@@ -2,98 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B4E38E69D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D6038E907
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhEXMb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhEXMbz (ORCPT
+        id S233097AbhEXOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:46:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55115 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233052AbhEXOqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:31:55 -0400
-X-Greylist: delayed 521 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 May 2021 05:30:26 PDT
-Received: from mx2.securetransport.de (mx2.securetransport.de [IPv6:2a03:4000:13:6c7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4DE3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:30:26 -0700 (PDT)
-Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.securetransport.de (Postfix) with ESMTPSA id 810225E9B3;
-        Mon, 24 May 2021 14:20:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1621858856;
-        bh=oAEP7Bx2kRgmVjQH+ibDkqNcf1DVDndBjF/hRNk5XtU=;
-        h=From:To:CC:Subject:Date:From;
-        b=KKsHz/E6wWc/yBxnFOXPdK8snYAW0oPS45Jm02uxu9TIXRYHKCmdmYlOzgf6Fo+Ru
-         XrybAT6BCxsSYrctA2FuMCOxSGC0xt1Jg8pMOjJTcg3vq3QFIV1pvvel3BhImp+YAc
-         4RqKLRwds9HMaQ4rof4nyW/YaHRvlD/p3KMP+gTPCEVPULRropMiCg8Wsiye6ytUfB
-         5uupIx+wD47hGucM3Y0hi+BtYvIU+KcRwKjUpoTSRbNTANWXi77Quvpo0iwVJ5iboy
-         pZuGT1PiOMg/eaPJttsbxb4gqDyL9LFMLBICeLXiUqV1VM1i1UUgaQ78IgBTAEX7Ok
-         igMtP+6iXOgLA==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
- DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.12; Mon, 24 May 2021 14:20:39 +0200
-Received: from DHPWEX01.DH-ELECTRONICS.ORG ([fe80::6ced:fa7f:9a9c:e579]) by
- DHPWEX01.DH-ELECTRONICS.ORG ([fe80::6ced:fa7f:9a9c:e579%6]) with mapi id
- 15.02.0858.012; Mon, 24 May 2021 14:20:39 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        kernel <kernel@dh-electronics.com>
-Subject: RE: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02
- boards [Klartext]
-Thread-Topic: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02
- boards [Klartext]
-Thread-Index: AddQlvQ3s4HwqoC/Q+OS4TW/MyA42Q==
-Date:   Mon, 24 May 2021 12:20:39 +0000
-Message-ID: <9282a98aad9a4f8585b7dae5679b0e2b@dh-electronics.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.64.2.18]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 24 May 2021 10:46:45 -0400
+X-UUID: b927cc3968194133b1d2c04322e16423-20210524
+X-UUID: b927cc3968194133b1d2c04322e16423-20210524
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1008611881; Mon, 24 May 2021 20:29:12 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 24 May 2021 20:29:11 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 24 May 2021 20:29:11 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        "chun-jie . chen" <chun-jie.chen@mediatek.com>
+Subject: [PATCH v9 08/22] clk: mediatek: Add configurable enable control to mtk_pll_data
+Date:   Mon, 24 May 2021 20:20:39 +0800
+Message-ID: <20210524122053.17155-9-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXN0b3BoIE5pZWRlcm1haWVyIDxjbmllZGVybWFpZXJAZGgtZWxlY3Ryb25pY3Mu
-Y29tPg0KU2VudDogTW9uZGF5LCBNYXkgMjQsIDIwMjEgMjowNCBQTQ0KPiANCj4gQWRkIERIIGVs
-ZWN0cm9uaWNzIERIQ09NIFBpY29JVFggYW5kIERIQ09NIERSQzAyIGJvYXJkcy4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IENocmlzdG9waCBOaWVkZXJtYWllciA8Y25pZWRlcm1haWVyQGRoLWVsZWN0
-cm9uaWNzLmNvbT4NCj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0K
-PiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBDYzogcm9iaCtkdEBrZXJuZWwu
-b3JnDQo+IENjOiBTaGF3biBHdW8gPHNoYXduZ3VvQGtlcm5lbC5vcmc+DQo+IENjOiBrZXJuZWxA
-ZGgtZWxlY3Ryb25pY3MuY29tDQo+IFRvOiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZw0KPiAt
-LS0NCj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnNsLnlhbWwgfCAx
-MyArKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKQ0KPiAN
-Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnNs
-LnlhbWwNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2ZzbC55YW1s
-DQo+IGluZGV4IGZjZTJhODY3MGI0OS4uYWZiZGVhMDc4YWJiIDEwMDY0NA0KPiAtLS0gYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2ZzbC55YW1sDQo+ICsrKyBiL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnNsLnlhbWwNCj4gQEAgLTQwNyw2ICs0
-MDcsMTIgQEAgcHJvcGVydGllczoNCj4gICAgICAgICAgICAtIGNvbnN0OiBkZmksZnM3MDBlLW02
-MA0KPiAgICAgICAgICAgIC0gY29uc3Q6IGZzbCxpbXg2ZGwNCj4gDQo+ICsgICAgICAtIGRlc2Ny
-aXB0aW9uOiBpLk1YNkRMIERIQ09NIFBpY29JVFggQm9hcmQNCj4gKyAgICAgICAgaXRlbXM6DQo+
-ICsgICAgICAgICAgLSBjb25zdDogZGgsaW14NmRsLWRoY29tLXBpY29pdHgNCj4gKyAgICAgICAg
-ICAtIGNvbnN0OiBkaCxpbXg2ZGwtZGhjb20tc29tDQo+ICsgICAgICAgICAgLSBjb25zdDogZnNs
-LGlteDZkbA0KPiArDQo+ICAgICAgICAtIGRlc2NyaXB0aW9uOiBpLk1YNkRMIEdhdGV3b3JrcyBW
-ZW50YW5hIEJvYXJkcw0KPiAgICAgICAgICBpdGVtczoNCj4gICAgICAgICAgICAtIGVudW06DQo+
-IEBAIC00NTgsNiArNDY0LDEzIEBAIHByb3BlcnRpZXM6DQo+ICAgICAgICAgICAgLSBjb25zdDog
-dG9yYWRleCxjb2xpYnJpX2lteDZkbCAgICAgICAgICAjIENvbGlicmkgaU1YNiBNb2R1bGUNCj4g
-ICAgICAgICAgICAtIGNvbnN0OiBmc2wsaW14NmRsDQo+IA0KPiArICAgICAgLSBkZXNjcmlwdGlv
-bjogaS5NWDZTIERIQ09NIERSQzAyIEJvYXJkDQo+ICsgICAgICAgIGl0ZW1zOg0KPiArICAgICAg
-ICAgIC0gY29uc3Q6IGRoLGlteDZzLWRoY29tLWRyYzAyDQo+ICsgICAgICAgICAgLSBjb25zdDog
-ZGgsaW14NnMtZGhjb20tc29tDQo+ICsgICAgICAgICAgLSBjb25zdDogZnNsLGlteDZzDQo+ICsg
-ICAgICAgICAgLSBjb25zdDogZnNsLGlteDZkbA0KPiArDQo+ICAgICAgICAtIGRlc2NyaXB0aW9u
-OiBpLk1YNlNMIGJhc2VkIEJvYXJkcw0KPiAgICAgICAgICBpdGVtczoNCj4gICAgICAgICAgICAt
-IGVudW06DQo+IC0tDQo+IDIuMTEuMA0KDQpJZ25vcmUgdGhpcyBvbmUsIGJlY2F1c2UgdGhlIHJl
-Y2lwaWVudCBpcyB3cm9uZyENCg0KUmVnYXJkcw0KQ2hyaXN0b3BoDQo=
+In all MediaTek PLL design, bit0 of CON0 register is always
+the enable bit.
+However, there's a special case of usbpll on MT8192.
+The enable bit of usbpll is moved to bit2 of other register.
+Add configurable en_reg and pll_en_bit for enable control or
+default 0 where pll data are static variables.
+Hence, CON0_BASE_EN could also be removed.
+And there might have another special case on other chips,
+the enable bit is still on CON0 register but not at bit0.
+
+Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
+---
+ drivers/clk/mediatek/clk-mtk.h | 20 +++++++++++---------
+ drivers/clk/mediatek/clk-pll.c | 15 ++++++++++-----
+ 2 files changed, 21 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mtk.h
+index c3d6756b0c7e..31c7cb304508 100644
+--- a/drivers/clk/mediatek/clk-mtk.h
++++ b/drivers/clk/mediatek/clk-mtk.h
+@@ -213,13 +213,13 @@ struct mtk_pll_div_table {
+ struct mtk_pll_data {
+ 	int id;
+ 	const char *name;
+-	uint32_t reg;
+-	uint32_t pwr_reg;
+-	uint32_t en_mask;
+-	uint32_t pd_reg;
+-	uint32_t tuner_reg;
+-	uint32_t tuner_en_reg;
+-	uint8_t tuner_en_bit;
++	u32 reg;
++	u32 pwr_reg;
++	u32 en_mask;
++	u32 pd_reg;
++	u32 tuner_reg;
++	u32 tuner_en_reg;
++	u8 tuner_en_bit;
+ 	int pd_shift;
+ 	unsigned int flags;
+ 	const struct clk_ops *ops;
+@@ -228,11 +228,13 @@ struct mtk_pll_data {
+ 	unsigned long fmax;
+ 	int pcwbits;
+ 	int pcwibits;
+-	uint32_t pcw_reg;
++	u32 pcw_reg;
+ 	int pcw_shift;
+-	uint32_t pcw_chg_reg;
++	u32 pcw_chg_reg;
+ 	const struct mtk_pll_div_table *div_table;
+ 	const char *parent_name;
++	u32 en_reg;
++	u8 pll_en_bit; /* Assume 0, indicates BIT(0) by default */
+ };
+ 
+ void mtk_clk_register_plls(struct device_node *node,
+diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
+index 11ed5d1d1c36..7fb001a4e7d8 100644
+--- a/drivers/clk/mediatek/clk-pll.c
++++ b/drivers/clk/mediatek/clk-pll.c
+@@ -44,6 +44,7 @@ struct mtk_clk_pll {
+ 	void __iomem	*tuner_en_addr;
+ 	void __iomem	*pcw_addr;
+ 	void __iomem	*pcw_chg_addr;
++	void __iomem	*en_addr;
+ 	const struct mtk_pll_data *data;
+ };
+ 
+@@ -56,7 +57,7 @@ static int mtk_pll_is_prepared(struct clk_hw *hw)
+ {
+ 	struct mtk_clk_pll *pll = to_mtk_clk_pll(hw);
+ 
+-	return (readl(pll->base_addr + REG_CON0) & CON0_BASE_EN) != 0;
++	return (readl(pll->en_addr) & BIT(pll->data->pll_en_bit)) != 0;
+ }
+ 
+ static unsigned long __mtk_pll_recalc_rate(struct mtk_clk_pll *pll, u32 fin,
+@@ -248,8 +249,8 @@ static int mtk_pll_prepare(struct clk_hw *hw)
+ 	writel(r, pll->pwr_addr);
+ 	udelay(1);
+ 
+-	r = readl(pll->base_addr + REG_CON0) | CON0_BASE_EN;
+-	writel(r, pll->base_addr + REG_CON0);
++	r = readl(pll->en_addr) | BIT(pll->data->pll_en_bit);
++	writel(r, pll->en_addr);
+ 
+ 	div_en_mask = pll->data->en_mask & ~CON0_BASE_EN;
+ 	if (div_en_mask) {
+@@ -290,8 +291,8 @@ static void mtk_pll_unprepare(struct clk_hw *hw)
+ 		writel(r, pll->base_addr + REG_CON0);
+ 	}
+ 
+-	r = readl(pll->base_addr + REG_CON0) & ~CON0_BASE_EN;
+-	writel(r, pll->base_addr + REG_CON0);
++	r = readl(pll->en_addr) & ~BIT(pll->data->pll_en_bit);
++	writel(r, pll->en_addr);
+ 
+ 	r = readl(pll->pwr_addr) | CON0_ISO_EN;
+ 	writel(r, pll->pwr_addr);
+@@ -333,6 +334,10 @@ static struct clk *mtk_clk_register_pll(const struct mtk_pll_data *data,
+ 		pll->tuner_addr = base + data->tuner_reg;
+ 	if (data->tuner_en_reg)
+ 		pll->tuner_en_addr = base + data->tuner_en_reg;
++	if (data->en_reg)
++		pll->en_addr = base + data->en_reg;
++	else
++		pll->en_addr = pll->base_addr + REG_CON0;
+ 	pll->hw.init = &init;
+ 	pll->data = data;
+ 
+-- 
+2.18.0
+
