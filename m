@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAA138ED80
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BE938ED09
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhEXPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:38:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51512 "EHLO mail.kernel.org"
+        id S233437AbhEXPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233594AbhEXPey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:34:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43BA36138C;
-        Mon, 24 May 2021 15:32:13 +0000 (UTC)
+        id S232547AbhEXPcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:32:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EB8361376;
+        Mon, 24 May 2021 15:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870333;
-        bh=gAC8X44v/DAW6Ft4kgj+eMny2o3mMGv0TRRVGZTyjj0=;
+        s=korg; t=1621870240;
+        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wF2OcdwJRKEeCYzLXAqaW7KyjbQNknM1c2xxRdotG9GWfmK7ch73/lhiuha1+8Z6e
-         eRCC0G4BBfpdZb2hQp5DejrMyA9tqheI+D2p717am7qPIkAOIyMaiKCk9WrijVBOAw
-         1PlaQdPIqhgNjcQfz7Lnk0E3Ng6Ng7CJ3g97pjLE=
+        b=s8oRCGqdFqzRmSdmZjQ7lCJwl22OWHdlsIUZWUGtjd71Ga0FkjJIhJbnc76ZEXyaR
+         oxmWgYrgYm+N8nwn66hS7O06KZLMEO7qn7XEjlVTYFgB375cnXbo5QSeJvJQ4x+ERO
+         S3TVvjNV+xRmDp+j4CMLt5g72klqKVMOnEAmFMyE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 10/36] Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
-Date:   Mon, 24 May 2021 17:24:55 +0200
-Message-Id: <20210524152324.501549476@linuxfoundation.org>
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: [PATCH 4.4 13/31] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+Date:   Mon, 24 May 2021 17:24:56 +0200
+Message-Id: <20210524152323.354620437@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
+References: <20210524152322.919918360@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,9 +41,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 5e68b86c7b7c059c0f0ec4bf8adabe63f84a61eb upstream.
+commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
 
-This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
+This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -56,38 +53,31 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-The original commit has a memory leak on the error path here, it does
-not clean up everything properly.
+The original commit does not properly unwind if there is an error
+condition so it needs to be reverted at this point in time.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Fixes: 23015b22e47c ("rapidio: fix a NULL pointer dereference when create_workqueue() fails")
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-45-gregkh@linuxfoundation.org
+Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
+Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/rapidio/rio_cm.c |    8 --------
- 1 file changed, 8 deletions(-)
+ drivers/leds/leds-lp5523.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -2147,14 +2147,6 @@ static int riocm_add_mport(struct device
- 	mutex_init(&cm->rx_lock);
- 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
- 	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
--	if (!cm->rx_wq) {
--		riocm_error("failed to allocate IBMBOX_%d on %s",
--			    cmbox, mport->name);
--		rio_release_outb_mbox(mport, cmbox);
--		kfree(cm);
--		return -ENOMEM;
--	}
--
- 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
  
- 	cm->tx_slot = 0;
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+-	if (ret)
+-		return ret;
++	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+ 	status &= LP5523_ENG_STATUS_MASK;
+ 
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
