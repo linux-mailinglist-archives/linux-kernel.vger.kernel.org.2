@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F3738E8C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C584B38E8C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhEXOcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbhEXOcH (ORCPT
+        id S232997AbhEXOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:34:57 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:51858 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232906AbhEXOex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:32:07 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB72CC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:30:39 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q5so28751179wrs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=orAplirkWFknLWPMzVptcilNsNkdO+txSDeVHlyUIIY=;
-        b=V1WeL0MdBuCjmtFOYJ/om7yQj6y8yOrb//GjPqdgtk11rQZN/7yPBrAKAd/KfOCJ0I
-         2WYh2Nt60DVeJBFIWJnwC3DNvXM4xds6aIHEnePxhR11BvHfE21Etz6M5wwejVyGKDSS
-         CWS38FMFysxoXrQ5oJ1JLluJahFCeX0r7+HhPxQOEyPfLSwB47xlTmPIRZN55VXAGHWJ
-         5kUEYuoGeYdZz1VmRv6UMlCO7pLVftxou+XWpXXc1a+TyhXpJ9vpLff/WQYh5Kllqrcv
-         kLwBHK9JWAA5r8czTK/6eteUnG0qFjxxMoVGz1JNQQ4C1qSOFR4hoNkrBAYgVyW5aXR9
-         Xi5g==
+        Mon, 24 May 2021 10:34:53 -0400
+Received: by mail-io1-f72.google.com with SMTP id h7-20020a5d9e070000b029041a1f6bccc8so27576872ioh.18
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:33:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=orAplirkWFknLWPMzVptcilNsNkdO+txSDeVHlyUIIY=;
-        b=j+L/HBpNsVrIhcUQRtHYLgj1yzlfaPVcBQxG1DPoRiHMcwvwJ4YCraCVEshdfaZXJp
-         d8Av5khclL9tBhHVxZmebD6qDjB6jTzUskCd3X1+VO5FgZqeByaqhssPPgIl3J6HsP8t
-         wUARdP0eqV8jjSDQDjNFj2TPVWpqbaUIruKey+QNibUyPJAWCBL41BfkrpWuaRnPMa9W
-         PVmMVMmG7ZxN1OYxNoOcjyMRQto3QyAKqN5oPPo1I46RpO+5nEGaYrh/cKBsWAJV+FnT
-         ORYaHix6+3PfYoEp5NgxYLJQsGwwvoKrKTmG026IS627ZbeYN3bWLrQutfXHqNoGAMze
-         MSOA==
-X-Gm-Message-State: AOAM533I6y+PqzKVRZjR9pY7hXWYN4Zg/G1zCp7+KMXAH3ZqdGBNu/7m
-        sIc4yaeRURpiXf/uPJsG3ngrXQ==
-X-Google-Smtp-Source: ABdhPJzzflD8S1xyzfWbn0VxC6DWx5C3QgvKTnnhg286AVQN/zJPEz8HFWusZWy6bjUPluSQDZc3Jg==
-X-Received: by 2002:a5d:6e03:: with SMTP id h3mr10890801wrz.138.1621866638160;
-        Mon, 24 May 2021 07:30:38 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id c194sm8192606wme.46.2021.05.24.07.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 07:30:37 -0700 (PDT)
-References: <20210524134517.687089-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org
-Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
-        khilman@baylibre.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clk: meson: meson8b: Use CLK_SET_RATE_NO_REPARENT
- for vclk{,2}_in_sel
-In-reply-to: <20210524134517.687089-1-martin.blumenstingl@googlemail.com>
-Message-ID: <1jmtskb3w2.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 24 May 2021 16:30:37 +0200
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mzMzgGXGzf6LXhHO5i6yc8Y+EDUJAYcIfexi+vE47CU=;
+        b=FWr1laZa6S7NL4LV6aNj8n56eqNcSVZjWGudZPtW2K9zaFEmmQYlWwuGkmMiOOiAxs
+         X9dJf6aGZmrZhge4Wz6KSh0obcXLqsEadj19RcEEdjm8bD0ncb30AWYz+sAml2uH/Wh7
+         NMgD8s+fMNmNR3ogHFVeRigOUYstisixcldGBaKkHtmTOFU9SivM6YMMTxxkdpV6SuVN
+         RNRmOtBzdF+BqWXI4A/EJ2zYkFc92NCCktQ5wlsbRkGJlzNyLekSDSj4kGiGHZ1txljC
+         lEDIzWt7CMDf0SSD1qN/UUVZuYAG2yObKPTaO7Hg2qVDHc0arHk55NhqK80VU0opOLt+
+         Ajfw==
+X-Gm-Message-State: AOAM5335mHS86kboCwtGbC71qceTOAKOLuTz+gvoRirUhOpTzk98TcY8
+        V7UhXvkrOWW2vjTF2sjmfkxGMHFhWUWiObUKjVSDkAI4ao9o
+X-Google-Smtp-Source: ABdhPJwcLmlxYie5V2pawuvy04hy/JhXmHluK7avvoMDLz8HPqTWiVk6pB4ev4axH1fIOY+cFZD0NJBTXl7Xe+dCdaOexF+vy7zQ
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:b47:: with SMTP id f7mr18755134ilu.261.1621866805007;
+ Mon, 24 May 2021 07:33:25 -0700 (PDT)
+Date:   Mon, 24 May 2021 07:33:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c91e6f05c3144acc@google.com>
+Subject: [syzbot] memory leak in ip_vs_add_service
+From:   syzbot <syzbot+e562383183e4b1766930@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        horms@verge.net.au, ja@ssi.bg, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On Mon 24 May 2021 at 15:45, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+syzbot found the following issue on:
 
-> Use CLK_SET_RATE_NO_REPARENT for the vclk{,2}_in_sel clocks. The only
-> parent which is actually used is vid_pll_final_div. This should be set
-> using assigned-clock-parents in the .dts rather than removing some
-> "unwanted" clock parents from the clock driver.
->
-> Suggested-by: Jerome Brunet <jbrunet@baylibre.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
-> After a hint from Jerome (thanks) this is the improved version of
-> "clk: meson: meson8b: Don't use MPLL1 as parent of vclk_in_sel" from [0]
->
->
-> [0] https://patchwork.kernel.org/project/linux-clk/patch/20210524104533.555953-1-martin.blumenstingl@googlemail.com/
->
->
->  drivers/clk/meson/meson8b.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-> index a844d35b553a..0f8bd707217a 100644
-> --- a/drivers/clk/meson/meson8b.c
-> +++ b/drivers/clk/meson/meson8b.c
-> @@ -1175,7 +1175,7 @@ static struct clk_regmap meson8b_vclk_in_sel = {
->  		.ops = &clk_regmap_mux_ro_ops,
+HEAD commit:    c3d0e3fd Merge tag 'fs.idmapped.mount_setattr.v5.13-rc3' o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=148d0bd7d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae7b129a135ab06b
+dashboard link: https://syzkaller.appspot.com/bug?extid=e562383183e4b1766930
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15585a4bd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13900753d00000
 
-I just noticed that these muxes are read-only ATM.
-It does not make this change (or the previous one) wrong but it does not
-make much sense as the mux won't ever change.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
 
-I suppose you make this mutable with another patch later on ?
+BUG: memory leak
+unreferenced object 0xffff888115227800 (size 512):
+  comm "syz-executor263", pid 8658, jiffies 4294951882 (age 12.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff83977188>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff83977188>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff83977188>] ip_vs_add_service+0x598/0x7c0 net/netfilter/ipvs/ip_vs_ctl.c:1343
+    [<ffffffff8397d770>] do_ip_vs_set_ctl+0x810/0xa40 net/netfilter/ipvs/ip_vs_ctl.c:2570
+    [<ffffffff838449a8>] nf_setsockopt+0x68/0xa0 net/netfilter/nf_sockopt.c:101
+    [<ffffffff839ae4e9>] ip_setsockopt+0x259/0x1ff0 net/ipv4/ip_sockglue.c:1435
+    [<ffffffff839fa03c>] raw_setsockopt+0x18c/0x1b0 net/ipv4/raw.c:857
+    [<ffffffff83691f20>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2117
+    [<ffffffff836920f2>] __do_sys_setsockopt net/socket.c:2128 [inline]
+    [<ffffffff836920f2>] __se_sys_setsockopt net/socket.c:2125 [inline]
+    [<ffffffff836920f2>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2125
+    [<ffffffff84350efa>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
 
->  		.parent_hws = meson8b_vclk_mux_parent_hws,
->  		.num_parents = ARRAY_SIZE(meson8b_vclk_mux_parent_hws),
-> -		.flags = CLK_SET_RATE_PARENT,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->  	},
->  };
->  
-> @@ -1358,7 +1358,7 @@ static struct clk_regmap meson8b_vclk2_in_sel = {
->  		.ops = &clk_regmap_mux_ro_ops,
->  		.parent_hws = meson8b_vclk_mux_parent_hws,
->  		.num_parents = ARRAY_SIZE(meson8b_vclk_mux_parent_hws),
-> -		.flags = CLK_SET_RATE_PARENT,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->  	},
->  };
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
