@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDB438E82B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B81E38E82E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhEXOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:00:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21932 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232867AbhEXOAZ (ORCPT
+        id S232950AbhEXOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:00:42 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5686 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232977AbhEXOAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:00:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621864736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J8LfDQ195znhoxRvE9Wqcc+zG0qrHlOf2a+m9kdOzR0=;
-        b=DHJVHuOsG0IHjA+fusm8xUVLhGw0SI5ff0Cn2TQhWC26Wn2SjsfPWW80y0+i4PCLn879ZR
-        vlzDhRu4b2cfWSY7BaFNwjOKPz4FTD3VWErnBfHAst7aXHKcN7ejmycNF/3JJknBTUQIMK
-        Wdqj+WBqAI44bvgvF3Ni+ggHyMXaQ3U=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-Rg5YjhHeOHqZUt5J71FOjg-1; Mon, 24 May 2021 09:58:55 -0400
-X-MC-Unique: Rg5YjhHeOHqZUt5J71FOjg-1
-Received: by mail-ej1-f72.google.com with SMTP id mp38-20020a1709071b26b02903df8ccd76fbso803572ejc.23
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:58:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J8LfDQ195znhoxRvE9Wqcc+zG0qrHlOf2a+m9kdOzR0=;
-        b=J+cwK483g9v88o8pHjhHjLRfg6jAieEYiF46xrN5nXkEblXLTwtzPN0y5oOOl6rkVu
-         VfWeSA9ZA9UhKYPBuXJ0tRD0XjnbVc1oXKLLQMocjjqcHPYWvfKN7CmnnJGwyLf6e6M0
-         UQtIjdF4NnPM/g0qVNg+VHKI2r5zCSL4jKDtmcBnXpqQY0E5YBzpj6BneLZl0Z6b37xD
-         f7ohJN9zHsJgBeqPf5o5vpjOm/ommehta2W8May7v8JadkvjSJ16bzjbIrffVMofOUmp
-         pFor6J9JfescW4lmQ6P6KjF/xjjgAvOke8D7vTYO4HQ6U0qTdYG/uswIIdr0FAy+UjrX
-         s1qw==
-X-Gm-Message-State: AOAM531KIQbVITGNfM9WD8TLPZ+0g9EARTl45/Aw/+jF4gVmQLHTOBpn
-        UpONZcHWwJIVStJy4fj477dl91Ym0WnGoeH+Rm6HcJaSlRFgPa+65D/D70s7r8I//TtGZaaBLkD
-        YajNh9sO8DG/CfUnSuBVSgfGh
-X-Received: by 2002:a17:907:1b19:: with SMTP id mp25mr23135155ejc.154.1621864733778;
-        Mon, 24 May 2021 06:58:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDahskZrAqXQ3CMOm3PkVMtwxYCfE7MCZQHvyz/0w9bsQmsrICw05FM5pGxo2gyBPjlaYK4A==
-X-Received: by 2002:a17:907:1b19:: with SMTP id mp25mr23135134ejc.154.1621864733603;
-        Mon, 24 May 2021 06:58:53 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k14sm9478241eds.0.2021.05.24.06.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:58:53 -0700 (PDT)
-Subject: Re: [PATCH v2 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when
- eVMCS data is copied in vmx_get_nested_state()
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
- <20210517135054.1914802-4-vkuznets@redhat.com>
- <48f7950dd6504a9ecc7a5209db264587958cafdf.camel@redhat.com>
- <87zgwk5lqy.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d049467a-e2a9-d888-4217-9261eec4a40b@redhat.com>
-Date:   Mon, 24 May 2021 15:58:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 24 May 2021 10:00:36 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FpdzM5WNlz1BQD3;
+        Mon, 24 May 2021 21:56:15 +0800 (CST)
+Received: from dggpeml500008.china.huawei.com (7.185.36.147) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 21:59:06 +0800
+Received: from [127.0.0.1] (10.40.188.252) by dggpeml500008.china.huawei.com
+ (7.185.36.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 24 May
+ 2021 21:59:05 +0800
+Subject: Re: [PATCH RESEND] Input: misc - use the correct HiSilicon copyright
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        <xuezhiliang@hisilicon.com>
+References: <1621677987-11009-1-git-send-email-fanghao11@huawei.com>
+ <YKsWGjy/0u/T8iO2@google.com>
+CC:     <xuezhiliang@huawei.com>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <prime.zeng@hisilicon.com>
+From:   "fanghao (A)" <fanghao11@huawei.com>
+Message-ID: <17af7a73-7a9f-2587-3529-bca5a7b775a2@huawei.com>
+Date:   Mon, 24 May 2021 21:59:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <87zgwk5lqy.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <YKsWGjy/0u/T8iO2@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.252]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500008.china.huawei.com (7.185.36.147)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/21 15:01, Vitaly Kuznetsov wrote:
-> With 'need_vmcs12_to_shadow_sync', we treat eVMCS as shadow VMCS which
-> happens to shadow all fields and while it may not be the most optimal
-> solution, it is at least easy to comprehend. We can try drafting
-> something up instead, maybe it will also be good but honestly I'm afraid
-> of incompatible changes in KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE, we
-> can ask Paolo's opinion on that.
 
-Yes, it's much easier to understand it if the eVMCS is essentially a 
-memory-backed shadow VMCS, than if it's really the vmcs12 format.  I 
-understand that it's bound to be a little slower, but at least the two 
-formats are not all over the place.
 
-Paolo
+On 2021/5/24 10:57, Dmitry Torokhov wrote:
+> Hi Hao,
+>
+> On Sat, May 22, 2021 at 06:06:27PM +0800, Hao Fang wrote:
+>> s/Hisilicon/HiSilicon/g.
+>> It should use capital S, according to
+>> https://www.hisilicon.com/en.
+>>
+>> Signed-off-by: Hao Fang <fanghao11@huawei.com>
+>> ---
+>>  drivers/input/misc/hisi_powerkey.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/input/misc/hisi_powerkey.c b/drivers/input/misc/hisi_powerkey.c
+>> index d3c293a..54cbfdf 100644
+>> --- a/drivers/input/misc/hisi_powerkey.c
+>> +++ b/drivers/input/misc/hisi_powerkey.c
+>> @@ -1,7 +1,7 @@
+>>  /*
+>>   * Hisilicon PMIC powerkey driver
+>>   *
+>> - * Copyright (C) 2013 Hisilicon Ltd.
+>> + * Copyright (C) 2013 HiSilicon Ltd.
+>
+> I see there are various versions of "Hisilicon" in copyright notices. I
+> do not know if capitalization here matters and which form is correct.
+> If this is important I'd rather HiSilicon folks submitted such
+> patch(es).
+>
+
+Xuezhiliang, can you help to review this patch and add an Acked-by? Or you can resubmit it.
+I found out you're the author of this driver, maybe you changed your email address.
+
+Thanks.
+Hao
+
+>
 
