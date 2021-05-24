@@ -2,161 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CB838E29B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276B838E29D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhEXItf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:49:35 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:6211 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbhEXIt1 (ORCPT
+        id S232552AbhEXItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:49:47 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:46799 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhEXItk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:49:27 -0400
-IronPort-SDR: FUOsR8lCnOZeWBw9JWra+xI6PrOJeDIRIZrauHuLV7pMuON3fNYa9k1TpbBxVrv8Ux7IvA7eOY
- 6+qeIFgtapaveu1pYt4W4n7ojasfA1BKxeRT/OZSeOY121Sp1mMzfWXkIKZFtHyw/8fRd43AFT
- yTWFVw9bdlvz0LsADXUr7hBm2xHQV8a4sEHuQfi9suoAkBdoTsGdQwGTo3oIAh0RxW1wUJnQki
- wMCGSwbtF3/Q0TVbSha/tEIqip0idrvIJ4NOSWHxnMl9+Vs+PgTojwZsJBK6LxpXxhnuYL2cyM
- vPg=
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="47877522"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 24 May 2021 01:47:56 -0700
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 24 May 2021 01:47:55 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 3CBE221AD7; Mon, 24 May 2021 01:47:55 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 6/6] scsi: ufs: Update the fast abort path in ufshcd_abort() for PM requests
-Date:   Mon, 24 May 2021 01:47:25 -0700
-Message-Id: <1621846046-22204-7-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621846046-22204-1-git-send-email-cang@codeaurora.org>
-References: <1621846046-22204-1-git-send-email-cang@codeaurora.org>
+        Mon, 24 May 2021 04:49:40 -0400
+Received: (Authenticated sender: hadess@hadess.net)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 27FAB1C0005;
+        Mon, 24 May 2021 08:48:09 +0000 (UTC)
+Message-ID: <3bd72f4181488c0066eee1674afaf26fea1d3a0c.camel@hadess.net>
+Subject: Re: [PATCH] touchscreen/goodix.c:unify format
+From:   Bastien Nocera <hadess@hadess.net>
+To:     mateng <ayowoe@163.com>, dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mateng <mateng@yulong.com>
+Date:   Mon, 24 May 2021 10:48:09 +0200
+In-Reply-To: <20210524024619.1227-1-ayowoe@163.com>
+References: <20210524024619.1227-1-ayowoe@163.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If PM requests fail during runtime suspend/resume, RPM framework saves the
-error to dev->power.runtime_error. Before the runtime_error gets cleared,
-runtime PM on this specific device won't work again, leaving the device
-in either suspended or active state permanently.
+On Mon, 2021-05-24 at 10:46 +0800, mateng wrote:
+> From: mateng <mateng@yulong.com>
+> 
+> unify format
 
-When task abort happens to a PM request sent during runtime suspend/resume,
-even if it can be successfully aborted, RPM framework anyways saves the
-(TIMEOUT) error. But we want more and we can do better - let error handling
-recover and clear the runtime_error. So, let PM requests take the fast
-abort path in ufshcd_abort().
+This doesn't "unify the format", it adds commas where none are needed.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 38 ++++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+NAK
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 9a3bc04..8312b31 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2731,7 +2731,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 		 * err handler blocked for too long. So, just fail the scsi cmd
- 		 * sent from PM ops, err handler can recover PM error anyways.
- 		 */
--		if (hba->wl_pm_op_in_progress) {
-+		if (cmd->request->rq_flags & RQF_PM) {
- 			hba->force_reset = true;
- 			set_host_byte(cmd, DID_BAD_TARGET);
- 			cmd->scsi_done(cmd);
-@@ -2764,7 +2764,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 		(hba->clk_gating.state != CLKS_ON));
- 
- 	if (unlikely(test_bit(tag, &hba->outstanding_reqs))) {
--		if (hba->wl_pm_op_in_progress)
-+		if (cmd->request->rq_flags & RQF_PM)
- 			set_host_byte(cmd, DID_BAD_TARGET);
- 		else
- 			err = SCSI_MLQUEUE_HOST_BUSY;
-@@ -6982,11 +6982,14 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 	int err = 0;
- 	struct ufshcd_lrb *lrbp;
- 	u32 reg;
-+	bool need_eh = false;
- 
- 	host = cmd->device->host;
- 	hba = shost_priv(host);
- 	tag = cmd->request->tag;
- 	lrbp = &hba->lrb[tag];
-+
-+	dev_info(hba->dev, "%s: Device abort task at tag %d\n", __func__, tag);
- 	if (!ufshcd_valid_tag(hba, tag)) {
- 		dev_err(hba->dev,
- 			"%s: invalid command tag %d: cmd=0x%p, cmd->request=0x%p",
-@@ -7004,9 +7007,6 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 		goto out;
- 	}
- 
--	/* Print Transfer Request of aborted task */
--	dev_info(hba->dev, "%s: Device abort task at tag %d\n", __func__, tag);
--
- 	/*
- 	 * Print detailed info about aborted request.
- 	 * As more than one request might get aborted at the same time,
-@@ -7034,21 +7034,21 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 	}
- 
- 	/*
--	 * Task abort to the device W-LUN is illegal. When this command
--	 * will fail, due to spec violation, scsi err handling next step
--	 * will be to send LU reset which, again, is a spec violation.
--	 * To avoid these unnecessary/illegal steps, first we clean up
--	 * the lrb taken by this cmd and re-set it in outstanding_reqs,
--	 * then queue the eh_work and bail.
-+	 * This fast path guarantees the cmd always gets aborted successfully,
-+	 * meanwhile it invokes the error handler. It allows contexts, which
-+	 * are blocked by this cmd, to fail fast. It serves multiple purposes:
-+	 * #1 To avoid unnecessary/illagal abort attempts to the W-LU.
-+	 * #2 To avoid live lock between eh_work and specific contexts, i.e.,
-+	 *    suspend/resume and eh_work itself.
-+	 * #3 To let eh_work recover runtime PM error in case abort happens
-+	 *    to cmds sent from runtime suspend/resume ops.
- 	 */
--	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
-+	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN ||
-+	    (cmd->request->rq_flags & RQF_PM)) {
- 		ufshcd_update_evt_hist(hba, UFS_EVT_ABORT, lrbp->lun);
- 		__ufshcd_transfer_req_compl(hba, (1UL << tag));
- 		set_bit(tag, &hba->outstanding_reqs);
--		spin_lock_irqsave(host->host_lock, flags);
--		hba->force_reset = true;
--		ufshcd_schedule_eh_work(hba);
--		spin_unlock_irqrestore(host->host_lock, flags);
-+		need_eh = true;
- 		goto out;
- 	}
- 
-@@ -7062,6 +7062,12 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- cleanup:
- 		__ufshcd_transfer_req_compl(hba, (1UL << tag));
- out:
-+		if (cmd->request->rq_flags & RQF_PM || need_eh) {
-+			spin_lock_irqsave(host->host_lock, flags);
-+			hba->force_reset = true;
-+			ufshcd_schedule_eh_work(hba);
-+			spin_unlock_irqrestore(host->host_lock, flags);
-+		}
- 		err = SUCCESS;
- 	} else {
- 		dev_err(hba->dev, "%s: failed with err %d\n", __func__, err);
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
+> Signed-off-by: mateng <mateng@yulong.com>
+> ---
+>  drivers/input/touchscreen/goodix.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/goodix.c
+> b/drivers/input/touchscreen/goodix.c
+> index c682b02..ab12065 100644
+> --- a/drivers/input/touchscreen/goodix.c
+> +++ b/drivers/input/touchscreen/goodix.c
+> @@ -210,7 +210,7 @@ static int goodix_check_cfg_16(struct
+> goodix_ts_data *ts,
+>                 .matches = {
+>                         DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
+>                         DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
+> -               }
+> +               },
+>         },
+>         {
+>                 .ident = "WinBook TW700",
+> @@ -230,7 +230,7 @@ static int goodix_check_cfg_16(struct
+> goodix_ts_data *ts,
+>                 /* YB1-X91L/F and YB1-X90L/F */
+>                 .matches = {
+>                         DMI_MATCH(DMI_PRODUCT_NAME, "Lenovo YB1-X9")
+> -               }
+> +               },
+>         },
+>  #endif
+>         {}
+
 
