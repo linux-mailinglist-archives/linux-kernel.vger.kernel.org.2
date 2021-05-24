@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D1838E3F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A8E38E3F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhEXKYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:24:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:53371 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhEXKYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:24:09 -0400
-IronPort-SDR: PZRI2nmDo1DBBRit1hxJzneIkdP12uJlTshRZoO+cRBpnO3cEYeOQXD9SbdAgpOOHc++jA+4Q5
- eq+7i8eGFx/g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="189024787"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="189024787"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 03:22:41 -0700
-IronPort-SDR: PAlFE+eBV1czTpL3dYCMs0cg8ir77MGPpUfgo3YTNGmc7n1C7bKJ3hoTe4Xj2mnN0wT0RrKo1N
- DT9PYQ0NGp4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="545868829"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 24 May 2021 03:22:38 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 24 May 2021 13:22:37 +0300
-Date:   Mon, 24 May 2021 13:22:37 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkp@intel.com
-Subject: Re: [PATCH v2 2/2] usb: typec: tcpm: Respond Not_Supported if no
- snk_vdo
-Message-ID: <YKt+bbgOVi/3RCpQ@kuha.fi.intel.com>
-References: <20210523015855.1785484-1-kyletso@google.com>
- <20210523015855.1785484-3-kyletso@google.com>
+        id S232579AbhEXKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232422AbhEXKZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 06:25:02 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D2475C061574;
+        Mon, 24 May 2021 03:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=jHeBSrLolQ
+        CA4SytVaIn4xVOwyyRaTWTfTNw9hbAPns=; b=uz7Z9N36xvE+Kn769Uq2gHSnkm
+        4u9SS9NXzl+vnnuf59U1hV2Ibv6E8RFMIzkmNDB6hPbG0HMbZH+C2ALKORrlOrBo
+        jp0GMy8uyhd6cpE/VFkO4hy0m2xVQd5MTMsk+IyIuJ1P0aoapRDXnYdzTMoEk5XG
+        ZrIgUy3AbozQZViDk=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3PMCcfqtgbpcKAA--.3527S4;
+        Mon, 24 May 2021 18:23:24 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     skashyap@marvell.com, jhasan@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, mlombard@redhat.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] scsi/bnx2fc/bnx2fx_fcore: Fix a double free in bnx2fc_rcv
+Date:   Mon, 24 May 2021 03:23:20 -0700
+Message-Id: <20210524102320.10122-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523015855.1785484-3-kyletso@google.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygA3PMCcfqtgbpcKAA--.3527S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7XFyxXFWUWr45ur15JFy5Jwb_yoW8Jr48pa
+        n2g3Z3AF4kCw1Ykw4Ut3yUCF15ua4rGr9xGa4xKan8CayfJr1FyFykta4Fqw45CFWrCw42
+        qrn5tryY9a1qqF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 09:58:55AM +0800, Kyle Tso wrote:
-> If snk_vdo is not populated from fwnode, it implies the port does not
-> support responding to SVDM commands. Not_Supported Message shall be sent
-> if the contract is in PD3. And for PD2, the port shall ignore the
-> commands.
-> 
-> Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+In bnx2fc_rcv, it calls skb_share_check(skb,GFP_ATOMIC) to clone
+the skb. But if skb_clone() failed, skb_share_check() will free
+the skb in the first time and return NULL. Then skb_share_check()
+returns NULL and goto err.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Unfortunately, the same skb is freed in the second time in the err.
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 7db6ae3e9c0b..a56bc71f4eb5 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2458,7 +2458,10 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  					   NONE_AMS);
->  		break;
->  	case PD_DATA_VENDOR_DEF:
-> -		tcpm_handle_vdm_request(port, msg->payload, cnt);
-> +		if (tcpm_vdm_ams(port) || port->nr_snk_vdo)
-> +			tcpm_handle_vdm_request(port, msg->payload, cnt);
-> +		else if (port->negotiated_rev > PD_REV20)
-> +			tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
->  		break;
->  	case PD_DATA_BIST:
->  		port->bist_request = le32_to_cpu(msg->payload[0]);
-> -- 
-> 2.31.1.818.g46aad6cb9e-goog
+As kfree_skb() free a null pointer is a safe operation, my patch
+put "skb = tmp_skb;" ahead of the "if(!tmp_skb) goto err;". So that
+if skb_share_check() failed, skb will be a null pointer.
 
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+index 8863a74e6c57..89c277cb93b2 100644
+--- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
++++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+@@ -445,11 +445,10 @@ static int bnx2fc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	}
+ 
+ 	tmp_skb = skb_share_check(skb, GFP_ATOMIC);
++	skb = tmp_skb;
+ 	if (!tmp_skb)
+ 		goto err;
+ 
+-	skb = tmp_skb;
+-
+ 	if (unlikely(eth_hdr(skb)->h_proto != htons(ETH_P_FCOE))) {
+ 		printk(KERN_ERR PFX "bnx2fc_rcv: Wrong FC type frame\n");
+ 		goto err;
 -- 
-heikki
+2.25.1
+
+
