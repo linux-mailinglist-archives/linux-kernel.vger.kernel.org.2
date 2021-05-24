@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A865338E356
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC9738E362
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhEXJ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:29:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2668 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232426AbhEXJ3J (ORCPT
+        id S232506AbhEXJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232396AbhEXJeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:29:09 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14O94Gkb185686;
-        Mon, 24 May 2021 05:26:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=/2eWibBSN0HVY3hGtUv/h4+T845xdYDo1OpxNXYB9jE=;
- b=IiHkvO4WNWyLedq1KTdl8/OUhYdKiOwd1WGWxNCiiPmERE4EHDR6fWRLABE4dn9NjOuq
- kB7XbSM6fM6VnmBqT9AbCg7W6LgfqGfy4pvOWVYTif1sd7uk+UmY+IKtoEMThY2OXKH/
- 8/tdCOyGZrFi2z6y3Ts67AeFbPhchwZOax1yUdzCcQUyPe+KezwA4jvCL3t8dF5iND3J
- hWetlJmY9F5vdky8Rl+KeqmF6KHuLsPDzj6+qmwn//oJ1xDbhc2QhRjfVerJ+zLvOTfS
- igSHglxIqJTdkkQPS7VqX4cdh7HbzD6sV35//6/BdM80zZ3ZiQOQisxBEVqaCTh7ntYl OQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38r8rm96au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 05:26:58 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14O9Q59o079191;
-        Mon, 24 May 2021 05:26:58 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38r8rm969w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 05:26:57 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14O9QtlP017120;
-        Mon, 24 May 2021 09:26:55 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 38ps7h8cug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 09:26:55 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14O9QrR017629654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 May 2021 09:26:53 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E94DAE053;
-        Mon, 24 May 2021 09:26:53 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C6E7AE045;
-        Mon, 24 May 2021 09:26:52 +0000 (GMT)
-Received: from localhost (unknown [9.85.75.18])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 24 May 2021 09:26:52 +0000 (GMT)
-Date:   Mon, 24 May 2021 14:56:50 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH -tip v2 02/10] kprobes: treewide: Replace
- arch_deref_entry_point() with dereference_function_descriptor()
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        tglx@linutronix.de, X86 ML <x86@kernel.org>, yhs@fb.com
-References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-        <161553132545.1038734.15042495470069054830.stgit@devnote2>
-In-Reply-To: <161553132545.1038734.15042495470069054830.stgit@devnote2>
+        Mon, 24 May 2021 05:34:06 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C9B3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=8QYGljFb5E
+        AOcfFXhgSb6txhlNcsv6mgPjDeDUMQExc=; b=QI6rL/1AG/Nr3fR+4Xu7eSpmJX
+        kDTi8rM3zUdlUXSS64u5EhHRpjtmVFL0AHTfmCh35ueGhqFQUgrtSsqjZp5SremW
+        rX+5gHzDOJx7LQ7R/tJuq4gJskoxZ89xbuPX2QS9ZPnz3JvUV4XrW8EQQxznBjR+
+        vcs+5Bx2q/ZfCaFI8=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3OoKfcqtgS0gKAA--.1158S4;
+        Mon, 24 May 2021 17:32:15 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     siglesias@igalia.com, jens.taprogge@taprogge.org,
+        gregkh@linuxfoundation.org
+Cc:     industrypack-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
+Date:   Mon, 24 May 2021 02:32:05 -0700
+Message-Id: <20210524093205.8333-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1621848345.yvip3z0wyn.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -atXjk7rEXZqyrfpvPGc-QzgnH2q2iig
-X-Proofpoint-ORIG-GUID: uXngcU3uWZYd7DQrFBISvBNV6OWz1axa
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-24_05:2021-05-24,2021-05-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- mlxlogscore=863 phishscore=0 lowpriorityscore=0 malwarescore=0
- clxscore=1011 priorityscore=1501 adultscore=0 spamscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105240069
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygA3OoKfcqtgS0gKAA--.1158S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyDWw48ur4fKryfGw4rZrb_yoW8GrWUpF
+        45A345Gr9xXa4rCF4IvFWDZF15Cw48t3sYk3yIk3y3ZFs3Wr1jkFs3AFyUXF48tw4rGF1x
+        XF1kt34UXF4UJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjAsqPUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masami Hiramatsu wrote:
-> Replace arch_deref_entry_point() with dereference_function_descriptor()
-> because those are doing same thing.
+In the out_err_bus_register error branch of tpci200_pci_probe,
+tpci200->info->cfg_regs is freed by tpci200_uninstall()->
+tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
+in the first time.
 
-It's not quite the same -- you need dereference_symbol_descriptor().
+But later, iounmap() is called to free tpci200->info->cfg_regs
+again.
+
+My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
+to avoid the double free.
+
+Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/ipack/carriers/tpci200.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
+index ec71063fff76..e1822e87ec3d 100644
+--- a/drivers/ipack/carriers/tpci200.c
++++ b/drivers/ipack/carriers/tpci200.c
+@@ -596,8 +596,11 @@ static int tpci200_pci_probe(struct pci_dev *pdev,
+ 
+ out_err_bus_register:
+ 	tpci200_uninstall(tpci200);
++	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
++	tpci200->info->cfg_regs = NULL;
+ out_err_install:
+-	iounmap(tpci200->info->cfg_regs);
++	if (tpci200->info->cfg_regs)
++		iounmap(tpci200->info->cfg_regs);
+ out_err_ioremap:
+ 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
+ out_err_pci_request:
+-- 
+2.25.1
 
 
-- Naveen
 
