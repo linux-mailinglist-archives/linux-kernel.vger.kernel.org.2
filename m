@@ -2,141 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80C38E12F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8287538E131
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhEXGuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:50:40 -0400
-Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64]:35482
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232120AbhEXGug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:50:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iqHhApfmld5Qm9u62KrMeNHdbCY9Lv96y++sX4zaw0KSvvagnpDYh56qVQm8gmLVYzTXryhK5B+Yq8XdLwlsThjFb+lD4i1ZetonwK1quP5XKHbRBFrCwepJuFxsjTV6n/eAzaibdRQ0xulUdFXnQLFLWyc2mp0fDhQg6ENLFeaQrD8MKu4V8yeeFhfm81lvy88YyvJ2F2d07h5NFT4vVN/RVMTmPfiQGS2CP+W1B8jx4+KPV+ZtcklOyIYDlwZJ3QhJfOtm2ArOWcFtXDfbDSzYxNtWK12f3fOwjGHtI3hYO2wqI4pKh+0lsZfRw00H/FSFTsir/cB0To4rimjLxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8q1GB4FfR9qK7Z4CGY06M7Yp+ytz6O3efNWj7nNWgwU=;
- b=m95fq0J3oZHXSDEa8Bc3NvIOKRp0Gt3IJJjs16D3Zf8XERcbpoy3hgwLaJAKITfBn03fnVmNoi/ucRCE/a6j/jNhib8NMovUAjHqXqOU1Q4D1LJImAfGlnWh9Ow2d1giXPc7XRqUO/zq2lulCJk9ngpu1oWU+n7Egwvw2frk4+xl0G0pqDfg/0dWL/oBvIWCq4A80likPzq22UL621K7Vy10BNcsMuHazlniEsQ92pxuC01lJ2+O4kh45wcCBIN3fsnmmW6fLKswil/GYMdC+peeNZacZDCysMtweKBfKmKZX42gUQ6B0iCHL+2ncSo88OrPx2jsTdp+juBRJOmTsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8q1GB4FfR9qK7Z4CGY06M7Yp+ytz6O3efNWj7nNWgwU=;
- b=f0SQVA9GcTOg+1Ee8/Kmessl5Ndr+NGBDv+DT9Ee0/FY+5Z9OUNry7CZYdSC60Go74aMsiZxLXDNbeID/2xIR5vJGa18X8KtzohTjO5heWlGiBHx4MBOAblqnOeQIVTqCzG7BeXzBCGxT7LqC+DIfZ0pEds64PshoAG05TZRScY=
-Received: from SN7PR04CA0004.namprd04.prod.outlook.com (2603:10b6:806:f2::9)
- by BN0PR02MB7903.namprd02.prod.outlook.com (2603:10b6:408:162::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
- 2021 06:49:06 +0000
-Received: from SN1NAM02FT0054.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:f2:cafe::6f) by SN7PR04CA0004.outlook.office365.com
- (2603:10b6:806:f2::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
- Transport; Mon, 24 May 2021 06:49:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0054.mail.protection.outlook.com (10.97.4.242) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4129.27 via Frontend Transport; Mon, 24 May 2021 06:49:06 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+        id S232322AbhEXGv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 02:51:58 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:51987 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232120AbhEXGvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 02:51:55 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14O6oAsU5016710, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14O6oAsU5016710
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 24 May 2021 14:50:10 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 23:49:04 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sun, 23 May 2021 23:49:04 -0700
-Envelope-to: linux-i2c@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- lee.jones@linaro.org
-Received: from [172.30.17.109] (port=45088)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1ll4Oe-0005Rv-3G; Sun, 23 May 2021 23:49:04 -0700
-Subject: Re: [PATCH 06/16] i2c: busses: i2c-cadence: Fix incorrectly
- documented 'enum cdns_i2c_slave_mode'
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-7-lee.jones@linaro.org>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <2742a590-c0f0-d32f-88d8-558ac0ff6bd0@xilinx.com>
-Date:   Mon, 24 May 2021 08:49:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ 15.1.2106.2; Mon, 24 May 2021 14:50:09 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 24 May
+ 2021 14:50:01 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
+Subject: [PATCH net v3] r8152: check the informaton of the device
+Date:   Mon, 24 May 2021 14:49:42 +0800
+Message-ID: <1394712342-15778-365-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
+In-Reply-To: <1394712342-15778-363-Taiwan-albertk@realtek.com>
+References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210520190105.3772683-7-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc04cb4b-e233-4041-3765-08d91e8006b1
-X-MS-TrafficTypeDiagnostic: BN0PR02MB7903:
-X-Microsoft-Antispam-PRVS: <BN0PR02MB790325F08829E30B451EF735C6269@BN0PR02MB7903.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MEZnlHg9HgU47Mag0KL3l0KAigNsbLZdyZQi2Pp73FoaECRymFvnHEwXq+DShOPlOiJat2DVBH4lxKFznCJlCdTs1a7SschndwK9IZ4Y3L0PpPD/JQEoOrUtlkmibNkMWHdY4Qfa/+PrR9tKzYfrWw0ZMry5+RHqhyC0GBReF+EVr+qhjvWapwmg7Rem/kkonj8MgJpFFPVfgKFzCMkyhvUasjOBVc+7xmlQYVioXK2AgqxaUw7rzzr9J4tpGzDRwcOTDnA7q+/kEFhMAurjRUoWfhdmVCOWC2YVcTDptQ1aycTAd4g2Mq5OOl8wtCBQk6TKZ42zTK0AdHwaKFD1WIadCUfOXnzNX1yrq4lGAhcCtOIdjAi/lgn2FIdeDwLd8xQlLjmZJn03RYrRS4gF88KfxTg8No3sqwdKLWlK2DkqTl41bJ66PhAU5O/Sn7kux4C3CScglf0Tz2VPviD9/jmQCjdufbSb3y9qEVXV7oZ+Ty1dZd9UuMvyKF/XCDCRtE9eZ8WwbbGrqUBrnMyFMaS+RkmnIK6zrdwm3kJkx9Iz6W3hNwIRXQD2JxwHguzT0UG3F4W6nrn4K06f8oC1hyXJdzb0/AmFOWgS1HQbu6I82RGw8Vn0R1hJhY1M1e5RbNISCUuv45RP/bcyQL/THEdQzfAoOQVyPrRb3kfpiBnFvqq3UM2PWeaIlEf1HDHEEzjxR4u3LrbRUyekXwMDp610A1s2xAnWr7L867R7VcSKm8OTCGwXJcvY/p29YxDC
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39850400004)(46966006)(36840700001)(478600001)(83380400001)(47076005)(5660300002)(31696002)(186003)(70206006)(44832011)(9786002)(53546011)(2616005)(4326008)(7636003)(82740400003)(70586007)(316002)(31686004)(54906003)(8936002)(426003)(356005)(36860700001)(36756003)(82310400003)(36906005)(6916009)(26005)(8676002)(336012)(2906002)(70780200001)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 06:49:06.5760
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc04cb4b-e233-4041-3765-08d91e8006b1
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0054.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR02MB7903
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/24/2021 06:30:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjQgpFekyCAwNjowMDowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/24/2021 06:36:18
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163865 [May 23 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Headers: Prob_stat_susp_url_only, url2}
+X-KSE-AntiSpam-Info: {Tracking_one_url, url3}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1;syzkaller.appspot.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/24/2021 06:40:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Verify some fields of the USB descriptor to make sure the driver
+could be used by the device.
 
+Besides, remove the check of endpoint number in rtl8152_probe().
+usb_find_common_endpoints() includes it.
 
-On 5/20/21 9:00 PM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/i2c/busses/i2c-cadence.c:157: warning: expecting prototype for enum cdns_i2c_slave_mode. Prototype was for enum cdns_i2c_slave_state instead
-> 
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-i2c@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/i2c/busses/i2c-cadence.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-> index c1bbc4caeb5c9..66aafa7d11234 100644
-> --- a/drivers/i2c/busses/i2c-cadence.c
-> +++ b/drivers/i2c/busses/i2c-cadence.c
-> @@ -144,7 +144,7 @@ enum cdns_i2c_mode {
->  };
->  
->  /**
-> - * enum cdns_i2c_slave_mode - Slave state when I2C is operating in slave mode
-> + * enum cdns_i2c_slave_state - Slave state when I2C is operating in slave mode
->   *
->   * @CDNS_I2C_SLAVE_STATE_IDLE: I2C slave idle
->   * @CDNS_I2C_SLAVE_STATE_SEND: I2C slave sending data to master
-> 
+BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
+Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
+Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+---
+v3:
+Remove the check of endpoint number in rtl_check_vendor_ok().
 
-Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+Adjust the error message and ccommit message.
 
-Thanks,
-Michal
+v2:
+Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
+code.
+
+remove the check of endpoint number in rtl8152_probe(). It has been done
+in rtl_check_vendor_ok().
+
+ drivers/net/usb/r8152.c | 42 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 136ea06540ff..f6abb2fbf972 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -8107,6 +8107,37 @@ static void r8156b_init(struct r8152 *tp)
+ 	tp->coalesce = 15000;	/* 15 us */
+ }
+ 
++static bool rtl_check_vendor_ok(struct usb_interface *intf)
++{
++	struct usb_host_interface *alt = intf->cur_altsetting;
++	struct usb_endpoint_descriptor *in, *out, *intr;
++
++	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
++		dev_err(&intf->dev, "Expected endpoints are not found\n");
++		return false;
++	}
++
++	/* Check Rx endpoint address */
++	if (usb_endpoint_num(in) != 1) {
++		dev_err(&intf->dev, "Invalid Rx endpoint address\n");
++		return false;
++	}
++
++	/* Check Tx endpoint address */
++	if (usb_endpoint_num(out) != 2) {
++		dev_err(&intf->dev, "Invalid Tx endpoint address\n");
++		return false;
++	}
++
++	/* Check interrupt endpoint address */
++	if (usb_endpoint_num(intr) != 3) {
++		dev_err(&intf->dev, "Invalid interrupt endpoint address\n");
++		return false;
++	}
++
++	return true;
++}
++
+ static bool rtl_vendor_mode(struct usb_interface *intf)
+ {
+ 	struct usb_host_interface *alt = intf->cur_altsetting;
+@@ -8115,12 +8146,15 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
+ 	int i, num_configs;
+ 
+ 	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
+-		return true;
++		return rtl_check_vendor_ok(intf);
+ 
+ 	/* The vendor mode is not always config #1, so to find it out. */
+ 	udev = interface_to_usbdev(intf);
+ 	c = udev->config;
+ 	num_configs = udev->descriptor.bNumConfigurations;
++	if (num_configs < 2)
++		return false;
++
+ 	for (i = 0; i < num_configs; (i++, c++)) {
+ 		struct usb_interface_descriptor	*desc = NULL;
+ 
+@@ -8135,7 +8169,8 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
+ 		}
+ 	}
+ 
+-	WARN_ON_ONCE(i == num_configs);
++	if (i == num_configs)
++		dev_err(&intf->dev, "Unexpected Device\n");
+ 
+ 	return false;
+ }
+@@ -9381,9 +9416,6 @@ static int rtl8152_probe(struct usb_interface *intf,
+ 	if (!rtl_vendor_mode(intf))
+ 		return -ENODEV;
+ 
+-	if (intf->cur_altsetting->desc.bNumEndpoints < 3)
+-		return -ENODEV;
+-
+ 	usb_reset_device(udev);
+ 	netdev = alloc_etherdev(sizeof(struct r8152));
+ 	if (!netdev) {
+-- 
+2.26.3
+
