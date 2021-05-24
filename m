@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E1638EF0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705E438EE46
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbhEXPz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
+        id S233837AbhEXPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234597AbhEXPrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:47:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2438861574;
-        Mon, 24 May 2021 15:37:16 +0000 (UTC)
+        id S234094AbhEXPnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42E136144B;
+        Mon, 24 May 2021 15:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870636;
-        bh=XYh8ezb/IUe1xhaP7Ot2KYhVPApl/pVDN0SGxRPyzC4=;
+        s=korg; t=1621870518;
+        bh=J2hRgjcqHwwKOaAQY1NXUiYhUUmHXXp0YzhfGjhnjW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBjutT8gam+1uxD2f+PiywUUwB7FiFaRRmJp3CNtP6LgE8J+ViNje4Fpv/h/vVKkg
-         tRR38GgEwyI018LrbGWTDqhzZFblUtSRUQVTrjNrBRNFXKdjyqGMS8dYBCCWJlvr2y
-         r3c5SCRM2xC97irpqR5ATE+h43nhZxDqD9DbwZYY=
+        b=cw6xMGLeHgOCW2d3NZV9SAGm8COGNtbtTVPSnYMN1o6XubxpmOHrL3Nj39//zTacr
+         iN4pxFFqFCorWXbwaMdTVtYWkpQRS8SDJq61DSknQOG5+m38rdLkT8FKZa30ef/LII
+         gQjs6jlTR5NXqkiLnkodc8BqA5Mc92PZXewOZMPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Changfeng <Changfeng.Zhu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH 5.4 37/71] drm/amdgpu: disable 3DCGCG on picasso/raven1 to avoid compute hang
+        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
+        Peter Rosin <peda@axentia.se>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 32/49] Revert "gdrom: fix a memory leak bug"
 Date:   Mon, 24 May 2021 17:25:43 +0200
-Message-Id: <20210524152327.676498693@linuxfoundation.org>
+Message-Id: <20210524152325.420239334@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changfeng <Changfeng.Zhu@amd.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit dbd1003d1252db5973dddf20b24bb0106ac52aa2 upstream.
+commit 257343d3ed557f11d580d0b7c515dc154f64a42b upstream.
 
-There is problem with 3DCGCG firmware and it will cause compute test
-hang on picasso/raven1. It needs to disable 3DCGCG in driver to avoid
-compute hang.
+This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
 
-Signed-off-by: Changfeng <Changfeng.Zhu@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+Because of this, all submissions from this group must be reverted from
+the kernel tree and will need to be re-reviewed again to determine if
+they actually are a valid fix.  Until that work is complete, remove this
+change to ensure that no problems are being introduced into the
+codebase.
+
+Cc: Wenwen Wang <wang6495@umn.edu>
+Cc: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Fixes: 093c48213ee3 ("gdrom: fix a memory leak bug")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-27-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c |   10 +++++++---
- drivers/gpu/drm/amd/amdgpu/soc15.c    |    2 --
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/cdrom/gdrom.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -4661,7 +4661,7 @@ static void gfx_v9_0_update_3d_clock_gat
- 	amdgpu_gfx_rlc_enter_safe_mode(adev);
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -889,7 +889,6 @@ static void __exit exit_gdrom(void)
+ 	platform_device_unregister(pd);
+ 	platform_driver_unregister(&gdrom_driver);
+ 	kfree(gd.toc);
+-	kfree(gd.cd_info);
+ }
  
- 	/* Enable 3D CGCG/CGLS */
--	if (enable && (adev->cg_flags & AMD_CG_SUPPORT_GFX_3D_CGCG)) {
-+	if (enable) {
- 		/* write cmd to clear cgcg/cgls ov */
- 		def = data = RREG32_SOC15(GC, 0, mmRLC_CGTT_MGCG_OVERRIDE);
- 		/* unset CGCG override */
-@@ -4673,8 +4673,12 @@ static void gfx_v9_0_update_3d_clock_gat
- 		/* enable 3Dcgcg FSM(0x0000363f) */
- 		def = RREG32_SOC15(GC, 0, mmRLC_CGCG_CGLS_CTRL_3D);
- 
--		data = (0x36 << RLC_CGCG_CGLS_CTRL_3D__CGCG_GFX_IDLE_THRESHOLD__SHIFT) |
--			RLC_CGCG_CGLS_CTRL_3D__CGCG_EN_MASK;
-+		if (adev->cg_flags & AMD_CG_SUPPORT_GFX_3D_CGCG)
-+			data = (0x36 << RLC_CGCG_CGLS_CTRL_3D__CGCG_GFX_IDLE_THRESHOLD__SHIFT) |
-+				RLC_CGCG_CGLS_CTRL_3D__CGCG_EN_MASK;
-+		else
-+			data = 0x0 << RLC_CGCG_CGLS_CTRL_3D__CGCG_GFX_IDLE_THRESHOLD__SHIFT;
-+
- 		if (adev->cg_flags & AMD_CG_SUPPORT_GFX_3D_CGLS)
- 			data |= (0x000F << RLC_CGCG_CGLS_CTRL_3D__CGLS_REP_COMPANSAT_DELAY__SHIFT) |
- 				RLC_CGCG_CGLS_CTRL_3D__CGLS_EN_MASK;
---- a/drivers/gpu/drm/amd/amdgpu/soc15.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
-@@ -1132,7 +1132,6 @@ static int soc15_common_early_init(void
- 			adev->cg_flags = AMD_CG_SUPPORT_GFX_MGCG |
- 				AMD_CG_SUPPORT_GFX_MGLS |
- 				AMD_CG_SUPPORT_GFX_CP_LS |
--				AMD_CG_SUPPORT_GFX_3D_CGCG |
- 				AMD_CG_SUPPORT_GFX_3D_CGLS |
- 				AMD_CG_SUPPORT_GFX_CGCG |
- 				AMD_CG_SUPPORT_GFX_CGLS |
-@@ -1152,7 +1151,6 @@ static int soc15_common_early_init(void
- 				AMD_CG_SUPPORT_GFX_MGLS |
- 				AMD_CG_SUPPORT_GFX_RLC_LS |
- 				AMD_CG_SUPPORT_GFX_CP_LS |
--				AMD_CG_SUPPORT_GFX_3D_CGCG |
- 				AMD_CG_SUPPORT_GFX_3D_CGLS |
- 				AMD_CG_SUPPORT_GFX_CGCG |
- 				AMD_CG_SUPPORT_GFX_CGLS |
+ module_init(init_gdrom);
 
 
