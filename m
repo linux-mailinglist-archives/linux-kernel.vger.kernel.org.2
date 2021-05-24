@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9201F38F085
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E70C38EFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhEXQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
+        id S234973AbhEXQAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhEXP4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DA261446;
-        Mon, 24 May 2021 15:43:11 +0000 (UTC)
+        id S234458AbhEXPyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3EE36141B;
+        Mon, 24 May 2021 15:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870992;
-        bh=+eUnc1haDTfcnX2Q572vSfKjYuhHi08mfvKabmkoIWQ=;
+        s=korg; t=1621870773;
+        bh=h8SDQxAQR6aARdv6g//rvHxQQXax+farRV5g6s586Is=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w9KRPPpOzpP6iUHK9u0qpKb14uPKYSIfHvNMiTn792sIMM2O1sj+uCocgERAMfK1e
-         1rAImrkehwgERUbh8piG/2PTTGrX6zTZUaS0RxUqBb/6UW0lM5XPWxDIMPIIXk/4Qi
-         SXeolBnDM1ZAS6eIYp3941aWMtp452SVHLTcVnzM=
+        b=Hb6B4DrjVXCc8YGB7XY3412TJeif2Zk7T+5jFmfCXDZ/QQPMN7Y5zXb6hLgjpFT3H
+         6j3BjsGUPRKHFfD657Ex4KXzLMYGUGtc5UGS+4oUd/Gh7+KDIGQIETplWPKno1RVyq
+         DduhWH1jWu9bLvk7bYENgUJVVK+Gld4iKv10mrNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 006/127] RDMA/siw: Release xarray entry
+Subject: [PATCH 5.10 028/104] locking/lockdep: Correct calling tracepoints
 Date:   Mon, 24 May 2021 17:25:23 +0200
-Message-Id: <20210524152335.069576086@linuxfoundation.org>
+Message-Id: <20210524152333.747260779@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Leo Yan <leo.yan@linaro.org>
 
-[ Upstream commit a3d83276d98886879b5bf7b30b7c29882754e4df ]
+[ Upstream commit 89e70d5c583c55088faa2201d397ee30a15704aa ]
 
-The xarray entry is allocated in siw_qp_add(), but release was
-missed in case zero-sized SQ was discovered.
+The commit eb1f00237aca ("lockdep,trace: Expose tracepoints") reverses
+tracepoints for lock_contended() and lock_acquired(), thus the ftrace
+log shows the wrong locking sequence that "acquired" event is prior to
+"contended" event:
 
-Fixes: 661f385961f0 ("RDMA/siw: Fix handling of zero-sized Read and Receive Queues.")
-Link: https://lore.kernel.org/r/f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+  <idle>-0       [001] d.s3 20803.501685: lock_acquire: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501686: lock_acquired: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501689: lock_contended: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501690: lock_release: 0000000008b91ab4 &sg_policy->update_lock
+
+This patch fixes calling tracepoints for lock_contended() and
+lock_acquired().
+
+Fixes: eb1f00237aca ("lockdep,trace: Expose tracepoints")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210512120937.90211-1-leo.yan@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/locking/lockdep.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index d1859c56a6db..8a00c06e5f56 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -375,7 +375,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	else {
- 		/* Zero sized SQ is not supported */
- 		rv = -EINVAL;
--		goto err_out;
-+		goto err_out_xa;
- 	}
- 	if (num_rqe)
- 		num_rqe = roundup_pow_of_two(num_rqe);
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 38d7c03e694c..858b96b438ce 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5664,7 +5664,7 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
+-	trace_lock_acquired(lock, ip);
++	trace_lock_contended(lock, ip);
+ 
+ 	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
+@@ -5682,7 +5682,7 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
+-	trace_lock_contended(lock, ip);
++	trace_lock_acquired(lock, ip);
+ 
+ 	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
 -- 
 2.30.2
 
