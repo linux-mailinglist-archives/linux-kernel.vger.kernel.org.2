@@ -2,197 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94EC38E3B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022EC38E3B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhEXKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:08:58 -0400
-Received: from mail-eopbgr1310127.outbound.protection.outlook.com ([40.107.131.127]:62932
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        id S232632AbhEXKKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:10:03 -0400
+Received: from mail-bn8nam08on2058.outbound.protection.outlook.com ([40.107.100.58]:40719
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232621AbhEXKIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:08:18 -0400
+        id S232445AbhEXKI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 06:08:57 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KulFYzE+YpKeODk2HXzzBItSCA/jY02TAkNKtRCel4OZqW4zllfubuHIuStkiv8YwabWFTK/yd4Wf5JxijpOK35Fc3wi9TuR9RKVSuNb0rgZcXtzhCp+s6UxxvsoH29AL/Uc9aEXi22VI7j95EcmfxDgxRSmpXooigrJR5JE8zuHo/dFQo1q/S3Y4ILxfjk5XvF7esKRnmCd/XQYTa83iifi9PsrOhPsKJZFoaDS6m67VqglNXglQJiIBn42zbWUt31H4L+kBHgVFoKWJ3iBIq6FqbRZ5h7YPX1gkRXPwrJ+6BHCyexKccHNJ4S4XiHln/RGC72pdaG4nqmIqwnDQA==
+ b=h3jblEco8koxS+C5FwrneLb7JVBLOn+QPc1Rz3TX0bqr9OG93yeN+COkOxdMt8EdGqY//lQfMYzMXKiCJNBMyGztrolVkUHmH8VxarAFFmf88nmQh+c5WUkKBXWnYfdMFC7Ru4Z0mtkRqT0MyuV668xrrPO7bNfvvwbNxmjEaEB02xlaENdL7oyX/k8tUCoZiFHD58xToQjvljEmej0w1aeuHGV9jsQ0wKqNXnVFv3Yjnv9Sp7pdPMgHpAbSzhyRAmbC4Af524mdCu9vF+jN5jhC4fwjRa2Zhx8nr1EwaEzGy3SU+oyXanWh7bujjo9DcRMDlYlkMIsXTZ98iIXaxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bgKXfjbtHrW06do2INpix45cXQhlTD+/5X9lSQ/LKOI=;
- b=Qu5g9Y8L1PIfngCplOBwC+RiFC07yPO4gftzqMeSA8G3bV2c3+rZCNgDoufAgN46VsDEYhVike9BUtQgcmF608oY1k4Pur+7buHQ9YihDdzCQXtPuz07dyyuIn29Y6fMT4qdApTBCl+tBAyP0EBGKkvktpSuR12mMnsDiPx2Nnk74bOPYbaPM9el0x7v3OFER9VraD2bG6zpVwTI2vKVEHgQW3uFmd0ii0/L65gREQtmkAzLdsJAdTURyDgXCam8sEGlDwxwMMFqDsA7kec5Jbw22A/rryRNESgQnSIMURyj694ketb7XEvIjcjbhQVfBlufJXmpe/XJRH3MkXR2Zw==
+ bh=uwcl5RsaNsLK1+EwM2BkldY1b/SklL+hPVRv3Co2kE0=;
+ b=im/OnC7vC52azxvxrwUpoJ1A131BtcOS+g/i0vL47cjqbQtfdiQ1hUvhJIqa6+TXnhBWGsN2jAxafW+VXE7+m1Quuq7JcrQA1lg1MRwMYEq3RbSHMg1VsLs33iiK40l0xbPdqJWxTxulB2Sfh0fx7hR+PUXMSsmYlvRYa4SmZF5TKCmPRKvbBq6OHOMgO0etboD2+PJ2ans1u9QjB6UvYaWNYSOk7hp+CbAn4biTEd6e8yNgFH4BWdJ1NAYzrMyCWZo7AyhNL19ub4mAmOEBBxdqSht6WmT2xU5TJxqt/TyM/k+VgWVBHZgrb/3gPsgJJ6YL066p9YR7ndYtHiH2Tg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bgKXfjbtHrW06do2INpix45cXQhlTD+/5X9lSQ/LKOI=;
- b=mKIABpaQJ9fha0ZxZ8kWPcrrOFHCg5+8W/kaIa4BNXL/d1RRkKEIE6OLELHQuqyDWxp60DORcCaaj+/S4QtIhXItQXaoq2fl1X6RA70HOJRxYqG80bZw/X3p/uHnRE/72ggapP0eZLmzA0MLfryYykEaRa+R3C+jPzoY7JKcrML0Zr/qnx4FtWQh2p1oLNyuMAx1Rrzh/FJTOXro/nsU2fH/haxysGdsAllSNi/yN5gq5Uz/fVoyZLUUJlsZyVtW5LN2rzSrSFSnA6n1Pg6ndG/4lvyxMVPebulWS/0jxp9uOm6OQ+8tlIGM1bBjhWV97p4h68QzAS07kpNh/FP8DA==
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK0PR06MB2578.apcprd06.prod.outlook.com (2603:1096:203:63::22) with
+ bh=uwcl5RsaNsLK1+EwM2BkldY1b/SklL+hPVRv3Co2kE0=;
+ b=SjS3pH8R97Yt8nwt3ztNsEVWYIimIHef8aEJg9/S/I3XVb1He3IIsTNOweiA1YWrgHaphYLflanslXka+WwVdgKozbOprHVVxCxxcOzVSoGSvkXHazqSri9BQwYbatuogf8tNCFBbKsf8Ej5QVEg2fqknsiBICHxAeQMSkmLOnM=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN6PR03MB2916.namprd03.prod.outlook.com (2603:10b6:404:10f::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
- 2021 10:06:13 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::ec25:881b:f113:93dc]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::ec25:881b:f113:93dc%6]) with mapi id 15.20.4150.027; Mon, 24 May 2021
- 10:06:12 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Corey Minyard <minyard@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-CC:     Open Source Submission <patches@amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-Subject: RE: [PATCH v3 5/7] i2c: aspeed: Add aspeed_set_slave_busy()
-Thread-Topic: [PATCH v3 5/7] i2c: aspeed: Add aspeed_set_slave_busy()
-Thread-Index: AQHXTIQCISnhT+/XbEiDVKSu2FVXwqryb5QA
-Date:   Mon, 24 May 2021 10:06:12 +0000
-Message-ID: <HK0PR06MB3380FD2B7649CFB48BEA2D4FF2269@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20210519074934.20712-1-quan@os.amperecomputing.com>
- <20210519074934.20712-6-quan@os.amperecomputing.com>
-In-Reply-To: <20210519074934.20712-6-quan@os.amperecomputing.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: os.amperecomputing.com; dkim=none (message not signed)
- header.d=none;os.amperecomputing.com; dmarc=none action=none
- header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 15891d5d-64cb-4472-997b-08d91e9b8f7a
-x-ms-traffictypediagnostic: HK0PR06MB2578:
-x-microsoft-antispam-prvs: <HK0PR06MB2578D54E9D2E885BBACD3DA4F2269@HK0PR06MB2578.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xom3LaH8GLXnegelyBcJAh4PtCc2f+BAWkARviG2EF+DCzep+Qpo/TCAy9sxPAdPz4NtvVh3aFCj0S9pYi7QEGxXWD+CdEKPS1RwK2NchFrP8kfqugWrfy02RYxQNAuZKotyUJf84Hg/amK5SFeDy/FwRGKA5V4MlDQSQUPGDCqj1UdTs0ZIPOqQJYhXk521rVD4GBNnLJ248N3BCMOJRgZdzh+5CpDxcGIdiyesOUfxrNJ7CI2wXQrbTYCq1SUSny4nYM6S3nWVlHSoKedfwt7ZnOycsnC3SAIOaDp8OP9Qq5ju6P7jiPYDbAEaeECisNHpe2RthBKDS0SQrHL3Q+UlZEU4QESx7q8yWJJuUiMG234fCNunnS4lAEr/OJO2k6zc3KCr1iqa80PRrbzBMUqyejxMsm2xgv6aWQ9DJoszSO8v6t+/gr8MfwXl5RgZwVDVkl7Ij/N+7zblgTV/zdOhvIog3wNXNc4jRXbWOcZlgb95ewj80x3w91bSlu9Y4ZsCXH2RZXydKBzYSM7FLe7zBFPX9fHj1Osz2ej608fVU2cGBtRUaAQk8t0oBZxvRJSwYAfeXu+w72qIYiGPPFl12YTITLJLHotjn81rnmHQ3ujW+W8GCqAAzNFCJyFRRGnk50WFoJIjWxDjkcUbyA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(366004)(39840400004)(64756008)(66556008)(66476007)(5660300002)(66446008)(122000001)(66946007)(38100700002)(52536014)(83380400001)(6506007)(53546011)(7696005)(8676002)(54906003)(2906002)(110136005)(9686003)(55016002)(86362001)(76116006)(316002)(186003)(7416002)(71200400001)(26005)(55236004)(8936002)(33656002)(921005)(4326008)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?PPO+fGFyzZV+5lPUa5JDaIo2Ap4ueUslNsfwg6vpaPwvlwL6gLXN55rwXiT8?=
- =?us-ascii?Q?qtWWL67Y8wtEcaQ8ihs9cFk9oy/2en406bsm4Y3H2E37Wr51U0qac74U8jML?=
- =?us-ascii?Q?QhQlZXT2DerybVgTyMRHjRV8eTtiwDELkwETBp5ySRyNGgWmnpDJpS4rWcK2?=
- =?us-ascii?Q?gp1eBt5ujiQ6nPlL1xgTMDSB80hWAX+wa+JrfndZ0e2zYV9o1WSUF/Qy8B7D?=
- =?us-ascii?Q?Lp1AjKPfQRYLmxvzD6qW6J9BupjBoYNKKV/SrzbJcLf6+xKekLuYYJTaBfEd?=
- =?us-ascii?Q?mmgC3yq27ZmeZwQXjFgkN+IcAUXV2R3JqAUihwfAw+f245zqvl2Zn+QY2G+P?=
- =?us-ascii?Q?AXgRTUP762ktrfipdIIAbnI4Fa6bLzbzdx3xvoRlABcd9VzTEg+TENcvyW/4?=
- =?us-ascii?Q?TvLYm4g/YsDmPynntwNApcz2pnVpNecjYGDC0MNleitdWWCctGRh/WN+iThm?=
- =?us-ascii?Q?4FplFFncTBo7aO0jwinjyT8B5cCgWoVn1WENdzcZH+ngZuFByfV5d3GXAn5x?=
- =?us-ascii?Q?ONQX/8Fdl94mPmYlce8P5zoM1PKRUvka54ZbycZYhpznD0X/M87QMXxUY2Dj?=
- =?us-ascii?Q?oteQ8DwT2fqSjMWBi1ESiyAbMDi6ybHakBwBJPDg5WvtiDXG6O2CRGYuQkx5?=
- =?us-ascii?Q?J8RuhOGjR7OxoixLC/TBBUwU8NBZ/EtBzXIWJxjQsPqWt3UE+318E2odPS8i?=
- =?us-ascii?Q?MN4DkCecexhacRn82WGGpK1DNmxQ9eBhLYVYOcjT9LCRFvxuGVzFqmub2KEj?=
- =?us-ascii?Q?QDoAeYOhjz5kygkLk1CqOLMfIDToi0DdMqWFzLSUZ2co80O8FN0keQmg063T?=
- =?us-ascii?Q?gQThjicS0RfLauTpMCIZi/lXImcun3CkrmToxpsaIttL9U+OnMg8+3lIkUH9?=
- =?us-ascii?Q?yCgk0RZc7y4DaicLdCtcM6O3ZYWa3i3IUXrSQUlQd7ADp4quoI/f666xOE9m?=
- =?us-ascii?Q?MyFo6qEAJRCT66W+Xr/UMLFWFTQepcWVeIfBQIdooi4u1lE+TTarKSpUqDXY?=
- =?us-ascii?Q?Ejqg29lIPeJ/2l4uieQxFJeRzEabm2FT+spotnVmpnbcisj+BhfYtY1JwC+r?=
- =?us-ascii?Q?THw300np5XF/NIinqlxOXVn9nEfHmgIz+rzsiJpDeju+ftgEiwa+MuCWIT9y?=
- =?us-ascii?Q?76AG1obRAvG1Lc1KmjKrI3TqQdM0i0nZiTK2CJwAUUq8uSGck1BLjeIrFqyM?=
- =?us-ascii?Q?yJiKksOhp5uBeYHM0KA8ZCiqL32DngxhUF0Nx9ZBg847/fkEPtkb5YV6bE1v?=
- =?us-ascii?Q?HLnGIvWUz/pfLIJ/5nj31ldEQucTs5QXIvjYb/faMyj4yQyPjjKfWNERLRSe?=
- =?us-ascii?Q?IOVpFNxU7SbP3lDRQUCTbXas?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Mon, 24 May
+ 2021 10:07:08 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4150.027; Mon, 24 May 2021
+ 10:07:08 +0000
+Date:   Mon, 24 May 2021 18:06:56 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/2] arm64: remove page granularity limitation from
+ KFENCE
+Message-ID: <20210524180656.395e45f6@xhacker.debian>
+In-Reply-To: <CANpmjNNuaYneLb3ScSwF=o0DnECBt4NRkBZJuwRqBrOKnTGPbA@mail.gmail.com>
+References: <20210524172433.015b3b6b@xhacker.debian>
+        <20210524172606.08dac28d@xhacker.debian>
+        <CANpmjNNuaYneLb3ScSwF=o0DnECBt4NRkBZJuwRqBrOKnTGPbA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR13CA0136.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::21) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR13CA0136.namprd13.prod.outlook.com (2603:10b6:a03:2c6::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.11 via Frontend Transport; Mon, 24 May 2021 10:07:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a3914c7d-b5ae-4d04-7e04-08d91e9bb03f
+X-MS-TrafficTypeDiagnostic: BN6PR03MB2916:
+X-Microsoft-Antispam-PRVS: <BN6PR03MB2916B9FFF837C639BF9EF83DED269@BN6PR03MB2916.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pST88dq3lqlrbynmMAD/WXSjL7IyJtNjFfzTk4DWyWQ6S5+eAl9gJZF9NaqE5I0AF8aAmiMkZyjjG2tpb9UgQbcAykR3O6mg3PPgU/84aE5578PqwCG51oRmPzMn+WgpE2G1WRVemx7tQY3dgL2mxkAH9U+v1FJEW32mQAEPgqz4LG48K3JrNIVNHqwGfshiLli6z8SOZvaECOArEmg8lvX4ULSFr3F4HnNYziBQ+OrjyDlrTPDV1bKm8NcnNRL0G71eXqUaTgb2V5wjPWIa2lD2R8DzSaXmNN2P28za+hlInM3+o0jy6/7ueQS/scy4cIeUGmlg0A0jUt9JlgfTfsT722FSWGQcUwNLdeEhDKrdVtHB54J2uuIyPvc+4cP+yiYb7yzqQxTtmLIA5WJ6GCMYLRerDrpKkxqMSy1tl4UrZfHf8BxHQ6hMTzFI9SgLJo87KNYMn036HsSLeH4Hfjus+sSou4aLNFY/1e1ZQ4CGk19/kBnQgOmvS+WuHMjB0qudnafa4lCju8/k+sGb3Vaoy+yjN6PUOBZ6rLbQ4FgpPdNu2ExuwhLvCXy7oK+FoduQhS9P9vtdb/QgSN6v4+p9AnaI/6uRUg7dv8Dx98VBlr0A3VcZ4YMEGV6mm5kMJxpgm4B32MfJhYj9SKy+2az31h2u6mzNgcpPb973QEc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(39850400004)(136003)(366004)(6666004)(55016002)(316002)(54906003)(9686003)(8936002)(8676002)(38350700002)(2906002)(478600001)(956004)(5660300002)(52116002)(7696005)(186003)(83380400001)(7416002)(6916009)(4326008)(26005)(66476007)(16526019)(38100700002)(6506007)(66556008)(66946007)(86362001)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?s3pQEW5PV1jGpW1PylaIre/b3KZp2HZepQRkwm5SrAhL2HnJCVksSk217O1r?=
+ =?us-ascii?Q?O05Gu73Tky1pGIm53DDM4/R5q/YQeJSTS62D03gTdkDSR8FNAgAoEqnKah6W?=
+ =?us-ascii?Q?gfq4rY0DCUte1UKkWK3Y5cu0W3WR2Egeox9boOw2psjmrwSJ07BJuMro68Ii?=
+ =?us-ascii?Q?2IpY/7EuePH8mDFON2douoME9RBNapg1x9VIYnRdLauZXTXTMl5y6KHD5DIO?=
+ =?us-ascii?Q?dKpFEwjNG4hcd3WSESzCFL3vHUBDzXCQQD7/RHXWH8m4aw96J+eJAm7/oXm1?=
+ =?us-ascii?Q?s3NBsAbTLejXzCMVKcOiQlFLYVpoCUmSk45hZOeE9cSXR1F5pHX2oy+TlHL3?=
+ =?us-ascii?Q?VDWSn4NwBHjzcTADN3bWsCRvJJh0dwpV7/8f9oOoIlqlnFL4t9D+cYQYdR/7?=
+ =?us-ascii?Q?wBiPbPrcIrWBRgeQvdhBi2cj/ZEIUsUKgcso7QEU2nLzQnG8vG0co/nqRbDw?=
+ =?us-ascii?Q?MF06HtLbb7iYH5tQHSOLsww3AAF1HCvqNrt5MIANT8503G4jh9aip7zMhhv2?=
+ =?us-ascii?Q?Xk5jZaC//gitgxwRmEN5upvFkiBBfzgSJ8erINwCT2RH3vPVCd6LdP2yMONX?=
+ =?us-ascii?Q?6RTapTXwbdHFJ5KF6TBgC//6y2xLo5ZzALy4R/6FfXWfuG6sYp7S6SK+GGl7?=
+ =?us-ascii?Q?y9pF6/MM0X4N+iqMaNFDeN0u4YjS4ak3+L2z3yzEnsONspACntHs3WjKSqa5?=
+ =?us-ascii?Q?gxzW56Ke3+IzVIcxjpCrFeiJkrpf5ckX0LdmDPBHdC/7+aYLJ0HNIb4jQ/3a?=
+ =?us-ascii?Q?LuRZXxo/Ze54Xwy2cGHUGEIQISUmtb4U8CQm7S92vYEf3jEx5FaEpYAQ4Rw8?=
+ =?us-ascii?Q?4y0dsHDwrxjGN4B3pTpaajio918qsINr0WYsOAuFkf3bONKdu8ImhiwHhJdJ?=
+ =?us-ascii?Q?2qIgfLQakPXj7fTjrnCvfBXRzHf4V/XO4cECX9MFzjUBaqK+Eod1h3hiAQE7?=
+ =?us-ascii?Q?8Z6YUHeMDfZmmAs8WQT9Apqjxl0EPFvj2LAzJFC9PRYxMzFv635BTEUcLmcq?=
+ =?us-ascii?Q?m1D/rH9XtaaxZv+2+uWfbGl6Xf4QGcKXr9YjQl5DuSJDY4Bijtge9kALNa79?=
+ =?us-ascii?Q?ryCoKFfyl1fnA2AVmXSGqpShzsioWqXCg8QmwkQTmmg5qaomyH2hhP3OhHRC?=
+ =?us-ascii?Q?sacCH6vchlv5lplTs8h05EgVuV95C1JLP7tAqfxGtUlpTta/LKUi54ZGzOK9?=
+ =?us-ascii?Q?H4q8rDdl07FwfsfxSd2d3tkoiOLjF3UoTLMV4Hh9Oql/MMotGyFodowtGJ7x?=
+ =?us-ascii?Q?5DO3baNiUs9w6oatPrku7dCvHwnTt6D0AHuT7urkDPgzXQ1so4eBaQyEU6S8?=
+ =?us-ascii?Q?ElcZOec1XrdZHGeYJQL6KYyN?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3914c7d-b5ae-4d04-7e04-08d91e9bb03f
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15891d5d-64cb-4472-997b-08d91e9b8f7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2021 10:06:12.3787
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 10:07:07.5978
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sbBdAaZ51nKhGZs8WzKlOktVxQiWOvGlFqgQDyi+0ESoYkIoSk2Bs5LqTojL3p+p91y6Lowk4YDx5vg+RRrLt6pnUjG2KhmX/H2opbf4/EE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2578
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zc7LqYPjiEPZ/yvkGkdgVinOeYTOaXXWd0+8rEZTMmt+V9d2qK9jZ/2tb/8bqZZW/Nq+kOlUeNV7f5v+LBWiIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB2916
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: openbmc
-> <openbmc-bounces+ryan_chen=3Daspeedtech.com@lists.ozlabs.org> On Behalf
-> Of Quan Nguyen
-> Sent: Wednesday, May 19, 2021 3:50 PM
-> To: Corey Minyard <minyard@acm.org>; Rob Herring <robh+dt@kernel.org>;
-> Joel Stanley <joel@jms.id.au>; Andrew Jeffery <andrew@aj.id.au>; Brendan
-> Higgins <brendanhiggins@google.com>; Benjamin Herrenschmidt
-> <benh@kernel.crashing.org>; Wolfram Sang <wsa@kernel.org>; Philipp Zabel
-> <p.zabel@pengutronix.de>; openipmi-developer@lists.sourceforge.net;
-> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> linux-i2c@vger.kernel.org
-> Cc: Open Source Submission <patches@amperecomputing.com>; Thang Q .
-> Nguyen <thang@os.amperecomputing.com>; Phong Vo
-> <phong@os.amperecomputing.com>; openbmc@lists.ozlabs.org
-> Subject: [PATCH v3 5/7] i2c: aspeed: Add aspeed_set_slave_busy()
->=20
-> Slave i2c device on AST2500 received a lot of slave irq while it is busy
-> processing the response. To handle this case, adds and exports
-> aspeed_set_slave_busy() for controller to temporary stop slave irq while =
-slave
-> is handling the response, and re-enable them again when the response is r=
-eady.
->=20
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
-> v3:
->   + First introduce in v3 [Quan]
->=20
->  drivers/i2c/busses/i2c-aspeed.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->=20
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-asp=
-eed.c
-> index b2e9c8f0ddf7..9926d04831a2 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -944,6 +944,26 @@ static int aspeed_i2c_init(struct aspeed_i2c_bus
-> *bus,
->  	return 0;
->  }
->=20
-> +#if IS_ENABLED(CONFIG_I2C_SLAVE)
-> +void aspeed_set_slave_busy(struct i2c_adapter *adap, bool busy) {
-> +	struct aspeed_i2c_bus *bus =3D i2c_get_adapdata(adap);
-> +	unsigned long current_mask, flags;
-> +
-> +	spin_lock_irqsave(&bus->lock, flags);
-> +
-> +	current_mask =3D readl(bus->base + ASPEED_I2C_INTR_CTRL_REG);
-Hello=20
-	Where the bus->base to be remap?
+On Mon, 24 May 2021 12:04:18 +0200 Marco Elver wrote:
 
-> +	if (busy)
-> +		current_mask &=3D ~(ASPEED_I2CD_INTR_RX_DONE |
-> ASPEED_I2CD_INTR_SLAVE_MATCH);
-> +	else
-> +		current_mask |=3D ASPEED_I2CD_INTR_RX_DONE |
-> ASPEED_I2CD_INTR_SLAVE_MATCH;
-> +	writel(current_mask, bus->base + ASPEED_I2C_INTR_CTRL_REG);
-> +
-> +	spin_unlock_irqrestore(&bus->lock, flags); }
-> +EXPORT_SYMBOL_GPL(aspeed_set_slave_busy);
-> +#endif
-> +
->  static int aspeed_i2c_reset(struct aspeed_i2c_bus *bus)  {
->  	struct platform_device *pdev =3D to_platform_device(bus->dev);
-> --
-> 2.28.0
 
+> 
+> 
+> +Cc Mark
+> 
+> On Mon, 24 May 2021 at 11:26, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> >
+> > KFENCE requires linear map to be mapped at page granularity, so that
+> > it is possible to protect/unprotect single pages in the KFENCE pool.
+> > Currently if KFENCE is enabled, arm64 maps all pages at page
+> > granularity, it seems overkilled. In fact, we only need to map the
+> > pages in KFENCE pool itself at page granularity. We acchieve this goal
+> > by allocating KFENCE pool before paging_init() so we know the KFENCE
+> > pool address, then we take care to map the pool at page granularity
+> > during map_mem().
+> >
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > ---
+> >  arch/arm64/kernel/setup.c |  3 +++
+> >  arch/arm64/mm/mmu.c       | 27 +++++++++++++++++++--------
+> >  2 files changed, 22 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> > index 61845c0821d9..51c0d6e8b67b 100644
+> > --- a/arch/arm64/kernel/setup.c
+> > +++ b/arch/arm64/kernel/setup.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/screen_info.h>
+> >  #include <linux/init.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/kfence.h>
+> >  #include <linux/root_dev.h>
+> >  #include <linux/cpu.h>
+> >  #include <linux/interrupt.h>
+> > @@ -345,6 +346,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+> >
+> >         arm64_memblock_init();
+> >
+> > +       kfence_alloc_pool();
+> > +
+> >         paging_init();
+> >
+> >         acpi_table_upgrade();
+> > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > index 89b66ef43a0f..12712d31a054 100644
+> > --- a/arch/arm64/mm/mmu.c
+> > +++ b/arch/arm64/mm/mmu.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/init.h>
+> >  #include <linux/ioport.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/kfence.h>
+> >  #include <linux/libfdt.h>
+> >  #include <linux/mman.h>
+> >  #include <linux/nodemask.h>
+> > @@ -515,10 +516,16 @@ static void __init map_mem(pgd_t *pgdp)
+> >          */
+> >         BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
+> >
+> > -       if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
+> > -           IS_ENABLED(CONFIG_KFENCE))
+> > +       if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
+> >                 flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> >
+> > +       /*
+> > +        * KFENCE requires linear map to be mapped at page granularity, so
+> > +        * temporarily skip mapping for __kfence_pool in the following
+> > +        * for-loop
+> > +        */
+> > +       memblock_mark_nomap(__pa(__kfence_pool), KFENCE_POOL_SIZE);
+> > +  
+> 
+> Did you build this with CONFIG_KFENCE unset? I don't think it builds.
+> 
+
+Oops, nice catch! I will fix it in v2
+
+thanks for your review
