@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D337138EE5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C0238F09D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhEXPsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
+        id S236844AbhEXQEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233527AbhEXPn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:43:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D02613D2;
-        Mon, 24 May 2021 15:35:35 +0000 (UTC)
+        id S234255AbhEXP6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 943F861960;
+        Mon, 24 May 2021 15:43:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870536;
-        bh=Z3zGwuJMu1s7oxzBcme5AR4esJ+RPG+VoadQoE8uIcQ=;
+        s=korg; t=1621871040;
+        bh=oIaaE+lymUrXstD0xnY07JxPAhOLYAqdHuB9GSYkgWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LrQ30IeJgfMP/j++RnWaDnohYDHODNlT1qDmJL2yJW3ShYLSgErHz+6VHfFw194GC
-         tmpCrLJBZwRq9IQ5ZaqhiKOmHWRwu4fVWWiXSCj1aKBEKyQkOL4PhEgGyejYmQb0HB
-         b0gPaxyOwrSqrx6m4X5YduTnDMKD+U9FNMAvVuGk=
+        b=yBGKjWUnHjQeZjyF/v7Moj4oK4y0KKVjqsnOBz6ftxM1lqTSR0ns2c1kmNZ0qVJuZ
+         vTTaDDfiqgrpNCqbCjD2LcslnHFQWXrZhaunSbHWY2yfw6cwwrjlyPrjrFTPWAEZK8
+         0g2qShezaMuwPC9SZgk3c4T5RESEvdv9kE/TPSEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 17/49] ALSA: hda/realtek: reset eapd coeff to default value for alc287
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 011/127] scsi: qedf: Add pointer checks in qedf_update_link_speed()
 Date:   Mon, 24 May 2021 17:25:28 +0200
-Message-Id: <20210524152324.935021212@linuxfoundation.org>
+Message-Id: <20210524152335.237280989@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-commit 8822702f6e4c8917c83ba79e0ebf2c8c218910d4 upstream.
+[ Upstream commit 73578af92a0fae6609b955fcc9113e50e413c80f ]
 
-Ubuntu users reported an audio bug on the Lenovo Yoga Slim 7 14IIL05,
-he installed dual OS (Windows + Linux), if he booted to the Linux
-from Windows, the Speaker can't work well, it has crackling noise,
-if he poweroff the machine first after Windows, the Speaker worked
-well.
+The following trace was observed:
 
-Before rebooting or shutdown from Windows, the Windows changes the
-codec eapd coeff value, but the BIOS doesn't re-initialize its value,
-when booting into the Linux from Windows, the eapd coeff value is not
-correct. To fix it, set the codec default value to that coeff register
-in the alsa driver.
+ [   14.042059] Call Trace:
+ [   14.042061]  <IRQ>
+ [   14.042068]  qedf_link_update+0x144/0x1f0 [qedf]
+ [   14.042117]  qed_link_update+0x5c/0x80 [qed]
+ [   14.042135]  qed_mcp_handle_link_change+0x2d2/0x410 [qed]
+ [   14.042155]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042170]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042186]  ? qed_rd+0x13/0x40 [qed]
+ [   14.042205]  qed_mcp_handle_events+0x437/0x690 [qed]
+ [   14.042221]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042239]  qed_int_sp_dpc+0x3a6/0x3e0 [qed]
+ [   14.042245]  tasklet_action_common.isra.14+0x5a/0x100
+ [   14.042250]  __do_softirq+0xe4/0x2f8
+ [   14.042253]  irq_exit+0xf7/0x100
+ [   14.042255]  do_IRQ+0x7f/0xd0
+ [   14.042257]  common_interrupt+0xf/0xf
+ [   14.042259]  </IRQ>
 
-BugLink: http://bugs.launchpad.net/bugs/1925057
-Suggested-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210507024452.8300-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+API qedf_link_update() is getting called from QED but by that time
+shost_data is not initialised. This results in a NULL pointer dereference
+when we try to dereference shost_data while updating supported_speeds.
+
+Add a NULL pointer check before dereferencing shost_data.
+
+Link: https://lore.kernel.org/r/20210512072533.23618-1-jhasan@marvell.com
+Fixes: 61d8658b4a43 ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/qedf/qedf_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -388,7 +388,6 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0282:
- 	case 0x10ec0283:
- 	case 0x10ec0286:
--	case 0x10ec0287:
- 	case 0x10ec0288:
- 	case 0x10ec0285:
- 	case 0x10ec0298:
-@@ -399,6 +398,10 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0275:
- 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
- 		break;
-+	case 0x10ec0287:
-+		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
-+		alc_write_coef_idx(codec, 0x8, 0x4ab7);
-+		break;
- 	case 0x10ec0293:
- 		alc_update_coef_idx(codec, 0xa, 1<<13, 0);
- 		break;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index cec27f2ef70d..e5076f09d5ed 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -536,7 +536,9 @@ static void qedf_update_link_speed(struct qedf_ctx *qedf,
+ 	if (linkmode_intersects(link->supported_caps, sup_caps))
+ 		lport->link_supported_speeds |= FC_PORTSPEED_20GBIT;
+ 
+-	fc_host_supported_speeds(lport->host) = lport->link_supported_speeds;
++	if (lport->host && lport->host->shost_data)
++		fc_host_supported_speeds(lport->host) =
++			lport->link_supported_speeds;
+ }
+ 
+ static void qedf_bw_update(void *dev)
+-- 
+2.30.2
+
 
 
