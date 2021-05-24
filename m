@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9792538ED1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEC238EFB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhEXPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
+        id S235483AbhEXP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233272AbhEXPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F3D161209;
-        Mon, 24 May 2021 15:30:46 +0000 (UTC)
+        id S234508AbhEXPxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:53:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58A07616E8;
+        Mon, 24 May 2021 15:39:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870247;
-        bh=h2ojx3YMZ8sL3U3dEwyIXQcjbnWucHPsCpZk3NPTBAM=;
+        s=korg; t=1621870755;
+        bh=5BIjGO/HfJ+QLLHPRH0DK/giklItFH5er/uviNOaCb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=et+Z5tSkJrSVr743MNemuLMmB8Jqk3OQsbE4j4trlUc+v6Ge4B9iTf6ya4U91P7G/
-         oTE8ceM3BRHgquCmNEOn2WkGTlCBmUAGK8gCvyxioy+Qw0OgBzdM8khsN63L19BPp7
-         8HOkuspOCd871X7c55LcZbtKPOD+PI3v8TNvZpLk=
+        b=ia+cuevf+h/o/Opv55ekTmQqqLbDUJhMNUwD639YtZTs424Z2nsk0ZxNp4TA7YU+A
+         06YpBIC3Z30j589Ryp/3D81nnnAke6CxIHJ7x1Ddr8b0THgLBK+UyLp0Ii1YefPDOw
+         VB+uwFFB7or1HGOLknDUBpXi0YA7LpbBeAtjs77g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Tyler Hicks <code@tyhicks.com>
-Subject: [PATCH 4.4 16/31] Revert "ecryptfs: replace BUG_ON with error handling code"
-Date:   Mon, 24 May 2021 17:24:59 +0200
-Message-Id: <20210524152323.453544126@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 005/104] RDMA/siw: Release xarray entry
+Date:   Mon, 24 May 2021 17:25:00 +0200
+Message-Id: <20210524152333.026054428@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit e1436df2f2550bc89d832ffd456373fdf5d5b5d7 upstream.
+[ Upstream commit a3d83276d98886879b5bf7b30b7c29882754e4df ]
 
-This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
+The xarray entry is allocated in siw_qp_add(), but release was
+missed in case zero-sized SQ was discovered.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit log for this change was incorrect, no "error
-handling code" was added, things will blow up just as badly as before if
-any of these cases ever were true.  As this BUG_ON() never fired, and
-most of these checks are "obviously" never going to be true, let's just
-revert to the original code for now until this gets unwound to be done
-correctly in the future.
-
-Cc: Aditya Pakki <pakki001@umn.edu>
-Fixes: 2c2a7552dd64 ("ecryptfs: replace BUG_ON with error handling code")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Tyler Hicks <code@tyhicks.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-49-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 661f385961f0 ("RDMA/siw: Fix handling of zero-sized Read and Receive Queues.")
+Link: https://lore.kernel.org/r/f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ecryptfs/crypto.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -346,10 +346,8 @@ static int crypt_scatterlist(struct ecry
- 	struct extent_crypt_result ecr;
- 	int rc = 0;
- 
--	if (!crypt_stat || !crypt_stat->tfm
--	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
--		return -EINVAL;
--
-+	BUG_ON(!crypt_stat || !crypt_stat->tfm
-+	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
- 	if (unlikely(ecryptfs_verbosity > 0)) {
- 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
- 				crypt_stat->key_size);
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 11bd3205dbc6..34e847a91eb8 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -372,7 +372,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	else {
+ 		/* Zero sized SQ is not supported */
+ 		rv = -EINVAL;
+-		goto err_out;
++		goto err_out_xa;
+ 	}
+ 	if (num_rqe)
+ 		num_rqe = roundup_pow_of_two(num_rqe);
+-- 
+2.30.2
+
 
 
