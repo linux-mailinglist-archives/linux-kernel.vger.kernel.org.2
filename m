@@ -2,256 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A1038EACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4438ECD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhEXO6M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 10:58:12 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:53666 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhEXOxE (ORCPT
+        id S232661AbhEXPZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234556AbhEXPQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:53:04 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id 87eb3c669466d932; Mon, 24 May 2021 16:51:34 +0200
-Received: from kreacher.localnet (89-64-80-49.dynamic.chello.pl [89.64.80.49])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 91A41669728;
-        Mon, 24 May 2021 16:51:33 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <lenb@kernel.org>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
-Date:   Mon, 24 May 2021 16:51:33 +0200
-Message-ID: <2592439.mvXUDI8C0e@kreacher>
-In-Reply-To: <20210524060221.519093-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com> <20210524060221.519093-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Mon, 24 May 2021 11:16:02 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C1DC061344;
+        Mon, 24 May 2021 07:52:56 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id b5so5212502ilc.12;
+        Mon, 24 May 2021 07:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yW6xxqoFqjdbNxGybwNPD8otEN5g9CMdaIvijDpl8O0=;
+        b=YG998/Adp6FNLqctJvDtccznSREYmD1mmYlwzYnDEAb3j2lEoIHiRuwAaZ7jRu532r
+         x5zGs1YGgjCF0mNuWeJtPGQN7gjo86NwKcarGrjw3NTlK2oiPvP69c8ujzo7gnY/6Gpq
+         64n3RWSkERQEwI2Yol1Hvx6lDX8Qf2Q37J50cFLC8z67y+f6N9mH7NgE0OZiisSiTF+K
+         TfUQw4AprvwBkE4jtL98xZhGeC72lG76tKl03DUi0PK/wl7qQ2gD5uYAV8MxUZucUygt
+         1oqh0ZfqMDQCMLNEq3ONkvy+8goSVdXLqGs43UPzJJWWxhdd6wPt99yEhQmg87wIkcNr
+         3rOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yW6xxqoFqjdbNxGybwNPD8otEN5g9CMdaIvijDpl8O0=;
+        b=GfPJjPFJrAZt/2zD5QqFVdhLxjQ7R1JdgyrsTfD0+hzTuOnO0DP8ZbIQoEgX8npce9
+         H7HZcNzqrphid+JDRSmMpbp+c7AaIuEyMvew7ntsNgiFSlxyP2yh2irBcSXdwPV0PKt4
+         1ukR58Sa+fPlUEYaK6f0IivBhlFbdajwwIHAgiYTHT2bVrc9nWF5hEzMC1hLY/VA/A6i
+         Mg+hYviUTcG8lIHkPaZ90wGU3XBG+HVi9YkXhI6t1COKuxyVDXnBcF01R4c+8U4MGIvb
+         VguWXZcqMYYfaXNp6O0R5YfHfkA+RleCG0udoU7efTMtZlnoNVi2akociN0uqCyfD0ni
+         kAnQ==
+X-Gm-Message-State: AOAM532qn8yO0EDcnutVDeB5hnlc9vBvRCAkHLeRzx1QrLiTVEeuArrS
+        XU9BvY98/QCD66sohhGBVIU=
+X-Google-Smtp-Source: ABdhPJyf4JdMyvNDf4B94zYpXpKtQnc4BcErdNlGmC9cdsi061geJGkk3D0utp+nBI3kiroqRr/pRw==
+X-Received: by 2002:a92:c5ca:: with SMTP id s10mr5953834ilt.32.1621867975418;
+        Mon, 24 May 2021 07:52:55 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id b10sm11047903ioz.35.2021.05.24.07.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 07:52:54 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8A4B027C0054;
+        Mon, 24 May 2021 10:52:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 24 May 2021 10:52:53 -0400
+X-ME-Sender: <xms:xL2rYN9s7JZK7Ki7BdlpqNe9XYHFRMDrInKNlhi7TE01XI1SphEW-g>
+    <xme:xL2rYBvRBLRnpHtSfTSkHOX2yMujLoPDQGsU2Aicc8MczkK00l-a9CjgUdUNWhtz6
+    8JmwQCtFNHCh4rJjA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:xL2rYLCiLyBUkk6aekMIKrgnjrtIPPCw4mfUoTiAXKKiqOT1luf5aA>
+    <xmx:xL2rYBfRlV8Ec925v5Tm2ob-gn3WlpvjrUtcOrcxu-fWqD8NYBfy0A>
+    <xmx:xL2rYCN1HDwRQ3Kt9mH50e2X_D65IeTxCpKcAp_C2IJm_YMUU9UuNA>
+    <xmx:xb2rYBfYgJEY1C7h1T-nLU5WcdguG-t-ZdBlAECUFixiBUp_Qd7I_ccxtIY>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 24 May 2021 10:52:52 -0400 (EDT)
+Date:   Mon, 24 May 2021 22:52:16 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Xiongwei Song <sxwjean@gmail.com>, Xiongwei Song <sxwjean@me.com>,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        corbet@lwn.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: lockdep-design: correct the notation for writer
+Message-ID: <YKu9oDtJ7l00k+Yh@boqun-archlinux>
+References: <1621578594-13237-1-git-send-email-sxwjean@me.com>
+ <e0c0302f-e63f-7eba-872b-85e21b0b1622@redhat.com>
+ <CAEVVKH9nwPmQo8L-eRsWST+gPaJ73MSHZfJ-mM8qWvPaiejdrA@mail.gmail.com>
+ <YKuAvt3WXBVASuhY@boqun-archlinux>
+ <ab3c5c38-1447-99e1-ee22-9e5af906d8b4@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.49
-X-CLIENT-HOSTNAME: 89-64-80-49.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthhqredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeeijeekfeehgeejffefveffgeehheetueevudeutddtvdetueegudehieeiheefveenucfkphepkeelrdeigedrkedtrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrgeelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepshgrthhhhigrnhgrrhgrhigrnhgrnhdrkhhuphhpuhhsfigrmhihsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepthhglhigsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohepmhhinhhgohesrhgvughhrghtrdgtohhmpdhrtghpthhtohephhhprgesiiihthhorhdrtghomhdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthho
- pehlvghnsgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhhnshgrthhhhigrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsvggrnhhjtgesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprghksehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepgiekieeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab3c5c38-1447-99e1-ee22-9e5af906d8b4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, May 24, 2021 8:02:21 AM CEST Kuppuswamy Sathyanarayanan wrote:
-> As per ACPI specification r6.4, sec 5.2.12.19, a new sub
-> structure – multiprocessor wake-up structure - is added to the
-> ACPI Multiple APIC Description Table (MADT) to describe the
-> information of the mailbox. If a platform firmware produces the
-> multiprocessor wake-up structure, then OS may use this new
-> mailbox-based mechanism to wake up the APs.
-> 
-> Add ACPI MADT wake table parsing support for x86 platform and if
-> MADT wake table is present, update apic->wakeup_secondary_cpu with
-> new API which uses MADT wake mailbox to wake-up CPU.
-> 
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-
-It would help if you CCed this to linux-acpi@vger.kernel.org.
-
-> ---
-> 
-> Changes since v4:
->  * Used smp_store_release() in place of WRITE_ONCE().
->  * Addressed some checkpatch warnings.
-> 
-> Changes since v3:
->  * Removed acpi_mp_wake_mailbox_init() and moved init code to
->    acpi_wakeup_cpu().
->  * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
->  * Added comments/debug prints as per Rafael's suggestion.
->  * Removed MADT/SVKL ACPI patches from this patchset. It will be
->    merged via ACPICA submission.
-> 
->  arch/x86/include/asm/apic.h |  3 ++
->  arch/x86/kernel/acpi/boot.c | 96 +++++++++++++++++++++++++++++++++++++
->  arch/x86/kernel/apic/apic.c |  8 ++++
->  3 files changed, 107 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-> index 412b51e059c8..3e94e1f402ea 100644
-> --- a/arch/x86/include/asm/apic.h
-> +++ b/arch/x86/include/asm/apic.h
-> @@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
->  	return apic->get_apic_id(reg);
->  }
->  
-> +typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
-> +extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
-> +
->  extern int default_apic_id_valid(u32 apicid);
->  extern int default_acpi_madt_oem_check(char *, char *);
->  extern void default_setup_apic_routing(void);
-> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-> index 14cd3186dc77..c51134eb55d0 100644
-> --- a/arch/x86/kernel/acpi/boot.c
-> +++ b/arch/x86/kernel/acpi/boot.c
-> @@ -65,6 +65,10 @@ int acpi_fix_pin2_polarity __initdata;
->  static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
->  #endif
->  
-> +static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-> +static u64 acpi_mp_wake_mailbox_paddr;
-> +static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
-> +
->  #ifdef CONFIG_X86_IO_APIC
->  /*
->   * Locks related to IOAPIC hotplug
-> @@ -329,6 +333,68 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
->  	return 0;
->  }
->  
-> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> +{
-> +	u8 timeout = 0xFF;
-> +
-> +	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
-> +	if (physids_empty(apic_id_wakemap)) {
-> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-> +						sizeof(*acpi_mp_wake_mailbox),
-> +						MEMREMAP_WB);
-> +	}
-> +
-> +	/*
-> +	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
-> +	 * mailbox-based wakeup mechanism cannot be used more than once
-> +	 * for the same CPU, so skip sending wake commands to already
-> +	 * awake CPU.
-> +	 */
-> +	if (physid_isset(apicid, apic_id_wakemap)) {
-> +		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
-> +		       apicid);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Mailbox memory is shared between firmware and OS. Firmware will
-> +	 * listen on mailbox command address, and once it receives the wakeup
-> +	 * command, CPU associated with the given apicid will be booted. So,
-> +	 * the value of apic_id and wakeup_vector has to be set before updating
-> +	 * the wakeup command. So use smp_store_release to let the compiler know
-> +	 * about it and preserve the order of writes.
-> +	 */
-> +	smp_store_release(&acpi_mp_wake_mailbox->apic_id, apicid);
-> +	smp_store_release(&acpi_mp_wake_mailbox->wakeup_vector, start_ip);
-> +	smp_store_release(&acpi_mp_wake_mailbox->command,
-> +			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-> +
-> +	/*
-> +	 * After writing wakeup command, wait for maximum timeout of 0xFF
-> +	 * for firmware to reset the command address back zero to indicate
-> +	 * the successful reception of command.
-> +	 * NOTE: 255 as timeout value is decided based on our experiments.
-> +	 *
-> +	 * XXX: Change the timeout once ACPI specification comes up with
-> +	 *      standard maximum timeout value.
-> +	 */
-> +	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
-> +		cpu_relax();
-> +
-> +	if (timeout) {
-> +		/*
-> +		 * If the CPU wakeup process is successful, store the
-> +		 * status in apic_id_wakemap to prevent re-wakeup
-> +		 * requests.
-> +		 */
-> +		physid_set(apicid, apic_id_wakemap);
-> +		return 0;
-> +	}
-> +
-> +	/* If timed out (timeout == 0), return error */
-> +	return -EIO;
-> +}
-> +
->  #endif				/*CONFIG_X86_LOCAL_APIC */
->  
->  #ifdef CONFIG_X86_IO_APIC
-> @@ -1086,6 +1152,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
->  	}
->  	return 0;
->  }
-> +
-> +static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-> +				      const unsigned long end)
-> +{
-> +	struct acpi_madt_multiproc_wakeup *mp_wake;
-> +
-> +	if (acpi_mp_wake_mailbox)
-> +		return -EINVAL;
-> +
-> +	if (!IS_ENABLED(CONFIG_SMP))
-> +		return -ENODEV;
-> +
-> +	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-> +	if (BAD_MADT_ENTRY(mp_wake, end))
-> +		return -EINVAL;
-> +
-> +	acpi_table_print_madt_entry(&header->common);
-> +
-> +	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-> +
-> +	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
-> +
-> +	return 0;
-> +}
->  #endif				/* CONFIG_X86_LOCAL_APIC */
->  
->  #ifdef	CONFIG_X86_IO_APIC
-> @@ -1284,6 +1374,12 @@ static void __init acpi_process_madt(void)
->  
->  				smp_found_config = 1;
->  			}
-> +
-> +			/*
-> +			 * Parse MADT MP Wake entry.
-> +			 */
-> +			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
-> +					      acpi_parse_mp_wake, 1);
->  		}
->  		if (error == -EINVAL) {
->  			/*
-> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-> index 4f26700f314d..f1b90a4b89e8 100644
-> --- a/arch/x86/kernel/apic/apic.c
-> +++ b/arch/x86/kernel/apic/apic.c
-> @@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
->  }
->  EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
->  
-> +void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
-> +{
-> +	struct apic **drv;
-> +
-> +	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
-> +		(*drv)->wakeup_secondary_cpu = handler;
-> +}
-> +
->  /*
->   * Override the generic EOI implementation with an optimized version.
->   * Only called during early boot when only one CPU is active and with
+On Mon, May 24, 2021 at 09:42:20AM -0400, Waiman Long wrote:
+> On 5/24/21 6:32 AM, Boqun Feng wrote:
+> > On Mon, May 24, 2021 at 12:24:00PM +0800, Xiongwei Song wrote:
+> > > On Fri, May 21, 2021 at 11:17 PM Waiman Long <llong@redhat.com> wrote:
+> > > > On 5/21/21 2:29 AM, Xiongwei Song wrote:
+> > > > > From: Xiongwei Song <sxwjean@gmail.com>
+> > > > > 
+> > > > > The block condition matrix is using 'E' as the writer noation here, so it
+> > > > > would be better to use 'E' as the reminder rather than 'W'.
+> > > > > 
+> > > > > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> > > > > ---
+> > > > >    Documentation/locking/lockdep-design.rst | 2 +-
+> > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
+> > > > > index 9f3cfca..c3b923a 100644
+> > > > > --- a/Documentation/locking/lockdep-design.rst
+> > > > > +++ b/Documentation/locking/lockdep-design.rst
+> > > > > @@ -462,7 +462,7 @@ Block condition matrix, Y means the row blocks the column, and N means otherwise
+> > > > >        | R | Y | Y | N |
+> > > > >        +---+---+---+---+
+> > > > > 
+> > > > > -     (W: writers, r: non-recursive readers, R: recursive readers)
+> > > > > +     (E: writers, r: non-recursive readers, R: recursive readers)
+> > > > > 
+> > > > > 
+> > > > >    acquired recursively. Unlike non-recursive read locks, recursive read locks
+> > > > I would say it should be the other way around. Both W and E refer to the
+> > > > same type of lockers. W emphasizes writer aspect of it and E for
+> > > > exclusive. I think we should change the block condition matrix to use W
+> > > > instead of E.
+> > > The doc uses 'E'  to describe dependency egdes too. Should we change them
+> > > to 'W'? Personally,  both 'W' and 'E' are fine.
+> > > 
+> > I also think Waiman's suggestion is solid, there are two ways to
+> > classify locks:
+> > 
+> > 1.	W (Writers), R (Recursive Readers), r (Non-recursive Readers)
+> > 
+> > 2.	E (Exclusive locks), S (Shared locks), R (Recursive Readers),
+> > 	N (Non-recursive locks)
+> > 
+> > And the relations between them are as follow:
+> > 
+> > 	E = W
+> > 	R = R
+> > 	N = W \/ r
+> > 	S = R \/ r
+> > 
+> > , where "\/" is the set union.
+> > 
+> > The story is that I used the way #1 at first, and later on realized way
+> > #2 is better for BFS implementation, also for reasoning, so here came
+> > this leftover..
+> > 
+> My suggestion was based on the fact that it is harder to associate E with
+> writer. So from a readability perspective, it is better to change the block
+> condition matrix to use 'W' to make it more readable.
 > 
 
+Yes, I agree. It's probably due to the curse of knowledge, I cannot see
+the difficultly of associating E with writer ;-) So thanks for pointing
+out!
 
+Actually there are two block condition matrices in my mind:
 
+The block condition matrix describes the natural of block conditions of
+write/read locks, this one provides better readability for lock users,
+it can be used to answer questions like: which lock blocks another lock.
 
+	|   | W | r | R |
+	+---+---+---+---+
+	| W | Y | Y | Y |
+	+---|---+---+---+
+	| r | Y | Y | N |
+	+---+---+---+---+
+	| R | Y | Y | N |
+
+(answer whether row blocks column)
+
+Based on this, we have a more abstract block condition matrix in
+lockdep, it's used to reason about deadlock possibility and implement
+the deadlock detection, it might not be the good one for normal lock
+users to read.
+
+	|   |  N  |  R  |
+	+---+-----+-----+
+	| E | Yes | Yes |
+	+---+-----+-----+
+	| S | Yes | No  |
+
+(answer whether row blocks column)
+
+FWIW, if we are going to put the second block condition matrix in the
+doc, we'd better place it somewhere in the section "Dependency types and
+strong dependency paths".
+
+Just clarify a little while we are at it.
+
+Regards,
+Boqun
+
+> Cheers,
+> Longman
+> 
