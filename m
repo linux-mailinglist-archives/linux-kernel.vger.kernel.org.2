@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB90B38EDCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9201F38F085
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhEXPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S234678AbhEXQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233878AbhEXPiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:38:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6FCB613E6;
-        Mon, 24 May 2021 15:33:22 +0000 (UTC)
+        id S234392AbhEXP4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DA261446;
+        Mon, 24 May 2021 15:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870403;
-        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
+        s=korg; t=1621870992;
+        bh=+eUnc1haDTfcnX2Q572vSfKjYuhHi08mfvKabmkoIWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b8QhNJIa/E+uQ+IRu/BN09rppDgzNqfqY22V9EOhuycqvuiM8QkzZypZWn6XEaqxx
-         AWHVX4IuXtLPv1IbrlbedOUGmoPEsqkXB7oZe8JmUGRWFeX1xArOX7lfp5tVmD9hO1
-         EbXl3Zfc8hxGcSzhPyNYTBcBYT1O3WJNYKyA2p78=
+        b=w9KRPPpOzpP6iUHK9u0qpKb14uPKYSIfHvNMiTn792sIMM2O1sj+uCocgERAMfK1e
+         1rAImrkehwgERUbh8piG/2PTTGrX6zTZUaS0RxUqBb/6UW0lM5XPWxDIMPIIXk/4Qi
+         SXeolBnDM1ZAS6eIYp3941aWMtp452SVHLTcVnzM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: [PATCH 4.14 18/37] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
-Date:   Mon, 24 May 2021 17:25:22 +0200
-Message-Id: <20210524152324.802635547@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 006/127] RDMA/siw: Release xarray entry
+Date:   Mon, 24 May 2021 17:25:23 +0200
+Message-Id: <20210524152335.069576086@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
+[ Upstream commit a3d83276d98886879b5bf7b30b7c29882754e4df ]
 
-This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
+The xarray entry is allocated in siw_qp_add(), but release was
+missed in case zero-sized SQ was discovered.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit does not properly unwind if there is an error
-condition so it needs to be reverted at this point in time.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
-Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 661f385961f0 ("RDMA/siw: Fix handling of zero-sized Read and Receive Queues.")
+Link: https://lore.kernel.org/r/f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-lp5523.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
- 
- 	/* Let the programs run for couple of ms and check the engine status */
- 	usleep_range(3000, 6000);
--	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
--	if (ret)
--		return ret;
-+	lp55xx_read(chip, LP5523_REG_STATUS, &status);
- 	status &= LP5523_ENG_STATUS_MASK;
- 
- 	if (status != LP5523_ENG_STATUS_MASK) {
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index d1859c56a6db..8a00c06e5f56 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -375,7 +375,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	else {
+ 		/* Zero sized SQ is not supported */
+ 		rv = -EINVAL;
+-		goto err_out;
++		goto err_out_xa;
+ 	}
+ 	if (num_rqe)
+ 		num_rqe = roundup_pow_of_two(num_rqe);
+-- 
+2.30.2
+
 
 
