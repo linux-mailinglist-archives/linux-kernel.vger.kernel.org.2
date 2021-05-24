@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9277938F4CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3C338F4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhEXVSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:18:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2811 "EHLO mga04.intel.com"
+        id S233751AbhEXVOj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 17:14:39 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:43672 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232693AbhEXVR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:17:59 -0400
-IronPort-SDR: QzgUUtGdG9kTCTugZWnENipvtLph3lpcX3Rn0LC3fxnrHhKwsMqaqdQ0H0bMTorGYstaJiUkFk
- AMy4hgbQxn4Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="200134989"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="200134989"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 14:16:30 -0700
-IronPort-SDR: OKEj1N73DEvMFr6omQhRPcwkkoKIrPoysr6AQrk2wYQVOk6ANTFKbbI4SV0PwCxGfAS1/IHNr5
- L5oeJlK8XScg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="629856710"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga006.fm.intel.com with ESMTP; 24 May 2021 14:16:29 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     luto@kernel.org, dave.hansen@intel.com, lenb@kernel.org
-Cc:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, x86@kernel.org,
-        len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com
-Subject: [PATCH v5-fix 28/28] x86/fpu/amx: Clear the AMX state when appropriate
-Date:   Mon, 24 May 2021 14:11:00 -0700
-Message-Id: <20210524211100.3347-1-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAJvTdKk-53JzUzgGbgWSsfMcGPjQ0Wvrb-AqYOhX3JArVsB=Qg@mail.gmail.com>
-References: <CAJvTdKk-53JzUzgGbgWSsfMcGPjQ0Wvrb-AqYOhX3JArVsB=Qg@mail.gmail.com>
+        id S233278AbhEXVOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:14:37 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1llHsk-0008Me-To; Mon, 24 May 2021 23:13:02 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Andreas =?ISO-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/9] arm64: dts: rockchip: Prepare Rockchip RK1808
+Date:   Mon, 24 May 2021 23:13:03 +0200
+Message-ID: <3998020.X9hSmTKtgW@diego>
+In-Reply-To: <87fsycw41m.wl-maz@kernel.org>
+References: <20210516230551.12469-1-afaerber@suse.de> <7ef183f1-00f8-13c4-1fd3-eae9e0bbf74c@suse.de> <87fsycw41m.wl-maz@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When AMX is enabled, and an AMX-task is saved, explicitly initialize the
-AMX state after the XSAVE.
+Am Montag, 24. Mai 2021, 17:21:41 CEST schrieb Marc Zyngier:
+> On Mon, 24 May 2021 14:32:41 +0100,
+> Andreas Färber <afaerber@suse.de> wrote:
+> > 
+> > On 17.05.21 11:21, Marc Zyngier wrote:
+> > > On Mon, 17 May 2021 00:05:45 +0100,
+> > > Andreas Färber <afaerber@suse.de> wrote:
+> > >>
+> > >> Add an initial Device Tree for Rockchip RK1808 SoC.
+> > >> Based on shipping TB-RK1808M0 DTB.
+> > >>
+> > >> Signed-off-by: Andreas Färber <afaerber@suse.de>
+> > >> ---
+> > >>  arch/arm64/boot/dts/rockchip/rk1808.dtsi | 203 +++++++++++++++++++++++
+> > >>  1 file changed, 203 insertions(+)
+> > >>  create mode 100644 arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> > >>
+> > >> diff --git a/arch/arm64/boot/dts/rockchip/rk1808.dtsi b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> > >> new file mode 100644
+> > >> index 000000000000..af2b51afda7d
+> > >> --- /dev/null
+> > >> +++ b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> > [...]
+> > >> +		gic: interrupt-controller@ff100000 {
+> > >> +			compatible = "arm,gic-v3";
+> > >> +			reg = <0xff100000 0x10000>, /* GICD */
+> > >> +			      <0xff140000 0xc0000>, /* GICR */
+> > > 
+> > > This is obviously wrong. You have two CPUs, and yet describe a range
+> > > that spans 6. I guess this is a copy paste from rk3399 again?
+> > 
+> > Not on my part at least. As indicated, these numbers are what ships in
+> > the DTB on the RK1808 card, as per dtc -I dtb -O dts. Could be a mistake
+> > by Rockchip, of course.
+> > 
+> > Are you suggesting 0xc0000/6*2 = 0x40000 for two CPUs here?  Works
+> > as bad as before - investigation still ongoing with latest next.
+> > 
+> > As for "obviously": The GICv3 YAML binding has no description for me to
+> > validate those numbers: "GIC Redistributors (GICR), one range per
+> > redistributor region" - says nothing about correlation to number of CPUs
+> > or size per CPU, and the examples are not explaining either: 0x200000
+> > has no number of CPUs associated, and by my calculation 0x800000 for 32
+> > CPUs results in 0x40000 per CPU; but then again the examples also have
+> > GICC etc. at diverging 0x2000 size.
+> 
+> The GICv3/v4 architecture spec does apply, and you should really have
+> a look at what these sizes mean. What is the value of copy-pasting
+> things without understanding it the first place?
+> 
+> > 
+> > >> +			      <0xff300000 0x10000>, /* GICC */
+> > >> +			      <0xff310000 0x10000>, /* GICH */
+> > >> +			      <0xff320000 0x10000>; /* GICV */
+> > >> +			interrupt-controller;
+> > >> +			#interrupt-cells = <3>;
+> > >> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> > >> +			#address-cells = <1>;
+> > >> +			#size-cells = <1>;
+> > >> +			ranges;
+> > >> +
+> > >> +			gic_its: msi-controller@ff120000 {
+> > >> +				compatible = "arm,gic-v3-its";
+> > >> +				reg = <0xff120000 0x20000>;
+> > >> +				msi-controller;
+> > >> +				#msi-cells = <1>;
+> > >> +			};
+> > > 
+> > > What uses the ITS?
+> > 
+> > DT-wise seemingly only the __symbols__ table (named just "its" there, I
+> > notice), so we could drop (or rename) the label if you prefer.
+> 
+> No, I am asking *what* uses the ITS. Is it just dangling without any
+> user? No PCI bus making use of it?
 
-This assures that the kernel will only request idle states with clean AMX
-state. In the case of the C6 idle state, this allows the hardware to get to
-a deeper power saving condition.
+just 2ct, as far as I remember the rk1808 does have a PCIe controller.
+And the datasheet [0] does agree with my memory it seems
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-Changes from v5:
-* Fixed to deactivate fpregs. (Andy Lutomirski and Dave Hansen)
-* Updated the code comment. (Dave Hansen)
 
-Changes from v4:
-* Added as a new patch. (Thomas Gleixner)
----
- arch/x86/include/asm/special_insns.h |  6 ++++++
- arch/x86/kernel/fpu/core.c           | 11 +++++++++++
- 2 files changed, 17 insertions(+)
+Heiko
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 2acd6cb62328..f0ed063035eb 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -306,6 +306,12 @@ static inline int enqcmds(void __iomem *dst, const void *src)
- 	return 0;
- }
- 
-+static inline void tile_release(void)
-+{
-+	/* Instruction opcode for TILERELEASE; supported in binutils >= 2.36. */
-+	asm volatile(".byte 0xc4, 0xe2, 0x78, 0x49, 0xc0");
-+}
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_SPECIAL_INSNS_H */
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index cccfeafe81e5..14c8216d9a39 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -106,6 +106,17 @@ int copy_fpregs_to_fpstate(struct fpu *fpu)
- 		 */
- 		if (fpu->state->xsave.header.xfeatures & XFEATURE_MASK_AVX512)
- 			fpu->avx512_timestamp = jiffies;
-+
-+		/*
-+		 * Leaving state in the TILE registers may prevent the
-+		 * processor from entering low-power idle states. Use
-+		 * TILERELEASE to initialize the state. Destroying
-+		 * fpregs state is safe after the fpstate update.
-+		 */
-+		if (fpu->state_mask & XFEATURE_MASK_XTILE_DATA) {
-+			tile_release();
-+			fpregs_deactivate(fpu);
-+		}
- 		return 1;
- 	}
- 
--- 
-2.17.1
+[0] http://opensource.rock-chips.com/images/4/43/Rockchip_RK1808_Datasheet_V1.2_20190527.pdf
+
 
