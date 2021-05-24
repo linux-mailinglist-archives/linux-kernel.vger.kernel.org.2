@@ -2,81 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F041138F178
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3E138F17F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhEXQ0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:26:08 -0400
-Received: from tux.runtux.com ([176.9.82.136]:35482 "EHLO tux.runtux.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233026AbhEXQ0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:26:07 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by tux.runtux.com (Postfix) with ESMTP id 442096EFC0;
-        Mon, 24 May 2021 18:24:36 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
-Received: from tux.runtux.com ([127.0.0.1])
-        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id 7nT45oZLbKUC; Mon, 24 May 2021 18:24:35 +0200 (CEST)
-Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
-        (Authenticated sender: postmaster@runtux.com)
-        by tux.runtux.com (Postfix) with ESMTPSA id 6DB866EF06;
-        Mon, 24 May 2021 18:24:34 +0200 (CEST)
-Received: by bee.priv.zoo (Postfix, from userid 1002)
-        id EFA9846F; Mon, 24 May 2021 18:24:33 +0200 (CEST)
-Date:   Mon, 24 May 2021 18:24:33 +0200
-From:   Ralf Schlatterbeck <rsc@runtux.com>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mirko Vogt <mirko-dev|linux@nanl.de>
-Subject: Re: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
-Message-ID: <20210524162433.6nebp2k7u66zbkx3@runtux.com>
-References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
- <20210521173011.1c602682@slackpad.fritz.box>
- <20210521201913.2gapcmrzynxekro7@runtux.com>
- <20210524133301.32c74794@slackpad.fritz.box>
+        id S233480AbhEXQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233026AbhEXQ1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:27:31 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF42C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:26:03 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id 15so5799743vkn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SP2BZdKlThSu6kHqkbL0f8O39z75p93t1CFSSb6kP6A=;
+        b=AMwhxlfvIPT1+cn4mQwMmez18R53eNYMW3kdqz/2K5bTXja+CsDaiMHjH87B9vs63T
+         vKcqORytD70hSj5y2ACajmqJVgY//3TpVjprFsek6Rl8xt+Qn5T63rZvuqH9j1UnEgZJ
+         74TBP8KAQY3Km93Wi1us0ke7foZFeFkMY4skhhC+LOBI2T7NBg6ZP4UMR9k8AyhbvkhU
+         YzjV50TNAJMHjPL/4PDR6iadZrMPBjQrkNNxwdJMDoW9tBXcgY0WvgA48SavEVckIlfE
+         qAOaRvRfDBx9m0MQhdu4XfDwWZecalIlcHWHEdQr97WEOYPgSWN66mMU3bdT0y1nP46m
+         hjdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SP2BZdKlThSu6kHqkbL0f8O39z75p93t1CFSSb6kP6A=;
+        b=mbzqJc0oJW5XQVSMW/2vXs17TrnK7XZ9GipdD2JPzv6zpnxBD8yxlpStIKUTMnIKwN
+         rw4qnqzOtOostkn8lvwCSOyplLOShWkLHqCNDba8FPt1NKMzuJwJj8Yzy82wiRnH4yJT
+         6i/EHEdfT78tmlqr5lICj2LEH38MfNHlIaN3EPx3lyHnBF/iz9sFTj6xjJhDrnoMCubo
+         IxHe95m87cH/5zGrp58M7wrzFHTrwXqNEz8sFwdBdEIU52d86bH82wDNuchIDmOS8VHJ
+         +bdL18sNz3xWZRWcG77rloWOwi+VETvAerFa5y9eODE7c2r6kjICnHyr6P+XYh7uTq4X
+         VsDg==
+X-Gm-Message-State: AOAM5338/0lyXvsIC7zLOnh95i5B1NNgum7Uv/Pf4NHODAIa3fkgJf1T
+        Zw8d3Ol1flPthucx1v2v4z23ymLoO2Nbv3xd9iwwzg==
+X-Google-Smtp-Source: ABdhPJwsNXBFGmRL6Qdv650SNJwagPUuG24dNMJGtpBJZ+17nxPEg4Pylgky7K5gV81D6DSkM24pcShGa9M1j9LcCzI=
+X-Received: by 2002:a1f:9542:: with SMTP id x63mr22199896vkd.15.1621873562173;
+ Mon, 24 May 2021 09:26:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524133301.32c74794@slackpad.fritz.box>
-X-ray:  beware
-User-Agent: NeoMutt/20180716
+References: <20210520133908.98891-1-damtev@yandex-team.ru> <20210520133908.98891-2-damtev@yandex-team.ru>
+ <YKu4Qovv1KMplifY@stefanha-x1.localdomain> <20210524145654.GA2632@lst.de>
+In-Reply-To: <20210524145654.GA2632@lst.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 24 May 2021 18:25:24 +0200
+Message-ID: <CAPDyKFpHeiyLxU1H_gZuxivkiZCKhZ_igsbx_TxSWzUhyaEufQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] virtio: disable partitions scanning for no partitions block
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Yury Kamenev <damtev@yandex-team.ru>,
+        Jens Axboe <axboe@kernel.dk>, mst@redhat.com,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-block <linux-block@vger.kernel.org>, pbonzini@redhat.com,
+        Lauri Kasanen <cand@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 01:33:01PM +0100, Andre Przywara wrote:
-> - Single patch set series don't bother to have a "1/1" after the
->   "PATCH".
-> - You are expected to increase the version number when you send a new
->   version, to show that *this* is better than the previous post and
->   this version should be merged. Otherwise the maintainer might pick
->   the wrong version. "git format-patch -v2" and "git send-email" will
->   automatically take care of this.
+On Mon, 24 May 2021 at 16:57, Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, May 24, 2021 at 03:29:22PM +0100, Stefan Hajnoczi wrote:
+> > GENHD_FL_NO_PART_SCAN is not used much in other drivers. This makes me
+> > wonder if the same use case is addressed through other means with SCSI,
+> > NVMe, etc devices. Maybe Christoph or Jens can weigh in on whether
+> > adding a bit to disable partition scanning for a virtio-blk fits into
+> > the big picture?
+> >
+> > Is your goal to avoid accidentally detecting partitions because it's
+> > confusing when that happens?
+>
+> I'm really confused what the use case is here.  GENHD_FL_NO_PART_SCAN
+> has four users:
+>
+>  - the block core setting it for hidden devices, for which the concept
+>    of paritions doesn't make sense.  Looking back this should have never
+>    used GENHD_FL_NO_PART_SCAN, and instead the partition scanning code
+>    should just check GENHD_FL_HIDDEN as well.
+>  - mmc uses it for boot partitions and rpmb.  I'm not even sure how
+>    these can be exposed as block devices as they don't require block
+>    granularity access IIRC, but if the allow block layer access there
+>    is no reason to ever set these flags.
 
-OK I'll keep that in mind.
+For RPMB, we have converted them into char devices, thus
+GENHD_FL_NO_PART_SCAN is never set for them. The code needs a cleanup
+to clarify this.
 
-> Please keep in mind that text after the dashes doesn't make it in it
-> repo, so this information would be lost there. Also, in general links in
-> commit messages are somewhat frowned upon, since they tend to 404
-> sooner or later. So ideally you can put a condensed version of your
-> findings into the commit message? Don't worry if it grows long, it is
-> not uncommon to have a 2 page commit message for a one-liner patch.
+When it comes to eMMC boot partitions, those can be read/written to as
+any other block device. Although, it's unlikely that they need
+partitions as they are usually very small, 512Kb or 2MB in that
+ballpark. At least, that was the thinking behind it when we added
+GENHD_FL_NO_PART_SCAN for them.
 
-This was intentional, the commit message is only the upper part.
-The Links were meant to give a lot of details why the patch fixes
-something. I think the commit message already explains the condensed
-findings. I've put this additional explanation text after the '---' to
-not need an additional Patch 0/1 email ;-)
+If you want to drop GENHD_FL_NO_PART_SCAN for eMMC boot partitions, I
+don't think it will be an issue.
 
-Thanks!
-Ralf
--- 
-Dr. Ralf Schlatterbeck                  Tel:   +43/2243/26465-16
-Open Source Consulting                  www:   www.runtux.com
-Reichergasse 131, A-3411 Weidling       email: office@runtux.com
+>  - loop is a bit of a mess.  IIRC the story is that originally the
+>    loop device did not support partitions, then in 2008 support for
+>    partitions was added by partitioning the minor number space, and
+>    then in 2011 support for partitions without that parameter was
+>    added using a new flag in the loop device creation ioctl that uses
+>    the extended dev_t space added since.  But even that might be
+>    something we can handled without that flag without breaking the
+>    userspace ABI
+>  - m64card sets it for no good reason at all
+>
+> In other words: in a perfect would GENHD_FL_NO_PART_SCAN would not
+> exist, and it certainly should not be added to a new driver, never
+> mind a protocol.
+> _______________________________________________
+> Virtualization mailing list
+> Virtualization@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+
+Kind regards
+Uffe
