@@ -2,106 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EE638E673
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BCC38E902
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhEXMTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232678AbhEXMTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:19:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9C6261209;
-        Mon, 24 May 2021 12:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621858669;
-        bh=teXbnvQA/9F8le8shlLhKROaQfKBflKP12itvlr6NDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n9EzFsn5dgbYafkGAnH83DXTFT9rXqgvD6woQxgp/zRM42lpntgjsNnJ9EBz0pe/I
-         XZjedXwXuS7lp6oLxvheJqEThhwQInWq+dDnTYVC0iiLPrXEwCqrwJao6eq2cSz3z6
-         1Yi1rlh8b7hWw9gD5LGJ8/Y8D+V39pA8fL2SI4VCV71zwKHlze5995dCCMpiurWsg+
-         kKr8iswfH1CbKIXn3uvejF8r1k+/8KP21/JqDZ0sOb6bmFXn2GKr7NtwoptdURx+Vp
-         w5JM2OYBfaOmHTafGekf7wiN48UGOizAmsReN5yotDsYLv4mCFfnMQ/JSqQjI4ULc5
-         7uo1w5mMC3n2g==
-Date:   Mon, 24 May 2021 13:17:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 06/21] sched: Introduce task_cpu_possible_mask() to
- limit fallback rq selection
-Message-ID: <20210524121743.GC14913@willie-the-truck>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-7-will@kernel.org>
- <20210521160344.GJ5618@worktop.programming.kicks-ass.net>
+        id S233099AbhEXOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:46:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55115 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232921AbhEXOqn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:46:43 -0400
+X-UUID: 0fef0fa0a5454da5bef29b84a8bd535d-20210524
+X-UUID: 0fef0fa0a5454da5bef29b84a8bd535d-20210524
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1925523394; Mon, 24 May 2021 20:29:11 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 24 May 2021 20:29:10 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 24 May 2021 20:29:10 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        "chun-jie . chen" <chun-jie.chen@mediatek.com>
+Subject: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document bindings of imp i2c wrapper controller
+Date:   Mon, 24 May 2021 20:20:32 +0800
+Message-ID: <20210524122053.17155-2-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521160344.GJ5618@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:03:44PM +0200, Peter Zijlstra wrote:
-> On Tue, May 18, 2021 at 10:47:10AM +0100, Will Deacon wrote:
-> > diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
-> > index 03dee12d2b61..bc4ac3c525e6 100644
-> > --- a/include/linux/mmu_context.h
-> > +++ b/include/linux/mmu_context.h
-> > @@ -14,4 +14,12 @@
-> >  static inline void leave_mm(int cpu) { }
-> >  #endif
-> >  
-> > +/*
-> > + * CPUs that are capable of running task @p. By default, we assume a sane,
-> > + * homogeneous system. Must contain at least one active CPU.
-> > + */
-> > +#ifndef task_cpu_possible_mask
-> > +# define task_cpu_possible_mask(p)	cpu_possible_mask
-> > +#endif
-> 
-> #ifndef task_cpu_possible_mask
-> # define task_cpu_possible_mask(p)	cpu_possible_mask
-> # define task_cpu_possible(cpu, p)	true
-> #else
-> # define task_cpu_possible(cpu, p)	cpumask_test_cpu((cpu), task_cpu_possible_mask(p))
-> #endif
-> 
-> > +
-> >  #endif
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 5226cc26a095..482f7fdca0e8 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1813,8 +1813,11 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
-> >  		return cpu_online(cpu);
-> >  
-> >  	/* Non kernel threads are not allowed during either online or offline. */
-> >  	if (!(p->flags & PF_KTHREAD))
-> > -		return cpu_active(cpu);
-> +		return cpu_active(cpu) && task_cpu_possible(cpu, p);
-> 
-> >  	/* KTHREAD_IS_PER_CPU is always allowed. */
-> >  	if (kthread_is_per_cpu(p))
-> 
-> Would something like that make sense?
+This patch adds the new binding documentation of imp i2c wrapper controller
+for Mediatek MT8192.
 
-I think this is probably the only place that we could use the helper, but
-it's also one of the places where architectures that don't have to worry
-about asymmetry end up with the check so, yes, I'll do that for v7.
+Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
+---
+ .../arm/mediatek/mediatek,imp_iic_wrap.yaml   | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
 
-Will
+diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
+new file mode 100644
+index 000000000000..fb6cb9e60ee2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/mediatek/mediatek,imp_iic_wrap.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek IMP I2C Wrapper Controller
++
++maintainers:
++  - Chun-Jie Chen <chun-jie.chen@mediatek.com>
++
++description:
++  The Mediatek imp i2c wrapper controller provides functional configurations and clocks to the system.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - mediatek,mt8192-imp_iic_wrap_c
++          - mediatek,mt8192-imp_iic_wrap_e
++          - mediatek,mt8192-imp_iic_wrap_s
++          - mediatek,mt8192-imp_iic_wrap_ws
++          - mediatek,mt8192-imp_iic_wrap_w
++          - mediatek,mt8192-imp_iic_wrap_n
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++  '#clock-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    imp_iic_wrap_c: syscon@11007000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_c", "syscon";
++        reg = <0x11007000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    imp_iic_wrap_e: syscon@11cb1000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_e", "syscon";
++        reg = <0x11cb1000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    imp_iic_wrap_s: syscon@11d03000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_s", "syscon";
++        reg = <0x11d03000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    imp_iic_wrap_ws: syscon@11d23000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_ws", "syscon";
++        reg = <0x11d23000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    imp_iic_wrap_w: syscon@11e01000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_w", "syscon";
++        reg = <0x11e01000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    imp_iic_wrap_n: syscon@11f02000 {
++        compatible = "mediatek,mt8192-imp_iic_wrap_n", "syscon";
++        reg = <0x11f02000 0x1000>;
++        #clock-cells = <1>;
++    };
+-- 
+2.18.0
+
