@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F10E38EDD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E25538F091
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhEXPmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        id S236353AbhEXQEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233767AbhEXPiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:38:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B9C61429;
-        Mon, 24 May 2021 15:33:27 +0000 (UTC)
+        id S234769AbhEXP50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B33D461952;
+        Mon, 24 May 2021 15:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870407;
-        bh=iLjv2BpjEpxLxEfUWOFHpbFCb3/nWsauqU8ooJ9BEsU=;
+        s=korg; t=1621871016;
+        bh=g4WznfC1RMud/RVC4tEowcseFD//o/MAWnIuwiNWWSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r0jgo2iz/zRpw9zJpw87KeA3w1zVtVFkaZCEE0gSRUBkPkloXYfGofuy3/VLpcTMo
-         bynwHyfPTRDNNkqRt9164W3uGHWZyVL0z/MJp2DlyCASuk87XgqLOUlFu1e9bb9ewD
-         shgQljBbD4WNJSNBHUsaTSeMPLEDRgyJ0t9rsCUw=
+        b=RvpJcJ8QvGn/KzgY8DDk77QNT3g5kGJQ/p8Is2qKawvIxPoZVeFnNGLqxv68R/Owj
+         3PmH7x/3e3XExwnjvMHES6lujEt/WiA3iwqZ0dJSSxQhOFu+gJwYoWfc9+f1n7cfkM
+         XV1qprxreLgQ8VVEO3f1TX3WLvpuolY4AUjd/Xvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 4.14 20/37] Revert "video: imsttfb: fix potential NULL pointer dereferences"
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 007/127] RDMA/core: Prevent divide-by-zero error triggered by the user
 Date:   Mon, 24 May 2021 17:25:24 +0200
-Message-Id: <20210524152324.871453534@linuxfoundation.org>
+Message-Id: <20210524152335.108504796@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit ed04fe8a0e87d7b5ea17d47f4ac9ec962b24814a upstream.
+[ Upstream commit 54d87913f147a983589923c7f651f97de9af5be1 ]
 
-This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
+The user_entry_size is supplied by the user and later used as a
+denominator to calculate number of entries. The zero supplied by the user
+will trigger the following divide-by-zero error:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+ divide error: 0000 [#1] SMP KASAN PTI
+ CPU: 4 PID: 497 Comm: c_repro Not tainted 5.13.0-rc1+ #281
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:ib_uverbs_handler_UVERBS_METHOD_QUERY_GID_TABLE+0x1b1/0x510
+ Code: 87 59 03 00 00 e8 9f ab 1e ff 48 8d bd a8 00 00 00 e8 d3 70 41 ff 44 0f b7 b5 a8 00 00 00 e8 86 ab 1e ff 31 d2 4c 89 f0 31 ff <49> f7 f5 48 89 d6 48 89 54 24 10 48 89 04 24 e8 1b ad 1e ff 48 8b
+ RSP: 0018:ffff88810416f828 EFLAGS: 00010246
+ RAX: 0000000000000008 RBX: 1ffff1102082df09 RCX: ffffffff82183f3d
+ RDX: 0000000000000000 RSI: ffff888105f2da00 RDI: 0000000000000000
+ RBP: ffff88810416fa98 R08: 0000000000000001 R09: ffffed102082df5f
+ R10: ffff88810416faf7 R11: ffffed102082df5e R12: 0000000000000000
+ R13: 0000000000000000 R14: 0000000000000008 R15: ffff88810416faf0
+ FS:  00007f5715efa740(0000) GS:ffff88811a700000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000020000840 CR3: 000000010c2e0001 CR4: 0000000000370ea0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  ? ib_uverbs_handler_UVERBS_METHOD_INFO_HANDLES+0x4b0/0x4b0
+  ib_uverbs_cmd_verbs+0x1546/0x1940
+  ib_uverbs_ioctl+0x186/0x240
+  __x64_sys_ioctl+0x38a/0x1220
+  do_syscall_64+0x3f/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit here, while technically correct, did not fully
-handle all of the reported issues that the commit stated it was fixing,
-so revert it until it can be "fixed" fully.
-
-Note, ioremap() probably will never fail for old hardware like this, and
-if anyone actually used this hardware (a PowerMac era PCI display card),
-they would not be using fbdev anymore.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-67-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9f85cbe50aa0 ("RDMA/uverbs: Expose the new GID query API to user space")
+Link: https://lore.kernel.org/r/b971cc70a8b240a8b5eda33c99fa0558a0071be2.1620657876.git.leonro@nvidia.com
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/imsttfb.c |    5 -----
- 1 file changed, 5 deletions(-)
+ drivers/infiniband/core/uverbs_std_types_device.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/video/fbdev/imsttfb.c
-+++ b/drivers/video/fbdev/imsttfb.c
-@@ -1516,11 +1516,6 @@ static int imsttfb_probe(struct pci_dev
- 	info->fix.smem_start = addr;
- 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
- 					    0x400000 : 0x800000);
--	if (!info->screen_base) {
--		release_mem_region(addr, size);
--		framebuffer_release(info);
--		return -ENOMEM;
--	}
- 	info->fix.mmio_start = addr + 0x800000;
- 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
- 	par->cmap_regs_phys = addr + 0x840000;
+diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
+index 9ec6971056fa..a03021d94e11 100644
+--- a/drivers/infiniband/core/uverbs_std_types_device.c
++++ b/drivers/infiniband/core/uverbs_std_types_device.c
+@@ -331,6 +331,9 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
+ 	if (ret)
+ 		return ret;
+ 
++	if (!user_entry_size)
++		return -EINVAL;
++
+ 	max_entries = uverbs_attr_ptr_get_array_size(
+ 		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
+ 		user_entry_size);
+-- 
+2.30.2
+
 
 
