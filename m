@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C0138F09F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0666438EE03
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236926AbhEXQEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        id S234864AbhEXPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234644AbhEXP6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 191A36195B;
-        Mon, 24 May 2021 15:44:05 +0000 (UTC)
+        id S233783AbhEXPlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:41:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A5C861442;
+        Mon, 24 May 2021 15:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871046;
-        bh=nb5gPHQ0lc71Pv8hxVx6JmpASmurqXzUg7X9LXFRH3k=;
+        s=korg; t=1621870469;
+        bh=/gpb6fmUgW9Nxnbc7m9rX/qShVly9KPG7W6YvQMouIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jrUFbH4pfx6eO8PIxAZSeAESaV/PP4oRu14hmh98RPir2OStr5llSFrErFj30bjN+
-         R/s4JiCtL1zPNkUO+lndtzrGgSDBhgpvCjmJ0UGPPh8DjWkMAqRX7B2Nma5hOJOIT6
-         XbvuHQ18R/otvPjR4sXKguiD218MyRhZzobogOAE=
+        b=gQevEP2HTYqD+Lsji+hlD+pquXjUUV+qszMK4vHBMmz75ep0S/gXiB0liIyDzeD3I
+         +ACA9d9OV3iL8HmyLJH4PXLHszPVQ2WGQYFANcV5SeE6zs9n/glYeRJ1BlJ6CAZd/L
+         CZGxTuxjI3rzWEutgDQ3mBQmCsZb4aefU5iFmos0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 004/127] habanalabs/gaudi: Fix a potential use after free in gaudi_memset_device_memory
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.19 10/49] cifs: fix memory leak in smb2_copychunk_range
 Date:   Mon, 24 May 2021 17:25:21 +0200
-Message-Id: <20210524152335.006868701@linuxfoundation.org>
+Message-Id: <20210524152324.723822973@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 115726c5d312b462c9d9931ea42becdfa838a076 ]
+commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
 
-Our code analyzer reported a uaf.
+When using smb2_copychunk_range() for large ranges we will
+run through several iterations of a loop calling SMB2_ioctl()
+but never actually free the returned buffer except for the final
+iteration.
+This leads to memory leaks everytime a large copychunk is requested.
 
-In gaudi_memset_device_memory, cb is get via hl_cb_kernel_create()
-with 2 refcount.
-If hl_cs_allocate_job() failed, the execution runs into release_cb
-branch. One ref of cb is dropped by hl_cb_put(cb) and could be freed
-if other thread also drops one ref. Then cb is used by cb->id later,
-which is a potential uaf.
-
-My patch add a variable 'id' to accept the value of cb->id before the
-hl_cb_put(cb) is called, to avoid the potential uaf.
-
-Fixes: 423815bf02e25 ("habanalabs/gaudi: remove PCI access to SM block")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/cifs/smb2ops.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 9152242778f5..ecdedd87f8cc 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -5546,6 +5546,7 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
- 	struct hl_cs_job *job;
- 	u32 cb_size, ctl, err_cause;
- 	struct hl_cb *cb;
-+	u64 id;
- 	int rc;
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1174,6 +1174,8 @@ smb2_copychunk_range(const unsigned int
+ 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
  
- 	cb = hl_cb_kernel_create(hdev, PAGE_SIZE, false);
-@@ -5612,8 +5613,9 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
- 	}
- 
- release_cb:
-+	id = cb->id;
- 	hl_cb_put(cb);
--	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, cb->id << PAGE_SHIFT);
-+	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, id << PAGE_SHIFT);
- 
- 	return rc;
- }
--- 
-2.30.2
-
+ 		/* Request server copy to target from src identified by key */
++		kfree(retbuf);
++		retbuf = NULL;
+ 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
+ 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
+ 			true /* is_fsctl */, (char *)pcchunk,
 
 
