@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0380538EE4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CBE38EDD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhEXPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
+        id S233419AbhEXPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234228AbhEXPn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:43:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 804A7613C8;
-        Mon, 24 May 2021 15:35:33 +0000 (UTC)
+        id S234075AbhEXPib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:38:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB7D9613F9;
+        Mon, 24 May 2021 15:33:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870534;
-        bh=LyOy+xlsooxbKqYUi7vUL9d6aQqlJNqEBv3mbHSy47o=;
+        s=korg; t=1621870416;
+        bh=eEKu4rUipG99VsW2aieIlLdvMnpIWxopf7nGFOwMgBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PjDh/WdBOUExa8sOzTpUp2HbDB1AGaeRglrA+PJGMkzh4fFxJ8SfL1G3o+O47hu6U
-         jtMYNqLaKeyJ0ffATEVkHpJoo8yMJqE6/nvkEFTiJZwd8lnnH9efCyILcYbAOndI4D
-         gmMfoggPmrdxteZ0j70PiSJi6ukpbrSnyjKC9QYQ=
+        b=moJ/Il4a1/irXbpz5+5sQ6Q8B0m+as1E1UcX0ACnPVplwR8ID0MmEi4unMV5TzVG/
+         QeMcxBfdq/m8gasuknDh4SKoEMYknIl08kCB9KqnLipguAfiIv5PLJGkI2qnSnG52f
+         w8RvGdX0iEw4wJKyx7ow6fzLspCyNg8HK+iy81Mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 16/49] Revert "ALSA: sb8: add a check for request_region"
-Date:   Mon, 24 May 2021 17:25:27 +0200
-Message-Id: <20210524152324.906170378@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.14 24/37] cdrom: gdrom: initialize global variable at init time
+Date:   Mon, 24 May 2021 17:25:28 +0200
+Message-Id: <20210524152324.994931391@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 94f88309f201821073f57ae6005caefa61bf7b7e upstream.
+commit 9183f01b5e6e32eb3f17b5f3f8d5ad5ac9786c49 upstream.
 
-This reverts commit dcd0feac9bab901d5739de51b3f69840851f8919.
+As Peter points out, if we were to disconnect and then reconnect this
+driver from a device, the "global" state of the device would contain odd
+values and could cause problems.  Fix this up by just initializing the
+whole thing to 0 at probe() time.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Ideally this would be a per-device variable, but given the age and the
+total lack of users of it, that would require a lot of s/./->/g changes
+for really no good reason.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit message for this change was incorrect as the code
-path can never result in a NULL dereference, alluding to the fact that
-whatever tool was used to "find this" is broken.  It's just an optional
-resource reservation, so removing this check is fine.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Fixes: dcd0feac9bab ("ALSA: sb8: add a check for request_region")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-35-gregkh@linuxfoundation.org
+Reported-by: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Peter Rosin <peda@axentia.se>
+Link: https://lore.kernel.org/r/YJP2j6AU82MqEY2M@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/isa/sb/sb8.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/cdrom/gdrom.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -111,10 +111,6 @@ static int snd_sb8_probe(struct device *
- 
- 	/* block the 0x388 port to avoid PnP conflicts */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
--	if (!acard->fm_res) {
--		err = -EBUSY;
--		goto _err;
--	}
- 
- 	if (port[dev] != SNDRV_AUTO_PORT) {
- 		if ((err = snd_sbdsp_create(card, port[dev], irq[dev],
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -775,6 +775,13 @@ static int probe_gdrom_setupqueue(void)
+ static int probe_gdrom(struct platform_device *devptr)
+ {
+ 	int err;
++
++	/*
++	 * Ensure our "one" device is initialized properly in case of previous
++	 * usages of it
++	 */
++	memset(&gd, 0, sizeof(gd));
++
+ 	/* Start the device */
+ 	if (gdrom_execute_diagnostic() != 1) {
+ 		pr_warning("ATA Probe for GDROM failed\n");
+@@ -874,7 +881,7 @@ static struct platform_driver gdrom_driv
+ static int __init init_gdrom(void)
+ {
+ 	int rc;
+-	gd.toc = NULL;
++
+ 	rc = platform_driver_register(&gdrom_driver);
+ 	if (rc)
+ 		return rc;
 
 
