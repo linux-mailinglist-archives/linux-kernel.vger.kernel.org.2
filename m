@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A67E38E6F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FEA38E6FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhEXMxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        id S232638AbhEXM40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbhEXMxU (ORCPT
+        with ESMTP id S232389AbhEXM4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:53:20 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E6CC061574;
-        Mon, 24 May 2021 05:51:51 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id j10so14261334edw.8;
-        Mon, 24 May 2021 05:51:51 -0700 (PDT)
+        Mon, 24 May 2021 08:56:23 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CD0C061574;
+        Mon, 24 May 2021 05:54:54 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so11091976pjb.2;
+        Mon, 24 May 2021 05:54:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dD9JUS/9clmQAwtTw0oy+Y0L6eGW7GOSlCzKvAfOcqI=;
-        b=uXZObOQAWLi+UqUELweUTgzr0xS+D+JIv93PqQnNec9m1DWvK3ICqM51zXr3H1LNYr
-         niW8fRxeIc6J8YtGGWrvJBOLrerpqW314Klei3EwcaLDhhac5I5dcMSMok8WaKoH2AuX
-         LGVvbwYGNZEn2k/XNFTXFa6YWl2fdccjLZ9dLzgsUWMhoLktKRLUdGC0J5w+3U2SqgPv
-         +BQhqksplDDFCbLkURCCWhxg5XeZez34ewqV9eMPcoh9HFkEr+tQ89VS2EPTjJA+PwvF
-         hrDIBl/uE8oybSgvxlaOLY8vpWrfyxawVPh3gTz+4SfBcQoQ4nEVnOgrr0OvFjFgYyLH
-         onjg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lL4mdK3OlVo5HtMpo/i3Kg+WlLytBJ9Ge9Zv4SxQ7gU=;
+        b=pGzM1IG9n01ZBmiUZlf9M9pq0HgR7inLpdsP1O6LCFKm/yy1B51ksOICc0+JwsQEBO
+         l8XnLPjK8XRcH5FpMghH4Fpsx2uTzljsuyi+qmnzoB5aQkzQaEf/POib4QJOACpkiXUq
+         xorxU/NVTqGsUGwmq/zES+XiIpQRWbaof/LyukPfzpbhExCZHQK/zgvYKdrg39pOuUZB
+         /+nXstxymUoQjhmiAdqKy+clSlVcPomamiWtmVqQVMQc/G4iFXrc/8JDNsKQryqLoIdp
+         WYs+zqYpU95pjBC8WVjrXkA36NBjfSka6KzK/u27UeFpkYTpEzQ1jqxiZCSL5Rl0gdpW
+         LaYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dD9JUS/9clmQAwtTw0oy+Y0L6eGW7GOSlCzKvAfOcqI=;
-        b=DWu3ZouAEljQMElL851rp7fbdWOZ4ltKLV1bNojK1XIOqqlg83Rt9Oth7mhq03YJ0e
-         Q1DubIN/TmWkI/rZQom1vKtuCxefBB4EGJWVCENf7vs7d0AbT165nXP1StMoSUGyZLVN
-         s7trQJRwLEZ7PUCXUJE+w7C46muEVmVgu8IM5RWvOhGLEKE/dk3X2yM0ndiDe1mnMPDG
-         pjvGbJ7XlCum5ncRFylxZNo9xu2lzDqs3efx6mUQyNNleb3FcnhEORjlbrWI4FyXn8gd
-         QUX+uYHuMOl2KZmmPCG4vpP6dAa4IQ0SdhqxvMEKOVvgAB5rScCYpdfHlEeA8y/JTWIo
-         X0og==
-X-Gm-Message-State: AOAM5307XPLKFJdU8S2zFwQpiyhR3SG4zy/WpBSDJ9bhUMSRQEiNT3uD
-        lQTSHCLcmh65nTBkK+yXQXk=
-X-Google-Smtp-Source: ABdhPJyMEkKmMiyUQ3uf21R2RgYMv75IOOJQ9W04QhJLUu7XPaq6mnxSqiA+tfBvgJn1FPWNjpSyNg==
-X-Received: by 2002:a05:6402:35c4:: with SMTP id z4mr25067694edc.362.1621860709805;
-        Mon, 24 May 2021 05:51:49 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
-        by smtp.gmail.com with ESMTPSA id u1sm9282891edv.91.2021.05.24.05.51.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 05:51:49 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v6 12/17] phy: sun4i-usb: Introduce port2 SIDDQ quirk
-Date:   Mon, 24 May 2021 14:51:47 +0200
-Message-ID: <2348352.12aM7klthN@jernej-laptop>
-In-Reply-To: <20210524115946.jwsasjbr3biyixhz@gilmour>
-References: <20210519104152.21119-1-andre.przywara@arm.com> <20210519104152.21119-13-andre.przywara@arm.com> <20210524115946.jwsasjbr3biyixhz@gilmour>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lL4mdK3OlVo5HtMpo/i3Kg+WlLytBJ9Ge9Zv4SxQ7gU=;
+        b=EM+6NYuJtEwcpZ5RIfhe9fzYsmNUNo8G02psvaHdjdYUrTczDIuOYlFOP/lqhjo2Mo
+         IFdfuXCoIIPYs4WYCh8BfEn+WbFTyyI991SAqVdV4UnXzLJ2hOWIfjfQkp+kPI4EgFbG
+         1Uz4wYs7JG3+5dpanHp2ABpDSzDK3VZiXNAB5sZ4OVEemBtD7cDRCpgrB/tUNVmXlqo0
+         NZP3wkX4Fer51bD9WVbM1cL0V680MVj3GDdl1dZYLwEMhI8TOaNwAZ4CXFtANOOqDBHE
+         tV2JSYTcnImGeb+K2MMSQTgJIE2gDJDxY5//YCrFPDhwpL13ED3k42v/xwapWqRpk6V6
+         4Tag==
+X-Gm-Message-State: AOAM5310uZDhmGT8JXQIdqVA4k9E5++50/KRjH7+fvJiFlyME4xLMzJX
+        PYplDy2uEAtbecoWHUEGlw5NuY61GnTPb6h+1Uc=
+X-Google-Smtp-Source: ABdhPJw+E3SSq/owwQFmphF7BgBwbkNmSsHWajF0qirgf9BcugvUZVhl7rsgwOsXxlWpzrkkfpBrtwDY1AxQ7XUkM7E=
+X-Received: by 2002:a17:902:bf48:b029:fa:9401:cda8 with SMTP id
+ u8-20020a170902bf48b02900fa9401cda8mr3853689pls.0.1621860893478; Mon, 24 May
+ 2021 05:54:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <cover.1620735871.git.sander@svanheule.net> <cover.1621809029.git.sander@svanheule.net>
+ <YKr9G3EfrM34gCsL@lunn.ch> <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+In-Reply-To: <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 24 May 2021 15:54:37 +0300
+Message-ID: <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne ponedeljek, 24. maj 2021 ob 13:59:46 CEST je Maxime Ripard napisal(a):
-> Hi
-> 
-> On Wed, May 19, 2021 at 11:41:47AM +0100, Andre Przywara wrote:
-> > At least the Allwinner H616 SoC requires a weird quirk to make most
-> > USB PHYs work: Only port2 works out of the box, but all other ports
-> > need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
-> > RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
-> > the PMU PHY control register needs to be cleared. For this register to
-> > be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
-> > 
-> > Instead of disguising this as some generic feature, do exactly that
-> > in our PHY init:
-> > If the quirk bit is set, and we initialise a PHY other than PHY2, ungate
-> > this one special clock, and clear the SIDDQ bit. We can pull in the
-> > other required clocks via the DT.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> 
-> What is this SIDDQ bit doing exactly?
+On Mon, May 24, 2021 at 2:41 PM Sander Vanheule <sander@svanheule.net> wrote:
+> On Mon, 2021-05-24 at 10:53 +0300, Andy Shevchenko wrote:
+> > On Mon, May 24, 2021 at 4:11 AM Andrew Lunn <andrew@lunn.ch> wrote:
 
-If this is similar to Rockchip USB PHY, then this bit takes care for powering 
-up/down analog parts of USB PHY:
-https://elixir.bootlin.com/linux/latest/source/drivers/phy/rockchip/phy-rockchip-usb.c#L83
+...
 
-Best regards,
-Jernej
+> > > > Changes since v2:
+> > > >   - MDIO regmap support was merged, so patch is dropped here
+> > >
+> > > Do you have any idea how this will get merged. It sounds like one of
+> > > the Maintainers will need a stable branch of regmap.
+> >
+> > This is not a problem if Mark provides an immutable branch to pull from.
+>
+> Mark has a tag (regmap-mdio) for this patch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git/tag/?h=regmap-mdio
 
-> 
-> I guess we could also expose this using a power-domain if it's relevant?
-> 
-> Maxime
+Also works but you have to provide this information in the cover letter.
 
+...
 
+> > > >   - Introduce GPIO regmap quirks to set output direction first
+> > >
+> > > I thought you had determined it was possible to set output before
+> > > direction?
+> >
+> > Same thoughts when I saw an updated version of that patch. My
+> > anticipation was to not see it at all.
+>
+> The two devices I've been trying to test the behaviour on are:
+>  * Netgear GS110TPP: has an RTL8231 with three LEDs, each driven via a pin
+>    configured as (active-low) GPIO. The LEDs are easy for a quick visual check.
+>  * Zyxel GS1900-8: RTL8231 used for the front panel button, and an active-low
+>    GPIO used to hard reset the main SoC (an RTL8380). I've modified this board
+>    to change some of the strapping pin values, but testing with the jumpers and
+>    pull-up/down resistors is a bit more tedious.
+>
+> On the Netgear, I tested the following with and without the quirk:
+>
+>    # Set as OUT-LOW twice, to avoid the quirk. Always turns the LED on
+>    gpioset 1 32=0; gpioset 1 32=0
+>    # Get value to change to input, turns the LED off (high impedance)
+>    # Will return 1 due to (weak) internal pull-up
+>    gpioget 1 32
+>    # Set as OUT-HIGH, should result in LED off
+>    # When the quirk is disabled, the LED turns on (i.e. old OUT-LOW value)
+>    # When the quirk is enabled, the LED remains off (i.e. correct OUT-HIGH value)
+>    gpioset 1 32=1
+>
+> Now, what's confusing (to me) is that the inverse doesn't depend on the quirk:
+>
+>    # Set as OUT-HIGH twice
+>    gpioset 1 32=1; gpioset 1 32=1
+>    # Change to high-Z
+>    gpioget 1 32
+>    # Set to OUT-LOW, always results in LED on, with or without quirk
+>    gpioset 1 32=0
+>
+> Any idea why this would be (or appear) broken on the former case, but not on the
+> latter?
 
+GPIO tools for the shell are context-less. Can you reproduce this with
+the legacy sysfs interface?
 
+> I was trying to reproduce this behaviour on the Zyxel, but using the strapping
+> pins that are also used to configure the device's address. So perhaps the pull-
+> ups/-downs were confusing the results. Using a separate pin on the Zyxel's
+> RTL8231, I've now been able to confirm the same behaviour as on the Netgear,
+> including capturing the resulting glitch (with my simple logic analyser) when
+> enabling the quirk in the first test case.
+>
+> I hope this explains why I've still included the quirk in this revision. If not,
+> please let me know what isn't clear.
+
+Do you possess a schematic of either of the devices and a link to the
+RTL datasheet (Btw, if it's publicly available, or you have a link
+that will ask for necessary sign-in it would be nice to include the
+link to it as a Datasheet: tag)?
+
+-- 
+With Best Regards,
+Andy Shevchenko
