@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7524338E359
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0506538E387
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhEXJ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:29:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5529 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhEXJ3y (ORCPT
+        id S232525AbhEXJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhEXJw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:29:54 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FpWz24ClCzkYZ9;
-        Mon, 24 May 2021 17:25:34 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 17:28:24 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 17:28:24 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <wangzhou1@hisilicon.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next v3] crypto: hisilicon - switch to memdup_user_nul()
-Date:   Mon, 24 May 2021 17:47:08 +0800
-Message-ID: <1621849628-108717-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 24 May 2021 05:52:26 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92FCBC061574;
+        Mon, 24 May 2021 02:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=WOEXKCrrEO
+        cMZcKBfbLEX3WCUQswPe8nxFTolMbRVOQ=; b=rqMPcfbUy3I9VlnjWXnWUa4mKt
+        JJhrncZpLUvLFL1yxj7QCdK8mupRvY0z7xvwymOMm10mvj8OZ4r9H2dMJTsgIiRk
+        QnThgw/yWK3eSCDgBCwKyhv0MCVmPInkWiqex5Esn8irukmuIodVJcsP51r3DIoG
+        6B19RKjYxY1s/m7sw=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3P4v7dqtg0GQKAA--.3270S4;
+        Mon, 24 May 2021 17:50:51 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
+        jitendra.bhivare@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] scsi: be2iscsi: Fix a use after free in beiscsi_if_clr_ip
+Date:   Mon, 24 May 2021 02:50:39 -0700
+Message-Id: <20210524095039.9033-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygA3P4v7dqtg0GQKAA--.3270S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr17Wr48Cw1kKw4fKw4DJwb_yoW8Xw18pa
+        4UX3WjyaykGF40kFnrAFWa9rnY9ayrKa42vFy2g3y5uFn5urWj9r98Ga4j9FnFkrZ5Jry7
+        JF1kJr98GF4ktaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUjAsqPUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use memdup_user_nul() helper instead of open-coding to
-simplify the code.
+In the free_cmd error path of callee beiscsi_exec_nemb_cmd(),
+nonemb_cmd->va is freed by dma_free_coherent().
+As req = nonemb_cmd.va, we can see that the freed nonemb_cmd.va
+is still dereferenced and used by req->ip_params.ip_record.status.
 
-v1-->v2:
-   fixed patch title error
-v2-->v3:
-   return the actual error
+My patch uses status to replace req->ip_params.ip_record.status
+to avoid the uaf.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 ---
- drivers/crypto/hisilicon/qm.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ drivers/scsi/be2iscsi/be_mgmt.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 8f7ea50..8b389c2 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -1571,16 +1571,9 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
- 	if (count > QM_DBG_WRITE_LEN)
- 		return -ENOSPC;
+diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
+index 462717bbb5b7..f05fcea707cd 100644
+--- a/drivers/scsi/be2iscsi/be_mgmt.c
++++ b/drivers/scsi/be2iscsi/be_mgmt.c
+@@ -509,6 +509,7 @@ beiscsi_if_clr_ip(struct beiscsi_hba *phba,
+ {
+ 	struct be_cmd_set_ip_addr_req *req;
+ 	struct be_dma_mem nonemb_cmd;
++	u32 status;
+ 	int rc;
  
--	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
--	if (!cmd_buf)
--		return -ENOMEM;
--
--	if (copy_from_user(cmd_buf, buffer, count)) {
--		kfree(cmd_buf);
--		return -EFAULT;
--	}
--
--	cmd_buf[count] = '\0';
-+	cmd_buf = memdup_user_nul(buffer, count);
-+	if (IS_ERR(cmd_buf))
-+		return PTR_ERR(cmd_buf);
- 
- 	cmd_buf_tmp = strchr(cmd_buf, '\n');
- 	if (cmd_buf_tmp) {
+ 	rc = beiscsi_prep_nemb_cmd(phba, &nonemb_cmd, CMD_SUBSYSTEM_ISCSI,
+@@ -531,11 +532,12 @@ beiscsi_if_clr_ip(struct beiscsi_hba *phba,
+ 	memcpy(req->ip_params.ip_record.ip_addr.subnet_mask,
+ 	       if_info->ip_addr.subnet_mask,
+ 	       sizeof(if_info->ip_addr.subnet_mask));
++	status = req->ip_params.ip_record.status;
+ 	rc = beiscsi_exec_nemb_cmd(phba, &nonemb_cmd, NULL, NULL, 0);
+-	if (rc < 0 || req->ip_params.ip_record.status) {
++	if (rc < 0 || status) {
+ 		beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_CONFIG,
+ 			    "BG_%d : failed to clear IP: rc %d status %d\n",
+-			    rc, req->ip_params.ip_record.status);
++			    rc, status);
+ 	}
+ 	return rc;
+ }
 -- 
-2.6.2
+2.25.1
+
 
