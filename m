@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D852838E836
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0121738E835
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhEXOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S232958AbhEXOCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232830AbhEXOCD (ORCPT
+        with ESMTP id S232512AbhEXOCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:02:03 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52112C06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:00:34 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id f1so9343253uaj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:00:34 -0700 (PDT)
+        Mon, 24 May 2021 10:02:01 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FEAC061574;
+        Mon, 24 May 2021 07:00:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id v8so35829120lft.8;
+        Mon, 24 May 2021 07:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bhZvYF2rrfsZa6Xf7+GPLv45uKVXrZPOlQNANCKECQI=;
-        b=QFwnDovX8FbineGyWDzBEnowUBB99r0szO6EctLouJ+VM2LiCGRhsvhsWGG63bQ38u
-         L8737OQdQqtbmzB2DOFHbAMHFz4mbgFynB6Hr6LEPzS2NlZebCoksFMUbpIrF5cEwx7B
-         T/9TaMS4c84GbC8mE2fvp1gao9RKc70VhhCRbiSPgOwHjT4x4MyLQ3y1AeJYjQvkEDI3
-         hTtFD7vvnj9PNncgtHBXpOzlA5KQG9P4JKmzwSe61ZYFSHnEWhrel6yZkKW/kbqSnTbg
-         QZOdLzAcRz1zB3xj9RzYvlmwEpHqCOREpVzye076+kpjJ8eDCQmKr6UsQZJa1pqzWEHI
-         lPEg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wVc2l62cdFstgwVjKRszvWIRoE1c3Blnck06ieikPIg=;
+        b=aD5eb/2JmDlsbuccsKLMFcqJcBu6hl+gIhyecjMjf9Wp4ohwSl3/zIHt/BqoebtTW1
+         ZCP7l0erbz5YNCT+Lelmzp0gHLwIgy/F9ZVtH3IXRiE7y6fLKOlqTRFcE3Yy7RKN7VUH
+         7ZNHRiA1qk3I1NT1XZt1/TEaGc7XEmzwmdfaJ7iCfmNdM6ntAycaat2InsoQkS8Aow94
+         AI8WUqv97yy5x6me8Dl/Ir216EGhZ4Lz1BS5wb0czXoIA34hpl7kXcu5Sa5M+YaLRanA
+         oUThSsZB/Sgjxm6bALDZT8RAXpA4q8caIAv9rY15Q1ziIcKGDBFudtYIeRIRFRMBkNzl
+         TfrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bhZvYF2rrfsZa6Xf7+GPLv45uKVXrZPOlQNANCKECQI=;
-        b=Iyg+ZGmhVdbgZrJrepe3/zd9jSRuK7fOKw9lqnqADdkcTnoKZ0zwWNk5IJ28MzZe8e
-         l9OqX2gSHS2zmT9eLtCnbiP7fTHsOoyDJTlWbBPbRErRhTv80HyF0vkMC5G7OkQX7ITG
-         8dW3DXdlHSHxxKTQ4gfUxrpq8wzkyiAjz++lIzOdoe9HXQRRNaUPrDnytMuVIhNVE3nz
-         Yik1plA6grKUGnFoEQBZl3Z4mbZc/jgEJGzavi5cVOl8UbjrKbGM7866q2RLm7KBIFWL
-         jPsxaUqUYAFLh/DoGUepwiHKHLp6+vjoQiD5uUKR5tD2/kuqQZDj202E8Wi0tHPEBJtN
-         GvNQ==
-X-Gm-Message-State: AOAM532evwIAh0tpY+VFC3WQeEryRU3hIR07wTJYuDmCJJrgY3xvc9El
-        41hrG6V5hBZkGSE2Tgs+6M3XAxJFqXlrH/3fUELJgA==
-X-Google-Smtp-Source: ABdhPJyTkuNIXW/4VTeu46rTAPJNrdcFFBw/FDfMkyZ8gV3dDP2TWej1nRS1wo4Y1zZF3ITB+QVUCzn16nazwshQD3Y=
-X-Received: by 2002:a9f:24b4:: with SMTP id 49mr12816796uar.100.1621864832999;
- Mon, 24 May 2021 07:00:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wVc2l62cdFstgwVjKRszvWIRoE1c3Blnck06ieikPIg=;
+        b=Xvr4oVUZhTUFHwlyJnR4/qRMdE+yS8/ZQ03ap40YnrwIppr1Y4Pn/aqFLgXdOBdlFv
+         MoI4nR76FGP+N8FKerEUwMSbemTaeAq965NnF6oWPqlPjKuTBlRCTEokAQIK6kZGqulM
+         beje8yS3kcIaMIeEMU/9h06l67NpLtTYpPZYrSUJygxajP+/NEKE3vtmgPdatIXSRck1
+         +k6UyaV/wksCZAFzO65WhSyVwTAAKpFIiLry8wixf1WcZn3s4gtFaAdey+Z6RVwbXpon
+         ADnmtUfBxfGh3ML9p6CUu4fR6VViOhuCV4sSDlUOmBxbtgAp1AGfVAAuVrMBnrSaWafs
+         49RA==
+X-Gm-Message-State: AOAM531fYhFu1Sj0woTiqJjp78lT72Fi0NIhuaPKsQN8zvbWXRyob59j
+        TZoC6bOrUCcj1swlaxkOgp8jtinacRw=
+X-Google-Smtp-Source: ABdhPJwe8HZoOudrB7of9u9ftFqXovADXZUIFQen5Of5GgAtTT+0iiU6KEC6tG/60fpMZlSmNNrLGg==
+X-Received: by 2002:a05:6512:3684:: with SMTP id d4mr10581528lfs.90.1621864828233;
+        Mon, 24 May 2021 07:00:28 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
+        by smtp.googlemail.com with ESMTPSA id s8sm1763804ljg.89.2021.05.24.07.00.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 07:00:27 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+ <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
+Date:   Mon, 24 May 2021 17:00:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <d05074c11962a046ff9c2f457c240432ca8a7194.1621600443.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <d05074c11962a046ff9c2f457c240432ca8a7194.1621600443.git.christophe.jaillet@wanadoo.fr>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 15:59:56 +0200
-Message-ID: <CAPDyKFrS3wdYs3AQtjZEOsLzNvxgy1n3EfxZ+a8w8J8rH8kQ-w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mxs-mmc: Disable the 'reg_vmmc' regulator when needed
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Chris Ball <cjb@laptop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 at 14:36, Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> The 'reg_vmmc' regulator is never disabled. Neither in the error handling
-> of the probe, nor in the remove function.
->
-> Add a managed action to do the required clean-up before a 'regulator_put()'
-> call.
->
-> Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/mmc/host/mxs-mmc.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-> index 947581de7860..b043d53dd728 100644
-> --- a/drivers/mmc/host/mxs-mmc.c
-> +++ b/drivers/mmc/host/mxs-mmc.c
-> @@ -552,6 +552,13 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
->
-> +static void regulator_disable_action(void *_data)
-> +{
-> +       struct regulator *regulator = _data;
-> +
-> +       regulator_disable(regulator);
-> +}
-> +
->  static int mxs_mmc_probe(struct platform_device *pdev)
->  {
->         struct device_node *np = pdev->dev.of_node;
-> @@ -591,6 +598,10 @@ static int mxs_mmc_probe(struct platform_device *pdev)
->                                 "Failed to enable vmmc regulator: %d\n", ret);
->                         goto out_mmc_free;
->                 }
-> +               ret = devm_add_action_or_reset(&pdev->dev,
-> +                                       regulator_disable_action, reg_vmmc);
-> +               if (ret)
-> +                       goto out_mmc_free;
+24.05.2021 13:54, Jaroslav Kysela пишет:
+> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
+>> Specify components string for Nexus 7 using the Intel BayTrail components
+>> format. This may allow us to create a more generic UCM for RT5640 codec.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>>  1 file changed, 19 insertions(+)
+>>
+>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+>> index a81f2ebfc00c..87e0a47040a5 100644
+>> --- a/sound/soc/tegra/tegra_asoc_machine.c
+>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>>  	.add_hp_jack = true,
+>>  };
+>>  
+>> +/*
+>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+>> + * Headphones: Connected to HPOL/R pins.
+>> + * Headset Microphone: Unconnected.
+>> + *
+>> + * IF2_DAC/ADC are unpopulated.
+>> + */
+>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+> 
+> Perhaps, it may be better to handle this string via the DT config (create new
+> function like snd_soc_of_parse_card_name()).
+> 
+> The "codec:rt5640" should be set in the driver (it's fixed), but the
+> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
 
-Even if this improves the behaviour, there is a standardized way for
-how we deal with regulators for mmc.
+Not sure that this is possible. The DT is an ABI, while components
+string has no specification. Any changes to the components string will
+require DT update.
 
-1. Call mmc_regulator_get_supply() during probe to fetch the optional
-regulator. If a regulator is found a corresponding OCR mask, in
-host->ocr_avail is assigned.
-
-2. In the ->set_ios() callback, invoke mmc_regulator_set_ocr(). This
-will also set the correct voltage-level and turn on/off the regulator,
-depending on the requested OCR/voltage-level.
-
->         }
->
->         ssp->clk = devm_clk_get(&pdev->dev, NULL);
-> --
-> 2.30.2
->
-
-Kind regards
-Uffe
+I think it's much more feasible to have a database of components within
+kernel driver, like Intel sound driver does it for ACPI devices.
