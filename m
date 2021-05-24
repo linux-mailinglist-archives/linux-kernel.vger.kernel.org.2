@@ -2,75 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A0D38F12B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14F138F14A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhEXQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:10:48 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:55614 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233704AbhEXQCd (ORCPT
+        id S236797AbhEXQOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236657AbhEXQN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:02:33 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 068C3BAA92
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:01:03 +0100 (IST)
-Received: (qmail 432 invoked from network); 24 May 2021 16:01:02 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 May 2021 16:01:02 -0000
-Date:   Mon, 24 May 2021 17:01:01 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/6] mm/page_alloc: Adjust pcp->high after CPU hotplug
- events
-Message-ID: <20210524160101.GG30378@techsingularity.net>
-References: <20210521102826.28552-1-mgorman@techsingularity.net>
- <20210521102826.28552-4-mgorman@techsingularity.net>
- <add15859-31e2-1688-3d8c-26e2579e9a57@intel.com>
- <20210524090726.GB30378@techsingularity.net>
- <e9061a5c-bbef-e818-94f7-95e21a73a948@intel.com>
+        Mon, 24 May 2021 12:13:56 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316A6C06137B
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:03:39 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id n10so28353408ion.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=y+makYrcDuSPhSPuZ0EEqqg1sVn6shp16zXhBJ/Rew8=;
+        b=KBH5hQvPEtCEhGv14dpfsszi8kpfMILLt21IvA/YTxgWvqJ1BJ7UCADVHaxOicwK1r
+         6zXNbCVVcaHut1bq7qQYIcmzBZC2Gz46gPp5hMsPV3V1/pJaDzbYhW9BraZYH7ZFN366
+         H0GgdNrliVLJ+zE2eapoZ2HTSZWttEcPKgZyU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y+makYrcDuSPhSPuZ0EEqqg1sVn6shp16zXhBJ/Rew8=;
+        b=C2q1PDGrwRkrOP+H2jmZZarDZ1Ndw0PlBuu15+YyGTSet0xmB3ItXxQB1AOrGOOa4Z
+         4mv0nAvToI8cI/rUohyvWO5AFCVQ6QUplcoI+2ANGlFRl6zq8oRUH5zWpReMQwXgVXJQ
+         +STgDXiE0XlXB+XhY/yp+E7R6SfWFoEacnPCwt+nE5d1gJiF42waaInOGfKzQ0B1o2RF
+         AW9ri0scBTrcOdObK4UdGPltUEnDjKY01bo89wEwJgKE/U0fPVfE5gK9N5SU2Ysk41GL
+         X1mxZ3CGVmZY3mmfuxtLYFWQgBfKtZlfXRA3DK9mUa89INXfbvc0Qu6qUSMuNZrxLqLR
+         BNJw==
+X-Gm-Message-State: AOAM532gks/9jWVkORuhFtV4yYuJngJtLsgOAWR/bjvkUaNWJ6n3rvMX
+        JVPG9NXwrdbKBucxJxosPvDXSw==
+X-Google-Smtp-Source: ABdhPJz5MJ70Nkg/qkrgOLmpw9nbJ2fJBmUNkV513TIUQLJJY6P35O662hMDlfPmboL6i9jb3xIZXg==
+X-Received: by 2002:a05:6602:1695:: with SMTP id s21mr13947732iow.29.1621872218516;
+        Mon, 24 May 2021 09:03:38 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j15sm11444495ilc.53.2021.05.24.09.03.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 09:03:38 -0700 (PDT)
+Subject: Re: [PATCH v2] kbuild: replace LANG=C with LC_ALL=C
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        patchwork-bot+linux-kselftest@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210430015627.65738-1-masahiroy@kernel.org>
+ <162162208791.14477.6963689219198766644.git-patchwork-notify@kernel.org>
+ <CAK7LNAST-2CDycoAsKEmVw-56um7HHs07smaWemsOsL8eo+F6w@mail.gmail.com>
+ <CAK7LNATWFLTKYBg6OOc5JQeb5mZXjUXqo0GNU3vAqVrwfcqDew@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <80462279-ac70-719e-6bbd-80b6bb0d9340@linuxfoundation.org>
+Date:   Mon, 24 May 2021 10:03:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <e9061a5c-bbef-e818-94f7-95e21a73a948@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAK7LNATWFLTKYBg6OOc5JQeb5mZXjUXqo0GNU3vAqVrwfcqDew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 08:52:02AM -0700, Dave Hansen wrote:
-> > To address your point requires much deeper surgery.
-> ...
-> > There is value to doing something like this but it's beyond what this
-> > series is trying to do and doing the work without introducing regressions
-> > would be very difficult.
+On 5/21/21 8:22 PM, Masahiro Yamada wrote:
+> On Sat, May 22, 2021 at 11:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>>
+>> On Sat, May 22, 2021 at 3:34 AM
+>> <patchwork-bot+linux-kselftest@kernel.org> wrote:
+>>>
+>>> Hello:
+>>>
+>>> This patch was applied to shuah/linux-kselftest.git (refs/heads/next):
+>>>
+>>> On Fri, 30 Apr 2021 10:56:27 +0900 you wrote:
+>>>> LANG gives a weak default to each LC_* in case it is not explicitly
+>>>> defined. LC_ALL, if set, overrides all other LC_* variables.
+>>>>
+>>>>    LANG  <  LC_CTYPE, LC_COLLATE, LC_MONETARY, LC_NUMERIC, ...  <  LC_ALL
+>>>>
+>>>> This is why documentation such as [1] suggests to set LC_ALL in build
+>>>> scripts to get the deterministic result.
+>>>>
+>>>> [...]
+>>>
+>>> Here is the summary with links:
+>>>    - [v2] kbuild: replace LANG=C with LC_ALL=C
+>>>      https://git.kernel.org/shuah/linux-kselftest/c/77a88274dc1a
+>>>
+>>> You are awesome, thank you!
+>>> --
+>>
+>>
+>> Huh?
+>>
+>> This patch exists in Linus' tree.
+>>
+>> Why is this going to the kselftest tree
+>> in the first place?
 > 
-> Agreed, such a solution is outside of the scope of what this set is
-> trying to do.
 > 
-> It would be nice to touch on this counter-intuitive property in the
-> changelog, and *maybe* add a WARN_ON_ONCE() if we hit an edge case.
-> Maybe WARN_ON_ONCE() if pcp->high gets below pcp->batch*SOMETHING.
+> Sorry, I misunderstood it.
+> 
+> I think this notification was unneeded
+> because the commit was not actually
+> applied to kselftest tree.
 > 
 
-I think it's reasonable to ensure pcp->batch is never above pcp->high so
-I have this in zone_highsize now
+When I rebase kselftest tree, patchwork-bot generates this unnecessary
+notification. I have been procrastinating looking into how to disable
+this. This confusion is a good enough reason to get to it asap. :)
 
-+       /*
-+        * Ensure high is at least batch*4. The multiple is based on the
-+        * historical relationship between high and batch.
-+        */
-+       high = max(high, batch << 2);
+thanks,
+-- Shuah
 
-Performance tests are running and I'll post a v2 assuming they pass.
-
--- 
-Mel Gorman
-SUSE Labs
