@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A9838F439
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D9C38F43E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhEXUVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
+        id S233767AbhEXUVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233073AbhEXUVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233079AbhEXUVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 16:21:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 07ECA6140B;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1047D6141A;
         Mon, 24 May 2021 20:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621887610;
-        bh=cIwn6YUq4dP0J1MFHjACwwFulsSLzXbskBKBG/NuD/Q=;
+        bh=E8TX+IzIzGjUSD9qVd+RzLohf3ZOA7PPDZRYaimXkY0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WK3LePyLFqRtlTXpJ4bBIyHRhcW4p93/l81KV08eQ0qnBmGSY+c2eJceMf5jo3KQz
-         k/OaURyU4f+N+U7R2WTYWgSB87o7qdbSAAx3oU3JPDC8QL2ADNwQtdiBFDbskLfDOv
-         r/AFmmpiUHcBs58Im2FrzB5Ghxn3xbdlYPDrAzSrvDFypp1nyQGnrd/K3jMAfK5ReR
-         3zRRuGmzcmBxAffepfu5ygpFRiYMf/i1X2+5RFFav0ljiJUuIdBVyQsmDsTUZJNKML
-         qCKvopZUSoUbMqkTqfWIHSUYMlzAXFt+8toEkJIU5c0SuavLUoNhhv0phhK4Swb4/r
-         KNmPaLa6ggr3Q==
+        b=GuKsXZy6NHg7xyybAI8KX5OyeRiu0s8QAcBZjUoxyRMdghXKFu0knrErphNq/qjJb
+         uuhGPBEqr1PD5G4WxsnN1RaWuL7llEJ29JAOs1+cTeyc0HST4lF7VDEcgbzNbpLAXy
+         wuviShCVcdoaube8yQi4Gywm2cH+Iq7di5AKNZ8Ft2s6zH0LlupnSM+VhJBb5xIGS5
+         lx5/qpUNbtCcopApLIFE3t+ysVuPUg6EdKb6FtuXIn542mQNp7yYNemEhxgAu2IbJb
+         Kgq8OMeP7kExNU4Cru9HsO9g5aXSSdBgzhtmGSOIwX5/ttIlabaIE9Ag0t/pRHADzA
+         HF1TIZkJTWHGw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EAAF260A56;
-        Mon, 24 May 2021 20:20:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 00BAF60CD4;
+        Mon, 24 May 2021 20:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] r8152: check the informaton of the device
+Subject: Re: [PATCH net] net: hso: fix control-request directions
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162188760995.19394.10849632943787697818.git-patchwork-notify@kernel.org>
+Message-Id: <162188760999.19394.15297874086454377579.git-patchwork-notify@kernel.org>
 Date:   Mon, 24 May 2021 20:20:09 +0000
-References: <1394712342-15778-365-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-365-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
+References: <20210524092511.4657-1-johan@kernel.org>
+In-Reply-To: <20210524092511.4657-1-johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,23 +47,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon, 24 May 2021 14:49:42 +0800 you wrote:
-> Verify some fields of the USB descriptor to make sure the driver
-> could be used by the device.
+On Mon, 24 May 2021 11:25:11 +0200 you wrote:
+> The direction of the pipe argument must match the request-type direction
+> bit or control requests may fail depending on the host-controller-driver
+> implementation.
 > 
-> Besides, remove the check of endpoint number in rtl8152_probe().
-> usb_find_common_endpoints() includes it.
-> 
-> BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-> Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-> Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> Fix the tiocmset and rfkill requests which erroneously used
+> usb_rcvctrlpipe().
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v3] r8152: check the informaton of the device
-    https://git.kernel.org/netdev/net/c/1a44fb38cc65
+  - [net] net: hso: fix control-request directions
+    https://git.kernel.org/netdev/net/c/1a6e9a9c68c1
 
 You are awesome, thank you!
 --
