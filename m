@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE2138EFDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B36F38EF27
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233817AbhEXQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
+        id S235265AbhEXP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235304AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBED16192B;
-        Mon, 24 May 2021 15:41:01 +0000 (UTC)
+        id S234107AbhEXPs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:48:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE0061492;
+        Mon, 24 May 2021 15:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870862;
-        bh=C+lh8KxiIEcHRnF8UVTrCETUejZU7TtyF3yTbjfQ5UQ=;
+        s=korg; t=1621870645;
+        bh=Jbp0dyKfEnwaO2xXfVC0H7Cf3zzyZ2HP6DBEF+6ZlSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BzkHvzJqljwb4d3r6LTGHh3OsQ3GJzhi/Cwj2fnZ5Wraumj9dshkSbrZ2lrtttfWa
-         TeR7bzn0zYdgW015+RgadeaZE0/EhKL/2tEmvMG+zMeQa4TVsr9TrHNRW7/ertwrMc
-         KyQDBkRDfDtJiHnhypaz8Fr6UUv8Snm6LVykIEn0=
+        b=E3WCdb1ruq61vDyYeXVcRVC5S1A6VckdJFD1I2RuR0TuP4GHWh75sTb2pNoGhwwCB
+         62Y52hrwEqkB0fkPq3Wlcp3vWgI+TZha4PLviOyh70QRccrWSsTlnghlgTeQizNL/Z
+         jrAH1gexcyte3bRvP0AvUlAxhJ6DSzip1jO5CrkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 051/104] Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
+        stable@vger.kernel.org, Daniel Beer <dlbeer@gmail.com>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 40/71] mmc: sdhci-pci-gli: increase 1.8V regulator wait
 Date:   Mon, 24 May 2021 17:25:46 +0200
-Message-Id: <20210524152334.535265782@linuxfoundation.org>
+Message-Id: <20210524152327.770397183@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Daniel Beer <dlbeer@gmail.com>
 
-commit 5e68b86c7b7c059c0f0ec4bf8adabe63f84a61eb upstream.
+commit a1149a6c06ee094a6e62886b0c0e8e66967a728a upstream.
 
-This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
+Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
+results in the message:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+    mmc0: 1.8V regulator output did not become stable
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+Following this message, some cards work (sometimes), but most cards fail
+with EILSEQ. This behaviour is observed on Debian 10 running kernel
+4.19.188, but also with 5.8.18 and 5.11.15.
 
-The original commit has a memory leak on the error path here, it does
-not clean up everything properly.
+The driver currently waits 5ms after switching on the 1.8V regulator for
+it to become stable. Increasing this to 10ms gets rid of the warning
+about stability, but most cards still fail. Increasing it to 20ms gets
+some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
+doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
+cards work reliably.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Fixes: 23015b22e47c ("rapidio: fix a NULL pointer dereference when create_workqueue() fails")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-45-gregkh@linuxfoundation.org
+Signed-off-by: Daniel Beer <dlbeer@gmail.com>
+Acked-by: Ben Chuang <benchuanggli@gmail.com>
+Fixes: e51df6ce668a ("mmc: host: sdhci-pci: Add Genesys Logic GL975x support")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210424081652.GA16047@nyquist.nev
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/rapidio/rio_cm.c |    8 --------
- 1 file changed, 8 deletions(-)
+ drivers/mmc/host/sdhci-pci-gli.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -2138,14 +2138,6 @@ static int riocm_add_mport(struct device
- 	mutex_init(&cm->rx_lock);
- 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
- 	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
--	if (!cm->rx_wq) {
--		riocm_error("failed to allocate IBMBOX_%d on %s",
--			    cmbox, mport->name);
--		rio_release_outb_mbox(mport, cmbox);
--		kfree(cm);
--		return -ENOMEM;
--	}
--
- 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -318,8 +318,13 @@ static void sdhci_gli_voltage_switch(str
+ 	 *
+ 	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
+ 	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
++	 *
++	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
++	 * slightly longer than 5ms before the control register reports that
++	 * 1.8V is ready, and far longer still before the card will actually
++	 * work reliably.
+ 	 */
+-	usleep_range(5000, 5500);
++	usleep_range(100000, 110000);
+ }
  
- 	cm->tx_slot = 0;
+ static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
 
 
