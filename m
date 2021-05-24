@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E9438EF33
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBD538EEA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbhEXP4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        id S234654AbhEXPw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233963AbhEXPsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:48:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F2AF613CC;
-        Mon, 24 May 2021 15:37:31 +0000 (UTC)
+        id S234972AbhEXPpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0956145B;
+        Mon, 24 May 2021 15:36:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870651;
-        bh=AcoVqIUKAS83PBtxU0e3MSBpKP24FUWomHUDJy5W7Tc=;
+        s=korg; t=1621870573;
+        bh=skmn3hDXi1UM16jjDfrKd5/J7MZ5ubLyW5ijbXSvj8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IO0v+iWSDkUTtb34eHGNM1M88E6BAY47Hm19zZeqsmzmmKjIYpvFrOwxGQy/uUDbU
-         6ZheApIAbN3YoEC+4B6Iz8vXRB6+q6B8/TdviYum1WNIAElkMJfww8rTPjV+GWeLRC
-         SgHSzJihkoGMWVfRhryJGw1zlsofQGhs+Z3Q+RPA=
+        b=uNWV1HCVWdwbCRDeVU7e2ihSHD0qHNGpbGkpCJYrMtrrON/UAGFWfz+GSuVPd+Aiy
+         38h68h/26YTJ9BioUs/LRJ9WpK7wyuGmsVkLcZbFZ8vy1b7a2aA3mRqYpTIhmOVTvA
+         m1bowLeEI8aKq0AgZOQj22jOb7xsVGL9iIO6mJ2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 43/71] dm snapshot: fix crash with transient storage and zero chunk size
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Shannon Nelson <shannon.lee.nelson@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 38/49] Revert "niu: fix missing checks of niu_pci_eeprom_read"
 Date:   Mon, 24 May 2021 17:25:49 +0200
-Message-Id: <20210524152327.865846130@linuxfoundation.org>
+Message-Id: <20210524152325.603415392@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit c699a0db2d62e3bbb7f0bf35c87edbc8d23e3062 upstream.
+commit 7930742d6a0ff091c85b92ef4e076432d8d8cb79 upstream.
 
-The following commands will crash the kernel:
+This reverts commit 26fd962bde0b15e54234fe762d86bc0349df1de4.
 
-modprobe brd rd_size=1048576
-dmsetup create o --table "0 `blockdev --getsize /dev/ram0` snapshot-origin /dev/ram0"
-dmsetup create s --table "0 `blockdev --getsize /dev/ram0` snapshot /dev/ram0 /dev/ram1 N 0"
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-The reason is that when we test for zero chunk size, we jump to the label
-bad_read_metadata without setting the "r" variable. The function
-snapshot_ctr destroys all the structures and then exits with "r == 0". The
-kernel then crashes because it falsely believes that snapshot_ctr
-succeeded.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-In order to fix the bug, we set the variable "r" to -EINVAL.
+The change here was incorrect.  While it is nice to check if
+niu_pci_eeprom_read() succeeded or not when using the data, any error
+that might have happened was not propagated upwards properly, causing
+the kernel to assume that these reads were successful, which results in
+invalid data in the buffer that was to contain the successfully read
+data.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
+Cc: David S. Miller <davem@davemloft.net>
+Fixes: 26fd962bde0b ("niu: fix missing checks of niu_pci_eeprom_read")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-23-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-snap.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/sun/niu.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -1407,6 +1407,7 @@ static int snapshot_ctr(struct dm_target
+--- a/drivers/net/ethernet/sun/niu.c
++++ b/drivers/net/ethernet/sun/niu.c
+@@ -8098,8 +8098,6 @@ static int niu_pci_vpd_scan_props(struct
+ 		start += 3;
  
- 	if (!s->store->chunk_size) {
- 		ti->error = "Chunk size not set";
-+		r = -EINVAL;
- 		goto bad_read_metadata;
- 	}
+ 		prop_len = niu_pci_eeprom_read(np, start + 4);
+-		if (prop_len < 0)
+-			return prop_len;
+ 		err = niu_pci_vpd_get_propname(np, start + 5, namebuf, 64);
+ 		if (err < 0)
+ 			return err;
+@@ -8144,12 +8142,8 @@ static int niu_pci_vpd_scan_props(struct
+ 			netif_printk(np, probe, KERN_DEBUG, np->dev,
+ 				     "VPD_SCAN: Reading in property [%s] len[%d]\n",
+ 				     namebuf, prop_len);
+-			for (i = 0; i < prop_len; i++) {
+-				err = niu_pci_eeprom_read(np, off + i);
+-				if (err >= 0)
+-					*prop_buf = err;
+-				++prop_buf;
+-			}
++			for (i = 0; i < prop_len; i++)
++				*prop_buf++ = niu_pci_eeprom_read(np, off + i);
+ 		}
  
+ 		start += len;
 
 
