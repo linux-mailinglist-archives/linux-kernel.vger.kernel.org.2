@@ -2,154 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F0038DF5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFBC38DF64
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhEXCsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 22:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhEXCse (ORCPT
+        id S232181AbhEXCu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 22:50:59 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:53574 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231896AbhEXCuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 22:48:34 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA3BC061574;
-        Sun, 23 May 2021 19:47:05 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q10so25767888qkc.5;
-        Sun, 23 May 2021 19:47:05 -0700 (PDT)
+        Sun, 23 May 2021 22:50:54 -0400
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14O2n5UX018750;
+        Mon, 24 May 2021 02:49:05 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by mx0a-0064b401.pphosted.com with ESMTP id 38qjghre56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 May 2021 02:49:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f/QqTIx4WGVNW4i/eHzKNDPl7K7L0N2SXXPK3l0rtcqqI6hgJvzOgjgCZyWrtXqaZNmU+AjO3pRcpI3Booxubmd2HiyN22mjtWWjX6dNgBO/XN+5j2eenu1520s4WuQWtLonHQawTi/M7TgSfGLQK8G/ZLAMsjN1t0u/+oMPaAwtCzXG67B1vvHsNsFKeIyM5wAlDKYHoRa+k+GwNQhZ/KmNva1QZgQmFS3ihJrtmWt6bQ2hgqo2FX1upwTwBcWp87lsMtNWhR7hGTMQWea0f8LX1NcFVfCLNpoiyjm8Nze80NCj25gimSo0AafFgwaSiDfLTKo94On3OPEEbcq1Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dSZKUCA2DxsypSVQdw4ev3t2FkVOQwfaMEuWdysoaBY=;
+ b=ABN5dmSa0iRegafXLq7wTcIWA2nN5Y7GZ6EGlmliVzVG+fSmX6JVFlWTFBJSJID7qMTbE5FpCO/8jguNX243rGhEAWS2KrceI/hWd4G10N7sKiHyUnWM75E+mETMhlyLz6w9qWZeKfzhPHvY7J6Z9n96z2qrOXM3PjNrTUUHn8duLA/w+Aw46wKkPlIi0+gRz9E4mF1I6UhHN2Vs/YcBTjywpyBSXHTjORDFy2r3RgDroJqeIf6gug1zVS+hAyknoAq4FbhaqTgBaHZTWDzAYDNPcFdVtnZXR58G1aOTcSt9yBhb8absIaQhYFPawjSYpYCBPB3v3VLcvbxqD5aZbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LTCPne6GXFzHJ7+D1ZybTqJ/Z3dDxDNGFw0CMhOL8Rs=;
-        b=hJbVnkiQENoyNTPSSPUoPrfPxPtOvXlxrjv+JNfihflwvPlydj1kKxcWZqjemyfqmO
-         aUt360h8r61lvw+Zdxp1bhhjHknphbjwgk0MApLTWrLxblAQ3iaCSU6c03qgSfRgqqEu
-         K4bZ43EGBSo3lDh9tEol1tHLIGs86R4KvO6Kw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LTCPne6GXFzHJ7+D1ZybTqJ/Z3dDxDNGFw0CMhOL8Rs=;
-        b=gCwcbHa04KhxgSXHH5fE9Glyr2j3s9/e5YSMCKPP0YYSUK3emXTk9WuNC2WgFcH0td
-         Bh/2oimiajN2t1BDMfxJX1oxm4XCQCypnYIbsB4srTMIhP0siNaUUQIC5cseu1BZQq+l
-         abpbTILZZ0Ma2S6D5C2uOPt5kxWwb6nIqeTYdZBt4CigZk33BgWPAd+redujwqi0EBmi
-         WiY0L3v07OFf4kUH9arRke0nIV5nyTbopsefo5yCm4+4+U+elhcGzrchV8obX66endJm
-         V7JrFJi6TXynZ9qFRMVl9ubFqLXcfuSUKYa5jP0XdkV1VWOxQWX83naX9gaGd8E3dDY7
-         XS4A==
-X-Gm-Message-State: AOAM530PrS02XViV2pOcoPWKhgCAz/8k0GtK2giFMrjcpcDciHcQpZq2
-        8FKj67598Rhl1CViR7U+AIWt4ciDV4GrVXdEHYg=
-X-Google-Smtp-Source: ABdhPJwKrT1nqV52738s0dioZLpz1C9s9WeGGGKgsxr3NpTELBPM2mW8vXf/ydUfZHgfvf1gZWCTf6zGN0VxHJFJ+no=
-X-Received: by 2002:a05:620a:12a4:: with SMTP id x4mr25587812qki.487.1621824425020;
- Sun, 23 May 2021 19:47:05 -0700 (PDT)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dSZKUCA2DxsypSVQdw4ev3t2FkVOQwfaMEuWdysoaBY=;
+ b=Ww6ciV/n6teC+u43xwMYAehdt9M83LgzU1Y4wMasIoqLbcGlpBsS9+T5eMRZ6GdfqYHcnie+f3Yi1bgQEtAo0P58l6vS5dVPBZt2bICjywjx6ld4PCyw5X2ooHAbt+0ifKI7rMIjLEc3vwY04jgbBxilAprnRDXdaXMncqYElPY=
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
+ by PH0PR11MB5206.namprd11.prod.outlook.com (2603:10b6:510:3f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
+ 2021 02:49:01 +0000
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::ac4d:5dd3:c365:cd49]) by PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::ac4d:5dd3:c365:cd49%9]) with mapi id 15.20.4150.027; Mon, 24 May 2021
+ 02:49:01 +0000
+From:   "Li, Meng" <Meng.Li@windriver.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     "lars@metafoo.de" <lars@metafoo.de>,
+        "Michael.Hennerich@analog.com" <Michael.Hennerich@analog.com>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
+Subject: RE: [PATCH] driver: adc: ltc2497: return directly after reading the
+ adc conversion value
+Thread-Topic: [PATCH] driver: adc: ltc2497: return directly after reading the
+ adc conversion value
+Thread-Index: AQHXRutZA2KT9UoVoUu9pd++4IrNe6rqkr4AgAOlZgCAA8QIcA==
+Date:   Mon, 24 May 2021 02:49:01 +0000
+Message-ID: <PH0PR11MB519159873BE8CB7ACA227826F1269@PH0PR11MB5191.namprd11.prod.outlook.com>
+References: <20210512045725.23390-1-Meng.Li@windriver.com>
+        <20210519092104.pntanimcjg6s6fca@pengutronix.de>
+ <20210521180150.0f4d1b5d@jic23-huawei>
+In-Reply-To: <20210521180150.0f4d1b5d@jic23-huawei>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [147.11.252.42]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a71b61bf-bed1-4401-9d7d-08d91e5e7cc6
+x-ms-traffictypediagnostic: PH0PR11MB5206:
+x-microsoft-antispam-prvs: <PH0PR11MB52061DDFA8BFF1F45732B5FDF1269@PH0PR11MB5206.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dkxvOYoxH8H4yScHxcGnxNLA+524T/fkDJvzoZdWwet3XwiRcY1IYLqveRxiyxRlU+MoybrD9rQ02NA6Mq9Se1W6EekpMq89KzbqsEziysOvitS6owo+uLv8HFQarbEkF+rqmkZoluxHLhHXp8OJZwqtD4/O6ujqfs4+Sqt9h4dGQz0zcyvU456QoI3h/KHUpc1iKHcmzhEftSxH7rTPuRQ0J1hK48Wp/M1b8ulhPDewHcWMAzSqn6yO06ojX25sBLERn1fXpGBYgLPY6sG/WRHmen43/4mWbOCwsG87KIt/Cg7REbgynZbuWJWGIBRZz95+qljGC60CdzL6UIV4RGVf9UaONLMh11UDhL47rBaGuMexQ46YhpOsokof4kbG3g8O2fiHbOM+Zqwrotxnyl1ZV9GQMLPaOteCuYSwsl3O0vtAjVCGGfzhtAIPsAwD6hPuaK9EY3JkWbuQJOt5zVyOoKbGtz/7vEmGkOSMzuxxFqRgCevqfgBqIDMLOqGdR2s3FwVFqKcSAK4M2q8sJI7CxTOMll8ttfdcYdpcWVNOuvZZ4SR152IMap8GFxcZzieG//LOdMF1hmf0OyOOrYzJnYDfvlkuueBwDxFzd7w=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(396003)(366004)(376002)(136003)(346002)(4326008)(38100700002)(316002)(55016002)(5660300002)(186003)(8936002)(8676002)(86362001)(110136005)(54906003)(64756008)(66556008)(66476007)(478600001)(122000001)(83380400001)(52536014)(66574015)(33656002)(53546011)(26005)(6506007)(9686003)(2906002)(66446008)(66946007)(76116006)(71200400001)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?MXlFV29VQWpUaXpJMWdaak5mQksydSt3b0FaemRoRjcxSUNrcmVEc3BJUWk3?=
+ =?utf-8?B?OXczUHhwZGxGMTB2RXcrM2ZiSmZyRGMzeDc0ZnpObG0zbS9zWndNNHZsR3NN?=
+ =?utf-8?B?UVZ2dFNoWlJzb1p3cXJZSzZOdGloYXpRQ04zTGc3SStwcVdUdkNYcHJ6U0Rw?=
+ =?utf-8?B?N3pTdG5MbDk3ZkRIbDNmUWJsNkpYV01sY0FBcVJRSFRIYTdDajV0YkxuUmJ6?=
+ =?utf-8?B?amdBL0pMaHJDMktUMm9Lcy95U3BPY2xUWFVDL0dsVmVodnVyMk02YXE3MEdY?=
+ =?utf-8?B?SjBPcW5ZWjI0OWtsVzRacnRNaTk2Zmg2S1YzNlNFUVQyNWxSVmo1T3B5Rnk2?=
+ =?utf-8?B?UHFSNlhBZmhQWjVCOFFjVklsaEd4S0ZyNmVwMVBPV2QrZWVlOEx3eDN5bTd0?=
+ =?utf-8?B?ZTRDbEZtRGQ2R3k1YjBJd3U5T05EU3NZcHV5T2pnS1N2WksrbkJBUXA3NkI2?=
+ =?utf-8?B?KzNzNy9rYWFYWkpWREJNWWNFUUIzYXNXeHRRdGE0MUM2ZEg3NHRQMytXbWF6?=
+ =?utf-8?B?UVRvN1RnaTRZWFNXbFFJVTNET2dtL2pYeFA4THA5WXFwY0YwTTdNVUJXK2o4?=
+ =?utf-8?B?aFYvTFRnYTBXN2VER2RieE5JRnJnT284RnVqTGlFbVFsT1Exbk1FRm9lYjVs?=
+ =?utf-8?B?U2c3ZkgzV0ZFaFhSVTZCOGs1Y2ZpV0s0cC92N0ZEOWJzdVZOWldSanVpU0o1?=
+ =?utf-8?B?TlR2WmlpNzRpWkU2N2N2cUt3QUVuVDVIQ0hOejVzZHVHNUU2blZjQndUTXF5?=
+ =?utf-8?B?TzNjSGZzdWpReUFhRTRLZ25pNDZ3L2JweHg1bHYyb0IxcWhpZmJnMkZPVWdl?=
+ =?utf-8?B?MHQ2ZG5QbEduOG1lTldkeEErSElpeDNwTnc2MDV5aEFiKzc2K1lyZTJqbTZ0?=
+ =?utf-8?B?dDFnRFNvbVRsT3hlcEkxcXhQRnp0M1RRMnoyZkxWRTJpbnorczhnRStrMy9t?=
+ =?utf-8?B?cmhkR3lPSHBGYXFRSkJtU3V0Y0xnOTdHeENhaXVtcnRycndpVWRTSTU2T0s1?=
+ =?utf-8?B?RWlMSUhSbGtWMHFQWFZCVWFDeThaTENYZ3JOdmtxUUxYNzZWUmtlclIzem1t?=
+ =?utf-8?B?LzA4UVY1VmNnK3ZVa1dubXlVY0pBYW53VHQ3clRQSCtYaEpYNnE3dDA4YnpQ?=
+ =?utf-8?B?VVFGSitIL20rRWVTQUxUK2dNOTJpQm9xZXBCd2dKVzBuUTZ0ZzUwaWtCWTBZ?=
+ =?utf-8?B?V3BaMmdrSFdGMmpibTR3eXBkYVlmNUlrOEl0eTNNSWNOWkZQc2ZqTzNYYnYv?=
+ =?utf-8?B?T2tPQktHV1dZcmU0cUtEVUN4VHltTHY2ekVTdERnZVh0UnNUekpoMUhIQmRC?=
+ =?utf-8?B?TUltQWwxbkd0bkVKNzQxQXZrc0FaSmNSTDkrNCs5LzhFSWw4Q2tzU1hKZWNw?=
+ =?utf-8?B?NU9vOE5jcVdUdWgyV0lDSnczSnBuZ1IvMlJ5VGVsTmNqeHBuZTYxYUErYkln?=
+ =?utf-8?B?OERYenlZRVhGelJjZWkzMzlqTDlNeUNjc1JseUg4R0NmbHIxR3FUcnZrMXdq?=
+ =?utf-8?B?VVRoRlBOc2VNdnVPeXB1YUNnNDZLeC9lM3ViOWZRU1pSSHVmUklwOG5LOFVZ?=
+ =?utf-8?B?QlhlYVpvY2xwL2JuMFczenVRR01VbmpQaWJXTUZnQUpWK3E3ZDFvYytEQXB6?=
+ =?utf-8?B?QlF0T3FURlR0QVZiNVk5SWFjd1pMK0h5OWw0SmhzZnNvSHVrazhyRSsxdWNk?=
+ =?utf-8?B?elZRNmhxLzFJNnNJY0FvOThCM3BSZWwzTFRjWU1WeU9aYy9WV1gxMzFUQjlX?=
+ =?utf-8?Q?jm9LjvqsEBEvSJyjG+/NmSpvXEOBV3tY2wr6khY?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210520101346.16772-1-steven_lee@aspeedtech.com>
- <20210520101346.16772-2-steven_lee@aspeedtech.com> <CACPK8XcSYgQKRp7C5gZ9LKekL0LCHYPDwjC49EDTEr5__T2M3Q@mail.gmail.com>
- <20210524023526.GA2727@aspeedtech.com>
-In-Reply-To: <20210524023526.GA2727@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 24 May 2021 02:46:52 +0000
-Message-ID: <CACPK8XewH8b5FB+6bQ9EWy--Y6x79-95MCqNmFovJhO4hS0e=A@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] ARM: dts: aspeed: ast2600evb: Add sdhci node and
- gpio regulator for A2 evb.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a71b61bf-bed1-4401-9d7d-08d91e5e7cc6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2021 02:49:01.6864
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: laCXy3jHun0oKAezh4lDhSnxXQo663ihq3MqLGDTIsFydWPPp1ahc5rmb2WFCRY1LTvR13kKGWVIQsBt5HeDfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5206
+X-Proofpoint-GUID: F5vCKJB5NMEBoiUkR5-Xw5F1-EYkESrO
+X-Proofpoint-ORIG-GUID: F5vCKJB5NMEBoiUkR5-Xw5F1-EYkESrO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-24_02:2021-05-20,2021-05-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ adultscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 priorityscore=1501 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105240019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 02:35, Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> The 05/21/2021 09:25, Joel Stanley wrote:
-> > Hi Steven,
-> >
-> > On Thu, 20 May 2021 at 10:16, Steven Lee <steven_lee@aspeedtech.com> wrote:
-> > >
-> > > AST2600 A2(or newer) EVB has gpio regulators for toggling signal voltage
-> > > between 3.3v and 1.8v, the patch adds sdhci node and gpio regulator in the
-> > > new dts file and adds commment for describing the reference design.
-> >
-> > spelling: comment
-> >
->
-> Thanks, will correct the typo.
->
-> > I need you to justify the separate dts for the A2 EVB.
-> >
-> > What would happen if this device tree was loaded on to an A1 or A0?
-> >
->
-> Since the clock default value(SCU210) of A1 and A0 are different to A2,
-> the following error would happen if A2 device tree was loaded on A1/A0.
->
-> ```
-> [  133.179825] mmc1: Reset 0x4 never completed.
-> [  133.184599] mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
-> [  133.191786] mmc1: sdhci: Sys addr:  0x00000000 | Version:  0x00000002
-> [  133.198972] mmc1: sdhci: Blk size:  0x00007008 | Blk cnt:  0x00000001
-> [  133.206158] mmc1: sdhci: Argument:  0x00000c00 | Trn mode: 0x00000013
-> [  133.213343] mmc1: sdhci: Present:   0x01f70001 | Host ctl: 0x00000011
-> [  133.220528] mmc1: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
-> [  133.227713] mmc1: sdhci: Wake-up:   0x00000000 | Clock:    0x00008007
-> [  133.234898] mmc1: sdhci: Timeout:   0x0000000b | Int stat: 0x00000000
-> [  133.242083] mmc1: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
-> [  133.249268] mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> [  133.256453] mmc1: sdhci: Caps:      0x07f80080 | Caps_1:   0x00000007
-> [  133.263638] mmc1: sdhci: Cmd:       0x0000341a | Max curr: 0x001f0f08
-> [  133.270824] mmc1: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x01dd7f7f
-> [  133.278009] mmc1: sdhci: Resp[2]:   0x325b5900 | Resp[3]:  0x00400e00
-> [  133.285193] mmc1: sdhci: Host ctl2: 0x00000000
-> [  133.290148] mmc1: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0xbe041200
-> [  133.297332] mmc1: sdhci: ============================================
->
-> ```
->
-> Besides, A1/A0 EVBs don't have regulator, vmmc and vqmmc should be
-> removed from sdhci node of A1/A0 dts.
->
-> > Would this device tree be used for the A3 (and any future revision?)
-> >
->
-> Yes, A3 can use the A2 dts.
->
-> > An alternative proposal: we modify the ast2600-evb.dts to support the
-> > A2 (which I assume would also support the A3).
-> >
-> > If we need a separate board file for the A0 and A1 EVB, we add a new
-> > one that supports these earlier revisions. Or we decide to only
-> > support the latest revision in mainline.
-> >
->
-> In this patch, I add a new dts to support A2 sdhci, and include the
-> original dts since the other settings can be loaded on A2.
-> Do you mean creating a new file(e.g. aspeed-ast2600-evb-a1.dts) for A1,
-> and modifying the original aspeed-ast2600-evb.dts for supporting A2?
-
-Yes, that would be my suggestion. The aspeed-ast2600-evb-a1.dts could
-include the aspeed-ast2600-evb.dts.
-
-> If we decide to only support the latest version in mainline, users
-> should mark vmmc and vqmmc as comment and modify clk-phase manually
-> for supporting A1.
-
-If you believe there will be users of the A1 for some time, then I
-think it makes sense to support both A1 and future boards in mainline.
-
-Cheers,
-
-Joel
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9uYXRoYW4gQ2FtZXJv
+biA8amljMjNAa2VybmVsLm9yZz4NCj4gU2VudDogU2F0dXJkYXksIE1heSAyMiwgMjAyMSAxOjAy
+IEFNDQo+IFRvOiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4
+LmRlPg0KPiBDYzogTGksIE1lbmcgPE1lbmcuTGlAd2luZHJpdmVyLmNvbT47IGxhcnNAbWV0YWZv
+by5kZTsNCj4gTWljaGFlbC5IZW5uZXJpY2hAYW5hbG9nLmNvbTsgcG1lZXJ3QHBtZWVydy5uZXQ7
+IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1paW9Admdlci5rZXJuZWwu
+b3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGRyaXZlcjogYWRjOiBsdGMyNDk3OiByZXR1cm4g
+ZGlyZWN0bHkgYWZ0ZXIgcmVhZGluZyB0aGUgYWRjDQo+IGNvbnZlcnNpb24gdmFsdWUNCj4gDQo+
+IFtQbGVhc2Ugbm90ZTogVGhpcyBlLW1haWwgaXMgZnJvbSBhbiBFWFRFUk5BTCBlLW1haWwgYWRk
+cmVzc10NCj4gDQo+IE9uIFdlZCwgMTkgTWF5IDIwMjEgMTE6MjE6MDQgKzAyMDANCj4gVXdlIEts
+ZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6DQo+IA0K
+PiA+IE9uIFdlZCwgTWF5IDEyLCAyMDIxIGF0IDEyOjU3OjI1UE0gKzA4MDAsIE1lbmcuTGlAd2lu
+ZHJpdmVyLmNvbQ0KPiB3cm90ZToNCj4gPiA+IEZyb206IE1lbmcgTGkgPE1lbmcuTGlAd2luZHJp
+dmVyLmNvbT4NCj4gPiA+DQo+ID4gPiBXaGVuIHJlYWQgYWRjIGNvbnZlcnNpb24gdmFsdWUgd2l0
+aCBiZWxvdyBjb21tYW5kOg0KPiA+ID4gY2F0IC9zeXMvLi4uL2lpbzpkZXZpY2UwL2luX3ZvbHRh
+Z2UwLXZvbHRhZ2UxX3Jhdw0KPiA+ID4gVGhlcmUgaXMgYW4gZXJyb3IgcmVwb3J0ZWQgYXMgYmVs
+b3c6DQo+ID4gPiBsdGMyNDk3IDAtMDAxNDogaTJjIHRyYW5zZmVyIGZhaWxlZDogLUVSRU1PVEVJ
+TyBUaGlzIGkyYyB0cmFuc2Zlcg0KPiA+ID4gaXNzdWUgaXMgaW50cm9kdWNlZCBieSBjb21taXQg
+Njk1NDhiN2MyYzRmICgiaWlvOg0KPiA+ID4gYWRjOiBsdGMyNDk3OiBzcGxpdCBwcm90b2NvbCBp
+bmRlcGVuZGVudCBwYXJ0IGluIGEgc2VwYXJhdGUgbW9kdWxlIikuDQo+ID4gPiBXaGVuIGV4dHJh
+Y3QgdGhlIGNvbW1vbiBjb2RlIGludG8gbHRjMjQ5Ny1jb3JlLmMsIGl0IGNoYW5nZSB0aGUgY29k
+ZQ0KPiA+ID4gbG9naWMgb2YgZnVuY3Rpb24gbHRjMjQ5N2NvcmVfcmVhZCgpLiBXaXRoIHdyb25n
+IHJlYWRpbmcgc2VxdWVuY2UsDQo+ID4gPiB0aGUgYWN0aW9uIG9mIGVuYWJsZSBhZGMgY2hhbm5l
+bCBpcyBzZW50IHRvIGNoaXAgYWdhaW4gZHVyaW5nIGFkYw0KPiA+ID4gY2hhbm5lbCBpcyBpbiBj
+b252ZXJzaW9uIHN0YXR1cy4gSW4gdGhpcyB3YXksIHRoZXJlIGlzIG5vIGFjayBmcm9tDQo+ID4g
+PiBjaGlwLCBhbmQgdGhlbiBjYXVzZSBpMmMgdHJhbnNmZXIgZmFpbGVkLg0KPiA+ID4gSW4gb3Jk
+ZXIgdG8ga2VlcCB0aGUgY29kZSBsb2dpYyBpcyB0aGUgc2FtZSB3aXRoIG9yaWdpbmFsIGlkZWFs
+LCBpdA0KPiA+ID4gaXMgbmVlZCB0byByZXR1cm4gZGlyZWN0IGFmdGVyIHJlYWRpbmcgdGhlIGFk
+YyBjb252ZXJzaW9uIHZhbHVlLg0KPiA+ID4NCj4gPiA+IEZpeGVzOiA2OTU0OGI3YzJjNGYgKCJp
+aW86IGFkYzogbHRjMjQ5Nzogc3BsaXQgcHJvdG9jb2wgaW5kZXBlbmRlbnQNCj4gPiA+IHBhcnQg
+aW4gYSBzZXBhcmF0ZSBtb2R1bGUgIikNCj4gPiA+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3Jn
+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBNZW5nIExpIDxNZW5nLkxpQHdpbmRyaXZlci5jb20+DQo+
+ID4gPiAtLS0NCj4gPiA+ICBkcml2ZXJzL2lpby9hZGMvbHRjMjQ5Ny5jIHwgMiArKw0KPiA+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9paW8vYWRjL2x0YzI0OTcuYyBiL2RyaXZlcnMvaWlvL2FkYy9sdGMyNDk3LmMN
+Cj4gPiA+IGluZGV4IDFhZGRkZjVhODhhOS4uZmQ1YTY2ODYwYTQ3IDEwMDY0NA0KPiA+ID4gLS0t
+IGEvZHJpdmVycy9paW8vYWRjL2x0YzI0OTcuYw0KPiA+ID4gKysrIGIvZHJpdmVycy9paW8vYWRj
+L2x0YzI0OTcuYw0KPiA+ID4gQEAgLTQxLDYgKzQxLDggQEAgc3RhdGljIGludCBsdGMyNDk3X3Jl
+c3VsdF9hbmRfbWVhc3VyZShzdHJ1Y3QNCj4gbHRjMjQ5N2NvcmVfZHJpdmVyZGF0YSAqZGRhdGEs
+DQo+ID4gPiAgICAgICAgICAgICB9DQo+ID4gPg0KPiA+ID4gICAgICAgICAgICAgKnZhbCA9IChi
+ZTMyX3RvX2NwdShzdC0+YnVmKSA+PiAxNCkgLSAoMSA8PCAxNyk7DQo+ID4gPiArDQo+ID4gPiAr
+ICAgICAgICAgICByZXR1cm4gcmV0Ow0KPiA+DQo+ID4gVGhpcyBsb29rcyB3cm9uZyBmb3IgbWUu
+IFRoZSBpZGVhIG9mIHRoZSBmdW5jdGlvbg0KPiA+IGx0YzI0OTdfcmVzdWx0X2FuZF9tZWFzdXJl
+IGlzIHRoYXQgaXQgcmVhZHMgdGhlIHJlc3VsdCBhbmQgc3RhcnRzIGENCj4gPiBuZXcgbWVhc3Vy
+ZW1lbnQuIEkgZ3Vlc3MgdGhlIHByb2JsZW0gaXMgdGhhdA0KPiA+IGx0YzI0OTdfcmVzdWx0X2Fu
+ZF9tZWFzdXJlIGlzIGNhbGxlZCB0byBlYXJseSwgbm90IHRoYXQgaXQgZG9lcyB0b28gbXVjaC4N
+Cj4gPg0KPiA+IEJ1dCBub3RlIEkgZG9uJ3QgaGF2ZSBzdWNoIGEgc3lzdGVtIGhhbmR5IHRvIGFj
+dHVhbGx5IGRlYnVnIHRoaXMgYW55DQo+ID4gbW9yZS4NCj4gDQo+IEBNZW5nIExpLA0KPiANCj4g
+SSBzZWUgZnJvbSB0aGUgZGF0YXNoZWV0IHRoYXQgdGhlIGRldmljZSBjYW4gYmUgdXNlZCB3aXRo
+IGFuIGV4dGVybmFsDQo+IG9zY2lsbGF0b3IuDQo+IElzIHRoYXQgdGhlIGNhc2Ugb24geW91ciBi
+b2FyZHMsIGJlY2F1c2UgaWYgc28gdGhlIHRpbWluZyBkZWxheSBvZiAxNTBtc2Vjcw0KPiBtYXkg
+YmUgZmFyIHRvbyBzaG9ydC4gIElmIG5vdCwgcGVyaGFwcyB0aGUgcGFydCBpcyByaWdodCBhdCB0
+aGUgdXBwZXIgZW5kIG9mDQo+IHRpbWluZ3MgYW5kIHdlIGp1c3QgbmVlZCB0byBhZGQgMjAlIHRv
+IHRoZSAxNTBtc2VjcyB0byBiZSBzdXJlIG9mIG5vdA0KPiBoaXR0aW5nIHRoZSBsaW1pdD8NCj4g
+DQoNCkhpIEpvbmF0aGFuLA0KDQpUaGFua3MgZm9yIHlvdXIgdmVyeSBwcm9mZXNzaW9uYWwgY29t
+bWVudHMuDQpJIGNoZWNrIG15IGJvYXJkIHNjaGVtYXRpY3MsIHRoZSBwaW4gMzUgZjAgaXMgY29u
+bmVjdGVkIHRvIEdORCwgc28gSSB1c2UgdGhlIGludGVybmFsIG9zY2lsbGF0b3IuDQpJbiBhZGRp
+dGlvbmFsLCBJIGFtIG5vdCB2ZXJ5IHVuZGVyc3RhbmQgeW91ciBjb21tZW50IGFib3V0IHRoZSBj
+YXNlIG9mIHVzaW5nIGludGVybmFsIG9zY2lsbGF0b3IuDQpEbyB5b3UgbWVhbiB0aGF0IHlvdSBh
+Z3JlZSBteSBwYXRjaCBhbmQgb25seSBuZWVkIHRvIGNoYW5nZSAxNTAgaW50byAxODA/DQojZGVm
+aW5lIExUQzI0OTdfQ09OVkVSU0lPTl9USU1FX01TCTE1MFVMTA0KPT4NCiNkZWZpbmUgTFRDMjQ5
+N19DT05WRVJTSU9OX1RJTUVfTVMJMTgwVUxMDQoNClRoYW5rcywNCkxpbWVuZw0KDQo+IFRoYW5r
+cywNCj4gDQo+IEpvbmF0aGFuDQo+IA0KPiANCj4gPg0KPiA+IEJlc3QgcmVnYXJkcw0KPiA+IFV3
+ZQ0KPiA+DQoNCg==
