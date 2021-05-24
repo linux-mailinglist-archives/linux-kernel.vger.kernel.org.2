@@ -2,304 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEF338F2B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9843A38F2B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhEXSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbhEXSDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:03:22 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15CAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:01:53 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id f1so9599709uaj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Yts7qQiY5cVw+gZuSHeCN8lE/arX6Qto1/OwLEXAhQ=;
-        b=H8BM+oDJsRf44M+gFJkkX2QGVohKPWVfWWJU1mhWKhdIAEex/y5Apwy3ws0LA6RZyi
-         6WnwtyNXX+DOUwTZSzorRoijv7lG0bmMnBRaGIkcCaoKmNIIngJHaeJm+gWvkADlTnX6
-         SMrzNlrJWO25a0iSaOrEJWWo0PzSp6eAMvxpc7k7v4OrARj2Fg/NJkS9tYYMhFlE7frh
-         pBipM/2BBB75n9EseQ9DXqjJrBVWZ9eTAUPph4y3yvHa4C6eDqQyrVxDSBnh3sLXG2JK
-         BlL8LVo2mGZLNKqM8rm1n8F4ahX4fi67nCHB5iam3AIvB7K97PmRBIlxzXzwAX/EqoGm
-         qLgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Yts7qQiY5cVw+gZuSHeCN8lE/arX6Qto1/OwLEXAhQ=;
-        b=qBGev2vVjLjwzHhaoyGsdCwFXQEFe90STVI+GvZ2MdwM1OZJ+sbhGc3pho25rWwQrl
-         PFDodqSh35RUkQ+A/B8ehLJPn6K3gJH1q7+CcwT/TKyPDa6quRZsB3aOc3O3sTPl/waR
-         l6WC8i0cBd1oFAJBcKMc9xfHdgfjvCBwv5w1vUiqmrWauQ5bqrMSBlW1bMnIEKzl6/oa
-         Fm5D53tzR5Wlv/jdz0eASY+4PW5z1bBTNAUFu4K2XOtppqFEEsnv411NuVP5Hq6KNFpp
-         kJ74msJcd8CXTeBr2cqSf8upw82fKgozAzua7S0pcQu2WXp7j7iL+0sZTZxbOlCsylbM
-         N0VQ==
-X-Gm-Message-State: AOAM533XVJoi/xQonJ3a5gyrE4DpIeN19WKsM3mqqYLshL8AcrouNXlJ
-        6z5Vhv+uGVy3Wi+GvvSEhu0/Avbb2PNqmW1X50YBtg==
-X-Google-Smtp-Source: ABdhPJzldT2KtNW5LanITjVVU8o7Tu39YI61SMrwMRReheJzUy03Rj2D1eZAzB04TnuGNIFPO+/hkePdl+GMFf+OCc0=
-X-Received: by 2002:a9f:24b4:: with SMTP id 49mr14197782uar.100.1621879313042;
- Mon, 24 May 2021 11:01:53 -0700 (PDT)
+        id S233420AbhEXSGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233105AbhEXSGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:06:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C01D361403
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621879505;
+        bh=KGRCoMcUCffmNqNMyYCNwM4ghBH4MssFfRhQ/aKFadw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BcdB6cNQvxd4u6LUFIOZOlNu8JlNiEjvUpUmxR71JMGIB8xYsyqiutXKAIZHgafcA
+         589dFAs9mMxTQFFFcbCIw6tA5SoQ+MIJSepIJSrA3o12WPR3rQYbFhhbkCiK8GW+s9
+         SXWgPB/U/sq5CrKW4He40cPP2SyHLL9fyBpTTQfnqfavjucq+DEaQUdZ+uq16c9lLm
+         XTiSIAxs3VXos8NJcMkrJJxLDh4m50xlp7OXaRgGUZV23/sbhKxlBXc2CxjwUFJivp
+         zBljbCjyTR4a1dquB+MqHFckUeVk+UJvWH7T00qMRIMHHX8JQmMAdBMyRxI+VqJ8Jy
+         KTb8+vdFHwtSg==
+Received: by mail-ot1-f51.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so26049162otc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:05:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533EVDHzUtlO7TDqLY5tsUUsGm8ULs2CuQW+8sXHl1vP1jCgflNJ
+        YVykEeHpW9NP1zi9lLaLVboc+hkNqpWIYsAeU1E=
+X-Google-Smtp-Source: ABdhPJzwa+eGro5LfpsUg8LpjxTeuWPx0fycPTgtYU+cKxtT4ii8rv0+oT0G8vyH2SBT1iB3LZJFWVcv8tiG7iSQL/c=
+X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr19941356otn.90.1621879505060;
+ Mon, 24 May 2021 11:05:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517130823.796963-1-anup.patel@wdc.com> <20210517130823.796963-6-anup.patel@wdc.com>
-In-Reply-To: <20210517130823.796963-6-anup.patel@wdc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 20:01:16 +0200
-Message-ID: <CAPDyKFpxx-jBbL4o_iJCcivFL2ei5a7PcWVfUaBmLu-q89Mkjg@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 5/8] cpuidle: Factor-out power domain related code
- from PSCI domain driver
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>,
-        Anup Patel <anup@brainfault.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210524172433.015b3b6b@xhacker.debian> <20210524172606.08dac28d@xhacker.debian>
+ <CANpmjNNuaYneLb3ScSwF=o0DnECBt4NRkBZJuwRqBrOKnTGPbA@mail.gmail.com>
+In-Reply-To: <CANpmjNNuaYneLb3ScSwF=o0DnECBt4NRkBZJuwRqBrOKnTGPbA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 24 May 2021 20:04:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGtguQ=rG4wM2=xXaDLBvN3+w7DRFeCGCeVabTGLinPuQ@mail.gmail.com>
+Message-ID: <CAMj1kXGtguQ=rG4wM2=xXaDLBvN3+w7DRFeCGCeVabTGLinPuQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: remove page granularity limitation from KFENCE
+To:     Marco Elver <elver@google.com>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 15:10, Anup Patel <anup.patel@wdc.com> wrote:
+On Mon, 24 May 2021 at 19:31, Marco Elver <elver@google.com> wrote:
 >
-> The generic power domain related code in PSCI domain driver is largely
-> independent of PSCI and can be shared with RISC-V SBI domain driver
-> hence we factor-out this code into dt_idle_genpd.c and dt_idle_genpd.h.
+> +Cc Mark
 >
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> On Mon, 24 May 2021 at 11:26, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> >
+> > KFENCE requires linear map to be mapped at page granularity, so that
+> > it is possible to protect/unprotect single pages in the KFENCE pool.
+> > Currently if KFENCE is enabled, arm64 maps all pages at page
+> > granularity, it seems overkilled. In fact, we only need to map the
+> > pages in KFENCE pool itself at page granularity. We acchieve this goal
+> > by allocating KFENCE pool before paging_init() so we know the KFENCE
+> > pool address, then we take care to map the pool at page granularity
+> > during map_mem().
+> >
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-This is clearly a big step in the right direction. Just a couple minor
-things, see more below.
+Could you please share some performance numbers that result from this
+optimization?
 
-Note that, I have a couple of patches in the pipe for the
-cpuidle-psci-domain driver (not ready to be posted). I need a couple
-of more days to confirm this restructuring still makes sense beyond
-these potential new changes. I will let you know as soon as I can with
-the outcome.
+(There are other reasons why we may need to map the linear region down
+to pages unconditionally in the future, so it would be good to have
+some solid numbers about the potential impact of doing so)
 
-[...]
 
-> diff --git a/drivers/cpuidle/dt_idle_genpd.c b/drivers/cpuidle/dt_idle_genpd.c
-
-I think it would be a good idea to add a new section for this to the
-MAINTAINERS file. Perhaps a "DT IDLE DOMAIN" section? Or perhaps you
-have another idea?
-
-In any case, I am happy to continue with maintenance of this code,
-even in the new restructured form.
-
-> new file mode 100644
-> index 000000000000..5a901773db60
-> --- /dev/null
-> +++ b/drivers/cpuidle/dt_idle_genpd.c
-> @@ -0,0 +1,182 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * PM domains for CPUs via genpd.
-> + *
-> + * Copyright (C) 2019 Linaro Ltd.
-> + * Author: Ulf Hansson <ulf.hansson@linaro.org>
-> + *
-> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> + */
-> +
-> +#define pr_fmt(fmt) "dt-idle-genpd: " fmt
-> +
-> +#include <linux/cpu.h>
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +
-> +#include "dt_idle_genpd.h"
-> +
-> +static int dt_pd_parse_state_nodes(
-> +                       int (*parse_state)(struct device_node *, u32 *),
-> +                       struct genpd_power_state *states, int state_count)
-> +{
-> +       int i, ret;
-> +       u32 state, *state_buf;
-> +
-> +       for (i = 0; i < state_count; i++) {
-> +               ret = parse_state(to_of_node(states[i].fwnode), &state);
-> +               if (ret)
-> +                       goto free_state;
-> +
-> +               state_buf = kmalloc(sizeof(u32), GFP_KERNEL);
-> +               if (!state_buf) {
-> +                       ret = -ENOMEM;
-> +                       goto free_state;
-> +               }
-> +               *state_buf = state;
-> +               states[i].data = state_buf;
-> +       }
-> +
-> +       return 0;
-> +
-> +free_state:
-> +       i--;
-> +       for (; i >= 0; i--)
-> +               kfree(states[i].data);
-> +       return ret;
-> +}
-> +
-> +static int dt_pd_parse_states(struct device_node *np,
-> +                       int (*parse_state)(struct device_node *, u32 *),
-> +                       struct genpd_power_state **states,
-> +                       int *state_count)
-> +{
-> +       int ret;
-> +
-> +       /* Parse the domain idle states. */
-> +       ret = of_genpd_parse_idle_states(np, states, state_count);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Fill out the dt specifics for each found state. */
-> +       ret = dt_pd_parse_state_nodes(parse_state, *states, *state_count);
-> +       if (ret)
-> +               kfree(*states);
-> +
-> +       return ret;
-> +}
-> +
-> +static void dt_pd_free_states(struct genpd_power_state *states,
-> +                             unsigned int state_count)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < state_count; i++)
-> +               kfree(states[i].data);
-> +       kfree(states);
-> +}
-> +
-> +void dt_pd_free(struct generic_pm_domain *pd)
-> +{
-> +       dt_pd_free_states(pd->states, pd->state_count);
-> +       kfree(pd->name);
-> +       kfree(pd);
-> +}
-> +EXPORT_SYMBOL_GPL(dt_pd_free);
-> +
-> +struct generic_pm_domain *dt_pd_alloc(struct device_node *np,
-> +                       int (*parse_state)(struct device_node *, u32 *))
-> +{
-> +       struct generic_pm_domain *pd;
-> +       struct genpd_power_state *states = NULL;
-> +       int ret, state_count = 0;
-> +
-> +       pd = kzalloc(sizeof(*pd), GFP_KERNEL);
-> +       if (!pd)
-> +               goto out;
-> +
-> +       pd->name = kasprintf(GFP_KERNEL, "%pOF", np);
-> +       if (!pd->name)
-> +               goto free_pd;
-> +
-> +       /*
-> +        * Parse the domain idle states and let genpd manage the state selection
-> +        * for those being compatible with "domain-idle-state".
-> +        */
-> +       ret = dt_pd_parse_states(np, parse_state, &states, &state_count);
-> +       if (ret)
-> +               goto free_name;
-> +
-> +       pd->free_states = dt_pd_free_states;
-> +       pd->name = kbasename(pd->name);
-> +       pd->states = states;
-> +       pd->state_count = state_count;
-> +
-> +       pr_debug("alloc PM domain %s\n", pd->name);
-> +       return pd;
-> +
-> +free_name:
-> +       kfree(pd->name);
-> +free_pd:
-> +       kfree(pd);
-> +out:
-> +       pr_err("failed to alloc PM domain %pOF\n", np);
-> +       return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(dt_pd_alloc);
-> +
-> +int dt_pd_init_topology(struct device_node *np)
-> +{
-> +       struct device_node *node;
-> +       struct of_phandle_args child, parent;
-> +       int ret;
-> +
-> +       for_each_child_of_node(np, node) {
-> +               if (of_parse_phandle_with_args(node, "power-domains",
-> +                                       "#power-domain-cells", 0, &parent))
-> +                       continue;
-> +
-> +               child.np = node;
-> +               child.args_count = 0;
-> +               ret = of_genpd_add_subdomain(&parent, &child);
-> +               of_node_put(parent.np);
-> +               if (ret) {
-> +                       of_node_put(node);
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(dt_pd_init_topology);
-
-May I suggest that we stick to dt_idle_* as the prefix for all of the
-exported functions in this file. Static functions can just skip the
-prefix altogether.
-
-> +
-> +struct device *dt_idle_genpd_attach_cpu(int cpu, const char *name)
-> +{
-> +       struct device *dev;
-> +
-> +       dev = dev_pm_domain_attach_by_name(get_cpu_device(cpu), name);
-> +       if (IS_ERR_OR_NULL(dev))
-> +               return dev;
-> +
-> +       pm_runtime_irq_safe(dev);
-> +       if (cpu_online(cpu))
-> +               pm_runtime_get_sync(dev);
-> +
-> +       dev_pm_syscore_device(dev, true);
-> +
-> +       return dev;
-> +}
-> +EXPORT_SYMBOL_GPL(dt_idle_genpd_attach_cpu);
-> +
-> +void dt_idle_genpd_detach_cpu(struct device *dev)
-> +{
-> +       if (IS_ERR_OR_NULL(dev))
-> +               return;
-> +
-> +       dev_pm_domain_detach(dev, false);
-> +}
-> +EXPORT_SYMBOL_GPL(dt_idle_genpd_detach_cpu);
-
-Again, a minor comment on the naming of the functions. How about
-skipping "genpd" in the prefix, thus just dt_idle_attach|detach_cpu()?
-
-[...]
-
-Kind regards
-Uffe
+> > ---
+> >  arch/arm64/kernel/setup.c |  3 +++
+> >  arch/arm64/mm/mmu.c       | 27 +++++++++++++++++++--------
+> >  2 files changed, 22 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> > index 61845c0821d9..51c0d6e8b67b 100644
+> > --- a/arch/arm64/kernel/setup.c
+> > +++ b/arch/arm64/kernel/setup.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/screen_info.h>
+> >  #include <linux/init.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/kfence.h>
+> >  #include <linux/root_dev.h>
+> >  #include <linux/cpu.h>
+> >  #include <linux/interrupt.h>
+> > @@ -345,6 +346,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+> >
+> >         arm64_memblock_init();
+> >
+> > +       kfence_alloc_pool();
+> > +
+> >         paging_init();
+> >
+> >         acpi_table_upgrade();
+> > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > index 89b66ef43a0f..12712d31a054 100644
+> > --- a/arch/arm64/mm/mmu.c
+> > +++ b/arch/arm64/mm/mmu.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/init.h>
+> >  #include <linux/ioport.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/kfence.h>
+> >  #include <linux/libfdt.h>
+> >  #include <linux/mman.h>
+> >  #include <linux/nodemask.h>
+> > @@ -515,10 +516,16 @@ static void __init map_mem(pgd_t *pgdp)
+> >          */
+> >         BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
+> >
+> > -       if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
+> > -           IS_ENABLED(CONFIG_KFENCE))
+> > +       if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
+> >                 flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> >
+> > +       /*
+> > +        * KFENCE requires linear map to be mapped at page granularity, so
+> > +        * temporarily skip mapping for __kfence_pool in the following
+> > +        * for-loop
+> > +        */
+> > +       memblock_mark_nomap(__pa(__kfence_pool), KFENCE_POOL_SIZE);
+> > +
+>
+> Did you build this with CONFIG_KFENCE unset? I don't think it builds.
+>
+> >         /*
+> >          * Take care not to create a writable alias for the
+> >          * read-only text and rodata sections of the kernel image.
+> > @@ -553,6 +560,15 @@ static void __init map_mem(pgd_t *pgdp)
+> >         __map_memblock(pgdp, kernel_start, kernel_end,
+> >                        PAGE_KERNEL, NO_CONT_MAPPINGS);
+> >         memblock_clear_nomap(kernel_start, kernel_end - kernel_start);
+> > +
+> > +       /*
+> > +        * Map the __kfence_pool at page granularity now.
+> > +        */
+> > +       __map_memblock(pgdp, __pa(__kfence_pool),
+> > +                      __pa(__kfence_pool + KFENCE_POOL_SIZE),
+> > +                      pgprot_tagged(PAGE_KERNEL),
+> > +                      NO_EXEC_MAPPINGS | NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS);
+> > +       memblock_clear_nomap(__pa(__kfence_pool), KFENCE_POOL_SIZE);
+> >  }
+> >
+> >  void mark_rodata_ro(void)
+> > @@ -1480,12 +1496,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> >
+> >         VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> >
+> > -       /*
+> > -        * KFENCE requires linear map to be mapped at page granularity, so that
+> > -        * it is possible to protect/unprotect single pages in the KFENCE pool.
+> > -        */
+> > -       if (rodata_full || debug_pagealloc_enabled() ||
+> > -           IS_ENABLED(CONFIG_KFENCE))
+> > +       if (rodata_full || debug_pagealloc_enabled())
+> >                 flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> >
+> >         __create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
+> > --
+> > 2.31.0
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210524172606.08dac28d%40xhacker.debian.
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
