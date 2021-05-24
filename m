@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910A38F0A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FA638EFEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237196AbhEXQFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:05:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        id S235149AbhEXQA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235249AbhEXP6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E43E661964;
-        Mon, 24 May 2021 15:44:29 +0000 (UTC)
+        id S235317AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D77EB61930;
+        Mon, 24 May 2021 15:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871070;
-        bh=TM2KUuyDB8NaJB2CiidIrsob6FcjUAVXJa3HAnIJwWg=;
+        s=korg; t=1621870864;
+        bh=ltbbYEFhgO6/+YnQDbpBLYbBtqKENujx/ng6urUI7jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/Lug29zecaaMVC/WNQ0F2YNvgJWh6IK+PlsEaDMCMzrrg6dadupY3QEDXViuHpLy
-         79aqu7jzCaPE/sso3kharRBV9AOVtdgwEnCwkPwq8VPzYNkSoQsoHmW0eKCZMFLLr+
-         F2XGSAsrtuDqjB5OnWqp1hrW/B9khciotcGWtKTM=
+        b=yDZOt8bMR6ZoQEYoIYrDneWD4cuSWYVP1pkJihZSXd014d2lTeuz1Y5KsnWvUFzFx
+         qCdCaQ+5ICPZD1Cj2qQeKL3C56C3iPKLn0XFH9LcXLzMlBmuW2oOlQhOqjgsceXqJa
+         o5L0uSTh6GO8pw7SYjoB9KtQpq08CGbH8f+gRZi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 047/127] ALSA: firewire-lib: fix calculation for size of IR context payload
+        stable@vger.kernel.org, Varad Gautam <varad.gautam@suse.com>,
+        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 069/104] ipc/mqueue, msg, sem: avoid relying on a stack reference past its expiry
 Date:   Mon, 24 May 2021 17:26:04 +0200
-Message-Id: <20210524152336.438862305@linuxfoundation.org>
+Message-Id: <20210524152335.144408381@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +46,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Varad Gautam <varad.gautam@suse.com>
 
-commit 1be4f21d9984fa9835fae5411a29465dc5aece6f upstream.
+commit a11ddb37bf367e6b5239b95ca759e5389bb46048 upstream.
 
-The quadlets for CIP header is handled as a part of IR context header,
-thus it doesn't join in IR context payload. However current calculation
-includes the quadlets in IR context payload.
+do_mq_timedreceive calls wq_sleep with a stack local address.  The
+sender (do_mq_timedsend) uses this address to later call pipelined_send.
 
+This leads to a very hard to trigger race where a do_mq_timedreceive
+call might return and leave do_mq_timedsend to rely on an invalid
+address, causing the following crash:
+
+  RIP: 0010:wake_q_add_safe+0x13/0x60
+  Call Trace:
+   __x64_sys_mq_timedsend+0x2a9/0x490
+   do_syscall_64+0x80/0x680
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f5928e40343
+
+The race occurs as:
+
+1. do_mq_timedreceive calls wq_sleep with the address of `struct
+   ext_wait_queue` on function stack (aliased as `ewq_addr` here) - it
+   holds a valid `struct ext_wait_queue *` as long as the stack has not
+   been overwritten.
+
+2. `ewq_addr` gets added to info->e_wait_q[RECV].list in wq_add, and
+   do_mq_timedsend receives it via wq_get_first_waiter(info, RECV) to call
+   __pipelined_op.
+
+3. Sender calls __pipelined_op::smp_store_release(&this->state,
+   STATE_READY).  Here is where the race window begins.  (`this` is
+   `ewq_addr`.)
+
+4. If the receiver wakes up now in do_mq_timedreceive::wq_sleep, it
+   will see `state == STATE_READY` and break.
+
+5. do_mq_timedreceive returns, and `ewq_addr` is no longer guaranteed
+   to be a `struct ext_wait_queue *` since it was on do_mq_timedreceive's
+   stack.  (Although the address may not get overwritten until another
+   function happens to touch it, which means it can persist around for an
+   indefinite time.)
+
+6. do_mq_timedsend::__pipelined_op() still believes `ewq_addr` is a
+   `struct ext_wait_queue *`, and uses it to find a task_struct to pass to
+   the wake_q_add_safe call.  In the lucky case where nothing has
+   overwritten `ewq_addr` yet, `ewq_addr->task` is the right task_struct.
+   In the unlucky case, __pipelined_op::wake_q_add_safe gets handed a
+   bogus address as the receiver's task_struct causing the crash.
+
+do_mq_timedsend::__pipelined_op() should not dereference `this` after
+setting STATE_READY, as the receiver counterpart is now free to return.
+Change __pipelined_op to call wake_q_add_safe on the receiver's
+task_struct returned by get_task_struct, instead of dereferencing `this`
+which sits on the receiver's stack.
+
+As Manfred pointed out, the race potentially also exists in
+ipc/msg.c::expunge_all and ipc/sem.c::wake_up_sem_queue_prepare.  Fix
+those in the same way.
+
+Link: https://lkml.kernel.org/r/20210510102950.12551-1-varad.gautam@suse.com
+Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
+Fixes: 8116b54e7e23ef ("ipc/sem.c: document and update memory barriers")
+Fixes: 0d97a82ba830d8 ("ipc/msg.c: update and document memory barriers")
+Signed-off-by: Varad Gautam <varad.gautam@suse.com>
+Reported-by: Matthias von Faber <matthias.vonfaber@aox-tech.de>
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
+Acked-by: Manfred Spraul <manfred@colorfullife.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 Cc: <stable@vger.kernel.org>
-Fixes: f11453c7cc01 ("ALSA: firewire-lib: use 16 bytes IR context header to separate CIP header")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-5-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/amdtp-stream.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ ipc/mqueue.c |    6 ++++--
+ ipc/msg.c    |    6 ++++--
+ ipc/sem.c    |    6 ++++--
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1068,23 +1068,22 @@ static int amdtp_stream_start(struct amd
- 		s->data_block_counter = 0;
- 	}
+--- a/ipc/mqueue.c
++++ b/ipc/mqueue.c
+@@ -1003,12 +1003,14 @@ static inline void __pipelined_op(struct
+ 				  struct mqueue_inode_info *info,
+ 				  struct ext_wait_queue *this)
+ {
++	struct task_struct *task;
++
+ 	list_del(&this->list);
+-	get_task_struct(this->task);
++	task = get_task_struct(this->task);
  
--	/* initialize packet buffer */
-+	// initialize packet buffer.
-+	max_ctx_payload_size = amdtp_stream_get_max_payload(s);
- 	if (s->direction == AMDTP_IN_STREAM) {
- 		dir = DMA_FROM_DEVICE;
- 		type = FW_ISO_CONTEXT_RECEIVE;
--		if (!(s->flags & CIP_NO_HEADER))
-+		if (!(s->flags & CIP_NO_HEADER)) {
-+			max_ctx_payload_size -= 8;
- 			ctx_header_size = IR_CTX_HEADER_SIZE_CIP;
--		else
-+		} else {
- 			ctx_header_size = IR_CTX_HEADER_SIZE_NO_CIP;
--
--		max_ctx_payload_size = amdtp_stream_get_max_payload(s) -
--				       ctx_header_size;
-+		}
- 	} else {
- 		dir = DMA_TO_DEVICE;
- 		type = FW_ISO_CONTEXT_TRANSMIT;
- 		ctx_header_size = 0;	// No effect for IT context.
+ 	/* see MQ_BARRIER for purpose/pairing */
+ 	smp_store_release(&this->state, STATE_READY);
+-	wake_q_add_safe(wake_q, this->task);
++	wake_q_add_safe(wake_q, task);
+ }
  
--		max_ctx_payload_size = amdtp_stream_get_max_payload(s);
- 		if (!(s->flags & CIP_NO_HEADER))
- 			max_ctx_payload_size -= IT_PKT_HEADER_SIZE_CIP;
+ /* pipelined_send() - send a message directly to the task waiting in
+--- a/ipc/msg.c
++++ b/ipc/msg.c
+@@ -251,11 +251,13 @@ static void expunge_all(struct msg_queue
+ 	struct msg_receiver *msr, *t;
+ 
+ 	list_for_each_entry_safe(msr, t, &msq->q_receivers, r_list) {
+-		get_task_struct(msr->r_tsk);
++		struct task_struct *r_tsk;
++
++		r_tsk = get_task_struct(msr->r_tsk);
+ 
+ 		/* see MSG_BARRIER for purpose/pairing */
+ 		smp_store_release(&msr->r_msg, ERR_PTR(res));
+-		wake_q_add_safe(wake_q, msr->r_tsk);
++		wake_q_add_safe(wake_q, r_tsk);
  	}
+ }
+ 
+--- a/ipc/sem.c
++++ b/ipc/sem.c
+@@ -784,12 +784,14 @@ would_block:
+ static inline void wake_up_sem_queue_prepare(struct sem_queue *q, int error,
+ 					     struct wake_q_head *wake_q)
+ {
+-	get_task_struct(q->sleeper);
++	struct task_struct *sleeper;
++
++	sleeper = get_task_struct(q->sleeper);
+ 
+ 	/* see SEM_BARRIER_2 for purpuse/pairing */
+ 	smp_store_release(&q->status, error);
+ 
+-	wake_q_add_safe(wake_q, q->sleeper);
++	wake_q_add_safe(wake_q, sleeper);
+ }
+ 
+ static void unlink_queue(struct sem_array *sma, struct sem_queue *q)
 
 
