@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BE138E755
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860C938E763
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhEXN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:26:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44892 "EHLO
+        id S232917AbhEXN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:27:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59656 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232426AbhEXN0S (ORCPT
+        by vger.kernel.org with ESMTP id S232842AbhEXN06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:26:18 -0400
+        Mon, 24 May 2021 09:26:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621862690;
+        s=mimecast20190719; t=1621862730;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4XLlEUkhiAcP2K4ZB+J18mgQ/icUCahgsIUqJqs8aT8=;
-        b=LvQD3UIEQraMlUaipeFIXB0KErsoODNUWeSb2zKfpRipQBoK46GayHY3pMryDPezQOvFfq
-        1tp9Khp3tXYvZ9KfuUD1zCZKEpxWELNrU5GZwx4qWMQW//cTQeu8gx2nxh7K98WgK4xkEc
-        2HITjwvTSriwVpziKwqFRN9d4Wd/yN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-jomfIlbHN1CH-3P2nYiTDA-1; Mon, 24 May 2021 09:24:46 -0400
-X-MC-Unique: jomfIlbHN1CH-3P2nYiTDA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B747B100A241;
-        Mon, 24 May 2021 13:24:44 +0000 (UTC)
-Received: from localhost (ovpn-113-244.ams2.redhat.com [10.36.113.244])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D599E50233;
-        Mon, 24 May 2021 13:24:38 +0000 (UTC)
-Date:   Mon, 24 May 2021 14:24:37 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        pbonzini@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, joe.jin@oracle.com,
-        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
-Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
- handler
-Message-ID: <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
-References: <20210523063843.1177-1-dongli.zhang@oracle.com>
- <ac161748-15d2-2962-402e-23abca469623@suse.de>
+        bh=M0kainRH42RdsY8Y3urUJhWHPRUuUeVjYP8+Uj0Uo0c=;
+        b=GQxTa4wdHIyIEOSlQVSrOk6Kz406qieYtj62Wy+gUeclwGQjr1OkRyTSbxxOw0LEyi5F5G
+        vo1HsKRvrJ/4h2ypd6M/giyBs2CM6r1WXpzIYp5VFzPKfzbK7ywkZE+klXWXXkv7n6KGQp
+        md69XqUAIu6lbjJkaajhiPB31d7ESCI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-88-VIKcyGiQP7SiF7HhxAh98w-1; Mon, 24 May 2021 09:25:28 -0400
+X-MC-Unique: VIKcyGiQP7SiF7HhxAh98w-1
+Received: by mail-ed1-f72.google.com with SMTP id cy15-20020a0564021c8fb029038d26976787so14123789edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:25:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M0kainRH42RdsY8Y3urUJhWHPRUuUeVjYP8+Uj0Uo0c=;
+        b=JZP3UyvgXwlW6BESsaLnUb4GuMS/fr8EvyohL9n9VPSRW/4qBP47Ov4XTc+VsJvkWb
+         tzF8mk6/aAvLCiu/E/KGF3C//7/XEhv5FYfnFH6r8ga9i7T6pnmtf6ItH7ZhGNKihYg2
+         mXwkux0qLT2FPRJ9xPe9nHoxZVtXUQTkRWD1IAb1vAh1efvxKdBFwGLEZ6aSAZpTrslX
+         PqAZOm8iO2Do2I/xYn1G8BjBHcX4XSX/jBu6wnQdIkWkDsHjMXAPzj0VvoFTilh+2Lzn
+         hgxO2PJ+/huNH4UYvJG2DU86tYYs/a9MlydU2pgwSi7JRWFOUvzZCLrszKAuvQcl3L8i
+         7LGQ==
+X-Gm-Message-State: AOAM532/uiVlbrNeuXBwNTZd8hrMc8663nd3fywMcWWi33Smyu3lF2m8
+        t+Nt2p3bx1jrZTKFSaTDt95cUf7IqGh/7SMquGMBjJCxQwjZ3QlVeK15y+HgjqbFxLmPBawLWJ8
+        66Kd6hKMu6nF1lrKnxyI3K6Ia
+X-Received: by 2002:a17:906:eb0d:: with SMTP id mb13mr23097557ejb.261.1621862727709;
+        Mon, 24 May 2021 06:25:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9QnvMOCLEMOMhpBAki5iXpY5iZp70ilUI2Tl1uFieprXzXpBLESyZxxJnCJHzmTQqktCk2A==
+X-Received: by 2002:a17:906:eb0d:: with SMTP id mb13mr23097529ejb.261.1621862727542;
+        Mon, 24 May 2021 06:25:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r17sm9231641edt.33.2021.05.24.06.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 06:25:26 -0700 (PDT)
+Subject: Re: [PATCH v2 02/10] KVM: selftests: simplify setup_demand_paging
+ error handling
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+References: <20210519200339.829146-1-axelrasmussen@google.com>
+ <20210519200339.829146-3-axelrasmussen@google.com>
+ <CANgfPd-dF+vWafBC5DsNhf5C0M12+LxRQLhsBM=CzOKTsep+og@mail.gmail.com>
+ <CAJHvVcizVoAs+-wOXeO7bc=8c2G3oEC4KSVyPm5E9Z6YMCsvaw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <824fe2de-a087-d2b4-406a-e8c6c040b37a@redhat.com>
+Date:   Mon, 24 May 2021 15:25:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="S/KzmU9AGl0WrRAq"
-Content-Disposition: inline
-In-Reply-To: <ac161748-15d2-2962-402e-23abca469623@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAJHvVcizVoAs+-wOXeO7bc=8c2G3oEC4KSVyPm5E9Z6YMCsvaw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20/05/21 00:14, Axel Rasmussen wrote:
+> On Wed, May 19, 2021 at 2:45 PM Ben Gardon <bgardon@google.com> wrote:
+>>
+>> On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>>>
+>>> A small cleanup. Our caller writes:
+>>>
+>>>    r = setup_demand_paging(...);
+>>>    if (r < 0) exit(-r);
+>>>
+>>> Since we're just going to exit anyway, instead of returning an error we
+>>> can just re-use TEST_ASSERT. This makes the caller simpler, as well as
+>>> the function itself - no need to write our branches, etc.
+>>>
+>>> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>>> ---
+>>>   .../selftests/kvm/demand_paging_test.c        | 51 +++++++------------
+>>>   1 file changed, 19 insertions(+), 32 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+>>> index 9398ba6ef023..601a1df24dd2 100644
+>>> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+>>> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+>>> @@ -9,6 +9,8 @@
+>>>
+>>>   #define _GNU_SOURCE /* for pipe2 */
+>>>
+>>> +#include <inttypes.h>
+>>> +#include <stdint.h>
+>>
+>> Why do the includes need to change in this commit? Is it for the PRIu64 below?
+> 
+> Right, I didn't actually try compiling without these, but inttypes.h
+> defines PRIu64 and stdint.h defines uint64_t. In general I tend to
+> prefer including things like this because we're using their
+> definitions directly, even if we might be picking them up transiently
+> some other way.
 
---S/KzmU9AGl0WrRAq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+inttypes.h is defined to include stdint.h (stdint.h is mostly useful in 
+freestanding environments and is usually provided by the C compiler, 
+while inttypes.h is provided by libc).
 
-On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
-> On 5/23/21 8:38 AM, Dongli Zhang wrote:
-> > This RFC is to trigger the discussion about to poll and kick the
-> > virtqueue on purpose in virtio-scsi timeout handler.
-> >=20
-> > The virtio-scsi relies on the virtio vring shared between VM and host.
-> > The VM side produces requests to vring and kicks the virtqueue, while t=
-he
-> > host side produces responses to vring and interrupts the VM side.
-> >=20
-> > By default the virtio-scsi handler depends on the host timeout handler
-> > by BLK_EH_RESET_TIMER to give host a chance to perform EH.
-> >=20
-> > However, this is not helpful for the case that the responses are availa=
-ble
-> > on vring but the notification from host to VM is lost.
-> >=20
-> How can this happen?
-> If responses are lost the communication between VM and host is broken, and
-> we should rather reset the virtio rings themselves.
-
-I agree. In principle it's fine to poll the virtqueue at any time, but I
-don't understand the failure scenario here. It's not clear to me why the
-device-to-driver vq notification could be lost.
-
-Stefan
-
---S/KzmU9AGl0WrRAq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCrqRUACgkQnKSrs4Gr
-c8ja+gf9GSHdRkmM60mxLZ82ONQ0mRq3/yKUUtqLg3POUVan4p1AT+T6YazetRxA
-1ux2OmVeDXzAfe9mawQXQLZ5ArlNGYGR+hfi30ECCfXGMkmdhJN42JO57bzYhyfM
-ezn5v4l8Dk6d6sdTwQbqaj0KJ8MGS3OqZ4Sd/zanTVlOEi3fuiY0NRYRRQG8xWkr
-TFB8ZqPqQvFfdtrjZQHufl9GaZr/pn3xP3bKNXwKWTGCO4zUsgNzddvjGjcAsDh8
-a9dX8ujl+N2xQYcp/EpWbeg3H8S/kyMv2834ZHaBH9FEG2K/Z25HfXTzInOSZiRs
-vyysHy57N24AFAeVx11lAKTqkkvxcQ==
-=8nHX
------END PGP SIGNATURE-----
-
---S/KzmU9AGl0WrRAq--
+Paolo
 
