@@ -2,102 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035DE38E896
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE87F38E89D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhEXOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:22:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232932AbhEXOWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:22:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621866054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qWpWyl7mO1aSiMmeBum3aQQBzcxHnspJtGSp5kl6VF0=;
-        b=KjfYsW8zkjtiOQSqBpoTQ497BHTdrLYOuvHC8iR4XNeK8oSkoC+q6aohJt81/3ZLI3/FE2
-        jMDSQB4hT4pTHWbCt9uIaFn1U/JSDgq7ARPqP3MnTWqFAgc31k91xAlZ3KNDjQedN1Gqlt
-        5DJACotZhnpfh5n/i+1OuowKmu7oPAg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-3PkKXQBdPAigPgzvK2-weQ-1; Mon, 24 May 2021 10:20:52 -0400
-X-MC-Unique: 3PkKXQBdPAigPgzvK2-weQ-1
-Received: by mail-ed1-f71.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so7462543edb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:20:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qWpWyl7mO1aSiMmeBum3aQQBzcxHnspJtGSp5kl6VF0=;
-        b=CWrCPWpLG87JWaEBo+cHixPyT5Gj0tcwaTCsIcIM1sO3jk3lks/GczaoMJ6C5ypZtJ
-         uuvohi/sIbD0k3ynXRdZHyBj7rQvSJUozTUCJJopAnyUG2+7e0Vpphv+D/2x4+bPUg0G
-         XjP6ES9kipXszGmFB89k20BX3SJXFNSiEVl+5pgMOa57iGukbV1TnLi2DUufVWqiqCGn
-         TmKiSAkn1r6GcyA/fAzzXMIuJRKanhGbJA2pvXz4f0DWIwIKgj8rYqPt4BjaBRpiwxxR
-         G9MV4GJ3Zmq/vH8dqSNTkat94SAF1beC2T2xkpgJXlT7IYGHEXlxz4HkRKy1WmTjRu5G
-         hIcg==
-X-Gm-Message-State: AOAM530QLDCL0fTMy08cVftBTWwYxAdbancjj9i9guKwkfelaqHejLZv
-        lO8qOpKvfhJYqhsslEd9Ntye5x5Mb6VljbYYFLtp6THQf1rVPeNmCystG1NCBJDUUHdhTmAOYdb
-        4zkZtIzo47iJENsWuki+foxqi
-X-Received: by 2002:a05:6402:684:: with SMTP id f4mr26871629edy.25.1621866051176;
-        Mon, 24 May 2021 07:20:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVMF/rSGJrKkgc3jpZ8C8SKICYwMG5+WivdEC6ffRp3YwXe7GwutziyX9f29kyS8loVnQnCg==
-X-Received: by 2002:a05:6402:684:: with SMTP id f4mr26871610edy.25.1621866051047;
-        Mon, 24 May 2021 07:20:51 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p25sm7893946eja.35.2021.05.24.07.20.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 07:20:50 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with
- protected state
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
- <87pmxg73h7.fsf@vitty.brq.redhat.com>
- <a947ee05-4205-fb3d-a1e6-f5df7275014e@amd.com>
- <87tums8cn0.fsf@vitty.brq.redhat.com>
- <211d5285-e209-b9ef-3099-8da646051661@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c6864982-b30a-29b5-9a10-3cfdd331057e@redhat.com>
-Date:   Mon, 24 May 2021 16:20:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232948AbhEXOXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:23:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61774 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233035AbhEXOXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:23:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621866105; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=m7+jOoOsnFGo767weGdSHvLamkIeGssb1Lzq9/80Lvs=; b=RZWBX5bR5sGWTP8wGrnyDZXQIjnDvOyAbJhMbUpMHMU3rGsTL5k90cQqeHAkpuVZmknBy8nN
+ dQyRd9QNI7+jsL/TDuMcwO+vRDAe93yzTWI0jGv0NPJreQY+vnukDc9Mn4hn8J99t/Vfyh20
+ 2TfMQGHZDxPwdk7IwO8V0/WEHVU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60abb66c67d156359aebe5a4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 14:21:32
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6BBF6C433F1; Mon, 24 May 2021 14:21:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46CCBC433F1;
+        Mon, 24 May 2021 14:21:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46CCBC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v3] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture begin
+Date:   Mon, 24 May 2021 19:51:14 +0530
+Message-Id: <20210524142114.18676-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <211d5285-e209-b9ef-3099-8da646051661@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/21 15:58, Tom Lendacky wrote:
->> Would it hurt if we just move 'vcpu->arch.guest_state_protected' check
->> to is_64_bit_mode() itself? It seems to be too easy to miss this
->> peculiar detail about SEV in review if new is_64_bit_mode() users are to
->> be added.
-> I thought about that, but wondered if is_64_bit_mode() was to be used in
-> other places in the future, if it would be a concern. I think it would be
-> safe since anyone adding it to a new section of code is likely to look at
-> what that function is doing first.
-> 
-> I'm ok with this. Paolo, I know you already queued this, but would you
-> prefer moving the check into is_64_bit_mode()?
+This patch fixes PoP noise of around 15ms observed during audio capture begin.
+Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
+before capture start and clock enable.
 
-Let's introduce a new wrapper is_64_bit_hypercall, and add a 
-WARN_ON_ONCE(vcpu->arch.guest_state_protected) to is_64_bit_mode.
+Co-developed-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes Since V2:
+	-- Updated comments as per linux style
+	-- Removed unrelated changes. 
+Changes Since V1:
+	-- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
+	-- Added comments
 
-Paolo
+ sound/soc/qcom/lpass-cpu.c | 54 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 28c7497344e3..1855eae22aad 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -93,9 +93,21 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
+ 
+ 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+-	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
++	/*
++	 * To ensure BCLK/LRCLK disabled even in device node validation
++	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
++	 * suspend.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
++	else
++		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
++
++	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+ }
+ 
+ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+@@ -275,6 +287,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/*
++		 * To ensure lpass BCLK/LRCLK is enabled during
++		 * device resume. Will not impact if enabled in lpass_cpu_daiops_prepare().
++		 */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_ENABLE);
+@@ -296,6 +312,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/*
++		 * To ensure lpass BCLK/LRCLK is disabled during
++		 * device suspend.
++		 */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_DISABLE);
+@@ -315,12 +335,44 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
++	int ret;
++	/*
++	 * To ensure lpass BCLK/LRCLK is enabled bit before
++	 * playback/capture data flow starts.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
++	else
++		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
++
++	if (ret) {
++		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
++		return ret;
++	}
++
++	ret = clk_enable(drvdata->mi2s_bit_clk[id]);
++
++	if (ret) {
++		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
++		clk_disable(drvdata->mi2s_osr_clk[id]);
++		return ret;
++	}
++	return 0;
++}
++
+ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ 	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
+ 	.startup	= lpass_cpu_daiops_startup,
+ 	.shutdown	= lpass_cpu_daiops_shutdown,
+ 	.hw_params	= lpass_cpu_daiops_hw_params,
+ 	.trigger	= lpass_cpu_daiops_trigger,
++	.prepare	= lpass_cpu_daiops_prepare,
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
