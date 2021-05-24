@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C2D38EAAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1740038EAFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhEXO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:57:11 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3653 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbhEXOvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:51:54 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fpg5Z6SWszNynv;
-        Mon, 24 May 2021 22:46:42 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:18 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:18 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 07/10] net: wan: move out assignment in if condition
-Date:   Mon, 24 May 2021 22:47:14 +0800
-Message-ID: <1621867637-2680-8-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+        id S234240AbhEXO7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:59:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233691AbhEXOxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:53:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EFFC61420;
+        Mon, 24 May 2021 14:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621867706;
+        bh=HbHEhZjevRB4CeDDwC7R5m9J42CXq3lr/RUWKX8V39w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SdF0PbUubV5p4mcfbcaHmVnAaY+XcimrDCty7Al1C/9SlxXXBauY9331M0CVIdpnu
+         Ko/OVgnzIQ5jZVyrMViHNcltsu3k5jyCERJGHwYfrR56pCA33FQxFKNoN828IJsGZc
+         jx+KFunxpBnSqh7CZEzgu6ezEwxAKalRHujVTHlo7e8goXFtAAfDAJCm+5W+SW9Zy1
+         Ew/6eL6Uz8h1PHzErJ6quytcbvGL4qXsPwGFcWei5Xi4RrqLmX7fNUjZ9xPMg08230
+         jHHF+bIYuqbjU9xon9vSrSIqdXM6O1H5lTlOImar5Ly/XMzH2VGngLxCGyQ1wJ8J9J
+         sERWGGdU5id2Q==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alaa Emad <alaaemadhossney.ae@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 34/62] media: dvb: Add check on sp8870_readreg return
+Date:   Mon, 24 May 2021 10:47:15 -0400
+Message-Id: <20210524144744.2497894-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
+References: <20210524144744.2497894-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Alaa Emad <alaaemadhossney.ae@gmail.com>
 
-Should not use assignment in if condition.
+[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+The function sp8870_readreg returns a negative value when i2c_transfer
+fails so properly check for this and return the error if it happens.
+
+Cc: Sean Young <sean@mess.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/wanxl.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/dvb-frontends/sp8870.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
-index 7965c648f3eb..a5f0aae30e0c 100644
---- a/drivers/net/wan/wanxl.c
-+++ b/drivers/net/wan/wanxl.c
-@@ -404,7 +404,9 @@ static int wanxl_open(struct net_device *dev)
- 		netdev_err(dev, "port already open\n");
- 		return -EIO;
- 	}
--	if ((i = hdlc_open(dev)) != 0)
-+
-+	i = hdlc_open(dev);
-+	if (i)
- 		return i;
+diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
+index ee893a2f2261..9767159aeb9b 100644
+--- a/drivers/media/dvb-frontends/sp8870.c
++++ b/drivers/media/dvb-frontends/sp8870.c
+@@ -280,7 +280,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
+ 	sp8870_writereg(state, 0xc05, reg0xc05);
  
- 	port->tx_in = port->tx_out = 0;
-@@ -730,7 +732,8 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 	// read status reg in order to clear pending irqs
+-	sp8870_readreg(state, 0x200);
++	err = sp8870_readreg(state, 0x200);
++	if (err < 0)
++		return err;
  
- 	timeout = jiffies + 5 * HZ;
- 	do {
--		if ((stat = readl(card->plx + PLX_MAILBOX_5)) != 0)
-+		stat = readl(card->plx + PLX_MAILBOX_5);
-+		if (stat)
- 			break;
- 		schedule();
- 	} while (time_after(timeout, jiffies));
+ 	// system controller start
+ 	sp8870_microcontroller_start(state);
 -- 
-2.8.1
+2.30.2
 
