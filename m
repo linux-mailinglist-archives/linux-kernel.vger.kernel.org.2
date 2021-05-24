@@ -2,122 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90E838E304
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D382238E308
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhEXJNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:13:52 -0400
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:38439 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232313AbhEXJNv (ORCPT
+        id S232504AbhEXJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:13:58 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:46929 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhEXJNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:13:51 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id A0FC4CAD42
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:12:22 +0100 (IST)
-Received: (qmail 26294 invoked from network); 24 May 2021 09:12:22 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 May 2021 09:12:22 -0000
-Date:   Mon, 24 May 2021 10:12:20 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] mm/page_alloc: Scale the number of pages that are
- batch freed
-Message-ID: <20210524091220.GC30378@techsingularity.net>
-References: <20210521102826.28552-1-mgorman@techsingularity.net>
- <20210521102826.28552-5-mgorman@techsingularity.net>
- <8646d3ad-345f-7ec7-fe4a-ada2680487a3@intel.com>
+        Mon, 24 May 2021 05:13:53 -0400
+Received: by mail-io1-f71.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so21039441ios.13
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:12:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=knsiepNzKLIRV0xuSivy0HpBvp6evnTsTrIM6JnWJt4=;
+        b=oa9YgB0FnLJBE9+Z5yiF71CB/ofIbn6cYd4hBCtnpuT/+rvPs5ok0XjcTEWZrItmWl
+         0CGZGCLQAoLFR9vvY0cQh6WRUy0MREZswIMoxZfZ/hvsKCtsWTbrHyNZSLdBC5RMWtKW
+         KSYR5NT7l9QOcOhPoEkJ5x8Z5WhuFzuNlcVvJWlP2TRngLyhyytmGsBk9jnUkph6DI6c
+         s4h6d3JYG5hb8M11DGawSAllo3V6TUuls3hGcQJ+iTue3t9IgQbujjYh9Cp1bYdb0Ugw
+         SS6k31nQzqiAET5RrRHYY+QGujkPmcgCagjkZnqfcfbagFybAaEd983FnyT0FNQGSIem
+         A6hA==
+X-Gm-Message-State: AOAM532dIy9sWNgsjMD78c4GLZ+Kc07Rvm5XDNrxL4rgWWKpYz1dqWb5
+        cz+qsHBTZjllqhju9pK4WpNw9ODsUHdhzyULKUcoJ6BjqeBO
+X-Google-Smtp-Source: ABdhPJyeF7jAZgF0ywP1DOpyBuuV/h1HGABOyhZh4jPLSfFoqakMVpL95SnY7jie9DkxFDY+DrF7u3RQja60DYBuQLQyHWB6PuhN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <8646d3ad-345f-7ec7-fe4a-ada2680487a3@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a92:b07:: with SMTP id b7mr13108882ilf.268.1621847545850;
+ Mon, 24 May 2021 02:12:25 -0700 (PDT)
+Date:   Mon, 24 May 2021 02:12:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9b3aa05c30fce61@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in dump_schedule (2)
+From:   syzbot <syzbot+a6e609c672ce997c14a8@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, leandro.maciel.dorileo@intel.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, vedang.patel@intel.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 03:36:05PM -0700, Dave Hansen wrote:
-> ...
-> > +static int nr_pcp_free(struct per_cpu_pages *pcp, int high, int batch)
-> > +{
-> > +	int min_nr_free, max_nr_free;
-> > +
-> > +	/* Check for PCP disabled or boot pageset */
-> > +	if (unlikely(high < batch))
-> > +		return 1;
-> > +
-> > +	min_nr_free = batch;
-> > +	max_nr_free = high - batch;
-> 
-> I puzzled over this for a minute.  I *think* it means to say: "Leave at
-> least one batch worth of pages in the pcp at all times so that the next
-> allocation can still be satisfied from this pcp."
-> 
+Hello,
 
-Yes, I added a comment.
+syzbot found the following issue on:
 
-> > +	batch <<= pcp->free_factor;
-> > +	if (batch < max_nr_free)
-> > +		pcp->free_factor++;
-> > +	batch = clamp(batch, min_nr_free, max_nr_free);
-> > +
-> > +	return batch;
-> > +}
-> > +
-> >  static void free_unref_page_commit(struct page *page, unsigned long pfn,
-> >  				   int migratetype)
-> >  {
-> >  	struct zone *zone = page_zone(page);
-> >  	struct per_cpu_pages *pcp;
-> > +	int high;
-> >  
-> >  	__count_vm_event(PGFREE);
-> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
-> >  	list_add(&page->lru, &pcp->lists[migratetype]);
-> >  	pcp->count++;
-> > -	if (pcp->count >= READ_ONCE(pcp->high))
-> > -		free_pcppages_bulk(zone, READ_ONCE(pcp->batch), pcp);
-> > +	high = READ_ONCE(pcp->high);
-> > +	if (pcp->count >= high) {
-> > +		int batch = READ_ONCE(pcp->batch);
-> > +
-> > +		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch), pcp);
-> > +	}
-> >  }
-> >  
-> >  /*
-> > @@ -3531,6 +3555,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
-> >  
-> >  	local_lock_irqsave(&pagesets.lock, flags);
-> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
-> > +	pcp->free_factor >>= 1;
-> >  	list = &pcp->lists[migratetype];
-> >  	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-> >  	local_unlock_irqrestore(&pagesets.lock, flags);
-> 
-> A high-level description of the algorithm in the changelog would also be
-> nice.  I *think* it's basically:
-> 
-> After hitting the high pcp mark, free one pcp->batch at a time.  But, as
-> subsequent pcp free operations occur, keep doubling the size of the
-> freed batches.  Cap them so that they always leave at least one
-> pcp->batch worth of pages.  Scale the size back down by half whenever an
-> allocation that consumes a page from the pcp occurs.
-> 
-> While I'd appreciate another comment or two, I do think this is worth
-> doing, and the approach seems sound:
-> 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+HEAD commit:    f5120f59 dpaa2-eth: don't print error from dpaa2_mac_conne..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1582989dd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1a53f9a0b5a801
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6e609c672ce997c14a8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11924417d00000
 
-Thanks, I added a few additional comments.
+The issue was bisected to:
 
--- 
-Mel Gorman
-SUSE Labs
+commit 7b9eba7ba0c1b24df42b70b62d154b284befbccf
+Author: Leandro Dorileo <leandro.maciel.dorileo@intel.com>
+Date:   Mon Apr 8 17:12:17 2019 +0000
+
+    net/sched: taprio: fix picos_per_byte miscalculation
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1261f09dd00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1161f09dd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1661f09dd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a6e609c672ce997c14a8@syzkaller.appspotmail.com
+Fixes: 7b9eba7ba0c1 ("net/sched: taprio: fix picos_per_byte miscalculation")
+
+==================================================================
+BUG: KASAN: use-after-free in dump_schedule+0x758/0x7d0 net/sched/sch_taprio.c:1837
+Read of size 8 at addr ffff888043cca140 by task syz-executor.5/9214
+
+CPU: 1 PID: 9214 Comm: syz-executor.5 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ dump_schedule+0x758/0x7d0 net/sched/sch_taprio.c:1837
+ taprio_dump+0x591/0xd80 net/sched/sch_taprio.c:1906
+ tc_fill_qdisc+0x60e/0x12a0 net/sched/sch_api.c:917
+ qdisc_notify.isra.0+0x2b1/0x310 net/sched/sch_api.c:984
+ tc_modify_qdisc+0xf54/0x1a50 net/sched/sch_api.c:1636
+ rtnetlink_rcv_msg+0x44e/0xb70 net/core/rtnetlink.c:5550
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fba2214b188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffcc845827f R14: 00007fba2214b300 R15: 0000000000022000
+
+Allocated by task 9193:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:507 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:466 [inline]
+ __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:516
+ kmalloc include/linux/slab.h:556 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ taprio_change+0x5fb/0x4030 net/sched/sch_taprio.c:1477
+ qdisc_change net/sched/sch_api.c:1332 [inline]
+ tc_modify_qdisc+0xd50/0x1a50 net/sched/sch_api.c:1634
+ rtnetlink_rcv_msg+0x44e/0xb70 net/core/rtnetlink.c:5550
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 9201:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1581 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
+ slab_free mm/slub.c:3166 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4225
+ rcu_do_batch kernel/rcu/tree.c:2558 [inline]
+ rcu_core+0x7ab/0x13b0 kernel/rcu/tree.c:2793
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ taprio_change+0x2e82/0x4030 net/sched/sch_taprio.c:1595
+ qdisc_change net/sched/sch_api.c:1332 [inline]
+ tc_modify_qdisc+0xd50/0x1a50 net/sched/sch_api.c:1634
+ rtnetlink_rcv_msg+0x44e/0xb70 net/core/rtnetlink.c:5550
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ taprio_change+0x2e82/0x4030 net/sched/sch_taprio.c:1595
+ qdisc_change net/sched/sch_api.c:1332 [inline]
+ tc_modify_qdisc+0xd50/0x1a50 net/sched/sch_api.c:1634
+ rtnetlink_rcv_msg+0x44e/0xb70 net/core/rtnetlink.c:5550
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888043cca100
+ which belongs to the cache kmalloc-96 of size 96
+The buggy address is located 64 bytes inside of
+ 96-byte region [ffff888043cca100, ffff888043cca160)
+The buggy address belongs to the page:
+page:ffffea00010f3280 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x43cca
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffffea0000886b00 0000001600000016 ffff888011041780
+raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 8489, ts 1045116260415, free_ts 0
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1644 [inline]
+ allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
+ new_slab mm/slub.c:1847 [inline]
+ new_slab_objects mm/slub.c:2593 [inline]
+ ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
+ slab_alloc_node mm/slub.c:2878 [inline]
+ slab_alloc mm/slub.c:2920 [inline]
+ __kmalloc+0x315/0x330 mm/slub.c:4063
+ kmalloc include/linux/slab.h:561 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ tomoyo_commit_ok+0x1e/0x90 security/tomoyo/memory.c:76
+ tomoyo_update_domain+0x5de/0x850 security/tomoyo/domain.c:139
+ tomoyo_update_path_number_acl security/tomoyo/file.c:691 [inline]
+ tomoyo_write_file+0x68b/0x7f0 security/tomoyo/file.c:1034
+ tomoyo_write_domain2+0x116/0x1d0 security/tomoyo/common.c:1152
+ tomoyo_add_entry security/tomoyo/common.c:2042 [inline]
+ tomoyo_supervisor+0xbc9/0xf00 security/tomoyo/common.c:2103
+ tomoyo_audit_path_number_log security/tomoyo/file.c:235 [inline]
+ tomoyo_path_number_perm+0x419/0x590 security/tomoyo/file.c:734
+ security_file_ioctl+0x50/0xb0 security/security.c:1539
+ __do_sys_ioctl fs/ioctl.c:1063 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0xb3/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888043cca000: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
+ ffff888043cca080: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+>ffff888043cca100: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+                                           ^
+ ffff888043cca180: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+ ffff888043cca200: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
