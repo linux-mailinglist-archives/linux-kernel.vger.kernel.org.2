@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBD538EEA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE7638F08F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhEXPw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
+        id S236278AbhEXQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234972AbhEXPpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:45:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0956145B;
-        Mon, 24 May 2021 15:36:12 +0000 (UTC)
+        id S234870AbhEXP5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6435D61951;
+        Mon, 24 May 2021 15:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870573;
-        bh=skmn3hDXi1UM16jjDfrKd5/J7MZ5ubLyW5ijbXSvj8M=;
+        s=korg; t=1621871011;
+        bh=8UAYECxSB2/SyPk/IQ/Eo++kvlCJAddxyNSq/jyfuTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNWV1HCVWdwbCRDeVU7e2ihSHD0qHNGpbGkpCJYrMtrrON/UAGFWfz+GSuVPd+Aiy
-         38h68h/26YTJ9BioUs/LRJ9WpK7wyuGmsVkLcZbFZ8vy1b7a2aA3mRqYpTIhmOVTvA
-         m1bowLeEI8aKq0AgZOQj22jOb7xsVGL9iIO6mJ2Q=
+        b=lf6tq+XHk4YE6YzK7ekcIa7ubs0vxubuev+MxGFqQIuFY/57VlgFsfeVVFYiUlZBk
+         eJDolvWwVT3rsxlrHoCKYdIXVgJc87g/foh7KcBefyRAPUg0FfxYu/FFZfwf9Y9b47
+         AV8IKMrf/vCquFJw/UJwsgI9KD8HtAw+EDTHLI2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 38/49] Revert "niu: fix missing checks of niu_pci_eeprom_read"
+        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 032/127] locking/lockdep: Correct calling tracepoints
 Date:   Mon, 24 May 2021 17:25:49 +0200
-Message-Id: <20210524152325.603415392@linuxfoundation.org>
+Message-Id: <20210524152335.930163642@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leo Yan <leo.yan@linaro.org>
 
-commit 7930742d6a0ff091c85b92ef4e076432d8d8cb79 upstream.
+[ Upstream commit 89e70d5c583c55088faa2201d397ee30a15704aa ]
 
-This reverts commit 26fd962bde0b15e54234fe762d86bc0349df1de4.
+The commit eb1f00237aca ("lockdep,trace: Expose tracepoints") reverses
+tracepoints for lock_contended() and lock_acquired(), thus the ftrace
+log shows the wrong locking sequence that "acquired" event is prior to
+"contended" event:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+  <idle>-0       [001] d.s3 20803.501685: lock_acquire: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501686: lock_acquired: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501689: lock_contended: 0000000008b91ab4 &sg_policy->update_lock
+  <idle>-0       [001] d.s3 20803.501690: lock_release: 0000000008b91ab4 &sg_policy->update_lock
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+This patch fixes calling tracepoints for lock_contended() and
+lock_acquired().
 
-The change here was incorrect.  While it is nice to check if
-niu_pci_eeprom_read() succeeded or not when using the data, any error
-that might have happened was not propagated upwards properly, causing
-the kernel to assume that these reads were successful, which results in
-invalid data in the buffer that was to contain the successfully read
-data.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Fixes: 26fd962bde0b ("niu: fix missing checks of niu_pci_eeprom_read")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-23-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: eb1f00237aca ("lockdep,trace: Expose tracepoints")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210512120937.90211-1-leo.yan@linaro.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/niu.c |   10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ kernel/locking/lockdep.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8098,8 +8098,6 @@ static int niu_pci_vpd_scan_props(struct
- 		start += 3;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index f160f1c97ca1..f39c383c7180 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5731,7 +5731,7 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
  
- 		prop_len = niu_pci_eeprom_read(np, start + 4);
--		if (prop_len < 0)
--			return prop_len;
- 		err = niu_pci_vpd_get_propname(np, start + 5, namebuf, 64);
- 		if (err < 0)
- 			return err;
-@@ -8144,12 +8142,8 @@ static int niu_pci_vpd_scan_props(struct
- 			netif_printk(np, probe, KERN_DEBUG, np->dev,
- 				     "VPD_SCAN: Reading in property [%s] len[%d]\n",
- 				     namebuf, prop_len);
--			for (i = 0; i < prop_len; i++) {
--				err = niu_pci_eeprom_read(np, off + i);
--				if (err >= 0)
--					*prop_buf = err;
--				++prop_buf;
--			}
-+			for (i = 0; i < prop_len; i++)
-+				*prop_buf++ = niu_pci_eeprom_read(np, off + i);
- 		}
+-	trace_lock_acquired(lock, ip);
++	trace_lock_contended(lock, ip);
  
- 		start += len;
+ 	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
+@@ -5749,7 +5749,7 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
+-	trace_lock_contended(lock, ip);
++	trace_lock_acquired(lock, ip);
+ 
+ 	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
+-- 
+2.30.2
+
 
 
