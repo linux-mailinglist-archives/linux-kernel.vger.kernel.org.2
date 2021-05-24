@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1E938E207
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B86638E20D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhEXH4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 03:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhEXH4s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 03:56:48 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4242C061574;
-        Mon, 24 May 2021 00:55:18 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k5so14370357pjj.1;
-        Mon, 24 May 2021 00:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m1J/Jo+r8mKr38XIJ9QtR6SB9IFiAQBUxXoKzYHmwE0=;
-        b=QXIpB+SG0A8zH+V/w3KQ2u/djXkMVX/IZX+d9fzo6Csz2xrHLL9p5Q6jTQvg0DUMU8
-         WmnYXRnT+V8PgP/7bsaDHFltfIXbbzO6D7WLUhGOqOQM2zKJzG8Vc4lMeGzLY2KuAyWH
-         Wg3/o8OJSbQ9PhQgaEeiA6AKMXMFRPX6Mci10ROPQerji7Y4soeHKnc0Woz+JgjhkZJP
-         4LcT48gWm8OHyS8g30hmYVMtPEq8hb4Dq5RMK0DYfZXczv5/UXovnfYL3m5MTXj+S/In
-         oB44mzjE4W+sREOoqv5COyC+f7zGFw5apYjsNbINuohZjsga1mByKj3npE0wQrbPIbDh
-         8mbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m1J/Jo+r8mKr38XIJ9QtR6SB9IFiAQBUxXoKzYHmwE0=;
-        b=rIFxd58DCgnXEAWRAIRXMXI4aS5GUnxmZC8P5pKLGd1CXM2emTcCUXeVtFZAvOZGZe
-         rnxnuMiTlyuB3tqleych9KpYX6UnxghQcqQsVfMxqZphE7+1RUWvNd62zPMOy1tsvCxW
-         fIHTauqSEnY4Wkm1iBqkCxWn+bbx/TAL207D3LuwmJ2tklxJWY7DGCacofM57edCVmPo
-         nTWbFiOxPpPQXAbCwvrkJZnlAdpnNzfZmzIX9pI82ZwPmHGH+3Y22dIJWljL4u/P3SFA
-         q4HbrvzVEvZzalPiI+i9KFafpNpHik6Pfg3snz6srBS5YXPDnhlnRc+o8xLJi+ctx5yq
-         SAEg==
-X-Gm-Message-State: AOAM5305V11EUP/88GX0NgH0Hzsb74XednbBHMY4UkMFLRrOxS1dXofJ
-        WCdUI7ObZavW6avEfcRKoluqDzWIQyCk6mv+7yM=
-X-Google-Smtp-Source: ABdhPJwhv389tH+Fd5hw1e/lij1tH8rmYSXV/xbIpl1M9c+IF8Fu+egL203tyIcW9tF5cw0JtRBntT4s1Vnn665smfU=
-X-Received: by 2002:a17:902:bf48:b029:fa:9401:cda8 with SMTP id
- u8-20020a170902bf48b02900fa9401cda8mr2816160pls.0.1621842918255; Mon, 24 May
- 2021 00:55:18 -0700 (PDT)
+        id S232421AbhEXH5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 03:57:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:59229 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232254AbhEXH5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 03:57:40 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FpTzt3P3Mz9sPf; Mon, 24 May 2021 17:56:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1621842970;
+        bh=C/hH2K1GEBPadXoSrKk7V2ObPasOjkp3z+Am5C3tgTM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SlkI23zR6q71HmYnJJ3f9KWdOEkVnA6VgflwcXorCZ+xSlbOn80eH8qqkj1bGiDwr
+         KC9B7UJXnzhSsKRs2ic63ipbacchSoGdi4E458+5M7iaEJIuB0k7HuIOJAPxbDK6pB
+         dK2O+tSql9Eour4tx4hSxxkcAjj0iCOHwEc2IDJA=
+Date:   Mon, 24 May 2021 17:56:05 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YKtcFdW9U2+iW4cM@yekko>
+References: <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko>
+ <20210503160530.GL1370958@nvidia.com>
+ <YJDFj+sAv41JRIo4@yekko>
+ <20210504181537.GC1370958@nvidia.com>
+ <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
+ <20210505163902.GG1370958@nvidia.com>
+ <YJzCC18cQDdKMR6p@yekko>
+ <20210513135030.GF1002214@nvidia.com>
 MIME-Version: 1.0
-References: <cover.1621279162.git.sander@svanheule.net> <f1ca940216c0accfc804afee2dbe46d260d890ae.1621279162.git.sander@svanheule.net>
- <CAHp75Vc5a4PsHsJ2sNsRNT7BaBJ=Kxb+KKM7x7jWeRdOS8WfnQ@mail.gmail.com> <33eb043f2ef9d81bbe26876a1c73859f56a8abd9.camel@svanheule.net>
-In-Reply-To: <33eb043f2ef9d81bbe26876a1c73859f56a8abd9.camel@svanheule.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 24 May 2021 10:55:02 +0300
-Message-ID: <CAHp75VeVq31q6U+fXGi=ME0Bx5D7V+KiE70JZB4MLy+SbEJP4A@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] mfd: Add RTL8231 core device
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qdaYK/TYh/pdg5Us"
+Content-Disposition: inline
+In-Reply-To: <20210513135030.GF1002214@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 10:50 AM Sander Vanheule <sander@svanheule.net> wrote:
-> On Tue, 2021-05-18 at 00:18 +0300, Andy Shevchenko wrote:
-> > On Mon, May 17, 2021 at 10:28 PM Sander Vanheule <sander@svanheule.net> wrote:
-> > > +       err = regmap_read(map, RTL8231_REG_FUNC1, &v);
-> >
-> > > +       ready_code = FIELD_GET(RTL8231_FUNC1_READY_CODE_MASK, v);
-> >
-> > If we got an error why we need a read_core, what for?
->
-> The chip has a static 5-bit field in register 0x01, called READY_CODE according
-> to the datasheet. If a device is present, and a read from register 0x01
-> succeeds, I still check that this field has the correct value. For the RTL8231,
-> it should return 0x37. If this isn't the case, I assume this isn't an RTL8231,
-> so the driver probe stops and returns an error value.
 
-Right. And why do you get ready_code if you know that there is an error?
+--qdaYK/TYh/pdg5Us
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-With Best Regards,
-Andy Shevchenko
+On Thu, May 13, 2021 at 10:50:30AM -0300, Jason Gunthorpe wrote:
+> On Thu, May 13, 2021 at 04:07:07PM +1000, David Gibson wrote:
+> > On Wed, May 05, 2021 at 01:39:02PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, May 05, 2021 at 02:28:53PM +1000, Alexey Kardashevskiy wrote:
+> > >=20
+> > > > This is a good feature in general when let's say there is a linux s=
+upported
+> > > > device which has a proprietary device firmware update tool which on=
+ly exists
+> > > > as an x86 binary and your hardware is not x86 - running qemu + vfio=
+ in full
+> > > > emulation would provide a way to run the tool to update a physical =
+device.
+> > >=20
+> > > That specific use case doesn't really need a vIOMMU though, does it?
+> >=20
+> > Possibly not, but the mechanics needed to do vIOMMU on different host
+> > IOMMU aren't really different from what you need for a no-vIOMMU
+> > guest. =20
+>=20
+> For very simple vIOMMUs this might be true, but this new features of nest=
+ing
+> PASID, migration, etc, etc all make the vIOMMU complicated and
+> emuluating it completely alot harder.
+
+Well, sure, emulating a complex vIOMMU is complex. But "very simple
+vIOMMUs" covers the vast majority of currently deployed hardware, and
+several are already emulated by qemu.
+
+> Stuffing a vfio-pci into a guest and creating a physical map using a
+> single IOASID is comparably trivial.
+
+Note that for PAPR (POWER guest) systems this is not an option: the
+PAPR platform *always* has a vIOMMU.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--qdaYK/TYh/pdg5Us
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCrXBUACgkQbDjKyiDZ
+s5IBMw/6AomCVLmh/8hoxD3OLa7DsF2qksrpcbo5JXuotCrUKLd+NER23oRbTekN
+8HQ/YKfUWhmFlGh9NeBcjjUjkm/ru1HFa3vbGfQIrVWxabmQX9vQSjKDc/qvQlKB
+ApOyT0PNJuHFy8rZNB7vrpd9zP9xhV1gKLk5nxmmPHeITxA2ZLrZSlfMkRhIG5vP
+3xpnCB8KoycgXBsYbLCi50o11TxhVlYWoujMA/I69mLgfqFoxTy3+zz99RtEEnY9
+Nqf3jnnpL+5tCu8gBZD2actRlu0jrnXU6nyYleOy89Sr2ZjrOM73cfrkrJjhuTa6
+hdQVhb8XgS1HQPiELvT2WCVVQkfAG1ss0HcPi2Wt+JvVnxeQ4kNixS8ZNwh/X9/Q
+lMVqY0OsG8Gz38XftHA3oj20IyAKeVYfXkQJLougTadA3/ydrOELNB169PPHtggT
+qtgvOFogrmYKJyaGQaQvWIWmHd63OYqVxycbu2fimxeuM4kMxgU5ERWo6caXHLz+
+bZfdkrRUW1vCGoMfjqpjG4OgDhnLwz4PUfy7tKdh6Ek4TGe0OUHYxcMcJI28AIii
+jnapbsmXzLYgsyHou+UYRwtLPrIOjOpRh3eDRzfRDtI1HQBWG1RBKkJdqUf1r5FW
+r45iEZaQ+AdySJsDkfCc7+SDhLx4AO8z6RuoKgukxPR6E5D8Z9c=
+=GQEt
+-----END PGP SIGNATURE-----
+
+--qdaYK/TYh/pdg5Us--
