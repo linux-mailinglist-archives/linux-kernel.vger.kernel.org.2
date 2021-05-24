@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B156938F4DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDE638F4DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhEXV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        id S233875AbhEXVaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhEXV2r (ORCPT
+        with ESMTP id S229480AbhEXVaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:28:47 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001CFC061574;
-        Mon, 24 May 2021 14:27:17 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m124so21032622pgm.13;
-        Mon, 24 May 2021 14:27:17 -0700 (PDT)
+        Mon, 24 May 2021 17:30:05 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2256FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:28:37 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso10238549pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=/AXCnWWbppkvrDbwpVLtksfVERM2AC+R+EBKyLvOYaY=;
-        b=MKmC4wI49pi46Hyf+EMx6FfhhrQRWha9ra9fLMxrj5J7uc7R3L/R6NQIb0oOd3Pxue
-         CffwNpR8jgrVOLuUEeToLi04XnkTABOYrZJAvjYIfRnxW+Jl8PYEkiI/z0LfCZtU7ioq
-         kaKseHnUNsHICmKdVUlVX095Y0wUlQBCAUuT+VLT1wTwJY6Xc+ZmK6H+P7hvaE1ubS/n
-         k8lJyTQiVsdX8ol7vKYEtB7q/bEBl1ZAJhMv06ohgeuO0FFG+CARn2t6LXMdNafR0YjV
-         A92fGlM/k/tyCm6FCrFJ/ZMszV/VPU0eE1dIrc/FA02qX7YGnZiBYLK2acHlDWQ5VM6f
-         cAsA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VXDvybtYbaA/WSLW3M8pJycbeN9ie3uJZCSoeU17yO4=;
+        b=Hx86I9k1r8WTQK+7RJJk0K+XsWt7hzlR5DPrVnvIKljyxdcdE5s7KywgdkPD2TjNHP
+         NsaIsTjhihIqOZzfzNWFCGN+ObVkGd+YFp+EmTYyeZdyg8f/bBCFXVJeFex2AI+1nAUB
+         G6+jBqV7W559zXsGtv6drRKhO0Z4slsOVR269zhhiD/db3lNXcvNTwrYsRIs6CjwwGG+
+         ZsJlkWnQwhSc5NthytXMjqeFSJC+eequ0ymGUt/5uvLExHHY500YBhMLSN23izR8XfT2
+         NqenXszlsX+IqCB7dXPFZYO2Gdc6lQgbfsNCOTmfxizw2pVBuEOlLWgA+U4OJhNO5s8w
+         /9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=/AXCnWWbppkvrDbwpVLtksfVERM2AC+R+EBKyLvOYaY=;
-        b=eI2E7R5pKE0q12Z16KygXtzcv2cP7n9bINoIPZfdQETdB+dL+LGK+zNTGU76fMBVRG
-         fV2qYLaQnP9C6s5kOiQu0cloHboAZ4o+3bcnSMbPbeZw4vXtQhsXkYsvsoaNhgVVK1c/
-         im6dtSeDaWCb9GZwL3YOvlvMNadrt8usct7f5AUbdfbqdXTIWhdkSLZuhHoDWmA8trWn
-         iJebqh+CSjB1fV1a06vXgCdJ2ElQRHnX47+70vezTbg1Lp81mpi4VUirIDpv/Izpth9F
-         Yqr1p2ZhfG4u6fruCWes5TfCj3Wxr32oeTb9x+5s8WvSC0njKbxHy5gzgAkw2jvnoAw7
-         LIxQ==
-X-Gm-Message-State: AOAM532tcEHEp0ytF2D9uUvDuW95mBpEo1EUxz5EDIjl12T7fSBiemNo
-        RvTitFtmgqas3WtEYWx9dYff7TD3aGTSEXcRwlDy3Q==
-X-Google-Smtp-Source: ABdhPJyM2fEegL2yG/tw1M0+0LliYAZOnipPktmBVoj1rbS/1dMLF/GYgwwKbBSFz57uuEslK3SrGg==
-X-Received: by 2002:a63:2350:: with SMTP id u16mr12447672pgm.195.1621891637165;
-        Mon, 24 May 2021 14:27:17 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id u12sm11416891pfh.122.2021.05.24.14.27.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VXDvybtYbaA/WSLW3M8pJycbeN9ie3uJZCSoeU17yO4=;
+        b=FAL2vwhxBpNGbPmZElAR+77dYGQfn0r5FcvQx0yQIIyMu8PIszEYlz33SN7ycc/8pf
+         HsZ4LGd9bGBNar8FZIrAJVByJOVtw3LTapa5l/kEcczAALBBCdi87tDYgIWl8yd/dXDQ
+         JkLA71VAvSJXucP2NSuaj7vbdawWm4YFAK8Tnign5qVyvMqB3eAKvYsiXzIpnqOLX/TK
+         uDS95MxCV9/9fCjQxWmnL227WtbnneWZD0CTWxhAk4TUGiaFz1NAzQNZcWF1k2wh646T
+         nwSTiDvKk5+FIIB0r4UxHRF5P817V1Ym0By7dEEIJkEbWIUcC+lpIPCmohPodr9IXAoA
+         uA1Q==
+X-Gm-Message-State: AOAM532Y9EAD90hsPQNAyX7bLreBT3oYMgijJQkEylRMoCFK4q+l14iK
+        FeXB+bu2ES78L2GtoEvGN40nzODkYrV/8w==
+X-Google-Smtp-Source: ABdhPJyzR3mTIylx9ARwP1rkzsp2Ez0vWPebx/QquQiBs8xEkHeD9LTpdqUHhqeZ+DXQqp/+HPJkCQ==
+X-Received: by 2002:a17:902:b585:b029:f6:5cd5:f128 with SMTP id a5-20020a170902b585b02900f65cd5f128mr22731955pls.43.1621891716493;
+        Mon, 24 May 2021 14:28:36 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id y1sm12007937pfn.13.2021.05.24.14.28.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 14:27:16 -0700 (PDT)
-Message-ID: <60ac1a34.1c69fb81.e1d42.6175@mx.google.com>
-Date:   Mon, 24 May 2021 14:27:16 -0700 (PDT)
-X-Google-Original-Date: Mon, 24 May 2021 21:27:14 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/104] 5.10.40-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 24 May 2021 14:28:35 -0700 (PDT)
+Date:   Mon, 24 May 2021 21:28:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jing Liu <jing2.liu@linux.intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+Subject: Re: [PATCH RFC 5/7] kvm: x86: Revise CPUID.D.1.EBX for alignment rule
+Message-ID: <YKwagHvhqiY1rrAI@google.com>
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-6-jing2.liu@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207154256.52850-6-jing2.liu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 17:24:55 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.40 release.
-> There are 104 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sun, Feb 07, 2021, Jing Liu wrote:
+> CPUID.0xD.1.EBX[1] is set if, when the compacted format of an XSAVE
+> area is used, this extended state component located on the next
+> 64-byte boundary following the preceding state component (otherwise,
+> it is located immediately following the preceding state component).
 > 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
+> AMX tileconfig and tiledata are the first to use 64B alignment.
+> Revise the runtime cpuid modification for this rule.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.40-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+> ---
+>  arch/x86/kvm/cpuid.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 04a73c395c71..ee1fac0a865e 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -35,12 +35,17 @@ static u32 xstate_required_size(u64 xstate_bv, bool compacted)
+>  {
+>  	int feature_bit = 0;
+>  	u32 ret = XSAVE_HDR_SIZE + XSAVE_HDR_OFFSET;
+> +	bool is_aligned = false;
+>  
+>  	xstate_bv &= XFEATURE_MASK_EXTEND;
+>  	while (xstate_bv) {
+>  		if (xstate_bv & 0x1) {
+>  		        u32 eax, ebx, ecx, edx, offset;
+>  		        cpuid_count(0xD, feature_bit, &eax, &ebx, &ecx, &edx);
+> +			/* ECX[2]: 64B alignment in compacted form */
+> +			is_aligned = !!(ecx & 2);
+> +			if (is_aligned && compacted)
 
-5.10.40-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+I'd forego the local is_aligned, and also check "compacted" first so that the
+uncompacted variant isn't required to evaluated ecx.
 
+And the real reason I am responding... can you post this as a standalone patch?
+I stumbled across the "aligned" flag when reading through the SDM for a completely
+unrelated reason, and also discovered that the flag has been documented since
+2016.  While AMX may be the first to "officially" utilize the alignment flag,
+the flag itself is architectural and not strictly limited to AMX.
+
+> +				ret = ALIGN(ret, 64);
+>  			offset = compacted ? ret : ebx;
+>  			ret = max(ret, offset + eax);
+>  		}
+> -- 
+> 2.18.4
+> 
