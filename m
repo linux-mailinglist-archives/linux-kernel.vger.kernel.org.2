@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943CC38F68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF9438F68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhEXX4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
+        id S229940AbhEXX5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEXX4p (ORCPT
+        with ESMTP id S229875AbhEXX46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:56:45 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D446C061574;
-        Mon, 24 May 2021 16:55:15 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso6751745oop.9;
-        Mon, 24 May 2021 16:55:15 -0700 (PDT)
+        Mon, 24 May 2021 19:56:58 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EA3C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:55:29 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c10so22079991lfm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VRnXCD+92FNz7EDcLk9ph/Nc8eMDGwxajC0s/Qy/6Wo=;
-        b=leZimnSf/OOoTBvgyCGyeSDpGQp6rEt9Rkz5dbOG7WixjZpf2hxOwkzJ1jqk+mHx3Z
-         xLgz8HQ9C6YZ6j+ISKKyqrpkWrDY1LihASZ+XYbV+gePRIhddSKpVwBum+lYuMEJ+4R0
-         1cpO/9ZW7zjc53d3yH7RY5AxeL0W8vTxvhJaKBYoYWjGQyZyyXmsNsi7nUgkmbN0FicR
-         zskl1xhZjFz7ayqVW+zmQhz6yxdR7dz3Y6ZSjDMv2bDwjZtuwXrCOeGJhzkxlrRCU69C
-         K/mbmrQdplYpyc2BifhWLIfQD/gHTznO8oWfa3lLanmoyfgV3Lr79c8QYLhuFppIPgRV
-         u2RQ==
+        bh=592zjrjs71MnPKYyPd/8Gk+j2UZLngCEKFNFLQ96mQY=;
+        b=Hi7md/ohZBbgNkX+gRP/A7hbkMRs56Dn/rd+BvZrdxnMamaGNiflZLG96US3F7f0yw
+         1UmztCpe3Rp7VFYMFm1l1VwnRNrT54ENZj0ZwoC7kdx7N8rOmTaEh1K+RfcdsnBiNpk+
+         vWOyNBfaty36OI3DinuIPd9/uw1VZ9G89qb1Xw1QwOzpBUZwnYRyyNWokcC6Op7gDim+
+         RUTgrZGzXfeU2xGy71lxqxLlLUNa91w9hJy0D+a1hin9uW44SQJ5dJapRN9mCBRqVXvP
+         ug7d5hDgNauAHWQ1D7epY8msb6hu1NcAn4mkeP2GaAUx3QcYcgpAomtSNBNBk1vBZ84Y
+         iA/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VRnXCD+92FNz7EDcLk9ph/Nc8eMDGwxajC0s/Qy/6Wo=;
-        b=DI7ZOaJWtS4uS9pJfibE+R8lK9JvoyGUq0Rchrmb6RlB3AIqAKX8bsXWCRd7fSNWm7
-         bXa9mKP6R2DLHkFPsZxyYvRreoJkYP7rgHvRloPHOa/aid5o9lodVgU6/iKBwjwHauc1
-         o8VYsgAhPi7S6IQF9983vjLbPfbcqffUdRdjRnedUSmdsVJ/oXrua6ATiLs+xrEqOYJY
-         63hPRo1IJOD1ig8oysKozHsOvc/F1KuWsDaOYLcspz/KGtGuLf9hepdeKRdchSOE6oq6
-         qpSYjwJgYnlZn+fijuKQyEXOgUFrGxVDUJJ9Dg7Nu69kuu9neD4XWdZ0LfhNCqkjY4Lu
-         e6bg==
-X-Gm-Message-State: AOAM532WoEvAGOoBnYPCvD9RwzbWvUgdzqUdENzJfRXCA7viI7NLpD71
-        hhzyEJGfof3u16L3zFFthrQecNIiegE4Ij2QV7E=
-X-Google-Smtp-Source: ABdhPJwzG4XtZSuaatRoAIedCLWwMklX/5iEANj/5kMsuk42vdeuM007l0yGTVz4ydVLT5dN9eeR/LyQfLAWDX+UeaU=
-X-Received: by 2002:a4a:8706:: with SMTP id z6mr20307749ooh.41.1621900514993;
- Mon, 24 May 2021 16:55:14 -0700 (PDT)
+        bh=592zjrjs71MnPKYyPd/8Gk+j2UZLngCEKFNFLQ96mQY=;
+        b=mJevFJlnJoxCIljC6CQWRsCvr8SRb5Yfya3HxPJ7oxpm/61b2Q81TblANEC0YpewNs
+         BJ7VrhBl07XXcB75PGp4Sr/L4DzkR0P3+O+oU4oJYM5dwXKEUlrl9xmxM1kiJR+ASmXe
+         EmPYZWa+vYiTBWYSC4aDhfJ8HKRXxAuAZL6PyPSNrQxlE53bxP+4P5IE0D0b07rX+zKY
+         /2/LqaOhUZe4gMd/cptFMRQRmZ881Le4Ok3Oyei9s74q+qQyuvmS1tJEtXYp94YgQT/N
+         ZlAhbxLPK5641Fx/p2B1bpVIjOs5XRtHr7TnDAmL2O8iCuZpNJMdpz53q9RTq1gyNBrn
+         Mh+w==
+X-Gm-Message-State: AOAM533RVv0Do4FmjqE+PF0SHUOD7z4JyrrhiOwg6k382Z4k8UKJz1mp
+        FJ2LXGXuRQq5e0cVuktAH9sALWzP/+IUks9FAafxUQ==
+X-Google-Smtp-Source: ABdhPJx/e/kNcfBBwSrujRvi50rqAYpED4xQ/1Z1KiwOS/qb69WenvVA5bxXAGKmpbikyGXHTzGCq3bA7YejdGNjNPU=
+X-Received: by 2002:a05:6512:11ea:: with SMTP id p10mr11650728lfs.157.1621900527740;
+ Mon, 24 May 2021 16:55:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525093221.1b62a5f4@canb.auug.org.au>
-In-Reply-To: <20210525093221.1b62a5f4@canb.auug.org.au>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 25 May 2021 07:55:03 +0800
-Message-ID: <CANRm+CyrwrC8ccgJo0ymQ1m9KF7XeYCwsLQewt_4w7DYZgm7nw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the kvm-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210510063602.505829-1-jay.xu@rock-chips.com> <20210510063602.505829-2-jay.xu@rock-chips.com>
+In-Reply-To: <20210510063602.505829-2-jay.xu@rock-chips.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 25 May 2021 01:55:16 +0200
+Message-ID: <CACRpkdaWX7OBN=SH3=epQkYyP4nyaYsvC_S3y+hThpR=J-ZAjA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] pinctrl/rockchip: separate struct rockchip_pin_bank
+ to a head file
+To:     Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 07:33, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the kvm-fixes tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->
-> ERROR: modpost: ".kvm_vcpu_can_poll" [arch/powerpc/kvm/kvm-hv.ko] undefined!
->
-> Caused by commit
->
->   0fee89fbc44b ("KVM: PPC: exit halt polling on need_resched()")
+Hi Jianqun,
 
-This is my fault.
+This series does not apply cleanly on kernel v5.13-rc1, can you rebase and
+resend it so I can apply it? I hade some minor comment but overall it is very
+good and I think we should apply it to move ahead with this series.
 
-From b2a6d98b48fc6b22a0b47f57a98dc3203c678195 Mon Sep 17 00:00:00 2001
-From: Wanpeng Li <wanpengli@tencent.com>
-Date: Tue, 25 May 2021 07:50:08 +0800
-Subject: [PATCH] KVM: Fix ERROR: modpost: .kvm_vcpu_can_poll undefined!
-
-From: Wanpeng Li <wanpengli@tencent.com>
-
-Export kvm_vcpu_can_poll to fix ERROR: modpost: .kvm_vcpu_can_poll undefined!
-
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- virt/kvm/kvm_main.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 62522c1..8eaec42 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2949,6 +2949,7 @@ bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
- {
-     return single_task_running() && !need_resched() && ktime_before(cur, stop);
- }
-+EXPORT_SYMBOL_GPL(kvm_vcpu_can_poll);
-
- /*
-  * The vCPU has executed a HLT instruction with in-kernel mode enabled.
---
-2.7.4
+Yours,
+Linus Walleij
