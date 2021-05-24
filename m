@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE8538E671
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBB438E652
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhEXMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:18:27 -0400
-Received: from mx3.securetransport.de ([116.203.31.6]:35838 "EHLO
-        mx3.securetransport.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232300AbhEXMSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:18:23 -0400
-X-Greylist: delayed 344 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 May 2021 08:18:23 EDT
-Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx3.securetransport.de (Postfix) with ESMTPSA id 1BBDF5DCCC;
-        Mon, 24 May 2021 14:10:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1621858253;
-        bh=wR5m3pbatZZrpyCn/nOoDkXkVnEDm6B6QbUt2U8ZtSg=;
-        h=From:To:CC:Subject:Date:From;
-        b=OX7Q3ikXhX1h/PY/87Q64ilAZI1KuCcwlAfT+4vhspebisUl1t8F8sgnLOBJJWdWM
-         rOPi4484IeyI3qTyZoIttgzLMmWNQR1HMZad9pJIvGudKzrEe5wk1dfgxvoqCpUik0
-         EtXWKJAJDyTBdbJtYtA6Am61eJTXUnra3qrjXISZHQKw6DxoTKwnBmUZSl4n8r8a3w
-         kAnZP1gL3eNSdypEKM7ibv0N6uqsyqpYjiVRDvlUblz4KDAyc7yuqvsWVnvB2vHYUn
-         7AX6gMe/vEDqLL4ddTjQOm+WeEHkyEVUifBaLlsEMmLVIFMRH6CnmbVNSEbj24BB2O
-         x9n1fNzpWcf7g==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
- DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.12; Mon, 24 May 2021 14:10:37 +0200
-Received: from localhost.localdomain (172.16.51.17) by
- DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.12
- via Frontend Transport; Mon, 24 May 2021 14:10:37 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     <devicetree@vger.kernel.org>
-CC:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, <kernel@dh-electronics.com>
-Subject: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02 boards
-Date:   Mon, 24 May 2021 14:09:17 +0200
-Message-ID: <20210524120917.6573-1-cniedermaier@dh-electronics.com>
-X-Mailer: git-send-email 2.11.0
-X-klartext: yes
+        id S232824AbhEXMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:11:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232662AbhEXMLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 08:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03CD9610A6;
+        Mon, 24 May 2021 12:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621858206;
+        bh=FKrYa9wRIMDhYZ616MV0mGehueLTvFDWOr+340TGuqA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vesc9sRDCdI2+F9Nqo5LUge6k+kq8/zXd6yY2lML3vjNbzJqm5aFpnJmgKEJey4L7
+         oE58PDkTRRImcuawBLkvaCkK7YTyHhSWVSPkqxzlF6/XT7bPnxt7hwnCDhojSpT2G5
+         yDHYlBpl+Aktln9aiELBHf+khHFC5lrBXUuvSwaTI0FPYBMUnmv4/okfVaRnnLOAI2
+         GtI44mWwa4nA8YhrYOO+NYjPRZ9ocj8kBYAXfI0WSXsxSb5j+ezYKJgEvt1ECybPAC
+         MBhHlBDHbpukX5ulb7lIawVxd8sNrM49Un9AZfxoKGeFMO1T2mvTyOfRzBwKIjvsc0
+         r/8mzil5vgiSg==
+Date:   Mon, 24 May 2021 13:09:59 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 02/21] arm64: Allow mismatched 32-bit EL0 support
+Message-ID: <20210524120959.GB14913@willie-the-truck>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-3-will@kernel.org>
+ <20210521104155.GC6675@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521104155.GC6675@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DH electronics DHCOM PicoITX and DHCOM DRC02 boards.
+On Fri, May 21, 2021 at 11:41:56AM +0100, Catalin Marinas wrote:
+> On Tue, May 18, 2021 at 10:47:06AM +0100, Will Deacon wrote:
+> > +static int enable_mismatched_32bit_el0(unsigned int cpu)
+> > +{
+> > +	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
+> > +	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
+> > +
+> > +	if (cpu_32bit) {
+> > +		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
+> > +		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
+> 
+> It may be worth only calling static_branch_enable_cpuslocked() if not
+> already set, in case you try this on a system with lots of CPUs.
 
-Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: robh+dt@kernel.org
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: kernel@dh-electronics.com
-To: devicetree@vger.kernel.org
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+static_key_enable_cpuslocked() already checks this early on, so I don't
+think we need another check here (note that we're not calling stop_machine()
+here _anyway_; the '_cpuslocked' suffix just says that we're already holding
+cpu_hotplug_lock via the notifier).
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index fce2a8670b49..afbdea078abb 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -407,6 +407,12 @@ properties:
-           - const: dfi,fs700e-m60
-           - const: fsl,imx6dl
- 
-+      - description: i.MX6DL DHCOM PicoITX Board
-+        items:
-+          - const: dh,imx6dl-dhcom-picoitx
-+          - const: dh,imx6dl-dhcom-som
-+          - const: fsl,imx6dl
-+
-       - description: i.MX6DL Gateworks Ventana Boards
-         items:
-           - enum:
-@@ -458,6 +464,13 @@ properties:
-           - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
-           - const: fsl,imx6dl
- 
-+      - description: i.MX6S DHCOM DRC02 Board
-+        items:
-+          - const: dh,imx6s-dhcom-drc02
-+          - const: dh,imx6s-dhcom-som
-+          - const: fsl,imx6s
-+          - const: fsl,imx6dl
-+
-       - description: i.MX6SL based Boards
-         items:
-           - enum:
--- 
-2.11.0
-
+Will
