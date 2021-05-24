@@ -2,125 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D03238F58A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0927F38F592
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234035AbhEXWUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:20:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234032AbhEXWUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:20:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07515613BF;
-        Mon, 24 May 2021 22:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621894722;
-        bh=ffWiERagTcZEV4ms3ZlV8yXc4bcuThcyGLbdb9sfjLw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QpjVEBTcJ6GmF8j8G5FpNJCRs0aIcpRtzJRssqXnp315cpuHjQ/w2zb4aH8JP2GIE
-         earNDJRuiuwmvfTvQpjqMwn6byI5dCjc64DpxRBOlPsct4r+s73rwcfZbtEX5dd/S7
-         G1G26gfLPQmkbpqjs4upQqCf43m18xg3rRJVV4UhBAJNa3lWCQNovAAY2Lt9b2F3hl
-         qpTRzTj5x3B2GbIpvOXXUBodzNQw6H7nCsorRd+ojQzySSMhk00ZyogtkbxpoguyV7
-         yopXY9WiZ15yjiGzfVpfyb6+4grGrz852kDeqJgjqU/oG9Hjx/JKzIwnNko+XtZh8m
-         Pltzq5sk9VdyA==
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Mika=20Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        kernel-team@android.com
-Subject: [PATCH v2 5/5] timer_list: Print name of per-cpu wakeup device
-Date:   Mon, 24 May 2021 23:18:18 +0100
-Message-Id: <20210524221818.15850-6-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210524221818.15850-1-will@kernel.org>
-References: <20210524221818.15850-1-will@kernel.org>
+        id S230102AbhEXWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhEXWXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 18:23:02 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C93C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:21:32 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id n3-20020a9d74030000b029035e65d0a0b8so5332027otk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:21:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GDIQ9fX7lLs/gbyWNEU6V6HWzQKvLmHPZGiIasFlfRM=;
+        b=oXVIQseLDoeABV/dp53lRn0giiPNZMb1SK5CpIaX74y8d+rhVsMtH4iNDvzelsXt3R
+         MOphmVil/Eff+qNgr1AJf2R9XVwwslGTbNk4ZImOHcinCwCR/lQbNHoSex6Shrotkaqx
+         UTRdl+JWDMyCfW4qxcBOfccdBPJm/3r3iM4M4PfqO3/z9nZf5YGj1a7+qA7nxXltUgpj
+         CdP8U3jellankNmbaUC44RGRdP3EJo8OIzpfiB2nrzllD2u8PXBi3978tk9cD0cRNUM4
+         67MJHJmxgqiHetnAA1coICZMbqJABK+RHME5mkwNzAl3q0s7XdhFEzs4sbP4A4/A4zcw
+         hz9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GDIQ9fX7lLs/gbyWNEU6V6HWzQKvLmHPZGiIasFlfRM=;
+        b=n2z4OKafwUj7QWbbjtfhT72nsdJB5tRzLOES1v/GHskUNppBKj4k2GU0J8iNrXzh56
+         cJ/MyPFy8xmIrXz6B6VD2KzlEeTCJSF85hpcLuHcK+6svcziISKQmn37bkV3d91dJyAc
+         GZrE7S3A8D+sl4fZs7NH3jZfmL6NefOqyVQ34ShiNUvU089KNQqAjaWcCvux2c/z+NQw
+         iNtQKzLs9HIdb65WMl078s0cLRekBIrIspxN2NZ6V1d8w60W7gYZCOfx5tt8V+zbLLV1
+         pQeAohnlb4EdpBVxvwLxLNXlFxpga94U+j9IM8/lza0G5o7CcNc9KSraadPq/8zBJHvQ
+         Cvpg==
+X-Gm-Message-State: AOAM533JWAMUI5cQHPdPhtBmsWLOF4xl/BvNrhG7/Z38QG/Mvt6GkdDy
+        WbaG1md9Zjofq1LMXn9sUE4xAb8/EmDJo96dUgDfWQ==
+X-Google-Smtp-Source: ABdhPJziySXZk11WNjyzRJ6zXrXwgIiDyYvJ5+F9SVg/TMDZkrwooR7ggFmvjnEhHj4wAhfq3lTsk2Unh3rxK7khctU=
+X-Received: by 2002:a9d:5786:: with SMTP id q6mr20800952oth.56.1621894891564;
+ Mon, 24 May 2021 15:21:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-43-seanjc@google.com>
+ <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
+In-Reply-To: <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 24 May 2021 15:21:20 -0700
+Message-ID: <CALMp9eT72keN2r9tfdzsPpzAkV9fN4V4edmXuPyMbt+shVu0Ww@mail.gmail.com>
+Subject: Re: [PATCH 42/43] KVM: VMX: Drop VMWRITEs to zero fields at vCPU RESET
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of per-cpu wakeup devices that can be used in
-preference to the broadcast timer, print the name of such devices when
-they are available.
+On Mon, May 24, 2021 at 2:15 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 24/04/21 02:46, Sean Christopherson wrote:
+> > Don't waste time writing zeros via VMWRITE during vCPU RESET, the VMCS
+> > is zero allocated.
+>
+> Is this guaranteed to be valid, or could the VMCS in principle use some
+> weird encoding? (Like it does for the access rights, even though this
+> does not matter for this patch).
 
-Cc: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- kernel/time/tick-broadcast.c |  7 +++++++
- kernel/time/tick-internal.h  |  1 +
- kernel/time/timer_list.c     | 10 +++++++++-
- 3 files changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
-index 9b845212430b..f7fe6fe36173 100644
---- a/kernel/time/tick-broadcast.c
-+++ b/kernel/time/tick-broadcast.c
-@@ -63,6 +63,13 @@ struct cpumask *tick_get_broadcast_mask(void)
- 	return tick_broadcast_mask;
- }
- 
-+static struct clock_event_device *tick_get_oneshot_wakeup_device(int cpu);
-+
-+const struct clock_event_device *tick_get_wakeup_device(int cpu)
-+{
-+	return tick_get_oneshot_wakeup_device(cpu);
-+}
-+
- /*
-  * Start the device in periodic mode
-  */
-diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
-index 30c89639e305..6a742a29e545 100644
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -71,6 +71,7 @@ extern void tick_set_periodic_handler(struct clock_event_device *dev, int broadc
- extern int tick_broadcast_update_freq(struct clock_event_device *dev, u32 freq);
- extern struct tick_device *tick_get_broadcast_device(void);
- extern struct cpumask *tick_get_broadcast_mask(void);
-+extern const struct clock_event_device *tick_get_wakeup_device(int cpu);
- # else /* !CONFIG_GENERIC_CLOCKEVENTS_BROADCAST: */
- static inline void tick_install_broadcast_device(struct clock_event_device *dev, int cpu) { }
- static inline int tick_is_broadcast_device(struct clock_event_device *dev) { return 0; }
-diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
-index 6939140ab7c5..cca611edfd65 100644
---- a/kernel/time/timer_list.c
-+++ b/kernel/time/timer_list.c
-@@ -228,6 +228,14 @@ print_tickdevice(struct seq_file *m, struct tick_device *td, int cpu)
- 	SEQ_printf(m, " event_handler:  %ps\n", dev->event_handler);
- 	SEQ_printf(m, "\n");
- 	SEQ_printf(m, " retries:        %lu\n", dev->retries);
-+
-+#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-+	if (cpu >= 0) {
-+		const struct clock_event_device *wd =
-+			tick_get_wakeup_device(cpu);
-+		SEQ_printf(m, "Wakeup Device: %s\n", wd ? wd->name : "<NULL>");
-+	}
-+#endif
- 	SEQ_printf(m, "\n");
- }
- 
-@@ -248,7 +256,7 @@ static void timer_list_show_tickdevices_header(struct seq_file *m)
- 
- static inline void timer_list_header(struct seq_file *m, u64 now)
- {
--	SEQ_printf(m, "Timer List Version: v0.8\n");
-+	SEQ_printf(m, "Timer List Version: v0.9\n");
- 	SEQ_printf(m, "HRTIMER_MAX_CLOCK_BASES: %d\n", HRTIMER_MAX_CLOCK_BASES);
- 	SEQ_printf(m, "now at %Ld nsecs\n", (unsigned long long)now);
- 	SEQ_printf(m, "\n");
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+I see nothing in the SDM that would indicate that zero must be encoded as zero.
