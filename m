@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE57A38E2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB8738E2E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhEXJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:02:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232387AbhEXJCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:02:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621846884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KyNpmtPVi73FGeb1l6Zw5sAifVTsA3JabmYau6KyfuA=;
-        b=zYsYVoH9VhNWsgDUh6b0ZYXw8eSMiYym0dV2eQNI2KQ84vV9jxPPQl49oiqCU1SnZ3WX8o
-        ZcvAhdkn8jL3KlUQpWNkWQ/vQeJk6crxekCclW49tydOB7YFezPMI5Y8joOOj7E46jKAkL
-        ownrc28Lyzuo1o0sjz7CzY/9ZsKj53o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621846884;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KyNpmtPVi73FGeb1l6Zw5sAifVTsA3JabmYau6KyfuA=;
-        b=D89WDl5h/v+pyiNg2DvJVSqEzUzc4N+HStDLgLaKamYvZBqb9L4XDtVqpBqqFzlp67Xj9X
-        wmyudGcgk2hOJNAA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EFAABAC11;
-        Mon, 24 May 2021 09:01:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8D5B91F2CA2; Mon, 24 May 2021 11:01:23 +0200 (CEST)
-Date:   Mon, 24 May 2021 11:01:23 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     jack@suse.cz, reiserfs-devel@vger.kernel.org,
+        id S232447AbhEXJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhEXJDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 05:03:41 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65478C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:02:14 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id s4so12746393plg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=iPvQM7Ju1ffWKIo+8yldAlBUkBMS+sJNZu1vYtZK95Y=;
+        b=yIcCS+Cbcf4SQbB2ozxN/mlL7P4irXdIn7392izp1/M0hZPWyJmx5Mnf6JwadtddWU
+         TCkMwGtLO+7KYH+JpjZjYgfdzdM8nRuV9dOaCvCOD4nO/LZjHdJ2SecQs69SNLfi65Y8
+         bqJdj5C9wc1QwY/z+pVa3ItifpQ/iGqZ0y5ISArHIo6ecofDch0FIOAdoV2ETbmFhCXL
+         7oqzcPtKdvDmjgYT4h/DHcjVNb4Rf1ViFcLzu52Jzm4/YXxT6r0sifDo2gEBf2pMjV2R
+         O6mWqBwOZn3K/laIlYa3NqHNuXXF1xkkW3TdrA53cAsbE+6SaWovnRNyfniUnk2Q65oB
+         dUxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:cc:to;
+        bh=iPvQM7Ju1ffWKIo+8yldAlBUkBMS+sJNZu1vYtZK95Y=;
+        b=eew1hZLF8+7UuuGS3GxqB/dSrxbn0qWbTwohWzUxs9JzYptf3CIj0sx07qZgyQvGdr
+         V0IEUJ8BoxUN8hO+0EG98TWfrX7F9a0D7a7+qj1FzPfRYE6QLZCd2nXAcy/DOml6/twW
+         SAgcyIJg7MZ+IUl/CyRcdkRRwOWbvViEbBrL0xNVwXGu7dJlxKfeiC5m1mutWx7jY8cT
+         tGTtWVFaLMiGZOsJse/Q/PNubXkgKgTiZLSqQb96dBX3nw4pDgvDxdAUpfxMHGIdKj1U
+         eZG9LANNvx5acXBc9sDLLSgDA0oUnAHTV09El0ELKQlybUbDlQj6vqtxQMSLRRw4uhvV
+         a24A==
+X-Gm-Message-State: AOAM530b8qBnH49p6rTYMGgXXWDVAk3nKYJqhYq97h+0GHE6o0+IiGiV
+        /Zv5DZKKBELFUggpws/gXJaZ6Q==
+X-Google-Smtp-Source: ABdhPJxW3Ih0kl/t8C0f7Wph1i/gPeyb71D336JNHAC/M7n6qXeQx4sBV+IJSEb5+uqi9NQU7eRRDw==
+X-Received: by 2002:a17:903:1cd:b029:f0:c1c2:9e75 with SMTP id e13-20020a17090301cdb02900f0c1c29e75mr24517969plh.54.1621846933651;
+        Mon, 24 May 2021 02:02:13 -0700 (PDT)
+Received: from smtpclient.apple ([139.177.225.224])
+        by smtp.gmail.com with ESMTPSA id a65sm9098526pfb.177.2021.05.24.02.02.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 May 2021 02:02:13 -0700 (PDT)
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: =?utf-8?Q?Documentation/admin-guide/module-signing=2Erst=3A_Does_?=
+ =?utf-8?Q?the_function_of_adding_a_key_to_=E2=80=98Builtin=5Ftrusted=5Fke?=
+ =?utf-8?Q?y=E2=80=99_work=3F?=
+Message-Id: <49DB247F-F485-45D5-87F9-4FCB85CB7767@bytedance.com>
+Date:   Mon, 24 May 2021 17:02:07 +0800
+Cc:     keyrings@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] reiserfs: Remove unneed check in
- reiserfs_write_full_page()
-Message-ID: <20210524090123.GE32705@quack2.suse.cz>
-References: <20210523090258.27696-1-yuehaibing@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523090258.27696-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     dhowells@redhat.com, dwmw2@infradead.org, corbet@lwn.net
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 23-05-21 17:02:58, YueHaibing wrote:
-> Condition !A || A && B is equivalent to !A || B.
-> 
-> Generated by: scripts/coccinelle/misc/excluded_middle.cocci
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Recently, I am learning how to use module signature.
+But I got 'Permission denied' when I trying to add a=20
+public key to the 'builtin_trusted_keys' keyring.
 
-Fair enough. Thanks for the patch. Added to my tree.
+root@:~# cat /proc/keys
+3471e123 I------     1 perm 1f030000     0     0 asymmetri Build time =
+autogenerated kernel key: xxxx: X509.rsa xxxx []
+37e8db03 I------     1 perm 1f0b0000     0     0 keyring   =
+.builtin_trusted_keys: 1
+root@:~# keyctl padd asymmetric "" 0x37e8db03  < =
+./signing_key_test_sign.x509
+add_key: Permission denied
 
-								Honza
+The reason is the 'builtin_trusted_keys'  keyring's perm was set=20
+'1f0b0000' by below operate when kernel starting.=20
 
-> ---
->  fs/reiserfs/inode.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
-> index 780bb90c1804..f49b72ccac4c 100644
-> --- a/fs/reiserfs/inode.c
-> +++ b/fs/reiserfs/inode.c
-> @@ -2584,9 +2584,7 @@ static int reiserfs_write_full_page(struct page *page,
->  			clear_buffer_dirty(bh);
->  			set_buffer_uptodate(bh);
->  		} else if ((checked || buffer_dirty(bh)) &&
-> -		           (!buffer_mapped(bh) || (buffer_mapped(bh)
-> -						       && bh->b_blocknr ==
-> -						       0))) {
-> +			   (!buffer_mapped(bh) || bh->b_blocknr == 0)) {
->  			/*
->  			 * not mapped yet, or it points to a direct item, search
->  			 * the btree for the mapping info, and log any direct
-> -- 
-> 2.20.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+builtin_trusted_keys =3D
+                keyring_alloc(".builtin_trusted_keys",
+                              KUIDT_INIT(0), KGIDT_INIT(0), =
+current_cred(),
+                              ((KEY_POS_ALL & ~KEY_POS_SETATTR) |=20
+                              KEY_USR_VIEW | KEY_USR_READ | =
+KEY_USR_SEARCH),
+                              KEY_ALLOC_NOT_IN_QUOTA,
+                              NULL, NULL);
+
+And,  'add_key' interface pass the KEY_NEED_WRITE
+perm to lookup_user_key.=20
+So -EACCES returned in key_task_permission check.
+
+Is there something wrong in  module-signing.rst ?
+Or I missed some information about it.
+
+Best wishes
+Chunxin=
