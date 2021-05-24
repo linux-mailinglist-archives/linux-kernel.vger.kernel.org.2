@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671D938EE01
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6E238EF9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234800AbhEXPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:44:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
+        id S233044AbhEXP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233528AbhEXPkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:40:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A69F6142C;
-        Mon, 24 May 2021 15:34:24 +0000 (UTC)
+        id S235094AbhEXPy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC5061876;
+        Mon, 24 May 2021 15:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870464;
-        bh=cqS4uG4oymDwgtZch5JHh0WuULcKvxegNLzQvl62z24=;
+        s=korg; t=1621870829;
+        bh=zcj1N2YsNW4jSa0/pwPpHGaac4BQZlaVdlLqA796S/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dvfF+CEHgtANe5q1voma2wnneqiOdyEGPMplA0Kle1LLJKi8iBQ2ZQzXz53NvMkaR
-         8bDiIqRhQms5RVrPpteJGcjyq3E0ksUvu57sP9lhUII15WS6L2s9Mwna7HghowcTcD
-         LW4v+wKxu7Wyb0S8+5jvTOT3Ah/sQ3jiLI+IoEHE=
+        b=I35Eo/NAL/b84ddQaFMfY910147e3AYBT2FPH5o9lGvUODCbmjS8Yv1WBKSvGK/s2
+         KVd9NHt9JhmJIJ3RShp0lsxnR6VEkq04cSP2mw4cMh/DEcQgRE70TdVvFqWojVq09W
+         vLbwNkwm/sgkOY+XLmdahnXpK3E+vywY+jjFM0Jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 35/37] vgacon: Record video mode changes with VT_RESIZEX
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 044/104] ALSA: firewire-lib: fix check for the size of isochronous packet payload
 Date:   Mon, 24 May 2021 17:25:39 +0200
-Message-Id: <20210524152325.352993815@linuxfoundation.org>
+Message-Id: <20210524152334.281414775@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit d4d0ad57b3865795c4cde2fb5094c594c2e8f469 upstream.
+commit 395f41e2cdac63e7581fb9574e5ac0f02556e34a upstream.
 
-Fix an issue with VGA console font size changes made after the initial
-video text mode has been changed with a user tool like `svgatextmode'
-calling the VT_RESIZEX ioctl.  As it stands in that case the original
-screen geometry continues being used to validate further VT resizing.
+The check for size of isochronous packet payload just cares of the size of
+IR context payload without the size of CIP header.
 
-Consequently when the video adapter is firstly reprogrammed from the
-original say 80x25 text mode using a 9x16 character cell (720x400 pixel
-resolution) to say 80x37 text mode and the same character cell (720x592
-pixel resolution), and secondly the CRTC character cell updated to 9x8
-(by loading a suitable font with the KD_FONT_OP_SET request of the
-KDFONTOP ioctl), the VT geometry does not get further updated from 80x37
-and only upper half of the screen is used for the VT, with the lower
-half showing rubbish corresponding to whatever happens to be there in
-the video memory that maps to that part of the screen.  Of course the
-proportions change according to text mode geometries and font sizes
-chosen.
-
-Address the problem then, by updating the text mode geometry defaults
-rather than checking against them whenever the VT is resized via a user
-ioctl.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Fixes: e400b6ec4ede ("vt/vgacon: Check if screen resize request comes from userspace")
-Cc: stable@vger.kernel.org # v2.6.24+
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org>
+Fixes: f11453c7cc01 ("ALSA: firewire-lib: use 16 bytes IR context header to separate CIP header")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210513125652.110249-4-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/console/vgacon.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/firewire/amdtp-stream.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -1100,12 +1100,20 @@ static int vgacon_resize(struct vc_data
- 	if ((width << 1) * height > vga_vram_size)
- 		return -EINVAL;
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -633,18 +633,24 @@ static int parse_ir_ctx_header(struct am
+ 			       unsigned int *syt, unsigned int packet_index, unsigned int index)
+ {
+ 	const __be32 *cip_header;
++	unsigned int cip_header_size;
+ 	int err;
  
-+	if (user) {
-+		/*
-+		 * Ho ho!  Someone (svgatextmode, eh?) may have reprogrammed
-+		 * the video mode!  Set the new defaults then and go away.
-+		 */
-+		screen_info.orig_video_cols = width;
-+		screen_info.orig_video_lines = height;
-+		vga_default_font_height = c->vc_font.height;
-+		return 0;
-+	}
- 	if (width % 2 || width > screen_info.orig_video_cols ||
- 	    height > (screen_info.orig_video_lines * vga_default_font_height)/
- 	    c->vc_font.height)
--		/* let svgatextmode tinker with video timings and
--		   return success */
--		return (user) ? 0 : -EINVAL;
-+		return -EINVAL;
+ 	*payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+-	if (*payload_length > s->ctx_data.tx.ctx_header_size +
+-					s->ctx_data.tx.max_ctx_payload_length) {
++
++	if (!(s->flags & CIP_NO_HEADER))
++		cip_header_size = 8;
++	else
++		cip_header_size = 0;
++
++	if (*payload_length > cip_header_size + s->ctx_data.tx.max_ctx_payload_length) {
+ 		dev_err(&s->unit->device,
+ 			"Detect jumbo payload: %04x %04x\n",
+-			*payload_length, s->ctx_data.tx.max_ctx_payload_length);
++			*payload_length, cip_header_size + s->ctx_data.tx.max_ctx_payload_length);
+ 		return -EIO;
+ 	}
  
- 	if (con_is_visible(c) && !vga_is_gfx) /* who knows */
- 		vgacon_doresize(c, width, height);
+-	if (!(s->flags & CIP_NO_HEADER)) {
++	if (cip_header_size > 0) {
+ 		cip_header = ctx_header + 2;
+ 		err = check_cip_header(s, cip_header, *payload_length,
+ 				       data_blocks, data_block_counter, syt);
 
 
