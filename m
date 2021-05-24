@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B1E38EFCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F171738EF39
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhEXP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
+        id S235374AbhEXP43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235215AbhEXPzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2293661439;
-        Mon, 24 May 2021 15:40:39 +0000 (UTC)
+        id S234617AbhEXPtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:49:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23BC561376;
+        Mon, 24 May 2021 15:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870840;
-        bh=Hkib7HmFjpGuga3aSoohJ7gDsBbzsy2qgzCm9wjyFXM=;
+        s=korg; t=1621870662;
+        bh=3QGc/LvIFFdbXuhpfjbxySzcVz5xSVM25npG30qL/VU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wPskC09HPch+Wx0pMNASQTiw/rbBgbAedXUYG4gMvlThzpIvhBsEpOD4xWsAXjNDF
-         /jM4knnJEyiokCiYPYV618D5+PEXAfFPblzB4eYbjmz6clVy8h4tE8mg2olHP8aYW0
-         IO7jt/YCHnRiwBHtHwTK7pND3jwCu8fIsaHSCXPU=
+        b=ESpJV7tVr9vvAxyi2vxS+2xWkIpKIyxPPA02HwhvSOv9jVbYhbSRhxfHrHmhRFJls
+         fB/7JVYKHYzT4owmC71dQOrixmT/+E6kD9VtWtuylv0oBg+ymj2mZmhnJ7s9yIs2eO
+         7aHWkkQaEgeig42JXQJt/0IyZUm1IV/Up9vC31dY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.10 059/104] x86/sev-es: Forward page-faults which happen during emulation
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.4 48/71] Revert "video: imsttfb: fix potential NULL pointer dereferences"
 Date:   Mon, 24 May 2021 17:25:54 +0200
-Message-Id: <20210524152334.813884395@linuxfoundation.org>
+Message-Id: <20210524152328.025318252@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit c25bbdb564060adaad5c3a8a10765c13487ba6a3 upstream.
+commit ed04fe8a0e87d7b5ea17d47f4ac9ec962b24814a upstream.
 
-When emulating guest instructions for MMIO or IOIO accesses, the #VC
-handler might get a page-fault and will not be able to complete. Forward
-the page-fault in this case to the correct handler instead of killing
-the machine.
+This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
 
-Fixes: 0786138c78e7 ("x86/sev-es: Add a Runtime #VC Exception Handler")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # v5.10+
-Link: https://lkml.kernel.org/r/20210519135251.30093-3-joro@8bytes.org
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit here, while technically correct, did not fully
+handle all of the reported issues that the commit stated it was fixing,
+so revert it until it can be "fixed" fully.
+
+Note, ioremap() probably will never fail for old hardware like this, and
+if anyone actually used this hardware (a PowerMac era PCI display card),
+they would not be using fbdev anymore.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-67-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/sev-es.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/video/fbdev/imsttfb.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -1269,6 +1269,10 @@ static __always_inline void vc_forward_e
- 	case X86_TRAP_UD:
- 		exc_invalid_op(ctxt->regs);
- 		break;
-+	case X86_TRAP_PF:
-+		write_cr2(ctxt->fi.cr2);
-+		exc_page_fault(ctxt->regs, error_code);
-+		break;
- 	case X86_TRAP_AC:
- 		exc_alignment_check(ctxt->regs, error_code);
- 		break;
+--- a/drivers/video/fbdev/imsttfb.c
++++ b/drivers/video/fbdev/imsttfb.c
+@@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev
+ 	info->fix.smem_start = addr;
+ 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
+ 					    0x400000 : 0x800000);
+-	if (!info->screen_base) {
+-		release_mem_region(addr, size);
+-		framebuffer_release(info);
+-		return -ENOMEM;
+-	}
+ 	info->fix.mmio_start = addr + 0x800000;
+ 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+ 	par->cmap_regs_phys = addr + 0x840000;
 
 
