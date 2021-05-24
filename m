@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B7D38F037
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD0438F059
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhEXQCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:02:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
+        id S236056AbhEXQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234790AbhEXPzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63B5D61448;
-        Mon, 24 May 2021 15:41:58 +0000 (UTC)
+        id S234966AbhEXPz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9215261945;
+        Mon, 24 May 2021 15:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870918;
-        bh=tZJpO8rTLY+OhH39EUkaPSIT96N6/9lr6M+6xKRx964=;
+        s=korg; t=1621870940;
+        bh=3eB4CpqZbQMODAApH7fn0fg282KuU6e5dh0PHqES+io=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0eTvzLCZZk3S/a/9XoI7t3wSGLnPAgSoIREs15HFN1TThuh6aIOX6CDJr570AL3WK
-         pZZmsoPNko3gspiGpTNrGmbjJ3gOQ9lZddg+ijd7MUKZFhdKeR00HDVkrKulUZMWjI
-         KJsxMtxiKg/3IusN44Csyh7m79On+URARnr5WzlI=
+        b=2i0qf71arkVrKBSguJo3DMF9QKyCLw98H6tUTFMFPhhwMX4wZFuN8P8QDdr27aIkt
+         zjMPtLsBB6AaZaPEfCLKGY8RDpRGtUTeo5w15QhwutR6OmdjrQSaUCExUeKt+notKw
+         iyfgIsuJxxIjQPUiplG+awJHu9w/t+oLHfx/RMLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Du Cheng <ducheng2@gmail.com>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
+        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 087/104] ethernet: sun: niu: fix missing checks of niu_pci_eeprom_read()
-Date:   Mon, 24 May 2021 17:26:22 +0200
-Message-Id: <20210524152335.735652748@linuxfoundation.org>
+Subject: [PATCH 5.10 088/104] net: stmicro: handle clk_prepare() failure during init
+Date:   Mon, 24 May 2021 17:26:23 +0200
+Message-Id: <20210524152335.768401930@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 References: <20210524152332.844251980@linuxfoundation.org>
@@ -40,121 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit e6e337708c22f80824b82d4af645f20715730ad0 upstream.
+commit 0c32a96d000f260b5ebfabb4145a86ae1cd71847 upstream.
 
-niu_pci_eeprom_read() may fail, so add checks to its return value and
-propagate the error up the callstack.
+In case clk_prepare() fails, capture and propagate the error code up the
+stack. If regulator_enable() was called earlier, properly unwind it by
+calling regulator_disable().
 
-An examination of the callstack up to niu_pci_eeprom_read shows that:
-
-niu_pci_eeprom_read() // returns int
-    niu_pci_vpd_scan_props() // returns int
-        niu_pci_vpd_fetch() // returns *void*
-            niu_get_invariants() // returns int
-
-since niu_pci_vpd_fetch() returns void which breaks the bubbling up,
-change its return type to int so that error is propagated upwards.
-
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 Cc: David S. Miller <davem@davemloft.net>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-24-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-22-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sun/niu.c |   34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8097,6 +8097,8 @@ static int niu_pci_vpd_scan_props(struct
- 		start += 3;
- 
- 		prop_len = niu_pci_eeprom_read(np, start + 4);
-+		if (prop_len < 0)
-+			return prop_len;
- 		err = niu_pci_vpd_get_propname(np, start + 5, namebuf, 64);
- 		if (err < 0)
- 			return err;
-@@ -8141,8 +8143,12 @@ static int niu_pci_vpd_scan_props(struct
- 			netif_printk(np, probe, KERN_DEBUG, np->dev,
- 				     "VPD_SCAN: Reading in property [%s] len[%d]\n",
- 				     namebuf, prop_len);
--			for (i = 0; i < prop_len; i++)
--				*prop_buf++ = niu_pci_eeprom_read(np, off + i);
-+			for (i = 0; i < prop_len; i++) {
-+				err =  niu_pci_eeprom_read(np, off + i);
-+				if (err < 0)
-+					return err;
-+				*prop_buf++ = err;
-+			}
- 		}
- 
- 		start += len;
-@@ -8152,14 +8158,14 @@ static int niu_pci_vpd_scan_props(struct
- }
- 
- /* ESPC_PIO_EN_ENABLE must be set */
--static void niu_pci_vpd_fetch(struct niu *np, u32 start)
-+static int niu_pci_vpd_fetch(struct niu *np, u32 start)
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+@@ -30,7 +30,7 @@ struct sunxi_priv_data {
+ static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
  {
- 	u32 offset;
- 	int err;
+ 	struct sunxi_priv_data *gmac = priv;
+-	int ret;
++	int ret = 0;
  
- 	err = niu_pci_eeprom_read16_swp(np, start + 1);
- 	if (err < 0)
--		return;
-+		return err;
- 
- 	offset = err + 3;
- 
-@@ -8168,12 +8174,14 @@ static void niu_pci_vpd_fetch(struct niu
- 		u32 end;
- 
- 		err = niu_pci_eeprom_read(np, here);
-+		if (err < 0)
-+			return err;
- 		if (err != 0x90)
--			return;
-+			return -EINVAL;
- 
- 		err = niu_pci_eeprom_read16_swp(np, here + 1);
- 		if (err < 0)
--			return;
-+			return err;
- 
- 		here = start + offset + 3;
- 		end = start + offset + err;
-@@ -8181,9 +8189,12 @@ static void niu_pci_vpd_fetch(struct niu
- 		offset += err;
- 
- 		err = niu_pci_vpd_scan_props(np, here, end);
--		if (err < 0 || err == 1)
--			return;
-+		if (err < 0)
-+			return err;
-+		if (err == 1)
-+			return -EINVAL;
+ 	if (gmac->regulator) {
+ 		ret = regulator_enable(gmac->regulator);
+@@ -50,10 +50,12 @@ static int sun7i_gmac_init(struct platfo
+ 		gmac->clk_enabled = 1;
+ 	} else {
+ 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+-		clk_prepare(gmac->tx_clk);
++		ret = clk_prepare(gmac->tx_clk);
++		if (ret && gmac->regulator)
++			regulator_disable(gmac->regulator);
  	}
-+	return 0;
+ 
+-	return 0;
++	return ret;
  }
  
- /* ESPC_PIO_EN_ENABLE must be set */
-@@ -9274,8 +9285,11 @@ static int niu_get_invariants(struct niu
- 		offset = niu_pci_vpd_offset(np);
- 		netif_printk(np, probe, KERN_DEBUG, np->dev,
- 			     "%s() VPD offset [%08x]\n", __func__, offset);
--		if (offset)
--			niu_pci_vpd_fetch(np, offset);
-+		if (offset) {
-+			err = niu_pci_vpd_fetch(np, offset);
-+			if (err < 0)
-+				return err;
-+		}
- 		nw64(ESPC_PIO_EN, 0);
- 
- 		if (np->flags & NIU_FLAGS_VPD_VALID) {
+ static void sun7i_gmac_exit(struct platform_device *pdev, void *priv)
 
 
