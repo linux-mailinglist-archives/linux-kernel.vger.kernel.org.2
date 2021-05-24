@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763E638E7BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991B238E7CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhEXNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:37:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232401AbhEXNhe (ORCPT
+        id S232919AbhEXNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhEXNk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:37:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621863365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vKJ7Xmipw+loMCTi+Pu30+gNzhTSZcxxbwDM5OKce/I=;
-        b=MAduVn/K9U3JxOUVbVc/Su2hsjAjWn1O3x0ADHA3N6NocaKyGpslKafoUeRtsc7NP5+14y
-        uNzrO88T5atH/BluJUv1hdUMMJGb3j++iiv+PKp0FLafR2C317uweTwiUr29n/l5OSGkGu
-        y5uAV4RtH7ab2l3GkO9X0U/pr9gQ9BA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-K3sNBxIqMEytCSaHSr8cZw-1; Mon, 24 May 2021 09:36:04 -0400
-X-MC-Unique: K3sNBxIqMEytCSaHSr8cZw-1
-Received: by mail-ed1-f69.google.com with SMTP id u14-20020a05640207ceb029038d4bfbf3a6so12024275edy.9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:36:03 -0700 (PDT)
+        Mon, 24 May 2021 09:40:26 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80962C061574;
+        Mon, 24 May 2021 06:38:57 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so1938972pjb.5;
+        Mon, 24 May 2021 06:38:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=24xHs/c9+Vn16SJ80N4lzJM1aJdYpt55ltlqUdwqHiM=;
+        b=scqmS67QUgt1Fyf/4fpwGS4WutaGVaj/jxJ1L4w5FuFY7hJKD5d7EZkBeNXeRt8TNR
+         /OsZH4Ysney0WPC+TzEY9OBZaICZleyn/+cVjoI4q5tEn6qrTObNva62hgyt+C54ciOg
+         jYS1wF1OpPS5JpTaKv2oFGZ9KDXsXkJgISQWVVA2XxMWHO++HNQ9gMLv3oj1nPOisjFo
+         +Qcd8dvIt+cpo/ENgeXWjBIhLB2u0CvQKVb8W4tVqxShH7I90TGWq+8ARd1GmqIVvkOq
+         hHzDasNcOicrESHXuzbThmIY3sOZFM+4oqBMjGGtRkaCj+0XJqY8vCixHnEte6cB+mTg
+         ko6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vKJ7Xmipw+loMCTi+Pu30+gNzhTSZcxxbwDM5OKce/I=;
-        b=Pks9BrJoDVG8sPcY0JKrEQ++IlhfYDUAMwk1kRMwsY7bj4Sy/BgQQYTNRNSaOMp6ZD
-         vaOJbrAr0cqOxap2Ht/PRag9RCTpEPoStKJg040JVs7SMV16iYBKLS0bczim3PpmWd5F
-         Mg19m7rVKcLpTK2tP32EZqD2x5QEnFLGxH/PpRaq4+x+nza8NgWXT+dSp02oJrNXda4J
-         LF39L+d0iqOTLrYLn+dLRVsMikm9klPOd3l7J8au3O91IB8c9hUkaNvbxZ+TKELO5M2T
-         D9K1dznGlGMuzudgpCnWe+QPyn4L7LXIC4YR2LHOeMN5xDUcLsYTIjjPON6zF61vyTbX
-         xiLA==
-X-Gm-Message-State: AOAM533UehoS7OWHei6X6VAQxGuhydk6zlnEatjS2SDPZhhzM+gsBtEk
-        u1/4yAg0O5pX4TqlbH5EVae/1vDiFxRO7dyd1zj00x+wzySezE22ew/x9Zedl5KzOjchPuLuRQb
-        ixMPkDK8irGqGSG4YwQnyuWjX
-X-Received: by 2002:a17:906:4714:: with SMTP id y20mr11266322ejq.235.1621863362960;
-        Mon, 24 May 2021 06:36:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrB+HntDmfllKmZV7OfrD2S77X7t2bGH5QT3Yr0wq41gHiubUsw3kmfGsTv7xcMeF6bxT7Dw==
-X-Received: by 2002:a17:906:4714:: with SMTP id y20mr11266295ejq.235.1621863362747;
-        Mon, 24 May 2021 06:36:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v12sm9816149edb.81.2021.05.24.06.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:36:02 -0700 (PDT)
-Subject: Re: [PATCH v2 09/10] KVM: selftests: allow using UFFD minor faults
- for demand paging
-To:     Ben Gardon <bgardon@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-References: <20210519200339.829146-1-axelrasmussen@google.com>
- <20210519200339.829146-10-axelrasmussen@google.com>
- <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b02ff62b-13e8-9ebb-7002-04b0d47ba410@redhat.com>
-Date:   Mon, 24 May 2021 15:36:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=24xHs/c9+Vn16SJ80N4lzJM1aJdYpt55ltlqUdwqHiM=;
+        b=dBre84uIXDoOVVb9y8As/O0jGZ2lnxMU7bg+4IC61wJuwfit5TSwiPVUrFrXu/qDDG
+         8Q9tukqFeTp/UnlWbnepbDAn1bldiDKzT/M5Tuq6+JftnDoMI+wnRiY0utgXsGMAMA7t
+         B4FYmCgKE/G2hrbnDxgUnQ8u+L83IoOedvCeA5T5IehyPFmfdIfYdH1jJ1i7GMlbEQG2
+         cFu+2qB4vO7+qmOom59cDXyyUDMcF69KPAI9syn1ojfQqsX93r0P5We+R2nuZbP5U1Dw
+         vGxcJTQooy7QPVGJ8m5Po5dYuXvmkHqdEwzsi9IfSFWXmZHJZTm2lL9HaRsotUjloYQv
+         3/1Q==
+X-Gm-Message-State: AOAM530jMgUeYtyuuX4q+NaZUz6sE4ivSch2uZjK6Vie82cMx27cknWV
+        wDAIr39fX7h/+o2NMdSlMlq/4nzhSz9Zd5pG
+X-Google-Smtp-Source: ABdhPJydfIwNrfnLYpzRXfkHv1vSE7Dm7d9+TjuXhyGEKX4kxaKS44Tuor1padPABacZRVuMCVduYg==
+X-Received: by 2002:a17:90a:e291:: with SMTP id d17mr25040930pjz.42.1621863536924;
+        Mon, 24 May 2021 06:38:56 -0700 (PDT)
+Received: from vessel.. ([103.242.196.149])
+        by smtp.gmail.com with ESMTPSA id n69sm4876274pfd.132.2021.05.24.06.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 06:38:56 -0700 (PDT)
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, gustavoars@kernel.org,
+        wanghai38@huawei.com
+Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] net: appletalk: cops: Fix data race in cops_probe1
+Date:   Mon, 24 May 2021 19:07:12 +0530
+Message-Id: <20210524133712.15720-1-saubhik.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/21 00:20, Ben Gardon wrote:
->> +       printf("usage: %s [-h] [-m mode] [-u mode] [-d uffd_delay_usec]\n"
-> NIT: maybe use uffd_mode or some word other than mode here to
-> disambiguate with -m
-> 
+In cops_probe1(), there is a write to dev->base_addr after requesting an
+interrupt line and registering the interrupt handler cops_interrupt().
+The handler might be called in parallel to handle an interrupt.
+cops_interrupt() tries to read dev->base_addr leading to a potential
+data race. So write to dev->base_addr before calling request_irq().
 
-Changed to "[-m vm_mode] [-u uffd_mode]".
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Paolo
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+---
+ drivers/net/appletalk/cops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
+index ba8e70a8e312..6b12ce822e51 100644
+--- a/drivers/net/appletalk/cops.c
++++ b/drivers/net/appletalk/cops.c
+@@ -327,6 +327,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			break;
+ 	}
+ 
++	dev->base_addr = ioaddr;
++
+ 	/* Reserve any actual interrupt. */
+ 	if (dev->irq) {
+ 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
+@@ -334,8 +336,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
+ 			goto err_out;
+ 	}
+ 
+-	dev->base_addr = ioaddr;
+-
+         lp = netdev_priv(dev);
+         spin_lock_init(&lp->lock);
+ 
+-- 
+2.30.2
 
