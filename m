@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9865F38EAFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FB138EAE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbhEXO7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:59:08 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3988 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbhEXOvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:51:53 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fpg72504xzmZsw;
-        Mon, 24 May 2021 22:47:58 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:18 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:18 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 06/10] net: wan: add some required spaces
-Date:   Mon, 24 May 2021 22:47:13 +0800
-Message-ID: <1621867637-2680-7-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+        id S233082AbhEXO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:58:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233632AbhEXOxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F28A6142A;
+        Mon, 24 May 2021 14:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621867703;
+        bh=ZqLak8BtxpSBoSac6F+jFOun1e3iSVOTf+B9UAhpitk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=d8540NV+4lyBm7Z4sf07Mv+WA7x9CAkHGz9tAT+GKk8ifqBd0SKFyp9UzLDQRr+pE
+         XNsIbasn6kzrOJE9L+w63UcfpfnAL2KIKund3x1OZ2LubTH00SArGxOF6GXzXflwM4
+         wFSlQbv7BHc5gyJegXe6ICUKb7MGwb0kzJO4+CB7cJlM2C5tZuB2vRMDswaNb2srjL
+         CLcDtQ8cXa8VcxDjsZUAbsXmYcHvWaisJzLHkWEGw1wAvFtbb8C4y/45m49rgLc9Qa
+         DvafM0qwDjaS8V2+ZYJvTYX4qomjAU19/wyEAkNuK9xVIPjU/AtBPVdrcyRlJ75o45
+         zX5TUGhkAEUHA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com
+Subject: [PATCH AUTOSEL 5.10 32/62] ASoC: cs43130: handle errors in cs43130_probe() properly
+Date:   Mon, 24 May 2021 10:47:13 -0400
+Message-Id: <20210524144744.2497894-32-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
+References: <20210524144744.2497894-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Add space required after that close brace '}'.
-Add space required before the open parenthesis '('.
+[ Upstream commit 2da441a6491d93eff8ffff523837fd621dc80389 ]
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+cs43130_probe() does not do any valid error checking of things it
+initializes, OR what it does, it does not unwind properly if there are
+errors.
+
+Fix this up by moving the sysfs files to an attribute group so the
+driver core will correctly add/remove them all at once and handle errors
+with them, and correctly check for creating a new workqueue and
+unwinding if that fails.
+
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-58-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/wanxl.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs43130.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
-index 7e5bf207a142..7965c648f3eb 100644
---- a/drivers/net/wan/wanxl.c
-+++ b/drivers/net/wan/wanxl.c
-@@ -111,7 +111,7 @@ static inline void wanxl_cable_intr(struct port *port)
- 	int valid = 1;
- 	const char *cable, *pm, *dte = "", *dsr = "", *dcd = "";
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index bb46e993c353..8f70dee95878 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -1735,6 +1735,14 @@ static DEVICE_ATTR(hpload_dc_r, 0444, cs43130_show_dc_r, NULL);
+ static DEVICE_ATTR(hpload_ac_l, 0444, cs43130_show_ac_l, NULL);
+ static DEVICE_ATTR(hpload_ac_r, 0444, cs43130_show_ac_r, NULL);
  
--	switch(value & 0x7) {
-+	switch (value & 0x7) {
- 	case STATUS_CABLE_V35:
- 		cable = "V.35";
- 		break;
-@@ -131,7 +131,7 @@ static inline void wanxl_cable_intr(struct port *port)
- 		cable = "invalid";
++static struct attribute *hpload_attrs[] = {
++	&dev_attr_hpload_dc_l.attr,
++	&dev_attr_hpload_dc_r.attr,
++	&dev_attr_hpload_ac_l.attr,
++	&dev_attr_hpload_ac_r.attr,
++};
++ATTRIBUTE_GROUPS(hpload);
++
+ static struct reg_sequence hp_en_cal_seq[] = {
+ 	{CS43130_INT_MASK_4, CS43130_INT_MASK_ALL},
+ 	{CS43130_HP_MEAS_LOAD_1, 0},
+@@ -2302,23 +2310,15 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 
+ 	cs43130->hpload_done = false;
+ 	if (cs43130->dc_meas) {
+-		ret = device_create_file(component->dev, &dev_attr_hpload_dc_l);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_dc_r);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_ac_l);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_ac_r);
+-		if (ret < 0)
++		ret = sysfs_create_groups(&component->dev->kobj, hpload_groups);
++		if (ret)
+ 			return ret;
+ 
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
++		if (!cs43130->wq) {
++			sysfs_remove_groups(&component->dev->kobj, hpload_groups);
++			return -ENOMEM;
++		}
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
  	}
  
--	switch((value >> STATUS_CABLE_PM_SHIFT) & 0x7) {
-+	switch ((value >> STATUS_CABLE_PM_SHIFT) & 0x7) {
- 	case STATUS_CABLE_V35:
- 		pm = "V.35";
- 		break;
-@@ -484,7 +484,7 @@ static int wanxl_puts_command(struct card *card, u32 cmd)
- 			return 0;
- 
- 		schedule();
--	}while (time_after(timeout, jiffies));
-+	} while (time_after(timeout, jiffies));
- 
- 	return -1;
- }
-@@ -654,7 +654,7 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
- 			return -ENODEV;
- 		}
- 
--		switch(stat & 0xC0) {
-+		switch (stat & 0xC0) {
- 		case 0x00:	/* hmm - PUTS completed with non-zero code? */
- 		case 0x80:	/* PUTS still testing the hardware */
- 			break;
-@@ -733,7 +733,7 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
- 		if ((stat = readl(card->plx + PLX_MAILBOX_5)) != 0)
- 			break;
- 		schedule();
--	}while (time_after(timeout, jiffies));
-+	} while (time_after(timeout, jiffies));
- 
- 	if (!stat) {
- 		pr_warn("%s: timeout while initializing card firmware\n",
 -- 
-2.8.1
+2.30.2
 
