@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B623438EF98
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0380538EE4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhEXP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
+        id S232897AbhEXPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234733AbhEXPyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E57961422;
-        Mon, 24 May 2021 15:39:41 +0000 (UTC)
+        id S234228AbhEXPn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 804A7613C8;
+        Mon, 24 May 2021 15:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870781;
-        bh=MQPWFhuDBxFHafnOD0b0OKwcznXauzBzgd4vPtxUXgI=;
+        s=korg; t=1621870534;
+        bh=LyOy+xlsooxbKqYUi7vUL9d6aQqlJNqEBv3mbHSy47o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pY/KooBtyoHQXWXvKvyEyFISJEujmFKRluZw2R9bCmvwgGE7n+OwMTNIz0Xw2Q3AA
-         yjkwEmkV2+46Z1E5j8sQdt6SATHIS6980HPDBPSmXSAGqD7D/1UKQTOfc2r0impBTZ
-         QFhBCsfutIcJWdl2ohzg1MSneRaYbkx/IkOcmqrM=
+        b=PjDh/WdBOUExa8sOzTpUp2HbDB1AGaeRglrA+PJGMkzh4fFxJ8SfL1G3o+O47hu6U
+         jtMYNqLaKeyJ0ffATEVkHpJoo8yMJqE6/nvkEFTiJZwd8lnnH9efCyILcYbAOndI4D
+         gmMfoggPmrdxteZ0j70PiSJi6ukpbrSnyjKC9QYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 032/104] cifs: fix memory leak in smb2_copychunk_range
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 16/49] Revert "ALSA: sb8: add a check for request_region"
 Date:   Mon, 24 May 2021 17:25:27 +0200
-Message-Id: <20210524152333.881710396@linuxfoundation.org>
+Message-Id: <20210524152324.906170378@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
+commit 94f88309f201821073f57ae6005caefa61bf7b7e upstream.
 
-When using smb2_copychunk_range() for large ranges we will
-run through several iterations of a loop calling SMB2_ioctl()
-but never actually free the returned buffer except for the final
-iteration.
-This leads to memory leaks everytime a large copychunk is requested.
+This reverts commit dcd0feac9bab901d5739de51b3f69840851f8919.
 
-Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit message for this change was incorrect as the code
+path can never result in a NULL dereference, alluding to the fact that
+whatever tool was used to "find this" is broken.  It's just an optional
+resource reservation, so removing this check is fine.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Acked-by: Takashi Iwai <tiwai@suse.de>
+Fixes: dcd0feac9bab ("ALSA: sb8: add a check for request_region")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-35-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/smb2ops.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/isa/sb/sb8.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -1764,6 +1764,8 @@ smb2_copychunk_range(const unsigned int
- 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
+--- a/sound/isa/sb/sb8.c
++++ b/sound/isa/sb/sb8.c
+@@ -111,10 +111,6 @@ static int snd_sb8_probe(struct device *
  
- 		/* Request server copy to target from src identified by key */
-+		kfree(retbuf);
-+		retbuf = NULL;
- 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
- 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
- 			true /* is_fsctl */, (char *)pcchunk,
+ 	/* block the 0x388 port to avoid PnP conflicts */
+ 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
+-	if (!acard->fm_res) {
+-		err = -EBUSY;
+-		goto _err;
+-	}
+ 
+ 	if (port[dev] != SNDRV_AUTO_PORT) {
+ 		if ((err = snd_sbdsp_create(card, port[dev], irq[dev],
 
 
