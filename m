@@ -2,189 +2,445 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5DA38F230
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CF938F238
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhEXRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 13:24:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:45608 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232543AbhEXRYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 13:24:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E023ED1;
-        Mon, 24 May 2021 10:22:39 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2C3253F73B;
-        Mon, 24 May 2021 10:22:38 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cedric Le Goater <clg@fr.ibm.com>,
-        Christian Brauner <christian@brauner.io>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Paul Mackerras <paulus@samba.org>, stable@kernel.org
-Subject: [PATCH] pid: take a reference when initializing `cad_pid`
-Date:   Mon, 24 May 2021 18:22:30 +0100
-Message-Id: <20210524172230.38715-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S233106AbhEXR1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 13:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhEXR1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 13:27:12 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488DEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:25:44 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id q7so40396233lfr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:25:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mVUpnYRcjJBsN8s+5F3r6338w4G3SMvUP8o1J96tnmk=;
+        b=AL3VhVp/mhBbQ0yBTyUmqwKf2L69435zF3JqfrpaiqscF9P+EtBELIhGMvh3YzbMz4
+         kCUJaEvmtO6dCjcUI/w8rlNCODqU1ygkHzhBuGuyTW+TS8+MkMTZqhSAqZLgUIKC1589
+         dhrayctMbGgBrTK1ViRBuT2N9A3OuYFzJaeRpk54I6UNl/JQzN3vDti8D0rd3WvlOU3o
+         8dK3qXXFHT/phXK3EMINec+PxIPQOSaONnCFN8WBTzTYWkoNpWhjGQXXrbp/H33Eg4ba
+         5K9lwSOIhiNzlsisxUW8CCsxYwOn3X1qdVzBd7ejyJyIfSsiLQfNrzasNPDZUANZEiVu
+         YApg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mVUpnYRcjJBsN8s+5F3r6338w4G3SMvUP8o1J96tnmk=;
+        b=ePAE4uNX/v3z3cX0/FFI1mCq52/imejqap9vP/E6q7QHLC115SxiwFBrm1XcB5G2FF
+         hnglv60zxjqZ43HTvpMlQkCTC4v2xEoM1yrCevmKapxnP0t7A1rDyEA9QlAZpynGZc1P
+         6Ly0bXDOr6jFF2u18fLG2IQM4PxoZ2hu/EgxEY5c6CVIjZZOQ7gt9xeDYIJN42wrlbgQ
+         k3NuvuJ5jEgZ45eU+Js9PPw8jVtQe1IfHP4wcT/1OlZ9/UZjX2pkKzaZCrTgsjFJI+0u
+         g1zYeae7IcSuz0KFwHIbiVMxt+pG+SwE+/m9ArdxVMZyo56AxpA8Fgtt656z88T+3UNW
+         Gwcg==
+X-Gm-Message-State: AOAM530yyiFODKMiii0RO0fBP6rAr0MtTpKhBCWqX2c5rgF6kYRQH8Bj
+        PWYGQ7fO823iIXq5CaYx/CzSRelLI5C1qR0W6+wqMw==
+X-Google-Smtp-Source: ABdhPJz2XDU9vg8Xi5S+I6j9eUZY7zH4o1R2oNe7QfH244oFyOCsEgn/1usMQH83yCAxspej0B3oYZWxwQhl9miKO/c=
+X-Received: by 2002:ac2:53b0:: with SMTP id j16mr11021841lfh.122.1621877142203;
+ Mon, 24 May 2021 10:25:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210513232701.411773-1-rajatja@google.com> <20210521205407.GA270280@bjorn-Precision-5520>
+In-Reply-To: <20210521205407.GA270280@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 24 May 2021 10:25:06 -0700
+Message-ID: <CACK8Z6EsX27pyakKbdH-tjV+=m1QZ+KzFD-A-BNXX-tkOjtt9g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] driver core: Move the "removable" attribute from
+ USB to core
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During boot, kernel_init_freeable() initializes `cad_pid` to the init
-task's struct pid. Later on, we may change `cad_pid` via a sysctl, and
-when this happens proc_do_cad_pid() will increment the refcount on the
-new pid via get_pid(), and will decrement the refcount on the old pid
-via put_pid(). As we never called get_pid() when we initialized
-`cad_pid`, we decrement a reference we never incremented, can therefore
-free the init task's struct pid early. As there can be dangling
-references to the struct pid, we can later encounter a use-after-free
-(e.g. when delivering signals).
+On Fri, May 21, 2021 at 1:54 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, May 13, 2021 at 04:27:00PM -0700, Rajat Jain wrote:
+> > Move the "removable" attribute from USB to core in order to allow it to be
+> > supported by other subsystem / buses. Individual buses that want to support
+> > this attribute can populate the removable property of the device while
+> > enumerating it with the 3 possible values -
+> >  - "unknown"
+> >  - "fixed"
+> >  - "removable"
+> > Leaving the field unchanged (i.e. "not supported") would mean that the
+> > attribute would not show up in sysfs for that device. The UAPI (location,
+> > symantics etc) for the attribute remains unchanged.
+>
+> Looks nice!
+>
+> Maybe the mini usage guide here could be a little more explicit, e.g.,
+>
+>   Move the "removable" attribute from USB to the device core so it can
+>   be used by other subsystems / buses.
+>
+>   By default, devices do not have a "removable" attribute in sysfs.
+>
+>   If a subsystem or bus driver wants to support a "removable"
+>   attribute, it should call device_set_removable() before calling
+>   device_register() or device_add(), e.g.,
+>
+>     device_set_removable(dev, DEVICE_REMOVABLE);
+>     device_register(dev);
+>
+>   The possible values and the resulting sysfs attribute contents are:
+>
+>     DEVICE_REMOVABLE_UNKNOWN  ->  "unknown"
+>     DEVICE_REMOVABLE          ->  "removable"
+>     DEVICE_FIXED              ->  "fixed"
+>
+>   Convert the USB "removable" attribute to use this new device core
+>   functionality.  There should be no user-visible change in the
+>   location or semantics of attribute for USB devices.
+>
+> > Signed-off-by: Rajat Jain <rajatja@google.com>
+>
+> Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+>
+> Minor comment below, reviewed-by applies whether or not you do
+> anything.
 
-This was spotted when fuzzing v5.13-rc3 with Syzkaller, but seems to
-have been around since the conversion of `cad_pid` to struct pid in
-commit:
+Thanks Bjorn  for your review, I took care of both the comments and
+updated the commit log.
 
-  9ec52099e4b8678a ("[PATCH] replace cad_pid by a struct pid")
+>
+> > ---
+> > v4: - instead of devicce_type->supports_removable, add 1 more value in
+> >       device_removable_enum
+> >     - documentation update.
+> >     - Remove "Acked-by" and "Reviewed-by" tags from previous versions.
+> > v3: - Minor commit log / comments updated.
+> >     - use sysfs_emit()
+> >     - Rename local variable name (state -> loc)
+> >     - change supports_removable flag from bool to bitfield.
+> > v2: Add documentation
+> >
+> >  Documentation/ABI/testing/sysfs-bus-usb       | 11 ------
+> >  .../ABI/testing/sysfs-devices-removable       | 17 +++++++++
+> >  drivers/base/core.c                           | 28 ++++++++++++++
+> >  drivers/usb/core/hub.c                        | 13 ++++---
+> >  drivers/usb/core/sysfs.c                      | 24 ------------
+> >  include/linux/device.h                        | 37 +++++++++++++++++++
+> >  include/linux/usb.h                           |  7 ----
+> >  7 files changed, 89 insertions(+), 48 deletions(-)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-devices-removable
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
+> > index bf2c1968525f..73eb23bc1f34 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-usb
+> > +++ b/Documentation/ABI/testing/sysfs-bus-usb
+> > @@ -154,17 +154,6 @@ Description:
+> >               files hold a string value (enable or disable) indicating whether
+> >               or not USB3 hardware LPM U1 or U2 is enabled for the device.
+> >
+> > -What:                /sys/bus/usb/devices/.../removable
+> > -Date:                February 2012
+> > -Contact:     Matthew Garrett <mjg@redhat.com>
+> > -Description:
+> > -             Some information about whether a given USB device is
+> > -             physically fixed to the platform can be inferred from a
+> > -             combination of hub descriptor bits and platform-specific data
+> > -             such as ACPI. This file will read either "removable" or
+> > -             "fixed" if the information is available, and "unknown"
+> > -             otherwise.
+> > -
+> >  What:                /sys/bus/usb/devices/.../ltm_capable
+> >  Date:                July 2012
+> >  Contact:     Sarah Sharp <sarah.a.sharp@linux.intel.com>
+> > diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> > new file mode 100644
+> > index 000000000000..acf7766e800b
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> > @@ -0,0 +1,17 @@
+> > +What:                /sys/devices/.../removable
+> > +Date:                May 2021
+> > +Contact:     Rajat Jain <rajatxjain@gmail.com>
+> > +Description:
+> > +             Information about whether a given device can be removed from the
+> > +             platform by the user. This is determined by its subsystem in a
+> > +             bus / platform-specific way. This attribute is only present for
+> > +             devices that can support determining such information:
+> > +
+> > +             "removable": device can be removed from the platform by the user
+> > +             "fixed":     device is fixed to the platform / cannot be removed
+> > +                          by the user.
+> > +             "unknown":   The information is unavailable / cannot be deduced.
+> > +
+> > +             Currently this is only supported by USB (which infers the
+> > +             information from a combination of hub descriptor bits and
+> > +             platform-specific data such as ACPI).
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 4a8bf8cda52b..ae3d6a4a79fb 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -2404,6 +2404,25 @@ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+> >  }
+> >  static DEVICE_ATTR_RW(online);
+> >
+> > +static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+> > +                           char *buf)
+> > +{
+> > +     const char *loc;
+> > +
+> > +     switch (dev->removable) {
+> > +     case DEVICE_REMOVABLE:
+> > +             loc = "removable";
+> > +             break;
+> > +     case DEVICE_FIXED:
+> > +             loc = "fixed";
+> > +             break;
+> > +     default:
+> > +             loc = "unknown";
+> > +     }
+> > +     return sysfs_emit(buf, "%s\n", loc);
+> > +}
+> > +static DEVICE_ATTR_RO(removable);
+> > +
+> >  int device_add_groups(struct device *dev, const struct attribute_group **groups)
+> >  {
+> >       return sysfs_create_groups(&dev->kobj, groups);
+> > @@ -2581,8 +2600,16 @@ static int device_add_attrs(struct device *dev)
+> >                       goto err_remove_dev_online;
+> >       }
+> >
+> > +     if (dev_removable_is_valid(dev)) {
+> > +             error = device_create_file(dev, &dev_attr_removable);
+> > +             if (error)
+> > +                     goto err_remove_dev_waiting_for_supplier;
+> > +     }
+> > +
+> >       return 0;
+> >
+> > + err_remove_dev_waiting_for_supplier:
+> > +     device_remove_file(dev, &dev_attr_waiting_for_supplier);
+> >   err_remove_dev_online:
+> >       device_remove_file(dev, &dev_attr_online);
+> >   err_remove_dev_groups:
+> > @@ -2602,6 +2629,7 @@ static void device_remove_attrs(struct device *dev)
+> >       struct class *class = dev->class;
+> >       const struct device_type *type = dev->type;
+> >
+> > +     device_remove_file(dev, &dev_attr_removable);
+> >       device_remove_file(dev, &dev_attr_waiting_for_supplier);
+> >       device_remove_file(dev, &dev_attr_online);
+> >       device_remove_groups(dev, dev->groups);
+> > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> > index b2bc4b7c4289..366cb7ef3b72 100644
+> > --- a/drivers/usb/core/hub.c
+> > +++ b/drivers/usb/core/hub.c
+> > @@ -2432,6 +2432,8 @@ static void set_usb_port_removable(struct usb_device *udev)
+> >       u16 wHubCharacteristics;
+> >       bool removable = true;
+> >
+> > +     dev_set_removable(&udev->dev, DEVICE_REMOVABLE_UNKNOWN);
+> > +
+> >       if (!hdev)
+> >               return;
+> >
+> > @@ -2443,11 +2445,11 @@ static void set_usb_port_removable(struct usb_device *udev)
+> >        */
+> >       switch (hub->ports[udev->portnum - 1]->connect_type) {
+> >       case USB_PORT_CONNECT_TYPE_HOT_PLUG:
+> > -             udev->removable = USB_DEVICE_REMOVABLE;
+> > +             dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+> >               return;
+> >       case USB_PORT_CONNECT_TYPE_HARD_WIRED:
+> >       case USB_PORT_NOT_USED:
+> > -             udev->removable = USB_DEVICE_FIXED;
+> > +             dev_set_removable(&udev->dev, DEVICE_FIXED);
+> >               return;
+> >       default:
+> >               break;
+> > @@ -2472,9 +2474,9 @@ static void set_usb_port_removable(struct usb_device *udev)
+> >       }
+> >
+> >       if (removable)
+> > -             udev->removable = USB_DEVICE_REMOVABLE;
+> > +             dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+> >       else
+> > -             udev->removable = USB_DEVICE_FIXED;
+> > +             dev_set_removable(&udev->dev, DEVICE_FIXED);
+> >
+> >  }
+> >
+> > @@ -2546,8 +2548,7 @@ int usb_new_device(struct usb_device *udev)
+> >       device_enable_async_suspend(&udev->dev);
+> >
+> >       /* check whether the hub or firmware marks this port as non-removable */
+> > -     if (udev->parent)
+> > -             set_usb_port_removable(udev);
+> > +     set_usb_port_removable(udev);
+> >
+> >       /* Register the device.  The device driver is responsible
+> >        * for configuring the device and invoking the add-device
+> > diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+> > index 5a168ba9fc51..fa2e49d432ff 100644
+> > --- a/drivers/usb/core/sysfs.c
+> > +++ b/drivers/usb/core/sysfs.c
+> > @@ -301,29 +301,6 @@ static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
+> >  }
+> >  static DEVICE_ATTR_RO(urbnum);
+> >
+> > -static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+> > -                           char *buf)
+> > -{
+> > -     struct usb_device *udev;
+> > -     char *state;
+> > -
+> > -     udev = to_usb_device(dev);
+> > -
+> > -     switch (udev->removable) {
+> > -     case USB_DEVICE_REMOVABLE:
+> > -             state = "removable";
+> > -             break;
+> > -     case USB_DEVICE_FIXED:
+> > -             state = "fixed";
+> > -             break;
+> > -     default:
+> > -             state = "unknown";
+> > -     }
+> > -
+> > -     return sprintf(buf, "%s\n", state);
+> > -}
+> > -static DEVICE_ATTR_RO(removable);
+> > -
+> >  static ssize_t ltm_capable_show(struct device *dev,
+> >                               struct device_attribute *attr, char *buf)
+> >  {
+> > @@ -828,7 +805,6 @@ static struct attribute *dev_attrs[] = {
+> >       &dev_attr_avoid_reset_quirk.attr,
+> >       &dev_attr_authorized.attr,
+> >       &dev_attr_remove.attr,
+> > -     &dev_attr_removable.attr,
+> >       &dev_attr_ltm_capable.attr,
+> >  #ifdef CONFIG_OF
+> >       &dev_attr_devspec.attr,
+> > diff --git a/include/linux/device.h b/include/linux/device.h
+> > index 38a2071cf776..e3a4749694b7 100644
+> > --- a/include/linux/device.h
+> > +++ b/include/linux/device.h
+> > @@ -350,6 +350,22 @@ enum dl_dev_state {
+> >       DL_DEV_UNBINDING,
+> >  };
+> >
+> > +/**
+> > + * enum device_removable - Whether the device is removable. The criteria for a
+> > + * device to be classified as removable is determined by its subsystem or bus.
+> > + * @DEVICE_REMOVABLE_NOT_SUPPORTED: This attribute is not supported for this
+> > + *                               device (default).
+> > + * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown.
+> > + * @DEVICE_FIXED: Device is not removable by the user.
+> > + * @DEVICE_REMOVABLE: Device is removable by the user.
+> > + */
+> > +enum device_removable {
+> > +     DEVICE_REMOVABLE_NOT_SUPPORTED = 0, /* must be 0 */
+> > +     DEVICE_REMOVABLE_UNKNOWN,
+> > +     DEVICE_FIXED,
+> > +     DEVICE_REMOVABLE,
+> > +};
+> > +
+> >  /**
+> >   * struct dev_links_info - Device data related to device links.
+> >   * @suppliers: List of links to supplier devices.
+> > @@ -431,6 +447,9 @@ struct dev_links_info {
+> >   *           device (i.e. the bus driver that discovered the device).
+> >   * @iommu_group: IOMMU group the device belongs to.
+> >   * @iommu:   Per device generic IOMMU runtime data
+> > + * @removable:  Whether the device can be removed from the system. This
+> > + *              should be set by the subsystem / bus driver that discovered
+> > + *              the device.
+> >   *
+> >   * @offline_disabled: If set, the device is permanently online.
+> >   * @offline: Set after successful invocation of bus type's .offline().
+> > @@ -544,6 +563,8 @@ struct device {
+> >       struct iommu_group      *iommu_group;
+> >       struct dev_iommu        *iommu;
+> >
+> > +     enum device_removable   removable;
+> > +
+> >       bool                    offline_disabled:1;
+> >       bool                    offline:1;
+> >       bool                    of_node_reused:1;
+> > @@ -782,6 +803,22 @@ static inline bool dev_has_sync_state(struct device *dev)
+> >       return false;
+> >  }
+> >
+> > +static inline void dev_set_removable(struct device *dev,
+> > +                                  enum device_removable removable)
+> > +{
+> > +     dev->removable = removable;
+> > +}
+> > +
+> > +static inline bool dev_is_removable(struct device *dev)
+> > +{
+> > +     return dev && dev->removable == DEVICE_REMOVABLE;
+> > +}
+> > +
+> > +static inline bool dev_removable_is_valid(struct device *dev)
+> > +{
+> > +     return dev && dev->removable != DEVICE_REMOVABLE_NOT_SUPPORTED;
+>
+> I probably wouldn't check for "dev" being non-NULL in these two
+> functions unless you have a use case that requires it.
 
-... from the pre-KASAN stone age of v2.6.19.
+Done, I removed the check and submitted the v5 here:
+https://lore.kernel.org/patchwork/patch/1435682/
 
-Fix this by getting a reference to the init task's struct pid when we
-assign it to `cad_pid`.
+Thanks,
 
-Full KASAN splat below.
+Rajat
 
-==================================================================
-BUG: KASAN: use-after-free in ns_of_pid include/linux/pid.h:153 [inline]
-BUG: KASAN: use-after-free in task_active_pid_ns+0xc0/0xc8 kernel/pid.c:509
-Read of size 4 at addr ffff23794dda0004 by task syz-executor.0/273
 
-CPU: 1 PID: 273 Comm: syz-executor.0 Not tainted 5.12.0-00001-g9aef892b2d15 #1
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x0/0x4a8 arch/arm64/kernel/stacktrace.c:105
- show_stack+0x34/0x48 arch/arm64/kernel/stacktrace.c:191
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x1d4/0x2a0 lib/dump_stack.c:120
- print_address_description.constprop.11+0x60/0x3a8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report+0x1e8/0x200 mm/kasan/report.c:416
- __asan_report_load4_noabort+0x30/0x48 mm/kasan/report_generic.c:308
- ns_of_pid include/linux/pid.h:153 [inline]
- task_active_pid_ns+0xc0/0xc8 kernel/pid.c:509
- do_notify_parent+0x308/0xe60 kernel/signal.c:1950
- exit_notify kernel/exit.c:682 [inline]
- do_exit+0x2334/0x2bd0 kernel/exit.c:845
- do_group_exit+0x108/0x2c8 kernel/exit.c:922
- get_signal+0x4e4/0x2a88 kernel/signal.c:2781
- do_signal arch/arm64/kernel/signal.c:882 [inline]
- do_notify_resume+0x300/0x970 arch/arm64/kernel/signal.c:936
- work_pending+0xc/0x2dc
-
-Allocated by task 0:
- kasan_save_stack+0x28/0x58 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- __kasan_slab_alloc+0x88/0xa8 mm/kasan/common.c:460
- kasan_slab_alloc include/linux/kasan.h:223 [inline]
- slab_post_alloc_hook+0x50/0x5c0 mm/slab.h:516
- slab_alloc_node mm/slub.c:2907 [inline]
- slab_alloc mm/slub.c:2915 [inline]
- kmem_cache_alloc+0x1f4/0x4c0 mm/slub.c:2920
- alloc_pid+0xdc/0xc00 kernel/pid.c:180
- copy_process+0x2794/0x5e18 kernel/fork.c:2129
- kernel_clone+0x194/0x13c8 kernel/fork.c:2500
- kernel_thread+0xd4/0x110 kernel/fork.c:2552
- rest_init+0x44/0x4a0 init/main.c:687
- arch_call_rest_init+0x1c/0x28
- start_kernel+0x520/0x554 init/main.c:1064
- 0x0
-
-Freed by task 270:
- kasan_save_stack+0x28/0x58 mm/kasan/common.c:38
- kasan_set_track+0x28/0x40 mm/kasan/common.c:46
- kasan_set_free_info+0x28/0x50 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf4/0x148 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x98/0x260 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kmem_cache_free+0x224/0x8e0 mm/slub.c:3177
- put_pid.part.4+0xe0/0x1a8 kernel/pid.c:114
- put_pid+0x30/0x48 kernel/pid.c:109
- proc_do_cad_pid+0x190/0x1b0 kernel/sysctl.c:1401
- proc_sys_call_handler+0x338/0x4b0 fs/proc/proc_sysctl.c:591
- proc_sys_write+0x34/0x48 fs/proc/proc_sysctl.c:617
- call_write_iter include/linux/fs.h:1977 [inline]
- new_sync_write+0x3ac/0x510 fs/read_write.c:518
- vfs_write fs/read_write.c:605 [inline]
- vfs_write+0x9c4/0x1018 fs/read_write.c:585
- ksys_write+0x124/0x240 fs/read_write.c:658
- __do_sys_write fs/read_write.c:670 [inline]
- __se_sys_write fs/read_write.c:667 [inline]
- __arm64_sys_write+0x78/0xb0 fs/read_write.c:667
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
- el0_svc_common.constprop.1+0x16c/0x388 arch/arm64/kernel/syscall.c:129
- do_el0_svc+0xf8/0x150 arch/arm64/kernel/syscall.c:168
- el0_svc+0x28/0x38 arch/arm64/kernel/entry-common.c:416
- el0_sync_handler+0x134/0x180 arch/arm64/kernel/entry-common.c:432
- el0_sync+0x154/0x180 arch/arm64/kernel/entry.S:701
-
-The buggy address belongs to the object at ffff23794dda0000
- which belongs to the cache pid of size 224
-The buggy address is located 4 bytes inside of
- 224-byte region [ffff23794dda0000, ffff23794dda00e0)
-The buggy address belongs to the page:
-page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4dda0
-head:(____ptrval____) order:1 compound_mapcount:0
-flags: 0x3fffc0000010200(slab|head)
-raw: 03fffc0000010200 dead000000000100 dead000000000122 ffff23794d40d080
-raw: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff23794dd9ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff23794dd9ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff23794dda0000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff23794dda0080: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
- ffff23794dda0100: fc fc fc fc fc fc fc fc 00 00 00 00 00 00 00 00
-==================================================================
-
-Fixes: 9ec52099e4b8678a ("[PATCH] replace cad_pid by a struct pid")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Cedric Le Goater <clg@fr.ibm.com>
-Cc: Christian Brauner <christian@brauner.io>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Kees Cook <keescook@chromium.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: stable@kernel.org
----
- init/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/init/main.c b/init/main.c
-index eb01e121d2f1..e9c42a183e33 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1537,7 +1537,7 @@ static noinline void __init kernel_init_freeable(void)
- 	 */
- 	set_mems_allowed(node_states[N_MEMORY]);
- 
--	cad_pid = task_pid(current);
-+	cad_pid = get_pid(task_pid(current));
- 
- 	smp_prepare_cpus(setup_max_cpus);
- 
--- 
-2.11.0
-
+>
+> > +}
+> > +
+> >  /*
+> >   * High level routines for use by the bus drivers
+> >   */
+> > diff --git a/include/linux/usb.h b/include/linux/usb.h
+> > index eaae24217e8a..b9bd664f44a1 100644
+> > --- a/include/linux/usb.h
+> > +++ b/include/linux/usb.h
+> > @@ -473,12 +473,6 @@ struct usb_dev_state;
+> >
+> >  struct usb_tt;
+> >
+> > -enum usb_device_removable {
+> > -     USB_DEVICE_REMOVABLE_UNKNOWN = 0,
+> > -     USB_DEVICE_REMOVABLE,
+> > -     USB_DEVICE_FIXED,
+> > -};
+> > -
+> >  enum usb_port_connect_type {
+> >       USB_PORT_CONNECT_TYPE_UNKNOWN = 0,
+> >       USB_PORT_CONNECT_TYPE_HOT_PLUG,
+> > @@ -703,7 +697,6 @@ struct usb_device {
+> >  #endif
+> >       struct wusb_dev *wusb_dev;
+> >       int slot_id;
+> > -     enum usb_device_removable removable;
+> >       struct usb2_lpm_parameters l1_params;
+> >       struct usb3_lpm_parameters u1_params;
+> >       struct usb3_lpm_parameters u2_params;
+> > --
+> > 2.31.1.751.gd2f1c929bd-goog
+> >
