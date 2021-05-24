@@ -2,62 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86A538E0F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75FA38E107
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhEXGZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:25:42 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:33716 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231605AbhEXGZk (ORCPT
+        id S232344AbhEXGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 02:32:12 -0400
+Received: from mo-csw1114.securemx.jp ([210.130.202.156]:44256 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhEXGcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:25:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UZssckj_1621837441;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZssckj_1621837441)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 24 May 2021 14:24:07 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     hmh@hmh.eng.br
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com, jdelvare@suse.com,
-        linux@roeck-us.net, ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] platform/x86: thinkpad_acpi: Fix inconsistent indenting
-Date:   Mon, 24 May 2021 14:23:58 +0800
-Message-Id: <1621837438-70790-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 24 May 2021 02:32:05 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 14O6UDpq011752; Mon, 24 May 2021 15:30:13 +0900
+X-Iguazu-Qid: 2wGrTXt2OTZ3JauveJ
+X-Iguazu-QSIG: v=2; s=0; t=1621837813; q=2wGrTXt2OTZ3JauveJ; m=hKCpCsnUM5F0fJr5XiY3dcIMiQR4Kw6R9ZxRrbWz2Lk=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1112) id 14O6UCbf007973
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 24 May 2021 15:30:12 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1302E1000D0;
+        Mon, 24 May 2021 15:30:12 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 14O6UBsj020955;
+        Mon, 24 May 2021 15:30:11 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v3 0/3]  Visconti: Add Toshiba Visconti PCIe host controller driver
+Date:   Mon, 24 May 2021 15:30:01 +0900
+X-TSB-HOP: ON
+Message-Id: <20210524063004.132043-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the follow smatch warning:
+Hi,
 
-drivers/platform/x86/thinkpad_acpi.c:7942 volume_write() warn:
-inconsistent indenting.
+This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -For the follow advice: https://lore.kernel.org/patchwork/patch/1434215/
+Best regards,
+  Nobuhiro
 
- drivers/platform/x86/thinkpad_acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index dd60c93..b7fec1b 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -7938,7 +7938,7 @@ static int volume_write(char *buf)
- 				continue;
- 			} else if (sscanf(cmd, "level %u", &l) == 1 &&
- 				   l >= 0 && l <= TP_EC_VOLUME_MAX) {
--					new_level = l;
-+				new_level = l;
- 				continue;
- 			}
- 		}
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - Remove white space.
+      - Drop num-viewport and bus-range from required.
+      - Drop status line from example.
+      - Drop bus-range from required.
+      - Removed lines defined in pci-bus.yaml from required.
+
+  PCI: Visconti: Add Toshiba Visconti PCIe host controller driver
+    v2 -> v3:
+      - Update subject.
+      - Wrap description in 75 columns.
+      - Change config name to PCIE_VISCONTI_HOST.
+      - Update Kconfig text.
+      - Drop empty lines.
+      - Adjusted to 80 columns.
+      - Drop inline from functions for register access.
+      - Changed function name from visconti_pcie_check_link_status to
+        visconti_pcie_link_up.
+      - Update to using dw_pcie_host_init().
+      - Reorder these in the order of use in visconti_pcie_establish_link().
+      - Rewrite visconti_pcie_host_init() without dw_pcie_setup_rc().
+      - Change function name from  visconti_device_turnon() to
+        visconti_pcie_power_on().
+      - Unify formats such as dev_err().
+      - Drop error label in visconti_add_pcie_port(). 
+    v1 -> v2:
+      - Fix typo in commit message.
+      - Drop "depends on OF && HAS_IOMEM" from Kconfig.
+      - Stop using the pointer of struct dw_pcie.
+      - Use _relaxed variant.
+      - Drop dw_pcie_wait_for_link.
+      - Drop dbi resource processing.
+      - Drop MSI IRQ initialization processing.
+  
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - No update.
+
+Nobuhiro Iwamatsu (3):
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+  PCI: Visconti: Add Toshiba Visconti PCIe host controller driver
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+
+ .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++
+ MAINTAINERS                                   |   2 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-visconti.c    | 369 ++++++++++++++++++
+ 5 files changed, 491 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+
 -- 
-1.8.3.1
-
+2.31.1
