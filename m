@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6844738F645
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96FD38F646
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhEXXeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:34:01 -0400
-Received: from mga09.intel.com ([134.134.136.24]:39314 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhEXXdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:33:53 -0400
-IronPort-SDR: xmGw6oaexb+x57fZxGQqJq/YHAzkn7G4oJc2Br+9i1XU44ijVDqzZRu9qXe5eINOrDujpyIpE9
- SxjDiBFTEJGQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="202074825"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="202074825"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:32:24 -0700
-IronPort-SDR: tMMpTMnSpbpiKlV23esSQpMsNXGRomnh7I0F2BjF87tgEUs7nWFjv+NUOjyJql7bGB9gjztE24
- pzLBDuMWpa9w==
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="476126864"
-Received: from eyoukerh-mobl.ger.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.2.69])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:32:23 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX guest
-Date:   Mon, 24 May 2021 16:32:11 -0700
-Message-Id: <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S229967AbhEXXeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhEXXd5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:33:57 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BEBC061574;
+        Mon, 24 May 2021 16:32:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fptm712zLz9sSn;
+        Tue, 25 May 2021 09:32:23 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621899144;
+        bh=R//UBP3I4gk7Nu1ajpoLEfWbDGM7+Ta6syJtcvbDEl8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RAug8AFFihouSinJi36M5Zv/zn+sEuYy5jiimldYHcz2VabD4BBxlQoFS4/jHXWqp
+         kJPmhB5ja8h6buN4LKk6J5Ot9yPnCEIkB5M1gHzcfqJzsZ5kgXwFcHZixNDK20fQ7F
+         fojHfaU3EejF9CC9oapvcgxIy9cgVUOmG5xUGszHqFvKcJ1+gozmfkSM9xeFSuWaxi
+         lxPcHV1LqsNRE7POFRKk6oqEoXejWNxDWAWxRN9K7wSMnFayaM7SNLE1aQirvDos1z
+         qM/poNoKLDJhwozDVYe9+hbVGnNHChGzUD+Z7UglynezKN5hixOX5ZfPL5y6TzKZEG
+         IapTEaPpkQStA==
+Date:   Tue, 25 May 2021 09:32:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the kvm-fixes tree
+Message-ID: <20210525093221.1b62a5f4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Z1iCdp2gUzSu7CyUEtrQIrb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functionally only DMA devices can notice a side effect from
-WBINVD's cache flushing. But, TDX does not support DMA,
-because DMA typically needs uncached access for MMIO, and
-the current TDX module always sets the IgnorePAT bit, which
-prevents that.
+--Sig_/Z1iCdp2gUzSu7CyUEtrQIrb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So handle the WBINVD instruction as nop. Currently, we did
-not include any warning for WBINVD handling because ACPI
-reboot code uses it. This is the same behavior as KVM. It only
-allows WBINVD in a guest when the guest supports VT-d (=DMA),
-but just handles it as a nop if it doesn't .
+Hi all,
 
-If TDX ever gets DMA support, a hypercall will be added to
-implement it similar to AMD-SEV. But current TDX does not
-support direct DMA.
+After merging the kvm-fixes tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+ERROR: modpost: ".kvm_vcpu_can_poll" [arch/powerpc/kvm/kvm-hv.ko] undefined!
 
-Changes since RFC v2:
- * Fixed commit log as per review comments.
- * Removed WARN_ONCE for WBINVD #VE support.
+Caused by commit
 
- arch/x86/kernel/tdx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+  0fee89fbc44b ("KVM: PPC: exit halt polling on need_resched()")
 
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 3800c7cbace3..21dec5bfc88e 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -511,6 +511,12 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_EPT_VIOLATION:
- 		ve->instr_len = tdg_handle_mmio(regs, ve);
- 		break;
-+	case EXIT_REASON_WBINVD:
-+		/*
-+		 * Non coherent DMA is not supported in TDX guest.
-+		 * So ignore WBINVD and treat it nop.
-+		 */
-+		break;
- 	case EXIT_REASON_MONITOR_INSTRUCTION:
- 	case EXIT_REASON_MWAIT_INSTRUCTION:
- 		/*
--- 
-2.25.1
+I have used the kvm-fixes tree from next-20210524 for today.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Z1iCdp2gUzSu7CyUEtrQIrb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCsN4UACgkQAVBC80lX
+0Gzf4AgAhp0w5DSqtCsrFNqrKkz6dPUXzhLuKVVl57CfATZGdQ0HjgmHcgNwq1jO
+kitQeWxEbWkitDlAfp+LYDXRZp3RdCfU1JF8d6LwQoaLDTwUJ5wD5NxjXK/UDfkX
+q5bpAVztqiKq2LKM8tIJ8gPaQRn82Adhj0G62nwqCXYoEchLHBM7SVvu027aoUDc
+2p2V77FhEUEj67wB/Lgj4NEr0AkgSjtkpvgGC/yQmLauZ4y41ApiIAxi3IEk/nVj
+4owPaP3YY4eOIIFQrXNAFruultbLy8tpwSmx436JhfWW3j1nVSgoad2zbg5agffV
+IB57FUPKN4jfJpzY/SkFI5EuZCjNGg==
+=q0Ef
+-----END PGP SIGNATURE-----
+
+--Sig_/Z1iCdp2gUzSu7CyUEtrQIrb--
