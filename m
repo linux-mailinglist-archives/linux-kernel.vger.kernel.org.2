@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC4C38ED25
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F16638ED85
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbhEXPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:34:35 -0400
+        id S234079AbhEXPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:38:34 -0400
 Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233244AbhEXPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFD76138C;
-        Mon, 24 May 2021 15:30:42 +0000 (UTC)
+        id S232829AbhEXPe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3AC4613C8;
+        Mon, 24 May 2021 15:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870243;
-        bh=jz5lJpbrtEPhliG6O76iXaB5fHjt4HN2bNwhoy5SiXE=;
+        s=korg; t=1621870340;
+        bh=ZP1z6xfZ4sra0aSKN20GNNlBCH2m0BhCbrHOQLCUcJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zbo2hZNXCJphvmosGsdfy+YPpd7cBDD6lOp+Al5M37REBAKOmGXafaWJaiUGhy5Ze
-         mSujrZpJDz7fdbPGeO7e4M1+/yrI5kCp7qm++Vzp/zX4rcpIFcokyxApsZqY+SpmEt
-         Gkq/jxk3+bXTO8zp4IEDfXrh3u2B0uYciJtYkWZ4=
+        b=jxMY+jA0ClVYNcwTusj/ogDimx19oPZf/2l8YrtYq+8R5Llm52EJIS8obkybWHyBa
+         u0EqB9hc4w+8nrhZjASMIfzCVp1REa2Xf0HEUn0R5zCCjvw2BY/9R6qlhqlCHMtSTL
+         LCu4W95LObOoqZRFmtg64ZP1H8vjzuXI6LOQBdw0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 14/31] Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
-Date:   Mon, 24 May 2021 17:24:57 +0200
-Message-Id: <20210524152323.389310783@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Tokarev <mjt@tls.msk.ru>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.9 13/36] dm snapshot: fix a crash when an origin has no snapshots
+Date:   Mon, 24 May 2021 17:24:58 +0200
+Message-Id: <20210524152324.601677945@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 99ae3417672a6d4a3bf68d4fc43d7c6ca074d477 upstream.
+commit 7ee06ddc4038f936b0d4459d37a7d4d844fb03db upstream.
 
-This reverts commit 9aa3aa15f4c2f74f47afd6c5db4b420fadf3f315.
+If an origin target has no snapshots, o->split_boundary is set to 0.
+This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Fix this by initializing chunk_size, and in turn split_boundary, to
+rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
+into "unsigned" type.
 
-Upon review, it was determined that this commit is not needed at all so
-just revert it.  Also, the call to lm80_init_client() was not properly
-handled, so if error handling is needed in the lm80_probe() function,
-then it should be done properly, not half-baked like the commit being
-reverted here did.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Fixes: 9aa3aa15f4c2 ("hwmon: (lm80) fix a missing check of bus read in lm80 probe")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-5-gregkh@linuxfoundation.org
+Reported-by: Michael Tokarev <mjt@tls.msk.ru>
+Tested-by: Michael Tokarev <mjt@tls.msk.ru>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/lm80.c |   11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/md/dm-snap.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/hwmon/lm80.c
-+++ b/drivers/hwmon/lm80.c
-@@ -630,7 +630,6 @@ static int lm80_probe(struct i2c_client
- 	struct device *dev = &client->dev;
- 	struct device *hwmon_dev;
- 	struct lm80_data *data;
--	int rv;
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -788,12 +788,11 @@ static int dm_add_exception(void *contex
+ static uint32_t __minimum_chunk_size(struct origin *o)
+ {
+ 	struct dm_snapshot *snap;
+-	unsigned chunk_size = 0;
++	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
  
- 	data = devm_kzalloc(dev, sizeof(struct lm80_data), GFP_KERNEL);
- 	if (!data)
-@@ -643,14 +642,8 @@ static int lm80_probe(struct i2c_client
- 	lm80_init_client(client);
+ 	if (o)
+ 		list_for_each_entry(snap, &o->snapshots, list)
+-			chunk_size = min_not_zero(chunk_size,
+-						  snap->store->chunk_size);
++			chunk_size = min(chunk_size, snap->store->chunk_size);
  
- 	/* A few vars need to be filled upon startup */
--	rv = lm80_read_value(client, LM80_REG_FAN_MIN(1));
--	if (rv < 0)
--		return rv;
--	data->fan[f_min][0] = rv;
--	rv = lm80_read_value(client, LM80_REG_FAN_MIN(2));
--	if (rv < 0)
--		return rv;
--	data->fan[f_min][1] = rv;
-+	data->fan[f_min][0] = lm80_read_value(client, LM80_REG_FAN_MIN(1));
-+	data->fan[f_min][1] = lm80_read_value(client, LM80_REG_FAN_MIN(2));
- 
- 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
- 							   data, lm80_groups);
+ 	return (uint32_t) chunk_size;
+ }
 
 
