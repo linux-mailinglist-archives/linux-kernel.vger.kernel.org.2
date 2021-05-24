@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A0A38EEEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B623438EF98
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhEXPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
+        id S235553AbhEXP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234469AbhEXPrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7A7F61401;
-        Mon, 24 May 2021 15:36:58 +0000 (UTC)
+        id S234733AbhEXPyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E57961422;
+        Mon, 24 May 2021 15:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870619;
-        bh=6uPdLOtWDwPTg23SaBpdldN7cAfKsfp4eOLSq3ZdXgY=;
+        s=korg; t=1621870781;
+        bh=MQPWFhuDBxFHafnOD0b0OKwcznXauzBzgd4vPtxUXgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMC2REM6uBGJVuVnLU9+u9R4PK9z/qbu3WemjcM5S/lqq9gkQP0N4I5IwweaT7W/7
-         pTr3hP24nh1lEUK+ZHM0EpzSPecZmhcWANNUrC5KrN/rkibVmSfPtbijPWE79kifgg
-         viscRPBTipQ1v0saTD+vDmPT0dA+xdc3rC9HSjP0=
+        b=pY/KooBtyoHQXWXvKvyEyFISJEujmFKRluZw2R9bCmvwgGE7n+OwMTNIz0Xw2Q3AA
+         yjkwEmkV2+46Z1E5j8sQdt6SATHIS6980HPDBPSmXSAGqD7D/1UKQTOfc2r0impBTZ
+         QFhBCsfutIcJWdl2ohzg1MSneRaYbkx/IkOcmqrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 21/71] ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.10 032/104] cifs: fix memory leak in smb2_copychunk_range
 Date:   Mon, 24 May 2021 17:25:27 +0200
-Message-Id: <20210524152327.148984069@linuxfoundation.org>
+Message-Id: <20210524152333.881710396@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-commit 1b6604896e78969baffc1b6cc6bc175f95929ac4 upstream.
+commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
 
-Alesis iO 26 FireWire has two pairs of digital optical interface. It
-delivers PCM frames from the interfaces by second isochronous packet
-streaming. Although both of the interfaces are available at 44.1/48.0
-kHz, first one of them is only available at 88.2/96.0 kHz. It reduces
-the number of PCM samples to 4 in Multi Bit Linear Audio data channel
-of data blocks on the second isochronous packet streaming.
+When using smb2_copychunk_range() for large ranges we will
+run through several iterations of a loop calling SMB2_ioctl()
+but never actually free the returned buffer except for the final
+iteration.
+This leads to memory leaks everytime a large copychunk is requested.
 
-This commit fixes hardcoded stream formats.
-
+Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
 Cc: <stable@vger.kernel.org>
-Fixes: 28b208f600a3 ("ALSA: dice: add parameters of stream formats for models produced by Alesis")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-2-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/dice/dice-alesis.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/cifs/smb2ops.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/firewire/dice/dice-alesis.c
-+++ b/sound/firewire/dice/dice-alesis.c
-@@ -16,7 +16,7 @@ alesis_io14_tx_pcm_chs[MAX_STREAMS][SND_
- static const unsigned int
- alesis_io26_tx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT] = {
- 	{10, 10, 4},	/* Tx0 = Analog + S/PDIF. */
--	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
-+	{16, 4, 0},	/* Tx1 = ADAT1 + ADAT2 (available at low rate). */
- };
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1764,6 +1764,8 @@ smb2_copychunk_range(const unsigned int
+ 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
  
- int snd_dice_detect_alesis_formats(struct snd_dice *dice)
+ 		/* Request server copy to target from src identified by key */
++		kfree(retbuf);
++		retbuf = NULL;
+ 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
+ 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
+ 			true /* is_fsctl */, (char *)pcchunk,
 
 
