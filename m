@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C39138ED74
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A1F38EF97
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbhEXPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51440 "EHLO mail.kernel.org"
+        id S235135AbhEXP62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhEXPee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96559613AD;
-        Mon, 24 May 2021 15:32:04 +0000 (UTC)
+        id S232911AbhEXPxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:53:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B4F613F9;
+        Mon, 24 May 2021 15:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870325;
-        bh=iLjv2BpjEpxLxEfUWOFHpbFCb3/nWsauqU8ooJ9BEsU=;
+        s=korg; t=1621870764;
+        bh=PhFm7ALNNG4FJCbcGTUtO3K/7tninEJiovqLt4vCB+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F4WMrfTTbKn8bParmgs/HguvdEOTQ/bGpHQdUfKOqjfTZyTK1WLpLve5rGqOXp8jW
-         XxsON4INHiovEi2XbsCNqUew+swD9K4O7yYiSmpcjLt5jGwwZRKrFY92/OOvnicIfU
-         FcgeOEl247k96ecxa4EokxcznTlPKWl0avNlrNYc=
+        b=TA6nCo0/1X8sy90Q7Hwf/2/E0MHuh8hlAeBnncjkdOazvbWeshDt9R2HGRoBNe6mH
+         6AV813Qyb/9Pzc6tPlTdh6WjR6/Xr6T/3dICqHa/Wt5MOG5N47ZrPelO/tc/gWLyWo
+         L1QmO2TPB3ngXqMN2/2gkr6dCMkJZRfnJKWuHWtc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 4.9 19/36] Revert "video: imsttfb: fix potential NULL pointer dereferences"
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 009/104] scsi: qedf: Add pointer checks in qedf_update_link_speed()
 Date:   Mon, 24 May 2021 17:25:04 +0200
-Message-Id: <20210524152324.780323540@linuxfoundation.org>
+Message-Id: <20210524152333.146154252@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Javed Hasan <jhasan@marvell.com>
 
-commit ed04fe8a0e87d7b5ea17d47f4ac9ec962b24814a upstream.
+[ Upstream commit 73578af92a0fae6609b955fcc9113e50e413c80f ]
 
-This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
+The following trace was observed:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+ [   14.042059] Call Trace:
+ [   14.042061]  <IRQ>
+ [   14.042068]  qedf_link_update+0x144/0x1f0 [qedf]
+ [   14.042117]  qed_link_update+0x5c/0x80 [qed]
+ [   14.042135]  qed_mcp_handle_link_change+0x2d2/0x410 [qed]
+ [   14.042155]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042170]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042186]  ? qed_rd+0x13/0x40 [qed]
+ [   14.042205]  qed_mcp_handle_events+0x437/0x690 [qed]
+ [   14.042221]  ? qed_set_ptt+0x70/0x80 [qed]
+ [   14.042239]  qed_int_sp_dpc+0x3a6/0x3e0 [qed]
+ [   14.042245]  tasklet_action_common.isra.14+0x5a/0x100
+ [   14.042250]  __do_softirq+0xe4/0x2f8
+ [   14.042253]  irq_exit+0xf7/0x100
+ [   14.042255]  do_IRQ+0x7f/0xd0
+ [   14.042257]  common_interrupt+0xf/0xf
+ [   14.042259]  </IRQ>
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+API qedf_link_update() is getting called from QED but by that time
+shost_data is not initialised. This results in a NULL pointer dereference
+when we try to dereference shost_data while updating supported_speeds.
 
-The original commit here, while technically correct, did not fully
-handle all of the reported issues that the commit stated it was fixing,
-so revert it until it can be "fixed" fully.
+Add a NULL pointer check before dereferencing shost_data.
 
-Note, ioremap() probably will never fail for old hardware like this, and
-if anyone actually used this hardware (a PowerMac era PCI display card),
-they would not be using fbdev anymore.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-67-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210512072533.23618-1-jhasan@marvell.com
+Fixes: 61d8658b4a43 ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/imsttfb.c |    5 -----
- 1 file changed, 5 deletions(-)
+ drivers/scsi/qedf/qedf_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/video/fbdev/imsttfb.c
-+++ b/drivers/video/fbdev/imsttfb.c
-@@ -1516,11 +1516,6 @@ static int imsttfb_probe(struct pci_dev
- 	info->fix.smem_start = addr;
- 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
- 					    0x400000 : 0x800000);
--	if (!info->screen_base) {
--		release_mem_region(addr, size);
--		framebuffer_release(info);
--		return -ENOMEM;
--	}
- 	info->fix.mmio_start = addr + 0x800000;
- 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
- 	par->cmap_regs_phys = addr + 0x840000;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 46d185cb9ea8..a464d0a4f465 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -536,7 +536,9 @@ static void qedf_update_link_speed(struct qedf_ctx *qedf,
+ 	if (linkmode_intersects(link->supported_caps, sup_caps))
+ 		lport->link_supported_speeds |= FC_PORTSPEED_20GBIT;
+ 
+-	fc_host_supported_speeds(lport->host) = lport->link_supported_speeds;
++	if (lport->host && lport->host->shost_data)
++		fc_host_supported_speeds(lport->host) =
++			lport->link_supported_speeds;
+ }
+ 
+ static void qedf_bw_update(void *dev)
+-- 
+2.30.2
+
 
 
