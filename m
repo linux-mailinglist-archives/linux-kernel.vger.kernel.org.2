@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FE438E85F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FEF38E864
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhEXOMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S233036AbhEXOM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbhEXOMo (ORCPT
+        with ESMTP id S232993AbhEXOMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:12:44 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A33C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:16 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id s15so14303576vsi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:16 -0700 (PDT)
+        Mon, 24 May 2021 10:12:48 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D67C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:19 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id x22so6279799vsn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tCQyDrPS485JCf/EEBqEIhlOY+R+jUvQFllkGWdxwlU=;
-        b=rL221ZDLv+YLV6YwZRS3eQJhMyuZtgYBJ8CrSEy+N6aSE3T3ThkMn/A72sXlzWEXbB
-         s1fWLTuu717xF3h23DVKY+pstdeiXlXI6rgJa3HM7nv6/VFM86FSs/coHqklivyZxNA4
-         2Wy/1Ng8g7/BKFHWqPSiiVhnh22Syomle17OvQ/4n29KfSfukWYqmp/FK4vZilte2jL9
-         WhQgB/sIQ+bfT/s7/yIGKbhNOCm0/mLSPh34x9FiqKVL8xH/xA8h6z9GQzFWPDX4kajB
-         egQ4wTAvfNnM/dAg6LaDnHi6YxsyGwGKtAhJWvxJHNFOt9KfyQ2/V0vH/FDeaHPyr2WJ
-         GMJg==
+        bh=kY6jyrsjJi+HRe/mQv1siQhxLxlSd/Eu9JyaCf+aU6s=;
+        b=IXs1jXps0iRBX4YK9sEw4oHXipJS2Vdcqg8JktkfHSIi5jU2oVnIJyIAzOS7eZcYNw
+         o5mQqMSbTrVSYXiNmkgb0meO+JonZ1dPBDOVINXK2+9ItmqFWGyVdMbhgZwgJLiArKJQ
+         vme5ZxZkosQY3pAdTR1TV4i1TkPBo7lCLx8I1moZEsxTAtfhMYwytO4EnwYpgJ88/bO5
+         Inh2i9pYEld/fb+HBFPhty7+WIUSjWjNfL1o9SWOmWowtK+9L75wswYYxZdw2SC0KmgP
+         BCf8MKMOK6BGch3AhVUMN0zBUIOqiKqKbaiOu9JBcy6MXM3W/dcOrvoTlR9yF5TcNblt
+         jVig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tCQyDrPS485JCf/EEBqEIhlOY+R+jUvQFllkGWdxwlU=;
-        b=nXFIG3BvS2ulX3GyBAocxoe51ecTeqUtzZw/7r/m91qAkmhsM+8goGskmgfPDdCnrO
-         vqTCuxDaB8uLwmnmrMfrmY/QYhshZb0uHh756yFy9YK6RK2dPvI6+IMA6cGoRRloUBev
-         RTLGpW+dunhOdrTgNAjyLXiklc/tjzkeIPwP55oM51yjs0t7DrMJs3l0y2TJZCUmn6n2
-         PjYp5SFHMFp804EnbRUKcd2It2q/7EZFBIs6pTBzfvkK/PvshvJoU4orCVCHY8cVb/ND
-         9laA94BwgodGPmlPE2kCv5pBmtp23aU8brwSKr+i//wyBSCbG1HcFg7xyGs8jFXK7VyZ
-         HabA==
-X-Gm-Message-State: AOAM530O9cYr6VFq6Xv7apzzR1ynRpO/xFwrP2p3K913mRc2UcdviACv
-        NpdGUw9mCn/TLK3O+6fDYkXe8kR9zn0ZgAeGCfhTDA==
-X-Google-Smtp-Source: ABdhPJwMK3SFZbamqjUeewMx4pyjEYGz6E3mOkM1UlEIRFJpJxPqU+mIDBmUS5Mxf2RtuRjUN723pYQ6K6iCkHrQauA=
-X-Received: by 2002:a05:6102:7d5:: with SMTP id y21mr21665508vsg.19.1621865475641;
- Mon, 24 May 2021 07:11:15 -0700 (PDT)
+        bh=kY6jyrsjJi+HRe/mQv1siQhxLxlSd/Eu9JyaCf+aU6s=;
+        b=oIDrTyec+y8IEJVl9aFSOUNrgSoMYk9xcKEMULsT192s9DsA+AQQTH7JdXSIsd8Ta2
+         9geWLtRy05TshTnUlwUB6a7LNE4a3eUcO1fESVn7XW6kzUznNtaABaLWV2guCOtrW8SH
+         GXNOUA7SzsaU+wpsjXo3uLWcnASAoWnoS++/bg2Ay58GTcPv+nCYsnYz1LE5M/1jpEWh
+         rtNyqfmXFnkYGH1NaskWZ78vuKIu/EeURnsf6sewB71ENDLgUHN6vF0KLuEehU281N21
+         NHz6D8MS5VuzWcM9mGNUeKSXJHNqYA5eKfThteInhSsw5AdrQta5RovC+HttOCqoQ/Q/
+         i71Q==
+X-Gm-Message-State: AOAM533aNBn1a443/HcmR936OELQkjyVPb9EyRHx0YE2rWWwpOoaLHeF
+        xrAitroup4G8lrusJmPOv8Wz3r83V3k+oUNeauclgQ==
+X-Google-Smtp-Source: ABdhPJzy5pWzjYOdI2C/JAdvDJO42gMZKBOGSCRG9HkPRjrjrvdlF4IEcTEM2E/bQlE0mUc+P4Djeej/ypqMDjf5eb0=
+X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr22086341vsg.34.1621865478143;
+ Mon, 24 May 2021 07:11:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517105432.1682-1-zbestahu@gmail.com>
-In-Reply-To: <20210517105432.1682-1-zbestahu@gmail.com>
+References: <20210519153712.3146025-1-robh@kernel.org>
+In-Reply-To: <20210519153712.3146025-1-robh@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 16:10:36 +0200
-Message-ID: <CAPDyKFpyoEFt6CEwitD12sskG_YuLW=B+635_hyJ5gOLAzwYPQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: remove useless data parameter from msdc_data_xfer_next()
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
+Date:   Mon, 24 May 2021 16:10:40 +0200
+Message-ID: <CAPDyKFq-dFj2sS3gsh=oBywmoTKkxojYCq8B8Gn5kXyEiFChKA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: mmc: Clean-up examples to match
+ documented bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     DTML <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>, zbestahu@163.com
+        linux-mmc <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 12:54, Yue Hu <zbestahu@gmail.com> wrote:
+On Wed, 19 May 2021 at 17:37, Rob Herring <robh@kernel.org> wrote:
 >
-> From: Yue Hu <huyue2@yulong.com>
+> The "sdhci" compatible is not documented though used as a fallback in a
+> few cases. It is also not supported by a Linux driver. Just remove the
+> example as part of ridding examples of undocumented bindings.
 >
-> We do not use the 'data' in msdc_data_xfer_next().
+> The "brcm,bcm43xx-fmac" compatible is also not documented. Update the
+> example to use one of the correct ones, "brcm,bcm4329-fmac", instead and
+> use a device class based nodename.
 >
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: linux-mmc@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
 Applied for next, thanks!
 
@@ -79,32 +82,51 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/mtk-sd.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> v2:
+>  - Also fix "brcm,bcm43xx-fmac" example
 >
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index c4db944..4dfc246 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -1347,8 +1347,7 @@ static void msdc_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
->         }
->  }
+>  .../bindings/mmc/mmc-controller.yaml          | 20 ++-----------------
+>  1 file changed, 2 insertions(+), 18 deletions(-)
 >
-> -static void msdc_data_xfer_next(struct msdc_host *host,
-> -                               struct mmc_request *mrq, struct mmc_data *data)
-> +static void msdc_data_xfer_next(struct msdc_host *host, struct mmc_request *mrq)
->  {
->         if (mmc_op_multi(mrq->cmd->opcode) && mrq->stop && !mrq->stop->error &&
->             !mrq->sbc)
-> @@ -1407,7 +1406,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
->                                 (int)data->error, data->bytes_xfered);
->                 }
+> diff --git a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> index e141330c1114..646ae768d625 100644
+> --- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> @@ -357,22 +357,6 @@ dependencies:
+>  additionalProperties: true
 >
-> -               msdc_data_xfer_next(host, mrq, data);
-> +               msdc_data_xfer_next(host, mrq);
->                 done = true;
->         }
->         return done;
+>  examples:
+> -  - |
+> -    mmc@ab000000 {
+> -        compatible = "sdhci";
+> -        reg = <0xab000000 0x200>;
+> -        interrupts = <23>;
+> -        bus-width = <4>;
+> -        cd-gpios = <&gpio 69 0>;
+> -        cd-inverted;
+> -        wp-gpios = <&gpio 70 0>;
+> -        max-frequency = <50000000>;
+> -        keep-power-in-suspend;
+> -        wakeup-source;
+> -        mmc-pwrseq = <&sdhci0_pwrseq>;
+> -        clk-phase-sd-hs = <63>, <72>;
+> -    };
+> -
+>    - |
+>      mmc3: mmc@1c12000 {
+>          #address-cells = <1>;
+> @@ -385,9 +369,9 @@ examples:
+>          non-removable;
+>          mmc-pwrseq = <&sdhci0_pwrseq>;
+>
+> -        brcmf: bcrmf@1 {
+> +        brcmf: wifi@1 {
+>              reg = <1>;
+> -            compatible = "brcm,bcm43xx-fmac";
+> +            compatible = "brcm,bcm4329-fmac";
+>              interrupt-parent = <&pio>;
+>              interrupts = <10 8>;
+>              interrupt-names = "host-wake";
 > --
-> 1.9.1
+> 2.27.0
 >
