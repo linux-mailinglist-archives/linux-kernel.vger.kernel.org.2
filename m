@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EF238F623
+	by mail.lfdr.de (Postfix) with ESMTP id C77B838F624
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhEXXRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:17:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:49048 "EHLO foss.arm.com"
+        id S229969AbhEXXRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:17:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:49064 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhEXXRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:17:13 -0400
+        id S229922AbhEXXRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:17:15 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1E4B11D4;
-        Mon, 24 May 2021 16:15:44 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C792F6D;
+        Mon, 24 May 2021 16:15:46 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 051473F73D;
-        Mon, 24 May 2021 16:15:42 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 058A93F73D;
+        Mon, 24 May 2021 16:15:44 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
         etienne.carriere@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH 3/4] firmware: arm_scmi: Introduce monotonically increasing tokens
-Date:   Tue, 25 May 2021 00:15:02 +0100
-Message-Id: <20210524231503.34924-4-cristian.marussi@arm.com>
+Subject: [PATCH 4/4] firmware: arm_scmi: Introduce delegated xfers support
+Date:   Tue, 25 May 2021 00:15:03 +0100
+Message-Id: <20210524231503.34924-5-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210524231503.34924-1-cristian.marussi@arm.com>
 References: <20210524231503.34924-1-cristian.marussi@arm.com>
@@ -33,486 +33,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tokens are sequence numbers embedded in the each SCMI message header: they
-are used to correlate commands with responses (and delayed responses), but
-their usage and policy of selection is entirely up to the caller (usually
-the OSPM agent), while they are completely opaque to the callee (SCMI
-server platform) which merely copies them back from the command into the
-response message header.
-This also means that the platform does not, can not and should not enforce
-any kind of policy on received messages depending on the contained sequence
-number: platform can perfectly handle concurrent requests carrying the same
-identifiying token if that should happen.
+Introduce optional support for delegated xfers allocation.
 
-Moreover the platform is not required to produce in-order responses to
-agent requests, the only constraint in these regards is that in case of
-an asynchronous message the delayed response must be sent after the
-immediate response for the synchronous part of the command transaction.
+An SCMI transport can optionally declare to support delegated xfers and
+then use a few helper functions exposed by the core SCMI transport layer to
+query the core for existing in-flight transfers matching a provided message
+header or alternatively and transparently obtain a brand new xfer to handle
+a freshly received notification message.
+In both cases the obtained xfer is uniquely mapped into a specific xfer
+through the means of the message header acting as key.
 
-Currenly the SCMI stack of the OSPM agent selects as token for the
-egressing commands the lowest possible number which is not already in use
-by an existing in-flight transaction, which means, in other words, that
-we immediately reuse any token after its transaction has completed or it
-has timed out: this indeed simplifies token and associated xfer management
-and lookup.
+In this way such a transport can properly store its own transport specific
+payload into the xfer uniquely associated to the message header before
+even calling into the core scmi_rx_callback() in the usual way, so that
+the transport specific message envelope structures can be freed early
+and there is no more need to keep track of their status till the core
+fully processes the xfer to completion or times out.
 
-Under the above assumptions and constraints, since there is really no state
-shared between the agent and the platform to let the platform know when a
-token and its associated message has timed out, the current policy of early
-reuse of tokens can easily lead to the situation in which a spurios or late
-received response (or delayed_response), related to an old stale and timed
-out transaction, can be wrongly associated to a newer valid in-flight xfer
-that just happens to have reused the same token.
+The scmi_rx_callbak() does not need to be modified to carry additional
+transport-specific ancillary data related to such message envelopes since
+an unique natural association is established between the xfer and the
+related message header.
 
-This misbehavior on such ghost responses is more easily exposed on those
-transports that naturally have an higher level of parallelism in processing
-multiple concurrent in-flight messages.
-
-This commit introduces a new policy of selection of tokens for the OSPM
-agent: each new transfer now gets the next available and monotonically
-increasing token, until tokens are exhausted and the counter rolls over.
-
-Such new policy mitigates the above issues with ghost responses since the
-tokens are now reused as later as possible (when they roll back ideally)
-and so it is much easier to identify ghost responses to stale timed out
-transactions: this also helps in simplifying the specific transports
-implementation since stale transport messages can be easily identified
-and discarded early on in the rx path without the need to cross check
-their actual sate with the core transport layer.
-This mitigation is even more effective when, as is usual the case, the
-maximum number of pending messages is capped by the platform to a much
-lower value than whole possible range of tokens.(2^10)
-
-This internal policy change in the core SCMI transport layer is fully
-transparent to the specific transports so it has not and should not have
-any impact on the transports implementation.
-
-The empirically observed cost of such new procedure of token selection
-amounts in the best case to ~10us out of an observed full transaction cost
-of 3ms for the completion of a synchronous sensor reading command on a
-platform supporting commmands completion interrupts.
+Existing transports that do not need anything of the above will continue
+to work as before without any change.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/common.h |  23 +++
- drivers/firmware/arm_scmi/driver.c | 245 +++++++++++++++++++++++++----
- 2 files changed, 234 insertions(+), 34 deletions(-)
+ drivers/firmware/arm_scmi/common.h |  14 +++
+ drivers/firmware/arm_scmi/driver.c | 132 ++++++++++++++++++++++++++++-
+ 2 files changed, 143 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 4bd43863c306..aba8f1efdd2b 100644
+index aba8f1efdd2b..d89b3b3a8c05 100644
 --- a/drivers/firmware/arm_scmi/common.h
 +++ b/drivers/firmware/arm_scmi/common.h
-@@ -14,7 +14,10 @@
- #include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
-+#include <linux/hashtable.h>
-+#include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/refcount.h>
- #include <linux/scmi_protocol.h>
- #include <linux/types.h>
- 
-@@ -127,6 +130,21 @@ struct scmi_msg {
- 	size_t len;
+@@ -80,6 +80,7 @@ struct scmi_msg_resp_prot_version {
+  * @status: Status of the transfer once it's complete
+  * @poll_completion: Indicate if the transfer needs to be polled for
+  *	completion or interrupt mode is used
++ * @saved_hdr: A copy of the original msg_hdr
+  */
+ struct scmi_msg_hdr {
+ 	u8 id;
+@@ -88,6 +89,7 @@ struct scmi_msg_hdr {
+ 	u16 seq;
+ 	u32 status;
+ 	bool poll_completion;
++	u32 saved_hdr;
  };
  
-+/**
-+ * An helper macro to lookup an xfer from the @pending_xfers hashtable
-+ * using the message sequence number token as a key.
-+ */
-+#define XFER_FIND(__ht, __k)					\
-+({								\
-+	typeof(__k) k_ = __k;					\
-+	struct scmi_xfer *xfer_ = NULL;				\
-+								\
-+	hash_for_each_possible((__ht), xfer_, node, k_)		\
-+		if (xfer_->hdr.seq == k_)			\
-+			break;					\
-+	 xfer_;							\
-+})
-+
  /**
-  * struct scmi_xfer - Structure representing a message flow
-  *
-@@ -138,6 +156,9 @@ struct scmi_msg {
+@@ -154,6 +156,9 @@ struct scmi_msg {
+  * @rx: Receive message, the buffer should be pre-allocated to store
+  *	message. If request-ACK protocol is used, we can reuse the same
   *	buffer for the rx path as we use for the tx path.
++ * @rx_raw_len: A field which can be optionally used by a specific transport
++ *		to save transport specific message length
++ *		It is not used by the SCMI transport core
   * @done: command message transmit completion event
   * @async_done: pointer to delayed response message received event completion
-+ * @users: A refcount to track the active users for this xfer
-+ * @node: An hlist_node reference used to store this xfer, alternatively, on
-+ *	  the free list @free_xfers or in the @pending_xfers hashtable
-  */
- struct scmi_xfer {
- 	int transfer_id;
-@@ -146,6 +167,8 @@ struct scmi_xfer {
+  * @users: A refcount to track the active users for this xfer
+@@ -165,6 +170,7 @@ struct scmi_xfer {
+ 	struct scmi_msg_hdr hdr;
+ 	struct scmi_msg tx;
  	struct scmi_msg rx;
++	size_t rx_raw_len;
  	struct completion done;
  	struct completion *async_done;
-+	refcount_t users;
-+	struct hlist_node node;
+ 	refcount_t users;
+@@ -349,12 +355,16 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+  * @max_msg: Maximum number of messages that can be pending
+  *	simultaneously in the system
+  * @max_msg_size: Maximum size of data per message that can be handled.
++ * @support_xfers_delegation: A flag to indicate if the described transport
++ *			      will handle delegated xfers, so the core can
++ *			      derive proper related assumptions.
+  */
+ struct scmi_desc {
+ 	const struct scmi_transport_ops *ops;
+ 	int max_rx_timeout_ms;
+ 	int max_msg;
+ 	int max_msg_size;
++	bool support_xfers_delegation;
  };
  
- struct scmi_xfer_ops;
+ extern const struct scmi_desc scmi_mailbox_desc;
+@@ -383,4 +393,8 @@ void scmi_notification_instance_data_set(const struct scmi_handle *handle,
+ 					 void *priv);
+ void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
+ 
++int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
++			  struct scmi_xfer **xfer);
++void scmi_transfer_release(struct scmi_chan_info *cinfo,
++			   struct scmi_xfer *xfer);
+ #endif /* _SCMI_COMMON_H */
 diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b4c69141eca1..ab975c74cab1 100644
+index ab975c74cab1..08f52f53e14c 100644
 --- a/drivers/firmware/arm_scmi/driver.c
 +++ b/drivers/firmware/arm_scmi/driver.c
-@@ -21,6 +21,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/ktime.h>
-+#include <linux/hashtable.h>
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-@@ -65,19 +66,29 @@ struct scmi_requested_dev {
- 	struct list_head node;
- };
- 
-+#define SCMI_PENDING_XFERS_HT_ORDER_SZ	9
-+
- /**
-  * struct scmi_xfers_info - Structure to manage transfer information
-  *
-- * @xfer_block: Preallocated Message array
-  * @xfer_alloc_table: Bitmap table for allocated messages.
-  *	Index of this bitmap table is also used for message
-  *	sequence identifier.
-  * @xfer_lock: Protection for message allocation
-+ * @last_token: A counter to use as base to generate for monotonically
-+ *		increasing tokens.
-+ * @free_xfers: A free list for available to use xfers. It is initialized with
-+ *		a number of xfers equal to the maximum allowed in-flight
-+ *		messages.
-+ * @pending_xfers: An hashtable, indexed by msg_hdr.seq, used to keep all the
-+ *		   currently in-flight messages.
-  */
- struct scmi_xfers_info {
--	struct scmi_xfer *xfer_block;
- 	unsigned long *xfer_alloc_table;
- 	spinlock_t xfer_lock;
-+	atomic_t last_token;
-+	struct hlist_head free_xfers;
-+	DECLARE_HASHTABLE(pending_xfers, SCMI_PENDING_XFERS_HT_ORDER_SZ);
- };
- 
- /**
-@@ -203,6 +214,117 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
- 	return info->notify_priv;
+@@ -433,6 +433,124 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
+ 	return xfer ?: ERR_PTR(-EINVAL);
  }
  
 +/**
-+ * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
++ * scmi_xfer_acquire  -  Helper to lookup and acquire an xfer
 + *
 + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-+ * @xfer: The xfer to act upon
++ * @xfer_id: Token ID to lookup in @pending_xfers
 + *
-+ * Pick the next unused monotonically increasing token and set it into
-+ * xfer->hdr.seq: picking a monotonically increasing value avoids reusing
-+ * immediately tokens of just completed or timed-out xfers, mitigating the risk
-+ * of wrongly associating a late received answer for an expired xfer to a live
-+ * in-flight transaction which happened to have reused the same token.
++ * When a valid xfer is found for the provided @xfer_id, reference counting is
++ * properly updated.
 + *
-+ * Since platform is NOT required to answer our request in-order we should
-+ * account for a few rare but possible scenarios:
-+ *
-+ *  - exactly 'next_token' may be NOT available so pick xfer_id >= next_token
-+ *    using find_next_zero_bit() starting from candidate next_token bit
-+ *
-+ *  - all tokens ahead upto (MSG_TOKEN_ID_MASK - 1) are used in-flight but we
-+ *    are plenty of free tokens at start, so try a second pass using
-+ *    find_next_zero_bit() and starting from 0.
-+ *
-+ *  X = used in-flight
-+ *
-+ * Normal
-+ * ------
-+ *
-+ *		|- xfer_id picked
-+ *   -----------+----------------------------------------------------------
-+ *   | | |X|X|X| | | | | | ... ... ... ... ... ... ... ... ... ... ...|X|X|
-+ *   ----------------------------------------------------------------------
-+ *		^
-+ *		|- next_token
-+ *
-+ * Out-of-order pending at start
-+ * -----------------------------
-+ *
-+ *	  |- xfer_id picked, last_token fixed
-+ *   -----+----------------------------------------------------------------
-+ *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... ... ...|X| |
-+ *   ----------------------------------------------------------------------
-+ *    ^
-+ *    |- next_token
-+ *
-+ *
-+ * Out-of-order pending at end
-+ * ---------------------------
-+ *
-+ *	  |- xfer_id picked, last_token fixed
-+ *   -----+----------------------------------------------------------------
-+ *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... |X|X|X||X|X|
-+ *   ----------------------------------------------------------------------
-+ *								^
-+ *								|- next_token
-+ *
-+ * Context: Assumes to be called with @xfer_lock already acquired.
-+ *
-+ * Return: 0 on Success or error
++ * Return: A valid @xfer on Success or error otherwise.
 + */
-+static int scmi_xfer_token_set(struct scmi_xfers_info *minfo,
-+			       struct scmi_xfer *xfer)
++static struct scmi_xfer *
++scmi_xfer_acquire(struct scmi_xfers_info *minfo, u16 xfer_id)
 +{
-+	unsigned long xfer_id, next_token;
++	unsigned long flags;
++	struct scmi_xfer *xfer;
 +
-+	/* Pick a candidate monotonic token in range [0, MSG_TOKEN_MAX - 1] */
-+	next_token = (atomic_inc_return(&minfo->last_token) &
-+		      (MSG_TOKEN_MAX - 1));
++	spin_lock_irqsave(&minfo->xfer_lock, flags);
++	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
++	if (!IS_ERR(xfer))
++		refcount_inc(&xfer->users);
++	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
 +
-+	/* Pick the next available xfer_id >= next_token */
-+	xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-+				     MSG_TOKEN_MAX, next_token);
-+	if (xfer_id == MSG_TOKEN_MAX) {
-+		/*
-+		 * After heavily out-of-order responses, there are no free
-+		 * tokens ahead, but only at start of xfer_alloc_table so
-+		 * try again from the beginning.
-+		 */
-+		xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-+					     MSG_TOKEN_MAX, 0);
-+		/*
-+		 * Something is wrong if we got here since there can be a
-+		 * maximum number of (MSG_TOKEN_MAX - 1) in-flight messages
-+		 * but we have not found any free token [0, MSG_TOKEN_MAX - 1].
-+		 */
-+		if (WARN_ON_ONCE(xfer_id == MSG_TOKEN_MAX))
-+			return -ENOMEM;
++	return xfer;
++}
++
++/**
++ * scmi_transfer_acquire  -  Lookup for an existing xfer or freshly allocate a
++ * new one depending on the type of the message
++ *
++ * @cinfo: A reference to the channel descriptor.
++ * @msg_hdr: A pointer to the message header to lookup.
++ * @xfer: A reference to the pre-existent or freshly allocated xfer
++ *	  associated with the provided *msg_hdr.
++ *
++ * This function can be used by transports supporting delegated xfers to obtain
++ * a valid @xfer associated with the provided @msg_hdr param.
++ *
++ * The nature of the resulting @xfer depends on the type of message specified in
++ * @msg_hdr:
++ *  - for responses and delayed responses a pre-existent/pre-allocated in-flight
++ *    xfer descriptor will be returned (properly refcounted)
++ *  - for notifications a brand new xfer will be allocated; in this case the
++ *    provided message header sequence number will also be mangled to match
++ *    the token in the freshly allocated xfer: this is needed to establish a
++ *    link between the picked xfer and the msg_hdr that will be subsequently
++ *    passed back via usual scmi_rx_callback().
++ *
++ * Return: 0 if a valid xfer is returned in @xfer, error otherwise.
++ */
++int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
++			  struct scmi_xfer **xfer)
++{
++	u8 msg_type;
++	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
++
++	if (!xfer || !msg_hdr || !info->desc->support_xfers_delegation)
++		return -EINVAL;
++
++	msg_type = MSG_XTRACT_TYPE(*msg_hdr);
++	switch (msg_type) {
++	case MSG_TYPE_COMMAND:
++	case MSG_TYPE_DELAYED_RESP:
++		/* Grab an existing xfer for xfer_id */
++		*xfer = scmi_xfer_acquire(&info->tx_minfo,
++					  MSG_XTRACT_TOKEN(*msg_hdr));
++		break;
++	case MSG_TYPE_NOTIFICATION:
++		/* Get a brand new RX xfer */
++		*xfer = scmi_xfer_get(cinfo->handle, &info->rx_minfo);
++		if (!IS_ERR(*xfer)) {
++			/* Save original msg_hdr and fix sequence number */
++			(*xfer)->hdr.saved_hdr = *msg_hdr;
++			*msg_hdr &= ~MSG_TOKEN_ID_MASK;
++			*msg_hdr |= FIELD_PREP(MSG_TOKEN_ID_MASK,
++					       (*xfer)->hdr.seq);
++		}
++		break;
++	default:
++		*xfer = ERR_PTR(-EINVAL);
++		break;
 +	}
 +
-+	/* Update +/- last_token accordingly if we skept some hole */
-+	if (xfer_id != next_token)
-+		atomic_add((int)(xfer_id - next_token), &minfo->last_token);
++	if (IS_ERR(*xfer)) {
++		dev_err(cinfo->dev,
++			"Failed to acquire a valid xfer for hdr:0x%X\n",
++			*msg_hdr);
++		return PTR_ERR(*xfer);
++	}
 +
-+	/* Set in-flight */
-+	set_bit(xfer_id, minfo->xfer_alloc_table);
-+	xfer->hdr.seq = (u16)xfer_id;
++	/* Fix xfer->hdr.type with actual msg_hdr carried type */
++	unpack_scmi_header(*msg_hdr, &((*xfer)->hdr));
 +
 +	return 0;
 +}
 +
 +/**
-+ * scmi_xfer_token_clear  - Release the token
++ * scmi_transfer_release  - Release an previously acquired xfer
 + *
-+ * @minfo: Pointer to Tx/Rx Message management info based on channel type
-+ * @xfer: The xfer to act upon
++ * @cinfo: A reference to the channel descriptor.
++ * @xfer: A reference to the xfer to release.
 + */
-+static inline void scmi_xfer_token_clear(struct scmi_xfers_info *minfo,
-+					 struct scmi_xfer *xfer)
++void scmi_transfer_release(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
 +{
-+	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-+}
++	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
++	struct scmi_xfers_info *minfo;
 +
- /**
-  * scmi_xfer_get() - Allocate one message
-  *
-@@ -212,37 +334,50 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
-  * Helper function which is used by various message functions that are
-  * exposed to clients of this driver for allocating a message traffic event.
-  *
-- * This function can sleep depending on pending requests already in the system
-- * for the SCMI entity. Further, this also holds a spinlock to maintain
-- * integrity of internal data structures.
-+ * Picks an xfer from the free list @free_xfers (if any available), sets a
-+ * monotonically increasing token and stores the inflight xfer into the
-+ * @pending_xfers hashtable for later retrieval.
-+ *
-+ * The successfully initialized xfer is refcounted.
-+ *
-+ * Context: Holds @xfer_lock while manipulating @xfer_alloc_table and
-+ *	    @free_xfers.
-  *
-  * Return: 0 if all went fine, else corresponding error.
-  */
- static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
- 				       struct scmi_xfers_info *minfo)
- {
--	u16 xfer_id;
-+	int ret;
-+	unsigned long flags;
- 	struct scmi_xfer *xfer;
--	unsigned long flags, bit_pos;
--	struct scmi_info *info = handle_to_scmi_info(handle);
- 
--	/* Keep the locked section as small as possible */
- 	spin_lock_irqsave(&minfo->xfer_lock, flags);
--	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table,
--				      info->desc->max_msg);
--	if (bit_pos == info->desc->max_msg) {
-+	if (hlist_empty(&minfo->free_xfers)) {
- 		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
- 		return ERR_PTR(-ENOMEM);
- 	}
--	set_bit(bit_pos, minfo->xfer_alloc_table);
--	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
- 
--	xfer_id = bit_pos;
-+	/* grab an xfer from the free_list */
-+	xfer = hlist_entry(minfo->free_xfers.first, struct scmi_xfer, node);
-+	hlist_del_init(&xfer->node);
- 
--	xfer = &minfo->xfer_block[xfer_id];
--	xfer->hdr.seq = xfer_id;
--	reinit_completion(&xfer->done);
--	xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-+	/* Pick and set monotonic token */
-+	ret = scmi_xfer_token_set(minfo, xfer);
-+	if (!ret) {
-+		hash_add(minfo->pending_xfers, &xfer->node, xfer->hdr.seq);
-+	} else {
-+		dev_err(handle->dev, "Failed to get monotonic token %d\n", ret);
-+		hlist_add_head(&xfer->node, &minfo->free_xfers);
-+		xfer = ERR_PTR(ret);
-+	}
-+	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
++	if (!xfer || !info->desc->support_xfers_delegation)
++		return;
 +
-+	if (!IS_ERR(xfer)) {
-+		refcount_set(&xfer->users, 1);
-+		reinit_completion(&xfer->done);
-+		xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-+	}
- 
- 	return xfer;
- }
-@@ -253,6 +388,9 @@ static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
-  * @minfo: Pointer to Tx/Rx Message management info based on channel type
-  * @xfer: message that was reserved by scmi_xfer_get
-  *
-+ * After refcount check, possibly release an xfer, clearing the token slot,
-+ * removing xfer from @pending_xfers and putting it back into free_xfers.
-+ *
-  * This holds a spinlock to maintain integrity of internal data structures.
-  */
- static void
-@@ -260,16 +398,41 @@ __scmi_xfer_put(struct scmi_xfers_info *minfo, struct scmi_xfer *xfer)
- {
- 	unsigned long flags;
- 
--	/*
--	 * Keep the locked section as small as possible
--	 * NOTE: we might escape with smp_mb and no lock here..
--	 * but just be conservative and symmetric.
--	 */
- 	spin_lock_irqsave(&minfo->xfer_lock, flags);
--	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-+	if (refcount_dec_and_test(&xfer->users)) {
-+		scmi_xfer_token_clear(minfo, xfer);
-+		hash_del(&xfer->node);
-+		hlist_add_head(&xfer->node, &minfo->free_xfers);
-+	}
- 	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
- }
- 
-+/**
-+ * scmi_xfer_lookup_unlocked  -  Helper to lookup an xfer_id
-+ *
-+ * @minfo: Pointer to Tx/Rx Message management info based on channel type
-+ * @xfer_id: Token ID to lookup in @pending_xfers
-+ *
-+ * Refcounting is untouched.
-+ *
-+ * Context: Assumes to be called with @xfer_lock already acquired.
-+ *
-+ * Return: A valid xfer on Success or error otherwise
-+ */
-+static struct scmi_xfer *
-+scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
-+{
-+	struct scmi_xfer *xfer = NULL;
++	if (xfer->hdr.type == MSG_TYPE_NOTIFICATION)
++		minfo = &info->rx_minfo;
++	else
++		minfo = &info->tx_minfo;
 +
-+	if (xfer_id >= MSG_TOKEN_MAX)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (test_bit(xfer_id, minfo->xfer_alloc_table))
-+		xfer = XFER_FIND(minfo->pending_xfers, xfer_id);
-+
-+	return xfer ?: ERR_PTR(-EINVAL);
++	__scmi_xfer_put(minfo, xfer);
 +}
 +
  static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
  {
  	struct scmi_xfer *xfer;
-@@ -306,19 +469,22 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- static void scmi_handle_response(struct scmi_chan_info *cinfo,
- 				 u16 xfer_id, u8 msg_type)
- {
-+	unsigned long flags;
- 	struct scmi_xfer *xfer;
- 	struct device *dev = cinfo->dev;
- 	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
- 	struct scmi_xfers_info *minfo = &info->tx_minfo;
+@@ -442,7 +560,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
+ 	ktime_t ts;
  
- 	/* Are we even expecting this? */
--	if (!test_bit(xfer_id, minfo->xfer_alloc_table)) {
-+	spin_lock_irqsave(&minfo->xfer_lock, flags);
-+	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
-+	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-+	if (IS_ERR(xfer)) {
- 		dev_err(dev, "message for %d is not expected!\n", xfer_id);
- 		info->desc->ops->clear_channel(cinfo);
+ 	ts = ktime_get_boottime();
+-	xfer = scmi_xfer_get(cinfo->handle, minfo);
++
++	if (!info->desc->support_xfers_delegation)
++		xfer = scmi_xfer_get(cinfo->handle, minfo);
++	else
++		xfer = scmi_xfer_acquire(minfo, MSG_XTRACT_TOKEN(msg_hdr));
+ 	if (IS_ERR(xfer)) {
+ 		dev_err(dev, "failed to get free message slot (%ld)\n",
+ 			PTR_ERR(xfer));
+@@ -450,8 +572,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
  		return;
  	}
  
--	xfer = &minfo->xfer_block[xfer_id];
- 	/*
- 	 * Even if a response was indeed expected on this slot at this point,
- 	 * a buggy platform could wrongly reply feeding us an unexpected
-@@ -1036,18 +1202,25 @@ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
- 		return -EINVAL;
+-	unpack_scmi_header(msg_hdr, &xfer->hdr);
+ 	scmi_dump_header_dbg(dev, &xfer->hdr);
++
++	if (!info->desc->support_xfers_delegation)
++		unpack_scmi_header(msg_hdr, &xfer->hdr);
++
+ 	info->desc->ops->fetch_notification(cinfo, info->desc->max_msg_size,
+ 					    xfer);
+ 	scmi_notify(cinfo->handle, xfer->hdr.protocol_id,
+@@ -497,7 +622,8 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
+ 			xfer_id);
+ 		info->desc->ops->clear_channel(cinfo);
+ 		/* It was unexpected, so nobody will clear the xfer if not us */
+-		__scmi_xfer_put(minfo, xfer);
++		if (!info->desc->support_xfers_delegation) //XXX ??? Really
++			__scmi_xfer_put(minfo, xfer);
+ 		return;
  	}
  
--	info->xfer_block = devm_kcalloc(dev, desc->max_msg,
--					sizeof(*info->xfer_block), GFP_KERNEL);
--	if (!info->xfer_block)
--		return -ENOMEM;
-+	hash_init(info->pending_xfers);
- 
--	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(desc->max_msg),
-+	/* Allocate a bitmask sized to hold MSG_TOKEN_MAX tokens */
-+	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(MSG_TOKEN_MAX),
- 					      sizeof(long), GFP_KERNEL);
- 	if (!info->xfer_alloc_table)
- 		return -ENOMEM;
- 
--	/* Pre-initialize the buffer pointer to pre-allocated buffers */
--	for (i = 0, xfer = info->xfer_block; i < desc->max_msg; i++, xfer++) {
-+	/*
-+	 * Preallocate a number of xfers equal to max inflight messages,
-+	 * pre-initialize the buffer pointer to pre-allocated buffers and
-+	 * attach all of them to the free list
-+	 */
-+	INIT_HLIST_HEAD(&info->free_xfers);
-+	for (i = 0; i < desc->max_msg; i++) {
-+		xfer = devm_kzalloc(dev, sizeof(*xfer), GFP_KERNEL);
-+		if (!xfer)
-+			return -ENOMEM;
-+
- 		xfer->rx.buf = devm_kcalloc(dev, sizeof(u8), desc->max_msg_size,
- 					    GFP_KERNEL);
- 		if (!xfer->rx.buf)
-@@ -1055,8 +1228,12 @@ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
- 
- 		xfer->tx.buf = xfer->rx.buf;
- 		init_completion(&xfer->done);
-+
-+		/* Add initialized xfer to the free list */
-+		hlist_add_head(&xfer->node, &info->free_xfers);
- 	}
- 
-+	atomic_set(&info->last_token, -1);
- 	spin_lock_init(&info->xfer_lock);
- 
- 	return 0;
 -- 
 2.17.1
 
