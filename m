@@ -2,142 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B2B38E537
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E88C38E539
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhEXLQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:16:57 -0400
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:63994 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbhEXLQn (ORCPT
+        id S232804AbhEXLRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:17:04 -0400
+Received: from alln-iport-1.cisco.com ([173.37.142.88]:13883 "EHLO
+        alln-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232777AbhEXLQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:16:43 -0400
+        Mon, 24 May 2021 07:16:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2222; q=dns/txt; s=iport;
-  t=1621854915; x=1623064515;
+  d=cisco.com; i=@cisco.com; l=3312; q=dns/txt; s=iport;
+  t=1621854916; x=1623064516;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=/x1hGeCwMtshLjZHcErVJlS+wMeuvBwQYyQcghRtbKM=;
-  b=jhKtpCl6EX7Utat6W9BxYtzkLYjHt7vQ+qKxuznKmDpW1I59Hnh4mw5D
-   8bjjPY0D6GFCvI4imJW1lvLOq4wPmvROWMxQPv8zhqoohVr+6/fQoJsxS
-   TpJcvyNaGKw2XBts7Ay0yWy7zxmRs5qUWY2hioMTg1T9MSlRDLNEJEpF3
-   Y=;
-X-IPAS-Result: =?us-ascii?q?A0CTBAC/iatg/49dJa1agmCCK3dWATkxsWiBfAsBAQENA?=
- =?us-ascii?q?QEtFAQBAYRQAoF+AiU0CQ4CBAEBAQEDAgMBAQEBBQEBBQEBAQIBBgRxE4VoD?=
- =?us-ascii?q?YZFBjIBVh4zLCsHEoJxAYMHp16CLIEBiDOBRIE6iHZ2g3gnHIFJRIR1ij0Eg?=
- =?us-ascii?q?keBDxOTYY4inFWDIYoKkz4UKYUdoC+VPaAMhA0CBAYFAhaBVDuBWTMaCBsVg?=
- =?us-ascii?q?yQJRxkOkXaHCoQNIQMvAjYCBgoBAQMJiW4BAQ?=
-IronPort-Data: A9a23:Ky5By60QFhZQ5wRTwvbD5ctwkn2cJEfYwER7XKvMYLTBsI5bp2EOz
- GFLWG+Pbv6JNGWhKY12Oou3/BlXv5KGx9RmHQFs3Hw8FHgiRegpqji6wuYcGwvIc6UvmWo+t
- 512huEtr6nYd1eEzvuXGuCJQUJUiOfYHNIQNMaeYnooHVI+FH944f5es7dRbrBA0IDR7zyl4
- bsek+WHULNy82cpWo68w/vrRCJH5JweihtB1rANTawjUGvlqpUgJMl3yZddgJfPatI88uaSH
- 44vxVwil4/T109F5tiNyt4XfqCWK1LfFVDmt5ZYZ0StqjlbngcT36kmDt5GS2tOpBnWufwy4
- vwY4PRcSS9xVkHNsP4WXx8dGCZkMOgZvrTGOnO498eUyiUqcVO1nK4oVx5wbNZeo7osaY1N3
- aRwxDQlYgKKiOWs3bOTQeh3jcNlJ87uVG8aki44kG+JUqh4GPgvRY3B6452zS8gtvlQGPfSW
- 9Q5dGdVNC3PNkgn1lA/TchWcP2Trn3+dSBI7VGYv6w650DNwwFrlrvgKtzYfpqNX8o9tkOZo
- G3B1370DhETKJqUzj/t2nCrgvTGtTn2VIIbCPuz8fsCqFSXy3waDhEbTx2gofiiik2/XfpbK
- koJ6mwvq7Q/8AqgSdyVdxuxpX6VoxgTc9ldCes37EeK0KW8yw+SA2UsTTNbbtEi8sgsSlQCz
- lKVksn7LT1pvqecRX+U+vGTtzzaES0cN2xEfzIYSQID7/HquoR1hRXKJuuPC4avhdHzXDr32
- T3P8241hq4YiogA0KDTEU37vg9Ab6PhFmYdjjg7lEr8hu+lTOZJv7CV1GU=
-IronPort-HdrOrdr: A9a23:+h4qV6w1OAQp7yjBkwkUKrPwLb1zdoMgy1knxilNoHtuA6ilfq
- +V8sjzuSWYtN9VYgBCpTniAtjkfZqjz/9ICOAqVN/INjUO+lHYTr2KhrGM/9SPIUHDH5ZmtZ
- uJt8NFebvN5Z8Qt7ec3DWF
+  bh=JFjfl4xJfPfBHw99z86+v8NqOKExMrnDkDvZI6epnsk=;
+  b=ClUcGhRrQVTh35gwh7Q9fC5SsxJCFH5LYwi1RjIR9ZmnzccRZ5YCBq17
+   1B31aTk4gIZev9B4pdJLGkS84jSh8jO250Zq9gVZjpAEGQWE7vtds6Og+
+   +QtxNwICWtNT0qdXEHFM6UJPkpAz7PqH4JHcZzxc9DV5Id1UtSr9YZayp
+   4=;
+X-IPAS-Result: =?us-ascii?q?A0BkAQA9iqtgl5BdJa1agmCDIlYBOTGxaIF8CwEBAQ0BA?=
+ =?us-ascii?q?S0UBAEBhFACgX4CJTUIDgIEAQEBAQMCAwEBAQEFAQEFAQEBAgEGBBQBAQEBA?=
+ =?us-ascii?q?QEBAWiFaA2GRQYyAVYeMywrBxKCcQGDB6digiyBAYgzgUSBOoh2doN4JxyBS?=
+ =?us-ascii?q?USBFYNgihsiBIJHexMBohacVYMhnUgUKYNbixmWWJU9nxcgVYQNAgQGBQIWg?=
+ =?us-ascii?q?VUBN4FbMxoIGxWDJAlHGQ6OOIM+ixchAy8CNgIGCgEBAwmJbgEB?=
+IronPort-Data: A9a23:TVet4qncS6SOzfiP4XKbylbo5gxTJkRdPkR7XQ2eYbSJt1+Wr1Gzt
+ xIbDTvVb/2NNmagLdEiPoiz8k8E6sTRn4BgTFE/+S0yEltH+JHPbTi7wugcHM8zwunrFh8PA
+ xA2M4GYRCwMo/y1Si6FatANl1EkvU2zbue6WLSs1hxZH1c+EX980047wobVv6Yx6TSHK1LV0
+ T/Ni5W31G+Ng1aY5UpNtspvADs21BjDkGtwUm4WPJinj3eC/5UhN6/zEInqR5fOria4KcbhL
+ wrL5OnREmo0ZH7BAPv9+lrwWhVirrI/oWFih1IOM5VOjCSuqQQ/45gFFv0lY3tPsDa3xuta4
+ ohitJyZHFJB0q3kwIzxUjFCGC14eKZB4rKCcT60sNeYyAvNdH6EL/dGVR5te9ZHvLcsRzgSq
+ ZT0KxhVBvyHr+6kyb28UPRtrs8iN8LseogYvxmMyBmHXKl/HMicE/SiCdlwwTsAi8ZuJuviP
+ ttAchR/QT7wWQcVEwJCYH45tL742iagG9FCk3qRpKwq8y3QwRZ33bzFLtXYYJqJSN9Tk0Leo
+ XjJl0z8AxcVM/SFxDaF+27qjejK9Qv5X4YJHZWi+/JqiUHVzWsWYDUfUVarqP+1h1T4QNJeM
+ EwX+ywGqak06VztT9/hUhn+q3mB1jYaUt9QAvA85ymOx7DS7gLfAXILJhZIY9krnMw7Xzon0
+ hmOhdyBLSRirLCPW1qc8LmOpD+/MCRTKnUNDQcBRBEGpcP+vIU6iB7nR8xmVqWyi7XI9SrY2
+ TuGqm01gK8eyJ5N3KSg9leBiDWpznTUcuIrzgjmYFyH6TpzWJaeZLLx0nPxsNlBLK/MGzFto
+ 0M4d9iiAPEmVM/XzXHdHr1SQNlF9N7eamyA3gUH840JsmXzpCb5Lei89RknfB8xWvvobwMFd
+ 6M6Vel53p5YPHKwYbRwZepd4Ox1kPCwTLwJuh0oB+eij7BrfwOBuSppf0PVjwgBcXTAc4liY
+ v93ku71UB727JiLKhLtG4/xNpdwnEgDKZv7H8yT8vhe+eP2iISppVI53L2mMLlRAESs/ly9z
+ jqjH5HiJ+h3CbenOXCHreb/03hXfSBT6W/KRzx/L77ffVUO9JAJIP7KyrRpQJ1+g6lQjY/1E
+ oKVCxIGkgGm7UAr3T6iNyE4AJuyDMkXkJ7OFXF1Vbpe8yN7MdjHAWZ2X8ZfQITLA8QznKYoE
+ KFdI5vo7zYmYm2vxgnxpKLV9ORKHClHTyrVV8Z5SFDTp6JdejE=
+IronPort-HdrOrdr: A9a23:CIppnKij7UP2MHy/CnLutxDU53BQXtsji2hC6mlwRA09TyX+rb
+ HLoB1173HJYVoqNU3I3OrwW5VoIkmskKKdn7NxAV7KZmCP0wGVxcNZnOnfKlbbdBEWmNQw6U
+ 4ZSchD4BmaNykdsS48izPIdOod/A==
 X-IronPort-Anti-Spam-Filtered: true
 X-IronPort-AV: E=Sophos;i="5.82,319,1613433600"; 
-   d="scan'208";a="705687661"
-Received: from rcdn-core-7.cisco.com ([173.37.93.143])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 24 May 2021 11:15:14 +0000
+   d="scan'208";a="697150789"
+Received: from rcdn-core-8.cisco.com ([173.37.93.144])
+  by alln-iport-1.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 24 May 2021 11:15:15 +0000
 Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
-        by rcdn-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 14OBFEkr017265
+        by rcdn-core-8.cisco.com (8.15.2/8.15.2) with ESMTPS id 14OBFE27012694
         (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
         Mon, 24 May 2021 11:15:14 GMT
 Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
-        id 31ABFCC1253; Mon, 24 May 2021 04:15:14 -0700 (PDT)
+        id 350EBCC1254; Mon, 24 May 2021 04:15:14 -0700 (PDT)
 From:   Denys Zagorui <dzagorui@cisco.com>
 To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         namhyung@kernel.org
-Subject: [PATCH v8 2/3] perf tests: avoid storing an absolute path in perf binary
-Date:   Mon, 24 May 2021 04:15:13 -0700
-Message-Id: <20210524111514.65713-2-dzagorui@cisco.com>
+Subject: [PATCH v8 3/3] perf parse-events: add bison --file-prefix-map option
+Date:   Mon, 24 May 2021 04:15:14 -0700
+Message-Id: <20210524111514.65713-3-dzagorui@cisco.com>
 X-Mailer: git-send-email 2.26.2.Cisco
 In-Reply-To: <20210524111514.65713-1-dzagorui@cisco.com>
 References: <20210524111514.65713-1-dzagorui@cisco.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
-X-Outbound-Node: rcdn-core-7.cisco.com
+X-Outbound-Node: rcdn-core-8.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-python binding test uses PYTHONPATH definition to find python/perf.so
-library. This definition is an absolute path that makes perf binary
-unreproducible. This path can be found during runtime execution.
+During perf build with O= bison stores full paths in generated files and
+those paths are stored in resulting perf binary. Starting from v3.7.1.
+those paths can be remapped by using --file-prefix-map option. Use this
+option if it possible to make perf binary more reproducible.
 
 Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 ---
- tools/perf/tests/Build        |  2 +-
- tools/perf/tests/python-use.c | 25 ++++++++++++++++++++++---
- 2 files changed, 23 insertions(+), 4 deletions(-)
+ tools/perf/Makefile.config | 9 +++++++++
+ tools/perf/util/Build      | 6 +++---
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 650aec19d490..a20098dcdbc4 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 406a9519145e..dacd16874d3d 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -202,6 +202,12 @@ ifeq ($(call get-executable,$(BISON)),)
+   dummy := $(error Error: $(BISON) is missing on this system, please install it)
  endif
  
- CFLAGS_attr.o         += -DBINDIR="BUILD_STR($(bindir_SQ))" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
--CFLAGS_python-use.o   += -DPYTHONPATH="BUILD_STR($(OUTPUT)python)" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
-+CFLAGS_python-use.o   += -DPYTHON="BUILD_STR($(PYTHON_WORD))"
- CFLAGS_dwarf-unwind.o += -fno-optimize-sibling-calls
-diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.c
-index 98c6d474aa6f..32af71300aa3 100644
---- a/tools/perf/tests/python-use.c
-+++ b/tools/perf/tests/python-use.c
-@@ -8,18 +8,37 @@
- #include <linux/compiler.h>
- #include "tests.h"
- #include "util/debug.h"
-+#include "util/util.h"
-+#include <sys/stat.h>
-+#include <limits.h>
-+#include <libgen.h>
- 
- int test__python_use(struct test *test __maybe_unused, int subtest __maybe_unused)
- {
- 	char *cmd;
--	int ret;
-+	int ret = -1;
-+	char *exec_path;
-+	char buf[PATH_MAX];
-+	char *pythonpath;
-+	struct stat sb;
++ifneq ($(OUTPUT),)
++  ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
++    BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
++  endif
++endif
 +
-+	perf_exe(buf, PATH_MAX);
-+	exec_path = dirname(buf);
-+
-+	if (asprintf(&pythonpath, "%s/python", exec_path) < 0)
-+		return ret;
-+
-+	if (stat(pythonpath, &sb) || !S_ISDIR(sb.st_mode))
-+		pythonpath[0] = 0;
+ # Treat warnings as errors unless directed not to
+ ifneq ($(WERROR),0)
+   CORE_CFLAGS += -Werror
+@@ -1228,6 +1234,9 @@ $(call detected_var,LIBDIR)
+ $(call detected_var,GTK_CFLAGS)
+ $(call detected_var,PERL_EMBED_CCOPTS)
+ $(call detected_var,PYTHON_EMBED_CCOPTS)
++ifneq ($(BISON_FILE_PREFIX_MAP),)
++$(call detected_var,BISON_FILE_PREFIX_MAP)
++endif
  
- 	if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); import perf\" | %s %s",
--		     PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
--		return -1;
-+		     pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
-+		goto out;
+ # re-generate FEATURE-DUMP as we may have called feature_check, found out
+ # extra libraries to add to LDFLAGS of some other test and then redo those
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index b64bdc1a7026..95e15d1035ab 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -216,7 +216,7 @@ $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-flex.h: util/parse-
  
- 	pr_debug("python usage test: \"%s\"\n", cmd);
- 	ret = system(cmd) ? -1 : 0;
- 	free(cmd);
-+out:
-+	free(pythonpath);
- 	return ret;
- }
+ $(OUTPUT)util/parse-events-bison.c $(OUTPUT)util/parse-events-bison.h: util/parse-events.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/parse-events-bison.c -p parse_events_
+ 
+ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/expr-bison.c
+@@ -226,7 +226,7 @@ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/e
+ 
+ $(OUTPUT)util/expr-bison.c $(OUTPUT)util/expr-bison.h: util/expr.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/expr-bison.c -p expr_
+ 
+ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-bison.c
+@@ -236,7 +236,7 @@ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-
+ 
+ $(OUTPUT)util/pmu-bison.c $(OUTPUT)util/pmu-bison.h: util/pmu.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/pmu-bison.c -p perf_pmu_
+ 
+ FLEX_GE_26 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 26)
 -- 
 2.26.2.Cisco
 
