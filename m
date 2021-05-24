@@ -2,98 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4DE38E385
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4A938EC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhEXJvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:51:47 -0400
-Received: from m12-14.163.com ([220.181.12.14]:59993 "EHLO m12-14.163.com"
+        id S233824AbhEXPRz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 11:17:55 -0400
+Received: from dvzMG4.fh-swf.de ([193.174.68.36]:55051 "EHLO dvzmg4.fh-swf.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhEXJvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:51:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4knG8
-        BtykaQwETiDN9cbwBvGvd+lcXmV7rz/lIeDAUU=; b=lxzJAwSquvyFwDCmBIlSK
-        HrZrYyf7GP2ojv2foBYAyThshLVBDk3VrxpGdF5G1HUxKbp7fxbMbUXkTJjZu5VS
-        /Dh1AOE3btrOFIhmoQa4Y2tGAc/MpaJG8yyjy7EJ0nfp4nqF6XM4dKfWAswug4KA
-        utcySTnH4Nzc+eMODq3jkM=
-Received: from COOL-20201218BF.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowAD3UW_4cqtgCM3HKg--.29986S2;
-        Mon, 24 May 2021 17:33:57 +0800 (CST)
-From:   mateng <ayowoe@163.com>
-To:     hadess@hadess.net, dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mateng <mateng@yulong.com>
-Subject: [PATCH] touchscreen/goodix.c:remove no needed commas
-Date:   Mon, 24 May 2021 17:33:54 +0800
-Message-Id: <20210524093354.1356-1-ayowoe@163.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S234126AbhEXPGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:06:46 -0400
+Received: from dvzmg4.fh-swf.de (localhost [127.0.0.1])
+        by localhost (Postfix) with SMTP id 1CC64493A91;
+        Mon, 24 May 2021 11:53:36 +0200 (CEST)
+Received: from DESKTOP-MA3PNO9.fh-swf.de (unknown [172.31.10.144])  
+        (Authenticated sender: hidden)
+        by dvzmg4.fh-swf.de (Postfix) with ESMTPSA id 88F55491DF8  ;
+        Mon, 24 May 2021 11:34:33 +0200 (CEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAD3UW_4cqtgCM3HKg--.29986S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WrWktF17AFW3GrW7uw48Zwb_yoW8Xry5pr
-        s3Wry7Ar1qya1UXr45ta1DXFn8ur4rKay0ka9rAw4rXayUJw18ZasYyFn2gFyUtFZ8J3Wk
-        Aw18Zw18Ca97AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jnyCXUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5d1r40rh6rljoofrz/xtbBIg+cKl3l-tppUwAAs9
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: 2 MILLIONEN EURO
+To:     Recipients <saeid.yassers@fh-swf.de>
+From:   "CRISTY DAVIS" <saeid.yassers@fh-swf.de>
+Date:   Mon, 24 May 2021 10:34:27 +0100
+Reply-To: grtnews.cdavis@gmail.com
+X-PMX-Scanned: Virus scanned by dvzMG4
+Message-Id: <20210524095336.1CC64493A91@dvzmg4.fh-swf.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mateng <mateng@yulong.com>
+Attention: I would like to inform that you are the selected winner of 2 Million Euro, kindly contact the email below immediately for claim.
 
-remove no needed commas
+Email: grtnews.cdavis@gmail.com
 
-Signed-off-by: mateng <mateng@yulong.com>
----
- drivers/input/touchscreen/goodix.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index c682b02..35febde 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -190,8 +190,8 @@ static int goodix_check_cfg_16(struct goodix_ts_data *ts,
- 			/* tPAD is too generic, also match on bios date */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
- 			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
--			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
--		},
-+			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014")
-+		}
- 	},
- 	{
- 		.ident = "Teclast X98 Pro",
-@@ -202,8 +202,8 @@ static int goodix_check_cfg_16(struct goodix_ts_data *ts,
- 			 * (sometimes)...
- 			 */
- 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
--			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
--		},
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015")
-+		}
- 	},
- 	{
- 		.ident = "WinBook TW100",
-@@ -217,7 +217,7 @@ static int goodix_check_cfg_16(struct goodix_ts_data *ts,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
--		},
-+		}
- 	},
- #endif
- 	{}
-@@ -246,7 +246,7 @@ static int goodix_check_cfg_16(struct goodix_ts_data *ts,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Cube"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "I15-TC")
--		},
-+		}
- 	},
- #endif
- 	{}
--- 
-1.9.1
 
+====================================
+
+
+
+Achtung: Ich möchte Sie darüber informieren, dass Sie der ausgewählte Gewinner von 2 Millionen Euro sind. Bitte kontaktieren Sie die unten stehende E-Mail umgehend, um einen Anspruch geltend zu machen.
+
+E-Mail: grtnews.cdavis@gmail.com
