@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8799438F4F3
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC4D38F4F2
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbhEXVdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhEXVdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233653AbhEXVdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 24 May 2021 17:33:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C5AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=NW26hKIZwvWed4oS/NKmxGFFPa9FlHafxqWsKTcR/II=; b=PUjvRHIfX2TBLYE2eHPYL/cgPA
-        6juuF4XKakgbNoUk8o1RowLcMu8DTffkkMpoEOP0A6yyoqX+G9Bh699aycz4OfF0apVKPwbOSmQIE
-        A743euy2tp3Tx6ApMLGZG949UVtkxuXRGgedY0VNdCM9OA8mHQafNKWFwemHV5VdlyRlxdObT/34S
-        BxxvU2c+GrMCmn9fk7CiOaHUMXvJmXTqw4smBLxie1XlKdFzchLYODZP1SSqvm1Tio7ADwidUHRLa
-        +HM9Xs/toqtvM86cd4wsuFNMjApEnptDMxbe/mpK2PEVYRXy6u//ETuUCAQYRp0Hfp9HEngk+ZNKe
-        j46Z95nw==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1llIB5-001xBd-NK; Mon, 24 May 2021 21:31:59 +0000
-Subject: Re: [PATCH] LOCKDEP: use depends on LOCKDEP_SUPPORT instead of $ARCH
- list
-To:     Waiman Long <llong@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-References: <20210517034430.9569-1-rdunlap@infradead.org>
- <YKIXBpxyvhzdb1uv@gmail.com>
- <1284b997-b9da-769f-2d36-4d4232c7df88@redhat.com>
- <bfb11ab2-d606-b96e-1979-3bcc3c3adc96@infradead.org>
- <8a4ee5be-ad5c-ca06-dd1a-aa13ccc94906@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c8698ce3-4995-efd6-9d1d-095dcac70dc2@infradead.org>
-Date:   Mon, 24 May 2021 14:31:58 -0700
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhEXVdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:33:44 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E93C061574;
+        Mon, 24 May 2021 14:32:15 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id 22so21520432pfv.11;
+        Mon, 24 May 2021 14:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Su0Fl4wQCNXBOF4oM6+KVolqDcfXCaN+Ud//FfTMd5U=;
+        b=IWeDv9aMFYjtEWtGg3dwxjBXe9FzdOYAjeLH1l+gW6/Q6KLINlYCQPL/DV9Oi9BxX6
+         5Y8lQ9RpaFBm5OXf9GL8QhTNpMl6qC/10f6EtTweSfWexCgXPgPp9hRL6Sn6jvjr3YbQ
+         YawAHEVjVBySxsR3B6iud1nN3Er34+WUFG+Y+SXUxcGol1WSNXm4eW9OPqnJ7SXyblR0
+         YUL329/PRoTPi31fXznhKMMhPopgfjmtKii2lwAb99WEDDyFdxvCh6MCCoUYWcum2O4c
+         Q0Y0gU2HZRUWV1yc/3FdIShN/dut/pi9IEMZFhzwVfshSay2aQ3yx83iSdwOvcrpmFYM
+         QZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Su0Fl4wQCNXBOF4oM6+KVolqDcfXCaN+Ud//FfTMd5U=;
+        b=iaGzL6Dd3xGxphjX/YcjWnDHNKhK89QmaI7bWHZn7Ug/V3P+KIMSL8n9LLKVJtltO9
+         xu0EzvLzymSWVAtFY6uNRq1FoyEL/yis2uQcFTMp2m9ER7N6+UmtuaxbJSLT97Q/VayK
+         wNAU47XpvrOWN+HsyNYS2Qy5Bub/4FJb9DvSFUxgaOr+JDDWhe/9tGU5icFhma+O5DwT
+         qsNChDWj1XW0e5V0FQ0eLDQS7NGTNmdlhvfnUYXM5YBxCD7GcRpTEm/OHAJiNxbGO5XX
+         rc9saNNgvX2cDBkG1T3fvbzO38holq5TNQkXyYxpeydiipBg2GZDP8im3qmnx+3bsUjL
+         Vu2w==
+X-Gm-Message-State: AOAM533CQ5WqJlpd1KjJjIuszkdR/Jo6BDzBQMJYlCGfXbDQtrvkaNVG
+        opKIrIqzvyHQLawOqUaQJBZ3jSPh/cs=
+X-Google-Smtp-Source: ABdhPJwDS+QX7YIXVrmpcZAOug1r1tPJigF4nRqhYAjq/uKtZFcjP6xd/wa7wieTnAND5FRcfu2quQ==
+X-Received: by 2002:a63:ba1b:: with SMTP id k27mr15611722pgf.381.1621891934334;
+        Mon, 24 May 2021 14:32:14 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id gj21sm312426pjb.49.2021.05.24.14.32.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 14:32:13 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/71] 5.4.122-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210524152326.447759938@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2438c6df-dc68-a167-354b-8b53689cd4a0@gmail.com>
+Date:   Mon, 24 May 2021 14:32:10 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <8a4ee5be-ad5c-ca06-dd1a-aa13ccc94906@redhat.com>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 2:04 PM, Waiman Long wrote:
-> On 5/24/21 3:47 PM, Randy Dunlap wrote:
->> On 5/17/21 7:02 AM, Waiman Long wrote:
->>> On 5/17/21 3:11 AM, Ingo Molnar wrote:
->>>> * Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>>> Both arch/um/ and arch/xtensa/ cause a Kconfig warning for LOCKDEP.
->>>>> These arch-es select LOCKDEP_SUPPORT but they are not listed as one
->>>>> of the arch-es that LOCKDEP depends on.
->>>>>
->>>>> Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
->>>>> intend to have LOCKDEP support, replace the awkward list of
->>>>> arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
->>>>>
->>>>> Fixes this kconfig warning: (for both um and xtensa)
->>>>>
->>>>> WARNING: unmet direct dependencies detected for LOCKDEP
->>>>>     Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
->>>>>     Selected by [y]:
->>>>>     - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
->>>>>     - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
->>>>>     - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
->>>>>
->>>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>>> Cc: Ingo Molnar <mingo@redhat.com>
->>>>> Cc: Will Deacon <will@kernel.org>
->>>>> Cc: Waiman Long <longman@redhat.com>
->>>>> Cc: Boqun Feng <boqun.feng@gmail.com>
->>>>> Cc: Chris Zankel <chris@zankel.net>
->>>>> Cc: Max Filippov <jcmvbkbc@gmail.com>
->>>>> Cc: linux-xtensa@linux-xtensa.org
->>>>> Cc: Johannes Berg <johannes@sipsolutions.net>
->>>>> Cc: Jeff Dike <jdike@addtoit.com>
->>>>> Cc: Richard Weinberger <richard@nod.at>
->>>>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>>>> Cc: linux-um@lists.infradead.org
->>>>> ---
->>>>>    lib/Kconfig.debug |    2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> --- linux-next-20210514.orig/lib/Kconfig.debug
->>>>> +++ linux-next-20210514/lib/Kconfig.debug
->>>>> @@ -1383,7 +1383,7 @@ config LOCKDEP
->>>>>        bool
->>>>>        depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
->>>>>        select STACKTRACE
->>>>> -    depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
->>>>> +    depends on FRAME_POINTER || LOCKDEP_SUPPORT
->>>> Ok - the FRAME_POINTER bit is weird. Are there any architectures that have
->>>> FRAME_POINTER defined but no LOCKDEP_SUPPORT?
->>> LOCK_DEBUGGING_SUPPORT depends on LOCKDEP_SUPPORT. So this patch is equivalent to just delete the second depends-on line.
->> Yes, if we disregard the FRAME_POINTER part.
+On 5/24/21 8:25 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.122 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> My understanding is that the 2 depends-on statements have an implicit AND. So it is like
-
-Right (on the implicit AND).
-
-> DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT && (FRAME_POINTER || LOCKDEP_SUPPORT). LOCK_DEBUGGING_SUPPORT is true means the (FRAME_POINTER || LOCKDEP_SUPPORT) will always be true. FRAME_POINTER is true doesn't mean the other dependencies are true. That is why I said it is equivalent to just "DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT". IOW, FRAME_POINTER will play no part here.
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
 > 
-
-Ack. I should have done that myself.
-
->>
->>> Beside LOCKDEP, LATENCYTOP also have exactly the same depends-on line.
->> True, but I don't get any implication that the same patch applies there.
->> Do you?
-> It is just an observation that I stumble on. It is not related to your patch.
-
-Got it.
-
->>> So isn't FRAME_POINTER used mainly to support STACK_TRACE? However, LOCK_DEBUGGING_SUPPORT has already included STACK_TRACE_SUPPORT in its dependency. So why there is a FRAME_POINTER dependency?
->> FRAME_POINTER is one way but it does not seem to be required
->> for STACKTRACE_SUPPORT.
->>
->> Do you have any patch suggestions?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.122-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
-> Is it possible to just get rid of the 2nd depends-on statement?
+> thanks,
 > 
-> The 2nd depends-on line was introduced by commit 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTER"):
+> greg k-h
 
-and I should have looked at that history too. Thanks.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Yes, I agree, we can just delete that line...
-
-I'll send a v2 and copy the author of commit 7d37cb2c912d as well.
-
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 2779c29d9981..417c3d3e521b 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1363,7 +1363,7 @@ config LOCKDEP
->         bool
->         depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
->         select STACKTRACE
-> -       select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE &&
-> +       depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM ||
->         select KALLSYMS
->         select KALLSYMS_ALL
-> 
-> Since STACKTRACE is selected by lockdep, maybe we can just remove the 2nd depends-on line to see if anyone complain.
-> 
-> Cheers,
-> Longman
-> 
-
-thanks.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-~Randy
-
+Florian
