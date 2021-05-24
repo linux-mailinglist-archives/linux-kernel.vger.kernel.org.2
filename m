@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCFD38EED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E838EDF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhEXPz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33990 "EHLO mail.kernel.org"
+        id S234488AbhEXPoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233797AbhEXPqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7900B6140E;
-        Mon, 24 May 2021 15:36:54 +0000 (UTC)
+        id S233583AbhEXPkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:40:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B6661430;
+        Mon, 24 May 2021 15:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870614;
-        bh=n3h+C+wVsGdNeqInQVjAiGNNQInOR2ABJybVHtVRBgo=;
+        s=korg; t=1621870447;
+        bh=gAC8X44v/DAW6Ft4kgj+eMny2o3mMGv0TRRVGZTyjj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+hLYYVyPxV+HqEe4dEMx5KvM/bvRlmvCCVdBKHuypHqaJk+SYeWw2CYVc6cAFH49
-         9aXdIuCiCxoSNTOUPF6LsWzClqfd3oYtXmZaVhj2ooJzihee1yKoVcpb1V9C0eHpu/
-         5SQ1i2vFJ0j7ScDRG5LQV7SjkswMxQ9rJw2q9BaU=
+        b=HE7buHkBWHXqeLH1rf5RLi01OMhbRIYkQFpBXsJvMXT58uOAcMaiLhGHWxl6MBDC+
+         QWKQrVi7L+wCkuVGwyClhL0cw6oogmR848olWQk+a6YgdUWFYYWn56qAN1XHpsOxJS
+         qL+Gm8Yc/jiwAstDrR84T5ivhw+DvccNJ64okFZk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 09/71] RDMA/core: Dont access cm_id after its destruction
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 11/37] Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
 Date:   Mon, 24 May 2021 17:25:15 +0200
-Message-Id: <20210524152326.761251858@linuxfoundation.org>
+Message-Id: <20210524152324.576543251@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Drory <shayd@nvidia.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 889d916b6f8a48b8c9489fffcad3b78eedd01a51 ]
+commit 5e68b86c7b7c059c0f0ec4bf8adabe63f84a61eb upstream.
 
-restrack should only be attached to a cm_id while the ID has a valid
-device pointer. It is set up when the device is first loaded, but not
-cleared when the device is removed. There is also two copies of the device
-pointer, one private and one in the public API, and these were left out of
-sync.
+This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
 
-Make everything go to NULL together and manipulate restrack right around
-the device assignments.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Found by syzcaller:
-BUG: KASAN: wild-memory-access in __list_del include/linux/list.h:112 [inline]
-BUG: KASAN: wild-memory-access in __list_del_entry include/linux/list.h:135 [inline]
-BUG: KASAN: wild-memory-access in list_del include/linux/list.h:146 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_listens drivers/infiniband/core/cma.c:1767 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_operation drivers/infiniband/core/cma.c:1795 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_operation+0x1f4/0x4b0 drivers/infiniband/core/cma.c:1783
-Write of size 8 at addr dead000000000108 by task syz-executor716/334
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-CPU: 0 PID: 334 Comm: syz-executor716 Not tainted 5.11.0+ #271
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xbe/0xf9 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:400 [inline]
- kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
- __list_del include/linux/list.h:112 [inline]
- __list_del_entry include/linux/list.h:135 [inline]
- list_del include/linux/list.h:146 [inline]
- cma_cancel_listens drivers/infiniband/core/cma.c:1767 [inline]
- cma_cancel_operation drivers/infiniband/core/cma.c:1795 [inline]
- cma_cancel_operation+0x1f4/0x4b0 drivers/infiniband/core/cma.c:1783
- _destroy_id+0x29/0x460 drivers/infiniband/core/cma.c:1862
- ucma_close_id+0x36/0x50 drivers/infiniband/core/ucma.c:185
- ucma_destroy_private_ctx+0x58d/0x5b0 drivers/infiniband/core/ucma.c:576
- ucma_close+0x91/0xd0 drivers/infiniband/core/ucma.c:1797
- __fput+0x169/0x540 fs/file_table.c:280
- task_work_run+0xb7/0x100 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0x7da/0x17f0 kernel/exit.c:825
- do_group_exit+0x9e/0x190 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x2d/0x30 kernel/exit.c:931
- do_syscall_64+0x2d/0x40 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The original commit has a memory leak on the error path here, it does
+not clean up everything properly.
 
-Fixes: 255d0c14b375 ("RDMA/cma: rdma_bind_addr() leaks a cma_dev reference count")
-Link: https://lore.kernel.org/r/3352ee288fe34f2b44220457a29bfc0548686363.1620711734.git.leonro@nvidia.com
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 23015b22e47c ("rapidio: fix a NULL pointer dereference when create_workqueue() fails")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-45-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/core/cma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/rapidio/rio_cm.c |    8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index ecac62a7b59e..92428990f0cc 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -530,6 +530,7 @@ static void cma_release_dev(struct rdma_id_private *id_priv)
- 	list_del(&id_priv->list);
- 	cma_deref_dev(id_priv->cma_dev);
- 	id_priv->cma_dev = NULL;
-+	id_priv->id.device = NULL;
- 	if (id_priv->id.route.addr.dev_addr.sgid_attr) {
- 		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
- 		id_priv->id.route.addr.dev_addr.sgid_attr = NULL;
-@@ -1871,6 +1872,7 @@ void rdma_destroy_id(struct rdma_cm_id *id)
- 				iw_destroy_cm_id(id_priv->cm_id.iw);
- 		}
- 		cma_leave_mc_groups(id_priv);
-+		rdma_restrack_del(&id_priv->res);
- 		cma_release_dev(id_priv);
- 	}
+--- a/drivers/rapidio/rio_cm.c
++++ b/drivers/rapidio/rio_cm.c
+@@ -2147,14 +2147,6 @@ static int riocm_add_mport(struct device
+ 	mutex_init(&cm->rx_lock);
+ 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
+ 	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
+-	if (!cm->rx_wq) {
+-		riocm_error("failed to allocate IBMBOX_%d on %s",
+-			    cmbox, mport->name);
+-		rio_release_outb_mbox(mport, cmbox);
+-		kfree(cm);
+-		return -ENOMEM;
+-	}
+-
+ 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
  
-@@ -3580,7 +3582,7 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
- 	}
- 
- 	id_priv->backlog = backlog;
--	if (id->device) {
-+	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id->device, 1)) {
- 			ret = cma_ib_listen(id_priv);
- 			if (ret)
--- 
-2.30.2
-
+ 	cm->tx_slot = 0;
 
 
