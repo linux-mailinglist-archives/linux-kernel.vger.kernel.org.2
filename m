@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CA838EDC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB6B38EDEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233197AbhEXPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:41:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35510 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233666AbhEXPh2 (ORCPT
+        id S234074AbhEXPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:43:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23951 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234148AbhEXPjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:37:28 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OFYce3115652;
-        Mon, 24 May 2021 11:35:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=0GUyE5bYVPf1EOavZNI3brZReI/hBFug03qUKRSri0Y=;
- b=cn3oOIjq1VQObdr3uVRjXwzOxs7ILCikqZ5wOK4093NGx0/qaKaQzLPiikrOsxuufToB
- RUI/TlxSJR3RMlza8deZRhUi4aDzrCjOVnOm2jc8soxhvdkZ1EAOOvuf0j5oLeI2EEns
- vxUDlTcqjlc5Y7hhUm5ckCZ+IZvShYwbFydz8DTDEsyh/929ludo9By3KnslxBcDSYjU
- bNvEF6IcH6JOvWghX388ocAPdgYEJWQazZaLp/6xwpCI7R6jW/viRMW8qLd7WjuyG0g+
- mHUPaqflKb6xx885NfmfzLgi6mRpijrsx+snWUprZad/8jGih0uzpgDmhSGjq1UMaDAC Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38rcd5n7eu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 11:35:47 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14OFYdrs115807;
-        Mon, 24 May 2021 11:35:46 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38rcd5n7e7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 11:35:46 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14OFX5qc015612;
-        Mon, 24 May 2021 15:35:45 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04dal.us.ibm.com with ESMTP id 38psk8uymv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 15:35:45 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14OFZhOI13173016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 May 2021 15:35:43 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19D6278067;
-        Mon, 24 May 2021 15:35:43 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C042D7805F;
-        Mon, 24 May 2021 15:35:39 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.208.94])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 24 May 2021 15:35:39 +0000 (GMT)
-Message-ID: <d7841acd416f9437b532a4acf65cfc46762ef79d.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] Allow access to confidential computing secret
- area
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dov Murik <dovmurik@linux.ibm.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, linux-efi@vger.kernel.org,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Laszlo Ersek <lersek@redhat.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Mon, 24 May 2021 08:35:38 -0700
-In-Reply-To: <YKuXI9TUBa3sjY3e@work-vm>
-References: <20210513062634.2481118-1-dovmurik@linux.ibm.com>
-         <2c8ae998-6dd0-bcb9-f735-e90da05ab9d9@amd.com> <YKZAUdbikp2Pt0XV@work-vm>
-         <ccdf0059-7e39-7895-2733-412dbe4b13f1@linux.intel.com>
-         <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
-         <45842efd-7b6b-496f-d161-e5786760078d@linux.intel.com>
-         <YKuXI9TUBa3sjY3e@work-vm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 24 May 2021 11:39:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621870650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uwoIxOxl2r2xIjwfirZmXNL1cV9XOqsSrH6Pev8GZW8=;
+        b=C6IB79VFoHoSkomIcpikbDYAKzZML5yUnxNMgZzO6h6rQRBoAk3giuMc+VrvUawvsGGdBU
+        Ad3RrUgFRzQJzAbFCK++5bfVmVJoeZi11YQmMPTLvXThX8mcO/BFPJCmTVX7O9azq8wOi5
+        UcMstYW1/hb9QUe1tdSDZZV/BVayZFg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-28yLK7FpN56h-ozA_lD06Q-1; Mon, 24 May 2021 11:37:28 -0400
+X-MC-Unique: 28yLK7FpN56h-ozA_lD06Q-1
+Received: by mail-ej1-f69.google.com with SMTP id bw21-20020a170906c1d5b02903df8cbe09ccso925320ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:37:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uwoIxOxl2r2xIjwfirZmXNL1cV9XOqsSrH6Pev8GZW8=;
+        b=W88vOy9h1Ukr2dkm3s1M8UQDb6YKxd6CTgoSJgG6lzBNsMe1eTO6nJcBGM0mN7J8oL
+         AGjXv00i/KCRODxz6IUtHJ5ZrKSMmqp+p4yj6nOn/98aCnrfWzJahvsmGqo7903e7dvz
+         01Jpzj1Bik4ul0QUMbwyGJ7OqtHyL4ZCT8f4GXfne2gRHlXwUhJQmgbH9BCblsvZexZF
+         Xb3Hp4QNycT2zahzYeumX0fB0v42VB0G43PrXzM2klyJMb3OY6AMdvZ1GLy4T/15LPuJ
+         9OGRISWNCvAgIOf3V7XGJBh+R+7WsZl5jX1eevfZ6dKRgj9S6u1dis1hedPMmySq9zYV
+         YwBQ==
+X-Gm-Message-State: AOAM532gthkk/Qk/5PgY4OEP58nd59dgtFQ9r69PnyhKdaiaGJcyc2/5
+        +9/zaB4aSwwrRxPrErnL2EDM+k1zqkXhtxuq0L9UcUCn3xezePTK+YxH3h8aAADF/Ya3d6qsvES
+        bj8MF05m3SDdJAkYYY1MJLkmt
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr23894093ejq.390.1621870647587;
+        Mon, 24 May 2021 08:37:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV4HYWCQYEhf+JFOjvNGGj/EBWUVsvsXzhiz2dQtb0oV8ZsNF79LkF8LDkAH//6I7bKCQfAw==
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr23894062ejq.390.1621870647347;
+        Mon, 24 May 2021 08:37:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b25sm9658855edv.9.2021.05.24.08.37.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 08:37:26 -0700 (PDT)
+To:     Ilias Stamatis <ilstam@amazon.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mlevitsk@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
+References: <20210521102449.21505-1-ilstam@amazon.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 00/12] KVM: Implement nested TSC scaling
+Message-ID: <92071380-a81f-7db2-6954-6abd4e390905@redhat.com>
+Date:   Mon, 24 May 2021 17:37:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QlVb6q4H6y_9lu-lAoKWz9WFq28EbZbP
-X-Proofpoint-ORIG-GUID: EGyF6gCjMd9VCPvyiKfZ3eBEiFDzeXil
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-24_08:2021-05-24,2021-05-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- clxscore=1011 adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105240095
+In-Reply-To: <20210521102449.21505-1-ilstam@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-24 at 13:08 +0100, Dr. David Alan Gilbert wrote:
-> * Andi Kleen (ak@linux.intel.com) wrote:
-[...]
-> > We opted to use ioctls, with the idea that it should be just read
-> > and cleared once to not let the secret lying around. Typically you
-> > would just use it to set up dmcrypt or similar once. I think read-
-> > and-clear with explicit operations is a better model than some
-> > virtual file because of the security properties.
+On 21/05/21 12:24, Ilias Stamatis wrote:
+> KVM currently supports hardware-assisted TSC scaling but only for L1;
+> the feature is not exposed to nested guests. This patch series adds
+> support for nested TSC scaling and allows both L1 and L2 to be scaled
+> with different scaling factors. That is achieved by "merging" the 01 and
+> 02 values together.
 > 
-> Do you think the ioctl is preferable to read+ftruncate/unlink ?
+> Most of the logic in this series is implemented in common code (by doing
+> the necessary restructurings), however the patches add support for VMX
+> only. Adding support for SVM should be easy at this point and Maxim
+> Levitsky has volunteered to do this (thanks!).
+> 
+> Changelog:
+> v3:
+>    - Applied Sean's feedback
+>    - Refactored patches 7 to 10
+> 
+> v2:
+>    - Applied all of Maxim's feedback
+>    - Added a mul_s64_u64_shr function in math64.h
+>    - Added a separate kvm_scale_tsc_l1 function instead of passing an
+>      argument to kvm_scale_tsc
+>    - Implemented the 02 fields calculations in common code
+>    - Moved all of write_l1_tsc_offset's logic to common code
+>    - Added a check for whether the TSC is stable in patch 10
+>    - Used a random L1 factor and a negative offset in patch 10
+> 
+> Ilias Stamatis (12):
+>    math64.h: Add mul_s64_u64_shr()
+>    KVM: X86: Store L1's TSC scaling ratio in 'struct kvm_vcpu_arch'
+>    KVM: X86: Rename kvm_compute_tsc_offset() to
+>      kvm_compute_tsc_offset_l1()
+>    KVM: X86: Add a ratio parameter to kvm_scale_tsc()
+>    KVM: VMX: Add a TSC multiplier field in VMCS12
+>    KVM: X86: Add functions for retrieving L2 TSC fields from common code
+>    KVM: X86: Add functions that calculate L2's TSC offset and multiplier
+>    KVM: X86: Move write_l1_tsc_offset() logic to common code and rename
+>      it
+>    KVM: VMX: Remove vmx->current_tsc_ratio and decache_tsc_multiplier()
+>    KVM: VMX: Set the TSC offset and multiplier on nested entry and exit
+>    KVM: VMX: Expose TSC scaling to L2
+>    KVM: selftests: x86: Add vmx_nested_tsc_scaling_test
+> 
+>   arch/x86/include/asm/kvm-x86-ops.h            |   4 +-
+>   arch/x86/include/asm/kvm_host.h               |  14 +-
+>   arch/x86/kvm/svm/svm.c                        |  29 ++-
+>   arch/x86/kvm/vmx/nested.c                     |  33 ++-
+>   arch/x86/kvm/vmx/vmcs12.c                     |   1 +
+>   arch/x86/kvm/vmx/vmcs12.h                     |   4 +-
+>   arch/x86/kvm/vmx/vmx.c                        |  49 ++--
+>   arch/x86/kvm/vmx/vmx.h                        |  11 +-
+>   arch/x86/kvm/x86.c                            |  91 +++++--
+>   include/linux/math64.h                        |  19 ++
+>   tools/testing/selftests/kvm/.gitignore        |   1 +
+>   tools/testing/selftests/kvm/Makefile          |   1 +
+>   .../kvm/x86_64/vmx_nested_tsc_scaling_test.c  | 242 ++++++++++++++++++
+>   13 files changed, 417 insertions(+), 82 deletions(-)
+>   create mode 100644 tools/testing/selftests/kvm/x86_64/vmx_nested_tsc_scaling_test.c
+> 
+> --
+> 2.17.1
+> 
 
-I really think if we do a unified upper interface it should be file
-based.  An ioctl based on will have too much temptation to expose the
-architecture of the underlying system.  However, the way to explore
-this would be to ask if there's anything the current ioctl based one
-can do that a file based one couldn't?
+Queued, thanks.
 
-I think ftruncate/unlink is a preferable interface because it puts the
-control in the hands of the consumer: you don't know how far the secret
-might get shared, so by doing clear on first read the driver is forcing
-the user implementation to cache it instead, thus shifting the problem
-not solving it.
+The new kvm_x86_ops should go in kvm_x86_ops.nested, but those are not 
+yet static_calls so we can leave that for later.
 
-James
-
+Paolo
 
