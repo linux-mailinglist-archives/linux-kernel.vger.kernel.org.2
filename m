@@ -2,165 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB8A38F069
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343FA38ECDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbhEXQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbhEXP4O (ORCPT
+        id S233612AbhEXPZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:25:42 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42283 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232746AbhEXPPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:14 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA50C061143
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:08:18 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id v22so27342942oic.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qd2GGNOqjcoVwR9/InTy3gHaTefuQ8PzIzZm4PfwF+Q=;
-        b=pHUsCN/IDaId/ipsKoG3ZrMYVpOUrGYrLef0xTZtQqyz5XEMvN+lSpLTWg7jqjs6Jg
-         8wJ0pQL7+XaAsnBMSaWQCy7vQ/ZJnhOkVL0wp8RSeBJ7P47eTtE07yeR4+A6SNbbViAa
-         iet9G/GM1FfaXkBxAschybOUCLj4dh8QNh+vYyRua3BmM2eulhIfr9X1rl0wIRCwsWd+
-         pISDWphupk3cSrSJvfwLRLkVetuRq3bdIaT1ju8SB684mx/GMUIuCsIkN5+XbviAupjL
-         9P0mdNOzaKLEQ+SZt9yQ2d8SL3naZn+5M6s/xOz5hGkwU900zBI4ruNo/Nh5jzk7aRTk
-         Bqjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qd2GGNOqjcoVwR9/InTy3gHaTefuQ8PzIzZm4PfwF+Q=;
-        b=J1uQsxSKmB2ZZmCF7gEbJXeRHnM/zcOqbYR/EFQ4W5cIFeFVgnTaxv9Rue4ky8D4/1
-         mH/KGUDGTgqzhCtRqbxZHa9ZyPgRYBCUMCtX8gdkf+ck4o1uIsQ6u2Nstzv4OsT24n38
-         GK6Lp3ugRf0PhbSl456b2eqON1zo7aEJAajLRKwk8UsvXItNxolJsqQdY3XUtDyhgSjO
-         obI5EXin15tbZPlNtiCgAQX07Q1uFeFtmeivdwb3zNq15lyvwAEMJd27IcJmrxXdYfVn
-         7utierwQR4FbGPDpT/0wnikXfHaeZHEvMHTaY6ULzFK9gj3pOhtXA9ywgyZMIKGiWb6k
-         fDHQ==
-X-Gm-Message-State: AOAM530PgqURvVeTrgzicOXyiH780Gn9xH/aoSgYGZMzIEdFGGS6fXtk
-        kUYTGNYgSAHG2LBe2o7ByLDFHw==
-X-Google-Smtp-Source: ABdhPJzQwEXxT63vulS4Mr1iXuUiQVfsntslWby9WpFJQ1i6LL+g6rwKWyZorlvtptAuR0hvccJ5Xg==
-X-Received: by 2002:aca:230e:: with SMTP id e14mr11102837oie.58.1621868898078;
-        Mon, 24 May 2021 08:08:18 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n11sm2564001oom.1.2021.05.24.08.08.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 08:08:17 -0700 (PDT)
-Date:   Mon, 24 May 2021 10:08:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 02/13] dt-bindings: msm/dsi: Document Display Stream
- Compression (DSC) parameters
-Message-ID: <20210524150815.GH2484@yoga>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-3-vkoul@kernel.org>
- <20210521144237.GZ2484@yoga>
- <YKtWM+BYeIA+P+55@vkoul-mobl.Dlink>
+        Mon, 24 May 2021 11:15:04 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D17B04476;
+        Mon, 24 May 2021 11:13:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 24 May 2021 11:13:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=BGa72Vj6zhdzVJ4MQX7Q91APrP9
+        Unrjyy5c4SX8SOrc=; b=mWpDg5tBjU9621uQ54CKDVyw+Gv2TiI7f4GuNwXz1W3
+        kXLLs4castuRfycfbqcuTHhumHK7HDqLFpKW8iOEQs+5O9LSKEYThwfdo5avZJgL
+        fQ4BuowLt8t2P/+Cs/DiDlhnETvgH6Fc7sMwachowHcitst/Gy3BWxtr49vEILPn
+        k8Xi5VFN5V4OTprAOrbYejPt6KkGvVlQbw7RS4OGwUXZ7XKQGnb975OmQRcupGpj
+        EXzo3SknZvxfym9Sin4gzBUfWSdk2uQQjU8OrowDefsDc2TOVAbsy1XCw+4qXnhX
+        u4r3vkhJ9N5mHrFfFSGiQkAVmKjClvuzRxYmcWmfYxQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=BGa72V
+        j6zhdzVJ4MQX7Q91APrP9Unrjyy5c4SX8SOrc=; b=oJ3fWltJeZ+rjCRSXb30hz
+        a1hWCac2qaRfPjbFIt8HtpCrYvdOnhgai9lZGyKGiASWteZIyLLQx3CySjYY2c9+
+        i3kEt5DLNAk6NIyGNwT4Pf4LIE3PM+qSSIs2NxjluRw1UNJQdtoriOMuE5UhFe4i
+        r7FD+Iblp1uHmzZu1CPuAySf/CHqmWmzxB4MLpjlUmN7css8ujLA4hPf3W8JIu1w
+        kIKPoVYZgJdjkmkPS7W5dpFoqWCs+44FqAqrJ004J3x3rFh7EOnkgInSccn+13qG
+        PRtP+om51wiicwnVC8O6llEDPusO3DZAK4VXZWLzSnRj8B/VPKhzhNYytZHKGBpg
+        ==
+X-ME-Sender: <xms:nMKrYAeDrLPsbckCZlfYi8A3JXhMYiXesiQWu5J57G7Shc-LSrhMgA>
+    <xme:nMKrYCMwlqKesaxpCLvlHKhU2ofb0JUU1_2ZzebXE1Jl_KWI2XsqgGPOJ4pdP3o3j
+    uD4nYie7xYtn04avQA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:nMKrYBhJ1tpQmpXUYX6dQCBQgcjM4kKLZlLtE3Rlws5PCoL2GlUCKw>
+    <xmx:nMKrYF8b7Cn0DEXJH0_-bdo7plvPfex_2lvq8nDqG-01aV2vqPwzbg>
+    <xmx:nMKrYMvF9tN30CuUlWSkf9Z_9MEwi-5SdT213s88qxUBVEzSXKJjDw>
+    <xmx:nMKrYIIy6EsRpwSp7yJS8oCOfb1sE7ue1Tc_AFvG7eylBTvIZdy1Ew>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 24 May 2021 11:13:31 -0400 (EDT)
+Date:   Mon, 24 May 2021 17:13:29 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Doug Berger <opendmb@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: Re: Kernel Panic in skb_release_data using genet
+Message-ID: <20210524151329.5ummh4dfui6syme3@gilmour>
+References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
+ <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wgtnyrrd22offedx"
 Content-Disposition: inline
-In-Reply-To: <YKtWM+BYeIA+P+55@vkoul-mobl.Dlink>
+In-Reply-To: <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24 May 02:30 CDT 2021, Vinod Koul wrote:
 
-> On 21-05-21, 09:42, Bjorn Andersson wrote:
-> > On Fri 21 May 07:49 CDT 2021, Vinod Koul wrote:
-> > 
-> > > DSC enables streams to be compressed before we send to panel. This
-> > > requires DSC enabled encoder and a panel to be present. So we add this
-> > > information in board DTS and find if DSC can be enabled and the
-> > > parameters required to configure DSC are added to binding document along
-> > > with example
-> > > 
-> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > ---
-> > >  .../devicetree/bindings/display/msm/dsi.txt       | 15 +++++++++++++++
-> > >  1 file changed, 15 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > > index b9a64d3ff184..83d2fb92267e 100644
-> > > --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > > +++ b/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > > @@ -48,6 +48,13 @@ Optional properties:
-> > >  - pinctrl-n: the "sleep" pinctrl state
-> > >  - ports: contains DSI controller input and output ports as children, each
-> > >    containing one endpoint subnode.
-> > > +- qcom,mdss-dsc-enabled: Display Stream Compression (DSC) is enabled
-> > > +- qcom,mdss-slice-height: DSC slice height in pixels
-> > > +- qcom,mdss-slice-width: DSC slice width in pixels
-> > > +- qcom,mdss-slice-per-pkt: DSC slices per packet
-> > > +- qcom,mdss-bit-per-component: DSC bits per component
-> > > +- qcom,mdss-bit-per-pixel: DSC bits per pixel
-> > > +- qcom,mdss-block-prediction-enable: Block prediction mode of DSC enabled
-> > >  
-> > >    DSI Endpoint properties:
-> > >    - remote-endpoint: For port@0, set to phandle of the connected panel/bridge's
-> > > @@ -188,6 +195,14 @@ Example:
-> > >  		qcom,master-dsi;
-> > >  		qcom,sync-dual-dsi;
-> > >  
-> > > +		qcom,mdss-dsc-enabled;
-> > 
-> > To me the activation of DSC seems to be a property of the panel.
-> 
-> I think there are three parts to the problem
-> 1. Panel needs to support it
+--wgtnyrrd22offedx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the case of DP there's bits to be read in the panel to figure this
-out, for DSI panels this seems like a property that the panel (driver)
-should know about.
+Hi Florian,
 
-> 2. Host needs to support it
+On Mon, May 24, 2021 at 07:49:25AM -0700, Florian Fainelli wrote:
+> Hi Maxime,
+>=20
+> On 5/24/2021 6:01 AM, Maxime Ripard wrote:
+> > Hi Doug, Florian,
+> >=20
+> > I've been running a RaspberryPi4 with a mainline kernel for a while,
+> > booting from NFS. Every once in a while (I'd say ~20-30% of all boots),
+> > I'm getting a kernel panic around the time init is started.
+> >=20
+> > I was debugging a kernel based on drm-misc-next-2021-05-17 today with
+> > KASAN enabled and got this, which looks related:
+>=20
+> Is there a known good version that could be used for bisection or you
+> just started to do this test and you have no reference point?
 
-Right, so this needs to be known by the driver. My suggestion is that we
-derive it from the compatible or from the HW version.
+I've had this issue for over a year and never (I think?) got a good
+version, so while it might be a regression, it's not a recent one.
 
-> 3. Someone needs to decide to use when both the above conditions are
-> met.
-> 
-> There are cases where above 1, 2 will be satisfied, but we might be okay
-> without DSC too.. so how to decide when to do DSC :)
-> 
+> How stable in terms of clocking is the configuration that you are using?
+> I could try to fire up a similar test on a Pi4 at home, or use one of
+> our 72112 systems which is the closest we have to a Pi4 and see if that
+> happens there as well.
 
-Can we describe those cases? E.g. is it because enabling DSC would not
-cause a reduction in clock speed that's worth the effort? Or do we only
-use DSC for DSI when it allows us to squeeze everything into a single
-link?
+I'm not really sure about the clocking. Is there any clock you want to
+look at in particular?
 
-Regards,
-Bjorn
+My setup is fairly simple: the firmware and kernel are loaded over TFTP
+and the rootfs is mounted over NFS, and the crash always occur around
+init start, so I guess when it actually starts to transmit a decent
+amount of data?
 
-> I feel it is more of a system property. And I also think that these
-> parameters here are host configuration and not really for panel...
-> 
-> > 
-> > > +		qcom,mdss-slice-height = <16>;
-> > > +		qcom,mdss-slice-width = <540>;
-> > > +		qcom,mdss-slice-per-pkt = <1>;
-> > > +		qcom,mdss-bit-per-component = <8>;
-> > > +		qcom,mdss-bit-per-pixel = <8>;
-> > > +		qcom,mdss-block-prediction-enable;
-> > 
-> > Which of these properties relates to the DSC encoder and what needs to
-> > be agreed with the sink? Can't we derive e.g. bpp from the information
-> > we have from the attached panel already?
-> 
-> Let me go back and check on this a bit more
-> 
-> Thanks
-> -- 
-> ~Vinod
+Maxime
+
+--wgtnyrrd22offedx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKvCmQAKCRDj7w1vZxhR
+xdujAQD/0Kymwp3S8g4TKdrzdqH41ouOvUVLq7pZGVM7OdEHDAD9ERamwnRIoYUx
+mKWf46HXJAlF1yqaZ97ea5MrcHmbowo=
+=r7lJ
+-----END PGP SIGNATURE-----
+
+--wgtnyrrd22offedx--
