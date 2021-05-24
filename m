@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CC538E571
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE8338E578
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhEXL2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhEXL2n (ORCPT
+        id S232609AbhEXLan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:30:43 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3926 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232070AbhEXLaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:28:43 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CCFC061574;
-        Mon, 24 May 2021 04:27:16 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id w206so5923345ybg.7;
-        Mon, 24 May 2021 04:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n4lZKQ7D/b+Y1RnAe1IHv907xEM4UrKrYxjGnKdhmJs=;
-        b=kCzxdZSgQ+Qvkuemg1RliV7PQ15KS5a1Qe+OwDcyfwKRqZeAeqlfwqbMGUopNBnIGO
-         xV7tKYPuyGNDSKbtaR5y5JTrluPYIrSv+x8WL4KkqbqDpwfn8gmHIv8y1mjjlb32uubI
-         mpZujOUm6T+yU1K4psAp0SByHHHZxtsFW91ACMCFLavQWd+vdcrJzhfeJABoSlyFw8mq
-         5VImmopVl4M+pEntrlWzGFmO4UESaMhuUe1vhotgHvf1w0503oYPNlau5+SvFNteTdZD
-         SPgs1sG5x09+Z1s4CBdp50r+5+w3KJxgzfxR5YRlYN3J8gUZk/+1Fp7P038BtOhnedpi
-         H0NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n4lZKQ7D/b+Y1RnAe1IHv907xEM4UrKrYxjGnKdhmJs=;
-        b=ZoeBGi/pzX0HzljNBaPniT7DYWTyAlMXqpIOYwMDrBZRukRxgFjdK3H4q5l59SIKiq
-         ZPjap28EAosKsICc/bXQGOg2cNYdOuGjmaB9hT4Nm+zL7mcBWrkIY0WvPosxUhzQhKnx
-         ox86/3pza4XEehs8xkBG4RlEm0iuaEVANqWRmkdoxjqquZ0Nvo6JkhWX85YGYuiDKwgU
-         og7WNaOIZSX8eDkRdTbUbAsWYR2efjMsAkGzTLGGgLz+MQYTC1ytanAkEG2Sx3EzT5+b
-         R66hdgmegnRUgvNvgDhP/1R8AuZWrCXf5IcKtRXEX1muh1ToFNPaHGp9Wr63vXOmsSzN
-         kALg==
-X-Gm-Message-State: AOAM5318jFPClJkN2sV/F2n7vQZvsrZycUR4T1xCytdBcjhLHCHaQX/5
-        b8aX9YNttlb54EHffKF+AMNLR3XT91NARkPSmg8=
-X-Google-Smtp-Source: ABdhPJy2CiQGQD9PVjlvfc77AiGZksg4u2goErRpB2fkP/7pbqKE9HS5KbzuJSWj6Tjl5TG5N7AmZEE5geyLUdWuD1U=
-X-Received: by 2002:a25:b78e:: with SMTP id n14mr35491542ybh.474.1621855635345;
- Mon, 24 May 2021 04:27:15 -0700 (PDT)
+        Mon, 24 May 2021 07:30:39 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FpZfM0tLPzCx72;
+        Mon, 24 May 2021 19:26:19 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 19:29:09 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
+ May 2021 19:29:09 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <akpm@linux-foundation.org>, <andriy.shevchenko@linux.intel.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH v2 -next] mm/dmapool: use DEVICE_ATTR_RO macro
+Date:   Mon, 24 May 2021 19:28:52 +0800
+Message-ID: <20210524112852.34716-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
-In-Reply-To: <20201203191135.21576-2-info@metux.net>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Mon, 24 May 2021 16:57:03 +0530
-Message-ID: <CAOh2x=kcM351ObubnQSzUa=FVBQUmAUhz4u8ExORUthQQ0WbGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 12:51 AM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> Introducing new gpio driver for virtual GPIO devices via virtio.
->
-> The driver allows routing gpio control into VM guests, eg. brigding
-> virtual gpios to specific host gpios, or attaching simulators for
-> automatic application testing.
->
-> Changes v2:
->     * fixed uapi header license
->     * sorted include's
->     * fixed formatting
->     * fixed unneeded devm allocation - plain kzalloc/kfree is enough
->     * fixed missing devm_kzalloc fail check
->     * use devm_kcalloc() for array allocation
->     * added virtio-gpio protocol specification
+Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
+which makes the code a bit shorter and easier to read.
 
-Hi Enrico,
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: DEVICE_ATTR_RO -> DEVICE_ATTR_RO()
+    DEVICE_ATTR -> DEVICE_ATTR()
 
-We (Linaro's Project Stratos
-https://linaro.atlassian.net/wiki/spaces/STR/overview)
- are interested in this stuff. I was trying to look at the last status
-of all this. Few
-questions for you:
+ mm/dmapool.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-- Was the spec ever posted to virtio-dev list ? I thought that's the
-very first step before
-we merge the code.
+diff --git a/mm/dmapool.c b/mm/dmapool.c
+index 16483f86360e..64b537b3ccb0 100644
+--- a/mm/dmapool.c
++++ b/mm/dmapool.c
+@@ -62,8 +62,7 @@ struct dma_page {		/* cacheable header for 'allocation' bytes */
+ static DEFINE_MUTEX(pools_lock);
+ static DEFINE_MUTEX(pools_reg_lock);
+ 
+-static ssize_t
+-show_pools(struct device *dev, struct device_attribute *attr, char *buf)
++static ssize_t pools_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	unsigned temp;
+ 	unsigned size;
+@@ -103,7 +102,7 @@ show_pools(struct device *dev, struct device_attribute *attr, char *buf)
+ 	return PAGE_SIZE - size;
+ }
+ 
+-static DEVICE_ATTR(pools, 0444, show_pools, NULL);
++static DEVICE_ATTR_RO(pools);
+ 
+ /**
+  * dma_pool_create - Creates a pool of consistent memory blocks, for dma.
+-- 
+2.17.1
 
-- Any follow up on this patchset ?
-
-Thanks. I will be happy to help otherwise and have cycles to work on
-this if you need my help.
-
---
-viresh
