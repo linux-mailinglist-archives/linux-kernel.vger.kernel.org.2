@@ -2,191 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D4738F5F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E210238F5FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhEXW77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:59:59 -0400
-Received: from mail-pg1-f170.google.com ([209.85.215.170]:41956 "EHLO
-        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhEXW77 (ORCPT
+        id S229830AbhEXXAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhEXXAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:59:59 -0400
-Received: by mail-pg1-f170.google.com with SMTP id r1so6353126pgk.8;
-        Mon, 24 May 2021 15:58:29 -0700 (PDT)
+        Mon, 24 May 2021 19:00:10 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A00C061574;
+        Mon, 24 May 2021 15:58:41 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id i4so40336467ybe.2;
+        Mon, 24 May 2021 15:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aeA6ZzJ9wtLKU0spfXFvzN/vxEYBOrxPH2HZTAIR6G4=;
+        b=BlN/F3DALifeeVLcQMifYUL1JTB7D90uTeUf49tlCUgw7ST0wvnsN+yYX629qZHlcI
+         ggd5JIQr0QsP0hgqaUNvQzhfty9eAzRA05zi97R3mDUwmKeVWdtUzvPmWn/jeQW3UCmz
+         xo5xt4pMAnqxtxzOm1183OXeVq60wH57wG4vUtQRoJzhbrPCotgRHwyLRrposZ4OnXxT
+         uLlCdgHvKGQPQnCNT50bIT9kLIITr+XDmAECdGMQa8PXwc5Cp6EIFgS3Dn1gdHDYblLa
+         KS+0kjkPiZQTDDrI8vjT2XlbSzDw6VJxsd8tJOLmBBiC89kROo9IX/OoPRt/9HUpmk1/
+         0I9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x+Vw1vTu0QmIaUSfKZb4qqGrLso9ZIGt1u68HUOBSRM=;
-        b=hNjxnk1OnFaWZVhVH7Bkf5g2e8oaLEYanux0eV81X/DZw2VSU/1F9u3R56mW/EQfpu
-         rn93H/8Viedyh340nCtoDhgmjMtSi8kVrxGLe7l+p4t4eMPXfBWAn3H6PlVELpp8SEb2
-         ciwH73ZKCbe3cCAKVLzQf/+tk9dh7stLhBol1vuU6krspF/unGaX4BilQcBzbLqG7iJs
-         VL8Ez1J+PiVudzuYxA2l3ZYav4BS64BQjDBxclhGn+XtwV2mhPc/40gPRb6LSLeKeaWp
-         XvzMC+igmODms58IQUt+DsuUT+r+9RHfuf+NknU0xQ7KaqYn7jsOZqd0XMnJBFN7dGoF
-         7x8Q==
-X-Gm-Message-State: AOAM533UHe5arjAbL29m2yGjIeS0Djca6GgPVp9w2jOkeoob7wWnYGa8
-        6KChBGwIIf+rlqIQ/wbkl/o=
-X-Google-Smtp-Source: ABdhPJwpw5NG3yxJWXj1a0idruoNsJtWN1fiESIpnB9mYWXAknw5yuI6w4SaM8m78mE2kIFHTVWrkw==
-X-Received: by 2002:a63:8449:: with SMTP id k70mr15947936pgd.392.1621897109144;
-        Mon, 24 May 2021 15:58:29 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id r10sm7075716pga.48.2021.05.24.15.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 15:58:28 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 30AEC401AD; Mon, 24 May 2021 22:58:27 +0000 (UTC)
-Date:   Mon, 24 May 2021 22:58:27 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
-        Barret Rhoden <brho@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, vbabka@suse.cz,
-        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
-        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
-        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support
- pivot_root
-Message-ID: <20210524225827.GA4332@42.do-not-panic.com>
-References: <20210520154244.20209-1-dong.menglong@zte.com.cn>
- <20210520214111.GV4332@42.do-not-panic.com>
- <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
- <20210521155020.GW4332@42.do-not-panic.com>
- <CADxym3Z7bdEJECEejPqg-15ycghgX3ZEmOGWYwxZ1_HPWLU1NA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aeA6ZzJ9wtLKU0spfXFvzN/vxEYBOrxPH2HZTAIR6G4=;
+        b=IAb1/LyjU82Zta5PtGRir/GzpVgN42p+nb2x8vHTNXonbPv7FYLQBlnAL1yO/m/NEB
+         cPfQy4qh/tvcElgcstjcn9F1KXktkLgD92qvVrcAZzWWlkw6J5LdBv/VnA/+RB9C5EiN
+         3TLOw2QR2sQeh9C99p6NPPZzFtlc+ewjEoOt5Z8tMDZaIAf6aUH/ABWaXDGMJylPpHx5
+         afdrojORVnfJoPWd3gCHcwynAwuuewmtKUpC4JAaxywSLtiyGR3074LMoYG9fTstSLw9
+         fEJeEuSzmdroZsrzA7tCqFSjSx1eUJovUPtmx2i1I2f66/0jt/CXw9HWNYlScQdz8pOK
+         5+Sw==
+X-Gm-Message-State: AOAM532zgXEuvzHH2bQ+296hPXt+vk2cQXuDR6qsnSpyZxtjTNpEO08A
+        0ppzpCC47q69p+ul4EBkHtMCfJEQG9uDZzsu6Qg=
+X-Google-Smtp-Source: ABdhPJwCD58vucK7G7O5g1HdcPSR435C+4XpCO00AfQnWJG7NAMraj9RQJBJ/g/36D2p6ru8HmfULYTulkIULklsKRM=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr38084998ybz.260.1621897120617;
+ Mon, 24 May 2021 15:58:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxym3Z7bdEJECEejPqg-15ycghgX3ZEmOGWYwxZ1_HPWLU1NA@mail.gmail.com>
+References: <20210519141936.GV8544@kitsune.suse.cz> <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 May 2021 15:58:29 -0700
+Message-ID: <CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com>
+Subject: Re: BPF: failed module verification on linux-next
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 12:09:30PM +0800, Menglong Dong wrote:
-> On Fri, May 21, 2021 at 11:50 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > > That's a solution, but I don't think it is feasible. Users may create many
-> > > containers, and you can't make docker create all the containers first
-> > > and create network namespace later, as you don't know if there are any
-> > > containers to create later.
-> >
-> > It doesn't seem impossible, but worth noting why inside the commit log
-> > this was not a preferred option.
-> >
-> 
-> In fact, the network namespace is just a case for the problem that the
-> 'mount leak' caused. And this kind modification is not friendly to
-> current docker users, it makes great changes to the usage of docker.
-
-You mean an upgrade of docker? If so... that does not seem like a
-definitive reason to do something new in the kernel *always*.
-
-However, if you introduce it as a kconfig option so that users
-who want to use this new feature can enable it, and then use it,
-the its sold as a new feature.
-
-Should this always be enabled, or done this way? Should we never have
-the option to revert back to the old behaviour? If not, why not?
-
-> > We still have:
-> >
-> > start_kernel() --> vfs_caches_init() --> mnt_init() -->
-> >
-> > mnt_init()
-> > {
-> >         ...
-> >         shmem_init();
-> >         init_rootfs();
-> >         init_mount_tree();
-> > }
-> >
-> > You've now modified init_rootfs() to essentially just set the new user_root,
-> > and that's it. But we stil call init_mount_tree() even if we did set the
-> > rootfs to use tmpfs.
-> 
-> The variate of 'is_tmpfs' is only used in 'rootfs_init_fs_context'. I used
-> ramfs_init_fs_context directly for rootfs,
-
-I don't see you using any context directly, where are you specifying the
-context directly?
-
-> so it is not needed any more
-> and I just removed it in init_rootfs().
+On Thu, May 20, 2021 at 10:31 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> The initialization of 'user_root' in init_rootfs() is used in:
-> do_populate_rootfs -> mount_user_root, which set the file system(
-> ramfs or tmpfs) of the second mount.
-> 
-> Seems it's not suitable to place it in init_rootfs()......
-
-OK I think I just need to understand how you added the context of the
-first mount explicitly now and where, as I don't see it.
-
-> > > In do_populate_ro
-> > > tmpfs, and that's the real rootfs for initramfs. And I call this root
-> > > as 'user_root',
-> > > because it is created for user space.
-> > >
-> > > int __init mount_user_root(void)
-> > > {
-> > >        return do_mount_root(user_root->dev_name,
-> > >                             user_root->fs_name,
-> > >                             root_mountflags,
-> > >                             root_mount_data);
-> > >  }
-> > >
-> > > In other words, I moved the realization of 'rootfs_fs_type' here to
-> > > do_populate_rootfs(), and fixed this 'rootfs_fs_type' with
-> > > ramfs_init_fs_context, as it is a fake root now.
+> On Wed, May 19, 2021 at 7:19 AM Michal Such=C3=A1nek <msuchanek@suse.de> =
+wrote:
 > >
-> > do_populate_rootfs() is called from populate_rootfs() and that in turn
-> > is a:
+> > Hello,
 > >
-> > rootfs_initcall(populate_rootfs);
+> > linux-next fails to boot for me:
 > >
-> > In fact the latest changes have made this to schedule asynchronously as
-> > well. And so indeed, init_mount_tree() always kicks off first. So its
-> > still unclear to me why the first mount now always has a fs context of
-> > ramfs_init_fs_context, even if we did not care for a ramdisk.
+> > [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanill=
+a (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils;
+> > openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC =
+2021 (3455ff8)
+> > [    0.000000] Command line: BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next=
+-20210519-1.g3455ff8-vanilla root=3DUUID=3Dec42c33e-a2c2-4c61-afcc-93e9527
+> > 8f687 plymouth.enable=3D0 resume=3D/dev/disk/by-uuid/f1fe4560-a801-4faf=
+-a638-834c407027c7 mitigations=3Dauto earlyprintk initcall_debug nomodeset
+> >  earlycon ignore_loglevel console=3DttyS0,115200
+> > ...
+> > [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+> > [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 a=
+fter 0 usecs
+> > [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c=
+ @ 1
+> > [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c=
+ returned 0 after 3 usecs
+> > [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+> > [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0=
+ usecs
+> > [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+> > [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 aft=
+er 0 usecs
+> > [   26.147816] Freeing unused decrypted memory: 2036K
+> > [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+> > [   26.165776] Write protecting the kernel read-only data: 26624k
+> > [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 20=
+36K
+> > [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 11=
+84K
+> > [   26.187031] Run /init as init process
+> > [   26.190693]   with arguments:
+> > [   26.193661]     /init
+> > [   26.195933]   with environment:
+> > [   26.199079]     HOME=3D/
+> > [   26.201444]     TERM=3Dlinux
+> > [   26.204152]     BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-20210519-=
+1.g3455ff8-vanilla
+> > [   26.254154] BPF:      type_id=3D35503 offset=3D178440 size=3D4
+> > [   26.259125] BPF:
+> > [   26.261054] BPF:Invalid offset
+> > [   26.264119] BPF:
+>
+> It took me a while to reliably bisect this, but it clearly points to
+> this commit:
+>
+> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lo=
+ck")
+>
+> One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
+> lists and zone stats -fix"), works just fine.
+>
+> I'll have to spend more time debugging what exactly is happening, but
+> the immediate problem is two different definitions of numa_node
+> per-cpu variable. They both are at the same offset within
+> .data..percpu ELF section, they both have the same name, but one of
+> them is marked as static and another as global. And one is int
+> variable, while another is struct pagesets. I'll look some more
+> tomorrow, but adding Jiri and Arnaldo for visibility.
+>
+> [110907] DATASEC '.data..percpu' size=3D178904 vlen=3D303
+> ...
+>         type_id=3D27753 offset=3D163976 size=3D4 (VAR 'numa_node')
+>         type_id=3D27754 offset=3D163976 size=3D4 (VAR 'numa_node')
+>
+> [27753] VAR 'numa_node' type_id=3D27556, linkage=3Dstatic
+> [27754] VAR 'numa_node' type_id=3D20, linkage=3Dglobal
+>
+> [20] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+>
+> [27556] STRUCT 'pagesets' size=3D0 vlen=3D1
+>         'lock' type_id=3D507 bits_offset=3D0
+>
+> [506] STRUCT '(anon)' size=3D0 vlen=3D0
+> [507] TYPEDEF 'local_lock_t' type_id=3D506
+>
+> So also something weird about those zero-sized struct pagesets and
+> local_lock_t inside it.
+
+Ok, so nothing weird about them. local_lock_t is designed to be
+zero-sized unless CONFIG_DEBUG_LOCK_ALLOC is defined.
+
+But such zero-sized per-CPU variables are confusing pahole during BTF
+generation, as now two different variables "occupy" the same address.
+
+Given this seems to be the first zero-sized per-CPU variable, I wonder
+if it would be ok to make sure it's never zero-sized, while pahole
+gets fixed and it's latest version gets widely packaged and
+distributed.
+
+Mel, what do you think about something like below? Or maybe you can
+advise some better solution?
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 41b87d6f840c..6a1d7511cae9 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -124,6 +124,13 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
+
+ struct pagesets {
+     local_lock_t lock;
++#if defined(CONFIG_DEBUG_INFO_BTF) && !defined(CONFIG_DEBUG_LOCK_ALLOC)
++    /* pahole 1.21 and earlier gets confused by zero-sized per-CPU
++     * variables and produces invalid BTF. So to accommodate earlier
++     * versions of pahole, ensure that sizeof(struct pagesets) is never 0.
++     */
++    char __filler;
++#endif
+ };
+ static DEFINE_PER_CPU(struct pagesets, pagesets) =3D {
+     .lock =3D INIT_LOCAL_LOCK(lock),
+
+>
+> > [   26.264119]
+> > [   26.267437] failed to validate module [efivarfs] BTF: -22
+> > [   26.316724] systemd[1]: systemd 246.13+suse.105.g14581e0120 running =
+in system mode. (+PAM +AUDIT +SELINUX -IMA +APPARMOR -SMACK +SYSVINI
+> > T +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +BL=
+KID +ELFUTILS +KMOD +IDN2 -IDN +PCRE2 default-hierarchy=3Dunified)
+> > [   26.357990] systemd[1]: Detected architecture x86-64.
+> > [   26.363068] systemd[1]: Running in initial RAM disk.
 > >
-> > Are you suggesting it can be arbitrary now?
-> 
-> With the existence of the new user_root, the first mount is not directly used
-> any more, so the filesystem type of it doesn't  matter.
-
-What do you mean? init_mount_tree() is always called, and it has
-statically:
-
-static void __init init_mount_tree(void)                                        
-{                                                                               
-	struct vfsmount *mnt;
-	...
-	mnt = vfs_kern_mount(&rootfs_fs_type, 0, "rootfs", NULL);
-	...
-}
-
-And as I noted, this is *always* called earlier than
-do_populate_rootfs(). Your changes did not remove the init_mount_tree()
-or modify it, and so why would the context of the above call always
-be OK to be used now with a ramfs context now?
-
-> So it makes no sense to make the file system of the first mount selectable.
-
-Why? I don't see why, nor is it explained, we're always caling
-vfs_kern_mount(&rootfs_fs_type, ...) and you have not changed that
-either.
-
-> To simplify the code here, I make it ramfs_init_fs_context directly. In fact,
-> it's fine to make it shmen_init_fs_context here too.
-
-So indeed you're suggesting its arbitrary now.... I don't see why.
-
-  Luis
+>
+> [...]
