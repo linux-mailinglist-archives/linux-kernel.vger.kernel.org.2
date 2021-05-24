@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5B638ED99
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379C138F029
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhEXPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
+        id S236050AbhEXQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhEXPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C688261413;
-        Mon, 24 May 2021 15:32:43 +0000 (UTC)
+        id S234418AbhEXPwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0D2613F3;
+        Mon, 24 May 2021 15:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870364;
-        bh=15oc/WjcNzfjmfguWvMxeJ7cZRbaFID4/OV0DFsxLz0=;
+        s=korg; t=1621870740;
+        bh=LEkjlQhBJKYdOwVtxAHgm3u6ALPjzQ7XpA6VTqnK/iA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mj85q3AHQEQuW+9g4J6+FZeby4UhTeYWQ66s24Y4sTLfTZxpaZIzujuf1W1WTZ6tz
-         xxwJcJjCp47Ay5VPTba2mbeXTCKg6FyLr+feV6Z3Bzu36hk0AoXixqoXjQMdPyc20P
-         G+aSNAjj3vlINVzoxsrf23Ix3DuLOhNT475xbmg4=
+        b=J8Yjm9HlkNr2DXMNpJpjxsLZ3FLB+vzzPJfnTjWovORK2xy0Q9owSzQDlWJ5pTZuq
+         ZYjjAOAOf79SdConXuB8DB1aH4sOXZUBngeNOoc8qQQE/chScMcjatZNMM8jKP2wnK
+         gWSY4fHpfvj4RZ/UAdsFFqCUc1KU1YZZZURPb5eA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 23/36] cdrom: gdrom: initialize global variable at init time
+        stable@vger.kernel.org, Amit <amit.engel@dell.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 013/104] nvmet: remove unused ctrl->cqs
 Date:   Mon, 24 May 2021 17:25:08 +0200
-Message-Id: <20210524152324.912387378@linuxfoundation.org>
+Message-Id: <20210524152333.269792078@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Amit <amit.engel@dell.com>
 
-commit 9183f01b5e6e32eb3f17b5f3f8d5ad5ac9786c49 upstream.
+[ Upstream commit 6d65aeab7bf6e83e75f53cfdbdb84603e52e1182 ]
 
-As Peter points out, if we were to disconnect and then reconnect this
-driver from a device, the "global" state of the device would contain odd
-values and could cause problems.  Fix this up by just initializing the
-whole thing to 0 at probe() time.
+remove unused cqs from nvmet_ctrl struct
+this will reduce the allocated memory.
 
-Ideally this would be a per-device variable, but given the age and the
-total lack of users of it, that would require a lot of s/./->/g changes
-for really no good reason.
-
-Reported-by: Peter Rosin <peda@axentia.se>
-Cc: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Peter Rosin <peda@axentia.se>
-Link: https://lore.kernel.org/r/YJP2j6AU82MqEY2M@kroah.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Amit <amit.engel@dell.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cdrom/gdrom.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/nvme/target/core.c  | 15 ++-------------
+ drivers/nvme/target/nvmet.h |  1 -
+ 2 files changed, 2 insertions(+), 14 deletions(-)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -773,6 +773,13 @@ static int probe_gdrom_setupqueue(void)
- static int probe_gdrom(struct platform_device *devptr)
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index 1e79d33c1df7..870d06cfd815 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -757,8 +757,6 @@ void nvmet_cq_setup(struct nvmet_ctrl *ctrl, struct nvmet_cq *cq,
  {
- 	int err;
-+
-+	/*
-+	 * Ensure our "one" device is initialized properly in case of previous
-+	 * usages of it
-+	 */
-+	memset(&gd, 0, sizeof(gd));
-+
- 	/* Start the device */
- 	if (gdrom_execute_diagnostic() != 1) {
- 		pr_warning("ATA Probe for GDROM failed\n");
-@@ -867,7 +874,7 @@ static struct platform_driver gdrom_driv
- static int __init init_gdrom(void)
- {
- 	int rc;
--	gd.toc = NULL;
-+
- 	rc = platform_driver_register(&gdrom_driver);
- 	if (rc)
- 		return rc;
+ 	cq->qid = qid;
+ 	cq->size = size;
+-
+-	ctrl->cqs[qid] = cq;
+ }
+ 
+ void nvmet_sq_setup(struct nvmet_ctrl *ctrl, struct nvmet_sq *sq,
+@@ -1355,20 +1353,14 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
+ 	if (!ctrl->changed_ns_list)
+ 		goto out_free_ctrl;
+ 
+-	ctrl->cqs = kcalloc(subsys->max_qid + 1,
+-			sizeof(struct nvmet_cq *),
+-			GFP_KERNEL);
+-	if (!ctrl->cqs)
+-		goto out_free_changed_ns_list;
+-
+ 	ctrl->sqs = kcalloc(subsys->max_qid + 1,
+ 			sizeof(struct nvmet_sq *),
+ 			GFP_KERNEL);
+ 	if (!ctrl->sqs)
+-		goto out_free_cqs;
++		goto out_free_changed_ns_list;
+ 
+ 	if (subsys->cntlid_min > subsys->cntlid_max)
+-		goto out_free_cqs;
++		goto out_free_changed_ns_list;
+ 
+ 	ret = ida_simple_get(&cntlid_ida,
+ 			     subsys->cntlid_min, subsys->cntlid_max,
+@@ -1406,8 +1398,6 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
+ 
+ out_free_sqs:
+ 	kfree(ctrl->sqs);
+-out_free_cqs:
+-	kfree(ctrl->cqs);
+ out_free_changed_ns_list:
+ 	kfree(ctrl->changed_ns_list);
+ out_free_ctrl:
+@@ -1437,7 +1427,6 @@ static void nvmet_ctrl_free(struct kref *ref)
+ 
+ 	nvmet_async_events_free(ctrl);
+ 	kfree(ctrl->sqs);
+-	kfree(ctrl->cqs);
+ 	kfree(ctrl->changed_ns_list);
+ 	kfree(ctrl);
+ 
+diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
+index bc91336080e0..ea96487b5424 100644
+--- a/drivers/nvme/target/nvmet.h
++++ b/drivers/nvme/target/nvmet.h
+@@ -164,7 +164,6 @@ static inline struct nvmet_port *ana_groups_to_port(
+ 
+ struct nvmet_ctrl {
+ 	struct nvmet_subsys	*subsys;
+-	struct nvmet_cq		**cqs;
+ 	struct nvmet_sq		**sqs;
+ 
+ 	bool			cmd_seen;
+-- 
+2.30.2
+
 
 
