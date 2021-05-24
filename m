@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA638ECD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8FA38ECDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbhEXPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:25:20 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54042 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhEXPRb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:17:31 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14OFFrGa041504;
-        Mon, 24 May 2021 10:15:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621869353;
-        bh=GboA2Om6dWr6qVDBT1Ckg/PVdLDQm9AAnrekIIVfbC4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ezxz44WojYw81t7cpvqj9sVTor/6Nt3SS+z2gMEgyX+ijRNxI7/ljJP4TlP+YB19C
-         1OIdg9qgMKnbRN+oVdMOyaNGMZ0GGnOOSMe+vN94M+lh5pbxkIoW09groq6bMFamFh
-         JeLJh3J21Hf9L7J4UbCpnzFtDgauuSwUz879qIxk=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14OFFrqk107878
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 May 2021 10:15:53 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
- May 2021 10:15:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 24 May 2021 10:15:52 -0500
-Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14OFFqY7115517;
-        Mon, 24 May 2021 10:15:52 -0500
-Subject: Re: [PATCH] thermal: ti-soc-thermal: Fix kernel-doc
-To:     Yang Li <yang.lee@linux.alibaba.com>, <edubezval@gmail.com>
-CC:     <j-keerthy@ti.com>, <rui.zhang@intel.com>,
-        <daniel.lezcano@linaro.org>, <amitk@kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1621851963-36548-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <011fb94c-7775-6c3f-2215-bf9cb505d6d1@ti.com>
-Date:   Mon, 24 May 2021 10:15:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234192AbhEXPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:25:53 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44414 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235295AbhEXPUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:20:41 -0400
+IronPort-SDR: 3VAmEWNKnN1kJRH5F+MBT+S+8/OQ7aElxVzIfCXaQR+3zXkhx4IvpyAx3wZU8Ipnw3AkXzWXB7
+ HWi4JpcJr7fw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="223112581"
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="223112581"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 08:18:34 -0700
+IronPort-SDR: 3xTXIYzKCtF6IjPu7vE/AmzsvA23PXBxNkDOLWZ71J7wEIsEt2GSoZn7c8zNKaDFnHxGeMg9wl
+ hq5kQftQnV1w==
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="629725647"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 08:18:31 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id B4AA4202F7;
+        Mon, 24 May 2021 18:18:29 +0300 (EEST)
+Date:   Mon, 24 May 2021 18:18:29 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH] media: atomisp: remove compat_ioctl32 code
+Message-ID: <20210524151829.GO3@paasikivi.fi.intel.com>
+References: <20210516204818.2967910-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1621851963-36548-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210516204818.2967910-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 5:26 AM, Yang Li wrote:
-> Fix function name in ti-bandgap.c kernel-doc comment
-> to remove a warning.
-> 
-> drivers/thermal/ti-soc-thermal/ti-bandgap.c:787: warning: expecting
-> prototype for ti_bandgap_alert_init(). Prototype was for
-> ti_bandgap_talert_init() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Hi Arnd,
 
-Acked-by: Suman Anna <s-anna@ti.com>
-
-> ---
->  drivers/thermal/ti-soc-thermal/ti-bandgap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, May 16, 2021 at 10:47:43PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> index ebe7cb7..ea0603b 100644
-> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> @@ -770,7 +770,7 @@ static int ti_bandgap_tshut_init(struct ti_bandgap *bgp,
->  }
->  
->  /**
-> - * ti_bandgap_alert_init() - setup and initialize talert handling
-> + * ti_bandgap_talert_init() - setup and initialize talert handling
->   * @bgp: pointer to struct ti_bandgap
->   * @pdev: pointer to device struct platform_device
->   *
+> This is one of the last remaining users of compat_alloc_user_space()
+> and copy_in_user(), which are in the process of getting removed.
 > 
+> As of commit 57e6b6f2303e ("media: atomisp_fops.c: disable
+> atomisp_compat_ioctl32"), nothing in this file is actually getting used
+> as the only reference has been stubbed out.
 
+This patch was made redundant by another one that fixed the bug. But I
+guess you're right in the sense that no-one could have used this because of
+the patch that disabled it.
+
+So:
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+But:
+
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> index f1e6b2597853..e383e17c5072 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+> @@ -1283,7 +1283,8 @@ const struct v4l2_file_operations atomisp_fops = {
+>  	.unlocked_ioctl = video_ioctl2,
+>  #ifdef CONFIG_COMPAT
+>  	/*
+> -	 * There are problems with this code. Disable this for now.
+> +	 * this was removed because of bugs, the interface
+> +	 * needs to be made safe for compat tasks instead.
+>  	.compat_ioctl32 = atomisp_compat_ioctl32,
+
+I think the comment could go, too.
+
+>  	 */
+>  #endif
+> @@ -1297,10 +1298,7 @@ const struct v4l2_file_operations atomisp_file_fops = {
+>  	.mmap = atomisp_file_mmap,
+>  	.unlocked_ioctl = video_ioctl2,
+>  #ifdef CONFIG_COMPAT
+> -	/*
+> -	 * There are problems with this code. Disable this for now.
+> -	.compat_ioctl32 = atomisp_compat_ioctl32,
+> -	 */
+> +	/* .compat_ioctl32 = atomisp_compat_ioctl32, */
+
+Thie one, too.
+
+>  #endif
+>  	.poll = atomisp_poll,
+>  };
+
+-- 
+Kind  regards,
+
+Sakari Ailus
