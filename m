@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F7638E000
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6305D38E006
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhEXECE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 00:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhEXECC (ORCPT
+        id S232185AbhEXEFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:05:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:13994 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232120AbhEXEFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 00:02:02 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A805C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:00:35 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v14so16405325pgi.6
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:00:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PkGL/jirzcz4Lvqb4/MaE1jMqBDDNPzHgjnDClieuEo=;
-        b=RyMoNBJ5LXlz3lErKrV7Mx+2qO+5hLyS2t1/2Ij/ygzhBpM3lEEYRALvBPTm6/adVi
-         i9KOdXO8aoiolkhvwTvEZ+abOqr1qHY0HBAnWR9MzpiSA9NUmaOInZywi7Yx1ssTKyDs
-         awWKkQAVMDcb8L1v47QGpZRl2l9a4DKVwKg8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PkGL/jirzcz4Lvqb4/MaE1jMqBDDNPzHgjnDClieuEo=;
-        b=l3vfeufxCw0elrN6quQ3RKyCvL9s1vTviyncFiuE2U97ejbTxZy2I0KI/9LTPQTq3I
-         aTxslfz7QdwU0LTdfyhJO0Lwnk7eNPC0J9TLzkm0VLjjar+yQ6rWQHi/WHOF4jrHeiTP
-         bvKGqUGph/f6AZFSgXrx2Z/nNLOKsP/WC6AdgfMYpJcFHg8dsH2xAE1HD70yhiQzoTJ3
-         I/y8ucuhLT4HrmcYODR7BX5o9dRzx1ikphZvRVpDhj5x4u6AHByWIGzwbpEW3K5Yv4GM
-         u2q1Ma6xTTMLdoIn81wFJ934pJV16xKFeriHnD/MjI4efZqufN4gwaMBoQgCyScM2N/D
-         1Hjw==
-X-Gm-Message-State: AOAM531MesGCAKCLggzS5zZc7akkoWOYgZb7E+OukRzttrB1eEanZhPG
-        OiTwLisNhxaQ/KoyJcpuj1/Jjg==
-X-Google-Smtp-Source: ABdhPJwzqY9hiTjr90NxYZ01WoyFOoK/lrGZrXP5jkiQDmlyC/gLbRo96v9qx+cbDPzt/qZ6SeNXrg==
-X-Received: by 2002:a62:1d52:0:b029:2dd:ee:1439 with SMTP id d79-20020a621d520000b02902dd00ee1439mr22124945pfd.57.1621828835108;
-        Sun, 23 May 2021 21:00:35 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:7357:1320:fdb3:1853])
-        by smtp.gmail.com with ESMTPSA id o17sm3991608pgj.25.2021.05.23.21.00.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 21:00:34 -0700 (PDT)
-Date:   Mon, 24 May 2021 13:00:29 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
-Message-ID: <YKsk3ZdDyoy9/Ga/@google.com>
-References: <20210521155624.174524-1-senozhatsky@chromium.org>
- <20210521180127.GD4441@paulmck-ThinkPad-P17-Gen-1>
- <20210521213855.GA3437356@paulmck-ThinkPad-P17-Gen-1>
- <YKsH3GrEoxcMf4j0@google.com>
- <20210524034645.GH4441@paulmck-ThinkPad-P17-Gen-1>
+        Mon, 24 May 2021 00:05:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621829021; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=qJyT7ZMqzWN/xyhBNw4dAHIGfNS/+50PSHAczgqPi3c=; b=K7b9zRiJpCqsExPdRS36wNUV9pJjRfN53sx8ZYFuqoItrsGEue+4m7e7DoPtogLKoEmgCEPA
+ Qq1QrN0T1pb/WirQIw8EHoFDWYoSBcAPXe+SecJXDw3UY1I4ZAAkPRrbr/ipRS9MEMocP2Nm
+ Sw4Yv+1nYAJP5pjs/QVdPWiMqf0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60ab258814eae4d7417ceac7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 04:03:20
+ GMT
+Sender: bqiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81A24C43217; Mon, 24 May 2021 04:03:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from bqiang-Celadon-RN.qca.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bqiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4486CC433D3;
+        Mon, 24 May 2021 04:03:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4486CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bqiang@codeaurora.org
+From:   Baochen Qiang <bqiang@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: [PATCH v2] bus: mhi: Wait for M2 state during system resume
+Date:   Mon, 24 May 2021 12:03:12 +0800
+Message-Id: <20210524040312.14409-1-bqiang@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524034645.GH4441@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/23 20:46), Paul E. McKenney wrote:
-> 
-> In theory, yes, sort of, anyway.  In practice, highly unlikely.
-> The most plausible way for this to happen is for this code path to be
-> delayed for a long time on a 32-bit system, so that jiffies+ULONG_MAX/2
-> actually arrives.  But in that case, all sorts of other complaints
-> would happen first.
+During system resume, MHI host triggers M3->M0 transition and then waits
+for target device to enter M0 state. Once done, the device queues a state
+change event into ctrl event ring and notifies MHI host by raising an
+interrupt, where a tasklet is scheduled to process this event. In most cases,
+the tasklet is served timely and wait operation succeeds.
 
-I see.
+However, there are cases where CPU is busy and cannot serve this tasklet
+for some time. Once delay goes long enough, the device moves itself to M1
+state and also interrupts MHI host after inserting a new state change
+event to ctrl ring. Later CPU finally has time to process the ring, however
+there are two events in it now:
+	1. for M3->M0 event, which is processed first as queued first,
+	   tasklet handler updates device state to M0 and wakes up the task,
+	   i.e., the MHI host.
+	2. for M0->M1 event, which is processed later, tasklet handler
+	   triggers M1->M2 transition and updates device state to M2 directly,
+	   then wakes up the MHI host(if still sleeping on this wait queue).
+Note that although MHI host has been woken up while processing the first
+event, it may still has no chance to run before the second event is processed.
+In other words, MHI host has to keep waiting till timeout cause the M0 state
+has been missed.
 
-> But I could make this a cmpxchg(), if that is what you are getting at.
+kernel log here:
+...
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
+...
 
-No, it's good. I was just curious what scenario I was missing.
+Fix this issue by simply adding M2 as a valid state for resume.
+
+Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
+
+Fixes: 0c6b20a1d720 ("bus: mhi: core: Add support for MHI suspend and resume")
+Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+ drivers/bus/mhi/core/pm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index e2e59a341fef..59b009a3ee9b 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -934,6 +934,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
+ 
+ 	ret = wait_event_timeout(mhi_cntrl->state_event,
+ 				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
++				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
+ 				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+ 				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+ 
+-- 
+2.25.1
+
