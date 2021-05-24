@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BE938ED09
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424A938ED83
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhEXPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:33:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50232 "EHLO mail.kernel.org"
+        id S233941AbhEXPib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:38:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232547AbhEXPcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EB8361376;
-        Mon, 24 May 2021 15:30:40 +0000 (UTC)
+        id S233493AbhEXPe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B36E613BF;
+        Mon, 24 May 2021 15:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870240;
-        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
+        s=korg; t=1621870335;
+        bh=vRPb5bbdFlXhDT9/MX5I0AwXk6wBI1jLoV7lvKlY5pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s8oRCGqdFqzRmSdmZjQ7lCJwl22OWHdlsIUZWUGtjd71Ga0FkjJIhJbnc76ZEXyaR
-         oxmWgYrgYm+N8nwn66hS7O06KZLMEO7qn7XEjlVTYFgB375cnXbo5QSeJvJQ4x+ERO
-         S3TVvjNV+xRmDp+j4CMLt5g72klqKVMOnEAmFMyE=
+        b=n3N/sdBnILkLgrLZ6IbT4b8mP1xfL9wJJQms5ckn/vF5SHInkFvqsTxaefArLqS82
+         L2QmcU7XwwdHogqIaynEfsQwfFEwLwxcjiVlHgTs09ufnK+FhGR7CYNRcJVOR0DhUR
+         9RHd2j2n40DlSBqW/PWs0dcd7kJqgWXBnU7B7IUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: [PATCH 4.4 13/31] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+        stable@vger.kernel.org, Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anirudh Rayabharam <mail@anirudhrb.com>
+Subject: [PATCH 4.9 11/36] rapidio: handle create_workqueue() failure
 Date:   Mon, 24 May 2021 17:24:56 +0200
-Message-Id: <20210524152323.354620437@linuxfoundation.org>
+Message-Id: <20210524152324.538910839@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
+commit 69ce3ae36dcb03cdf416b0862a45369ddbf50fdf upstream.
 
-This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
+In case create_workqueue() fails, release all resources and return -ENOMEM
+to caller to avoid potential NULL pointer deref later. Move up the
+create_workequeue() call to return early and avoid unwinding the call to
+riocm_rx_fill().
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit does not properly unwind if there is an error
-condition so it needs to be reverted at this point in time.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: stable <stable@vger.kernel.org>
-Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
-Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-46-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/leds/leds-lp5523.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/rapidio/rio_cm.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
+--- a/drivers/rapidio/rio_cm.c
++++ b/drivers/rapidio/rio_cm.c
+@@ -2136,6 +2136,14 @@ static int riocm_add_mport(struct device
+ 		return -ENODEV;
+ 	}
  
- 	/* Let the programs run for couple of ms and check the engine status */
- 	usleep_range(3000, 6000);
--	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
--	if (ret)
--		return ret;
-+	lp55xx_read(chip, LP5523_REG_STATUS, &status);
- 	status &= LP5523_ENG_STATUS_MASK;
++	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
++	if (!cm->rx_wq) {
++		rio_release_inb_mbox(mport, cmbox);
++		rio_release_outb_mbox(mport, cmbox);
++		kfree(cm);
++		return -ENOMEM;
++	}
++
+ 	/*
+ 	 * Allocate and register inbound messaging buffers to be ready
+ 	 * to receive channel and system management requests
+@@ -2146,7 +2154,6 @@ static int riocm_add_mport(struct device
+ 	cm->rx_slots = RIOCM_RX_RING_SIZE;
+ 	mutex_init(&cm->rx_lock);
+ 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
+-	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
+ 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
  
- 	if (status != LP5523_ENG_STATUS_MASK) {
+ 	cm->tx_slot = 0;
 
 
