@@ -2,93 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF68B38EACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7790138EA9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhEXO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:58:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233808AbhEXOww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:52:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D066141C;
-        Mon, 24 May 2021 14:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621867696;
-        bh=FjffVfX7ZHBpMoEV5UGia/iEkAw5C7P7xXuBqUhqT+g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3KKSKlox3tIdiRg3oifAXT+IW7haP1EktKaZVDfYygnO36lGnWgZU7DPhhFGnVek
-         UIlWZsDUrpQ0qjy67r6bTkjfJbVM18T1pXEuG4uJjKIA0P8dKv3vqS0Ys4FErbgQ+9
-         gCHnIgTAji22KAozpViT6gGIlDQ9iSIzsBjeijmVu7D6maPpZoWMjQ2dHeFkdNokzr
-         m5syEO8l5MN4/CDSHnv+UlPVng3h2M7XjJszC7UvFrqIsGndQteVjLlU0qr746szOb
-         asZ9DVQgiKjz8ysFGmQu3XOsFA9/ofSpeneO+T/9urcevpsRjhgSmQQakjgxT+z+xO
-         FHJyXJqPgAQtA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        Vinod Koul <vkoul@kernel.org>, Sinan Kaya <okaya@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 26/62] dmaengine: qcom_hidma: comment platform_driver_register call
-Date:   Mon, 24 May 2021 10:47:07 -0400
-Message-Id: <20210524144744.2497894-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
-References: <20210524144744.2497894-1-sashal@kernel.org>
+        id S234121AbhEXO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:57:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5688 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233971AbhEXOvy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:51:54 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fpg6S1Bytz1BRGQ;
+        Mon, 24 May 2021 22:47:28 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 24 May 2021 22:50:16 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
+        <ms@dev.tdt.de>, <willemb@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 00/10] net: wan: clean up some code style issues
+Date:   Mon, 24 May 2021 22:47:07 +0800
+Message-ID: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+This patchset clean up some code style issues.
 
-[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
+Peng Li (10):
+  net: wan: remove redundant blank lines
+  net: wan: fix an code style issue about "foo* bar"
+  net: wan: add blank line after declarations
+  net: wan: code indent use tabs where possible
+  net: wan: fix the code style issue about trailing statements
+  net: wan: add some required spaces
+  net: wan: move out assignment in if condition
+  net: wan: replace comparison to NULL with "!card"
+  net: wan: fix the comments style issue
+  net: wan: add braces {} to all arms of the statement
 
-Place a comment in hidma_mgmt_init explaining why success must
-currently be assumed, due to the cleanup issue that would need to
-be considered were this module ever to be unloadable or were this
-platform_driver_register call ever to fail.
+ drivers/net/wan/wanxl.c | 186 ++++++++++++++++++++++++------------------------
+ 1 file changed, 94 insertions(+), 92 deletions(-)
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-Acked-By: Sinan Kaya <okaya@kernel.org>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
-index fe87b01f7a4e..62026607f3f8 100644
---- a/drivers/dma/qcom/hidma_mgmt.c
-+++ b/drivers/dma/qcom/hidma_mgmt.c
-@@ -418,6 +418,20 @@ static int __init hidma_mgmt_init(void)
- 		hidma_mgmt_of_populate_channels(child);
- 	}
- #endif
-+	/*
-+	 * We do not check for return value here, as it is assumed that
-+	 * platform_driver_register must not fail. The reason for this is that
-+	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
-+	 * cleaned up if it does fail, and to do this work is quite
-+	 * complicated. In particular, various calls of of_address_to_resource,
-+	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
-+	 * and of_msi_configure which then call other functions and so on, must
-+	 * be cleaned up - this is not a trivial exercise.
-+	 *
-+	 * Currently, this module is not intended to be unloaded, and there is
-+	 * no module_exit function defined which does the needed cleanup. For
-+	 * this reason, we have to assume success here.
-+	 */
- 	platform_driver_register(&hidma_mgmt_driver);
- 
- 	return 0;
 -- 
-2.30.2
+2.8.1
 
