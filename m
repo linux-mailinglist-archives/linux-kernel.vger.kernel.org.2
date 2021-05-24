@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD96338EF2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629AD38F08E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbhEXP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:56:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
+        id S235697AbhEXQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234091AbhEXPs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:48:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 220606157F;
-        Mon, 24 May 2021 15:37:28 +0000 (UTC)
+        id S235080AbhEXP5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A3BF61950;
+        Mon, 24 May 2021 15:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870649;
-        bh=3tr2OMRnQcEEYAL6cEE519vtoioTcnPkV1HS//zF48Q=;
+        s=korg; t=1621871009;
+        bh=8MmAe9ioIJXYEC9+vWdC7mJvZaHue8oIlnJ3m1cRlx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Wehs7P9f1T00R5ylYFg3QEzxi9yyR+2HfcjnzL6cfk1snv4goanNYExZC0lCq9y4
-         mWGmVuRw7rIY/uP/5gLw/EF9a2vNxwAC3w/KttiIN7FvOzNgncflQg88I0IhHrbiHE
-         en+FHtrNzswfXJJoEg8IfuWrocacflGfQxTrOPOo=
+        b=N2Jh21tfZArMCgNAto3rVEJJ7Uc1LfRnhl/WnPZ5PITtZtHoJ8nK+JdAz2O/bjIfo
+         EnfJqwLKE2xO1nT4B1PSFd1VkwEDTeiAJX/h2Ufs+AZ52r+07dIozJ+RAASMAao0Vg
+         UUOjPBdgRuuDVFzu4Zmm2x6jJ5yijFc8pNgmonnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Tokarev <mjt@tls.msk.ru>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 42/71] dm snapshot: fix a crash when an origin has no snapshots
+        stable@vger.kernel.org, Like Xu <like.xu@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 031/127] perf/x86: Avoid touching LBR_TOS MSR for Arch LBR
 Date:   Mon, 24 May 2021 17:25:48 +0200
-Message-Id: <20210524152327.835078212@linuxfoundation.org>
+Message-Id: <20210524152335.894137968@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Like Xu <like.xu@linux.intel.com>
 
-commit 7ee06ddc4038f936b0d4459d37a7d4d844fb03db upstream.
+[ Upstream commit 3317c26a4b413b41364f2c4b83c778c6aba1576d ]
 
-If an origin target has no snapshots, o->split_boundary is set to 0.
-This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
+The Architecture LBR does not have MSR_LBR_TOS (0x000001c9).
+In a guest that should support Architecture LBR, check_msr()
+will be a non-related check for the architecture MSR 0x0
+(IA32_P5_MC_ADDR) that is also not supported by KVM.
 
-Fix this by initializing chunk_size, and in turn split_boundary, to
-rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
-into "unsigned" type.
+The failure will cause x86_pmu.lbr_nr = 0, thereby preventing
+the initialization of the guest Arch LBR. Fix it by avoiding
+this extraneous check in intel_pmu_init() for Arch LBR.
 
-Reported-by: Michael Tokarev <mjt@tls.msk.ru>
-Tested-by: Michael Tokarev <mjt@tls.msk.ru>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+[peterz: simpler still]
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210430052247.3079672-1-like.xu@linux.intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-snap.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -854,12 +854,11 @@ static int dm_add_exception(void *contex
- static uint32_t __minimum_chunk_size(struct origin *o)
- {
- 	struct dm_snapshot *snap;
--	unsigned chunk_size = 0;
-+	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
- 
- 	if (o)
- 		list_for_each_entry(snap, &o->snapshots, list)
--			chunk_size = min_not_zero(chunk_size,
--						  snap->store->chunk_size);
-+			chunk_size = min(chunk_size, snap->store->chunk_size);
- 
- 	return (uint32_t) chunk_size;
- }
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c57ec8e27907..4c18e7fb58f5 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5741,7 +5741,7 @@ __init int intel_pmu_init(void)
+ 	 * Check all LBT MSR here.
+ 	 * Disable LBR access if any LBR MSRs can not be accessed.
+ 	 */
+-	if (x86_pmu.lbr_nr && !check_msr(x86_pmu.lbr_tos, 0x3UL))
++	if (x86_pmu.lbr_tos && !check_msr(x86_pmu.lbr_tos, 0x3UL))
+ 		x86_pmu.lbr_nr = 0;
+ 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
+ 		if (!(check_msr(x86_pmu.lbr_from + i, 0xffffUL) &&
+-- 
+2.30.2
+
 
 
