@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F6438EDFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2A038EF93
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbhEXPoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58368 "EHLO mail.kernel.org"
+        id S234096AbhEXP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233009AbhEXPk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:40:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B725D61423;
-        Mon, 24 May 2021 15:34:17 +0000 (UTC)
+        id S234585AbhEXPwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CFC61622;
+        Mon, 24 May 2021 15:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870458;
-        bh=GiFo+j/eaoh4G+oxXE8pCQfSHUeJLxULqf52JcMWLy8=;
+        s=korg; t=1621870747;
+        bh=F5+Y0KYYN8GX/sZgkCchlexqW7ylrqjZ/vqpeMbnaDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k+FY/4UMGGKjIo8VBTq6ydaqBp+MsYgy5Bg+oK9gvYvjyeM0ExRg62iI4SuijsRha
-         0PvkC8c+itz4YRB/aLqlvDTxeJmB7wz/iJnbWga2AeQOMtBgcgSkR+s03/+YV8XM42
-         2WrPiwRYcMzPgnYEp8bg7rHHWpf346ZRKOb2tB40=
+        b=nXmrI9iYF332ZsoDdl9si633u9fC1wLn+bakwja763voKUwK7tLLiK6VXUsWideG6
+         wE/R4G+WI4OjSMzzdr88XtCPDEwqOO4DU8v5xsVodLK3mObQn4cPLePZEWHfpEjxzr
+         l3A4mh9bP9Bxesl4s6tPMHwyI6rW1K5+JjXiVDfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 06/37] ALSA: line6: Fix racy initialization of LINE6 MIDI
-Date:   Mon, 24 May 2021 17:25:10 +0200
-Message-Id: <20210524152324.408860425@linuxfoundation.org>
+        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 016/104] nvme-tcp: rerun io_work if req_list is not empty
+Date:   Mon, 24 May 2021 17:25:11 +0200
+Message-Id: <20210524152333.366112978@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,85 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Keith Busch <kbusch@kernel.org>
 
-commit 05ca447630334c323c9e2b788b61133ab75d60d3 upstream.
+[ Upstream commit a0fdd1418007f83565d3f2e04b47923ba93a9b8c ]
 
-The initialization of MIDI devices that are found on some LINE6
-drivers are currently done in a racy way; namely, the MIDI buffer
-instance is allocated and initialized in each private_init callback
-while the communication with the interface is already started via
-line6_init_cap_control() call before that point.  This may lead to
-Oops in line6_data_received() when a spurious event is received, as
-reported by syzkaller.
+A possible race condition exists where the request to send data is
+enqueued from nvme_tcp_handle_r2t()'s will not be observed by
+nvme_tcp_send_all() if it happens to be running. The driver relies on
+io_work to send the enqueued request when it is runs again, but the
+concurrently running nvme_tcp_send_all() may not have released the
+send_mutex at that time. If no future commands are enqueued to re-kick
+the io_work, the request will timeout in the SEND_H2C state, resulting
+in a timeout error like:
 
-This patch moves the MIDI initialization to line6_init_cap_control()
-as well instead of the too-lately-called private_init for avoiding the
-race.  Also this reduces slightly more lines, so it's a win-win
-change.
+  nvme nvme0: queue 1: timeout request 0x3 type 6
 
-Reported-by: syzbot+0d2b3feb0a2887862e06@syzkallerlkml..appspotmail.com
-Link: https://lore.kernel.org/r/000000000000a4be9405c28520de@google.com
-Link: https://lore.kernel.org/r/20210517132725.GA50495@hyeyoo
-Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210518083939.1927-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ensure the io_work continues to run as long as the req_list is not empty.
+
+Fixes: db5ad6b7f8cdd ("nvme-tcp: try to send request in queue_rq context")
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/line6/driver.c |    4 ++++
- sound/usb/line6/pod.c    |    5 -----
- sound/usb/line6/variax.c |    6 ------
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ drivers/nvme/host/tcp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -698,6 +698,10 @@ static int line6_init_cap_control(struct
- 		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
- 		if (!line6->buffer_message)
- 			return -ENOMEM;
-+
-+		ret = line6_init_midi(line6);
-+		if (ret < 0)
-+			return ret;
- 	} else {
- 		ret = line6_hwdep_init(line6);
- 		if (ret < 0)
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -421,11 +421,6 @@ static int pod_init(struct usb_line6 *li
- 	if (err < 0)
- 		return err;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 4cf81f3841ae..7346a05d395b 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1140,7 +1140,8 @@ static void nvme_tcp_io_work(struct work_struct *w)
+ 				pending = true;
+ 			else if (unlikely(result < 0))
+ 				break;
+-		}
++		} else
++			pending = !llist_empty(&queue->req_list);
  
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(line6);
--	if (err < 0)
--		return err;
--
- 	/* initialize PCM subsystem: */
- 	err = line6_init_pcm(line6, &pod_pcm_properties);
- 	if (err < 0)
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -217,7 +217,6 @@ static int variax_init(struct usb_line6
- 		       const struct usb_device_id *id)
- {
- 	struct usb_line6_variax *variax = (struct usb_line6_variax *) line6;
--	int err;
- 
- 	line6->process_message = line6_variax_process_message;
- 	line6->disconnect = line6_variax_disconnect;
-@@ -233,11 +232,6 @@ static int variax_init(struct usb_line6
- 	if (variax->buffer_activate == NULL)
- 		return -ENOMEM;
- 
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(&variax->line6);
--	if (err < 0)
--		return err;
--
- 	/* initiate startup procedure: */
- 	variax_startup1(variax);
- 	return 0;
+ 		result = nvme_tcp_try_recv(queue);
+ 		if (result > 0)
+-- 
+2.30.2
+
 
 
