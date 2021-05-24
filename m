@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A6D38F0FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B39D38F100
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236108AbhEXQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:08:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46880 "EHLO mail.kernel.org"
+        id S236832AbhEXQIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:08:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233228AbhEXQAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:00:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DA6361468;
-        Mon, 24 May 2021 15:45:59 +0000 (UTC)
+        id S235630AbhEXQAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 647EB6198B;
+        Mon, 24 May 2021 15:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871159;
-        bh=eSo3u7S8Y8x03P5HuFzkqcHPD8cByTV/ijpy0qViCm8=;
+        s=korg; t=1621871161;
+        bh=1thRWn/Ko8lZOPys+Us69FIXuUyvzd84Oklr9SZ8F9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cT86gl43oNd+A+7C9N6/Jue6T4gElW/hhaN6lGR/2ksehrIH/FHbRpaH72zXTSna2
-         y+hHCYSOtCNJbIf/ddKUNqvhtBnjnSXp5ylMsoSpjcWLQ2iOlaA9K/5oWxTwqekr69
-         aws3cU06l24IQ8Ckrx9ObxvtOwfmmNpL/2RB1JBA=
+        b=R8QaMglqaSmombV6Qe+EHJvaDY1CHFrHLxlhS++eEk4s78/075ZNKuxE0zpjyuRbb
+         cTvUXxJ+2Vc62yl/hNM/R+i7wKhWfNo6AajSwLu+OSX2kI4AONxRZ+kUT9gFu7seQC
+         t7ufeA49OWGplK240lVbQvrm7eiWbtRr+882FX0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 5.12 066/127] Revert "serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference"
-Date:   Mon, 24 May 2021 17:26:23 +0200
-Message-Id: <20210524152337.090738842@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Narayan Ayalasomayajula <narayan.ayalasomayajula@wdc.com>,
+        Anil Mishra <anil.mishra@wdc.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.12 067/127] nvme-tcp: fix possible use-after-completion
+Date:   Mon, 24 May 2021 17:26:24 +0200
+Message-Id: <20210524152337.120308490@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
 References: <20210524152334.857620285@linuxfoundation.org>
@@ -39,41 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 754f39158441f4c0d7a8255209dd9a939f08ce80 upstream.
+commit 825619b09ad351894d2c6fb6705f5b3711d145c7 upstream.
 
-This reverts commit 32f47179833b63de72427131169809065db6745e.
+Commit db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq
+context") added a second context that may perform a network send.
+This means that now RX and TX are not serialized in nvme_tcp_io_work
+and can run concurrently.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+While there is correct mutual exclusion in the TX path (where
+the send_mutex protect the queue socket send activity) RX activity,
+and more specifically request completion may run concurrently.
 
-Upon review, this commit was found to be not be needed at all as the
-change was useless because this function can only be called when
-of_match_device matched on something.  So it should be reverted.
+This means we must guarantee that any mutation of the request state
+related to its lifetime, bytes sent must not be accessed when a completion
+may have possibly arrived back (and processed).
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 32f47179833b ("serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference")
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-6-gregkh@linuxfoundation.org
+The race may trigger when a request completion arrives, processed
+_and_ reused as a fresh new request, exactly in the (relatively short)
+window between the last data payload sent and before the request iov_iter
+is advanced.
+
+Consider the following race:
+1. 16K write request is queued
+2. The nvme command and the data is sent to the controller (in-capsule
+   or solicited by r2t)
+3. After the last payload is sent but before the req.iter is advanced,
+   the controller sends back a completion.
+4. The completion is processed, the request is completed, and reused
+   to transfer a new request (write or read)
+5. The new request is queued, and the driver reset the request parameters
+   (nvme_tcp_setup_cmd_pdu).
+6. Now context in (2) resumes execution and advances the req.iter
+
+==> use-after-completion as this is already a new request.
+
+Fix this by making sure the request is not advanced after the last
+data payload send, knowing that a completion may have arrived already.
+
+An alternative solution would have been to delay the request completion
+or state change waiting for reference counting on the TX path, but besides
+adding atomic operations to the hot-path, it may present challenges in
+multi-stage R2T scenarios where a r2t handler needs to be deferred to
+an async execution.
+
+Reported-by: Narayan Ayalasomayajula <narayan.ayalasomayajula@wdc.com>
+Tested-by: Anil Mishra <anil.mishra@wdc.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/mvebu-uart.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/nvme/host/tcp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -818,9 +818,6 @@ static int mvebu_uart_probe(struct platf
- 		return -EINVAL;
- 	}
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -940,7 +940,6 @@ static int nvme_tcp_try_send_data(struct
+ 		if (ret <= 0)
+ 			return ret;
  
--	if (!match)
--		return -ENODEV;
--
- 	/* Assume that all UART ports have a DT alias or none has */
- 	id = of_alias_get_id(pdev->dev.of_node, "serial");
- 	if (!pdev->dev.of_node || id < 0)
+-		nvme_tcp_advance_req(req, ret);
+ 		if (queue->data_digest)
+ 			nvme_tcp_ddgst_update(queue->snd_hash, page,
+ 					offset, ret);
+@@ -957,6 +956,7 @@ static int nvme_tcp_try_send_data(struct
+ 			}
+ 			return 1;
+ 		}
++		nvme_tcp_advance_req(req, ret);
+ 	}
+ 	return -EAGAIN;
+ }
 
 
