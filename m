@@ -2,224 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9C938ECF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ED538EEB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhEXPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:30:14 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:51496 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbhEXP3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:29:07 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id c768bedd6e9807ac; Mon, 24 May 2021 17:27:37 +0200
-Received: from kreacher.localnet (89-64-80-49.dynamic.chello.pl [89.64.80.49])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 4433766971F;
-        Mon, 24 May 2021 17:27:36 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        David Box <david.e.box@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Olsthoorn <dave@bewaar.me>, Shujun Wang <wsj20369@163.com>
-Subject: [PATCH v1 2/3] ACPI: power: Save the last known state of each power resource
+        id S235164AbhEXPzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233952AbhEXPpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:45:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAF9C6145E;
+        Mon, 24 May 2021 15:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621870593;
+        bh=tp882o/zghF5p/HiL5a1X0yQiJpnlZs6BbLpzJElWZQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HAGK/XoiAzgt77OPA4wVNid5WgDQGtUp86QemYGpgkA/QL93OKkyrb9mAdPyfwvC+
+         xjLv53XdjZamqUwS3kUqpNuZAxVEJQu2grPid6ATdcEeQi/eu6VU85vnr2s34MSBnT
+         mchvLe7atsu9S2KT8r0BGb1unajWVjtlH3hXU7/0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.4 17/71] cifs: fix memory leak in smb2_copychunk_range
 Date:   Mon, 24 May 2021 17:25:23 +0200
-Message-ID: <3126947.44csPzL39Z@kreacher>
-In-Reply-To: <2074778.irdbgypaU6@kreacher>
-References: <2074778.irdbgypaU6@kreacher>
+Message-Id: <20210524152327.021522694@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.49
-X-CLIENT-HOSTNAME: 89-64-80-49.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgledtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedtrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrgeelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopegurghvihgurdgvrdgsohigsehlihhnuhigrdhi
- nhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghvvgessggvfigrrghrrdhmvgdprhgtphhtthhopeifshhjvddtfeeileesudeifedrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-Currently, there are two ways to check the state of an ACPI power
-resource and they may not be consistent with each other.  The first
-one is to evaluate the power resource's _STA object and the other one
-is to check its reference counter value.  However, on some systems
-the value returned by _STA may not be consistent with the value of
-the power resource's reference counter (for example, on some systems
-it returns the same value every time for certain power resources).
+commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
 
-Moreover, evaluating _STA is unnecessary overhead for a power
-resource for which it has been evaluated already or whose state is
-otherwise known, because either the _ON or the _OFF method has been
-executed for it.
+When using smb2_copychunk_range() for large ranges we will
+run through several iterations of a loop calling SMB2_ioctl()
+but never actually free the returned buffer except for the final
+iteration.
+This leads to memory leaks everytime a large copychunk is requested.
 
-For this reason, save the state of each power resource in its
-struct acpi_power_resource object and use the saved value whenever
-its state needs to be checked, except when its stats is unknown, in
-which case the _STA method is evaluated for it and the value
-returned by that method is saved as the last known state of
-the power resource.
-
-Moreover, drop the power resource _STA method evaluation from
-acpi_add_power_resource(), so as to avoid doing that unnecessarily
-for power resources that will never be used.
-
-Tested-by: Dave Olsthoorn <dave@bewaar.me>
-Tested-by: Shujun Wang <wsj20369@163.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/power.c |   50 ++++++++++++++++++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 18 deletions(-)
+ fs/cifs/smb2ops.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -52,6 +52,7 @@ struct acpi_power_resource {
- 	u32 order;
- 	unsigned int ref_count;
- 	unsigned int users;
-+	u8 state;
- 	bool wakeup_enabled;
- 	struct mutex resource_lock;
- 	struct list_head dependents;
-@@ -177,15 +178,12 @@ int acpi_extract_power_resources(union a
- 	return err;
- }
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -1673,6 +1673,8 @@ smb2_copychunk_range(const unsigned int
+ 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
  
--static int acpi_power_get_state(acpi_handle handle, u8 *state)
-+static int __get_state(acpi_handle handle, u8 *state)
- {
- 	acpi_status status = AE_OK;
- 	unsigned long long sta = 0;
- 	u8 cur_state;
- 
--	if (!handle || !state)
--		return -EINVAL;
--
- 	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
- 	if (ACPI_FAILURE(status))
- 		return -ENODEV;
-@@ -199,6 +197,20 @@ static int acpi_power_get_state(acpi_han
- 	return 0;
- }
- 
-+static int acpi_power_get_state(struct acpi_power_resource *resource, u8 *state)
-+{
-+	if (resource->state == ACPI_POWER_RESOURCE_STATE_UNKNOWN) {
-+		int ret;
-+
-+		ret = __get_state(resource->device.handle, &resource->state);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	*state = resource->state;
-+	return 0;
-+}
-+
- static int acpi_power_get_list_state(struct list_head *list, u8 *state)
- {
- 	struct acpi_power_resource_entry *entry;
-@@ -210,11 +222,10 @@ static int acpi_power_get_list_state(str
- 	/* The state of the list is 'on' IFF all resources are 'on'. */
- 	list_for_each_entry(entry, list, node) {
- 		struct acpi_power_resource *resource = entry->resource;
--		acpi_handle handle = resource->device.handle;
- 		int result;
- 
- 		mutex_lock(&resource->resource_lock);
--		result = acpi_power_get_state(handle, &cur_state);
-+		result = acpi_power_get_state(resource, &cur_state);
- 		mutex_unlock(&resource->resource_lock);
- 		if (result)
- 			return result;
-@@ -347,8 +358,12 @@ static int __acpi_power_on(struct acpi_p
- 	acpi_status status = AE_OK;
- 
- 	status = acpi_evaluate_object(resource->device.handle, "_ON", NULL, NULL);
--	if (ACPI_FAILURE(status))
-+	if (ACPI_FAILURE(status)) {
-+		resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
- 		return -ENODEV;
-+	}
-+
-+	resource->state = ACPI_POWER_RESOURCE_STATE_ON;
- 
- 	pr_debug("Power resource [%s] turned on\n", resource->name);
- 
-@@ -400,8 +415,12 @@ static int __acpi_power_off(struct acpi_
- 
- 	status = acpi_evaluate_object(resource->device.handle, "_OFF",
- 				      NULL, NULL);
--	if (ACPI_FAILURE(status))
-+	if (ACPI_FAILURE(status)) {
-+		resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
- 		return -ENODEV;
-+	}
-+
-+	resource->state = ACPI_POWER_RESOURCE_STATE_OFF;
- 
- 	pr_debug("Power resource [%s] turned off\n", resource->name);
- 
-@@ -585,13 +604,12 @@ int acpi_power_wakeup_list_init(struct l
- 
- 	list_for_each_entry(entry, list, node) {
- 		struct acpi_power_resource *resource = entry->resource;
--		acpi_handle handle = resource->device.handle;
- 		int result;
- 		u8 state;
- 
- 		mutex_lock(&resource->resource_lock);
- 
--		result = acpi_power_get_state(handle, &state);
-+		result = acpi_power_get_state(resource, &state);
- 		if (result) {
- 			mutex_unlock(&resource->resource_lock);
- 			return result;
-@@ -915,7 +933,6 @@ int acpi_add_power_resource(acpi_handle
- 	struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
- 	acpi_status status;
- 	int result;
--	u8 state;
- 
- 	acpi_bus_get_device(handle, &device);
- 	if (device)
-@@ -942,13 +959,9 @@ int acpi_add_power_resource(acpi_handle
- 
- 	resource->system_level = acpi_object.power_resource.system_level;
- 	resource->order = acpi_object.power_resource.resource_order;
-+	resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
- 
--	result = acpi_power_get_state(handle, &state);
--	if (result)
--		goto err;
--
--	pr_info("%s [%s] (%s)\n", acpi_device_name(device),
--		acpi_device_bid(device), state ? "on" : "off");
-+	pr_info("%s [%s]\n", acpi_device_name(device), acpi_device_bid(device));
- 
- 	device->flags.match_driver = true;
- 	result = acpi_device_add(device, acpi_release_power_resource);
-@@ -980,7 +993,8 @@ void acpi_resume_power_resources(void)
- 
- 		mutex_lock(&resource->resource_lock);
- 
--		result = acpi_power_get_state(resource->device.handle, &state);
-+		resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
-+		result = acpi_power_get_state(resource, &state);
- 		if (result) {
- 			mutex_unlock(&resource->resource_lock);
- 			continue;
-
+ 		/* Request server copy to target from src identified by key */
++		kfree(retbuf);
++		retbuf = NULL;
+ 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
+ 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
+ 			true /* is_fsctl */, (char *)pcchunk,
 
 
