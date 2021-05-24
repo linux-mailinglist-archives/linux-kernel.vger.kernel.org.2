@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5948C38E220
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C343538E228
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhEXIEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S232408AbhEXIGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhEXIEl (ORCPT
+        with ESMTP id S232382AbhEXIGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:04:41 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0BEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:03:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o127so14416433wmo.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=r1MKnvZ6A/JoCs5aUiOd4Aom1NuletnEZa+phzDnz5M=;
-        b=X1/dQWoPBV5rYZo35v4oSYZmM96aocbipBey7dGJEdpLl///Dtl0Q5Y9+YvTIXf6hW
-         Wd02NxeqdIlKUKtQi0ZVil0bvKImEbqf/dIqzkrewLjb5iXWR9TpR2UmEKkmMvLhzlJi
-         nb8tDjCjD01v9mKbpSAmwuVRFnUzLzmgtKWFHpoUfhBfvMlaUQQ2Jn5U+0bxpSe1SRO6
-         9A+eTiDgC6dRIbMyhOUGfwQAEdUfiT2h2CeEdD/56NqnmJyWT5S/mAZ2cv9MV20GHkel
-         MuLXaB9fbnKd9W4Zw6taLe4xZTpO2u5t8NYvNTN6nhsgY6cqmdFU4K+LBiQ4zvidgHZd
-         XvUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r1MKnvZ6A/JoCs5aUiOd4Aom1NuletnEZa+phzDnz5M=;
-        b=dLZfv58PPBlbmSSZNlbk74AZkwOeEpciWfS1BT709BakSEDytDr1quxUVVBLC0y/GL
-         bJntnUfI9Z1Hp7/BV+eVUSgA+5rQX/Ot7GerIXevUa49VIjwasDgyphTxiDoSynaibou
-         MhJCc3E764yItaL2IYqtj8cGVJBZw6pBZ1EK6sQw52pzZvmQ+pyHFlYkABCUth2lhwoA
-         bz9M2Ma7Cg1o+8zzmpzNBUo6XPrEatyoOJE4FaSAjofBrVjWxnpmyfrt70BXc5s/j91A
-         CsK6yE/XdQB8NAYztDZeCr6xoZZ7SFi835QXuq4lSZnDn25Hbc4svY28c6dHd12duTqG
-         AM0g==
-X-Gm-Message-State: AOAM533oJG0EAl0OkT1/Mvb4+lPoKTomtnvVTT5ISIBoMwMaVp/vglcd
-        vv+IT8D+UNQikwPNVoVGm10Ubg==
-X-Google-Smtp-Source: ABdhPJzIQXFWcFfr5Y+IlsHJjhYafYThK6faqxY8JbqLqAZiiNXK/BvqIFilS1tXTvhsYkqkaot+Bw==
-X-Received: by 2002:a05:600c:4ecb:: with SMTP id g11mr19311104wmq.46.1621843392021;
-        Mon, 24 May 2021 01:03:12 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id 10sm7186159wmi.7.2021.05.24.01.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 01:03:11 -0700 (PDT)
-Date:   Mon, 24 May 2021 09:03:09 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Elliot Berman <eberman@quicinc.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Makefile: fix GDB warning with CONFIG_RELR
-Message-ID: <20210524080309.GK2549456@dell>
-References: <20210319000708.1694662-1-ndesaulniers@google.com>
- <20210323190532.eiqxmskiankf7hn3@archlinux-ax161>
- <CAF2Aj3i3-bev_iS6OrBUTzt==4d0f7UiTeY1YPur6eKFqToFYQ@mail.gmail.com>
- <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
+        Mon, 24 May 2021 04:06:11 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08CDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:04:43 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1] (unknown [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 651FE202DD8;
+        Mon, 24 May 2021 10:04:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621843481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zthMGLj/pXuuAmBpsAdfxQUAV3dXK2ma/p3BTdy4UJg=;
+        b=bBcAlQuyE7iw1bo+QlZo3ZV3bCvFu3AVrng3162CplZWCVGYLuNh1JADIc2GmaAx5ltoeX
+        4EDHPkGtmKU3+8XnMuAbDEQcbjxQxlY2zq7J1VHwboyQ7dR29dl8MIawRdp/h85b5fyova
+        rrlB+ueubYG4MlJeIxljY2aLI48vNaZrn2v6xf1i9SNZR2b8V4UuvJnQPjtq2E1k9juwu8
+        3banQ6ynbGfyrpY3V3hpr3vjQRDzoQAEF2eKZPp63x6cHzn92atuZQdxd1Kq8mHj3LgC5E
+        GdXwm54pARzq+P5enTivPcVl96CZItNtLqkp2uIeEevqnkSOspPDPSP5Och8lw==
+Message-ID: <9bb05a58e24b6b200dfb31c264fcaa93b8a023c9.camel@svanheule.net>
+Subject: Re: [PATCH v2 5/7] mfd: Add RTL8231 core device
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Date:   Mon, 24 May 2021 10:04:38 +0200
+In-Reply-To: <CAHp75VeVq31q6U+fXGi=ME0Bx5D7V+KiE70JZB4MLy+SbEJP4A@mail.gmail.com>
+References: <cover.1621279162.git.sander@svanheule.net>
+         <f1ca940216c0accfc804afee2dbe46d260d890ae.1621279162.git.sander@svanheule.net>
+         <CAHp75Vc5a4PsHsJ2sNsRNT7BaBJ=Kxb+KKM7x7jWeRdOS8WfnQ@mail.gmail.com>
+         <33eb043f2ef9d81bbe26876a1c73859f56a8abd9.camel@svanheule.net>
+         <CAHp75VeVq31q6U+fXGi=ME0Bx5D7V+KiE70JZB4MLy+SbEJP4A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021, Masahiro Yamada wrote:
-
-> On Fri, May 21, 2021 at 6:36 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Tue, 23 Mar 2021 at 19:06, Nathan Chancellor <nathan@kernel.org> wrote:
-> >>
-> >> On Thu, Mar 18, 2021 at 05:07:06PM -0700, Nick Desaulniers wrote:
-> >> > GDB produces the following warning when debugging kernels built with
-> >> > CONFIG_RELR:
-> >> >
-> >> > BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
-> >> >
-> >> > when loading a kernel built with CONFIG_RELR into GDB. It can also
-> >> > prevent debugging symbols using such relocations.
-> >> >
-> >> > Peter sugguests:
-> >> >   [That flag] means that lld will use dynamic tags and section type
-> >> >   numbers in the OS-specific range rather than the generic range. The
-> >> >   kernel itself doesn't care about these numbers; it determines the
-> >> >   location of the RELR section using symbols defined by a linker script.
-> >> >
-> >> > Link: https://github.com/ClangBuiltLinux/linux/issues/1057
-> >> > Suggested-by: Peter Collingbourne <pcc@google.com>
-> >> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >>
-> >> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> >
-> >
-> >  Masahiro,
-> >
-> > Would you mind sharing your plans for this reviewed patch please?
+On Mon, 2021-05-24 at 10:55 +0300, Andy Shevchenko wrote:
+> On Mon, May 24, 2021 at 10:50 AM Sander Vanheule <sander@svanheule.net> wrote:
+> > On Tue, 2021-05-18 at 00:18 +0300, Andy Shevchenko wrote:
+> > > On Mon, May 17, 2021 at 10:28 PM Sander Vanheule <sander@svanheule.net>
+> > > wrote:
+> > > > +       err = regmap_read(map, RTL8231_REG_FUNC1, &v);
+> > > 
+> > > > +       ready_code = FIELD_GET(RTL8231_FUNC1_READY_CODE_MASK, v);
+> > > 
+> > > If we got an error why we need a read_core, what for?
+> > 
+> > The chip has a static 5-bit field in register 0x01, called READY_CODE
+> > according
+> > to the datasheet. If a device is present, and a read from register 0x01
+> > succeeds, I still check that this field has the correct value. For the
+> > RTL8231,
+> > it should return 0x37. If this isn't the case, I assume this isn't an
+> > RTL8231,
+> > so the driver probe stops and returns an error value.
 > 
-> 
-> Do you want me to pick up this?
-> 
-> Or, do you think it should be done by the committer of
-> 5cf896fb6be3effd9aea455b22213e27be8bdb1d ?
+> Right. And why do you get ready_code if you know that there is an error?
 
-Not sure it matters a whole bunch TBH.  If you have the bandwidth and
-are willing to merge it, please feel free to do so.
+This has changed in v3. I now check if there was an error reading the register,
+and return if there was. Only if there wasn't an error, the code continues to
+extract and verify the READY_CODE value.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best,
+Sander
+
