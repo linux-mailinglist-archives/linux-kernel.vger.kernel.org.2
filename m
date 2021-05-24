@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4926B38F137
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1988D38F1B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235276AbhEXQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237249AbhEXQFO (ORCPT
+        id S233101AbhEXQrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:47:22 -0400
+Received: from 1.mo2.mail-out.ovh.net ([46.105.63.121]:53462 "EHLO
+        1.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232442AbhEXQrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:05:14 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810DDC08C5DC
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:20:16 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1] (unknown [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id AACCD202FE2;
-        Mon, 24 May 2021 17:20:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1621869615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KKLQc2NBPOHNUHuTQ5VD+lESnzXxzbFhPv9iqnAedX0=;
-        b=U8O/lCMbraND+fUwsMSmNU7BX7DyIgkOE5GmzcAlF+BsqPEh5+xyarQ9QMacOZXRoUsHdj
-        cWTjPBxmX3lJ6iQXrr/Nxyc1PdPbTAcHuH0adEgDbUcasGzEH+cqBYlXK/5Kt8dX8AsCGF
-        MNzJQqP2eKTWUP2vzwEEVraU0z8SjvOZFhbPNBeS4MXm9OexdrCyyl3EQ73V3USNvvsl9p
-        LY9NwbZSOCEvxEFsjtFxbL69B3FmdOvuz9GdJFMOng/e9NcRN4nmBzhrInTfkPddOG6EtI
-        hznHNDLlmof6dPNvyPl8+pjVC9LivmOuvhzOGR3RmS8ZJxDBkwfUW4PHLvsiTw==
-Message-ID: <69c95adb6bafb8fbf69b9f79613606f62ba769e8.camel@svanheule.net>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        Mon, 24 May 2021 12:47:21 -0400
+X-Greylist: delayed 5045 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 May 2021 12:47:20 EDT
+Received: from player797.ha.ovh.net (unknown [10.110.208.124])
+        by mo2.mail-out.ovh.net (Postfix) with ESMTP id EB6EA207E39
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:21:45 +0200 (CEST)
+Received: from mrtz.fr (lfbn-lyo-1-490-81.w2-7.abo.wanadoo.fr [2.7.79.81])
+        (Authenticated sender: harold@mrtz.fr)
+        by player797.ha.ovh.net (Postfix) with ESMTPSA id ECC801A5C91A4;
+        Mon, 24 May 2021 15:21:36 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G005c8330ba4-4892-4bbc-9840-5d478b1168bf,
+                    C140F9C3D5E2866CE6A0DF242C55A977A0D9EDE7) smtp.auth=harold@mrtz.fr
+X-OVh-ClientIp: 2.7.79.81
+From:   Harold Mertzweiller <harold@mrtz.fr>
+Cc:     Harold Mertzweiller <harold@mrtz.fr>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 May 2021 17:20:13 +0200
-In-Reply-To: <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
-         <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
-         <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
-         <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Sean Behan <codebam@riseup.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: emxx_udc: fix alignment issues
+Date:   Mon, 24 May 2021 17:21:26 +0200
+Message-Id: <20210524152128.20519-1-harold@mrtz.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 14161850503387417869
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -55
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnehmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnegoteeftdduqddtudculdduhedmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefjrghrohhlugcuofgvrhhtiiifvghilhhlvghruceohhgrrhholhgusehmrhhtiidrfhhrqeenucggtffrrghtthgvrhhnpefhudekgefhheevleeugeehvedufeelieeggefgvdegheevheekvdfhgeduveevheenucfkpheptddrtddrtddrtddpvddrjedrjeelrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhephhgrrhholhgusehmrhhtiidrfhhrpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Three function calls can now be properly formatted inside the 100
+characters limit.
 
-Forgot to reply to the sysfs suggestion.
+Signed-off-by: Harold Mertzweiller <harold@mrtz.fr>
+---
+ drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-On Mon, 2021-05-24 at 15:54 +0300, Andy Shevchenko wrote:
-> On Mon, May 24, 2021 at 2:41 PM Sander Vanheule <sander@svanheule.net> wrote:
-> > On Mon, 2021-05-24 at 10:53 +0300, Andy Shevchenko wrote:
-> > > On Mon, May 24, 2021 at 4:11 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> > > > >   - Introduce GPIO regmap quirks to set output direction first
-> > > > 
-> > > > I thought you had determined it was possible to set output before
-> > > > direction?
-> > > 
-> > > Same thoughts when I saw an updated version of that patch. My
-> > > anticipation was to not see it at all.
-> > 
-> > The two devices I've been trying to test the behaviour on are:
-> >  * Netgear GS110TPP: has an RTL8231 with three LEDs, each driven via a pin
-> >    configured as (active-low) GPIO. The LEDs are easy for a quick visual
-> > check.
-> >  * Zyxel GS1900-8: RTL8231 used for the front panel button, and an active-
-> > low
-> >    GPIO used to hard reset the main SoC (an RTL8380). I've modified this
-> > board
-> >    to change some of the strapping pin values, but testing with the jumpers
-> > and
-> >    pull-up/down resistors is a bit more tedious.
-> > 
-> > On the Netgear, I tested the following with and without the quirk:
-> > 
-> >    # Set as OUT-LOW twice, to avoid the quirk. Always turns the LED on
-> >    gpioset 1 32=0; gpioset 1 32=0
-> >    # Get value to change to input, turns the LED off (high impedance)
-> >    # Will return 1 due to (weak) internal pull-up
-> >    gpioget 1 32
-> >    # Set as OUT-HIGH, should result in LED off
-> >    # When the quirk is disabled, the LED turns on (i.e. old OUT-LOW value)
-> >    # When the quirk is enabled, the LED remains off (i.e. correct OUT-HIGH
-> > value)
-> >    gpioset 1 32=1
-> > 
-> > Now, what's confusing (to me) is that the inverse doesn't depend on the
-> > quirk:
-> > 
-> >    # Set as OUT-HIGH twice
-> >    gpioset 1 32=1; gpioset 1 32=1
-> >    # Change to high-Z
-> >    gpioget 1 32
-> >    # Set to OUT-LOW, always results in LED on, with or without quirk
-> >    gpioset 1 32=0
-> > 
-> > Any idea why this would be (or appear) broken on the former case, but not on
-> > the
-> > latter?
-> 
-> GPIO tools for the shell are context-less. Can you reproduce this with
-> the legacy sysfs interface?
-
-Using the sysfs interface produced the same behaviour for both test cases.
-
-E.g. case 1:
-   # Set to output low
-   echo out > direction; echo 0 > value
-   # Change to input (with weak pull-up)
-   echo in > direction
-   # Try to set to output high
-   # Fails to go high if the pin value is set before the direction
-   echo high > direction
-
-
-Best,
-Sander
+diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+index ecc5c9da9027..b6abd3770e81 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.c
++++ b/drivers/staging/emxx_udc/emxx_udc.c
+@@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
+ 		i_word_length = length / sizeof(u32);
+ 		if (i_word_length > 0) {
+ 			for (i = 0; i < i_word_length; i++) {
+-				_nbu2ss_writel(
+-					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+-					p_buf_32->dw);
++				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
++					       p_buf_32->dw);
+ 
+ 				p_buf_32++;
+ 			}
+@@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
+ 		return;
+ 
+ 	if (ep->epnum > 0) {
+-		length = _nbu2ss_readl(
+-			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
++		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+ 
+ 		length &= EPN_LDATA;
+ 		if (length < ep->ep.maxpacket)
+@@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
+ 		for (limit_cnt = 0
+ 			; limit_cnt < IN_DATA_EMPTY_COUNT
+ 			; limit_cnt++) {
+-			regdata = _nbu2ss_readl(
+-				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
++			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+ 
+ 			if ((regdata & EPN_IN_DATA) == 0)
+ 				break;
+-- 
+2.20.1
 
