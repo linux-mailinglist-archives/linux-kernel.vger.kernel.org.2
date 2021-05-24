@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFD738F07C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83D038EEF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhEXQDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        id S233735AbhEXPzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:55:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233519AbhEXP4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF546144A;
-        Mon, 24 May 2021 15:43:05 +0000 (UTC)
+        id S234461AbhEXPrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:47:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2DA61415;
+        Mon, 24 May 2021 15:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870985;
-        bh=1dAMraQ5B+FymVoCYVg+XAajTuiOTDxvtot00gCCi/k=;
+        s=korg; t=1621870625;
+        bh=il5dChJjhFtRvXPyUfOQ5OG42G5UnANpeqwOXJFXj4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6OCVE0QyVnz36pKPxRDis6asHRgSKn8bRr0ESd7XT4WUYvd4Uxv+IFqTpSkNTTiD
-         ZdchwYiocSgPlHxYHfq3o+l7VeTPCwklnUeghLYpx6MQwWDG8SqI2uUlF9WPAAe9bE
-         9TPwoT+FOH0dDQKLS6TaP+jlEJFzSbNkWgGBsnpQ=
+        b=d5v+U6LT51cyMe1FoBgqWlhA1UuVyLnz5floJKYQpJbur3JA2EXb575Tyd38yePDq
+         PfOHzc4y7jS1Y8yHSUZJl3UsKNGw6D4aEAedWvlH2oDBhAycs12DbNq1ENmNpZpjs6
+         5dvYUG2xSehQ14xXXBBoF+nQgwhpvsxTXRfp5tBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liming Sun <limings@nvidia.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 021/127] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier issue
+        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 32/71] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
 Date:   Mon, 24 May 2021 17:25:38 +0200
-Message-Id: <20210524152335.572887795@linuxfoundation.org>
+Message-Id: <20210524152327.506934903@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liming Sun <limings@nvidia.com>
+From: Elia Devito <eliadevito@gmail.com>
 
-[ Upstream commit 1c0e5701c5e792c090aef0e5b9b8923c334d9324 ]
+commit f2be77fee648ddd6d0d259d3527344ba0120e314 upstream.
 
-The virtio framework uses wmb() when updating avail->idx. It
-guarantees the write order, but not necessarily loading order
-for the code accessing the memory. This commit adds a load barrier
-after reading the avail->idx to make sure all the data in the
-descriptor is visible. It also adds a barrier when returning the
-packet to virtio framework to make sure read/writes are visible to
-the virtio code.
+Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
+on similar models.
 
-Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox BlueField Soc")
-Signed-off-by: Liming Sun <limings@nvidia.com>
-Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/1620433812-17911-1-git-send-email-limings@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+0x14 pin config override is required to enable all speakers and
+alc285-speaker2-to-dac1 fixup to enable volume adjustment.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210511124651.4802-1-eliadevito@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index bbc4e71a16ff..38800e86ed8a 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -294,6 +294,9 @@ mlxbf_tmfifo_get_next_desc(struct mlxbf_tmfifo_vring *vring)
- 	if (vring->next_avail == virtio16_to_cpu(vdev, vr->avail->idx))
- 		return NULL;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6391,6 +6391,7 @@ enum {
+ 	ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+ 	ALC295_FIXUP_ASUS_DACS,
+ 	ALC295_FIXUP_HP_OMEN,
++	ALC285_FIXUP_HP_SPECTRE_X360,
+ };
  
-+	/* Make sure 'avail->idx' is visible already. */
-+	virtio_rmb(false);
-+
- 	idx = vring->next_avail % vr->num;
- 	head = virtio16_to_cpu(vdev, vr->avail->ring[idx]);
- 	if (WARN_ON(head >= vr->num))
-@@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct mlxbf_tmfifo_vring *vring,
- 	 * done or not. Add a memory barrier here to make sure the update above
- 	 * completes before updating the idx.
- 	 */
--	mb();
-+	virtio_mb(false);
- 	vr->used->idx = cpu_to_virtio16(vdev, vr_idx + 1);
- }
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7880,6 +7881,15 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	},
++	[ALC285_FIXUP_HP_SPECTRE_X360] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x14, 0x90170110 }, /* enable top speaker */
++			{}
++		},
++		.chained = true,
++		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
++	},
+ };
  
-@@ -733,6 +736,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct mlxbf_tmfifo_vring *vring,
- 		desc = NULL;
- 		fifo->vring[is_rx] = NULL;
- 
-+		/*
-+		 * Make sure the load/store are in order before
-+		 * returning back to virtio.
-+		 */
-+		virtio_mb(false);
-+
- 		/* Notify upper layer that packet is done. */
- 		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
- 		vring_interrupt(0, vring->vq);
--- 
-2.30.2
-
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8032,6 +8042,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+@@ -8436,6 +8447,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
++	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 
 
