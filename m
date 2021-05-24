@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657C038EDC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C5B38EDAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhEXPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S234218AbhEXPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233854AbhEXPiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:38:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF17D61421;
-        Mon, 24 May 2021 15:33:20 +0000 (UTC)
+        id S233892AbhEXPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:36:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFA461414;
+        Mon, 24 May 2021 15:32:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870401;
-        bh=3iOAUpIunq8o5uXAQzDcoek9kBPjKvTpZGYDo5alVaY=;
+        s=korg; t=1621870362;
+        bh=mbTBEpLuOGOSt73j/DVn5yuJombL/qCnen1JDX7faB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iR7MsYy7idZxIJjwfcNc5P99cqU97Sv+6EpB9mLdTAYHGMOiexTXl8qScS1jx1mim
-         yOYfEIsKZOL7pxagydiOFag/xq2xicaah1aUc7faQ6eTSvLpw0MgvTpuVz14Q5SZ/U
-         G2yIP3mkfLTJA6PSbX0Wr7VZeIDbAi5Ub2EOtp68=
+        b=z7sBZnXaguojsLziOD2NaxL99V53qxi2pBlGmqFyK2rCQs3f687i7m/s6xhw3715x
+         LHqMftHmY4oN6mYx1gDUnL56Gua0cmPUm0eR/DY0UZyTYo2Yqh0MzaqLvdIv0eRM1N
+         qXDBLjhw5Ef/Eh1R1R+FPiaT1GJkqvMVgfDcRl/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 17/37] Revert "net: stmicro: fix a missing check of clk_prepare"
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.9 36/36] iio: tsl2583: Fix division by a zero lux_val
 Date:   Mon, 24 May 2021 17:25:21 +0200
-Message-Id: <20210524152324.770843178@linuxfoundation.org>
+Message-Id: <20210524152325.329346979@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit bee1b0511844c8c79fccf1f2b13472393b6b91f7 upstream.
+commit af0e1871d79cfbb91f732d2c6fa7558e45c31038 upstream.
 
-This reverts commit f86a3b83833e7cfe558ca4d70b64ebc48903efec.
+The lux_val returned from tsl2583_get_lux can potentially be zero,
+so check for this to avoid a division by zero and an overflowed
+gain_trim_val.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Fixes clang scan-build warning:
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+drivers/iio/light/tsl2583.c:345:40: warning: Either the
+condition 'lux_val<0' is redundant or there is division
+by zero at line 345. [zerodivcond]
 
-The original commit causes a memory leak when it is trying to claim it
-is properly handling errors.  Revert this change and fix it up properly
-in a follow-on commit.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Fixes: f86a3b83833e ("net: stmicro: fix a missing check of clk_prepare")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-21-gregkh@linuxfoundation.org
+Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+[Colin Ian King: minor context adjustments for 4.9.y]
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/staging/iio/light/tsl2583.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-@@ -59,9 +59,7 @@ static int sun7i_gmac_init(struct platfo
- 		gmac->clk_enabled = 1;
- 	} else {
- 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
--		ret = clk_prepare(gmac->tx_clk);
--		if (ret)
--			return ret;
-+		clk_prepare(gmac->tx_clk);
+--- a/drivers/staging/iio/light/tsl2583.c
++++ b/drivers/staging/iio/light/tsl2583.c
+@@ -382,6 +382,15 @@ static int taos_als_calibrate(struct iio
+ 		dev_err(&chip->client->dev, "taos_als_calibrate failed to get lux\n");
+ 		return lux_val;
  	}
++
++	/* Avoid division by zero of lux_value later on */
++	if (lux_val == 0) {
++		dev_err(&chip->client->dev,
++			"%s: lux_val of 0 will produce out of range trim_value\n",
++			__func__);
++		return -ENODATA;
++	}
++
+ 	gain_trim_val = (unsigned int)(((chip->taos_settings.als_cal_target)
+ 			* chip->taos_settings.als_gain_trim) / lux_val);
  
- 	return 0;
 
 
