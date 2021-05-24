@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97FB38F599
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64D538F59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbhEXW1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S229583AbhEXWaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEXW1n (ORCPT
+        with ESMTP id S229539AbhEXWaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:27:43 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D82C061574;
-        Mon, 24 May 2021 15:26:14 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id v14so18434231pgi.6;
-        Mon, 24 May 2021 15:26:14 -0700 (PDT)
+        Mon, 24 May 2021 18:30:14 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4C0C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:28:44 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id h12so3191694plf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:28:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ijS1JpXOi8B1tolKqPZrvvt1/JkfWjMSymM0Q5F0R8c=;
-        b=Qegzn4yqS/fQUFLkKGhcioforqeT32y+1BKod51WPT5LgjFz4g06DgPeJWzXzLk64i
-         RoXjJVTM/i5u8LF9Tip3wcEQtbXW4xgEq7J0ci0dUNiQEQIuucEprHWAq04TPIlhZIlz
-         3l9kjIZTvTb/5O1r1bu4ryYdHDXZfGLpZ3XIbfeYAwJyt5BiW9OKIorjhFOOxefjDzhV
-         CxOlFPt3HQ7/QyS/D9wLA1Gn129IDzouwojK1NblyprXj02B3BpTKykfnfr0qOnQWj33
-         e3GO5HWBYbSHbWnBCrWpW+QCAOHbw4/zftdDPPOmBOAaB8dApp8AZP0oiIMVPvajNwOE
-         k2BA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wjHpPJplladoMyN508+roXM5QX3joM77pztZx4dnUzs=;
+        b=Vh9c4pDMcMGHrDB/DXKm60YSRnio8FmkVEXBrs70mST+GX+GqtGg7DbzngmZeLYOlF
+         TwnPui9rY6g+IixjZoEWmDWk93pl3ZSH7muk3fn0u/oYcmafAkQopuNDOCq2/2c3Pojj
+         k0SCysDD0W33PzlYFD/w7g8YVnxrccbFHdewjygkBEo2FPzOGp3yzkBD0cmpufPBplk8
+         kgXTPHhfByDtKazuIeTBKos7tsz5uIUFkMtMygnyCmzDO5cfFeFhiL5g/D0U5wX5uu3A
+         odJzYyursS1h8P1XGBBbX1ifx5CX2zpMxcfMRFZult61SqSolWMpn638LEPINTSPKaQL
+         cj6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ijS1JpXOi8B1tolKqPZrvvt1/JkfWjMSymM0Q5F0R8c=;
-        b=l+CRnODwjmbP9kSVjXvcsehd0vHjBwDCyhN9k2ttAXoKERO7k3WRHmwBA8z6uVSv1y
-         cZmt9ggSLA6L02MHpFSMw8OkDI0yoM+1v++f3MhwraT2xwy6X9tINGVVGEue4/V24jya
-         PcDK8h9hGtQhlp1r+iOcTiohB1tznvqaMS2h0qVDFFBryW5dvPnKwLHe3UYxt2jem1Wp
-         6YfuJ5BzEXul2wdTDzH9svA7VGGRhDY339O2LhCaa8+YDgqIpynf+fxxLgMnn2hEwRGL
-         xvmEKYhdqQA7Jdgql61u+/4afmRl1n+jZ0K3gzU7WPYbSItm8iztGEMDx3aNXDV9RtkD
-         wxWw==
-X-Gm-Message-State: AOAM532XzbCjylzCYKhxcKtaLJaCBiZxH+iWTfmlg9hEmj/1B0g8SN0t
-        62s4Nqz5I2uLu+dwQsL7/zUuzv7rJ/g=
-X-Google-Smtp-Source: ABdhPJyjfddw6SKLM5ZJeIUiaUk8q7jWg8oViyHvtwlZ4QlOxcGvAeWCUVjpXtbxwr6ohZ22htjhcQ==
-X-Received: by 2002:a63:490:: with SMTP id 138mr15749310pge.99.1621895173368;
-        Mon, 24 May 2021 15:26:13 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id g72sm11765403pfb.33.2021.05.24.15.26.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 15:26:12 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/36] 4.9.270-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wjHpPJplladoMyN508+roXM5QX3joM77pztZx4dnUzs=;
+        b=fLixVE7DSY6jxeaKsRLqlvzjjyMHr5oDvoL0IWGWP3zixVULAkZx1aTuFcxzHhP/sA
+         kkv5PyXNqc6gwLwWSI/nh1C8eopmjsPNd/lhYvQFYlo5zwx9xLEeenSEPHTUcHFvf5b/
+         iY5msZUEo/WapdBogkFevsqJzs7XLzX+lr64y18+Y0aBg+OTbRkiiryflbRAg9ahtiWZ
+         K/OKw7q5WlI+F9Co8goGhmLyR09TdOTvA5l3p8kOklhqqw5f1C1c2o9hR/ImOm7eShb0
+         m7FEpn/4k2NJ72F8RsOv9yoXENQvcT/8M5M2a43FkJX4tnu2NJSCFxvzKdEG2Bdb0reN
+         RmtQ==
+X-Gm-Message-State: AOAM531zJ0Vgi37ayOB8e9KvQFNFc2X9ovChzqtKFUJ7TQPWICkQ5ypI
+        zzlzwS/hrsT/FPxTUPWGuAeM2A==
+X-Google-Smtp-Source: ABdhPJymBcH3mXTox6PlhJFMX+WysdycfN2VP+NWNbw7SdmI4w4ynWj/wQqPhVDzRBOWP01+PF/G0A==
+X-Received: by 2002:a17:902:f545:b029:f5:4b82:9cc9 with SMTP id h5-20020a170902f545b02900f54b829cc9mr27428087plf.68.1621895324070;
+        Mon, 24 May 2021 15:28:44 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b23sm2385959pfi.34.2021.05.24.15.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 15:28:43 -0700 (PDT)
+Date:   Mon, 24 May 2021 22:28:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210524152324.158146731@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <21b398d6-4cf9-1f99-fd14-0207a5cdcfdc@gmail.com>
-Date:   Mon, 24 May 2021 15:26:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Subject: Re: [PATCH 42/43] KVM: VMX: Drop VMWRITEs to zero fields at vCPU
+ RESET
+Message-ID: <YKwomNuTEwgf4Xt0@google.com>
+References: <20210424004645.3950558-1-seanjc@google.com>
+ <20210424004645.3950558-43-seanjc@google.com>
+ <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 8:24 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.270 release.
-> There are 36 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, May 24, 2021, Paolo Bonzini wrote:
+> On 24/04/21 02:46, Sean Christopherson wrote:
+> > Don't waste time writing zeros via VMWRITE during vCPU RESET, the VMCS
+> > is zero allocated.
 > 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.270-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Is this guaranteed to be valid, or could the VMCS in principle use some
+> weird encoding? (Like it does for the access rights, even though this does
+> not matter for this patch).
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Phooey.  In principle, the CPU can do whatever it wants, e.g. the SDM states that
+software should never write to the data portion of the VMCS under any circumstance.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+In practice, I would be flabbergasted if Intel ever ships a CPU that doesn't play
+nice with zero initiazing the VMCS via software writes.  I'd bet dollars to
+donuts that KVM isn't the only software that relies on that behavior.
+
+That said, I'm not against switching to VMWRITE for everything, but regardless
+of which route we choose, we should commit to one or the other.  I.e. double down
+on memset() and bet that Intel won't break KVM, or replace the memset() in
+alloc_vmcs_cpu() with a sequence that writes all known (possible?) fields.  The
+current approach of zeroing the memory in software but initializing _some_ fields
+is the worst option, e.g. I highly doubt vmcs01 and vmcs02 do VMWRITE(..., 0) on
+the same fields.
