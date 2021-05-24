@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5624E38DED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE6338DEDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhEXBWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 21:22:47 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53510 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232067AbhEXBWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 21:22:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=El+XZLB92OFWSNNtDA3CExs5QoARTgqBFwrJ+abZcbI=; b=wVz1tZsk4uVfYWfxhScxy8WxbG
-        uDf3vohtq+lri3NoaDwd5mfH4kGPGjjg+OaxxHb2QmJRwp/5+UcIVPUu/t+lt0X8vwL8WeAuQ9TXY
-        heDO2rAhc+03Hn/W0nnuP56sWvom59PH/uzByo5FzyKCkowVZqvdXRZOptdxbF3xCyO8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lkzH9-005tzT-LY; Mon, 24 May 2021 03:20:59 +0200
-Date:   Mon, 24 May 2021 03:20:59 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     leoyang.li@nxp.com, davem@davemloft.net, kuba@kernel.org,
-        rasmus.villemoes@prevas.dk, christophe.leroy@csgroup.eu,
-        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net-next] ethernet: ucc_geth: Use kmemdup() rather
- than kmalloc+memcpy
-Message-ID: <YKr/e4H0fPEyK8px@lunn.ch>
-References: <20210524010701.24596-1-yuehaibing@huawei.com>
+        id S232165AbhEXBZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 21:25:48 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:36462 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232067AbhEXBZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 21:25:47 -0400
+Received: by mail-pf1-f180.google.com with SMTP id c12so7918147pfl.3;
+        Sun, 23 May 2021 18:24:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=846OUuZQkLpeNUjXFbRAPUYHOWnoHhJDvnKplijG+Ac=;
+        b=Wr8g4byQ2QA6oSoQz6VYrzO0bGqaOpAMuJDBxqsXoZOXLEoateurh9Y2EB4A4OFpGb
+         3MYsbRp5cJn817iHHqw9aezkZuhpifWfQxXUVMh+7GGhzURfNakP8GVYqwUCYokryuAW
+         v72Yb2/devoU3oNFMXZwUIx1p6b5hGOcPovBhcSxaDpfWdSBzhtEsQ2PbXiK3n0nUFgp
+         OzpvcRSA0TcMtIN1M/W6jOI8ztcr5LBn/wipcXL39If+3ptRV1zTkLM9ZRP4utmQZbCb
+         IUKRftfil1OCtHUtYRjYojOU695wCFpx4FPa/ErU5qrAbaIMeBGwLHoKvpQ5W2bi3PjR
+         hLsQ==
+X-Gm-Message-State: AOAM531VLWma+WMISMubyl+zgbaYwdCSj/WrcOR0ukRPcbbrdolzv8Sw
+        TOWDBx1KjWU9JROY2pkGX/zkbJjLAiA=
+X-Google-Smtp-Source: ABdhPJxIdlPArrEqTac8ea9DVMcycNf90KDw5YDPsrbuoHodNHLWwXuteKj4xfmZi2r7xi487D+moA==
+X-Received: by 2002:a62:1b97:0:b029:24e:44e9:a8c1 with SMTP id b145-20020a621b970000b029024e44e9a8c1mr22020434pfb.19.1621819458407;
+        Sun, 23 May 2021 18:24:18 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id t1sm9900814pgq.47.2021.05.23.18.24.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 18:24:17 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Let UPIU completion trace print RSP
+ UPIU
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210523211409.210304-1-huobean@gmail.com>
+ <20210523211409.210304-2-huobean@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
+Date:   Sun, 23 May 2021 18:24:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524010701.24596-1-yuehaibing@huawei.com>
+In-Reply-To: <20210523211409.210304-2-huobean@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 09:07:01AM +0800, YueHaibing wrote:
-> Issue identified with Coccinelle.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+On 5/23/21 2:14 PM, Bean Huo wrote:
+> +		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+So a pointer to a response (hba->lrb[tag].ucd_rsp_ptr) is cast to a
+pointer to a request (struct utp_upiu_req *)? That seems really odd to
+me. Please explain.
 
-    Andrew
+Bart.
