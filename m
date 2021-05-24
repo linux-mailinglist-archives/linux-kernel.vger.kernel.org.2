@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8B238E69A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB9538E6A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhEXMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:31:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232476AbhEXMbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:31:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621859377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MF/OZbyChnf7NefLWpOKRbGY5MjAOqZmWg+o3M3i8A8=;
-        b=NyL+kfzGEYY3RZlyh+X3mZlmstSpSnOVZbzRCYyFo5un3Rl9M/ZNdoWVq2CPKIFNa0DDgo
-        avF58E5GpAeJRgmOWXXafdv5RKKUS6IJNrUj4pdPNzZaCsdLHqb/oOjQD8hGOXzV+BCQUq
-        cIXnAa5Zul+us2Nh+uUs68fEW2fWj48=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-DI4HyUp1PbeZ-gMsI-iuSQ-1; Mon, 24 May 2021 08:29:35 -0400
-X-MC-Unique: DI4HyUp1PbeZ-gMsI-iuSQ-1
-Received: by mail-ed1-f69.google.com with SMTP id h18-20020a05640250d2b029038cc3938914so15532839edb.17
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:29:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MF/OZbyChnf7NefLWpOKRbGY5MjAOqZmWg+o3M3i8A8=;
-        b=aWQaaAw//VJtVPfM1Gn12XL4Hni9eRC7dc/ACb6D83Vsi8lW+2Iz5vJOB3Ub5d21+u
-         oWVTrdHgWhK0JHuQexmEri5/+E9MXDNH9iLZNC7RFVha1u0qaEpaWz2gi1Uvah1enEKu
-         I+6sL9mx4WxJVh2HehMIIUr8/Uxh9zeHUkmhrAdei2038iD2i2MRoEDGS37ONw1MTf30
-         63P6XE5jDIPoUj/mZL/zlar8qfXaQmm0B2PtxDVXo+E7lCcxwBmkn0H/lBBFrBVDsCCs
-         SONqLa5Ip09OqwJl1AxzFNi/WljGKKdHhDAHzYVviisQtKf/OSLRlFIRnyvsvGr/woF+
-         BXzQ==
-X-Gm-Message-State: AOAM530Ig4CigifXEmtwCTWvTrlkFjwwshdhbz7aQDffuNRDfyhvYIIl
-        11i0HZTmslD1kRbvd5P2AQCs7xT5RHH9qdac8pq9kjqCq48ekNCB+j57XZfF9a3ZvU9xoxuBDR/
-        NoPBeFCa/dUMJqAOnC617Von2
-X-Received: by 2002:a17:906:a0a:: with SMTP id w10mr23066244ejf.416.1621859374593;
-        Mon, 24 May 2021 05:29:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJycsnShuJqQ9FXZ6dWkQDbxNdD9tWWnao+pMnZmWDe96PE9gC/dNyHSgTXXNr/kd9G8JHMUKA==
-X-Received: by 2002:a17:906:a0a:: with SMTP id w10mr23066229ejf.416.1621859374440;
-        Mon, 24 May 2021 05:29:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t23sm9432789edq.74.2021.05.24.05.29.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 05:29:33 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with
- protected state
-To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>
-References: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <98671460-e0db-3f04-ce4f-157f133c82a0@redhat.com>
-Date:   Mon, 24 May 2021 14:29:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232801AbhEXMcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:32:48 -0400
+Received: from m12-18.163.com ([220.181.12.18]:59808 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232409AbhEXMcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 08:32:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=sU5FY
+        b8dbRCDV7uzf79+KDS0Ydjp7nGO86CkKtG3jkY=; b=NoCqksKag7hdsEvMEK7H3
+        R76yvtwkiD3bqkWnPNIAKqHvUgIlULcVxfjqO7coRhiMp9mHz/g27CzW7ozM2T71
+        uKrG5nYLhjx51Mq/dt8uDfTIo5GJ//p0adhmQ0GY+0VEqlS4Lz1sZ1eRDkUIRw0S
+        c0k6y0W83+Q1gD5kDx4Lec=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowAC3n92DnKtg2fc2lQ--.61126S2;
+        Mon, 24 May 2021 20:31:03 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     mchehab@kernel.org, colin.king@canonical.com,
+        gustavoars@kernel.org, trix@redhat.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] drivers: media: Simplify the return expression
+Date:   Mon, 24 May 2021 20:31:08 +0800
+Message-Id: <20210524123108.470-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowAC3n92DnKtg2fc2lQ--.61126S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF13ZF1fCw47tryktFWfuFg_yoWDZrg_KF
+        93Z3W5WrW0yF48G34Utr1xJ3s5trWYqF1vqF1UtFZxXFs3GF15Jr1DKr47XryYga17ury5
+        WFnxWr1xCr4UGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU09NVDUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbipQeciVUMeTFAxAAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/21 18:43, Tom Lendacky wrote:
-> When processing a hypercall for a guest with protected state, currently
-> SEV-ES guests, the guest CS segment register can't be checked to
-> determine if the guest is in 64-bit mode. For an SEV-ES guest, it is
-> expected that communication between the guest and the hypervisor is
-> performed to shared memory using the GHCB. In order to use the GHCB, the
-> guest must have been in long mode, otherwise writes by the guest to the
-> GHCB would be encrypted and not be able to be comprehended by the
-> hypervisor. Given that, assume that the guest is in 64-bit mode when
-> processing a hypercall from a guest with protected state.
-> 
-> Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
-> Reported-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->   arch/x86/kvm/x86.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9b6bca616929..e715c69bb882 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8403,7 +8403,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->   
->   	trace_kvm_hypercall(nr, a0, a1, a2, a3);
->   
-> -	op_64_bit = is_64_bit_mode(vcpu);
-> +	/*
-> +	 * If running with protected guest state, the CS register is not
-> +	 * accessible. The hypercall register values will have had to been
-> +	 * provided in 64-bit mode, so assume the guest is in 64-bit.
-> +	 */
-> +	op_64_bit = is_64_bit_mode(vcpu) || vcpu->arch.guest_state_protected;
->   	if (!op_64_bit) {
->   		nr &= 0xFFFFFFFF;
->   		a0 &= 0xFFFFFFFF;
-> 
+From: zuoqilin <zuoqilin@yulong.com>
 
-Queued, thanks.
+Simplify the return expression of drxj_dap_scu_atomic_write_reg16().
 
-Paolo
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+---
+ drivers/media/dvb-frontends/drx39xyj/drxj.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/drx39xyj/drxj.c b/drivers/media/dvb-frontends/drx39xyj/drxj.c
+index bf9e4ef..108d1f4 100644
+--- a/drivers/media/dvb-frontends/drx39xyj/drxj.c
++++ b/drivers/media/dvb-frontends/drx39xyj/drxj.c
+@@ -4234,14 +4234,11 @@ int drxj_dap_scu_atomic_write_reg16(struct i2c_device_addr *dev_addr,
+ 					  u16 data, u32 flags)
+ {
+ 	u8 buf[2];
+-	int rc;
+ 
+ 	buf[0] = (u8) (data & 0xff);
+ 	buf[1] = (u8) ((data >> 8) & 0xff);
+ 
+-	rc = drxj_dap_scu_atomic_read_write_block(dev_addr, addr, 2, buf, false);
+-
+-	return rc;
++	return drxj_dap_scu_atomic_read_write_block(dev_addr, addr, 2, buf, false);
+ }
+ 
+ /* -------------------------------------------------------------------------- */
+-- 
+1.9.1
+
 
