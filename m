@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA0E38EFCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C2538EFD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235542AbhEXP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        id S235721AbhEXP75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235299AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235297AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 11:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4432261928;
-        Mon, 24 May 2021 15:40:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 780736192A;
+        Mon, 24 May 2021 15:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870855;
-        bh=b/BDRKremjjVFpeY76yHO0t1RAC3L1f5mSxxV4dJYyA=;
+        s=korg; t=1621870857;
+        bh=7hmAbfphgOyVL13LgGdGnRzOmIHoIxlzSnUWIOJjmdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0Z0KfjljIo8wELmZqSnSW7GepBQ3K+K9R4g8QpQR8ETcAOVySTOJEvcfzlklQzgA
-         C0vQmyK4pofo9BQZoKK32Psptx0aF1h/4tsQnFHrsRX8JijiFzx9b1v248X3wshyf9
-         xLn8ujtiXdvPC9K4u49Isoe2prRee3NMVbYnlTaA=
+        b=NatkCyzBl4tasTUza6q6ImYRtbppobyqYPTmFd6q1oJ2Jkaz2ixXS/6+R49SwbxU5
+         gXNNmGvKW0CoJqGjacPOCKj4/7iMuX6K1+H30w8B3FusceN+FS9Eultv0gQIKvjZcM
+         Hdg1LjRMrPRYn/qfZ+uwiub1+VBYa9Ww/koJGIAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Beer <dlbeer@gmail.com>,
-        Ben Chuang <benchuanggli@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 066/104] mmc: sdhci-pci-gli: increase 1.8V regulator wait
-Date:   Mon, 24 May 2021 17:26:01 +0200
-Message-Id: <20210524152335.042714036@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.10 067/104] xen-pciback: redo VF placement in the virtual topology
+Date:   Mon, 24 May 2021 17:26:02 +0200
+Message-Id: <20210524152335.074372417@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 References: <20210524152332.844251980@linuxfoundation.org>
@@ -40,53 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Beer <dlbeer@gmail.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit a1149a6c06ee094a6e62886b0c0e8e66967a728a upstream.
+commit 4ba50e7c423c29639878c00573288869aa627068 upstream.
 
-Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
-results in the message:
+The commit referenced below was incomplete: It merely affected what
+would get written to the vdev-<N> xenstore node. The guest would still
+find the function at the original function number as long as
+__xen_pcibk_get_pci_dev() wouldn't be in sync. The same goes for AER wrt
+__xen_pcibk_get_pcifront_dev().
 
-    mmc0: 1.8V regulator output did not become stable
+Undo overriding the function to zero and instead make sure that VFs at
+function zero remain alone in their slot. This has the added benefit of
+improving overall capacity, considering that there's only a total of 32
+slots available right now (PCI segment and bus can both only ever be
+zero at present).
 
-Following this message, some cards work (sometimes), but most cards fail
-with EILSEQ. This behaviour is observed on Debian 10 running kernel
-4.19.188, but also with 5.8.18 and 5.11.15.
-
-The driver currently waits 5ms after switching on the 1.8V regulator for
-it to become stable. Increasing this to 10ms gets rid of the warning
-about stability, but most cards still fail. Increasing it to 20ms gets
-some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
-doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
-cards work reliably.
-
-Signed-off-by: Daniel Beer <dlbeer@gmail.com>
-Acked-by: Ben Chuang <benchuanggli@gmail.com>
-Fixes: e51df6ce668a ("mmc: host: sdhci-pci: Add Genesys Logic GL975x support")
+Fixes: 8a5248fe10b1 ("xen PV passthru: assign SR-IOV virtual functions to separate virtual slots")
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210424081652.GA16047@nyquist.nev
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/8def783b-404c-3452-196d-3f3fd4d72c9e@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci-pci-gli.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/xen/xen-pciback/vpci.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -555,8 +555,13 @@ static void sdhci_gli_voltage_switch(str
- 	 *
- 	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
- 	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
-+	 *
-+	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
-+	 * slightly longer than 5ms before the control register reports that
-+	 * 1.8V is ready, and far longer still before the card will actually
-+	 * work reliably.
- 	 */
--	usleep_range(5000, 5500);
-+	usleep_range(100000, 110000);
- }
+--- a/drivers/xen/xen-pciback/vpci.c
++++ b/drivers/xen/xen-pciback/vpci.c
+@@ -70,7 +70,7 @@ static int __xen_pcibk_add_pci_dev(struc
+ 				   struct pci_dev *dev, int devid,
+ 				   publish_pci_dev_cb publish_cb)
+ {
+-	int err = 0, slot, func = -1;
++	int err = 0, slot, func = PCI_FUNC(dev->devfn);
+ 	struct pci_dev_entry *t, *dev_entry;
+ 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
  
- static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
+@@ -95,22 +95,25 @@ static int __xen_pcibk_add_pci_dev(struc
+ 
+ 	/*
+ 	 * Keep multi-function devices together on the virtual PCI bus, except
+-	 * virtual functions.
++	 * that we want to keep virtual functions at func 0 on their own. They
++	 * aren't multi-function devices and hence their presence at func 0
++	 * may cause guests to not scan the other functions.
+ 	 */
+-	if (!dev->is_virtfn) {
++	if (!dev->is_virtfn || func) {
+ 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
+ 			if (list_empty(&vpci_dev->dev_list[slot]))
+ 				continue;
+ 
+ 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
+ 				       struct pci_dev_entry, list);
++			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
++				continue;
+ 
+ 			if (match_slot(dev, t->dev)) {
+ 				dev_info(&dev->dev, "vpci: assign to virtual slot %d func %d\n",
+-					 slot, PCI_FUNC(dev->devfn));
++					 slot, func);
+ 				list_add_tail(&dev_entry->list,
+ 					      &vpci_dev->dev_list[slot]);
+-				func = PCI_FUNC(dev->devfn);
+ 				goto unlock;
+ 			}
+ 		}
+@@ -123,7 +126,6 @@ static int __xen_pcibk_add_pci_dev(struc
+ 				 slot);
+ 			list_add_tail(&dev_entry->list,
+ 				      &vpci_dev->dev_list[slot]);
+-			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
+ 			goto unlock;
+ 		}
+ 	}
 
 
