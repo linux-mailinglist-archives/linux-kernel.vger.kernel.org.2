@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B751C38F054
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA8A38F053
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbhEXQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S235833AbhEXQCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235152AbhEXPzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235148AbhEXPzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 11:55:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B7761456;
-        Mon, 24 May 2021 15:42:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B5B761944;
+        Mon, 24 May 2021 15:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870946;
-        bh=Oo3ztTKrT4fQjPNpGhU0AtG7+1T9vobNl4gDim5UShs=;
+        s=korg; t=1621870948;
+        bh=0DVwXL7PYrs3JfPmlESgZ3BmiRo0C+ub21RL2mKSP9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Iq1X9fyOCX1SlzHcmkvOwCxn+r3jn1bG7HnGKoXzK3GDRQevpe64jV/GiFcd5JhwR
-         KvqRH8BpKrDsdFcZh3R7JliviPDP5mI6cMU1tW4xLC4ozIHpHo97drx81l4N9N5U/r
-         u02FuwxPOfvK3LIjq0Crj+Ea3bb9dNIV2Y/MfQF4=
+        b=faKK4dE3xH0nzKENNG+o3wHwChrP3+dvq+1e1EzbJeRayWvn06zW/TMonU8rHlYei
+         2M7zgHijPB3Dlj3N9UiTxfX336WkHkQJ1xFLPrU55nOmsULvw+NkRB/BKQMpQK6ITA
+         nAgFTpfA/T27gQT/daaTQJb4aON2NcBLmRLbhs1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
-Subject: [PATCH 5.10 091/104] ics932s401: fix broken handling of errors when word reading fails
-Date:   Mon, 24 May 2021 17:26:26 +0200
-Message-Id: <20210524152335.866763702@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH 5.10 092/104] leds: lp5523: check return value of lp5xx_read and jump to cleanup code
+Date:   Mon, 24 May 2021 17:26:27 +0200
+Message-Id: <20210524152335.899552362@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 References: <20210524152332.844251980@linuxfoundation.org>
@@ -38,39 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <djwong@kernel.org>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit a73b6a3b4109ce2ed01dbc51a6c1551a6431b53c upstream.
+commit 6647f7a06eb030a2384ec71f0bb2e78854afabfe upstream.
 
-In commit b05ae01fdb89, someone tried to make the driver handle i2c read
-errors by simply zeroing out the register contents, but for some reason
-left unaltered the code that sets the cached register value the function
-call return value.
+Check return value of lp5xx_read and if non-zero, jump to code at end of
+the function, causing lp5523_stop_all_engines to be executed before
+returning the error value up the call chain. This fixes the original
+commit (248b57015f35) which was reverted due to the University of Minnesota
+problems.
 
-The original patch was authored by a member of the Underhanded
-Mangle-happy Nerds, I'm not terribly surprised.  I don't have the
-hardware anymore so I can't test this, but it seems like a pretty
-obvious API usage fix to me...
-
-Fixes: b05ae01fdb89 ("misc/ics932s401: Add a missing check to i2c_smbus_read_word_data")
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Link: https://lore.kernel.org/r/20210428222534.GJ3122264@magnolia
 Cc: stable <stable@vger.kernel.org>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-10-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/ics932s401.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/leds-lp5523.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/ics932s401.c
-+++ b/drivers/misc/ics932s401.c
-@@ -134,7 +134,7 @@ static struct ics932s401_data *ics932s40
- 	for (i = 0; i < NUM_MIRRORED_REGS; i++) {
- 		temp = i2c_smbus_read_word_data(client, regs_to_copy[i]);
- 		if (temp < 0)
--			data->regs[regs_to_copy[i]] = 0;
-+			temp = 0;
- 		data->regs[regs_to_copy[i]] = temp >> 8;
- 	}
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -305,7 +305,9 @@ static int lp5523_init_program_engine(st
  
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	if (ret)
++		goto out;
+ 	status &= LP5523_ENG_STATUS_MASK;
+ 
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
