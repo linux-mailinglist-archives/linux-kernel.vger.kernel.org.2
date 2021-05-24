@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B6A38F4FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559A038F508
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233996AbhEXVfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbhEXVfl (ORCPT
+        id S233693AbhEXVlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:41:09 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:34499 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232547AbhEXVlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:35:41 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62049C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:34:12 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso11926775pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bK50K0ZuzWopvsRPDO/W9edrVLo3uYNgj7H36Mg20zU=;
-        b=rLfM8Es5WWlEOUqQlzKFMrBsWdFS+YBM0GERCq4zR4U0U8d0oa3zPx8ltLXnFCF+M9
-         1HgkeNANlCEAbjeUebYF853F9yCjUr7ldIbCtq3bTF2gJBUjUwnierbTlYzb1gKf7iZz
-         W0XzH189RCcLJRRFG6fyC1zKpSnFrCK1gKbXmaO0LHgCNWXHDe+44nmbmHuswCiNfvVr
-         6x7NQsEQfOygXQZuouwO2ECAPnnzCpF1yUNKvEfx/fxuLRRMy5ihCHZ58qTBaMC8D/co
-         A5tBrYjvyVf0SJSj03RZ3qRgxSVcUthKaI6tfEXcJRiK9nhHTMfNVG1uezekObJZ+rjV
-         O2kw==
+        Mon, 24 May 2021 17:41:07 -0400
+Received: by mail-oi1-f175.google.com with SMTP id u11so28374580oiv.1;
+        Mon, 24 May 2021 14:39:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bK50K0ZuzWopvsRPDO/W9edrVLo3uYNgj7H36Mg20zU=;
-        b=cN7O/CGnBIRIAlwYdb7iWYXhZYub3ffjcscKyou0hd6x28wVcBN2KESRzzKKtCH+Wy
-         m6zJFINjKhcZbLX/W8pmFFsBvfusgYTb2y3Z20tn2AbYG8M08auEMc5Ioe9sPB123VfD
-         AzaiXa4gvBAT0Kxvhyd+pgyi54tAbfq8b8PL3Zvy2+0gX6KaxtNKUHpEn8mBelw+JbQy
-         xTwxPD0ZaxotA2mMQeNPr64YjvbwPMo541UY2s60kx6skaZiG2/dC3znBC3dQzEQcmyX
-         BBO+5PaYK2GHjOXl+tbF098H9WzZmgQhGSLQQBllWn8+o7GINUM6rH5hX92TebUS2n2Y
-         20ZQ==
-X-Gm-Message-State: AOAM531aJzdnbbqANVIvyurwIBiX33tSZGj8uTDY6XY84ArAbJdw+YbX
-        bsWUVbRAhen3o8DZx5K+bzjnTw==
-X-Google-Smtp-Source: ABdhPJwR+sUklgjM5cKeSrUw8qvy5Zyr+dYz/5Xqsq3ODHfVzoA+/YiYBtJlsvLZXr8k4NBtHWMRzw==
-X-Received: by 2002:a17:90a:6402:: with SMTP id g2mr26855568pjj.82.1621892051796;
-        Mon, 24 May 2021 14:34:11 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h1sm11585614pfh.72.2021.05.24.14.34.11
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=oZgYZTZUD5+APBZoaT6l8ZwbOZbqbgSkGLzVf/tRBGA=;
+        b=tuUw7U+ItT4IJoN5Q/l+/A8NYQYXlaxLu7Xj1ufISMOOdXKBUNAAN+24K8TkejlCG8
+         4FkKuJhZc79psds/WpPYY8Jxyxbp3xQYeF5a66taK+ZVPr/IPBVEPVJoUhJnH//XeCXd
+         nVg9fblwc5nMBddipLX5WRoIGsVC1NGBPLSaxfOB+mwi5lYt9PLfkMloZFUwhnmyS6wo
+         KoCmrbl8QyBGC7w2pUzk6jUqm0m+E8Zy/SKCNNqqbvW7yuVq8vAPqpWpY7Zb4WQKaiPH
+         Q35SwCztPUOuq6ogAUHbeAJYBJGm/dK9RDERVQljVBT8klyYrgS3G0WfwW9cJ3MDk+H8
+         3pfQ==
+X-Gm-Message-State: AOAM531vCskIiJpdyfXTAWqFQqGjFOGBXTn29oapmIu+809QKn37zU83
+        tXWf0h2q1/sFdjTlvBnLGg==
+X-Google-Smtp-Source: ABdhPJwzD4unQyBP4EbhN+KSVb7mCjgNBOrrwEZLKwwF2vGlsNzBa3Otszl7AocZmk/cI829T8E5Kw==
+X-Received: by 2002:aca:2115:: with SMTP id 21mr4966103oiz.12.1621892377488;
+        Mon, 24 May 2021 14:39:37 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e21sm2919793oie.32.2021.05.24.14.39.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 14:34:11 -0700 (PDT)
-Date:   Mon, 24 May 2021 21:34:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jing Liu <jing2.liu@linux.intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com
-Subject: Re: [PATCH RFC 1/7] kvm: x86: Expose XFD CPUID to guest
-Message-ID: <YKwbz3zuPhR7u1dw@google.com>
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-2-jing2.liu@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207154256.52850-2-jing2.liu@linux.intel.com>
+        Mon, 24 May 2021 14:39:36 -0700 (PDT)
+Received: (nullmailer pid 1190594 invoked by uid 1000);
+        Mon, 24 May 2021 21:39:35 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     konrad.dybcio@somainline.org, linux-arm-msm@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        angelogioacchino.delregno@somainline.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        marijn.suijten@somainline.org
+In-Reply-To: <20210523211016.726736-1-martin.botka@somainline.org>
+References: <20210523211016.726736-1-martin.botka@somainline.org>
+Subject: Re: [PATCH V2 1/2] dt-bindings: clk: qcom: gcc-sm6125: Document SM6125 GCC driver
+Date:   Mon, 24 May 2021 16:39:35 -0500
+Message-Id: <1621892375.408287.1190593.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I need a formletter for these...
-
-GET_SUPPORTED_CPUID advertises support to userspace, it does not expose anything
-to the guest.
-
-On Sun, Feb 07, 2021, Jing Liu wrote:
-> Intel's Extended Feature Disable (XFD) feature is an extension
-> to the XSAVE feature that allows an operating system to enable
-> a feature while preventing specific user threads from using
-> the feature. A processor that supports XFD enumerates
-> CPUID.(EAX=0DH,ECX=1):EAX[4] as 1.
+On Sun, 23 May 2021 23:10:13 +0200, Martin Botka wrote:
+> Document the newly added SM6125 GCC driver.
 > 
-> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
 > ---
->  arch/x86/kvm/cpuid.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in V2:
+> Add commit description.
+>  .../bindings/clock/qcom,gcc-sm6125.yaml       | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
 > 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 83637a2ff605..04a73c395c71 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -437,7 +437,7 @@ void kvm_set_cpu_caps(void)
->  	);
->  
->  	kvm_cpu_cap_mask(CPUID_D_1_EAX,
-> -		F(XSAVEOPT) | F(XSAVEC) | F(XGETBV1) | F(XSAVES)
-> +		F(XSAVEOPT) | F(XSAVEC) | F(XGETBV1) | F(XSAVES) | F(XFD)
 
-KVM must not advertise support until it actually has said support, i.e. this
-patch needs to go at the end of the series.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Also, adding the kvm_cpu_cap flag in a separate patch isn't strictly required.
-In most cases, I would go so far as to say that if there is additional enabling
-to be done, advertising the feature should be done in the same patch that adds
-the last bits of enabling.  Putting the CPUID stuff in its own patch doesn't
-usually add values, e.g. if there's a bug in the actual support code bisecting
-will point at the wrong patch if userspace conditions its vCPU model on
-GET_SUPPORTED_CPUID.
+yamllint warnings/errors:
 
->  	);
->  
->  	kvm_cpu_cap_mask(CPUID_8000_0001_ECX,
-> -- 
-> 2.18.4
-> 
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.example.dts:27.28-29 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1482526
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
