@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864E338EFE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BF738EDF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhEXQAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
+        id S234227AbhEXPn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:43:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235008AbhEXPy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3066191B;
-        Mon, 24 May 2021 15:40:11 +0000 (UTC)
+        id S233527AbhEXPjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3FE761422;
+        Mon, 24 May 2021 15:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870812;
-        bh=6uPdLOtWDwPTg23SaBpdldN7cAfKsfp4eOLSq3ZdXgY=;
+        s=korg; t=1621870429;
+        bh=30UboduEteUD7DbeI9zlzKBdoN62rm3KX0iqz8akjow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7ABEu59Ny1drFB1BltKZsJ/h63hzH7z4Gekf3bjNCOAnc4zHY6m9EuJsUfHZCWYR
-         8rbuEAks77SasghZ3kiZHiVwCGgrx6M/KEdhi7nxD8OTfZ9ZCIXnTpDkooe38l3X+3
-         CUlBDF4aN/G6M4oG/JtH09TQCZdR9AOtq6fGxU/A=
+        b=0hC1UzCy204Y7nkjbyCFh2n9REQX0xAfniExnQdPq83aWBXVMU4+CIqF4yVLbcCPo
+         ozzWRLmKpeZVNz0Hvj7bgHlhMu21/rAl3DBA1u4Nv9E3gmbNtYvpMossey9eTjknx1
+         JZZhxv9MlgrKmrt5GIHm8bfA3T2dpyxfU3T0Gy1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 038/104] ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
+        stable@vger.kernel.org, Du Cheng <ducheng2@gmail.com>,
+        Shannon Nelson <shannon.lee.nelson@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 29/37] ethernet: sun: niu: fix missing checks of niu_pci_eeprom_read()
 Date:   Mon, 24 May 2021 17:25:33 +0200
-Message-Id: <20210524152334.094681399@linuxfoundation.org>
+Message-Id: <20210524152325.157686496@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Du Cheng <ducheng2@gmail.com>
 
-commit 1b6604896e78969baffc1b6cc6bc175f95929ac4 upstream.
+commit e6e337708c22f80824b82d4af645f20715730ad0 upstream.
 
-Alesis iO 26 FireWire has two pairs of digital optical interface. It
-delivers PCM frames from the interfaces by second isochronous packet
-streaming. Although both of the interfaces are available at 44.1/48.0
-kHz, first one of them is only available at 88.2/96.0 kHz. It reduces
-the number of PCM samples to 4 in Multi Bit Linear Audio data channel
-of data blocks on the second isochronous packet streaming.
+niu_pci_eeprom_read() may fail, so add checks to its return value and
+propagate the error up the callstack.
 
-This commit fixes hardcoded stream formats.
+An examination of the callstack up to niu_pci_eeprom_read shows that:
 
-Cc: <stable@vger.kernel.org>
-Fixes: 28b208f600a3 ("ALSA: dice: add parameters of stream formats for models produced by Alesis")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-2-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+niu_pci_eeprom_read() // returns int
+    niu_pci_vpd_scan_props() // returns int
+        niu_pci_vpd_fetch() // returns *void*
+            niu_get_invariants() // returns int
+
+since niu_pci_vpd_fetch() returns void which breaks the bubbling up,
+change its return type to int so that error is propagated upwards.
+
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-24-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/dice/dice-alesis.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/sun/niu.c |   34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
---- a/sound/firewire/dice/dice-alesis.c
-+++ b/sound/firewire/dice/dice-alesis.c
-@@ -16,7 +16,7 @@ alesis_io14_tx_pcm_chs[MAX_STREAMS][SND_
- static const unsigned int
- alesis_io26_tx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT] = {
- 	{10, 10, 4},	/* Tx0 = Analog + S/PDIF. */
--	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
-+	{16, 4, 0},	/* Tx1 = ADAT1 + ADAT2 (available at low rate). */
- };
+--- a/drivers/net/ethernet/sun/niu.c
++++ b/drivers/net/ethernet/sun/niu.c
+@@ -8117,6 +8117,8 @@ static int niu_pci_vpd_scan_props(struct
+ 		start += 3;
  
- int snd_dice_detect_alesis_formats(struct snd_dice *dice)
+ 		prop_len = niu_pci_eeprom_read(np, start + 4);
++		if (prop_len < 0)
++			return prop_len;
+ 		err = niu_pci_vpd_get_propname(np, start + 5, namebuf, 64);
+ 		if (err < 0)
+ 			return err;
+@@ -8161,8 +8163,12 @@ static int niu_pci_vpd_scan_props(struct
+ 			netif_printk(np, probe, KERN_DEBUG, np->dev,
+ 				     "VPD_SCAN: Reading in property [%s] len[%d]\n",
+ 				     namebuf, prop_len);
+-			for (i = 0; i < prop_len; i++)
+-				*prop_buf++ = niu_pci_eeprom_read(np, off + i);
++			for (i = 0; i < prop_len; i++) {
++				err =  niu_pci_eeprom_read(np, off + i);
++				if (err < 0)
++					return err;
++				*prop_buf++ = err;
++			}
+ 		}
+ 
+ 		start += len;
+@@ -8172,14 +8178,14 @@ static int niu_pci_vpd_scan_props(struct
+ }
+ 
+ /* ESPC_PIO_EN_ENABLE must be set */
+-static void niu_pci_vpd_fetch(struct niu *np, u32 start)
++static int niu_pci_vpd_fetch(struct niu *np, u32 start)
+ {
+ 	u32 offset;
+ 	int err;
+ 
+ 	err = niu_pci_eeprom_read16_swp(np, start + 1);
+ 	if (err < 0)
+-		return;
++		return err;
+ 
+ 	offset = err + 3;
+ 
+@@ -8188,12 +8194,14 @@ static void niu_pci_vpd_fetch(struct niu
+ 		u32 end;
+ 
+ 		err = niu_pci_eeprom_read(np, here);
++		if (err < 0)
++			return err;
+ 		if (err != 0x90)
+-			return;
++			return -EINVAL;
+ 
+ 		err = niu_pci_eeprom_read16_swp(np, here + 1);
+ 		if (err < 0)
+-			return;
++			return err;
+ 
+ 		here = start + offset + 3;
+ 		end = start + offset + err;
+@@ -8201,9 +8209,12 @@ static void niu_pci_vpd_fetch(struct niu
+ 		offset += err;
+ 
+ 		err = niu_pci_vpd_scan_props(np, here, end);
+-		if (err < 0 || err == 1)
+-			return;
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return -EINVAL;
+ 	}
++	return 0;
+ }
+ 
+ /* ESPC_PIO_EN_ENABLE must be set */
+@@ -9294,8 +9305,11 @@ static int niu_get_invariants(struct niu
+ 		offset = niu_pci_vpd_offset(np);
+ 		netif_printk(np, probe, KERN_DEBUG, np->dev,
+ 			     "%s() VPD offset [%08x]\n", __func__, offset);
+-		if (offset)
+-			niu_pci_vpd_fetch(np, offset);
++		if (offset) {
++			err = niu_pci_vpd_fetch(np, offset);
++			if (err < 0)
++				return err;
++		}
+ 		nw64(ESPC_PIO_EN, 0);
+ 
+ 		if (np->flags & NIU_FLAGS_VPD_VALID) {
 
 
