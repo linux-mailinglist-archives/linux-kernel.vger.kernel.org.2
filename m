@@ -2,174 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9359338DFCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE03E38DFCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhEXDQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 23:16:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39777 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhEXDQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 23:16:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621826100; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uqzfuHPJmT1rryM1vxLF4VofXMmwpMUZC0+VLumh7UY=;
- b=KJqZGWACNYdaLxZH4geoZ3ZPoefVHgRkaGV2itdoD6MIpEm6cUvutf1JlNWfSkDVrX2Yk0an
- Bwxo6zpXBHbjo6m6SpJmTC2pjclLk4x24Nd79DHA7Fiua2F1wh0/nUvXFtfEFFOVZ9CD6mxk
- M/5DdngYH6D0t/NMi4ZNdudHVHU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60ab1a33c229adfeffc882b5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 03:14:59
- GMT
-Sender: bqiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 999CFC433F1; Mon, 24 May 2021 03:14:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bqiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0071C4338A;
-        Mon, 24 May 2021 03:14:58 +0000 (UTC)
+        id S232243AbhEXDQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 23:16:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232108AbhEXDQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 23:16:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1104A61159;
+        Mon, 24 May 2021 03:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621826125;
+        bh=zUQe/8ynwMDvSe70xdTPDgG1ssh4xt32o6GF40Jp1f8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pKwX1w1hrJr0qc5d7sxHlQJYxqQKK2JRptermCADi6GQkoDPPzKjbUBDdJtDX76XX
+         kdxarHxeDRoUp2UVLr+9qGy+IQRtAxUNVhmydXM55AgP1kYC+WkDvuaWXL/QOFrdog
+         IogG2Pq/pZ5M2y82ihMVhw1ZjNc4s83rG/FLsTFEQCSwRhFGPcsL55SbNWLM/g8yo3
+         q0BVSdgi1b62qhZRMzEFbASayi/cUeKCKAK51X2awy8fo9zgbZgEGve02HdgEVoc8z
+         JN+A58jL4lu0DjpWpF0xJ5OqdNjQJ5LPfNpPPYeAacqgdF3nhllrp/7Vs6FgI18Eb1
+         tQbezgvK3VOGQ==
+Subject: Re: [PATCH v5 24/28] x86/fpu/xstate: Use per-task xstate mask for
+ saving xstate in signal frame
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-25-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <de9f67eb-2be7-8950-749e-cc8eef5cc142@kernel.org>
+Date:   Sun, 23 May 2021 20:15:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210523193259.26200-25-chang.seok.bae@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 24 May 2021 11:14:58 +0800
-From:   bqiang@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH] mhi: add MHI_STATE_M2 to resume success criteria
-In-Reply-To: <20210521124530.GF70095@thinkpad>
-References: <20210420035339.282963-1-bqiang@codeaurora.org>
- <20210521124530.GF70095@thinkpad>
-Message-ID: <480583c9b392c315c30795c54afd69f8@codeaurora.org>
-X-Sender: bqiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-21 20:45, Manivannan Sadhasivam wrote:
-> Hi,
+On 5/23/21 12:32 PM, Chang S. Bae wrote:
+> Entering a signal handler, the kernel saves xstate in signal frame. The
+> dynamic user state is better to be saved only when used. fpu->state_mask
+> can help to exclude unused states.
 > 
-> The patch subject should be,
-> 
-> "bus: mhi: Wait for M2 state during system resume"
-> 
-> We follow "bus: mhi:" prefix for all MHI patches. Also, the subject 
-> should
-> clearly portray what the patch is intend to do.
-> 
-> On Tue, Apr 20, 2021 at 11:53:39AM +0800, Baochen Qiang wrote:
->> During system resume, mhi driver triggers M3->M0 transition and then 
->> waits
-> 
-> s/mhi driver/MHI host
-> 
->> for target device to enter M0 state. Once done, the device queues a 
->> state
->> change event into ctrl event ring and notify mhi dirver by raising an
-> 
-> s/notify/notifies and s/mhi dirver/MHI host. MHI driver is somewhat 
-> confusing
-> since we have the MHI device driver (QRTR etc...) as well. So just use 
-> MHI host
-> everywhere.
-> 
->> interrupt, where a tasklet is scheduled to process this event. In most 
->> cases,
->> the taklet is served timely and wait operation succeeds.
->> 
-> 
-> s/taklet/tasklet
-> 
->> However, there are cases where CPU is busy and can not serve this 
->> tasklet
-> 
-> a/can not/cannot
-> 
->> for some time. Once delay goes long enough, the device moves itself to 
->> M1
->> state and also interrupts mhi driver after inserting a new state 
->> change
->> event to ctrl ring. Later CPU finally has time to process the ring, 
->> however
->> there are two events in it now:
->> 	1. for M3->M0 event, which is processed first as queued first,
->> 	   tasklet handler updates device state to M0 and wakes up the task,
->> 	   i.e., the mhi driver.
->> 	2. for M0->M1 event, which is processed later, tasklet handler
->> 	   triggers M1->M2 transition and updates device state to M2 
->> directly,
->> 	   then wakes up the mhi driver(if still sleeping on this wait 
->> queue).
->> Note that although mhi driver has been woken up while processing the 
->> first
->> event, it may still has no chance to run before the second event is 
->> processed.
->> In other words, mhi driver has to keep waiting till timeout cause the 
->> M0 state
->> has been missed.
->> 
->> kernel log here:
->> ...
->> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 
->> 0000:06:00.0: Entered with PM state: M3, MHI state: M3
->> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 
->> 0000:06:00.0: State change event to state: M0
->> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 
->> 0000:06:00.0: State change event to state: M1
->> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 
->> 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
->> ...
->> 
->> Fix this issue by simply adding M2 as a valid state for resume.
->> 
->> Tested-on: WCN6855 hw2.0 PCI 
->> WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
->> 
->> Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
-> 
-> Could you please add a fixes tag as well? And this patch should be 
-> backported to
-> stable kernels also, so please CC stable@vger.kernel.org.
-> 
-> Thanks,
-> Mani
-> 
+> Returning from a signal handler, XRSTOR(S) re-initializes the excluded
+> state components.
 
-Thanks Mani.
-Will address them and send as V2.
+If I'm reading this right, it means that tasks that have ever used AMX
+get one format and tasks that haven't get another one.  Do we really
+want that?  We could instead look at the actual XINUSE mask.
 
->> ---
->>  drivers/bus/mhi/core/pm.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
->> index ce73cfa63cb3..ca5f2feed9d5 100644
->> --- a/drivers/bus/mhi/core/pm.c
->> +++ b/drivers/bus/mhi/core/pm.c
->> @@ -900,6 +900,7 @@ int mhi_pm_resume(struct mhi_controller 
->> *mhi_cntrl)
->> 
->>  	ret = wait_event_timeout(mhi_cntrl->state_event,
->>  				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
->> +				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
->>  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
->>  				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
->> 
->> --
->> 2.25.1
->> 
+BTW, the current FPU signal restore code is horrific.  I'm not convinced
+we want to make any changes to the signal handling until that code gets
+cleaned up.
+
+--Andy
