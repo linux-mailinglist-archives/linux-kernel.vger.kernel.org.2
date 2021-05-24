@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8352B38EFF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ED738EF73
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbhEXQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
+        id S234541AbhEXP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235314AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1165961927;
-        Mon, 24 May 2021 15:41:05 +0000 (UTC)
+        id S233114AbhEXPvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:51:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 681F361628;
+        Mon, 24 May 2021 15:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870866;
-        bh=3tr2OMRnQcEEYAL6cEE519vtoioTcnPkV1HS//zF48Q=;
+        s=korg; t=1621870718;
+        bh=3eB4CpqZbQMODAApH7fn0fg282KuU6e5dh0PHqES+io=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBddhz640dKh4/vQFTE1V5G2/yJOO4h1ZQHQIqPGJagFQdANHcR1X+W/NaDte5OAQ
-         Qj4Ru0hB8Zu+DABtcqolatF+TcOYSL4YcsTi8PaDHaCcYaBMvEajj78D/l7orPpVpV
-         ryiszyy/UogByFceyApBfu+2WzgkrV/zxfi7yqtI=
+        b=u2HFcdHstfCozMLQu3qCjQ1nuoIvu9Y3LIIZLlKYSiWjoVmhAQbXwnz39yhkkLGrc
+         upjuS5UQ/qi5ZpT97weh/g+mL0Sgrl94/NzKcycICrDrDVM0S3WWqiU/v3P3+UvoNe
+         NMq7oczUzLYI5GbgPTzaORtEo+wzwg9C7jD2xMgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Tokarev <mjt@tls.msk.ru>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 070/104] dm snapshot: fix a crash when an origin has no snapshots
+        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 59/71] net: stmicro: handle clk_prepare() failure during init
 Date:   Mon, 24 May 2021 17:26:05 +0200
-Message-Id: <20210524152335.174655194@linuxfoundation.org>
+Message-Id: <20210524152328.372204007@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 7ee06ddc4038f936b0d4459d37a7d4d844fb03db upstream.
+commit 0c32a96d000f260b5ebfabb4145a86ae1cd71847 upstream.
 
-If an origin target has no snapshots, o->split_boundary is set to 0.
-This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
+In case clk_prepare() fails, capture and propagate the error code up the
+stack. If regulator_enable() was called earlier, properly unwind it by
+calling regulator_disable().
 
-Fix this by initializing chunk_size, and in turn split_boundary, to
-rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
-into "unsigned" type.
-
-Reported-by: Michael Tokarev <mjt@tls.msk.ru>
-Tested-by: Michael Tokarev <mjt@tls.msk.ru>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-22-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-snap.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -854,12 +854,11 @@ static int dm_add_exception(void *contex
- static uint32_t __minimum_chunk_size(struct origin *o)
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+@@ -30,7 +30,7 @@ struct sunxi_priv_data {
+ static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
  {
- 	struct dm_snapshot *snap;
--	unsigned chunk_size = 0;
-+	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
+ 	struct sunxi_priv_data *gmac = priv;
+-	int ret;
++	int ret = 0;
  
- 	if (o)
- 		list_for_each_entry(snap, &o->snapshots, list)
--			chunk_size = min_not_zero(chunk_size,
--						  snap->store->chunk_size);
-+			chunk_size = min(chunk_size, snap->store->chunk_size);
+ 	if (gmac->regulator) {
+ 		ret = regulator_enable(gmac->regulator);
+@@ -50,10 +50,12 @@ static int sun7i_gmac_init(struct platfo
+ 		gmac->clk_enabled = 1;
+ 	} else {
+ 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+-		clk_prepare(gmac->tx_clk);
++		ret = clk_prepare(gmac->tx_clk);
++		if (ret && gmac->regulator)
++			regulator_disable(gmac->regulator);
+ 	}
  
- 	return (uint32_t) chunk_size;
+-	return 0;
++	return ret;
  }
+ 
+ static void sun7i_gmac_exit(struct platform_device *pdev, void *priv)
 
 
