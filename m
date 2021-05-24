@@ -2,192 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC9F38F671
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F023338F674
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhEXXpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230033AbhEXXov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E90176140F;
-        Mon, 24 May 2021 23:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621899803;
-        bh=bzWATNTPaYHTgas/Ru4ikVqAuF22p6QgBAnd0xCRvlM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=U0ndxR7l73gsZ4FDhlPe62bGK9fQ6j+qvxlo1GuEKzYiC68TVizE/HT2E9Upsfh5N
-         QeEH2jnkKAN+9Vkr55FoBr6E53fCF7Yg/7SwvnnyfHhY+Zzimvk3wfzmadG9negzuf
-         AeKvIR7/vABzouc/W3ofMYHw0GsU1sIZdvL6d5dB4TVe0UmKNhxGGd6+tYlLOE4McX
-         dj4J2kg6jmqOy+rKvmVyf7RKH5YccwjdNzTcYG2vlIWFw0nIa3WoFtTHPzTUfHHZ06
-         XeC3sany43hxiV02zxV3ssbD7NKOcG2VhmM+4cuCdm3Fz1JEaxvLvXv8swhbJxBkTX
-         FbQrGFvEYzRsQ==
-Date:   Mon, 24 May 2021 18:43:21 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chiqijun <chiqijun@huawei.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
-        yin.yinshi@huawei.com, cloud.wangxiaoyun@huawei.com,
-        zengweiliang.zengweiliang@huawei.com, chenlizhong@huawei.com
-Subject: Re: [v6] PCI: Add reset quirk for Huawei Intelligent NIC virtual
- function
-Message-ID: <20210524234321.GA1141045@bjorn-Precision-5520>
+        id S229890AbhEXXrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhEXXrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:47:41 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F1C061574;
+        Mon, 24 May 2021 16:46:12 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id i4so40462351ybe.2;
+        Mon, 24 May 2021 16:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6iczEggOtiy2FN7AYegw0B3aUi5aVpE5nDr01zddwxQ=;
+        b=VOiyCupb1CJ6+Ni3mL9sB+N93oglb/TsQMDHnT2/aAIRkd0xfmVZMJ+siqdp4T6q9M
+         wsw1OhkYDzVs4tiI5Az6RgSzRXETvQRAgJ+at9mIoTD+UIzQR+sJpijpkZPNibHKaxpz
+         7/Ef8ZogOpgEBImU2v2pUbeuftAT7jvKIWrgIvKF1Ai0S7dw0awAuQxEIBhnfHZSjzUB
+         pF05KjX7MxQk1Df+fD4VrORz8E680A3r7Q2H1u01sQg5vPnlbyeMHl+1jd7XtkbM4jSu
+         7LooS0WXmT71zBPJ4nDyba0uAtYWKtE5qklPfmetFIbPZ0Kqy1Tl0qQI10PT7EMGrqDA
+         FBTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6iczEggOtiy2FN7AYegw0B3aUi5aVpE5nDr01zddwxQ=;
+        b=hdRCURNleIIoC78pm3Y81p2o6zkLAVinsK6JmAec62/4qtPH1tI1OrcfH3CY7Lkcqt
+         lh9QUYe4iW1qrZfF3KVkc9oz8tmz5sFu+wr0ZjbKYvTnqVmcDnNjmk1nOZK/6nMDaqj6
+         4i28JhxdwgOHKe7Rh7TDEWJIcOprWdWmGcDeU01sp54LTQSxWe8QzVa2TB9M9HhkxHIP
+         Q/67BNxXe6rH8hAn37Lwepk+0bSQ8GhRiQz2bPWvRT80JfyK1qqctu/mdKwPCfYu9x/5
+         xOl9yG0kyfj2zYcDGrXm55T4urjAUwWnqf/pR3Tdj/EMKenJyX1WBLlzRhnCUbRcuAW3
+         UYxA==
+X-Gm-Message-State: AOAM530S+SMcxQKINzEetXf0ZRp8JlGcmdsWA04yMDgeNLP4Q426xIsc
+        Q1elFsALascgZ+zSQhm6ufnzaCw/3lkjoWHEzLGxaCnPQvQ=
+X-Google-Smtp-Source: ABdhPJy9NppsxSVMgzNiwBF7EJy2Hn9kL3HJEFrj8uT2sCTyD5DFA+/dTO2ajeySsy+VtJ4KwD43XMaOoxBYn2Md2Rs=
+X-Received: by 2002:a25:7507:: with SMTP id q7mr37158860ybc.27.1621899971663;
+ Mon, 24 May 2021 16:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414132301.1793-1-chiqijun@huawei.com>
+References: <20210519141936.GV8544@kitsune.suse.cz> <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+ <CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 May 2021 16:46:00 -0700
+Message-ID: <CAEf4BzZ9=aLVD7ytgCcSxcbOLqFNK-p1mj14Rv_TGnOyL3aO_g@mail.gmail.com>
+Subject: Re: BPF: failed module verification on linux-next
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 09:23:01PM +0800, Chiqijun wrote:
-> When we do an FLR on several VFs at the same time, the Huawei
-> Intelligent NIC processes them serially, resulting in some VF
-> FLRs being delayed more than 100ms, when the virtual machine
-> restarts and the device driver is loaded, the firmware is doing
-> the corresponding VF FLR, causing the driver to fail to load.
-> Link: https://support.huawei.com/enterprise/en/doc/EDOC1100063073/87950645/vm-oss-occasionally-fail-to-load-the-in200-driver-when-the-vf-performs-flr
-> 
-> To solve this problem, add host and firmware status synchronization
-> during FLR.
-> 
-> Signed-off-by: Chiqijun <chiqijun@huawei.com>
+On Mon, May 24, 2021 at 3:58 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, May 20, 2021 at 10:31 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, May 19, 2021 at 7:19 AM Michal Such=C3=A1nek <msuchanek@suse.de=
+> wrote:
+> > >
+> > > Hello,
+> > >
+> > > linux-next fails to boot for me:
+> > >
+> > > [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vani=
+lla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils;
+> > > openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UT=
+C 2021 (3455ff8)
+> > > [    0.000000] Command line: BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-ne=
+xt-20210519-1.g3455ff8-vanilla root=3DUUID=3Dec42c33e-a2c2-4c61-afcc-93e952=
+7
+> > > 8f687 plymouth.enable=3D0 resume=3D/dev/disk/by-uuid/f1fe4560-a801-4f=
+af-a638-834c407027c7 mitigations=3Dauto earlyprintk initcall_debug nomodese=
+t
+> > >  earlycon ignore_loglevel console=3DttyS0,115200
+> > > ...
+> > > [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+> > > [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0=
+ after 0 usecs
+> > > [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x=
+7c @ 1
+> > > [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x=
+7c returned 0 after 3 usecs
+> > > [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+> > > [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after=
+ 0 usecs
+> > > [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+> > > [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 a=
+fter 0 usecs
+> > > [   26.147816] Freeing unused decrypted memory: 2036K
+> > > [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+> > > [   26.165776] Write protecting the kernel read-only data: 26624k
+> > > [   26.173067] Freeing unused kernel image (text/rodata gap) memory: =
+2036K
+> > > [   26.180416] Freeing unused kernel image (rodata/data gap) memory: =
+1184K
+> > > [   26.187031] Run /init as init process
+> > > [   26.190693]   with arguments:
+> > > [   26.193661]     /init
+> > > [   26.195933]   with environment:
+> > > [   26.199079]     HOME=3D/
+> > > [   26.201444]     TERM=3Dlinux
+> > > [   26.204152]     BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-2021051=
+9-1.g3455ff8-vanilla
+> > > [   26.254154] BPF:      type_id=3D35503 offset=3D178440 size=3D4
+> > > [   26.259125] BPF:
+> > > [   26.261054] BPF:Invalid offset
+> > > [   26.264119] BPF:
+> >
+> > It took me a while to reliably bisect this, but it clearly points to
+> > this commit:
+> >
+> > e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_=
+lock")
+> >
+> > One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
+> > lists and zone stats -fix"), works just fine.
+> >
+> > I'll have to spend more time debugging what exactly is happening, but
+> > the immediate problem is two different definitions of numa_node
+> > per-cpu variable. They both are at the same offset within
+> > .data..percpu ELF section, they both have the same name, but one of
+> > them is marked as static and another as global. And one is int
+> > variable, while another is struct pagesets. I'll look some more
+> > tomorrow, but adding Jiri and Arnaldo for visibility.
+> >
+> > [110907] DATASEC '.data..percpu' size=3D178904 vlen=3D303
+> > ...
+> >         type_id=3D27753 offset=3D163976 size=3D4 (VAR 'numa_node')
+> >         type_id=3D27754 offset=3D163976 size=3D4 (VAR 'numa_node')
+> >
+> > [27753] VAR 'numa_node' type_id=3D27556, linkage=3Dstatic
+> > [27754] VAR 'numa_node' type_id=3D20, linkage=3Dglobal
+> >
+> > [20] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> >
+> > [27556] STRUCT 'pagesets' size=3D0 vlen=3D1
+> >         'lock' type_id=3D507 bits_offset=3D0
+> >
+> > [506] STRUCT '(anon)' size=3D0 vlen=3D0
+> > [507] TYPEDEF 'local_lock_t' type_id=3D506
+> >
+> > So also something weird about those zero-sized struct pagesets and
+> > local_lock_t inside it.
+>
+> Ok, so nothing weird about them. local_lock_t is designed to be
+> zero-sized unless CONFIG_DEBUG_LOCK_ALLOC is defined.
+>
+> But such zero-sized per-CPU variables are confusing pahole during BTF
+> generation, as now two different variables "occupy" the same address.
 
-Applied to pci/reset for v5.14 with subject
-"PCI: Work around Huawei Intelligent NIC VF FLR erratum" and the
-following commit log:
+FWIW, here's the pahole fix (it tried to filter zero-sized per-CPU
+vars, but not quite completely).
 
-  pcie_flr() starts a Function Level Reset (FLR), waits 100ms (the maximum
-  time allowed for FLR completion by PCIe r5.0, sec 6.6.2), and waits for the
-  FLR to complete.  It assumes the FLR is complete when a config read returns
-  valid data.
+  [0] https://lore.kernel.org/bpf/20210524234222.278676-1-andrii@kernel.org=
+/T/#u
 
-  When we do an FLR on several Huawei Intelligent NIC VFs at the same time,
-  firmware on the NIC processes them serially.  The VF may respond to config
-  reads before the firmware has completed its reset processing.  If we bind a
-  driver to the VF (e.g., by assigning the VF to a virtual machine) in the
-  interval between the successful config read and completion of the firmware
-  reset processing, the NIC VF driver may fail to load.
-
-  Prevent this driver failure by waiting for the NIC firmware to complete its
-  reset processing.  Not all NIC firmware supports this feature.
-
-Let me know if that's not accurate.
-
-I applied Alex's Reviewed-by (from v3) because the patch is basically
-identical except for cosmetic changes.
-
-> ---
-> v6:
->  - Addressed Bjorn's review comments
-> 
-> v5:
->  - Fix build warning reported by kernel test robot
-> 
-> v4:
->  - Addressed Bjorn's review comments
-> 
-> v3:
->  - The MSE bit in the VF configuration space is hardwired to zero,
->    remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
->    set PCI_COMMAND register.
-> 
-> v2:
->  - Update comments
->  - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
->    macro instead of the magic number
-> ---
->  drivers/pci/quirks.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..6677b7220442 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3913,6 +3913,73 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
->  	return 0;
->  }
->  
-> +#define PCI_DEVICE_ID_HINIC_VF      0x375E
-> +#define HINIC_VF_FLR_TYPE           0x1000
-> +#define HINIC_VF_FLR_CAP_BIT        (1UL << 30)
-> +#define HINIC_VF_OP                 0xE80
-> +#define HINIC_VF_FLR_PROC_BIT       (1UL << 18)
-> +#define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
-> +
-> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
-> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-> +{
-> +	unsigned long timeout;
-> +	void __iomem *bar;
-> +	u32 val;
-> +
-> +	if (probe)
-> +		return 0;
-> +
-> +	bar = pci_iomap(pdev, 0, 0);
-> +	if (!bar)
-> +		return -ENOTTY;
-> +
-> +	/* Get and check firmware capabilities. */
-> +	val = ioread32be(bar + HINIC_VF_FLR_TYPE);
-> +	if (!(val & HINIC_VF_FLR_CAP_BIT)) {
-> +		pci_iounmap(pdev, bar);
-> +		return -ENOTTY;
-> +	}
-> +
-> +	/*
-> +	 * Set the processing bit for the start of FLR, which will be cleared
-> +	 * by the firmware after FLR is completed.
-> +	 */
-> +	val = ioread32be(bar + HINIC_VF_OP);
-> +	val = val | HINIC_VF_FLR_PROC_BIT;
-> +	iowrite32be(val, bar + HINIC_VF_OP);
-> +
-> +	/* Perform the actual device function reset */
-> +	pcie_flr(pdev);
-> +
-> +	/*
-> +	 * The device must learn BDF after FLR in order to respond to BAR's
-> +	 * read request, therefore, we issue a configure write request to let
-> +	 * the device capture BDF.
-> +	 */
-> +	pci_write_config_word(pdev, PCI_VENDOR_ID, 0);
-> +
-> +	/* Waiting for device reset complete */
-> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
-> +	do {
-> +		val = ioread32be(bar + HINIC_VF_OP);
-> +		if (!(val & HINIC_VF_FLR_PROC_BIT))
-> +			goto reset_complete;
-> +		msleep(20);
-> +	} while (time_before(jiffies, timeout));
-> +
-> +	val = ioread32be(bar + HINIC_VF_OP);
-> +	if (!(val & HINIC_VF_FLR_PROC_BIT))
-> +		goto reset_complete;
-> +
-> +	pci_warn(pdev, "Reset dev timeout, FLR ack reg: %#010x\n", val);
-> +
-> +reset_complete:
-> +	pci_iounmap(pdev, bar);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
->  		 reset_intel_82599_sfp_virtfn },
-> @@ -3924,6 +3991,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
->  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
->  		reset_chelsio_generic_dev },
-> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
-> +		reset_hinic_vf_dev },
->  	{ 0 }
+>
+> Given this seems to be the first zero-sized per-CPU variable, I wonder
+> if it would be ok to make sure it's never zero-sized, while pahole
+> gets fixed and it's latest version gets widely packaged and
+> distributed.
+>
+> Mel, what do you think about something like below? Or maybe you can
+> advise some better solution?
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 41b87d6f840c..6a1d7511cae9 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -124,6 +124,13 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
+>
+>  struct pagesets {
+>      local_lock_t lock;
+> +#if defined(CONFIG_DEBUG_INFO_BTF) && !defined(CONFIG_DEBUG_LOCK_ALLOC)
+> +    /* pahole 1.21 and earlier gets confused by zero-sized per-CPU
+> +     * variables and produces invalid BTF. So to accommodate earlier
+> +     * versions of pahole, ensure that sizeof(struct pagesets) is never =
+0.
+> +     */
+> +    char __filler;
+> +#endif
 >  };
->  
-> -- 
-> 2.17.1
-> 
+>  static DEFINE_PER_CPU(struct pagesets, pagesets) =3D {
+>      .lock =3D INIT_LOCAL_LOCK(lock),
+>
+> >
+> > > [   26.264119]
+> > > [   26.267437] failed to validate module [efivarfs] BTF: -22
+> > > [   26.316724] systemd[1]: systemd 246.13+suse.105.g14581e0120 runnin=
+g in system mode. (+PAM +AUDIT +SELINUX -IMA +APPARMOR -SMACK +SYSVINI
+> > > T +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +=
+BLKID +ELFUTILS +KMOD +IDN2 -IDN +PCRE2 default-hierarchy=3Dunified)
+> > > [   26.357990] systemd[1]: Detected architecture x86-64.
+> > > [   26.363068] systemd[1]: Running in initial RAM disk.
+> > >
+> >
+> > [...]
