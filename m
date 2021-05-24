@@ -2,90 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A45738F2A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A2338F2B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhEXR6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 13:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbhEXR6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 13:58:02 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44077C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:56:34 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso10962706pjq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JwZQhxTS/GfTPS65+/sRF0tVgmUrlLF3uY9XACHcGco=;
-        b=GygAdUsVSiyqP92o7Lw9zI1843h4WnOOMTKkzu2EHd7EEI3DlnBtRAsyqv/kYBdJcw
-         91wpCxrpVJe4wjTD92vvNBS2wqLtZHHb9/2ELpB0dmT5ky2656wraOUvpdaqPLxNuUId
-         vzuCAdfvZ/092dbGhiW8m/IMYPl3kQfNbRvLs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JwZQhxTS/GfTPS65+/sRF0tVgmUrlLF3uY9XACHcGco=;
-        b=Pa7K6ZuXm5IOHeii1Z+g5GFYwN3tYPVyPH5p3XEO8RXIOah2J5+9cqLxa6G2u4tGRt
-         KFoVvxoFDnFR7GDKhA/d6UUfbne+0axmxqag4IEdcEaPDYtBQGb7mULdgMj9NJKwbbF2
-         2BWcSdWZ3z4Ohnt4vkSJ5LIDUQDwdoOHitvcbakDm14jl1bhSW46GFKDISD9Q3MvOK0R
-         BA7pN7OX1Je6VOAMfb4eWsyShL4qwPdYCwENDO9UpzLnk50yJ6Si2CXZdRuWcAToHg+h
-         rRVtdQIT/7FXSBFZD5KpA2SO5OvcVP5hcfFspZmGUi4qDg3ZsODeMaf7Zmea6kfgH9X3
-         +U9Q==
-X-Gm-Message-State: AOAM532HxHrxTTYzhHooo/A7XnBVx+d36UCLYYUytozIuf8nnweKM+Cf
-        tRQyI7PYDAB8BK5p790YaIsIky3c9V1TUEpSAzo=
-X-Google-Smtp-Source: ABdhPJxaiZ+abmCf8hAldTYoDVApchfKY9mlOFcNNegiMaa09f3Nm0kTrELbtuBssTEsbgzYGQpnAg==
-X-Received: by 2002:a17:902:b109:b029:ef:1ee:9d02 with SMTP id q9-20020a170902b109b02900ef01ee9d02mr26748191plr.85.1621878993744;
-        Mon, 24 May 2021 10:56:33 -0700 (PDT)
-Received: from d53f71d6d7f0 (110-175-118-133.tpgi.com.au. [110.175.118.133])
-        by smtp.gmail.com with ESMTPSA id gb10sm10434381pjb.57.2021.05.24.10.56.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 May 2021 10:56:33 -0700 (PDT)
-Date:   Mon, 24 May 2021 17:56:26 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/127] 5.12.7-rc1 review
-Message-ID: <20210524175622.GA20@d53f71d6d7f0>
-References: <20210524152334.857620285@linuxfoundation.org>
+        id S233648AbhEXSCl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 14:02:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:46100 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233244AbhEXSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:02:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1107E6D;
+        Mon, 24 May 2021 11:01:11 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1A603F73B;
+        Mon, 24 May 2021 11:01:09 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Beata Michalska <beata.michalska@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry detection
+In-Reply-To: <20210524101617.8965-3-beata.michalska@arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com> <20210524101617.8965-3-beata.michalska@arm.com>
+Date:   Mon, 24 May 2021 19:01:04 +0100
+Message-ID: <87fsyc6mfz.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 05:25:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.7 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hi Beata,
 
-On Tiger Lake x86_64 kernel:
-- tested ok.
+On 24/05/21 11:16, Beata Michalska wrote:
+> Currently the CPU capacity asymmetry detection, performed through
+> asym_cpu_capacity_level, tries to identify the lowest topology level
+> at which the highest CPU capacity is being observed, not necessarily
+> finding the level at which all possible capacity values are visible
+> to all CPUs, which might be bit problematic for some possible/valid
+> asymmetric topologies i.e.:
+>
+> DIE      [                                ]
+> MC       [                       ][       ]
+>
+> CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
+> Capacity  |.....| |.....| |.....|  |.....|
+>            L	     M       B        B
+>
+> Where:
+>  arch_scale_cpu_capacity(L) = 512
+>  arch_scale_cpu_capacity(M) = 871
+>  arch_scale_cpu_capacity(B) = 1024
+>
+> In this particular case, the asymmetric topology level will point
+> at MC, as all possible CPU masks for that level do cover the CPU
+> with the highest capacity. It will work just fine for the first
+> cluster, not so much for the second one though (consider the
+> find_energy_efficient_cpu which might end up attempting the energy
+> aware wake-up for a domain that does not see any asymmetry at all)
+>
+> Rework the way the capacity asymmetry levels are being detected,
+> allowing to point to the lowest topology level (for a given CPU), where
+> full set of available CPU capacities is visible to all CPUs within given
+> domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
+> the domains. This will have an impact on EAS wake-up placement in a way
+> that it might see different rage of CPUs to be considered, depending on
+> the given current and target CPUs.
+>
+> Additionally, those levels, where any range of asymmetry (not
+> necessarily full) is being detected will get identified as well.
+> The selected asymmetric topology level will be denoted by
+> SD_ASYM_CPUCAPACITY_FULL sched domain flag whereas the 'sub-levels'
+> would receive the already used SD_ASYM_CPUCAPACITY flag. This allows
+> maintaining the current behaviour for asymmetric topologies, with
+> misfit migration operating correctly on lower levels, if applicable,
+> as any asymmetry is enough to trigger the misfit migration.
+> The logic there relies on the SD_ASYM_CPUCAPACITY flag and does not
+> relate to the full asymmetry level denoted by the sd_asym_cpucapacity
+> pointer.
+>
+> Detecting the CPU capacity asymmetry is being based on a set of
+> available CPU capacities for all possible CPUs. This data is being
+> generated upon init and updated once CPU topology changes are being
+> detected (through arch_update_cpu_topology). As such, any changes
+> to identified CPU capacities (like initializing cpufreq) need to be
+> explicitly advertised by corresponding archs to trigger rebuilding
+> the data.
+>
+> This patch also removes the additional -dflags- parameter used when
+  ^^^^^^^^^^^^^^^^^^^^^^^
+s/^/Also remove/
 
-Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
--- 
-Rudi
+> building sched domains as the asymmetry flags are now being set
+> directly in sd_init.
+>
+
+Few nits below, but beyond that:
+
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+> +static inline int
+> +asym_cpu_capacity_classify(struct sched_domain *sd,
+> +			   const struct cpumask *cpu_map)
+> +{
+> +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+> +	struct asym_cap_data *entry;
+> +	int asym_cap_count = 0;
+> +
+> +	if (list_is_singular(&asym_cap_list))
+> +		goto leave;
+> +
+> +	list_for_each_entry(entry, &asym_cap_list, link) {
+> +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+> +			++asym_cap_count;
+> +		} else {
+> +			/*
+> +			 * CPUs with given capacity might be offline
+> +			 * so make sure this is not the case
+> +			 */
+> +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+> +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+> +				if (asym_cap_count > 1)
+> +					break;
+> +			}
+
+Readability nit: That could be made into an else if ().
+
+
+> +		}
+> +	}
+> +	WARN_ON_ONCE(!asym_cap_count);
+> +leave:
+> +	return asym_cap_count > 1 ? sd_asym_flags : 0;
+> +}
+> +
+
+> +static void asym_cpu_capacity_scan(void)
+> +{
+> +	struct asym_cap_data *entry, *next;
+> +	int cpu;
+> +
+> +	list_for_each_entry(entry, &asym_cap_list, link)
+> +		cpumask_clear(entry->cpu_mask);
+> +
+> +	entry = list_first_entry_or_null(&asym_cap_list,
+> +					 struct asym_cap_data, link);
+> +
+> +	for_each_cpu_and(cpu, cpu_possible_mask,
+> +			 housekeeping_cpumask(HK_FLAG_DOMAIN)) {
+> +		unsigned long capacity = arch_scale_cpu_capacity(cpu);
+> +
+> +		if (!entry || capacity != entry->capacity)
+> +			entry = asym_cpu_capacity_get_data(capacity);
+> +		if (entry)
+> +			__cpumask_set_cpu(cpu, entry->cpu_mask);
+
+That 'if' is only there in case the alloc within the helper failed, which
+is a bit of a shame.
+
+You could pass the CPU to that helper function and have it set the right
+bit, or you could even forgo the capacity != entry->capacity check here and
+let the helper function do it all.
+
+Yes, that means more asym_cap_list iterations, but that's
+O(nr_cpus * nr_caps); a topology rebuild is along the lines of
+O(nr_cpus² * nr_topology_levels), so not such a big deal comparatively.
+
+> +	}
+> +
+> +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> +		if (cpumask_empty(entry->cpu_mask)) {
+> +			list_del(&entry->link);
+> +			kfree(entry);
+> +		}
+> +	}
+> +}
+> +
