@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFBA38DFD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B46D38DFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhEXDVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 23:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhEXDVk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 23:21:40 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529B1C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 20:20:12 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id f18so9300471ejq.10
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 20:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8UV+IIiaESw5plOu1kB4kNiRQoDlm7XC16kel3ldThc=;
-        b=t4ZF0pX91tbZPTG4a3RsnCUsR867kJhIsRLFK2FJvhqbrXneRMEuVHJKslabXH8ejX
-         PB90Q3oadFOPaqrZNJCBOivSFJiKvRT72yty1H8/o2Z5Y0sGOPzVHtQ2pVVzPWFYZnri
-         eko5ylTi32YLWCvWC3mtP1LMWFXUzC8Q6EtJtW4jl4ys26bhMIbBDOnshPR8L4vEAZww
-         zqzDqvNIbRJ059UvvScw40Cy3efBzmejnA32TDgnm/OEgSBQbfJ++XvV4cPBK8To92SU
-         lVtet/excg0XP/P5C4dg4Dws3TMZf0A9IX3Mq/KWsXoshd2x9q6nL/W45yF9Ok2UeayA
-         lXIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8UV+IIiaESw5plOu1kB4kNiRQoDlm7XC16kel3ldThc=;
-        b=cTNQOnIQkZjF0AU6vmlqvSv6N987NrVVkt13ZqnVgbF8A0ZsVrb3cLHVUmPDSaLDVv
-         agSYbg4yMHU2N2zDmml5SoR48tIE36IcDs2rZrOFyswthMRC/XLho8hICaxdWnlzKtNH
-         N3L58M+bU1eAeoE3juL2uiilb7LnxjugoXM9c4kdw7FW1+MSAZu8D6Ti0aqzu+t0t0Ew
-         i9gdFRowDjXO8YfEsR0hSe8kWcYGz/1M5cXosrBM1Xy1uErdnJJ/4iYo3TMgtc20lssT
-         V+h0A+0hohL+n+SCwF5YHKmDZMbZJyawVGA3cXI8JQGq4PORkl+yp1s9mZfwxhzxFug6
-         H+sg==
-X-Gm-Message-State: AOAM531l7fDWcZD+UE/+n7hknLf9JpTc+GGQbcQYnlKLuPxNrT7O/EUN
-        cAfnjRLQdgW5LYsMaPRw3CVrtp5Icxf0Q6VTC+MLDHFxPsMDZg==
-X-Google-Smtp-Source: ABdhPJxSO6yeIC0VFxiyHU8Q5cmEiF0vtZyk4fopXUN0/UTJvOUzfGpEs7UI4BzBgrcLzpjnfEaXYNmFUfMszv4G7zM=
-X-Received: by 2002:a17:906:1e15:: with SMTP id g21mr20998448ejj.241.1621826410849;
- Sun, 23 May 2021 20:20:10 -0700 (PDT)
+        id S232136AbhEXD1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 23:27:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230181AbhEXD1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 23:27:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FA2260FE7;
+        Mon, 24 May 2021 03:25:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621826736;
+        bh=EDFTkcAwSFOK0FnRgG63bT405VUM1DCJshGwKByLqq8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VpojPf6CSZo4wVFGVUXyrBSVNeOOlOHKh/Saa57vbhrMbnR/pY/RPtdPSw3oSAzcW
+         FisMR/BZq2oOBEDqfVNaJL3pwYlrY+MCDi+pTnKxb2Iv0eKg0M7/yLJOTDVc3hK8ss
+         1qEJdCJz/tx9CUzj7uHYr8cPS6a4JGnMmRAABpQ+3Ns/FTu6G1uz3YcGfuyHxnQ6zx
+         Kq8fZ7d23ot45EpWkj+/nEC1DI/RC0QxUnW7+Kpso7JQcg5C8ZYL3PFT4KzSy6x7Rl
+         h4ESTRwypJLcNJGkGQYSJmTRAN3KSwHy7YWpBHeSh4fPYtyyQqewoPR4RwLpaC+Ax9
+         zmNoqVMMJ+ovQ==
+Subject: Re: [PATCH v5 25/28] x86/fpu/xstate: Skip writing zeros to signal
+ frame for dynamic user states if in INIT-state
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-26-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <6197fd94-76a9-a391-f290-7001a71add7f@kernel.org>
+Date:   Sun, 23 May 2021 20:25:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
- <CAHp75Vf8kQ73w0R9ieDNjDVkxM-V83QRN9mc6BjRZA8xHpPNAA@mail.gmail.com>
- <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
- <CAM7=BFoH7Q+YHvPFnHM4j72ORHQp4gTjHFjnfeLsV2-30ZLNYw@mail.gmail.com>
- <CA+7tXigG7QVYOtkuFrqciHfuxE4+c0JM9z8r0e9rooTjjz5PYA@mail.gmail.com>
- <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com> <20210522190759.GA9755@basil.scara.com>
-In-Reply-To: <20210522190759.GA9755@basil.scara.com>
-From:   Trent Piepho <tpiepho@gmail.com>
-Date:   Sun, 23 May 2021 20:20:00 -0700
-Message-ID: <CA+7tXigHEwwnVqjD=Hi1HBCxrBfeuvieK8v=W4nvgsm+ipaLmQ@mail.gmail.com>
-Subject: Re: A divide by zero bug in lib/math/rational.c (with triggering input)
-To:     Oskar Schirmer <oskar@scara.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Yiyuan guo <yguoaz@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210523193259.26200-26-chang.seok.bae@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 12:08 PM Oskar Schirmer <oskar@scara.com> wrote:
-> On Fri, May 21, 2021 at 12:53:27 +0300, Andy Shevchenko wrote:
-> > On Fri, May 21, 2021 at 12:20 PM Trent Piepho <tpiepho@gmail.com> wrote:
-> > > On Fri, May 21, 2021 at 12:55 AM Yiyuan guo <yguoaz@gmail.com> wrote:
->
-> Sorry, it does not. E.g. with the given fraction of 31/1000
-> and the registers restricted to 8 and 5 bits respectively, the
-> proposed fixed function would still divide by zero, because
-> n1 == 0. If it was for the division by d1, the test for !d1
+On 5/23/21 12:32 PM, Chang S. Bae wrote:
+> By default, for xstate features in the INIT-state, XSAVE writes zeros to
+> the uncompressed destination buffer.
+> 
+> E.g., if you are not using AVX-512, you will still get a bunch of zeros on
+> the signal stack where live AVX-512 data would go.
+> 
+> For 'dynamic user state' (currently only XTILEDATA), explicitly skip this
+> data transfer. The result is that the user buffer for the AMX region will
+> not be touched by XSAVE.
 
-Yes, values less than 1 less than the smallest allowed non-zero value
-will divide by zero will finish on the 2nd iteration, with n1 == 0,
-and divide by zero.
+Why?
 
-The finished patch I've since sent fixes this.
+> 
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> Changes from v4:
+> * Added as a new patch.
+> ---
+>  arch/x86/include/asm/fpu/internal.h | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+> index 4a3436684805..131f2557fc85 100644
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -354,11 +354,27 @@ static inline void copy_kernel_to_xregs(struct xregs_state *xstate, u64 mask)
+>   */
+>  static inline int copy_xregs_to_user(struct xregs_state __user *buf)
+>  {
+> -	u64 mask = current->thread.fpu.state_mask;
+> -	u32 lmask = mask;
+> -	u32 hmask = mask >> 32;
+> +	u64 state_mask = current->thread.fpu.state_mask;
+> +	u64 dynamic_state_mask;
+> +	u32 lmask, hmask;
+>  	int err;
+>  
+> +	dynamic_state_mask = state_mask & xfeatures_mask_user_dynamic;
+> +	if (dynamic_state_mask && boot_cpu_has(X86_FEATURE_XGETBV1)) {
+> +		u64 dynamic_xinuse, dynamic_init;
+> +		u64 xinuse = xgetbv(1);
+> +
+> +		dynamic_xinuse = xinuse & dynamic_state_mask;
+> +		dynamic_init = ~(xinuse) & dynamic_state_mask;
+> +		if (dynamic_init) {
+> +			state_mask &= ~xfeatures_mask_user_dynamic;
+> +			state_mask |= dynamic_xinuse;
 
-> Moreover, for a fraction of 33/1000, both the original and
-> the latest version would produce 1/30, which is off by some
-> 1.01%, but the proposed fixed version would result in 1/31,
-> which is worse: 2.24% off.
+That's a long-winded way to say:
 
-Finished patch correctly produces 1/30 in this case.
+state_mask &= ~dynamic_init;
 
-> I think the original function was not so bad. And the code it
-> produced was much shorter than the latest version, although
-> this might not be an argument in times, where a simple OS
-> kernel is beyond the 40MB.
+But what happens if we don't have the XGETBV1 feature?  Are we making
+AMX support depend on XGETBV1?
 
-I measured this.  I've compared the original, which did not consider
-semi-convergents nor out of range values, the current version, which
-does semi-convergents but fails on out of range, and the patched
-version, which handles that too.
+How does this patch interact with "[PATCH v5 24/28] x86/fpu/xstate: Use
+per-task xstate mask for saving xstate in signal frame"?  They seem to
+be try to do something similar but not quite the same, and they seem to
+be patching the same function.  The result seems odd.
 
-Size in bytes:
-X64 149 205 278
-ARM 164 220 300
+Finally, isn't part of the point that we need to avoid even *allocating*
+space for non-AMX-using tasks?  That would require writing out the
+compacted format and/or fiddling with XCR0.
 
-So 129 bytes on x64 and 136 bytes on ARM.  Not all that much.  I
-didn't try writing a special check for large/small inputs in the older
-code to see how large that was, for a more like-to-like comparison to
-my latest patch.
