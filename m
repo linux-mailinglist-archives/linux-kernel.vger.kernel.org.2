@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB5038EDEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB0A38F076
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbhEXPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        id S235087AbhEXQDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233982AbhEXPjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B8F461400;
-        Mon, 24 May 2021 15:33:53 +0000 (UTC)
+        id S235402AbhEXP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC7106140B;
+        Mon, 24 May 2021 15:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870433;
-        bh=/H2hHskoegI29xPt92L5/gju4VwR7DlzkGwpYpmSEE0=;
+        s=korg; t=1621870979;
+        bh=KMpnQluOi1+SqxhiUXyVmM16htn4gqIsZs89RfgJ7XM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ly7FhPsr8xD0+7KVaJGH//ilAOInvAhbEi+PA8RSVmZEnsem9Zr3j/7UVJYw3cJpx
-         WjRfyDWJo2stuCqJ0K0zGqHcbZ0QBgnVHE2GC+lED4QQnXB7g+EzzPxCIb6wLpD7Vj
-         xciDJpn4RsT96mnnWSV+l/wGLJKYnlf4+Gtw+K/s=
+        b=WwMOWkd4VdJO8aopNWO4prVk/BjGL0Dvd/rHqJKEDZ8P5XtuOhSXHNnokwUv7/k8y
+         oheczUD4xpjdEZjPFW2Ig+iiZAFq9Dy3DtMJkb+lvPuKg3Ot97GZ5ttIAZ0gh0Et9x
+         b1MabpeorDLq8k0RSGBIkFjrBuMX6nJES3kWLb/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH 4.14 31/37] net: rtlwifi: properly check for alloc_workqueue() failure
+        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 018/127] nvme-loop: fix memory leak in nvme_loop_create_ctrl()
 Date:   Mon, 24 May 2021 17:25:35 +0200
-Message-Id: <20210524152325.223399428@linuxfoundation.org>
+Message-Id: <20210524152335.479393062@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Wu Bo <wubo40@huawei.com>
 
-commit 30b0e0ee9d02b97b68705c46b41444786effc40c upstream.
+[ Upstream commit 03504e3b54cc8118cc26c064e60a0b00c2308708 ]
 
-If alloc_workqueue() fails, properly catch this and propagate the error
-to the calling functions, so that the devuce initialization will
-properly error out.
+When creating loop ctrl in nvme_loop_create_ctrl(), if nvme_init_ctrl()
+fails, the loop ctrl should be freed before jumping to the "out" label.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Bryan Brattlof <hello@bryanbrattlof.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-14-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3a85a5de29ea ("nvme-loop: add a NVMe loopback host driver")
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/base.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/nvme/target/loop.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/realtek/rtlwifi/base.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-@@ -456,9 +456,14 @@ static void _rtl_init_mac80211(struct ie
- 	}
- }
+diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
+index 3e189e753bcf..14913a4588ec 100644
+--- a/drivers/nvme/target/loop.c
++++ b/drivers/nvme/target/loop.c
+@@ -588,8 +588,10 @@ static struct nvme_ctrl *nvme_loop_create_ctrl(struct device *dev,
  
--static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
-+static int _rtl_init_deferred_work(struct ieee80211_hw *hw)
- {
- 	struct rtl_priv *rtlpriv = rtl_priv(hw);
-+	struct workqueue_struct *wq;
-+
-+	wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
-+	if (!wq)
-+		return -ENOMEM;
+ 	ret = nvme_init_ctrl(&ctrl->ctrl, dev, &nvme_loop_ctrl_ops,
+ 				0 /* no quirks, we're perfect! */);
+-	if (ret)
++	if (ret) {
++		kfree(ctrl);
+ 		goto out;
++	}
  
- 	/* <1> timer */
- 	setup_timer(&rtlpriv->works.watchdog_timer,
-@@ -467,7 +472,8 @@ static void _rtl_init_deferred_work(stru
- 		    rtl_easy_concurrent_retrytimer_callback, (unsigned long)hw);
- 	/* <2> work queue */
- 	rtlpriv->works.hw = hw;
--	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
-+	rtlpriv->works.rtl_wq = wq;
-+
- 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
- 			  (void *)rtl_watchdog_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
-@@ -480,7 +486,7 @@ static void _rtl_init_deferred_work(stru
- 			  (void *)rtl_fwevt_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.c2hcmd_wq,
- 			  (void *)rtl_c2hcmd_wq_callback);
--
-+	return 0;
- }
- 
- void rtl_deinit_deferred_work(struct ieee80211_hw *hw, bool ips_wq)
-@@ -580,9 +586,7 @@ int rtl_init_core(struct ieee80211_hw *h
- 	rtlmac->link_state = MAC80211_NOLINK;
- 
- 	/* <6> init deferred work */
--	_rtl_init_deferred_work(hw);
--
--	return 0;
-+	return _rtl_init_deferred_work(hw);
- }
- EXPORT_SYMBOL_GPL(rtl_init_core);
- 
+ 	if (!nvme_change_ctrl_state(&ctrl->ctrl, NVME_CTRL_CONNECTING))
+ 		WARN_ON_ONCE(1);
+-- 
+2.30.2
+
 
 
