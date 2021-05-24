@@ -2,178 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2766738EFC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA46038EFEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbhEXP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:32 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:49764 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235199AbhEXPzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OFVodS005312;
-        Mon, 24 May 2021 15:51:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=ANT5xKW4nx9m49D6/G8fs6o+OuyuuDORxrGpmun4OaE=;
- b=qrHgrHMxhsaF79ZYG/kLlxpYPZVP4f+0Z+b18LeoJSWSx9YeuGQ8XtIHf4YmV5tJ8jEm
- wKNa7q0c1VUC9ewublNDludWoJ030qKy6ECaKENS+S2x07OmSU8YG+BfNBZEInFLYEBJ
- gHGlfVqOFRVX+yMgpTU59cWsKgebxhaf/Q/vD0ly10EAmhVaBE2FABLCaEE57qX0cWhj
- 8lQ0BKBx3Zp0XJwQ1cNH2TsisPKNn6vrVqU1IlP/4EBriQWhRUCwDjMMQ9xZ+iwsD7/6
- HKH5UkdWS+DoxN3WMrAGq7YjgP3G6dq1rCrUc5mX5GLRumpFMx4/VsFUPTIOTIi6K5Pf Dg== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38r267r8mt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 May 2021 15:51:29 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14OFlg7X024516;
-        Mon, 24 May 2021 15:51:28 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2048.outbound.protection.outlook.com [104.47.74.48])
-        by userp3020.oracle.com with ESMTP id 38qbqrbpx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 May 2021 15:51:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BHh0pj5ZxiT6YLjthu35y50e/lVzAGsa6PPkJf7HWbnxfw+iTaQfD98asDhw56/aF2Ssdx1kNirBcf2OMT97qkcWwEnB8EpyW8PvzaLL77u/ilkzzIRb7sdDVHKUV+LetcRwz+w0tACsMm7NfcqrY69HgfpWGfVJaKXIPg0El38fX8IoghQwoGzRcw3fqfl37J5nkwLq9ptDmJs9+uil163icWL3ICiYQdYWq6t4FTAMkfLjQVVAwdGR7vGHv6jUXR9Wef8sSNTe1ZHkJKAPZt5ARkX243QhHu3kQJSiLceIbw6zEWLwqQxmGGpVJrG+Qi6+4in3G/8xDIPbyO3zkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ANT5xKW4nx9m49D6/G8fs6o+OuyuuDORxrGpmun4OaE=;
- b=OAeqYh0f58V6IHL07eBrGHgQtKQMwhJ+cvnN6gbcy/AmzrjSD0fpF3y57dU/hVpsxKeUK7w9M1hLHfut4tsYajBxnJY94efai/gcO5TUihbkIn1bzBKnwRK93rbB0sRl/qg9VCLYNq1zL5AKUNyQ8tegrfwAAvR6I6lyr3NOAGsQ5XhR+UEqdLeM0q1ftvej6Xh6JqhmtkJuUs5IlFk9eeDyC0jQeFy39V7tebh3BKrQX8/zbc0BUovYXZExHr9MlxhtM97o1R28dhG4ojvOXCUwim4WhVq+Hf41pIvqYzlTqyfABJYlYAQw59ZiCD9qYAROLgil0cHlMvNtqPwZxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ANT5xKW4nx9m49D6/G8fs6o+OuyuuDORxrGpmun4OaE=;
- b=dfaZOae0bFVaquGcd68p7COHf7NSnMoK+q5vEUfpruHVPdGCrSde54IdgopJb/+t5XxGdHvyUxuuxW76oxZ/xZXqsZTguhBaFsx9K+Uh0hAXVDiCICJntr//mWTrUy6AwQUmpYmcJhbPYBm2bFXngVLZdmqCWTfKPnQVhlpz+/w=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB3096.namprd10.prod.outlook.com (2603:10b6:a03:151::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
- 2021 15:51:23 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d%6]) with mapi id 15.20.4150.027; Mon, 24 May 2021
- 15:51:23 +0000
-Date:   Mon, 24 May 2021 11:51:15 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v7 05/15] swiotlb: Add a new get_io_tlb_mem getter
-Message-ID: <YKvLc9onyqdsINP7@0xbeefdead.lan>
-References: <20210518064215.2856977-1-tientzu@chromium.org>
- <20210518064215.2856977-6-tientzu@chromium.org>
- <CALiNf28ke3c91Y7xaHUgvJePKXqYA7UmsYJV9yaeZc3-4Lzs8Q@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf28ke3c91Y7xaHUgvJePKXqYA7UmsYJV9yaeZc3-4Lzs8Q@mail.gmail.com>
-X-Originating-IP: [130.44.160.152]
-X-ClientProxiedBy: BL1PR13CA0025.namprd13.prod.outlook.com
- (2603:10b6:208:256::30) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        id S234856AbhEXQAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:52730 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235318AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:05 -0400
+IronPort-SDR: B10Q/kr/k+f0Z2AOnhHEbA0qVZpeiipepfGRLjQJDsVkDgo6nLwSEGhO/8w+G4N6B/zblYI3lb
+ Enk660/wRZfA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="182282892"
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="182282892"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 08:52:05 -0700
+IronPort-SDR: DWfQDheTDtxp1tyv+SuoREIy9eL5yGlXo6GQHvi+7bXoGN1HloKO9er3LLh+1DW52MA2eEKr+V
+ bRqL6DynZdsA==
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="478605771"
+Received: from caknoll-mobl.amr.corp.intel.com (HELO [10.209.100.8]) ([10.209.100.8])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 08:52:05 -0700
+Subject: Re: [PATCH 3/6] mm/page_alloc: Adjust pcp->high after CPU hotplug
+ events
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210521102826.28552-1-mgorman@techsingularity.net>
+ <20210521102826.28552-4-mgorman@techsingularity.net>
+ <add15859-31e2-1688-3d8c-26e2579e9a57@intel.com>
+ <20210524090726.GB30378@techsingularity.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <e9061a5c-bbef-e818-94f7-95e21a73a948@intel.com>
+Date:   Mon, 24 May 2021 08:52:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 0xbeefdead.lan (130.44.160.152) by BL1PR13CA0025.namprd13.prod.outlook.com (2603:10b6:208:256::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.11 via Frontend Transport; Mon, 24 May 2021 15:51:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 27d633d6-6886-4ffa-a44a-08d91ecbc7c4
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3096:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB30962A69BA3EEA748AD71B7989269@BYAPR10MB3096.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +N83Gd+vIa6HFf9GGeGnQWALIhCS11sTuVASeml3ScVVX4kKnQ90+wmWu14xkc2kHAqM1eBMxPhJwGeSP1ybhcQrmrrji/5Yh7NI5AKUXOSH//YUcD6OdkMRAPXEUco7bX2XJlO026ptDlGszXsM+Qa8JjiU6tmYWji57vfTiq/orKeqqgLkQHHAbtjWkRyI55C7TsR9l0l/uGNPf2zuLhmtdqFq7BbjIeQdl0xyufGalOxjj9196lHp1FNjL/SqzSY7fuqeTDLezHQhjzsoYnQed+4S+L2XK93PL6Ztq780tsZ493ifPS/HCl5OePy8j0a77gIgGXbjYuB6dL7SOtjhjltMz5UNPpwNpFBtRPA6YEzQkVsYU2+C+mRoaDQLRUApxKvPMxyhVlgCmur+apUde+Z1cur4qY3HGPq8MNusIwBdSQXjy3MqoIrHAg1GzcilGenGQEIBP9M6Pp2FxeOcLajvKTZnSFz4rx5xSzOSb/3jU4rboTLnN2THtqpEAIu7J8uMBHd7w2LwkCDrb3jSHbbbADhvIT7ZgOKjYwPZzUYaXrCfDQ0xqAz4K1HYih6FqE/23ProZp2orcZc565JO1gB+og9ZYUOk8XLtb9Tlxo8Ch+pQ2nGiyYPQefAwCCY2HafKeS577/MPO3p3e89ufUhQsTgLk375bvPYqE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(346002)(136003)(39860400002)(8936002)(8886007)(9686003)(4326008)(66946007)(66556008)(66476007)(52116002)(5660300002)(36756003)(2906002)(6506007)(7366002)(6916009)(7406005)(8676002)(7696005)(7416002)(316002)(4744005)(956004)(186003)(26005)(16526019)(54906003)(38100700002)(38350700002)(86362001)(478600001)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oo36w6L3PwdgG9nBNqyN8WBm2OiXwQ483HbbfXjA5xY9AczPozaEoVkR4yfg?=
- =?us-ascii?Q?zPCJY/w1sw6eV/0nk7eRpYHNzc4hCTjl8JUJcnX4BZhXwaPlqkM7aS+QPTKo?=
- =?us-ascii?Q?qI7C8haJTOXJh1eYTxkF64beSG/lXI9LtquWwRHsYot3B7TnIKK7JxJkBOEU?=
- =?us-ascii?Q?jex4r6FRmWgSalUFUAiS/BosSJcYPT4O+BUqIPg20Tt2M/R/gRoaEgIrKarm?=
- =?us-ascii?Q?2QW5ufRML0QU6582vWejdu4B2ed+ng64wCsojkX2RdUissmkr22DCRol05KR?=
- =?us-ascii?Q?O5svXcOsJTPtKdnznmuJBT/qKUsG+pM3hfYP9bCsZfx7mP76i2WwZyyUa89L?=
- =?us-ascii?Q?P2LUjGZkt6NhNSfkmgknUZfE2uf13dl34AxWqw8yrNnskWa80CJNWj/s3v+k?=
- =?us-ascii?Q?JiLlJszvn+zi6iZxd0aL5PhkJXVKSIiDbKf2p258OMmg04Z9GIlN8GKcydI6?=
- =?us-ascii?Q?YDKtjkq1sbYlaNhe/i1SLA70JOFp1kG3S3hrLptP+NNmLl5QOCe0EE4JNX0U?=
- =?us-ascii?Q?uxw+nslQVakkslnuc2Obq4izZ9RniboX9QsNmT2/w8chqFD7fvq/+S181GFQ?=
- =?us-ascii?Q?zC/5MXz0QLqyN3bDkLG3fdrzqV4sZbYDWpt4rmayhVS7Drui1B+duAY1RGuK?=
- =?us-ascii?Q?ahnSToT+WLZyeq5h+e8lzNlmBptd6o2wWy+QE7ayMzWQPSjmBSqTcd2QCvNI?=
- =?us-ascii?Q?eYb3yRAEt4AqYqjJ1svN+KQ1sJhzlNyGOtJ63Gq/bfpXy0wfxy/XVCdvwF8i?=
- =?us-ascii?Q?IsYjdxlVZAxbWdyCz9IJowF45rNCNxb0OGtaqs7L99BRJWZkJ5wLqCG87Z7P?=
- =?us-ascii?Q?SDNpGOfFSQvG2E/uBgZZpf+ETp/pkk3U4yfsL2DuubLUrNC62S8vmGXZC1SP?=
- =?us-ascii?Q?AbhY2VlH5coloSgcUmuOG+bOzuJdJM+Ta6iG3/A7rsu5TD1aGBfRZ4/IpbEm?=
- =?us-ascii?Q?cB6yPsjhd/D5j7EDbXHu25ujKcNPvGD1YiDrCEAHHZkq1ZnPiktcyMZMiXog?=
- =?us-ascii?Q?BlcrNxx1ptCLXNa9EBkgxPR6C5FEGY/rqokiWWCqvHvxWv7rKEFTvmN4tPMZ?=
- =?us-ascii?Q?2HZpCcGL7R3M77OMDGBuPY8uz2AbQ6Gvwwp0eoe994DjRE9rzCPEh1IganGQ?=
- =?us-ascii?Q?VgT4GwAgR6pZGeQDAh6/bi/Rw4KsW1rxYU+oTxQ9GcwvoWRNiF3tQGyv5EvJ?=
- =?us-ascii?Q?GDPsI2BGsOyLmqo2suSJAwDu9AheDXYoPMQ+EWv3hnFMywAbDJudvbtJ3v4+?=
- =?us-ascii?Q?BOO1BjKfpBgL5nFsIgwXDKrXjYXHTl010/nKw44YQHT31Je6nbYgVC7pXSWA?=
- =?us-ascii?Q?aoEzv4EB4ztnyFFtarSDv7i/?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27d633d6-6886-4ffa-a44a-08d91ecbc7c4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 15:51:23.0272
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DxAllPJF1Dj9LN1/8w73nsJA1i57Xgng16mblVk0eANUe4Km8DzVt6OxfeczoB8PyL61CptsY18dgcIG9dyUCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3096
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9993 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105240095
-X-Proofpoint-ORIG-GUID: sc6PYAtMB6pfPEa5xGNcqSGSSBmqt-Er
-X-Proofpoint-GUID: sc6PYAtMB6pfPEa5xGNcqSGSSBmqt-Er
+In-Reply-To: <20210524090726.GB30378@techsingularity.net>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:51:52PM +0800, Claire Chang wrote:
-> Still keep this function because directly using dev->dma_io_tlb_mem
-> will cause issues for memory allocation for existing devices. The pool
-> can't support atomic coherent allocation so we need to distinguish the
-> per device pool and the default pool in swiotlb_alloc.
+On 5/24/21 2:07 AM, Mel Gorman wrote:
+> On Fri, May 21, 2021 at 03:13:35PM -0700, Dave Hansen wrote:
+>> On 5/21/21 3:28 AM, Mel Gorman wrote:
+>>> The PCP high watermark is based on the number of online CPUs so the
+>>> watermarks must be adjusted during CPU hotplug. At the time of
+>>> hot-remove, the number of online CPUs is already adjusted but during
+>>> hot-add, a delta needs to be applied to update PCP to the correct
+>>> value. After this patch is applied, the high watermarks are adjusted
+>>> correctly.
+>>>
+>>>   # grep high: /proc/zoneinfo  | tail -1
+>>>               high:  649
+>>>   # echo 0 > /sys/devices/system/cpu/cpu4/online
+>>>   # grep high: /proc/zoneinfo  | tail -1
+>>>               high:  664
+>>>   # echo 1 > /sys/devices/system/cpu/cpu4/online
+>>>   # grep high: /proc/zoneinfo  | tail -1
+>>>               high:  649
+>> This is actually a comment more about the previous patch, but it doesn't
+>> really become apparent until the example above.
+>>
+>> In your example, you mentioned increased exit() performance by using
+>> "vm.percpu_pagelist_fraction to increase the pcp->high value".  That's
+>> presumably because of the increased batching effects and fewer lock
+>> acquisitions.
+>>
+> Yes
+> 
+>> But, logically, doesn't that mean that, the more CPUs you have in a
+>> node, the *higher* you want pcp->high to be?  If we took this to the
+>> extreme and had an absurd number of CPUs in a node, we could end up with
+>> a too-small pcp->high value.
+>>
+> I see your point but I don't think increasing pcp->high for larger
+> numbers of CPUs is the right answer because then reclaim can be
+> triggered simply because too many PCPs have pages.
+> 
+> To address your point requires much deeper surgery.
+...
+> There is value to doing something like this but it's beyond what this
+> series is trying to do and doing the work without introducing regressions
+> would be very difficult.
 
-This above should really be rolled in the commit. You can prefix it by
-"The reason it was done this way was because directly using .."
+Agreed, such a solution is outside of the scope of what this set is
+trying to do.
+
+It would be nice to touch on this counter-intuitive property in the
+changelog, and *maybe* add a WARN_ON_ONCE() if we hit an edge case.
+Maybe WARN_ON_ONCE() if pcp->high gets below pcp->batch*SOMETHING.
+
+
+
 
 
