@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091FD38F0C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7509F38F049
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhEXQGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S235956AbhEXQC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhEXP72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCA861972;
-        Mon, 24 May 2021 15:45:17 +0000 (UTC)
+        id S234792AbhEXPzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BAB46142F;
+        Mon, 24 May 2021 15:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871118;
-        bh=ncJtzOT3U+ZWyoeHpWPShHREqEQ2ABrlbIWDbbaSQ5I=;
+        s=korg; t=1621870937;
+        bh=9jW5E5FsQGcrO2qsi4g2HM0gupFU/sDofvrZVbVMKsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/A36USY4N/UBSpb2AXzcTQDbHPdfR9h4EKPKrQT6VXgH9aGMAHLl8VQPyM+YZhWi
-         VO6h0sSHC8HPm+yVvBnXGpX7DBzWN7n+bkRP3xgbq9Y/OMh6bNts7jM2d3AINFO7Mg
-         /Dt2W5Cvol09gDTa3L+VbcQ/bV724uWRekuVgqYE=
+        b=c+LwUsBTnOt31m61GWUhjkfXwGqPMcLic8CVIgVrnzAbab769WJiXGxVPcXzgH5YZ
+         KOZ8s0RCBuuJQgjR+//zLg707avS+VGUWEGjZ+10iLv1ZRt9Yg25mP/xdcRLrdHDvc
+         qiZqV/CXfU0oWcwl39WrSPSzfxJgXzHeclmtOWvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, stable@kernel.org
-Subject: [PATCH 5.12 081/127] dma-buf: fix unintended pin/unpin warnings
-Date:   Mon, 24 May 2021 17:26:38 +0200
-Message-Id: <20210524152337.591366002@linuxfoundation.org>
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 104/104] x86/boot/compressed/64: Check SEV encryption in the 32-bit boot-path
+Date:   Mon, 24 May 2021 17:26:39 +0200
+Message-Id: <20210524152336.300687440@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +39,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-commit 7e008b02557ccece4d2c31fb0eaf6243cbc87121 upstream.
+commit fef81c86262879d4b1176ef51a834c15b805ebb9 upstream.
 
-DMA-buf internal users call the pin/unpin functions without having a
-dynamic attachment. Avoid the warning and backtrace in the logs.
+Check whether the hypervisor reported the correct C-bit when running
+as an SEV guest. Using a wrong C-bit position could be used to leak
+sensitive data from the guest to the hypervisor.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Bugs: https://gitlab.freedesktop.org/drm/intel/-/issues/3481
-Fixes: c545781e1c55 ("dma-buf: doc polish for pin/unpin")
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-CC: stable@kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210517115705.2141-1-christian.koenig@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210312123824.306-8-joro@8bytes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma-buf/dma-buf.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/boot/compressed/head_64.S |   85 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -760,7 +760,7 @@ dma_buf_dynamic_attach(struct dma_buf *d
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -172,11 +172,21 @@ SYM_FUNC_START(startup_32)
+ 	 */
+ 	call	get_sev_encryption_bit
+ 	xorl	%edx, %edx
++#ifdef	CONFIG_AMD_MEM_ENCRYPT
+ 	testl	%eax, %eax
+ 	jz	1f
+ 	subl	$32, %eax	/* Encryption bit is always above bit 31 */
+ 	bts	%eax, %edx	/* Set encryption mask for page tables */
++	/*
++	 * Mark SEV as active in sev_status so that startup32_check_sev_cbit()
++	 * will do a check. The sev_status memory will be fully initialized
++	 * with the contents of MSR_AMD_SEV_STATUS later in
++	 * set_sev_encryption_mask(). For now it is sufficient to know that SEV
++	 * is active.
++	 */
++	movl	$1, rva(sev_status)(%ebp)
+ 1:
++#endif
  
- 		if (dma_buf_is_dynamic(attach->dmabuf)) {
- 			dma_resv_lock(attach->dmabuf->resv, NULL);
--			ret = dma_buf_pin(attach);
-+			ret = dmabuf->ops->pin(attach);
- 			if (ret)
- 				goto err_unlock;
- 		}
-@@ -786,7 +786,7 @@ err_attach:
+ 	/* Initialize Page tables to 0 */
+ 	leal	rva(pgtable)(%ebx), %edi
+@@ -261,6 +271,9 @@ SYM_FUNC_START(startup_32)
+ 	movl	%esi, %edx
+ 1:
+ #endif
++	/* Check if the C-bit position is correct when SEV is active */
++	call	startup32_check_sev_cbit
++
+ 	pushl	$__KERNEL_CS
+ 	pushl	%eax
  
- err_unpin:
- 	if (dma_buf_is_dynamic(attach->dmabuf))
--		dma_buf_unpin(attach);
-+		dmabuf->ops->unpin(attach);
+@@ -787,6 +800,78 @@ SYM_DATA_END(loaded_image_proto)
+ #endif
  
- err_unlock:
- 	if (dma_buf_is_dynamic(attach->dmabuf))
-@@ -843,7 +843,7 @@ void dma_buf_detach(struct dma_buf *dmab
- 		__unmap_dma_buf(attach, attach->sgt, attach->dir);
- 
- 		if (dma_buf_is_dynamic(attach->dmabuf)) {
--			dma_buf_unpin(attach);
-+			dmabuf->ops->unpin(attach);
- 			dma_resv_unlock(attach->dmabuf->resv);
- 		}
- 	}
-@@ -956,7 +956,7 @@ struct sg_table *dma_buf_map_attachment(
- 	if (dma_buf_is_dynamic(attach->dmabuf)) {
- 		dma_resv_assert_held(attach->dmabuf->resv);
- 		if (!IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY)) {
--			r = dma_buf_pin(attach);
-+			r = attach->dmabuf->ops->pin(attach);
- 			if (r)
- 				return ERR_PTR(r);
- 		}
-@@ -968,7 +968,7 @@ struct sg_table *dma_buf_map_attachment(
- 
- 	if (IS_ERR(sg_table) && dma_buf_is_dynamic(attach->dmabuf) &&
- 	     !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
--		dma_buf_unpin(attach);
-+		attach->dmabuf->ops->unpin(attach);
- 
- 	if (!IS_ERR(sg_table) && attach->dmabuf->ops->cache_sgt_mapping) {
- 		attach->sgt = sg_table;
+ /*
++ * Check for the correct C-bit position when the startup_32 boot-path is used.
++ *
++ * The check makes use of the fact that all memory is encrypted when paging is
++ * disabled. The function creates 64 bits of random data using the RDRAND
++ * instruction. RDRAND is mandatory for SEV guests, so always available. If the
++ * hypervisor violates that the kernel will crash right here.
++ *
++ * The 64 bits of random data are stored to a memory location and at the same
++ * time kept in the %eax and %ebx registers. Since encryption is always active
++ * when paging is off the random data will be stored encrypted in main memory.
++ *
++ * Then paging is enabled. When the C-bit position is correct all memory is
++ * still mapped encrypted and comparing the register values with memory will
++ * succeed. An incorrect C-bit position will map all memory unencrypted, so that
++ * the compare will use the encrypted random data and fail.
++ */
++	__HEAD
++	.code32
++SYM_FUNC_START(startup32_check_sev_cbit)
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++	pushl	%eax
++	pushl	%ebx
++	pushl	%ecx
++	pushl	%edx
++
++	/* Check for non-zero sev_status */
++	movl	rva(sev_status)(%ebp), %eax
++	testl	%eax, %eax
++	jz	4f
++
++	/*
++	 * Get two 32-bit random values - Don't bail out if RDRAND fails
++	 * because it is better to prevent forward progress if no random value
++	 * can be gathered.
++	 */
++1:	rdrand	%eax
++	jnc	1b
++2:	rdrand	%ebx
++	jnc	2b
++
++	/* Store to memory and keep it in the registers */
++	movl	%eax, rva(sev_check_data)(%ebp)
++	movl	%ebx, rva(sev_check_data+4)(%ebp)
++
++	/* Enable paging to see if encryption is active */
++	movl	%cr0, %edx			 /* Backup %cr0 in %edx */
++	movl	$(X86_CR0_PG | X86_CR0_PE), %ecx /* Enable Paging and Protected mode */
++	movl	%ecx, %cr0
++
++	cmpl	%eax, rva(sev_check_data)(%ebp)
++	jne	3f
++	cmpl	%ebx, rva(sev_check_data+4)(%ebp)
++	jne	3f
++
++	movl	%edx, %cr0	/* Restore previous %cr0 */
++
++	jmp	4f
++
++3:	/* Check failed - hlt the machine */
++	hlt
++	jmp	3b
++
++4:
++	popl	%edx
++	popl	%ecx
++	popl	%ebx
++	popl	%eax
++#endif
++	ret
++SYM_FUNC_END(startup32_check_sev_cbit)
++
++/*
+  * Stack and heap for uncompression
+  */
+ 	.bss
 
 
