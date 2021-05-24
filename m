@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EE638EEFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E56438F087
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhEXPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35146 "EHLO mail.kernel.org"
+        id S235857AbhEXQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234424AbhEXPrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:47:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A067361554;
-        Mon, 24 May 2021 15:37:09 +0000 (UTC)
+        id S234276AbhEXP4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F66461947;
+        Mon, 24 May 2021 15:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870630;
-        bh=C+lh8KxiIEcHRnF8UVTrCETUejZU7TtyF3yTbjfQ5UQ=;
+        s=korg; t=1621870994;
+        bh=p4tMViJ21b/FvMRpi4ZmBriUtVwJhoQr/WeyN0qWI5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rR9n5eQE9lr05agaA/Cw2OXx4uKSHqPuXL6Y+pFzPLunB9d4ijzqEt+9EGnIzfK3I
-         ahg04XqGp9bKXlJVIc3PYXj8RhYviPM5Wf16dJo9fmQaGYBdywt5KUSRUpRUBxVUZD
-         W0jCy7f/1HcmroObcZZMaoPD/aJcyIfhFBEH/RMM=
+        b=qOSLIk6Gymt+iS3RojaEQW/izy1p+l4k9IRt5gf4Y2q1I0YEOncvD+hx1H3GxF41p
+         O2j9Z99HRL5TdXYhzOL5fIH/6Gu2nidVa2YdTFMPhZWPD95bOTHTuROR2QULHOEiB3
+         lOjP+63WZk5kLfy1YZh2LI4Eh/NyfpqimprpwWIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 34/71] Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
-Date:   Mon, 24 May 2021 17:25:40 +0200
-Message-Id: <20210524152327.568552258@linuxfoundation.org>
+        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 024/127] RDMA/mlx5: Fix query DCT via DEVX
+Date:   Mon, 24 May 2021 17:25:41 +0200
+Message-Id: <20210524152335.669861048@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-commit 5e68b86c7b7c059c0f0ec4bf8adabe63f84a61eb upstream.
+[ Upstream commit cfa3b797118eda7d68f9ede9b1a0279192aca653 ]
 
-This reverts commit 23015b22e47c5409620b1726a677d69e5cd032ba.
+When executing DEVX command to query QP object, we need to take the QP
+type from the mlx5_ib_qp struct which hold the driver specific QP types as
+well, such as DC.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit has a memory leak on the error path here, it does
-not clean up everything properly.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Fixes: 23015b22e47c ("rapidio: fix a NULL pointer dereference when create_workqueue() fails")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-45-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 34613eb1d2ad ("IB/mlx5: Enable modify and query verbs objects via DEVX")
+Link: https://lore.kernel.org/r/6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com
+Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rapidio/rio_cm.c |    8 --------
- 1 file changed, 8 deletions(-)
+ drivers/infiniband/hw/mlx5/devx.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -2138,14 +2138,6 @@ static int riocm_add_mport(struct device
- 	mutex_init(&cm->rx_lock);
- 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
- 	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
--	if (!cm->rx_wq) {
--		riocm_error("failed to allocate IBMBOX_%d on %s",
--			    cmbox, mport->name);
--		rio_release_outb_mbox(mport, cmbox);
--		kfree(cm);
--		return -ENOMEM;
--	}
--
- 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 07b8350929cd..81276b4247f8 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -630,9 +630,8 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 	case UVERBS_OBJECT_QP:
+ 	{
+ 		struct mlx5_ib_qp *qp = to_mqp(uobj->object);
+-		enum ib_qp_type	qp_type = qp->ibqp.qp_type;
  
- 	cm->tx_slot = 0;
+-		if (qp_type == IB_QPT_RAW_PACKET ||
++		if (qp->type == IB_QPT_RAW_PACKET ||
+ 		    (qp->flags & IB_QP_CREATE_SOURCE_QPN)) {
+ 			struct mlx5_ib_raw_packet_qp *raw_packet_qp =
+ 							 &qp->raw_packet_qp;
+@@ -649,10 +648,9 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 					       sq->tisn) == obj_id);
+ 		}
+ 
+-		if (qp_type == MLX5_IB_QPT_DCT)
++		if (qp->type == MLX5_IB_QPT_DCT)
+ 			return get_enc_obj_id(MLX5_CMD_OP_CREATE_DCT,
+ 					      qp->dct.mdct.mqp.qpn) == obj_id;
+-
+ 		return get_enc_obj_id(MLX5_CMD_OP_CREATE_QP,
+ 				      qp->ibqp.qp_num) == obj_id;
+ 	}
+-- 
+2.30.2
+
 
 
