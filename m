@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C584B38E8C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95B138E8CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhEXOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:34:57 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:51858 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhEXOex (ORCPT
+        id S233008AbhEXOfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:35:31 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:36404 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhEXOfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:34:53 -0400
-Received: by mail-io1-f72.google.com with SMTP id h7-20020a5d9e070000b029041a1f6bccc8so27576872ioh.18
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:33:25 -0700 (PDT)
+        Mon, 24 May 2021 10:35:30 -0400
+Received: by mail-oi1-f174.google.com with SMTP id t24so11720728oiw.3;
+        Mon, 24 May 2021 07:34:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mzMzgGXGzf6LXhHO5i6yc8Y+EDUJAYcIfexi+vE47CU=;
-        b=FWr1laZa6S7NL4LV6aNj8n56eqNcSVZjWGudZPtW2K9zaFEmmQYlWwuGkmMiOOiAxs
-         X9dJf6aGZmrZhge4Wz6KSh0obcXLqsEadj19RcEEdjm8bD0ncb30AWYz+sAml2uH/Wh7
-         NMgD8s+fMNmNR3ogHFVeRigOUYstisixcldGBaKkHtmTOFU9SivM6YMMTxxkdpV6SuVN
-         RNRmOtBzdF+BqWXI4A/EJ2zYkFc92NCCktQ5wlsbRkGJlzNyLekSDSj4kGiGHZ1txljC
-         lEDIzWt7CMDf0SSD1qN/UUVZuYAG2yObKPTaO7Hg2qVDHc0arHk55NhqK80VU0opOLt+
-         Ajfw==
-X-Gm-Message-State: AOAM5335mHS86kboCwtGbC71qceTOAKOLuTz+gvoRirUhOpTzk98TcY8
-        V7UhXvkrOWW2vjTF2sjmfkxGMHFhWUWiObUKjVSDkAI4ao9o
-X-Google-Smtp-Source: ABdhPJwcLmlxYie5V2pawuvy04hy/JhXmHluK7avvoMDLz8HPqTWiVk6pB4ev4axH1fIOY+cFZD0NJBTXl7Xe+dCdaOexF+vy7zQ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DIQFsFAcuT6ezcc/lSj+Ubd3KgT48ueLGhHc3ywPu98=;
+        b=LLomuOFbkgpfhQ9zKze2u0D3Hti6/9ZMdLLCI+U2O4Ny3Z4WWk3IlhqDznPQKiJn1k
+         6pgVYsP7q27AdtdGjFl0B2vFJLnB/zPiTclYdmFHOdCFkoLkIUC69REZqyXvetGgW/aP
+         jQh2eJDWRkjfVPGG2lrshU8gpLOfCa0eujidyZaWsbVWr+7RJS9GpCysRni6oo8mR/JK
+         Ru3E6neryFBhVS8L+Rty/hPfN/kZOdsv/4ZlPhQwSXbB1UveqVL9+xs4naIIfGrAhU+6
+         YXF/1WG1YBoUlBc5bi+iCwPlnP8lFQMSxAbhL3IeuE7ukO4eWB5udaXqlcE3a8qBTMFj
+         yJDg==
+X-Gm-Message-State: AOAM533S0dXxU1C09h8FVBLA7UdBSkW7X7pkKqQeeUrdzmmUwjLx/GCT
+        bPUrLhKwnvm781I/DTP2q0T8y3Y23GWk9Jr7dYE=
+X-Google-Smtp-Source: ABdhPJxLYWYIr1dHL5IvKWcX5gy28IJjtUtHR22kN8XQzyQ4zVA6C24pJNV4vzR5FyP2pmGBmiWYwB9Lnyn1cwQX3Js=
+X-Received: by 2002:aca:380a:: with SMTP id f10mr11399113oia.157.1621866842300;
+ Mon, 24 May 2021 07:34:02 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b47:: with SMTP id f7mr18755134ilu.261.1621866805007;
- Mon, 24 May 2021 07:33:25 -0700 (PDT)
-Date:   Mon, 24 May 2021 07:33:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c91e6f05c3144acc@google.com>
-Subject: [syzbot] memory leak in ip_vs_add_service
-From:   syzbot <syzbot+e562383183e4b1766930@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        horms@verge.net.au, ja@ssi.bg, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
+References: <20210524120832.1580247-1-liushixin2@huawei.com>
+In-Reply-To: <20210524120832.1580247-1-liushixin2@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 24 May 2021 16:33:46 +0200
+Message-ID: <CAJZ5v0gZYupB2w4oU1QGvE5aohcyPXk=BJVRvSrApGzp=sXkMQ@mail.gmail.com>
+Subject: Re: [PATCH -next] ACPI: LPSS: Replaced simple_strtol() with kstrtol()
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 24, 2021 at 1:35 PM Liu Shixin <liushixin2@huawei.com> wrote:
+>
+> The simple_strtol() function is deprecated in some situation since
+> it does not check for the range overflow. Use kstrtol() instead.
+>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>  drivers/acpi/acpi_lpss.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+> index ca742f16a507..1b46e00cad3a 100644
+> --- a/drivers/acpi/acpi_lpss.c
+> +++ b/drivers/acpi/acpi_lpss.c
+> @@ -186,13 +186,12 @@ static void byt_i2c_setup(struct lpss_private_data *pdata)
+>         long uid = 0;
+>
+>         /* Expected to always be true, but better safe then sorry */
+> -       if (uid_str)
+> -               uid = simple_strtol(uid_str, NULL, 10);
+> -
+> -       /* Detect I2C bus shared with PUNIT and ignore its d3 status */
+> -       status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
+> -       if (ACPI_SUCCESS(status) && shared_host && uid)
+> -               pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
+> +       if (uid_str && !kstrtol(uid_str, 10, &uid)) {
+> +               /* Detect I2C bus shared with PUNIT and ignore its d3 status */
+> +               status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
+> +               if (ACPI_SUCCESS(status) && shared_host && uid)
+> +                       pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
+> +       }
 
-syzbot found the following issue on:
+This is not a simple replacement.
 
-HEAD commit:    c3d0e3fd Merge tag 'fs.idmapped.mount_setattr.v5.13-rc3' o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148d0bd7d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae7b129a135ab06b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e562383183e4b1766930
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15585a4bd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13900753d00000
+Why are you making the other changes?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e562383183e4b1766930@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888115227800 (size 512):
-  comm "syz-executor263", pid 8658, jiffies 4294951882 (age 12.560s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff83977188>] kmalloc include/linux/slab.h:556 [inline]
-    [<ffffffff83977188>] kzalloc include/linux/slab.h:686 [inline]
-    [<ffffffff83977188>] ip_vs_add_service+0x598/0x7c0 net/netfilter/ipvs/ip_vs_ctl.c:1343
-    [<ffffffff8397d770>] do_ip_vs_set_ctl+0x810/0xa40 net/netfilter/ipvs/ip_vs_ctl.c:2570
-    [<ffffffff838449a8>] nf_setsockopt+0x68/0xa0 net/netfilter/nf_sockopt.c:101
-    [<ffffffff839ae4e9>] ip_setsockopt+0x259/0x1ff0 net/ipv4/ip_sockglue.c:1435
-    [<ffffffff839fa03c>] raw_setsockopt+0x18c/0x1b0 net/ipv4/raw.c:857
-    [<ffffffff83691f20>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2117
-    [<ffffffff836920f2>] __do_sys_setsockopt net/socket.c:2128 [inline]
-    [<ffffffff836920f2>] __se_sys_setsockopt net/socket.c:2125 [inline]
-    [<ffffffff836920f2>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2125
-    [<ffffffff84350efa>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>
+>         lpss_deassert_reset(pdata);
+>
+> --
