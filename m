@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8656F38E75F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763E638E7BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhEXN0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:26:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5759 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbhEXN0a (ORCPT
+        id S232778AbhEXNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:37:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232401AbhEXNhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:26:30 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FpdC91vxczml0H;
-        Mon, 24 May 2021 21:21:25 +0800 (CST)
-Received: from dggeml759-chm.china.huawei.com (10.1.199.138) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 21:25:00 +0800
-Received: from localhost.localdomain (10.175.102.38) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 21:24:59 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "Timur Tabi" <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-CC:     <alsa-devel@alsa-project.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] ASoC: imx-card: Make some symbols static
-Date:   Mon, 24 May 2021 13:35:53 +0000
-Message-ID: <20210524133553.2366502-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 24 May 2021 09:37:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621863365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vKJ7Xmipw+loMCTi+Pu30+gNzhTSZcxxbwDM5OKce/I=;
+        b=MAduVn/K9U3JxOUVbVc/Su2hsjAjWn1O3x0ADHA3N6NocaKyGpslKafoUeRtsc7NP5+14y
+        uNzrO88T5atH/BluJUv1hdUMMJGb3j++iiv+PKp0FLafR2C317uweTwiUr29n/l5OSGkGu
+        y5uAV4RtH7ab2l3GkO9X0U/pr9gQ9BA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-K3sNBxIqMEytCSaHSr8cZw-1; Mon, 24 May 2021 09:36:04 -0400
+X-MC-Unique: K3sNBxIqMEytCSaHSr8cZw-1
+Received: by mail-ed1-f69.google.com with SMTP id u14-20020a05640207ceb029038d4bfbf3a6so12024275edy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:36:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vKJ7Xmipw+loMCTi+Pu30+gNzhTSZcxxbwDM5OKce/I=;
+        b=Pks9BrJoDVG8sPcY0JKrEQ++IlhfYDUAMwk1kRMwsY7bj4Sy/BgQQYTNRNSaOMp6ZD
+         vaOJbrAr0cqOxap2Ht/PRag9RCTpEPoStKJg040JVs7SMV16iYBKLS0bczim3PpmWd5F
+         Mg19m7rVKcLpTK2tP32EZqD2x5QEnFLGxH/PpRaq4+x+nza8NgWXT+dSp02oJrNXda4J
+         LF39L+d0iqOTLrYLn+dLRVsMikm9klPOd3l7J8au3O91IB8c9hUkaNvbxZ+TKELO5M2T
+         D9K1dznGlGMuzudgpCnWe+QPyn4L7LXIC4YR2LHOeMN5xDUcLsYTIjjPON6zF61vyTbX
+         xiLA==
+X-Gm-Message-State: AOAM533UehoS7OWHei6X6VAQxGuhydk6zlnEatjS2SDPZhhzM+gsBtEk
+        u1/4yAg0O5pX4TqlbH5EVae/1vDiFxRO7dyd1zj00x+wzySezE22ew/x9Zedl5KzOjchPuLuRQb
+        ixMPkDK8irGqGSG4YwQnyuWjX
+X-Received: by 2002:a17:906:4714:: with SMTP id y20mr11266322ejq.235.1621863362960;
+        Mon, 24 May 2021 06:36:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrB+HntDmfllKmZV7OfrD2S77X7t2bGH5QT3Yr0wq41gHiubUsw3kmfGsTv7xcMeF6bxT7Dw==
+X-Received: by 2002:a17:906:4714:: with SMTP id y20mr11266295ejq.235.1621863362747;
+        Mon, 24 May 2021 06:36:02 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v12sm9816149edb.81.2021.05.24.06.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 06:36:02 -0700 (PDT)
+Subject: Re: [PATCH v2 09/10] KVM: selftests: allow using UFFD minor faults
+ for demand paging
+To:     Ben Gardon <bgardon@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+References: <20210519200339.829146-1-axelrasmussen@google.com>
+ <20210519200339.829146-10-axelrasmussen@google.com>
+ <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b02ff62b-13e8-9ebb-7002-04b0d47ba410@redhat.com>
+Date:   Mon, 24 May 2021 15:36:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml759-chm.china.huawei.com (10.1.199.138)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CANgfPd-O5aEvK74DSxkbJaTBv5gResLgvNSjpuzP+PJwifNmfQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+On 20/05/21 00:20, Ben Gardon wrote:
+>> +       printf("usage: %s [-h] [-m mode] [-u mode] [-d uffd_delay_usec]\n"
+> NIT: maybe use uffd_mode or some word other than mode here to
+> disambiguate with -m
+> 
 
-sound/soc/fsl/imx-card.c:121:27: warning:
- symbol 'ak4458_fs_mul' was not declared. Should it be static?
-sound/soc/fsl/imx-card.c:138:31: warning:
- symbol 'ak4458_tdm_fs_mul' was not declared. Should it be static?
-sound/soc/fsl/imx-card.c:149:27: warning:
- symbol 'ak4497_fs_mul' was not declared. Should it be static?
-sound/soc/fsl/imx-card.c:166:27: warning:
- symbol 'ak5558_fs_mul' was not declared. Should it be static?
-sound/soc/fsl/imx-card.c:180:31: warning:
- symbol 'ak5558_tdm_fs_mul' was not declared. Should it be static?
+Changed to "[-m vm_mode] [-u uffd_mode]".
 
-Those symbols are not used outside of imx-card.c, so marks
-them static.
-
-Fixes: aa736700f42f ("ASoC: imx-card: Add imx-card machine driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/fsl/imx-card.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
-index ab424735bbfe..58fd0639a069 100644
---- a/sound/soc/fsl/imx-card.c
-+++ b/sound/soc/fsl/imx-card.c
-@@ -118,7 +118,7 @@ struct imx_card_data {
- 	u32 asrc_format;
- };
- 
--struct imx_akcodec_fs_mul ak4458_fs_mul[] = {
-+static struct imx_akcodec_fs_mul ak4458_fs_mul[] = {
- 	/* Normal, < 32kHz */
- 	{ .rmin = 8000,   .rmax = 24000,  .wmin = 1024, .wmax = 1024, },
- 	/* Normal, 32kHz */
-@@ -135,7 +135,7 @@ struct imx_akcodec_fs_mul ak4458_fs_mul[] = {
- 	{ .rmin = 705600, .rmax = 768000, .wmin = 16,   .wmax = 64,   },
- };
- 
--struct imx_akcodec_tdm_fs_mul ak4458_tdm_fs_mul[] = {
-+static struct imx_akcodec_tdm_fs_mul ak4458_tdm_fs_mul[] = {
- 	/*
- 	 * Table 13	- Audio Interface Format
- 	 * For TDM mode, MCLK should is set to
-@@ -146,7 +146,7 @@ struct imx_akcodec_tdm_fs_mul ak4458_tdm_fs_mul[] = {
- 	{ .min = 512,	.max = 512,	.mul = 1024  }, /* TDM512 */
- };
- 
--struct imx_akcodec_fs_mul ak4497_fs_mul[] = {
-+static struct imx_akcodec_fs_mul ak4497_fs_mul[] = {
- 	/**
- 	 * Table 7      - mapping multiplier and speed mode
- 	 * Tables 8 & 9 - mapping speed mode and LRCK fs
-@@ -163,7 +163,7 @@ struct imx_akcodec_fs_mul ak4497_fs_mul[] = {
-  * Auto MCLK selection based on LRCK for Normal Mode
-  * (Table 4 from datasheet)
-  */
--struct imx_akcodec_fs_mul ak5558_fs_mul[] = {
-+static struct imx_akcodec_fs_mul ak5558_fs_mul[] = {
- 	{ .rmin = 8000,   .rmax = 32000,  .wmin = 1024, .wmax = 1024, },
- 	{ .rmin = 44100,  .rmax = 48000,  .wmin = 512,  .wmax = 512, },
- 	{ .rmin = 88200,  .rmax = 96000,  .wmin = 256,  .wmax = 256, },
-@@ -177,7 +177,7 @@ struct imx_akcodec_fs_mul ak5558_fs_mul[] = {
-  * because of SAI we also add the restriction: MCLK >= 2 * BCLK
-  * (Table 9 from datasheet)
-  */
--struct imx_akcodec_tdm_fs_mul ak5558_tdm_fs_mul[] = {
-+static struct imx_akcodec_tdm_fs_mul ak5558_tdm_fs_mul[] = {
- 	{ .min = 128,	.max = 128,	.mul = 256 },
- 	{ .min = 256,	.max = 256,	.mul = 512 },
- 	{ .min = 512,	.max = 512,	.mul = 1024 },
+Paolo
 
