@@ -2,106 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B2038DF65
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF9038DF67
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhEXCxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 22:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhEXCxD (ORCPT
+        id S232222AbhEXCyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 22:54:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46744 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231896AbhEXCyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 22:53:03 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E069FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 19:51:34 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so1093342pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 19:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=i73AEFY5NK+zxdF+/J6dNT5X4fwFt2JtmM0q5i6FPrM=;
-        b=Mu2QW6oyzg/UXrOcCuAbGWTpk2Fm7TxGyrs2yDN4/I1jwkaLDut9+W3W41nbg13eQd
-         S0R8B5s4PpfJfovl/8CAg5VuDKW3HmnwpZGTJgdwZXieLiFX2qDU8r3aapwHzq0t0tbw
-         PDChgVjfPcHZWPSZMDojeFuzvvSOr+V8Q9rrIW+dqTbYVXqPsaCBb/f/dKA29oB1Pt2I
-         2wRBbXwqQBc6VDvp90TnJvSAGBbEEuXU5tIa6Wd1bVcH2ir1PZro0UC6pVL1+K67mu1Z
-         kBh+W3EtxQMgQsD30sH6k8BSZsXFCq3ajqEON3PNAbO8ES1zWPAOg42C8mbJ2Tte5zOA
-         CmGQ==
+        Sun, 23 May 2021 22:54:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621824801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OHCpWszk2k0MKGSbz/oMp6Y4c3mTJaXAiLMSobPSgQg=;
+        b=YvolKr8XsByZwrAg0qc56TH7IIweqwtpUZuVblSLmpXx9O3B6pDbrtmPi2q9eGpCxeL87K
+        GL0o3HrXma0HnldMPIG2z4A32aFEHbgP9vNaw3tmStT8DDY7SALCKJ6wHjlJzbfk9rZg5p
+        abxcGPncMDpyTHzwVgl4ScMmQUFUrbM=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-CL1IcWi5OESiIh-sf0zaWA-1; Sun, 23 May 2021 22:53:18 -0400
+X-MC-Unique: CL1IcWi5OESiIh-sf0zaWA-1
+Received: by mail-pj1-f72.google.com with SMTP id gq1-20020a17090b1041b029015dad62a207so12868293pjb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 19:53:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=i73AEFY5NK+zxdF+/J6dNT5X4fwFt2JtmM0q5i6FPrM=;
-        b=K3+SngyxBVd7N/WF6ntdljH7y3/r5JwhbTOfV57fcU4tdI9s8jWMpBgupLGkQ5VJcS
-         gVO1c61eagEBywMeNuvpLx20jr/86KTr/LthUuP8acSsMqLqszi2zC41nQ+s882QxrBC
-         uSwCOkP3FKLujnbm9A9T+LMoSEIW+aktIlcEnmNMHVw8usI8RmGhKJPM+1NLP9XMBhQ8
-         oJ8enkUw5C8ih9jJdsslcGqE8jnKteY73G/2RtTGEmzi8NOY/cGVy0oWJutK6eVDhYbn
-         R5txjHYBJ0d/SBJvhIKmTcxDet41yAQ+NYFmL5nwcjZWXBfqyzkYk/fozGR0r3PlO1kS
-         UTyA==
-X-Gm-Message-State: AOAM530GgULNNeBOxtpZwyRj3IQ9FGuXnuH60oDFCvScD9D5+KiEVj0K
-        ZkOVbX9nDagOjigoivPB8uE=
-X-Google-Smtp-Source: ABdhPJzgUS8QvthqSO/900dIWQWMgT5qJ6lPzkYtCrC6kwqK8275gs97KuEVpvgjQjOnKj3CUtcyKg==
-X-Received: by 2002:a17:902:f211:b029:f0:c53a:65e2 with SMTP id m17-20020a170902f211b02900f0c53a65e2mr23295728plc.80.1621824694296;
-        Sun, 23 May 2021 19:51:34 -0700 (PDT)
-Received: from sz-dl-056.autox.sz ([45.67.53.159])
-        by smtp.gmail.com with ESMTPSA id q3sm9738957pff.142.2021.05.23.19.51.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 23 May 2021 19:51:33 -0700 (PDT)
-From:   Yejune Deng <yejune.deng@gmail.com>
-X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
-To:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, npiggin@gmail.com,
-        mark.rutland@arm.com, yejunedeng@gmail.com, elver@google.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] irqflags: Remove the CONFIG_TRACE_IRQFLAGS
-Date:   Mon, 24 May 2021 10:51:19 +0800
-Message-Id: <1621824679-29258-1-git-send-email-yejunedeng@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=OHCpWszk2k0MKGSbz/oMp6Y4c3mTJaXAiLMSobPSgQg=;
+        b=dtasDF2KGPXeE4Zhe7fceP4nNqrdiBi3klNzMamoY2+nWhamxadLdsg8LQldoxL8n4
+         aICHvVQIlYE+q0YOihXvS1wyrCYpuw/mNOP3X6qnkUM3E0W8r52Tv+CxYjNXhqQIPoje
+         ECq+0CIgnRsv1dTzCocdVxOeg9tfcqyQhDH68amrheZvsf8cn8tIKGFGhZEv2YfJqnI9
+         7UQSb4JsadTO29U34PyF7SXfIJkH26AY/GDtiKBaIvkOxOM/gchqRpjh4dc5/g4/II5J
+         kZIINN1IOEhSKG0ORCCEoh+IQPsvuk6ERf/r7z48enzG1Z2bl5VRcFpzzbhfP9EALwF5
+         QuCA==
+X-Gm-Message-State: AOAM531Ui1EUCNDPHpuSfRloLwSoQApqPTSDLEzTFtxtZ5bllRB0IcCl
+        BWhf6krJggBexE39wDeIbiOUhwlMsHF8IraKcyeIh54r35HlJJ9XvOVQz293fBtmrgE/Kgg8nAy
+        DFSJPf+wY3nfy8ahdOM14Xi6C
+X-Received: by 2002:a63:74e:: with SMTP id 75mr7415331pgh.200.1621824797353;
+        Sun, 23 May 2021 19:53:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzP1ngdwvFX7GKxWKgZ4m6yITaZWeGU+YceEWcYXFbWXp51SlQUq1uR/X6gvfXsGOJdOyWhtQ==
+X-Received: by 2002:a63:74e:: with SMTP id 75mr7415321pgh.200.1621824797107;
+        Sun, 23 May 2021 19:53:17 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b9sm9335313pfo.107.2021.05.23.19.53.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 19:53:16 -0700 (PDT)
+Subject: Re: virtio_net: BQL?
+To:     Dave Taht <dave.taht@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        bloat <bloat@lists.bufferbloat.net>
+References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
+ <CAA93jw6LUAnWZj0b5FvefpDKUyd6cajCNLoJ6OKrwbu-V_ffrA@mail.gmail.com>
+ <CA+FuTSf0Af2RXEG=rCthNNEb5mwKTG37gpEBBZU16qKkvmF=qw@mail.gmail.com>
+ <CAA93jw7Vr_pFMsPCrPadqaLGu0BdC-wtCmW2iyHFkHERkaiyWQ@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <a3a9b036-14d1-2f4f-52e6-f0aa1b187003@redhat.com>
+Date:   Mon, 24 May 2021 10:53:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CAA93jw7Vr_pFMsPCrPadqaLGu0BdC-wtCmW2iyHFkHERkaiyWQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trace_hardirqs_on() and trace_hardirqs_off() had include the
-CONFIG_TRACE_IRQFLAGS, so remove the redundant CONFIG_TRACE_IRQFLAGS.
 
-Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
----
- include/linux/irqflags.h | 16 ----------------
- 1 file changed, 16 deletions(-)
+在 2021/5/18 上午5:48, Dave Taht 写道:
+> On Mon, May 17, 2021 at 1:23 PM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+>> On Mon, May 17, 2021 at 2:44 PM Dave Taht <dave.taht@gmail.com> wrote:
+>>> Not really related to this patch, but is there some reason why virtio
+>>> has no support for BQL?
+>> There have been a few attempts to add it over the years.
+>>
+>> Most recently, https://lore.kernel.org/lkml/20181205225323.12555-2-mst@redhat.com/
+>>
+>> That thread has a long discussion. I think the key open issue remains
+>>
+>> "The tricky part is the mode switching between napi and no napi."
+> Oy, vey.
+>
+> I didn't pay any attention to that discussion, sadly enough.
+>
+> It's been about that long (2018) since I paid any attention to
+> bufferbloat in the cloud and my cloudy provider (linode) switched to
+> using virtio when I wasn't looking. For over a year now, I'd been
+> getting reports saying that comcast's pie rollout wasn't working as
+> well as expected, that evenroute's implementation of sch_cake and sqm
+> on inbound wasn't working right, nor pf_sense's and numerous other
+> issues at Internet scale.
+>
+> Last week I ran a string of benchmarks against starlink's new services
+> and was really aghast at what I found there, too. but the problem
+> seemed deeper than in just the dishy...
+>
+> Without BQL, there's no backpressure for fq_codel to do its thing.
+> None. My measurement servers aren't FQ-codeling
+> no matter how much load I put on them. Since that qdisc is the default
+> now in most linux distributions, I imagine that the bulk of the cloud
+> is now behaving as erratically as linux was in 2011 with enormous
+> swings in throughput and latency from GSO/TSO hitting overlarge rx/tx
+> rings, [1], breaking various rate estimators in codel, pie and the tcp
+> stack itself.
+>
+> See:
+>
+> http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq_codel.png
+>
+> See the swings in latency there? that's symptomatic of tx/rx rings
+> filling and emptying.
+>
+> it wasn't until I switched my measurement server temporarily over to
+> sch_fq that I got a rrul result that was close to the results we used
+> to get from the virtualized e1000e drivers we were using in 2014.
+>
+> http://fremont.starlink.taht.net/~d/virtio_nobql/rrul_-_evenroute_v3_server_fq.png
+>
+> While I have long supported the use of sch_fq for tcp-heavy workloads,
+> it still behaves better with bql in place, and fq_codel is better for
+> generic workloads... but needs bql based backpressure to kick in.
+>
+> [1] I really hope I'm overreacting but, um, er, could someone(s) spin
+> up a new patch that does bql in some way even half right for this
+> driver and help test it? I haven't built a kernel in a while.
 
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index 600c10d..b5edd7b 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -189,12 +189,6 @@ extern void warn_bogus_irq_restore(void);
- #define raw_irqs_disabled()		(arch_irqs_disabled())
- #define raw_safe_halt()			arch_safe_halt()
- 
--/*
-- * The local_irq_*() APIs are equal to the raw_local_irq*()
-- * if !TRACE_IRQFLAGS.
-- */
--#ifdef CONFIG_TRACE_IRQFLAGS
--
- #define local_irq_enable()				\
- 	do {						\
- 		trace_hardirqs_on();			\
-@@ -230,16 +224,6 @@ extern void warn_bogus_irq_restore(void);
- 	} while (0)
- 
- 
--#else /* !CONFIG_TRACE_IRQFLAGS */
--
--#define local_irq_enable()	do { raw_local_irq_enable(); } while (0)
--#define local_irq_disable()	do { raw_local_irq_disable(); } while (0)
--#define local_irq_save(flags)	do { raw_local_irq_save(flags); } while (0)
--#define local_irq_restore(flags) do { raw_local_irq_restore(flags); } while (0)
--#define safe_halt()		do { raw_safe_halt(); } while (0)
--
--#endif /* CONFIG_TRACE_IRQFLAGS */
--
- #define local_save_flags(flags)	raw_local_save_flags(flags)
- 
- /*
--- 
-2.7.4
+
+I think it's time to obsolete skb_orphan() for virtio-net to get rid of 
+a brunch of tricky codes in the current virtio-net driver.
+
+Then we can do BQL on top.
+
+I will prepare some patches to do this (probably with Michael's BQL patch).
+
+Thanks
+
+
+>
+>
+>>> On Mon, May 17, 2021 at 11:41 AM Xianting Tian
+>>> <xianting.tian@linux.alibaba.com> wrote:
+>>>> BUG_ON() uses unlikely in if(), which can be optimized at compile time.
+>>>>
+>>>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>>> ---
+>>>>    drivers/net/virtio_net.c | 5 ++---
+>>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>>> index c921ebf3ae82..212d52204884 100644
+>>>> --- a/drivers/net/virtio_net.c
+>>>> +++ b/drivers/net/virtio_net.c
+>>>> @@ -1646,10 +1646,9 @@ static int xmit_skb(struct send_queue *sq, struct
+>>>> sk_buff *skb)
+>>>>          else
+>>>>                  hdr = skb_vnet_hdr(skb);
+>>>>
+>>>> -       if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+>>>> +       BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,
+>>>>                                      virtio_is_little_endian(vi->vdev), false,
+>>>> -                                   0))
+>>>> -               BUG();
+>>>> +                                   0));
+>>>>
+>>>>          if (vi->mergeable_rx_bufs)
+>>>>                  hdr->num_buffers = 0;
+>>>> --
+>>>> 2.17.1
+>>>>
+>>>
+>>> --
+>>> Latest Podcast:
+>>> https://www.linkedin.com/feed/update/urn:li:activity:6791014284936785920/
+>>>
+>>> Dave Täht CTO, TekLibre, LLC
+>
+>
+> --
+> Latest Podcast:
+> https://www.linkedin.com/feed/update/urn:li:activity:6791014284936785920/
+>
+> Dave Täht CTO, TekLibre, LLC
+>
 
