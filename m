@@ -2,126 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C76D38E08C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242B438E08A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhEXE77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 00:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhEXE76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 00:59:58 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF515C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:58:29 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d78so18979202pfd.10
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1ZYaJzg8EfGTG1YeFB1KyajqSUT6MB2q2X9Re4Ft+nw=;
-        b=QpGnnJc2Tb1UEE7G3EnRIds1WFTSQS/3IYFhN5NB1mCThWYLnzHZRMsvpQS8FOV1iP
-         oQBCNXR/jLpzVqr6JKVKe+R8B9fa5zy4t2pQQId55UfuG04FlZAKIgjy4dDvJXkmyU2N
-         dirg1foJ3iYCVhR0yU2o7NIb+9wViqBNjdUPyU2VxRe1LFE/lfkmRZ3lU/bN9rDs/dwL
-         2FkJVaDfL2wMisoaA5zBIfTuNLreUtmP/UVBVU56l83eg9albvBN816TBp3sukmjPISM
-         K4V5tLlpVYfBa4hXez4xPDwTfABLoK2kdSQ4U9vOAhtr8Nur+q0PyEy3WGb5Uh/nbyRN
-         eKTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1ZYaJzg8EfGTG1YeFB1KyajqSUT6MB2q2X9Re4Ft+nw=;
-        b=Z2IuzJh5hglUejPA/8riBILiPjah0Wc4GuimYjPdKtZfvqE3Ybg/4lV7DviD6OAnZC
-         XfvRRDxkRZIsOlqT0BwxaAyMhsWJuncbTCrUarL8C7iwERHs9NebzoNtIyAvOL/TOnIW
-         cAM/bn2mg6A3r54vkTmmOlKsHBQTdAKB79cW79mQDiUrgi47ORmWfCCfwiKhyZk9bqNV
-         Mo/xFZ8+lyS0qLCGfluYV4CoO2NThJ8gDt9pkSSX1AZNs2F34fjQRdnifazU9R9HYxAg
-         J70/FxlpHcjGlov65nG3dOFHRK9xLm6yF3WSvyyNU98stxpj8nj7L1yOBTTbIQcS9IvH
-         Cdzg==
-X-Gm-Message-State: AOAM531ct68SWlGpHzXWs7EN98hi8ScyI1ZcGzyDX5y6/DDJm2VNKR3+
-        v4MTse32+bDzb6jOeMNpTV03Vm/FIw0C
-X-Google-Smtp-Source: ABdhPJzbYXJg0d7860GaWT42y4HEWTc3wQrKrsk/TEnPoqjFti276Sc54G9ltl/uRfd3wgq5m8vZ5A==
-X-Received: by 2002:a62:384c:0:b029:2dd:423b:6e49 with SMTP id f73-20020a62384c0000b02902dd423b6e49mr23220503pfa.9.1621832309175;
-        Sun, 23 May 2021 21:58:29 -0700 (PDT)
-Received: from work ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id w2sm9341621pjq.5.2021.05.23.21.58.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 23 May 2021 21:58:28 -0700 (PDT)
-Date:   Mon, 24 May 2021 10:28:25 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: core: Validate channel ID when processing
- command completions
-Message-ID: <20210524045825.GE8823@work>
-References: <1619481538-4435-1-git-send-email-bbhatt@codeaurora.org>
- <20210524044228.GD8823@work>
+        id S232270AbhEXE70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:59:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:39312 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhEXE7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 00:59:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C73C9ED1;
+        Sun, 23 May 2021 21:57:56 -0700 (PDT)
+Received: from [10.163.81.29] (unknown [10.163.81.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 67B593F73B;
+        Sun, 23 May 2021 21:57:54 -0700 (PDT)
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     linux-mm@kvack.org
+Cc:     david@redhat.com, rppt@kernel.org, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <10e5eecf-3ef5-f691-f38a-7ca305b707c1@arm.com>
+Date:   Mon, 24 May 2021 10:28:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524044228.GD8823@work>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 10:12:28AM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Apr 26, 2021 at 04:58:58PM -0700, Bhaumik Bhatt wrote:
-> > MHI reads the channel ID from the event ring element sent by the
-> > device which can be any value between 0 and 255. In order to
-> > prevent any out of bound accesses, add a check against the maximum
-> > number of channels supported by the controller and those channels
-> > not configured yet so as to skip processing of that event ring
-> > element.
-> > 
-> > Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
-> > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> 
-> Applied to mhi-next!
-> 
 
-Sorry this has been applied to mhi-next!
 
-Thanks,
-Mani
-
-> Thanks,
-> Mani
+On 4/22/21 1:20 PM, Anshuman Khandual wrote:
+> Platforms like arm and arm64 have redefined pfn_valid() because their early
+> memory sections might have contained memmap holes after freeing parts of it
+> during boot, which should be skipped while validating a pfn for struct page
+> backing. This scenario on certain platforms where memmap is not continuous,
+> could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+> Then the generic pfn_valid() can be improved to accommodate such platforms.
+> This reduces overall code footprint and also improves maintainability.
 > 
-> > ---
-> >  drivers/bus/mhi/core/main.c | 15 ++++++++++-----
-> >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> > index 22acde1..ed07421 100644
-> > --- a/drivers/bus/mhi/core/main.c
-> > +++ b/drivers/bus/mhi/core/main.c
-> > @@ -773,11 +773,16 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
-> >  	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
-> >  
-> >  	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-> > -	mhi_chan = &mhi_cntrl->mhi_chan[chan];
-> > -	write_lock_bh(&mhi_chan->lock);
-> > -	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-> > -	complete(&mhi_chan->completion);
-> > -	write_unlock_bh(&mhi_chan->lock);
-> > +	WARN_ON(chan >= mhi_cntrl->max_chan);
-> > +
-> > +	if (chan < mhi_cntrl->max_chan &&
-> > +	    mhi_cntrl->mhi_chan[chan].configured) {
-> > +		mhi_chan = &mhi_cntrl->mhi_chan[chan];
-> > +		write_lock_bh(&mhi_chan->lock);
-> > +		mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-> > +		complete(&mhi_chan->completion);
-> > +		write_unlock_bh(&mhi_chan->lock);
-> > +	}
-> >  
-> >  	mhi_del_ring_element(mhi_cntrl, mhi_ring);
-> >  }
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
+> free_unused_memmap() and pfn_to_online_page() have been updated to include
+> such cases. This also exports memblock_is_memory() for all drivers that use
+> pfn_valid() but lack required visibility. After the new config is in place,
+> drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This patch applies on the latest mainline kernel after Mike's series
+> regarding arm64 based pfn_valid().
+> 
+> https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+> 
+> Changes in RFC V2:
+> 
+> - Dropped support for arm (32 bit)
+> - Replaced memblock_is_map_memory() check with memblock_is_memory()
+> - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+> - Updated pfn_to_online_page() per David
+> - Updated free_unused_memmap() to preserve existing semantics per Mike
+> - Exported memblock_is_memory() instead of memblock_is_map_memory()
+> 
+> Changes in RFC V1:
+> 
+> - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+> 
+>  arch/arm64/Kconfig            |  2 +-
+>  arch/arm64/include/asm/page.h |  1 -
+>  arch/arm64/mm/init.c          | 41 -----------------------------------
+>  include/linux/mmzone.h        | 18 ++++++++++++++-
+>  mm/Kconfig                    |  9 ++++++++
+>  mm/memblock.c                 |  8 +++++--
+>  mm/memory_hotplug.c           |  5 +++++
+>  7 files changed, 38 insertions(+), 46 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index b4a9b493ce72..4cdc3570ffa9 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -144,7 +144,6 @@ config ARM64
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_MMAP_RND_BITS
+>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+> -	select HAVE_ARCH_PFN_VALID
+>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select HAVE_ARCH_STACKLEAK
+> @@ -167,6 +166,7 @@ config ARM64
+>  		if $(cc-option,-fpatchable-function-entry=2)
+>  	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+>  		if DYNAMIC_FTRACE_WITH_REGS
+> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>  	select HAVE_FAST_GUP
+>  	select HAVE_FTRACE_MCOUNT_RECORD
+> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+> index 75ddfe671393..fcbef3eec4b2 100644
+> --- a/arch/arm64/include/asm/page.h
+> +++ b/arch/arm64/include/asm/page.h
+> @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+>  
+>  typedef struct page *pgtable_t;
+>  
+> -int pfn_valid(unsigned long pfn);
+>  int pfn_is_map_memory(unsigned long pfn);
+>  
+>  #include <asm/memory.h>
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index f431b38d0837..5731a11550d8 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>  	free_area_init(max_zone_pfns);
+>  }
+>  
+> -int pfn_valid(unsigned long pfn)
+> -{
+> -	phys_addr_t addr = PFN_PHYS(pfn);
+> -
+> -	/*
+> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> -	 * pfn. Else it might lead to false positives when
+> -	 * some of the upper bits are set, but the lower bits
+> -	 * match a valid pfn.
+> -	 */
+> -	if (PHYS_PFN(addr) != pfn)
+> -		return 0;
+> -
+> -#ifdef CONFIG_SPARSEMEM
+> -{
+> -	struct mem_section *ms;
+> -
+> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+> -		return 0;
+> -
+> -	ms = __pfn_to_section(pfn);
+> -	if (!valid_section(ms))
+> -		return 0;
+> -
+> -	/*
+> -	 * ZONE_DEVICE memory does not have the memblock entries.
+> -	 * memblock_is_memory() check for ZONE_DEVICE based
+> -	 * addresses will always fail. Even the normal hotplugged
+> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+> -	 * memblock entries. Skip memblock search for all non early
+> -	 * memory sections covering all of hotplug memory including
+> -	 * both normal and ZONE_DEVICE based.
+> -	 */
+> -	if (!early_section(ms))
+> -		return pfn_section_valid(ms, pfn);
+> -}
+> -#endif
+> -	return memblock_is_memory(addr);
+> -}
+> -EXPORT_SYMBOL(pfn_valid);
+> -
+>  int pfn_is_map_memory(unsigned long pfn)
+>  {
+>  	phys_addr_t addr = PFN_PHYS(pfn);
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 961f0eeefb62..18bf71665211 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>   *
+>   * Return: 1 for PFNs that have memory map entries and 0 otherwise
+>   */
+> +bool memblock_is_memory(phys_addr_t addr);
+> +
+>  static inline int pfn_valid(unsigned long pfn)
+>  {
+> +	phys_addr_t addr = PFN_PHYS(pfn);
+>  	struct mem_section *ms;
+>  
+> +	/*
+> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> +	 * pfn. Else it might lead to false positives when
+> +	 * some of the upper bits are set, but the lower bits
+> +	 * match a valid pfn.
+> +	 */
+> +	if (PHYS_PFN(addr) != pfn)
+> +		return 0;
+> +
+>  	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>  		return 0;
+>  	ms = __nr_to_section(pfn_to_section_nr(pfn));
+> @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+>  	 * Traditionally early sections always returned pfn_valid() for
+>  	 * the entire section-sized span.
+>  	 */
+> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+> +	if (early_section(ms))
+> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+> +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+> +
+> +	return pfn_section_valid(ms, pfn);
+>  }
+>  #endif
+
+Hello David/Mike,
+
+Now that pfn_is_map_memory() usage has been decoupled from pfn_valid() and
+SPARSEMEM_VMEMMAP is only available memory model on arm64, wondering if we
+still need this HAVE_EARLY_SECTION_MEMMAP_HOLES proposal ? Please do kindly
+suggest. Thank you.
+
+- Anshuman
