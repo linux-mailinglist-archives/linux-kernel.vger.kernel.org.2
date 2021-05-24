@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BD38EE02
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383B338EDE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbhEXPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:45:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
+        id S233304AbhEXPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233691AbhEXPk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:40:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6168961440;
-        Mon, 24 May 2021 15:34:26 +0000 (UTC)
+        id S233875AbhEXPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:38:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4033961402;
+        Mon, 24 May 2021 15:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870466;
-        bh=camBSRbpkDb7ZdGiXRKDQ5VA9nbY2heBx7g4NdR8c7A=;
+        s=korg; t=1621870420;
+        bh=8Pc6/+iZw0Ip+WPzob1jaCDN8GJ6Kzbg0KsNJ8f9xjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LbdGoIr53gb/BSrfbH21vOeoREOx8BvaGAun0lpc2FdfmFoXs+ErXeJ7NPSa05sPE
-         M2eVKUhrL94HXCTLGA9u37ACKYifwn6MlhvyJbkQcIuutL3Ly/Mz8/54kmlKOubMlD
-         FibRBgoywZlwO8bPdll/y+wQ/JrI4a+VJGHlYMis=
+        b=DdHPA/Qq3chqgj/xs1981DwXTAt0Ht+vFtb1YZcxPAhrtulOe1nyHE0xTUZ/C1G5m
+         fCz130iJ0cYHkdMlJACwCWYHUbKKWU9T5/Wa3gtIxToWq3NaT5dXtt8jX/fJpmWfIL
+         xDUvD7tcZGL0Ot4m+Fa4gLF1UrdHEd5xhhO9IRzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/49] firmware: arm_scpi: Prevent the ternary sign expansion bug
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 08/37] ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro
 Date:   Mon, 24 May 2021 17:25:12 +0200
-Message-Id: <20210524152324.429513626@linuxfoundation.org>
+Message-Id: <20210524152324.470902757@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,49 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit d9cd78edb2e6b7e26747c0ec312be31e7ef196fe ]
+commit 0edabdfe89581669609eaac5f6a8d0ae6fe95e7f upstream.
 
-How the type promotion works in ternary expressions is a bit tricky.
-The problem is that scpi_clk_get_val() returns longs, "ret" is a int
-which holds a negative error code, and le32_to_cpu() is an unsigned int.
-We want the negative error code to be cast to a negative long.  But
-because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
-becomes a high positive and then it is promoted to long and it is still
-a high positive value.
+Mackie d.2 has an extension card for IEEE 1394 communication, which uses
+BridgeCo DM1000 ASIC. On the other hand, Mackie d.4 Pro has built-in
+function for IEEE 1394 communication by Oxford Semiconductor OXFW971,
+according to schematic diagram available in Mackie website. Although I
+misunderstood that Mackie d.2 Pro would be also a model with OXFW971,
+it's wrong. Mackie d.2 Pro is a model which includes the extension card
+as factory settings.
 
-Fix this by getting rid of the ternary.
+This commit fixes entries in Kconfig and comment in ALSA OXFW driver.
 
-Link: https://lore.kernel.org/r/YIE7pdqV/h10tEAK@mwanda
-Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-[sudeep.holla: changed to return 0 as clock rate on error]
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: fd6f4b0dc167 ("ALSA: bebob: Add skelton for BeBoB based devices")
+Fixes: ec4dba5053e1 ("ALSA: oxfw: Add support for Behringer/Mackie devices")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210513125652.110249-3-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/arm_scpi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/firewire/Kconfig       |    4 ++--
+ sound/firewire/bebob/bebob.c |    2 +-
+ sound/firewire/oxfw/oxfw.c   |    1 -
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
-index c7d06a36b23a..baa7280eccb3 100644
---- a/drivers/firmware/arm_scpi.c
-+++ b/drivers/firmware/arm_scpi.c
-@@ -563,8 +563,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
- 
- 	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
- 				sizeof(le_clk_id), &rate, sizeof(rate));
-+	if (ret)
-+		return 0;
- 
--	return ret ? ret : le32_to_cpu(rate);
-+	return le32_to_cpu(rate);
- }
- 
- static int scpi_clk_set_val(u16 clk_id, unsigned long rate)
--- 
-2.30.2
-
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -37,7 +37,7 @@ config SND_OXFW
+ 	   * Mackie(Loud) Onyx 1640i (former model)
+ 	   * Mackie(Loud) Onyx Satellite
+ 	   * Mackie(Loud) Tapco Link.Firewire
+-	   * Mackie(Loud) d.2 pro/d.4 pro
++	   * Mackie(Loud) d.4 pro
+ 	   * Mackie(Loud) U.420/U.420d
+ 	   * TASCAM FireOne
+ 	   * Stanton Controllers & Systems 1 Deck/Mixer
+@@ -83,7 +83,7 @@ config SND_BEBOB
+ 	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
+ 	  * BridgeCo RDAudio1/Audio5
+ 	  * Mackie Onyx 1220/1620/1640 (FireWire I/O Card)
+-	  * Mackie d.2 (FireWire Option)
++	  * Mackie d.2 (FireWire Option) and d.2 Pro
+ 	  * Stanton FinalScratch 2 (ScratchAmp)
+ 	  * Tascam IF-FW/DM
+ 	  * Behringer XENIX UFX 1204/1604
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -414,7 +414,7 @@ static const struct ieee1394_device_id b
+ 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
+ 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
+-	/* Mackie, d.2 (Firewire Option) */
++	// Mackie, d.2 (Firewire option card) and d.2 Pro (the card is built-in).
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
+ 	/* Stanton, ScratchAmp */
+ 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -406,7 +406,6 @@ static const struct ieee1394_device_id o
+ 	 *  Onyx-i series (former models):	0x081216
+ 	 *  Mackie Onyx Satellite:		0x00200f
+ 	 *  Tapco LINK.firewire 4x6:		0x000460
+-	 *  d.2 pro:				Unknown
+ 	 *  d.4 pro:				Unknown
+ 	 *  U.420:				Unknown
+ 	 *  U.420d:				Unknown
 
 
