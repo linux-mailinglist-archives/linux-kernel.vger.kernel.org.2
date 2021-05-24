@@ -2,156 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3053738F3F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C9938F3FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhEXUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232516AbhEXUAE (ORCPT
+        id S233092AbhEXUBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:01:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28466 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232676AbhEXUBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 16:00:04 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCBAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:58:34 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id w206so8031661ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WJ6tyfSEArP9hZm90tcyE3NQZnpl/6fI+B8ESdNfuho=;
-        b=DGiMbn2oWBHJGlquzFbClTelbBRbm6EbopgxGjWgk/Utr3/zBOwHFEGbLBpdvji4Td
-         r2re7GIDGTlYE2Y58CiJKz08whvTgviabFbWPfBc9xp4lN6YLJ1UYj5cwUfJhzM0P6qY
-         tsSHIphGc1Dc8Yx6HNyLBr/xRllCLcwUeOOujJ+rsLiY1Tubi8Z9ijH9QbBmpwqKlTsA
-         scYxl7X9h9gYP+m9+78Q5lmPxLW9w6o9v944+eZEoK/nzc/RCEFJL3DW6o7IzcoxAQKf
-         TD9AAK4a603BtCQe8P9zDowyC7j7iCO7pCYuwFFyTKe94LeiRYNmbC7RxBwVLpn3QUMl
-         QJxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WJ6tyfSEArP9hZm90tcyE3NQZnpl/6fI+B8ESdNfuho=;
-        b=rcXbNCSQGU26ixzCM79WCLgnClJelbknC5xFn76K3BF0dZjzPFKFNjbw7xlv4AUvlL
-         nyxhCSSn3WGkLG4Bt6VJhR5XzZJmRIHnGtjUjvJolvGJ56gMcG+I1WF9UC2Xpdid7IHH
-         vaZobOvyHvxhn9DKfSWFbKzIvt45iGbtmLd2A/V+QDbudq9TTHIFsN7/MogDFMFmpnT+
-         rJ6LBEGOmUSo2iIDyz9mluL/aFG5z0/PMyJ+ZTDMvBt3q85YZ1Xr12ZP6U8LcScX9swC
-         Wdc7DjSY2ZRVc5LKCYEzTrd8ifJkZHQat9feQyezq7yBT1CKsj88KJrEkKHHF74yeXAs
-         RR8w==
-X-Gm-Message-State: AOAM530G5UvfS6uyimVsgSodCPP/5wH6pGCNNZOoPOMs+TVCiQmY5HzQ
-        9auRh+UtcQ/XUZ2LV9D0fQSN713sJoDQIK0Fyt56Ww==
-X-Google-Smtp-Source: ABdhPJy6xbnugZ//Jb+C3rETmeIdKqrj+NjbepUasSomoA2tgZybeFjEsJIbf+T2M4rD6xWa/vDdCQx74qyA5BZ6B/s=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr35848883ybc.136.1621886313594;
- Mon, 24 May 2021 12:58:33 -0700 (PDT)
+        Mon, 24 May 2021 16:01:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621886395; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rqogvh+KjuhKzFsJvqhpY8PANK2Z2egADguUSBTXtdA=;
+ b=rque+gD6EJecEjvb9ihLEH22FHGnK9NceTk8CANoo8kmuaimIVCt6zyFZa/NfjoZtYGKANuz
+ p8wWg7qgH47ibmrGB/65DigtKdqwxRFXn4tbJXzZP54gl16s52N9BL/wqn04mJJVB3nZfciK
+ 8nZwvG1vHrCGSp4ByTI0u8lKH48=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60ac05b77b5af81b5c6e9673 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 19:59:51
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E23CC4323A; Mon, 24 May 2021 19:59:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 08A05C433D3;
+        Mon, 24 May 2021 19:59:49 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210518020200.1790058-1-surenb@google.com> <20210518185251.GI5618@worktop.programming.kicks-ass.net>
- <CAJuCfpFVEmYdnqDz+-txLtxM3OhLTyQUJPPP-jLq1YPg0fZ_dA@mail.gmail.com>
-In-Reply-To: <CAJuCfpFVEmYdnqDz+-txLtxM3OhLTyQUJPPP-jLq1YPg0fZ_dA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 24 May 2021 12:58:22 -0700
-Message-ID: <CAJuCfpEMybpu_ALyu=SSLg4-YDC50bQa3jmeNUXSq9UKXfh5UQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 24 May 2021 12:59:49 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        aravindh@codeaurora.org, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 3/3] drm/msm/dp: Handle aux timeouts, nacks, defers
+In-Reply-To: <20210507212505.1224111-4-swboyd@chromium.org>
+References: <20210507212505.1224111-1-swboyd@chromium.org>
+ <20210507212505.1224111-4-swboyd@chromium.org>
+Message-ID: <69aea0fa62a6f4f0ee86a8272b9d21c5@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:55 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Tue, May 18, 2021 at 11:52 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, May 17, 2021 at 07:02:00PM -0700, Suren Baghdasaryan wrote:
-> >
-> > > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> > > index cc25a3cff41f..4b8e72640ac9 100644
-> > > --- a/kernel/sched/psi.c
-> > > +++ b/kernel/sched/psi.c
-> > > @@ -148,6 +148,7 @@
-> > >  static int psi_bug __read_mostly;
-> > >
-> > >  DEFINE_STATIC_KEY_FALSE(psi_disabled);
-> > > +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
-> >
-> > I'm thinking the whole thing will be easier/clearer when you make this:
-> >
-> > DEFINE_STATIC_KEY_TRUE(psi_cgroups_enabled);
-> >
->
-> Sounds good. Will respin another version. Thanks for reviewing!
+On 2021-05-07 14:25, Stephen Boyd wrote:
+> Let's look at the irq status bits after a transfer and see if we got a
+> nack or a defer or a timeout, instead of telling drm layers that
+> everything was fine, while still printing an error message. I wasn't
+> sure about NACK+DEFER so I lumped all those various errors along with a
+> nack so that the drm core can figure out that things are just not going
+> well. The important thing is that we're now returning -ETIMEDOUT when
+> the message times out and nacks for bad addresses.
+> 
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+> Cc: aravindh@codeaurora.org
+> Cc: Sean Paul <sean@poorly.run>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-v3 is posted at https://lore.kernel.org/patchwork/patch/1435705
+Reviewed-by: Kuogee Hsieh <khsieh@codeaurora.org>
 
->
->
-> > >
-> > >  #ifdef CONFIG_PSI_DEFAULT_DISABLED
-> > >  static bool psi_enable;
-> > > @@ -211,6 +212,9 @@ void __init psi_init(void)
-> > >               return;
-> > >       }
-> > >
-> > > +     if (!cgroup_psi_enabled())
-> > > +             static_branch_enable(&psi_cgroups_disabled);
-> >
-> >         if (!cgroup_psi_enabled())
-> >                 static_branch_disable(&psi_cgroups_enabled);
-> >
-> > > +
-> > >       psi_period = jiffies_to_nsecs(PSI_FREQ);
-> > >       group_init(&psi_system);
-> > >  }
-> > > @@ -744,23 +748,23 @@ static void psi_group_change(struct psi_group *group, int cpu,
-> > >
-> > >  static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> > >  {
-> > > +     if (*iter == &psi_system)
-> > > +             return NULL;
-> > > +
-> > >  #ifdef CONFIG_CGROUPS
-> > > +     if (!static_branch_likely(&psi_cgroups_disabled)) {
-> >
-> >         if (static_branch_likely(&psi_cgroups_enabled)) {
-> >
-> > > +             struct cgroup *cgroup = NULL;
-> > >
-> > > +             if (!*iter)
-> > > +                     cgroup = task->cgroups->dfl_cgrp;
-> > > +             else
-> > > +                     cgroup = cgroup_parent(*iter);
-> > >
-> > > +             if (cgroup && cgroup_parent(cgroup)) {
-> > > +                     *iter = cgroup;
-> > > +                     return cgroup_psi(cgroup);
-> > > +             }
-> > >       }
-> > >  #endif
-> > >       *iter = &psi_system;
-> > >       return &psi_system;
-> >
-> > But yes, very nice.
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+> ---
+>  drivers/gpu/drm/msm/dp/dp_aux.c | 140 ++++++++++++++------------------
+>  drivers/gpu/drm/msm/dp/dp_aux.h |   8 --
+>  2 files changed, 61 insertions(+), 87 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+> b/drivers/gpu/drm/msm/dp/dp_aux.c
+> index b49810396513..4a3293b590b0 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> @@ -9,7 +9,15 @@
+>  #include "dp_reg.h"
+>  #include "dp_aux.h"
+> 
+> -#define DP_AUX_ENUM_STR(x)		#x
+> +enum msm_dp_aux_err {
+> +	DP_AUX_ERR_NONE,
+> +	DP_AUX_ERR_ADDR,
+> +	DP_AUX_ERR_TOUT,
+> +	DP_AUX_ERR_NACK,
+> +	DP_AUX_ERR_DEFER,
+> +	DP_AUX_ERR_NACK_DEFER,
+> +	DP_AUX_ERR_PHY,
+> +};
+> 
+>  struct dp_aux_private {
+>  	struct device *dev;
+> @@ -18,7 +26,7 @@ struct dp_aux_private {
+>  	struct mutex mutex;
+>  	struct completion comp;
+> 
+> -	u32 aux_error_num;
+> +	enum msm_dp_aux_err aux_error_num;
+>  	u32 retry_cnt;
+>  	bool cmd_busy;
+>  	bool native;
+> @@ -33,62 +41,45 @@ struct dp_aux_private {
+> 
+>  #define MAX_AUX_RETRIES			5
+> 
+> -static const char *dp_aux_get_error(u32 aux_error)
+> -{
+> -	switch (aux_error) {
+> -	case DP_AUX_ERR_NONE:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NONE);
+> -	case DP_AUX_ERR_ADDR:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_ADDR);
+> -	case DP_AUX_ERR_TOUT:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_TOUT);
+> -	case DP_AUX_ERR_NACK:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK);
+> -	case DP_AUX_ERR_DEFER:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_DEFER);
+> -	case DP_AUX_ERR_NACK_DEFER:
+> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK_DEFER);
+> -	default:
+> -		return "unknown";
+> -	}
+> -}
+> -
+> -static u32 dp_aux_write(struct dp_aux_private *aux,
+> +static ssize_t dp_aux_write(struct dp_aux_private *aux,
+>  			struct drm_dp_aux_msg *msg)
+>  {
+> -	u32 data[4], reg, len;
+> +	u8 data[4];
+> +	u32 reg;
+> +	ssize_t len;
+>  	u8 *msgdata = msg->buffer;
+>  	int const AUX_CMD_FIFO_LEN = 128;
+>  	int i = 0;
+> 
+>  	if (aux->read)
+> -		len = 4;
+> +		len = 0;
+>  	else
+> -		len = msg->size + 4;
+> +		len = msg->size;
+> 
+>  	/*
+>  	 * cmd fifo only has depth of 144 bytes
+>  	 * limit buf length to 128 bytes here
+>  	 */
+> -	if (len > AUX_CMD_FIFO_LEN) {
+> +	if (len > AUX_CMD_FIFO_LEN - 4) {
+>  		DRM_ERROR("buf size greater than allowed size of 128 bytes\n");
+> -		return 0;
+> +		return -EINVAL;
+>  	}
+> 
+>  	/* Pack cmd and write to HW */
+> -	data[0] = (msg->address >> 16) & 0xf; /* addr[19:16] */
+> +	data[0] = (msg->address >> 16) & 0xf;	/* addr[19:16] */
+>  	if (aux->read)
+> -		data[0] |=  BIT(4); /* R/W */
+> +		data[0] |=  BIT(4);		/* R/W */
+> 
+> -	data[1] = (msg->address >> 8) & 0xff;	/* addr[15:8] */
+> -	data[2] = msg->address & 0xff;		/* addr[7:0] */
+> -	data[3] = (msg->size - 1) & 0xff;	/* len[7:0] */
+> +	data[1] = msg->address >> 8;		/* addr[15:8] */
+> +	data[2] = msg->address;			/* addr[7:0] */
+> +	data[3] = msg->size - 1;		/* len[7:0] */
+> 
+> -	for (i = 0; i < len; i++) {
+> +	for (i = 0; i < len + 4; i++) {
+>  		reg = (i < 4) ? data[i] : msgdata[i - 4];
+> +		reg <<= DP_AUX_DATA_OFFSET;
+> +		reg &= DP_AUX_DATA_MASK;
+> +		reg |= DP_AUX_DATA_WRITE;
+>  		/* index = 0, write */
+> -		reg = (((reg) << DP_AUX_DATA_OFFSET)
+> -		       & DP_AUX_DATA_MASK) | DP_AUX_DATA_WRITE;
+>  		if (i == 0)
+>  			reg |= DP_AUX_DATA_INDEX_WRITE;
+>  		aux->catalog->aux_data = reg;
+> @@ -116,39 +107,27 @@ static u32 dp_aux_write(struct dp_aux_private 
+> *aux,
+>  	return len;
+>  }
+> 
+> -static int dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
+> +static ssize_t dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
+>  			      struct drm_dp_aux_msg *msg)
+>  {
+> -	u32 ret, len, timeout;
+> -	int aux_timeout_ms = HZ/4;
+> +	ssize_t ret;
+> +	unsigned long time_left;
+> 
+>  	reinit_completion(&aux->comp);
+> 
+> -	len = dp_aux_write(aux, msg);
+> -	if (len == 0) {
+> -		DRM_ERROR("DP AUX write failed\n");
+> -		return -EINVAL;
+> -	}
+> +	ret = dp_aux_write(aux, msg);
+> +	if (ret < 0)
+> +		return ret;
+> 
+> -	timeout = wait_for_completion_timeout(&aux->comp, aux_timeout_ms);
+> -	if (!timeout) {
+> -		DRM_ERROR("aux %s timeout\n", (aux->read ? "read" : "write"));
+> +	time_left = wait_for_completion_timeout(&aux->comp,
+> +						msecs_to_jiffies(250));
+> +	if (!time_left)
+>  		return -ETIMEDOUT;
+> -	}
+> -
+> -	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
+> -		ret = len;
+> -	} else {
+> -		DRM_ERROR_RATELIMITED("aux err: %s\n",
+> -			dp_aux_get_error(aux->aux_error_num));
+> -
+> -		ret = -EINVAL;
+> -	}
+> 
+>  	return ret;
+>  }
+> 
+> -static void dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
+> +static ssize_t dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
+>  		struct drm_dp_aux_msg *msg)
+>  {
+>  	u32 data;
+> @@ -175,9 +154,10 @@ static void dp_aux_cmd_fifo_rx(struct 
+> dp_aux_private *aux,
+> 
+>  		actual_i = (data >> DP_AUX_DATA_INDEX_OFFSET) & 0xFF;
+>  		if (i != actual_i)
+> -			DRM_ERROR("Index mismatch: expected %d, found %d\n",
+> -				i, actual_i);
+> +			break;
+>  	}
+> +
+> +	return i;
+>  }
+> 
+>  static void dp_aux_native_handler(struct dp_aux_private *aux, u32 isr)
+> @@ -367,36 +347,38 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+> *dp_aux,
+>  	}
+> 
+>  	ret = dp_aux_cmd_fifo_tx(aux, msg);
+> -
+>  	if (ret < 0) {
+>  		if (aux->native) {
+>  			aux->retry_cnt++;
+>  			if (!(aux->retry_cnt % MAX_AUX_RETRIES))
+>  				dp_catalog_aux_update_cfg(aux->catalog);
+>  		}
+> -		usleep_range(400, 500); /* at least 400us to next try */
+> -		goto unlock_exit;
+> -	}
+> -
+> -	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
+> -		if (aux->read)
+> -			dp_aux_cmd_fifo_rx(aux, msg);
+> -
+> -		msg->reply = aux->native ?
+> -			DP_AUX_NATIVE_REPLY_ACK : DP_AUX_I2C_REPLY_ACK;
+>  	} else {
+> -		/* Reply defer to retry */
+> -		msg->reply = aux->native ?
+> -			DP_AUX_NATIVE_REPLY_DEFER : DP_AUX_I2C_REPLY_DEFER;
+> +		aux->retry_cnt = 0;
+> +		switch (aux->aux_error_num) {
+> +		case DP_AUX_ERR_NONE:
+> +			if (aux->read)
+> +				ret = dp_aux_cmd_fifo_rx(aux, msg);
+> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_ACK : 
+> DP_AUX_I2C_REPLY_ACK;
+> +			break;
+> +		case DP_AUX_ERR_DEFER:
+> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_DEFER :
+> DP_AUX_I2C_REPLY_DEFER;
+> +			break;
+> +		case DP_AUX_ERR_PHY:
+> +		case DP_AUX_ERR_ADDR:
+> +		case DP_AUX_ERR_NACK:
+> +		case DP_AUX_ERR_NACK_DEFER:
+> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_NACK : 
+> DP_AUX_I2C_REPLY_NACK;
+> +			break;
+> +		case DP_AUX_ERR_TOUT:
+> +			ret = -ETIMEDOUT;
+> +			break;
+> +		}
+>  	}
+> 
+> -	/* Return requested size for success or retry */
+> -	ret = msg->size;
+> -	aux->retry_cnt = 0;
+> -
+> -unlock_exit:
+>  	aux->cmd_busy = false;
+>  	mutex_unlock(&aux->mutex);
+> +
+>  	return ret;
+>  }
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.h 
+> b/drivers/gpu/drm/msm/dp/dp_aux.h
+> index f8b8ba919465..0728cc09c9ec 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.h
+> @@ -9,14 +9,6 @@
+>  #include "dp_catalog.h"
+>  #include <drm/drm_dp_helper.h>
+> 
+> -#define DP_AUX_ERR_NONE		0
+> -#define DP_AUX_ERR_ADDR		-1
+> -#define DP_AUX_ERR_TOUT		-2
+> -#define DP_AUX_ERR_NACK		-3
+> -#define DP_AUX_ERR_DEFER	-4
+> -#define DP_AUX_ERR_NACK_DEFER	-5
+> -#define DP_AUX_ERR_PHY		-6
+> -
+>  int dp_aux_register(struct drm_dp_aux *dp_aux);
+>  void dp_aux_unregister(struct drm_dp_aux *dp_aux);
+>  void dp_aux_isr(struct drm_dp_aux *dp_aux);
