@@ -2,161 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD0238F3DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE20538F3E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhEXTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 15:54:54 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:58625 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhEXTyx (ORCPT
+        id S233332AbhEXTzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 15:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233270AbhEXTzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 15:54:53 -0400
-Date:   Mon, 24 May 2021 19:53:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1621886002;
-        bh=bXCt2Xvwh8yJ0dYvpXrjt8eMZ6cWK43qw/iY/SShco0=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=IHthz3IGDdIUnfD/BZARtKNxuirFU1sAN7gqt5+vOznPWOxY49HXj7AkDpWF7/x5c
-         rYW6Aiv9diKoTUnB41z2ODHDDrRvu7MFvWL91DJYEJ/iQnbztINmnAAkSy/PH+gkXY
-         FgGNrLOgLWjM73pdRvbUXPMOn1Q21KKTFV8WidOFTP1Mb2TYcdVtP89UeXCq1D6FRw
-         Otr35NKue+RZ0PTdDGiE8hMIPlGQXgF2O0fpVchdxFyiKotumus+LN3CSKmDCeR1kC
-         fcSSUp1Xlyxlrx9MNHSQmrKFJCoTFoXmIWl9voZP8djTbqn/pdvOaJBKOgKye7uH1h
-         wMh5WQTtu6zZA==
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove sd_f0_read8()
-Message-ID: <20210524195144.1943280-1-hello@bryanbrattlof.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        Mon, 24 May 2021 15:55:13 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF4BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:53:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id s8-20020a5b04480000b029049fb35700b9so39770398ybp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=fc46/l2rCPobikwBmwQYOTco7XcqbGGg0DWxmUOO5h8=;
+        b=jvOD4gDcykd2DnaG7KChFMf/t56S72Bk0bomU/fBxMiAnoWd7HVRyOSfpWu9Stuz6S
+         zbV6X9qM2HOrZPWqyQKzh1wwdaBMoOhziaJdgBf7Q1M8/FjA436qXMTOSe6Gdx0zrxo/
+         BXsIJZg4vS08vil0Hd5n8n4R9xs7bATgWexWfBWDnGEWapvmE1KFDPReV18Z+c9kf7Fm
+         w5HeaWtaVkDQK94JtjL6L3r4Bmvj2wmnZZ+iVO1XEiH4ubLmyF/a3UGdlfdYRiz3346Y
+         QqJUBGWd1+wUQBErjHzvUuU5RI8Wog1eDUQzPHiCjILmKkQ6pC5AlgsV6qb0Wn296vSl
+         w5Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=fc46/l2rCPobikwBmwQYOTco7XcqbGGg0DWxmUOO5h8=;
+        b=XIodYO0u0D0FiJf9GeZjgGwFNupXvM5nqs7y/K4QseIZp1iKsU9WM3fC27fXuUpKjv
+         IypIJAlKsMJW2He8HxecUcNfvKi5O70f9vHMItpGnupfA220L7pCiexYjL/GZqliJwkv
+         0OwSpoiomWmHWnVgcXdyWLFo9ar6UDtqxRgyxjH5/sq6QF9F+jWFR5TJBk/sqZ9by3RH
+         ECXPh6TGgnxUbhWjSgLwyae9m5/bX7eh9T5iqx8Eh/aL7sNTczfnMXvgPrzdcYwZo5PT
+         ufDBAvlDGhWT6HhVotJPuntOPc6Y8gIoiPD8076vY3BKu91uTY9cc3Fnm8x+XGxzbF9I
+         JTeQ==
+X-Gm-Message-State: AOAM531nDRFcswRQAb8Efwpvt/u9pzm3XpQPzZiFeavk12HDfNmjbrU/
+        OjxU5WWJcf/PnptxXlAqtUL0jeblyWA=
+X-Google-Smtp-Source: ABdhPJz0xWr9aSCJIUX5Kh4JIeVf0qIpUzKga9yfb02e7Y1QctA+XTSC7aFMAb2/pfsHGYci5/U/GnQdJ2o=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:a530:52cb:fa88:d7b3])
+ (user=surenb job=sendgmr) by 2002:a25:bb84:: with SMTP id y4mr63977ybg.450.1621886023878;
+ Mon, 24 May 2021 12:53:43 -0700 (PDT)
+Date:   Mon, 24 May 2021 12:53:39 -0700
+Message-Id: <20210524195339.1233449-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH v3 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     tj@kernel.org
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, mingo@redhat.com,
+        peterz@infradead.org, shakeelb@google.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
+        paulmck@kernel.org, rdunlap@infradead.org,
+        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
+        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, surenb@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sd_f0_read8() function, which is used by the sdio_f0_read8()
-function, are not used anywhere in the driver and both can be
-safely removed.
+PSI accounts stalls for each cgroup separately and aggregates it at each
+level of the hierarchy. This causes additional overhead with psi_avgs_work
+being called for each cgroup in the hierarchy. psi_avgs_work has been
+highly optimized, however on systems with large number of cgroups the
+overhead becomes noticeable.
+Systems which use PSI only at the system level could avoid this overhead
+if PSI can be configured to skip per-cgroup stall accounting.
+Add "cgroup_disable=pressure" kernel command-line option to allow
+requesting system-wide only pressure stall accounting. When set, it
+keeps system-wide accounting under /proc/pressure/ but skips accounting
+for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- drivers/staging/rtl8723bs/hal/sdio_ops.c      |  7 -----
- drivers/staging/rtl8723bs/include/rtw_io.h    |  2 --
- .../rtl8723bs/include/sdio_ops_linux.h        |  2 --
- .../staging/rtl8723bs/os_dep/sdio_ops_linux.c | 28 -------------------
- 4 files changed, 39 deletions(-)
+changes in v3:
+- Replaced psi_cgroups_disabled with psi_cgroups_enabled key, per PeterZ
+- Rebased to ToT after cgroup tree merge
+- Added "Disabling ... control group feature" message in cgroup_disable()
+  similar to the new message generated when a cgroup gets disabled
 
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl=
-8723bs/hal/sdio_ops.c
-index 196b2232c17d..2dd251ce177e 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-@@ -346,11 +346,6 @@ static s32 sdio_writeN(struct intf_hdl *intfhdl, u32 a=
-ddr, u32 cnt, u8 *buf)
- =09return err;
+ .../admin-guide/kernel-parameters.txt         |  9 +++-
+ include/linux/cgroup-defs.h                   |  1 +
+ include/linux/cgroup.h                        |  7 +++
+ kernel/cgroup/cgroup.c                        | 48 +++++++++++++++++++
+ kernel/sched/psi.c                            | 30 +++++++-----
+ 5 files changed, 80 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbdedc46..653c62142f07 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -497,16 +497,21 @@
+ 	ccw_timeout_log	[S390]
+ 			See Documentation/s390/common_io.rst for details.
+ 
+-	cgroup_disable=	[KNL] Disable a particular controller
+-			Format: {name of the controller(s) to disable}
++	cgroup_disable=	[KNL] Disable a particular controller or optional feature
++			Format: {name of the controller(s) or feature(s) to disable}
+ 			The effects of cgroup_disable=foo are:
+ 			- foo isn't auto-mounted if you mount all cgroups in
+ 			  a single hierarchy
+ 			- foo isn't visible as an individually mountable
+ 			  subsystem
++			- if foo is an optional feature then the feature is
++			  disabled and corresponding cgroup files are not
++			  created
+ 			{Currently only "memory" controller deal with this and
+ 			cut the overhead, others just disable the usage. So
+ 			only cgroup_disable=memory is actually worthy}
++			Specifying "pressure" disables per-cgroup pressure
++			stall information accounting feature
+ 
+ 	cgroup_no_v1=	[KNL] Disable cgroup controllers and named hierarchies in v1
+ 			Format: { { controller | "all" | "named" }
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index fb8f6d2cd104..5a9d898daecb 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -110,6 +110,7 @@ enum {
+ 	CFTYPE_NO_PREFIX	= (1 << 3),	/* (DON'T USE FOR NEW FILES) no subsys prefix */
+ 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
+ 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
++	CFTYPE_PRESSURE		= (1 << 6),	/* only if pressure feature is enabled */
+ 
+ 	/* internal flags, do not use outside cgroup core proper */
+ 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 6bc9c76680b2..5492fcb7f9ca 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -676,6 +676,8 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return &cgrp->psi;
  }
-
--static u8 sdio_f0_read8(struct intf_hdl *intfhdl, u32 addr)
--{
--=09return sd_f0_read8(intfhdl, addr, NULL);
--}
--
- static void sdio_read_mem(
- =09struct intf_hdl *intfhdl,
- =09u32 addr,
-@@ -481,8 +476,6 @@ void sdio_set_intf_ops(struct adapter *adapter, struct =
-_io_ops *ops)
- =09ops->_writeN =3D &sdio_writeN;
- =09ops->_write_mem =3D &sdio_write_mem;
- =09ops->_write_port =3D &sdio_write_port;
--
--=09ops->_sd_f0_read8 =3D sdio_f0_read8;
+ 
++bool cgroup_psi_enabled(void);
++
+ static inline void cgroup_init_kthreadd(void)
+ {
+ 	/*
+@@ -735,6 +737,11 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return NULL;
  }
-
- /*
-diff --git a/drivers/staging/rtl8723bs/include/rtw_io.h b/drivers/staging/r=
-tl8723bs/include/rtw_io.h
-index ab3c5ffe011b..e98083a07a66 100644
---- a/drivers/staging/rtl8723bs/include/rtw_io.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_io.h
-@@ -104,8 +104,6 @@ struct _io_ops {
-
- =09=09void (*_read_port_cancel)(struct intf_hdl *pintfhdl);
- =09=09void (*_write_port_cancel)(struct intf_hdl *pintfhdl);
--
--=09=09u8 (*_sd_f0_read8)(struct intf_hdl *pintfhdl, u32 addr);
- };
-
- struct io_req {
-diff --git a/drivers/staging/rtl8723bs/include/sdio_ops_linux.h b/drivers/s=
-taging/rtl8723bs/include/sdio_ops_linux.h
-index 16a03adbc2cf..18830dd18372 100644
---- a/drivers/staging/rtl8723bs/include/sdio_ops_linux.h
-+++ b/drivers/staging/rtl8723bs/include/sdio_ops_linux.h
-@@ -11,8 +11,6 @@
- #define SDIO_ERR_VAL16=090xEAEA
- #define SDIO_ERR_VAL32=090xEAEAEAEA
-
--u8 sd_f0_read8(struct intf_hdl *pintfhdl, u32 addr, s32 *err);
--
- s32 _sd_cmd52_read(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pdata=
-);
- s32 _sd_cmd52_write(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pdat=
-a);
- s32 sd_cmd52_read(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pdata)=
-;
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_ops_linux.c b/drivers/st=
-aging/rtl8723bs/os_dep/sdio_ops_linux.c
-index 5cedf775b6ef..bed930760656 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_ops_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_ops_linux.c
-@@ -26,34 +26,6 @@ inline void rtw_sdio_set_irq_thd(struct dvobj_priv *dvob=
-j, void *thd_hdl)
- =09sdio_data->sys_sdio_irq_thd =3D thd_hdl;
+ 
++static inline bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
+ 					       struct cgroup *ancestor)
+ {
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 21ecc6ee6a6d..3a15a8407b46 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -209,6 +209,22 @@ struct cgroup_namespace init_cgroup_ns = {
+ static struct file_system_type cgroup2_fs_type;
+ static struct cftype cgroup_base_files[];
+ 
++/* cgroup optional features */
++enum cgroup_opt_features {
++#ifdef CONFIG_PSI
++	OPT_FEATURE_PRESSURE,
++#endif
++	OPT_FEATURE_COUNT
++};
++
++static const char *cgroup_opt_feature_names[OPT_FEATURE_COUNT] = {
++#ifdef CONFIG_PSI
++	"pressure",
++#endif
++};
++
++static u16 cgroup_feature_disable_mask __read_mostly;
++
+ static int cgroup_apply_control(struct cgroup *cgrp);
+ static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
+ static void css_task_iter_skip(struct css_task_iter *it,
+@@ -3631,6 +3647,18 @@ static void cgroup_pressure_release(struct kernfs_open_file *of)
+ {
+ 	psi_trigger_replace(&of->priv, NULL);
  }
-
--u8 sd_f0_read8(struct intf_hdl *pintfhdl, u32 addr, s32 *err)
--{
--=09struct adapter *padapter;
--=09struct dvobj_priv *psdiodev;
--=09struct sdio_data *psdio;
--
--=09u8 v =3D 0;
--=09struct sdio_func *func;
--=09bool claim_needed;
--
--=09padapter =3D pintfhdl->padapter;
--=09psdiodev =3D pintfhdl->pintf_dev;
--=09psdio =3D &psdiodev->intf_data;
--
--=09if (padapter->bSurpriseRemoved)
--=09=09return v;
--
--=09func =3D psdio->func;
--=09claim_needed =3D rtw_sdio_claim_host_needed(func);
--
--=09if (claim_needed)
--=09=09sdio_claim_host(func);
--=09v =3D sdio_f0_readb(func, addr, err);
--=09if (claim_needed)
--=09=09sdio_release_host(func);
--=09return v;
--}
--
- /*
-  * Return:
-  *0=09=09Success
---
-2.27.0
-
++
++bool cgroup_psi_enabled(void)
++{
++	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
++}
++
++#else /* CONFIG_PSI */
++bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ #endif /* CONFIG_PSI */
+ 
+ static int cgroup_freeze_show(struct seq_file *seq, void *v)
+@@ -3881,6 +3909,8 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
+ restart:
+ 	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
+ 		/* does cft->flags tell us to skip this file on @cgrp? */
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
+ 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
+ 			continue;
+ 		if ((cft->flags & __CFTYPE_NOT_ON_DFL) && cgroup_on_dfl(cgrp))
+@@ -3958,6 +3988,9 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
+ 
+ 		WARN_ON(cft->ss || cft->kf_ops);
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (cft->seq_start)
+ 			kf_ops = &cgroup_kf_ops;
+ 		else
+@@ -4866,6 +4899,7 @@ static struct cftype cgroup_base_files[] = {
+ #ifdef CONFIG_PSI
+ 	{
+ 		.name = "io.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_io_pressure_show,
+ 		.write = cgroup_io_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4873,6 +4907,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "memory.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_memory_pressure_show,
+ 		.write = cgroup_memory_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4880,6 +4915,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "cpu.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_cpu_pressure_show,
+ 		.write = cgroup_cpu_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -6213,6 +6249,15 @@ static int __init cgroup_disable(char *str)
+ 			pr_info("Disabling %s control group subsystem\n",
+ 				ss->name);
+ 		}
++
++		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
++			if (strcmp(token, cgroup_opt_feature_names[i]))
++				continue;
++			cgroup_feature_disable_mask |= 1 << i;
++			pr_info("Disabling %s control group feature\n",
++				cgroup_opt_feature_names[i]);
++			break;
++		}
+ 	}
+ 	return 1;
+ }
+@@ -6511,6 +6556,9 @@ static ssize_t show_delegatable_files(struct cftype *files, char *buf,
+ 		if (!(cft->flags & CFTYPE_NS_DELEGATABLE))
+ 			continue;
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (prefix)
+ 			ret += snprintf(buf + ret, size - ret, "%s.", prefix);
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3cff41f..b773cae4c24b 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -148,6 +148,7 @@
+ static int psi_bug __read_mostly;
+ 
+ DEFINE_STATIC_KEY_FALSE(psi_disabled);
++DEFINE_STATIC_KEY_TRUE(psi_cgroups_enabled);
+ 
+ #ifdef CONFIG_PSI_DEFAULT_DISABLED
+ static bool psi_enable;
+@@ -211,6 +212,9 @@ void __init psi_init(void)
+ 		return;
+ 	}
+ 
++	if (!cgroup_psi_enabled())
++		static_branch_disable(&psi_cgroups_enabled);
++
+ 	psi_period = jiffies_to_nsecs(PSI_FREQ);
+ 	group_init(&psi_system);
+ }
+@@ -744,23 +748,23 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 
+ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+ {
++	if (*iter == &psi_system)
++		return NULL;
++
+ #ifdef CONFIG_CGROUPS
+-	struct cgroup *cgroup = NULL;
++	if (static_branch_likely(&psi_cgroups_enabled)) {
++		struct cgroup *cgroup = NULL;
+ 
+-	if (!*iter)
+-		cgroup = task->cgroups->dfl_cgrp;
+-	else if (*iter == &psi_system)
+-		return NULL;
+-	else
+-		cgroup = cgroup_parent(*iter);
++		if (!*iter)
++			cgroup = task->cgroups->dfl_cgrp;
++		else
++			cgroup = cgroup_parent(*iter);
+ 
+-	if (cgroup && cgroup_parent(cgroup)) {
+-		*iter = cgroup;
+-		return cgroup_psi(cgroup);
++		if (cgroup && cgroup_parent(cgroup)) {
++			*iter = cgroup;
++			return cgroup_psi(cgroup);
++		}
+ 	}
+-#else
+-	if (*iter)
+-		return NULL;
+ #endif
+ 	*iter = &psi_system;
+ 	return &psi_system;
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
