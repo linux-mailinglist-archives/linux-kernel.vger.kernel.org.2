@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0927F38F592
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2207838F597
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhEXWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhEXWXC (ORCPT
+        id S229989AbhEXW1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:27:14 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:46851 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhEXW1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:23:02 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C93C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:21:32 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id n3-20020a9d74030000b029035e65d0a0b8so5332027otk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDIQ9fX7lLs/gbyWNEU6V6HWzQKvLmHPZGiIasFlfRM=;
-        b=oXVIQseLDoeABV/dp53lRn0giiPNZMb1SK5CpIaX74y8d+rhVsMtH4iNDvzelsXt3R
-         MOphmVil/Eff+qNgr1AJf2R9XVwwslGTbNk4ZImOHcinCwCR/lQbNHoSex6Shrotkaqx
-         UTRdl+JWDMyCfW4qxcBOfccdBPJm/3r3iM4M4PfqO3/z9nZf5YGj1a7+qA7nxXltUgpj
-         CdP8U3jellankNmbaUC44RGRdP3EJo8OIzpfiB2nrzllD2u8PXBi3978tk9cD0cRNUM4
-         67MJHJmxgqiHetnAA1coICZMbqJABK+RHME5mkwNzAl3q0s7XdhFEzs4sbP4A4/A4zcw
-         hz9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDIQ9fX7lLs/gbyWNEU6V6HWzQKvLmHPZGiIasFlfRM=;
-        b=n2z4OKafwUj7QWbbjtfhT72nsdJB5tRzLOES1v/GHskUNppBKj4k2GU0J8iNrXzh56
-         cJ/MyPFy8xmIrXz6B6VD2KzlEeTCJSF85hpcLuHcK+6svcziISKQmn37bkV3d91dJyAc
-         GZrE7S3A8D+sl4fZs7NH3jZfmL6NefOqyVQ34ShiNUvU089KNQqAjaWcCvux2c/z+NQw
-         iNtQKzLs9HIdb65WMl078s0cLRekBIrIspxN2NZ6V1d8w60W7gYZCOfx5tt8V+zbLLV1
-         pQeAohnlb4EdpBVxvwLxLNXlFxpga94U+j9IM8/lza0G5o7CcNc9KSraadPq/8zBJHvQ
-         Cvpg==
-X-Gm-Message-State: AOAM533JWAMUI5cQHPdPhtBmsWLOF4xl/BvNrhG7/Z38QG/Mvt6GkdDy
-        WbaG1md9Zjofq1LMXn9sUE4xAb8/EmDJo96dUgDfWQ==
-X-Google-Smtp-Source: ABdhPJziySXZk11WNjyzRJ6zXrXwgIiDyYvJ5+F9SVg/TMDZkrwooR7ggFmvjnEhHj4wAhfq3lTsk2Unh3rxK7khctU=
-X-Received: by 2002:a9d:5786:: with SMTP id q6mr20800952oth.56.1621894891564;
- Mon, 24 May 2021 15:21:31 -0700 (PDT)
+        Mon, 24 May 2021 18:27:11 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id BDC4C240003;
+        Mon, 24 May 2021 22:25:39 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudius Heine <ch@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-rtc@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] [v2] rtc: bd70528: fix BD71815 watchdog dependency
+Date:   Tue, 25 May 2021 00:25:39 +0200
+Message-Id: <162189513064.208942.8503261764736710854.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210422151545.2403356-1-arnd@kernel.org>
+References: <20210422151545.2403356-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-43-seanjc@google.com>
- <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
-In-Reply-To: <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 24 May 2021 15:21:20 -0700
-Message-ID: <CALMp9eT72keN2r9tfdzsPpzAkV9fN4V4edmXuPyMbt+shVu0Ww@mail.gmail.com>
-Subject: Re: [PATCH 42/43] KVM: VMX: Drop VMWRITEs to zero fields at vCPU RESET
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 2:15 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 24/04/21 02:46, Sean Christopherson wrote:
-> > Don't waste time writing zeros via VMWRITE during vCPU RESET, the VMCS
-> > is zero allocated.
->
-> Is this guaranteed to be valid, or could the VMCS in principle use some
-> weird encoding? (Like it does for the access rights, even though this
-> does not matter for this patch).
+On Thu, 22 Apr 2021 17:15:21 +0200, Arnd Bergmann wrote:
+> The added Kconfig dependency is slightly incorrect, which can
+> lead to a link failure when the watchdog is a loadable module:
+> 
+> arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_rtc_based_timers':
+> rtc-bd70528.c:(.text+0x6cc): undefined reference to `bd70528_wdt_set'
+> arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_time':
+> rtc-bd70528.c:(.text+0xaa0): undefined reference to `bd70528_wdt_lock'
+> arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0xab8): undefined reference to `bd70528_wdt_unlock'
+> arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_alm_enable':
+> rtc-bd70528.c:(.text+0xfc0): undefined reference to `bd70528_wdt_lock'
+> arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0x1030): undefined reference to `bd70528_wdt_unlock'
+> 
+> [...]
 
-I see nothing in the SDM that would indicate that zero must be encoded as zero.
+Applied, thanks!
+
+[1/1] rtc: bd70528: fix BD71815 watchdog dependency
+      commit: b0ddc5b170058a9ed3c9f031501d735a4eb8ee89
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
