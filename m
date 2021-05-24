@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567E738DE63
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E6938DE60
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhEXAbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 20:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
+        id S232184AbhEXAbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 20:31:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232110AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 20:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5A1E66134F;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3DD1B611EE;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621816211;
-        bh=n9xGNETJ3pjQQDebyFGZ9/yBWEytIQ9rSEvdDNWz3fY=;
+        bh=K/fWhKNN1VGkbAY/Tgqq2mkSmILj9mfF6IuFawaUBF4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pYPvLfHnPxRK1tQgI9nUIcXUrhInQAeymxzdfJ0ccquY8lquo0htYNi64TW0EiWi+
-         HROMjydXK81jGn/Me9Hml1S6glCgJKG2wGvVzePgvAuHuCOa48Qfxz6+GBbKA/iGj5
-         tHhDDuYiOcSa8pfKLK2gKsVQT67lLLGTTcnj140iior6BkibhIHmIo7xM1noEkmT1i
-         aPuDUpGoBDdGzX90Jsdl+3L8QvpXVHTV/dix1RMQIxsiMtrjS8WWj+rY0A1RdjcofR
-         a9PPxzwww/lsUHWRGHiyyw7M+QsTs4zMJjpA+/9naXLHMAM6dfPXvs0+eCfWxX72Q5
-         sAlv6D6iyffNg==
+        b=BvMB7l2rLJaA7bDacdQUV9KpLxfO3Q1uZsQG/KHTJWYXwUk6fqLY/NU0trf6Mym86
+         A2cU2fUCw6uSHZhsKTodDwthdKYy/ELcKF0hVBJkvX8RAQNGmF6fy57y4FajHJ71ah
+         gyitJdwVfCLcy9aovsHyFGEoakJUtUKh4jClpEFLQ5heJ3fmrAu+2vbUFpAN+XCLTo
+         Btq2b8H7U5sUKkPSsyTzCPUlwr6spR/DPYNYYzrW6DasLaO78RUqI7gNhRxmkb3mhg
+         Qld+c+14Xxpkjx6pUJFMZI3O8RxMO6nE3+Ae7xPTuhRU8TLVvocSLe+FqUUpB1hMrS
+         ktb3WXCrv4UZw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 53D6960CD1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3810C60BD8;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] sfc: falcon: use DEVICE_ATTR_*() macro
+Subject: Re: [PATCH net-next 0/2] net: r6040: Non-functional changes
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162181621133.30453.2456779748887719312.git-patchwork-notify@kernel.org>
+Message-Id: <162181621122.30453.5963616888599452675.git-patchwork-notify@kernel.org>
 Date:   Mon, 24 May 2021 00:30:11 +0000
-References: <20210523032409.47076-1-yuehaibing@huawei.com>
-In-Reply-To: <20210523032409.47076-1-yuehaibing@huawei.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+References: <20210523155411.11185-1-f.fainelli@gmail.com>
+In-Reply-To: <20210523155411.11185-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,21 +44,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Sun, 23 May 2021 11:24:09 +0800 you wrote:
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+On Sun, 23 May 2021 08:54:09 -0700 you wrote:
+> Hi David, Jakub,
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/ethernet/sfc/falcon/efx.c           |  4 ++--
->  drivers/net/ethernet/sfc/falcon/falcon_boards.c | 10 +++++-----
->  2 files changed, 7 insertions(+), 7 deletions(-)
+> These two patches clean up the r6040 driver a little bit in preparation
+> for adding additional features such as dumping MAC counters and properly
+> dealing with DMA-API mapping.
+> 
+> Thanks
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] sfc: falcon: use DEVICE_ATTR_*() macro
-    https://git.kernel.org/netdev/net-next/c/4934fb7dc409
+  - [net-next,1/2] net: r6040: Use logical or for MDIO operations
+    https://git.kernel.org/netdev/net-next/c/190e6e291a4c
+  - [net-next,2/2] net: r6040: Use ETH_FCS_LEN
+    https://git.kernel.org/netdev/net-next/c/06666907a38a
 
 You are awesome, thank you!
 --
