@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C1338F65F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E8238F665
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhEXXn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:43:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50686 "EHLO mx2.suse.de"
+        id S230429AbhEXXnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:43:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50880 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229932AbhEXXmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:42:21 -0400
+        id S229945AbhEXXmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:42:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1621899648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pujOlIhYWPeMTKEY13Ihu35BcGQbMGosNCP4JLGFGRc=;
-        b=F97vcPNe0EcFqemti6Ay4RnyEq6vlmtCNoW7OtVhokSEGIzq90Bjw8Dbg44VqM94GlylWa
-        rlcPX0L6qizYXu6xT7+pufXk/z0WMn7z6PTirGBRsrU1PpFOGwY5jUMJ67gMLH38z4qrzb
-        BuiCRR+lVaFfbklTwaLPZ3nDoAvC1xU=
+        bh=0tu41fI/tehEDdtk24Fc6V86f4NZ4fbmTVRxT+6xDtI=;
+        b=Q1Skr70Skr7DkCUY/22aNjYfRK5j6dEk/M2CeFxGX/GcyUZUfYfO9SbmIeuQfsqXYx3Yvi
+        Pr6mVr8Y6yRZBbT9aCLvCZj3h5M1ASQ7kM4t3823AfQCIZFjGz9eecjS3IrWfNcRifgmkm
+        rYg+U1i04g/9svGprw6LzAJBcJGqZrY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1621899648;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pujOlIhYWPeMTKEY13Ihu35BcGQbMGosNCP4JLGFGRc=;
-        b=4gKyKM0f3X5lgv6ynP+Wq7V/h/yalpNL2pUTobVYUoDgbWATWd2TdbXubSxUSU7jJhNTpk
-        4pF3HNYbxQKwfQAg==
+        bh=0tu41fI/tehEDdtk24Fc6V86f4NZ4fbmTVRxT+6xDtI=;
+        b=gehOBtx2kTGbnW2lNeAX/zy5asReW9dnmEwJj9Ip4kKlrR9IwB1Cj7KZOt1x64G3Vn1RGI
+        Bbve3XL4DpJRIXBw==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83FDFAF37;
+        by mx2.suse.de (Postfix) with ESMTP id 9D871AF38;
         Mon, 24 May 2021 23:40:48 +0000 (UTC)
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC 15/26] mm, slub: stop disabling irqs around get_partial()
-Date:   Tue, 25 May 2021 01:39:35 +0200
-Message-Id: <20210524233946.20352-16-vbabka@suse.cz>
+Subject: [RFC 16/26] mm, slub: move reset of c->page and freelist out of deactivate_slab()
+Date:   Tue, 25 May 2021 01:39:36 +0200
+Message-Id: <20210524233946.20352-17-vbabka@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524233946.20352-1-vbabka@suse.cz>
 References: <20210524233946.20352-1-vbabka@suse.cz>
@@ -57,88 +57,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function get_partial() does not need to have irqs disabled as a whole. It's
-sufficient to convert spin_lock operations to their irq saving/restoring
-versions.
+deactivate_slab() removes the cpu slab by merging the cpu freelist with slab's
+freelist and putting the slab on the proper node's list. It also sets the
+respective kmem_cache_cpu pointers to NULL.
 
-As a result, it's now possible to reach the page allocator from the slab
-allocator without disabling and re-enabling interrupts on the way.
+By extracting the kmem_cache_cpu operations from the function, we can make it
+not dependent on disabled irqs.
+
+Also if we return a single free pointer from ___slab_alloc, we no longer have
+to load the slab page before deactivation or care if somebody preempted us and
+loaded a different slab page to our kmem_cache_cpu in the process.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ mm/slub.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index e092387b5932..bc7bee5d4bf2 100644
+index bc7bee5d4bf2..cf855cd09802 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -1964,11 +1964,12 @@ static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags);
-  * Try to allocate a partial slab from a specific node.
-  */
- static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
--			      struct page **ret_page, gfp_t flags)
-+			      struct page **ret_page, gfp_t gfpflags)
- {
- 	struct page *page, *page2;
- 	void *object = NULL;
- 	unsigned int available = 0;
-+	unsigned long flags;
- 	int objects;
- 
- 	/*
-@@ -1980,11 +1981,11 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 	if (!n || !n->nr_partial)
- 		return NULL;
- 
--	spin_lock(&n->list_lock);
-+	spin_lock_irqsave(&n->list_lock, flags);
- 	list_for_each_entry_safe(page, page2, &n->partial, slab_list) {
- 		void *t;
- 
--		if (!pfmemalloc_match(page, flags))
-+		if (!pfmemalloc_match(page, gfpflags))
- 			continue;
- 
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
-@@ -2005,7 +2006,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 			break;
- 
- 	}
--	spin_unlock(&n->list_lock);
-+	spin_unlock_irqrestore(&n->list_lock, flags);
- 	return object;
+@@ -2163,10 +2163,13 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
  }
  
-@@ -2722,8 +2723,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 			local_irq_restore(flags);
- 			goto reread_page;
- 		}
--		if (unlikely(!slub_percpu_partial(c))) /* stolen by IRQ? */
-+		if (unlikely(!slub_percpu_partial(c))) { /* stolen by IRQ? */
-+			local_irq_restore(flags);
- 			goto new_objects;
-+		}
- 
- 		page = c->page = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, page);
-@@ -2732,16 +2735,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto redo;
+ /*
+- * Remove the cpu slab
++ * Finishes removing the cpu slab. Merges cpu's freelist with page's freelist,
++ * unfreezes the slabs and puts it on the proper list.
++ * Assumes the slab has been already safely taken away from kmem_cache_cpu
++ * by the caller.
+  */
+ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+-				void *freelist, struct kmem_cache_cpu *c)
++			    void *freelist)
+ {
+ 	enum slab_modes { M_NONE, M_PARTIAL, M_FULL, M_FREE };
+ 	struct kmem_cache_node *n = get_node(s, page_to_nid(page));
+@@ -2295,9 +2298,6 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 		discard_slab(s, page);
+ 		stat(s, FREE_SLAB);
  	}
- 
--	local_irq_save(flags);
--	if (unlikely(c->page)) {
--		local_irq_restore(flags);
--		goto reread_page;
--	}
 -
- new_objects:
+-	c->page = NULL;
+-	c->freelist = NULL;
+ }
  
- 	freelist = get_partial(s, gfpflags, node, &page);
--	local_irq_restore(flags);
- 	if (freelist)
- 		goto check_new_page;
+ /*
+@@ -2429,10 +2429,16 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
  
+ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
+ {
+-	stat(s, CPUSLAB_FLUSH);
+-	deactivate_slab(s, c->page, c->freelist, c);
++	void *freelist = c->freelist;
++	struct page *page = c->page;
+ 
++	c->page = NULL;
++	c->freelist = NULL;
+ 	c->tid = next_tid(c->tid);
++
++	deactivate_slab(s, page, freelist);
++
++	stat(s, CPUSLAB_FLUSH);
+ }
+ 
+ /*
+@@ -2712,7 +2718,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		local_irq_restore(flags);
+ 		goto reread_page;
+ 	}
+-	deactivate_slab(s, page, c->freelist, c);
++	freelist = c->freelist;
++	c->page = NULL;
++	c->freelist = NULL;
++	deactivate_slab(s, page, freelist);
+ 	local_irq_restore(flags);
+ 
+ new_slab:
+@@ -2792,11 +2801,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ return_single:
+ 
+ 	local_irq_save(flags);
+-	if (unlikely(c->page))
+-		flush_slab(s, c);
+-	c->page = page;
+-
+-	deactivate_slab(s, page, get_freepointer(s, freelist), c);
++	deactivate_slab(s, page, get_freepointer(s, freelist));
+ 	local_irq_restore(flags);
+ 	return freelist;
+ }
 -- 
 2.31.1
 
