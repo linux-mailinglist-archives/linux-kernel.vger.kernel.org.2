@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31E638F368
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123A438F36A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhEXTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 15:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S233405AbhEXTCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 15:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbhEXTBr (ORCPT
+        with ESMTP id S233167AbhEXTCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 15:01:47 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72958C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:18 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id w206so7810790ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:18 -0700 (PDT)
+        Mon, 24 May 2021 15:02:01 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50069C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:32 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id r8so39449713ybb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZCl2405oxq5KUkCKGM+eRztXt4CN2xq0xPJS/JuqGfM=;
-        b=zj9nZ6/JuRnHTaDlHlFp+RiJHDPAzagbZtskw955lQ8H8ABQsFQwL3RzPNYhFEIEua
-         91GpCQ8b53Xj1Gx9FGJeFu7sb7701CmWHzhtQAN2UD0bwFkIU4r3F6IBwBGRzeny06AT
-         aQqDXlfEPtUcU1HLPQfJegmmW4vpKIaCsgeP8e5XOsugBx0opd0wSTttycRI40aT+SRj
-         hLHLFOnWwjPKg/xxPlSSojpgPgA06IdjuN9NKI2AGiUNuZaeHoq1Dreum6e2onhcdHei
-         EIHQUDNs8xOADWV5ag2asNeDG+2yfA3SU24BHWFlQFAUmKSaB2OImMucQOn9QJyfGEtF
-         7fYw==
+        bh=qZ/HHH6RzjFrXIpsOJzjI+Qc1VHUbpxeGOmV9lmhHyc=;
+        b=YiUrbTf9fHfnrlZaVNXWX2ffeVRP5Psh3XBE1kMs9L/sXhpgKua0laF3KHras/R3fA
+         bNbWe6WXHIATQsWiqoSeIF/HaQSPnkAiwe6vK8M8tFghbUBh/+Y21KsH3Bsgt/5M+nmv
+         mQkPJiwt0yz+D7sDDF6b2svmm40CLw5D5Woj1+iEntXkHFWZt4g/k/y1Wn7+eZVkLySH
+         Qw8DSL08hbOxcctLHINNIb0xFh9fG4UPvaYEZT+x4w56vhkK5hCkYRaowpRkzhAW6GV+
+         CRVA6ZJu4PY9KVzBdCFlFnpUDwOF3bGa8oQDqzyWxmCBavTGzhYYh002Vnxkw5AWbKt6
+         R2cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZCl2405oxq5KUkCKGM+eRztXt4CN2xq0xPJS/JuqGfM=;
-        b=ZnHesgI/JbPIPn513tmvNn74dgwQOJLjG9VK85F6IzxLbaObWn2C1kEHa5gCxXhw9o
-         /Deh3wz36YFPnc/KbyK3rqPVCuHmhycv9oti6b8Gmt07Fb7zbSVrhBNg+ghs8cFLLpRa
-         67Yi54gg4Djyd4Brz169Wq4AqE/cQ0mn2/Wa5pIWzQ2dqFmNsLe0BD9sSszS3OtB1dZR
-         Y8VFN9CJkuc3/hbZYieU0ras8ApbOd4GFKRHv7DNFJNYfiK66w/EphA+d+dzuUm1KC9U
-         wpvk8esCcAvT7G7JL8qJCKFNBcPhEyoDfRVNuIyytWk3tGiBBWKzlQvCTzLU0N5X6lJ6
-         LPZw==
-X-Gm-Message-State: AOAM533SUDbi/NpRNhDR76XbboBOlUpftXL8hOEBQzDqW3wl/Wf0ORuZ
-        PI/TbX4ZmbYLAjzcoLtrPS70UjNUjVHUekVQVvGDCg==
-X-Google-Smtp-Source: ABdhPJy8bdhzUaRUmhEBPBRy378KnTQW3q3Z+hxh6rQEPEA4jJVTQLA2JbMZTb8tu2NxGwm1v/w3/r9gUKwE7A8En3M=
-X-Received: by 2002:a25:e08e:: with SMTP id x136mr33361771ybg.0.1621882817789;
- Mon, 24 May 2021 12:00:17 -0700 (PDT)
+        bh=qZ/HHH6RzjFrXIpsOJzjI+Qc1VHUbpxeGOmV9lmhHyc=;
+        b=YGvfGZNtx0IKaE5gUOFqWVfGCAmysUyzynabQtuy8l8Pk7HrHxX1rA5P6wtDiLdLq0
+         KDWacYeCNeUe9/VhamBirekKLBhlH44092JfW+TZZayK5tDJWh+Bc6RlQY2DCjNoamUJ
+         6PhwnAxr8ljgcVgUz9hLr6IniE7Gafjyz9UZDsSRHIzgkKWPU3MhsqgFHgqjamVIiQnR
+         sZOcsz+TD3m3X1oVocnGjjsPMA8F/zl84p+aZk+qFKXqqGPPPWb5SQoGZqkt6fSDgdAz
+         6d18ctNKOYLQ7poJvA1ZggNsPGGXD7lIG/7jxDBAfUpudds/ESi7TmCfPU0bdLILbSEY
+         122g==
+X-Gm-Message-State: AOAM533ROanmTI1NTXT/sV6WLLk5BTEJaI9XAhdC18Vk+Y0M5b2JEGKl
+        ZiDx+mLd4vQ02e6wbcFdaEp1hvX9Sq+30STE4kRE/zy9IwTkeg==
+X-Google-Smtp-Source: ABdhPJzh926Hx6hSGwdxh6ozSTJy0YjecarXSU76V/d/BwbeV40EFDwLYSTVIkh4m/GS4WKe4225+eHJro8geqbMtwE=
+X-Received: by 2002:a25:c092:: with SMTP id c140mr2244608ybf.25.1621882831629;
+ Mon, 24 May 2021 12:00:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210515075444.9210-1-aardelean@deviqon.com>
-In-Reply-To: <20210515075444.9210-1-aardelean@deviqon.com>
+References: <20210515075257.7918-1-aardelean@deviqon.com>
+In-Reply-To: <20210515075257.7918-1-aardelean@deviqon.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 24 May 2021 21:00:06 +0200
-Message-ID: <CAMpxmJUoEU=yKw68G0MquVCJoCZteTaAvfvgLqD0tXGW-d5nhQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-tps65218: remove platform_set_drvdata() +
+Date:   Mon, 24 May 2021 21:00:20 +0200
+Message-ID: <CAMpxmJWBi=R21pK0-g4j8bOfh7Hy4tmFrcKY+X23+c2f2CiKjw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-tps65912: remove platform_set_drvdata() +
  cleanup probe
 To:     Alexandru Ardelean <aardelean@deviqon.com>
 Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
@@ -61,7 +61,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 9:55 AM Alexandru Ardelean
+On Sat, May 15, 2021 at 9:53 AM Alexandru Ardelean
 <aardelean@deviqon.com> wrote:
 >
 > The platform_set_drvdata() call is only useful if we need to retrieve back
@@ -74,39 +74,39 @@ On Sat, May 15, 2021 at 9:55 AM Alexandru Ardelean
 >
 > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  drivers/gpio/gpio-tps65218.c | 12 +-----------
+>  drivers/gpio/gpio-tps65912.c | 12 +-----------
 >  1 file changed, 1 insertion(+), 11 deletions(-)
 >
-> diff --git a/drivers/gpio/gpio-tps65218.c b/drivers/gpio/gpio-tps65218.c
-> index 43a1150055ce..66461ed192d7 100644
-> --- a/drivers/gpio/gpio-tps65218.c
-> +++ b/drivers/gpio/gpio-tps65218.c
-> @@ -187,7 +187,6 @@ static int tps65218_gpio_probe(struct platform_device *pdev)
+> diff --git a/drivers/gpio/gpio-tps65912.c b/drivers/gpio/gpio-tps65912.c
+> index 510d9ed9fd2a..fab771cb6a87 100644
+> --- a/drivers/gpio/gpio-tps65912.c
+> +++ b/drivers/gpio/gpio-tps65912.c
+> @@ -99,7 +99,6 @@ static int tps65912_gpio_probe(struct platform_device *pdev)
 >  {
->         struct tps65218 *tps65218 = dev_get_drvdata(pdev->dev.parent);
->         struct tps65218_gpio *tps65218_gpio;
+>         struct tps65912 *tps = dev_get_drvdata(pdev->dev.parent);
+>         struct tps65912_gpio *gpio;
 > -       int ret;
 >
->         tps65218_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps65218_gpio),
->                                      GFP_KERNEL);
-> @@ -201,16 +200,7 @@ static int tps65218_gpio_probe(struct platform_device *pdev)
->         tps65218_gpio->gpio_chip.of_node = pdev->dev.of_node;
->  #endif
+>         gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+>         if (!gpio)
+> @@ -109,16 +108,7 @@ static int tps65912_gpio_probe(struct platform_device *pdev)
+>         gpio->gpio_chip = template_chip;
+>         gpio->gpio_chip.parent = tps->dev;
 >
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &tps65218_gpio->gpio_chip,
-> -                                    tps65218_gpio);
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &gpio->gpio_chip,
+> -                                    gpio);
 > -       if (ret < 0) {
-> -               dev_err(&pdev->dev, "Failed to register gpiochip, %d\n", ret);
+> -               dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
 > -               return ret;
 > -       }
 > -
-> -       platform_set_drvdata(pdev, tps65218_gpio);
+> -       platform_set_drvdata(pdev, gpio);
 > -
-> -       return ret;
-> +       return devm_gpiochip_add_data(&pdev->dev, &tps65218_gpio->gpio_chip, tps65218_gpio);
+> -       return 0;
+> +       return devm_gpiochip_add_data(&pdev->dev, &gpio->gpio_chip, gpio);
 >  }
 >
->  static const struct of_device_id tps65218_dt_match[] = {
+>  static const struct platform_device_id tps65912_gpio_id_table[] = {
 > --
 > 2.31.1
 >
