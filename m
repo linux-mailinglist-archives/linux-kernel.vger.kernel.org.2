@@ -2,171 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C8E38E7FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A99038E801
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhEXNsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:48:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232462AbhEXNsQ (ORCPT
+        id S232952AbhEXNst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhEXNsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:48:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621864008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1zKaniUke1CTgDP/v1gmAVeJGY1+eRl2in4CVL6GC9M=;
-        b=g2Of2tua3aM77IpHtD6M3I2+EJYR9y7g2lB7a3wciWWYCdu0E9I+NvZoZPygjIi/IwlLE9
-        QxBw6XGFE3Xs/Z0r+ZGUVWZRrfxLZ63+vYCjpYt0eKU+HGvtPUaMd+81FF6B81ZzbdUSWT
-        BJr9KKccXkEdOHJ5K/l1pP6vLfuMvZ0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-w_lJBKklP7G_Jczu-DNeHQ-1; Mon, 24 May 2021 09:46:46 -0400
-X-MC-Unique: w_lJBKklP7G_Jczu-DNeHQ-1
-Received: by mail-ej1-f71.google.com with SMTP id mp38-20020a1709071b26b02903df8ccd76fbso790349ejc.23
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:46:46 -0700 (PDT)
+        Mon, 24 May 2021 09:48:47 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDAEC061574;
+        Mon, 24 May 2021 06:47:19 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so25238376otp.11;
+        Mon, 24 May 2021 06:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KI/HnPyleu74KNvwfkl9eC4rz7vQPnZ9pyrBZUB7Oo4=;
+        b=jylLaeBs6+nJZqslIGodyIwH1VzYhDm0fWQOz/CNsWFtAeOfSbp/O1yr0X9jgYRT3/
+         QBen9S3CfFoUKcz1+OgU6emYz3XEnAz7+mW9FrcWRfSDCNQP8FufPtKNJv0GSSx5J2Sg
+         U7/FahaQ6L7Z8z12r6M6/NGxBnr04OW08bmH1xpJIh9yhsahqhKMtLjwrJ6+cV2STk1O
+         D31U/EbNxXVTvd5HNIzfGOqwkoysoOskXJh67lx2/3sjHxp/gLM5UI1mp8FvCjdQkKOM
+         6K0UahVCFEeikEp7hELNCVwwnSSJfmLNGXakWPNRglXf8IoQa+8MB3wxBIAPxK6BiqfY
+         IHhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1zKaniUke1CTgDP/v1gmAVeJGY1+eRl2in4CVL6GC9M=;
-        b=SA4zxmCU1KzUfm4HboSX9arMicKuOuof4LF+JJTN1JZ3aV8VzbS0dLfTPEsCSo8TWD
-         /xl85pE60Iv2KhYnyGMMukKg57SnFWZdBkeCbiRP2QGnVc55RJhXtUgTPpdMjiVsQ83M
-         ViKAbDJJoPF9lt8t5+MJ5xn8bFYoGLsQ6ZKVpISwQD/RFhc8urxJ5KeyiBiSxvbhnlvm
-         TV/Vb3O5cSKjyMPDNsHvaG8wieVd++AwriWi6Rz3i0U5hnAs755TGey2vGXixGxAHoVe
-         1Kz48gVe3+2CbXY7N25puxFmgoF0OCF4L0u2cGjEkqg0lPrYX9uqyiU5u3H68KFUF0p+
-         lipQ==
-X-Gm-Message-State: AOAM5339pRjBlP9YhqJld+BLKfPiYlbgNWXcO5IfisyOMMyGXDsfC29T
-        setPSFEJsOHX8thcuw5lv3z/kRaITkVlwxLg6Rv0hLAhtgGw+a8IzwYH/rjLSoxGBk6DHAV9kXk
-        q32SzXH0kw2HGwhPx9fsTXJ7k
-X-Received: by 2002:a17:906:6a93:: with SMTP id p19mr23652399ejr.319.1621864005357;
-        Mon, 24 May 2021 06:46:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxL+MPEX0xHstZztgHZk1ZfQV9cHQqyq1YhQQZRhVxtKLp+Hm/Y1Lt2xqMCJwNwQrdOxuyViA==
-X-Received: by 2002:a17:906:6a93:: with SMTP id p19mr23652383ejr.319.1621864005203;
-        Mon, 24 May 2021 06:46:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x10sm9233166edd.30.2021.05.24.06.46.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:46:44 -0700 (PDT)
-Subject: Re: [PATCH v4 1/5] KVM: exit halt polling on need_resched() for both
- book3s and generic halt-polling
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KI/HnPyleu74KNvwfkl9eC4rz7vQPnZ9pyrBZUB7Oo4=;
+        b=JjOXBlSxRaA43hUZxvMTiQrhIvqHPiTtJH1peBU70MAw/MU/eh4D+WqdCH5ZDC7aZP
+         gHg/J04KLzos0f2gbCWI2QnqvVlHc++Ma5gaMBKpEhdzjQW3i8KdDu5T2JRq9r2q7lZF
+         bCve61800cCbA93Q2trC46ASGA/1vD7Ielv1zJt/0aHZmnvQGUARJqVsUka0fbcrglqY
+         nHUDSC/zAraVAqzKSBGPbMTLDRG07JcLxkAxncfJxf/VcNtBWXh/74lZBlkohO8MIYeW
+         4UgKr3xAEvKQmBOOyCsAuMhoY3tLmnmGW489XOnFWzfDkZ4T+eb0XzfJw6fkV5/mdIY+
+         L+tw==
+X-Gm-Message-State: AOAM531AH+qWn9PJKCzLcrgnGOWLF9Wkd/oDyoAFgq32q2PNCQSaNfF1
+        MVOKHkX61+GQngdIaxgQQhfuSMjh05FRX+uOLCI=
+X-Google-Smtp-Source: ABdhPJxsYufT0useln7Ymyca5qFh30PCg6ji3Vb7+XDICaMhVDZBcHZlBVvGDF8nVXZyEtZQ8PCWl304eT2SOQY1LiA=
+X-Received: by 2002:a9d:6655:: with SMTP id q21mr17144151otm.185.1621864039105;
+ Mon, 24 May 2021 06:47:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+ <1621339235-11131-2-git-send-email-wanpengli@tencent.com> <YKQTx381CGPp7uZY@google.com>
+ <CANRm+Cy_D3cBBEYQ9ApKMNC6p0dpTBQYQXs+dv5vrFedVkOy2w@mail.gmail.com> <889a0a43-0641-70ce-d2a5-ed71bd54e59c@redhat.com>
+In-Reply-To: <889a0a43-0641-70ce-d2a5-ed71bd54e59c@redhat.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Mon, 24 May 2021 21:47:07 +0800
+Message-ID: <CANRm+CwES8w0=yoWO3uZ4kC-ZcMeRksQH_p3U-tYcwAvgFg4kw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] KVM: X86: Bail out of direct yield in case of
+ under-committed scenarios
+To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Ben Segall <bsegall@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        David Matlack <dmatlack@google.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
-References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f0247587-e90a-1695-1399-47a67c44d861@redhat.com>
-Date:   Mon, 24 May 2021 15:46:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/21 14:00, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
-> as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
-> one task to get the task to block. It was likely allowing VMs to overrun their
-> quota when halt polling. Due to PPC implements an arch specific halt polling
-> logic, we should add the need_resched() checking there as well. This
-> patch adds a helper function that to be shared between book3s and generic
-> halt-polling loop.
-> 
-> Reviewed-by: David Matlack <dmatlack@google.com>
-> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Venkatesh Srinivas <venkateshs@chromium.org>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Paul Mackerras <paulus@ozlabs.org>
-> Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v3 -> v4:
->   * rename to kvm_vcpu_can_poll
-> v2 -> v3:
->   * add a helper function
-> v1 -> v2:
->   * update patch description
-> 
->   arch/powerpc/kvm/book3s_hv.c | 2 +-
->   include/linux/kvm_host.h     | 2 ++
->   virt/kvm/kvm_main.c          | 8 ++++++--
->   3 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 28a80d240b76..7360350e66ff 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
->   				break;
->   			}
->   			cur = ktime_get();
-> -		} while (single_task_running() && ktime_before(cur, stop));
-> +		} while (kvm_vcpu_can_poll(cur, stop));
->   
->   		spin_lock(&vc->lock);
->   		vc->vcore_state = VCORE_INACTIVE;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 2f34487e21f2..ba682f738a25 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
->   /* Max number of entries allowed for each kvm dirty ring */
->   #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
->   
-> +bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop);
-> +
->   #endif
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 6b4feb92dc79..62522c12beba 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -2945,6 +2945,11 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
->   		vcpu->stat.halt_poll_success_ns += poll_ns;
->   }
->   
-> +bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
-> +{
-> +	return single_task_running() && !need_resched() && ktime_before(cur, stop);
-> +}
-> +
->   /*
->    * The vCPU has executed a HLT instruction with in-kernel mode enabled.
->    */
-> @@ -2973,8 +2978,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->   				goto out;
->   			}
->   			poll_end = cur = ktime_get();
-> -		} while (single_task_running() && !need_resched() &&
-> -			 ktime_before(cur, stop));
-> +		} while (kvm_vcpu_can_poll(cur, stop));
->   	}
->   
->   	prepare_to_rcuwait(&vcpu->wait);
-> 
+On Mon, 24 May 2021 at 21:42, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 19/05/21 04:57, Wanpeng Li wrote:
+> > Looks good. Hope Paolo can update the patch description when applying.:)
+> >
+> > "In case of under-committed scenarios, vCPU can get scheduling easily,
+> > kvm_vcpu_yield_to add extra overhead, we can observe a lot of races
+> > between vcpu->ready is true and yield fails due to p->state is
+> > TASK_RUNNING. Let's bail out in such scenarios by checking the length
+> > of current cpu runqueue, it can be treated as a hint of under-committed
+> > instead of guaranteeing accuracy. 30%+ of directed-yield attempts can
+> > avoid the expensive lookups in kvm_sched_yield() in an under-committed
+> > scenario. "
+> >
+>
+> Here is what I used:
+>
+>      In case of under-committed scenarios, vCPUs can be scheduled easily;
+>      kvm_vcpu_yield_to adds extra overhead, and it is also common to see
+>      when vcpu->ready is true but yield later failing due to p->state is
+>      TASK_RUNNING.
+>
+>      Let's bail out in such scenarios by checking the length of current cpu
+>      runqueue, which can be treated as a hint of under-committed instead of
+>      guarantee of accuracy. 30%+ of directed-yield attempts can now avoid
+>      the expensive lookups in kvm_sched_yield() in an under-committed scenario.
 
-Queued all five, thanks.
-
-Paolo
-
+Thanks Paolo! :)
+    Wanpeng
