@@ -2,361 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2952738F1A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D687A38F1A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhEXQfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:35:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:41453 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232442AbhEXQfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:35:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621874048; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aHjdHVr2dluICSuWIvFlF2QPvPLQPnabZ4PLOF5vX7k=;
- b=dOZd/OUODrmkfs0vfSUCoA2T0HOQIVUhs/fjgryLvAFsC75PYrl8LfsuSlCRWQRRBpcw1v6y
- rZEsGCi7U4tZ9b6cTNzO80CDsICyp4lFQqoiwOW9tWUtm6bPU4a8Utx8ZUIf1hcJQ1etxaOz
- ujUvN/tKCAFd1//FBfY/8SKfYG4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60abd56fc229adfeff1bb476 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 16:33:51
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D924C43217; Mon, 24 May 2021 16:33:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1EA3C433D3;
-        Mon, 24 May 2021 16:33:49 +0000 (UTC)
+        id S233048AbhEXQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232491AbhEXQgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:36:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DDD6140C
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:34:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621874076;
+        bh=ZLC8qQnMj4ooJVxFsue4U3K8DWfx8sWZhRr0SsKBcjk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=POmSP74CcUe0KM1A6asTBP5N4cIxU9qdYs5z543h7DwZAi5wWbC+pl8QLI6UkE1G6
+         U2321BNMHejTCio06KhWeZyVujf8vQIy+zgeNhstptLNWb6bS9wo4kjmQHjw8R9RQ7
+         rDHKy1e6H75XccxTC3E4MurrWi1N7CxvXPUaoIPAE8H1JJPUyPfBJveR7+OMBO7WMb
+         /KTAlJ/Fh8Af5kcO1Yyo8m4CXLiQGwCYoOM+g6bXJ59tCp7VDgQ9uPdE0oprCspy5H
+         lR6K0JCV1oyUIeWhz5lnd4yvQLgA/LvwtZ+H4tx1sa5np3laPH6v18fkAuQHee3yOl
+         JoTZIcQaf1WPA==
+Received: by mail-ed1-f54.google.com with SMTP id t15so32718141edr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:34:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530Db5iiKgrNI0OyG4xPIZGjX/2j863/9ZFQXvy43V9RSy7X6QGQ
+        yKnuaCU6Oa/PMS+jUg5Ob7OtAtr11Myg9z8RMfgcxw==
+X-Google-Smtp-Source: ABdhPJy/LkAdwUDEi2HBwJHj8sOm3jtgls+wbFBUGYPLK3LBnPye3W6g3OUK8gFArWJZcw6647SJKzgVJmX+8UAAWoY=
+X-Received: by 2002:a05:6402:4251:: with SMTP id g17mr26424758edb.238.1621874074727;
+ Mon, 24 May 2021 09:34:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 24 May 2021 09:33:49 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        aravindh@codeaurora.org, Sean Paul <sean@poorly.run>
-Subject: Re: [PATCH 3/3] drm/msm/dp: Handle aux timeouts, nacks, defers
-In-Reply-To: <20210507212505.1224111-4-swboyd@chromium.org>
-References: <20210507212505.1224111-1-swboyd@chromium.org>
- <20210507212505.1224111-4-swboyd@chromium.org>
-Message-ID: <1133b2c21eb8f385c16c610638a17d9c@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200512145444.15483-6-yu-cheng.yu@intel.com> <158964181793.17951.15480349640697746223.tip-bot2@tip-bot2>
+In-Reply-To: <158964181793.17951.15480349640697746223.tip-bot2@tip-bot2>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 24 May 2021 09:34:23 -0700
+X-Gmail-Original-Message-ID: <CALCETrXfLbsrBX42Y094YLWTG=pqkrf+aSCLruCGzqnZ0Y=P-Q@mail.gmail.com>
+Message-ID: <CALCETrXfLbsrBX42Y094YLWTG=pqkrf+aSCLruCGzqnZ0Y=P-Q@mail.gmail.com>
+Subject: Re: [tip: x86/fpu] x86/fpu/xstate: Define new functions for clearing
+ fpregs and xstates
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-tip-commits@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>, x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-07 14:25, Stephen Boyd wrote:
-> Let's look at the irq status bits after a transfer and see if we got a
-> nack or a defer or a timeout, instead of telling drm layers that
-> everything was fine, while still printing an error message. I wasn't
-> sure about NACK+DEFER so I lumped all those various errors along with a
-> nack so that the drm core can figure out that things are just not going
-> well. The important thing is that we're now returning -ETIMEDOUT when
-> the message times out and nacks for bad addresses.
-> 
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-> Cc: aravindh@codeaurora.org
-> Cc: Sean Paul <sean@poorly.run>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_aux.c | 140 ++++++++++++++------------------
->  drivers/gpu/drm/msm/dp/dp_aux.h |   8 --
->  2 files changed, 61 insertions(+), 87 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
-> b/drivers/gpu/drm/msm/dp/dp_aux.c
-> index b49810396513..4a3293b590b0 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -9,7 +9,15 @@
->  #include "dp_reg.h"
->  #include "dp_aux.h"
-> 
-> -#define DP_AUX_ENUM_STR(x)		#x
-> +enum msm_dp_aux_err {
-> +	DP_AUX_ERR_NONE,
-> +	DP_AUX_ERR_ADDR,
-> +	DP_AUX_ERR_TOUT,
-> +	DP_AUX_ERR_NACK,
-> +	DP_AUX_ERR_DEFER,
-> +	DP_AUX_ERR_NACK_DEFER,
-> +	DP_AUX_ERR_PHY,
-> +};
-> 
->  struct dp_aux_private {
->  	struct device *dev;
-> @@ -18,7 +26,7 @@ struct dp_aux_private {
->  	struct mutex mutex;
->  	struct completion comp;
-> 
-> -	u32 aux_error_num;
-> +	enum msm_dp_aux_err aux_error_num;
->  	u32 retry_cnt;
->  	bool cmd_busy;
->  	bool native;
-> @@ -33,62 +41,45 @@ struct dp_aux_private {
-> 
->  #define MAX_AUX_RETRIES			5
-> 
-> -static const char *dp_aux_get_error(u32 aux_error)
-> -{
-> -	switch (aux_error) {
-> -	case DP_AUX_ERR_NONE:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NONE);
-> -	case DP_AUX_ERR_ADDR:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_ADDR);
-> -	case DP_AUX_ERR_TOUT:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_TOUT);
-> -	case DP_AUX_ERR_NACK:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK);
-> -	case DP_AUX_ERR_DEFER:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_DEFER);
-> -	case DP_AUX_ERR_NACK_DEFER:
-> -		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK_DEFER);
-> -	default:
-> -		return "unknown";
-> -	}
-> -}
-> -
-> -static u32 dp_aux_write(struct dp_aux_private *aux,
-> +static ssize_t dp_aux_write(struct dp_aux_private *aux,
->  			struct drm_dp_aux_msg *msg)
+On Sat, May 16, 2020 at 8:10 AM tip-bot2 for Fenghua Yu
+<tip-bot2@linutronix.de> wrote:
+>
+> The following commit has been merged into the x86/fpu branch of tip:
+>
+> Commit-ID:     b860eb8dce5906b14e3a7f3c771e0b3d6ef61b94
+> Gitweb:        https://git.kernel.org/tip/b860eb8dce5906b14e3a7f3c771e0b3d6ef61b94
+> Author:        Fenghua Yu <fenghua.yu@intel.com>
+> AuthorDate:    Tue, 12 May 2020 07:54:39 -07:00
+> Committer:     Borislav Petkov <bp@suse.de>
+> CommitterDate: Wed, 13 May 2020 13:41:50 +02:00
+>
+> x86/fpu/xstate: Define new functions for clearing fpregs and xstates
+
+syzbot says this is busted.  I've made no effort to identify the
+precise bug that is making syzbot complain, but:
+
+>  /*
+> - * Clear FPU registers by setting them up from
+> - * the init fpstate:
+> + * Clear FPU registers by setting them up from the init fpstate.
+> + * Caller must do fpregs_[un]lock() around it.
+>   */
+> -static inline void copy_init_fpstate_to_fpregs(void)
+> +static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
 >  {
-> -	u32 data[4], reg, len;
-> +	u8 data[4];
-> +	u32 reg;
-> +	ssize_t len;
->  	u8 *msgdata = msg->buffer;
->  	int const AUX_CMD_FIFO_LEN = 128;
->  	int i = 0;
-> 
->  	if (aux->read)
-> -		len = 4;
-> +		len = 0;
->  	else
-> -		len = msg->size + 4;
-> +		len = msg->size;
-> 
->  	/*
->  	 * cmd fifo only has depth of 144 bytes
->  	 * limit buf length to 128 bytes here
->  	 */
-> -	if (len > AUX_CMD_FIFO_LEN) {
-> +	if (len > AUX_CMD_FIFO_LEN - 4) {
->  		DRM_ERROR("buf size greater than allowed size of 128 bytes\n");
-> -		return 0;
-> +		return -EINVAL;
->  	}
-> 
->  	/* Pack cmd and write to HW */
-> -	data[0] = (msg->address >> 16) & 0xf; /* addr[19:16] */
-> +	data[0] = (msg->address >> 16) & 0xf;	/* addr[19:16] */
->  	if (aux->read)
-> -		data[0] |=  BIT(4); /* R/W */
-> +		data[0] |=  BIT(4);		/* R/W */
-> 
-> -	data[1] = (msg->address >> 8) & 0xff;	/* addr[15:8] */
-> -	data[2] = msg->address & 0xff;		/* addr[7:0] */
-> -	data[3] = (msg->size - 1) & 0xff;	/* len[7:0] */
-> +	data[1] = msg->address >> 8;		/* addr[15:8] */
-> +	data[2] = msg->address;			/* addr[7:0] */
-> +	data[3] = msg->size - 1;		/* len[7:0] */
-> 
-> -	for (i = 0; i < len; i++) {
-> +	for (i = 0; i < len + 4; i++) {
->  		reg = (i < 4) ? data[i] : msgdata[i - 4];
-> +		reg <<= DP_AUX_DATA_OFFSET;
-> +		reg &= DP_AUX_DATA_MASK;
-> +		reg |= DP_AUX_DATA_WRITE;
->  		/* index = 0, write */
-> -		reg = (((reg) << DP_AUX_DATA_OFFSET)
-> -		       & DP_AUX_DATA_MASK) | DP_AUX_DATA_WRITE;
->  		if (i == 0)
->  			reg |= DP_AUX_DATA_INDEX_WRITE;
->  		aux->catalog->aux_data = reg;
-> @@ -116,39 +107,27 @@ static u32 dp_aux_write(struct dp_aux_private 
-> *aux,
->  	return len;
+> -       fpregs_lock();
+> -
+
+
+
+>         if (use_xsave())
+> -               copy_kernel_to_xregs(&init_fpstate.xsave, -1);
+> +               copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
+>         else if (static_cpu_has(X86_FEATURE_FXSR))
+>                 copy_kernel_to_fxregs(&init_fpstate.fxsave);
+>         else
+> @@ -307,9 +305,6 @@ static inline void copy_init_fpstate_to_fpregs(void)
+>
+>         if (boot_cpu_has(X86_FEATURE_OSPKE))
+>                 copy_init_pkru_to_fpregs();
+
+if (boot_cpu_has(X86_FEATURE_OSPKE) && (features_mask & PKRU)), perhaps?
+
+> -
+> -       fpregs_mark_activate();
+> -       fpregs_unlock();
 >  }
-> 
-> -static int dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
-> +static ssize_t dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
->  			      struct drm_dp_aux_msg *msg)
+>
+>  /*
+> @@ -318,18 +313,40 @@ static inline void copy_init_fpstate_to_fpregs(void)
+>   * Called by sys_execve(), by the signal handler code and by various
+>   * error paths.
+>   */
+> -void fpu__clear(struct fpu *fpu)
+> +static void fpu__clear(struct fpu *fpu, bool user_only)
 >  {
-> -	u32 ret, len, timeout;
-> -	int aux_timeout_ms = HZ/4;
-> +	ssize_t ret;
-> +	unsigned long time_left;
-> 
->  	reinit_completion(&aux->comp);
-> 
-> -	len = dp_aux_write(aux, msg);
-> -	if (len == 0) {
-> -		DRM_ERROR("DP AUX write failed\n");
-> -		return -EINVAL;
-> -	}
-> +	ret = dp_aux_write(aux, msg);
-> +	if (ret < 0)
-> +		return ret;
-> 
-> -	timeout = wait_for_completion_timeout(&aux->comp, aux_timeout_ms);
-> -	if (!timeout) {
-> -		DRM_ERROR("aux %s timeout\n", (aux->read ? "read" : "write"));
-> +	time_left = wait_for_completion_timeout(&aux->comp,
-> +						msecs_to_jiffies(250));
-> +	if (!time_left)
->  		return -ETIMEDOUT;
-> -	}
-> -
-> -	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
-> -		ret = len;
-> -	} else {
-> -		DRM_ERROR_RATELIMITED("aux err: %s\n",
-> -			dp_aux_get_error(aux->aux_error_num));
-> -
-> -		ret = -EINVAL;
-> -	}
-> 
->  	return ret;
->  }
-> 
-> -static void dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
-> +static ssize_t dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
->  		struct drm_dp_aux_msg *msg)
->  {
->  	u32 data;
-> @@ -175,9 +154,10 @@ static void dp_aux_cmd_fifo_rx(struct 
-> dp_aux_private *aux,
-> 
->  		actual_i = (data >> DP_AUX_DATA_INDEX_OFFSET) & 0xFF;
->  		if (i != actual_i)
-> -			DRM_ERROR("Index mismatch: expected %d, found %d\n",
-> -				i, actual_i);
-> +			break;
->  	}
+> -       WARN_ON_FPU(fpu != &current->thread.fpu); /* Almost certainly an anomaly */
+> +       WARN_ON_FPU(fpu != &current->thread.fpu);
+>
+> -       fpu__drop(fpu);
+> +       if (!static_cpu_has(X86_FEATURE_FPU)) {
+> +               fpu__drop(fpu);
+> +               fpu__initialize(fpu);
+> +               return;
+> +       }
+>
+> -       /*
+> -        * Make sure fpstate is cleared and initialized.
+> -        */
+> -       fpu__initialize(fpu);
+> -       if (static_cpu_has(X86_FEATURE_FPU))
+> -               copy_init_fpstate_to_fpregs();
+> +       fpregs_lock();
 > +
-> +	return i;
->  }
-> 
->  static void dp_aux_native_handler(struct dp_aux_private *aux, u32 isr)
-> @@ -367,36 +347,38 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
-> *dp_aux,
->  	}
-> 
->  	ret = dp_aux_cmd_fifo_tx(aux, msg);
-> -
->  	if (ret < 0) {
->  		if (aux->native) {
->  			aux->retry_cnt++;
->  			if (!(aux->retry_cnt % MAX_AUX_RETRIES))
->  				dp_catalog_aux_update_cfg(aux->catalog);
->  		}
-> -		usleep_range(400, 500); /* at least 400us to next try */
-> -		goto unlock_exit;
-> -	}
+> +       if (user_only) {
+> +               if (!fpregs_state_valid(fpu, smp_processor_id()) &&
+> +                   xfeatures_mask_supervisor())
+> +                       copy_kernel_to_xregs(&fpu->state.xsave,
+> +                                            xfeatures_mask_supervisor());
 
-1) dp_catalog_aux_update_cfg(aux->catalog) will not work without  
-dp_catalog_aux_reset(aux->catalog);
-dp_catalog_aux_reset(aux->catalog) will reset hpd control block and 
-potentially cause pending hpd interrupts got lost.
-Therefore I think we should not do 
-dp_catalog_aux_update_cfg(aux->catalog) for now.
-reset aux controller will reset hpd control block probolem will be fixed 
-at next chipset.
-after that we can add dp_catalog_aux_update_cfg(aux->catalog) followed 
-by dp_catalog_aux_reset(aux->catalog) back at next chipset.
+This looks correct to me.
 
-2) according to DP specification, aux read/write failed have to wait at 
-least 400us before next try can start.
-Otherwise, DP compliant test will failed
-
-
-> -
-> -	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
-> -		if (aux->read)
-> -			dp_aux_cmd_fifo_rx(aux, msg);
-> -
-> -		msg->reply = aux->native ?
-> -			DP_AUX_NATIVE_REPLY_ACK : DP_AUX_I2C_REPLY_ACK;
->  	} else {
-> -		/* Reply defer to retry */
-> -		msg->reply = aux->native ?
-> -			DP_AUX_NATIVE_REPLY_DEFER : DP_AUX_I2C_REPLY_DEFER;
-> +		aux->retry_cnt = 0;
-> +		switch (aux->aux_error_num) {
-> +		case DP_AUX_ERR_NONE:
-> +			if (aux->read)
-> +				ret = dp_aux_cmd_fifo_rx(aux, msg);
-> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_ACK : 
-> DP_AUX_I2C_REPLY_ACK;
-> +			break;
-> +		case DP_AUX_ERR_DEFER:
-> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_DEFER :
-> DP_AUX_I2C_REPLY_DEFER;
-> +			break;
-> +		case DP_AUX_ERR_PHY:
-> +		case DP_AUX_ERR_ADDR:
-> +		case DP_AUX_ERR_NACK:
-> +		case DP_AUX_ERR_NACK_DEFER:
-> +			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_NACK : 
-> DP_AUX_I2C_REPLY_NACK;
-> +			break;
-> +		case DP_AUX_ERR_TOUT:
-> +			ret = -ETIMEDOUT;
-> +			break;
-> +		}
->  	}
-> 
-> -	/* Return requested size for success or retry */
-> -	ret = msg->size;
-> -	aux->retry_cnt = 0;
-> -
-> -unlock_exit:
->  	aux->cmd_busy = false;
->  	mutex_unlock(&aux->mutex);
-> +
->  	return ret;
->  }
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.h 
-> b/drivers/gpu/drm/msm/dp/dp_aux.h
-> index f8b8ba919465..0728cc09c9ec 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.h
-> @@ -9,14 +9,6 @@
->  #include "dp_catalog.h"
->  #include <drm/drm_dp_helper.h>
-> 
-> -#define DP_AUX_ERR_NONE		0
-> -#define DP_AUX_ERR_ADDR		-1
-> -#define DP_AUX_ERR_TOUT		-2
-> -#define DP_AUX_ERR_NACK		-3
-> -#define DP_AUX_ERR_DEFER	-4
-> -#define DP_AUX_ERR_NACK_DEFER	-5
-> -#define DP_AUX_ERR_PHY		-6
-> -
->  int dp_aux_register(struct drm_dp_aux *dp_aux);
->  void dp_aux_unregister(struct drm_dp_aux *dp_aux);
->  void dp_aux_isr(struct drm_dp_aux *dp_aux);
+So I'm guessing that syzbot may have misattributed the problem.  But
+we definitely need to clean up the XRSTOR #GP handling before CET
+lands.
