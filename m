@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3742738E881
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E2338E888
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhEXOSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:18:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:42508 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhEXORy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:17:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61598139F;
-        Mon, 24 May 2021 07:16:26 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ED4B3F719;
-        Mon, 24 May 2021 07:16:24 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Subject: Re: [PATCH 2/3] powerpc/numa: Populate distance map correctly
-In-Reply-To: <20210520154427.1041031-3-srikar@linux.vnet.ibm.com>
-References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com> <20210520154427.1041031-3-srikar@linux.vnet.ibm.com>
-Date:   Mon, 24 May 2021 15:16:22 +0100
-Message-ID: <87im386wuh.mognet@arm.com>
+        id S232971AbhEXOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:19:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232462AbhEXOTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:19:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621865906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BPw/5LHMKGLRM41ByxBD2gODEQe12CphnDx2DP+UUxM=;
+        b=Qpx32zg010Yl3WLBCImXEjPu2FEhK9m0Dyj2TrudgMZ9e6CDclJrav6WFWnd0KQ2WJjBYe
+        mRYCn9rsdtdyFcYWl2u8b7lbxk6TMbwtuXE59VMIgNYn81JKAUPruD6wO8Fh3DOMhK5Rv8
+        AsuI50UM6i1Xn4Zjvi6+wDk+MUXT9Ys=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-c9P9WihOMHqOA9U3U2QNpw-1; Mon, 24 May 2021 10:18:24 -0400
+X-MC-Unique: c9P9WihOMHqOA9U3U2QNpw-1
+Received: by mail-ej1-f72.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso7621609ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:18:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BPw/5LHMKGLRM41ByxBD2gODEQe12CphnDx2DP+UUxM=;
+        b=R6ImqTINP7c8ahJsYxzH/15WkzWlu+gAiWJvnbZnj6+YrtLZYcfUmhrP6yPwQlqhDG
+         BcgVx33MysGkPh9PeG0+GM0Cgbmyx/mOjOPXLLEN7GFzbJeyCEFZQXq6WQb0d7IHJ4EF
+         Tpy/gZx580CehtIPlQk73nh+Pu6vHHmYaeI9Kd83KlM+IVpk2APs8YVM/HGeHnUM0Z1D
+         0ylHuC8D1pfqZOoIXy4ZLCqgcVmIiK3jWuFTW9n8bIEckrAs3Sr/YjLFHQPtj6ZeoVh9
+         iRBRP2+k4hL+2afv7ORxCTbflU0l7PeKSG8A6bzaZRJy2lOw8Ysei2COv9tLLrQfHAlc
+         pt2A==
+X-Gm-Message-State: AOAM531keg79CbjuYZyJi/edvxDf/ewi4FpS1E8bFDLFE70wr/oGhXaY
+        4flzrrY76kk+j46c2xjebrlcOIyDMFlbRxfIraQ3LmR4EMwLNQobp0i6RBnn0I1VguLu1nG8D7q
+        hijIoYOncUhffv3tm9mOHIM51ex1dZCKTlRocTYJ4wEUemp7eG+9vehqtpyghy5tL9DjnQNezAZ
+        Hg
+X-Received: by 2002:a17:906:7e55:: with SMTP id z21mr23962505ejr.225.1621865903344;
+        Mon, 24 May 2021 07:18:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx45Uzx7QU999pULxjst2unJ84pDpHQLupsTGnJHZT9GFcGBcvJ2kHermICIR/DbnvBToGvRg==
+X-Received: by 2002:a17:906:7e55:: with SMTP id z21mr23962474ejr.225.1621865903105;
+        Mon, 24 May 2021 07:18:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f11sm7691938ejd.101.2021.05.24.07.18.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 07:18:22 -0700 (PDT)
+Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+ <20210517135054.1914802-2-vkuznets@redhat.com>
+ <115fcae7-0c88-4865-6494-bdf6fb672382@redhat.com>
+ <87r1hw8br1.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <37a6d13d-58ae-65e1-75f9-681a40d819a1@redhat.com>
+Date:   Mon, 24 May 2021 16:18:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <87r1hw8br1.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/21 21:14, Srikar Dronamraju wrote:
-> +int arch_populate_distance_map(unsigned long *distance_map)
-> +{
-> +	int i;
-> +	int distance = LOCAL_DISTANCE;
-> +
-> +	bitmap_set(distance_map, distance, 1);
-> +
-> +	if (!form1_affinity) {
-> +		bitmap_set(distance_map, REMOTE_DISTANCE, 1);
-> +		return 0;
-> +	}
-> +
-> +	for (i = 0; i < distance_ref_points_depth; i++) {
-> +		distance *= 2;
-> +		bitmap_set(distance_map, distance, 1);
+On 24/05/21 16:09, Vitaly Kuznetsov wrote:
+> You mean we'll be using:
+> 
+> "hv_evmcs_ptr == 0" meaning "no evmcs" (like now)
+> "hv_evmcs_ptr == -1" meaing "evmcs not yet mapped" (and
+> nested_evmcs_is_used() will check for both '0' and '-1')
+> "hv_evmcs_ptr == anything else" - eVMCS mapped.
 
-Do you have guarantees your distance values will always be in the form of
+I was thinking of:
 
-  LOCAL_DISTANCE * 2^i
+hv_evmcs_ptr == -1 meaning no evmcs
 
-because that certainly isn't true for x86/arm64.
+hv_evmcs == NULL meaning "evmcs not yet mapped" (I think)
 
-> +	}
-> +	return 0;
-> +}
-> +
->  /*
->   * Returns nid in the range [0..nr_node_ids], or -1 if no useful NUMA
->   * info is found.
-> --
-> 2.27.0
+hv_evmcs != NULL meaning "evmcs mapped".
+
+As usual with my suggestions, I'm not sure if this makes sense :) but if 
+it does, the code should be nicer.
+
+Paolo
+
