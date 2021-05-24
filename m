@@ -2,110 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B60638F33E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF04638F343
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhEXSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbhEXSvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:51:39 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB0EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:50:10 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so26133841oth.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OA4u1hUVW7+czWLOl7FPRNPAHAh/vc/gl/M2fiIZYJo=;
-        b=tQ32gaJ+K524LKDCVZIVsFdMx5pCHrP/SDGMrpfkp0V7f+aQg0NutnYXMkesDoexif
-         n2+tK4S+bphjLSN2kEcC6C7z9YBFVFBIreIhdg0x4rRIMU0jkHEkla0y5cDBNr3mHaPn
-         kl8H3/DFY/rz9Dl+uqpvH3aJCCgzHC7tfzu/wQlTFe+UWJf9hTPXJ12olYhHAgghQGgO
-         FSYeEShH7WQ1ssMxvkzVLmVtMoOpF7BFQdFzoPKM1HQYO+GKODiYM5nw84om2K2sR5Hf
-         LJ9MmwmflUEZffrDx/bUSw6EugvN8R10GbN5W5H9uShfTJaZGM9EWKVUfVjCP36awygI
-         55fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OA4u1hUVW7+czWLOl7FPRNPAHAh/vc/gl/M2fiIZYJo=;
-        b=O2mB5BIX/LUm3i3zQD+senX0XYxfMjjT2KVlvXYGV8W8iniscqXTLYJU0T0DoIvte1
-         aQMgdgwBpAuaRYPr8Z29A/FLBiu8RjTHCTg0RGKFznmlk+iziOFCp07/2PtE/7o97UG6
-         /LUROLtW69pjkU5uN4TATq88mewH0UNJnuAeUTEBZgEcP6H+QGEhFXW5jrMDRcWfaF1n
-         OfBYQ/f7qlJqZ+9eFxFUbWWkYyw8NaGvky0kwqiy8SZTOTEh3xG4Wm3B+sxC9xenkXba
-         gMvRxcCjw1LZCRL7eb35JPLBbJXrOMzdoV9Ooig57s9bH1Lyh57tjEKvkc4QOhnwiO5P
-         ny4Q==
-X-Gm-Message-State: AOAM531SQ+Xpg4OPIMea73Z3UHbBN6rQiPC6zMz0lhGn+cEDH3zYd30I
-        +m32hYEl248ubnnGe14NaDmEu4xHGS70xovncrU=
-X-Google-Smtp-Source: ABdhPJwiKzX9Gj1sMzHOgN92igF3UyXdCiTIb4xlUH7OP/tM0D4aeQ/+U1aKEUBnpy8WLZa75emQN038NmfSWdArwjY=
-X-Received: by 2002:a9d:57cd:: with SMTP id q13mr19783026oti.23.1621882209553;
- Mon, 24 May 2021 11:50:09 -0700 (PDT)
+        id S233174AbhEXSvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:51:54 -0400
+Received: from mail-dm6nam08on2088.outbound.protection.outlook.com ([40.107.102.88]:57216
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232746AbhEXSvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:51:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LbnCPROkwxRy052ADbjICfmXCioGKerC2llzfrD5Z+yE00CiNwVz+g/MAM6g5xCR/7K5/L8gxMe8JRXRrqcrWvuYEDc04VPvGnUW+sfxpwb7ugstz8cgahS0fY/c/4kRvmYe1NvPhC1oPSf+tk7gGt45KhAQantYXYC7rRsaUmyXPR/38BVobO27kYbMCu9fDk5zu6KoWezdLBi2Rc2QAoC/zMBYpvMNOYaRXiiHHTGJj4zHvUysGA18F96762Nf7igk5zrwdDgCeXhMYdDlFt40+RmKMFxU0DJANlqb7rWsVWuqQgyiRcFikMLYegQQu7U6RM0YLlwbjupbYInjvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t2vvZ9jE5uZ4fFHVbr41tZIbCOJJa/tlhC9oyQg3BVI=;
+ b=NTuXqyYWqtDfzXI94ST9cFLYRu7WYILIbnctdz/QtwYP9M/xuEasjPd3q0lJ3+U2UeE0fOJDBncDMnidbKlY+Z5kFNyzJ/kn0zC7E7eCKL3yc6+S5X20DNamXiqvz/JGr9epFE8gBL9R52jnbOMPkom4sNUMpfA8+x5dZRSdRNNAnDPX6+syW5F9rwruHSHMw2qvCPax1MyGl+BHGfzPed2DBXOGSCkCm9niLha7eSZSEZdsEZFl+cXNerIaO4gACowsc4Rtj76GNqg6996rt63XnkaWP9+8r1n9K+MECHgM/qPUj3MgMpZko/dGDzr8yg6wyBtMhEkjUjXNAxECFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t2vvZ9jE5uZ4fFHVbr41tZIbCOJJa/tlhC9oyQg3BVI=;
+ b=jTocPNvwbI6KgAC7tkBbNgmTxl+V8Mlwdw4CbQLOLZDpik47RIyQNjwjUxysCg87C/rg/xwfEA81NtlLwxA/SQ1V+PzuUyLordjbiPul/EeMFS7LxyWnc1v3JPdb5uTPr+NZRlz4KAqvh8/RCqn5Bjm1H7F0fi+kNxp4gqdL/426jJxQhg+rIvzlLKJetdr+lfsGVZLELri8q+2s4DDaRCx6ZSB6CR4YdsACgu50UqDwW4/9qUWHK8mGyVYIm1gqYNrA/1ffvuXLqhs6/G0/a/RHj40ejVvtPw7cPYnKVTQpCkJ2q00j5UrvZyrU63HR9KMQH9SOgx1lMwPB11ew3A==
+Received: from DM6PR21CA0020.namprd21.prod.outlook.com (2603:10b6:5:174::30)
+ by BL1PR12MB5190.namprd12.prod.outlook.com (2603:10b6:208:31c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Mon, 24 May
+ 2021 18:50:23 +0000
+Received: from DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:174:cafe::ff) by DM6PR21CA0020.outlook.office365.com
+ (2603:10b6:5:174::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.2 via Frontend
+ Transport; Mon, 24 May 2021 18:50:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT026.mail.protection.outlook.com (10.13.172.161) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Mon, 24 May 2021 18:50:22 +0000
+Received: from [10.26.49.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 24 May
+ 2021 18:50:20 +0000
+Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210520175054.28308-1-digetx@gmail.com>
+ <20210520175054.28308-3-digetx@gmail.com>
+ <32171079-ed4e-1147-2272-5f11bc480c6a@nvidia.com>
+ <91e53907-d87d-aeeb-4644-3926d4311daa@gmail.com>
+ <6bc26992-e136-ef6a-a956-382b5cae5db7@nvidia.com>
+ <f9631faa-5fc8-ecdd-709b-93b58e45a1ac@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <cf2ee04e-d4cf-14ba-92d0-aa113eb7b8c8@nvidia.com>
+Date:   Mon, 24 May 2021 19:50:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210524071554.12344-1-nswdhpyhwt@163.com>
-In-Reply-To: <20210524071554.12344-1-nswdhpyhwt@163.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 May 2021 14:49:58 -0400
-Message-ID: <CADnq5_OoFF=zEr61yRj0c6xXTBO4qLwor76e4knyyPg1ZhHF0g@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: fix typo
-To:     nswdhpyhwt@163.com
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sonny Jiang <sonny.jiang@amd.com>, Leo Liu <leo.liu@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "tony.huang_cp" <huangwentao@yulong.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f9631faa-5fc8-ecdd-709b-93b58e45a1ac@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eaf2b72d-d116-43fe-3d22-08d91ee4c969
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5190:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB519061159D969DE8120B3DCAD9269@BL1PR12MB5190.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1Sw1suuFJkgMHz2DTg6yDX2+GBjhW+HIQOzyI3DPtehVxWZOPOMTKZY9KhscF9bS2+yO6LgBTrsERbmWaSWmJ4aOzRywe9O66V7Vt/wLfaorE5njTtPIt4CVvwzvzfaEshzQqa3X5uzFVaiY1Mzz/jG2T1IeRViga65F5izDqRvCKdYkqrGVELco1/x3D9PVutCp3T6XHUpKqp+NAeeX451brus4WGbuz2Qt6FFJIphhPPfyaC1Jk34s7NQI0beMVxbGBZGKE7/RrXO29/Ogu6JaBcoCV9Zt2z6ObxzMAm816zR5MzAgcZxIc9fmWpHE/IlYWhYaEp56mKKXp06t4aURbM5knrTszcIAVDtLTHiX1tAegFtz5cPxZY5/2inUT9nCinAUH/nplW8twu5RTD51zuxTeNlPwoiFbBDdDTx3A4DaQfCadfmTx3CKSfDWO52bqrETzX8ifnebX8XFUhd4sDb2+wmcg04xapxPJn0nwqzn7NYakc5Bw4xbWeJaLZ9pWIRI0BBJfShMl9MZmXX2tXR1I7L/L0o+6u0ftcNg8sTCjwqskOuD5/mdGUNG9hyV494Fgein4Vak80ZrLLpkWGKnvEUB7fmarMO+hUmlJu3DXSe6aAEe5r/eseAORSZX5LQBcyqr8ZQH1UrnLDSaL7xsrunXP5pKRsIAkPf4AIe/LOTKPPGQXnX9Zeo0
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(36840700001)(46966006)(82740400003)(186003)(36906005)(83380400001)(478600001)(8676002)(316002)(8936002)(4326008)(16576012)(356005)(70206006)(31686004)(26005)(70586007)(2616005)(47076005)(7636003)(36756003)(16526019)(36860700001)(31696002)(5660300002)(426003)(2906002)(82310400003)(53546011)(86362001)(336012)(54906003)(110136005)(7416002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 18:50:22.9070
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: eaf2b72d-d116-43fe-3d22-08d91ee4c969
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
+On 24/05/2021 14:40, Dmitry Osipenko wrote:
+> 24.05.2021 15:22, Jon Hunter пишет:
+>>
+>>
+>> On 21/05/2021 20:05, Dmitry Osipenko wrote:
+>>
+>> ...
+>>
+>>>>> +unsigned int tegra_asoc_machine_mclk_rate(unsigned int srate)
+>>>>> +{
+>>>>> +	unsigned int mclk;
+>>>>> +
+>>>>> +	switch (srate) {
+>>>>> +	case 64000:
+>>>>> +	case 88200:
+>>>>> +	case 96000:
+>>>>> +		mclk = 128 * srate;
+>>>>> +		break;
+>>>>> +	default:
+>>>>> +		mclk = 256 * srate;
+>>>>> +		break;
+>>>>> +	}
+>>>>> +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
+>>>>> +	while (mclk < 6000000)
+>>>>> +		mclk *= 2;
+>>>>
+>>>> So this appears to be specific to the wm8903 codec or at least this is
+>>>> where it came from. And given that the switch statement is not complete
+>>>> in terms of the sample rates (ie. only has a subset), I am wondering if
+>>>> set should keep this specific to the wm8903 codec?
+>>>
+>>> The RT5631 codec of Asus Transformers will re-use this function.
+>>
+>> OK, but does it need this FIXME part? That appears to be codec specific.
+> 
+> Downstream RT5631 Tegra driver has exactly the same FIXME.
 
-On Mon, May 24, 2021 at 3:45 AM <nswdhpyhwt@163.com> wrote:
->
-> From: "tony.huang_cp" <huangwentao@yulong.com>
->
-> change 'interupt' to 'interrupt'
->
-> Signed-off-by: tony.huang_cp <huangwentao@yulong.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-> index 284447d..6c0e914 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
-> @@ -340,7 +340,7 @@ static int uvd_v3_1_start(struct amdgpu_device *adev)
->         /* enable VCPU clock */
->         WREG32(mmUVD_VCPU_CNTL,  1 << 9);
->
-> -       /* disable interupt */
-> +       /* disable interrupt */
->         WREG32_P(mmUVD_MASTINT_EN, 0, ~(1 << 1));
->
->  #ifdef __BIG_ENDIAN
-> @@ -405,7 +405,7 @@ static int uvd_v3_1_start(struct amdgpu_device *adev)
->                 return r;
->         }
->
-> -       /* enable interupt */
-> +       /* enable interrupt */
->         WREG32_P(mmUVD_MASTINT_EN, 3<<1, ~(3 << 1));
->
->         WREG32_P(mmUVD_STATUS, 0, ~(1<<2));
-> --
-> 1.9.1
->
+What downstream branch are you referring to? I still don't think that
+that is a good reason to make this 'FIXME' the standard going forward
+and hence I would prefer that it is kept specific the wm8903. Otherwise
+people will keep using this code without understanding if this is
+needed/correct.
+
+> Although, I now see that downstream RT5631 uses 384*srate for the
+> default cases.
+> 
+> I also see that WM8994 driver that we have in grate-kernel for Galaxy
+> Tab and SGH-I927 also re-uses that mclk_rate function.
+> 
+>>> IIUC, the default switch-case works properly for all rates below 64KHz,
+>>> at least I haven't had any problems with it. Could you please clarify
+>>> why you are saying that the switch statement appears to be incomplete?
+>>
+>> It looks a bit weird because less than 64kHz and greater than 96kHz we
+>> use 256 and for only 64kHz, 88.2kHz and 96kHz we use 128. So it is not
+>> clear to me which sample rates have actually been tested with this and
+>> if this is complete or not?
+>>
+>> Is it intended that we use 256 for sample rates greater than 96kHz?
+> 
+> The 128*srate gives MCLK >6MHZ for 64/88/96, 256*srate gives MCLK >6MHZ
+> for rates below 64kHZ. Looks like the goal is to get MCLK >6MHZ.
+
+The wm8903 supports 8kHz sample rates and 256*8000 is less than 6MHz.
+Yes the FIXME loop corrects this, but you could also extend the case
+statement to multiply by 512 for 8kHz.
+
+>  The WM8903 datasheet says:
+> 
+> "The  following  operating  frequency  limits  must  be  observed  when
+>  configuring  CLK_SYS.  Failure  to  observe   these   limits   will
+> result   in   degraded  noise   performance   and/or   incorrect
+> ADC/DAC  functionality.
+> 
+> If DAC_OSR = 0 then CLK_SYS  3MHz
+> If DAC_OSR = 1 then CLK_SYS  6MHz"
+> 
+> Where DAC_OSR is DAC Oversampling Control
+> 0 = Low power (normal oversample)
+> 1 = High performance (double rate)
+> 
+> I see that DAC_OSR=0 by default, it can be switched to 1 by userspace
+> ALSA control.
+> 
+
+Yes that is all fine, but again this is specific to the wm8903.
+
+Jon
+
+-- 
+nvpublic
