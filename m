@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09C538EE25
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFD538EDFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhEXPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        id S234659AbhEXPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234248AbhEXPl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:41:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA9C861456;
-        Mon, 24 May 2021 15:34:43 +0000 (UTC)
+        id S233879AbhEXPkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:40:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0506143A;
+        Mon, 24 May 2021 15:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870484;
-        bh=dvRhylMM555JA8EOpyrJQdp6quiVFeZiBnuhqqBa5fY=;
+        s=korg; t=1621870456;
+        bh=cCJCMC36Ge3NvLa2sMCwovOSbnmUC5nuuXymeLcvdQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TE/AqwgwjfJmXucgHHo4Httc6aZAjKxS/BlSyna4ikhowm6+RUm8Ny2pNHyMqpctt
-         aSmjf8mhTRGgfk852BcqQbjjdIkI6WKBuHMKeP9Mbw/juO8Qe0T1dtpwmfdEqycsKo
-         o6/aarsO/pUZJzqEZyXpzadBVdgsCfL/R/+ziH6E=
+        b=X6BO2S6YbylhmDEAxPxu1ClK7j1HbNnqDaqPd02fwPK15DkIc5Enj/rufz7zZZql8
+         MHK+oMKEqoVgL3UhBw8EdM/0ZRzG0PLKF2yMhYpszHP5gQ/yyB+AZdiIuDd2cK+TjY
+         s/Xg8EvTotA+wlYxYYSxF/Af9NTx3fYQoUoU7SAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Pedro Alves <palves@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/49] ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
-Date:   Mon, 24 May 2021 17:25:18 +0200
-Message-Id: <20210524152324.620321932@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 15/37] dm snapshot: fix crash with transient storage and zero chunk size
+Date:   Mon, 24 May 2021 17:25:19 +0200
+Message-Id: <20210524152324.709750069@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,161 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit dbb5afad100a828c97e012c6106566d99f041db6 ]
+commit c699a0db2d62e3bbb7f0bf35c87edbc8d23e3062 upstream.
 
-Suppose we have 2 threads, the group-leader L and a sub-theread T,
-both parked in ptrace_stop(). Debugger tries to resume both threads
-and does
+The following commands will crash the kernel:
 
-	ptrace(PTRACE_CONT, T);
-	ptrace(PTRACE_CONT, L);
+modprobe brd rd_size=1048576
+dmsetup create o --table "0 `blockdev --getsize /dev/ram0` snapshot-origin /dev/ram0"
+dmsetup create s --table "0 `blockdev --getsize /dev/ram0` snapshot /dev/ram0 /dev/ram1 N 0"
 
-If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
-resume the old leader L, it resumes the post-exec thread T which was
-actually now stopped in PTHREAD_EVENT_EXEC. In this case the
-PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
-tracee changed its pid.
+The reason is that when we test for zero chunk size, we jump to the label
+bad_read_metadata without setting the "r" variable. The function
+snapshot_ctr destroys all the structures and then exits with "r == 0". The
+kernel then crashes because it falsely believes that snapshot_ctr
+succeeded.
 
-This patch makes ptrace() fail in this case until debugger does wait()
-and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
-ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
+In order to fix the bug, we set the variable "r" to -EINVAL.
 
-The patch doesn't add the new PTRACE_ option to not complicate the API,
-and I _hope_ this won't cause any noticeable regression:
-
-	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
-	  and the tracer does a ptrace request without having consumed
-	  the exec event, it's 100% sure that the thread the ptracer
-	  thinks it is targeting does not exist anymore, or isn't the
-	  same as the one it thinks it is targeting.
-
-	- To some degree this patch adds nothing new. In the scenario
-	  above ptrace(L) can fail with -ESRCH if it is called after the
-	  execing sub-thread wakes the leader up and before it "steals"
-	  the leader's pid.
-
-Test-case:
-
-	#include <stdio.h>
-	#include <unistd.h>
-	#include <signal.h>
-	#include <sys/ptrace.h>
-	#include <sys/wait.h>
-	#include <errno.h>
-	#include <pthread.h>
-	#include <assert.h>
-
-	void *tf(void *arg)
-	{
-		execve("/usr/bin/true", NULL, NULL);
-		assert(0);
-
-		return NULL;
-	}
-
-	int main(void)
-	{
-		int leader = fork();
-		if (!leader) {
-			kill(getpid(), SIGSTOP);
-
-			pthread_t th;
-			pthread_create(&th, NULL, tf, NULL);
-			for (;;)
-				pause();
-
-			return 0;
-		}
-
-		waitpid(leader, NULL, WSTOPPED);
-
-		ptrace(PTRACE_SEIZE, leader, 0,
-				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
-		waitpid(leader, NULL, 0);
-
-		ptrace(PTRACE_CONT, leader, 0,0);
-		waitpid(leader, NULL, 0);
-
-		int status, thread = waitpid(-1, &status, 0);
-		assert(thread > 0 && thread != leader);
-		assert(status == 0x80137f);
-
-		ptrace(PTRACE_CONT, thread, 0,0);
-		/*
-		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
-		 * report status. Why ????
-		 *
-		 * Why WEXITED? because we have another kernel problem connected
-		 * to mt-exec.
-		 */
-		siginfo_t info;
-		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
-		assert(info.si_pid == leader && info.si_status == 0x0405);
-
-		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
-		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
-		assert(errno == ESRCH);
-
-		assert(leader == waitpid(leader, &status, WNOHANG));
-		assert(status == 0x04057f);
-
-		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
-
-		return 0;
-	}
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Reported-by: Simon Marchi <simon.marchi@efficios.com>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Acked-by: Pedro Alves <palves@redhat.com>
-Acked-by: Simon Marchi <simon.marchi@efficios.com>
-Acked-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/ptrace.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/md/dm-snap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index ecdb7402072f..af74e843221b 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -163,6 +163,21 @@ void __ptrace_unlink(struct task_struct *child)
- 	spin_unlock(&child->sighand->siglock);
- }
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -1285,6 +1285,7 @@ static int snapshot_ctr(struct dm_target
  
-+static bool looks_like_a_spurious_pid(struct task_struct *task)
-+{
-+	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
-+		return false;
-+
-+	if (task_pid_vnr(task) == task->ptrace_message)
-+		return false;
-+	/*
-+	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
-+	 * was not wait()'ed, most probably debugger targets the old
-+	 * leader which was destroyed in de_thread().
-+	 */
-+	return true;
-+}
-+
- /* Ensure that nothing can wake it up, even SIGKILL */
- static bool ptrace_freeze_traced(struct task_struct *task)
- {
-@@ -173,7 +188,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
- 		return ret;
- 
- 	spin_lock_irq(&task->sighand->siglock);
--	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
-+	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
-+	    !__fatal_signal_pending(task)) {
- 		task->state = __TASK_TRACED;
- 		ret = true;
+ 	if (!s->store->chunk_size) {
+ 		ti->error = "Chunk size not set";
++		r = -EINVAL;
+ 		goto bad_read_metadata;
  	}
--- 
-2.30.2
-
+ 
 
 
