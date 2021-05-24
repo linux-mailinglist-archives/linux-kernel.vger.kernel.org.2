@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C1F38EFF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC05838F09A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234831AbhEXQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38696 "EHLO mail.kernel.org"
+        id S236711AbhEXQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234194AbhEXPyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6025461400;
-        Mon, 24 May 2021 15:39:39 +0000 (UTC)
+        id S234409AbhEXP55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41645613D6;
+        Mon, 24 May 2021 15:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870779;
-        bh=PUcFZFfMlxrF6KIC44lRkzF2bo/Fg2nBQPLL+pmSMp4=;
+        s=korg; t=1621871035;
+        bh=5Hx4p+Qbxi3eDt6LJCwbrurWvlawR5FryGBHDF53dlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E6vn1Bu6Fs4QRqofPhPzcVHvU3GG2pyJ0O7m7YiMwUDimXIWqbfXbofPkMZccm3rn
-         0dEv9Np26fBEOjGciWp7uirNuf4xb1lNPeQNSVQT5kewC2uPbvpTH9V+nua3XPW1pn
-         Yd5bTyLNsuZxJyIs/7zhpw93LBqLVkKeGm/z78Io=
+        b=CuRUlDI2ehvx/Zc5b5UjzJbL4e94ypKrzeGDLf+k68dXBVR9l9keznfrm93iIfSbV
+         C+B6xLrSV2sT6bUEvx2c07RsN8LmmXkzKfxbx1J/gG2uuT6Y4lft5pgLXEKJdBigSI
+         qxIuFsTDmRRqmIqvRMIipAe8MkEYZyoj5R54VAr4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rik van Riel <riel@surriel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 031/104] btrfs: avoid RCU stalls while running delayed iputs
+        stable@vger.kernel.org,
+        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 009/127] RDMA/rxe: Clear all QP fields if creation failed
 Date:   Mon, 24 May 2021 17:25:26 +0200
-Message-Id: <20210524152333.849600830@linuxfoundation.org>
+Message-Id: <20210524152335.172456951@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,76 +43,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 71795ee590111e3636cc3c148289dfa9fa0a5fc3 upstream.
+[ Upstream commit 67f29896fdc83298eed5a6576ff8f9873f709228 ]
 
-Generally a delayed iput is added when we might do the final iput, so
-usually we'll end up sleeping while processing the delayed iputs
-naturally.  However there's no guarantee of this, especially for small
-files.  In production we noticed 5 instances of RCU stalls while testing
-a kernel release overnight across 1000 machines, so this is relatively
-common:
+rxe_qp_do_cleanup() relies on valid pointer values in QP for the properly
+created ones, but in case rxe_qp_from_init() failed it was filled with
+garbage and caused tot the following error.
 
-  host count: 5
-  rcu: INFO: rcu_sched self-detected stall on CPU
-  rcu: ....: (20998 ticks this GP) idle=59e/1/0x4000000000000002 softirq=12333372/12333372 fqs=3208
-   	(t=21031 jiffies g=27810193 q=41075) NMI backtrace for cpu 1
-  CPU: 1 PID: 1713 Comm: btrfs-cleaner Kdump: loaded Not tainted 5.6.13-0_fbk12_rc1_5520_gec92bffc1ec9 #1
+  refcount_t: underflow; use-after-free.
+  WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+  Modules linked in:
+  CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+  Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+  RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+  RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
+  RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+  R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
+  R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
+  FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
   Call Trace:
-    <IRQ> dump_stack+0x50/0x70
-    nmi_cpu_backtrace.cold.6+0x30/0x65
-    ? lapic_can_unplug_cpu.cold.30+0x40/0x40
-    nmi_trigger_cpumask_backtrace+0xba/0xca
-    rcu_dump_cpu_stacks+0x99/0xc7
-    rcu_sched_clock_irq.cold.90+0x1b2/0x3a3
-    ? trigger_load_balance+0x5c/0x200
-    ? tick_sched_do_timer+0x60/0x60
-    ? tick_sched_do_timer+0x60/0x60
-    update_process_times+0x24/0x50
-    tick_sched_timer+0x37/0x70
-    __hrtimer_run_queues+0xfe/0x270
-    hrtimer_interrupt+0xf4/0x210
-    smp_apic_timer_interrupt+0x5e/0x120
-    apic_timer_interrupt+0xf/0x20 </IRQ>
-   RIP: 0010:queued_spin_lock_slowpath+0x17d/0x1b0
-   RSP: 0018:ffffc9000da5fe48 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-   RAX: 0000000000000000 RBX: ffff889fa81d0cd8 RCX: 0000000000000029
-   RDX: ffff889fff86c0c0 RSI: 0000000000080000 RDI: ffff88bfc2da7200
-   RBP: ffff888f2dcdd768 R08: 0000000001040000 R09: 0000000000000000
-   R10: 0000000000000001 R11: ffffffff82a55560 R12: ffff88bfc2da7200
-   R13: 0000000000000000 R14: ffff88bff6c2a360 R15: ffffffff814bd870
-   ? kzalloc.constprop.57+0x30/0x30
-   list_lru_add+0x5a/0x100
-   inode_lru_list_add+0x20/0x40
-   iput+0x1c1/0x1f0
-   run_delayed_iput_locked+0x46/0x90
-   btrfs_run_delayed_iputs+0x3f/0x60
-   cleaner_kthread+0xf2/0x120
-   kthread+0x10b/0x130
+   __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+   __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+   refcount_dec_and_test include/linux/refcount.h:333 [inline]
+   kref_put include/linux/kref.h:64 [inline]
+   rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
+   execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
+   rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
+   kref_put include/linux/kref.h:65 [inline]
+   rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
+   _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
+   ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
+   ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
+   create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
+   ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
+   ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
+   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
+   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+   ib_register_device drivers/infiniband/core/device.c:1413 [inline]
+   ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
+   rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
+   rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+   rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
+   rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+   rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+   nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
+   rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+   rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+   netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+   sock_sendmsg_nosec net/socket.c:654 [inline]
+   sock_sendmsg+0xcf/0x120 net/socket.c:674
+   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+   ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+   do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fix this by adding a cond_resched_lock() to the loop processing delayed
-iputs so we can avoid these sort of stalls.
-
-CC: stable@vger.kernel.org # 4.9+
-Reviewed-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com
+Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2967,6 +2967,7 @@ void btrfs_run_delayed_iputs(struct btrf
- 		inode = list_first_entry(&fs_info->delayed_iputs,
- 				struct btrfs_inode, delayed_iput);
- 		run_delayed_iput_locked(fs_info, inode);
-+		cond_resched_lock(&fs_info->delayed_iput_lock);
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 34ae957a315c..b0f350d674fd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -242,6 +242,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	if (err) {
+ 		vfree(qp->sq.queue->buf);
+ 		kfree(qp->sq.queue);
++		qp->sq.queue = NULL;
+ 		return err;
  	}
- 	spin_unlock(&fs_info->delayed_iput_lock);
- }
+ 
+@@ -295,6 +296,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		if (err) {
+ 			vfree(qp->rq.queue->buf);
+ 			kfree(qp->rq.queue);
++			qp->rq.queue = NULL;
+ 			return err;
+ 		}
+ 	}
+@@ -355,6 +357,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ err2:
+ 	rxe_queue_cleanup(qp->sq.queue);
+ err1:
++	qp->pd = NULL;
++	qp->rcq = NULL;
++	qp->scq = NULL;
++	qp->srq = NULL;
++
+ 	if (srq)
+ 		rxe_drop_ref(srq);
+ 	rxe_drop_ref(scq);
+-- 
+2.30.2
+
 
 
