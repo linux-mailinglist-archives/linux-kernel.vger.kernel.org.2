@@ -2,80 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C44438E5BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E101038E5C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhEXLqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:46:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5679 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhEXLqt (ORCPT
+        id S232786AbhEXLsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232625AbhEXLsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:46:49 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fpb122v74z1BR46;
-        Mon, 24 May 2021 19:42:30 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 19:45:20 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
- May 2021 19:45:20 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: cs42l56: use DEVICE_ATTR_WO macro
-Date:   Mon, 24 May 2021 19:45:03 +0800
-Message-ID: <20210524114503.26460-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Mon, 24 May 2021 07:48:04 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A93DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:46:35 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id et19so34275415ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=2Q82VtrVrpT6RPgDrZ+gcYZWvDuIiGS7uieO/KG+a5I=;
+        b=bm5fPvROW9d68ckndnVjzHUu/SebhyyfhcKEfkzohn+4sjG5RBoF5ioXUkYBzTWdlr
+         HTKGphgr/+ijCmRdhRjqOOVyIYAcDwaDNQEH9//VYKgjxbufymXzv1ocoHwaPWMXsyyx
+         HfYv/YGS0xPOIuOmI4SXPrGLQbze1bdTImdYPrHRyvmUdW5HyX9uxL3FHVBzgrvbIXlj
+         gfEtCZa7VYbZn6bXikY7Lkmp1SCuSbWDIvZKZoejan46WjKdkJRu3wqe64RBetkGhrWZ
+         Gek4iueJJEDgyLh89yD3vjgHGhGY7NH47zHyZ8/RjW+A5fr4M5mteV0GWUlIyvXLIw8v
+         GYIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=2Q82VtrVrpT6RPgDrZ+gcYZWvDuIiGS7uieO/KG+a5I=;
+        b=iWAxrSckgAMMP7p2B1QPXnc9OiSBsVp8LOpqV1WmlnR9FXHWA6YtY+cris5tc41hTA
+         aAK2vSiBX89NJ+QQ++hKJPFchcNZuFVfnFSTmA7BKxj3epIGnQ9L1hLFUm/EWI1QISJA
+         TaZUyGCRalh+m3vQ9jyuhzBQfoqcw3NADEQ56oXLeWWv2JAtGFOyCElSZcZLnKS8TAVK
+         nWNs8Rv9QRceDdWAS+CHhYUjqxSk85JHXs9M6ebkmQLMZ36Ihig83RoBt1RV1m1JU1Q1
+         pZcPF1tz95PA2MmIxB8kVOs+u0VMh9SGJ4gd6M/pz3QVdZah2rv8jxBA896FhbqqBk0I
+         LiQw==
+X-Gm-Message-State: AOAM531toHFVDpGr9bCv8p6dH29pS9+9sqsk4clvVNHgFjaLtzJOdehY
+        fLYg2/v668VObOcKDj36OrpXkqLSJZMWfNwNP1/Q8g==
+X-Google-Smtp-Source: ABdhPJwbDJKtue+GKoVRNDjr8x5jngrd9hrXCCgAjXOKwbdB44t9Yw6c8ioUpbO0Q66+iDGCt5oO6Wzi2KW0jJpK1D4=
+X-Received: by 2002:a17:906:f896:: with SMTP id lg22mr21667951ejb.170.1621856793678;
+ Mon, 24 May 2021 04:46:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 24 May 2021 17:16:22 +0530
+Message-ID: <CA+G9fYvFXTHPKwasdVidF7qEHdqwRht8Xg6qm6CCLL0HGaU1ew@mail.gmail.com>
+Subject: x86: unistd_64.h: warning: missing whitespace after the macro name
+To:     X86 ML <x86@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_WO() helper instead of plain DEVICE_ATTR(),
-which makes the code a bit shorter and easier to read.
+While building Linux next-20210524 tag with gcc 7.x the following warnings and
+errors were noticed.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/codecs/cs42l56.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+build log:
+------------
+  HOSTLD  scripts/mod/modpost
+  CC      kernel/bounds.s
+  CALL    /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/scripts/atomic/check-atomics.sh
+  UPD     include/generated/bounds.h
+  UPD     include/generated/timeconst.h
+  CC      arch/x86/kernel/asm-offsets.s
+In file included from
+/srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/include/asm/unistd.h:20:0,
+                 from
+/srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/include/asm/seccomp.h:5,
+                 from
+/srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/include/linux/seccomp.h:21,
+                 from
+/srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/include/linux/sched.h:21,
+                 from
+/srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/kernel/asm-offsets.c:10:
+./arch/x86/include/generated/uapi/asm/unistd_64.h:4:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrread 0
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:5:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrwrite 1
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:5:0: warning:
+"__NR_" redefined
+ #define __NR_/usrwrite 1
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 7cdffdf6b8cf..3cf8a0b4478c 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1021,9 +1021,8 @@ static int cs42l56_beep_event(struct input_dev *dev, unsigned int type,
- 	return 0;
- }
- 
--static ssize_t cs42l56_beep_set(struct device *dev,
--			       struct device_attribute *attr,
--			       const char *buf, size_t count)
-+static ssize_t beep_store(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t count)
- {
- 	struct cs42l56_private *cs42l56 = dev_get_drvdata(dev);
- 	long int time;
-@@ -1038,7 +1037,7 @@ static ssize_t cs42l56_beep_set(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(beep, 0200, NULL, cs42l56_beep_set);
-+static DEVICE_ATTR_WO(beep);
- 
- static void cs42l56_init_beep(struct snd_soc_component *component)
- {
--- 
-2.17.1
+./arch/x86/include/generated/uapi/asm/unistd_64.h:4:0: note: this is
+the location of the previous definition
+ #define __NR_/usrread 0
 
+./arch/x86/include/generated/uapi/asm/unistd_64.h:6:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usropen 2
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:6:0: warning:
+"__NR_" redefined
+ #define __NR_/usropen 2
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:5:0: note: this is
+the location of the previous definition
+ #define __NR_/usrwrite 1
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:7:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrclose 3
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:7:0: warning:
+"__NR_" redefined
+ #define __NR_/usrclose 3
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:6:0: note: this is
+the location of the previous definition
+ #define __NR_/usropen 2
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:8:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrstat 4
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:8:0: warning:
+"__NR_" redefined
+ #define __NR_/usrstat 4
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:7:0: note: this is
+the location of the previous definition
+ #define __NR_/usrclose 3
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:9:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrfstat 5
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:9:0: warning:
+"__NR_" redefined
+ #define __NR_/usrfstat 5
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:8:0: note: this is
+the location of the previous definition
+ #define __NR_/usrstat 4
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:10:14: warning:
+missing whitespace after the macro name
+ #define __NR_/usrlstat 6
+              ^
+./arch/x86/include/generated/uapi/asm/unistd_64.h:10:0: warning:
+"__NR_" redefined
+ #define __NR_/usrlstat 6
+
+./arch/x86/include/generated/uapi/asm/unistd_64.h:9:0: note: this is
+the location of the previous definition
+ #define __NR_/usrfstat 5
+
+<trim>
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+Detailed build link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-buster-lkft/1032/console
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
