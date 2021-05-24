@@ -2,247 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CDD38E22C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3638038E232
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhEXIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhEXIOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:14:52 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B06C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:13:23 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so7859844wmq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hkoJ4XU3fJYIUXpsvaVz4eo9jPqdu/8/7QTK7vX9wJM=;
-        b=pL2oo52tUpRLBy49VIx5zFQfFs5QoWz6wCdaZlOZynpDEiny/Ix3dTTLDNMS3jTgP+
-         CAvTt0KKu+xM5jHc9zloqeIu+MILVF1fS0tLdulYu0KHAhGdkXyg/ezsgjuFDshU/ipv
-         Nc6vA/sFhFWX0CtXzfB8q/dBybiq/y3SCsxnogvRPd8VgF5hhq3CT56rtSKRNN3rsHZ9
-         6xA8OndA1FmuRj6PzaoOaJ9Kr0EEIbMfvHcy78eF3jAhKwg9eXN9h0Cs+EykFPkbD5cP
-         6mo1yQO1u3Iqh6grda/3LMtWRo+eGmxP449xoKZhaNwwtAnAhYQJrtAzarXyd2pmiP4f
-         /DfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hkoJ4XU3fJYIUXpsvaVz4eo9jPqdu/8/7QTK7vX9wJM=;
-        b=Y1H0fJaq8NEDduawnh2gOz3GmWgWw2KQJ5nn1/aj9OuD3hwgyDX7uXNX6cRvwtYhgl
-         kjx5YcAUhkqO7qzGxpAY7ST0Z4nAmGrUg0xaa3Btjxh1yRrWNumnIe6y4aG2qKucIiKO
-         1iTMgYt6bnPoCt+1hI6LGgZYtwaX87MdyRYKAg0AOA9pNQZx6VG9sN3worSKZ1Xx+Ih0
-         QQL0kIYkSbAhbpSGXZ/k+rCd6DLoISUm3YJ0+DW/8KZH0JxL6umS5FULLDxhan/UOVKb
-         1SlT1S6yJnDSNnBgzGEeZM4Fav+NJ/y6Jvkgz4Wyc9/S1X4mv+cQerZeOXIXcsQ5bJ56
-         uXhw==
-X-Gm-Message-State: AOAM531jNQv9/YX8RcxZ/CQfDtpBMcEwbzyHGBtyYnIGoyyhE1+D0rG9
-        gjWpVoGgffgizQnPP2MXi3OPjAMQW21pU0PMYt+5Nw==
-X-Google-Smtp-Source: ABdhPJyC2jCu7SFxxUWfosx6Xigmxy1B2+g0gPGzW98vy1plPs28wHz7rs4SviVoeR8UnTFwEAYZZhBVno/WhE+51kM=
-X-Received: by 2002:a1c:4e0b:: with SMTP id g11mr18341827wmh.3.1621844001916;
- Mon, 24 May 2021 01:13:21 -0700 (PDT)
+        id S232382AbhEXITt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232279AbhEXITq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 04:19:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C6A1610FA;
+        Mon, 24 May 2021 08:18:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621844297;
+        bh=AlVcLQHTxNloRwDWsV+rNVmvKSeCiwHEajO/2kgia10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jxT3W7cNdTS6rash1fRa+9EOMXQ3xdfHj2CTpT7I4rdZgj3yPhh5je5scL3bS1idH
+         u6n/LG6KtpZjW52stfGjY3XKuf+/pCmTNiHq05855UigNExzdYwnQMxKHQZWWtm9m3
+         4yOp2QvWwHJS4ro/cd6eIf2zBvJSzuF7jRi5dZPs=
+Date:   Mon, 24 May 2021 10:18:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Luiz Sampaio <sampaio.ime@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH] w1: fix build warning in w1_ds2438.rst
+Message-ID: <YKthRzCGan9WEcmP@kroah.com>
+References: <20210524161919.626b3344@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1621839068-31738-1-git-send-email-guoren@kernel.org> <1621839068-31738-3-git-send-email-guoren@kernel.org>
-In-Reply-To: <1621839068-31738-3-git-send-email-guoren@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 24 May 2021 13:43:10 +0530
-Message-ID: <CAAhSdy16yXsuPRBv2Sn-OJwEhvs1UkdMUr1jqhB8qxXo+Mu7=w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] riscv: Use use_asid_allocator flush TLB
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524161919.626b3344@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:22 PM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> Use static_branch_unlikely(&use_asid_allocator) to keep the origin
-> tlb flush style, so it's no effect on the existing machine. Here
-> are the optimized functions:
->  - flush_tlb_mm
->  - flush_tlb_page
->  - flush_tlb_range
->
-> All above are based on the below new implement functions:
->  - __sbi_tlb_flush_range_asid
->  - local_flush_tlb_range_asid
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> ---
->  arch/riscv/include/asm/mmu_context.h |  2 ++
->  arch/riscv/include/asm/tlbflush.h    | 22 ++++++++++++++++++++
->  arch/riscv/mm/context.c              |  2 +-
->  arch/riscv/mm/tlbflush.c             | 40 +++++++++++++++++++++++++++++++++---
->  4 files changed, 62 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-> index b065941..7030837 100644
-> --- a/arch/riscv/include/asm/mmu_context.h
-> +++ b/arch/riscv/include/asm/mmu_context.h
-> @@ -33,6 +33,8 @@ static inline int init_new_context(struct task_struct *tsk,
->         return 0;
->  }
->
-> +DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
-> +
->  #include <asm-generic/mmu_context.h>
->
->  #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-> index c84218a..9390319 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -8,6 +8,7 @@
->  #define _ASM_RISCV_TLBFLUSH_H
->
->  #include <linux/mm_types.h>
-> +#include <asm/page.h>
->  #include <asm/smp.h>
->  #include <asm/errata_list.h>
->
-> @@ -22,9 +23,30 @@ static inline void local_flush_tlb_page(unsigned long addr)
->  {
->         ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
->  }
-> +
-> +static inline void local_flush_tlb_range_asid(unsigned long start, unsigned long size,
-> +                                             unsigned long asid)
-> +{
-> +       unsigned long page_add = PAGE_DOWN(start);
-> +       unsigned long page_end = PAGE_UP(start + size);
+commit c999fbbdcf77 ("w1: ds2438: support for writing to offset
+register") added more documentation, but had a one-off line for the
+header of a section which caused the build warning:
 
-Your PATCH2 is not correct because PAGE_UP(x) should in-fact
-return 0 when x == 0.
+	Documentation/w1/slaves/w1_ds2438.rst:56: WARNING: Title underline too short.
 
-In fact, if both "start" and "size" are zero then both page_add and
-page_end should be zero so that no "sfence.vma" is executed.
+Resolve this by fixing the underline to be long enough.
 
-If you want at least one TLB entry to be invalidated when size == 0
-then you can simply set "size = 1" when size is zero which will force
-one TLB invalidation.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Please drop your PATCH2 and the rest of the things look good to me.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
-
-> +
-> +       if (size == -1) {
-> +               __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
-> +               return;
-> +       }
-> +
-> +       while(page_add < page_end) {
-> +               __asm__ __volatile__ ("sfence.vma %0, %1"
-> +                               :
-> +                               : "r" (page_add), "r" (asid)
-> +                               : "memory");
-> +               page_add += PAGE_SIZE;
-> +       }
-> +}
->  #else /* CONFIG_MMU */
->  #define local_flush_tlb_all()                  do { } while (0)
->  #define local_flush_tlb_page(addr)             do { } while (0)
-> +#define local_flush_tlb_range_asid(addr)       do { } while (0)
->  #endif /* CONFIG_MMU */
->
->  #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 68aa312..45c1b04 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -18,7 +18,7 @@
->
->  #ifdef CONFIG_MMU
->
-> -static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
-> +DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
->
->  static unsigned long asid_bits;
->  static unsigned long num_asids;
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 720b443..69588dc 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -4,6 +4,7 @@
->  #include <linux/smp.h>
->  #include <linux/sched.h>
->  #include <asm/sbi.h>
-> +#include <asm/mmu_context.h>
->
->  void flush_tlb_all(void)
->  {
-> @@ -39,18 +40,51 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
->         put_cpu();
->  }
->
-> +static void __sbi_tlb_flush_range_asid(struct cpumask *cmask, unsigned long start,
-> +                                      unsigned long size, unsigned long asid)
-> +{
-> +       struct cpumask hmask;
-> +       unsigned int cpuid;
-> +
-> +       if (cpumask_empty(cmask))
-> +               return;
-> +
-> +       cpuid = get_cpu();
-> +
-> +       if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
-> +               local_flush_tlb_range_asid(start, size, asid);
-> +       } else {
-> +               riscv_cpuid_to_hartid_mask(cmask, &hmask);
-> +               sbi_remote_sfence_vma_asid(cpumask_bits(&hmask), start, size, asid);
-> +       }
-> +
-> +       put_cpu();
-> +}
-> +
->  void flush_tlb_mm(struct mm_struct *mm)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
-> +       if (static_branch_unlikely(&use_asid_allocator))
-> +               __sbi_tlb_flush_range_asid(mm_cpumask(mm), 0, -1,
-> +                                          atomic_long_read(&mm->context.id));
-> +       else
-> +               __sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
->  }
->
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
-> +       if (static_branch_unlikely(&use_asid_allocator))
-> +               __sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE,
-> +                                          atomic_long_read(&vma->vm_mm->context.id));
-> +       else
-> +               __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
->  }
->
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->                      unsigned long end)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
-> +       if (static_branch_unlikely(&use_asid_allocator))
-> +               __sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), start, end - start,
-> +                                          atomic_long_read(&vma->vm_mm->context.id));
-> +       else
-> +               __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
->  }
-> --
-> 2.7.4
->
+diff --git a/Documentation/w1/slaves/w1_ds2438.rst b/Documentation/w1/slaves/w1_ds2438.rst
+index 5c5573991351..4fa671fbc93f 100644
+--- a/Documentation/w1/slaves/w1_ds2438.rst
++++ b/Documentation/w1/slaves/w1_ds2438.rst
+@@ -53,7 +53,7 @@ from the slave device. If it is correct, the 8 bytes page data are passed
+ to userspace, otherwise an I/O error is returned.
+ 
+ "offset"
+--------
++--------
+ This file controls the 2-byte Offset Register of the chip.
+ Writing a 2-byte value will change the Offset Register, which changes the
+ current measurement done by the chip. Changing this register to the two's complement
