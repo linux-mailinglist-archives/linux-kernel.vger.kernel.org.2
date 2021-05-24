@@ -2,208 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF34338E24B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C103F38E254
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhEXIay convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 04:30:54 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:47067 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232279AbhEXIaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:30:52 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-287-jZos3xe8MRC6svOSyzJzVQ-1; Mon, 24 May 2021 09:29:21 +0100
-X-MC-Unique: jZos3xe8MRC6svOSyzJzVQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 24 May 2021 09:29:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 24 May 2021 09:29:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Samuel Neves' <sneves@dei.uc.pt>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] x86/usercopy: speed up 64-bit __clear_user() with
- stos{b,q}
-Thread-Topic: [PATCH] x86/usercopy: speed up 64-bit __clear_user() with
- stos{b,q}
-Thread-Index: AQHXT/9yOXqO/LIr3EWA7KTWrkvuyaryStrQ
-Date:   Mon, 24 May 2021 08:29:18 +0000
-Message-ID: <58be4e3df1954458890d69c2684fb748@AcuMS.aculab.com>
-References: <20210523180423.108087-1-sneves@dei.uc.pt>
-In-Reply-To: <20210523180423.108087-1-sneves@dei.uc.pt>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S232413AbhEXIeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:34:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232306AbhEXIeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 04:34:13 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D8096113B;
+        Mon, 24 May 2021 08:32:46 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ll60y-003Aa8-80; Mon, 24 May 2021 09:32:44 +0100
+Date:   Mon, 24 May 2021 09:32:36 +0100
+Message-ID: <87v978wmzf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 34/39] ARM: Bulk conversion to generic_handle_domain_irq()
+In-Reply-To: <CAL_JsqJ2onUWecftfOrZZAZgegJzwC2_UT_gRcV88L5A9R9Ddg@mail.gmail.com>
+References: <20210520163751.27325-1-maz@kernel.org>
+        <20210520163751.27325-35-maz@kernel.org>
+        <CAL_JsqJ2onUWecftfOrZZAZgegJzwC2_UT_gRcV88L5A9R9Ddg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: robh@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Neves
-> Sent: 23 May 2021 19:04
+On Thu, 20 May 2021 19:04:17 +0100,
+Rob Herring <robh@kernel.org> wrote:
 > 
-> The current 64-bit implementation of __clear_user consists of a simple loop
-> writing an 8-byte register per iteration. On typical x86_64 chips, this will
-> result in a rate of ~8 bytes per cycle.
+> On Thu, May 20, 2021 at 11:58 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Wherever possible, replace constructs that match either
+> > generic_handle_irq(irq_find_mapping()) or
+> > generic_handle_irq(irq_linear_revmap()) to a single call to
+> > generic_handle_domain_irq().
+> >
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm/mach-pxa/pxa_cplds_irqs.c | 6 ++----
+> >  arch/arm/mach-s3c/irq-s3c24xx.c    | 5 ++---
+> >  2 files changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/arch/arm/mach-pxa/pxa_cplds_irqs.c b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+> > index ec0d9b094744..ce1bbabbad54 100644
+> > --- a/arch/arm/mach-pxa/pxa_cplds_irqs.c
+> > +++ b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+> > @@ -39,10 +39,8 @@ static irqreturn_t cplds_irq_handler(int in_irq, void *d)
+> >
+> >         do {
+> >                 pending = readl(fpga->base + FPGA_IRQ_SET_CLR) & fpga->irq_mask;
+> > -               for_each_set_bit(bit, &pending, CPLDS_NB_IRQ) {
+> > -                       generic_handle_irq(irq_find_mapping(fpga->irqdomain,
+> > -                                                           bit));
+> > -               }
+> > +               for_each_set_bit(bit, &pending, CPLDS_NB_IRQ)
+> > +                       generic_handle_domain_irq(fpga->irqdomain, bit);
 > 
-> On those same typical chips, much better is often possible, ranging from 16
-> to 32 to 64 bytes per cycle. Here we want to avoid bringing vector
-> instructions for this, but we can still achieve something close to those fill
-> rates using `rep stos{b,q}`. This is actually how it is already done in
-> usercopy_32.c.
+> We see this pattern a bit, I'm wondering if we can come up with a
+> common helper. For an even longer name, something like:
 > 
-> This patch does precisely this. But because `rep stosb` can be slower for
-> short fills, I've retained the old loop for sizes below 256 bytes. This is a
-> somewhat arbitrary threshold; some documents say that `rep stosb` should be
-> faster after 128 bytes, whereas glibc puts the threshold at 2048 bytes (but
-> there it is competing against vector instructions). My measurements on
-> various (but not an exhaustive variety of) machines suggest this is a
-> reasonable threshold, but I could be mistaken.
-> 
-> It should also be mentioned that the existent code contains a bug. In the loop
-> 
->     "0: movq $0,(%[dst])\n"
->     "   addq   $8,%[dst]\n"
->     "   decl %%ecx ; jnz   0b\n"
-> 
-> The `decl %%ecx` instruction truncates the register containing `size/8` to
-> 32 bits, which means that calling __clear_user on a buffer longer than 32 GiB
-> would leave part of it unzeroed.
-> 
-> This change is noticeable from userspace. That is in fact how I spotted it; in
-> a hashing benchmark that read from /dev/zero, around 10-15% of the CPU time
-> was spent in __clear_user. After this patch, on a Skylake CPU, these are the
-> before/after figures:
-> 
-> $ dd if=/dev/zero of=/dev/null bs=1024k status=progress
-> 94402248704 bytes (94 GB, 88 GiB) copied, 6 s, 15.7 GB/s
-> 
-> $ dd if=/dev/zero of=/dev/null bs=1024k status=progress
-> 446476320768 bytes (446 GB, 416 GiB) copied, 15 s, 29.8 GB/s
-> 
-> The difference decreases when reading in smaller increments, but I have
-> observed no slowdowns.
-> 
-> Signed-off-by: Samuel Neves <sneves@dei.uc.pt>
-> ---
->  arch/x86/lib/usercopy_64.c | 59 +++++++++++++++++++++++++-------------
->  1 file changed, 39 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-> index 508c81e97..af0f3089a 100644
-> --- a/arch/x86/lib/usercopy_64.c
-> +++ b/arch/x86/lib/usercopy_64.c
-> @@ -9,6 +9,7 @@
->  #include <linux/export.h>
->  #include <linux/uaccess.h>
->  #include <linux/highmem.h>
-> +#include <asm/alternative.h>
-> 
->  /*
->   * Zero Userspace
-> @@ -16,33 +17,51 @@
-> 
->  unsigned long __clear_user(void __user *addr, unsigned long size)
->  {
-> -	long __d0;
-> +	long __d0, __d1;
->  	might_fault();
->  	/* no memory constraint because it doesn't change any memory gcc knows
->  	   about */
->  	stac();
->  	asm volatile(
-> -		"	testq  %[size8],%[size8]\n"
-> -		"	jz     4f\n"
-> -		"	.align 16\n"
-> -		"0:	movq $0,(%[dst])\n"
-> -		"	addq   $8,%[dst]\n"
-> -		"	decl %%ecx ; jnz   0b\n"
-> -		"4:	movq  %[size1],%%rcx\n"
-> -		"	testl %%ecx,%%ecx\n"
-> -		"	jz     2f\n"
-> -		"1:	movb   $0,(%[dst])\n"
-> -		"	incq   %[dst]\n"
-> -		"	decl %%ecx ; jnz  1b\n"
-> -		"2:\n"
-> +		"	cmp    $256, %[size]\n"
-> +		"	jae    3f\n"  /* size >= 256 */
-> +		"	mov    %k[size], %k[aux]\n"
-> +		"	and    $7, %k[aux]\n"
-> +		"	shr    $3, %[size]\n"
-> +		"	jz     1f\n"  /* size < 8 */
-> +		".align 16\n"
-> +		"0:	movq   %%rax,(%[dst])\n"
-> +		"	add    $8,%[dst]\n"
-> +		"	dec    %[size]; jnz 0b\n"
+> generic_handle_domain_irq_for_bitmap(fpga->irqdomain, &pending, CPLDS_NB_IRQ);
 
-No need for a loop, just write zeros to the end of the buffer.
-It may be worth doing that even if the size is a multiple of
-8 and the last 'block zero' clears the same bytes.
+Maybe. However, people may want to (should?) do something when
+generic_handle_domain_irq() returns an error, and this wrapper would
+hide the error entirely (and being a secondary interrupt controller,
+things are as non-standard as you can imagine them).
 
-> +		"1:	mov    %k[aux],%k[size]\n"
-> +		"	test   %k[aux], %k[aux]\n"
-> +		"	jz     6f\n"
-> +		"2:	movb   %%al,(%[dst])\n"
-> +		"	inc    %[dst]\n"
-> +		"	dec    %k[size]; jnz 2b\n"
-> +		"	jmp	   6f\n"
-> +		"3:	\n"
-> +		ALTERNATIVE(
-> +			"mov   %k[size], %k[aux]\n"
-> +			"shr   $3, %[size]\n"
-> +			"and   $7, %k[aux]\n"
-> +			"4:    rep stosq\n"
-> +			"mov   %k[aux], %k[size]\n",
+If we can come up with a common approach for most of the bitmap-driven
+I'd be happy to add something to that effect. Not as part of this
+series though.
 
-You really don't want to use 'rep stosb' here.
-There are a large class of x86 cpu where it is really horrid.
-IIRC there is one small set (just before the ERMS ones) where
-short 'rep movsb' isn't too bad.
+Thanks,
 
-	David
+	M.
 
-> +			"",
-> +			X86_FEATURE_ERMS
-> +		)
-> +		"5: rep stosb\n"
-> +		"6:	\n"
->  		".section .fixup,\"ax\"\n"
-> -		"3:	lea 0(%[size1],%[size8],8),%[size8]\n"
-> -		"	jmp 2b\n"
-> +		"7:	lea 0(%[aux],%[size],8),%[size]\n"
-> +		"	jmp    6b\n"
->  		".previous\n"
-> -		_ASM_EXTABLE_UA(0b, 3b)
-> -		_ASM_EXTABLE_UA(1b, 2b)
-> -		: [size8] "=&c"(size), [dst] "=&D" (__d0)
-> -		: [size1] "r"(size & 7), "[size8]" (size / 8), "[dst]"(addr));
-> +		_ASM_EXTABLE_UA(0b, 7b)
-> +		_ASM_EXTABLE_UA(2b, 6b)
-> +		_ASM_EXTABLE_UA(4b, 7b)
-> +		_ASM_EXTABLE_UA(5b, 6b)
-> +		: [size] "=&c"(size), [dst] "=&D" (__d0), [aux] "=&r"(__d1)
-> +		: "[size]" (size), "[dst]"(addr), "a"(0));
->  	clac();
->  	return size;
->  }
-> --
-> 2.31.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Without deviation from the norm, progress is not possible.
