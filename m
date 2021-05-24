@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D08F38EE41
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E8438EDF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhEXPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56576 "EHLO mail.kernel.org"
+        id S234347AbhEXPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:44:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233965AbhEXPmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:42:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B34361457;
-        Mon, 24 May 2021 15:35:05 +0000 (UTC)
+        id S233740AbhEXPj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:39:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2AF61435;
+        Mon, 24 May 2021 15:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870505;
-        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
+        s=korg; t=1621870440;
+        bh=Wjlwndu3maWl4Pu3r737cwkled+6HVuNMWTYCHealns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLlOoVgkI4p/mHUWvEOE5vpIseODb9lpoHDJa2HXsGakIlDF0Coc5zw06SK2ET4ea
-         qgmbluvzjQ1/A6NvutBtCLoX33ULvZnvQmXE+P7QtGs8VbMwu0FpwlRDR1+dLu/8Zr
-         8GuxFOR2Lg339W4pnzjGApmOazxDujAaHmeN3pKU=
+        b=b4BAOXCVFrntiYR5wwZUg0WuRY/qW9XjksQmFfqkOeXVrCdf2Tv7BdS6e7lUlpnbo
+         +0L9ILqJ4gsGbbn/TXbS5GanyKmwUPWWJtEnCd5OUhtBfxBR/UwDw+FkSFcS4ju12a
+         +q/IYhvBMqU40y5nrnJWaB7xlNYvDtBmU2r6tfeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: [PATCH 4.19 27/49] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+        stable@vger.kernel.org, Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Subject: [PATCH 4.14 34/37] video: hgafb: fix potential NULL pointer dereference
 Date:   Mon, 24 May 2021 17:25:38 +0200
-Message-Id: <20210524152325.258389830@linuxfoundation.org>
+Message-Id: <20210524152325.321554753@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 
-commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
+commit dc13cac4862cc68ec74348a80b6942532b7735fa upstream.
 
-This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
+The return of ioremap if not checked, and can lead to a NULL to be
+assigned to hga_vram. Potentially leading to a NULL pointer
+dereference.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+The fix adds code to deal with this case in the error label and
+changes how the hgafb_probe handles the return of hga_card_detect.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit does not properly unwind if there is an error
-condition so it needs to be reverted at this point in time.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Cc: stable <stable@vger.kernel.org>
-Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
-Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
+Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-40-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/leds/leds-lp5523.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/video/fbdev/hgafb.c |   21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
+--- a/drivers/video/fbdev/hgafb.c
++++ b/drivers/video/fbdev/hgafb.c
+@@ -285,6 +285,8 @@ static int hga_card_detect(void)
+ 	hga_vram_len  = 0x08000;
  
- 	/* Let the programs run for couple of ms and check the engine status */
- 	usleep_range(3000, 6000);
--	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
--	if (ret)
--		return ret;
-+	lp55xx_read(chip, LP5523_REG_STATUS, &status);
- 	status &= LP5523_ENG_STATUS_MASK;
+ 	hga_vram = ioremap(0xb0000, hga_vram_len);
++	if (!hga_vram)
++		return -ENOMEM;
  
- 	if (status != LP5523_ENG_STATUS_MASK) {
+ 	if (request_region(0x3b0, 12, "hgafb"))
+ 		release_io_ports = 1;
+@@ -344,13 +346,18 @@ static int hga_card_detect(void)
+ 			hga_type_name = "Hercules";
+ 			break;
+ 	}
+-	return 1;
++	return 0;
+ error:
+ 	if (release_io_ports)
+ 		release_region(0x3b0, 12);
+ 	if (release_io_port)
+ 		release_region(0x3bf, 1);
+-	return 0;
++
++	iounmap(hga_vram);
++
++	pr_err("hgafb: HGA card not detected.\n");
++
++	return -EINVAL;
+ }
+ 
+ /**
+@@ -548,13 +555,11 @@ static struct fb_ops hgafb_ops = {
+ static int hgafb_probe(struct platform_device *pdev)
+ {
+ 	struct fb_info *info;
++	int ret;
+ 
+-	if (! hga_card_detect()) {
+-		printk(KERN_INFO "hgafb: HGA card not detected.\n");
+-		if (hga_vram)
+-			iounmap(hga_vram);
+-		return -EINVAL;
+-	}
++	ret = hga_card_detect();
++	if (!ret)
++		return ret;
+ 
+ 	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
+ 		hga_type_name, hga_vram_len/1024);
 
 
