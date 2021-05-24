@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB68F38F46C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED6C38F46D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhEXUed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232676AbhEXUeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 16:34:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8243B613BC;
-        Mon, 24 May 2021 20:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621888376;
-        bh=/ZmMkfeFVEJtTK0muGwwN9GZqwmxbVGHMxb/E5KyW54=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lMuXnM0QO5fDMiCegDMDnto8Jz7KB2QuypLCAFt91bjHql+2lOMnRWZSbqynjchSK
-         yvWaYswqS1H9/XCdi25UoNAJewuJ6QUJJu2FWzdC8RzUdFCP2Md63P/ANd8jZdoRmt
-         ZFYnl39RklELhh4aGtvgUOgpg/d4N0d2ljcdGJzbh4oZKWHNGIW07oo7xpT89kb92R
-         F3mnMlNLV1M/3xeSW8aBJRht1j1Jz8dnivwSr31kAOxURdSg0ZvFF72FgcvYgnSkPb
-         DShhOq7bcUdjS+eQDKAPQOv4rIrnaLvL/3gEdpW+uT/rWOxXdNiPedPL9TYLYsglPe
-         YV3dKTKSTV6CQ==
-Date:   Mon, 24 May 2021 21:32:50 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 18/21] arm64: Prevent offlining first CPU with 32-bit
- EL0 on mismatched system
-Message-ID: <20210524203249.GD15545@willie-the-truck>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-19-will@kernel.org>
- <20210524154657.GE14645@arm.com>
+        id S233454AbhEXUef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232929AbhEXUe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 16:34:26 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99846C061574;
+        Mon, 24 May 2021 13:32:56 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id q67so4752395pfb.4;
+        Mon, 24 May 2021 13:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qJcO70sr7yP3+DUAooohk7hGAbCdhh2b83zx22V/NxA=;
+        b=YYFrBODAaSAmB+q9ZGXfZL5VkiIQwK7CzJnzBaKrH64lh5MOCBKA3qZ1DCp66LaGs8
+         JWh+6lSVvEsJe7MzYRqjwlRBKI0oBi/NoALfInMvOwYF3js3FZvFL/xupL6/zXFeBbJG
+         s9IxY8997sbBBtrofPVs07Xwo80z3JJrBeYCeUWpLJdtQwZbWobmUKmSWiHdAfAJVZH2
+         HSXTgYRGl1zODNx7x6aInnmcRIsLwgp57bP+1H13NB6CtFjEyJo7olmaJqWdXgz1MYrD
+         cT1wb9BmzwGoDZhVZ/0dlqr+UQHqpqrco8VDOWTW5dMc8x3FsaFu4pVmMG1ElC5Q2SD+
+         FXNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qJcO70sr7yP3+DUAooohk7hGAbCdhh2b83zx22V/NxA=;
+        b=ASku3C5ARZLQB9xy7YxcRUKuMnK0H3/uT5nMdUop+2D882SZyXwidoUn4oKXbyQygT
+         rmhDCujDdQTruQorjOkdd6AGgUCjuP9qoaRNsZ+jsOfVVCbGAh0cstmLM3WhDNpmG5Zg
+         w/VPwEtoD8uWwIU08BMkoZLAZS4gocW6EN2j36UvCKme030GzWwLmGYglUMHjMgXix8b
+         T4OfbMl+jqZ/4URlEFN8xQzD6jfpknoYJE/GX6PJ8rXx1K9n6F2/ePcyA8aOW0qJqSJO
+         /Wxq9yTBAglZ0UJJbU4AVN/qIEvBc33tkhRadhSyG1lJxTwKCvsxJLBy1mEjJBwd0MLU
+         5Biw==
+X-Gm-Message-State: AOAM530XsIK2sMm/aCsvbwPvEAA30FUJW9NUCK/vJjAbUImYK+yCcsNJ
+        26nK9728rP4fu9sFruGDESJlo5ytZKleCA==
+X-Google-Smtp-Source: ABdhPJze8OGjR8VsQN1Cr66K11ljRJfpJHJ5vQuDcI8htZdEiDjGgPAGIDU+QUZBJqQL6Y+B0DYd3g==
+X-Received: by 2002:a65:654a:: with SMTP id a10mr15198968pgw.443.1621888376010;
+        Mon, 24 May 2021 13:32:56 -0700 (PDT)
+Received: from localhost ([103.248.31.164])
+        by smtp.gmail.com with ESMTPSA id n8sm11379670pff.167.2021.05.24.13.32.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 13:32:55 -0700 (PDT)
+Date:   Tue, 25 May 2021 02:02:53 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH v2] PCI: Check value of resource alignment before using
+ __ffs
+Message-ID: <20210524203253.xwpq7tmah2vrew7l@archlinux>
+References: <20210422105538.76057-1-ameynarkhede03@gmail.com>
+ <YIFWhL9RvwZJdnAB@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210524154657.GE14645@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YIFWhL9RvwZJdnAB@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
-
-On Mon, May 24, 2021 at 04:46:58PM +0100, Catalin Marinas wrote:
-> On Tue, May 18, 2021 at 10:47:22AM +0100, Will Deacon wrote:
-> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > index 959442f76ed7..72efdc611b14 100644
-> > --- a/arch/arm64/kernel/cpufeature.c
-> > +++ b/arch/arm64/kernel/cpufeature.c
-> > @@ -2896,15 +2896,33 @@ void __init setup_cpu_features(void)
-> >  
-> >  static int enable_mismatched_32bit_el0(unsigned int cpu)
-> >  {
-> > +	static int lucky_winner = -1;
-> > +
-> >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-> >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
-> >  
-> >  	if (cpu_32bit) {
-> >  		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
-> >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
-> > -		setup_elf_hwcaps(compat_elf_hwcaps);
-> >  	}
-> >  
-> > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
-> > +		return 0;
-> 
-> I don't fully understand this early return. AFAICT, we still call
-> setup_elf_hwcaps() via setup_cpu_features() if the system supports
-> 32-bit EL0 (mismatched or not) at boot. For CPU hotplug, we can add the
-> compat hwcaps later if we didn't set them up at boot. So this part is
-> fine.
-> 
-> However, if CPU0 is 32-bit-capable, it looks like we'd never disable the
-> offlining on any of the 32-bit-capable CPUs and there's nothing that
-> prevents offlining CPU0.
-
-That is also deferred until we actually detect the mismatch. For example, if
-CPU0 is 32-bit capable but none of the others are, then when we online CPU1
-we will print:
-
-  | CPU features: Asymmetric 32-bit EL0 support detected on CPU 1; CPU hot-unplug disabled on CPU 0
-
-so the check above is really asking "Is the CPU being onlined mismatched wrt
-the boot CPU?". If yes, then we need to make sure that we're keeping a
-32-bit-capable CPU around.
-
-Will
+On 21/04/22 01:57PM, Leon Romanovsky wrote:
+> On Thu, Apr 22, 2021 at 04:25:38PM +0530, Amey Narkhede wrote:
+> > Return value of __ffs is undefined if no set bit exists in
+> > its argument. This indicates that the associated BAR has
+> > invalid alignment.
+> >
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> >  drivers/pci/setup-bus.c | 9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> >
+>
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+A gentle ping :)
