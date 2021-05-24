@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0368F38EFFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34F438EDD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhEXQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38648 "EHLO mail.kernel.org"
+        id S233072AbhEXPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234652AbhEXPyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CA8D613F5;
-        Mon, 24 May 2021 15:39:37 +0000 (UTC)
+        id S234046AbhEXPiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:38:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9990E613E4;
+        Mon, 24 May 2021 15:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870777;
-        bh=B2YmaOLZ8sUvAHqkfhLKExSdVVQsHbEQlSclP+9YIOg=;
+        s=korg; t=1621870412;
+        bh=J2hRgjcqHwwKOaAQY1NXUiYhUUmHXXp0YzhfGjhnjW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ldYX8n9SOk97UPEIOBjeUTST3H2Oe/Iqr1pJt4DwPDiHzxGqFeLWKF+BFjBErblPF
-         0kg5fBhZgfFSIZpkrDOLllgbRfrwd9r+fM068QJlynosbor1703A+Z0EX//biPM3/u
-         Ak+ga+T9Hpz12o06yhRB/lE6NKTXWf9jqxEE9SB4=
+        b=E9AGSuJFoRPdxLzzXegMBbJUX3GCBmH0CU9Rv0stZQ3U3svmXBjypeAaajsNPI40D
+         PnmT8luuVCUxd1Y5p6Qwlo5TpjHBNglJ4vgzTT6tCtbZntv4ZGquTHcshjpdla6Ng9
+         4ou78CzOg4pUasIKDC8VE/Evu7nNNmLJPsKNjtUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 030/104] powerpc: Fix early setup to make early_ioremap() work
-Date:   Mon, 24 May 2021 17:25:25 +0200
-Message-Id: <20210524152333.811212934@linuxfoundation.org>
+        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
+        Peter Rosin <peda@axentia.se>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.14 22/37] Revert "gdrom: fix a memory leak bug"
+Date:   Mon, 24 May 2021 17:25:26 +0200
+Message-Id: <20210524152324.933788892@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit e2f5efd0f0e229bd110eab513e7c0331d61a4649 ]
+commit 257343d3ed557f11d580d0b7c515dc154f64a42b upstream.
 
-The immediate problem is that after commit
-0bd3f9e953bd ("powerpc/legacy_serial: Use early_ioremap()") the kernel
-silently reboots on some systems.
+This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
 
-The reason is that early_ioremap() returns broken addresses as it uses
-slot_virt[] array which initialized with offsets from FIXADDR_TOP ==
-IOREMAP_END+FIXADDR_SIZE == KERN_IO_END - FIXADDR_SIZ + FIXADDR_SIZE ==
-__kernel_io_end which is 0 when early_ioremap_setup() is called.
-__kernel_io_end is initialized little bit later in early_init_mmu().
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-This fixes the initialization by swapping early_ioremap_setup() and
-early_init_mmu().
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Fixes: 265c3491c4bc ("powerpc: Add support for GENERIC_EARLY_IOREMAP")
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Drop unrelated cleanup & cleanup change log]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210520032919.358935-1-aik@ozlabs.ru
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Because of this, all submissions from this group must be reverted from
+the kernel tree and will need to be re-reviewed again to determine if
+they actually are a valid fix.  Until that work is complete, remove this
+change to ensure that no problems are being introduced into the
+codebase.
+
+Cc: Wenwen Wang <wang6495@umn.edu>
+Cc: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Fixes: 093c48213ee3 ("gdrom: fix a memory leak bug")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-27-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/setup_64.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/cdrom/gdrom.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
-index 3b871ecb3a92..3f8426bccd16 100644
---- a/arch/powerpc/kernel/setup_64.c
-+++ b/arch/powerpc/kernel/setup_64.c
-@@ -368,11 +368,11 @@ void __init early_setup(unsigned long dt_ptr)
- 	apply_feature_fixups();
- 	setup_feature_keys();
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -889,7 +889,6 @@ static void __exit exit_gdrom(void)
+ 	platform_device_unregister(pd);
+ 	platform_driver_unregister(&gdrom_driver);
+ 	kfree(gd.toc);
+-	kfree(gd.cd_info);
+ }
  
--	early_ioremap_setup();
--
- 	/* Initialize the hash table or TLB handling */
- 	early_init_mmu();
- 
-+	early_ioremap_setup();
-+
- 	/*
- 	 * After firmware and early platform setup code has set things up,
- 	 * we note the SPR values for configurable control/performance
--- 
-2.30.2
-
+ module_init(init_gdrom);
 
 
