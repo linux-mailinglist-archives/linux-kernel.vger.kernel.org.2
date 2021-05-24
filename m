@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C8C38E6D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627738E6E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhEXMql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:46:41 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:60063 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232638AbhEXMqi (ORCPT
+        id S232772AbhEXMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232512AbhEXMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:46:38 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 60BF93286;
-        Mon, 24 May 2021 08:45:09 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 08:45:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=EqrWjydNtPHKtRRAqpTKU5Ag/Mj
-        Ht7wOFilARXgopKU=; b=H6A2E4J0aWmrW6AKKpi7MwFNhCdXUOMziP4p5qJQtnV
-        gYaUuoH/V98KSRjNL/Ksp0fw+wMtFfPXXxso5kvbn7M0BJKksAeb2C2uynLHIUTd
-        xC9V2JUhwnm4NayDdpbGEJU455hMgpPyyzBwVfYo0cbFB55wNbGzs2koPGBuIJ+B
-        nB1XIKsUEeCazg8LkdwM453qpP1Cy1gid1fiYt+GRzGBx7Zcf7Y/P3bcPhyNHOJB
-        zE6W41l89L+pz502j62Qsk9r/iDJInBtMBULkyIrGOeQCN4k5XDLR77vT4TSN0Lh
-        EvHhiHTdizBd44Xm9yDOsOC/JAVmPE9DCVnEOrRMBPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=EqrWjy
-        dNtPHKtRRAqpTKU5Ag/MjHt7wOFilARXgopKU=; b=GWQpOSilQd+X/p4DVr/fVo
-        zrLj26NfcZL8Cs/gKk9vYM3qpNPjrTyaDpbYCP+rwALKUY+9oA2GYvcxXxfrTmvK
-        5PQGfKbg05CaV8iNEztLSL5sI8OyAIGCFIXHzCpV0+KN1kUzseVTcM4HRLb4eqTu
-        yZTs2JFfTAD/ng+Ef7vzP0+++QTJnfFKidQdoFW7FivWtyY+UNJW70kt7Y2AByA9
-        2hkVVgH9d4PS4FaTvxBn7Tv36EwDG98iq11tZemy48+Gv2Zg4/Fqjje9Fps8RswK
-        tUBiKyU9l7s3ik7nVRypZjVlCw6f8RuMiw/65SDsKhvemabM1437XuH3upa9YM9g
-        ==
-X-ME-Sender: <xms:0p-rYJSPQ6Biq4Byb799D4tH1m8mVNmLBrubGKyhGl_T-TrtHI09HA>
-    <xme:0p-rYCw2Kewt5Lp0rgljP3XjdXCi7kON6XG2Zh7ip55q3j8EXYlPDjvZo0hghy-8F
-    HmjftVPrEVBxb09ZjQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:0p-rYO3wJ6QbziyKXlzjXAriEYKXQDHG6VlT6w_UxNGVh22g3LekBw>
-    <xmx:0p-rYBDv1axzpLy2V8v6T09QwXDR15koyfsKtvNfd-BNMMHPY9FbUA>
-    <xmx:0p-rYCju4krJ1cRueqSB7iCPskPCJN5qbknk7Zet15bpZWi8rBn_Tg>
-    <xmx:1J-rYJqQHxmAsalHcobUmWaWU0HmEDM5CdVumMIG7gGPyml5xJ6VHjAeZqg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 08:45:06 -0400 (EDT)
-Date:   Mon, 24 May 2021 14:45:04 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/12] drm/vc4: hdmi: Support the 4k @ 60Hz modes
-Message-ID: <20210524124504.i6dlxjkb265wjcxw@gilmour>
-References: <20210507150515.257424-1-maxime@cerno.tech>
+        Mon, 24 May 2021 08:49:32 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAF0C061574;
+        Mon, 24 May 2021 05:48:03 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id g18so19092218pfr.2;
+        Mon, 24 May 2021 05:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zNATQPXCHqo6W4bfJlq6Weg8Cm+bnIyKUInS/JSGSD4=;
+        b=pc/qu/BkCRzgodJu5jz5PuyodDFdWvuGyD+UCZSpVRBhzwClgBPCJKnUGI1wPv7Qel
+         68cm5mM1fFSfBOkUfeN1OCYLj0O2iKwVdavJnU84Dp9Z6dN6UTDk0FnRdPJTwHzy+VKS
+         FXhEbaUxi3J4xYMdvgaPKtr5Q5xzPHWRXuRQSXSOmofQxscpnF5v9t2AIzlXFMoi5Yzd
+         o98g5LqXSvCv2jxyod3wqdlcBwNnIyICL1G2Sy14+l/qmA/VNRhQeFYwGQONCE0gbz9x
+         cA39If1DVwY+12SS/jmVGh8nu0WtPS1uQzZcW3zHYBeb7fdbrY7bnKkg8Y2U/ooxwwyL
+         KSjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zNATQPXCHqo6W4bfJlq6Weg8Cm+bnIyKUInS/JSGSD4=;
+        b=dVbAyugZRrGa023hLTGrMeLXkq0ORP2keGqPGjawRktEYO8NnKMRckyM/ixuc6DGpv
+         kBQS6ZHxEVtkUTqy0iuoBspIM+pVWJ7gC9gg86hJeQXbHi6Z1dN/c9xbIXztvWtYIEoW
+         CxHrXvYa6NfuRE/4Piy70cBbWjzDx0fU/I6GYg9KHf+JdRIYlGD64UrwKMnSmmfXSnyy
+         yFXkKaHBEFwrfq6ck2+O3UJZ4rc/gZGe8FyfapshWIa9ec4VYo8TrF/IbTn1UgpQD/t3
+         btipPZg0b9nVVgHGsw+mh9JeneQbt3a2ODTI82r1mVu8BMb8JB+7WBc4dO489yFzs4o/
+         NCDQ==
+X-Gm-Message-State: AOAM530Ni+WeCe5N2m++IrppBm2pHSCm/X8pz4k9mczOzO9jkgrb/7uu
+        gqpoHAX3/HPkqLvsXJBnNb1fN0sqgDyuFVXDOhM=
+X-Google-Smtp-Source: ABdhPJzWplVZVVHOiJEAAS61tTN++D2R0EqzKEkFqB224r/OOVXTz3cs88eBTzYTf5+Z2EKbRy/M1PHbZ4Ix5rAwV3o=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr5986931pge.74.1621860483387;
+ Mon, 24 May 2021 05:48:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4ybk7u4ui2mnpwcg"
-Content-Disposition: inline
-In-Reply-To: <20210507150515.257424-1-maxime@cerno.tech>
+References: <cover.1621809029.git.sander@svanheule.net> <213ab7580a1d3229d32f7aac67bf4e828612153a.1621809029.git.sander@svanheule.net>
+ <CAHp75VdoSfO3Y9Lf+fcoG2=Rb+SBJKq+B0tG+gS7TaHUmN-iYg@mail.gmail.com> <08375439546c04d32b158c20fb59446c3bbafb46.camel@svanheule.net>
+In-Reply-To: <08375439546c04d32b158c20fb59446c3bbafb46.camel@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 24 May 2021 15:47:47 +0300
+Message-ID: <CAHp75VfbdmHPsscHOAnH-WjGyWF-8V_00FjQu1PD+xFLcUytig@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] leds: Add support for RTL8231 LED scan matrix
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 24, 2021 at 3:04 PM Sander Vanheule <sander@svanheule.net> wrote:
+> On Mon, 2021-05-24 at 13:24 +0300, Andy Shevchenko wrote:
+> > On Mon, May 24, 2021 at 1:34 AM Sander Vanheule <sander@svanheule.net> wrote:
 
---4ybk7u4ui2mnpwcg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Fri, May 07, 2021 at 05:05:03PM +0200, Maxime Ripard wrote:
-> Hi,
->=20
-> Here is a series that enables the higher resolutions on the HDMI0 Control=
-ler
-> found in the BCM2711 (RPi4).
->=20
-> In order to work it needs a few adjustments to config.txt, most notably to
-> enable the enable_hdmi_4kp60 option.
->=20
-> Let me know what you think,
-> Maxime
+> > > +       if (ret != 2)
+> > > +               return -ENODEV;
+> >
+> > I would say -EINVAL, but -ENODEV is similarly okay.
+>
+> Any specific reason you think EINVAL is more appropriate than ENODEV?
 
-Applied all the patches but patch 12 since we have an ongoing bug on the
-core clock rate that ends up with the display being stalled.
+My logic is that the initial values (from resource provider) are incorrect.
+But as I said, I'm fine with either.
 
-Maxime
+...
 
---4ybk7u4ui2mnpwcg
-Content-Type: application/pgp-signature; name="signature.asc"
+> > > +       int err;
+> >
+> > ret or err? Be consistent across a single driver.
+>
+> I had first used 'err' for both fwnode_property_count_u32() and
+> fwnode_property_read_u32_array(). The former returns "actual count or error
+> code", while the latter is only "error code". And I found it weird to read the
+> code as "does error code equal 2", if I used 'err' as variable name.
+>
+> I've split this up:
+>  * addr_count for fwnode_property_count_u32's result
+>  * err for fwnode_property_read_u32_array's result
+>
+> Since addr_count is only used before err is touched, I guess the compiler will
+> optimize this out anyway?
 
------BEGIN PGP SIGNATURE-----
+Usually we do this pattern (and it seems you missed the point, name of
+variable is ret in some functions and err in the rest):
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKuf0AAKCRDj7w1vZxhR
-xaQ0AP9K0DT2OKNbbVSyuFIPIw2N7lTpaZXRYT9RDSA0gvcfkwD+M713WPYGMptc
-AjzhyDphIrCKynuseSNxJV8h9Yo2AgY=
-=6vVh
------END PGP SIGNATURE-----
+err /* ret */ = foo();
+if (err < 0)
+  return err;
+count = err;
 
---4ybk7u4ui2mnpwcg--
+-- 
+With Best Regards,
+Andy Shevchenko
