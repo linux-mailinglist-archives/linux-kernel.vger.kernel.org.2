@@ -2,144 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB6B38EDEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EC138F13D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhEXPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:43:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23951 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234148AbhEXPjB (ORCPT
+        id S236605AbhEXQLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236543AbhEXQG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:39:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621870650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uwoIxOxl2r2xIjwfirZmXNL1cV9XOqsSrH6Pev8GZW8=;
-        b=C6IB79VFoHoSkomIcpikbDYAKzZML5yUnxNMgZzO6h6rQRBoAk3giuMc+VrvUawvsGGdBU
-        Ad3RrUgFRzQJzAbFCK++5bfVmVJoeZi11YQmMPTLvXThX8mcO/BFPJCmTVX7O9azq8wOi5
-        UcMstYW1/hb9QUe1tdSDZZV/BVayZFg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-28yLK7FpN56h-ozA_lD06Q-1; Mon, 24 May 2021 11:37:28 -0400
-X-MC-Unique: 28yLK7FpN56h-ozA_lD06Q-1
-Received: by mail-ej1-f69.google.com with SMTP id bw21-20020a170906c1d5b02903df8cbe09ccso925320ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:37:28 -0700 (PDT)
+        Mon, 24 May 2021 12:06:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0A1C02B303;
+        Mon, 24 May 2021 08:37:56 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so11356712pjv.1;
+        Mon, 24 May 2021 08:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+nT9isBU54OZ4Gptgzv7nV8Z5fwz1kFz9fkugI6k8C8=;
+        b=rJcSDO/TQp0X3rY44BhKdB26FCK5SYPbKfrb4hPVvL2LjrwEkR4O4/7tz1JtAbmXAb
+         aS/nDBXFNBxBakwzwTWRsEHXsEnTPV1oQ780sM4dT9fy/fdQXPlOaaP8+uyTlw0Mos0O
+         kYZelPUBRYTPQ5qhBcSIVmz65kEX6CgKNBVxMrYkD39gVl7fpd2yLi+vqdLfhWvZ5z60
+         ASEOp9v9gk1bKPdYDkHH/Rn6CdzBrzqa+uWtKXCiG8CINnVax4NLsUYWqSUp9xRapSlH
+         oswPD/NZnCRcRWXMXymBWpQ0Cw1Dir4YGqJ3BzBAfDUsE7qa/H8wE7p/JwajMcs/XL0z
+         +ZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uwoIxOxl2r2xIjwfirZmXNL1cV9XOqsSrH6Pev8GZW8=;
-        b=W88vOy9h1Ukr2dkm3s1M8UQDb6YKxd6CTgoSJgG6lzBNsMe1eTO6nJcBGM0mN7J8oL
-         AGjXv00i/KCRODxz6IUtHJ5ZrKSMmqp+p4yj6nOn/98aCnrfWzJahvsmGqo7903e7dvz
-         01Jpzj1Bik4ul0QUMbwyGJ7OqtHyL4ZCT8f4GXfne2gRHlXwUhJQmgbH9BCblsvZexZF
-         Xb3Hp4QNycT2zahzYeumX0fB0v42VB0G43PrXzM2klyJMb3OY6AMdvZ1GLy4T/15LPuJ
-         9OGRISWNCvAgIOf3V7XGJBh+R+7WsZl5jX1eevfZ6dKRgj9S6u1dis1hedPMmySq9zYV
-         YwBQ==
-X-Gm-Message-State: AOAM532gthkk/Qk/5PgY4OEP58nd59dgtFQ9r69PnyhKdaiaGJcyc2/5
-        +9/zaB4aSwwrRxPrErnL2EDM+k1zqkXhtxuq0L9UcUCn3xezePTK+YxH3h8aAADF/Ya3d6qsvES
-        bj8MF05m3SDdJAkYYY1MJLkmt
-X-Received: by 2002:a17:906:5608:: with SMTP id f8mr23894093ejq.390.1621870647587;
-        Mon, 24 May 2021 08:37:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwV4HYWCQYEhf+JFOjvNGGj/EBWUVsvsXzhiz2dQtb0oV8ZsNF79LkF8LDkAH//6I7bKCQfAw==
-X-Received: by 2002:a17:906:5608:: with SMTP id f8mr23894062ejq.390.1621870647347;
-        Mon, 24 May 2021 08:37:27 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b25sm9658855edv.9.2021.05.24.08.37.25
+        bh=+nT9isBU54OZ4Gptgzv7nV8Z5fwz1kFz9fkugI6k8C8=;
+        b=HgLcYawSARkqVBosFOwzl3ALycMvmSZnR9wqoZG1Wed7TFQBMuITVEGdzR/NTrTX4u
+         7w4lzKbvw+2FBTj3QDcA+dulvGfVneB/81mwwtgF7c9VgW+Dlnq84nm2WTEp2HavZqjI
+         WPnIfGQ/COHRaOAbud+ubxSHtaJvshcP7qnUvBWKvBYXyRUPNWC6HQNfzmaYTyA4aa9/
+         uDLX22E3RPakvsOtWlKu49tHW8/KLTD/FJbwGgsqUnxHF/7GlCsQLT8Vu1Pqp34SpqHL
+         bxhgnCLO/ZUPm5y9eXU8FQ539PmZ/KSbwMphQ2h9PHYKkVw0Qk+5IYIaI76yDIeI3DVS
+         zoqQ==
+X-Gm-Message-State: AOAM531azOsc12jiIh4AFZHfM1HdJxtjjMGDPHgtmWt5TX2A6FsnL48w
+        pb+f3A9bmKbDN/bC4WTSbZI=
+X-Google-Smtp-Source: ABdhPJzVYHLTms7uU0YphKTzlQ50pE8mJsgeDCZfTkHuauFreaJGqzMj1f+zHgcocQa/jtEuT+n55g==
+X-Received: by 2002:a17:90a:fa91:: with SMTP id cu17mr25799038pjb.178.1621870675716;
+        Mon, 24 May 2021 08:37:55 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u12sm11028188pfh.122.2021.05.24.08.37.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 08:37:26 -0700 (PDT)
-To:     Ilias Stamatis <ilstam@amazon.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mlevitsk@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
-References: <20210521102449.21505-1-ilstam@amazon.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 00/12] KVM: Implement nested TSC scaling
-Message-ID: <92071380-a81f-7db2-6954-6abd4e390905@redhat.com>
-Date:   Mon, 24 May 2021 17:37:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 24 May 2021 08:37:55 -0700 (PDT)
+Subject: Re: Kernel Panic in skb_release_data using genet
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Doug Berger <opendmb@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
+ <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
+ <20210524151329.5ummh4dfui6syme3@gilmour>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
+Date:   Mon, 24 May 2021 08:37:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210521102449.21505-1-ilstam@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210524151329.5ummh4dfui6syme3@gilmour>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/21 12:24, Ilias Stamatis wrote:
-> KVM currently supports hardware-assisted TSC scaling but only for L1;
-> the feature is not exposed to nested guests. This patch series adds
-> support for nested TSC scaling and allows both L1 and L2 to be scaled
-> with different scaling factors. That is achieved by "merging" the 01 and
-> 02 values together.
-> 
-> Most of the logic in this series is implemented in common code (by doing
-> the necessary restructurings), however the patches add support for VMX
-> only. Adding support for SVM should be easy at this point and Maxim
-> Levitsky has volunteered to do this (thanks!).
-> 
-> Changelog:
-> v3:
->    - Applied Sean's feedback
->    - Refactored patches 7 to 10
-> 
-> v2:
->    - Applied all of Maxim's feedback
->    - Added a mul_s64_u64_shr function in math64.h
->    - Added a separate kvm_scale_tsc_l1 function instead of passing an
->      argument to kvm_scale_tsc
->    - Implemented the 02 fields calculations in common code
->    - Moved all of write_l1_tsc_offset's logic to common code
->    - Added a check for whether the TSC is stable in patch 10
->    - Used a random L1 factor and a negative offset in patch 10
-> 
-> Ilias Stamatis (12):
->    math64.h: Add mul_s64_u64_shr()
->    KVM: X86: Store L1's TSC scaling ratio in 'struct kvm_vcpu_arch'
->    KVM: X86: Rename kvm_compute_tsc_offset() to
->      kvm_compute_tsc_offset_l1()
->    KVM: X86: Add a ratio parameter to kvm_scale_tsc()
->    KVM: VMX: Add a TSC multiplier field in VMCS12
->    KVM: X86: Add functions for retrieving L2 TSC fields from common code
->    KVM: X86: Add functions that calculate L2's TSC offset and multiplier
->    KVM: X86: Move write_l1_tsc_offset() logic to common code and rename
->      it
->    KVM: VMX: Remove vmx->current_tsc_ratio and decache_tsc_multiplier()
->    KVM: VMX: Set the TSC offset and multiplier on nested entry and exit
->    KVM: VMX: Expose TSC scaling to L2
->    KVM: selftests: x86: Add vmx_nested_tsc_scaling_test
-> 
->   arch/x86/include/asm/kvm-x86-ops.h            |   4 +-
->   arch/x86/include/asm/kvm_host.h               |  14 +-
->   arch/x86/kvm/svm/svm.c                        |  29 ++-
->   arch/x86/kvm/vmx/nested.c                     |  33 ++-
->   arch/x86/kvm/vmx/vmcs12.c                     |   1 +
->   arch/x86/kvm/vmx/vmcs12.h                     |   4 +-
->   arch/x86/kvm/vmx/vmx.c                        |  49 ++--
->   arch/x86/kvm/vmx/vmx.h                        |  11 +-
->   arch/x86/kvm/x86.c                            |  91 +++++--
->   include/linux/math64.h                        |  19 ++
->   tools/testing/selftests/kvm/.gitignore        |   1 +
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../kvm/x86_64/vmx_nested_tsc_scaling_test.c  | 242 ++++++++++++++++++
->   13 files changed, 417 insertions(+), 82 deletions(-)
->   create mode 100644 tools/testing/selftests/kvm/x86_64/vmx_nested_tsc_scaling_test.c
-> 
-> --
-> 2.17.1
-> 
 
-Queued, thanks.
 
-The new kvm_x86_ops should go in kvm_x86_ops.nested, but those are not 
-yet static_calls so we can leave that for later.
+On 5/24/2021 8:13 AM, Maxime Ripard wrote:
+> Hi Florian,
+> 
+> On Mon, May 24, 2021 at 07:49:25AM -0700, Florian Fainelli wrote:
+>> Hi Maxime,
+>>
+>> On 5/24/2021 6:01 AM, Maxime Ripard wrote:
+>>> Hi Doug, Florian,
+>>>
+>>> I've been running a RaspberryPi4 with a mainline kernel for a while,
+>>> booting from NFS. Every once in a while (I'd say ~20-30% of all boots),
+>>> I'm getting a kernel panic around the time init is started.
+>>>
+>>> I was debugging a kernel based on drm-misc-next-2021-05-17 today with
+>>> KASAN enabled and got this, which looks related:
+>>
+>> Is there a known good version that could be used for bisection or you
+>> just started to do this test and you have no reference point?
+> 
+> I've had this issue for over a year and never (I think?) got a good
+> version, so while it might be a regression, it's not a recent one.
 
-Paolo
+OK, this helps and does not really help.
 
+> 
+>> How stable in terms of clocking is the configuration that you are using?
+>> I could try to fire up a similar test on a Pi4 at home, or use one of
+>> our 72112 systems which is the closest we have to a Pi4 and see if that
+>> happens there as well.
+> 
+> I'm not really sure about the clocking. Is there any clock you want to
+> look at in particular?
+
+ARM, DDR, AXI, anything that could cause some memory corruption to occur
+essentially. GENET clocks are fairly fixed, you have a 250MHz clock and
+a 125MHz clock feeding the data path.
+
+> 
+> My setup is fairly simple: the firmware and kernel are loaded over TFTP
+> and the rootfs is mounted over NFS, and the crash always occur around
+> init start, so I guess when it actually starts to transmit a decent
+> amount of data?
+
+Do you reproduce this problem with KASAN disabled, do you eventually
+have a crash pointing back to the same location?
+
+I have a suspicion that this is all Pi4 specific because we regularly
+run the GENET driver through various kernel versions (4.9, 5.4 and 5.10
+and mainline) and did not run into that.
+-- 
+Florian
