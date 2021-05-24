@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4A138F320
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3747638F328
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbhEXSlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:41:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7816 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232803AbhEXSlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:41:13 -0400
-IronPort-SDR: 63vuhk4eXcjvdqrSk1COAMtjvav+oT2CP444CfrAEhGzUCeb92p27mzzupybkSwLXTEherTKjV
- HqGUbTZzKayA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="202046324"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="202046324"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 11:39:42 -0700
-IronPort-SDR: vwNMvLdb3njbjNB+C58BOdqGKehkHbmLTL84wCKzCyq5NqJ1so83ODGF/KcVN+7ZeN+6h681Yj
- WgCuwaeoUXLg==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="546049393"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 11:39:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1llFUH-00EPEW-I8; Mon, 24 May 2021 21:39:37 +0300
-Date:   Mon, 24 May 2021 21:39:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 00/28] leds: cleanups and fwnode refcounting bug fixes
-Message-ID: <YKvy6TCF7EsiUGQ2@smile.fi.intel.com>
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
- <YKu+jUHTjwf+3J5g@smile.fi.intel.com>
- <20210524174903.GA29340@duo.ucw.cz>
+        id S232918AbhEXSoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232442AbhEXSoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:44:09 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D73C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:42:40 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id j12so20744644pgh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0lIj2JPS56Xp2DBaz+Q3cwfyZBcU2zyGs0Uphk2Sqys=;
+        b=XO4WiNivZKpaOGgwvH9M2+upDycSqmiKS7yAVt+IclB6rTZUJNwpeIWhJ94TpGm4yF
+         x4KkkGUl8A1vD0M/B3BCA7lGYO23IQsq6BIU6/6eqY7YYv3wpqZJ2uAlOcLjUO1rCa+c
+         Mr7j3Aet1fQP8HUFKhf8Uv+Tw26M5HF30s2Qk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0lIj2JPS56Xp2DBaz+Q3cwfyZBcU2zyGs0Uphk2Sqys=;
+        b=etKk5ZtSpu1/UyYRen7l2/TgmS3PXHIr5/1ku1mKa9YTN8J1u+JAc23wGXO+Tw6/r+
+         ik1yF+hXg2ZIkDpPtgp/T0AM2Hxal94qdlsYirCL0p0JL5f+0kstOIXi6Vx8fGWhk1wc
+         nj0u9AlfBa79BFQnAGG0gxu/8sj94/nGlB8vTVLaUfmcnY6gclAm9QSUwl0n/in/xip+
+         vNwWF94xZcIge/x/HqJMtT708OTDbP067jNpoxOPLxeDE8/CyUSPISneVqNTMEcgJSt9
+         vIE4TPyVlmShQmYMDTxrLRpZyR44zooRNhcsdxyRMLKHfB/SwQUlQj3qYCy8tmRsgNoR
+         kSLw==
+X-Gm-Message-State: AOAM532FA66mPWSaktXCZXTBVpLDgd9vOa8qO2XKvxZeTR54OmlWXt56
+        R3UJVMILGYnDRGi/IJRtes/C+Q==
+X-Google-Smtp-Source: ABdhPJyEESSJu6/xp/AD92L7LjPu5dY5wWdr0BidRyr6bfpQDMyd3WRLMHc+/WXauzF0qSpZA12prw==
+X-Received: by 2002:a05:6a00:1996:b029:2e0:9d87:a547 with SMTP id d22-20020a056a001996b02902e09d87a547mr25586981pfl.12.1621881759691;
+        Mon, 24 May 2021 11:42:39 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c00a:a884:3e9e:4cb3:3e0e:f4b1])
+        by smtp.gmail.com with ESMTPSA id s2sm155655pjz.41.2021.05.24.11.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 11:42:39 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Sam Ravnborg <sam@ravnborg.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH] drm/panel: panel-simple: Fix proper bpc for ytc700tlag_05_201c
+Date:   Tue, 25 May 2021 00:12:26 +0530
+Message-Id: <20210524184226.3064621-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524174903.GA29340@duo.ucw.cz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 07:49:03PM +0200, Pavel Machek wrote:
-> On Mon 2021-05-24 17:56:13, Andy Shevchenko wrote:
-> > On Mon, May 17, 2021 at 10:30:08AM +0300, Andy Shevchenko wrote:
-> > > On Mon, May 10, 2021 at 12:50:17PM +0300, Andy Shevchenko wrote:
-> > > > When analyzing the current state of affairs with fwnode reference counting
-> > > > I found that a lot of core doesn't take it right. Here is a bunch of
-> > > > corresponding fixes against LED drivers.
-> > > > 
-> > > > The series includes some cleanups and a few other fixes grouped by a driver.
-> > > > 
-> > > > First two patches are taking care of -ENOTSUPP error code too  prevent its
-> > > > appearance in the user space.
-> > > 
-> > > Pavel, any comments on this bug fix series?
-> > 
-> > Pavel, we are at rc-3 already and this is kinda a big series that needs more
-> > time to be sit in Linux-next, unfortunately while I see your activities here
-> > and there, it is kept uncommented and unapplied. Can you shed a light what's
-> > going on here? Do I need something to be amended?
-> 
-> I'm busy, sorry.
+ytc700tlag_05_201c panel support 8 bpc not 6 bpc as per
+recent testing in i.MX8MM platform.
 
-Oh, I see. Good you eventually answered!
+Fix it.
 
-> Series looks kind of okay on quick look.
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll look forward to see it applied at some point in the future, thanks!
-
-
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 9be050ab372f..6f4151729fb7 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -4164,7 +4164,7 @@ static const struct drm_display_mode yes_optoelectronics_ytc700tlag_05_201c_mode
+ static const struct panel_desc yes_optoelectronics_ytc700tlag_05_201c = {
+ 	.modes = &yes_optoelectronics_ytc700tlag_05_201c_mode,
+ 	.num_modes = 1,
+-	.bpc = 6,
++	.bpc = 8,
+ 	.size = {
+ 		.width = 154,
+ 		.height = 90,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
