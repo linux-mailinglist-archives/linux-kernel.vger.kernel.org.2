@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A87638F467
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB68F38F46C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhEXUb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233529AbhEXUbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 16:31:55 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764FBC061574;
-        Mon, 24 May 2021 13:30:25 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id b25so28281622oic.0;
-        Mon, 24 May 2021 13:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=GqUcUpb2Ej5ByHB7iSH1hiStjrC0tu1eCOwjuG9fVMA=;
-        b=LdosPC1Hy1iNWhY5aFHn37/tLbrTirZ/a+cthsRf+IOORtG/CqJRvdeJ0gjHhrBDN0
-         KMyfM0N9b+ESX3si6WmvNsCtleq2vQeFJqZn3XsaOWO7KTBFvMhqqNoLUSTpdlTycah3
-         vC9+JdiRKwMd4KSQpuB471rxlah/dUFOXHSMQerMeXtGXGHP00d8elf9OOSJC8MeqfOF
-         aypRq5jWEO2RLOcw0LfuU+zWGSOPdZzWaxb9Lz55lUvPLnFr4hMYCl7Fz4Wux2NiR/kp
-         iilSw3AxL9V+a6wsdktXHIHnNoyN4DeZHBMKFA4iEPDXSBQrvWS+SbBBokfVhk9EDLO3
-         IKSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GqUcUpb2Ej5ByHB7iSH1hiStjrC0tu1eCOwjuG9fVMA=;
-        b=YFLyB0KyeLfR1hJ7srsc3HUCw837a69rFlfVFH8A9gzGYUnZ4zaqHJUlE03LINgbSL
-         GUY5xK+dF0yPYiy0U4dubcDCn4MC6QYVxJz3KX9D9iXSMRW9KTJ7+dKyiTI9yONoo2nb
-         A9wP+CrUPGDffomk0gQEnVc+0SLP7TKxXaBbAXNY8Flrj4c37rVuLsMv/pM8H/dcQia1
-         yCM6V/JrsbuxHEDSaJgnUhiPZSy5qhDVFqcQ1mkQranVp612URcVCwV4BwtavkKe4gK/
-         3j81cZOg8y+HiXOio6LFbiAMTue7pLhIW1WK0CJrbrulshBxJBp31f9JyrWCMFy9UJ8L
-         VBiA==
-X-Gm-Message-State: AOAM533lBcTmwQtDZfbPNDMUjyvplEmhkbw4RnYNQ3xURmzrJNK/dPe7
-        WACjmhdYFsbsb1Aeh0EdT4YT3MdLieEI
-X-Google-Smtp-Source: ABdhPJwcvYPe1008UJs7WtpgbMmUIvPjfrMw4RU6xipJ9exupeYXtQpkotdHQK6mIs1iAWF6te0tkg==
-X-Received: by 2002:a05:6808:2003:: with SMTP id q3mr527111oiw.171.1621888224287;
-        Mon, 24 May 2021 13:30:24 -0700 (PDT)
-Received: from threadripper.novatech-llc.local ([216.21.169.52])
-        by smtp.gmail.com with ESMTPSA id q1sm361548oos.32.2021.05.24.13.30.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 May 2021 13:30:23 -0700 (PDT)
-From:   George McCollister <george.mccollister@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>
-Subject: [PATCH net] net: dsa: microchip: enable phy errata workaround on 9567
-Date:   Mon, 24 May 2021 15:29:53 -0500
-Message-Id: <20210524202953.70379-1-george.mccollister@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S233380AbhEXUed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232676AbhEXUeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 16:34:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8243B613BC;
+        Mon, 24 May 2021 20:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621888376;
+        bh=/ZmMkfeFVEJtTK0muGwwN9GZqwmxbVGHMxb/E5KyW54=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMuXnM0QO5fDMiCegDMDnto8Jz7KB2QuypLCAFt91bjHql+2lOMnRWZSbqynjchSK
+         yvWaYswqS1H9/XCdi25UoNAJewuJ6QUJJu2FWzdC8RzUdFCP2Md63P/ANd8jZdoRmt
+         ZFYnl39RklELhh4aGtvgUOgpg/d4N0d2ljcdGJzbh4oZKWHNGIW07oo7xpT89kb92R
+         F3mnMlNLV1M/3xeSW8aBJRht1j1Jz8dnivwSr31kAOxURdSg0ZvFF72FgcvYgnSkPb
+         DShhOq7bcUdjS+eQDKAPQOv4rIrnaLvL/3gEdpW+uT/rWOxXdNiPedPL9TYLYsglPe
+         YV3dKTKSTV6CQ==
+Date:   Mon, 24 May 2021 21:32:50 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 18/21] arm64: Prevent offlining first CPU with 32-bit
+ EL0 on mismatched system
+Message-ID: <20210524203249.GD15545@willie-the-truck>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-19-will@kernel.org>
+ <20210524154657.GE14645@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524154657.GE14645@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also enable phy errata workaround on 9567 since has the same errata as
-the 9477 according to the manufacture's documentation.
+Hi Catalin,
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
----
- drivers/net/dsa/microchip/ksz9477.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, May 24, 2021 at 04:46:58PM +0100, Catalin Marinas wrote:
+> On Tue, May 18, 2021 at 10:47:22AM +0100, Will Deacon wrote:
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 959442f76ed7..72efdc611b14 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -2896,15 +2896,33 @@ void __init setup_cpu_features(void)
+> >  
+> >  static int enable_mismatched_32bit_el0(unsigned int cpu)
+> >  {
+> > +	static int lucky_winner = -1;
+> > +
+> >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
+> >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
+> >  
+> >  	if (cpu_32bit) {
+> >  		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
+> >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
+> > -		setup_elf_hwcaps(compat_elf_hwcaps);
+> >  	}
+> >  
+> > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
+> > +		return 0;
+> 
+> I don't fully understand this early return. AFAICT, we still call
+> setup_elf_hwcaps() via setup_cpu_features() if the system supports
+> 32-bit EL0 (mismatched or not) at boot. For CPU hotplug, we can add the
+> compat hwcaps later if we didn't set them up at boot. So this part is
+> fine.
+> 
+> However, if CPU0 is 32-bit-capable, it looks like we'd never disable the
+> offlining on any of the 32-bit-capable CPUs and there's nothing that
+> prevents offlining CPU0.
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index b99e453b0a56..4dae07da1b53 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1639,6 +1639,7 @@ static const struct ksz_chip_data ksz9477_switch_chips[] = {
- 		.num_statics = 16,
- 		.cpu_ports = 0x7F,	/* can be configured as cpu port */
- 		.port_cnt = 7,		/* total physical port count */
-+		.phy_errata_9477 = true,
- 	},
- };
- 
--- 
-2.11.0
+That is also deferred until we actually detect the mismatch. For example, if
+CPU0 is 32-bit capable but none of the others are, then when we online CPU1
+we will print:
 
+  | CPU features: Asymmetric 32-bit EL0 support detected on CPU 1; CPU hot-unplug disabled on CPU 0
+
+so the check above is really asking "Is the CPU being onlined mismatched wrt
+the boot CPU?". If yes, then we need to make sure that we're keeping a
+32-bit-capable CPU around.
+
+Will
