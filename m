@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFC138EF5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD0338F07A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhEXP5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:57:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38646 "EHLO mail.kernel.org"
+        id S235846AbhEXQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234873AbhEXPuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0705615FF;
-        Mon, 24 May 2021 15:38:05 +0000 (UTC)
+        id S235406AbhEXP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D346140A;
+        Mon, 24 May 2021 15:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870686;
-        bh=L0pbN6tH+Cy+2S1BijpgXm7Qn/6CMLNdJh++mlpi18U=;
+        s=korg; t=1621870977;
+        bh=hdg4uBJDJ6MiDizfKqAjEMznM9c13ErAqs+kxOs/2SI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GFEu+Av4NoLC19TvQyIl2xdDYJ8/minY4214BlcLi+ZhrVYfA7yX1rqzR666FjfFT
-         3RAYTbVIqCMTN3Utfh5i63nbYhZ8A/w2EcvYl/OFTNu8MlXgVt3TV5Fheh1nfAE8Qb
-         6KhusKCG36AGhucbQy9KGL3xfdEkZ66g5tAMUqBE=
+        b=r53AtZlcHO5z/MN6+6GJCZmGWMsBvbs00qtheL2P+Jv6lXzgiO+N/qhSqHvDiEDNL
+         B/L3d0V39CR17wjF8uZNCHYUC134VudsS7tt2kPImHLkYf3bYdo6uNVausa9rbZ2wD
+         Oxy1Y41iu5vsCJabAtjYRcHZ3angKqpZhZSUHiJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 28/71] ALSA: hda/realtek: reset eapd coeff to default value for alc287
+        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 017/127] nvmet: fix memory leak in nvmet_alloc_ctrl()
 Date:   Mon, 24 May 2021 17:25:34 +0200
-Message-Id: <20210524152327.374030974@linuxfoundation.org>
+Message-Id: <20210524152335.445612570@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Wu Bo <wubo40@huawei.com>
 
-commit 8822702f6e4c8917c83ba79e0ebf2c8c218910d4 upstream.
+[ Upstream commit fec356a61aa3d3a66416b4321f1279e09e0f256f ]
 
-Ubuntu users reported an audio bug on the Lenovo Yoga Slim 7 14IIL05,
-he installed dual OS (Windows + Linux), if he booted to the Linux
-from Windows, the Speaker can't work well, it has crackling noise,
-if he poweroff the machine first after Windows, the Speaker worked
-well.
+When creating ctrl in nvmet_alloc_ctrl(), if the cntlid_min is larger
+than cntlid_max of the subsystem, and jumps to the
+"out_free_changed_ns_list" label, but the ctrl->sqs lack of be freed.
+Fix this by jumping to the "out_free_sqs" label.
 
-Before rebooting or shutdown from Windows, the Windows changes the
-codec eapd coeff value, but the BIOS doesn't re-initialize its value,
-when booting into the Linux from Windows, the eapd coeff value is not
-correct. To fix it, set the codec default value to that coeff register
-in the alsa driver.
-
-BugLink: http://bugs.launchpad.net/bugs/1925057
-Suggested-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210507024452.8300-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/nvme/target/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -385,7 +385,6 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0282:
- 	case 0x10ec0283:
- 	case 0x10ec0286:
--	case 0x10ec0287:
- 	case 0x10ec0288:
- 	case 0x10ec0285:
- 	case 0x10ec0298:
-@@ -396,6 +395,10 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0275:
- 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
- 		break;
-+	case 0x10ec0287:
-+		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
-+		alc_write_coef_idx(codec, 0x8, 0x4ab7);
-+		break;
- 	case 0x10ec0293:
- 		alc_update_coef_idx(codec, 0xa, 1<<13, 0);
- 		break;
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index a027433b8be8..348057fdc568 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -1371,7 +1371,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
+ 		goto out_free_changed_ns_list;
+ 
+ 	if (subsys->cntlid_min > subsys->cntlid_max)
+-		goto out_free_changed_ns_list;
++		goto out_free_sqs;
+ 
+ 	ret = ida_simple_get(&cntlid_ida,
+ 			     subsys->cntlid_min, subsys->cntlid_max,
+-- 
+2.30.2
+
 
 
