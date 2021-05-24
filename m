@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343FA38ECDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18A438ECCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhEXPZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:25:42 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42283 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232746AbhEXPPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:15:04 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id D17B04476;
-        Mon, 24 May 2021 11:13:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 24 May 2021 11:13:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=BGa72Vj6zhdzVJ4MQX7Q91APrP9
-        Unrjyy5c4SX8SOrc=; b=mWpDg5tBjU9621uQ54CKDVyw+Gv2TiI7f4GuNwXz1W3
-        kXLLs4castuRfycfbqcuTHhumHK7HDqLFpKW8iOEQs+5O9LSKEYThwfdo5avZJgL
-        fQ4BuowLt8t2P/+Cs/DiDlhnETvgH6Fc7sMwachowHcitst/Gy3BWxtr49vEILPn
-        k8Xi5VFN5V4OTprAOrbYejPt6KkGvVlQbw7RS4OGwUXZ7XKQGnb975OmQRcupGpj
-        EXzo3SknZvxfym9Sin4gzBUfWSdk2uQQjU8OrowDefsDc2TOVAbsy1XCw+4qXnhX
-        u4r3vkhJ9N5mHrFfFSGiQkAVmKjClvuzRxYmcWmfYxQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=BGa72V
-        j6zhdzVJ4MQX7Q91APrP9Unrjyy5c4SX8SOrc=; b=oJ3fWltJeZ+rjCRSXb30hz
-        a1hWCac2qaRfPjbFIt8HtpCrYvdOnhgai9lZGyKGiASWteZIyLLQx3CySjYY2c9+
-        i3kEt5DLNAk6NIyGNwT4Pf4LIE3PM+qSSIs2NxjluRw1UNJQdtoriOMuE5UhFe4i
-        r7FD+Iblp1uHmzZu1CPuAySf/CHqmWmzxB4MLpjlUmN7css8ujLA4hPf3W8JIu1w
-        kIKPoVYZgJdjkmkPS7W5dpFoqWCs+44FqAqrJ004J3x3rFh7EOnkgInSccn+13qG
-        PRtP+om51wiicwnVC8O6llEDPusO3DZAK4VXZWLzSnRj8B/VPKhzhNYytZHKGBpg
-        ==
-X-ME-Sender: <xms:nMKrYAeDrLPsbckCZlfYi8A3JXhMYiXesiQWu5J57G7Shc-LSrhMgA>
-    <xme:nMKrYCMwlqKesaxpCLvlHKhU2ofb0JUU1_2ZzebXE1Jl_KWI2XsqgGPOJ4pdP3o3j
-    uD4nYie7xYtn04avQA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:nMKrYBhJ1tpQmpXUYX6dQCBQgcjM4kKLZlLtE3Rlws5PCoL2GlUCKw>
-    <xmx:nMKrYF8b7Cn0DEXJH0_-bdo7plvPfex_2lvq8nDqG-01aV2vqPwzbg>
-    <xmx:nMKrYMvF9tN30CuUlWSkf9Z_9MEwi-5SdT213s88qxUBVEzSXKJjDw>
-    <xmx:nMKrYIIy6EsRpwSp7yJS8oCOfb1sE7ue1Tc_AFvG7eylBTvIZdy1Ew>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 11:13:31 -0400 (EDT)
-Date:   Mon, 24 May 2021 17:13:29 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: Re: Kernel Panic in skb_release_data using genet
-Message-ID: <20210524151329.5ummh4dfui6syme3@gilmour>
-References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
- <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wgtnyrrd22offedx"
-Content-Disposition: inline
-In-Reply-To: <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
+        id S233208AbhEXPZM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 11:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233119AbhEXPQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:16:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E48F961057;
+        Mon, 24 May 2021 15:15:01 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1llCIF-003FbG-Pc; Mon, 24 May 2021 16:14:59 +0100
+Date:   Mon, 24 May 2021 16:14:59 +0100
+Message-ID: <87h7isw4cs.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/42] PCI: aardvark: Change name of INTx irq_chip to advk-INT
+In-Reply-To: <20210524163651.430e5497@thinkpad>
+References: <20210506153153.30454-1-pali@kernel.org>
+        <20210506153153.30454-16-pali@kernel.org>
+        <87im3uq5bx.wl-maz@kernel.org>
+        <20210524163651.430e5497@thinkpad>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kabel@kernel.org, pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, robh@kernel.org, bhelgaas@google.com, rmk+kernel@armlinux.org.uk, repk@triplefau.lt, contact@xogium.me, tmn505@gmail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 24 May 2021 15:36:51 +0100,
+Marek Behún <kabel@kernel.org> wrote:
+> 
+> On Fri, 07 May 2021 10:08:18 +0100
+> Marc Zyngier <maz@kernel.org> wrote:
+> 
+> > On Thu, 06 May 2021 16:31:26 +0100,
+> > Pali Rohár <pali@kernel.org> wrote:
+> > > 
+> > > This name is visible in /proc/interrupts file and for better reading it
+> > > should have at most 8 characters. Also there is no need to allocate this
+> > > name dynamically, since there is only one PCIe controller on Armada 37xx.
+> > > This aligns with how the MSI irq_chip in this driver names it's interrupt
+> > > ("advk-MSI").  
+> > 
+> > And *because* the name is visible in /proc/interrupts, it has become
+> > an ABI, and cannot be changed anymore.
+> > 
+> > We had the exact same issue with Tegra this merge window as I
+> > accidentally changed "Tegra" to "tegra", resulting in userspace
+> > programs failing find stuff in /proc/interrupts.
+> > 
+> > Please keep the name as is, no matter how ugly it is.
+> 
+> Hmm, I am 99% sure that for the A3720 platform this ABI change would not
+> affect anybody. And it does make the driver's irq names confusing.
+> Can't we really do anything here?
 
---wgtnyrrd22offedx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, this is final. Show anything in /proc/*, maintain it forever. We
+already went there with the bogomips crap showing up in
+/proc/cpuinfo. There is no way you can know what userspace does, and
+the best course of action is not to change things for some dubious
+value of "nicer" or "less confusing".
 
-Hi Florian,
+> Note that there were suggestions from some people to completely remove
+> this driver due to the many problems it has which Pali is trying to
+> solve. But if the driver was removed and then later introduced again
+> without these problems, the new version would use the "advk-INT" IRQ
+> name...
 
-On Mon, May 24, 2021 at 07:49:25AM -0700, Florian Fainelli wrote:
-> Hi Maxime,
->=20
-> On 5/24/2021 6:01 AM, Maxime Ripard wrote:
-> > Hi Doug, Florian,
-> >=20
-> > I've been running a RaspberryPi4 with a mainline kernel for a while,
-> > booting from NFS. Every once in a while (I'd say ~20-30% of all boots),
-> > I'm getting a kernel panic around the time init is started.
-> >=20
-> > I was debugging a kernel based on drm-misc-next-2021-05-17 today with
-> > KASAN enabled and got this, which looks related:
->=20
-> Is there a known good version that could be used for bisection or you
-> just started to do this test and you have no reference point?
+No, you would have to keep the *exact same output*. Userspace doesn't
+know about drivers, and expect things in /proc to be stable.
 
-I've had this issue for over a year and never (I think?) got a good
-version, so while it might be a regression, it's not a recent one.
+Frankly, there are more important things to do than to worry about the
+shape of /proc/interrupts. And if we could change it, I'd simply get
+rid of it (you really should look at it on a system that has ~200
+CPUs...).
 
-> How stable in terms of clocking is the configuration that you are using?
-> I could try to fire up a similar test on a Pi4 at home, or use one of
-> our 72112 systems which is the closest we have to a Pi4 and see if that
-> happens there as well.
+Thanks,
 
-I'm not really sure about the clocking. Is there any clock you want to
-look at in particular?
+	M.
 
-My setup is fairly simple: the firmware and kernel are loaded over TFTP
-and the rootfs is mounted over NFS, and the crash always occur around
-init start, so I guess when it actually starts to transmit a decent
-amount of data?
-
-Maxime
-
---wgtnyrrd22offedx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKvCmQAKCRDj7w1vZxhR
-xdujAQD/0Kymwp3S8g4TKdrzdqH41ouOvUVLq7pZGVM7OdEHDAD9ERamwnRIoYUx
-mKWf46HXJAlF1yqaZ97ea5MrcHmbowo=
-=r7lJ
------END PGP SIGNATURE-----
-
---wgtnyrrd22offedx--
+-- 
+Without deviation from the norm, progress is not possible.
