@@ -2,155 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B0438E64B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E93C38E64C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhEXMKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:10:16 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:52221 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232494AbhEXMKO (ORCPT
+        id S232793AbhEXMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:10:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232476AbhEXMKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:10:14 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 279FD15FA;
-        Mon, 24 May 2021 08:08:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 08:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=KuYrmIVCiLVbSSTdfz4ZTMoPZUe
-        vG5TsxBnT23F3ZtI=; b=VY3TRQAGB0UhY9VLyddLVz+IvpoHtPjcngvTgKLIcEi
-        uuQGdI+ldIF0njPwa7GstT9j793TjzmhDvFzCzEdx0mXw4E5ONfI3CvQab9MndbJ
-        2j4ZemUAdZBPZ6M4V+Vp2c5fUZZ7ITC3gQalja/LRTi/5QgAdQzos0+er8dL86hx
-        IXbTR1i70BBjR3YXzViHjzxFGZQ1/KYn5iGkPoY2ZnvEew7nk1C72YcaOftAzKF5
-        7/nfNeYppr/DxeTWgewHJ5a/ddJNcmAA2/HRblqIOgIzpS99HEK/DLyRhT4W1Rc7
-        sKAD9lfoE/xmas58MfK3R+yE63n3X32UIbTjg4O2V2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=KuYrmI
-        VCiLVbSSTdfz4ZTMoPZUevG5TsxBnT23F3ZtI=; b=jEbiZcEM/wdt6YhmQUAb5u
-        uFGA+dO8AHnmT04TSkF/5BZIS11Tr7cqaSIuorT/9ynk3bMTk8JS+MuXWFs9Itci
-        VoFL0Rtl+nrqoY9OaJKqDVWjSnsD81E77HIfZ9H/7gpC6dLNdD+WwG3fKK6pInmW
-        EG3yMurED35jNYa6Z/sWAmKJTKnTQP8YixdkQD6xwYN4wc3rgvXOt3kcKMtdUTcU
-        aAyVmNKiPpySK+Jx2Mc/e7ZXSjIjmDnPAgqN+IeB1qb/hObGfelwINQ5gzd0gh7A
-        xcZrnZPkug6ACe615JzEFo5WyKswwZ1GzQZ7xbWmvKWZu69upPnKZSQ1x7Em/yoQ
-        ==
-X-ME-Sender: <xms:S5erYMFXDAp7GelPYNjYPpJ6R9YtvkC_c-gJ9u5MnQOP1UYgYHijQw>
-    <xme:S5erYFXf-un_Yv355xrw8xwZKtBCafNs8hGjvtoycWUR2OJh7K1N5tgTuyLXiF9rJ
-    UxxMxrqY5Af19vvGZI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:S5erYGLNM5SH-F3h4MFTEctwD0cBHagL0Vvqrsh_TNZJqd21kYAI8w>
-    <xmx:S5erYOHqzzv3wGHrWlTQRJRvsZ0uLIypJOXaIGGYqeQa-ks2C_4WTQ>
-    <xmx:S5erYCXsPCbR9eFCO6HEDu3BxZuxLthG5XVHv9j9GSvY3KcuXaGxaw>
-    <xmx:TJerYOSFqbod4Zu3njaEggk1J3P3aVbmiV6T9k9qqsgDuIQcclvRCmfP7pk>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 08:08:43 -0400 (EDT)
-Date:   Mon, 24 May 2021 14:08:41 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH v3 7/7] arm64: dts: allwinner: pinephone: Set audio card
- name
-Message-ID: <20210524120841.bj6fohyxrhpp3i2u@gilmour>
-References: <20210430035859.3487-1-samuel@sholland.org>
- <20210430035859.3487-8-samuel@sholland.org>
- <20210507080942.lxysxdbrviv3ys7m@gilmour>
- <2c8e512c-59f4-8869-be2e-0bf4c3cc2415@sholland.org>
+        Mon, 24 May 2021 08:10:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621858145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jfVfjsdTY3heP1QKS11wD9j4Ahl6hvZeJZpiwdwAoEU=;
+        b=PpJuu4ZBjBxKlhjXDEq/jGc+8meeDTKxqI1TKcKEt51B6T6dHWnkW8h1CIB4BY/ZsqmzvV
+        85dlKiKTKad/gzzrQhs4FJQjLf1swFi/b8IWTPOV6ynnrUW1qIA65i194lVEmHRPP+teh6
+        EhvbZaQXunalv6GeXt84c1KJi2gf5oQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-Bv1ckKJLM8quvdAo_noqaA-1; Mon, 24 May 2021 08:09:03 -0400
+X-MC-Unique: Bv1ckKJLM8quvdAo_noqaA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED5A107ACE3;
+        Mon, 24 May 2021 12:09:02 +0000 (UTC)
+Received: from starship (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D56A1ACC7;
+        Mon, 24 May 2021 12:08:59 +0000 (UTC)
+Message-ID: <ea9a392d018ced61478482763f7a59472110104c.camel@redhat.com>
+Subject: Re: [PATCH v2 0/7] KVM: nVMX: Fixes for nested state migration when
+ eVMCS is in use
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 24 May 2021 15:08:57 +0300
+In-Reply-To: <20210517135054.1914802-1-vkuznets@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vdqks5dqd2amw37s"
-Content-Disposition: inline
-In-Reply-To: <2c8e512c-59f4-8869-be2e-0bf4c3cc2415@sholland.org>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
+> Changes since v1 (Sean):
+> - Drop now-unneeded curly braces in nested_sync_vmcs12_to_shadow().
+> - Pass 'evmcs->hv_clean_fields' instead of 'bool from_vmentry' to
+>   copy_enlightened_to_vmcs12().
+> 
+> Commit f5c7e8425f18 ("KVM: nVMX: Always make an attempt to map eVMCS after
+> migration") fixed the most obvious reason why Hyper-V on KVM (e.g. Win10
+>  + WSL2) was crashing immediately after migration. It was also reported
+> that we have more issues to fix as, while the failure rate was lowered 
+> signifincatly, it was still possible to observe crashes after several
+> dozens of migration. Turns out, the issue arises when we manage to issue
+> KVM_GET_NESTED_STATE right after L2->L2 VMEXIT but before L1 gets a chance
+> to run. This state is tracked with 'need_vmcs12_to_shadow_sync' flag but
+> the flag itself is not part of saved nested state. A few other less 
+> significant issues are fixed along the way.
+> 
+> While there's no proof this series fixes all eVMCS related problems,
+> Win10+WSL2 was able to survive 3333 (thanks, Max!) migrations without
+> crashing in testing.
+> 
+> Patches are based on the current kvm/next tree.
+> 
+> Vitaly Kuznetsov (7):
+>   KVM: nVMX: Introduce nested_evmcs_is_used()
+>   KVM: nVMX: Release enlightened VMCS on VMCLEAR
+>   KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS data is copied in
+>     vmx_get_nested_state()
+>   KVM: nVMX: Force enlightened VMCS sync from nested_vmx_failValid()
+>   KVM: nVMX: Reset eVMCS clean fields data from prepare_vmcs02()
+>   KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
+>   KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
+>     lost
+> 
+>  arch/x86/kvm/vmx/nested.c                     | 110 ++++++++++++------
+>  .../testing/selftests/kvm/x86_64/evmcs_test.c |  64 +++++-----
+>  2 files changed, 115 insertions(+), 59 deletions(-)
+> 
 
---vdqks5dqd2amw37s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Vitaly!
 
-On Sun, May 09, 2021 at 08:54:36PM -0500, Samuel Holland wrote:
-> On 5/7/21 3:09 AM, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Thu, Apr 29, 2021 at 10:58:59PM -0500, Samuel Holland wrote:
-> >> From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-> >>
-> >> Add the "PinePhone" name to the sound card: this will make
-> >> upstreaming an ALSA UCM config easier as we can use a unique name.
-> >>
-> >> It also avoids an issue where the default card name is truncated.
-> >>
-> >> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-> >> [Samuel: Split out change, updated commit message]
-> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> >> ---
-> >>  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b=
-/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> >> index 51cbfdc12936..02712f85f6bd 100644
-> >> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-g> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> >> @@ -433,6 +433,7 @@ &reg_rtc_ldo {
-> >> =20
-> >>  &sound {
-> >>  	status =3D "okay";
-> >> +	simple-audio-card,name =3D "PinePhone";
-> >>  	simple-audio-card,aux-devs =3D <&codec_analog>, <&speaker_amp>;
-> >>  	simple-audio-card,widgets =3D "Microphone", "Headset Microphone",
-> >>  				    "Microphone", "Internal Microphone",
-> >=20
-> > Isn't that reported to the userspace? I'm not sure we can just change it
-> > without breaking it.
->=20
-> Yes, this is seen by userspace.
->=20
-> Ideally, we would add this property with a unique value when enabling
-> audio for any board, but as you mention, it would be a breaking change
-> to add those properties now.
->=20
-> In practice, all distributions supporting the PinePhone are already
-> carrying this patch, because the ALSA setup needed for the PinePhone is
-> very different from most other boards. So it would be similarly breaking
-> for them (and their users) to drop this patch.
+In addition to the review of this patch series, I would like
+to share an idea on how to avoid the hack of mapping the evmcs
+in nested_vmx_vmexit, because I think I found a possible generic
+solution to this and similar issues:
 
-Ack :)
+The solution is to always set nested_run_pending after 
+nested migration (which means that we won't really
+need to migrate this flag anymore).
 
-Since no one else complained, I merged this patch too
+I was thinking a lot about it and I think that there is no downside to this,
+other than sometimes a one extra vmexit after migration.
 
-Thanks!
-Maxime
+Otherwise there is always a risk of the following scenario:
 
---vdqks5dqd2amw37s
-Content-Type: application/pgp-signature; name="signature.asc"
+  1. We migrate with nested_run_pending=0 (but don't restore all the state
+  yet, like that HV_X64_MSR_VP_ASSIST_PAGE msr,
+  or just the guest memory map is not up to date, guest is in smm or something
+  like that)
 
------BEGIN PGP SIGNATURE-----
+  2. Userspace calls some ioctl that causes a nested vmexit
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKuXSQAKCRDj7w1vZxhR
-xQeqAQDH3EOIl439YaZCsAopMTIIpwmTqAD047YX53owNIwA8gEAr3PT+rxlJ51k
-fqTfXb4QIVbfh/RtIUWCrNx6tU+MGAw=
-=V5lB
------END PGP SIGNATURE-----
+  This can happen today if the userspace calls 
+  kvm_arch_vcpu_ioctl_get_mpstate -> kvm_apic_accept_events -> kvm_check_nested_events
 
---vdqks5dqd2amw37s--
+  3. Userspace finally sets correct guest's msrs, correct guest memory map and only
+  then calls KVM_RUN
+
+This means that at (2) we can't map and write the evmcs/vmcs12/vmcb12 even
+if KVM_REQ_GET_NESTED_STATE_PAGES is pending,
+but we have to do so to complete the nested vmexit.
+
+To some extent, the entry to the nested mode after a migration is only complete
+when we process the KVM_REQ_GET_NESTED_STATE_PAGES, so we shoudn't interrupt it.
+
+This will allow us to avoid dealing with KVM_REQ_GET_NESTED_STATE_PAGES on
+nested vmexit path at all. 
+
+Best regards,
+	Maxim Levitsky
+
+
