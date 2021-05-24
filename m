@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEC638EDB4
+	by mail.lfdr.de (Postfix) with ESMTP id 0E98738EDB3
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhEXPlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:41:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51548 "EHLO mail.kernel.org"
+        id S233212AbhEXPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233513AbhEXPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 377CF6141D;
-        Mon, 24 May 2021 15:33:01 +0000 (UTC)
+        id S233539AbhEXPg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:36:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96949613CC;
+        Mon, 24 May 2021 15:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870381;
-        bh=XHYPZJ9WXzLB6L2N7zgeqXGZs7Z4Kofy3XAQaQOe2DA=;
+        s=korg; t=1621870386;
+        bh=KsC8HE7jHKbGpD11Z/gSWuvwbH4VDyzwkdlIobDRGZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdE2yteXlcYuHPRt0IFZpOYxztHcQg7jthMIf0tfDvpcsJQi9awQa0ZpKQrfw8UlF
-         DbIiwVGpSwN1QWcvrPoznBv39rrcnpfA67MaRRWPaJAqHOC+lC2tC86rWepVR7qLW5
-         prnoAySrh5HQGpgvdBXrWzxZnupqEY5dNiXdkz2g=
+        b=qmjov/Ela4yWiP9hYl2Wl3EZb+ROQ09t5hXusYx9fNYWLUUQ9gpXdtc8sunc4WnQ+
+         md3S6q/kn/bsZdFi/HxqdE8AeyXfuhdJ5R3lTwCMU2+dgGTp7WRuDngfbJnNuyT1yg
+         t4D0ZQLX/aoG0fxuSLoRaH0WQ2aNBuAULPclZsuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Peter Rosin <peda@axentia.se>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 21/36] Revert "gdrom: fix a memory leak bug"
+        stable@vger.kernel.org,
+        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 02/37] RDMA/rxe: Clear all QP fields if creation failed
 Date:   Mon, 24 May 2021 17:25:06 +0200
-Message-Id: <20210524152324.841767227@linuxfoundation.org>
+Message-Id: <20210524152324.280845375@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +43,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 257343d3ed557f11d580d0b7c515dc154f64a42b upstream.
+[ Upstream commit 67f29896fdc83298eed5a6576ff8f9873f709228 ]
 
-This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
+rxe_qp_do_cleanup() relies on valid pointer values in QP for the properly
+created ones, but in case rxe_qp_from_init() failed it was filled with
+garbage and caused tot the following error.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+  refcount_t: underflow; use-after-free.
+  WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+  Modules linked in:
+  CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+  Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+  RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+  RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
+  RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+  R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
+  R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
+  FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+   __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+   refcount_dec_and_test include/linux/refcount.h:333 [inline]
+   kref_put include/linux/kref.h:64 [inline]
+   rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
+   execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
+   rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
+   kref_put include/linux/kref.h:65 [inline]
+   rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
+   _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
+   ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
+   ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
+   create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
+   ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
+   ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
+   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
+   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+   ib_register_device drivers/infiniband/core/device.c:1413 [inline]
+   ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
+   rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
+   rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+   rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
+   rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+   rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+   nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
+   rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+   rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+   netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+   sock_sendmsg_nosec net/socket.c:654 [inline]
+   sock_sendmsg+0xcf/0x120 net/socket.c:674
+   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+   ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+   do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-Because of this, all submissions from this group must be reverted from
-the kernel tree and will need to be re-reviewed again to determine if
-they actually are a valid fix.  Until that work is complete, remove this
-change to ensure that no problems are being introduced into the
-codebase.
-
-Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Peter Rosin <peda@axentia.se>
-Cc: Jens Axboe <axboe@kernel.dk>
-Fixes: 093c48213ee3 ("gdrom: fix a memory leak bug")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-27-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com
+Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cdrom/gdrom.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -882,7 +882,6 @@ static void __exit exit_gdrom(void)
- 	platform_device_unregister(pd);
- 	platform_driver_unregister(&gdrom_driver);
- 	kfree(gd.toc);
--	kfree(gd.cd_info);
- }
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index ef7fd5dfad46..28c7b91531b6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -258,6 +258,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	if (err) {
+ 		vfree(qp->sq.queue->buf);
+ 		kfree(qp->sq.queue);
++		qp->sq.queue = NULL;
+ 		return err;
+ 	}
  
- module_init(init_gdrom);
+@@ -311,6 +312,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		if (err) {
+ 			vfree(qp->rq.queue->buf);
+ 			kfree(qp->rq.queue);
++			qp->rq.queue = NULL;
+ 			return err;
+ 		}
+ 	}
+@@ -370,6 +372,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ err2:
+ 	rxe_queue_cleanup(qp->sq.queue);
+ err1:
++	qp->pd = NULL;
++	qp->rcq = NULL;
++	qp->scq = NULL;
++	qp->srq = NULL;
++
+ 	if (srq)
+ 		rxe_drop_ref(srq);
+ 	rxe_drop_ref(scq);
+-- 
+2.30.2
+
 
 
