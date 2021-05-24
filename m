@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E8238F665
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E420E38F661
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEXXnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:43:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50880 "EHLO mx2.suse.de"
+        id S230382AbhEXXnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:43:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50688 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhEXXmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229940AbhEXXmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 19:42:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -17,21 +17,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0tu41fI/tehEDdtk24Fc6V86f4NZ4fbmTVRxT+6xDtI=;
-        b=Q1Skr70Skr7DkCUY/22aNjYfRK5j6dEk/M2CeFxGX/GcyUZUfYfO9SbmIeuQfsqXYx3Yvi
-        Pr6mVr8Y6yRZBbT9aCLvCZj3h5M1ASQ7kM4t3823AfQCIZFjGz9eecjS3IrWfNcRifgmkm
-        rYg+U1i04g/9svGprw6LzAJBcJGqZrY=
+        bh=x5p0PizEV3N3GiwLue+53YpFP9i8rF0CXirWwfnsCP4=;
+        b=DXFOK/s7RsNQOHek7IKrH62rhnjIs5Q0JQVDdO9HiVjkSKvaNFf15g+kVOQ1TFiiCVW4r/
+        OMA7BorHY+9fpcwHQaI4V8YSsBFCgrmWtoKI86Sd9hRnK8aU5E5gV0Y6crsxNkIdVWW/t1
+        B56V2enMULhFxr7dGGbuB319smJpw64=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1621899648;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0tu41fI/tehEDdtk24Fc6V86f4NZ4fbmTVRxT+6xDtI=;
-        b=gehOBtx2kTGbnW2lNeAX/zy5asReW9dnmEwJj9Ip4kKlrR9IwB1Cj7KZOt1x64G3Vn1RGI
-        Bbve3XL4DpJRIXBw==
+        bh=x5p0PizEV3N3GiwLue+53YpFP9i8rF0CXirWwfnsCP4=;
+        b=eWIjO2wgep5ZYKjyLU6z8Cx8pWnq/Msaaw8quKQ4oUxAa0hByJjR4PtNC2/3jpcfx1G4oe
+        gPzGGJVEnTqWo8Cw==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9D871AF38;
+        by mx2.suse.de (Postfix) with ESMTP id BE29FAF39;
         Mon, 24 May 2021 23:40:48 +0000 (UTC)
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC 16/26] mm, slub: move reset of c->page and freelist out of deactivate_slab()
-Date:   Tue, 25 May 2021 01:39:36 +0200
-Message-Id: <20210524233946.20352-17-vbabka@suse.cz>
+Subject: [RFC 17/26] mm, slub: make locking in deactivate_slab() irq-safe
+Date:   Tue, 25 May 2021 01:39:37 +0200
+Message-Id: <20210524233946.20352-18-vbabka@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524233946.20352-1-vbabka@suse.cz>
 References: <20210524233946.20352-1-vbabka@suse.cz>
@@ -57,96 +57,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-deactivate_slab() removes the cpu slab by merging the cpu freelist with slab's
-freelist and putting the slab on the proper node's list. It also sets the
-respective kmem_cache_cpu pointers to NULL.
-
-By extracting the kmem_cache_cpu operations from the function, we can make it
-not dependent on disabled irqs.
-
-Also if we return a single free pointer from ___slab_alloc, we no longer have
-to load the slab page before deactivation or care if somebody preempted us and
-loaded a different slab page to our kmem_cache_cpu in the process.
+dectivate_slab() now no longer touches the kmem_cache_cpu structure, so it will
+be possible to call it with irqs enabled. Just convert the spin_lock calls to
+their irq saving/restoring variants to make it irq-safe. Additionally we now
+have to use cmpxchg_double_slab() for irq-safe slab_lock().
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+ mm/slub.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index bc7bee5d4bf2..cf855cd09802 100644
+index cf855cd09802..0f58859165bf 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2163,10 +2163,13 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
- }
+@@ -2177,6 +2177,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 	enum slab_modes l = M_NONE, m = M_NONE;
+ 	void *nextfree, *freelist_iter, *freelist_tail;
+ 	int tail = DEACTIVATE_TO_HEAD;
++	unsigned long flags = 0;
+ 	struct page new;
+ 	struct page old;
  
- /*
-- * Remove the cpu slab
-+ * Finishes removing the cpu slab. Merges cpu's freelist with page's freelist,
-+ * unfreezes the slabs and puts it on the proper list.
-+ * Assumes the slab has been already safely taken away from kmem_cache_cpu
-+ * by the caller.
-  */
- static void deactivate_slab(struct kmem_cache *s, struct page *page,
--				void *freelist, struct kmem_cache_cpu *c)
-+			    void *freelist)
- {
- 	enum slab_modes { M_NONE, M_PARTIAL, M_FULL, M_FREE };
- 	struct kmem_cache_node *n = get_node(s, page_to_nid(page));
-@@ -2295,9 +2298,6 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 		discard_slab(s, page);
- 		stat(s, FREE_SLAB);
+@@ -2252,7 +2253,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 			 * that acquire_slab() will see a slab page that
+ 			 * is frozen
+ 			 */
+-			spin_lock(&n->list_lock);
++			spin_lock_irqsave(&n->list_lock, flags);
+ 		}
+ 	} else {
+ 		m = M_FULL;
+@@ -2263,7 +2264,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 			 * slabs from diagnostic functions will not see
+ 			 * any frozen slabs.
+ 			 */
+-			spin_lock(&n->list_lock);
++			spin_lock_irqsave(&n->list_lock, flags);
+ 		}
  	}
--
--	c->page = NULL;
--	c->freelist = NULL;
- }
  
- /*
-@@ -2429,10 +2429,16 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 
- static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
- {
--	stat(s, CPUSLAB_FLUSH);
--	deactivate_slab(s, c->page, c->freelist, c);
-+	void *freelist = c->freelist;
-+	struct page *page = c->page;
- 
-+	c->page = NULL;
-+	c->freelist = NULL;
- 	c->tid = next_tid(c->tid);
-+
-+	deactivate_slab(s, page, freelist);
-+
-+	stat(s, CPUSLAB_FLUSH);
- }
- 
- /*
-@@ -2712,7 +2718,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		local_irq_restore(flags);
- 		goto reread_page;
+@@ -2280,14 +2281,14 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
  	}
--	deactivate_slab(s, page, c->freelist, c);
-+	freelist = c->freelist;
-+	c->page = NULL;
-+	c->freelist = NULL;
-+	deactivate_slab(s, page, freelist);
- 	local_irq_restore(flags);
  
- new_slab:
-@@ -2792,11 +2801,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- return_single:
+ 	l = m;
+-	if (!__cmpxchg_double_slab(s, page,
++	if (!cmpxchg_double_slab(s, page,
+ 				old.freelist, old.counters,
+ 				new.freelist, new.counters,
+ 				"unfreezing slab"))
+ 		goto redo;
  
- 	local_irq_save(flags);
--	if (unlikely(c->page))
--		flush_slab(s, c);
--	c->page = page;
--
--	deactivate_slab(s, page, get_freepointer(s, freelist), c);
-+	deactivate_slab(s, page, get_freepointer(s, freelist));
- 	local_irq_restore(flags);
- 	return freelist;
- }
+ 	if (lock)
+-		spin_unlock(&n->list_lock);
++		spin_unlock_irqrestore(&n->list_lock, flags);
+ 
+ 	if (m == M_PARTIAL)
+ 		stat(s, tail);
 -- 
 2.31.1
 
