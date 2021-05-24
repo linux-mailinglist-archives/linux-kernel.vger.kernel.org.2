@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D2238EFCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D2038EEAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhEXP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
+        id S234888AbhEXPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235221AbhEXPzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 488176143A;
-        Mon, 24 May 2021 15:40:42 +0000 (UTC)
+        id S234631AbhEXPo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:44:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4150D61452;
+        Mon, 24 May 2021 15:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870842;
-        bh=X1nSI36gVj+lwwu87lKIKivvc1Xlem4MisVkfCpIYWI=;
+        s=korg; t=1621870564;
+        bh=spKPCrO0sL/Gh3g1hk1TvU51aq5+aqlImPb+KmLLB0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vuX2nuMMe/5Ydiz4TUNj7Mc5GjM4mrSEkrFlCAYsArthpFYcIjVKJ5sNh+qy0CF5J
-         R+85gpQ5o6LO0BWlHEq10f+ZfrpIXcLH2+FkP/E8N0NTop3VrfeuoVWlDYcXWnlTZB
-         u57926XyAPksIveZvoHKsnJbryqSVti51jqJg9Iw=
+        b=SjWPflEtIHCbNcU4V44kQAdXKLRzxt697qeKFJlY9VAXvqzkCRzmVO2IcSmr338ox
+         nMArdJHHcO7FhBljzY8kCTlFPgRPDwUqmu14LpSMwaOZVjSd3GuFiLeAqioNwtckhB
+         YUat59bikoW7h5JgzUMDyPPPwH5/td4FEjDOO4NM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yi Li <liyi@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 060/104] drm/amdgpu: Fix GPU TLB update error when PAGE_SIZE > AMDGPU_PAGE_SIZE
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Tom Seewald <tseewald@gmail.com>
+Subject: [PATCH 4.19 44/49] qlcnic: Add null check after calling netdev_alloc_skb
 Date:   Mon, 24 May 2021 17:25:55 +0200
-Message-Id: <20210524152334.845491646@linuxfoundation.org>
+Message-Id: <20210524152325.791989205@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yi Li <liyi@loongson.cn>
+From: Tom Seewald <tseewald@gmail.com>
 
-commit d53751568359e5b3ffb859b13cbd79dc77a571f1 upstream.
+commit 84460f01cba382553199bc1361f69a872d5abed4 upstream.
 
-When PAGE_SIZE is larger than AMDGPU_PAGE_SIZE, the number of GPU TLB
-entries which need to update in amdgpu_map_buffer() should be multiplied
-by AMDGPU_GPU_PAGES_IN_CPU_PAGE (PAGE_SIZE / AMDGPU_PAGE_SIZE).
+The function qlcnic_dl_lb_test() currently calls netdev_alloc_skb()
+without checking afterwards that the allocation succeeded. Fix this by
+checking if the skb is NULL and returning an error in such a case.
+Breaking out of the loop if the skb is NULL is not correct as no error
+would be reported to the caller and no message would be printed for the
+user.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Yi Li <liyi@loongson.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Cc: David S. Miller <davem@davemloft.net>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Tom Seewald <tseewald@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-26-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -267,7 +267,7 @@ static int amdgpu_ttm_map_buffer(struct
- 	*addr += offset & ~PAGE_MASK;
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
+@@ -1048,6 +1048,8 @@ int qlcnic_do_lb_test(struct qlcnic_adap
  
- 	num_dw = ALIGN(adev->mman.buffer_funcs->copy_num_dw, 8);
--	num_bytes = num_pages * 8;
-+	num_bytes = num_pages * 8 * AMDGPU_GPU_PAGES_IN_CPU_PAGE;
- 
- 	r = amdgpu_job_alloc_with_ib(adev, num_dw * 4 + num_bytes,
- 				     AMDGPU_IB_POOL_DELAYED, &job);
+ 	for (i = 0; i < QLCNIC_NUM_ILB_PKT; i++) {
+ 		skb = netdev_alloc_skb(adapter->netdev, QLCNIC_ILB_PKT_SIZE);
++		if (!skb)
++			goto error;
+ 		qlcnic_create_loopback_buff(skb->data, adapter->mac_addr);
+ 		skb_put(skb, QLCNIC_ILB_PKT_SIZE);
+ 		adapter->ahw->diag_cnt = 0;
+@@ -1071,6 +1073,7 @@ int qlcnic_do_lb_test(struct qlcnic_adap
+ 			cnt++;
+ 	}
+ 	if (cnt != i) {
++error:
+ 		dev_err(&adapter->pdev->dev,
+ 			"LB Test: failed, TX[%d], RX[%d]\n", i, cnt);
+ 		if (mode != QLCNIC_ILB_MODE)
 
 
