@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E25538F091
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F47138EDD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236353AbhEXQEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43814 "EHLO mail.kernel.org"
+        id S233845AbhEXPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234769AbhEXP50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B33D461952;
-        Mon, 24 May 2021 15:43:35 +0000 (UTC)
+        id S233887AbhEXPiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:38:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 709AE613F4;
+        Mon, 24 May 2021 15:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871016;
-        bh=g4WznfC1RMud/RVC4tEowcseFD//o/MAWnIuwiNWWSA=;
+        s=korg; t=1621870409;
+        bh=mMX5HUHTtWOlzHb1E9m+WAkJkVryMLyaA+OR+Mk+fqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RvpJcJ8QvGn/KzgY8DDk77QNT3g5kGJQ/p8Is2qKawvIxPoZVeFnNGLqxv68R/Owj
-         3PmH7x/3e3XExwnjvMHES6lujEt/WiA3iwqZ0dJSSxQhOFu+gJwYoWfc9+f1n7cfkM
-         XV1qprxreLgQ8VVEO3f1TX3WLvpuolY4AUjd/Xvo=
+        b=LJ3pOYfkbnoPIpcqJHlu7ZjTnb9RWP3u/R3t1ZZNHY1nIi7VDZBjb/V8foXehEomo
+         MyGDWDnjl/c9Tx0Zk1I2+MTBSCIbhv9kviyVLdgJtIoRI1cc40U6dG6CjccYHtHYKv
+         HZGWGG0wIJING+LycasVWOF8UE11MJMww7dJCTa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 007/127] RDMA/core: Prevent divide-by-zero error triggered by the user
-Date:   Mon, 24 May 2021 17:25:24 +0200
-Message-Id: <20210524152335.108504796@linuxfoundation.org>
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Tyler Hicks <code@tyhicks.com>
+Subject: [PATCH 4.14 21/37] Revert "ecryptfs: replace BUG_ON with error handling code"
+Date:   Mon, 24 May 2021 17:25:25 +0200
+Message-Id: <20210524152324.902646317@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 54d87913f147a983589923c7f651f97de9af5be1 ]
+commit e1436df2f2550bc89d832ffd456373fdf5d5b5d7 upstream.
 
-The user_entry_size is supplied by the user and later used as a
-denominator to calculate number of entries. The zero supplied by the user
-will trigger the following divide-by-zero error:
+This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
 
- divide error: 0000 [#1] SMP KASAN PTI
- CPU: 4 PID: 497 Comm: c_repro Not tainted 5.13.0-rc1+ #281
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- RIP: 0010:ib_uverbs_handler_UVERBS_METHOD_QUERY_GID_TABLE+0x1b1/0x510
- Code: 87 59 03 00 00 e8 9f ab 1e ff 48 8d bd a8 00 00 00 e8 d3 70 41 ff 44 0f b7 b5 a8 00 00 00 e8 86 ab 1e ff 31 d2 4c 89 f0 31 ff <49> f7 f5 48 89 d6 48 89 54 24 10 48 89 04 24 e8 1b ad 1e ff 48 8b
- RSP: 0018:ffff88810416f828 EFLAGS: 00010246
- RAX: 0000000000000008 RBX: 1ffff1102082df09 RCX: ffffffff82183f3d
- RDX: 0000000000000000 RSI: ffff888105f2da00 RDI: 0000000000000000
- RBP: ffff88810416fa98 R08: 0000000000000001 R09: ffffed102082df5f
- R10: ffff88810416faf7 R11: ffffed102082df5e R12: 0000000000000000
- R13: 0000000000000000 R14: 0000000000000008 R15: ffff88810416faf0
- FS:  00007f5715efa740(0000) GS:ffff88811a700000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000020000840 CR3: 000000010c2e0001 CR4: 0000000000370ea0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  ? ib_uverbs_handler_UVERBS_METHOD_INFO_HANDLES+0x4b0/0x4b0
-  ib_uverbs_cmd_verbs+0x1546/0x1940
-  ib_uverbs_ioctl+0x186/0x240
-  __x64_sys_ioctl+0x38a/0x1220
-  do_syscall_64+0x3f/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 9f85cbe50aa0 ("RDMA/uverbs: Expose the new GID query API to user space")
-Link: https://lore.kernel.org/r/b971cc70a8b240a8b5eda33c99fa0558a0071be2.1620657876.git.leonro@nvidia.com
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit log for this change was incorrect, no "error
+handling code" was added, things will blow up just as badly as before if
+any of these cases ever were true.  As this BUG_ON() never fired, and
+most of these checks are "obviously" never going to be true, let's just
+revert to the original code for now until this gets unwound to be done
+correctly in the future.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Fixes: 2c2a7552dd64 ("ecryptfs: replace BUG_ON with error handling code")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Tyler Hicks <code@tyhicks.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-49-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/core/uverbs_std_types_device.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/ecryptfs/crypto.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
-index 9ec6971056fa..a03021d94e11 100644
---- a/drivers/infiniband/core/uverbs_std_types_device.c
-+++ b/drivers/infiniband/core/uverbs_std_types_device.c
-@@ -331,6 +331,9 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
- 	if (ret)
- 		return ret;
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -339,10 +339,8 @@ static int crypt_scatterlist(struct ecry
+ 	struct extent_crypt_result ecr;
+ 	int rc = 0;
  
-+	if (!user_entry_size)
-+		return -EINVAL;
-+
- 	max_entries = uverbs_attr_ptr_get_array_size(
- 		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
- 		user_entry_size);
--- 
-2.30.2
-
+-	if (!crypt_stat || !crypt_stat->tfm
+-	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
+-		return -EINVAL;
+-
++	BUG_ON(!crypt_stat || !crypt_stat->tfm
++	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
+ 	if (unlikely(ecryptfs_verbosity > 0)) {
+ 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
+ 				crypt_stat->key_size);
 
 
