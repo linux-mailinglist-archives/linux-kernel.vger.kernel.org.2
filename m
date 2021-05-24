@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906CF38EFA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF13F38EE00
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235592AbhEXP6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        id S234776AbhEXPoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:44:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235200AbhEXPzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 995A061924;
-        Mon, 24 May 2021 15:40:33 +0000 (UTC)
+        id S234055AbhEXPkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:40:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B556143F;
+        Mon, 24 May 2021 15:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870834;
-        bh=i3Be1xhdB470r73Y7vpHs48dUE99IAGvNPj3Y1bxEEo=;
+        s=korg; t=1621870462;
+        bh=11CFGkVqx0/wik8SpN3uohr7Pd+8jB70sbAWCEt25z8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OHV5fGOAy+WU5cKPIJ5QSLoCT/6sWf0cR8CYF+ZgCyD7wrDezP/q0sAF1aPSwhp18
-         Sp9TeaHtudA1GIJtJyIj1nDWNv/DWfVI/iNN/3140vDDbodd3+6XG+aP/ZyF4O8E2i
-         vMAHG1gAz76U4HkydfvQvDERET+2f16DMlBi3ais=
+        b=1vuxt8seZCrU+CYkKGp2xW2zuSIte3iliLPzDfBwuVmZstbn2/7pEcyFarGz25RHI
+         ci0wpzFv790kp6+zscDaUKInX/SC/iDpYMuuwF1Iaw0+YvwuHKzGopxdbY25hiip2T
+         Ad8M8uNljUENuzMLUqCD/KwJD6CDexb6s/VQA5yM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 046/104] ALSA: hda/realtek: Add some CLOVE SSIDs of ALC293
+        stable@vger.kernel.org,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH 4.14 37/37] tty: vt: always invoke vc->vc_sw->con_resize callback
 Date:   Mon, 24 May 2021 17:25:41 +0200
-Message-Id: <20210524152334.355507687@linuxfoundation.org>
+Message-Id: <20210524152325.418859115@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: PeiSen Hou <pshou@realtek.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-commit 1d5cfca286178ce81fb0c8a5f5777ef123cd69e4 upstream.
+commit ffb324e6f874121f7dce5bdae5e05d02baae7269 upstream.
 
-Fix "use as headset mic, without its own jack detect" problen.
+syzbot is reporting OOB write at vga16fb_imageblit() [1], for
+resize_screen() from ioctl(VT_RESIZE) returns 0 without checking whether
+requested rows/columns fit the amount of memory reserved for the graphical
+screen if current mode is KD_GRAPHICS.
 
-Signed-off-by: PeiSen Hou <pshou@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/d0746eaf29f248a5acc30313e3ba4f99@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+----------
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #include <fcntl.h>
+  #include <sys/ioctl.h>
+  #include <linux/kd.h>
+  #include <linux/vt.h>
+
+  int main(int argc, char *argv[])
+  {
+        const int fd = open("/dev/char/4:1", O_RDWR);
+        struct vt_sizes vt = { 0x4100, 2 };
+
+        ioctl(fd, KDSETMODE, KD_GRAPHICS);
+        ioctl(fd, VT_RESIZE, &vt);
+        ioctl(fd, KDSETMODE, KD_TEXT);
+        return 0;
+  }
+----------
+
+Allow framebuffer drivers to return -EINVAL, by moving vc->vc_mode !=
+KD_GRAPHICS check from resize_screen() to fbcon_resize().
+
+Link: https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3 [1]
+Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/tty/vt/vt.c              |    2 +-
+ drivers/video/fbdev/core/fbcon.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8319,12 +8319,19 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0x50b8, "Clevo NK50SZ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50d5, "Clevo NP50D5", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50f0, "Clevo NH50A[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x50f2, "Clevo NH50E[PR]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x50f3, "Clevo NH58DPQ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x50f5, "Clevo NH55EPY", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x50f6, "Clevo NH55DPQ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x5101, "Clevo S510WU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x5157, "Clevo W517GU1", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x51a1, "Clevo NS50MU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x70a1, "Clevo NB70T[HJK]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x70b3, "Clevo NK70SB", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x70f2, "Clevo NH79EPY", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x70f3, "Clevo NH77DPQ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x70f4, "Clevo NH77EPY", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x70f6, "Clevo NH77DPQ-Y", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8228, "Clevo NR40BU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8520, "Clevo NH50D[CD]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8521, "Clevo NH77D[CD]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-@@ -8342,9 +8349,17 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0x8a51, "Clevo NH70RCQ-Y", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8d50, "Clevo NH55RCQ-M", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x951d, "Clevo N950T[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x9600, "Clevo N960K[PR]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x961d, "Clevo N960S[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x971d, "Clevo N970T[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0xa500, "Clevo NL53RU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xa600, "Clevo NL5XNU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xb018, "Clevo NP50D[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xb019, "Clevo NH77D[BE]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xb022, "Clevo NH77D[DC][QW]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xc018, "Clevo NP50D[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xc019, "Clevo NH77D[BE]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0xc022, "Clevo NH77[DC][QW]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
- 	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -835,7 +835,7 @@ static inline int resize_screen(struct v
+ 	/* Resizes the resolution of the display adapater */
+ 	int err = 0;
+ 
+-	if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
++	if (vc->vc_sw->con_resize)
+ 		err = vc->vc_sw->con_resize(vc, width, height, user);
+ 
+ 	return err;
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2003,7 +2003,7 @@ static int fbcon_resize(struct vc_data *
+ 			return -EINVAL;
+ 
+ 		DPRINTK("resize now %ix%i\n", var.xres, var.yres);
+-		if (con_is_visible(vc)) {
++		if (con_is_visible(vc) && vc->vc_mode == KD_TEXT) {
+ 			var.activate = FB_ACTIVATE_NOW |
+ 				FB_ACTIVATE_FORCE;
+ 			fb_set_var(info, &var);
 
 
