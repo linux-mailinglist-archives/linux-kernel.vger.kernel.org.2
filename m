@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D687A38F1A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143E538F1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhEXQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:36:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232491AbhEXQgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:36:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DDD6140C
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621874076;
-        bh=ZLC8qQnMj4ooJVxFsue4U3K8DWfx8sWZhRr0SsKBcjk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=POmSP74CcUe0KM1A6asTBP5N4cIxU9qdYs5z543h7DwZAi5wWbC+pl8QLI6UkE1G6
-         U2321BNMHejTCio06KhWeZyVujf8vQIy+zgeNhstptLNWb6bS9wo4kjmQHjw8R9RQ7
-         rDHKy1e6H75XccxTC3E4MurrWi1N7CxvXPUaoIPAE8H1JJPUyPfBJveR7+OMBO7WMb
-         /KTAlJ/Fh8Af5kcO1Yyo8m4CXLiQGwCYoOM+g6bXJ59tCp7VDgQ9uPdE0oprCspy5H
-         lR6K0JCV1oyUIeWhz5lnd4yvQLgA/LvwtZ+H4tx1sa5np3laPH6v18fkAuQHee3yOl
-         JoTZIcQaf1WPA==
-Received: by mail-ed1-f54.google.com with SMTP id t15so32718141edr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:34:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530Db5iiKgrNI0OyG4xPIZGjX/2j863/9ZFQXvy43V9RSy7X6QGQ
-        yKnuaCU6Oa/PMS+jUg5Ob7OtAtr11Myg9z8RMfgcxw==
-X-Google-Smtp-Source: ABdhPJy/LkAdwUDEi2HBwJHj8sOm3jtgls+wbFBUGYPLK3LBnPye3W6g3OUK8gFArWJZcw6647SJKzgVJmX+8UAAWoY=
-X-Received: by 2002:a05:6402:4251:: with SMTP id g17mr26424758edb.238.1621874074727;
- Mon, 24 May 2021 09:34:34 -0700 (PDT)
+        id S233193AbhEXQgQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 12:36:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:22017 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232797AbhEXQgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:36:14 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-130-Su6f02UuPwmFID_yslxeDA-1; Mon, 24 May 2021 17:34:43 +0100
+X-MC-Unique: Su6f02UuPwmFID_yslxeDA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 24 May 2021 17:34:39 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 24 May 2021 17:34:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mark Rutland' <mark.rutland@arm.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     Joe Richey <joerichey94@gmail.com>,
+        "trivial@kernel.org" <trivial@kernel.org>,
+        Joe Richey <joerichey@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-accelerators@lists.ozlabs.org" 
+        <linux-accelerators@lists.ozlabs.org>
+Subject: RE: [PATCH 0/6] Don't use BIT() macro in UAPI headers
+Thread-Topic: [PATCH 0/6] Don't use BIT() macro in UAPI headers
+Thread-Index: AQHXUJhmyhlvadTh4EyDNcSC3h2x96ry0v3w
+Date:   Mon, 24 May 2021 16:34:39 +0000
+Message-ID: <56cdb86fe8984a94b4a7a8073476d849@AcuMS.aculab.com>
+References: <20210520104343.317119-1-joerichey94@gmail.com>
+ <YKuSEnfEbjpOOgLS@infradead.org> <20210524122901.GH1040@C02TD0UTHF1T.local>
+In-Reply-To: <20210524122901.GH1040@C02TD0UTHF1T.local>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20200512145444.15483-6-yu-cheng.yu@intel.com> <158964181793.17951.15480349640697746223.tip-bot2@tip-bot2>
-In-Reply-To: <158964181793.17951.15480349640697746223.tip-bot2@tip-bot2>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 24 May 2021 09:34:23 -0700
-X-Gmail-Original-Message-ID: <CALCETrXfLbsrBX42Y094YLWTG=pqkrf+aSCLruCGzqnZ0Y=P-Q@mail.gmail.com>
-Message-ID: <CALCETrXfLbsrBX42Y094YLWTG=pqkrf+aSCLruCGzqnZ0Y=P-Q@mail.gmail.com>
-Subject: Re: [tip: x86/fpu] x86/fpu/xstate: Define new functions for clearing
- fpregs and xstates
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-tip-commits@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>, x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 8:10 AM tip-bot2 for Fenghua Yu
-<tip-bot2@linutronix.de> wrote:
->
-> The following commit has been merged into the x86/fpu branch of tip:
->
-> Commit-ID:     b860eb8dce5906b14e3a7f3c771e0b3d6ef61b94
-> Gitweb:        https://git.kernel.org/tip/b860eb8dce5906b14e3a7f3c771e0b3d6ef61b94
-> Author:        Fenghua Yu <fenghua.yu@intel.com>
-> AuthorDate:    Tue, 12 May 2020 07:54:39 -07:00
-> Committer:     Borislav Petkov <bp@suse.de>
-> CommitterDate: Wed, 13 May 2020 13:41:50 +02:00
->
-> x86/fpu/xstate: Define new functions for clearing fpregs and xstates
+From: Mark Rutland
+> Sent: 24 May 2021 13:29
+> 
+> On Mon, May 24, 2021 at 12:46:26PM +0100, Christoph Hellwig wrote:
+> > On Thu, May 20, 2021 at 03:43:37AM -0700, Joe Richey wrote:
+> > > This patch series changes all UAPI uses of BIT() to just be open-coded.
+> > > However, there really should be a check for this in checkpatch.pl
+> > > Currently, the script actually _encourages_ users to use the BIT macro
+> > > even if adding things to UAPI.
+> >
+> > Yes.  In fact it should warn about BIT() in general.  It is totally
+> > pointless obsfucation that doesn't even save any typing at all.
+> 
+> That's not quite true; the point is that if you use BIT() consistently,
+> then even when you refer to bits 32 to 63 you won't accidentally
+> introduce shifts of more than the width of int, and the definition will
+> work equally well for assembly and C, which isn't true if you use `1UL`
+> in the definition.
+> 
+> With that in mind it's shorter and clearer than its functional
+> equivalent:
+> 
+>   BIT(x)
+>   (UL(1) << (x))
+> 
+> So IMO it's preferable to use BIT() generally, or _BITUL() in uapi
+> headers.
 
-syzbot says this is busted.  I've made no effort to identify the
-precise bug that is making syzbot complain, but:
+And then, suddenly the compiler warns about truncation of the
+high bits when ~BIT(x) is used to mask a 32bit value on 64bit systems.
 
->  /*
-> - * Clear FPU registers by setting them up from
-> - * the init fpstate:
-> + * Clear FPU registers by setting them up from the init fpstate.
-> + * Caller must do fpregs_[un]lock() around it.
->   */
-> -static inline void copy_init_fpstate_to_fpregs(void)
-> +static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
->  {
-> -       fpregs_lock();
-> -
+Once the C standard committee had decided to change from K&R's
+'sign preserving' integer promotions to 'value preserving'
+you always lose somewhere.
 
+Personally I prefer hex constants - I can't count bits at all.
 
+	David
 
->         if (use_xsave())
-> -               copy_kernel_to_xregs(&init_fpstate.xsave, -1);
-> +               copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
->         else if (static_cpu_has(X86_FEATURE_FXSR))
->                 copy_kernel_to_fxregs(&init_fpstate.fxsave);
->         else
-> @@ -307,9 +305,6 @@ static inline void copy_init_fpstate_to_fpregs(void)
->
->         if (boot_cpu_has(X86_FEATURE_OSPKE))
->                 copy_init_pkru_to_fpregs();
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-if (boot_cpu_has(X86_FEATURE_OSPKE) && (features_mask & PKRU)), perhaps?
-
-> -
-> -       fpregs_mark_activate();
-> -       fpregs_unlock();
->  }
->
->  /*
-> @@ -318,18 +313,40 @@ static inline void copy_init_fpstate_to_fpregs(void)
->   * Called by sys_execve(), by the signal handler code and by various
->   * error paths.
->   */
-> -void fpu__clear(struct fpu *fpu)
-> +static void fpu__clear(struct fpu *fpu, bool user_only)
->  {
-> -       WARN_ON_FPU(fpu != &current->thread.fpu); /* Almost certainly an anomaly */
-> +       WARN_ON_FPU(fpu != &current->thread.fpu);
->
-> -       fpu__drop(fpu);
-> +       if (!static_cpu_has(X86_FEATURE_FPU)) {
-> +               fpu__drop(fpu);
-> +               fpu__initialize(fpu);
-> +               return;
-> +       }
->
-> -       /*
-> -        * Make sure fpstate is cleared and initialized.
-> -        */
-> -       fpu__initialize(fpu);
-> -       if (static_cpu_has(X86_FEATURE_FPU))
-> -               copy_init_fpstate_to_fpregs();
-> +       fpregs_lock();
-> +
-> +       if (user_only) {
-> +               if (!fpregs_state_valid(fpu, smp_processor_id()) &&
-> +                   xfeatures_mask_supervisor())
-> +                       copy_kernel_to_xregs(&fpu->state.xsave,
-> +                                            xfeatures_mask_supervisor());
-
-This looks correct to me.
-
-So I'm guessing that syzbot may have misattributed the problem.  But
-we definitely need to clean up the XRSTOR #GP handling before CET
-lands.
