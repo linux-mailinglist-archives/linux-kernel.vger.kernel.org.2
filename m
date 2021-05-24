@@ -2,144 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1255438E4B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCC138E4C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhEXLCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:02:15 -0400
-Received: from mail-mw2nam12on2124.outbound.protection.outlook.com ([40.107.244.124]:63553
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232548AbhEXLCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:02:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YuT0uKsU8bYVa7vNBYOldcrwQkFFjizw3MphOWPcH5DqbgjHTJeZjxPMIHm0hSt7xzoSM1LXYVJNMwtRtZHBi9OJvSJKn7aVRaiW5kit21uH/ZCF6owK6VlUTK61kyJ8p22hslAGLVpXi+K6q60NDPtI9IkRI8AfnJtaoEwf21VNm+3clFOx6wYBfTxPPgjE1RpI34uAdFzf6EwAokcKTjrK6riMwqm/ikSiLLTet3BOTYzPfoz8s/WpVpsicXeNFoiPqV9pz1/7B83kw4mrkWexvdo2a+grNBxxUCw9S6vRBwDv/lIfOg8p7eEdxVV+LFpr6rQTVsWGFiXdNVfdCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bnVlcU9zM25biMznX+8cYjdaclvwgWgfkcuQF/5G10w=;
- b=B73Zgkq02DGEQ5Bvw7Niqp+/v30nNnHEat8v5Kr5LorJQjrOrjdbGgO6xc+fjouZEQLzjYAspnSDjVWOU0U7Da6bzAbt9NDVMMfjmqfPSzGTp4TORaP3SoBtP4IQUfheobvNeEBWdhOGbvVcrVc71iiyTrPhS2shf2jp++zwxwn3izNhm/y7JQESWLXmxUYccYhOwib/FqiAA0xFIiN+2TV0TpFZ5S9u9KKBQCzEwI8Pw0xCf8jMT9BWDNzcXrSwQsU6+a9jQvWfeczdu28jikvP9kpyyMmadCZUsApJxVjpveKgtqkOg3qP6lymHW9HtIHJG1CbEuCVsSV4u5ydeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=chelsio.com; dmarc=pass action=none header.from=chelsio.com;
- dkim=pass header.d=chelsio.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=chelsious.onmicrosoft.com; s=selector2-chelsious-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bnVlcU9zM25biMznX+8cYjdaclvwgWgfkcuQF/5G10w=;
- b=Hdpd1vRkkaxldf93r2ARi+WH2MQZP8FuO5IymJoIzXH6xy4YQP7U93BZm2hCNAf/f4U+DYnrYhl/lHdhREv9Y0Zlj42LbuANWHJkXqJmQ19iqln8QYntjPnkztLkbnaMHg8xABy3zO+gJBYV8bxf0N/q+XKRyCY2U6O2Oj4LfB0=
-Received: from BN9PR12MB5321.namprd12.prod.outlook.com (2603:10b6:408:102::20)
- by BN9PR12MB5323.namprd12.prod.outlook.com (2603:10b6:408:104::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
- 2021 11:00:42 +0000
-Received: from BN9PR12MB5321.namprd12.prod.outlook.com
- ([fe80::24b4:3771:b03b:980b]) by BN9PR12MB5321.namprd12.prod.outlook.com
- ([fe80::24b4:3771:b03b:980b%7]) with mapi id 15.20.4150.027; Mon, 24 May 2021
- 11:00:42 +0000
-From:   "Raju  Rangoju" <rajur@chelsio.com>
-To:     Josh Boyer <jwboyer@kernel.org>,
-        "linux-firmware@kernel.org" <linux-firmware@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ramaraju Yelavarthy <ramaraju@chelsio.com>,
-        "Raju Rangoju" <rajur@chelsio.com>
-Subject: pull request: linux-firmware: update cxgb4 firmware to 1.25.6.0
-Thread-Topic: pull request: linux-firmware: update cxgb4 firmware to 1.25.6.0
-Thread-Index: AddQi/jxg8aJf9XJS5OKMl+ZpgS8xA==
-Date:   Mon, 24 May 2021 11:00:42 +0000
-Message-ID: <BN9PR12MB53218D9345EF839962E1E4C9BC269@BN9PR12MB5321.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=chelsio.com;
-x-originating-ip: [175.101.22.122]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0fbcb782-57ea-413f-6d27-08d91ea32cb0
-x-ms-traffictypediagnostic: BN9PR12MB5323:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN9PR12MB53236A0898B1248EC309760EBC269@BN9PR12MB5323.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9QMLyVshpABlJKLLqECEOHMdYv3iVu3Nrp2GgXbI0UqreysOV2NnheWNNRmdYhqlXaHTHuYyPCtF6EkIcNKMLByXgGN69hn5fZ9w0uwjW5xyz6S/M8edYiIEwr1Oiu13OMkxn9UuTHLENKmjmY6y40uikyWHDsjsYhUoN1pqG7n6anVdXpvGf2ZHo7QECNLQ2V0zPSomuRjDbCsYu/InQUgKgfxcnr9A1+SkIIYkijA0RCl/YUzBL5XJOzaAyKTZKG5G6shN/leBjHR9RpI2QtMRpjYrABTO8HRvGmIg68TTAAP4qhS5IVPi+t+F7X2BjK/JJxEMP+wBA0HnzbYDx1tNEsu3rfZ8vPlQ1zhyRRSOVmEcIAqXCPJJVF903hp8TIEcR5NqRfiXIoAJ4VOwG0D1n0v6qhvfXQgSersnGCZWK6xPs5A0R+FqMD+o9UBkGPttWbBaXt8mOxuhqzvKh/yIp4NAcNbJOYFEfvNKVHB5WYAI5u15f7RMMnRa7wAHDHkdqlbrfiAktSZ5vTNBJ2MfsLoA/PnUDdQs6MyjFfjCnkkmBghrC7V5PsrnieiR/vA/HaekNs0xGvZLNh74FdzIYpwC086w3t3wNgrZ/i4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5321.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(39830400003)(396003)(54906003)(4326008)(26005)(6506007)(71200400001)(7696005)(38100700002)(55016002)(107886003)(186003)(8936002)(122000001)(52536014)(15650500001)(2906002)(86362001)(66946007)(64756008)(66476007)(478600001)(83380400001)(316002)(110136005)(76116006)(5660300002)(8676002)(66446008)(66556008)(33656002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MtlYFmiCMahWv+14klGqWz8n4yHGD/V6bVp7aL4m92sSdAMeo48tTL27sIyY?=
- =?us-ascii?Q?6Hm485Y64iVKMDfqK2l+G3lb2CmMnWc4yE4KckMDQ8ap/ggrPHMtlQ+de7sP?=
- =?us-ascii?Q?MOd9NCsznsNSKRtLAAd+OclpnPRcr3KtDoXHVMEHic4Tvk7v0EUFWDHUpkLB?=
- =?us-ascii?Q?OEXjbI30DeVnBXxWQNOdaqLt6vLIY4jd0fp5wzXK5QVXJBWHySDVFgr9/gxt?=
- =?us-ascii?Q?pEFryXnWOor57xppVbhm/i0MlcADN+C3lCkNIFsYx8hZrN1E6kYYJBfp6ORv?=
- =?us-ascii?Q?7RZCv/Yi/P7UcSFMRW9DPIwsopOXA4IiwBL0c+Y0Q5+NRZK04koRqXOUXLb4?=
- =?us-ascii?Q?KzB/wfnN01JxqxHMI6j/ycmKb6i9TQocOTg7SDwyP07UQL/h/jORaffKVQoN?=
- =?us-ascii?Q?vLCcm/lLH7xkruay3B+PTi1ARY73jDtM7Y90ghPApBAggLyvEXdrP2xESjIk?=
- =?us-ascii?Q?NQxen6/3HDaimdUL4Ok3+/Z0l7WZCmLHJyz3SOmUlcHnYa3dZ46AvNugPhPJ?=
- =?us-ascii?Q?KtybxLYLyM8ykb313Hp7p9sJEwAiz/wdorugUPvTdJrXRw/rLnZ04522JeoH?=
- =?us-ascii?Q?jz7EY5fSHzCVHxEAXi3hW3M7b/GNuvzVXn2B9dzh7prCJWhYE1jxKvJJtdZD?=
- =?us-ascii?Q?9rbbkI/VdEQeTWkIbRwJZtf8if70NNbjYm/kE/Boarq2v8Ah39A/1LYROJZK?=
- =?us-ascii?Q?jZRK5fyMQVhJBk26YD2LUviuKfZ6uqOWeyiXTnU5oSOvypPuubmyrh/c2mA1?=
- =?us-ascii?Q?RUXCINnEBOmEY6JDXucjoZimXkIaXms+QR2EEIRcjZI3ilXEM2/wcudb80Zc?=
- =?us-ascii?Q?nUcrvM/8h0uzXZMD4a+/ETqqy6InEeqJ/NOE2gKgirVk57w3hGDwdO+5JgOW?=
- =?us-ascii?Q?BU50cw097DYztiG3lwdMuVi5LAZXV6j++5plgAlwIVo00OrxwOiABSb0mPtc?=
- =?us-ascii?Q?YnpjBUPE5wQmSdIxqP5YJd5JvX9KFqPH1IO/rASiwcscGOGkzoNXq/b+fk8p?=
- =?us-ascii?Q?nyIQgypbxeIeu7aiSbOmd7HbzhZ8A7ySOD6wyJ0ocr6k99sf2EMFImWDMCG/?=
- =?us-ascii?Q?ogbBJLuo1lsgVX/OelcOmbqQIZ6qwz+9ZVjLxiiXN5yT/xH/zBNkJZrdcERQ?=
- =?us-ascii?Q?gD0+Sk6WCS3gyvN+TQMZO2gfMvisotfgsOvd6JKj0VA1nIdcHvqO1YqSw0Pw?=
- =?us-ascii?Q?RJGxUHVWqmG8aZUMHJ61JA13AY9wENQ1rCjJmLbM7oo4ZGwokgH2NfXHYWf+?=
- =?us-ascii?Q?KlkvI5LyipBPe2ym/r3KrYXCNK9E/8bJDAMfxAephMdLdZVVzxLghUIKya2u?=
- =?us-ascii?Q?pRSNlZcUIHcDlMN74XYMROP/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232658AbhEXLE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232548AbhEXLE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 07:04:56 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B910C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:03:27 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ll8MZ-00043h-Df; Mon, 24 May 2021 13:03:11 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ll8MO-0002iH-Ii; Mon, 24 May 2021 13:03:00 +0200
+Date:   Mon, 24 May 2021 13:02:57 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v6 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210524110257.izcgx4kdmj5c7dou@pengutronix.de>
+References: <20210518005517.9036-1-billy_tsai@aspeedtech.com>
+ <20210518005517.9036-3-billy_tsai@aspeedtech.com>
+ <20210522160708.ryr7n7klapszu2da@pengutronix.de>
+ <9EA46360-8F43-4D1B-9004-3965A6182FA1@aspeedtech.com>
 MIME-Version: 1.0
-X-OriginatorOrg: chelsio.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5321.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fbcb782-57ea-413f-6d27-08d91ea32cb0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2021 11:00:42.6663
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 065db76d-a7ae-4c60-b78a-501e8fc17095
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 88mWQifKqzMsUeGuuCZMmfF/N5l5TucXhSwdKQdutNRu1AQJ1jnXXO9p4gRQ3TnqaaUXVWm+IpFjo83Jcn3nDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5323
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p3cy6gevslqiqnpq"
+Content-Disposition: inline
+In-Reply-To: <9EA46360-8F43-4D1B-9004-3965A6182FA1@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Can you please pull the new firmware from the following URL?
-git://git.chelsio.net/pub/git/linux-firmware.git for-upstream
+--p3cy6gevslqiqnpq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Raju
+Hi Billy,
 
-The following changes since commit f8462923ed8fc874f770b8c6dfad49d39b381f14=
-:
+On Mon, May 24, 2021 at 01:56:19AM +0000, Billy Tsai wrote:
+> On 2021/5/23, 12:07 AM,Uwe Kleine-K=C3=B6nigwrote:
+>     On Tue, May 18, 2021 at 08:55:17AM +0800, Billy Tsai wrote:
+>     >   > +static u64 aspeed_pwm_get_period(struct pwm_chip *chip, struct=
+ pwm_device *pwm)
+>     >   > +{
+>     >   > +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip=
+);
+>     >   > +	unsigned long rate;
+>     >   > +	u32 index =3D pwm->hwpwm;
+>     >   > +	u32 val;
+>     >   > +	u64 period, div_h, div_l, clk_period;
+>     >   > +
+>     >   > +	rate =3D clk_get_rate(priv->clk);
+>     >   > +	regmap_read(priv->regmap, PWM_ASPEED_CTRL_CH(index), &val);
+>     >   > +	div_h =3D FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_H, val);
+>     >   > +	div_l =3D FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_L, val);
+>     >   > +	regmap_read(priv->regmap, PWM_ASPEED_DUTY_CYCLE_CH(index), &v=
+al);
+>     >   > +	clk_period =3D FIELD_GET(PWM_ASPEED_DUTY_CYCLE_PERIOD, val);
+>     >   > +	period =3D (NSEC_PER_SEC * BIT(div_h) * (div_l + 1) * (clk_pe=
+riod + 1));
+>=20
+>     > The outer pair of parenthesis on the RHS isn't necessary. The maxim=
+al
+>     > value that period can have here is:
+>=20
+>     >	1000000000 * 2**15 * 256 * 256
+>=20
+>     > This fits into an u64, but as all but the last factor are 32 bit va=
+lues
+>     > you might get an overflow here.
+>=20
+> I don=E2=80=99t know in which case the value will overflow, when my param=
+eter types are all u64.
+> Can you tell me what is "the last factor"?
 
-  nvidia: fix symlinks for tu104/tu106 acr unload firmware (2021-05-18 11:0=
-3:08 -0400)
+Ah, I missed that div_l is u64. NSEC_PER_SEC and BIT(div_h) are both
+long quantities only and 1000000000 * 2**15 might overflow that.
 
-are available in the git repository at:
+>     >   > +static int aspeed_pwm_apply(struct pwm_chip *chip, struct pwm_=
+device *pwm,
+>     >   > +			    const struct pwm_state *state)
+>     >   > +{
+>     >   > +	struct device *dev =3D chip->dev;
+>     >   > +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip=
+);
+>     >   > +	u32 index =3D pwm->hwpwm;
+>     >   > +	int ret;
+>     >   > +
+>     >   > +	dev_dbg(dev, "apply period: %lldns, duty_cycle: %lldns", stat=
+e->period,
+>     >   > +		state->duty_cycle);
+>     >   > +
+>     >   > +	regmap_update_bits(priv->regmap, PWM_ASPEED_CTRL_CH(index),
+>     >   > +			   PWM_ASPEED_CTRL_PIN_ENABLE,
+>     >   > +			   state->enabled ? PWM_ASPEED_CTRL_PIN_ENABLE : 0);
+>     >   > +	/*
+>     >   > +	 * Fixed the period to the max value and rising point to 0
+>     >   > +	 * for high resolution and simplify frequency calculation.
+>     >   > +	 */
+>     >   > +	regmap_update_bits(priv->regmap, PWM_ASPEED_DUTY_CYCLE_CH(ind=
+ex),
+>     >   > +			   (PWM_ASPEED_DUTY_CYCLE_PERIOD |
+>     >   > +			    PWM_ASPEED_DUTY_CYCLE_RISING_POINT),
+>     >   > +			   FIELD_PREP(PWM_ASPEED_DUTY_CYCLE_PERIOD,
+>     >   > +				      PWM_ASPEED_FIXED_PERIOD));
+>     >   > +
+>     >   > +	ret =3D aspeed_pwm_set_period(chip, pwm, state);
+>     >   > +	if (ret)
+>     >   > +		return ret;
+>     >   > +	aspeed_pwm_set_duty(chip, pwm, state);
+>=20
+>     > aspeed_pwm_set_duty calls aspeed_pwm_get_period() which is a bit
+>     > ineffective after just having set the period.
+>=20
+> When I call aspeed_pwm_set_period it doesn't mean the period is equal to =
+what I set (It may
+> lose some precision Ex: When I set the period 40000ns, the actual period =
+I set is 39680ns) and
+> I didn't get this information when I call aspeed_pwm_set_period. Thus, I =
+need to get the actual
+> period first before set duty.
 
-  git://git.chelsio.net/pub/git/linux-firmware.git for-upstream
+I'm aware it might lose precision. But calling aspeed_pwm_get_period()
+determines the setting from reading registers, if you reuse all
+information available in aspeed_pwm_set_period() this is cheaper. Also
+it might be beneficial to first compute all necessary register values
+and then write them in quick sequence to keep the window for glitches
+small. Given that aspeed_pwm_set_period and aspeed_pwm_set_duty both
+have only a single caller, doing both in a single function might be an
+idea.
 
-for you to fetch changes up to 0c8946d82f059f90199f4926ab55033d8aa9c920:
+Best regards
+Uwe
 
-  cxgb4: Update firmware to revision 1.25.6.0 (2021-05-24 00:51:20 -0700)
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-----------------------------------------------------------------
-Raju Rangoju (1):
-      cxgb4: Update firmware to revision 1.25.6.0
+--p3cy6gevslqiqnpq
+Content-Type: application/pgp-signature; name="signature.asc"
 
- WHENCE                                         |  12 ++++++------
- cxgb4/{t4fw-1.25.4.0.bin =3D> t4fw-1.25.6.0.bin} | Bin 569856 -> 570368 by=
-tes
- cxgb4/{t5fw-1.25.4.0.bin =3D> t5fw-1.25.6.0.bin} | Bin 675328 -> 675840 by=
-tes
- cxgb4/t6fw-1.25.4.0.bin                        | Bin 728064 -> 0 bytes
- cxgb4/t6fw-1.25.6.0.bin                        | Bin 0 -> 730112 bytes
- 5 files changed, 6 insertions(+), 6 deletions(-)
- rename cxgb4/{t4fw-1.25.4.0.bin =3D> t4fw-1.25.6.0.bin} (75%)
- rename cxgb4/{t5fw-1.25.4.0.bin =3D> t5fw-1.25.6.0.bin} (78%)
- delete mode 100644 cxgb4/t6fw-1.25.4.0.bin
- create mode 100644 cxgb4/t6fw-1.25.6.0.bin=
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCrh94ACgkQwfwUeK3K
+7An++AgAh1gL5iovGBXJHgZiS4/Qh9dNgycwY3goMgTLH3o9NfZ2Mc/ziOpEphOO
+2iwXtYaDcoapVOrXFNWdWTUbKfaKd5jHDA1j9QwNUHMJoBmyf+RNR+VU9XpfioZl
+nk6xNcwrWIPQtMbh1c0Dj3cfQ21QT3MS+vfZEBStpbqTQ6nOWUQ+FP5/Y0DWNpay
+JsyTAe4Fzl7HYVmTxtpMp0QHB3BOroo9PwEC6Xq3Gvm+SVyMiiEdEshhNwzePhnh
+hs1lXdaBXSuM1ZacPh838IFRRRfCI4eeK5SeVskrW8cyMYfra47j/N8EK4eIFDw4
+Mssd1Whz5NQeQxyMXbqs9Hfa0CJRVQ==
+=L/9W
+-----END PGP SIGNATURE-----
+
+--p3cy6gevslqiqnpq--
