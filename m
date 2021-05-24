@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F08838F32E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C5238F333
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbhEXSrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbhEXSrI (ORCPT
+        id S233119AbhEXSrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:47:53 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:35746 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhEXSrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:47:08 -0400
-X-Greylist: delayed 5496 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 May 2021 11:45:39 PDT
-Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA3FC061756;
-        Mon, 24 May 2021 11:45:39 -0700 (PDT)
-Received: from tux.applied-asynchrony.com (p5ddd760d.dip0.t-ipconnect.de [93.221.118.13])
-        by mail.itouring.de (Postfix) with ESMTPSA id 0B3C2E0;
-        Mon, 24 May 2021 20:45:38 +0200 (CEST)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id B26A2F01624;
-        Mon, 24 May 2021 20:45:37 +0200 (CEST)
-Subject: Re: [PATCH BUGFIX] block, bfq: fix delayed stable merge check
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Luca Mariotti <mariottiluca1@hotmail.it>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Pietro Pedroni <pedroni.pietro.96@gmail.com>
-References: <DB8PR01MB59647C41BF6C964467EAFE0D882C9@DB8PR01MB5964.eurprd01.prod.exchangelabs.com>
- <f23f8090-4a55-3c16-1bdd-f86634cd6f3b@applied-asynchrony.com>
- <E9D95C99-D07B-4A63-8C0E-67356887DE23@linaro.org>
- <c6a3d259-a118-0c7a-0faf-1ab48f9cd2ff@applied-asynchrony.com>
- <E4CEEAB2-7092-4CC5-AA37-59CA5343A5AA@linaro.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <3005fed2-d5f6-f709-cb3a-3d865623015d@applied-asynchrony.com>
-Date:   Mon, 24 May 2021 20:45:37 +0200
-MIME-Version: 1.0
-In-Reply-To: <E4CEEAB2-7092-4CC5-AA37-59CA5343A5AA@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 24 May 2021 14:47:52 -0400
+Received: by mail-ot1-f47.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so26164544otg.2;
+        Mon, 24 May 2021 11:46:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=zUHC5bIhrZ72gMSo4YDUSPpMzPen1n8QrM3EpHdTPCU=;
+        b=ZN9WSq4Ga2k7jF584kZKj3f1EySb3V/oP5BiP5nd01ZSTOTOQ6kkWuxTWniEEt5R2N
+         TpsCnKeESFlrCcshNYGi1BO4yXN1ziwKvU/M1ZA7N9h0zV1G/boDMiM2igfMKMMqIFP9
+         v3oYN3cAyG7F4wHwnCDB9CTl7yJ7LehoX7ZfUvTBEV0WJTehYAXhkpFeuUd98EChnf4K
+         OUjoIFyIdYrlvDhRZB5iF6DfQ63QlGo779SABpc7whQhZFJB6FNkZkBP0hy05V7t2c/x
+         9++OIgaRt/b4CsFzg2wAA6hM0uqRIz4Bnzm+37nl1rAXtVxS3VeT7acPuec1crjoT0Qa
+         +4eQ==
+X-Gm-Message-State: AOAM530sTyNhrgJFJQnF8zYRsLMi+o+jn9MYqrMS+8/wdAB0RtJ/meX9
+        4HdKbIzuSGkgj1etWr6F7Q==
+X-Google-Smtp-Source: ABdhPJxdAi4fhbZzkOm6+CuFnI7z6/7DvcD5YO0qHwvEi3e5MRZ55z5rLH5D3pwhDjCNUsZ/1ZsHdQ==
+X-Received: by 2002:a05:6830:1042:: with SMTP id b2mr19873646otp.120.1621881982575;
+        Mon, 24 May 2021 11:46:22 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 77sm3178951otc.54.2021.05.24.11.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 11:46:21 -0700 (PDT)
+Received: (nullmailer pid 437764 invoked by uid 1000);
+        Mon, 24 May 2021 18:46:20 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        konrad.dybcio@somainline.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>, marijn.suijten@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210523204415.703081-1-martin.botka@somainline.org>
+References: <20210523204415.703081-1-martin.botka@somainline.org>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: sm6125: Document SM6125 pinctrl driver
+Date:   Mon, 24 May 2021 13:46:20 -0500
+Message-Id: <1621881980.447955.437763.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-24 19:41, Paolo Valente wrote:
+On Sun, 23 May 2021 22:44:13 +0200, Martin Botka wrote:
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+>  .../bindings/pinctrl/qcom,sm6125-pinctrl.yaml | 161 ++++++++++++++++++
+>  1 file changed, 161 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml
 > 
-> 
->> Il giorno 24 mag 2021, alle ore 19:13, Holger Hoffstätte <holger@applied-asynchrony.com> ha scritto:
->>
->> On 2021-05-24 18:57, Paolo Valente wrote:
->>>> Il giorno 20 mag 2021, alle ore 09:15, Holger Hoffstätte <holger@applied-asynchrony.com> ha scritto:
->>>>
->>>> On 2021-05-18 12:43, Luca Mariotti wrote:
->>>>> When attempting to schedule a merge of a given bfq_queue with the currently
->>>>> in-service bfq_queue or with a cooperating bfq_queue among the scheduled
->>>>> bfq_queues, delayed stable merge is checked for rotational or non-queueing
->>>>> devs. For this stable merge to be performed, some conditions must be met.
->>>>> If the current bfq_queue underwent some split from some merged bfq_queue,
->>>>> one of these conditions is that two hundred milliseconds must elapse from
->>>>> split, otherwise this condition is always met.
->>>>> Unfortunately, by mistake, time_is_after_jiffies() was written instead of
->>>>> time_is_before_jiffies() for this check, verifying that less than two
->>>>> hundred milliseconds have elapsed instead of verifying that at least two
->>>>> hundred milliseconds have elapsed.
->>>>> Fix this issue by replacing time_is_after_jiffies() with
->>>>> time_is_before_jiffies().
->>>>> Signed-off-by: Luca Mariotti <mariottiluca1@hotmail.it>
->>>>> Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
->>>>> Signed-off-by: Pietro Pedroni <pedroni.pietro.96@gmail.com>
->>>>> ---
->>>>>   block/bfq-iosched.c | 2 +-
->>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->>>>> index acd1f881273e..2adb1e69c9d2 100644
->>>>> --- a/block/bfq-iosched.c
->>>>> +++ b/block/bfq-iosched.c
->>>>> @@ -2697,7 +2697,7 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->>>>>   	if (unlikely(!bfqd->nonrot_with_queueing)) {
->>>>>   		if (bic->stable_merge_bfqq &&
->>>>>   		    !bfq_bfqq_just_created(bfqq) &&
->>>>> -		    time_is_after_jiffies(bfqq->split_time +
->>>>> +		    time_is_before_jiffies(bfqq->split_time +
->>>>>   					  msecs_to_jiffies(200))) {
->>>>>   			struct bfq_queue *stable_merge_bfqq =
->>>>>   				bic->stable_merge_bfqq;
->>>>
->>>> Not sure why but with this patch I quickly got a division-by-zero in BFQ and
->>>> complete system halt. Unfortunately I couldn't capture the exact stack trace,
->>>> but it read something like bfq_calc_weight() or something ike that.
->>>> I looked through the code and found bfq_delta(), so maybe weight got
->>>> reduced to 0?
->>>>
->>> Hi Holger,
->>> is this (easily) reproducible for you?  If so, I'd like to propose you
->>> a candidate fix.
->>
->> Yes, it's easily reproducible (should be reproducible on 5.13-rc as well).
->> Simple read/write I/O on a cold FS (rotational disk obviously) will crash
->> pretty much immediately; without it everything works fine, likely because the
->> bug (in the recent queue merging patches?) is never triggered due to the
->> accidentally-wrong time calculation.
-> 
-> Exactly!
-> 
-> Unfortunately, no crash happens on my systems.  Or, actually, crashes
-> stopped after the attached fix.
-> 
->> Will gladly test your patch! :)
->>
-> 
-> Here it is!
-> 
-> I'll make a proper commit after your early tests.
-> 
-> Crossing my fingers,
-> Paolo
 
-That did it - it now survived a bunch of heavy read/write/mixed I/O that
-would previously crash right away. Maybe it's because btrfs uses several
-workers and so different IOs got mixed together? Anyway:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Fixes: 430a67f9d616 ("block, bfq: merge bursts of newly-created queues")
-Tested-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml:122:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
-Thanks!
-Holger
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 120, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 122, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml:  while scanning a block scalar
+  in "<unicode string>", line 120, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 122, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml
+make: *** [Makefile:1416: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1482519
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
