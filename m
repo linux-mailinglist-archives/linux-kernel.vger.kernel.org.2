@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAFC38F07B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A08B38EE3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbhEXQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
+        id S233094AbhEXPrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:47:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233148AbhEXP4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C8A613B6;
-        Mon, 24 May 2021 15:43:02 +0000 (UTC)
+        id S233683AbhEXPmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:42:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FAA61407;
+        Mon, 24 May 2021 15:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870983;
-        bh=UaJTUP9vSwhaor5B3Ksj/UGX8v9gBy3zGKcvbV9+OGM=;
+        s=korg; t=1621870503;
+        bh=3iOAUpIunq8o5uXAQzDcoek9kBPjKvTpZGYDo5alVaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CAMRRYbdL1AJOkwCYd9CLNpoIEyip5qzNAvcWg8CY/GYp4s1YcaEJE9GPANNqymmA
-         PJkd5u50umiZcnQ8d+DzwaW7JdLwMbONTa7V21InKuRInxguHF4TaUH30PpHeiVXK4
-         67H5b2qZRUO/5NI6NjY6/HQUrV4oIckkTi8beLs8=
+        b=sI6ZB9XnXl66Ns/rliT9u0r6I6rEQo2Go19cEO7F2dgw0DAWQVjRxm5bN2m5HzWD1
+         njfLU26c1Rt9zjgcWMPlC9cgiMfhxvhGFfhsMdP8keFY/oaooYmtgqAo55A4jWgwFd
+         x2as1KrecWo55q+7AS1mS4JR8Wh4H/cX8ZHybCBE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 020/127] nvme-fc: clear q_live at beginning of association teardown
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 26/49] Revert "net: stmicro: fix a missing check of clk_prepare"
 Date:   Mon, 24 May 2021 17:25:37 +0200
-Message-Id: <20210524152335.540349481@linuxfoundation.org>
+Message-Id: <20210524152325.227655392@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit a7d139145a6640172516b193abf6d2398620aa14 ]
+commit bee1b0511844c8c79fccf1f2b13472393b6b91f7 upstream.
 
-The __nvmf_check_ready() routine used to bounce all filesystem io if the
-controller state isn't LIVE.  However, a later patch changed the logic so
-that it rejection ends up being based on the Q live check.  The FC
-transport has a slightly different sequence from rdma and tcp for
-shutting down queues/marking them non-live.  FC marks its queue non-live
-after aborting all ios and waiting for their termination, leaving a
-rather large window for filesystem io to continue to hit the transport.
-Unfortunately this resulted in filesystem I/O or applications seeing I/O
-errors.
+This reverts commit f86a3b83833e7cfe558ca4d70b64ebc48903efec.
 
-Change the FC transport to mark the queues non-live at the first sign of
-teardown for the association (when I/O is initially terminated).
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 73a5379937ec ("nvme-fabrics: allow to queue requests for live queues")
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit causes a memory leak when it is trying to claim it
+is properly handling errors.  Revert this change and fix it up properly
+in a follow-on commit.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Fixes: f86a3b83833e ("net: stmicro: fix a missing check of clk_prepare")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-21-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/fc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 6ffa8de2a0d7..5eee603bc249 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -2460,6 +2460,18 @@ nvme_fc_terminate_exchange(struct request *req, void *data, bool reserved)
- static void
- __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
- {
-+	int q;
-+
-+	/*
-+	 * if aborting io, the queues are no longer good, mark them
-+	 * all as not live.
-+	 */
-+	if (ctrl->ctrl.queue_count > 1) {
-+		for (q = 1; q < ctrl->ctrl.queue_count; q++)
-+			clear_bit(NVME_FC_Q_LIVE, &ctrl->queues[q].flags);
-+	}
-+	clear_bit(NVME_FC_Q_LIVE, &ctrl->queues[0].flags);
-+
- 	/*
- 	 * If io queues are present, stop them and terminate all outstanding
- 	 * ios on them. As FC allocates FC exchange for each io, the
--- 
-2.30.2
-
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+@@ -59,9 +59,7 @@ static int sun7i_gmac_init(struct platfo
+ 		gmac->clk_enabled = 1;
+ 	} else {
+ 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+-		ret = clk_prepare(gmac->tx_clk);
+-		if (ret)
+-			return ret;
++		clk_prepare(gmac->tx_clk);
+ 	}
+ 
+ 	return 0;
 
 
