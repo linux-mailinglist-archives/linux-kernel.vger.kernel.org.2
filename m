@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083CC38EFAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9BD38EE31
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbhEXP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
+        id S234159AbhEXPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:46:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235211AbhEXPzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C41C961430;
-        Mon, 24 May 2021 15:40:35 +0000 (UTC)
+        id S233519AbhEXPmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:42:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7489561406;
+        Mon, 24 May 2021 15:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870836;
-        bh=MTf65CjRn4pimJ0YQqAOZWp680x6htRBMF1uX8Kmrns=;
+        s=korg; t=1621870494;
+        bh=4y53AlV7J/GunMYGYqM0s5l56bGEUAVQa7NrzwKwNJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmpR1jk8I6DFVgziS2qbyufbVpSSBtKyEX3DpHwMZ2nRQ0+4H+/8FOFNlQIo2SA2D
-         83gfWcBqtPhBtIt2oHr/68Ln2EEQESNKu7hBF5BMiccdVixGSRrAwNeLo/VZC/hQw3
-         qno7jWQKiMlt26k+ti8Xt9Q81B8/XpYVE/hpaO1k=
+        b=o/B1ukvzqJjtgZYXslkxfq81StNAUPoHobeS6eejxBDwi3RXXCQycQNp8XCWSjK04
+         4eXSFzlGrp2+cXa3EiQcW8jf1/bq/qnvuBA3KGQxuuxvr67ap0qjZ4Qv/jp4VsdEx/
+         7QYfiYzgo17bWb9qWv4b2tbV+qSTaO7c2gAPbcJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 037/104] ALSA: line6: Fix racy initialization of LINE6 MIDI
-Date:   Mon, 24 May 2021 17:25:32 +0200
-Message-Id: <20210524152334.064032900@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.19 22/49] xen-pciback: reconfigure also from backend watch handler
+Date:   Mon, 24 May 2021 17:25:33 +0200
+Message-Id: <20210524152325.097641429@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,85 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit 05ca447630334c323c9e2b788b61133ab75d60d3 upstream.
+commit c81d3d24602540f65256f98831d0a25599ea6b87 upstream.
 
-The initialization of MIDI devices that are found on some LINE6
-drivers are currently done in a racy way; namely, the MIDI buffer
-instance is allocated and initialized in each private_init callback
-while the communication with the interface is already started via
-line6_init_cap_control() call before that point.  This may lead to
-Oops in line6_data_received() when a spurious event is received, as
-reported by syzkaller.
+When multiple PCI devices get assigned to a guest right at boot, libxl
+incrementally populates the backend tree. The writes for the first of
+the devices trigger the backend watch. In turn xen_pcibk_setup_backend()
+will set the XenBus state to Initialised, at which point no further
+reconfigures would happen unless a device got hotplugged. Arrange for
+reconfigure to also get triggered from the backend watch handler.
 
-This patch moves the MIDI initialization to line6_init_cap_control()
-as well instead of the too-lately-called private_init for avoiding the
-race.  Also this reduces slightly more lines, so it's a win-win
-change.
-
-Reported-by: syzbot+0d2b3feb0a2887862e06@syzkallerlkml..appspotmail.com
-Link: https://lore.kernel.org/r/000000000000a4be9405c28520de@google.com
-Link: https://lore.kernel.org/r/20210517132725.GA50495@hyeyoo
-Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210518083939.1927-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/2337cbd6-94b9-4187-9862-c03ea12e0c61@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/line6/driver.c |    4 ++++
- sound/usb/line6/pod.c    |    5 -----
- sound/usb/line6/variax.c |    6 ------
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ drivers/xen/xen-pciback/xenbus.c |   22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -699,6 +699,10 @@ static int line6_init_cap_control(struct
- 		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
- 		if (!line6->buffer_message)
- 			return -ENOMEM;
-+
-+		ret = line6_init_midi(line6);
-+		if (ret < 0)
-+			return ret;
- 	} else {
- 		ret = line6_hwdep_init(line6);
- 		if (ret < 0)
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *li
- 	if (err < 0)
- 		return err;
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -358,7 +358,8 @@ out:
+ 	return err;
+ }
  
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(line6);
--	if (err < 0)
--		return err;
--
- 	/* initialize PCM subsystem: */
- 	err = line6_init_pcm(line6, &pod_pcm_properties);
- 	if (err < 0)
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -159,7 +159,6 @@ static int variax_init(struct usb_line6
- 		       const struct usb_device_id *id)
+-static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev)
++static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev,
++				 enum xenbus_state state)
  {
- 	struct usb_line6_variax *variax = line6_to_variax(line6);
--	int err;
+ 	int err = 0;
+ 	int num_devs;
+@@ -372,9 +373,7 @@ static int xen_pcibk_reconfigure(struct
+ 	dev_dbg(&pdev->xdev->dev, "Reconfiguring device ...\n");
  
- 	line6->process_message = line6_variax_process_message;
- 	line6->disconnect = line6_variax_disconnect;
-@@ -172,11 +171,6 @@ static int variax_init(struct usb_line6
- 	if (variax->buffer_activate == NULL)
- 		return -ENOMEM;
+ 	mutex_lock(&pdev->dev_lock);
+-	/* Make sure we only reconfigure once */
+-	if (xenbus_read_driver_state(pdev->xdev->nodename) !=
+-	    XenbusStateReconfiguring)
++	if (xenbus_read_driver_state(pdev->xdev->nodename) != state)
+ 		goto out;
  
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(&variax->line6);
--	if (err < 0)
--		return err;
--
- 	/* initiate startup procedure: */
- 	schedule_delayed_work(&line6->startup_work,
- 			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
+ 	err = xenbus_scanf(XBT_NIL, pdev->xdev->nodename, "num_devs", "%d",
+@@ -499,6 +498,10 @@ static int xen_pcibk_reconfigure(struct
+ 		}
+ 	}
+ 
++	if (state != XenbusStateReconfiguring)
++		/* Make sure we only reconfigure once. */
++		goto out;
++
+ 	err = xenbus_switch_state(pdev->xdev, XenbusStateReconfigured);
+ 	if (err) {
+ 		xenbus_dev_fatal(pdev->xdev, err,
+@@ -524,7 +527,7 @@ static void xen_pcibk_frontend_changed(s
+ 		break;
+ 
+ 	case XenbusStateReconfiguring:
+-		xen_pcibk_reconfigure(pdev);
++		xen_pcibk_reconfigure(pdev, XenbusStateReconfiguring);
+ 		break;
+ 
+ 	case XenbusStateConnected:
+@@ -663,6 +666,15 @@ static void xen_pcibk_be_watch(struct xe
+ 		xen_pcibk_setup_backend(pdev);
+ 		break;
+ 
++	case XenbusStateInitialised:
++		/*
++		 * We typically move to Initialised when the first device was
++		 * added. Hence subsequent devices getting added may need
++		 * reconfiguring.
++		 */
++		xen_pcibk_reconfigure(pdev, XenbusStateInitialised);
++		break;
++
+ 	default:
+ 		break;
+ 	}
 
 
