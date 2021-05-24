@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060BE38F652
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC0A38F650
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhEXXma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:42:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50510 "EHLO mx2.suse.de"
+        id S229988AbhEXXmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:42:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50438 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229794AbhEXXmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:42:19 -0400
+        id S229598AbhEXXmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:42:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1621899648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QAc7SlXYGxt2yuMRE5XHgxbmgFR+ii55sq8tCy9hQcc=;
-        b=OX7OPqIoBu3mU8tTU8iucEudGCJLSAPXm9wKohyhEcrd9YnAXAfyczVFjiQ08hIf6tCjH/
-        ZwBFkKQx9q1HrzMp1VxGFEF86wP5Ug1+Sn/CvtM1OV4PZrt42dFlm7dZVPOQdhCY8R4vhT
-        o85Y40TG7RGgXZBl7jPbcgzkNTNF6P8=
+        bh=m3NM1kan+8I0dQSmYiERLwA5HXaatts/npqSxc2yo1s=;
+        b=dxPCSLvpV0HPfbtbyyz4WWiXaoqkE+RuEn+3eiYjaPMSUzWdXyvZ/IYSKFjxmR3k8in6UQ
+        UXZ798BVtRDlFUKFIgO5u8WC6Lf3sd0BT5qro9IiUD3pXorxNUueBNlr82RYbNc7e7wnx4
+        3J/SEZSwsCVDwmJXZORMwxkw8yfyI0E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1621899648;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QAc7SlXYGxt2yuMRE5XHgxbmgFR+ii55sq8tCy9hQcc=;
-        b=9Wtrrbdf8ROT0GDVejk3inSy+nSfQtLKinR6vFqxAOZz6+oR6PKp+MlaJ3Iu1N/1SetK8T
-        KdstWqO4650PJTDQ==
+        bh=m3NM1kan+8I0dQSmYiERLwA5HXaatts/npqSxc2yo1s=;
+        b=48TzUnVPiJ9rxm8hWdC6qWhZNBRFHpClNS3Aya9Nu3cVdolTLKvs0gNQEYbEBG9+g8s5a0
+        6u5oefeFnaHusFAA==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EAC66AF1F;
+        by mx2.suse.de (Postfix) with ESMTP id E4C30AF1A;
         Mon, 24 May 2021 23:40:47 +0000 (UTC)
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC 01/26] mm, slub: allocate private object map for sysfs listings
-Date:   Tue, 25 May 2021 01:39:21 +0200
-Message-Id: <20210524233946.20352-2-vbabka@suse.cz>
+Subject: [RFC 02/26] mm, slub: allocate private object map for validate_slab_cache()
+Date:   Tue, 25 May 2021 01:39:22 +0200
+Message-Id: <20210524233946.20352-3-vbabka@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524233946.20352-1-vbabka@suse.cz>
 References: <20210524233946.20352-1-vbabka@suse.cz>
@@ -57,122 +57,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Slub has a static spinlock protected bitmap for marking which objects are on
-freelist when it wants to list them, for situations where dynamically
-allocating such map can lead to recursion or locking issues, and on-stack
-bitmap would be too large.
-
-The handlers of sysfs files alloc_calls and free_calls also currently use this
-shared bitmap, but their syscall context makes it straightforward to allocate a
-private map before entering locked sections, so switch these processing paths
-to use a private bitmap.
+validate_slab_cache() is called either to handle a sysfs write, or from a
+self-test context. In both situations it's straightforward to preallocate a
+private object bitmap instead of grabbing the shared static one meant for
+critical sections, so let's do that.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 43 +++++++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ mm/slub.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 3f96e099817a..4c876749f322 100644
+index 4c876749f322..ed0f2620b19b 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -448,6 +448,18 @@ static inline bool cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
- static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
- static DEFINE_SPINLOCK(object_map_lock);
+@@ -4622,7 +4622,8 @@ static int count_total(struct page *page)
+ #endif
  
-+static void __fill_map(unsigned long *obj_map, struct kmem_cache *s,
-+		       struct page *page)
-+{
-+	void *addr = page_address(page);
-+	void *p;
-+
-+	bitmap_zero(obj_map, page->objects);
-+
-+	for (p = page->freelist; p; p = get_freepointer(s, p))
-+		set_bit(__obj_to_index(s, addr, p), obj_map);
-+}
-+
- /*
-  * Determine a map of object in use on a page.
-  *
-@@ -457,17 +469,11 @@ static DEFINE_SPINLOCK(object_map_lock);
- static unsigned long *get_map(struct kmem_cache *s, struct page *page)
- 	__acquires(&object_map_lock)
+ #ifdef CONFIG_SLUB_DEBUG
+-static void validate_slab(struct kmem_cache *s, struct page *page)
++static void validate_slab(struct kmem_cache *s, struct page *page,
++			  unsigned long *obj_map)
  {
--	void *p;
--	void *addr = page_address(page);
--
- 	VM_BUG_ON(!irqs_disabled());
- 
- 	spin_lock(&object_map_lock);
- 
--	bitmap_zero(object_map, page->objects);
--
--	for (p = page->freelist; p; p = get_freepointer(s, p))
--		set_bit(__obj_to_index(s, addr, p), object_map);
-+	__fill_map(object_map, s, page);
- 
- 	return object_map;
- }
-@@ -4813,17 +4819,17 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
- }
- 
- static void process_slab(struct loc_track *t, struct kmem_cache *s,
--		struct page *page, enum track_item alloc)
-+		struct page *page, enum track_item alloc,
-+		unsigned long *obj_map)
- {
- 	void *addr = page_address(page);
  	void *p;
--	unsigned long *map;
+ 	void *addr = page_address(page);
+@@ -4634,7 +4635,7 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+ 		goto unlock;
  
+ 	/* Now we know that a valid freelist exists */
 -	map = get_map(s, page);
 +	__fill_map(obj_map, s, page);
-+
- 	for_each_object(p, s, addr, page->objects)
--		if (!test_bit(__obj_to_index(s, addr, p), map))
-+		if (!test_bit(__obj_to_index(s, addr, p), obj_map))
- 			add_location(t, s, get_track(s, p, alloc));
+ 	for_each_object(p, s, addr, page->objects) {
+ 		u8 val = test_bit(__obj_to_index(s, addr, p), map) ?
+ 			 SLUB_RED_INACTIVE : SLUB_RED_ACTIVE;
+@@ -4642,13 +4643,12 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+ 		if (!check_object(s, page, p, val))
+ 			break;
+ 	}
 -	put_map(map);
+ unlock:
+ 	slab_unlock(page);
  }
  
- static int list_locations(struct kmem_cache *s, char *buf,
-@@ -4834,11 +4840,18 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 	struct loc_track t = { 0, 0, NULL };
+ static int validate_slab_node(struct kmem_cache *s,
+-		struct kmem_cache_node *n)
++		struct kmem_cache_node *n, unsigned long *obj_map)
+ {
+ 	unsigned long count = 0;
+ 	struct page *page;
+@@ -4657,7 +4657,7 @@ static int validate_slab_node(struct kmem_cache *s,
+ 	spin_lock_irqsave(&n->list_lock, flags);
+ 
+ 	list_for_each_entry(page, &n->partial, slab_list) {
+-		validate_slab(s, page);
++		validate_slab(s, page, obj_map);
+ 		count++;
+ 	}
+ 	if (count != n->nr_partial)
+@@ -4668,7 +4668,7 @@ static int validate_slab_node(struct kmem_cache *s,
+ 		goto out;
+ 
+ 	list_for_each_entry(page, &n->full, slab_list) {
+-		validate_slab(s, page);
++		validate_slab(s, page, obj_map);
+ 		count++;
+ 	}
+ 	if (count != atomic_long_read(&n->nr_slabs))
+@@ -4685,10 +4685,17 @@ static long validate_slab_cache(struct kmem_cache *s)
  	int node;
+ 	unsigned long count = 0;
  	struct kmem_cache_node *n;
 +	unsigned long *obj_map;
 +
 +	obj_map = bitmap_alloc(oo_objects(s->oo), GFP_KERNEL);
 +	if (!obj_map)
-+		return sysfs_emit(buf, "Out of memory\n");
++		return -ENOMEM;
  
- 	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
- 			     GFP_KERNEL)) {
-+		bitmap_free(obj_map);
- 		return sysfs_emit(buf, "Out of memory\n");
- 	}
-+
- 	/* Push back cpu slabs */
  	flush_all(s);
- 
-@@ -4851,12 +4864,14 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 
- 		spin_lock_irqsave(&n->list_lock, flags);
- 		list_for_each_entry(page, &n->partial, slab_list)
--			process_slab(&t, s, page, alloc);
-+			process_slab(&t, s, page, alloc, obj_map);
- 		list_for_each_entry(page, &n->full, slab_list)
--			process_slab(&t, s, page, alloc);
-+			process_slab(&t, s, page, alloc, obj_map);
- 		spin_unlock_irqrestore(&n->list_lock, flags);
- 	}
- 
-+	bitmap_free(obj_map);
+ 	for_each_kmem_cache_node(s, node, n)
+-		count += validate_slab_node(s, n);
++		count += validate_slab_node(s, n, obj_map);
 +
- 	for (i = 0; i < t.count; i++) {
- 		struct location *l = &t.loc[i];
++	bitmap_free(obj_map);
  
+ 	return count;
+ }
 -- 
 2.31.1
 
