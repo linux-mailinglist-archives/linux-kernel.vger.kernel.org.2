@@ -2,464 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B98038E67C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B724238E682
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbhEXMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbhEXMXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:23:13 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA23AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:21:44 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id o21so27599073iow.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AVj2UZLoMatA9yLbqF3L/VCYiqsHaiAQE0zqsL8wIdI=;
-        b=rQwLftt4nazyTM34MEcdzFm95kKw/qDb+lj/oJ/fCUsvLe/wdkYqO/KnXYEMjVUCpD
-         P1Bx0a4WNhRfTuJYPJfy4dga2js92QzTzgSkTGxLxs37cy8aKDJ3NJTOF/YLrRYdzuTm
-         4MsnNyRMFp1xydtGY1ZFXH5TpsvVUAAu+Yl/csGOhQh8d/WI2hFpTQeWLU1NSYDFIxJA
-         RFc9y9UXBzhNgGGL+b0fufm74NZhWJok+XInSBdYt/vgaiKT90U6feTMPyV9Anw+sn+3
-         mgIiiTaYjStbw/SXqXSROBX570lqdyB8oku4MBldxIhmTxPua67nhU/8xATEzT/HN/Yq
-         KG/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AVj2UZLoMatA9yLbqF3L/VCYiqsHaiAQE0zqsL8wIdI=;
-        b=g9UJB/ksAvZEy/r1N8HOMLzXpRvQ0sXfrAdxnH6giqrzd6rHmd8cnO+LmlSdQ+Z/Vk
-         dy+pNVGdPFWHQljWa2M89pyNi///5x1F2dLXK4i+r5vCZuSHksqVTS0fUYmVhPh4kQSn
-         5dqICLBcbs77jzLQ21u4HhnqGMtty2fXt9mNuK/dwIEkSH/dKR+NxX10GO4/UvKFSEuL
-         qaDJPxcI1++De+HUbiePAdcHG5c/XU5qOpX2kyfCYUuzKdXqgyGPxQXTmjALr4zfTZaj
-         VVhtsAVy+Yk3hQQZp7UVt6vdVBNos/tHh/fRe2lYUihBPu4dgqYzVDLDmwDGqE4RiFzC
-         ytIQ==
-X-Gm-Message-State: AOAM533ThEcLvZBUydymrHp79XgVQuQJsD0quK8K+4vfKAzio/tV4cLn
-        V1nuChKBUA39HDu4q+RAICVzkmgiQ02IweiHp8Loww==
-X-Google-Smtp-Source: ABdhPJyeZDM2ESdYBWhK72Pzpr2jdq4nGIYT5vBUDR2knIjSdQ6ct1SFTbKu8JCA8XzfkHrQ79RdUX9Sz42QLZDmiy4=
-X-Received: by 2002:a05:6602:134c:: with SMTP id i12mr15667249iov.175.1621858903879;
- Mon, 24 May 2021 05:21:43 -0700 (PDT)
+        id S232529AbhEXMYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:24:04 -0400
+Received: from mail-mw2nam10on2062.outbound.protection.outlook.com ([40.107.94.62]:64608
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232327AbhEXMYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 08:24:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c8von+yxhjrhadwkSNExIgPyTDjmgQ+K365KBZy4f+j3okLQBSH+A3DlYfrjAZIE4vnD2bC1bokoXynA7IjzXNVvzlnYM7oX66n/vyY/iMGEnq0/Lz1rKuunNRrHpFF8Vzy4Xrf2gaaGMPfTGcK2pNEhS/KjVh8LWQyk8Os1yC8BPDiZqQGBltpISUfghshF82/7phIFl0rpNhxZrkqNUKB2KMO4y5bFeakc9Z3QunIdSka4zZwoDzGGzyRGSFcxRDSCKQIUwRF2ZsvXqEF4jD9O1D5NA+rG2I0l2ZXbrKEGYmgevzMR54ozK2G/1LsOe3fWt6dHV/YsAhlgLkVgMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1PAiHIdPPL/8LN2pI6m1/GrgY2DzkS2LGV7L49hfHGI=;
+ b=HMIwnmpKNICaSrAN4HrBvT7ZWON4Rd5ZRGjfTmHUuXGK8HfFjWii79DNJ4RW8D6GXz6vVPBtUmYK/73Q7CJrSiRpJM/hQxQ9FgcnTsBbO9KoxNsuxWP2Z8OzLzKiYvNAlHPvxtwFSUkW2Glz/AJiOYhZp4A1R7IpekXQ7clVum//OodgeA4qTCPLtUNK+kNAw+SfmyrktMIyxaRSIleUGdhG/c/MkA+XI9MchM6UxgfqRd+99RGMlbbwUC/k9yCB+wOvQqBCgjiu8q3lJlQvCUg1wtvJhVZiYMScHoT1zkSfmEsucCQ6lEf5h2cH423WEpaYSSr3uXF02i183//edw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1PAiHIdPPL/8LN2pI6m1/GrgY2DzkS2LGV7L49hfHGI=;
+ b=R7ixLWwSdTk6JydlRDhZoMj6SkFZXXXs8ogP3QXGFx153/rXKDNk2CteqMhZ8dMxBx9NRNfDsSk3IrRd1jNwlKzuBXgbrG+qYoQIILpTN3F16XjtEQYEkqkFZcl+h94l9ukaPEB4YdSAubz9LN4AAluX+g1AqVa2iQRZqnqav+RlJjsnODPLiakXQLYaSCe3W7xKmDgxXtAifFVxCpGldOn5py5xmrgRBXyecohLpbQ9A017wiJEa0UUalin03pRqMTwHGRLVegi8+wxdODTf90GPmxYIWMjaCoitoq2ZDmP8+QI5B6D41MuRzmUP4T5VUZL0CZJNy46XEZC2sCqoQ==
+Received: from MWHPR15CA0041.namprd15.prod.outlook.com (2603:10b6:300:ad::27)
+ by SN1PR12MB2368.namprd12.prod.outlook.com (2603:10b6:802:32::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Mon, 24 May
+ 2021 12:22:33 +0000
+Received: from CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ad:cafe::1a) by MWHPR15CA0041.outlook.office365.com
+ (2603:10b6:300:ad::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
+ Transport; Mon, 24 May 2021 12:22:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT012.mail.protection.outlook.com (10.13.175.192) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Mon, 24 May 2021 12:22:32 +0000
+Received: from [10.26.49.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 24 May
+ 2021 12:22:30 +0000
+Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210520175054.28308-1-digetx@gmail.com>
+ <20210520175054.28308-3-digetx@gmail.com>
+ <32171079-ed4e-1147-2272-5f11bc480c6a@nvidia.com>
+ <91e53907-d87d-aeeb-4644-3926d4311daa@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <6bc26992-e136-ef6a-a956-382b5cae5db7@nvidia.com>
+Date:   Mon, 24 May 2021 13:22:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210430132735.127342-1-robert.marko@sartura.hr>
- <20210430134810.GA2714262@roeck-us.net> <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
- <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net> <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
- <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net> <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
- <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net>
-In-Reply-To: <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 24 May 2021 14:21:32 +0200
-Message-ID: <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <91e53907-d87d-aeeb-4644-3926d4311daa@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 04ecb75e-a23b-46a1-d509-08d91eae9b61
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2368:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2368DC782409753F8840899ED9269@SN1PR12MB2368.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H9KgRPJqNWidnXNCITpc+WcEgUSF74Upwr0Zk4lQ7FSuNBkF4XPRtSkdygkq4qMHAcQQ8LhwHHoTw8DhLnBdLqofkM7kMozHM7HwGIgAiln0qJdNPojC+q8rF2AWkPJs0rYsFBUuY23d0NBs9WqwIe3bos3SS4ui7QhGdoPNsSLv5fTu1L40RyWO92Qj6NefDrTygc5kRqEzlcFKDEcVABa0bxpKJ4U7/SE5Cai4myiSixOn8sY0kM+ggS02e/qZIjZjGeq7s38a/xYGQO0Wgvi/Lu4uOS5S8SvPzHp7Wi/ef4znNe2alABJJ8haD3CSokj6HmHm/7dNKNC58RccQL9o4zvjbtHT8QlmLpR9pAXdPT4R6RTGimTLSmr7PBLEadhoxGktIw9WTjgDSYduxQVowfkyERcCl39avUe9ku9urSndM8HP+z8T/Po8vdA+/bNgcstu3x/kSaORTiOODTnFJ1wBMMYzCEQmiviVP/MdHqrDgbtQ/hvE+5wakxTjqQBjGKKne0wWKIWYnUEACQouQkBn6TAyT3wMKILSl9mNf6nAIV2Io6JHJ7KwzKFhWqOM84ozGHQRriaHixTH+xjdvElzPdU98X2vp4PB/kVG/wm+vgHK3p73BtdJhm+QSpmBtTgqhEZGbJ8awEO6uQUNIEhV/uy1NTXJqy1yuEiPGASzUkrb7nF/GN9JGuNn
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(36840700001)(46966006)(82310400003)(336012)(70206006)(70586007)(53546011)(426003)(356005)(186003)(36756003)(36860700001)(8676002)(5660300002)(8936002)(2616005)(478600001)(2906002)(316002)(110136005)(16576012)(82740400003)(7416002)(4326008)(7636003)(36906005)(54906003)(26005)(16526019)(31686004)(86362001)(47076005)(31696002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 12:22:32.8549
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04ecb75e-a23b-46a1-d509-08d91eae9b61
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2368
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 4:46 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 5/21/21 4:56 AM, Robert Marko wrote:
-> > On Fri, May 21, 2021 at 12:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>
-> >> On 5/21/21 1:36 AM, Robert Marko wrote:
-> >>> On Wed, May 19, 2021 at 3:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>>>
-> >>>> On 5/19/21 5:38 AM, Robert Marko wrote:
-> >>>>> On Fri, Apr 30, 2021 at 3:48 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>>>>>
-> >>>>>> On Fri, Apr 30, 2021 at 03:27:33PM +0200, Robert Marko wrote:
-> >>>>>>> This adds support for the Delta DPS-920AB PSU.
-> >>>>>>>
-> >>>>>>> Only missing feature is fan control which the PSU supports.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> >>>>>>> ---
-> >>>>>>>     Documentation/hwmon/dps920ab.rst | 80 ++++++++++++++++++++++++++++++++
-> >>>>>>>     Documentation/hwmon/index.rst    |  1 +
-> >>>>>>>     drivers/hwmon/pmbus/Kconfig      |  9 ++++
-> >>>>>>>     drivers/hwmon/pmbus/Makefile     |  1 +
-> >>>>>>>     drivers/hwmon/pmbus/dps920ab.c   | 63 +++++++++++++++++++++++++
-> >>>>>>>     5 files changed, 154 insertions(+)
-> >>>>>>>     create mode 100644 Documentation/hwmon/dps920ab.rst
-> >>>>>>>     create mode 100644 drivers/hwmon/pmbus/dps920ab.c
-> >>>>>>>
-> >>>>>>> diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
-> >>>>>>> new file mode 100644
-> >>>>>>> index 000000000000..df0aef530c7e
-> >>>>>>> --- /dev/null
-> >>>>>>> +++ b/Documentation/hwmon/dps920ab.rst
-> >>>>>>> @@ -0,0 +1,80 @@
-> >>>>>>> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> >>>>>>> +
-> >>>>>>> +Kernel driver dps920ab
-> >>>>>>> +========================
-> >>>>>>> +
-> >>>>>>> +Supported chips:
-> >>>>>>> +
-> >>>>>>> +  * Delta DPS920AB
-> >>>>>>> +
-> >>>>>>> +    Prefix: 'dps920ab'
-> >>>>>>> +
-> >>>>>>> +    Addresses scanned: -
-> >>>>>>> +
-> >>>>>>> +Authors:
-> >>>>>>> +    Robert Marko <robert.marko@sartura.hr>
-> >>>>>>> +
-> >>>>>>> +
-> >>>>>>> +Description
-> >>>>>>> +-----------
-> >>>>>>> +
-> >>>>>>> +This driver implements support for Delta DPS920AB 920W 54V DC single output
-> >>>>>>> +power supply with PMBus support.
-> >>>>>>> +
-> >>>>>>> +The driver is a client driver to the core PMBus driver.
-> >>>>>>> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> >>>>>>> +
-> >>>>>>> +
-> >>>>>>> +Usage Notes
-> >>>>>>> +-----------
-> >>>>>>> +
-> >>>>>>> +This driver does not auto-detect devices. You will have to instantiate the
-> >>>>>>> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> >>>>>>> +details.
-> >>>>>>> +
-> >>>>>>> +
-> >>>>>>> +Sysfs entries
-> >>>>>>> +-------------
-> >>>>>>> +
-> >>>>>>> +======================= ======================================================
-> >>>>>>> +curr1_label          "iin"
-> >>>>>>> +curr1_input          Measured input current
-> >>>>>>> +curr1_crit           Critical maximum current
-> >>>>>>> +curr1_crit_alarm     Current critical high alarm
-> >>>>>>> +
-> >>>>>>> +curr2_label          "iout1"
-> >>>>>>> +curr2_input          Measured output current
-> >>>>>>> +curr2_crit           Critical maximum current
-> >>>>>>> +curr2_crit_alarm     Current critical high alarm
-> >>>>>>> +
-> >>>>>>> +in1_label            "vin"
-> >>>>>>> +in1_input            Measured input voltage
-> >>>>>>> +in1_lcrit            Critical minimum input voltage
-> >>>>>>> +in1_lcrit_alarm              Input voltage critical low alarm
-> >>>>>>> +in1_crit             Critical maximum input voltage
-> >>>>>>> +in1_crit_alarm               Input voltage critical high alarm
-> >>>>>>> +
-> >>>>>>> +in2_label            "vout1"
-> >>>>>>> +in2_input            Measured output voltage
-> >>>>>>> +in2_lcrit            Critical minimum output voltage
-> >>>>>>> +in2_lcrit_alarm              Output voltage critical low alarm
-> >>>>>>> +in2_crit             Critical maximum output voltage
-> >>>>>>> +in2_crit_alarm               Output voltage critical high alarm
-> >>>>>>> +
-> >>>>>>> +power1_label         "pin"
-> >>>>>>> +power1_input         Measured input power
-> >>>>>>> +power1_alarm         Input power high alarm
-> >>>>>>> +
-> >>>>>>> +power2_label         "pout1"
-> >>>>>>> +power2_input         Measured output power
-> >>>>>>> +
-> >>>>>>> +temp[1-2]_input              Measured temperature
-> >>>>>>> +temp[1-2]_crit               Critical high temperature
-> >>>>>>> +temp[1-2]_crit_alarm Chip temperature critical high alarm
-> >>>>>>> +temp[1-2]_max                Maximum temperature
-> >>>>>>> +temp[1-2]_max_alarm  Chip temperature high alarm
-> >>>>>>> +
-> >>>>>>> +fan1_alarm           Fan 1 warning.
-> >>>>>>> +fan1_fault           Fan 1 fault.
-> >>>>>>> +fan1_input           Fan 1 speed in RPM.
-> >>>>>>> +======================= ======================================================
-> >>>>>>> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> >>>>>>> index 8d5a2df1ecb6..b24436f22052 100644
-> >>>>>>> --- a/Documentation/hwmon/index.rst
-> >>>>>>> +++ b/Documentation/hwmon/index.rst
-> >>>>>>> @@ -54,6 +54,7 @@ Hardware Monitoring Kernel Drivers
-> >>>>>>>        dell-smm-hwmon
-> >>>>>>>        dme1737
-> >>>>>>>        drivetemp
-> >>>>>>> +   dps920ab
-> >>>>>>>        ds1621
-> >>>>>>>        ds620
-> >>>>>>>        emc1403
-> >>>>>>> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> >>>>>>> index 32d2fc850621..865ade0aa205 100644
-> >>>>>>> --- a/drivers/hwmon/pmbus/Kconfig
-> >>>>>>> +++ b/drivers/hwmon/pmbus/Kconfig
-> >>>>>>> @@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
-> >>>>>>>            This driver can also be built as a module. If so, the module will
-> >>>>>>>            be called ibm-cffps.
-> >>>>>>>
-> >>>>>>> +config SENSORS_DPS920AB
-> >>>>>>> +     tristate "Delta DPS920AB Power Supply"
-> >>>>>>> +     help
-> >>>>>>> +       If you say yes here you get hardware monitoring support for Delta
-> >>>>>>> +       DPS920AB Power Supplies.
-> >>>>>>> +
-> >>>>>>> +       This driver can also be built as a module. If so, the module will
-> >>>>>>> +       be called dps920ab.
-> >>>>>>> +
-> >>>>>>>     config SENSORS_INSPUR_IPSPS
-> >>>>>>>          tristate "INSPUR Power System Power Supply"
-> >>>>>>>          help
-> >>>>>>> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> >>>>>>> index 6a4ba0fdc1db..f59ba0123d68 100644
-> >>>>>>> --- a/drivers/hwmon/pmbus/Makefile
-> >>>>>>> +++ b/drivers/hwmon/pmbus/Makefile
-> >>>>>>> @@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266) += adm1266.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_ADM1275)        += adm1275.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_BEL_PFE)        += bel-pfe.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_IBM_CFFPS)      += ibm-cffps.o
-> >>>>>>> +obj-$(CONFIG_SENSORS_DPS920AB)       += dps920ab.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_IR35221)        += ir35221.o
-> >>>>>>>     obj-$(CONFIG_SENSORS_IR38064)        += ir38064.o
-> >>>>>>> diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
-> >>>>>>> new file mode 100644
-> >>>>>>> index 000000000000..d579ed9f879c
-> >>>>>>> --- /dev/null
-> >>>>>>> +++ b/drivers/hwmon/pmbus/dps920ab.c
-> >>>>>>> @@ -0,0 +1,63 @@
-> >>>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
-> >>>>>>> +/*
-> >>>>>>> + * Driver for Delta DPS920AB PSU
-> >>>>>>> + *
-> >>>>>>> + * Copyright (C) 2021 Delta Networks, Inc.
-> >>>>>>> + * Copyright (C) 2021 Sartura Ltd.
-> >>>>>>> + */
-> >>>>>>> +
-> >>>>>>> +#include <linux/i2c.h>
-> >>>>>>> +#include <linux/module.h>
-> >>>>>>> +#include <linux/of_device.h>
-> >>>>>>> +#include "pmbus.h"
-> >>>>>>> +
-> >>>>>>> +static struct pmbus_driver_info dps920ab_info = {
-> >>>>>>> +     .pages = 1,
-> >>>>>>> +
-> >>>>>>> +     .format[PSC_VOLTAGE_IN] = linear,
-> >>>>>>> +     .format[PSC_VOLTAGE_OUT] = linear,
-> >>>>>>> +     .format[PSC_CURRENT_IN] = linear,
-> >>>>>>> +     .format[PSC_CURRENT_OUT] = linear,
-> >>>>>>> +     .format[PSC_POWER] = linear,
-> >>>>>>> +     .format[PSC_FAN] = linear,
-> >>>>>>> +     .format[PSC_TEMPERATURE] = linear,
-> >>>>>>> +
-> >>>>>>> +     .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN  |
-> >>>>>>> +     PMBUS_HAVE_VOUT  | PMBUS_HAVE_STATUS_VOUT   |
-> >>>>>>> +     PMBUS_HAVE_IOUT  | PMBUS_HAVE_STATUS_IOUT   |
-> >>>>>>> +     PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2         |
-> >>>>>>> +     PMBUS_HAVE_PIN   | PMBUS_HAVE_POUT          |
-> >>>>>>> +     PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12  |
-> >>>>>>> +     PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
-> >>>>>>> +};
-> >>>>>>> +
-> >>>>>>> +static int dps920ab_probe(struct i2c_client *client)
-> >>>>>>> +{
-> >>>>>>> +     if (!i2c_check_functionality(client->adapter,
-> >>>>>>> +                                  I2C_FUNC_SMBUS_BYTE_DATA |
-> >>>>>>> +                                  I2C_FUNC_SMBUS_WORD_DATA))
-> >>>>>>> +             return -ENODEV;
-> >>>>>>
-> >>>>>> This check is done in pmbus_do_probe(), and repeating it here does not add
-> >>>>>> any value.
-> >>>>>
-> >>>>> Ok, makes sense.
-> >>>>>>
-> >>>>>> That makes me wonder: Is this driver needed in the first place, or could
-> >>>>>> it be added to drivers/hwmon/pmbus/pmbus.c ?
-> >>>>>
-> >>>>> It could be added as a generic driver, but that creates properties in
-> >>>>> the sysfs that this thing
-> >>>>> does not support like 3 voltage readings, 3 fans, and so on.
-> >>>>>
-> >>>>
-> >>>> Can you be more specific ? What additional unsupported attributes
-> >>>> are added, and why ? Are you saying the PSU reports registers as
-> >>>> existing which do not really exist ? If so, which registers are those ?
-> >>>
-> >>> Sure, when core does probing and autodiscovery, then the following
-> >>> sysfs attributes are created:
-> >>>>
-> >>>> curr1_crit         fan3_fault       in3_min_alarm      temp1_max
-> >>>> curr1_crit_alarm   fan3_input       in3_rated_max      temp1_max_alarm
-> >>>> curr1_input        fan3_target      in3_rated_min      temp1_min
-> >>>> curr1_label        in1_crit         name               temp1_min_alarm
-> >>>> curr1_max          in1_crit_alarm   of_node            temp1_rated_max
-> >>>> curr1_max_alarm    in1_input        power              temp2_crit
-> >>>> curr1_rated_max    in1_label        power1_alarm       temp2_crit_alarm
-> >>>> curr2_crit         in1_lcrit        power1_input       temp2_input
-> >>>> curr2_crit_alarm   in1_lcrit_alarm  power1_label       temp2_lcrit
-> >>>> curr2_input        in1_max          power1_max         temp2_lcrit_alarm
-> >>>> curr2_label        in1_max_alarm    power1_rated_max   temp2_max
-> >>>> curr2_lcrit        in1_min          power2_cap         temp2_max_alarm
-> >>>> curr2_lcrit_alarm  in1_min_alarm    power2_cap_alarm   temp2_min
-> >>>> curr2_max          in1_rated_max    power2_crit        temp2_min_alarm
-> >>>> curr2_max_alarm    in1_rated_min    power2_crit_alarm  temp2_rated_max
-> >>>> curr2_rated_max    in2_input        power2_input       temp3_crit
-> >>>> device             in2_label        power2_label       temp3_crit_alarm
-> >>>> fan1_alarm         in3_crit         power2_max         temp3_input
-> >>>> fan1_fault         in3_crit_alarm   power2_max_alarm   temp3_lcrit
-> >>>> fan1_input         in3_input        power2_rated_max   temp3_lcrit_alarm
-> >>>> fan1_target        in3_label        subsystem          temp3_max
-> >>>> fan2_alarm         in3_lcrit        temp1_crit         temp3_max_alarm
-> >>>> fan2_fault         in3_lcrit_alarm  temp1_crit_alarm   temp3_min
-> >>>> fan2_input         in3_max          temp1_input        temp3_min_alarm
-> >>>> fan2_target        in3_max_alarm    temp1_lcrit        temp3_rated_max
-> >>>> fan3_alarm         in3_min          temp1_lcrit_alarm  uevent
-> >>>
-> >>> The following return -1, or -500 so they are not supported.
-> >>> * fan2
-> >>> * in2
-> >>>
-> >>> Weirdly, with the external driver both fan2 and in2 are enabled and work fine,
-> >>> but when auto probing they are fan3 and in3.
-> >>>
-> >>> temp3 actually seems to return a valid temperature despite it not being used in
-> >>> the vendor driver that features were picked from.
-> >>>
-> >>
-> >> Can you run "grep . *" in the hwmon directory so I can see actual values ?
-> >>
-> > Sure:
-> >>
-> >> curr1_crit:-500
-> >> curr1_crit_alarm:0
-> >> curr1_input:195
-> >> curr1_label:iin
-> >> curr1_max:-500
-> >> curr1_max_alarm:0
-> >> curr1_rated_max:-500
-> >> curr2_crit:-500
-> >> curr2_crit_alarm:0
-> >> curr2_input:320
-> >> curr2_label:iout1
-> >> curr2_lcrit:-500
-> >> curr2_lcrit_alarm:0
-> >> curr2_max:18625
-> >> curr2_max_alarm:0
-> >> curr2_rated_max:16875
-> >> grep: device: Is a directory
-> >> fan1_alarm:0
-> >> fan1_fault:0
-> >> fan1_input:10000
-> >> fan1_target:0
-> >> fan2_alarm:1
-> >> fan2_fault:1
-> >> fan2_input:-1
-> >> fan2_target:-1
-> >> fan3_alarm:1
-> >> fan3_fault:1
-> >> fan3_input:-1
-> >> fan3_target:-1
-> >> in1_crit:-500
-> >> in1_crit_alarm:0
-> >> in1_input:245250
-> >> in1_label:vin
-> >> in1_lcrit:-500
-> >> in1_lcrit_alarm:0
-> >> in1_max:-500
-> >> in1_max_alarm:0
-> >> in1_min:-500
-> >> in1_min_alarm:0
-> >> in1_rated_max:-500
-> >> in1_rated_min:-500
-> >> in2_input:-500
-> >> in2_label:vcap
-> >> in3_crit:255996
-> >> in3_crit_alarm:0
-> >> in3_input:54511
-> >> in3_label:vout1
-> >> in3_lcrit:255996
-> >> in3_lcrit_alarm:0
-> >> in3_max:255996
-> >> in3_max_alarm:0
-> >> in3_min:255996
-> >> in3_min_alarm:0
-> >> in3_rated_max:56136
-> >> in3_rated_min:52863
-> >> name:dps920ab
-> >> grep: of_node: Is a directory
-> >> grep: power: Is a directory
-> >> power1_alarm:0
-> >> power1_input:33250000
-> >> power1_label:pin
-> >> power1_max:-500000
-> >> power1_rated_max:-500000
-> >> power2_cap:-500000
-> >> power2_cap_alarm:0
-> >> power2_crit:-500000
-> >> power2_crit_alarm:0
-> >> power2_input:17750000
-> >> power2_label:pout1
-> >> power2_max:-500000
-> >> power2_max_alarm:0
-> >> power2_rated_max:920000000
-> >> grep: subsystem: Is a directory
-> >> temp1_crit:-500
-> >> temp1_crit_alarm:0
-> >> temp1_input:23000
-> >> temp1_lcrit:-500
-> >> temp1_lcrit_alarm:0
-> >> temp1_max:-500
-> >> temp1_max_alarm:0
-> >> temp1_min:-500
-> >> temp1_min_alarm:0
-> >> temp1_rated_max:-500
-> >> temp2_crit:-500
-> >> temp2_crit_alarm:0
-> >> temp2_input:26000
-> >> temp2_lcrit:-500
-> >> temp2_lcrit_alarm:0
-> >> temp2_max:-500
-> >> temp2_max_alarm:0
-> >> temp2_min:-500
-> >> temp2_min_alarm:0
-> >> temp2_rated_max:-500
-> >> temp3_crit:-500
-> >> temp3_crit_alarm:0
-> >> temp3_input:30000
-> >> temp3_lcrit:-500
-> >> temp3_lcrit_alarm:0
-> >> temp3_max:-500
-> >> temp3_max_alarm:0
-> >> temp3_min:-500
-> >> temp3_min_alarm:0
-> >> temp3_rated_max:-500
-> >> uevent:OF_NAME=psu
-> >> uevent:OF_FULLNAME=/ap806/config-space@f0000000/i2c@511000/psu@5a
-> >> uevent:OF_COMPATIBLE_0=delta,dps920ab
-> >> uevent:OF_COMPATIBLE_N=1
-> >
-> Ok, good enough. It looks like the PSU reports values for pretty much everything,
-> including registers which don't exist. With that in mind, please check
-> the attributes generated by your driver - I suspect that some of the limit
-> attributes are not really supported (maybe none of them is supported).
-
-Yeah, I also think that none of those limits are actually supported.
-Does the core expose a way to not register those?
-
-Regards,
-Robert
->
-> Thanks,
-> Guenter
 
 
+On 21/05/2021 20:05, Dmitry Osipenko wrote:
 
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+...
+
+>>> +unsigned int tegra_asoc_machine_mclk_rate(unsigned int srate)
+>>> +{
+>>> +	unsigned int mclk;
+>>> +
+>>> +	switch (srate) {
+>>> +	case 64000:
+>>> +	case 88200:
+>>> +	case 96000:
+>>> +		mclk = 128 * srate;
+>>> +		break;
+>>> +	default:
+>>> +		mclk = 256 * srate;
+>>> +		break;
+>>> +	}
+>>> +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
+>>> +	while (mclk < 6000000)
+>>> +		mclk *= 2;
+>>
+>> So this appears to be specific to the wm8903 codec or at least this is
+>> where it came from. And given that the switch statement is not complete
+>> in terms of the sample rates (ie. only has a subset), I am wondering if
+>> set should keep this specific to the wm8903 codec?
+> 
+> The RT5631 codec of Asus Transformers will re-use this function.
+
+OK, but does it need this FIXME part? That appears to be codec specific.
+
+> IIUC, the default switch-case works properly for all rates below 64KHz,
+> at least I haven't had any problems with it. Could you please clarify
+> why you are saying that the switch statement appears to be incomplete?
+
+It looks a bit weird because less than 64kHz and greater than 96kHz we
+use 256 and for only 64kHz, 88.2kHz and 96kHz we use 128. So it is not
+clear to me which sample rates have actually been tested with this and
+if this is complete or not?
+
+Is it intended that we use 256 for sample rates greater than 96kHz?
+
+Jon
+
