@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FD338E87B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0086F38E85D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhEXONy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S232964AbhEXOMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbhEXONe (ORCPT
+        with ESMTP id S232981AbhEXOMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:13:34 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848EDC06138D
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:12:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id f30so3851878lfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:12:05 -0700 (PDT)
+        Mon, 24 May 2021 10:12:42 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757A4C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:12 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id f15so12988269vsq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EqzKZy8iG5YtODeoQ+7arxZWeDSaRjeQIJ9lF+wQUvM=;
-        b=mceq3hTDdifAJiqp7ulPjiCJ3NEgeMnoBdVCNB9C7MFH36BifBM8EsuhWPsqrv2pus
-         de/9fBoSLzgB1hBeDCZK/eQGGsY6G6mx5a09cAnG5je608TnYffFYCGw/733trTGJYGT
-         wVRzdDUViH96KyDBLHT8Z/S35/uZ7T4IlauGZeYjXw81oPiv4UkuOCAbkQXAHL8MAnBh
-         /4X3ziVwd14FomNlrrXUXkx5PNPcsGxI/STW2Nx3yWxG4ZQ9KFOASEyPOr2hN4N0GxXk
-         EK5H8QwSQxixy1DNJtQWThxVRBcuv901Xj8abXpnsbJtxPSYxKftHPKJXVuS5OAnOA4B
-         cABA==
+         :cc;
+        bh=RtaxpJ3ZIqpbUxLnGdserLZmqNzbhH1N5iJJI4iZESw=;
+        b=O4jM4bSYSS7J58eJ1fb121TCHbnOVl9LqBduEc7SGBX/YCXdfSI46H4Wtka1LkxRS7
+         8h5kPKFQpPZcA+Ca3Rmzk7NVImyE9jZi4KUPNBd23Q44W/5sVRURZ+oTZlE9diZCsekz
+         2I2M2Z4PefHOLr/5yuYaUowwknRfVV3CCpuPffOo2hSQQ5NCc8Y7seAZfU0ScrEePnQU
+         1fK776YmoVWqh2nKRFv/8JY765zcPiQCPxZTrruhpPj1mTuq9GbuEAe/xQt0uN1tZdPE
+         uJwHz3IrZ74D3spFamWzHnDOnclKG9UmNxZE8t+X4EjSgJKUhrmeWLGZr5rjcyyA6b8X
+         gGqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EqzKZy8iG5YtODeoQ+7arxZWeDSaRjeQIJ9lF+wQUvM=;
-        b=AVHms9bB9sqaqUaAgrtNiGnbGfGAwelpCxcv9mzNfv0wpFFfx7Qc7pef34aZJO7Has
-         3Defh4RBN+cooRAAHC777ZsPDKO2jRX9zy00EX9PKms3a6lJxwnWhFB/TGGgrYq50RmM
-         kxHVQvwjmfYesaRizSpM+0CILBWLQiggRCWTEtDvOxz54c7SZTpSU1W5gN5SdyKrjMjS
-         SfB/2iClfp8VQzbh4irOWp/YxlbWEBwXCUB2bfCs4afGw50o8ey+apYHGFjhQ9Dja253
-         WpjZ3hetmrYbZFzRR+mIZpVfIVNleJ2R4MHwI76OjL/h6orm2bYV+hQuS4bVvn9Tqxu0
-         bLQQ==
-X-Gm-Message-State: AOAM533YVLsU9Y7y1dIZSFWeVQrfLWFU8AeVHPhYQ01bQ6X52UuDHaQ5
-        VddOXczilNlhWqyVIdVoUsBMioWzAyPm4Bd0K9mMlg==
-X-Google-Smtp-Source: ABdhPJxPgWa+XQ/7Yg9tLBVcQQ7nzCQ0v/2otc+UDqjvNgiP2uxY0CceWIfPJOWFC9pJWYvoJbCIy35NX/VyVkYlof8=
-X-Received: by 2002:a19:c511:: with SMTP id w17mr11003208lfe.113.1621865523890;
- Mon, 24 May 2021 07:12:03 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=RtaxpJ3ZIqpbUxLnGdserLZmqNzbhH1N5iJJI4iZESw=;
+        b=dm6CAn23LRIjLLzu3U2elm5NadcpCQjzf+ZrbmcFJvPB5aHGk4Wwqb5p8fWQYOoy+R
+         Sr5ieFPJ7gA46+PbW09iDxSZ6uf8LsaYdyYprKu1JKViQn8aQc1yeuGQZfteieSKTPoQ
+         Gc/Gi7BgPTDKfUZ/P5GwE0ybm4F0OyjWOstF+/o7HtOnEi+9qOcq8x+WOk8w1YnJj3hp
+         EnhoXQyLropiN6zj+CuYnFyOWtInxzIWhukB9DuBAyvQqi4I/MoiTFfQEmDkvBGaKSqX
+         w8ilHBAZkJORsT0U7l50NEzyYdAR6YS/VjYVUYu5i/NH0gM8eBEKHL/TTvlDTG9oSJ4C
+         Rwng==
+X-Gm-Message-State: AOAM530TYPQhoOJmiHIDBSOwYvJkAhWtZeiXFAy++co3wSLeRKStGPS1
+        h60rlF/nSCqilryPYL57lnziHyNKTlQgwiG9K0HZ3g==
+X-Google-Smtp-Source: ABdhPJyJxoEXg38Ru3anDaOR89iyQH6Z608DJmvgu1cLXp9ByLGDvmMUflZvo2udH4W1HBCqQ8ERHRYs9TOLCeqKR4M=
+X-Received: by 2002:a67:1087:: with SMTP id 129mr20526217vsq.42.1621865471594;
+ Mon, 24 May 2021 07:11:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210516230551.12469-1-afaerber@suse.de> <20210516230551.12469-7-afaerber@suse.de>
-In-Reply-To: <20210516230551.12469-7-afaerber@suse.de>
+References: <20210517100900.1620-1-zbestahu@gmail.com>
+In-Reply-To: <20210517100900.1620-1-zbestahu@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 16:10:30 +0200
-Message-ID: <CAPDyKFpfL8uSK5Vk-=FjN+D0Sz3TWn28kWjF0g8cmftu_moZfg@mail.gmail.com>
-Subject: Re: [PATCH 6/9] dt-bindings: mmc: rockchip-dw-mshc: Add Rockchip RK1808
-To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
-Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
+Date:   Mon, 24 May 2021 16:10:33 +0200
+Message-ID: <CAPDyKFoPKSCoh6udphtGY210rB-QonJF-MAT0ZQJa+kJn-o6aQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: use data instead of mrq parameter from msdc_{un}prepare_data()
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yue Hu <huyue2@yulong.com>, zbestahu@163.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 01:06, Andreas F=C3=A4rber <afaerber@suse.de> wrote:
+On Mon, 17 May 2021 at 12:09, Yue Hu <zbestahu@gmail.com> wrote:
 >
-> Add a compatible string for Rockchip RK1808 SoC.
+> From: Yue Hu <huyue2@yulong.com>
 >
-> Signed-off-by: Andreas F=C3=A4rber <afaerber@suse.de>
+> We already have 'mrq->data' before calling these two functions, no
+> need to find it again via 'mrq->data' internally. Also remove local
+> data variable accordingly.
+>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
 
 Applied for next, thanks!
 
@@ -78,22 +81,82 @@ Uffe
 
 
 > ---
->  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mmc/host/mtk-sd.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml =
-b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> index eaa3b0ef24f6..54fb59820d2b 100644
-> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> @@ -30,6 +30,7 @@ properties:
->        - items:
->            - enum:
->                - rockchip,px30-dw-mshc
-> +              - rockchip,rk1808-dw-mshc
->                - rockchip,rk3036-dw-mshc
->                - rockchip,rk3228-dw-mshc
->                - rockchip,rk3308-dw-mshc
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 898ed1b..c4db944 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -724,10 +724,8 @@ static inline void msdc_dma_setup(struct msdc_host *host, struct msdc_dma *dma,
+>         writel(lower_32_bits(dma->gpd_addr), host->base + MSDC_DMA_SA);
+>  }
+>
+> -static void msdc_prepare_data(struct msdc_host *host, struct mmc_request *mrq)
+> +static void msdc_prepare_data(struct msdc_host *host, struct mmc_data *data)
+>  {
+> -       struct mmc_data *data = mrq->data;
+> -
+>         if (!(data->host_cookie & MSDC_PREPARE_FLAG)) {
+>                 data->host_cookie |= MSDC_PREPARE_FLAG;
+>                 data->sg_count = dma_map_sg(host->dev, data->sg, data->sg_len,
+> @@ -735,10 +733,8 @@ static void msdc_prepare_data(struct msdc_host *host, struct mmc_request *mrq)
+>         }
+>  }
+>
+> -static void msdc_unprepare_data(struct msdc_host *host, struct mmc_request *mrq)
+> +static void msdc_unprepare_data(struct msdc_host *host, struct mmc_data *data)
+>  {
+> -       struct mmc_data *data = mrq->data;
+> -
+>         if (data->host_cookie & MSDC_ASYNC_FLAG)
+>                 return;
+>
+> @@ -1140,7 +1136,7 @@ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+>
+>         msdc_track_cmd_data(host, mrq->cmd, mrq->data);
+>         if (mrq->data)
+> -               msdc_unprepare_data(host, mrq);
+> +               msdc_unprepare_data(host, mrq->data);
+>         if (host->error)
+>                 msdc_reset_hw(host);
+>         mmc_request_done(mmc_from_priv(host), mrq);
+> @@ -1311,7 +1307,7 @@ static void msdc_ops_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>         host->mrq = mrq;
+>
+>         if (mrq->data)
+> -               msdc_prepare_data(host, mrq);
+> +               msdc_prepare_data(host, mrq->data);
+>
+>         /* if SBC is required, we have HW option and SW option.
+>          * if HW option is enabled, and SBC does not have "special" flags,
+> @@ -1332,7 +1328,7 @@ static void msdc_pre_req(struct mmc_host *mmc, struct mmc_request *mrq)
+>         if (!data)
+>                 return;
+>
+> -       msdc_prepare_data(host, mrq);
+> +       msdc_prepare_data(host, data);
+>         data->host_cookie |= MSDC_ASYNC_FLAG;
+>  }
+>
+> @@ -1340,14 +1336,14 @@ static void msdc_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
+>                 int err)
+>  {
+>         struct msdc_host *host = mmc_priv(mmc);
+> -       struct mmc_data *data;
+> +       struct mmc_data *data = mrq->data;
+>
+> -       data = mrq->data;
+>         if (!data)
+>                 return;
+> +
+>         if (data->host_cookie) {
+>                 data->host_cookie &= ~MSDC_ASYNC_FLAG;
+> -               msdc_unprepare_data(host, mrq);
+> +               msdc_unprepare_data(host, data);
+>         }
+>  }
+>
 > --
-> 2.31.1
+> 1.9.1
 >
