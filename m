@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14F038F5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C93738FA82
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhEXWn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        id S230474AbhEYGMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEXWn0 (ORCPT
+        with ESMTP id S229621AbhEYGMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:43:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CC9C061574;
-        Mon, 24 May 2021 15:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=KZXb/tLr9YFiA/T3KrJSdP6LyxwsCT3QXewBPoMTKsE=; b=g5bGXx5OXeTJgLIdaHL7wrYzDy
-        ug/SzbkUytOW/Wo6NIcbnStWecwnmqr0wzFJgh1JKVyg2CvdKXQMLVAr3ZSQpzCmP8U4B8N9iUNKG
-        kGqziSr/xYr+DVSVKoi1VGlmJEnjJhj7etjnNpoE4cNUfB47DRJjyy1JaEeWAHc91Qx2CZK8xJ5fa
-        1PJyhf6SEb8drQ9c0fHHbknMOabnz7HMJXtnWfB+F+zlctGQEvpgv+1kng5rwvSRvQco5a6yMdOpZ
-        rsAJ3mf28iuhTS72wpjoQ+CGKg9cP6eLb1ZMNtHw+pJeB28VL60CaJSCc/HdJCK71HKsTiUIPdNDg
-        ayQYdgHA==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1llJGi-002B2q-Cf; Mon, 24 May 2021 22:41:52 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Julian Braha <julianbraha@gmail.com>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2] LOCKDEP: reduce LOCKDEP dependency list
-Date:   Mon, 24 May 2021 15:41:50 -0700
-Message-Id: <20210524224150.8009-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 25 May 2021 02:12:43 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B598C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:11:14 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id f22so14396945pfn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IdcS0bFy+y6ulhI9jyzfyMDlCSagPAt22qi8j9Vz510=;
+        b=mc4IUwZLJpdkM8bbnvHKPA26QdF+Ie2VdMYPxDl7eC3vIr98RQhLTsZbiRzQV4lZV6
+         b6rdy5h6snfAVuj2BsDPxPJv4mQfj7sGtfCltHDRuSke2KeyQQpxS6+QvDBjeZBTuCCh
+         0PvUc6xRGYUW/6U7gz2fBhTDRSPZyLCrr3fdK0u3bF8TtBdZRi26JGxaA4ZXZmDt1FNn
+         fYDS6sWJrW6HnXloZWf3lBGURTFw1NRUoXBdTG6IqIin0yXnGe/9m9SKHe+mqYg+nFSr
+         w6Dsrg6whm32mkaNx1jwiUEAiDlWcUcPiDebNsaxn4fdeMho6yqb7wC1Tkv4+sIVf8nf
+         tyaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IdcS0bFy+y6ulhI9jyzfyMDlCSagPAt22qi8j9Vz510=;
+        b=qQRcJr3ElHxbBmoRyY8Yziwm6ZkFwVK7c/SBXc9LT1BBTralTUyPf+BOAQULZwtQUc
+         n2v9gKbRwatK+U/ElMRD3Bis2ZEqtAJbtjtI+x37XXG11x9QbmtBpCkczXsVvHPcssia
+         jV5N6kJn0XxjsTuaKg9Z6K6FGwELFmMaFgwl4UKSJ2IFhvy14Sp7Z7yyZaDkM6m4s+U3
+         zw73Qj3pwT/AQO694DjsEFy0FT7xkYN91RJQKjB/IVGQ1O5ATK3MmR8WboWTbFfSJvjl
+         BH4xIOgc5/wkaheA+i6w8U1aqMvWct3RDZDcruGavmp8A4NGLZ6OV3+RnCdLuh7hfptq
+         xvrQ==
+X-Gm-Message-State: AOAM533oC/XRZTAy+iBoLY9Ae0+ETnWRQ9EnVWhOp9whXyv/122zq6u/
+        UekP7oTyb6ApXG3EhFKzN/E=
+X-Google-Smtp-Source: ABdhPJxHFskWnQ3Twf0BOzSFH/LrWOUSxi3nuj1D6nt0WdQu2zeZNePHmRy1XEpqnnuunDpeUbBlcw==
+X-Received: by 2002:a63:3444:: with SMTP id b65mr17373426pga.185.1621923073765;
+        Mon, 24 May 2021 23:11:13 -0700 (PDT)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id h3sm12452301pgp.10.2021.05.24.23.11.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 23:11:13 -0700 (PDT)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] iommu/amd: Enable page-selective flushes
+Date:   Mon, 24 May 2021 15:41:55 -0700
+Message-Id: <20210524224159.32807-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some arches (um, sparc64, riscv, xtensa) cause a Kconfig warning for
-LOCKDEP.
-These arch-es select LOCKDEP_SUPPORT but they are not listed as one
-of the arch-es that LOCKDEP depends on.
+From: Nadav Amit <namit@vmware.com>
 
-Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
-intend to have LOCKDEP support, replace the awkward list of
-arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
+The previous patch, commit 268aa4548277 ("iommu/amd: Page-specific
+invalidations for more than one page") was supposed to enable
+page-selective IOTLB flushes on AMD.
 
-But wait. LOCKDEP_SUPPORT is included in LOCK_DEBUGGING_SUPPORT,
-which is already a dependency here, so LOCKDEP_SUPPORT is redundant
-and not needed.
-That leaves the FRAME_POINTER dependency, but it is part of an
-expression like this:
-	depends on (A && B) && (FRAME_POINTER || B')
-where B' is a dependency of B so if B is true then B' is true
-and the value of FRAME_POINTER does not matter.
-Thus we can also delete the FRAME_POINTER dependency.
+The patch had an embaressing bug, and I apologize for it.
 
-Fixes this kconfig warning: (for um, sparc64, riscv, xtensa)
+Analysis as for why this bug did not result in failures raised
+additional issues that caused at least most of the IOTLB flushes not to
+be page-selective ones.
 
-WARNING: unmet direct dependencies detected for LOCKDEP
-  Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
-  Selected by [y]:
-  - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+The first patch corrects the bug from the previous patch. The next
+patches enable page-selective invalidations, which were not enabled
+despite the previous patch.
 
-Link to v1: https://lore.kernel.org/lkml/20210517034430.9569-1-rdunlap@infradead.org/
-
-Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joerg Roedel <joro@8bytes.org>
 Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Cc: Julian Braha <julianbraha@gmail.com>
-Cc: linux-arch@vger.kernel.org
+Cc: Jiajun Cao <caojiajun@vmware.com>
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+
 ---
-@Julian: please take a look. I'm a little concerned about the
-  FRAME_POINTER dependency going away when our 2 patches are combined.
 
-v2: drop depends on LOCKDEP_SUPPORT for LOCKDEP; the use of
-    LOCK_DEBUGGING_SUPPORT already covers that dependency;
-    drop FRAME_POINTER dependency (thanks to Waiman Long
-    for both of these suggestions)
-v2: add CC: to linux-arch
+v1->v2:
+* Rebase on v5.13-rc3
 
- lib/Kconfig.debug |    1 -
- 1 file changed, 1 deletion(-)
+Nadav Amit (4):
+  iommu/amd: Fix wrong parentheses on page-specific invalidations
+  iommu/amd: Selective flush on unmap
+  iommu/amd: Do not sync on page size changes
+  iommu/amd: Do not use flush-queue when NpCache is on
 
---- linux-next-20210524.orig/lib/Kconfig.debug
-+++ linux-next-20210524/lib/Kconfig.debug
-@@ -1383,7 +1383,6 @@ config LOCKDEP
- 	bool
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select STACKTRACE
--	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
- 
+ drivers/iommu/amd/init.c  |  7 ++++++-
+ drivers/iommu/amd/iommu.c | 18 +++++++++++++++---
+ include/linux/iommu.h     |  3 ++-
+ 3 files changed, 23 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
