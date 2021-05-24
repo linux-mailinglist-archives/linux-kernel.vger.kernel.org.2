@@ -2,128 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A2838E846
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DCB38E84F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhEXOIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:08:46 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27655 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232462AbhEXOIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:08:43 -0400
-IronPort-SDR: XaJruZewemy/9Vh2bS+PAsIvGpEWJZg9T2e4yItO96bkIAETHdVcc39cz2FRDlqSwbw0C1u892
- 2fwl1hfKgm5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="189323512"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="189323512"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:07:00 -0700
-IronPort-SDR: 47YgCBPnzL8e5+OnNh1hqki7HARI+6DCswQfLK6gfjZecxOoh++es4xGcKLrM+maymLhqrUG+C
- /aE56hicPQ6w==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="478548483"
-Received: from caknoll-mobl.amr.corp.intel.com (HELO [10.209.100.8]) ([10.209.100.8])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:07:00 -0700
-Subject: Re: [PATCH v5 28/28] x86/fpu/amx: Clear the AMX state when
- appropriate
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
+        id S232942AbhEXOKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232462AbhEXOKf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:10:35 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50C6C061574;
+        Mon, 24 May 2021 07:09:07 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id c196so18954968oib.9;
+        Mon, 24 May 2021 07:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=o7CLir1PLpSoekN7HG+8aA3BrPc01kxQajb9KjLV5l4=;
+        b=tEju27IHwOw6efgYeLMuBKQncK+4X3DyXW/zeSO/V1OkNbYFV/NwLJveOGUekswyna
+         z3xj9R3y09rxxMUNsf1EwIAymuhVpxXnov3uZpdSDX648CHSBk9iVYZIPlZCKTAQhn2k
+         V7MeX4W39IZ+2If2sInL9lCQLdJT4nSpf5/fViLm1r5IVU+9NmYbyca5R3+wiEo72OG3
+         Zdu0cbzUcIkV8j23WYmst2dhLCjmNmTqRlbjzLumB79x/JL8imrbROFWZajIZCDhRqHC
+         Gnsl7EXBftMup+dQEej2pa6qG7Tf71Se4RsB/FEpzHx8sCZAVzdyjUjDU3xqSQmvHMtb
+         WXRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o7CLir1PLpSoekN7HG+8aA3BrPc01kxQajb9KjLV5l4=;
+        b=iYq7+QaiSPVLkn0XXoGN7Psly7YDDuZyUrhIwUJBvsUuDqOYvcTWZSlRXrBJofm0DA
+         ebJdmz57bIQB7mWznLYnqoJPhmRBLi3s3o84QlCjsefQsaq29Ed6QLd6l0B24J/lG9xB
+         zEAG3/3n8EGVfPX4iJSOeuxJ4h9KQZPY8KiONn1vXpk7bLRR2wHbV4UFi+stPaHIHjRs
+         sbOchC2Jxc5ByHtAa1TqcerUPB+9tEka8Wk6qBzRiQuJS6hGqcVTkfyeHVZbrDqFsyBM
+         pausakp3CPM6BtowExkZJ5bTxIu3zHSpYJ8Vs4yQ7yCgycO6zhG/Gj5b1Xk93v8lGBz2
+         yXLQ==
+X-Gm-Message-State: AOAM5325F4BEXEkwdAgLFEp9U2fHjzq7EhWH1r0N2y3s3WVLY6OXAHpz
+        lvJeVgFiMHfjMfS2lGDSzo5lak6aM18=
+X-Google-Smtp-Source: ABdhPJzgz3pU39JQUzGqVImlOvQ1V/Zg32t/Us+gwAIjc4mp6rL/PgYC3mDTlmbr6YMUYb1b2LXwng==
+X-Received: by 2002:a05:6808:128b:: with SMTP id a11mr10775351oiw.88.1621865347239;
+        Mon, 24 May 2021 07:09:07 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 129sm2814742ooq.34.2021.05.24.07.09.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 07:09:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v7] hwmon: Add sht4x Temperature and Humidity Sensor
+ Driver
+To:     Navin Sankar Velliangiri <navin@linumiz.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-29-chang.seok.bae@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fd9ea1d5-06cf-c5e7-e44e-d74fa7627983@intel.com>
-Date:   Mon, 24 May 2021 07:06:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Cc:     jdelvare@suse.com, corbet@lwn.net
+References: <20210524100425.64052-1-navin@linumiz.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <8ae3dac2-54d5-d64c-cc9b-d1e661d6a4c5@roeck-us.net>
+Date:   Mon, 24 May 2021 07:09:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210523193259.26200-29-chang.seok.bae@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210524100425.64052-1-navin@linumiz.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/21 12:32 PM, Chang S. Bae wrote:
-> +		/*
-> +		 * Since the current task's state is safely in the XSAVE buffer, TILERELEASE
-> +		 * the TILE registers to guarantee that dirty state will not interfere with the
-> +		 * hardware's ability to enter the core C6 idle state.
-> +		 */
+On 5/24/21 3:04 AM, Navin Sankar Velliangiri wrote:
+> This patch adds a hwmon driver for the SHT4x Temperature and
+> Humidity sensor.
+> 
+> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> 
+> Changes in v2:
+> 
+> * Removed unused macro SHT4X_MIN_POLL_INTERVAL
+> * Replaced time_after instead of ktime_after
+> * Used goto statements for error handling
+> * Hardcoded the interval_time instead of clamp_val().
+> 
+> Changes in v3:
+> 
+> * Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
+>    return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
+> * Changed the data type of update_interval and last_updated to long.
+> 
+> Changes in v4:
+> 
+> * "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
+>    clamp_val() api is used to assign the update_interval stays within UINT_MAX.
+> 
+> Changes in v5:
+> 
+> * Added error handling when master unable to send the data.
+> 
+> Changes in v6:
+> 
+> * clamp_val() alone is used to set the update interval. since the update
+>    interval is a continuous setting.
+> 
+> Changes in v7:
+> 
+> * initialized the ret variable to -EINVAL in sht4x_read_values() function,
+>    whenever if condition fail's it return's -EINVAL.
 
-Is there an architectural reason to be so specific about this one idle
-state?  Are AMX and "C6 idle state" so intertwined that this comment
-will age well?
+That wasn't the problem; it needs to be initialized with 0.
+And you did not actually do it.
 
-I'm a bit worried that "C6 idle state" won't be meaningful to folks who
-read this.
+Guenter
 
-Could we maybe say:
+> ---
+>   Documentation/hwmon/index.rst |   1 +
+>   Documentation/hwmon/sht4x.rst |  45 +++++
+>   drivers/hwmon/Kconfig         |  11 ++
+>   drivers/hwmon/Makefile        |   1 +
+>   drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
+>   5 files changed, 363 insertions(+)
+>   create mode 100644 Documentation/hwmon/sht4x.rst
+>   create mode 100644 drivers/hwmon/sht4x.c
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 9ed60fa84cbe..b6fcae40258c 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -164,6 +164,7 @@ Hardware Monitoring Kernel Drivers
+>      sht15
+>      sht21
+>      sht3x
+> +   sht4x
+>      shtc1
+>      sis5595
+>      sl28cpld
+> diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
+> new file mode 100644
+> index 000000000000..3b37abcd4a46
+> --- /dev/null
+> +++ b/Documentation/hwmon/sht4x.rst
+> @@ -0,0 +1,45 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Kernel driver sht4x
+> +===================
+> +
+> +Supported Chips:
+> +
+> +  * Sensirion SHT4X
+> +
+> +    Prefix: 'sht4x'
+> +
+> +    Addresses scanned: None
+> +
+> +    Datasheet:
+> +
+> +      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
+> +
+> +Author: Navin Sankar Velliangiri <navin@linumiz.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements support for the Sensirion SHT4x chip, a humidity
+> +and temperature sensor. Temperature is measured in degree celsius, relative
+> +humidity is expressed as a percentage. In sysfs interface, all values are
+> +scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
+> +
+> +Usage Notes
+> +-----------
+> +
+> +The device communicates with the I2C protocol. Sensors can have the I2C
+> +address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
+> +to instantiate the device.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +=============== ============================================
+> +temp1_input     Measured temperature in millidegrees Celcius
+> +humidity1_input Measured humidity in %H
+> +update_interval The minimum interval for polling the sensor,
+> +                in milliseconds. Writable. Must be at least
+> +                2000.
+> +============== =============================================
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 87624902ea80..e3675377bc5d 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
+>   	  This driver can also be built as a module. If so, the module
+>   	  will be called sht3x.
+>   
+> +config SENSORS_SHT4x
+> +	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
+> +	depends on I2C
+> +	select CRC8
+> +	help
+> +	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
+> +	  SHT45 humidity and temperature sensors.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called sht4x.
+> +
+>   config SENSORS_SHTC1
+>   	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
+>   	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 59e78bc212cf..d712c61c1f5e 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -171,6 +171,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
+>   obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
+>   obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
+>   obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
+> +obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
+>   obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
+>   obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
+>   obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
+> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+> new file mode 100644
+> index 000000000000..39e1b4a123fa
+> --- /dev/null
+> +++ b/drivers/hwmon/sht4x.c
+> @@ -0,0 +1,305 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +/*
+> + * Copyright (c) Linumiz 2021
+> + *
+> + * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
+> + *
+> + * Author: Navin Sankar Velliangiri <navin@linumiz.com>
+> + */
+> +
+> +#include <linux/crc8.h>
+> +#include <linux/delay.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/i2c.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/module.h>
+> +
+> +/*
+> + * Poll intervals (in milliseconds)
+> + */
+> +#define SHT4X_MIN_POLL_INTERVAL	2000
+> +
+> +/*
+> + * I2C command delays (in microseconds)
+> + */
+> +#define SHT4X_MEAS_DELAY	1000
+> +#define SHT4X_DELAY_EXTRA	10000
+> +
+> +/*
+> + * Command Bytes
+> + */
+> +#define SHT4X_CMD_MEASURE_HPM	0b11111101
+> +#define SHT4X_CMD_RESET		0b10010100
+> +
+> +#define SHT4X_CMD_LEN		1
+> +#define SHT4X_CRC8_LEN		1
+> +#define SHT4X_WORD_LEN		2
+> +#define SHT4X_RESPONSE_LENGTH	6
+> +#define SHT4X_CRC8_POLYNOMIAL	0x31
+> +#define SHT4X_CRC8_INIT		0xff
+> +#define SHT4X_MIN_TEMPERATURE	-45000
+> +#define SHT4X_MAX_TEMPERATURE	125000
+> +#define SHT4X_MIN_HUMIDITY	0
+> +#define SHT4X_MAX_HUMIDITY	100000
+> +
+> +DECLARE_CRC8_TABLE(sht4x_crc8_table);
+> +
+> +/**
+> + * struct sht4x_data - All the data required to operate an SHT4X chip
+> + * @client: the i2c client associated with the SHT4X
+> + * @lock: a mutex that is used to prevent parallel access to the i2c client
+> + * @update_interval: the minimum poll interval
+> + * @last_updated: the previous time that the SHT4X was polled
+> + * @temperature: the latest temperature value received from the SHT4X
+> + * @humidity: the latest humidity value received from the SHT4X
+> + */
+> +struct sht4x_data {
+> +	struct i2c_client	*client;
+> +	struct mutex		lock;	/* atomic read data updates */
+> +	bool			valid;	/* validity of fields below */
+> +	long			update_interval;	/* in milli-seconds */
+> +	long			last_updated;	/* in jiffies */
+> +	s32			temperature;
+> +	s32			humidity;
+> +};
+> +
+> +/**
+> + * sht4x_read_values() - read and parse the raw data from the SHT4X
+> + * @sht4x_data: the struct sht4x_data to use for the lock
+> + * Return: 0 if succesfull, 1 if not
+> + */
+> +static int sht4x_read_values(struct sht4x_data *data)
+> +{
+> +	int ret;
+> +	u16 t_ticks, rh_ticks;
+> +	unsigned long next_update;
+> +	struct i2c_client *client = data->client;
+> +	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
+> +	cmd[] = {SHT4X_CMD_MEASURE_HPM};
+> +
+> +	mutex_lock(&data->lock);
+> +	next_update = data->last_updated +
+> +		      msecs_to_jiffies(data->update_interval);
+> +	if (!data->valid || time_after(jiffies, next_update)) {
+> +		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
+> +		if (ret < 0)
+> +			goto unlock;
+> +
+> +		usleep_range(SHT4X_MEAS_DELAY,
+> +			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
+> +
+> +		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
+> +		if (ret != SHT4X_RESPONSE_LENGTH) {
+> +			if (ret >= 0)
+> +				ret = -ENODATA;
+> +
+> +			goto unlock;
+> +		}
+> +
+> +		t_ticks = raw_data[0] << 8 | raw_data[1];
+> +		rh_ticks = raw_data[3] << 8 | raw_data[4];
+> +
+> +		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> +		if (crc != raw_data[2]) {
+> +			dev_err(&client->dev, "data integrity check failed\n");
+> +			ret = -EIO;
+> +			goto unlock;
+> +		}
+> +
+> +		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
+> +		if (crc != raw_data[5]) {
+> +			dev_err(&client->dev, "data integrity check failed\n");
+> +			ret = -EIO;
+> +			goto unlock;
+> +		}
+> +
+> +		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
+> +		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
+> +		data->last_updated = jiffies;
+> +		data->valid = true;
+> +	}
+> +
+> +unlock:
+> +	mutex_unlock(&data->lock);
+> +	return ret;
+> +}
+> +
+> +static ssize_t sht4x_interval_write(struct sht4x_data *data,
+> +				    long val)
+> +{
+> +
+> +	data->update_interval = clamp_val(val, SHT4X_MIN_POLL_INTERVAL,
+> +					  UINT_MAX);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * sht4x_interval_read() - read the minimum poll interval
+> + *			   in milliseconds
+> + */
+> +static size_t sht4x_interval_read(struct sht4x_data *data,
+> +				  long *val)
+> +{
+> +	*val = data->update_interval;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * sht4x_temperature1_read() - read the temperature in millidegrees
+> + */
+> +static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
+> +{
+> +	int ret;
+> +
+> +	ret = sht4x_read_values(data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = data->temperature;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * sht4x_humidity1_read() - read a relative humidity in millipercent
+> + */
+> +static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
+> +{
+> +	int ret;
+> +
+> +	ret = sht4x_read_values(data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = data->humidity;
+> +
+> +	return 0;
+> +}
+> +
+> +static umode_t sht4x_hwmon_visible(const void *data,
+> +				   enum hwmon_sensor_types type,
+> +				   u32 attr, int channel)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +	case hwmon_humidity:
+> +		return 0444;
+> +	case hwmon_chip:
+> +		return 0644;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static int sht4x_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+> +			    u32 attr, int channel, long *val)
+> +{
+> +	struct sht4x_data *data = dev_get_drvdata(dev);
+> +
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		return sht4x_temperature1_read(data, val);
+> +	case hwmon_humidity:
+> +		return sht4x_humidity1_read(data, val);
+> +	case hwmon_chip:
+> +		return sht4x_interval_read(data, val);
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int sht4x_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
+> +			     u32 attr, int channel, long val)
+> +{
+> +	struct sht4x_data *data = dev_get_drvdata(dev);
+> +
+> +	switch (type) {
+> +	case hwmon_chip:
+> +		return sht4x_interval_write(data, val);
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static const struct hwmon_channel_info *sht4x_info[] = {
+> +	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
+> +	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
+> +	NULL,
+> +};
+> +
+> +static const struct hwmon_ops sht4x_hwmon_ops = {
+> +	.is_visible = sht4x_hwmon_visible,
+> +	.read = sht4x_hwmon_read,
+> +	.write = sht4x_hwmon_write,
+> +};
+> +
+> +static const struct hwmon_chip_info sht4x_chip_info = {
+> +	.ops = &sht4x_hwmon_ops,
+> +	.info = sht4x_info,
+> +};
+> +
+> +static int sht4x_probe(struct i2c_client *client,
+> +		       const struct i2c_device_id *sht4x_id)
+> +{
+> +	struct device *device = &client->dev;
+> +	struct device *hwmon_dev;
+> +	struct sht4x_data *data;
+> +	u8 cmd[] = {SHT4X_CMD_RESET};
+> +	int ret;
+> +
+> +	/*
+> +	 * we require full i2c support since the sht4x uses multi-byte read and
+> +	 * writes as well as multi-byte commands which are not supported by
+> +	 * the smbus protocol
+> +	 */
+> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+> +		return -EOPNOTSUPP;
+> +
+> +	data = devm_kzalloc(device, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->update_interval = SHT4X_MIN_POLL_INTERVAL;
+> +	data->client = client;
+> +
+> +	mutex_init(&data->lock);
+> +
+> +	crc8_populate_msb(sht4x_crc8_table, SHT4X_CRC8_POLYNOMIAL);
+> +
+> +	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (ret != SHT4X_CMD_LEN)
+> +		return -EIO;
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(device,
+> +							 client->name,
+> +							 data,
+> +							 &sht4x_chip_info,
+> +							 NULL);
+> +
+> +	return PTR_ERR_OR_ZERO(hwmon_dev);
+> +}
+> +
+> +static const struct i2c_device_id sht4x_id[] = {
+> +	{ "sht4x", 0 },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(i2c, sht4x_id);
+> +
+> +static struct i2c_driver sht4x_driver = {
+> +	.driver = {
+> +		.name = "sht4x",
+> +	},
+> +	.probe		= sht4x_probe,
+> +	.id_table	= sht4x_id,
+> +};
+> +
+> +module_i2c_driver(sht4x_driver);
+> +
+> +MODULE_AUTHOR("Navin Sankar Velliangiri <navin@linumiz.com>");
+> +MODULE_DESCRIPTION("Sensirion SHT4x humidity and temperature sensor driver");
+> +MODULE_LICENSE("GPL v2");
+> 
 
-		/*
-		 * Leaving state in the TILE registers may prevent the
-		 * processor from entering low-power idle states.  Use
-		 * TILERELEASE to initialize the state.  Destroying
-		 * fpregs state is safe after the fpstate update.
-		 */
-
-Also, referencing fpregs/fpstate is really nice because the codes
-doesn't actually say "XSAVE" anywhere.
-
-> +		if (fpu->state_mask & XFEATURE_MASK_XTILE_DATA)
-> +			tile_release();
-
-Doesn't this tile_release() need a fpregs_deactivate()?  Otherwise, the
-next XRSTOR might get optimized away because it thinks there's still
-good data in the fpregs.
-
-Will this unnecessarily thwart the modified optimization in cases where
-we go and run this task again without ever going out to userspace?  Will
-this impact context-switch latency for *EVERY* context switch in order
-to go to a lower idle state in a few minutes, hours, or never?
