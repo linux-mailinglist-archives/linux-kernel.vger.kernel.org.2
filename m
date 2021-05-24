@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF1738ED87
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9792538ED1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhEXPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:38:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50534 "EHLO mail.kernel.org"
+        id S233614AbhEXPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233048AbhEXPe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1113613D2;
-        Mon, 24 May 2021 15:32:21 +0000 (UTC)
+        id S233272AbhEXPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:32:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F3D161209;
+        Mon, 24 May 2021 15:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870342;
-        bh=5RqDjF78WtfQ3p1ZbGSN+v3AGnEPouPjeGPu+1ZfddA=;
+        s=korg; t=1621870247;
+        bh=h2ojx3YMZ8sL3U3dEwyIXQcjbnWucHPsCpZk3NPTBAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eG45yCPr/9nWOKPkpg4Q0bgUZdTnL3YUoi3mZ6+M1gYZjQbU9I0XSL4ad4BOQnFRP
-         PHkX+uB9a0s7Dxx+QhEO2HO1IUBbQ2p2c2ugj9ewF5oEyUa1CXLooN1vXAobiEKT1h
-         FDzSaQLCJQp3orxQiruvtDaU3QYmFeE8n2al0Xfg=
+        b=et+Z5tSkJrSVr743MNemuLMmB8Jqk3OQsbE4j4trlUc+v6Ge4B9iTf6ya4U91P7G/
+         oTE8ceM3BRHgquCmNEOn2WkGTlCBmUAGK8gCvyxioy+Qw0OgBzdM8khsN63L19BPp7
+         8HOkuspOCd871X7c55LcZbtKPOD+PI3v8TNvZpLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.9 14/36] dm snapshot: fix crash with transient storage and zero chunk size
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Tyler Hicks <code@tyhicks.com>
+Subject: [PATCH 4.4 16/31] Revert "ecryptfs: replace BUG_ON with error handling code"
 Date:   Mon, 24 May 2021 17:24:59 +0200
-Message-Id: <20210524152324.630438190@linuxfoundation.org>
+Message-Id: <20210524152323.453544126@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
+References: <20210524152322.919918360@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit c699a0db2d62e3bbb7f0bf35c87edbc8d23e3062 upstream.
+commit e1436df2f2550bc89d832ffd456373fdf5d5b5d7 upstream.
 
-The following commands will crash the kernel:
+This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
 
-modprobe brd rd_size=1048576
-dmsetup create o --table "0 `blockdev --getsize /dev/ram0` snapshot-origin /dev/ram0"
-dmsetup create s --table "0 `blockdev --getsize /dev/ram0` snapshot /dev/ram0 /dev/ram1 N 0"
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-The reason is that when we test for zero chunk size, we jump to the label
-bad_read_metadata without setting the "r" variable. The function
-snapshot_ctr destroys all the structures and then exits with "r == 0". The
-kernel then crashes because it falsely believes that snapshot_ctr
-succeeded.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-In order to fix the bug, we set the variable "r" to -EINVAL.
+The original commit log for this change was incorrect, no "error
+handling code" was added, things will blow up just as badly as before if
+any of these cases ever were true.  As this BUG_ON() never fired, and
+most of these checks are "obviously" never going to be true, let's just
+revert to the original code for now until this gets unwound to be done
+correctly in the future.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Fixes: 2c2a7552dd64 ("ecryptfs: replace BUG_ON with error handling code")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Tyler Hicks <code@tyhicks.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-49-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-snap.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ecryptfs/crypto.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -1263,6 +1263,7 @@ static int snapshot_ctr(struct dm_target
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -346,10 +346,8 @@ static int crypt_scatterlist(struct ecry
+ 	struct extent_crypt_result ecr;
+ 	int rc = 0;
  
- 	if (!s->store->chunk_size) {
- 		ti->error = "Chunk size not set";
-+		r = -EINVAL;
- 		goto bad_read_metadata;
- 	}
- 
+-	if (!crypt_stat || !crypt_stat->tfm
+-	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
+-		return -EINVAL;
+-
++	BUG_ON(!crypt_stat || !crypt_stat->tfm
++	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
+ 	if (unlikely(ecryptfs_verbosity > 0)) {
+ 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
+ 				crypt_stat->key_size);
 
 
