@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1899238F09E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5000838EDE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236891AbhEXQEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41136 "EHLO mail.kernel.org"
+        id S234006AbhEXPnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235485AbhEXP6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD6D061965;
-        Mon, 24 May 2021 15:44:01 +0000 (UTC)
+        id S234144AbhEXPjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C780613F5;
+        Mon, 24 May 2021 15:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871042;
-        bh=tLit2fks7rXXXfgitzjpcmmAtQRcj2PjNJMhFUkd6tk=;
+        s=korg; t=1621870422;
+        bh=4rY4OaBQ2UoxGJOQ/MMnVhwQexIRIz3IAWbEqdKFhz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTyXTemCURanICd3XqwzeKq3q+0aE11NJwh84fls6R3N4zr6lvP+BxRud671bJkLF
-         aAZIZgbKBG+sJC4z7qxlDTyGZpUWoCGIWviqRhzKXWA3hPgFd1QbI31EbWlgjbdFvR
-         UdB4x8glORcyjw1s5T+GZLC06NntIdhfxnOuMuwU=
+        b=x1WaAsJ1fLr98edSnlSteEnKtEQ87RRxaEzvwVFarmhfSPQd8qSViMIa9gGhTvBjv
+         MupjxNJo7BBq9tRoOkTb8sfAktng5ZGiDl9xioK3rLrfuk8SP1LZfLlHXZsqs216a7
+         oD19j3RiBLeYKT4Tn+IwJblgGDXlFjb7OMfZtPwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 012/127] scsi: qla2xxx: Fix error return code in qla82xx_write_flash_dword()
-Date:   Mon, 24 May 2021 17:25:29 +0200
-Message-Id: <20210524152335.270424557@linuxfoundation.org>
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH 4.14 26/37] Revert "rtlwifi: fix a potential NULL pointer dereference"
+Date:   Mon, 24 May 2021 17:25:30 +0200
+Message-Id: <20210524152325.055159078@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 5cb289bf2d7c34ca1abd794ce116c4f19185a1d4 ]
+commit 68c5634c4a7278672a3bed00eb5646884257c413 upstream.
 
-Fix to return a negative error code from the error handling case instead of
-0 as done elsewhere in this function.
+This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
 
-Link: https://lore.kernel.org/r/20210514090952.6715-1-thunder.leizhen@huawei.com
-Fixes: a9083016a531 ("[SCSI] qla2xxx: Add ISP82XX support.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+This commit is not correct, it should not have used unlikely() and is
+not propagating the error properly to the calling function, so it should
+be reverted at this point in time.  Also, if the check failed, the
+work queue was still assumed to be allocated, so further accesses would
+have continued to fail, meaning this patch does nothing to solve the
+root issues at all.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Bryan Brattlof <hello@bryanbrattlof.com>
+Fixes: 765976285a8c ("rtlwifi: fix a potential NULL pointer dereference")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-13-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_nx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/realtek/rtlwifi/base.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
-index 0677295957bc..615e44af1ca6 100644
---- a/drivers/scsi/qla2xxx/qla_nx.c
-+++ b/drivers/scsi/qla2xxx/qla_nx.c
-@@ -1063,7 +1063,8 @@ qla82xx_write_flash_dword(struct qla_hw_data *ha, uint32_t flashaddr,
- 		return ret;
- 	}
- 
--	if (qla82xx_flash_set_write_enable(ha))
-+	ret = qla82xx_flash_set_write_enable(ha);
-+	if (ret < 0)
- 		goto done_write;
- 
- 	qla82xx_wr_32(ha, QLA82XX_ROMUSB_ROM_WDATA, data);
--- 
-2.30.2
-
+--- a/drivers/net/wireless/realtek/rtlwifi/base.c
++++ b/drivers/net/wireless/realtek/rtlwifi/base.c
+@@ -468,11 +468,6 @@ static void _rtl_init_deferred_work(stru
+ 	/* <2> work queue */
+ 	rtlpriv->works.hw = hw;
+ 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
+-	if (unlikely(!rtlpriv->works.rtl_wq)) {
+-		pr_err("Failed to allocate work queue\n");
+-		return;
+-	}
+-
+ 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
+ 			  (void *)rtl_watchdog_wq_callback);
+ 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
 
 
