@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DBD38EE47
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAA538EF1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhEXPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:47:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56946 "EHLO mail.kernel.org"
+        id S234721AbhEXP4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234129AbhEXPnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:43:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F4486144D;
-        Mon, 24 May 2021 15:35:20 +0000 (UTC)
+        id S234071AbhEXPs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:48:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D70B61483;
+        Mon, 24 May 2021 15:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870520;
-        bh=col2W/90IZRbqSa1kiiJsi0Aix/u3sIohvPjvSJJyCY=;
+        s=korg; t=1621870640;
+        bh=LEfSqMjJgZCv6ZwSTW4fO5N37l/PmX+RzxLwdfcuLPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ewn9HMw5HFo8A63NUMAWj09n5hLNFVLNwsmX1Q7B7avsguYuh5H5t072yFn6zkUVt
-         JcIwB5ZPG64U5Fgsfuwn3qUpIpcf1+4d2Sld74mrJoLukU7aQnHGe3k4mHsOccP5TC
-         yd+8H6VWVZ1bj4lGlKFxuD2ylxkGd16RvvUeufpU=
+        b=QSXSU16INBuV6hDvQuq/s0X0J3fN3u9d18E8wZOc7L/ZX2uK/CB1QuM985Uz3xxB7
+         DiHtdRD2smvzOBD3XKs6ugwLgFaYSi+WryU7NoRilUpPmKAnG4t+21YtURsudm2QyK
+         aqLNZSOUmoZHOSvP3vdOfB+MBIXqOzbfBfku59v0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Peter Rosin <peda@axentia.se>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Subject: [PATCH 4.19 33/49] cdrom: gdrom: deallocate struct gdrom_unit fields in remove_gdrom
-Date:   Mon, 24 May 2021 17:25:44 +0200
-Message-Id: <20210524152325.451268720@linuxfoundation.org>
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 39/71] drm/amdgpu: update sdma golden setting for Navi12
+Date:   Mon, 24 May 2021 17:25:45 +0200
+Message-Id: <20210524152327.741325101@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-commit d03d1021da6fe7f46efe9f2a7335564e7c9db5ab upstream.
+commit 77194d8642dd4cb7ea8ced77bfaea55610574c38 upstream.
 
-The fields, "toc" and "cd_info", of "struct gdrom_unit gd" are allocated
-in "probe_gdrom()". Prevent a memory leak by making sure "gd.cd_info" is
-deallocated in the "remove_gdrom()" function.
+Current golden setting is out of date.
 
-Also prevent double free of the field "gd.toc" by moving it from the
-module's exit function to "remove_gdrom()". This is because, in
-"probe_gdrom()", the function makes sure to deallocate "gd.toc" in case
-of any errors, so the exit function invoked later would again free
-"gd.toc".
-
-The patch also maintains consistency by deallocating the above mentioned
-fields in "remove_gdrom()" along with another memory allocated field
-"gd.disk".
-
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Cc: Peter Rosin <peda@axentia.se>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-28-gregkh@linuxfoundation.org
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Kenneth Feng <kenneth.feng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cdrom/gdrom.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -857,6 +857,8 @@ static int remove_gdrom(struct platform_
- 	if (gdrom_major)
- 		unregister_blkdev(gdrom_major, GDROM_DEV_NAME);
- 	unregister_cdrom(gd.cd_info);
-+	kfree(gd.cd_info);
-+	kfree(gd.toc);
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+@@ -100,6 +100,10 @@ static const struct soc15_reg_golden gol
  
- 	return 0;
- }
-@@ -888,7 +890,6 @@ static void __exit exit_gdrom(void)
- {
- 	platform_device_unregister(pd);
- 	platform_driver_unregister(&gdrom_driver);
--	kfree(gd.toc);
- }
+ static const struct soc15_reg_golden golden_settings_sdma_nv12[] = {
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_RLC3_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_GB_ADDR_CONFIG, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_GB_ADDR_CONFIG_READ, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_GB_ADDR_CONFIG, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_GB_ADDR_CONFIG_READ, 0x001877ff, 0x00000044),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_RLC3_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+ };
  
- module_init(init_gdrom);
 
 
