@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0257D38EDFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A966838EEA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhEXPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        id S234060AbhEXPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233774AbhEXPkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:40:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40E3B61439;
-        Mon, 24 May 2021 15:34:11 +0000 (UTC)
+        id S234979AbhEXPpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F42961461;
+        Mon, 24 May 2021 15:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870451;
-        bh=4y53AlV7J/GunMYGYqM0s5l56bGEUAVQa7NrzwKwNJo=;
+        s=korg; t=1621870579;
+        bh=lVF9Ze/S06Eg1A+PMOGSpVDkwzSF0NNTQ75Reo2VATk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2fLnwVTMjkw9kNjAWEE86COV4MPrxlk/lQP3X97R0imAYQv3MR6Ix45/jRxXhL4l6
-         Zci53QjMGemsyFh05o0H1Q95T90fQYx4VOyjc0tc5+ESp/bVT/+KVJhV0gmWOy4v1w
-         i+LHShmJWCNJhvRd1lI04WgpI037Wkp49BMHE6KE=
+        b=j9B+/D9ePpzUcy4EdQ/gYQEcgHJlrnToYVlQmS2sb2KH61KC3MiYJ1vVB5CHvidzu
+         Ayij9M+OAlTxZuJihCm/EJiUeFmw/vUgQn0TNP0zGvTqrfdhVpQdBLuKVxgXLypr14
+         Z171vScr+F+UlnHaieR+Xu3KlAga3+8BdsUE3FHQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 13/37] xen-pciback: reconfigure also from backend watch handler
+        stable@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@outlook.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 11/71] platform/x86: dell-smbios-wmi: Fix oops on rmmod dell_smbios
 Date:   Mon, 24 May 2021 17:25:17 +0200
-Message-Id: <20210524152324.646191260@linuxfoundation.org>
+Message-Id: <20210524152326.827903772@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit c81d3d24602540f65256f98831d0a25599ea6b87 upstream.
+[ Upstream commit 3a53587423d25c87af4b4126a806a0575104b45e ]
 
-When multiple PCI devices get assigned to a guest right at boot, libxl
-incrementally populates the backend tree. The writes for the first of
-the devices trigger the backend watch. In turn xen_pcibk_setup_backend()
-will set the XenBus state to Initialised, at which point no further
-reconfigures would happen unless a device got hotplugged. Arrange for
-reconfigure to also get triggered from the backend watch handler.
+init_dell_smbios_wmi() only registers the dell_smbios_wmi_driver on systems
+where the Dell WMI interface is supported. While exit_dell_smbios_wmi()
+unregisters it unconditionally, this leads to the following oops:
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/2337cbd6-94b9-4187-9862-c03ea12e0c61@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[  175.722921] ------------[ cut here ]------------
+[  175.722925] Unexpected driver unregister!
+[  175.722939] WARNING: CPU: 1 PID: 3630 at drivers/base/driver.c:194 driver_unregister+0x38/0x40
+...
+[  175.723089] Call Trace:
+[  175.723094]  cleanup_module+0x5/0xedd [dell_smbios]
+...
+[  175.723148] ---[ end trace 064c34e1ad49509d ]---
+
+Make the unregister happen on the same condition the register happens
+to fix this.
+
+Cc: Mario Limonciello <mario.limonciello@outlook.com>
+Fixes: 1a258e670434 ("platform/x86: dell-smbios-wmi: Add new WMI dispatcher driver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@outlook.com>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Link: https://lore.kernel.org/r/20210518125027.21824-1-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/xen-pciback/xenbus.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ drivers/platform/x86/dell-smbios-wmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -358,7 +358,8 @@ out:
- 	return err;
+diff --git a/drivers/platform/x86/dell-smbios-wmi.c b/drivers/platform/x86/dell-smbios-wmi.c
+index 27a298b7c541..c97bd4a45242 100644
+--- a/drivers/platform/x86/dell-smbios-wmi.c
++++ b/drivers/platform/x86/dell-smbios-wmi.c
+@@ -271,7 +271,8 @@ int init_dell_smbios_wmi(void)
+ 
+ void exit_dell_smbios_wmi(void)
+ {
+-	wmi_driver_unregister(&dell_smbios_wmi_driver);
++	if (wmi_supported)
++		wmi_driver_unregister(&dell_smbios_wmi_driver);
  }
  
--static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev)
-+static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev,
-+				 enum xenbus_state state)
- {
- 	int err = 0;
- 	int num_devs;
-@@ -372,9 +373,7 @@ static int xen_pcibk_reconfigure(struct
- 	dev_dbg(&pdev->xdev->dev, "Reconfiguring device ...\n");
- 
- 	mutex_lock(&pdev->dev_lock);
--	/* Make sure we only reconfigure once */
--	if (xenbus_read_driver_state(pdev->xdev->nodename) !=
--	    XenbusStateReconfiguring)
-+	if (xenbus_read_driver_state(pdev->xdev->nodename) != state)
- 		goto out;
- 
- 	err = xenbus_scanf(XBT_NIL, pdev->xdev->nodename, "num_devs", "%d",
-@@ -499,6 +498,10 @@ static int xen_pcibk_reconfigure(struct
- 		}
- 	}
- 
-+	if (state != XenbusStateReconfiguring)
-+		/* Make sure we only reconfigure once. */
-+		goto out;
-+
- 	err = xenbus_switch_state(pdev->xdev, XenbusStateReconfigured);
- 	if (err) {
- 		xenbus_dev_fatal(pdev->xdev, err,
-@@ -524,7 +527,7 @@ static void xen_pcibk_frontend_changed(s
- 		break;
- 
- 	case XenbusStateReconfiguring:
--		xen_pcibk_reconfigure(pdev);
-+		xen_pcibk_reconfigure(pdev, XenbusStateReconfiguring);
- 		break;
- 
- 	case XenbusStateConnected:
-@@ -663,6 +666,15 @@ static void xen_pcibk_be_watch(struct xe
- 		xen_pcibk_setup_backend(pdev);
- 		break;
- 
-+	case XenbusStateInitialised:
-+		/*
-+		 * We typically move to Initialised when the first device was
-+		 * added. Hence subsequent devices getting added may need
-+		 * reconfiguring.
-+		 */
-+		xen_pcibk_reconfigure(pdev, XenbusStateInitialised);
-+		break;
-+
- 	default:
- 		break;
- 	}
+ MODULE_DEVICE_TABLE(wmi, dell_smbios_wmi_id_table);
+-- 
+2.30.2
+
 
 
