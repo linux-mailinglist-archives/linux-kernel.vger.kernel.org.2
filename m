@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D468D38F09B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C566438EFAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236755AbhEXQEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
+        id S235256AbhEXP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233923AbhEXP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4229613C8;
-        Mon, 24 May 2021 15:43:50 +0000 (UTC)
+        id S235254AbhEXPzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92B976191E;
+        Mon, 24 May 2021 15:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871031;
-        bh=KN9/wTIwtYFC3VY1RYKg//I4UbsHp7lVb6coPb4Sxuo=;
+        s=korg; t=1621870847;
+        bh=AAcJsTldw5MU9B+iIwXZdw35+5OS4Xr1gn8baVaQPMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnHuDhA0TVn+5/TKZOpeT/XN4i4ldR+mDsUUXZ1gALUvaWcAp52JbYKMWBUpVd4K+
-         S13ATLUQx0ZdCgeN4suH2mQpq8zXWslJ6pRrLIB5TRKEjXlNo/EtkV8G2i6uwYkrpN
-         +qK/N8TMqxzjhEWf7n4Od7hG8DwCau21Y3m2DcyY=
+        b=OwXv8Sec2q4973rjbqgI3QXZQ1uPcm12Q10j9VafSG4QvRZHcJ6f03Idm0XRgMM9i
+         MWmbTkbzCAFBEvHBICQ7wvsMGYxCo7X5jZTFgW4xod+nPDLbE2dIa2ZwbUQd0s+QAx
+         5+6XDceZjCKsiF++48ouRrYBnIGWAy9EEqvRBCxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 5.12 040/127] fs/mount_setattr: tighten permission checks
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 062/104] drm/amdgpu: update gc golden setting for Navi12
 Date:   Mon, 24 May 2021 17:25:57 +0200
-Message-Id: <20210524152336.206780930@linuxfoundation.org>
+Message-Id: <20210524152334.908315540@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-commit 2ca4dcc4909d787ee153272f7efc2bff3b498720 upstream.
+commit 99c45ba5799d6b938bd9bd20edfeb6f3e3e039b9 upstream.
 
-We currently don't have any filesystems that support idmapped mounts
-which are mountable inside a user namespace. That was a deliberate
-decision for now as a userns root can just mount the filesystem
-themselves. So enforce this restriction explicitly until there's a real
-use-case for this. This way we can notice it and will have a chance to
-adapt and audit our translation helpers and fstests appropriately if we
-need to support such filesystems.
+Current golden setting is out of date.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Kenneth Feng <kenneth.feng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-CC: linux-fsdevel@vger.kernel.org
-Suggested-by: Seth Forshee <seth.forshee@canonical.com>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/namespace.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -3853,8 +3853,12 @@ static int can_idmap_mount(const struct
- 	if (!(m->mnt_sb->s_type->fs_flags & FS_ALLOW_IDMAP))
- 		return -EINVAL;
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -1334,9 +1334,10 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG, 0xffffffff, 0x20000000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG2, 0xffffffff, 0x00000420),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG3, 0xffffffff, 0x00000200),
+-	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG4, 0xffffffff, 0x04800000),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG4, 0xffffffff, 0x04900000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DFSM_TILES_IN_FLIGHT, 0x0000ffff, 0x0000003f),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_LAST_OF_BURST_CONFIG, 0xffffffff, 0x03860204),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGB_ADDR_CONFIG, 0x0c1800ff, 0x00000044),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGCR_GENERAL_CNTL, 0x1ff0ffff, 0x00000500),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGE_PRIV_CONTROL, 0x00007fff, 0x000001fe),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGL1_PIPE_STEER, 0xffffffff, 0xe4e4e4e4),
+@@ -1354,12 +1355,13 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_ENHANCE_2, 0x00000820, 0x00000820),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_LINE_STIPPLE_STATE, 0x0000ff0f, 0x00000000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmRMI_SPARE, 0xffffffff, 0xffff3101),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSPI_CONFIG_CNTL_1, 0x001f0000, 0x00070104),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_ALU_CLK_CTRL, 0xffffffff, 0xffffffff),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_ARB_CONFIG, 0x00000133, 0x00000130),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_LDS_CLK_CTRL, 0xffffffff, 0xffffffff),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmTA_CNTL_AUX, 0xfff7ffff, 0x01030000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmTCP_CNTL, 0xffdf80ff, 0x479c0010),
+-	SOC15_REG_GOLDEN_VALUE(GC, 0, mmUTCL1_CTRL, 0xffffffff, 0x00800000)
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmUTCL1_CTRL, 0xffffffff, 0x00c00000)
+ };
  
-+	/* Don't yet support filesystem mountable in user namespaces. */
-+	if (m->mnt_sb->s_user_ns != &init_user_ns)
-+		return -EINVAL;
-+
- 	/* We're not controlling the superblock. */
--	if (!ns_capable(m->mnt_sb->s_user_ns, CAP_SYS_ADMIN))
-+	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
- 	/* Mount has already been visible in the filesystem hierarchy. */
+ static void gfx_v10_rlcg_wreg(struct amdgpu_device *adev, u32 offset, u32 v)
 
 
