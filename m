@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A38338E3D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD838E3D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhEXKUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbhEXKUc (ORCPT
+        id S232587AbhEXKVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:21:01 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36631 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232511AbhEXKU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:20:32 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0B3C061574;
-        Mon, 24 May 2021 03:19:04 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so4223084wmq.2;
-        Mon, 24 May 2021 03:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VnjZn5/nKzc6q673Td0aqLSIzRDB2omX+z2Bmi3TRsc=;
-        b=GHGFlMc/JUXf4L0zKi1D4G7C0Ipa7Hpofg4xWnxA5FYX2niIXoD1+45dQ8n9Igb93G
-         luyZOhsvf5U/Tj1MtZNWLJZ5BVabjEJ/rLPlpzxp0fcJBnQDso6xnt4AOSXq0lrmCD5T
-         oiBfYAiM8bmdUp9n/ZNwiAdS+zAWa+FjFfeI6Gp5YQ/9m48VIhduy6lIdHG1oiTbp3P5
-         27Yp/ZY3/asOWLk6VVY8s2TAWGIegtIruHoEixGArt6psyF6fc8Pw+1iGDlZj6ZS/PjC
-         Vmm7Rc3tWUfU2ARLtHHJbLx5Bh0oFPUrfbv2CyEdIWeMJK8wbLZmwGOlYWkHbQaSDIBX
-         06Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VnjZn5/nKzc6q673Td0aqLSIzRDB2omX+z2Bmi3TRsc=;
-        b=gU1n8fiA2F/2mmedNME6wiyyZSeJguhv5qBGTSlpOURYVuA6ovmUDRP89CRXwiJNIK
-         DOyUthISeFaQL0BiQV/GGWYuqnFar8soUz3ZUY4/QA1FvkpvKksaBNlyAxSmbc7RKUXm
-         ltsRRvdnI2zPMiCVTNr4Mj+FdWikH/7XwzH4pUul/8gliPvN9fQglRgvxj2EgZVy0Eqz
-         /5VZs+U2+b8z3BBcG+7F0XN0Gn+bm1x/0/ro5LhLqTtgxu3wolTApoxpx6qkxASIJWTM
-         Q9XIlg8Dr3Ui8PkLC0nvOXilrp402yhh1ANSC/5eSwInofmYM09APmjs8vp4SEQDUMqG
-         fIEQ==
-X-Gm-Message-State: AOAM530Q2KUbgVZ6xJ6ihUGSDstXhQsDLKtBEz4A97bbKppeuSm0DlB2
-        /2p//737UzgFOy5gKpcyGbBpPSps4d+CDr/j
-X-Google-Smtp-Source: ABdhPJzwVsC2AFdDFgjvgf86nH7odhYUhf2InB1KrGcSM/3SBVwbz4bulsn2gXx5o2COUZrJeWNWLA==
-X-Received: by 2002:a1c:14e:: with SMTP id 75mr2135146wmb.89.1621851542400;
-        Mon, 24 May 2021 03:19:02 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:310::2090? ([2620:10d:c093:600::2:2b02])
-        by smtp.gmail.com with ESMTPSA id x2sm7248430wmj.3.2021.05.24.03.19.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 03:19:02 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIXSBpby13cTogRml4IFVBRiB3aGVuIHdh?=
- =?UTF-8?Q?keup_wqe_in_hash_waitqueue?=
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Hillf Danton <hdanton@sina.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>
-Cc:     "syzbot+6cb11ade52aa17095297@syzkaller.appspotmail.com" 
-        <syzbot+6cb11ade52aa17095297@syzkaller.appspotmail.com>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210524071844.24085-1-qiang.zhang@windriver.com>
- <20210524082536.2032-1-hdanton@sina.com>
- <DM6PR11MB4202B442C4C27740B6EE2D64FF269@DM6PR11MB4202.namprd11.prod.outlook.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <900206b7-cf22-8248-1130-89c8f9d5539b@gmail.com>
-Date:   Mon, 24 May 2021 11:18:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB4202B442C4C27740B6EE2D64FF269@DM6PR11MB4202.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 24 May 2021 06:20:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UZvJBtZ_1621851566;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UZvJBtZ_1621851566)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 24 May 2021 18:19:27 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     dhowells@redhat.com
+Cc:     dwmw2@infradead.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] certs: Fix kernel-doc
+Date:   Mon, 24 May 2021 18:19:23 +0800
+Message-Id: <1621851563-30425-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 10:19 AM, Zhang, Qiang wrote:
-> On Mon, 24 May 2021 15:18:44 +0800
->> From: Zqiang <qiang.zhang@windriver.com>
->>
->> The syzbot report a UAF when iou-wrk accessing wqe of the hash
->> waitqueue. in the case of sharing a hash waitqueue between two
->> io-wq, when one of the io-wq is destroyed, all iou-wrk in this
->> io-wq are awakened, all wqe belonging to this io-wq are removed
->> from hash waitqueue, after that, all iou-wrk belonging to this
->> io-wq begin running, suppose following scenarios, wqe[0] and wqe[1]
->> belong to this io-wq, and these work has same hash value.
+Fix function name in system_keyring.c kernel-doc comment
+to remove a warning.
 
-Zhang, btw check your mail encoding, should some plain unicode
+certs/system_keyring.c:41: warning: expecting prototype for
+restrict_link_to_builtin_trusted(). Prototype was for
+restrict_link_by_builtin_trusted() instead.
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 'commit d3bfe84129f6 ("certs: Add a secondary system keyring that
+can be added to dynamically")'
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ certs/system_keyring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 692365d..06c0c3d 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -31,7 +31,7 @@
+ extern __initconst const unsigned long module_cert_size;
+ 
+ /**
+- * restrict_link_to_builtin_trusted - Restrict keyring addition by built in CA
++ * restrict_link_by_builtin_trusted - Restrict keyring addition by built in CA
+  *
+  * Restrict the addition of keys into a keyring based on the key-to-be-added
+  * being vouched for by a key in the built in system keyring.
 -- 
-Pavel Begunkov
+1.8.3.1
+
