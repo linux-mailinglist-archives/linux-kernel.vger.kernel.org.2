@@ -2,378 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D73E38F1C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972D738F1CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhEXQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        id S233230AbhEXQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhEXQxM (ORCPT
+        with ESMTP id S232107AbhEXQyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:53:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E20C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:51:43 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j14so27483826wrq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:51:42 -0700 (PDT)
+        Mon, 24 May 2021 12:54:32 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC9BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:53:03 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m124so20502016pgm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OfK3W2kSFwwGuWi4vFr85BfkbXEQ0phvVmMJ4aau6FI=;
-        b=Q++a7kWPHrbd5Ig+lm9R4GaLDeuUBvYSF8CrEqh1qIzCKEC0IACB2VeZjXULd2/oqD
-         SyqPf+BzdNeJmqc5H8a1yaul5o/9Ulfxu8u8VvfL2IYoiOMgaLy1mwCrmf+UqcvgGI2E
-         jRJJf2pm2gJrGPwPYYSggBkCIl8by3qhj4Opny8AKoAHcQi02mz4o58EPNlUE/SoB4pP
-         JEWcrvi+EsClL85BMJG8r9M2lslD3TOkxBHbsQMVXBf9Fw85R/oQx6leCnpSruP9W3X/
-         yOt9RmBuHiq3Vo/60qod8D1BZfKuoZtBOFziEt+TwdKaTGhB43JU6xdbv+aOArXprOJk
-         R8ng==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N2txpffhQNVmkCUqvMymT/aHNSSwoaT8nmlDPEhUqZE=;
+        b=JuZTWaiyOBfD3XdqP+AwRe2GcRlGDJCzTJBkj6Hr69AVEWETsP6Xd230zoK/uKVcBV
+         YNeNj5/sWBcjpBgjkAZsovmFsaHaXLH50RRzkqbvrI2vLTif6dxIGQOuw9JipL5TUQtY
+         2gYW9rQoiYEUlanIzTylsUCqeeWyWtnYABnTkDQr7Hen2NaEivp37QVMjlHvy8PGLKWC
+         6Qtjgcm2iF8NybrBsUIiLLEqgXpU0cJD2fV+ZcaxxKnWARt/Exd6MEOGquHyZ/hH3FFq
+         rwAYV/DiTW+n7R0hIwqgqGTLli5WGEc+srYKiJCJ+TU3gHtXzwFXzv+ZncYVqzmHSOaP
+         omdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OfK3W2kSFwwGuWi4vFr85BfkbXEQ0phvVmMJ4aau6FI=;
-        b=FdOK9WtDjXBR3xuzq4jPqiXdccv1d17XxhpSA+L7Ye+MMkv09JfhkhvmsiA54FQ8x0
-         OOJrM5fu064oTWf+ldxXK4lEbgfjqX3gTrqNiGEVewCfbqMW80CllbEEM+EUi9zXGj8S
-         jhZB09P4p9w6lYAHTfw3S8uPuLOzzZynJ+9RH5vIA0wjav+DNWRqerGSyo7nJYnM1duv
-         +Vz1W6rvor8otlycuXu4esW7u25WjcEq3gvw0FJEO2CizeOupaxeOQaL3G+DXt51TKDa
-         d9IaOsv5lfbzZUg8SpCDaDgkllmJne+bUZsr0Z9utwyB0/niErbAtyFDrF6o4eAGXaKY
-         Jk8A==
-X-Gm-Message-State: AOAM532uYSG04eq3fyZrG8t4j2C86xv1aPSZF7Gi3L1MGHixvKwNXarU
-        cRLak5hbHVqJiy3h5xuFwBJ4aMyuMAD4Iw==
-X-Google-Smtp-Source: ABdhPJzM6JASMABcQAzPlI+JDMwyyF8NkvWxOMqCfPg9+TtaETgNe5w+4vrpdIhSbf3gARZwA+a+ZQ==
-X-Received: by 2002:adf:d1ec:: with SMTP id g12mr23302827wrd.294.1621875101594;
-        Mon, 24 May 2021 09:51:41 -0700 (PDT)
-Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id y20sm486908wmi.0.2021.05.24.09.51.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N2txpffhQNVmkCUqvMymT/aHNSSwoaT8nmlDPEhUqZE=;
+        b=nXq6yhd9Ib1rX1t63yWaVZBmdrPWQuDuhR5ogXnkISavdgGmG984Fkam63agW6fL/c
+         kl+gQF7dtBr0ow7apDR4R33MB7GE84Jl1dXJ9+F/hk60XCL5iAbccef6aO63Ulu4HRnf
+         QiDU88mOizy1LGpfk2j17dvFdq0Ub4vKuekMnDu9lIG0azZSWAnpnuNve0X+0ZVTqG4u
+         WyNf0hn7u/l71DzG8ocIgsVqeKClORFJadl3/ojDLtGL7SN1g+ZFOUncdfEVbCPguUK6
+         7ZMlHuFds7pl0AeD5+EpgGwL67JypnCwVt83KWbgKJFNBawR0lFakKsyDo+5RKzsz4f3
+         Jgvg==
+X-Gm-Message-State: AOAM533k1crhpcON/8dJATUS8ipZX4NPnhy2U+Cc3mkX6zFKBdtVRr/i
+        h3HU07H+7zdzTMPGJBNXiF+Dwg==
+X-Google-Smtp-Source: ABdhPJxm2lkNMpPA+aDLQjFOaveDgWcmkqzDYbfuBuoHFySyF+am+K3RAzptfjpecT+LGsr6ntoT7A==
+X-Received: by 2002:aa7:8509:0:b029:2e5:8cfe:bc17 with SMTP id v9-20020aa785090000b02902e58cfebc17mr16226973pfn.2.1621875182742;
+        Mon, 24 May 2021 09:53:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t22sm11233580pfl.50.2021.05.24.09.53.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 09:51:41 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
-Subject: [PATCH] ASoC: meson: use dev_err_probe
-Date:   Mon, 24 May 2021 18:51:36 +0200
-Message-Id: <20210524165136.400702-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.32.0.rc0
+        Mon, 24 May 2021 09:53:02 -0700 (PDT)
+Date:   Mon, 24 May 2021 16:52:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] KVM: x86: Use common 'enable_apicv' variable for
+ both APICv and AVIC
+Message-ID: <YKvZ6vI2vFVmkCeb@google.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-4-vkuznets@redhat.com>
+ <YKQmG3rMpwSI3WrV@google.com>
+ <12eadbce-f688-77a1-27bf-c33fee2e7543@redhat.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12eadbce-f688-77a1-27bf-c33fee2e7543@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use dev_err_probe() helper function to handle probe deferral.
-It removes the open coded test for -EPROBE_DEFER but more importantly, it
-sets the deferral reason in debugfs which is great for debugging.
+On Mon, May 24, 2021, Paolo Bonzini wrote:
+> On 18/05/21 22:39, Sean Christopherson wrote:
+> > > +/* enable / disable AVIC */
+> > > +static int avic;
+> > > +module_param(avic, int, 0444);
+> > We should opportunistically make avic a "bool".
+> > 
+> 
+> And also:
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 11714c22c9f1..48cb498ff070 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -185,9 +185,12 @@ module_param(vls, int, 0444);
+>  static int vgif = true;
+>  module_param(vgif, int, 0444);
+> -/* enable / disable AVIC */
+> -static int avic;
+> -module_param(avic, int, 0444);
+> +/*
+> + * enable / disable AVIC.  Because the defaults differ for APICv
+> + * support between VMX and SVM we cannot use module_param_named.
+> + */
+> +static bool avic;
+> +module_param(avic, bool, 0444);
+>  bool __read_mostly dump_invalid_vmcb;
+>  module_param(dump_invalid_vmcb, bool, 0644);
+> @@ -1013,11 +1016,7 @@ static __init int svm_hardware_setup(void)
+>  			nrips = false;
+>  	}
+> -	if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC))
+> -		avic = false;
+> -
+> -	/* 'enable_apicv' is common between VMX/SVM but the defaults differ */
+> -	enable_apicv = avic;
+> +	enable_apicv = avic && npt_enabled && boot_cpu_has(X86_FEATURE_AVIC);
+>  	if (enable_apicv) {
+>  		pr_info("AVIC enabled\n");
+> 
+> The "if" can come back when AVIC is enabled by default.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/aiu.c               | 17 +++++++----------
- sound/soc/meson/axg-fifo.c          | 11 +++++------
- sound/soc/meson/axg-pdm.c           |  9 +++------
- sound/soc/meson/axg-spdifin.c       |  6 ++----
- sound/soc/meson/axg-spdifout.c      |  6 ++----
- sound/soc/meson/axg-tdm-formatter.c | 18 ++++++------------
- sound/soc/meson/axg-tdm-interface.c | 10 ++++------
- sound/soc/meson/meson-card-utils.c  |  4 ++--
- sound/soc/meson/t9015.c             |  7 +++----
- 9 files changed, 34 insertions(+), 54 deletions(-)
-
-diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
-index ba15d5762b0b..37036adf14ce 100644
---- a/sound/soc/meson/aiu.c
-+++ b/sound/soc/meson/aiu.c
-@@ -219,31 +219,29 @@ static int aiu_clk_get(struct device *dev)
- 
- 	aiu->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(aiu->pclk)) {
--		if (PTR_ERR(aiu->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu pclk\n");
-+		dev_err_probe(dev, PTR_ERR(aiu->pclk),
-+			      "Can't get the aiu pclk\n");
- 		return PTR_ERR(aiu->pclk);
- 	}
- 
- 	aiu->spdif_mclk = devm_clk_get(dev, "spdif_mclk");
- 	if (IS_ERR(aiu->spdif_mclk)) {
--		if (PTR_ERR(aiu->spdif_mclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu spdif master clock\n");
-+		dev_err_probe(dev, PTR_ERR(aiu->spdif_mclk),
-+			      "Can't get the aiu spdif master clock\n");
- 		return PTR_ERR(aiu->spdif_mclk);
- 	}
- 
- 	ret = aiu_clk_bulk_get(dev, aiu_i2s_ids, ARRAY_SIZE(aiu_i2s_ids),
- 			       &aiu->i2s);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the i2s clocks\n");
-+		dev_err_probe(dev, ret, "Can't get the i2s clocks\n");
- 		return ret;
- 	}
- 
- 	ret = aiu_clk_bulk_get(dev, aiu_spdif_ids, ARRAY_SIZE(aiu_spdif_ids),
- 			       &aiu->spdif);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the spdif clocks\n");
-+		dev_err_probe(dev, ret, "Can't get the spdif clocks\n");
- 		return ret;
- 	}
- 
-@@ -282,8 +280,7 @@ static int aiu_probe(struct platform_device *pdev)
- 
- 	ret = device_reset(dev);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to reset device\n");
-+		dev_err_probe(dev, ret, "Failed to reset device\n");
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index b9af2d513e09..d670a32d56ab 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -352,17 +352,16 @@ int axg_fifo_probe(struct platform_device *pdev)
- 
- 	fifo->pclk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(fifo->pclk)) {
--		if (PTR_ERR(fifo->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %ld\n",
--				PTR_ERR(fifo->pclk));
-+		dev_err_probe(dev, PTR_ERR(fifo->pclk),
-+			      "failed to get pclk: %ld\n", PTR_ERR(fifo->pclk));
- 		return PTR_ERR(fifo->pclk);
- 	}
- 
- 	fifo->arb = devm_reset_control_get_exclusive(dev, NULL);
- 	if (IS_ERR(fifo->arb)) {
--		if (PTR_ERR(fifo->arb) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get arb reset: %ld\n",
--				PTR_ERR(fifo->arb));
-+		dev_err_probe(dev, PTR_ERR(fifo->arb),
-+			      "failed to get arb reset: %ld\n",
-+			      PTR_ERR(fifo->arb));
- 		return PTR_ERR(fifo->arb);
- 	}
- 
-diff --git a/sound/soc/meson/axg-pdm.c b/sound/soc/meson/axg-pdm.c
-index bfd37d49a73e..f630311b5b29 100644
---- a/sound/soc/meson/axg-pdm.c
-+++ b/sound/soc/meson/axg-pdm.c
-@@ -613,24 +613,21 @@ static int axg_pdm_probe(struct platform_device *pdev)
- 	priv->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(priv->pclk)) {
- 		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get pclk: %d\n", ret);
- 		return ret;
- 	}
- 
- 	priv->dclk = devm_clk_get(dev, "dclk");
- 	if (IS_ERR(priv->dclk)) {
- 		ret = PTR_ERR(priv->dclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get dclk: %d\n", ret);
- 		return ret;
- 	}
- 
- 	priv->sysclk = devm_clk_get(dev, "sysclk");
- 	if (IS_ERR(priv->sysclk)) {
- 		ret = PTR_ERR(priv->sysclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get dclk: %d\n", ret);
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
-index d0d09f945b48..8f587c3bb5d7 100644
---- a/sound/soc/meson/axg-spdifin.c
-+++ b/sound/soc/meson/axg-spdifin.c
-@@ -481,16 +481,14 @@ static int axg_spdifin_probe(struct platform_device *pdev)
- 	priv->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(priv->pclk)) {
- 		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get pclk: %d\n", ret);
- 		return ret;
- 	}
- 
- 	priv->refclk = devm_clk_get(dev, "refclk");
- 	if (IS_ERR(priv->refclk)) {
- 		ret = PTR_ERR(priv->refclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get mclk: %d\n", ret);
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/meson/axg-spdifout.c b/sound/soc/meson/axg-spdifout.c
-index e769a5ee6e27..58e02f6898b7 100644
---- a/sound/soc/meson/axg-spdifout.c
-+++ b/sound/soc/meson/axg-spdifout.c
-@@ -424,16 +424,14 @@ static int axg_spdifout_probe(struct platform_device *pdev)
- 	priv->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(priv->pclk)) {
- 		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get pclk: %d\n", ret);
- 		return ret;
- 	}
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(priv->mclk)) {
- 		ret = PTR_ERR(priv->mclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get mclk: %d\n", ret);
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
-index cab7fa2851aa..108f11e14006 100644
---- a/sound/soc/meson/axg-tdm-formatter.c
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -284,8 +284,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(formatter->pclk)) {
- 		ret = PTR_ERR(formatter->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get pclk: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -293,8 +292,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->sclk = devm_clk_get(dev, "sclk");
- 	if (IS_ERR(formatter->sclk)) {
- 		ret = PTR_ERR(formatter->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get sclk: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -302,8 +300,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->lrclk = devm_clk_get(dev, "lrclk");
- 	if (IS_ERR(formatter->lrclk)) {
- 		ret = PTR_ERR(formatter->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get lrclk: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -311,8 +308,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->sclk_sel = devm_clk_get(dev, "sclk_sel");
- 	if (IS_ERR(formatter->sclk_sel)) {
- 		ret = PTR_ERR(formatter->sclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk_sel: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get sclk_sel: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -320,8 +316,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->lrclk_sel = devm_clk_get(dev, "lrclk_sel");
- 	if (IS_ERR(formatter->lrclk_sel)) {
- 		ret = PTR_ERR(formatter->lrclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk_sel: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get lrclk_sel: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -329,8 +324,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
- 	if (IS_ERR(formatter->reset)) {
- 		ret = PTR_ERR(formatter->reset);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get reset: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get reset: %d\n", ret);
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index 87cac440b369..a2c7f658f6b4 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -519,8 +519,7 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 	iface->sclk = devm_clk_get(dev, "sclk");
- 	if (IS_ERR(iface->sclk)) {
- 		ret = PTR_ERR(iface->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get sclk: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -528,8 +527,7 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 	iface->lrclk = devm_clk_get(dev, "lrclk");
- 	if (IS_ERR(iface->lrclk)) {
- 		ret = PTR_ERR(iface->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to get lrclk: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -545,8 +543,8 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 		if (ret == -ENOENT) {
- 			iface->mclk = NULL;
- 		} else {
--			if (ret != -EPROBE_DEFER)
--				dev_err(dev, "failed to get mclk: %d\n", ret);
-+			dev_err_probe(dev, ret, "failed to get mclk: %d\n",
-+				      ret);
- 			return ret;
- 		}
- 	}
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 300ac8be46ef..ac062c03cf33 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -86,8 +86,8 @@ int meson_card_parse_dai(struct snd_soc_card *card,
- 	ret = of_parse_phandle_with_args(node, "sound-dai",
- 					 "#sound-dai-cells", 0, &args);
- 	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(card->dev, "can't parse dai %d\n", ret);
-+		dev_err_probe(card->dev, ret,
-+			      "can't parse sound-dai at %pOFn\n", node);
- 		return ret;
- 	}
- 	*dai_of_node = args.np;
-diff --git a/sound/soc/meson/t9015.c b/sound/soc/meson/t9015.c
-index 4c1349dd1e06..7ff16f51dbd4 100644
---- a/sound/soc/meson/t9015.c
-+++ b/sound/soc/meson/t9015.c
-@@ -259,15 +259,14 @@ static int t9015_probe(struct platform_device *pdev)
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(priv->pclk)) {
--		if (PTR_ERR(priv->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get core clock\n");
-+		dev_err_probe(dev, PTR_ERR(priv->pclk),
-+			      "failed to get core clock\n");
- 		return PTR_ERR(priv->pclk);
- 	}
- 
- 	priv->avdd = devm_regulator_get(dev, "AVDD");
- 	if (IS_ERR(priv->avdd)) {
--		if (PTR_ERR(priv->avdd) != -EPROBE_DEFER)
--			dev_err(dev, "failed to AVDD\n");
-+		dev_err_probe(dev, PTR_ERR(priv->avdd), "failed to AVDD\n");
- 		return PTR_ERR(priv->avdd);
- 	}
- 
--- 
-2.32.0.rc0
-
+But "avic" is connected to the module param, even if it's off by default its
+effective value should be reflected in sysfs.  E.g. the user may incorrectly
+think AVIC is in use if they set avic=1 but the CPU doesn't support AVIC.
+Forcing the user to check /proc/cpuinfo or look for "AVIC enabled" in dmesg is
+kludgy at best.
