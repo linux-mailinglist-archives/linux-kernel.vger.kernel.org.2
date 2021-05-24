@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0D238F048
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D457938F045
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhEXQC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:02:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
+        id S235655AbhEXQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235113AbhEXPzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CEDC6193E;
-        Mon, 24 May 2021 15:42:12 +0000 (UTC)
+        id S235095AbhEXPzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 447DD61942;
+        Mon, 24 May 2021 15:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870933;
-        bh=gM6Rgk/SivELehT/98LaDrKID/I6xh+Ygu/AMIgc5AI=;
+        s=korg; t=1621870935;
+        bh=tTbS9qsh48BgZ/xZUmWnHXd55ELDUM8yD8OjGeVeY4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eXIF+xNLZsqKROWdEkUkHUXg5m+PJ/ok1AVMNtwjIYU8f4qwEcCwK23ouHmuvZ3Qt
-         VM9Jzyqq/5Al61VB7iTawUoce0D+DQITaTdHQF7t1Q2EdEZEz8pimOVIvCyr92b5uS
-         nsLrcBuQ6NKNTIk2MVg7aehGfRtAtTGUuNHvt0ew=
+        b=0KPFO3bSV+JVKZr1UoB00yy7O0rkefalk5RSs3++SH6ZIfcUcCyKVPSfqHom0ezGP
+         HjQVHWGt03vL/t9RsBnUEVVpzO9c8NcxLFvFGC1q8EjTMrJqBK9QHm5UquBGCm41Qe
+         gZsB9oDGw9SuulSwRZUE+mF/M4VyezzD+Hgyy+fU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 5.10 102/104] nvme-multipath: fix double initialization of ANA state
-Date:   Mon, 24 May 2021 17:26:37 +0200
-Message-Id: <20210524152336.237654277@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Francois Gervais <fgervais@distech-controls.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 5.10 103/104] rtc: pcf85063: fallback to parent of_node
+Date:   Mon, 24 May 2021 17:26:38 +0200
+Message-Id: <20210524152336.267728819@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 References: <20210524152332.844251980@linuxfoundation.org>
@@ -42,150 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Francois Gervais <fgervais@distech-controls.com>
 
-commit 5e1f689913a4498e3081093670ef9d85b2c60920 upstream.
+commit 03531606ef4cda25b629f500d1ffb6173b805c05 upstream.
 
-nvme_init_identify and thus nvme_mpath_init can be called multiple
-times and thus must not overwrite potentially initialized or in-use
-fields.  Split out a helper for the basic initialization when the
-controller is initialized and make sure the init_identify path does
-not blindly change in-use data structures.
+The rtc device node is always NULL.
 
-Fixes: 0d0b660f214d ("nvme: add ANA support")
-Reported-by: Martin Wilck <mwilck@suse.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Since v5.12-rc1-dontuse/3c9ea42802a1fbf7ef29660ff8c6e526c58114f6 this
+will lead to a NULL pointer dereference.
+
+To fix this use the parent node which is the i2c client node as set by
+devm_rtc_allocate_device().
+
+Using the i2c client node seems to be what other similar drivers do
+e.g. rtc-pcf8563.c.
+
+Signed-off-by: Francois Gervais <fgervais@distech-controls.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210310211026.27299-1-fgervais@distech-controls.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/core.c      |    3 +-
- drivers/nvme/host/multipath.c |   55 ++++++++++++++++++++++--------------------
- drivers/nvme/host/nvme.h      |    8 ++++--
- 3 files changed, 37 insertions(+), 29 deletions(-)
+ drivers/rtc/rtc-pcf85063.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3131,7 +3131,7 @@ int nvme_init_identify(struct nvme_ctrl
- 		ctrl->hmmaxd = le16_to_cpu(id->hmmaxd);
- 	}
- 
--	ret = nvme_mpath_init(ctrl, id);
-+	ret = nvme_mpath_init_identify(ctrl, id);
- 	kfree(id);
- 
- 	if (ret < 0)
-@@ -4517,6 +4517,7 @@ int nvme_init_ctrl(struct nvme_ctrl *ctr
- 		min(default_ps_max_latency_us, (unsigned long)S32_MAX));
- 
- 	nvme_fault_inject_init(&ctrl->fault_inject, dev_name(ctrl->device));
-+	nvme_mpath_init_ctrl(ctrl);
- 
- 	return 0;
- out_free_name:
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -708,9 +708,18 @@ void nvme_mpath_remove_disk(struct nvme_
- 	put_disk(head->disk);
- }
- 
--int nvme_mpath_init(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id)
-+void nvme_mpath_init_ctrl(struct nvme_ctrl *ctrl)
+--- a/drivers/rtc/rtc-pcf85063.c
++++ b/drivers/rtc/rtc-pcf85063.c
+@@ -486,6 +486,7 @@ static struct clk *pcf85063_clkout_regis
  {
--	int error;
-+	mutex_init(&ctrl->ana_lock);
-+	timer_setup(&ctrl->anatt_timer, nvme_anatt_timeout, 0);
-+	INIT_WORK(&ctrl->ana_work, nvme_ana_work);
-+}
-+
-+int nvme_mpath_init_identify(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id)
-+{
-+	size_t max_transfer_size = ctrl->max_hw_sectors << SECTOR_SHIFT;
-+	size_t ana_log_size;
-+	int error = 0;
+ 	struct clk *clk;
+ 	struct clk_init_data init;
++	struct device_node *node = pcf85063->rtc->dev.parent->of_node;
  
- 	/* check if multipath is enabled and we have the capability */
- 	if (!multipath || !ctrl->subsys ||
-@@ -722,37 +731,31 @@ int nvme_mpath_init(struct nvme_ctrl *ct
- 	ctrl->nanagrpid = le32_to_cpu(id->nanagrpid);
- 	ctrl->anagrpmax = le32_to_cpu(id->anagrpmax);
+ 	init.name = "pcf85063-clkout";
+ 	init.ops = &pcf85063_clkout_ops;
+@@ -495,15 +496,13 @@ static struct clk *pcf85063_clkout_regis
+ 	pcf85063->clkout_hw.init = &init;
  
--	mutex_init(&ctrl->ana_lock);
--	timer_setup(&ctrl->anatt_timer, nvme_anatt_timeout, 0);
--	ctrl->ana_log_size = sizeof(struct nvme_ana_rsp_hdr) +
--		ctrl->nanagrpid * sizeof(struct nvme_ana_group_desc);
--	ctrl->ana_log_size += ctrl->max_namespaces * sizeof(__le32);
--
--	if (ctrl->ana_log_size > ctrl->max_hw_sectors << SECTOR_SHIFT) {
-+	ana_log_size = sizeof(struct nvme_ana_rsp_hdr) +
-+		ctrl->nanagrpid * sizeof(struct nvme_ana_group_desc) +
-+		ctrl->max_namespaces * sizeof(__le32);
-+	if (ana_log_size > max_transfer_size) {
- 		dev_err(ctrl->device,
--			"ANA log page size (%zd) larger than MDTS (%d).\n",
--			ctrl->ana_log_size,
--			ctrl->max_hw_sectors << SECTOR_SHIFT);
-+			"ANA log page size (%zd) larger than MDTS (%zd).\n",
-+			ana_log_size, max_transfer_size);
- 		dev_err(ctrl->device, "disabling ANA support.\n");
--		return 0;
-+		goto out_uninit;
- 	}
--
--	INIT_WORK(&ctrl->ana_work, nvme_ana_work);
--	kfree(ctrl->ana_log_buf);
--	ctrl->ana_log_buf = kmalloc(ctrl->ana_log_size, GFP_KERNEL);
--	if (!ctrl->ana_log_buf) {
--		error = -ENOMEM;
--		goto out;
-+	if (ana_log_size > ctrl->ana_log_size) {
-+		nvme_mpath_stop(ctrl);
-+		kfree(ctrl->ana_log_buf);
-+		ctrl->ana_log_buf = kmalloc(ctrl->ana_log_size, GFP_KERNEL);
-+		if (!ctrl->ana_log_buf)
-+			return -ENOMEM;
- 	}
--
-+	ctrl->ana_log_size = ana_log_size;
- 	error = nvme_read_ana_log(ctrl);
- 	if (error)
--		goto out_free_ana_log_buf;
-+		goto out_uninit;
- 	return 0;
--out_free_ana_log_buf:
--	kfree(ctrl->ana_log_buf);
--	ctrl->ana_log_buf = NULL;
--out:
-+
-+out_uninit:
-+	nvme_mpath_uninit(ctrl);
- 	return error;
+ 	/* optional override of the clockname */
+-	of_property_read_string(pcf85063->rtc->dev.of_node,
+-				"clock-output-names", &init.name);
++	of_property_read_string(node, "clock-output-names", &init.name);
+ 
+ 	/* register the clock */
+ 	clk = devm_clk_register(&pcf85063->rtc->dev, &pcf85063->clkout_hw);
+ 
+ 	if (!IS_ERR(clk))
+-		of_clk_add_provider(pcf85063->rtc->dev.of_node,
+-				    of_clk_src_simple_get, clk);
++		of_clk_add_provider(node, of_clk_src_simple_get, clk);
+ 
+ 	return clk;
  }
- 
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -654,7 +654,8 @@ void nvme_kick_requeue_lists(struct nvme
- int nvme_mpath_alloc_disk(struct nvme_ctrl *ctrl,struct nvme_ns_head *head);
- void nvme_mpath_add_disk(struct nvme_ns *ns, struct nvme_id_ns *id);
- void nvme_mpath_remove_disk(struct nvme_ns_head *head);
--int nvme_mpath_init(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id);
-+int nvme_mpath_init_identify(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id);
-+void nvme_mpath_init_ctrl(struct nvme_ctrl *ctrl);
- void nvme_mpath_uninit(struct nvme_ctrl *ctrl);
- void nvme_mpath_stop(struct nvme_ctrl *ctrl);
- bool nvme_mpath_clear_current_path(struct nvme_ns *ns);
-@@ -730,7 +731,10 @@ static inline void nvme_trace_bio_comple
-         blk_status_t status)
- {
- }
--static inline int nvme_mpath_init(struct nvme_ctrl *ctrl,
-+static inline void nvme_mpath_init_ctrl(struct nvme_ctrl *ctrl)
-+{
-+}
-+static inline int nvme_mpath_init_identify(struct nvme_ctrl *ctrl,
- 		struct nvme_id_ctrl *id)
- {
- 	if (ctrl->subsys->cmic & (1 << 3))
 
 
