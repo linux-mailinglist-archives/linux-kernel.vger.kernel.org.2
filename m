@@ -2,130 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877BF38E065
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E5438E06F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhEXEjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 00:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S232167AbhEXEnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhEXEjO (ORCPT
+        with ESMTP id S229777AbhEXEnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 00:39:14 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3456CC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:37:46 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id v13-20020a17090abb8db029015f9f7d7290so812753pjr.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:37:46 -0700 (PDT)
+        Mon, 24 May 2021 00:43:51 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6CFC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:42:05 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id q143so5651779vkb.7
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MDE07gsiuD4M3r2LCEJykHaQUxtgYgyzLwjRG2xiWSo=;
-        b=cMlNRaFVHxk/Vg2m4FWR7arQ/ghKts+RBvLvpeQcGyy25qofos/zvz9gUv7jDeVjza
-         93RZUp5BiFbSqTrO+NUWRNsYj8cyBstCJBjhS3klDTdiKbCqN8gQYBgUNRJElP+C925B
-         ozyW+qN+zvi6L7UdnFuG8PIldHGPc/9jpIwBkA1t/2/3guTMpuunG+456UxWgZ7FDSuU
-         PKXM46qji8s89yr0dCU8ihrFl+w/q4zR6/zhs4tvktAHndJV9fX6fUWVzafwUBwIk7Pl
-         mkBAvXkgpVAt29Iz5EdNRiU+cSC3mZFHmUm6rQPX0IhZwaUVrnJ9CF9CJU0d8yU9TVjs
-         mBmA==
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oo5s8uwjF8OUbBmkEbKQsEf78QSRRFiHDe/U/edTUi8=;
+        b=B/+f7/rg2nxf8jbn87Ja7wWnko3ugfw5by9xEcHYm1zc9+DLasjWeUz56wkphR6I0m
+         Ry0tNpRtLlzMm9EbYoOCxKX52Im0K6/0NDmarXkUz2VQVnWFl9F8UCff1Z7Ea7SCIun0
+         zT39J5JHNF/3BrlCbleNJEM/5V544sJbd2yLoeaL0PaGs7jJK41jiyxoibFnACMQpYss
+         sdsakwwp7XERCEnUQesMNY1rMeE1AE8VFkzsWziGPXQBome0dIqzrDfofYT+JQZam5QD
+         /w6SN+QlJyp+Lc2lna/MnajFRq6aQzgtwCJC0tkZ0Y/c2OYe+3VX4Uxx6WeUU46iqcTC
+         Ulsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MDE07gsiuD4M3r2LCEJykHaQUxtgYgyzLwjRG2xiWSo=;
-        b=ZJMr3v5JqbtQhSHFm4l9uQ0dB8nu03YgF4L4tYKvvrS4+46CShARgLdJTJ2UtAbgtn
-         WPfrDst+o7XrNC9eFA3vrQJur6lNOmRWkpTHyhIlJ4jYiTKhQmiwsox8VdrpFmz2V7PF
-         bwrj4h/+MbG0U8Cjw1UEUtW8Xj6uuGWqDMiB87gLjcIaF+1ufDd5aZk2Bo5PAqQKwK3y
-         D8+FfdkLJv9AvFQknSEnj+e4fJNd4SVXAIc8/+3j6G1+WXT9lohjX5GtJyVZ0+FnwxSr
-         bX/2KfaNqHb5YIkCD2LIYjowtoYK3hS4cBpWG3LxSA62XlikMGR0iK1+tPM453bSbnII
-         k/KA==
-X-Gm-Message-State: AOAM533Zg25mcVvn0i3s+Enbt3m8iZahwOCHuI8tzq+djNL0XRHcmfMU
-        oXyKB2iVVXIu66wqzlpWynPv
-X-Google-Smtp-Source: ABdhPJy9QPbKkRIFtXdAwMIebxG5sg01nmgnd6EX7GHXpAgjDNbW5i8bMBIDNwjkg/fabwwZYgm8qA==
-X-Received: by 2002:a17:90a:b38d:: with SMTP id e13mr22456179pjr.222.1621831065632;
-        Sun, 23 May 2021 21:37:45 -0700 (PDT)
-Received: from work ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id v14sm9680578pfi.25.2021.05.23.21.37.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 23 May 2021 21:37:44 -0700 (PDT)
-Date:   Mon, 24 May 2021 10:07:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Baochen Qiang <bqiang@codeaurora.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] bus: mhi: Wait for M2 state during system resume
-Message-ID: <20210524043740.GC8823@work>
-References: <20210524040312.14409-1-bqiang@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oo5s8uwjF8OUbBmkEbKQsEf78QSRRFiHDe/U/edTUi8=;
+        b=Kt9hdXv4TbpCxMp/e6NgRbpwkzRao9xiNr9RqeSCxYjmG4auLPVLxP3RHL6t36RevK
+         78BGkR4WsXuCefwTgI1m38CJb8LRWtEikEkMXCoMXFQic7sLHik9/YZSRoUQecdko+Q1
+         tfsOEket63GCzhNNg33kwpWqezVbeFiVJh0QoffGzPWA22K81Ij8YdeK497Zs6Osc0Ef
+         X9KgATEhsbiLniaYr5Bw5HMyTHH9oeWMlmGZxGzy8yuDxEo1f1ZcFEOyePzUvbcHq4hZ
+         wgmQfa64ICJycLV8pXrXrYtLNSjEB1LgG6LGhjWBpDiffBMtuEVnU7ImTIrR5JXlJZYY
+         V6zQ==
+X-Gm-Message-State: AOAM530olkCLR5yA1Z6J2Rdpy/F1Fz08KjakGux4q69LVWxWN7V2G4bB
+        J8Aigyj8nwBFKUjZe4B8C/KH4nww4pGZfmcqYvXerKRRwh0j
+X-Google-Smtp-Source: ABdhPJwubfN66hEaBX7DuVUrkG2WV39k605CpKZQiPKpwbDi4Z0To1yEhCmQ7/3IuCuh4Tj059RyLW3QjmJK6NVy1Xo=
+X-Received: by 2002:a05:6122:a23:: with SMTP id 35mr19257058vkn.20.1621831274980;
+ Sun, 23 May 2021 21:41:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524040312.14409-1-bqiang@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210520033156.23209-1-qxj511mail@gmail.com>
+In-Reply-To: <20210520033156.23209-1-qxj511mail@gmail.com>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Mon, 24 May 2021 13:40:48 +0900
+Message-ID: <CABMQnV+5gN_6BA4tYS+GugrA0HrQD9+_EkQk_emqsUy1YzFCOA@mail.gmail.com>
+Subject: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal When
+ reading time from an uninitialized RTC chip, The value may be illegal
+To:     qxj511mail@gmail.com
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        qiuxiaojin@cvte.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:03:12PM +0800, Baochen Qiang wrote:
-> During system resume, MHI host triggers M3->M0 transition and then waits
-> for target device to enter M0 state. Once done, the device queues a state
-> change event into ctrl event ring and notifies MHI host by raising an
-> interrupt, where a tasklet is scheduled to process this event. In most cases,
-> the tasklet is served timely and wait operation succeeds.
-> 
-> However, there are cases where CPU is busy and cannot serve this tasklet
-> for some time. Once delay goes long enough, the device moves itself to M1
-> state and also interrupts MHI host after inserting a new state change
-> event to ctrl ring. Later CPU finally has time to process the ring, however
-> there are two events in it now:
-> 	1. for M3->M0 event, which is processed first as queued first,
-> 	   tasklet handler updates device state to M0 and wakes up the task,
-> 	   i.e., the MHI host.
-> 	2. for M0->M1 event, which is processed later, tasklet handler
-> 	   triggers M1->M2 transition and updates device state to M2 directly,
-> 	   then wakes up the MHI host(if still sleeping on this wait queue).
-> Note that although MHI host has been woken up while processing the first
-> event, it may still has no chance to run before the second event is processed.
-> In other words, MHI host has to keep waiting till timeout cause the M0 state
-> has been missed.
-> 
-> kernel log here:
-> ...
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
-> ...
-> 
-> Fix this issue by simply adding M2 as a valid state for resume.
-> 
-> Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
-> 
-> Fixes: 0c6b20a1d720 ("bus: mhi: core: Add support for MHI suspend and resume")
-> Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+Hi,
 
-Applied to mhi-fixes!
+2021=E5=B9=B45=E6=9C=8820=E6=97=A5(=E6=9C=A8) 12:32 <qxj511mail@gmail.com>:
+>
+> From: qiuxiaojin <qiuxiaojin@cvte.com>
 
-Thanks,
-Mani
+Please briefly describe the patch contained in the email to the subject.
+And, please write a description of the patch in the text
 
+>
+> Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
 > ---
->  drivers/bus/mhi/core/pm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index e2e59a341fef..59b009a3ee9b 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -934,6 +934,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
->  
->  	ret = wait_event_timeout(mhi_cntrl->state_event,
->  				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
-> +				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
->  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
->  				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
->  
-> -- 
-> 2.25.1
-> 
+>  drivers/rtc/rtc-rs5c372.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+> index 3bd6eaa0dcf6..ce61e15d5f3a 100644
+> --- a/drivers/rtc/rtc-rs5c372.c
+> +++ b/drivers/rtc/rtc-rs5c372.c
+> @@ -212,6 +212,7 @@ static int rs5c372_rtc_read_time(struct device *dev, =
+struct rtc_time *tm)
+>         struct rs5c372  *rs5c =3D i2c_get_clientdata(client);
+>         int             status =3D rs5c_get_regs(rs5c);
+>         unsigned char ctrl2 =3D rs5c->regs[RS5C_REG_CTRL2];
+> +       int flags_utime =3D 0;
+>
+>         if (status < 0)
+>                 return status;
+> @@ -239,12 +240,27 @@ static int rs5c372_rtc_read_time(struct device *dev=
+, struct rtc_time *tm)
+>         tm->tm_wday =3D bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
+>         tm->tm_mday =3D bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
+>
+> +       if (tm->tm_mday < 1) {
+> +               // The value read from the register may be zero, which is=
+ an illegal value
+
+Please use C89 style commet (/* */).
+
+> +               flags_utime =3D flags_utime + 1;
+
+I like using ++ (flags_utime++).
+
+> +               tm->tm_mday =3D 1;
+> +       }
+> +
+>         /* tm->tm_mon is zero-based */
+>         tm->tm_mon =3D bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
+>
+> +       if (tm->tm_mon < 0) {
+> +               flags_utime =3D flags_utime + 1;
+> +               tm->tm_mday =3D 0;
+> +       }
+> +
+>         /* year is 1900 + tm->tm_year */
+>         tm->tm_year =3D bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
+>
+> +       if (flags_utime > 0) {
+
+{} is unnecessary.
+
+> +               rs5c372_rtc_set_time(dev, tm);
+
+A build error will occur because there is no declaration of
+rs5c372_rtc_set_time.
+Please make sure this can be compiled.
+
+> +       }
+> +
+>         dev_dbg(&client->dev, "%s: tm is secs=3D%d, mins=3D%d, hours=3D%d=
+, "
+>                 "mday=3D%d, mon=3D%d, year=3D%d, wday=3D%d\n",
+>                 __func__,
+> --
+> 2.29.0
+>
+
+
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org}
+   GPG ID: 40AD1FA6
