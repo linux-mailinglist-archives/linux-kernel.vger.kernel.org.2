@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8D38E812
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88A938E813
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhEXNwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S232951AbhEXNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232409AbhEXNwn (ORCPT
+        with ESMTP id S232409AbhEXNwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:52:43 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABDBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:15 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x188so20883298pfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:15 -0700 (PDT)
+        Mon, 24 May 2021 09:52:47 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803C3C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:19 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id e15so8031420plh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CZtKdiXneeaLWvfNp9Guks/t8UbmChTN9qjKMw6k9W0=;
-        b=Vosdy+R3bG6UbzPu2864eSSC5PbFyqda5f8/njPIgmYFYJrM5kNCxj0HaRqhGueezn
-         CUY5c/Z4h8dnjyPgzzCkhB6EphhB8gRPZJfMZJ7OjxcWBFXi4mZiTiLg8YfSaxSkQok4
-         nTtbtUD3/3wOBpQsYjKWmrdzOLXXGm5WTzoQGoRJ2aWfuDmFtiyn60rkk476opk5onRv
-         jCKx5RS/N7liLDtoEpzNin8lI7FD6jTaQyK4yTAYZPdyr8xRFlXdl5/YLc8lYHPwxFaJ
-         jAy6TsooG96WSy4+4iRvB5mhTy84cQAT28aFyjHJBzCtzAYqg9Qke13YgVWrnX409WFJ
-         wqWw==
+        bh=r8hENKovfpvL6qtdxJzB/suCkGhj752NHX7VOuctV34=;
+        b=ERK8CtiL4/8YwgrrwO+D0EZ3kHnCqH4RfKxzFBdDq2UqNUrGB1hvYL3SvaDFhT2cAQ
+         O6bxOqofbcrxsucfQArl5VorUP0NaYjuThxYXdDfVP/zqeGSQBc52FZKaD+5GQkhvGvq
+         XovCQehsX/PwnHIbd0/3gRWAl8iRyAyXEDMLbXdcZ+L2hIHYheOHZqIaJ4pcgLOgLp1p
+         VgEdSk3EEf7WQB1j9oBPjQ9KJimOvOTBBj38yYjhXYRi/bL7j7tvjn3RQus9s1V8oXDJ
+         MqubMPw3K+5kgs4cnmzLtv3p6k+YY/xId3IaG1c2QnOuQS0eLkCG5fjYyXSsdGXuUXu+
+         HHYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CZtKdiXneeaLWvfNp9Guks/t8UbmChTN9qjKMw6k9W0=;
-        b=VKmop0mZ/ejdBafeg7x3owCPneyaRKLltrK/8pFyGc+R9CMPHNSgkhB7NpEfcPNKCK
-         hTF8gFXV6qtlLWmPfzB8812fkLsA1xK/jCp/EGVh5M8FzwwzDYSTFwLRccjA8gD0id62
-         rNf9HlnGvmGr5eB1nmpfRad5zUdGT4B+P9xJr6tvzT5s2vjHHlQmwp6YJSDPXHbK3FGT
-         ZGwrxN8G6KvpaXsIafCKSKSdYXJ62ioczSOoNxcl05BsIgq6qrmLnL7jSmbLWxlFCIHl
-         xNIyopBkc2F1YAz2bJr1Gs7YTkFKbeHrA5BBqWE1iPeMVFuL3wEgM9CF/Gvf8UJrbyKm
-         YXyw==
-X-Gm-Message-State: AOAM531fhQ7gZcnjQy9Q9rppJYkDTfEaysUAwjlL+Xx6bLxS6MI7QiUe
-        M/tgZ/4MB5HZE40FqY7Kj5M=
-X-Google-Smtp-Source: ABdhPJyNDc8xSk+4jxutKOOTCD4DRA9o0qJnvuSGTaGrQn+OMY6J7XozYQmTfBH0QY1ZOVlliCgdqw==
-X-Received: by 2002:a63:795:: with SMTP id 143mr13612903pgh.43.1621864275356;
-        Mon, 24 May 2021 06:51:15 -0700 (PDT)
+        bh=r8hENKovfpvL6qtdxJzB/suCkGhj752NHX7VOuctV34=;
+        b=T1wM9N0M4MA+l9vJyOOMEnXVdA68gBWkITT32SPPYLcAJ5vfKzZiOwVqFAVUTDOBr+
+         FRVNKecZQ0oWG4UWaeAFUAB7Cc7K0uLm+UkUY/ifVZIk3Uw1IYmMgZR8vVWTtkxA+ogV
+         NSdzUfcCJSRDkrfWIBXc7NUiDZ0Y8Z2HA8c3Ld/jGH7YtHpB9vZDcLudoL2aVRWuTpJs
+         nLRkpFQUR30EXeazQ0r2JucijeOTW4nA3EpFFAUwPOxycVCQ6mNe19ZzbSFOkvLG5ug7
+         fusF/bI3HdO4FnKx2upoMk2ZBGI0OY+GhJRrOAuT2BdJLXtdxmsVLAhnuLFk1Wh8m2uT
+         Dj7g==
+X-Gm-Message-State: AOAM532HQUgHeHFMNypAjme/O2Paec5T3CIFir3zpWs5yNrjj5g1G8X3
+        0NTd5QotC6yu939cAWn+b5k=
+X-Google-Smtp-Source: ABdhPJz0jbc2LkB9lXoPQ4uJ24NWB3wUrOt1yphHzlXsONnxRhE/EHfRL32S4EGveonoA2dqBWz0wQ==
+X-Received: by 2002:a17:90a:4bc3:: with SMTP id u3mr25660179pjl.158.1621864279004;
+        Mon, 24 May 2021 06:51:19 -0700 (PDT)
 Received: from fedora.. ([49.36.218.98])
-        by smtp.googlemail.com with ESMTPSA id z9sm8638106pji.47.2021.05.24.06.51.12
+        by smtp.googlemail.com with ESMTPSA id z9sm8638106pji.47.2021.05.24.06.51.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 06:51:14 -0700 (PDT)
+        Mon, 24 May 2021 06:51:18 -0700 (PDT)
 From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
         straube.linux@gmail.com, fabioaiuto83@gmail.com
 Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] staging: rtl8723bs: refactor to reduce indents
-Date:   Mon, 24 May 2021 19:21:03 +0530
-Message-Id: <20210524135105.5550-2-chouhan.shreyansh630@gmail.com>
+Subject: [PATCH 2/3] staging: rtl8723bs: remove unnecessary braces from conditionals
+Date:   Mon, 24 May 2021 19:21:04 +0530
+Message-Id: <20210524135105.5550-3-chouhan.shreyansh630@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524135105.5550-1-chouhan.shreyansh630@gmail.com>
 References: <20210524135105.5550-1-chouhan.shreyansh630@gmail.com>
@@ -65,164 +65,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce the number of indents in rtw_wlan_util.c file by refactoring the
-code.
-
-Moved the part of code that rearranged ac paramaters in the function
-WMMOnAssocResp to a separate function named sort_wmm_ac_params. It takes
-both the array of ac params and their indexes as arguments and sorts them.
-Has return type void.
-
-Moved the part of code that checked IE for realtek vendor in the
-function check_assoc_AP to a separate function named
-get_realtek_assoc_AP_vender. It takes a struct ndis_80211_var_ie * as an
-argument and returns u32 realtek vendor.
+Removed the braces from if else statements in core/rtw_wlan_util.c since
+the previous commit (6a257dd6de516573) caused all conditional blocks to
+have a single statement in the function check_assoc_AP.
 
 Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 ---
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 108 +++++++++---------
- 1 file changed, 56 insertions(+), 52 deletions(-)
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    | 35 +++++++++----------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index ce47ef4edea0..36e515a7ab5c 100644
+index 36e515a7ab5c..dd965c810967 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -777,6 +777,32 @@ int WMM_param_handler(struct adapter *padapter, struct ndis_80211_var_ie *pIE)
- 	return true;
- }
+@@ -1532,25 +1532,24 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
  
-+static void sort_wmm_ac_params(u32 *inx, u32 *edca)
-+{
-+	u32 i, j, change_inx = false;
-+
-+	/* entry indx: 0->vo, 1->vi, 2->be, 3->bk. */
-+	for (i = 0; i < 4; i++) {
-+		for (j = i + 1; j < 4; j++) {
-+			/* compare CW and AIFS */
-+			if ((edca[j] & 0xFFFF) < (edca[i] & 0xFFFF)) {
-+				change_inx = true;
-+			} else if ((edca[j] & 0xFFFF) == (edca[i] & 0xFFFF)) {
-+				/* compare TXOP */
-+				if ((edca[j] >> 16) > (edca[i] >> 16))
-+					change_inx = true;
-+			}
-+
-+			if (change_inx) {
-+				swap(edca[i], edca[j]);
-+				swap(inx[i], inx[j]);
-+
-+				change_inx = false;
-+			}
-+		}
-+	}
-+}
-+
- void WMMOnAssocRsp(struct adapter *padapter)
- {
- 	u8 ACI, ACM, AIFS, ECWMin, ECWMax, aSifsTime;
-@@ -873,35 +899,8 @@ void WMMOnAssocRsp(struct adapter *padapter)
- 
- 		inx[0] = 0; inx[1] = 1; inx[2] = 2; inx[3] = 3;
- 
--		if (pregpriv->wifi_spec == 1) {
--			u32 j, tmp, change_inx = false;
--
--			/* entry indx: 0->vo, 1->vi, 2->be, 3->bk. */
--			for (i = 0; i < 4; i++) {
--				for (j = i+1; j < 4; j++) {
--					/* compare CW and AIFS */
--					if ((edca[j] & 0xFFFF) < (edca[i] & 0xFFFF)) {
--						change_inx = true;
--					} else if ((edca[j] & 0xFFFF) == (edca[i] & 0xFFFF)) {
--						/* compare TXOP */
--						if ((edca[j] >> 16) > (edca[i] >> 16))
--							change_inx = true;
--					}
--
--					if (change_inx) {
--						tmp = edca[i];
--						edca[i] = edca[j];
--						edca[j] = tmp;
--
--						tmp = inx[i];
--						inx[i] = inx[j];
--						inx[j] = tmp;
--
--						change_inx = false;
--					}
--				}
+ 		switch (pIE->ElementID) {
+ 		case WLAN_EID_VENDOR_SPECIFIC:
+-			if ((!memcmp(pIE->data, ARTHEROS_OUI1, 3)) || (!memcmp(pIE->data, ARTHEROS_OUI2, 3))) {
++			if ((!memcmp(pIE->data, ARTHEROS_OUI1, 3)) || (!memcmp(pIE->data, ARTHEROS_OUI2, 3)))
+ 				return HT_IOT_PEER_ATHEROS;
+-			} else if ((!memcmp(pIE->data, BROADCOM_OUI1, 3)) ||
+-				   (!memcmp(pIE->data, BROADCOM_OUI2, 3)) ||
+-				   (!memcmp(pIE->data, BROADCOM_OUI3, 3))) {
+-				return HT_IOT_PEER_BROADCOM;
+-			} else if (!memcmp(pIE->data, MARVELL_OUI, 3)) {
+-				return HT_IOT_PEER_MARVELL;
+-			} else if (!memcmp(pIE->data, RALINK_OUI, 3)) {
+-				return HT_IOT_PEER_RALINK;
+-			} else if (!memcmp(pIE->data, CISCO_OUI, 3)) {
+-				return HT_IOT_PEER_CISCO;
+-			} else if (!memcmp(pIE->data, REALTEK_OUI, 3)) {
+-				return get_realtek_assoc_AP_vender(pIE);
+-			} else if (!memcmp(pIE->data, AIRGOCAP_OUI, 3)) {
+-				return HT_IOT_PEER_AIRGO;
+-			} else {
+-				break;
 -			}
--		}
-+		if (pregpriv->wifi_spec == 1)
-+			sort_wmm_ac_params(inx, edca);
++			else if ((!memcmp(pIE->data, BROADCOM_OUI1, 3)) ||
++			         (!memcmp(pIE->data, BROADCOM_OUI2, 3)) ||
++			         (!memcmp(pIE->data, BROADCOM_OUI3, 3)))
++			      return HT_IOT_PEER_BROADCOM;
++			else if (!memcmp(pIE->data, MARVELL_OUI, 3))
++			      return HT_IOT_PEER_MARVELL;
++			else if (!memcmp(pIE->data, RALINK_OUI, 3))
++			      return HT_IOT_PEER_RALINK;
++			else if (!memcmp(pIE->data, CISCO_OUI, 3))
++			      return HT_IOT_PEER_CISCO;
++			else if (!memcmp(pIE->data, REALTEK_OUI, 3))
++			      return get_realtek_assoc_AP_vender(pIE);
++			else if (!memcmp(pIE->data, AIRGOCAP_OUI, 3))
++			      return HT_IOT_PEER_AIRGO;
++			else
++			      break;
  
- 		for (i = 0; i < 4; i++)
- 			pxmitpriv->wmm_para_seq[i] = inx[i];
-@@ -1496,6 +1495,33 @@ void set_sta_rate(struct adapter *padapter, struct sta_info *psta)
- 	Update_RA_Entry(padapter, psta);
- }
- 
-+static u32 get_realtek_assoc_AP_vender(struct ndis_80211_var_ie *pIE)
-+{
-+	u32 Vender = HT_IOT_PEER_REALTEK;
-+
-+	if (pIE->Length >= 5) {
-+		if (pIE->data[4] == 1)
-+			/* if (pIE->data[5] & RT_HT_CAP_USE_LONG_PREAMBLE) */
-+			/* bssDesc->BssHT.RT2RT_HT_Mode |= RT_HT_CAP_USE_LONG_PREAMBLE; */
-+			if (pIE->data[5] & RT_HT_CAP_USE_92SE)
-+				/* bssDesc->BssHT.RT2RT_HT_Mode |= RT_HT_CAP_USE_92SE; */
-+				Vender = HT_IOT_PEER_REALTEK_92SE;
-+
-+		if (pIE->data[5] & RT_HT_CAP_USE_SOFTAP)
-+			Vender = HT_IOT_PEER_REALTEK_SOFTAP;
-+
-+		if (pIE->data[4] == 2) {
-+			if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_BCUT)
-+				Vender = HT_IOT_PEER_REALTEK_JAGUAR_BCUTAP;
-+
-+			if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_CCUT)
-+				Vender = HT_IOT_PEER_REALTEK_JAGUAR_CCUTAP;
-+		}
-+	}
-+
-+	return Vender;
-+}
-+
- unsigned char check_assoc_AP(u8 *pframe, uint len)
- {
- 	unsigned int	i;
-@@ -1519,29 +1545,7 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
- 			} else if (!memcmp(pIE->data, CISCO_OUI, 3)) {
- 				return HT_IOT_PEER_CISCO;
- 			} else if (!memcmp(pIE->data, REALTEK_OUI, 3)) {
--				u32 Vender = HT_IOT_PEER_REALTEK;
--
--				if (pIE->Length >= 5) {
--					if (pIE->data[4] == 1)
--						/* if (pIE->data[5] & RT_HT_CAP_USE_LONG_PREAMBLE) */
--						/* bssDesc->BssHT.RT2RT_HT_Mode |= RT_HT_CAP_USE_LONG_PREAMBLE; */
--						if (pIE->data[5] & RT_HT_CAP_USE_92SE)
--							/* bssDesc->BssHT.RT2RT_HT_Mode |= RT_HT_CAP_USE_92SE; */
--							Vender = HT_IOT_PEER_REALTEK_92SE;
--
--					if (pIE->data[5] & RT_HT_CAP_USE_SOFTAP)
--						Vender = HT_IOT_PEER_REALTEK_SOFTAP;
--
--					if (pIE->data[4] == 2) {
--						if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_BCUT)
--							Vender = HT_IOT_PEER_REALTEK_JAGUAR_BCUTAP;
--
--						if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_CCUT)
--							Vender = HT_IOT_PEER_REALTEK_JAGUAR_CCUTAP;
--					}
--				}
--
--				return Vender;
-+				return get_realtek_assoc_AP_vender(pIE);
- 			} else if (!memcmp(pIE->data, AIRGOCAP_OUI, 3)) {
- 				return HT_IOT_PEER_AIRGO;
- 			} else {
+ 		default:
+ 			break;
 -- 
 2.31.1
 
