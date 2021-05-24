@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4198838E21C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D787F38E222
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhEXIEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S232430AbhEXIEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhEXIEE (ORCPT
+        with ESMTP id S232295AbhEXIEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:04:04 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F545C061574;
-        Mon, 24 May 2021 01:02:36 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 22so19806822pfv.11;
-        Mon, 24 May 2021 01:02:36 -0700 (PDT)
+        Mon, 24 May 2021 04:04:50 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370CFC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:03:22 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso10906058wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3tG71KFeGvB6Bz61w8pRbOH7Ofvu8zef1oUzyLHGfF0=;
-        b=EjKcQ96zD1JI5HCMcQ8CIcLyTRF90OuzoQzejQpkXMvZIhYcJ/v22bfBemkMSselbF
-         PbvSnv1wnz6GDztK+u/Z6x5VdVxT+w7sifjH7oUBJ1k5wf/1u8lWhxmXLX4d1lyPLs7V
-         EW6aUPkeqsZNWIUJYuYZRD1DAJRbu+Vujr834rrjEzKfd/1gyjk9speagdG0P+6bWvm1
-         qOr+W2PPFe+6FkiwnU3b3Zr/rTzPP+w+qfwemzteqeV3GxifvciWry6OzjQD7yxfOC0O
-         ZEdRZKNGsfxU+MbW7FkKJKY6Vd632ZK7KXccQO7G+icCNvQ9aymabcaYazM44M3ZP7jL
-         R7Xg==
+        bh=l+lXZOkJT9ztp2JCl1bPRf8G039aIWHo+Vabd2KIAvY=;
+        b=hE15bhqpuXbPdzqAazrfGMf6jpdb7Plfzzuf8Tg3BA6zCx8evuNi5OahN0lBSi6jy0
+         gmL2pDkRxR+V6YGQV9V5IG0mTSsDV2iuox0/5/1IQawdULfqWvOg6DWh4BJg4fEGeK2E
+         J2AQpGvMaXThT16y4SiEJuhqSbiUyYR3D+56Ik012/2/YQXTxBpjo/ebQAUY/pqFLjxY
+         BcdjFYg6YKXxY2YcIZEYYwL+gRPsD5CEaNAlKZvfXvlhshNwe8bLJc/Nr73JUMDjdOQK
+         ParA5bj6PXKxhEZ0fHTy1lfN+l7xXY9cQCLdHYnZ95OIjte1+fWjOUXB5M0A8iL1NkqS
+         qU8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3tG71KFeGvB6Bz61w8pRbOH7Ofvu8zef1oUzyLHGfF0=;
-        b=e81MYE19N2zEwdaLztnraC2uPVht1NSCCeOmmX+WWVaQVmzzlmcmIATvKuNI63ygWd
-         Y4ASH2uDG5nwfhiCtPpZAGhXg9HIfxOleIyUmPtPM69BmXuNwNjU5P0GgzD9LaagpobP
-         H/c0WzFLfSpgtASvYqi6f/dPjn3h8LsDYyMhAujgLg2tUYZhfogmlEj6AKI5NUCaWjlu
-         2DRbVlGhFxHnwHrQcSUWwWx4CikfbPQy37xThlhuXXOOYidsw8aO6du5p6uN8SNFoz72
-         7fovTQ3NX9fBEseUV8WTRcw16edJY+Zq84IuEcti/1CGZsnvEJ7FLcAadnOPxP6DT6UA
-         GtRQ==
-X-Gm-Message-State: AOAM533vv1U5EIbZH43GEyGDDb9rm7MkgjeSqN0t5l0aaKd6oR7w4RVj
-        KGsFjpfC28uAPdkbmCGYhfHYhuFlx6xVC5556+Z1VUWmsAA=
-X-Google-Smtp-Source: ABdhPJylHCLD9rP65qJ0C77l3k8KRNc0rFvkvvth1kYxsH6Q4515gZYtN0QN4f8ValEOjiGy/wQPbpixdoRVLpqE4vI=
-X-Received: by 2002:a63:4145:: with SMTP id o66mr12431070pga.4.1621843355752;
- Mon, 24 May 2021 01:02:35 -0700 (PDT)
+        bh=l+lXZOkJT9ztp2JCl1bPRf8G039aIWHo+Vabd2KIAvY=;
+        b=bh0GA/ohPmZVRifVS7n9ozDK0wDWLGOTMDuEtSFrYygfa0/BHU3B7pxanw2O2Vi6TK
+         FrDhKYPNcJquAauw8iDLjptpsRO7Fe5piedcT5udGKWK7cj4g05bt42qx0Fgoe30b+Tz
+         +bQHPrmKLnKVLVclKE6dv0JfQig4VLRrogcuAXoEkq3pxH/O1+EKRKnoME8FhCIoXEar
+         8CLOF2g3qLhOS9Crq++s0zizN/5AwELwiWscFvD19nwIo/AlEZZmg6LzE/A8LU93evKd
+         1xdu2fIiGJh5lsMq6enX1yNeuH+I79bOsg/G3n+cdGxRNOLk3XZvfBtZABpsCVwMvXJc
+         fCXQ==
+X-Gm-Message-State: AOAM532NKyYllyrReslKVU/mwAi50Jpl4dHgHulhhNSnmU+jMTX3eqq6
+        9vLxTzurM6X1FG1x4SRE3NI+pgE9nDpbf8mw6zjgMScCQuGBmw==
+X-Google-Smtp-Source: ABdhPJyeURrTyE53pS9rjIrF1XyAYSlM5EIDZxsof/N3+lCkEYOm64yTb06OT7Z706TpnIKNx0pnoQ13EAD6f/Q4bPA=
+X-Received: by 2002:a05:600c:b44:: with SMTP id k4mr19148969wmr.152.1621843400672;
+ Mon, 24 May 2021 01:03:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1621809029.git.sander@svanheule.net> <6d14b72bc545a818675d99c8e91e99c96cc3e286.1621809029.git.sander@svanheule.net>
-In-Reply-To: <6d14b72bc545a818675d99c8e91e99c96cc3e286.1621809029.git.sander@svanheule.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 24 May 2021 11:02:19 +0300
-Message-ID: <CAHp75VcbRKGYSJZK_Rg969-Uck=h+8byWt0B3MtQJDqwbdf2sw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] mfd: Add RTL8231 core device
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
+References: <1621839068-31738-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <1621839068-31738-1-git-send-email-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 24 May 2021 13:33:08 +0530
+Message-ID: <CAAhSdy3ORUGqyL-9oMQCKYCXnG8M=xrZ8q+AiWg8s+v6zsk=_A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: Fixup _PAGE_GLOBAL in _PAGE_KERNEL
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 1:34 AM Sander Vanheule <sander@svanheule.net> wrote:
+On Mon, May 24, 2021 at 12:22 PM <guoren@kernel.org> wrote:
 >
-> The RTL8231 is implemented as an MDIO device, and provides a regmap
-> interface for register access by the core and child devices.
+> From: Guo Ren <guoren@linux.alibaba.com>
 >
-> The chip can also be a device on an SMI bus, an I2C-like bus by Realtek.
-> Since kernel support for SMI is limited, and no real-world SMI
-> implementations have been encountered for this device, this is currently
-> unimplemented. The use of the regmap interface should make any future
-> support relatively straightforward.
+> Kernel virtual address translation should avoid care asid or it'll
+> cause more TLB-miss and TLB-refill. Because the current asid in satp
+> belongs to the current process, but the target kernel va TLB entry's
+> asid still belongs to the previous process.
 >
-> After reset, all pins are muxed to GPIO inputs before the pin drivers
-> are enabled. This is done to prevent accidental system resets, when a
-> pin is connected to the parent SoC's reset line.
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Anup Patel <anup.patel@wdc.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
 
-...
+First of all thanks for doing this series, I had similar changes in mind
+as follow-up to the ASID allocator.
 
-> [missing MDIO_BUS dependency, provided via REGMAP_MDIO]
-> Reported-by: kernel test robot <lkp@intel.com>
+I went through all three patches and at least I don't see any
+obvious issue but I think we should try testing it more on a few
+existing platforms.
 
-What does this fix? Shouldn't it have a Fixes tag? (Yes, I know that
-you answered in the other email, but here is a hint: before settling
-these kinds of things do not send a new version. Instead of speeding
-up the review you are closer to the chance to have this been not
-applied for v5.14 at all)
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-...
+Regards,
+Anup
 
-> +       /* SOFT_RESET bit self-clears when done */
-> +       regmap_update_bits(map, RTL8231_REG_PIN_HI_CFG,
-> +               RTL8231_PIN_HI_CFG_SOFT_RESET, RTL8231_PIN_HI_CFG_SOFT_RESET);
-
-> +       usleep_range(1000, 10000);
-
-It's strange to see this big range of minimum and maximum sleep.
-Usually the ratio should not be bigger than ~3-4 between the values.
-
-...
-
-> +       regmap_write(map, RTL8231_REG_PIN_MODE0, 0xffff);
-> +       regmap_write(map, RTL8231_REG_GPIO_DIR0, 0xffff);
-> +       regmap_write(map, RTL8231_REG_PIN_MODE1, 0xffff);
-> +       regmap_write(map, RTL8231_REG_GPIO_DIR1, 0xffff);
-
-GENMASK() ?
-Actually it seems it deserves a special definition like
-
-..._ALL_PIN_MASK  GENMASK(15, 0)
-
--- 
-With Best Regards,
-Andy Shevchenko
+> ---
+>  arch/riscv/include/asm/pgtable.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 78f2323..017da15 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -135,6 +135,7 @@
+>                                 | _PAGE_PRESENT \
+>                                 | _PAGE_ACCESSED \
+>                                 | _PAGE_DIRTY \
+> +                               | _PAGE_GLOBAL \
+>                                 | _PAGE_CACHE)
+>
+>  #define PAGE_KERNEL            __pgprot(_PAGE_KERNEL)
+> --
+> 2.7.4
+>
