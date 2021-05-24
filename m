@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2333438EDA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689BF38EF84
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhEXPkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
+        id S234054AbhEXP6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233988AbhEXPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 660A2613DB;
-        Mon, 24 May 2021 15:33:03 +0000 (UTC)
+        id S233985AbhEXPwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA41B613E4;
+        Mon, 24 May 2021 15:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870383;
-        bh=6L8WzktFjCYIak5wKTESUj9MXN/emiR3fNTG/0ZC2iw=;
+        s=korg; t=1621870734;
+        bh=ZLvKPy560rOp4foRSQ0/RNlaixVa3FYvRKhxtV5t04U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=erPBpPtSX8kaiT6bduLb0WxYRbX3JACJsfDeM/rnXo/BygEKSHPZY/EIi1IryBgO7
-         BcGgS0TVHZvCSFy3PQoojrjAUZ9cr1SY2UTrCnyXwjzrwCOPD32C4bdnCTG1gAJ2ue
-         iED17hPlFud1FjQ7T0MHP5E4aD4Vljc+TLfg6m2w=
+        b=VTAc0O0kSk7Cq9eVHqD7D1X2edjn8z+ao1B55O7Upi5QffRPK3Sztv+iMatkyYnNM
+         T3GqfFjP3yOcp1hiHQ6FGK4j7tHEmHH7p3Mca4b66lArfRGiFzZQuQ3JKdWMALk4Em
+         JJgjRDJBcTw2S80UIkapd0qIRCd6OVc0s0FvUw3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Stafford Horne <shorne@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 01/37] openrisc: Fix a memory leak
+Subject: [PATCH 5.10 010/104] scsi: qla2xxx: Fix error return code in qla82xx_write_flash_dword()
 Date:   Mon, 24 May 2021 17:25:05 +0200
-Message-Id: <20210524152324.250462464@linuxfoundation.org>
+Message-Id: <20210524152333.176560633@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,40 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit c019d92457826bb7b2091c86f36adb5de08405f9 ]
+[ Upstream commit 5cb289bf2d7c34ca1abd794ce116c4f19185a1d4 ]
 
-'setup_find_cpu_node()' take a reference on the node it returns.
-This reference must be decremented when not needed anymore, or there will
-be a leak.
+Fix to return a negative error code from the error handling case instead of
+0 as done elsewhere in this function.
 
-Add the missing 'of_node_put(cpu)'.
-
-Note that 'setup_cpuinfo()' that also calls this function already has a
-correct 'of_node_put(cpu)' at its end.
-
-Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Link: https://lore.kernel.org/r/20210514090952.6715-1-thunder.leizhen@huawei.com
+Fixes: a9083016a531 ("[SCSI] qla2xxx: Add ISP82XX support.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/kernel/setup.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/qla2xxx/qla_nx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
-index dbf5ee95a0d5..b29aa3237e76 100644
---- a/arch/openrisc/kernel/setup.c
-+++ b/arch/openrisc/kernel/setup.c
-@@ -260,6 +260,8 @@ void calibrate_delay(void)
- 	pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
- 		loops_per_jiffy / (500000 / HZ),
- 		(loops_per_jiffy / (5000 / HZ)) % 100, loops_per_jiffy);
-+
-+	of_node_put(cpu);
- }
+diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
+index b3ba0de5d4fb..0563c9530dca 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.c
++++ b/drivers/scsi/qla2xxx/qla_nx.c
+@@ -1066,7 +1066,8 @@ qla82xx_write_flash_dword(struct qla_hw_data *ha, uint32_t flashaddr,
+ 		return ret;
+ 	}
  
- void __init setup_arch(char **cmdline_p)
+-	if (qla82xx_flash_set_write_enable(ha))
++	ret = qla82xx_flash_set_write_enable(ha);
++	if (ret < 0)
+ 		goto done_write;
+ 
+ 	qla82xx_wr_32(ha, QLA82XX_ROMUSB_ROM_WDATA, data);
 -- 
 2.30.2
 
