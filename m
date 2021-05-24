@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B9838ED98
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338A638EEB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhEXPjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51454 "EHLO mail.kernel.org"
+        id S235480AbhEXPzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:55:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233897AbhEXPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F13FD61415;
-        Mon, 24 May 2021 15:32:45 +0000 (UTC)
+        id S234276AbhEXPq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:46:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 795E261476;
+        Mon, 24 May 2021 15:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870366;
-        bh=PwZyXvvsQj6OH8etcpIiEPUTgcPTFwVs5Hi0HRYzK9o=;
+        s=korg; t=1621870601;
+        bh=PDp0/U3qKwYq3omsYJ3iKxZ9x4fs5OC9Obq63S0Ywt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JS/RK+6bKOLZ9gFBynQ5PpWtEZ/a1ofawEDONBGqLrGr81XMuS4upFXIOuHNN1h9c
-         gwBQd/a0KAAvP/kJgPcJI4AtPK6//WdeX/D6kOuYXmb4ymY/VGwwlHq1HtmikOFVJq
-         PDp23TxpjiUOEhyduxVwGiSlb/DUvAdg/hJcqiGA=
+        b=qOZ+oCBlSh+5QA8YYHB7GMwHsDcI11HBgz1S+tz2ssOTPUXp9wwIg2WAbYcc9MAPq
+         wyhJyn9HBU5HppRG9rensSzLijixE9J9VUcWnBtPMZkZNi2nPW5TKuWLLRnZTfWc2J
+         K4ZdCBz49ji1fsfCNnzcKhufdKPMijQMDnCAxd5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH 4.9 24/36] Revert "rtlwifi: fix a potential NULL pointer dereference"
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 03/71] RDMA/siw: Properly check send and receive CQ pointers
 Date:   Mon, 24 May 2021 17:25:09 +0200
-Message-Id: <20210524152324.950843492@linuxfoundation.org>
+Message-Id: <20210524152326.562771396@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 68c5634c4a7278672a3bed00eb5646884257c413 upstream.
+[ Upstream commit a568814a55a0e82bbc7c7b51333d0c38e8fb5520 ]
 
-This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
+The check for the NULL of pointer received from container_of() is
+incorrect by definition as it points to some offset from NULL.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Change such check with proper NULL check of SIW QP attributes.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-This commit is not correct, it should not have used unlikely() and is
-not propagating the error properly to the calling function, so it should
-be reverted at this point in time.  Also, if the check failed, the
-work queue was still assumed to be allocated, so further accesses would
-have continued to fail, meaning this patch does nothing to solve the
-root issues at all.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Bryan Brattlof <hello@bryanbrattlof.com>
-Fixes: 765976285a8c ("rtlwifi: fix a potential NULL pointer dereference")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-13-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+Link: https://lore.kernel.org/r/a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/base.c |    5 -----
- 1 file changed, 5 deletions(-)
+ drivers/infiniband/sw/siw/siw_verbs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/net/wireless/realtek/rtlwifi/base.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-@@ -466,11 +466,6 @@ static void _rtl_init_deferred_work(stru
- 	/* <2> work queue */
- 	rtlpriv->works.hw = hw;
- 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
--	if (unlikely(!rtlpriv->works.rtl_wq)) {
--		pr_err("Failed to allocate work queue\n");
--		return;
--	}
--
- 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
- 			  (void *)rtl_watchdog_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 2c3704f0f10f..daa71469269e 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -314,7 +314,6 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	struct siw_ucontext *uctx =
+ 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
+ 					  base_ucontext);
+-	struct siw_cq *scq = NULL, *rcq = NULL;
+ 	unsigned long flags;
+ 	int num_sqe, num_rqe, rv = 0;
+ 
+@@ -353,10 +352,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		rv = -EINVAL;
+ 		goto err_out;
+ 	}
+-	scq = to_siw_cq(attrs->send_cq);
+-	rcq = to_siw_cq(attrs->recv_cq);
+ 
+-	if (!scq || (!rcq && !attrs->srq)) {
++	if (!attrs->send_cq || (!attrs->recv_cq && !attrs->srq)) {
+ 		siw_dbg(base_dev, "send CQ or receive CQ invalid\n");
+ 		rv = -EINVAL;
+ 		goto err_out;
+@@ -423,8 +420,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		}
+ 	}
+ 	qp->pd = pd;
+-	qp->scq = scq;
+-	qp->rcq = rcq;
++	qp->scq = to_siw_cq(attrs->send_cq);
++	qp->rcq = to_siw_cq(attrs->recv_cq);
+ 
+ 	if (attrs->srq) {
+ 		/*
+-- 
+2.30.2
+
 
 
