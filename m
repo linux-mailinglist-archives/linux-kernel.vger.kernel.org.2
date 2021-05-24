@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E997F38F0A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385C638F01E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbhEXQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:05:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        id S235834AbhEXQBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235562AbhEXP6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 677C66195A;
-        Mon, 24 May 2021 15:44:23 +0000 (UTC)
+        id S235457AbhEXPzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6A6761949;
+        Mon, 24 May 2021 15:41:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871063;
-        bh=ZUTBNKxxxfq9G9Y4cC7y7d4x5/l8iXdOoffAoaWCkKs=;
+        s=korg; t=1621870888;
+        bh=MIh/gq1Au43YtotalzBSSyNVaznfxm6uSJGAnEpcbz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GJ7LjRgfscxpJ6+G0ilolAcEPHXZ7ns8PwLvTtSyK1VDV0XY8toSOHp+VTdcYjumz
-         iKEqD5MpMW8jdMzTVJFsZ7dy/OE+kT3od+frCFLVzEPqfXk8nq66Mo/8HTyIQhZGRU
-         kYp9ikLvkmlDLxEI0OidgZ/3d8mnRzkkF+Ygfa58=
+        b=kg2VpYLgUnhG188Q+dFNzY4s1w5W7juFqPXGwh9zqShaYIOHPAOaEcoTQfxEcnaWI
+         4/3epPMV1yn6XCQftK+CEdrn6esAvdrUOeDdVGHW6y56PwFsq4kyLFpi0KvC91dKsZ
+         JSu3zWh9SRp9BHfah9WTrKpLbflrT2JXl7Lx0jQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 057/127] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Avri Altman <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 079/104] Revert "scsi: ufs: fix a missing check of devm_reset_control_get"
 Date:   Mon, 24 May 2021 17:26:14 +0200
-Message-Id: <20210524152336.771338275@linuxfoundation.org>
+Message-Id: <20210524152335.470852142@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elia Devito <eliadevito@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit f2be77fee648ddd6d0d259d3527344ba0120e314 upstream.
+commit 4d427b408c4c2ff1676966c72119a3a559f8e39b upstream.
 
-Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
-on similar models.
+This reverts commit 63a06181d7ce169d09843645c50fea1901bc9f0a.
 
-0x14 pin config override is required to enable all speakers and
-alc285-speaker2-to-dac1 fixup to enable volume adjustment.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210511124651.4802-1-eliadevito@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit is incorrect, it does not properly clean up on the
+error path, so I'll keep the revert and fix it up properly with a
+follow-on patch.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 63a06181d7ce ("scsi: ufs: fix a missing check of devm_reset_control_get")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-31-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/scsi/ufs/ufs-hisi.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6534,6 +6534,7 @@ enum {
- 	ALC285_FIXUP_IDEAPAD_S740_COEF,
- 	ALC295_FIXUP_ASUS_DACS,
- 	ALC295_FIXUP_HP_OMEN,
-+	ALC285_FIXUP_HP_SPECTRE_X360,
- };
+--- a/drivers/scsi/ufs/ufs-hisi.c
++++ b/drivers/scsi/ufs/ufs-hisi.c
+@@ -479,10 +479,6 @@ static int ufs_hisi_init_common(struct u
+ 	ufshcd_set_variant(hba, host);
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8085,6 +8086,15 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
- 	},
-+	[ALC285_FIXUP_HP_SPECTRE_X360] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170110 }, /* enable top speaker */
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
-+	},
- };
+ 	host->rst  = devm_reset_control_get(dev, "rst");
+-	if (IS_ERR(host->rst)) {
+-		dev_err(dev, "%s: failed to get reset control\n", __func__);
+-		return PTR_ERR(host->rst);
+-	}
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8245,6 +8255,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
-+	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32", ALC274_FIXUP_HP_ENVY_GPIO),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
-@@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
- 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
-+	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+ 	ufs_hisi_set_pm_lvl(hba);
+ 
 
 
