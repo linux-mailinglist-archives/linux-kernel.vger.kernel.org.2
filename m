@@ -2,116 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C52538E6AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1996738E6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhEXMgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:36:40 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53447 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232486AbhEXMgj (ORCPT
+        id S232848AbhEXMhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:37:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20743 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232830AbhEXMgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:36:39 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id CAE3917C9;
-        Mon, 24 May 2021 08:35:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 08:35:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=RgURLS9p1wMowaWNBQnCBciQXSD
-        k9br9wW1FSu9L5OQ=; b=hQ6NN3WbEWtRvV4Dy/6bowGcLT6VAFZjQqUHxZf0OgC
-        9lyAnrKxnmwkI3v+4MASqyy9RmJdTGPhREBvmKFZN4nbv5hx3o1o3kYZoZih0/pc
-        Til6TmZTmEQafCRJub64i2zAvmIZqnz/VWGjKYhP7rVKQ9SIfMhST8nSfKzekh1u
-        a1ijcI82ax3gsl7ncNgfVvG7UVsP8xAoB9pz0Mos/iHpvRZfOCE0D/pc+KnVbSdw
-        f+mySgQF2QB3ak6U+1KwQbNsPuHBpCTqBmL0/fusYn36X/+aQjDxD2PW09SpvCcI
-        EeMzoSj2TE2/KaYoQv6VUIkXKKLQBNiLDSZTplI+r6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RgURLS
-        9p1wMowaWNBQnCBciQXSDk9br9wW1FSu9L5OQ=; b=VMHjCXu3QAaO4NGLHlg+HK
-        fX6ear112+NMHy6FUT8hFs9r5x+cwRS2V/lV9xfjofYprYL7Mxb/O4IPpTXFg4Kb
-        6s/+N1uFGwBAHZwjz05STyBLhMAG5cJGlBcRuaSZaf4fc56UbjwxuBwR03JCTH4s
-        EvofP+tbdHKlODJ+PVNBVrp4rmH++Oauov3Brg5wshxON5J0gCm21zw31MZOGZc0
-        gR+qg2wt3mO+okdlVc4SRcSy3WeY8MlGg2UmvcaweLJrL3mta3MSCcweCjdVGscH
-        746fe2vanbknnsdsj5s0KrEt9hANpG+fkipWOVHKsmUier3wapggpqI4B6IwpHkg
-        ==
-X-ME-Sender: <xms:e52rYNRg9mV0kdlAS6wyqtQ0UTEn52_ePEvbCg32M_A9CJ1CKMcqAw>
-    <xme:e52rYGzOSyh48b0fcDIBmwhNzHYX25yYzYX0VHd1DVoc1El2KBIfqkH_boPmErqxz
-    OC_5tPCbmG5iiyLdXY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdevffekheevfefgheelvefgieetfeeihfdvteegfefhuefghedtgfeuveef
-    tdefnecuffhomhgrihhnpeguvggsihgrnhdrohhrghenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:e52rYC1ErC6J997C3utIV9orIYguR-WXyx-8qiFD8CcFDO87z0BwMA>
-    <xmx:e52rYFDh-MhbQ2JH1o3ZSi1NbyOYrO_-dbqS2saZWw3W3_V7RioFLw>
-    <xmx:e52rYGiTaX5oJApnWVp8gcYkwe0thyiwa-UibnVbd1QuTPjItCFkgg>
-    <xmx:fp2rYKjLNc5tDqEvMCsoToNaDDa-INBMe8kE-H6QOK7UmDDQlqvynA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 08:35:07 -0400 (EDT)
-Date:   Mon, 24 May 2021 14:35:06 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Vagrant Cascadian <vagrant@reproducible-builds.org>,
-        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
-Message-ID: <20210524123506.cuwwtqgtejquuq5e@gilmour>
-References: <20210524122111.416885-1-carnil@debian.org>
+        Mon, 24 May 2021 08:36:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621859723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PpgAUyiKcsxyyDpd43AlLz5pN+mpE43cHu+cRRsUC+8=;
+        b=TXBsywCfggwQyUN+l1FtiIFDLLachpFRL4PnAoBz7HeuE3I7Kn4ShtnB9WnkPMaewwWNVX
+        SFPTJ18bntA+OuiG2eMH+GHCAClpafjX5dhFLcDfoGVo3hURPGVLa+i1iffpqfpQJNGLG4
+        fGNx1ReUydQN6CTTT1XWq9NG8hALwl4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-yZAeC1ItOF6lWx6yrnq84Q-1; Mon, 24 May 2021 08:35:17 -0400
+X-MC-Unique: yZAeC1ItOF6lWx6yrnq84Q-1
+Received: by mail-wm1-f71.google.com with SMTP id h9-20020a1cb7090000b029016d3f0b6ce4so3924605wmf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:35:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PpgAUyiKcsxyyDpd43AlLz5pN+mpE43cHu+cRRsUC+8=;
+        b=mBJOwhhU2aoLR9GkDxMjlnZkzWNyAVsm9i57fLfc1arE0qmXjuiUOYy2UMMhY+2KyU
+         HnrUoh8G6fU+NM/EVJrlGDnkpn2Gx4rp97VOrXokmz17KfWEUsZyAPGaiEq4KTn6nbrh
+         oTyZAch4SeMunp8C3yF9AWCjt2AFmW9jmWRAEhTFEqf/H5FlEzgQvt/URUYJvorQUyjc
+         W41fkx6WBgSpOo1Lhs6Z+z5LtWxGF/YtTPYnU+feabAYMlST8uLiah8CDqKy1VIhLQiR
+         uf+SmelxEeIq5bEiAiZ/cdb6uAB0azJXpcUvlYjVYMMK6rcH7I93tgZO15Gem04TC2ym
+         +C2Q==
+X-Gm-Message-State: AOAM530kkEgSvRAygFzROmgHW2FTbO5taPIUAOLnZ4pYccGzEry5sqKs
+        skZL/CifQkJLtiIUxiXExtr3ZwAkKb3BHaMjj7nQI8+RwG4njClmp4c5A2/C3iwFLJ0kwLpa9De
+        gnqzOrwQwJwxu55afDAQehjRypH6tHwH69UxRu5eILWJ4mRxfaFjHWkCfUBJGNIXSAg9exdoxwA
+        nz
+X-Received: by 2002:a5d:4fce:: with SMTP id h14mr21536335wrw.239.1621859715828;
+        Mon, 24 May 2021 05:35:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJaSdc2G2JIlQi2ysSOdWJOO94g1Ez7aGhHWhFsXXKj8SOWwzwrCkMWWBxRFqpEPku9GxM5Q==
+X-Received: by 2002:a5d:4fce:: with SMTP id h14mr21536302wrw.239.1621859715485;
+        Mon, 24 May 2021 05:35:15 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t11sm12357620wrz.57.2021.05.24.05.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 05:35:15 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
+In-Reply-To: <80892ca2e3d7122b5b92f696ecf4c1943b0245b9.camel@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+ <20210517135054.1914802-2-vkuznets@redhat.com>
+ <80892ca2e3d7122b5b92f696ecf4c1943b0245b9.camel@redhat.com>
+Date:   Mon, 24 May 2021 14:35:14 +0200
+Message-ID: <875yz871j1.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mjd66dqrdahwedu3"
-Content-Disposition: inline
-In-Reply-To: <20210524122111.416885-1-carnil@debian.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
---mjd66dqrdahwedu3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
+>> Unlike regular set_current_vmptr(), nested_vmx_handle_enlightened_vmptrld()
+>> can not be called directly from vmx_set_nested_state() as KVM may not have
+>> all the information yet (e.g. HV_X64_MSR_VP_ASSIST_PAGE MSR may not be
+>> restored yet). Enlightened VMCS is mapped later while getting nested state
+>> pages. In the meantime, vmx->nested.hv_evmcs remains NULL and using it
+>> for various checks is incorrect. In particular, if KVM_GET_NESTED_STATE is
+>> called right after KVM_SET_NESTED_STATE, KVM_STATE_NESTED_EVMCS flag in the
+>> resulting state will be unset (and such state will later fail to load).
+>> 
+>> Introduce nested_evmcs_is_used() and use 'is_guest_mode(vcpu) &&
+>> vmx->nested.current_vmptr == -1ull' check to detect not-yet-mapped eVMCS
+>> after restore.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/vmx/nested.c | 31 ++++++++++++++++++++++++++-----
+>>  1 file changed, 26 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index 6058a65a6ede..3080e00c8f90 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -141,6 +141,27 @@ static void init_vmcs_shadow_fields(void)
+>>  	max_shadow_read_write_fields = j;
+>>  }
+>>  
+>> +static inline bool nested_evmcs_is_used(struct vcpu_vmx *vmx)
+>> +{
+>> +	struct kvm_vcpu *vcpu = &vmx->vcpu;
+>> +
+>> +	if (vmx->nested.hv_evmcs)
+>> +		return true;
+>> +
+>> +	/*
+>> +	 * After KVM_SET_NESTED_STATE, enlightened VMCS is mapped during
+>> +	 * KVM_REQ_GET_NESTED_STATE_PAGES handling and until the request is
+>> +	 * processed vmx->nested.hv_evmcs is NULL. It is, however, possible to
+>> +	 * detect such state by checking 'nested.current_vmptr == -1ull' when
+>> +	 * vCPU is in guest mode, it is only possible with eVMCS.
+>> +	 */
+>> +	if (unlikely(vmx->nested.enlightened_vmcs_enabled && is_guest_mode(vcpu) &&
+>> +		     (vmx->nested.current_vmptr == -1ull)))
+>> +		return true;
+>> +
+>> +	return false;
+>> +}
+>
+>
+> I think that this is a valid way to solve the issue,
+> but it feels like there might be a better way.
+> I don't mind though to accept this patch as is.
+>
+> So here are my 2 cents about this:
+>
+> First of all after studying how evmcs works I take my words back
+> about needing to migrate its contents. 
+>
+> It is indeed enough to migrate its physical address, 
+> or maybe even just a flag that evmcs is loaded
+> (and to my surprise we already do this - KVM_STATE_NESTED_EVMCS)
+>
+> So how about just having a boolean flag that indicates that evmcs is in use, 
+> but doesn't imply that we know its address or that it is mapped 
+> to host address space, something like 'vmx->nested.enlightened_vmcs_loaded'
+>
+> On migration that flag saved and restored as the KVM_STATE_NESTED_EVMCS,
+> otherwise it set when we load an evmcs and cleared when it is released.
+>
+> Then as far as I can see we can use this flag in nested_evmcs_is_used
+> since all its callers don't touch evmcs, thus don't need it to be
+> mapped.
+>
+> What do you think?
+>
 
-On Mon, May 24, 2021 at 02:21:11PM +0200, Salvatore Bonaccorso wrote:
-> Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-> config") sets the RX/TX delay according to the phy-mode property in the
-> device tree. For the Orange Pi Plus board this is "rgmii", which is the
-> wrong setting.
->=20
-> Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
-> Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
-> the Ethernet working again on this board.
->=20
-> Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-> Reported-by: "B.R. Oake" <broake@mailfence.com>
-> Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
-> Link: https://bugs.debian.org/988574
-> Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
+First, we need to be compatible with older KVMs which don't have the
+flag and this is problematic: currently, we always expect vmcs12 to
+carry valid contents. This is challenging.
 
-Applied, thanks!
-Maxime
+Second, vCPU can be migrated in three different states:
+1) While L2 was running ('true' nested state is in VMCS02)
+2) While L1 was running ('true' nested state is in eVMCS)
+3) Right after an exit from L2 to L1 was forced
+('need_vmcs12_to_shadow_sync = true') ('true' nested state is in
+VMCS12).
 
---mjd66dqrdahwedu3
-Content-Type: application/pgp-signature; name="signature.asc"
+The current solution is to always use VMCS12 as a container to transfer
+the state and conceptually, it is at least easier to understand.
 
------BEGIN PGP SIGNATURE-----
+We can, indeed, transfer eVMCS (or VMCS12) in case 2) through guest
+memory and I even tried that but that was making the code more complex
+so eventually I gave up and decided to preserve the 'always use VMCS12
+as a container' status quo.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKudegAKCRDj7w1vZxhR
-xcr8AP4nGuUcFxQBI006qDoW+1VvmZevGyEN0wwfRSX+8K+q7wD9F36//h7Pj2FR
-oHnZzDUG3LJ2LBf8wCDnyFl2RjjJDAk=
-=0nBI
------END PGP SIGNATURE-----
+-- 
+Vitaly
 
---mjd66dqrdahwedu3--
