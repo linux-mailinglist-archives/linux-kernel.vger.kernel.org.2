@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFEA38E865
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2A538E867
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhEXONG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S232905AbhEXONL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbhEXOMw (ORCPT
+        with ESMTP id S232921AbhEXOMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:12:52 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA8CC06138E
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:21 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id 105so9365238uak.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:21 -0700 (PDT)
+        Mon, 24 May 2021 10:12:55 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDD3C06138B
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:26 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id o192so14283032vsd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yQjfeEw8bGFzEuzrklBfge8nfFaFNuAFn3ZK3HpPgxw=;
-        b=rxKg+ApaaB6JtEve8oSPQEKOi7NDXv6i0doj86gRxxobDDHUQFoMKa32yyziBSOU8P
-         c0T36wIiPhxWTRBBSITeKlwYyObzAYmZwhAcFo3kIfhmjd9OIQjLghJCMDDLy26AHkVE
-         Hmpgd7Fl3fCWgn8RHO6iN1G/A7m0klnp7LAzBgncua9JYZdDne+C2YJuAHrYXxXSK+O7
-         HqyTwM+6EpIGvkjrHBh6s9IBeNtIGsEt0b/nl8UqnNvAPJC7LOBURfwaQBhs67hi4qol
-         m+YN4JmTzIDo5GngFh6nNqRWoFhpQfMpQxoRA38GrFicoJkGmDO/WUDkuKYdGSwBE4iB
-         yfyg==
+        bh=g9YMGxXWO3gw0lQ0MfPopfjRGds3L9RPAtVucI8oBh8=;
+        b=QtGD1DYPGBFNv8H5o2auNhCqeNje2IV/YM/PBcelPMC5UV8XxqWGu7GXpfiJRCVnzq
+         WxLxargTpqSF2/NatjiW5zKmHYbem4i4ioFqno6XfOIxIzm+OGM5+Zf0cJNzGxwvxTki
+         BpJQq9zMpm4S2H7n2TS2i5waSARq92xas+rvm8tlQPoIEd60AFrMFb5wusacSxskhq4z
+         D0dBJmMkpsyDkqSSyzqaXv+XyNBDgmosENFi/ahz+3syNlrg26pX7mFUfYnQUZ+LeG/e
+         ZL0aS+Jb8aK5XJBbQh4/9sd9bPPWiuNmkweyF6GBz5+k6egoozwtSI/CQpTXHt4w6j/H
+         bI/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yQjfeEw8bGFzEuzrklBfge8nfFaFNuAFn3ZK3HpPgxw=;
-        b=SOxn0h6d4yGfaPFcMxW4sLesmCSW0LO2WhcBZBPMf3bAgb9jaNNCYETavy2RA01/Ss
-         coANaGU+rgSaUDm+O1vwOU2PAe5M72BuUw/Trln0xER1W7Qm0f3MfsvVlzFKdsnzZkSN
-         eG/4+0jd4vt4q5JsudKmwIa5wiCujXp00Ivv3cq2RgP9cfd9N0EiVEeFQK+rYE7kckKH
-         9TcoNE7wliLRXR8Zc52uqY0XPKTQnKkNWOa+bTKRA9Pdb3ti+ZLsGIor7NSJudsST/1f
-         a3hBxRdmcBluXg+0m64P1bVnfd7y4kFrT6sQZUxuq/nAdArPdZ4f2hzG5YKkipcWLTCg
-         4hag==
-X-Gm-Message-State: AOAM531HXpcntYLWsNb2fj634XdaK2Az5FqlIhYKysr7RtcqC57HkBtW
-        LAUdRfOgucmJXXY6wG69/6qj46ayIwbTBqXpfFeNI/DGCWHOfQ==
-X-Google-Smtp-Source: ABdhPJy/Xv1nxDQRV1veUOYH4c6SXp+zM77ffvPcG8/+Kbug0zamZtYxNek83b1FHuKJAC+4So3Zy0yfA85rpxm85lU=
-X-Received: by 2002:ab0:3351:: with SMTP id h17mr22720936uap.15.1621865480578;
- Mon, 24 May 2021 07:11:20 -0700 (PDT)
+        bh=g9YMGxXWO3gw0lQ0MfPopfjRGds3L9RPAtVucI8oBh8=;
+        b=lwNfFLP7cAEpgwdPN5WyTU0qbSsH2Qrp3b0zRtq7GE1QSb0JhjlxEW3jmosTy+oPrc
+         5/qIShjaK6Z0iPSOhpLmChn5G+22/tHy+PGCeb0Ucy8RxwxtQK/L5YGcDz1vLO7I8JPa
+         mr7U6O49MtyO7tVCsVobJ+hKz6OS7kEMsedeGW3lwyFKuQZ3KROHTzaKOLXuLmIMo6x+
+         jp5+c5LNkgHmVVXFl9Al2l3QI8vlFRU81lOM0DCgvORrwbtrdSbbBW1RljBFeeHfZEeQ
+         hFbL/Yg2EByuL8gvhhplm3c/xapmwsd9VPIrTB6JTUJgk6UmUER/+wf5xd7PrS+g05Om
+         iVlg==
+X-Gm-Message-State: AOAM530IJEBxrCd6tp4jY2K7c4x3yy2oCFk+i1P6x5ScY057CI80KGVl
+        ltm013BZl57yBIwY9TUGTtYpg28013BYYcREIe0JOA==
+X-Google-Smtp-Source: ABdhPJxzzAJAoFVRENqAVs40gjeLmdQmf8w/SzQ1OZ0IRexZkd2N+MTwdqJ2gAjRYqb28BnHbaZTd8AXGltSe1mQUnU=
+X-Received: by 2002:a67:1087:: with SMTP id 129mr20527619vsq.42.1621865485296;
+ Mon, 24 May 2021 07:11:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520101330.2255-1-zbestahu@gmail.com>
-In-Reply-To: <20210520101330.2255-1-zbestahu@gmail.com>
+References: <20210521034432.2321-1-zbestahu@gmail.com>
+In-Reply-To: <20210521034432.2321-1-zbestahu@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 16:10:43 +0200
-Message-ID: <CAPDyKFqLgAm02OY4NK-yCmpQYaePwY0HBUYKRyMRSY+8KAU_HQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: cqhci: fix typo
+Date:   Mon, 24 May 2021 16:10:47 +0200
+Message-ID: <CAPDyKFqPyyMizqFYfOcphXA3z3oJqod4x014T0D25Lm75uRHFg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: cqhci: introduce get_trans_desc_offset()
 To:     Yue Hu <zbestahu@gmail.com>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Harjani Ritesh <riteshh@codeaurora.org>,
@@ -63,11 +63,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 12:13, Yue Hu <zbestahu@gmail.com> wrote:
+On Fri, 21 May 2021 at 05:44, Yue Hu <zbestahu@gmail.com> wrote:
 >
 > From: Yue Hu <huyue2@yulong.com>
 >
-> 'descritors' -> 'descriptors'
+> The same calculation to get transfer descriptor offset is already used
+> at 3 different locations. Let's create a new helper to simplify code.
 >
 > Signed-off-by: Yue Hu <huyue2@yulong.com>
 
@@ -78,22 +79,52 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/cqhci-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/host/cqhci-core.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
 >
 > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index e759e3b..c237b6e 100644
+> index c237b6e..1128dd5 100644
 > --- a/drivers/mmc/host/cqhci-core.c
 > +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -146,7 +146,7 @@ static void cqhci_dumpregs(struct cqhci_host *cq_host)
+> @@ -45,17 +45,23 @@ static inline u8 *get_link_desc(struct cqhci_host *cq_host, u8 tag)
+>         return desc + cq_host->task_desc_len;
 >  }
 >
->  /*
-> - * The allocated descriptor table for task, link & transfer descritors
-> + * The allocated descriptor table for task, link & transfer descriptors
->   * looks like:
->   * |----------|
->   * |task desc |  |->|----------|
+> +static inline size_t get_trans_desc_offset(struct cqhci_host *cq_host, u8 tag)
+> +{
+> +       return cq_host->trans_desc_len * cq_host->mmc->max_segs * tag;
+> +}
+> +
+>  static inline dma_addr_t get_trans_desc_dma(struct cqhci_host *cq_host, u8 tag)
+>  {
+> -       return cq_host->trans_desc_dma_base +
+> -               (cq_host->mmc->max_segs * tag *
+> -                cq_host->trans_desc_len);
+> +       size_t offset = get_trans_desc_offset(cq_host, tag);
+> +
+> +       return cq_host->trans_desc_dma_base + offset;
+>  }
+>
+>  static inline u8 *get_trans_desc(struct cqhci_host *cq_host, u8 tag)
+>  {
+> -       return cq_host->trans_desc_base +
+> -               (cq_host->trans_desc_len * cq_host->mmc->max_segs * tag);
+> +       size_t offset = get_trans_desc_offset(cq_host, tag);
+> +
+> +       return cq_host->trans_desc_base + offset;
+>  }
+>
+>  static void setup_trans_desc(struct cqhci_host *cq_host, u8 tag)
+> @@ -194,8 +200,7 @@ static int cqhci_host_alloc_tdl(struct cqhci_host *cq_host)
+>
+>         cq_host->desc_size = cq_host->slot_sz * cq_host->num_slots;
+>
+> -       cq_host->data_size = cq_host->trans_desc_len * cq_host->mmc->max_segs *
+> -               cq_host->mmc->cqe_qdepth;
+> +       cq_host->data_size = get_trans_desc_offset(cq_host, cq_host->mmc->cqe_qdepth);
+>
+>         pr_debug("%s: cqhci: desc_size: %zu data_sz: %zu slot-sz: %d\n",
+>                  mmc_hostname(cq_host->mmc), cq_host->desc_size, cq_host->data_size,
 > --
 > 1.9.1
 >
