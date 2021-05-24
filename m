@@ -2,80 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AEB38DE7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634CB38DE7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhEXAtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 20:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhEXAtl (ORCPT
+        id S232127AbhEXAzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 20:55:31 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34691 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232050AbhEXAza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 20:49:41 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40F3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 17:48:14 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id q17-20020a4a33110000b029020ebab0e615so4034257ooq.8
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 17:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LgHdI5lskBzQnFk3xTRhcif2ctUBxuiUcbVE733gEr8=;
-        b=ZIs3NVVJWysGgYsZGra4RfHIaEnA0lVtrkwsDxyw+Rqo1E9GWIQVy6qgnY/Ec36Ehf
-         Ct0+dhJvJoFqSSfbsFlJQjd+FfJNR50tvR4d0ujGnvh/R5ct63SH2SAJWCn7d3R8aTYe
-         R1O0Ltgi/0RUQxHtwHmuyBwD/q2z8e4ECHohz+DbzO6NzBynwE8/AZ+X3/+dYWOwfxWm
-         yIA/PNty3XtwjLtLuacuW5CHtYjubp+VMF3dNvg6A3X3QFx3P+av4XhucPQCpvXSkdHl
-         y3eKmh/AABQB8z8IevvJ74ZJQuNUCItYmIrrY9r0OFHsKIk96Ntj5iw05og9PD024ZRS
-         oHtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LgHdI5lskBzQnFk3xTRhcif2ctUBxuiUcbVE733gEr8=;
-        b=CYDI5RYIoEHiluRflPZppedD8I6x6QHNiAUK64ndvTWixa4kg4a3Tqddln8sMtFpiQ
-         HjaUXkdk6Em6UplB/f0GvUEmGpYzzmXv3sgPWDlNhZZ1dvZiwTGgRZeQEJ1HXzFf5o/r
-         DScs7Nz/AAwsy2O8u4vG10y8GLa3GDWUNR1kemo5ruOBXk4LSkieYwySSpgdI1SqurJ5
-         zUJirMw2VGp0mNCvRZ5gje6taivOkypyzkK9Dncl8rwkomAcW6xKOeMe12yaBR/3VuIy
-         GYu6bIU+NDNJKQAWz0XJhqj6vToMsibicgU4UGlaVLz8JOOlf1seZ3WuU5i4pR7UF96v
-         U+KA==
-X-Gm-Message-State: AOAM530Eb8QqK0jj291Wh1c1q2DeXhZsmOI1KMrvO7Hz6goknp+NbPnu
-        WONTu3NiO7o7N43VNF6SSefK7hbSRq8=
-X-Google-Smtp-Source: ABdhPJxPPj9qUfByHMsPKClKscnlD5mVFNMbL+0hmAMiyEuGT891qPBd5QcEy95NFOR3yHm3I7b6Uw==
-X-Received: by 2002:a4a:d89a:: with SMTP id b26mr14219433oov.11.1621817292972;
-        Sun, 23 May 2021 17:48:12 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f2sm2750743otp.77.2021.05.23.17.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 17:48:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 23 May 2021 17:48:11 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.13-rc3
-Message-ID: <20210524004811.GA1714622@roeck-us.net>
-References: <CAHk-=wiUwtRp+jjCMd9x8O90iD_YHVBQzJoKCsT9e06L7qob3Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiUwtRp+jjCMd9x8O90iD_YHVBQzJoKCsT9e06L7qob3Q@mail.gmail.com>
+        Sun, 23 May 2021 20:55:30 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C31455802BD;
+        Sun, 23 May 2021 20:54:02 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Sun, 23 May 2021 20:54:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=c1N+jbjenOjR/XYKJ9JrzDDr2ArT8jH
+        cPPYVtFN0+8s=; b=ok68MILGrCZHwK/EEaDToidzeAy70JVtB9FjJ/pwDgHMLPY
+        ovb+ac2A0hKcALq3BTdinuwCUU4tFEwGrOvVUL4mgilE0fbIeLVIYkvTSg/A3C9A
+        isVLljZCWMdha3ynTPS17MuqSVPwWl+xJfQt4IZm5lrj3u6/bDh1GWIUQBVKySVd
+        7ERl6fYx9Hzwm7OyafapAf+HBqlPX9FYAxNvCWVQ9ffjN0rYZxPnzQvHDbFhf3R7
+        IkCLkHtnZMQBtAnVcG+H+5GnhaCsHT3HniEb+iFzns1yaffCeyg6si9NuN84TU7r
+        3z366tuQSQtEi+GBbH7tKxItf/Q+Fdx23+XX7rw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=c1N+jb
+        jenOjR/XYKJ9JrzDDr2ArT8jHcPPYVtFN0+8s=; b=sPFszQINYn+1MtITcFCPyx
+        lNphgTAT0DJen+WqjLY3YH7HctWzuSJZ3zFTeSqLVuWZDYrW/idxoBb2M6LPgQEt
+        ki/8+/Rk5S3eboxuGAYSLYMeGt4FwnCgkj+pOAJmlbNiPSPABGZshOSo60atWGdN
+        cG0D6RtmqjLAFdmo/kORMxRpta5VgktFkB9TRMbfmX0piFWDr6uIDOQAVJbV4LjE
+        DzJ46YD4tCg8RGGDBhp/tGiEQT+XdDLiX7JE1q4DwXdCPcoKSS4zY+wSpDL+idNh
+        R1IVg/tHltd7L39TDpOgOOuq+WjNKHaAYxtN9BElPSGpkJQYPt1F36fzw4/0Bt1g
+        ==
+X-ME-Sender: <xms:KfmqYFGXktOhUPKNJDzJOYcQ4Tzeks6lN1hunCMH1BbKURc_qdOeeQ>
+    <xme:KfmqYKVP_82xbmIxz_bE2LM3yEsYweE7P_onWJwfGBmcrYdGMtiisHCAzK7IyH6hJ
+    zaAN34p43ng12aQBA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejkedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:KfmqYHJ_v5C8EG4EYW_NTn5UOzrX06fnPFbJZwnae3XD3YlkYQwJYg>
+    <xmx:KfmqYLEbBUyIlB3eIXd5Hlj8oTL17cnH9n5uxKzO935D-w7tJcEf8g>
+    <xmx:KfmqYLWUfTZj2bVKOVzdVzOrcjFw_MTyYmuY4pT_lvT-CSbWNEFr9g>
+    <xmx:KvmqYIW307aCSiZ_4TnEnca3DgiXJQoDUWxBQVo4wWBb1GY4ECIEyg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A081EA004B1; Sun, 23 May 2021 20:54:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <79f3c6d1-1f74-46ec-99a0-37faf11517b6@www.fastmail.com>
+In-Reply-To: <20210521171412.GI2921206@minyard.net>
+References: <20210510054213.1610760-1-andrew@aj.id.au>
+ <20210510054213.1610760-6-andrew@aj.id.au>
+ <20210521171412.GI2921206@minyard.net>
+Date:   Mon, 24 May 2021 10:23:36 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Corey Minyard" <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed@lists.ozlabs.org,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        linux-kernel@vger.kernel.org, "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        "Arnd Bergmann" <arnd@arndb.de>, "Zev Weiss" <zweiss@equinix.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_05/16]_ipmi:_kcs=5Fbmc:_Turn_the_driver_data-str?=
+ =?UTF-8?Q?uctures_inside-out?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 11:57:20AM -1000, Linus Torvalds wrote:
-> Hmm. rc3 is when usually the other shoe drops, and we start having a
-> lot more fixes for fallout from the merge window.
-> 
-> Not so this time. It's been a very calm rc3 week, and at least in pure
-> number of commits this is the smallest rc3 we've had in the 5.x
-> series.
-> 
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 462 fail: 0
 
-Guenter
+On Sat, 22 May 2021, at 02:44, Corey Minyard wrote:
+> On Mon, May 10, 2021 at 03:12:02PM +0930, Andrew Jeffery wrote:
+> > Make the KCS device drivers responsible for allocating their own memory.
+> > 
+> > Until now the private data for the device driver was allocated internal
+> > to the private data for the chardev interface. This coupling required
+> > the slightly awkward API of passing through the struct size for the
+> > driver private data to the chardev constructor, and then retrieving a
+> > pointer to the driver private data from the allocated chardev memory.
+> > 
+> > In addition to being awkward, the arrangement prevents the
+> > implementation of alternative userspace interfaces as the device driver
+> > private data is not independent.
+> > 
+> > Peel a layer off the onion and turn the data-structures inside out by
+> > exploiting container_of() and embedding `struct kcs_device` in the
+> > driver private data.
+> 
+> All in all a very nice cleanup.  A few nits inline.
+> 
+> > 
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > Reviewed-by: Zev Weiss <zweiss@equinix.com>
+> > ---
+> >  drivers/char/ipmi/kcs_bmc.c           | 19 +++++++--
+> >  drivers/char/ipmi/kcs_bmc.h           | 12 ++----
+> >  drivers/char/ipmi/kcs_bmc_aspeed.c    | 56 +++++++++++++------------
+> >  drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 60 ++++++++++++++++++---------
+> >  drivers/char/ipmi/kcs_bmc_npcm7xx.c   | 37 ++++++++++-------
+> >  5 files changed, 111 insertions(+), 73 deletions(-)
+> > 
+> > diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+> > index ef5c48ffe74a..83da681bf49e 100644
+> > --- a/drivers/char/ipmi/kcs_bmc.c
+> > +++ b/drivers/char/ipmi/kcs_bmc.c
+> > @@ -44,12 +44,23 @@ int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
+> >  }
+> >  EXPORT_SYMBOL(kcs_bmc_handle_event);
+> >  
+> > -struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel);
+> > -struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
+> > +int kcs_bmc_ipmi_add_device(struct kcs_bmc *kcs_bmc);
+> 
+> The above (and it's remove function) should be in an include file.
+
+This is a short-term hack while I'm refactoring the code. It goes away 
+in a later patch when we switch to using an ops struct.
+
+I didn't move it to a header as it's an implementation detail at the 
+end of the day. I see headers as describing a public interface, and in 
+the bigger picture this function isn't part of the public API. But 
+maybe it's too tricky by half. My approach here generated some 
+discussion with Zev as well.
+
+> 
+> > +void kcs_bmc_add_device(struct kcs_bmc *kcs_bmc)
+> 
+> This should return an error so the probe can be failed and cleaned up
+> and so confusing message don't get printed after this in one case.
+
+Hmm. I did this because the end result of the series is that we can 
+have multiple chardev interfaces in distinct modules exposing the one 
+KCS device in the one kernel. If more than one of the chardev modules 
+is configured in and one of them fails to initialise themselves with 
+respect to the device driver I didn't think it was right to fail the 
+probe of the device driver (and thus remove any chardev interfaces that 
+did succeed to initialise against it).
+
+But this does limit the usefulness of the device driver instance in the 
+case that only one of the chardev interfaces is configured in and it 
+fails to initialise.
+
+So I think we need to decide on the direction before I adjust the 
+interface here. The patches are architected around the idea of multiple 
+chardevs being configured in to the kernel build and all are exposed at 
+runtime.
+
+The serio subsystem does have the 'drvctl' sysfs knob that allows 
+userspace to dictate which serio chardev interface they want to connect 
+to a serio device driver. Maybe that's preferred over my "connect them 
+all" strategy?
+
+Andrew
