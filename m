@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA5D38E173
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD87238E19B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhEXHXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 03:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbhEXHW7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 03:22:59 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AB5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 00:21:31 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id s15so13755810vsi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 00:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q9optjELGGE/yo65RX7aE+4P5JsAxC90Oa22sr1MR3U=;
-        b=eqjethxm3stGXVFYIbqtC/i944yZy5WCk5w5yeOccFG7SpB4oMGJIoyK55+UongDLF
-         Thj7uaOi+gx9oAA23xzNHjx355I/Z8SY8kD385MvXo4/OBDDR0tR4dNd9FX2hQv4iSW9
-         vEvt8DSMhedO4f34cC5h3XLodL69S+afXSWDBTZ/nMZ4aQqdOdxLjXpTOwR933OQn33H
-         +OjCIM2PqxhhPhBMAXAx+r2cuTep8htw9PuaatuZqvm0FcwVSlYU+eaD89cGL55IiWR1
-         V1Dr1iO2TbR4I0RlpPH0zPaO9oNLgj+KsBfXt41Vlp9JzrZyrSmiHN18hy7bWdFtleks
-         CSVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q9optjELGGE/yo65RX7aE+4P5JsAxC90Oa22sr1MR3U=;
-        b=JV/cBAD9QU32uEU5t6uDuy4oPIXZWvjpJ91iVBv97E3R//K2zslws/0apprJTbvFdr
-         DTSCGK/1yqS6Rhq9pReUcdAvg66uFKFtEOYhlX8FEwly7Kv/IiKjyiUoP8jKTpzW4UbN
-         jYi1XNdHr//7ldyK5ZBgK7kZvJ/QxiNfhxWON3obGZWH7kZ3W29amMB5qIqdSqZ8kqZQ
-         eb6Z/MZHn/+e1NtLrG0FWHLierXvH2MYeER4xrYVToZG7+vN2hvm8x/1PkDyFsnxvbCQ
-         CJISvQp5JLtgwOI4WRAwT0RETe2x+z7e9B+/hkMXhD2cZea6G+mCDa/geZ3ftAFGYdEx
-         OnkA==
-X-Gm-Message-State: AOAM530ePCUiYY/NqtOJP4yp/RIZazhYr+EDmIjSp6e+L2/Y+ap+TPz5
-        MY9T//EF4nAJV/ryRKgK8B187VuKQrDaAiFPyp5WKosw8gbwQvdh
-X-Google-Smtp-Source: ABdhPJxRZyK30UO9EkCv+1hq3sj8BoCtl7s93CCU/nrkc+Hg7BZWBt66ORrYI1kIoOk9tN+NJaUiVWRUYhiBgomZ/AI=
-X-Received: by 2002:a67:7d85:: with SMTP id y127mr19264486vsc.43.1621840890897;
- Mon, 24 May 2021 00:21:30 -0700 (PDT)
+        id S232345AbhEXH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 03:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232128AbhEXH2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 03:28:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98B5260E0B;
+        Mon, 24 May 2021 07:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621841199;
+        bh=NGwm1jJDkT8JccuOTPA1VPiOYYl1wMQVrKM3KE+Lle0=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=O0bc9TnCRB9a5C8Qas5eSkTrPf0c7AZhULO+boeX9JvnAj7gCxTkW7P+IO9xKJsEl
+         3WTl7e2di3txH6cG3jNwBq3AJSU1k8VUaNmbD+QqIINCr68Jgq102oGcBJl+TBaYlF
+         b/GinEWG/8Vdov0OMBoI5ERXuQ38D7io/mDARFAz5C7jF3Dh6LaYOkbmJWfnGWBi7Y
+         EI8u1g6Iikj51NMnSDrXrdvfCB98dnwNq5rRgelzNy1M65CrUBCK9HZcgki2TC8CYr
+         G7et06woWEEZyQmiY8CcQpmAnz57EapjBLofP7IjsBb92QB4HP82N1dIWGL+OB3vtX
+         Bun56XJXALeYg==
+Date:   Mon, 24 May 2021 12:56:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 01/13] drm/dsc: Add dsc pps header init function
+Message-ID: <YKtVKn/R5wF4nkHj@vkoul-mobl.Dlink>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-2-vkoul@kernel.org>
+ <YKfR1BGWa/CVYg9w@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <20210521181042.7726-1-aardelean@deviqon.com> <CAMpxmJW1Q-m_W+n28V9sEqvnb4ZVTGq_55DedhuJxu5icuD9sQ@mail.gmail.com>
-In-Reply-To: <CAMpxmJW1Q-m_W+n28V9sEqvnb4ZVTGq_55DedhuJxu5icuD9sQ@mail.gmail.com>
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-Date:   Mon, 24 May 2021 10:21:20 +0300
-Message-ID: <CAASAkoZWeQ3xSB3P-fLrym+_0b23HRuvaw3LW2Zgy9CVKr3AWQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-xgene: simplify probe, return
- devm_gpiochip_add_data() directly
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKfR1BGWa/CVYg9w@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 May 2021 at 21:31, Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
->
-> On Fri, May 21, 2021 at 8:10 PM Alexandru Ardelean
-> <aardelean@deviqon.com> wrote:
-> >
-> > The handling of the return value from devm_gpiochip_add_data() is a bit
-> > redundant. It prints messages on error and success cases.
-> > While the success message may be useful, it is more in the area of log
-> > spam, and these can be printed with other forms of kernel logging.
-> >
-> > This change does a direct return with devm_gpiochip_add_data() in the probe
-> > function.
-> >
-> > The platform_set_drvdata() is needed, as this driver uses the stored
-> > private date in the PM suspend/resume routines.
-> >
-> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+On 21-05-21, 17:29, Daniel Vetter wrote:
+> On Fri, May 21, 2021 at 06:19:30PM +0530, Vinod Koul wrote:
+> > We required a helper to create and set the dsc_dce_header, so add the
+> > dsc_dce_header and API drm_dsc_dsi_pps_header_init
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > > ---
-> >  drivers/gpio/gpio-xgene.c | 11 +----------
-> >  1 file changed, 1 insertion(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-xgene.c b/drivers/gpio/gpio-xgene.c
-> > index 532b0df8a1f2..fb4b0c67aeef 100644
-> > --- a/drivers/gpio/gpio-xgene.c
-> > +++ b/drivers/gpio/gpio-xgene.c
-> > @@ -159,7 +159,6 @@ static SIMPLE_DEV_PM_OPS(xgene_gpio_pm, xgene_gpio_suspend, xgene_gpio_resume);
-> >  static int xgene_gpio_probe(struct platform_device *pdev)
-> >  {
-> >         struct xgene_gpio *gpio;
-> > -       int err = 0;
-> >
-> >         gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
-> >         if (!gpio)
-> > @@ -183,15 +182,7 @@ static int xgene_gpio_probe(struct platform_device *pdev)
-> >
-> >         platform_set_drvdata(pdev, gpio);
-> >
-> > -       err = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
-> > -       if (err) {
-> > -               dev_err(&pdev->dev,
-> > -                       "failed to register gpiochip.\n");
-> > -               return err;
-> > -       }
-> > -
-> > -       dev_info(&pdev->dev, "X-Gene GPIO driver registered.\n");
-> > -       return 0;
-> > +       return devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+> >  drivers/gpu/drm/drm_dsc.c | 11 +++++++++++
+> >  include/drm/drm_dsc.h     | 16 ++++++++++++++++
+> >  2 files changed, 27 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_dsc.c b/drivers/gpu/drm/drm_dsc.c
+> > index ff602f7ec65b..0c1b745090e2 100644
+> > --- a/drivers/gpu/drm/drm_dsc.c
+> > +++ b/drivers/gpu/drm/drm_dsc.c
+> > @@ -49,6 +49,17 @@ void drm_dsc_dp_pps_header_init(struct dp_sdp_header *pps_header)
 > >  }
-> >
-> >  static const struct of_device_id xgene_gpio_of_match[] = {
-> > --
-> > 2.31.1
-> >
->
-> Applied, thanks.
->
-> For the future: the subject should be: "gpio: xgene: ..." here and
-> everywhere else.
+> >  EXPORT_SYMBOL(drm_dsc_dp_pps_header_init);
+> >  
+> > +void drm_dsc_dsi_pps_header_init(struct dsc_dce_header *dsc_header)
+> 
+> Kerneldoc for anything exported to drivers please, also ideally for all
+> the structures.
 
-ack
-will keep that in mind
+Sorry missed that, will add
 
-thanks :)
-Alex
-
->
-> Bart
+-- 
+~Vinod
