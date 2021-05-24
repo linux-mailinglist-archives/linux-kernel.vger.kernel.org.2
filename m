@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0146138F086
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAFC38F07B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhEXQDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42834 "EHLO mail.kernel.org"
+        id S235488AbhEXQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235423AbhEXP4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8AC061209;
-        Mon, 24 May 2021 15:43:00 +0000 (UTC)
+        id S233148AbhEXP4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C8A613B6;
+        Mon, 24 May 2021 15:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870981;
-        bh=UFlC+LfaNg5QCjGzHQJXyOwrWTkb6L1wA1OyiI1Ofv8=;
+        s=korg; t=1621870983;
+        bh=UaJTUP9vSwhaor5B3Ksj/UGX8v9gBy3zGKcvbV9+OGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QOI8eO57kAimySRnYte07bfLxqyl5yz3vD/SjUOPTmJ+BrUEZqayoQtL3l3f1A4Rc
-         Ls1Hbhe2qn+77fO8SFcvoE8tuUofPchAY2r1o1vMyHx9p80U/0a9AeQn+0v4yqUMFD
-         d8fA9mIasStTLgx3ziakfU/xSUCW7Rc9yV5T2rqs=
+        b=CAMRRYbdL1AJOkwCYd9CLNpoIEyip5qzNAvcWg8CY/GYp4s1YcaEJE9GPANNqymmA
+         PJkd5u50umiZcnQ8d+DzwaW7JdLwMbONTa7V21InKuRInxguHF4TaUH30PpHeiVXK4
+         67H5b2qZRUO/5NI6NjY6/HQUrV4oIckkTi8beLs8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
         Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 019/127] nvme-tcp: rerun io_work if req_list is not empty
-Date:   Mon, 24 May 2021 17:25:36 +0200
-Message-Id: <20210524152335.509055269@linuxfoundation.org>
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 020/127] nvme-fc: clear q_live at beginning of association teardown
+Date:   Mon, 24 May 2021 17:25:37 +0200
+Message-Id: <20210524152335.540349481@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
 References: <20210524152334.857620285@linuxfoundation.org>
@@ -40,46 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keith Busch <kbusch@kernel.org>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit a0fdd1418007f83565d3f2e04b47923ba93a9b8c ]
+[ Upstream commit a7d139145a6640172516b193abf6d2398620aa14 ]
 
-A possible race condition exists where the request to send data is
-enqueued from nvme_tcp_handle_r2t()'s will not be observed by
-nvme_tcp_send_all() if it happens to be running. The driver relies on
-io_work to send the enqueued request when it is runs again, but the
-concurrently running nvme_tcp_send_all() may not have released the
-send_mutex at that time. If no future commands are enqueued to re-kick
-the io_work, the request will timeout in the SEND_H2C state, resulting
-in a timeout error like:
+The __nvmf_check_ready() routine used to bounce all filesystem io if the
+controller state isn't LIVE.  However, a later patch changed the logic so
+that it rejection ends up being based on the Q live check.  The FC
+transport has a slightly different sequence from rdma and tcp for
+shutting down queues/marking them non-live.  FC marks its queue non-live
+after aborting all ios and waiting for their termination, leaving a
+rather large window for filesystem io to continue to hit the transport.
+Unfortunately this resulted in filesystem I/O or applications seeing I/O
+errors.
 
-  nvme nvme0: queue 1: timeout request 0x3 type 6
+Change the FC transport to mark the queues non-live at the first sign of
+teardown for the association (when I/O is initially terminated).
 
-Ensure the io_work continues to run as long as the req_list is not empty.
-
-Fixes: db5ad6b7f8cdd ("nvme-tcp: try to send request in queue_rq context")
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Fixes: 73a5379937ec ("nvme-fabrics: allow to queue requests for live queues")
+Signed-off-by: James Smart <jsmart2021@gmail.com>
 Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/tcp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/fc.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index d7d7c81d0701..f8ef1faaf5e4 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1137,7 +1137,8 @@ static void nvme_tcp_io_work(struct work_struct *w)
- 				pending = true;
- 			else if (unlikely(result < 0))
- 				break;
--		}
-+		} else
-+			pending = !llist_empty(&queue->req_list);
- 
- 		result = nvme_tcp_try_recv(queue);
- 		if (result > 0)
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 6ffa8de2a0d7..5eee603bc249 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2460,6 +2460,18 @@ nvme_fc_terminate_exchange(struct request *req, void *data, bool reserved)
+ static void
+ __nvme_fc_abort_outstanding_ios(struct nvme_fc_ctrl *ctrl, bool start_queues)
+ {
++	int q;
++
++	/*
++	 * if aborting io, the queues are no longer good, mark them
++	 * all as not live.
++	 */
++	if (ctrl->ctrl.queue_count > 1) {
++		for (q = 1; q < ctrl->ctrl.queue_count; q++)
++			clear_bit(NVME_FC_Q_LIVE, &ctrl->queues[q].flags);
++	}
++	clear_bit(NVME_FC_Q_LIVE, &ctrl->queues[0].flags);
++
+ 	/*
+ 	 * If io queues are present, stop them and terminate all outstanding
+ 	 * ios on them. As FC allocates FC exchange for each io, the
 -- 
 2.30.2
 
