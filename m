@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C28538F072
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB90B38EDCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhEXQDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
+        id S233517AbhEXPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:42:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235253AbhEXP4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC8F61948;
-        Mon, 24 May 2021 15:42:47 +0000 (UTC)
+        id S233878AbhEXPiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:38:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6FCB613E6;
+        Mon, 24 May 2021 15:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870968;
-        bh=D/2y5FVPzJodZp6DEraexI3A1SvBbzyVLpy2k67Z2cA=;
+        s=korg; t=1621870403;
+        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UslvJDa3pO+JUJvwPjEM+//zh3A2d9iaJCaguL4o1ZHAolLk5ttfusy7AQwoturVY
-         thOsqKse4Ntcp6LblVzNG7XsLwPS7tr6MHhOUNomtVIKUIsyj6C6qXqEVOILj+U5NG
-         qoCs3jN5TH5xAJDk5rwO4jtjWzTRj8gk7trk7TRQ=
+        b=b8QhNJIa/E+uQ+IRu/BN09rppDgzNqfqY22V9EOhuycqvuiM8QkzZypZWn6XEaqxx
+         AWHVX4IuXtLPv1IbrlbedOUGmoPEsqkXB7oZe8JmUGRWFeX1xArOX7lfp5tVmD9hO1
+         EbXl3Zfc8hxGcSzhPyNYTBcBYT1O3WJNYKyA2p78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 005/127] RDMA/siw: Properly check send and receive CQ pointers
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: [PATCH 4.14 18/37] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
 Date:   Mon, 24 May 2021 17:25:22 +0200
-Message-Id: <20210524152335.038402382@linuxfoundation.org>
+Message-Id: <20210524152324.802635547@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit a568814a55a0e82bbc7c7b51333d0c38e8fb5520 ]
+commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
 
-The check for the NULL of pointer received from container_of() is
-incorrect by definition as it points to some offset from NULL.
+This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
 
-Change such check with proper NULL check of SIW QP attributes.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-Link: https://lore.kernel.org/r/a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit does not properly unwind if there is an error
+condition so it needs to be reverted at this point in time.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
+Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/sw/siw/siw_verbs.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/leds/leds-lp5523.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index e389d44e5591..d1859c56a6db 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -300,7 +300,6 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	struct siw_ucontext *uctx =
- 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
- 					  base_ucontext);
--	struct siw_cq *scq = NULL, *rcq = NULL;
- 	unsigned long flags;
- 	int num_sqe, num_rqe, rv = 0;
- 	size_t length;
-@@ -343,10 +342,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 		rv = -EINVAL;
- 		goto err_out;
- 	}
--	scq = to_siw_cq(attrs->send_cq);
--	rcq = to_siw_cq(attrs->recv_cq);
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
  
--	if (!scq || (!rcq && !attrs->srq)) {
-+	if (!attrs->send_cq || (!attrs->recv_cq && !attrs->srq)) {
- 		siw_dbg(base_dev, "send CQ or receive CQ invalid\n");
- 		rv = -EINVAL;
- 		goto err_out;
-@@ -401,8 +398,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 		}
- 	}
- 	qp->pd = pd;
--	qp->scq = scq;
--	qp->rcq = rcq;
-+	qp->scq = to_siw_cq(attrs->send_cq);
-+	qp->rcq = to_siw_cq(attrs->recv_cq);
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+-	if (ret)
+-		return ret;
++	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+ 	status &= LP5523_ENG_STATUS_MASK;
  
- 	if (attrs->srq) {
- 		/*
--- 
-2.30.2
-
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
