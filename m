@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DAC38E7E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A37C38E7E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhEXNnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:43:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38665 "EHLO
+        id S232922AbhEXNoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:44:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51960 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232842AbhEXNnw (ORCPT
+        by vger.kernel.org with ESMTP id S232903AbhEXNoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:43:52 -0400
+        Mon, 24 May 2021 09:44:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621863744;
+        s=mimecast20190719; t=1621863754;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LdCvQOrGWjsKZxZwOOVoEv2iDDtEdHzVz0K+vqaSd8c=;
-        b=OznwIRICTH24zzW5gMa9gEsoTDyle4BU3ee+JgUiJIVKpl3pM09ZZ1uHJu02reUAlnptTI
-        RhST/fPWO6X6PD4Kmxkaa6SWDmK7it39OPE8Aj6advPoDxpltxSciAtuf1cmHcYpDss7e8
-        2BWgPXtxgu0zFrCiDkdBJXS+kIf/WHA=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-NDW0gLubP4S_Mw1LOlBMFQ-1; Mon, 24 May 2021 09:42:23 -0400
-X-MC-Unique: NDW0gLubP4S_Mw1LOlBMFQ-1
-Received: by mail-qk1-f199.google.com with SMTP id n3-20020a378b030000b02903a624ca95adso9709983qkd.17
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:42:22 -0700 (PDT)
+        bh=DUGrASOClCVVu+4hqHSu8VfIIMkQ9/UZu/ZQ1hqek/8=;
+        b=MhufEkbuLsU/q2UUxz3q0qfgNtYZS4QaH/huXqzjS1u0IGv60q9bQY18wS0bYYTj9IFugG
+        XFNz4xxQCBnDjI5s1joChw9aVO2bLgNd/8QD0stnt4hTnKCf8tk4mUpXVeayGeHfKivV71
+        IKuhkMRpKpE40dIBLMFPCE9lr4h9D+4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-388-cSNDkjNnNH-thcDR-ePhpA-1; Mon, 24 May 2021 09:42:32 -0400
+X-MC-Unique: cSNDkjNnNH-thcDR-ePhpA-1
+Received: by mail-ed1-f71.google.com with SMTP id q18-20020a50cc920000b029038cf491864cso15566664edi.14
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:42:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=LdCvQOrGWjsKZxZwOOVoEv2iDDtEdHzVz0K+vqaSd8c=;
-        b=fOYBkS1ABNVu26sGmsQ21rzeo2URZVwBhgGmr1WyOSrY30U6U8uAUGptsFGJcBH20t
-         OiqcOwf3aHdMJyX0SFZGuXiRoqZEZIrAU4q/ASZgsd/ATQ3gq1JN+qMFuR5QjMRteP6Y
-         3pZw/HfgZYVMveRrCxKsEKa3yhstVDY4Uu86P6n3Nl86XZhh3MBVTtwweCah/pPIVLlZ
-         KLMBgD5ds31EtEcUMsdBRf+AsViJu79XLD2S+C5dgnZBID2OCiz1ctCEvqAkqqQnhqCn
-         SgNp3BibbM7DrQDXH5a0nlFahrEZVUlvNIZc5prcPUeUORWWZefKT35PDbW2EAvGhc27
-         BCWQ==
-X-Gm-Message-State: AOAM530bKyqbTv3qShF3jVAAgUFAInxwDdA106o8d6t9RUI2jB9ui5ZL
-        8UkPCcdNJxymF2caPeB9vP8XkwxUyiuN5WBcZMsiAcAwX3mUEjVJ1NbaP2Yz2JRFKdP2c1S8EoS
-        dmrIf+mFhcFL+QDzez5FFPdVr
-X-Received: by 2002:ac8:41cc:: with SMTP id o12mr26663196qtm.225.1621863742580;
-        Mon, 24 May 2021 06:42:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzN2E6OyuJT27NGON0ll9bXuQZKU5qzeFUWBdBB/qU4w1rut3dBJP1eWoBaCwE7Gm43LKEigw==
-X-Received: by 2002:ac8:41cc:: with SMTP id o12mr26663182qtm.225.1621863742394;
-        Mon, 24 May 2021 06:42:22 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c185sm10971448qkg.96.2021.05.24.06.42.21
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DUGrASOClCVVu+4hqHSu8VfIIMkQ9/UZu/ZQ1hqek/8=;
+        b=p7GeztU/2Syj81rXmY57PEJhCWQ8IhZBnXMuj0zCmTw1WNlv6A5HMSyAtqtPvt5yRI
+         CgP/OA07h/1t3OxS5Boyv454aBeuuOhqrA0GsaDOSDEI58jN1F+aPwAHq7TOjMvxup3V
+         S3qRDq6YjiYvrD/D6SS2sZAlT2DHbvcRRDq+bYhqcQFMzZtoqF0+GxhzPKM4ln2J1L02
+         zsr38wx+e6lfjm9z4Sj1vt6E44yNU2/btaT64st5BXkMcuWErvSag+EuKe7mF4I17BrU
+         5r1D0e3R+X9sI25i05D0SKE2LcrJqspBDz7eepYPQlRo3epWJwljR4d2WFdWUswpq5UA
+         8FvQ==
+X-Gm-Message-State: AOAM531AR6CFFK4VfuVB3drCsZUU9MpShj45DJ/AZV7Eego7InRcxy4c
+        h8E5OZJ8DiJFQqxGYw7as9kPyAvn9Mz8Pnp+bkBuhUADA5XCr+tdrtEclkvmEZjlnE4yz6aIITZ
+        fUzFRUmIWdK79T+glO6iaH32k
+X-Received: by 2002:a17:906:d1d1:: with SMTP id bs17mr23600358ejb.492.1621863751795;
+        Mon, 24 May 2021 06:42:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcWwMt0UzuQzlYcKpAU17jJOBCW8vfhS/ldYW7vG8tdP2J+BOzpNidMdWDqfxSu6zF1AB5Uw==
+X-Received: by 2002:a17:906:d1d1:: with SMTP id bs17mr23600344ejb.492.1621863751659;
+        Mon, 24 May 2021 06:42:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q16sm7960408ejm.12.2021.05.24.06.42.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:42:21 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] docs: lockdep-design: correct the notation for writer
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Xiongwei Song <sxwjean@gmail.com>
-Cc:     Waiman Long <llong@redhat.com>, Xiongwei Song <sxwjean@me.com>,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        corbet@lwn.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-References: <1621578594-13237-1-git-send-email-sxwjean@me.com>
- <e0c0302f-e63f-7eba-872b-85e21b0b1622@redhat.com>
- <CAEVVKH9nwPmQo8L-eRsWST+gPaJ73MSHZfJ-mM8qWvPaiejdrA@mail.gmail.com>
- <YKuAvt3WXBVASuhY@boqun-archlinux>
-Message-ID: <ab3c5c38-1447-99e1-ee22-9e5af906d8b4@redhat.com>
-Date:   Mon, 24 May 2021 09:42:20 -0400
+        Mon, 24 May 2021 06:42:31 -0700 (PDT)
+Subject: Re: [PATCH v4 2/5] KVM: X86: Bail out of direct yield in case of
+ under-committed scenarios
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+ <1621339235-11131-2-git-send-email-wanpengli@tencent.com>
+ <YKQTx381CGPp7uZY@google.com>
+ <CANRm+Cy_D3cBBEYQ9ApKMNC6p0dpTBQYQXs+dv5vrFedVkOy2w@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <889a0a43-0641-70ce-d2a5-ed71bd54e59c@redhat.com>
+Date:   Mon, 24 May 2021 15:42:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YKuAvt3WXBVASuhY@boqun-archlinux>
+In-Reply-To: <CANRm+Cy_D3cBBEYQ9ApKMNC6p0dpTBQYQXs+dv5vrFedVkOy2w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 6:32 AM, Boqun Feng wrote:
-> On Mon, May 24, 2021 at 12:24:00PM +0800, Xiongwei Song wrote:
->> On Fri, May 21, 2021 at 11:17 PM Waiman Long <llong@redhat.com> wrote:
->>> On 5/21/21 2:29 AM, Xiongwei Song wrote:
->>>> From: Xiongwei Song <sxwjean@gmail.com>
->>>>
->>>> The block condition matrix is using 'E' as the writer noation here, so it
->>>> would be better to use 'E' as the reminder rather than 'W'.
->>>>
->>>> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
->>>> ---
->>>>    Documentation/locking/lockdep-design.rst | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
->>>> index 9f3cfca..c3b923a 100644
->>>> --- a/Documentation/locking/lockdep-design.rst
->>>> +++ b/Documentation/locking/lockdep-design.rst
->>>> @@ -462,7 +462,7 @@ Block condition matrix, Y means the row blocks the column, and N means otherwise
->>>>        | R | Y | Y | N |
->>>>        +---+---+---+---+
->>>>
->>>> -     (W: writers, r: non-recursive readers, R: recursive readers)
->>>> +     (E: writers, r: non-recursive readers, R: recursive readers)
->>>>
->>>>
->>>>    acquired recursively. Unlike non-recursive read locks, recursive read locks
->>> I would say it should be the other way around. Both W and E refer to the
->>> same type of lockers. W emphasizes writer aspect of it and E for
->>> exclusive. I think we should change the block condition matrix to use W
->>> instead of E.
->> The doc uses 'E'  to describe dependency egdes too. Should we change them
->> to 'W'? Personally,  both 'W' and 'E' are fine.
->>
-> I also think Waiman's suggestion is solid, there are two ways to
-> classify locks:
->
-> 1.	W (Writers), R (Recursive Readers), r (Non-recursive Readers)
->
-> 2.	E (Exclusive locks), S (Shared locks), R (Recursive Readers),
-> 	N (Non-recursive locks)
->
-> And the relations between them are as follow:
->
-> 	E = W
-> 	R = R
-> 	N = W \/ r
-> 	S = R \/ r
->
-> , where "\/" is the set union.
->
-> The story is that I used the way #1 at first, and later on realized way
-> #2 is better for BFS implementation, also for reasoning, so here came
-> this leftover..
->
-My suggestion was based on the fact that it is harder to associate E 
-with writer. So from a readability perspective, it is better to change 
-the block condition matrix to use 'W' to make it more readable.
+On 19/05/21 04:57, Wanpeng Li wrote:
+> Looks good. Hope Paolo can update the patch description when applying.:)
+> 
+> "In case of under-committed scenarios, vCPU can get scheduling easily,
+> kvm_vcpu_yield_to add extra overhead, we can observe a lot of races
+> between vcpu->ready is true and yield fails due to p->state is
+> TASK_RUNNING. Let's bail out in such scenarios by checking the length
+> of current cpu runqueue, it can be treated as a hint of under-committed
+> instead of guaranteeing accuracy. 30%+ of directed-yield attempts can
+> avoid the expensive lookups in kvm_sched_yield() in an under-committed
+> scenario. "
+> 
 
-Cheers,
-Longman
+Here is what I used:
+
+     In case of under-committed scenarios, vCPUs can be scheduled easily;
+     kvm_vcpu_yield_to adds extra overhead, and it is also common to see
+     when vcpu->ready is true but yield later failing due to p->state is
+     TASK_RUNNING.
+     
+     Let's bail out in such scenarios by checking the length of current cpu
+     runqueue, which can be treated as a hint of under-committed instead of
+     guarantee of accuracy. 30%+ of directed-yield attempts can now avoid
+     the expensive lookups in kvm_sched_yield() in an under-committed scenario.
+
+Paolo
 
