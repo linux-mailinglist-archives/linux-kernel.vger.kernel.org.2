@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3C338F4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0DF38F4C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhEXVOj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 17:14:39 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43672 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233278AbhEXVOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:14:37 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1llHsk-0008Me-To; Mon, 24 May 2021 23:13:02 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andreas =?ISO-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/9] arm64: dts: rockchip: Prepare Rockchip RK1808
-Date:   Mon, 24 May 2021 23:13:03 +0200
-Message-ID: <3998020.X9hSmTKtgW@diego>
-In-Reply-To: <87fsycw41m.wl-maz@kernel.org>
-References: <20210516230551.12469-1-afaerber@suse.de> <7ef183f1-00f8-13c4-1fd3-eae9e0bbf74c@suse.de> <87fsycw41m.wl-maz@kernel.org>
+        id S233765AbhEXVQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:16:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47704 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232693AbhEXVQl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:16:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621890912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tSqH+teOXpDHWZon+DBvYi3eou87Q03md2WpxZpsMus=;
+        b=iD+ZcrvpkHK3YpOS0c0zJUc2hFeHB4e7O6Ad4fjO40eGs1wmMYV/EEbiZPW+/PRVJtPxAd
+        7KYaslf9NWsBzs4y12OMxl0KRFzkADC1UFGSbQwJTaoj5ndGDjp/TOt0zqkgYWBMGqD2Y5
+        37p4poIP8HVJ5HpqFcLUFp7940u1axs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-9l-R3px_NOKbjhKIBZEYiw-1; Mon, 24 May 2021 17:15:10 -0400
+X-MC-Unique: 9l-R3px_NOKbjhKIBZEYiw-1
+Received: by mail-ej1-f71.google.com with SMTP id p18-20020a1709067852b02903dab2a3e1easo5081574ejm.17
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:15:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tSqH+teOXpDHWZon+DBvYi3eou87Q03md2WpxZpsMus=;
+        b=OgeIFpfSgmJgx2brd7CaEnLx4Ta2MVpRWQWiBhVOijYFT0xGXIdybpH8NQM03OrRk5
+         q0LE2zM3/VPVr0dtXi7+PvapZzZAF/i8kA1D2itxNSHi52/IR2n/T9ldr096AiEZn/Qg
+         B4Sc5qqg8o2TwFmKIgfKpp5qJjGLiqGCH+H4awLKUZht8cB19dHkoKZm2ZVh1sxldnRW
+         FdcQK+JokM1S+d6FHpw1kN492QW1HJwCsXoC4zueoR8x9+VIF4H2HYdihynFnbKQjAAp
+         VRO6qoRKVieG3RwAFJYpM7/H9BDJTgazagjZVTpntIYRFyspK0zHoewy36SB6/f1q5gZ
+         iPtw==
+X-Gm-Message-State: AOAM533tz7k9B05YEFcmBYhH4RFj+y9jpqL8w6Eeww9uiTCp5/h6HurN
+        PzFiAFvJ13PADDu/c0kNuT+Ahk98sqH1UHU4l5XpVnNgA9LquCXYiG9PWkFrgjM4qrovi31GA0A
+        ekFqNur1KqC9NqVqGIlPfPX5SSNRwYvgT1D1MfRyz/9OlsgnoRyZv6GV0tHUfX6tg2besKA7ZBc
+        s6
+X-Received: by 2002:a17:906:c04b:: with SMTP id bm11mr25020159ejb.263.1621890908976;
+        Mon, 24 May 2021 14:15:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz51YimQBkMpa9ns4Adz91j+xw6D5Bn0s1GpKaDoZphhcT9OIEOBiGHwPu/jv+luDjGbwmtog==
+X-Received: by 2002:a17:906:c04b:: with SMTP id bm11mr25020137ejb.263.1621890908744;
+        Mon, 24 May 2021 14:15:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u1sm9837524edv.91.2021.05.24.14.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 14:15:08 -0700 (PDT)
+Subject: Re: [PATCH 42/43] KVM: VMX: Drop VMWRITEs to zero fields at vCPU
+ RESET
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210424004645.3950558-1-seanjc@google.com>
+ <20210424004645.3950558-43-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
+Date:   Mon, 24 May 2021 23:15:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20210424004645.3950558-43-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 24. Mai 2021, 17:21:41 CEST schrieb Marc Zyngier:
-> On Mon, 24 May 2021 14:32:41 +0100,
-> Andreas Färber <afaerber@suse.de> wrote:
-> > 
-> > On 17.05.21 11:21, Marc Zyngier wrote:
-> > > On Mon, 17 May 2021 00:05:45 +0100,
-> > > Andreas Färber <afaerber@suse.de> wrote:
-> > >>
-> > >> Add an initial Device Tree for Rockchip RK1808 SoC.
-> > >> Based on shipping TB-RK1808M0 DTB.
-> > >>
-> > >> Signed-off-by: Andreas Färber <afaerber@suse.de>
-> > >> ---
-> > >>  arch/arm64/boot/dts/rockchip/rk1808.dtsi | 203 +++++++++++++++++++++++
-> > >>  1 file changed, 203 insertions(+)
-> > >>  create mode 100644 arch/arm64/boot/dts/rockchip/rk1808.dtsi
-> > >>
-> > >> diff --git a/arch/arm64/boot/dts/rockchip/rk1808.dtsi b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
-> > >> new file mode 100644
-> > >> index 000000000000..af2b51afda7d
-> > >> --- /dev/null
-> > >> +++ b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
-> > [...]
-> > >> +		gic: interrupt-controller@ff100000 {
-> > >> +			compatible = "arm,gic-v3";
-> > >> +			reg = <0xff100000 0x10000>, /* GICD */
-> > >> +			      <0xff140000 0xc0000>, /* GICR */
-> > > 
-> > > This is obviously wrong. You have two CPUs, and yet describe a range
-> > > that spans 6. I guess this is a copy paste from rk3399 again?
-> > 
-> > Not on my part at least. As indicated, these numbers are what ships in
-> > the DTB on the RK1808 card, as per dtc -I dtb -O dts. Could be a mistake
-> > by Rockchip, of course.
-> > 
-> > Are you suggesting 0xc0000/6*2 = 0x40000 for two CPUs here?  Works
-> > as bad as before - investigation still ongoing with latest next.
-> > 
-> > As for "obviously": The GICv3 YAML binding has no description for me to
-> > validate those numbers: "GIC Redistributors (GICR), one range per
-> > redistributor region" - says nothing about correlation to number of CPUs
-> > or size per CPU, and the examples are not explaining either: 0x200000
-> > has no number of CPUs associated, and by my calculation 0x800000 for 32
-> > CPUs results in 0x40000 per CPU; but then again the examples also have
-> > GICC etc. at diverging 0x2000 size.
+On 24/04/21 02:46, Sean Christopherson wrote:
+> Don't waste time writing zeros via VMWRITE during vCPU RESET, the VMCS
+> is zero allocated.
+
+Is this guaranteed to be valid, or could the VMCS in principle use some 
+weird encoding? (Like it does for the access rights, even though this 
+does not matter for this patch).
+
+Paolo
+
+> No functional change intended.
 > 
-> The GICv3/v4 architecture spec does apply, and you should really have
-> a look at what these sizes mean. What is the value of copy-pasting
-> things without understanding it the first place?
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/vmx.c | 29 -----------------------------
+>   1 file changed, 29 deletions(-)
 > 
-> > 
-> > >> +			      <0xff300000 0x10000>, /* GICC */
-> > >> +			      <0xff310000 0x10000>, /* GICH */
-> > >> +			      <0xff320000 0x10000>; /* GICV */
-> > >> +			interrupt-controller;
-> > >> +			#interrupt-cells = <3>;
-> > >> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> > >> +			#address-cells = <1>;
-> > >> +			#size-cells = <1>;
-> > >> +			ranges;
-> > >> +
-> > >> +			gic_its: msi-controller@ff120000 {
-> > >> +				compatible = "arm,gic-v3-its";
-> > >> +				reg = <0xff120000 0x20000>;
-> > >> +				msi-controller;
-> > >> +				#msi-cells = <1>;
-> > >> +			};
-> > > 
-> > > What uses the ITS?
-> > 
-> > DT-wise seemingly only the __symbols__ table (named just "its" there, I
-> > notice), so we could drop (or rename) the label if you prefer.
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 78d17adce7e6..74258ba4832a 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4427,13 +4427,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>   	}
+>   
+>   	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
+> -		vmcs_write64(EOI_EXIT_BITMAP0, 0);
+> -		vmcs_write64(EOI_EXIT_BITMAP1, 0);
+> -		vmcs_write64(EOI_EXIT_BITMAP2, 0);
+> -		vmcs_write64(EOI_EXIT_BITMAP3, 0);
+> -
+> -		vmcs_write16(GUEST_INTR_STATUS, 0);
+> -
+>   		vmcs_write16(POSTED_INTR_NV, POSTED_INTR_VECTOR);
+>   		vmcs_write64(POSTED_INTR_DESC_ADDR, __pa((&vmx->pi_desc)));
+>   	}
+> @@ -4444,23 +4437,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>   		vmx->ple_window_dirty = true;
+>   	}
+>   
+> -	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
+> -	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
+> -	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
+> -
+> -	vmcs_write16(HOST_FS_SELECTOR, 0);            /* 22.2.4 */
+> -	vmcs_write16(HOST_GS_SELECTOR, 0);            /* 22.2.4 */
+>   	vmx_set_constant_host_state(vmx);
+> -	vmcs_writel(HOST_FS_BASE, 0); /* 22.2.4 */
+> -	vmcs_writel(HOST_GS_BASE, 0); /* 22.2.4 */
+>   
+> -	if (cpu_has_vmx_vmfunc())
+> -		vmcs_write64(VM_FUNCTION_CONTROL, 0);
+> -
+> -	vmcs_write32(VM_EXIT_MSR_STORE_COUNT, 0);
+> -	vmcs_write32(VM_EXIT_MSR_LOAD_COUNT, 0);
+>   	vmcs_write64(VM_EXIT_MSR_LOAD_ADDR, __pa(vmx->msr_autoload.host.val));
+> -	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, 0);
+>   	vmcs_write64(VM_ENTRY_MSR_LOAD_ADDR, __pa(vmx->msr_autoload.guest.val));
+>   
+>   	if (vmcs_config.vmentry_ctrl & VM_ENTRY_LOAD_IA32_PAT)
+> @@ -4493,7 +4472,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>   		memset(&vmx->pt_desc, 0, sizeof(vmx->pt_desc));
+>   		/* Bit[6~0] are forced to 1, writes are ignored. */
+>   		vmx->pt_desc.guest.output_mask = 0x7F;
+> -		vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
+>   	}
+>   
+>   	vmx_setup_uret_msrs(vmx);
+> @@ -4536,13 +4514,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>   	vmcs_write32(GUEST_LDTR_LIMIT, 0xffff);
+>   	vmcs_write32(GUEST_LDTR_AR_BYTES, 0x00082);
+>   
+> -	if (!init_event) {
+> -		vmcs_write32(GUEST_SYSENTER_CS, 0);
+> -		vmcs_writel(GUEST_SYSENTER_ESP, 0);
+> -		vmcs_writel(GUEST_SYSENTER_EIP, 0);
+> -		vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
+> -	}
+> -
+>   	vmcs_writel(GUEST_GDTR_BASE, 0);
+>   	vmcs_write32(GUEST_GDTR_LIMIT, 0xffff);
+>   
 > 
-> No, I am asking *what* uses the ITS. Is it just dangling without any
-> user? No PCI bus making use of it?
-
-just 2ct, as far as I remember the rk1808 does have a PCIe controller.
-And the datasheet [0] does agree with my memory it seems
-
-
-Heiko
-
-[0] http://opensource.rock-chips.com/images/4/43/Rockchip_RK1808_Datasheet_V1.2_20190527.pdf
-
 
