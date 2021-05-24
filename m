@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B4F38F060
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBF838F0FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhEXQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        id S233923AbhEXQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:08:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233294AbhEXP4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB5A61449;
-        Mon, 24 May 2021 15:42:36 +0000 (UTC)
+        id S235262AbhEXQAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:00:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3951961463;
+        Mon, 24 May 2021 15:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870957;
-        bh=DbW5kA7WRlHGQ/9lZV98JCYkuTrvvHAaZvCk8gp2stU=;
+        s=korg; t=1621871157;
+        bh=o+GyRoW6tVYJFg5ygPEDk8ouNulvrjmiE7rvNFCY9mc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqswuliuy5U/iXzN7iSBJ7/Lt2xuH+UvJGyHYUCng269GVr0jju9Wyqd99vM2xo9y
-         /K3h2FpeMvGUfgyNixv0HXiIR8//y6f8vzd/I6mSh6YE5Fu077aRkTSgwTo+lsspcT
-         auRCOxceZx0c1H9nNDwF4swyxR3DgF8gaMXjRtB0=
+        b=L978vHcN8qmTdpG7sGB4URTiEjGrasbOEJvI4sjbwgFD5Gzul+AzsCWGNVAi1KfbK
+         Ji3uoCm5PlNiYFwXTZDT+WLLRg1L+gfTuO/boprws4omoLi295ukZHPO91uL9QQUc6
+         GuaeJ7M5ALVq35QoabVL92dKiK34WV9RFs+Q1vVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Shannon Nelson <shannon.lee.nelson@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 086/104] Revert "niu: fix missing checks of niu_pci_eeprom_read"
-Date:   Mon, 24 May 2021 17:26:21 +0200
-Message-Id: <20210524152335.700004311@linuxfoundation.org>
+        stable@vger.kernel.org, Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anirudh Rayabharam <mail@anirudhrb.com>
+Subject: [PATCH 5.12 065/127] rapidio: handle create_workqueue() failure
+Date:   Mon, 24 May 2021 17:26:22 +0200
+Message-Id: <20210524152337.053607627@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 7930742d6a0ff091c85b92ef4e076432d8d8cb79 upstream.
+commit 69ce3ae36dcb03cdf416b0862a45369ddbf50fdf upstream.
 
-This reverts commit 26fd962bde0b15e54234fe762d86bc0349df1de4.
+In case create_workqueue() fails, release all resources and return -ENOMEM
+to caller to avoid potential NULL pointer deref later. Move up the
+create_workequeue() call to return early and avoid unwinding the call to
+riocm_rx_fill().
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The change here was incorrect.  While it is nice to check if
-niu_pci_eeprom_read() succeeded or not when using the data, any error
-that might have happened was not propagated upwards properly, causing
-the kernel to assume that these reads were successful, which results in
-invalid data in the buffer that was to contain the successfully read
-data.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Shannon Nelson <shannon.lee.nelson@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Fixes: 26fd962bde0b ("niu: fix missing checks of niu_pci_eeprom_read")
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-23-gregkh@linuxfoundation.org
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-46-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sun/niu.c |   10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/rapidio/rio_cm.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -8097,8 +8097,6 @@ static int niu_pci_vpd_scan_props(struct
- 		start += 3;
+--- a/drivers/rapidio/rio_cm.c
++++ b/drivers/rapidio/rio_cm.c
+@@ -2127,6 +2127,14 @@ static int riocm_add_mport(struct device
+ 		return -ENODEV;
+ 	}
  
- 		prop_len = niu_pci_eeprom_read(np, start + 4);
--		if (prop_len < 0)
--			return prop_len;
- 		err = niu_pci_vpd_get_propname(np, start + 5, namebuf, 64);
- 		if (err < 0)
- 			return err;
-@@ -8143,12 +8141,8 @@ static int niu_pci_vpd_scan_props(struct
- 			netif_printk(np, probe, KERN_DEBUG, np->dev,
- 				     "VPD_SCAN: Reading in property [%s] len[%d]\n",
- 				     namebuf, prop_len);
--			for (i = 0; i < prop_len; i++) {
--				err = niu_pci_eeprom_read(np, off + i);
--				if (err >= 0)
--					*prop_buf = err;
--				++prop_buf;
--			}
-+			for (i = 0; i < prop_len; i++)
-+				*prop_buf++ = niu_pci_eeprom_read(np, off + i);
- 		}
++	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
++	if (!cm->rx_wq) {
++		rio_release_inb_mbox(mport, cmbox);
++		rio_release_outb_mbox(mport, cmbox);
++		kfree(cm);
++		return -ENOMEM;
++	}
++
+ 	/*
+ 	 * Allocate and register inbound messaging buffers to be ready
+ 	 * to receive channel and system management requests
+@@ -2137,7 +2145,6 @@ static int riocm_add_mport(struct device
+ 	cm->rx_slots = RIOCM_RX_RING_SIZE;
+ 	mutex_init(&cm->rx_lock);
+ 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
+-	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
+ 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
  
- 		start += len;
+ 	cm->tx_slot = 0;
 
 
