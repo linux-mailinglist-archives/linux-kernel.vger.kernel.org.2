@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2F638E47A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B798B38E47B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhEXKru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:47:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:40918 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232735AbhEXKrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:47:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2984831B;
+        id S232755AbhEXKrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232750AbhEXKrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 06:47:17 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F73AC061574;
+        Mon, 24 May 2021 03:45:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id lz27so41040833ejb.11;
+        Mon, 24 May 2021 03:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4uYH7l3s8AJ5oxtod3enPxI8aB3pIk6ye1nfYSwYWoM=;
+        b=R2Mx72dVHtO2EcIknrLn1vIqr/SLh7csM9MpN8Bf5/0hnQL9hOZLwFcKjzZNgR6Z+M
+         oRSAI3YBS7HbIQIQZmI8T7KdMhE0cQpyUyLXQ6arDdZgiqJwDb7TZbBNQNS01jKxKHGC
+         1yL5//L7ed2ktTYM9SbftynzOwfIfBHFRziby3EtaOP/q466biY50vcAelfeOaLK0066
+         VDeGyn7xtyepa4HCp6Y9x/VdPur4HE1stAAxAbKw8rbOHBqcKpk/Bc6KD8767zx0/Ggj
+         bCa682m2pMDrYC0Wc88IQM3VDG68yG7TwKqqLjp3r9O/Rwg5Jwy7VL4TGfLKHoE/pOQU
+         D5Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4uYH7l3s8AJ5oxtod3enPxI8aB3pIk6ye1nfYSwYWoM=;
+        b=QD/MSoanQkbRTfZ6j+FUC1s88/plGtLbzxDTHT8yflZKH72zi1jTDkoCZbG+Q0e80j
+         iZzOO8HEcMEZBhyiu/VWCtcJ6N7zdKZOTyt/S4KJ4gNz2ILXo3T5Tp6cY2f+sQmLLdPd
+         xMWEVsct3IPEFayfyQNbPs4TgEmXIELuvpIiWG3ZemtSjuB6OuRt735DJ4kSC6kaJ60I
+         GhBXqp6SMnOqb9K1yep38r0r2hBDup2NTx42VJ3XlDoyx8t7HyV1Ccy7TmHhpSOJVx12
+         nnQpYqRejsBuN6gNeG9XQ2uTqcqLBRoqwDz2YJrjJp+ujuNtpg34BBP66MmW9fs2H8jD
+         bP1g==
+X-Gm-Message-State: AOAM533bbJCDro+7J0rR/BnSO9OIcg63STTXdSDXLP9NEWaMRaLc1u8G
+        rmFEFShsebEdrFoRIAVbDEp955LA5OI=
+X-Google-Smtp-Source: ABdhPJw6FO3UuCOkGcIaxil8laXrc8QAy8cWzmS5WrzZyDxU8cYGX44Pu+ss0J54YxVWokIBHEJ+sA==
+X-Received: by 2002:a17:906:4e0d:: with SMTP id z13mr23048071eju.343.1621853146627;
         Mon, 24 May 2021 03:45:46 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C6ED3F719;
-        Mon, 24 May 2021 03:45:43 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v13 8/8] KVM: arm64: Document MTE capability and ioctl
-Date:   Mon, 24 May 2021 11:45:13 +0100
-Message-Id: <20210524104513.13258-9-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210524104513.13258-1-steven.price@arm.com>
-References: <20210524104513.13258-1-steven.price@arm.com>
+Received: from localhost.localdomain (p200300f1370a3a00f22f74fffe210725.dip0.t-ipconnect.de. [2003:f1:370a:3a00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id n24sm9162451edv.51.2021.05.24.03.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 03:45:46 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org
+Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
+        khilman@baylibre.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] clk: meson: meson8b: Don't use MPLL1 as parent of vclk_in_sel
+Date:   Mon, 24 May 2021 12:45:33 +0200
+Message-Id: <20210524104533.555953-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
-granting a guest access to the tags, and provides a mechanism for the
-VMM to enable it.
+MPLL1 is needed for audio output. Drop it from the vclk_in_sel parent
+list so we only use the (mutable) vid_pll_final_div tree or one of the
+(fixed) FCLK_DIV{3,4,5} clocks.
 
-A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
-access the tags of a guest without having to maintain a PROT_MTE mapping
-in userspace. The above capability gates access to the ioctl.
-
-Signed-off-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- Documentation/virt/kvm/api.rst | 52 ++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ drivers/clk/meson/meson8b.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 22d077562149..ab45d7fe2aa5 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5034,6 +5034,37 @@ see KVM_XEN_VCPU_SET_ATTR above.
- The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
- with the KVM_XEN_VCPU_GET_ATTR ioctl.
+diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+index a844d35b553a..f8bd211db720 100644
+--- a/drivers/clk/meson/meson8b.c
++++ b/drivers/clk/meson/meson8b.c
+@@ -1154,6 +1154,10 @@ static struct clk_regmap meson8b_vid_pll_final_div = {
+ 	},
+ };
  
-+4.130 KVM_ARM_MTE_COPY_TAGS
-+---------------------------
-+
-+:Capability: KVM_CAP_ARM_MTE
-+:Architectures: arm64
-+:Type: vm ioctl
-+:Parameters: struct kvm_arm_copy_mte_tags
-+:Returns: 0 on success, < 0 on error
-+
-+::
-+
-+  struct kvm_arm_copy_mte_tags {
-+	__u64 guest_ipa;
-+	__u64 length;
-+	void __user *addr;
-+	__u64 flags;
-+	__u64 reserved[2];
-+  };
-+
-+Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
-+fieldmust point to a buffer which the tags will be copied to or from.
-+
-+``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
-+``KVM_ARM_TAGS_FROM_GUEST``.
-+
-+The size of the buffer to store the tags is ``(length / 16)`` bytes
-+(granules in MTE are 16 bytes long). Each byte contains a single tag
-+value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+``PTRACE_POKEMTETAGS``.
-+
- 5. The kvm_run structure
- ========================
++/*
++ * parent 0x6 is meson8b_mpll1 but we don't use it here because it's reserved
++ * for the audio outputs.
++ */
+ static const struct clk_hw *meson8b_vclk_mux_parent_hws[] = {
+ 	&meson8b_vid_pll_final_div.hw,
+ 	&meson8b_fclk_div4.hw,
+@@ -1161,7 +1165,6 @@ static const struct clk_hw *meson8b_vclk_mux_parent_hws[] = {
+ 	&meson8b_fclk_div5.hw,
+ 	&meson8b_vid_pll_final_div.hw,
+ 	&meson8b_fclk_div7.hw,
+-	&meson8b_mpll1.hw,
+ };
  
-@@ -6362,6 +6393,27 @@ default.
- 
- See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
- 
-+7.26 KVM_CAP_ARM_MTE
-+--------------------
-+
-+:Architectures: arm64
-+:Parameters: none
-+
-+This capability indicates that KVM (and the hardware) supports exposing the
-+Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-+VMM before creating any VCPUs to allow the guest access. Note that MTE is only
-+available to a guest running in AArch64 mode and enabling this capability will
-+cause attempts to create AArch32 VCPUs to fail.
-+
-+When enabled the guest is able to access tags associated with any memory given
-+to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
-+that the tags are maintained during swap or hibernation of the host; however
-+the VMM needs to manually save/restore the tags as appropriate if the VM is
-+migrated.
-+
-+When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-+perform a bulk copy of tags to/from the guest.
-+
- 8. Other capabilities.
- ======================
- 
+ static struct clk_regmap meson8b_vclk_in_sel = {
 -- 
-2.20.1
+2.31.1
 
