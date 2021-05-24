@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD0338F07A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5CB38EE5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhEXQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
+        id S233150AbhEXPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235406AbhEXP4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D346140A;
-        Mon, 24 May 2021 15:42:56 +0000 (UTC)
+        id S233751AbhEXPmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:42:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2BB6613AD;
+        Mon, 24 May 2021 15:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870977;
-        bh=hdg4uBJDJ6MiDizfKqAjEMznM9c13ErAqs+kxOs/2SI=;
+        s=korg; t=1621870499;
+        bh=cCJCMC36Ge3NvLa2sMCwovOSbnmUC5nuuXymeLcvdQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r53AtZlcHO5z/MN6+6GJCZmGWMsBvbs00qtheL2P+Jv6lXzgiO+N/qhSqHvDiEDNL
-         B/L3d0V39CR17wjF8uZNCHYUC134VudsS7tt2kPImHLkYf3bYdo6uNVausa9rbZ2wD
-         Oxy1Y41iu5vsCJabAtjYRcHZ3angKqpZhZSUHiJ0=
+        b=coxmkF7lnLZPDD/Gy2UvMVkdCisbB6yqEsvZmA/eE3GQqIk1YjGpJdH4hD9OqqX7s
+         dP2eUXqcOjuWEzDTJ+BvdJZ9qntNVunuvi+vHq+ca4UVwiEN7dy+0uE8nVEoOygCuj
+         gadECb9CImmGdFuxSDC7n2gabOPD5lY2BSrxxMRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 017/127] nvmet: fix memory leak in nvmet_alloc_ctrl()
-Date:   Mon, 24 May 2021 17:25:34 +0200
-Message-Id: <20210524152335.445612570@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 24/49] dm snapshot: fix crash with transient storage and zero chunk size
+Date:   Mon, 24 May 2021 17:25:35 +0200
+Message-Id: <20210524152325.158126942@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit fec356a61aa3d3a66416b4321f1279e09e0f256f ]
+commit c699a0db2d62e3bbb7f0bf35c87edbc8d23e3062 upstream.
 
-When creating ctrl in nvmet_alloc_ctrl(), if the cntlid_min is larger
-than cntlid_max of the subsystem, and jumps to the
-"out_free_changed_ns_list" label, but the ctrl->sqs lack of be freed.
-Fix this by jumping to the "out_free_sqs" label.
+The following commands will crash the kernel:
 
-Fixes: 94a39d61f80f ("nvmet: make ctrl-id configurable")
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+modprobe brd rd_size=1048576
+dmsetup create o --table "0 `blockdev --getsize /dev/ram0` snapshot-origin /dev/ram0"
+dmsetup create s --table "0 `blockdev --getsize /dev/ram0` snapshot /dev/ram0 /dev/ram1 N 0"
+
+The reason is that when we test for zero chunk size, we jump to the label
+bad_read_metadata without setting the "r" variable. The function
+snapshot_ctr destroys all the structures and then exits with "r == 0". The
+kernel then crashes because it falsely believes that snapshot_ctr
+succeeded.
+
+In order to fix the bug, we set the variable "r" to -EINVAL.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-snap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index a027433b8be8..348057fdc568 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -1371,7 +1371,7 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
- 		goto out_free_changed_ns_list;
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -1285,6 +1285,7 @@ static int snapshot_ctr(struct dm_target
  
- 	if (subsys->cntlid_min > subsys->cntlid_max)
--		goto out_free_changed_ns_list;
-+		goto out_free_sqs;
+ 	if (!s->store->chunk_size) {
+ 		ti->error = "Chunk size not set";
++		r = -EINVAL;
+ 		goto bad_read_metadata;
+ 	}
  
- 	ret = ida_simple_get(&cntlid_ida,
- 			     subsys->cntlid_min, subsys->cntlid_max,
--- 
-2.30.2
-
 
 
