@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B238ED43
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF4D38ED3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbhEXPfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:35:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51440 "EHLO mail.kernel.org"
+        id S233573AbhEXPfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233468AbhEXPdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233469AbhEXPdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 11:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B096128B;
-        Mon, 24 May 2021 15:31:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E787F613EA;
+        Mon, 24 May 2021 15:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870280;
-        bh=308Rgqzwzn8F6+BdjMW1/khn4yX6QfWk8pZLxSJPSbg=;
+        s=korg; t=1621870284;
+        bh=KRrJAdxoYL0QCt6u4SSirQA78U2D4mC3usFw8C+NznA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dx3bgLL2Cin2Bwq/TvfMaT3g7VGo3GIbrFQKwpZUbZe+I8QOmQHVSVh0E5c0KxYW3
-         Hgln1u2jwECXmOrBz77cwF+x4CwOtq2xNnPjPg1Se+Fch7/2XwTu6to8HNl+fEJ1TW
-         WFUntyz40M7d9CFRwGIXZJ8EUK/SyvBWUspB97SM=
+        b=NLD1xk7Cb3R/tIGHBxYGuHIsTQa3I3NU/JRo8uvgJo9a0pltLFFDoQOfjrKya/eQV
+         V8zgDH8wkRDz3PD+LhHhffIX5jYP7gY6ahjP4L8ht0wpDsHTkITBeW8RScjple788V
+         Mx77BX0345QIRj9O9lNmDYSKLULA9moj8+nVQxTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Pedro Alves <palves@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 03/31] ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
-Date:   Mon, 24 May 2021 17:24:46 +0200
-Message-Id: <20210524152323.029798410@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.4 04/31] cifs: fix memory leak in smb2_copychunk_range
+Date:   Mon, 24 May 2021 17:24:47 +0200
+Message-Id: <20210524152323.061291491@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
 References: <20210524152322.919918360@linuxfoundation.org>
@@ -44,161 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit dbb5afad100a828c97e012c6106566d99f041db6 ]
+commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
 
-Suppose we have 2 threads, the group-leader L and a sub-theread T,
-both parked in ptrace_stop(). Debugger tries to resume both threads
-and does
+When using smb2_copychunk_range() for large ranges we will
+run through several iterations of a loop calling SMB2_ioctl()
+but never actually free the returned buffer except for the final
+iteration.
+This leads to memory leaks everytime a large copychunk is requested.
 
-	ptrace(PTRACE_CONT, T);
-	ptrace(PTRACE_CONT, L);
-
-If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
-resume the old leader L, it resumes the post-exec thread T which was
-actually now stopped in PTHREAD_EVENT_EXEC. In this case the
-PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
-tracee changed its pid.
-
-This patch makes ptrace() fail in this case until debugger does wait()
-and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
-ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
-
-The patch doesn't add the new PTRACE_ option to not complicate the API,
-and I _hope_ this won't cause any noticeable regression:
-
-	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
-	  and the tracer does a ptrace request without having consumed
-	  the exec event, it's 100% sure that the thread the ptracer
-	  thinks it is targeting does not exist anymore, or isn't the
-	  same as the one it thinks it is targeting.
-
-	- To some degree this patch adds nothing new. In the scenario
-	  above ptrace(L) can fail with -ESRCH if it is called after the
-	  execing sub-thread wakes the leader up and before it "steals"
-	  the leader's pid.
-
-Test-case:
-
-	#include <stdio.h>
-	#include <unistd.h>
-	#include <signal.h>
-	#include <sys/ptrace.h>
-	#include <sys/wait.h>
-	#include <errno.h>
-	#include <pthread.h>
-	#include <assert.h>
-
-	void *tf(void *arg)
-	{
-		execve("/usr/bin/true", NULL, NULL);
-		assert(0);
-
-		return NULL;
-	}
-
-	int main(void)
-	{
-		int leader = fork();
-		if (!leader) {
-			kill(getpid(), SIGSTOP);
-
-			pthread_t th;
-			pthread_create(&th, NULL, tf, NULL);
-			for (;;)
-				pause();
-
-			return 0;
-		}
-
-		waitpid(leader, NULL, WSTOPPED);
-
-		ptrace(PTRACE_SEIZE, leader, 0,
-				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
-		waitpid(leader, NULL, 0);
-
-		ptrace(PTRACE_CONT, leader, 0,0);
-		waitpid(leader, NULL, 0);
-
-		int status, thread = waitpid(-1, &status, 0);
-		assert(thread > 0 && thread != leader);
-		assert(status == 0x80137f);
-
-		ptrace(PTRACE_CONT, thread, 0,0);
-		/*
-		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
-		 * report status. Why ????
-		 *
-		 * Why WEXITED? because we have another kernel problem connected
-		 * to mt-exec.
-		 */
-		siginfo_t info;
-		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
-		assert(info.si_pid == leader && info.si_status == 0x0405);
-
-		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
-		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
-		assert(errno == ESRCH);
-
-		assert(leader == waitpid(leader, &status, WNOHANG));
-		assert(status == 0x04057f);
-
-		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
-
-		return 0;
-	}
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Reported-by: Simon Marchi <simon.marchi@efficios.com>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Acked-by: Pedro Alves <palves@redhat.com>
-Acked-by: Simon Marchi <simon.marchi@efficios.com>
-Acked-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/ptrace.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ fs/cifs/smb2ops.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index da8c358930fb..5a1d8cc7ef4e 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -129,6 +129,21 @@ void __ptrace_unlink(struct task_struct *child)
- 	spin_unlock(&child->sighand->siglock);
- }
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -619,6 +619,8 @@ smb2_clone_range(const unsigned int xid,
+ 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
  
-+static bool looks_like_a_spurious_pid(struct task_struct *task)
-+{
-+	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
-+		return false;
-+
-+	if (task_pid_vnr(task) == task->ptrace_message)
-+		return false;
-+	/*
-+	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
-+	 * was not wait()'ed, most probably debugger targets the old
-+	 * leader which was destroyed in de_thread().
-+	 */
-+	return true;
-+}
-+
- /* Ensure that nothing can wake it up, even SIGKILL */
- static bool ptrace_freeze_traced(struct task_struct *task)
- {
-@@ -139,7 +154,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
- 		return ret;
- 
- 	spin_lock_irq(&task->sighand->siglock);
--	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
-+	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
-+	    !__fatal_signal_pending(task)) {
- 		task->state = __TASK_TRACED;
- 		ret = true;
- 	}
--- 
-2.30.2
-
+ 		/* Request server copy to target from src identified by key */
++		kfree(retbuf);
++		retbuf = NULL;
+ 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
+ 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
+ 			true /* is_fsctl */, (char *)pcchunk,
 
 
