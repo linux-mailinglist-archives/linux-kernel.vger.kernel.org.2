@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027DC38F082
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E0A38EE5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235719AbhEXQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S233879AbhEXPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234296AbhEXP4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:56:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1916144E;
-        Mon, 24 May 2021 15:43:09 +0000 (UTC)
+        id S234061AbhEXPnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99D236140B;
+        Mon, 24 May 2021 15:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870990;
-        bh=rg9iAh5GciVETGI4Iogm5gExfJW64XtlbedHk4guDtk=;
+        s=korg; t=1621870510;
+        bh=iLjv2BpjEpxLxEfUWOFHpbFCb3/nWsauqU8ooJ9BEsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0/QsgEG+yKjxgVveS+F0+hh59C9fQTF5IN8Y1GSyh4fJ9EBQpnpEeeATyMGyGqVS
-         DfhjM1XR5HzpHYuQ55JmtSuJhvgYtx/kxWMrxo681iCpwfWbm+MK4ujSjax87aJ205
-         1CvT5Kdgxpc8ACmrgsgupS7Fn6CjVG8o2Ngiw2c0=
+        b=OOKiZi7dEltSKW4jqE9Kg6NXrUi3irlHPF8A8Lw3wOQq4DEeLtFll3yIQC2OVGg10
+         N+w2VZplkLY73J6vruaoi52UdKAksDYsHjcM15gAKAldsadYYd7lhz7n40uG1iXCyi
+         d/jEXDp4ooB/VuKwkhToIdpITsFYzLFJs6rBDBbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mario Limonciello <mario.limonciello@outlook.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 023/127] platform/x86: dell-smbios-wmi: Fix oops on rmmod dell_smbios
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 4.19 29/49] Revert "video: imsttfb: fix potential NULL pointer dereferences"
 Date:   Mon, 24 May 2021 17:25:40 +0200
-Message-Id: <20210524152335.637442535@linuxfoundation.org>
+Message-Id: <20210524152325.321090337@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 3a53587423d25c87af4b4126a806a0575104b45e ]
+commit ed04fe8a0e87d7b5ea17d47f4ac9ec962b24814a upstream.
 
-init_dell_smbios_wmi() only registers the dell_smbios_wmi_driver on systems
-where the Dell WMI interface is supported. While exit_dell_smbios_wmi()
-unregisters it unconditionally, this leads to the following oops:
+This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
 
-[  175.722921] ------------[ cut here ]------------
-[  175.722925] Unexpected driver unregister!
-[  175.722939] WARNING: CPU: 1 PID: 3630 at drivers/base/driver.c:194 driver_unregister+0x38/0x40
-...
-[  175.723089] Call Trace:
-[  175.723094]  cleanup_module+0x5/0xedd [dell_smbios]
-...
-[  175.723148] ---[ end trace 064c34e1ad49509d ]---
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Make the unregister happen on the same condition the register happens
-to fix this.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Cc: Mario Limonciello <mario.limonciello@outlook.com>
-Fixes: 1a258e670434 ("platform/x86: dell-smbios-wmi: Add new WMI dispatcher driver")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@outlook.com>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Link: https://lore.kernel.org/r/20210518125027.21824-1-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The original commit here, while technically correct, did not fully
+handle all of the reported issues that the commit stated it was fixing,
+so revert it until it can be "fixed" fully.
+
+Note, ioremap() probably will never fail for old hardware like this, and
+if anyone actually used this hardware (a PowerMac era PCI display card),
+they would not be using fbdev anymore.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-67-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/dell/dell-smbios-wmi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/imsttfb.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/platform/x86/dell/dell-smbios-wmi.c
-index 27a298b7c541..c97bd4a45242 100644
---- a/drivers/platform/x86/dell/dell-smbios-wmi.c
-+++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
-@@ -271,7 +271,8 @@ int init_dell_smbios_wmi(void)
- 
- void exit_dell_smbios_wmi(void)
- {
--	wmi_driver_unregister(&dell_smbios_wmi_driver);
-+	if (wmi_supported)
-+		wmi_driver_unregister(&dell_smbios_wmi_driver);
- }
- 
- MODULE_DEVICE_TABLE(wmi, dell_smbios_wmi_id_table);
--- 
-2.30.2
-
+--- a/drivers/video/fbdev/imsttfb.c
++++ b/drivers/video/fbdev/imsttfb.c
+@@ -1516,11 +1516,6 @@ static int imsttfb_probe(struct pci_dev
+ 	info->fix.smem_start = addr;
+ 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
+ 					    0x400000 : 0x800000);
+-	if (!info->screen_base) {
+-		release_mem_region(addr, size);
+-		framebuffer_release(info);
+-		return -ENOMEM;
+-	}
+ 	info->fix.mmio_start = addr + 0x800000;
+ 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+ 	par->cmap_regs_phys = addr + 0x840000;
 
 
