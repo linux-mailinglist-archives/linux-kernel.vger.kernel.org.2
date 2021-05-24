@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63AD38EEB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914C638F099
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhEXPzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
+        id S236678AbhEXQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234130AbhEXPqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:46:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F4D613DF;
-        Mon, 24 May 2021 15:36:37 +0000 (UTC)
+        id S234501AbhEXP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A515613D2;
+        Mon, 24 May 2021 15:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870597;
-        bh=NiEMGs9KAlbYIJQaLiRTAX+r6pdL8YyvuX7Ly8mfcPw=;
+        s=korg; t=1621871033;
+        bh=p+L6IWdDWj3BuKlRYk3bfT3VrIjBfJfW1TbppQKKpR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EzR9rIN7qiyJK0KZ8Jf9aID/Bw13laXJYRuB1EhOnCXUuaV5ieC/l2IOeZzd88+xD
-         qN+jUP4lroQBJGEh9d29mloYMTjsIVNvG7MBXOVIMnxvlfEgukzS6/tRZUH5Ir7mKd
-         LOPQOy8UYbb/pultLKC79plwsxbX0LOwVgPRZkwU=
+        b=D5WdWmCwbw7M3eS+P248RRyqjTAHgYV+tskQap+Z18J6EhnDXKW4KmGsZC569utUw
+         aXYfM6zr/VLAmWn3Kt8JtDdLAZQ7hXDgS4AZsAHvu2swqIflCKKbfnCqPGxtM8Ol9B
+         GYIejW000AovG3gv9WaPZIjsEP/kXZIUV4DjZsVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH 5.4 19/71] ALSA: intel8x0: Dont update period unless prepared
+        stable@vger.kernel.org, Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Ike Panhc <ike.pan@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 008/127] platform/x86: ideapad-laptop: fix a NULL pointer dereference
 Date:   Mon, 24 May 2021 17:25:25 +0200
-Message-Id: <20210524152327.083896423@linuxfoundation.org>
+Message-Id: <20210524152335.139344613@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,72 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
 
-commit c1f0616124c455c5c762b6f123e40bba5df759e6 upstream.
+[ Upstream commit ff67dbd554b2aaa22be933eced32610ff90209dd ]
 
-The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
-the hardware sets the corresponding status bit for each stream.  This
-works fine for most cases as long as the hardware behaves properly.
-But when the hardware gives a wrong bit set, this leads to a zero-
-division Oops, and reportedly, this seems what happened on a VM.
+The third parameter of dytc_cql_command should not be NULL since it will
+be dereferenced immediately.
 
-For fixing the crash, this patch adds a internal flag indicating that
-the stream is ready to be updated, and check it (as well as the flag
-being in suspended) to ignore such spurious update.
-
-Cc: <stable@vger.kernel.org>
-Reported-and-tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Link: https://lore.kernel.org/r/s5h5yzi7uh0.wl-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ff36b0d953dc4 ("platform/x86: ideapad-laptop: rework and create new ACPI helpers")
+Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
+Acked-by: Ike Panhc <ike.pan@canonical.com>
+Link: https://lore.kernel.org/r/20210428050636.8003-1-qiuwenbo@kylinos.com.cn
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/intel8x0.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/platform/x86/ideapad-laptop.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -354,6 +354,7 @@ struct ichdev {
- 	unsigned int ali_slot;			/* ALI DMA slot */
- 	struct ac97_pcm *pcm;
- 	int pcm_open_flag;
-+	unsigned int prepared:1;
- 	unsigned int suspended: 1;
- };
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index 6cb5ad4be231..8f871151f0cc 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -809,6 +809,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
+ {
+ 	struct ideapad_dytc_priv *dytc = container_of(pprof, struct ideapad_dytc_priv, pprof);
+ 	struct ideapad_private *priv = dytc->priv;
++	unsigned long output;
+ 	int err;
  
-@@ -714,6 +715,9 @@ static inline void snd_intel8x0_update(s
- 	int status, civ, i, step;
- 	int ack = 0;
+ 	err = mutex_lock_interruptible(&dytc->mutex);
+@@ -829,7 +830,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
  
-+	if (!ichdev->prepared || ichdev->suspended)
-+		return;
-+
- 	spin_lock_irqsave(&chip->reg_lock, flags);
- 	status = igetbyte(chip, port + ichdev->roff_sr);
- 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
-@@ -907,6 +911,7 @@ static int snd_intel8x0_hw_params(struct
- 	if (ichdev->pcm_open_flag) {
- 		snd_ac97_pcm_close(ichdev->pcm);
- 		ichdev->pcm_open_flag = 0;
-+		ichdev->prepared = 0;
+ 		/* Determine if we are in CQL mode. This alters the commands we do */
+ 		err = dytc_cql_command(priv, DYTC_SET_COMMAND(DYTC_FUNCTION_MMC, perfmode, 1),
+-				       NULL);
++				       &output);
+ 		if (err)
+ 			goto unlock;
  	}
- 	err = snd_ac97_pcm_open(ichdev->pcm, params_rate(hw_params),
- 				params_channels(hw_params),
-@@ -928,6 +933,7 @@ static int snd_intel8x0_hw_free(struct s
- 	if (ichdev->pcm_open_flag) {
- 		snd_ac97_pcm_close(ichdev->pcm);
- 		ichdev->pcm_open_flag = 0;
-+		ichdev->prepared = 0;
- 	}
- 	return snd_pcm_lib_free_pages(substream);
- }
-@@ -1002,6 +1008,7 @@ static int snd_intel8x0_pcm_prepare(stru
- 			ichdev->pos_shift = (runtime->sample_bits > 16) ? 2 : 1;
- 	}
- 	snd_intel8x0_setup_periods(chip, ichdev);
-+	ichdev->prepared = 1;
- 	return 0;
- }
- 
+-- 
+2.30.2
+
 
 
