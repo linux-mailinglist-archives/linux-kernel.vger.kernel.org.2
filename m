@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E4838F53F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407BB38F541
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhEXV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233603AbhEXV7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0139161403;
-        Mon, 24 May 2021 21:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621893472;
-        bh=mT2xSuaz7GfCwIuGVfSy11J/JNH1BcBFokdxMEzAXCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5HWxNpaLfusJXb1UsoaR1Ao6nLHxOw108FYU8AyYlZ99PhyTvL8wygw7Mf7FtTw/
-         IuIvU8amvov34lCweXLN6Qo3+StJncqYsSu+i648fRZtO7lcl7DU6sJgDxEydUcO+6
-         rfuaLxBM8/rDotVM3/S9fYrZs+/V26b931rtkU43Fwq7RhCOLIxcGlwishI5RiZ7sy
-         0LZCWnfm1ekNDri6+Nn2HcfNfAaVzFDmCAtv6TgD1ZO/YtYb4+Pc9DHCD9fEL14oFj
-         Wa9oHGRP2Lbre+3vN6dYrAgHoGBU7/Z06yRB73PisdPLjSBldLdqrHRixmuXx18nmj
-         z3dRqG7lgwCJA==
-Date:   Mon, 24 May 2021 14:57:50 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] crypto: algboss - Replaced simple_strtol() with
- kstrtouint()
-Message-ID: <YKwhXlrJzdOjS9lJ@gmail.com>
-References: <20210524120834.1580343-1-liushixin2@huawei.com>
+        id S233859AbhEXV7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233603AbhEXV7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:59:37 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEEDC061574;
+        Mon, 24 May 2021 14:58:08 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f22so20167789pgb.9;
+        Mon, 24 May 2021 14:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IBMIAWQdGmx4lMWgKW+ARGSTnwovRDeMr/3UG7SGN1I=;
+        b=TR9oIFPkiyyLKZW75bAD1vliknHml5tUGO4aZejyrX3QwreVF9vplt/5d/1fNXqK4S
+         6VtPrq2VClfmSx3YI/EMVQNP8LAi9f9cEOHCVUu/lpcAcoPL0v8hEEjEhaMrjRYvOzWP
+         ZznTjvvh+/XQTk+cm3hS4rY0mIi252j0GWrLqqFuaJF4/5bndkKBMWT48QfxdKX4gnPG
+         RtqEb7vT0E8D06OcfPd5YFKxtjG7PrBN37C9GrE2nisRfxz15z8KkXDoE5IGLEyDq3Ha
+         8Bx/q1lfCDP66vSWRjY62iy9idg5D9QVxDLbnkbJ/TX/H/KZjM2zthMXjVp5VmTpSLOO
+         EJuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IBMIAWQdGmx4lMWgKW+ARGSTnwovRDeMr/3UG7SGN1I=;
+        b=Bym1U3YoJs8iyfyZ6JZudzpWTMdMX0BitJEVcesSefMirHEHw6C1LJBqP+QeWcbr25
+         bLiMGX4enDGscrWoFocEAOut8exmEN4Bp5dUvXs0rFfEk0rWYjQQar6FYsMfLvH7EJa9
+         Au1LG/3v8GxWYvJFerwWT7oU/UBSBumCkuiJm8XCVDkGlGo9XL9Xa0lXR5L7s8VzwbEO
+         GTFYqPaNAbskTfa+EUdEO1aVgyRteDZAq5gSiTyJmgf9xeF4ZfcR4KRwba49slqtMdV6
+         Z3yXySplx2MvVl2g/0ssxZO4IttTL0WNIWQZG8wbqE+EKhFgvhQSW8cAhYRCgIogCWYO
+         Hj7w==
+X-Gm-Message-State: AOAM5309/FkHwsu6wW6TN3vFHxocq900Jy5V+/vV0HhGfG+TQjqGKMU1
+        RcNF2+SffQ5haIZgTrqxfh5gQPMq6iM=
+X-Google-Smtp-Source: ABdhPJyhfexzn6ZdaVsaPc7YcXFMUaLNj+YGuW37/rde1vaKnZrmb3ot7a/LaDBQwqW2EpmQLQ0z3Q==
+X-Received: by 2002:a63:514f:: with SMTP id r15mr15463896pgl.374.1621893487334;
+        Mon, 24 May 2021 14:58:07 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l7sm357451pjh.8.2021.05.24.14.58.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 14:58:06 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210524152332.844251980@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a307cb54-0497-a6fe-1b27-a99824dc459a@gmail.com>
+Date:   Mon, 24 May 2021 14:58:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524120834.1580343-1-liushixin2@huawei.com>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 08:08:34PM +0800, Liu Shixin wrote:
-> The simple_strtol() function is deprecated in some situation since
-> it does not check for the range overflow. Use kstrtouint() instead.
+On 5/24/21 8:24 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.40 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  crypto/algboss.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/crypto/algboss.c b/crypto/algboss.c
-> index 5ebccbd6b74e..64bb8dab9584 100644
-> --- a/crypto/algboss.c
-> +++ b/crypto/algboss.c
-> @@ -140,8 +140,8 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
->  			param->attrs[i].nu32.attr.rta_len =
->  				sizeof(param->attrs[i].nu32);
->  			param->attrs[i].nu32.attr.rta_type = CRYPTOA_U32;
-> -			param->attrs[i].nu32.data.num =
-> -				simple_strtol(name, NULL, 0);
-> +			if (unlikely(kstrtouint(name, 0, &param->attrs[i].nu32.data.num)))
-> +				goto err_free_param;
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.40-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-It would be better to just remove all the code related to CRYPTOA_U32 and
-crypto_attr_u32, as it is never used.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-- Eric
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
