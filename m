@@ -2,86 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DBA38EADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FE438EAA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhEXO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233150AbhEXOxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:53:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0425761423;
-        Mon, 24 May 2021 14:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621867702;
-        bh=RQhlUaPK0txnvTpB8EbPl0THdMYPjTwx7mfDkn3q924=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p8tdFiIWb8BrBN7FGFMI9gYUZopi/RcSMyF0lFti6LkfnndPr+OmojM607avJM/2+
-         4SuPNtxsuzRP58iFGNqR/oZtADfGeVpJXe3U5Bn672sA+68Ey9lgiCZyDBaENQBLo/
-         wH4RgSVwG19ya0LMbqGs5riYohtvyQd9QgC5aEsDyIuJAp1db3lWfU/TjQgYXSlYxF
-         H6BpJMdlsj+mjY3x1fSsbB7TkMxENy6BGe7ZmJFHDxwidr7HOWTASNp33XbmkubAny
-         Tmw0wakVbAWkkPchPV60aeYzfMBcOm1065Y549zT9yxKFz4to8FgzxI08+vKb+/nJh
-         4PhjKwAgKLY/w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com
-Subject: [PATCH AUTOSEL 5.10 31/62] Revert "ASoC: cs43130: fix a NULL pointer dereference"
-Date:   Mon, 24 May 2021 10:47:12 -0400
-Message-Id: <20210524144744.2497894-31-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
-References: <20210524144744.2497894-1-sashal@kernel.org>
+        id S233162AbhEXO5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:57:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5762 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233965AbhEXOvy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:51:54 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fpg5b0V5nzmkcm;
+        Mon, 24 May 2021 22:46:43 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 22:50:18 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
+        <ms@dev.tdt.de>, <willemb@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 05/10] net: wan: fix the code style issue about trailing statements
+Date:   Mon, 24 May 2021 22:47:12 +0800
+Message-ID: <1621867637-2680-6-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+References: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Peng Li <lipeng321@huawei.com>
 
-[ Upstream commit fdda0dd2686ecd1f2e616c9e0366ea71b40c485d ]
+Trailing statements should be on next line.
 
-This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
-
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original patch here is not correct, sysfs files that were created
-are not unwound.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-57-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Peng Li <lipeng321@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 ---
- sound/soc/codecs/cs43130.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/wan/wanxl.c | 59 ++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 7fb34422a2a4..bb46e993c353 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
- 			return ret;
+diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
+index 0bcb21ddcc62..7e5bf207a142 100644
+--- a/drivers/net/wan/wanxl.c
++++ b/drivers/net/wan/wanxl.c
+@@ -112,21 +112,45 @@ static inline void wanxl_cable_intr(struct port *port)
+ 	const char *cable, *pm, *dte = "", *dsr = "", *dcd = "";
  
- 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
--		if (!cs43130->wq)
--			return -ENOMEM;
- 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+ 	switch(value & 0x7) {
+-	case STATUS_CABLE_V35: cable = "V.35"; break;
+-	case STATUS_CABLE_X21: cable = "X.21"; break;
+-	case STATUS_CABLE_V24: cable = "V.24"; break;
+-	case STATUS_CABLE_EIA530: cable = "EIA530"; break;
+-	case STATUS_CABLE_NONE: cable = "no"; break;
+-	default: cable = "invalid";
++	case STATUS_CABLE_V35:
++		cable = "V.35";
++		break;
++	case STATUS_CABLE_X21:
++		cable = "X.21";
++		break;
++	case STATUS_CABLE_V24:
++		cable = "V.24";
++		break;
++	case STATUS_CABLE_EIA530:
++		cable = "EIA530";
++		break;
++	case STATUS_CABLE_NONE:
++		cable = "no";
++		break;
++	default:
++		cable = "invalid";
  	}
  
+ 	switch((value >> STATUS_CABLE_PM_SHIFT) & 0x7) {
+-	case STATUS_CABLE_V35: pm = "V.35"; break;
+-	case STATUS_CABLE_X21: pm = "X.21"; break;
+-	case STATUS_CABLE_V24: pm = "V.24"; break;
+-	case STATUS_CABLE_EIA530: pm = "EIA530"; break;
+-	case STATUS_CABLE_NONE: pm = "no personality"; valid = 0; break;
+-	default: pm = "invalid personality"; valid = 0;
++	case STATUS_CABLE_V35:
++		pm = "V.35";
++		break;
++	case STATUS_CABLE_X21:
++		pm = "X.21";
++		break;
++	case STATUS_CABLE_V24:
++		pm = "V.24";
++		break;
++	case STATUS_CABLE_EIA530:
++		pm = "EIA530";
++		break;
++	case STATUS_CABLE_NONE:
++		pm = "no personality";
++		valid = 0;
++		break;
++	default:
++		pm = "invalid personality";
++		valid = 0;
+ 	}
+ 
+ 	if (valid) {
+@@ -563,9 +587,14 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+ 	}
+ 
+ 	switch (pdev->device) {
+-	case PCI_DEVICE_ID_SBE_WANXL100: ports = 1; break;
+-	case PCI_DEVICE_ID_SBE_WANXL200: ports = 2; break;
+-	default: ports = 4;
++	case PCI_DEVICE_ID_SBE_WANXL100:
++		ports = 1;
++		break;
++	case PCI_DEVICE_ID_SBE_WANXL200:
++		ports = 2;
++		break;
++	default:
++		ports = 4;
+ 	}
+ 
+ 	card = kzalloc(struct_size(card, ports, ports), GFP_KERNEL);
 -- 
-2.30.2
+2.8.1
 
