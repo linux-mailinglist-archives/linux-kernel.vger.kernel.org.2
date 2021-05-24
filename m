@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9276B38E7D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B279438E7E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhEXNmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232409AbhEXNmC (ORCPT
+        id S232884AbhEXNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:43:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232842AbhEXNnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:42:02 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5077C061574;
-        Mon, 24 May 2021 06:40:33 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id p20so33644940ljj.8;
-        Mon, 24 May 2021 06:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+9LDxds78ZpBu8bZ2YStDaoNow/+xEuqsaqJfEUvzSs=;
-        b=qu+hXeFuBGul/Wj3lSSso0pa0MhS9lqMA8CmDT6sB9XlIbhj+tB0N+7fUwaWqxVvEb
-         t2XuhasWUa6of9i/F93O8IFlWMTmF1fyWQg/xbozp6wMpWPEelbV7SqrcX0/yrK8u21L
-         NS8MtIWVaUGmVmBvXH+tuzqLz9dsY2/iRF0Y6NCOWsoKanKrhcT4Thik9efLJzOExrM1
-         ToS3oO4dJ7apJrn5s+ZlFEPLH8bc6d80sLIf9g62Wc1huqAPu1+XktJVxY1MY/qK4qnk
-         6Cvgl8f3piNBc5MD17ZePmaqWLV60+t3xdj/omYmTDtGmry4AIhgl4zR/s+HGIwP/dEr
-         7t0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+9LDxds78ZpBu8bZ2YStDaoNow/+xEuqsaqJfEUvzSs=;
-        b=QSK/dXzE5R8+PzsowIyMD4T19WhYWOU60xXqq2N746yFuUQebi2OrHpE4uDJZuks3p
-         mwNfep1YkoffRAtL2J3zUFTpl9i4X9LSgdA+TRVTdUvsDiPe+jnD38pejVisMYd2fCE3
-         hCChja3ri2MbrnuTyW5rH2dea8Tpf0ViiqAgWPGXFtLmhrDG9o+mYt+hLSTonI3Qn44P
-         1asor4ku4GRGt0htfkm37/w46/Pn7qDOCRvdkf/vSVXxcCebH6tztTMF0wC1UeHO6PzW
-         g4Fq3573V34+RUk0LBUv3tD1LBOl4bwXirHLXNs7B9CRnLDNTN/JWNvNlIDKCPd9KbN0
-         wcMA==
-X-Gm-Message-State: AOAM530ogxL2gLrAeE1Wd4whBI6MNSz7dnAZQs9cmWXRfaj0PBPw7bBq
-        hASKQnpsfda1DTNjvZ4TdeobPyFLJZw=
-X-Google-Smtp-Source: ABdhPJz19QS4VATXDdLjkED1I3EhP/WMd2gSaZB1z7bN/6gA9RCnGUzDhmUQrvWEMhAsQt89FnoWGg==
-X-Received: by 2002:a2e:a553:: with SMTP id e19mr16915323ljn.280.1621863631965;
-        Mon, 24 May 2021 06:40:31 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
-        by smtp.googlemail.com with ESMTPSA id w17sm203610lfp.300.2021.05.24.06.40.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:40:31 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210520175054.28308-1-digetx@gmail.com>
- <20210520175054.28308-3-digetx@gmail.com>
- <32171079-ed4e-1147-2272-5f11bc480c6a@nvidia.com>
- <91e53907-d87d-aeeb-4644-3926d4311daa@gmail.com>
- <6bc26992-e136-ef6a-a956-382b5cae5db7@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f9631faa-5fc8-ecdd-709b-93b58e45a1ac@gmail.com>
-Date:   Mon, 24 May 2021 16:40:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 24 May 2021 09:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621863709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P8w9I0NZ19BtAHbKHjXK+mlEAIIVIyeCIj2mlV4DKGQ=;
+        b=S0sL2XYYaXInraNWlD2wK3AzHwb6WNJnbEfD4Qw256TApaEQspqaBUmggl2komTMzehA2G
+        ZP+gjzYQn9+ROcx7orxzuI7YBtN8WhfzfFP/fbOfK/y/9dNXi1k0xAa0ksfRKPitbPpPXG
+        P2+W/iiVqYmBSCkh7n3YxvYdoGvdYek=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-vSVG9O50OfGs577TcG7_-A-1; Mon, 24 May 2021 09:41:47 -0400
+X-MC-Unique: vSVG9O50OfGs577TcG7_-A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63838101371F;
+        Mon, 24 May 2021 13:41:46 +0000 (UTC)
+Received: from localhost (ovpn-113-121.ams2.redhat.com [10.36.113.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A961210016FC;
+        Mon, 24 May 2021 13:41:45 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     ebiederm@xmission.com (Eric W. Biederman)
+Cc:     linux-kernel@vger.kernel.org, serge@hallyn.com, dwalsh@redhat.com,
+        christian.brauner@ubuntu.com, snaipe <snaipe@arista.com>
+Subject: Re: [RFC PATCH 0/3] new mode 'shadow' for /proc/PID/setgroups
+References: <20210510130011.1441834-1-gscrivan@redhat.com>
+        <m1o8d4xgkk.fsf@fess.ebiederm.org>
+Date:   Mon, 24 May 2021 15:41:40 +0200
+In-Reply-To: <m1o8d4xgkk.fsf@fess.ebiederm.org> (Eric W. Biederman's message
+        of "Fri, 21 May 2021 10:16:43 -0500")
+Message-ID: <87a6oknt9n.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <6bc26992-e136-ef6a-a956-382b5cae5db7@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.05.2021 15:22, Jon Hunter пишет:
-> 
-> 
-> On 21/05/2021 20:05, Dmitry Osipenko wrote:
-> 
-> ...
-> 
->>>> +unsigned int tegra_asoc_machine_mclk_rate(unsigned int srate)
->>>> +{
->>>> +	unsigned int mclk;
->>>> +
->>>> +	switch (srate) {
->>>> +	case 64000:
->>>> +	case 88200:
->>>> +	case 96000:
->>>> +		mclk = 128 * srate;
->>>> +		break;
->>>> +	default:
->>>> +		mclk = 256 * srate;
->>>> +		break;
->>>> +	}
->>>> +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
->>>> +	while (mclk < 6000000)
->>>> +		mclk *= 2;
->>>
->>> So this appears to be specific to the wm8903 codec or at least this is
->>> where it came from. And given that the switch statement is not complete
->>> in terms of the sample rates (ie. only has a subset), I am wondering if
->>> set should keep this specific to the wm8903 codec?
+ebiederm@xmission.com (Eric W. Biederman) writes:
+
+> Giuseppe Scrivano <gscrivan@redhat.com> writes:
+>
+>> This series is based on some old patches I've been playing with some
+>> years ago, but they were never sent to lkml as I was not sure about
+>> their complexity/usefulness ratio.  It was recently reported by
+>> another user that these patches are still useful[1] so I am submitting
+>> the last version and see what other folks think about this feature.
 >>
->> The RT5631 codec of Asus Transformers will re-use this function.
-> 
-> OK, but does it need this FIXME part? That appears to be codec specific.
+>> Since the fix for CVE-2014-8989 in order to set a gids mapping for a
+>> user namespace when the user namespace owner doesn't have CAP_SETGID
+>> in its parent, it is necessary to first disable setgroups(2) through
+>> /proc/PID/setgroups.
+>>
+>> Setting up a user namespace with multiple IDs mapped into is usually
+>> done through the privileged helpers newuidmap/newgidmap.
+>> Since these helpers run either as setuid or with CAP_SET[U,G]ID file
+>> capabilities, it is not necessary to disable setgroups(2) in the
+>> created user namespace.  The user running in the user namespace can
+>> use setgroups(2) and drop the additional groups that it had initially.
+>>
+>> This is still an issue on systems where negative groups ACLs, i.e. the
+>> group permissions are more restrictive than the entry for the other
+>> categories, are used.  With such configuration, allowing setgroups(2)
+>> would cause the same security vulnerability described by
+>> CVE-2014-8989.
+>
+> Do you have any experience or any documentation about systems that are
+> using groups to deny access?
+>
+> There are some deployments somewhere, but last I looked they were rare
+> enough that the intersection between systems using groups to deny access
+> and systems deploying containers could reasonably be assumed to be the
+> empty set?
+>
+> Before we seriously consider merging a change like this I believe we
+> need some references to actual deployed systems.  As adding a feature
+> that is designed around a premise of a security model that people
+> are not using will likely lead to poor testing, poor review and
+> not enough feedback to get the rough edges off.
 
-Downstream RT5631 Tegra driver has exactly the same FIXME.
+Snaipe (added to CC) has raised this point some weeks ago.  Snaipe, do
+you have any more information to share on what systems are using user
+namespaces and deny access through groups?
 
-Although, I now see that downstream RT5631 uses 384*srate for the
-default cases.
+Giuseppe
 
-I also see that WM8994 driver that we have in grate-kernel for Galaxy
-Tab and SGH-I927 also re-uses that mclk_rate function.
-
->> IIUC, the default switch-case works properly for all rates below 64KHz,
->> at least I haven't had any problems with it. Could you please clarify
->> why you are saying that the switch statement appears to be incomplete?
-> 
-> It looks a bit weird because less than 64kHz and greater than 96kHz we
-> use 256 and for only 64kHz, 88.2kHz and 96kHz we use 128. So it is not
-> clear to me which sample rates have actually been tested with this and
-> if this is complete or not?
-> 
-> Is it intended that we use 256 for sample rates greater than 96kHz?
-
-The 128*srate gives MCLK >6MHZ for 64/88/96, 256*srate gives MCLK >6MHZ
-for rates below 64kHZ. Looks like the goal is to get MCLK >6MHZ.
-
- The WM8903 datasheet says:
-
-"The  following  operating  frequency  limits  must  be  observed  when
- configuring  CLK_SYS.  Failure  to  observe   these   limits   will
-result   in   degraded  noise   performance   and/or   incorrect
-ADC/DAC  functionality.
-
-If DAC_OSR = 0 then CLK_SYS  3MHz
-If DAC_OSR = 1 then CLK_SYS  6MHz"
-
-Where DAC_OSR is DAC Oversampling Control
-0 = Low power (normal oversample)
-1 = High performance (double rate)
-
-I see that DAC_OSR=0 by default, it can be switched to 1 by userspace
-ALSA control.
