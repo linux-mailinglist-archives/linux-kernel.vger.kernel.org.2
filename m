@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD8038E2D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3180538E2D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhEXI4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:56:45 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:42496 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232362AbhEXI4g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:56:36 -0400
-Received: by mail-ua1-f51.google.com with SMTP id 14so9083664uac.9;
-        Mon, 24 May 2021 01:55:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5H0qZkzumrdkYcAyVjQDQA6Hje2p2FxbSu2Plzs94Cg=;
-        b=Bn/c6Kw7q0MNLCbshYdbAYgS97X7nKSJGRbi6LfqPjQuE8DXHOElGQnZ5C3wKeIgcy
-         4KkM51ueXOpt1GLBYOfYiUylUogOKUgzWQLvNYK9gmnBPRLAPq5/vg1YblRRFhYqlETi
-         oejDUHfGr+TTCKy/8RkHw8U639RPilcjlMeJRFkv9UJk3j6BlpbJT1SS5NsyttGttx54
-         VoiIW5IeABFkIEIEb6x9K37WzXB+Max8o5z9nBwyXvPuOSNl8uGK2lul+dTRbFr4E3d8
-         9Ak4hbkPX4bWQXLg8KIyOOj0lZJn+OyE3NgXUoVAYLeqC5e5fR+ZViFlgZSo7X+rvQCU
-         yJ8Q==
-X-Gm-Message-State: AOAM5311EDvujXylHpzfASl67Hhlo2oCu5I2vwwRODy8IjlTmaGwMlVy
-        oBQaOAua/sxGfVg4R77llrw4sf7V/VGQhC3Znig=
-X-Google-Smtp-Source: ABdhPJxxyosYrdj1GqNypPiBnYRArw2E3/38homNMO1Av1PFu0RXXr0Dh8t9Utur9chqZtb0X55m4PfZQwmS3BcBlZQ=
-X-Received: by 2002:ab0:7705:: with SMTP id z5mr20481974uaq.2.1621846508208;
- Mon, 24 May 2021 01:55:08 -0700 (PDT)
+        id S232432AbhEXJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:00:45 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:57100 "EHLO uho.ysoft.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232313AbhEXJAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 05:00:43 -0400
+Received: from [10.0.31.199] (unknown [10.0.31.199])
+        by uho.ysoft.cz (Postfix) with ESMTP id 3ADA7A0445;
+        Mon, 24 May 2021 10:59:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1621846754;
+        bh=9gXHRkL0/lNEZcmId1P1XQF8Biy3VxhzAmq1CA/LKkU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gLOIc+RBlBTV5n0x/21GY2lHumdpywKDfHHGyK2vAUcx/twWYVQnrGOWcv967SPW9
+         xChwb9DwuKfZyXBvcK2ZtfFKF/m2MbDmcsuhu9lBTd+mTCwc3NUGclJvDYOnGRLHw8
+         LtUjHdoufLWCy21gXmgLLgaH8Soufbk9BzeMu/ng=
+Subject: Re: [PATCH RESEND] ARM: dts: imx6dl-yapp4: Configure the OLED display
+ segment offset
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+References: <1620813314-30803-1-git-send-email-michal.vokac@ysoft.com>
+ <20210523034952.GU8194@dragon>
+From:   =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Message-ID: <9add872f-0c98-3c11-ea1f-5349f0f0bed2@ysoft.com>
+Date:   Mon, 24 May 2021 10:59:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210523232556.15017-1-digetx@gmail.com>
-In-Reply-To: <20210523232556.15017-1-digetx@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 May 2021 10:54:57 +0200
-Message-ID: <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
-Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Burton <paul.burton@mips.com>,
-        John Crispin <john@phrozen.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210523034952.GU8194@dragon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On 23. 05. 21 5:49, Shawn Guo wrote:
+> On Wed, May 12, 2021 at 11:55:14AM +0200, Michal Vokáč wrote:
+>> The imx6dl-yapp4 platform uses a GE-LX012864FWPP3N0000 OLED display.
+>> The display consist of a 128x64 OLED panel and a SSD1305 controller.
+>>
+>> The OLED panel resolution is 128x64 but the built-in controller default
+>> resolution is 132x64. To display properly a segment offset needs to be
+>> configured.
+>>
+>> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+> 
+> Why are you resending?  Please state reason when you resend.
 
-On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
-> There are couple older platforms that can't be compile-tested because they
-> partially implement CLK API. It causes build failure of kernel drivers due
-> to the missing symbols of the unimplemented part of CLK API.
->
-> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
->                      MIPS Ralink.
->
-> Disable compile-testing for HAVE_LEGACY_CLK=y.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+I can't tell where but a while ago I read in some documentation
+that if you do not get any response for aprox. two weeks you
+can/should resend the patch in case it fell through the cracks.
+I sent these patches in the middle of April, four weeks ago,
+and have got no replies since then. So I [RESEND PATCH] these.
 
-Thanks for your patch!
+I totally understand that you, and all maintainers and reviewers
+in general, are very busy so it may take a long time to reply.
 
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
->
->  config COMPILE_TEST
->         bool "Compile also drivers which will not load"
-> -       depends on HAS_IOMEM
-> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+AFAIK one does not need to state a reason for RESEND PATCH.
+The word RESEND itself should explain the reason. This is not v2,
+where I would of course describe what has changed.
 
-That sounds a bit drastic to me.  Usually we just try to implement the
-missing functionality, or provide stubs.
-Which functions are missing?
+Please correct me if my understanding of this part of the submitting
+process is incorrect.
 
->         help
->           Some drivers can be compiled on a different platform than they are
->           intended to be run on. Despite they cannot be loaded there (or even
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thank you,
+Michal
