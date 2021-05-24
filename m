@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9159638DE66
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFE838DE5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhEXAbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 20:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
+        id S232138AbhEXAbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 20:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232120AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232118AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 20:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 670E261352;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 55E9861261;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621816211;
-        bh=WXtat16smgUAaIGMDW4P5PS91GPskB7apSEtMEnUoQQ=;
+        bh=E7tnaemu0GzBxIfKbRL9F0Yny0DeG2d4Q2JCnRY0nKg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=C92a1x1zhJRqv1RiznUtV+KsaxfeDi7kXqh3fffmUnmfhncXwmfdNPejY2zLhKDhO
-         pxVWjC4MdApvSMPZrX4AweRXAOIGz5bepoLBILq7wmRbZmL8butv+TRA26wbm401k4
-         C1p2a0e+HD4Bhb27pUNo7b5YccdJm1EB8IgGTSfjo6aKQZitb5NBbhz6pMWciIbxHn
-         hXL7TTtt0HSzFjYRrI8Xx3tv8H7zNEibo4TqBHL5W6mlYQfN4MkSnBLE1ecOZkTHay
-         A8XIu6vBjYbBu6tQL2HOckWqnB+fvrH+dt8AofZXay7M58Axms+xn4t0yFmtD2YdoE
-         7Pc2hqgTq7GmA==
+        b=BQu1wm62RiFoBBf4VJT0MY1fblIJ048zTESo+P/J0wc6bYuCG2E5Q3yqgtsYeD36Y
+         1N5tihl5obTPkQFyn3W2qk1/zyUneyqI486ZMc8ZJeB2zu6wKwojrEA+kmmG20KM83
+         ipMmE8f1a0peEAicfYKlExY8wyCwdFsz8PEYm9Dmd5G/cGjNkzwBr/8h5MqZ6Y20nI
+         o0yV7VQf7tE/j+cwtumHx84o72whUbgn4GRpPotkYSP/T10nU3nYz8FZ6IJjrBq4BF
+         YbyAwP0SKlur17BRCSzREOPVslNrjQhUiv+ZdAF30HYID6RC2pPYzv4XMUinbtEHYv
+         6GpWG6ZbMjCZw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5DCDE609ED;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A32E60CE2;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] net: ftgmac100: add missing error return code in
- ftgmac100_probe()
+Subject: Re: [PATCH net-next] sfc: use DEVICE_ATTR_*() macro
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162181621137.30453.7620078087763802418.git-patchwork-notify@kernel.org>
+Message-Id: <162181621130.30453.15592805092018753382.git-patchwork-notify@kernel.org>
 Date:   Mon, 24 May 2021 00:30:11 +0000
-References: <20210522120246.1125535-1-yangyingliang@huawei.com>
-In-Reply-To: <20210522120246.1125535-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, andrew@aj.id.au,
-        gwshan@linux.vnet.ibm.com
+References: <20210523032030.42052-1-yuehaibing@huawei.com>
+In-Reply-To: <20210523032030.42052-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,21 +47,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, 22 May 2021 20:02:46 +0800 you wrote:
-> The variables will be free on path err_phy_connect, it should
-> return error code, or it will cause double free when calling
-> ftgmac100_remove().
+On Sun, 23 May 2021 11:20:30 +0800 you wrote:
+> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
 > 
-> Fixes: bd466c3fb5a4 ("net/faraday: Support NCSI mode")
-> Fixes: 39bfab8844a0 ("net: ftgmac100: Add support for DT phy-handle property")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> 
-> [...]
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/net/ethernet/sfc/ef10.c       | 17 ++++++++---------
+>  drivers/net/ethernet/sfc/efx.c        |  6 +++---
+>  drivers/net/ethernet/sfc/efx_common.c | 12 +++++++-----
+>  3 files changed, 18 insertions(+), 17 deletions(-)
 
 Here is the summary with links:
-  - [-next] net: ftgmac100: add missing error return code in ftgmac100_probe()
-    https://git.kernel.org/netdev/net-next/c/52af13a41489
+  - [net-next] sfc: use DEVICE_ATTR_*() macro
+    https://git.kernel.org/netdev/net-next/c/3880fc37beba
 
 You are awesome, thank you!
 --
