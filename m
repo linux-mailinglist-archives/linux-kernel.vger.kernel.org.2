@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6F738EEAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EEA38ED97
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbhEXPyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35146 "EHLO mail.kernel.org"
+        id S234249AbhEXPjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:39:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233823AbhEXPph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:45:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E90A861469;
-        Mon, 24 May 2021 15:36:25 +0000 (UTC)
+        id S233889AbhEXPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:36:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FA916140E;
+        Mon, 24 May 2021 15:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870586;
-        bh=+Ry8OFtRQ6R/dls8cjldcYfjKLo1G6vnoM5kpwSEqFE=;
+        s=korg; t=1621870359;
+        bh=SsbNvQaUdj20wLzoljS0f2x1A3hb77seJHzsZL169dQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o4+Q93m8iq8WQ41mnW1ZYs/E4n0c5PeSDK5vRrINNe9jK/MofgASU2ZHUTxHA5SK5
-         usxvbIeaolKXXjiffVvgn762SBdyemUGlasK8QYFZLT7zEyD91TU3g/QcQeSDH/pvW
-         G/eC0OkQ72/AiCyWc65o732boXq6Eeg3KTbED4No=
+        b=sG2hVx1IJLFkWk/lK0WBMsn1nszMcZwqeFkxpRl5Cq8bDSs+/yrcKui0EDdQQZd3E
+         R3fyOQ0H68AWfAGSWf6X8jVUJwXG6ygwQmdrIIlXusGlddWoiEKxENZFLwFMmGevrb
+         LEJdfb+lIgyA9Nv57Iwg2dN+aoQXblX19p8BJDKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Enzo Matsumiya <ematsumiya@suse.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/71] nvmet: seset ns->file when open fails
+        stable@vger.kernel.org,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH 4.9 35/36] tty: vt: always invoke vc->vc_sw->con_resize callback
 Date:   Mon, 24 May 2021 17:25:20 +0200
-Message-Id: <20210524152326.925729819@linuxfoundation.org>
+Message-Id: <20210524152325.298259254@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit 85428beac80dbcace5b146b218697c73e367dcf5 ]
+commit ffb324e6f874121f7dce5bdae5e05d02baae7269 upstream.
 
-Reset the ns->file value to NULL also in the error case in
-nvmet_file_ns_enable().
+syzbot is reporting OOB write at vga16fb_imageblit() [1], for
+resize_screen() from ioctl(VT_RESIZE) returns 0 without checking whether
+requested rows/columns fit the amount of memory reserved for the graphical
+screen if current mode is KD_GRAPHICS.
 
-The ns->file variable points either to file object or contains the
-error code after the filp_open() call. This can lead to following
-problem:
+----------
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #include <fcntl.h>
+  #include <sys/ioctl.h>
+  #include <linux/kd.h>
+  #include <linux/vt.h>
 
-When the user first setups an invalid file backend and tries to enable
-the ns, it will fail. Then the user switches over to a bdev backend
-and enables successfully the ns. The first received I/O will crash the
-system because the IO backend is chosen based on the ns->file value:
+  int main(int argc, char *argv[])
+  {
+        const int fd = open("/dev/char/4:1", O_RDWR);
+        struct vt_sizes vt = { 0x4100, 2 };
 
-static u16 nvmet_parse_io_cmd(struct nvmet_req *req)
-{
-	[...]
+        ioctl(fd, KDSETMODE, KD_GRAPHICS);
+        ioctl(fd, VT_RESIZE, &vt);
+        ioctl(fd, KDSETMODE, KD_TEXT);
+        return 0;
+  }
+----------
 
-	if (req->ns->file)
-		return nvmet_file_parse_io_cmd(req);
+Allow framebuffer drivers to return -EINVAL, by moving vc->vc_mode !=
+KD_GRAPHICS check from resize_screen() to fbcon_resize().
 
-	return nvmet_bdev_parse_io_cmd(req);
-}
-
-Reported-by: Enzo Matsumiya <ematsumiya@suse.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3 [1]
+Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/io-cmd-file.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/tty/vt/vt.c           |    2 +-
+ drivers/video/console/fbcon.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
-index 05453f5d1448..6ca17a0babae 100644
---- a/drivers/nvme/target/io-cmd-file.c
-+++ b/drivers/nvme/target/io-cmd-file.c
-@@ -38,9 +38,11 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -838,7 +838,7 @@ static inline int resize_screen(struct v
+ 	/* Resizes the resolution of the display adapater */
+ 	int err = 0;
  
- 	ns->file = filp_open(ns->device_path, flags, 0);
- 	if (IS_ERR(ns->file)) {
--		pr_err("failed to open file %s: (%ld)\n",
--				ns->device_path, PTR_ERR(ns->file));
--		return PTR_ERR(ns->file);
-+		ret = PTR_ERR(ns->file);
-+		pr_err("failed to open file %s: (%d)\n",
-+			ns->device_path, ret);
-+		ns->file = NULL;
-+		return ret;
- 	}
+-	if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
++	if (vc->vc_sw->con_resize)
+ 		err = vc->vc_sw->con_resize(vc, width, height, user);
  
- 	ret = vfs_getattr(&ns->file->f_path,
--- 
-2.30.2
-
+ 	return err;
+--- a/drivers/video/console/fbcon.c
++++ b/drivers/video/console/fbcon.c
+@@ -1986,7 +1986,7 @@ static int fbcon_resize(struct vc_data *
+ 			return -EINVAL;
+ 
+ 		DPRINTK("resize now %ix%i\n", var.xres, var.yres);
+-		if (con_is_visible(vc)) {
++		if (con_is_visible(vc) && vc->vc_mode == KD_TEXT) {
+ 			var.activate = FB_ACTIVATE_NOW |
+ 				FB_ACTIVATE_FORCE;
+ 			fb_set_var(info, &var);
 
 
