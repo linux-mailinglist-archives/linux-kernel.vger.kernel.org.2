@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051B938F1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57E738F1EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhEXRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 13:01:03 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:38467 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbhEXRBC (ORCPT
+        id S233272AbhEXRDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 13:03:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24841 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232920AbhEXRDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 13:01:02 -0400
-Received: by mail-ot1-f49.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so14675486otk.5;
-        Mon, 24 May 2021 09:59:33 -0700 (PDT)
+        Mon, 24 May 2021 13:03:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621875743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wcEmMLIpMt542BRC/ArOGeP47HD5D7lnjpPaTzmc9ZE=;
+        b=CbFz429eBGEkD2C67KRB+CuvKeI0wVHC76It+yn8eErUhQzfR3PJ+cPs8TeuT7ODwE8Ffd
+        PKE/osTTOaGVZaNkSVp9BJCrMEO6mOOMOcJj619COHgt7BMJmMVXzXrWkCLgbqfzLOV8Ic
+        EWhbzyHCWCMmzFIMdoRcDGt1SpLy04Y=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-skqBv4HvOymSfGA0AgPz1A-1; Mon, 24 May 2021 13:02:21 -0400
+X-MC-Unique: skqBv4HvOymSfGA0AgPz1A-1
+Received: by mail-ej1-f69.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso7813666ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:02:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=TOA3bDdEMMFRDP4kZXTONZi/Xy6SI79VL7CIlLaKLO0=;
-        b=Ykd/iWa3QcAcjrENV2SCrtJzebcF9vyoB9ujTbLBLjC6mC62ZkPiDR8TqfDtz+3s+2
-         fHZCVwkNubfRDNPvn8hFYL2dtMN2BrpVnel6B6zI0wX9QUTpKojgvcqJbsjN0+bwgSk0
-         p+H58GDTcAf/HyzvDA5X0887QrBwXRP0Oyxbg4pTGo6rVuModdDIy3bOWJaFzuCA/y58
-         f5Y8bY6MoVVHjbZisNZjgKqF7dVwatDJq6j3suBlhsDnDtixVvLEcttdhaoRc5B8FWwK
-         mFu7b7V2bolQaHLX+FdYqWyeqsTeidXnxcBw+lGxOFKcge6Q0dQijQncQaleaSZsXzj7
-         jFMQ==
-X-Gm-Message-State: AOAM533+t3Mnn3DRdiANCTobJf0CjaAZTDgd8XdZcoD4cKeZ44Ia2lCH
-        d6yo7Yh3X2N5+EcKQdvG6w==
-X-Google-Smtp-Source: ABdhPJzCF1AjIDiFvsfcB85y4/1aKWchPZ+c8mSUgYDUel9fJ26poawYgLDrsZQX8maOVfC8yC7mPw==
-X-Received: by 2002:a9d:c64:: with SMTP id 91mr19392039otr.130.1621875572585;
-        Mon, 24 May 2021 09:59:32 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q5sm2472868oia.31.2021.05.24.09.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 09:59:31 -0700 (PDT)
-Received: (nullmailer pid 20323 invoked by uid 1000);
-        Mon, 24 May 2021 16:59:30 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-In-Reply-To: <20210521223236.18324-6-grygorii.strashko@ti.com>
-References: <20210521223236.18324-1-grygorii.strashko@ti.com> <20210521223236.18324-6-grygorii.strashko@ti.com>
-Subject: Re: [PATCH 5/5] dt-bindings: gpio: omap: Convert to json-schema
-Date:   Mon, 24 May 2021 11:59:30 -0500
-Message-Id: <1621875570.377768.20322.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wcEmMLIpMt542BRC/ArOGeP47HD5D7lnjpPaTzmc9ZE=;
+        b=KMYg4ybpPspFLLn+fyXXv1/pC4i8GqtftIr2nKLuOfrxkYgKw0ZWra1HIPFnrBtA/0
+         oiI9O6FDBV1nvF1BP1ugnA6+nWfi6uYqvcKnqXmy132RXUsKCzau+3Uc4gOrNDy0faHK
+         78aX5ZChNyx4oANKCtMlN3vimwlT7/F7grJYGgwPYRG+ZlSxvpj4d8qAa9J5vsp1k9c0
+         8mMXH/StysyyncqY0NhbvWPUMDqL0NAivdxxVXVzSCeoQgVD/UqtIMNYOc2X+FHyc4iL
+         TfQWfh0WV9T5+lFmj4Lu84Zxvzx2RxGLF/fAg5X9vZ8cKqKBJwYAd4fmRcR8PaSFK9z2
+         xC1g==
+X-Gm-Message-State: AOAM530awkJy5gy+ZnMf3FkUTXB+9MxwKaR8rLIwrZVqZW9GupxoG1l3
+        E6YVQFBS8g9dUEfuRcWmST9tzZdtswmlGQFvMrmeBDl5nVLUJmlD68Ee+41Lh8L6NNRFUK9ZmpC
+        47F+08jr0o1hiC2N62s27SJWm6Vr1SDlZlUtbK4X1mbUpdOfknjLUPEapuGzN0mADqJRQ7PhfqF
+        Xs
+X-Received: by 2002:a50:9346:: with SMTP id n6mr26905883eda.365.1621875740226;
+        Mon, 24 May 2021 10:02:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXLp1wRWeU2aBKnMEdIF+0UPlJKMdflp6xiudWJxTSxzYSssv1QjXUKON/oNsCX11ZOGuiqw==
+X-Received: by 2002:a50:9346:: with SMTP id n6mr26905848eda.365.1621875739988;
+        Mon, 24 May 2021 10:02:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q16sm9562165edw.87.2021.05.24.10.02.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 10:02:19 -0700 (PDT)
+Subject: Re: [PATCH v2 3/5] KVM: x86: Use common 'enable_apicv' variable for
+ both APICv and AVIC
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-4-vkuznets@redhat.com> <YKQmG3rMpwSI3WrV@google.com>
+ <12eadbce-f688-77a1-27bf-c33fee2e7543@redhat.com>
+ <YKvZ6vI2vFVmkCeb@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <aa5ef24e-6235-ad25-2f01-580efd2f1bbb@redhat.com>
+Date:   Mon, 24 May 2021 19:02:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <YKvZ6vI2vFVmkCeb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021 01:32:36 +0300, Grygorii Strashko wrote:
-> Convert the OMAP GPIO Device Tree binding documentation to json-schema.
-> The GPIO hogs node names defined to end with a 'hog' suffix.
+On 24/05/21 18:52, Sean Christopherson wrote:
+> On Mon, May 24, 2021, Paolo Bonzini wrote:
+>> On 18/05/21 22:39, Sean Christopherson wrote:
+>>>> +/* enable / disable AVIC */
+>>>> +static int avic;
+>>>> +module_param(avic, int, 0444);
+>>> We should opportunistically make avic a "bool".
+>>>
+>>
+>> And also:
+>>
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index 11714c22c9f1..48cb498ff070 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -185,9 +185,12 @@ module_param(vls, int, 0444);
+>>   static int vgif = true;
+>>   module_param(vgif, int, 0444);
+>> -/* enable / disable AVIC */
+>> -static int avic;
+>> -module_param(avic, int, 0444);
+>> +/*
+>> + * enable / disable AVIC.  Because the defaults differ for APICv
+>> + * support between VMX and SVM we cannot use module_param_named.
+>> + */
+>> +static bool avic;
+>> +module_param(avic, bool, 0444);
+>>   bool __read_mostly dump_invalid_vmcb;
+>>   module_param(dump_invalid_vmcb, bool, 0644);
+>> @@ -1013,11 +1016,7 @@ static __init int svm_hardware_setup(void)
+>>   			nrips = false;
+>>   	}
+>> -	if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC))
+>> -		avic = false;
+>> -
+>> -	/* 'enable_apicv' is common between VMX/SVM but the defaults differ */
+>> -	enable_apicv = avic;
+>> +	enable_apicv = avic && npt_enabled && boot_cpu_has(X86_FEATURE_AVIC);
+>>   	if (enable_apicv) {
+>>   		pr_info("AVIC enabled\n");
+>>
+>> The "if" can come back when AVIC is enabled by default.
 > 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> ---
->  .../devicetree/bindings/gpio/gpio-omap.txt    |  45 --------
->  .../bindings/gpio/ti,omap-gpio.yaml           | 108 ++++++++++++++++++
->  2 files changed, 108 insertions(+), 45 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
-> 
+> But "avic" is connected to the module param, even if it's off by default its
+> effective value should be reflected in sysfs.  E.g. the user may incorrectly
+> think AVIC is in use if they set avic=1 but the CPU doesn't support AVIC.
+> Forcing the user to check /proc/cpuinfo or look for "AVIC enabled" in dmesg is
+> kludgy at best.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Indeed -- I even tested the above, but only before realizing that 
+module_param_named would change the default.  So for now this needs to
+be "enable_apicv = avic = ...", and later it can become just
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml:22:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+	enable_apicv &= npt_enabled && boot_cpu_has(X86_FEATURE_AVIC);
 
-dtschema/dtc warnings/errors:
+Paolo
 
-See https://patchwork.ozlabs.org/patch/1482351
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
