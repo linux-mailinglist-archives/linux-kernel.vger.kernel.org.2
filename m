@@ -2,103 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991B238E7CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378DE38E7C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbhEXNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhEXNk0 (ORCPT
+        id S232858AbhEXNjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:39:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232536AbhEXNjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:40:26 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80962C061574;
-        Mon, 24 May 2021 06:38:57 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so1938972pjb.5;
-        Mon, 24 May 2021 06:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=24xHs/c9+Vn16SJ80N4lzJM1aJdYpt55ltlqUdwqHiM=;
-        b=scqmS67QUgt1Fyf/4fpwGS4WutaGVaj/jxJ1L4w5FuFY7hJKD5d7EZkBeNXeRt8TNR
-         /OsZH4Ysney0WPC+TzEY9OBZaICZleyn/+cVjoI4q5tEn6qrTObNva62hgyt+C54ciOg
-         jYS1wF1OpPS5JpTaKv2oFGZ9KDXsXkJgISQWVVA2XxMWHO++HNQ9gMLv3oj1nPOisjFo
-         +Qcd8dvIt+cpo/ENgeXWjBIhLB2u0CvQKVb8W4tVqxShH7I90TGWq+8ARd1GmqIVvkOq
-         hHzDasNcOicrESHXuzbThmIY3sOZFM+4oqBMjGGtRkaCj+0XJqY8vCixHnEte6cB+mTg
-         ko6g==
+        Mon, 24 May 2021 09:39:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621863491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gfjGBgY2FkJz/nb2klTdqTGbzOdhTohGwKQvQlvlXtQ=;
+        b=XRJwFH1ia4/i1+6Zk6HoCLp4Z0rmKciATdFv99cu+4UAGbeLxG5vjOW5YB4X6kmOiKPkUg
+        6lWoyKNxrmAOdECXV5GXO8eJM11Ikl+L5NLkhCzrhvGnVsaY4gunaSX5My7EseG0a4NyV9
+        BZ2HjzjpryjJF6DtRrBpcpud6ccdlr4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-mK25uefGOSCpmhKG7lVBjw-1; Mon, 24 May 2021 09:38:10 -0400
+X-MC-Unique: mK25uefGOSCpmhKG7lVBjw-1
+Received: by mail-ed1-f69.google.com with SMTP id cy15-20020a0564021c8fb029038d26976787so14143407edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:38:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=24xHs/c9+Vn16SJ80N4lzJM1aJdYpt55ltlqUdwqHiM=;
-        b=dBre84uIXDoOVVb9y8As/O0jGZ2lnxMU7bg+4IC61wJuwfit5TSwiPVUrFrXu/qDDG
-         8Q9tukqFeTp/UnlWbnepbDAn1bldiDKzT/M5Tuq6+JftnDoMI+wnRiY0utgXsGMAMA7t
-         B4FYmCgKE/G2hrbnDxgUnQ8u+L83IoOedvCeA5T5IehyPFmfdIfYdH1jJ1i7GMlbEQG2
-         cFu+2qB4vO7+qmOom59cDXyyUDMcF69KPAI9syn1ojfQqsX93r0P5We+R2nuZbP5U1Dw
-         vGxcJTQooy7QPVGJ8m5Po5dYuXvmkHqdEwzsi9IfSFWXmZHJZTm2lL9HaRsotUjloYQv
-         3/1Q==
-X-Gm-Message-State: AOAM530jMgUeYtyuuX4q+NaZUz6sE4ivSch2uZjK6Vie82cMx27cknWV
-        wDAIr39fX7h/+o2NMdSlMlq/4nzhSz9Zd5pG
-X-Google-Smtp-Source: ABdhPJydfIwNrfnLYpzRXfkHv1vSE7Dm7d9+TjuXhyGEKX4kxaKS44Tuor1padPABacZRVuMCVduYg==
-X-Received: by 2002:a17:90a:e291:: with SMTP id d17mr25040930pjz.42.1621863536924;
-        Mon, 24 May 2021 06:38:56 -0700 (PDT)
-Received: from vessel.. ([103.242.196.149])
-        by smtp.gmail.com with ESMTPSA id n69sm4876274pfd.132.2021.05.24.06.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 06:38:56 -0700 (PDT)
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, gustavoars@kernel.org,
-        wanghai38@huawei.com
-Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] net: appletalk: cops: Fix data race in cops_probe1
-Date:   Mon, 24 May 2021 19:07:12 +0530
-Message-Id: <20210524133712.15720-1-saubhik.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=gfjGBgY2FkJz/nb2klTdqTGbzOdhTohGwKQvQlvlXtQ=;
+        b=FgsaNu2o7/AX0RTbfMqFOmbATE7IdOa9x28dyWqpMmLPv6WAp68PKD/h6PAkkJW+Z/
+         vyRq2AsrcYVpwJm0FBZs7kwE5IG0EKFbc4WHT9Yzaj8/nb/f1wHuo4NOWf7x50PwS7+y
+         4rfB9xKmhyJ4VoB9doMcEtobyu/mrzmgh9ls22q6GT3L8jux4yt9n74/LtvuQ/zf1yfd
+         E17FfKi/at4KrLAC/y1WUZ06vp1SgfQO6tgoFMxCt72MfN5vvxDWJk/YGJQgW3B8enUR
+         XAYl6seE+zfu3pA3j7gyhndsnvbHvZ/J1wRnDc4IzEn4Lj2MAO+sfh5ITDitwamDyQPI
+         /EgA==
+X-Gm-Message-State: AOAM531ClRgEdyUzlAw7qJ6PQ+eVP0Xywca3PVBKmBFYs1UF6aoDSsUk
+        BtBZ9vmiV09zOTJ/bZtPiRqZ1nDfJQ4kvbMFrY+g2DWfihgQLK32x/ES5cpeD96cHOGUptc9Ukd
+        P2BIAfgEkXjWdiwYwJegt+9q2
+X-Received: by 2002:a50:a446:: with SMTP id v6mr26210212edb.254.1621863487864;
+        Mon, 24 May 2021 06:38:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaX41xtNYlI3xVyFbNhkNJUGgbn3pROEOzh8ymMppFkB7r4R9Hd70KqayS7P90z4Z0plwAfw==
+X-Received: by 2002:a50:a446:: with SMTP id v6mr26210188edb.254.1621863487631;
+        Mon, 24 May 2021 06:38:07 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f7sm9787850edd.5.2021.05.24.06.38.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 06:38:07 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] KVM: selftests: exercise userfaultfd minor
+ faults
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Gardon <bgardon@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20210519200339.829146-1-axelrasmussen@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8122c08a-67ab-47c0-99ab-5788c37a4166@redhat.com>
+Date:   Mon, 24 May 2021 15:38:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210519200339.829146-1-axelrasmussen@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cops_probe1(), there is a write to dev->base_addr after requesting an
-interrupt line and registering the interrupt handler cops_interrupt().
-The handler might be called in parallel to handle an interrupt.
-cops_interrupt() tries to read dev->base_addr leading to a potential
-data race. So write to dev->base_addr before calling request_irq().
+On 19/05/21 22:03, Axel Rasmussen wrote:
+> Base
+> ====
+> 
+> These patches are based upon Andrew Morton's v5.13-rc1-mmots-2021-05-13-17-23
+> tag. This is because this series depends on:
+> 
+> - UFFD minor fault support for hugetlbfs (in v5.13-rc1) [1]
+> - UFFD minor fault support for shmem (in Andrew's tree) [2]
+> 
+> [1] https://lore.kernel.org/linux-fsdevel/20210301222728.176417-1-axelrasmussen@google.com/
+> [2] https://lore.kernel.org/patchwork/cover/1420967/
+> 
+> Changelog
+> =========
+> 
+> v1->v2:
+> - Picked up Reviewed-by's.
+> - Change backing_src_is_shared() to check the flags, instead of the type. This
+>    makes it robust to adding new backing source types in the future.
+> - Add another commit which refactors setup_demand_paging() error handling.
+> - Print UFFD ioctl type once in setup_demand_paging, instead of on every page-in
+>    operation.
+> - Expand comment on why we use MFD_HUGETLB instead of MAP_HUGETLB.
+> - Reworded comment on addr_gpa2alias.
+> - Moved demand_paging_test.c timing calls outside of the if (), deduplicating
+>    them.
+> - Split trivial comment / logging fixups into a separate commit.
+> - Add another commit which prints a clarifying message on test skip.
+> - Split the commit allowing backing src_type to be modified in two.
+> - Split the commit adding the shmem backing type in two.
+> - Rebased onto v5.13-rc1-mmots-2021-05-13-17-23.
+> 
+> Overview
+> ========
+> 
+> Minor fault handling is a new userfaultfd feature whose goal is generally to
+> improve performance. In particular, it is intended for use with demand paging.
+> There are more details in the cover letters for this new feature (linked above),
+> but at a high level the idea is that we think of these three phases of live
+> migration of a VM:
+> 
+> 1. Precopy, where we copy "some" pages from the source to the target, while the
+>     VM is still running on the source machine.
+> 2. Blackout, where execution stops on the source, and begins on the target.
+> 3. Postcopy, where the VM is running on the target, some pages are already up
+>     to date, and others are not (because they weren't copied, or were modified
+>     after being copied).
+> 
+> During postcopy, the first time the guest touches memory, we intercept a minor
+> fault. Userspace checks whether or not the page is already up to date. If
+> needed, we copy the final version of the page from the soure machine. This
+> could be done with RDMA for example, to do it truly in place / with no copying.
+> At this point, all that's left is to setup PTEs for the guest: so we issue
+> UFFDIO_CONTINUE. No copying or page allocation needed.
+> 
+> Because of this use case, it's useful to exercise this as part of the demand
+> paging test. It lets us ensure the use case works correctly end-to-end, and also
+> gives us an in-tree way to profile the end-to-end flow for future performance
+> improvements.
+> 
+> Axel Rasmussen (10):
+>    KVM: selftests: trivial comment/logging fixes
+>    KVM: selftests: simplify setup_demand_paging error handling
+>    KVM: selftests: print a message when skipping KVM tests
+>    KVM: selftests: compute correct demand paging size
+>    KVM: selftests: allow different backing source types
+>    KVM: selftests: refactor vm_mem_backing_src_type flags
+>    KVM: selftests: add shmem backing source type
+>    KVM: selftests: create alias mappings when using shared memory
+>    KVM: selftests: allow using UFFD minor faults for demand paging
+>    KVM: selftests: add shared hugetlbfs backing source type
+> 
+>   .../selftests/kvm/demand_paging_test.c        | 175 +++++++++++-------
+>   .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+>   .../testing/selftests/kvm/include/test_util.h |  12 ++
+>   tools/testing/selftests/kvm/lib/kvm_util.c    |  84 ++++++++-
+>   .../selftests/kvm/lib/kvm_util_internal.h     |   2 +
+>   tools/testing/selftests/kvm/lib/test_util.c   |  51 +++--
+>   6 files changed, 238 insertions(+), 87 deletions(-)
+> 
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+> 
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Queued, thanks (with region->fd moved to the right patch).
 
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
----
- drivers/net/appletalk/cops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/appletalk/cops.c b/drivers/net/appletalk/cops.c
-index ba8e70a8e312..6b12ce822e51 100644
---- a/drivers/net/appletalk/cops.c
-+++ b/drivers/net/appletalk/cops.c
-@@ -327,6 +327,8 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			break;
- 	}
- 
-+	dev->base_addr = ioaddr;
-+
- 	/* Reserve any actual interrupt. */
- 	if (dev->irq) {
- 		retval = request_irq(dev->irq, cops_interrupt, 0, dev->name, dev);
-@@ -334,8 +336,6 @@ static int __init cops_probe1(struct net_device *dev, int ioaddr)
- 			goto err_out;
- 	}
- 
--	dev->base_addr = ioaddr;
--
-         lp = netdev_priv(dev);
-         spin_lock_init(&lp->lock);
- 
--- 
-2.30.2
+Paolo
 
