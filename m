@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8656038EFDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C8C38EEE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhEXQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
+        id S234794AbhEXPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235062AbhEXPy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3D361920;
-        Mon, 24 May 2021 15:40:24 +0000 (UTC)
+        id S234471AbhEXPrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:47:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24DEB61414;
+        Mon, 24 May 2021 15:37:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870825;
-        bh=/ZMCnfVgzjPi3wZ+cuTJLw8G9D5HUinA54l12UnUAtE=;
+        s=korg; t=1621870623;
+        bh=T+ER7xmjAML+VI4Qx/E1mYgGjFQ7SR8l6//dqmn/e7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khJs4c227m/zv9ecAp4IQnwxxbzk244iDPlIFJgLuxR4N3jzXiIpt6p+2by87oQ7X
-         JwQa53th3AmGcEumbm+T56v8+1yQ4vpTJF7wezlw4idA0Q2PSVgBpWeV0DVNGWzRo1
-         rhQkDP+6GoYRK5GEEZwXyPz+EMITEWfYNDQ7YVHQ=
+        b=nJRcjDEEYmvblaVKGrDvBzsFIGp8+fS8ImAb2PU2+KKeBPbyljbS0/IHgLgx3zW7z
+         jsHjGXkUi0rf5jpgnqb5Z9g03mdnAfqYqCllOQ03uyY3500ls7CbXSw0gtav4rK0g/
+         ajTs6RWrujnbk3Ue32SXZ3P7lynaRcklVcdwAKbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Cordova A <danesc87@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 042/104] ALSA: hda: fixup headset for ASUS GU502 laptop
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 31/71] ALSA: hda/realtek: Add fixup for HP OMEN laptop
 Date:   Mon, 24 May 2021 17:25:37 +0200
-Message-Id: <20210524152334.221335949@linuxfoundation.org>
+Message-Id: <20210524152327.470837120@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,114 +38,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Cordova A <danesc87@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit c1b55029493879f5bd585ff79f326e71f0bc05e3 upstream.
+commit 5d84b5318d860c9d80ca5dfae0e971ede53b4921 upstream.
 
-The GU502 requires a few steps to make headset i/o works properly:
-pincfg, verbs to unmute headphone out and callback to toggle output
-between speakers and headphone using jack.
+HP OMEN dc0019-ur with codec SSID 103c:84da requires the pin config
+overrides and the existing mic/mute LED setup.  This patch implements
+those in the fixup table.
 
-Signed-off-by: Daniel Cordova A <danesc87@gmail.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212733
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210507173116.12043-1-danesc87@gmail.com
+Link: https://lore.kernel.org/r/20210504121832.4558-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   62 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ sound/pci/hda/patch_realtek.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -6232,6 +6232,35 @@ static void alc294_fixup_gx502_hp(struct
- 	}
- }
+@@ -6390,6 +6390,7 @@ enum {
+ 	ALC256_FIXUP_ASUS_HPE,
+ 	ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+ 	ALC295_FIXUP_ASUS_DACS,
++	ALC295_FIXUP_HP_OMEN,
+ };
  
-+static void alc294_gu502_toggle_output(struct hda_codec *codec,
-+				       struct hda_jack_callback *cb)
-+{
-+	/* Windows sets 0x10 to 0x8420 for Node 0x20 which is
-+	 * responsible from changes between speakers and headphones
-+	 */
-+	if (snd_hda_jack_detect_state(codec, 0x21) == HDA_JACK_PRESENT)
-+		alc_write_coef_idx(codec, 0x10, 0x8420);
-+	else
-+		alc_write_coef_idx(codec, 0x10, 0x0a20);
-+}
-+
-+static void alc294_fixup_gu502_hp(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+	if (!is_jack_detectable(codec, 0x21))
-+		return;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_jack_detect_enable_callback(codec, 0x21,
-+				alc294_gu502_toggle_output);
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		alc294_gu502_toggle_output(codec, NULL);
-+		break;
-+	}
-+}
-+
- static void  alc285_fixup_hp_gpio_amp_init(struct hda_codec *codec,
- 			      const struct hda_fixup *fix, int action)
- {
-@@ -6449,6 +6478,9 @@ enum {
- 	ALC294_FIXUP_ASUS_GX502_HP,
- 	ALC294_FIXUP_ASUS_GX502_PINS,
- 	ALC294_FIXUP_ASUS_GX502_VERBS,
-+	ALC294_FIXUP_ASUS_GU502_HP,
-+	ALC294_FIXUP_ASUS_GU502_PINS,
-+	ALC294_FIXUP_ASUS_GU502_VERBS,
- 	ALC285_FIXUP_HP_GPIO_LED,
- 	ALC285_FIXUP_HP_MUTE_LED,
- 	ALC236_FIXUP_HP_GPIO_LED,
-@@ -7687,6 +7719,35 @@ static const struct hda_fixup alc269_fix
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7859,6 +7860,26 @@ static const struct hda_fixup alc269_fix
  		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc294_fixup_gx502_hp,
+ 		.v.func = alc295_fixup_asus_dacs,
  	},
-+	[ALC294_FIXUP_ASUS_GU502_PINS] = {
++	[ALC295_FIXUP_HP_OMEN] = {
 +		.type = HDA_FIXUP_PINS,
 +		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a11050 }, /* rear HP mic */
-+			{ 0x1a, 0x01a11830 }, /* rear external mic */
-+			{ 0x21, 0x012110f0 }, /* rear HP out */
-+			{ }
++			{ 0x12, 0xb7a60130 },
++			{ 0x13, 0x40000000 },
++			{ 0x14, 0x411111f0 },
++			{ 0x16, 0x411111f0 },
++			{ 0x17, 0x90170110 },
++			{ 0x18, 0x411111f0 },
++			{ 0x19, 0x02a11030 },
++			{ 0x1a, 0x411111f0 },
++			{ 0x1b, 0x04a19030 },
++			{ 0x1d, 0x40600001 },
++			{ 0x1e, 0x411111f0 },
++			{ 0x21, 0x03211020 },
++			{}
 +		},
 +		.chained = true,
-+		.chain_id = ALC294_FIXUP_ASUS_GU502_VERBS
++		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
 +	},
-+	[ALC294_FIXUP_ASUS_GU502_VERBS] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* set 0x15 to HP-OUT ctrl */
-+			{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0 },
-+			/* unmute the 0x15 amp */
-+			{ 0x15, AC_VERB_SET_AMP_GAIN_MUTE, 0xb000 },
-+			/* set 0x1b to HP-OUT */
-+			{ 0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24 },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC294_FIXUP_ASUS_GU502_HP
-+	},
-+	[ALC294_FIXUP_ASUS_GU502_HP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc294_fixup_gu502_hp,
-+	},
- 	[ALC294_FIXUP_ASUS_COEF_1B] = {
- 		.type = HDA_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -8198,6 +8259,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
-+	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8009,6 +8030,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+@@ -8413,6 +8435,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
+ 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
++	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 
 
