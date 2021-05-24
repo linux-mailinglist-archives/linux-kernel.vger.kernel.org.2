@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914C638F099
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0368F38EFFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbhEXQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S235929AbhEXQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234501AbhEXP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A515613D2;
-        Mon, 24 May 2021 15:43:52 +0000 (UTC)
+        id S234652AbhEXPyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CA8D613F5;
+        Mon, 24 May 2021 15:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871033;
-        bh=p+L6IWdDWj3BuKlRYk3bfT3VrIjBfJfW1TbppQKKpR4=;
+        s=korg; t=1621870777;
+        bh=B2YmaOLZ8sUvAHqkfhLKExSdVVQsHbEQlSclP+9YIOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5WdWmCwbw7M3eS+P248RRyqjTAHgYV+tskQap+Z18J6EhnDXKW4KmGsZC569utUw
-         aXYfM6zr/VLAmWn3Kt8JtDdLAZQ7hXDgS4AZsAHvu2swqIflCKKbfnCqPGxtM8Ol9B
-         GYIejW000AovG3gv9WaPZIjsEP/kXZIUV4DjZsVA=
+        b=ldYX8n9SOk97UPEIOBjeUTST3H2Oe/Iqr1pJt4DwPDiHzxGqFeLWKF+BFjBErblPF
+         0kg5fBhZgfFSIZpkrDOLllgbRfrwd9r+fM068QJlynosbor1703A+Z0EX//biPM3/u
+         Ak+ga+T9Hpz12o06yhRB/lE6NKTXWf9jqxEE9SB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 008/127] platform/x86: ideapad-laptop: fix a NULL pointer dereference
+Subject: [PATCH 5.10 030/104] powerpc: Fix early setup to make early_ioremap() work
 Date:   Mon, 24 May 2021 17:25:25 +0200
-Message-Id: <20210524152335.139344613@linuxfoundation.org>
+Message-Id: <20210524152333.811212934@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-[ Upstream commit ff67dbd554b2aaa22be933eced32610ff90209dd ]
+[ Upstream commit e2f5efd0f0e229bd110eab513e7c0331d61a4649 ]
 
-The third parameter of dytc_cql_command should not be NULL since it will
-be dereferenced immediately.
+The immediate problem is that after commit
+0bd3f9e953bd ("powerpc/legacy_serial: Use early_ioremap()") the kernel
+silently reboots on some systems.
 
-Fixes: ff36b0d953dc4 ("platform/x86: ideapad-laptop: rework and create new ACPI helpers")
-Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
-Acked-by: Ike Panhc <ike.pan@canonical.com>
-Link: https://lore.kernel.org/r/20210428050636.8003-1-qiuwenbo@kylinos.com.cn
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+The reason is that early_ioremap() returns broken addresses as it uses
+slot_virt[] array which initialized with offsets from FIXADDR_TOP ==
+IOREMAP_END+FIXADDR_SIZE == KERN_IO_END - FIXADDR_SIZ + FIXADDR_SIZE ==
+__kernel_io_end which is 0 when early_ioremap_setup() is called.
+__kernel_io_end is initialized little bit later in early_init_mmu().
+
+This fixes the initialization by swapping early_ioremap_setup() and
+early_init_mmu().
+
+Fixes: 265c3491c4bc ("powerpc: Add support for GENERIC_EARLY_IOREMAP")
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Drop unrelated cleanup & cleanup change log]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210520032919.358935-1-aik@ozlabs.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/ideapad-laptop.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/setup_64.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-index 6cb5ad4be231..8f871151f0cc 100644
---- a/drivers/platform/x86/ideapad-laptop.c
-+++ b/drivers/platform/x86/ideapad-laptop.c
-@@ -809,6 +809,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
- {
- 	struct ideapad_dytc_priv *dytc = container_of(pprof, struct ideapad_dytc_priv, pprof);
- 	struct ideapad_private *priv = dytc->priv;
-+	unsigned long output;
- 	int err;
+diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+index 3b871ecb3a92..3f8426bccd16 100644
+--- a/arch/powerpc/kernel/setup_64.c
++++ b/arch/powerpc/kernel/setup_64.c
+@@ -368,11 +368,11 @@ void __init early_setup(unsigned long dt_ptr)
+ 	apply_feature_fixups();
+ 	setup_feature_keys();
  
- 	err = mutex_lock_interruptible(&dytc->mutex);
-@@ -829,7 +830,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
+-	early_ioremap_setup();
+-
+ 	/* Initialize the hash table or TLB handling */
+ 	early_init_mmu();
  
- 		/* Determine if we are in CQL mode. This alters the commands we do */
- 		err = dytc_cql_command(priv, DYTC_SET_COMMAND(DYTC_FUNCTION_MMC, perfmode, 1),
--				       NULL);
-+				       &output);
- 		if (err)
- 			goto unlock;
- 	}
++	early_ioremap_setup();
++
+ 	/*
+ 	 * After firmware and early platform setup code has set things up,
+ 	 * we note the SPR values for configurable control/performance
 -- 
 2.30.2
 
