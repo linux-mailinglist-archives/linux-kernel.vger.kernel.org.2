@@ -2,194 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8287538E131
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD1338E134
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhEXGv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:51:58 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:51987 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbhEXGvz (ORCPT
+        id S232341AbhEXGw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 02:52:28 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:46901 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232295AbhEXGwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:51:55 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14O6oAsU5016710, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14O6oAsU5016710
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 24 May 2021 14:50:10 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 24 May 2021 14:50:09 +0800
-Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 24 May
- 2021 14:50:01 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <kuba@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
-Subject: [PATCH net v3] r8152: check the informaton of the device
-Date:   Mon, 24 May 2021 14:49:42 +0800
-Message-ID: <1394712342-15778-365-Taiwan-albertk@realtek.com>
-X-Mailer: Microsoft Office Outlook 11
-In-Reply-To: <1394712342-15778-363-Taiwan-albertk@realtek.com>
-References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
+        Mon, 24 May 2021 02:52:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1621839063; x=1653375063;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=NQaiOnWmTwRLzuuQvoOhYz43lIYqtpO7cKE4i2Er+cs=;
+  b=g4b/eS5YczYWAVBksaDrknaW4vj1Ra+PaxumpI23kQxCMQLpqpeAUM4D
+   lFwln4yPjOcYmqK7v63Re9U7LjcZK/EbYLBJkyWnEX7hswTCi4CwZ5OxH
+   BtnFx1NnP+KxxXvw2K0z+kmgsnsvayu27ApB5wkGWZ3niJxNNq59v3QKC
+   5JLokHQv3WP6hFxZwGh6cdJq4h28GylmFMdQ8AjKAk3selXcUyj8zrAyt
+   l+payFqPaRuIQbBrItUPONbh3ke2PyQwfZGhdEH46eqxgQSIpnL6uL3b1
+   lEe5piEukUHslYXMaGLx13HVKUALd7svIZ98J1RGyZTbD6/S/EFPKG69e
+   Q==;
+IronPort-SDR: EMrhTWFiHe4G6QtAKq5G8m+U+E8dJhT5hfUi1OmA9thIQj6hrP0GHSnjxQdK7ljtmRu1GrsMDK
+ 8mJwQr+kFsy1THBkek7pwQT0jKomDBR9BivMUSL5Mo6LYpbkqV6rqW5HZjrgyjK/jqpA0GsYkg
+ sHKJ/VrphSlo9dGgWB+NkQb9RuIN9nzW8V4AlxPixGY8usgQC2vYy5bo+SPC9VQfO+xASRs8OR
+ J2cr+ubZaa3tXA9c/XXwr9QI1Qoi6X8PZ0wXKnttteXvWAFtVC25DvDaoAI2Ny+Z9Cb9M3QQzV
+ V7g=
+X-IronPort-AV: E=Sophos;i="5.82,319,1613404800"; 
+   d="scan'208";a="273119051"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 24 May 2021 14:51:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U8k8X6voqXkeJtduuR3hmJ+HKiJ7PE4fIrOdSgbYA6tzRleiBB5h6WYLcJ3NkTEZwqwJl3AR71AaepWmg679siutJuQG052PmrwM3uPVIrcMHu3mOia2KfPAMBurGvESJi1xIRC8j+k6TLIOs4wp0aPY34CUVZjMPOF/ntZsSNFn7kvxTx80onkmw2vpVV74IW6IABGUqCQP5vVoTr/pm93NM4+kXRuBWKa28eUS4lqRd6btZumSjFh8XfVaT2J1camZoY179IsxKugDYCnzThMyvHp0fkcQBJzW/Ktu4i0+Y6p+4hiA1ZolaroVSfiw1jy8jOpEuIRZe0bArXy2TA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NQaiOnWmTwRLzuuQvoOhYz43lIYqtpO7cKE4i2Er+cs=;
+ b=P1GO5XeTMKZWm8ugZVr4FdbhmH+0ZJR1xpPEmeI8IEFlhy36xtxpasSIzKVRmdiHWYTYM6LwuwEc0CMmBXtbbe8mCQBh2aeUUBthn3EJP9fg1vuT8FbV7WsZRhC3iNA2g2Fw3Z82ndP50+dKlVfGvRCbL50uDa/O7g7pgAinCUlMCvrUTPiVhACTcNTMjr66vC2mqLh8ZcuC4/wxAa39pNYGCmhK4C1l3kEyyaNZw8Zcpejxbnb/Pdh5crOtETyVAhouP6DD9DpTDHbrDInZAF/HbkS2leudVSQfjIrUF5oT9bukYrw56I9P9b8pRWb0fvWKXXCrk09yrvau7r/2ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NQaiOnWmTwRLzuuQvoOhYz43lIYqtpO7cKE4i2Er+cs=;
+ b=JI9Zm9EDRPX57tuYXAQuG2/uAESLJXBfBNy3vo1GmeT7GMwlNiIN+dEvo5IU60IdTQkHUiEQod0EfJ0uoJ5LmN9YcVLNzeTnnSL2s3D9lqaWeDcbLtOUwLbRrsEYk2vdlusxv/JMTY8N38Oy5mJcqTbONtzktS+Em9GGzTnjsk0=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6923.namprd04.prod.outlook.com (2603:10b6:5:242::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4150.26; Mon, 24 May 2021 06:50:51 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966%5]) with mapi id 15.20.4150.027; Mon, 24 May 2021
+ 06:50:50 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bart Van Assche <bvanassche@acm.org>, Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1 2/3] scsi: ufs: Let command trace only for the cmd !=
+ null case
+Thread-Topic: [PATCH v1 2/3] scsi: ufs: Let command trace only for the cmd !=
+ null case
+Thread-Index: AQHXUBierK4G9a3mGEiLWvJ5+PaBs6rx2QcAgABXL2A=
+Date:   Mon, 24 May 2021 06:50:50 +0000
+Message-ID: <DM6PR04MB6575C932FD523BD50E99EEA9FC269@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210523211409.210304-1-huobean@gmail.com>
+ <20210523211409.210304-3-huobean@gmail.com>
+ <1d06cc01-a642-e8e0-a251-1b392e4935c7@acm.org>
+In-Reply-To: <1d06cc01-a642-e8e0-a251-1b392e4935c7@acm.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3123a394-fb04-439a-7014-08d91e8044cc
+x-ms-traffictypediagnostic: DM6PR04MB6923:
+x-microsoft-antispam-prvs: <DM6PR04MB692340861D55FB86064D4720FC269@DM6PR04MB6923.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nZ+2Y3PGas7KJpS90G/BggR4PvUgBONa3sTdIRdLPmyQbb3ELkqOxZa8p8cGQ/jYcmER4BMwse1VWFR7sXiQhRHG2yZYsnErR7EEbDVO0mczAPOjdCWpu9MAeQeDlDTpGavaf1HsMuECYRpSf7x+WXZtH8TAk5YkNqs/rRRdDO5S+svvh4ukfW4trsXx7kvcGdlSr8Z0iz2MsOJR1NY8HFR0U1UmDuxgjkOzbLrwkGcuk4/lsOEKq1NPtEEVD04Od28+FABKkammwiZo4E3hdpbqr4G1lP1t3jpB6Zsu3+m9FcQTwrzwbiRx14idRudWD8sbXsCerydP6H+73+3JujW8k0kbGNXdbtMLRh+PRRck1OTCAPGn9n/hkzA9s6xi55ts6gJCv7DXa5ZLcxLUXA2g8Ou+vnoHwMxyFzcyw05TgpaZaGfH8wEg3K98rHK4hFFfB4uho/HR5xqnalIGltJdUOm5tTUcDUG/6rb0aJi5gMJvz37LDAumPkHJTkkiQYZt7BOD8F+4jLBq6DW7kpP66YAyA+5ElyfWFHsNHMBt7E4ezOvW2bvxA0HDupNdA7MsOTSuVHdeh1zVXvxlh0kg6Ehb1RNGfHM99NvpYR5gdrhuaEnKx3k6z5NqRUKMSxHuq7FSB2T8m5ljbn2RJg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(39860400002)(396003)(136003)(66446008)(186003)(66476007)(64756008)(66556008)(33656002)(66946007)(5660300002)(9686003)(52536014)(6506007)(7416002)(8936002)(921005)(55016002)(8676002)(26005)(4326008)(38100700002)(122000001)(7696005)(316002)(2906002)(76116006)(478600001)(110136005)(71200400001)(558084003)(86362001)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?TEtodVlhK0N3UGpzbzM0RTRhaHE3dXNac21SS1VEM09nUE5wQXgzTHJTQmI2?=
+ =?utf-8?B?VXQ4UWMzQzU0RUx0OS8zYyszenJBa3JjZnNQbzVHazhmTlFQNnlhZzZJVkJM?=
+ =?utf-8?B?M3BnNFpUMUlsMUtCOFozbEdkck8yVDhyYnRPa0NVekJtQU1PbHFCTG8rU2I2?=
+ =?utf-8?B?OVVyc01zYThpc3B4bXNlSGtCS0xEaVpFVzRhUU5CK3h5eGpXUmdoMFZnNDFD?=
+ =?utf-8?B?MjBnRzUrWVdPNXZLbjNyMFpzOStyTWNhT3pxMkpwYVFTWXFuMGF2bE5kYzZY?=
+ =?utf-8?B?MVhMYzBzQlpCSHo4U0V5U0dMd295YVEwclFaRjFsRHdWcXVaYXNUNS9YUGhB?=
+ =?utf-8?B?TENCZVUxWEl2dVRvcHRpVU0ra3NISFFCVS9CUkJ5ZzlPMnlId0pYTDdSaXFa?=
+ =?utf-8?B?dHgxME15cHB0TUY4SzNHSDJXTTNIeTN0M1hyUk8wSTZRYXhZZXd4WjJBbjZL?=
+ =?utf-8?B?bGpJblY1bWRQMlVORmdKMWVYMlpwRG9SNzlsZUVPQUFzTzF5OVhERyt3NXNH?=
+ =?utf-8?B?ZjlpM05La3NMc09iTGxiUXh6ZGdKRUlmcHBqWGJXVmdKMm53L29Ed255M0py?=
+ =?utf-8?B?UmE4VFdITWhkMEJiQkxua0JsTmVjM09xdmlwL0daWEVxeEEzUXBXY3V4Z1NQ?=
+ =?utf-8?B?Nm9mcUJqei94OERkVXNId0NGQ0RHOHpCKzJyd0JpYjVBWFlHZnpKdGh1M0Nn?=
+ =?utf-8?B?SzNGY2pIZkVKRk8wd2w5d3BJbVJCMXRGdnFITmZWQjlrcGF6bnJkUDk0UmVF?=
+ =?utf-8?B?dU1xSlRyWWo1bzNnb3Z2Nm93Y0x6MUwra3dVaENSS0hNRW10KzJyMXM5STM0?=
+ =?utf-8?B?V3ppWGVRQ2Fza2JGOXZMMVVkZ0JVTG1iZzcrZTlybHJJYUNQVDBHR3dVR0V0?=
+ =?utf-8?B?RmRqaTYzSm8ycjhIeWdMNWtNOEs4SG9XSzI0cmFhei9tRFlOeWN4VGl4dzFi?=
+ =?utf-8?B?SkdaVlBSamZ2cHREKzRPcGxjSWt5SEkrOEU5cTl2MFFCc2JFUnRTVnJWSVZG?=
+ =?utf-8?B?VktTcDlvaXZ4VzlkWnM4V011d1ZmbWFMR1QydFRaOS9PblQ5TkMzR1ZpR25V?=
+ =?utf-8?B?QUpGYnJNREJMZll5K0p2MExOQ21VOG1ORVJTclJPSllQVW5VMFFlNm9kUzJS?=
+ =?utf-8?B?OGRFZWNhZ2d5RnBaMFRub1Z0T0h6K0QramMzNktoeXRBVkE2Z3VLOWF3YnMr?=
+ =?utf-8?B?VG1hbmkrWmVDbGlqTy9xMzBSdHQ0RExzZ0tac1F6SVllYnRHYXIvd0xQZWlF?=
+ =?utf-8?B?a3FXSnozazBrZHI3SU96ZTR5WExtajMraVBIcE90MHhpcitEL3VHc1NUaURN?=
+ =?utf-8?B?UEJFR2x2aGlaWHAzR0xXRHN4STdKK2J0SDRET2ZzNTVxUnQzTVZEcmRjaWlT?=
+ =?utf-8?B?TWQyckNMWWRTSmdCV3JmR3UxZWxYbWk3d2EyWDkrNVdyWG11OUNBNENMMEVB?=
+ =?utf-8?B?MjRQa21uSXBnaDY1ZVhVdWxZUU96NytwcERSOWxzQnVSWkI0YkRqUXFpK0Np?=
+ =?utf-8?B?bXdXdCswZjZHWk5xUUZoQTR5Y0poVktTNnhtRjdwaUJFaXJLakxpQkpIVXFL?=
+ =?utf-8?B?S3FJT1BmMnU2UnpNend0d0Rqcy82Ti9lek9JSXFrMjE1MHVVbTU0V1RFNUNI?=
+ =?utf-8?B?djZ2QnVBbkRPemdqNis0NWlOK21xVkdpMFhjMzlYSDNaMTcvYzFBTHpiRVRV?=
+ =?utf-8?B?Z1UxRXFJUVNSYm9tZWFycjlZRm50ZUZ2dVZVbk9NMlg2TWIyVzl4YW9tR0pB?=
+ =?utf-8?Q?nXWw6zT9sdhM9NU3KguaY57G/GjWSm7ApzONBLe?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.177.102]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/24/2021 06:30:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjQgpFekyCAwNjowMDowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/24/2021 06:36:18
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163865 [May 23 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Headers: Prob_stat_susp_url_only, url2}
-X-KSE-AntiSpam-Info: {Tracking_one_url, url3}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1;syzkaller.appspot.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/24/2021 06:40:00
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3123a394-fb04-439a-7014-08d91e8044cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2021 06:50:50.7307
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sjyVOPxka6uhuywakFCvEi9ZKrH7pr75rlUsbS32hyn5flah0x5HsDxYdqZ0jzhYRbrjU2bbwJ3FVQWGYE46Kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6923
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify some fields of the USB descriptor to make sure the driver
-could be used by the device.
-
-Besides, remove the check of endpoint number in rtl8152_probe().
-usb_find_common_endpoints() includes it.
-
-BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
----
-v3:
-Remove the check of endpoint number in rtl_check_vendor_ok().
-
-Adjust the error message and ccommit message.
-
-v2:
-Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
-code.
-
-remove the check of endpoint number in rtl8152_probe(). It has been done
-in rtl_check_vendor_ok().
-
- drivers/net/usb/r8152.c | 42 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 37 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 136ea06540ff..f6abb2fbf972 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -8107,6 +8107,37 @@ static void r8156b_init(struct r8152 *tp)
- 	tp->coalesce = 15000;	/* 15 us */
- }
- 
-+static bool rtl_check_vendor_ok(struct usb_interface *intf)
-+{
-+	struct usb_host_interface *alt = intf->cur_altsetting;
-+	struct usb_endpoint_descriptor *in, *out, *intr;
-+
-+	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
-+		dev_err(&intf->dev, "Expected endpoints are not found\n");
-+		return false;
-+	}
-+
-+	/* Check Rx endpoint address */
-+	if (usb_endpoint_num(in) != 1) {
-+		dev_err(&intf->dev, "Invalid Rx endpoint address\n");
-+		return false;
-+	}
-+
-+	/* Check Tx endpoint address */
-+	if (usb_endpoint_num(out) != 2) {
-+		dev_err(&intf->dev, "Invalid Tx endpoint address\n");
-+		return false;
-+	}
-+
-+	/* Check interrupt endpoint address */
-+	if (usb_endpoint_num(intr) != 3) {
-+		dev_err(&intf->dev, "Invalid interrupt endpoint address\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static bool rtl_vendor_mode(struct usb_interface *intf)
- {
- 	struct usb_host_interface *alt = intf->cur_altsetting;
-@@ -8115,12 +8146,15 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 	int i, num_configs;
- 
- 	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
--		return true;
-+		return rtl_check_vendor_ok(intf);
- 
- 	/* The vendor mode is not always config #1, so to find it out. */
- 	udev = interface_to_usbdev(intf);
- 	c = udev->config;
- 	num_configs = udev->descriptor.bNumConfigurations;
-+	if (num_configs < 2)
-+		return false;
-+
- 	for (i = 0; i < num_configs; (i++, c++)) {
- 		struct usb_interface_descriptor	*desc = NULL;
- 
-@@ -8135,7 +8169,8 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 		}
- 	}
- 
--	WARN_ON_ONCE(i == num_configs);
-+	if (i == num_configs)
-+		dev_err(&intf->dev, "Unexpected Device\n");
- 
- 	return false;
- }
-@@ -9381,9 +9416,6 @@ static int rtl8152_probe(struct usb_interface *intf,
- 	if (!rtl_vendor_mode(intf))
- 		return -ENODEV;
- 
--	if (intf->cur_altsetting->desc.bNumEndpoints < 3)
--		return -ENODEV;
--
- 	usb_reset_device(udev);
- 	netdev = alloc_etherdev(sizeof(struct r8152));
- 	if (!netdev) {
--- 
-2.26.3
-
+PiANCj4gV2h5IGFyZSBSRUFEXzE2IGFuZCBXUklURV8xNiBpZ25vcmVkPw0KRm9yIHByYWN0aWNh
+bCByZWFzb25zIC0gdTMyIGlzIGxhcmdlIGVub3VnaCB0byBjYXJyeSBhZGRyZXNzZXMgZm9yIGFs
+bCBmb3Jlc2VlbiBkZXZpY2VzLg0KU28gUkVBRDE2IGlzIHByYWN0aWNhbGx5IG5vdCB1c2VkIGlu
+IHVmcywgYWx0aG91Z2ggcGVyIHNwZWMgaXQgaXMgc3VwcG9ydGVkLg0K
