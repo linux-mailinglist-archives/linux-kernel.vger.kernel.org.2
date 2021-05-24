@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1538B38E742
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFEC38E743
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhEXNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:20:27 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37691 "EHLO
+        id S232846AbhEXNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:20:34 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:49905 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232401AbhEXNU0 (ORCPT
+        by vger.kernel.org with ESMTP id S232842AbhEXNUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:20:26 -0400
+        Mon, 24 May 2021 09:20:30 -0400
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 8A391395B;
-        Mon, 24 May 2021 09:18:57 -0400 (EDT)
+        by mailnew.west.internal (Postfix) with ESMTP id 01FB441FB;
+        Mon, 24 May 2021 09:19:00 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 09:18:58 -0400
+  by compute6.internal (MEProxy); Mon, 24 May 2021 09:19:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=A4U8f622y15xN+ZagXBG9NpEC5
-        YDva9tV4Lav/1ucwM=; b=F3ynUO4APQaMxLO/ocrADPqrX6M27XLkniI2nEhnbj
-        aajvXV6vvOKgSEAVvsP/4L600n9a4/MeUZop4nGHymNHJ9I9qeWDkMUzH2YwuR/x
-        jxD2WIbA9mSTPMNFNaJZxAaLun4cWMRbTuh49L9+5/UeZ6pv30yED+lQ24N+ygn+
-        oxZ4pfaD3GgyvYf2BJvOdbvkc0Vhx/o7f17iX1jziXzqjKL35KeTLz9TATv3uIlW
-        nR7UoVEDkYKC+Yaq7Cus6mSBBjCY2o7GjrHWvsNFAiyiiq996vQ61AYy5e70YK2Y
-        4h9Lkv1Am3AWkQVdsABgwSNvsiyBZ8OV5OL0yuOeIzwQ==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=fuDtBAgTxfRRs
+        uyiHlaCiOfs3SONm3r054MQGPMRRUY=; b=XxvgFUkz2aWr5l2is4drQF7faLYdr
+        w+dS80w6gSL/2Ll5fqL9auUmv7BR70la607qX8Ngz2NZmbcVdwmPjCHEKMbZHUIi
+        Rj9ldDb4DZ9VLlvXo8tcEwICHO7awZ3mN/xMrVgGY4sr/bK6UCvuGNn54P0J7O9H
+        lXwWpwpj9xj/4gwWiqrPZfeGUH1+bLh2TbUD/rWSGU9tOY8gsc++9V2or/ktVV9m
+        bN3n1cNYJTfkHVpuRM+IkthFeslCZ3kfj0TbNqGsxi4uHCDguqP19tlW2JENQ5r9
+        cMHgbLQHXKlZzHz4bYrWcQcDkowxkzHBnNGKc/TTayJCOPsjOde+iprbw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=A4U8f622y15xN+Zag
-        XBG9NpEC5YDva9tV4Lav/1ucwM=; b=jzIUuTKnJfSXe7D9TrvlpHwRUFH+2/S9i
-        pzlS0SNUF5ddkhNkJQ9qQSZx2gpAP89Si6joYT+wQ5N5uept7EPi13ostt4f9+CZ
-        nrRVuWDIO1NlMZ1mcQo8WAiA8xDKxI45pF/c7gKdbInAZF4hHSi+PxuezivJG0TT
-        ZyGJgWLoJlUIkb0Ak8u+KPTv4x7FbulGWerKZ95LakFglRyNV6zKgHp4Q+NsdunZ
-        Hsna8g5QR8buCa54QsWtt7A44szBWcDDGyXJ4Q1qcTgnfBx3G63ipb3XswOYUt6j
-        qXJDTWDeQoHrOVP2O9vyk70BwX7+RDj+duobk541KnIZSThwgtKmg==
-X-ME-Sender: <xms:vqerYO6fKQa1oonH4DaF10jg1P2qWxozCS3U0J2UqVD5UpFPGXkvHQ>
-    <xme:vqerYH4IxyCS9p8M8SCq9_Y83_1IFXeNLXagUYl6p5rNolSSurxXzPqKzw3oOx-FV
-    b7oGW9Dq-Mgd21FdiQ>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=fuDtBAgTxfRRsuyiHlaCiOfs3SONm3r054MQGPMRRUY=; b=RAB2wBaX
+        Qwg/7bHVXxBBs9/SndDvot7NezO38EvTuNqQbzPGKna/9XlBsmXcqvwAg53zFUQs
+        evwu/gPmA6Q+NScYCURz0PTNpM8wJGRtf5TNbCGr7jblEncO6GuE+Fuh84e7yXQc
+        azDrY4B4vRMi5kG2aTihTEE3ACSzQbFKh56ivyj5N63+w096M17v431PZYV6W5+V
+        9PZWfTXXxivBinlV32PHIop5c7oyFzBQJG80B5nHG4qiWLX8r3dD9aAT58p68f90
+        g2bIywED44ACDY8QRWiA18IqFvCDBh/y0jQkuEBQET3q6ecTNaEkHB0UMmWCNu34
+        BHYCfRI5Zd7QZg==
+X-ME-Sender: <xms:xKerYFEsNyclnpGV5lJxsjMUWape7M4WCYOPjr7yrIMt8hl8UjQ2lw>
+    <xme:xKerYKXA8KQzAxbQp7uNnFZgyRCLOjQu4RFYKBiWC65NRtyYE3tRRGc-zWsaaqOCE
+    IkTk8I6g1f-uVoGxb8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgieegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
-    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
-    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
-    necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:vqerYNcp6NULpyIzNbLohI3f1mSdLFn3RNuDHRMKmKFDPT6RvyJVww>
-    <xmx:vqerYLJmiPKkhimIqF1SuohdRkcjGr1VmNh5_EixbVe81ZRWtxNeIw>
-    <xmx:vqerYCJqsxTsZUuhmZ-ZIRA5j78a2UrltQPjQAs5FbA6KjTx5GbNdA>
-    <xmx:waerYNa3SyqoTN2xVFzh7KkhUoqXY_NdBmnMU4IkK-1pz4M6nAAaBKDKluk>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:xKerYHKcEi3gwderZ-kJC-0aJMnjdQ4AQ65vFXc45zaTEyUiuN8QFA>
+    <xmx:xKerYLF0dkMKYRJYnVznuscy19XMIh1P7HmQkN587O4SI7loZKDByw>
+    <xmx:xKerYLV5tnMfKmJnU9XM1h9bllgQ0w_WlZ5cWfyijRWGD4laTc0x-w>
+    <xmx:xKerYIXgrdT9hfmSlwe7fn6AhZE3-N1B3omnUO3CXETtVcXnzEK92P-KYYg>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 09:18:53 -0400 (EDT)
+        Mon, 24 May 2021 09:19:00 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     dri-devel@lists.freedesktop.org,
         Daniel Vetter <daniel.vetter@intel.com>,
@@ -70,53 +71,91 @@ Cc:     Eric Anholt <eric@anholt.net>, linux-kernel@vger.kernel.org,
         Daniel Vetter <daniel@ffwll.ch>,
         Hans Verkuil <hans.verkuil@cisco.com>,
         Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 1/2] drm/vc4: hdmi: Fix error path of hpd-gpios
-Date:   Mon, 24 May 2021 15:18:51 +0200
-Message-Id: <20210524131852.263883-1-maxime@cerno.tech>
+Subject: [PATCH 2/2] drm/vc4: hdmi: Convert to gpiod
+Date:   Mon, 24 May 2021 15:18:52 +0200
+Message-Id: <20210524131852.263883-2-maxime@cerno.tech>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210524131852.263883-1-maxime@cerno.tech>
+References: <20210524131852.263883-1-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the of_get_named_gpio_flags call fails in vc4_hdmi_bind, we jump to
-the err_unprepare_hsm label. That label will then call
-pm_runtime_disable and put_device on the DDC device.
+The new gpiod interface takes care of parsing the GPIO flags and to
+return the logical value when accessing an active-low GPIO, so switching
+to it simplifies a lot the driver.
 
-We just retrieved the DDC device, so the latter is definitely justified.
-However at that point we still haven't called pm_runtime_enable, so the
-call to pm_runtime_disable is not supposed to be there.
-
-Fixes: 10ee275cb12f ("drm/vc4: prepare for CEC support")
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 24 +++++++-----------------
+ drivers/gpu/drm/vc4/vc4_hdmi.h |  3 +--
+ 2 files changed, 8 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index c27b287d2053..ccc6c8079dc6 100644
+index ccc6c8079dc6..34622c59f6a7 100644
 --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -2039,7 +2039,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 							     &hpd_gpio_flags);
- 		if (vc4_hdmi->hpd_gpio < 0) {
- 			ret = vc4_hdmi->hpd_gpio;
--			goto err_unprepare_hsm;
-+			goto err_put_ddc;
- 		}
+@@ -159,10 +159,9 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	struct vc4_hdmi *vc4_hdmi = connector_to_vc4_hdmi(connector);
+ 	bool connected = false;
  
- 		vc4_hdmi->hpd_active_low = hpd_gpio_flags & OF_GPIO_ACTIVE_LOW;
-@@ -2080,8 +2080,8 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	vc4_hdmi_connector_destroy(&vc4_hdmi->connector);
- err_destroy_encoder:
- 	drm_encoder_cleanup(encoder);
--err_unprepare_hsm:
- 	pm_runtime_disable(dev);
-+err_put_ddc:
- 	put_device(&vc4_hdmi->ddc->dev);
+-	if (vc4_hdmi->hpd_gpio) {
+-		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
+-		    vc4_hdmi->hpd_active_low)
+-			connected = true;
++	if (vc4_hdmi->hpd_gpio &&
++	    gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio)) {
++		connected = true;
+ 	} else if (drm_probe_ddc(vc4_hdmi->ddc)) {
+ 		connected = true;
+ 	} else if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED) {
+@@ -1993,7 +1992,6 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	struct vc4_hdmi *vc4_hdmi;
+ 	struct drm_encoder *encoder;
+ 	struct device_node *ddc_node;
+-	u32 value;
+ 	int ret;
  
- 	return ret;
+ 	vc4_hdmi = devm_kzalloc(dev, sizeof(*vc4_hdmi), GFP_KERNEL);
+@@ -2031,18 +2029,10 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	/* Only use the GPIO HPD pin if present in the DT, otherwise
+ 	 * we'll use the HDMI core's register.
+ 	 */
+-	if (of_find_property(dev->of_node, "hpd-gpios", &value)) {
+-		enum of_gpio_flags hpd_gpio_flags;
+-
+-		vc4_hdmi->hpd_gpio = of_get_named_gpio_flags(dev->of_node,
+-							     "hpd-gpios", 0,
+-							     &hpd_gpio_flags);
+-		if (vc4_hdmi->hpd_gpio < 0) {
+-			ret = vc4_hdmi->hpd_gpio;
+-			goto err_put_ddc;
+-		}
+-
+-		vc4_hdmi->hpd_active_low = hpd_gpio_flags & OF_GPIO_ACTIVE_LOW;
++	vc4_hdmi->hpd_gpio = devm_gpiod_get_optional(dev, "hpd", GPIOD_IN);
++	if (IS_ERR(vc4_hdmi->hpd_gpio)) {
++		ret = PTR_ERR(vc4_hdmi->hpd_gpio);
++		goto err_put_ddc;
+ 	}
+ 
+ 	vc4_hdmi->disable_wifi_frequencies =
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+index 060bcaefbeb5..2688a55461d6 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+@@ -146,8 +146,7 @@ struct vc4_hdmi {
+ 	/* VC5 Only */
+ 	void __iomem *rm_regs;
+ 
+-	int hpd_gpio;
+-	bool hpd_active_low;
++	struct gpio_desc *hpd_gpio;
+ 
+ 	/*
+ 	 * On some systems (like the RPi4), some modes are in the same
 -- 
 2.31.1
 
