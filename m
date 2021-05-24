@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C6738F366
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5352B38F364
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhEXTB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 15:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbhEXTB2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233317AbhEXTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 24 May 2021 15:01:28 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2DFC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:59:58 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id w206so7809374ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:59:58 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232709AbhEXTB0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 15:01:26 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD841C061574;
+        Mon, 24 May 2021 11:59:57 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id e22so5050909pgv.10;
+        Mon, 24 May 2021 11:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d2qRtcBPi7fkJde21gR/Y6WPC5DkPL6SAS4CSueAMYY=;
-        b=wczBVJTBvwgIw9qC1aMEMc2GowUXpLLM0YE7d21fILY814nCuVWmY/QLmDXJcDdH4Z
-         lTFuec9T86+TA8DibRUdhHCCF+U0gZ3fTHMw8/tPiUpu7BvZG3UjXZG1J0zhR7cIc4B9
-         9DyS6tuCWCWNuBOUF5bPAowwrTZua9oseYaTAZk7q7HMpy9NpbcHkHyy5CZ+Ogh/0rzX
-         dc/ohpVLPmF8lS0LiCxdd7o6gQSFxsfR5Y0o3GnNluSGSD/Fk3yY4y5kMqlUC6gFEuCv
-         NruMJFLltUHLI3IIQOMwARMxlp/JUThqBqO42Mgggz5QAr74T5OFMFEIij0kGn9k4OHE
-         TOFQ==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=dNmbbm7vV2wdR8BIrLsykmJDRlXUTn+Fo63moxvECms=;
+        b=ofsq6Etij2PRpy7t3jNqI9WiGS0tTNgPHODRcyAfMNp6022PSnuZXcuW5HDpFJxM7v
+         iBDnWp8LNor4wBPX4N9eP5srsMdfOD40ZmAuDYx10+S+xmjjAX6FprafcXXVp9nNlyVi
+         nXzB4MpnJ/JQqUqd8L8o23Ysm8y/JA4gxoMePKdIYuKH8al/9+guoCVryiRV479c7LBQ
+         Fnuez/UoPZZo0thFfseZSkr1Z4LvDkBesnwMKRrBTKoK1WTVasTANjhxAx3q6S8FHuUt
+         0ahBtuGEtBObAfDP81LnjCEJVTBTkZe0Bv1JLeoHZOBzgkBYUQ5DgQIbho2DX6ouu6so
+         iQoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d2qRtcBPi7fkJde21gR/Y6WPC5DkPL6SAS4CSueAMYY=;
-        b=L71ouDpEJfeq8gIY1CRcxORTmDSYRHi8Xp4d4t2W9X6xGW5EuTs7/vECKgNTBG/wwZ
-         HDmyTfJiXao2adikElKu1RG5ID73Pgxb9JiUqrZF1SkQzIyYFnPbQu25i22+iyoiQZTY
-         FjG00cxQBrTo5OnlixljhslGCRCfi+yIrLhR6wduHHO1y4E9mNUxEAHbwgP18Zx1zeKY
-         kEjR8AbILVA9KPNwnl0yhw40wy1tFHo3rYxm0aFqhQSqALUSpuEMB/ZTdo9UtoECeNhH
-         sQ7jRPU/9EtsL4YvLgw+xO3Z+fTZhR+AAhA4wvKB4HIKCNc4pLQZQ6Qjb7O9IJWP5ZwR
-         BdMw==
-X-Gm-Message-State: AOAM532uFNb6N9Xx5Zqn1O3WasVsLQlFa8ufz8bmZ+8b7etC7re8N/+k
-        tyYwOW8PNVk2GDPK4n91vr+pyH17nnl+MZfM6RmzbA==
-X-Google-Smtp-Source: ABdhPJxzAqx2imCHWUqve+desDl2YKJklVrPlr+914/FhxB0hBHLJvgjeNAGhXQlgv2g9UzQzaNwgVQsPbUa6Ph9ZiI=
-X-Received: by 2002:a25:c092:: with SMTP id c140mr2240873ybf.25.1621882797973;
- Mon, 24 May 2021 11:59:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210515105831.9439-1-aardelean@deviqon.com>
-In-Reply-To: <20210515105831.9439-1-aardelean@deviqon.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 24 May 2021 20:59:47 +0200
-Message-ID: <CAMpxmJXbsLm00RdzDqU4dBazxvvhD0hHuO-119wMwO2FP+r4xg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-tc3589x: emove platform_set_drvdata() +
- cleanup probe
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=dNmbbm7vV2wdR8BIrLsykmJDRlXUTn+Fo63moxvECms=;
+        b=ifg9ugiBXXLf1npRj2tCBZX0zj2YuTcSt3W8QDCMoe8LGGCmeGaVmxsD9AeLXkp7iK
+         rCV1hkuBOUMjlKR5V0VGdQPgkonKxtfyQqfsISeT8qGE+j+GlMlskKJa3zhulIsFk2AR
+         JGCZHkrBGk7N1mAU90wS/BBEWHubjiKCOyyouDfh0U/7f4ivDH70+S3IZwP5jrwZZlLL
+         nKV3s/mhf4ghovgQH7PSmLzlPPYZV35bytPKPu0CQS92MD/mVHU1lRHCHFJzPbvtkjI1
+         o24aM7ne+OJVG1G724ARVWsUTopfR7qafUoYHRLP+Lfty/uv+9CVPiCXDsosyL2J2gls
+         UPIA==
+X-Gm-Message-State: AOAM531xwU0VXFZ3wR2LeyUuzWet0MNnCW1whpw7Luha1eRN5zljyeZr
+        ijTCnoAImqr0tOKNhuYs6ljTwPDZUG3vn4+1Vrw/3A==
+X-Google-Smtp-Source: ABdhPJzD00sn2trc3wkjjloNvGsiMKB8uLcl70wNn3Cup6baOm64drcasP3Mn/VqHDncJYHxOJ2btQ==
+X-Received: by 2002:aa7:982e:0:b029:2e4:eef5:e0c9 with SMTP id q14-20020aa7982e0000b02902e4eef5e0c9mr17633500pfl.3.1621882796905;
+        Mon, 24 May 2021 11:59:56 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id 25sm11493311pfh.39.2021.05.24.11.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 11:59:56 -0700 (PDT)
+Message-ID: <60abf7ac.1c69fb81.fd61c.6a38@mx.google.com>
+Date:   Mon, 24 May 2021 11:59:56 -0700 (PDT)
+X-Google-Original-Date: Mon, 24 May 2021 18:59:53 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 000/127] 5.12.7-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 12:58 PM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> The platform_set_drvdata() call is only useful if we need to retrieve back
-> the private information.
-> Since the driver doesn't do that, it's not useful to have it.
->
-> If this is removed, we can also just do a direct return on
-> devm_gpiochip_add_data(). We don't need to print that this call failed as
-> there are other ways to log/see this during probe.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/gpio/gpio-tc3589x.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-tc3589x.c b/drivers/gpio/gpio-tc3589x.c
-> index 55b8dbd13d11..8d158492488f 100644
-> --- a/drivers/gpio/gpio-tc3589x.c
-> +++ b/drivers/gpio/gpio-tc3589x.c
-> @@ -357,16 +357,7 @@ static int tc3589x_gpio_probe(struct platform_device *pdev)
->                 return ret;
->         }
->
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &tc3589x_gpio->chip,
-> -                                    tc3589x_gpio);
-> -       if (ret) {
-> -               dev_err(&pdev->dev, "unable to add gpiochip: %d\n", ret);
-> -               return ret;
-> -       }
-> -
-> -       platform_set_drvdata(pdev, tc3589x_gpio);
-> -
-> -       return 0;
-> +       return devm_gpiochip_add_data(&pdev->dev, &tc3589x_gpio->chip, tc3589x_gpio);
->  }
->
->  static struct platform_driver tc3589x_gpio_driver = {
-> --
-> 2.31.1
->
+On Mon, 24 May 2021 17:25:17 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.7 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
+5.12.7-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-Applied, thanks!
-
-Bart
