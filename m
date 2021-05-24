@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A9F38F0EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA0E38EFCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhEXQHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
+        id S235542AbhEXP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234401AbhEXP6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 957CA613FE;
-        Mon, 24 May 2021 15:44:12 +0000 (UTC)
+        id S235299AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4432261928;
+        Mon, 24 May 2021 15:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871053;
-        bh=2DtR95kMMVrs0ObbwoJNHyN/T4f7yxNTruw2/V0yOGs=;
+        s=korg; t=1621870855;
+        bh=b/BDRKremjjVFpeY76yHO0t1RAC3L1f5mSxxV4dJYyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LSw6g7tuKisma1P5Lifq5l6Yny+uOUbYkz4t8ShIjZzyW0kvv7cgb0bQfvhD2Mz8H
-         b5fubHgb86qLhh6EaQZ95PNyrH5e3RVB6NuUINv9dL2f4JVLj0hP7hdmAFphtW/3Gu
-         3o9tGFkC4VRsqR3MJS8GWik1WwBs+OuxobitRTxg=
+        b=o0Z0KfjljIo8wELmZqSnSW7GepBQ3K+K9R4g8QpQR8ETcAOVySTOJEvcfzlklQzgA
+         C0vQmyK4pofo9BQZoKK32Psptx0aF1h/4tsQnFHrsRX8JijiFzx9b1v248X3wshyf9
+         xLn8ujtiXdvPC9K4u49Isoe2prRee3NMVbYnlTaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 044/127] ALSA: firewire-lib: fix amdtp_packet tracepoints event for packet_index field
+        stable@vger.kernel.org, Daniel Beer <dlbeer@gmail.com>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.10 066/104] mmc: sdhci-pci-gli: increase 1.8V regulator wait
 Date:   Mon, 24 May 2021 17:26:01 +0200
-Message-Id: <20210524152336.337223870@linuxfoundation.org>
+Message-Id: <20210524152335.042714036@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,116 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Daniel Beer <dlbeer@gmail.com>
 
-commit 814b43127f4ac69332e809152e30773941438aff upstream.
+commit a1149a6c06ee094a6e62886b0c0e8e66967a728a upstream.
 
-The snd_firewire_lib:amdtp_packet tracepoints event includes index of
-packet processed in a context handling. However in IR context, it is not
-calculated as expected.
+Inserting an SD-card on an Intel NUC10i3FNK4 (which contains a GL9755)
+results in the message:
 
-Cc: <stable@vger.kernel.org>
-Fixes: 753e717986c2 ("ALSA: firewire-lib: use packet descriptor for IR context")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-6-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+    mmc0: 1.8V regulator output did not become stable
+
+Following this message, some cards work (sometimes), but most cards fail
+with EILSEQ. This behaviour is observed on Debian 10 running kernel
+4.19.188, but also with 5.8.18 and 5.11.15.
+
+The driver currently waits 5ms after switching on the 1.8V regulator for
+it to become stable. Increasing this to 10ms gets rid of the warning
+about stability, but most cards still fail. Increasing it to 20ms gets
+some cards working (a 32GB Samsung micro SD works, a 128GB ADATA
+doesn't). At 50ms, the ADATA works most of the time, and at 100ms both
+cards work reliably.
+
+Signed-off-by: Daniel Beer <dlbeer@gmail.com>
+Acked-by: Ben Chuang <benchuanggli@gmail.com>
+Fixes: e51df6ce668a ("mmc: host: sdhci-pci: Add Genesys Logic GL975x support")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210424081652.GA16047@nyquist.nev
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/amdtp-stream-trace.h |    6 +++---
- sound/firewire/amdtp-stream.c       |   15 +++++++++------
- 2 files changed, 12 insertions(+), 9 deletions(-)
+ drivers/mmc/host/sdhci-pci-gli.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/sound/firewire/amdtp-stream-trace.h
-+++ b/sound/firewire/amdtp-stream-trace.h
-@@ -14,8 +14,8 @@
- #include <linux/tracepoint.h>
- 
- TRACE_EVENT(amdtp_packet,
--	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int data_block_counter, unsigned int index),
--	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, data_block_counter, index),
-+	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int data_block_counter, unsigned int packet_index, unsigned int index),
-+	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, data_block_counter, packet_index, index),
- 	TP_STRUCT__entry(
- 		__field(unsigned int, second)
- 		__field(unsigned int, cycle)
-@@ -48,7 +48,7 @@ TRACE_EVENT(amdtp_packet,
- 		__entry->payload_quadlets = payload_length / sizeof(__be32);
- 		__entry->data_blocks = data_blocks;
- 		__entry->data_block_counter = data_block_counter,
--		__entry->packet_index = s->packet_index;
-+		__entry->packet_index = packet_index;
- 		__entry->irq = !!in_interrupt();
- 		__entry->index = index;
- 	),
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -526,7 +526,7 @@ static void build_it_pkt_header(struct a
- 	}
- 
- 	trace_amdtp_packet(s, cycle, cip_header, payload_length, data_blocks,
--			   data_block_counter, index);
-+			   data_block_counter, s->packet_index, index);
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -555,8 +555,13 @@ static void sdhci_gli_voltage_switch(str
+ 	 *
+ 	 * Wait 5ms after set 1.8V signal enable in Host Control 2 register
+ 	 * to ensure 1.8V signal enable bit is set by GL9750/GL9755.
++	 *
++	 * ...however, the controller in the NUC10i3FNK4 (a 9755) requires
++	 * slightly longer than 5ms before the control register reports that
++	 * 1.8V is ready, and far longer still before the card will actually
++	 * work reliably.
+ 	 */
+-	usleep_range(5000, 5500);
++	usleep_range(100000, 110000);
  }
  
- static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
-@@ -630,7 +630,7 @@ static int parse_ir_ctx_header(struct am
- 			       unsigned int *payload_length,
- 			       unsigned int *data_blocks,
- 			       unsigned int *data_block_counter,
--			       unsigned int *syt, unsigned int index)
-+			       unsigned int *syt, unsigned int packet_index, unsigned int index)
- {
- 	const __be32 *cip_header;
- 	int err;
-@@ -662,7 +662,7 @@ static int parse_ir_ctx_header(struct am
- 	}
- 
- 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
--			   *data_block_counter, index);
-+			   *data_block_counter, packet_index, index);
- 
- 	return err;
- }
-@@ -701,12 +701,13 @@ static int generate_device_pkt_descs(str
- 				     unsigned int packets)
- {
- 	unsigned int dbc = s->data_block_counter;
-+	unsigned int packet_index = s->packet_index;
-+	unsigned int queue_size = s->queue_size;
- 	int i;
- 	int err;
- 
- 	for (i = 0; i < packets; ++i) {
- 		struct pkt_desc *desc = descs + i;
--		unsigned int index = (s->packet_index + i) % s->queue_size;
- 		unsigned int cycle;
- 		unsigned int payload_length;
- 		unsigned int data_blocks;
-@@ -715,7 +716,7 @@ static int generate_device_pkt_descs(str
- 		cycle = compute_cycle_count(ctx_header[1]);
- 
- 		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
--					  &data_blocks, &dbc, &syt, i);
-+					  &data_blocks, &dbc, &syt, packet_index, i);
- 		if (err < 0)
- 			return err;
- 
-@@ -723,13 +724,15 @@ static int generate_device_pkt_descs(str
- 		desc->syt = syt;
- 		desc->data_blocks = data_blocks;
- 		desc->data_block_counter = dbc;
--		desc->ctx_payload = s->buffer.packets[index].buffer;
-+		desc->ctx_payload = s->buffer.packets[packet_index].buffer;
- 
- 		if (!(s->flags & CIP_DBC_IS_END_EVENT))
- 			dbc = (dbc + desc->data_blocks) & 0xff;
- 
- 		ctx_header +=
- 			s->ctx_data.tx.ctx_header_size / sizeof(*ctx_header);
-+
-+		packet_index = (packet_index + 1) % queue_size;
- 	}
- 
- 	s->data_block_counter = dbc;
+ static void sdhci_gl9750_reset(struct sdhci_host *host, u8 mask)
 
 
