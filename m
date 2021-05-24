@@ -2,62 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC3A38DED0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B093C38DED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhEXBMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 21:12:31 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53486 "EHLO vps0.lunn.ch"
+        id S232145AbhEXBRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 21:17:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12746 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232067AbhEXBMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 21:12:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Mhhm84mF+nGequsSzTA6OZ1mA9wHeyeL0AXVqLdZDQs=; b=fylOy9waMDK2J6c3KiGXVXOj0a
-        alkJvcMrMth057IyuwF4BqDH41ifTuIgj0vMgT22XbWvPiAOkfTrNo1ckGlIpPCGnqMshtaRDkwcv
-        SnWvCCSYXZtlm0Amjv9bnbUVH8jeqvwQLAMrQ8g98yxUHLYxAbqVkOHaU3iyqKe3TVhQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lkz7L-005tud-8M; Mon, 24 May 2021 03:10:51 +0200
-Date:   Mon, 24 May 2021 03:10:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-Message-ID: <YKr9G3EfrM34gCsL@lunn.ch>
-References: <cover.1620735871.git.sander@svanheule.net>
- <cover.1621809029.git.sander@svanheule.net>
+        id S232114AbhEXBRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 21:17:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621818970; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Jy34EtJAVoCMCPxGf5DCNJ6akcTQGePHMmxcOPshkGQ=;
+ b=gZxfUcmtaYFIIpQctjECgwhGJFrdFkf8WAAWYukwHeVDymoXSrh6qtGc39xKNu7ZifO70zAT
+ DVo/bMvjOlGn3hlQU6DJ3DvTAE6Z13mxOBhEyzjDFfoLdsxrwzWigzS2BVPvzQZnrYWn2ht/
+ EitV8Mo/mi7Mux10BeydeFcjYYA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60aafe442bff04e53b4a837d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 24 May 2021 01:15:48
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 320C7C43217; Mon, 24 May 2021 01:15:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7B642C433F1;
+        Mon, 24 May 2021 01:15:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1621809029.git.sander@svanheule.net>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 24 May 2021 06:45:47 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Sujit Kautkar <sujitka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Move rmtfs memory region
+In-Reply-To: <20210514113430.1.Ic2d032cd80424af229bb95e2c67dd4de1a70cb0c@changeid>
+References: <20210514113430.1.Ic2d032cd80424af229bb95e2c67dd4de1a70cb0c@changeid>
+Message-ID: <b2c386fd5881c452e0a18438c3f98787@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Changes since v2:
->   - MDIO regmap support was merged, so patch is dropped here
+Hey Sujit,
 
-Do you have any idea how this will get merged. It sounds like one of
-the Maintainers will need a stable branch of regmap.
+Thanks for the patch!
 
->   - Introduce GPIO regmap quirks to set output direction first
+On 2021-05-15 00:04, Sujit Kautkar wrote:
+> Move rmtfs memory region so that it does not overlap with system
+> RAM (kernel data) when KAsan is enabled. This puts rmtfs right
+> after mba_mem which is not supposed to increase beyond 0x94600000
+> 
 
-I thought you had determined it was possible to set output before
-direction?
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
 
-	Andrew
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> ---
+> 
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index e77a7926034a7..afe0f9c258164 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -45,7 +45,7 @@ chosen {
+> 
+>  /* Increase the size from 2MB to 8MB */
+>  &rmtfs_mem {
+> -	reg = <0x0 0x84400000 0x0 0x800000>;
+> +	reg = <0x0 0x94600000 0x0 0x800000>;
+>  };
+> 
+>  / {
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
