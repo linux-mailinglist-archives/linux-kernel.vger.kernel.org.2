@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF54A38EFCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA0938EE49
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbhEXP7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
+        id S233296AbhEXPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235212AbhEXPzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE826142D;
-        Mon, 24 May 2021 15:40:37 +0000 (UTC)
+        id S234135AbhEXPnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99FA1613B6;
+        Mon, 24 May 2021 15:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870838;
-        bh=0/p0tc9WrNj0jr3ZyF9G/zdESfFGAEkfgCe3qd7ps5w=;
+        s=korg; t=1621870523;
+        bh=eEKu4rUipG99VsW2aieIlLdvMnpIWxopf7nGFOwMgBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wu7Xdl5pNvze3MNDFWUDfrGAp++6thau2mW7BrLXf4Abx2toJ8p9w+lvnGhMEEW25
-         ZwBqw383sKPdZPB4VTXqXs0F+Qu9tjBOy8GwgEZw03A9jeNuq2RMG/wDymyAzahw8w
-         k1j0Dw2yRDS5ghR9bdKzNmzsrFecJwqTdt2+mzWU=
+        b=szcJEWoQke9tqWiBzIqZuNOIImPwpnfLVBKUpoZKLFMy0C9yU1Ze92fXIlTd+4xmp
+         bxNXw+tGTuZH4ESdayM9Qcf9XIqxtvXLFxglPlRBttVf7LYGdvwlHOyl5gi2YHCqKe
+         YsRUjMhIZz5xEwYK/4W1dyF6XZ5oAJW5pyf06zSM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 5.10 050/104] uio_hv_generic: Fix a memory leak in error handling paths
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 34/49] cdrom: gdrom: initialize global variable at init time
 Date:   Mon, 24 May 2021 17:25:45 +0200
-Message-Id: <20210524152334.503712061@linuxfoundation.org>
+Message-Id: <20210524152325.481203363@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 3ee098f96b8b6c1a98f7f97915f8873164e6af9d upstream.
+commit 9183f01b5e6e32eb3f17b5f3f8d5ad5ac9786c49 upstream.
 
-If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
-updated and 'hv_uio_cleanup()' in the error handling path will not be
-able to free the corresponding buffer.
+As Peter points out, if we were to disconnect and then reconnect this
+driver from a device, the "global" state of the device would contain odd
+values and could cause problems.  Fix this up by just initializing the
+whole thing to 0 at probe() time.
 
-In such a case, we need to free the buffer explicitly.
+Ideally this would be a per-device variable, but given the age and the
+total lack of users of it, that would require a lot of s/./->/g changes
+for really no good reason.
 
-Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr
+Reported-by: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Peter Rosin <peda@axentia.se>
+Link: https://lore.kernel.org/r/YJP2j6AU82MqEY2M@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/uio/uio_hv_generic.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/cdrom/gdrom.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/uio/uio_hv_generic.c
-+++ b/drivers/uio/uio_hv_generic.c
-@@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
- 
- 	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
- 				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
--	if (ret)
-+	if (ret) {
-+		vfree(pdata->recv_buf);
- 		goto fail_close;
-+	}
- 
- 	/* put Global Physical Address Label in name */
- 	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
-@@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
- 
- 	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
- 				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
--	if (ret)
-+	if (ret) {
-+		vfree(pdata->send_buf);
- 		goto fail_close;
-+	}
- 
- 	snprintf(pdata->send_name, sizeof(pdata->send_name),
- 		 "send:%u", pdata->send_gpadl);
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -775,6 +775,13 @@ static int probe_gdrom_setupqueue(void)
+ static int probe_gdrom(struct platform_device *devptr)
+ {
+ 	int err;
++
++	/*
++	 * Ensure our "one" device is initialized properly in case of previous
++	 * usages of it
++	 */
++	memset(&gd, 0, sizeof(gd));
++
+ 	/* Start the device */
+ 	if (gdrom_execute_diagnostic() != 1) {
+ 		pr_warning("ATA Probe for GDROM failed\n");
+@@ -874,7 +881,7 @@ static struct platform_driver gdrom_driv
+ static int __init init_gdrom(void)
+ {
+ 	int rc;
+-	gd.toc = NULL;
++
+ 	rc = platform_driver_register(&gdrom_driver);
+ 	if (rc)
+ 		return rc;
 
 
