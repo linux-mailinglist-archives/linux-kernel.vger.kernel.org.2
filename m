@@ -2,217 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018F338F64A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F290F38F64C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhEXXjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:39:18 -0400
-Received: from mail-dm6nam12on2068.outbound.protection.outlook.com ([40.107.243.68]:13025
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229503AbhEXXjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:39:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WvbpkXL5UYKynpHkIhJkO/Nz5y/kfqg6VJdC/Cy/6hhLFflUofkVBiIeXDaxJ34iDIzEysuiiPJx0LDB4QsmyDSvWxxr2wF8P1HBFrg24ltjgj1JIweqK+hcRGepSpTac3ARAWy9swJJYzzu7KtZ3a2BfgmdLHtB1yL7C5n/KDgR0NjD70TACsgul5oGDLvapiWdn92Y6IaT248cYrok5mFMQbOZJv7iCWmEJ70bX5p7TgEIncOo8IjEu1tQ4dg2PyC/7CiqKZpklt6WbqmhE891nEc9X87PEwzOxtyS6vCtC3E8+X7u3P5F3ZoRxGFgECFE0z2oefgX8Tl/BuzVNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FR6laYgpF9b95HZa9CNu+FrgxJqikDB0LQ7EyvD1SXA=;
- b=XcOwb2RziXX0PVtCkqlq2uUgI6yWLLKcyAW5R1PgojeZyHEP68PVkGdZXxqLzjtrgY9cT8i3yUk+HzbT7iuQlX/K1WA2c212vMi35dKdZwgvlZSFyfrlRjZcslfV/uGs83NMdVDgdhnwr15Gd/Fjqlsj+UL3pYBoKzU7AMhkdzy0yboNDuYN4W/rfo8UmKjAmRE1mw7CngpogZQOi5NoL01ZmUBPUgx6BP7QRGyRz9/NPXiKGvD/mWyKBBkLq+bEfDKhZgeBKvpuUy3Xx6dTlT6L9KPiGymcdSGTiKACA/+em4zsVBqNQQK6X+Uk7N+UB6jcetgWi7NoHkm82fjLHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FR6laYgpF9b95HZa9CNu+FrgxJqikDB0LQ7EyvD1SXA=;
- b=WioYrFyq6TDd0rJSB/lufkSLX4cBRO7UpPGYeEKYR41MY3irwINBc4DkMKQddsir47D0w756SKEJmSgTrTnmRVMf1HYNuT4SUz5aYLAKcR8zD/5/aP+/rBJWqP83YrpSqe/ncz48QcZH2Nbhb3yYHElXj5g3jU+R3JeIY2DQ4V7TAE3KB6aJZEuxSTVm7NcY22N2Kf0ae/4yk3jWAy/Jbo4671QI6sbtdHKNs+HceCilxErwvgyV6Ynlhay0dRNnvWXKjtc+Br8TTN+fKs3pXvQz0gqXwEqz+z8c2/GuRvDZKd+7FBBkH2RwqFUHeeO2ECqQXhMzPsiN4FXU/F7whQ==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Mon, 24 May
- 2021 23:37:47 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4150.027; Mon, 24 May 2021
- 23:37:47 +0000
-Date:   Mon, 24 May 2021 20:37:44 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210524233744.GT1002214@nvidia.com>
-References: <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
- <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKtbWo7PwIlXjFIV@yekko>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: YT1PR01CA0102.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::11) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229805AbhEXXj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhEXXjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:39:55 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077A1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:38:26 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id j30so26507327ila.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l2YKrWGrNRhpKB7nbC+pa0pby1lLy9Of2lysL0djOLk=;
+        b=O3nsE6E8dgqr1wZZ/sIpvjSGnuUc50HnZupw5P0IGyrnOqFDvZQIYh0q3FFLzPHD2o
+         vD8yZqdyRbqlXfEVZ/KOIGzb+UHW6phkAm0CVJ40Pe59VO8zxV0aFrMrWg3rG5tMKM4M
+         xNmMw2fqJ2tYZ8zCauidfFKYnukl3CGKszg7XpdXYtA6oKSKmNONOfRmsVVpdYnt8xlq
+         PIicCeSlyjEZkVcnL3KdMl/m3sccySmQkfpAxl4lXZOmyiheR1RzsV1jHfhFAGTkXSS+
+         q1b9v3tGsvtTbRn7hj6kdcXoYrPGVJJsirPxJg5XxhefRyN4C898vrp2+38nHAIPjc1F
+         KHUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l2YKrWGrNRhpKB7nbC+pa0pby1lLy9Of2lysL0djOLk=;
+        b=k48jo9qXVB7YzozM2dTI1lSSDSxOXiH+fkcLd8PaGB1oVc1EFrBw9xFVGZnSEAOCCm
+         fEQgrWLs+CKqZB9csTFzCcTpI0uxWEAUcNs2XEZ2jOIPPNVDx6uH7oE/CkRDNATOR1bw
+         y+eC0zxfd14CXbhQMnr87oR30AT78TUFvr/qrIPfY3wStgSRBorB3U9YVHNJDaOl9nT/
+         yQT0Ti/8V8YV1wD0q17chk9pu3K+fGQcTvYpWWhGflbJqgUSsoSIhByIczLvT0WNStIk
+         c0nBc87HwWk5zsR23VCRuu1gkgzslBxz3tIbCef2iFkhEzhMFg8gEiA05olojSgXJdDH
+         bsmQ==
+X-Gm-Message-State: AOAM5305+L5uI/96efXlxPqgb1hCDCTemlPK91BqBKJz/jCY0Tv7CZTm
+        0bHAun9FA61FDBi7vjrptHUb4sNigDelOduUohex1w==
+X-Google-Smtp-Source: ABdhPJwPnS5nSShfq26PfDeqyE7An+gQpZNnWds1Nq8ETmfP6WUUeMYWy8oti+8Kr3qNNofM+69QuhAHu/Oe213SjQE=
+X-Received: by 2002:a05:6e02:1067:: with SMTP id q7mr17629801ilj.75.1621899504965;
+ Mon, 24 May 2021 16:38:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0102.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Mon, 24 May 2021 23:37:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llK8m-00DpNv-QL; Mon, 24 May 2021 20:37:44 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6940fdd7-6132-4bac-35b7-08d91f0cef93
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5144:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB514405CEA9DEAFD6D622E6ABC2269@BL1PR12MB5144.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VuyNxtBgGk0VW5ZjaaxrE0WrUYrK+elkJuJnCIODdojJJ9TXpR8MtjuPVcR2KVLUsJPiJzrCE6L2bppVK09yJRFHr8I3sYj+mhTcNf2+zX1zttJyCjU7js4rBC7aIe4r51kzdsyrtoVFC5j0MZSYonnuG74WMCXYT9IVxfwJYffO5/94tACZLxc/Yv1r0NXEGisKRiJ+HgAndgN+H27QPbXfA7dd0Tcpj+gn3X2z0cCUksp/bGrczNqtFKxPqDpaobEvBP8WhqnPu2XKqTumYDrJMfwOGYkmXBgTjOsjc9NhlbM9AkjC7ClEbIDJbmmawb6m6f9eH1XV1oEr3aHQlEwFbJL8h6rkcOx5w/o++awMLkkdjvbRd94vO46baAo9wVTKuW6m5fw5+s5f1YIzHKHMXZ6GkmaBs+sYgrc/v8EWmReRYSLBd8IIUX/b9dOlP2RL2SS9GCq0bpFSbTF4OdmjsMPyaDnkJp5AWnlG0Ollo9uVi+7zLH6o5HUnYNkFY0HCJgpLCUFqgqy4f4kehAszntuMSY1VNoagRC1XCFMTevczSqryKNosMOln2L9DiF1JzYBWMtQ8lEBUonP7aVu8mHfHHMccJNX53EvB2zI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(66556008)(66476007)(26005)(86362001)(2616005)(2906002)(66946007)(33656002)(426003)(5660300002)(7416002)(38100700002)(8936002)(9786002)(9746002)(36756003)(6916009)(316002)(186003)(8676002)(4326008)(83380400001)(478600001)(54906003)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?doRDEVeVZrhbAim0a6B9O85Ca/hPSxBm4An8i6dxAGjpYEX1M+QviDHttk5o?=
- =?us-ascii?Q?VzYEwzqrwAJ7P2WcHV0rscn8gDKQDSh7eEseUX3DD0PhkK7IDoiT++qVj8Hj?=
- =?us-ascii?Q?Me6j0qw1wDsq7QIRDfiTGgUMpjM841uR6tObKRyRCQSXjIsyFAHV591G4uQd?=
- =?us-ascii?Q?zGe3C5JRfy9l/cHI9fHe07UUjPxNoGmCPkROmNuNb0t9kFeP0QmIkuxhbtog?=
- =?us-ascii?Q?JgzmWEdclfvGN3JYiGyu1W/uZZrv6Mi60qhEQnbNQsu0ojtSPgt5E8V857Em?=
- =?us-ascii?Q?eCTJ7h2p+LWT28h+U2iFwZFAmwysdh4mWZNTygORFl1tYZhHe3MLulN+AcSF?=
- =?us-ascii?Q?8DbpKZNDl7X7zm2cv+XuMaNWjtIEsLtVJli0mb1wBuMEbE4hv3NO/vzRLUiS?=
- =?us-ascii?Q?ps48vyJp1wzSVf8w2T+bqvXM4kC8iOVwNHjR++EuVQjUs+qTeV6MP099k6dn?=
- =?us-ascii?Q?kvD/GWexYABdh7F2lZc2845Um4U5a0g6jqrU3VI+YVLJ9NPJV/wuSu5PQGmR?=
- =?us-ascii?Q?H46FwhJM1ATn5govuu0zjQlGuec7N8u8DpMP04VjxdqOY03EUzZ58Dn7EZrh?=
- =?us-ascii?Q?sPv9x67MRaFF56FA7wbTwmehteif61Ko96mPqMvJozOkBJKH3jSzoDW+OOgU?=
- =?us-ascii?Q?tPDf0U0pcZ6W4Wj9DQiRRld/0KWdfGlt36VdRj8QxwQMkxpRvm5+1I5nQcFr?=
- =?us-ascii?Q?pRuqJMh0l2aw8xjHv4LcAtNQpeb2P9APrwm5dHkQy/8O9i8LSs3wAOnSPmRU?=
- =?us-ascii?Q?uFpwzUQ8roN7meXMAZoqAs0Y/3V8HJQ/Mk2/XaH0P47hnmAZ0kJTqU9uKGYe?=
- =?us-ascii?Q?o9oFd2Ki5jNXQRjNB0vCtquBMFYDiOr4QvDBmCKuJ3oLRvg+S3aOYd0oz3px?=
- =?us-ascii?Q?DNLS6V7diPn1Hh24Qg+FzGLe2GBMTZJqxOmuOoEBZI3QCMT+YSPYGmUfz8Ng?=
- =?us-ascii?Q?SUxrEOBNbXWC8Jcf1WCgsZWUp1+GMy18idl58KxZaX3AVIzeQiui9VrHduQj?=
- =?us-ascii?Q?bUaxE/nJKLG2caJGbuio9nqzFWpvGDePGZwZpPnWNQ4wvqHxw8scxQVvPzD2?=
- =?us-ascii?Q?5vM+TBTh3FAygMRHl8sHXfF6VRdZYN+G/t2RlMuMakvu/9F8L4frq5Cx6sG/?=
- =?us-ascii?Q?Uk4eSlf1hbmnp3JWsj8wamOQILkIvtwIIqYa5yTtpJH0ldbla1+oOTgtDnIw?=
- =?us-ascii?Q?BmQjhCD8OoS10vbO4ROKWO11xyhwfbZX1MyJuQkutsnEK+Xd+8J7RhzwGF8l?=
- =?us-ascii?Q?GyBijTvMk3e+rPu1/ye9I4JFWHY61EGUIvLigu/TpK97HH3RJiSOEk2i1yiv?=
- =?us-ascii?Q?r3j4dC7QiH8Jglg1rD+HohGO?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6940fdd7-6132-4bac-35b7-08d91f0cef93
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 23:37:47.1725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MvZixLmwktANf6m3hxxi1w325maEAj7Or6J13F6t3OjxNKZbFET7A0HyxJGKZvz1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5144
+References: <20210523001806.3927609-1-tpiepho@gmail.com> <YKuFPeH0sIFqrBt6@smile.fi.intel.com>
+ <CAGS_qxoKTyNBxoezkEVVrACGsFuzJwteepVpDzp+4KH+CgbMsw@mail.gmail.com>
+ <b5511f68-814b-1f8c-08d2-a7dbddce4e8d@infradead.org> <CAGS_qxrZAxvRD5Scvd-dMahnf-27npMjbzKKjG-+Bk7hZgZj5g@mail.gmail.com>
+ <bd3fceb3-4d49-befb-ee3b-bc01ef5d6827@infradead.org>
+In-Reply-To: <bd3fceb3-4d49-befb-ee3b-bc01ef5d6827@infradead.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 24 May 2021 16:38:13 -0700
+Message-ID: <CAGS_qxrUGW4uyMUQtEYWX710LxPs23B=uOJfhZSvMV1yaVa6jA@mail.gmail.com>
+Subject: Re: [PATCH] lib/math/rational.c: Fix divide by zero
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Oskar Schirmer <oskar@scara.com>, Yiyuan Guo <yguoaz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
+On Mon, May 24, 2021 at 4:30 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 5/24/21 3:56 PM, Daniel Latypov wrote:
+> > On Mon, May 24, 2021 at 3:04 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >>
+> >> On 5/24/21 9:55 AM, Daniel Latypov wrote:
+> >>> diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+> >>> index f19bc9734fa7..20460b567493 100644
+> >>> --- a/lib/math/Kconfig
+> >>> +++ b/lib/math/Kconfig
+> >>> @@ -15,3 +15,14 @@ config PRIME_NUMBERS
+> >>>
+> >>>  config RATIONAL
+> >>>         bool
+> >>> +
+> >>> +config RATIONAL_KUNIT_TEST
+> >>> +       tristate "KUnit test for rational number support" if !KUNIT_ALL_TESTS
+> >>> +       # depends on KUNIT && RATIONAL  # this is how it should work, but
+> >>> +       depends on KUNIT
+> >>> +       select RATIONAL # I don't grok kconfig enough to know why this
+> >>
+> >> Only to set the symbol CONFIG_RATIONAL.
+> >> Then when 'make' descends into the lib/math/ subdir and looks at its Makefile,
+> >> it will decide to build the binary rational.o.
+> >>
+> >> obj-$(CONFIG_RATIONAL)          += rational.o
+> >>
+> >
+> > Ack, I understand that much.
+>
+> Oh! Clearly I misunderstood the problem.
+>
+> I had to look thru 60 config files before I found one where CONFIG_RATIONAL
+> was not set.
+>
+> And I'm still not sure, but I believe that it's because it has to be set
+> by some other Kconfig entry doing a 'select' on it.
+>
+> Here are the kconfigs that select it (on i386, where I found it not set):
+>
+> - COMMON_CLK [=n] && !HAVE_LEGACY_CLK [=n]
+> - SERIAL_8250_LPSS [=n] && TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=n] && PCI [=n] && (X86 [=y] || COMPILE_TEST [=y])
+> - SERIAL_8250_MID [=n] && TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=n] && PCI [=n] && (X86 [=y] || COMPILE_TEST [=y])
+> - SERIAL_IMX [=n] && TTY [=n] && HAS_IOMEM [=y] && (ARCH_MXC || COMPILE_TEST [=y])
+> - VIDEO_V4L2 [=n] && MEDIA_SUPPORT [=n] && (I2C [=y] || I2C [=y]=n) && VIDEO_DEV [=n]
+> - SND_SOC_ROCKCHIP_PDM [=n] && SOUND [=n] && !UML && SND [=n] && SND_SOC [=n] && CLKDEV_LOOKUP [=n] && SND_SOC_ROCKCHIP [=n]
+> - COMMON_CLK_QCOM [=n] && COMMON_CLK [=n] && OF [=y] && (ARCH_QCOM || COMPILE_TEST [=y])
+>
+> but my test config has none of those enabled, so I cannot set RATIONAL.
+>
+> I guess the easiest solution is to have KUNIT or some sub-KUNIT test
+> just select RATIONAL.
 
-> > > I don't really see a semantic distinction between "always one-device
-> > > groups" and "groups don't matter".  Really the only way you can afford
-> > > to not care about groups is if they're singletons.
-> > 
-> > The kernel driver under the mdev may not be in an "always one-device"
-> > group.
-> 
-> I don't really understand what you mean by that.
+Yeah, the easiest thing would be to keep the `select RATIONAL` that I
+showed in the example patch.
 
-I mean the group of the mdev's actual DMA device may have multiple
-things in it.
- 
-> > It is a kernel driver so the only thing we know and care about is that
-> > all devices in the HW group are bound to kernel drivers.
-> > 
-> > The vfio device that spawns from this kernel driver is really a
-> > "groups don't matter" vfio device because at the IOMMU layer it should
-> > be riding on the physical group of the kernel driver.  At the VFIO
-> > layer we no longer care about the group abstraction because the system
-> > guarentees isolation in some other way.
-> 
-> Uh.. I don't really know how mdevs are isolated from each other.  I
-> thought it was because the physical device providing the mdevs
-> effectively had an internal IOMMU (or at least DMA permissioning) to
-> isolate the mdevs, even though the physical device may not be fully
-> isolated.
-> 
-> In that case the virtual mdev is effectively in a singleton group,
-> which is different from the group of its parent device.
++David Gow +Brendan Higgins as they both particularly wanted to avoid
+having any tests `select` their dependencies, however.
 
-That is one way to view it, but it means creating a whole group
-infrastructure and abusing the IOMMU stack just to create this
-nonsense fiction. We also abuse the VFIO container stuff to hackily
-create several different types pf IOMMU uAPIs for the mdev - all of
-which are unrelated to drivers/iommu.
-
-Basically, there is no drivers/iommu thing involved, thus is no really
-iommu group, for mdev it is all a big hacky lie.
-
-> If the physical device had a bug which meant the mdevs *weren't*
-> properly isolated from each other, then those mdevs would share a
-> group, and you *would* care about it.  Depending on how the isolation
-> failed the mdevs might or might not also share a group with the parent
-> physical device.
-
-That isn't a real scenario.. mdevs that can't be isolated just
-wouldn't be useful to exist
-
-> > This is today's model, yes. When you run dpdk on a multi-group device
-> > vfio already ensures that all the device groups remained parked and
-> > inaccessible.
-> 
-> I'm not really following what you're saying there.
-> 
-> If you have a multi-device group, and dpdk is using one device in it,
-> VFIO *does not* (and cannot) ensure that other devices in the group
-> are parked and inaccessible.  
-
-I mean in the sense that no other user space can open those devices
-and no kernel driver can later be attached to them.
-
-> It ensures that they're parked at the moment the group moves from
-> kernel to userspace ownership, but it can't prevent dpdk from
-> accessing and unparking those devices via peer to peer DMA.
-
-Right, and adding all this group stuff did nothing to alert the poor
-admin that is running DPDK to this risk.
-
-> > If the administator configures the system with different security
-> > labels for different VFIO devices then yes removing groups makes this
-> > more tricky as all devices in the group should have the same label.
-> 
-> That seems a bigger problem than "more tricky".  How would you propose
-> addressing this with your device-first model?
-
-You put the same security labels you'd put on the group to the devices
-that consitute the group. It is only more tricky in the sense that the
-script that would have to do this will need to do more than ID the
-group to label but also ID the device members of the group and label
-their char nodes.
-
-Jason
+>
+> > My confusion is why this doesn't work:
+> >
+> > $ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
+> > CONFIG_KUNIT=y
+> > CONFIG_RATIONAL=y
+> > EOF
+> > ...
+> > ERROR:root:Provided Kconfig is not contained in validated .config.
+> > Following fields found in kunitconfig, but not in .config:
+> > CONFIG_RATIONAL=y
+> >
+> > What it's complaining about is that `make  ARCH=um olddefconfig` is
+> > leaving CONFIG_RATIONAL=y unset.
+> >
+> > Stripping out kunit.py, it's this:
+> >
+> > $ echo -e 'CONFIG_KUNIT=y\nCONFIG_RATIONAL=y' > .kunit/.config
+> > $ make ARCH=um olddefconfig O=.kunit
+> > $ grep RATIONAL .kunit/.config
+> >
+> > I'm not versed in Kconfig enough to know why CONFIG_RATIONAL=y is
+> > getting removed.
+> >
+> >>
+> >>> is necessary
+> >>> +       default KUNIT_ALL_TESTS
+> >>> +       help
+> >>> +               This builds unit tests for the rational number support.
+> >>> +
+> >>> +               If unsure, say N.
+>
+>
+> --
+> ~Randy
+>
