@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E882E38DF1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AB938DF1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhEXCOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 22:14:08 -0400
-Received: from m12-12.163.com ([220.181.12.12]:54451 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231765AbhEXCOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 22:14:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=33HhlmsO4TUy4vpKzC
-        VRugwD5ZbCqQaS+7CjzK1u9p8=; b=cHnh6mpAfoe/S0Pw+bhhi8M7NfBpHgwhcO
-        D/xKxLR2RXgKX/12O0gob48/l+22d8PiGhDyXvMGhRwL7NfxaMAf/xNOZnhhlKjB
-        WjovmT91H6XUi+ztqJskl4P2I1ZUvmuUvXmkjKbjYRKcregEHiQL9hj2H9/62o17
-        rMX0YA11A=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAAXJVJOC6tgXIx2Fw--.11368S2;
-        Mon, 24 May 2021 10:11:28 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
-        alex.dewar90@gmail.com
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: st-nci: remove unnecessary assignment and label
-Date:   Mon, 24 May 2021 10:11:23 +0800
-Message-Id: <20210524021123.8860-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DMCowAAXJVJOC6tgXIx2Fw--.11368S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW3Xw4xZFWfArW8KFy7GFg_yoWktrbE9r
-        WSvr9xCr48JwnYyr1UKrsxZr929rs8ur18uFn8tr9xKF9rJ39Ikwn7urn3X3s8W34rAF9r
-        ur1vkryFyw1DZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeK2NtUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/
+        id S232187AbhEXCNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 22:13:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5670 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhEXCNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 22:13:43 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FpLHm342dz1BQn6;
+        Mon, 24 May 2021 10:09:24 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 10:12:11 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
+ May 2021 10:12:10 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <myungjoo.ham@samsung.com>, <kyungmin.park@samsung.com>,
+        <cw00.choi@samsung.com>, <yuehaibing@huawei.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] PM / devfreq: governor: use DEVICE_ATTR_RW macro
+Date:   Mon, 24 May 2021 10:11:58 +0800
+Message-ID: <20210524021158.21236-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Use DEVICE_ATTR_RW helper instead of plain DEVICE_ATTR,
+which makes the code a bit shorter and easier to read.
 
-In function st_nci_hci_network_init, the variable r is assigned then
-goto exit label, which just return r, so we use return to replace it.
-and exit label only used once at here, so we remove exit label.
-
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/nfc/st-nci/se.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/devfreq/governor_userspace.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nfc/st-nci/se.c b/drivers/nfc/st-nci/se.c
-index 1cba8f6..8657e02 100644
---- a/drivers/nfc/st-nci/se.c
-+++ b/drivers/nfc/st-nci/se.c
-@@ -534,10 +534,8 @@ static int st_nci_hci_network_init(struct nci_dev *ndev)
- 	dest_params =
- 		kzalloc(sizeof(struct core_conn_create_dest_spec_params) +
- 			sizeof(struct dest_spec_params), GFP_KERNEL);
--	if (dest_params == NULL) {
--		r = -ENOMEM;
--		goto exit;
--	}
-+	if (dest_params == NULL)
-+		return -ENOMEM;
- 
- 	dest_params->type = NCI_DESTINATION_SPECIFIC_PARAM_NFCEE_TYPE;
- 	dest_params->length = sizeof(struct dest_spec_params);
-@@ -594,8 +592,6 @@ static int st_nci_hci_network_init(struct nci_dev *ndev)
- 
- free_dest_params:
- 	kfree(dest_params);
--
--exit:
- 	return r;
+diff --git a/drivers/devfreq/governor_userspace.c b/drivers/devfreq/governor_userspace.c
+index 0fd6c4851071..ab9db7adb3ad 100644
+--- a/drivers/devfreq/governor_userspace.c
++++ b/drivers/devfreq/governor_userspace.c
+@@ -31,8 +31,8 @@ static int devfreq_userspace_func(struct devfreq *df, unsigned long *freq)
+ 	return 0;
  }
  
+-static ssize_t store_freq(struct device *dev, struct device_attribute *attr,
+-			  const char *buf, size_t count)
++static ssize_t set_freq_store(struct device *dev, struct device_attribute *attr,
++			      const char *buf, size_t count)
+ {
+ 	struct devfreq *devfreq = to_devfreq(dev);
+ 	struct userspace_data *data;
+@@ -52,8 +52,8 @@ static ssize_t store_freq(struct device *dev, struct device_attribute *attr,
+ 	return err;
+ }
+ 
+-static ssize_t show_freq(struct device *dev, struct device_attribute *attr,
+-			 char *buf)
++static ssize_t set_freq_show(struct device *dev,
++			     struct device_attribute *attr, char *buf)
+ {
+ 	struct devfreq *devfreq = to_devfreq(dev);
+ 	struct userspace_data *data;
+@@ -70,7 +70,7 @@ static ssize_t show_freq(struct device *dev, struct device_attribute *attr,
+ 	return err;
+ }
+ 
+-static DEVICE_ATTR(set_freq, 0644, show_freq, store_freq);
++static DEVICE_ATTR_RW(set_freq);
+ static struct attribute *dev_entries[] = {
+ 	&dev_attr_set_freq.attr,
+ 	NULL,
 -- 
-1.9.1
-
+2.17.1
 
