@@ -2,211 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA1B38E269
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1503B38E26A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhEXIi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:38:59 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:8834 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbhEXIi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:38:57 -0400
-IronPort-SDR: TWa3Fhi63S60EDRXcnbhqJyFy8dhPfEshDMx4boyqFmZBRfzPijqwHNzwyMuNGUT4oo2r85BJD
- S8oBicywI3al7o/1oT79E6vCtuHZFoVWcMHaAVY/ShRH/7XNmMsDbv6J/Lq2hATtwvbvJWvD5d
- dWKc9rgJBH5ILrCHq670hnIzytXgq32XZ3EOEBiLQbcsrPW7jMTYhaSR40Ry6RUKu2omrS2ZAm
- CqZPmUrD+1ParrHaXFzyRA1DC1JnHW7vCRhA+0AEWF66ECJTJfbFiajZd5F1n5noriahUoH5kn
- EJY=
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="29772330"
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by labrats.qualcomm.com with ESMTP; 24 May 2021 01:37:29 -0700
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 24 May 2021 01:37:28 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 9404621AD7; Mon, 24 May 2021 01:37:28 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Caleb Connolly <caleb@connolly.tech>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH v1 3/3] scsi: ufs: Utilize Transfer Request List Completion Notification Register
-Date:   Mon, 24 May 2021 01:36:58 -0700
-Message-Id: <1621845419-14194-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+        id S232450AbhEXIjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232318AbhEXIjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 04:39:35 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85C27610CE;
+        Mon, 24 May 2021 08:38:07 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ll668-003AdG-CN; Mon, 24 May 2021 09:38:04 +0100
+Date:   Mon, 24 May 2021 09:38:03 +0100
+Message-ID: <87tumswmqc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 30/39] PCI: Bulk conversion to generic_handle_domain_irq()
+In-Reply-To: <CAL_Jsq+nu8PmONzx2AfysRWuhJDV9Xn3O5rCOfEZL0KoC12_qw@mail.gmail.com>
+References: <20210520163751.27325-1-maz@kernel.org>
+        <20210520163751.27325-31-maz@kernel.org>
+        <CAL_Jsq+nu8PmONzx2AfysRWuhJDV9Xn3O5rCOfEZL0KoC12_qw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: robh@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By reading the UTP Transfer Request List Completion Notification Register,
-which is added in UFSHCI Ver 3.0, SW can easily get the compeleted transfer
-requests. Thus, SW can get rid of host lock, which is used to synchronize
-the tr_doorbell and outstanding_reqs, on transfer requests dispatch and
-completion paths. This can further benefit random read/write performance.
+On Thu, 20 May 2021 18:47:06 +0100,
+Rob Herring <robh@kernel.org> wrote:
+> 
+> On Thu, May 20, 2021 at 11:57 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Wherever possible, replace constructs that match either
+> > generic_handle_irq(irq_find_mapping()) or
+> > generic_handle_irq(irq_linear_revmap()) to a single call to
+> > generic_handle_domain_irq().
+> >
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/pci/controller/dwc/pci-dra7xx.c        | 14 +++++---------
+> >  drivers/pci/controller/dwc/pci-keystone.c      |  5 ++---
+> >  .../pci/controller/dwc/pcie-designware-host.c  |  9 ++++-----
+> >  drivers/pci/controller/dwc/pcie-uniphier.c     |  6 ++----
+> >  .../controller/mobiveil/pcie-mobiveil-host.c   | 15 ++++++---------
+> >  drivers/pci/controller/pci-aardvark.c          |  5 ++---
+> >  drivers/pci/controller/pci-ftpci100.c          |  2 +-
+> >  drivers/pci/controller/pci-tegra.c             |  8 +++-----
+> >  drivers/pci/controller/pci-xgene-msi.c         |  9 +++------
+> >  drivers/pci/controller/pcie-altera-msi.c       | 10 ++++------
+> >  drivers/pci/controller/pcie-altera.c           | 10 ++++------
+> >  drivers/pci/controller/pcie-brcmstb.c          |  9 ++++-----
+> >  drivers/pci/controller/pcie-iproc-msi.c        |  4 +---
+> >  drivers/pci/controller/pcie-mediatek-gen3.c    | 13 ++++---------
+> >  drivers/pci/controller/pcie-mediatek.c         | 12 ++++--------
+> >  drivers/pci/controller/pcie-microchip-host.c   | 18 +++++++-----------
+> >  drivers/pci/controller/pcie-rcar-host.c        |  8 +++-----
+> >  drivers/pci/controller/pcie-rockchip-host.c    |  8 +++-----
+> >  drivers/pci/controller/pcie-xilinx-cpm.c       |  4 ++--
+> >  drivers/pci/controller/pcie-xilinx-nwl.c       | 13 +++----------
+> >  drivers/pci/controller/pcie-xilinx.c           |  9 ++++-----
+> >  21 files changed, 71 insertions(+), 120 deletions(-)
+> 
+> 
+> > diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+> > index 1c34c897a7e2..cf3832b905e8 100644
+> > --- a/drivers/pci/controller/pci-xgene-msi.c
+> > +++ b/drivers/pci/controller/pci-xgene-msi.c
+> > @@ -291,8 +291,7 @@ static void xgene_msi_isr(struct irq_desc *desc)
+> >         struct irq_chip *chip = irq_desc_get_chip(desc);
+> >         struct xgene_msi_group *msi_groups;
+> >         struct xgene_msi *xgene_msi;
+> > -       unsigned int virq;
+> > -       int msir_index, msir_val, hw_irq;
+> > +       int msir_index, msir_val, hw_irq, ret;
+> >         u32 intr_index, grp_select, msi_grp;
+> >
+> >         chained_irq_enter(chip, desc);
+> > @@ -330,10 +329,8 @@ static void xgene_msi_isr(struct irq_desc *desc)
+> >                          * CPU0
+> >                          */
+> >                         hw_irq = hwirq_to_canonical_hwirq(hw_irq);
+> > -                       virq = irq_find_mapping(xgene_msi->inner_domain, hw_irq);
+> > -                       WARN_ON(!virq);
+> > -                       if (virq != 0)
+> > -                               generic_handle_irq(virq);
+> > +                       ret = generic_handle_domain_irq(xgene_msi->inner_domain, hw_irq);
+> > +                       WARN_ON(ret);
+> 
+> There's various error prints in some of the handlers. I think they
+> should be moved to the core. I can't imagine handling the irq is ever
+> optional.
 
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 52 +++++++++++++++++++++++++++++++++--------------
- drivers/scsi/ufs/ufshcd.h |  5 +++++
- drivers/scsi/ufs/ufshci.h |  1 +
- 3 files changed, 43 insertions(+), 15 deletions(-)
+Printing stuff like this is a sure recipe for disaster, and there is
+no way I'm moving such crap into core code. If the interrupt handling
+fails (most likely because there is no mapping for this interrupt), it
+is the driver's responsibility to handle the error (either disabling
+the input or the output of the secondary irqchip). There isn't much
+the core code can do about it.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b9b5e61..2b7ad26 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2106,7 +2106,6 @@ static inline
- void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag)
- {
- 	struct ufshcd_lrb *lrbp = &hba->lrb[task_tag];
--	unsigned long flags;
- 
- 	lrbp->issue_time_stamp = ktime_get();
- 	lrbp->compl_time_stamp = ktime_set(0, 0);
-@@ -2115,10 +2114,19 @@ void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag)
- 	ufshcd_clk_scaling_start_busy(hba);
- 	if (unlikely(ufshcd_should_inform_monitor(hba, lrbp)))
- 		ufshcd_start_monitor(hba, lrbp);
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	set_bit(task_tag, &hba->outstanding_reqs);
--	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TRANSFER_REQ_DOOR_BELL);
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	if (ufshcd_has_utrlcnr(hba)) {
-+		set_bit(task_tag, &hba->outstanding_reqs);
-+		ufshcd_writel(hba, 1 << task_tag,
-+			      REG_UTP_TRANSFER_REQ_DOOR_BELL);
-+	} else {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(hba->host->host_lock, flags);
-+		set_bit(task_tag, &hba->outstanding_reqs);
-+		ufshcd_writel(hba, 1 << task_tag,
-+			      REG_UTP_TRANSFER_REQ_DOOR_BELL);
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	}
- 	/* Make sure that doorbell is committed immediately */
- 	wmb();
- }
-@@ -5260,17 +5268,17 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
- }
- 
- /**
-- * ufshcd_transfer_req_compl - handle SCSI and query command completion
-+ * ufshcd_trc_handler - handle transfer requests completion
-  * @hba: per adapter instance
-+ * @use_utrlcnr: get completed requests from UTRLCNR
-  *
-  * Returns
-  *  IRQ_HANDLED - If interrupt is valid
-  *  IRQ_NONE    - If invalid interrupt
-  */
--static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
-+static irqreturn_t ufshcd_trc_handler(struct ufs_hba *hba, bool use_utrlcnr)
- {
--	unsigned long completed_reqs, flags;
--	u32 tr_doorbell;
-+	unsigned long completed_reqs = 0;
- 
- 	/* Resetting interrupt aggregation counters first and reading the
- 	 * DOOR_BELL afterward allows us to handle all the completed requests.
-@@ -5283,10 +5291,24 @@ static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
- 	    !(hba->quirks & UFSHCI_QUIRK_SKIP_RESET_INTR_AGGR))
- 		ufshcd_reset_intr_aggr(hba);
- 
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	tr_doorbell = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
--	completed_reqs = tr_doorbell ^ hba->outstanding_reqs;
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	if (use_utrlcnr) {
-+		u32 utrlcnr;
-+
-+		utrlcnr = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_LIST_COMPL);
-+		if (utrlcnr) {
-+			ufshcd_writel(hba, utrlcnr,
-+				      REG_UTP_TRANSFER_REQ_LIST_COMPL);
-+			completed_reqs = utrlcnr;
-+		}
-+	} else {
-+		unsigned long flags;
-+		u32 tr_doorbell;
-+
-+		spin_lock_irqsave(hba->host->host_lock, flags);
-+		tr_doorbell = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
-+		completed_reqs = tr_doorbell ^ hba->outstanding_reqs;
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	}
- 
- 	if (completed_reqs) {
- 		__ufshcd_transfer_req_compl(hba, completed_reqs);
-@@ -5768,7 +5790,7 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
- /* Complete requests that have door-bell cleared */
- static void ufshcd_complete_requests(struct ufs_hba *hba)
- {
--	ufshcd_transfer_req_compl(hba);
-+	ufshcd_trc_handler(hba, false);
- 	ufshcd_tmc_handler(hba);
- }
- 
-@@ -6409,7 +6431,7 @@ static irqreturn_t ufshcd_sl_intr(struct ufs_hba *hba, u32 intr_status)
- 		retval |= ufshcd_tmc_handler(hba);
- 
- 	if (intr_status & UTP_TRANSFER_REQ_COMPL)
--		retval |= ufshcd_transfer_req_compl(hba);
-+		retval |= ufshcd_trc_handler(hba, ufshcd_has_utrlcnr(hba));
- 
- 	return retval;
- }
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index a70daf7..d5325e8 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -1159,6 +1159,11 @@ static inline u32 ufshcd_vops_get_ufs_hci_version(struct ufs_hba *hba)
- 	return ufshcd_readl(hba, REG_UFS_VERSION);
- }
- 
-+static inline bool ufshcd_has_utrlcnr(struct ufs_hba *hba)
-+{
-+	return (hba->ufs_version >= ufshci_version(3, 0));
-+}
-+
- static inline int ufshcd_vops_clk_scale_notify(struct ufs_hba *hba,
- 			bool up, enum ufs_notify_change_status status)
- {
-diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
-index de95be5..5affb1f 100644
---- a/drivers/scsi/ufs/ufshci.h
-+++ b/drivers/scsi/ufs/ufshci.h
-@@ -39,6 +39,7 @@ enum {
- 	REG_UTP_TRANSFER_REQ_DOOR_BELL		= 0x58,
- 	REG_UTP_TRANSFER_REQ_LIST_CLEAR		= 0x5C,
- 	REG_UTP_TRANSFER_REQ_LIST_RUN_STOP	= 0x60,
-+	REG_UTP_TRANSFER_REQ_LIST_COMPL		= 0x64,
- 	REG_UTP_TASK_REQ_LIST_BASE_L		= 0x70,
- 	REG_UTP_TASK_REQ_LIST_BASE_H		= 0x74,
- 	REG_UTP_TASK_REQ_DOOR_BELL		= 0x78,
+Thanks,
+
+	M.
+
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Without deviation from the norm, progress is not possible.
