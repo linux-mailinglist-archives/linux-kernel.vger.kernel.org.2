@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2C638F556
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ECB38F558
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbhEXWHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
+        id S233913AbhEXWIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhEXWHW (ORCPT
+        with ESMTP id S232911AbhEXWH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:07:22 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD704C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:05:52 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so26662915otc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:05:52 -0700 (PDT)
+        Mon, 24 May 2021 18:07:59 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F81DC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:06:29 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2378206otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KcqVM3Z4xibqYKupYIQXxeW+HcldZY5vq9eb1PY4Kac=;
-        b=MnZNOO8yPKJj9nw6RU5WAHEbbPEEu4k/8oJOPamkJ5UxLY9/nTvMp5PlOmPOEG7sND
-         wWfCdPLAj5ShyQ+vATpnqbycqYS2czHBAR9LbC3RthBuYI/JQmnBLihPU/045L/71J4D
-         5zju4iW0gO45ihLnoR0S2r9YPTzwAunQu6q1I=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0x7KBa33YCdVpWQcerdsesPKCRJBcikDlHAi09xfS34=;
+        b=rgfuObfd7/poNAOG7HADeiA06piRoZurmGfRdshD9nR6+/A1XwcwHBvr0fIuXJzTAe
+         Bkh+E0t0AjhEyoqyxwfWpNleTenSMsqifsVjcsL40F+AlKaZrOqXdtv3khemVGnARE0E
+         5EteI+YhBAJxnuMmq5MMPd0RGCc292UG81YeprAZUxQi/XGGMlIsBJF45esOXqY9eUUe
+         Bq3M9XWw+JQkd74ygxUdxx/9g8ybvDDHcVLL9cQzYzynMuU75F3ecNzMBrO3S+/PRDvd
+         jSgjLBfc3/EK3k1ydIoMgeGMp4l6VBb3E7+/HvRS9JMVRL2/lWHBGPW9ax8kPvodyPZM
+         wP2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KcqVM3Z4xibqYKupYIQXxeW+HcldZY5vq9eb1PY4Kac=;
-        b=tzEd8GyuRJWgG24zA6X4feUFghwnhFcAmGpycw9pPY8u9VZlHvbO7JQULBcTAHjpb+
-         6cNloLQDbdkr4TVrlep/oZ6yG1g7nAnI+Pk5DVeE6JekF4dQ8YxLgC0hybXSXwKMc464
-         G5bCZlWE9OWu/w9Yh7o3RndfOcglIsjIti0HGZoheS3VBLgtvUy0M2jhLwNTjaHaNSCT
-         U4YwXQvn17xhDanorui+frchYKXOjGsX3GeSIKIyiOsAYRHIZ7kP8JkdtbBo5PhGr5po
-         EiL2aLL8Qeds21MyfeCtCx7FGZ2QcrXS6VonOmuqXkbJHeDklZxgV5KKnkNnvYkHnPvL
-         RPHw==
-X-Gm-Message-State: AOAM5332YxOjvLtG9ztflBmdNVZ+l5DZCrLEfPiIgfobdWNv/B4JBS92
-        qTiIC0ejeJ6v5S2icoH8m7RvIw==
-X-Google-Smtp-Source: ABdhPJxdDgwjmNhu8FXRoZ2YmByQ64Mvji0u+Ohm39Zqx6Kgt3ytokjDnn91todvxKuKyk3S5U6Ccw==
-X-Received: by 2002:a9d:12d6:: with SMTP id g80mr13392212otg.107.1621893952327;
-        Mon, 24 May 2021 15:05:52 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j33sm3125760otj.72.2021.05.24.15.05.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 15:05:52 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/71] 5.4.122-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <17a9b16e-bb18-3e62-a931-8618309fa10a@linuxfoundation.org>
-Date:   Mon, 24 May 2021 16:05:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0x7KBa33YCdVpWQcerdsesPKCRJBcikDlHAi09xfS34=;
+        b=uWFcwbquqFUyebR9UTHHOT1sAH6wVKOnThgtpV6N3qTXBiJFlJ9kcV8VnC6njlTCCs
+         46JD7mOHSQz7QKFIQiVg6sbLLX2dGzl4czPTFRjC53fqEF9iDutYp4aN8cxs/5brcaWn
+         o57Lu4qK6da4XiDOWYgRQV3atd4El+r/81v8RDUsKAWWME9PnIhWcAh7lioQ+BbNOqmY
+         rej8E28+gREQvyaJjQw7un5QvCfYPoWIEbyz0DL0hKlQVULelM9cVkXOIZDGVdQNJJUG
+         NSYasKu0P3SDh1OkgD66oPm65AXIUHNMGhKa41KUdiKdAhqmrzlAN9kF4hb6OSVUX+zb
+         CFRA==
+X-Gm-Message-State: AOAM531nvTiOEtCKFAQRqxsPxT4obEpZA+wBLpX5Wr4sTgyVFvqMwOhG
+        mV3Kti9vgHdYOpJh/TWBZlc4Bo/+4ca1G/gPiswWRQ==
+X-Google-Smtp-Source: ABdhPJxtCHIcf2YnfiuPHuBuBex18cxxq/QNS2VH1iDkBXBEJiRiDhEZCcB7y8XACmI3TQfSKbxiJELVGfEjPcEAOVU=
+X-Received: by 2002:a9d:5786:: with SMTP id q6mr20763785oth.56.1621893988639;
+ Mon, 24 May 2021 15:06:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com> <20210207154256.52850-5-jing2.liu@linux.intel.com>
+In-Reply-To: <20210207154256.52850-5-jing2.liu@linux.intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 24 May 2021 15:06:17 -0700
+Message-ID: <CALMp9eT8SoD0X=RZNv+o4LJLZZioTaPPXBnT199AGJKAwJ=W7Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
+To:     Jing Liu <jing2.liu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, jing2.liu@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 9:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.122 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.122-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Sat, Feb 6, 2021 at 11:00 PM Jing Liu <jing2.liu@linux.intel.com> wrote:
+>
+> The static xstate buffer kvm_xsave contains the extended register
+> states, but it is not enough for dynamic features with large state.
+>
+> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
+> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
+> new ioctl interfaces to get/set the whole xstate using struct
+> kvm_xsave_extension buffer containing both static and dynamic
+> xfeatures. Reuse fill_xsave and load_xsave for both cases.
+>
+> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+> ---
 
-Compiled and booted on my test system. No dmesg regressions.
+> +#define KVM_GET_XSAVE_EXTENSION   _IOW(KVMIO,  0xa4, struct kvm_xsave_extension)
+> +#define KVM_SET_XSAVE_EXTENSION   _IOW(KVMIO,  0xa5, struct kvm_xsave_extension)
+Isn't the convention to call these KVM_GET_XSAVE2 and KVM_SET_XSAVE2?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Do you have any documentation to add to Documentation/virt/kvm/api.rst?
