@@ -2,119 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972D738F1CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A19B38F1D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhEXQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S233020AbhEXQ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhEXQyc (ORCPT
+        with ESMTP id S232543AbhEXQ4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:54:32 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC9BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:53:03 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m124so20502016pgm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:53:03 -0700 (PDT)
+        Mon, 24 May 2021 12:56:43 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5F2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:55:13 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id e17so15980705iol.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 09:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N2txpffhQNVmkCUqvMymT/aHNSSwoaT8nmlDPEhUqZE=;
-        b=JuZTWaiyOBfD3XdqP+AwRe2GcRlGDJCzTJBkj6Hr69AVEWETsP6Xd230zoK/uKVcBV
-         YNeNj5/sWBcjpBgjkAZsovmFsaHaXLH50RRzkqbvrI2vLTif6dxIGQOuw9JipL5TUQtY
-         2gYW9rQoiYEUlanIzTylsUCqeeWyWtnYABnTkDQr7Hen2NaEivp37QVMjlHvy8PGLKWC
-         6Qtjgcm2iF8NybrBsUIiLLEqgXpU0cJD2fV+ZcaxxKnWARt/Exd6MEOGquHyZ/hH3FFq
-         rwAYV/DiTW+n7R0hIwqgqGTLli5WGEc+srYKiJCJ+TU3gHtXzwFXzv+ZncYVqzmHSOaP
-         omdA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oCGFricQjCqKzwZaW3kUQGXMVuxnxkEkAZ7s/yaERUA=;
+        b=sG8t4mZrhVVjAAKBB4G6b7mURLITxdFxZowTley4vKnO66HsO4mEvteCj2MVEZOJuK
+         j64aJDG/naXDwU86a46u/0Cz3Ftbg0lSGDPVblLBiMk0L926zVEata+cMsABthlZ9ZQn
+         e66AujY73WZnb5pd63kDqYSDi588rhppaJh+Cgb4YKaNvUz7ka3vA+Thmqsup6aw0PlH
+         s4zc2E0ZqzT+5mlyFyWvuH/SKFtZTe7pVnycO9W1vp6X+3WCnnXM7f2XK4GIRmXnOgL4
+         usgXPn9jCpxR2jIJ8WD5LnLZz7+f3mXcmkmN2jx4AcM06ndTcUr9tnzR1H3EAbsYkcdB
+         JZxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N2txpffhQNVmkCUqvMymT/aHNSSwoaT8nmlDPEhUqZE=;
-        b=nXq6yhd9Ib1rX1t63yWaVZBmdrPWQuDuhR5ogXnkISavdgGmG984Fkam63agW6fL/c
-         kl+gQF7dtBr0ow7apDR4R33MB7GE84Jl1dXJ9+F/hk60XCL5iAbccef6aO63Ulu4HRnf
-         QiDU88mOizy1LGpfk2j17dvFdq0Ub4vKuekMnDu9lIG0azZSWAnpnuNve0X+0ZVTqG4u
-         WyNf0hn7u/l71DzG8ocIgsVqeKClORFJadl3/ojDLtGL7SN1g+ZFOUncdfEVbCPguUK6
-         7ZMlHuFds7pl0AeD5+EpgGwL67JypnCwVt83KWbgKJFNBawR0lFakKsyDo+5RKzsz4f3
-         Jgvg==
-X-Gm-Message-State: AOAM533k1crhpcON/8dJATUS8ipZX4NPnhy2U+Cc3mkX6zFKBdtVRr/i
-        h3HU07H+7zdzTMPGJBNXiF+Dwg==
-X-Google-Smtp-Source: ABdhPJxm2lkNMpPA+aDLQjFOaveDgWcmkqzDYbfuBuoHFySyF+am+K3RAzptfjpecT+LGsr6ntoT7A==
-X-Received: by 2002:aa7:8509:0:b029:2e5:8cfe:bc17 with SMTP id v9-20020aa785090000b02902e58cfebc17mr16226973pfn.2.1621875182742;
-        Mon, 24 May 2021 09:53:02 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t22sm11233580pfl.50.2021.05.24.09.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 09:53:02 -0700 (PDT)
-Date:   Mon, 24 May 2021 16:52:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] KVM: x86: Use common 'enable_apicv' variable for
- both APICv and AVIC
-Message-ID: <YKvZ6vI2vFVmkCeb@google.com>
-References: <20210518144339.1987982-1-vkuznets@redhat.com>
- <20210518144339.1987982-4-vkuznets@redhat.com>
- <YKQmG3rMpwSI3WrV@google.com>
- <12eadbce-f688-77a1-27bf-c33fee2e7543@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oCGFricQjCqKzwZaW3kUQGXMVuxnxkEkAZ7s/yaERUA=;
+        b=lbJqGXennJfdbdoPLql71AMqryD5D8+hoFVBF2Se3ZYTOnUZbYkCM7KVWE8+dfJicB
+         +bsajs1ZBCpWKuT4gi5/hR+mbwab1z66hcu09+gnYL2fkohzCiP7GRwOQttJFBabqFFA
+         rfZBbRkUZ7b76vm8gUThj1vR25wreuLR16eo4NiUGAFlDWWF19meDOyvzgE7eKmpyx/C
+         /bSpf/Puao0ltZIPOS2NyQDSq7M3nDVradACLx24cFWGFkFuD1uE8NJz8VwmFABcOFje
+         V4rY/uY3ATf3nFqPLg/uH8LNQIWIvFYIelnWgt4Va2uPw9AmzAlAzb9XqzY02YBA6FYm
+         Z9QQ==
+X-Gm-Message-State: AOAM530XID0613TkvqaE+yEH8kX77Ea5wPvgjVI600kUiDId9TvyIbAa
+        OtMNDWs+LzwK21VngUlbGB5Hbfc7OXzrRrm2il85Dg==
+X-Google-Smtp-Source: ABdhPJx15g9L/3CvukHmOn46pbBvJCT4nRHl3t6gaw0pipekzy/SJPM/UiSJNNASqPqS4BR4IwZlfFXhIpYwG31e0og=
+X-Received: by 2002:a05:6602:54:: with SMTP id z20mr15240420ioz.48.1621875312955;
+ Mon, 24 May 2021 09:55:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12eadbce-f688-77a1-27bf-c33fee2e7543@redhat.com>
+References: <20210523001806.3927609-1-tpiepho@gmail.com> <YKuFPeH0sIFqrBt6@smile.fi.intel.com>
+In-Reply-To: <YKuFPeH0sIFqrBt6@smile.fi.intel.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 24 May 2021 09:55:01 -0700
+Message-ID: <CAGS_qxoKTyNBxoezkEVVrACGsFuzJwteepVpDzp+4KH+CgbMsw@mail.gmail.com>
+Subject: Re: [PATCH] lib/math/rational.c: Fix divide by zero
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Trent Piepho <tpiepho@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        oskar@scara.com, Yiyuan Guo <yguoaz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021, Paolo Bonzini wrote:
-> On 18/05/21 22:39, Sean Christopherson wrote:
-> > > +/* enable / disable AVIC */
-> > > +static int avic;
-> > > +module_param(avic, int, 0444);
-> > We should opportunistically make avic a "bool".
-> > 
-> 
-> And also:
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 11714c22c9f1..48cb498ff070 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -185,9 +185,12 @@ module_param(vls, int, 0444);
->  static int vgif = true;
->  module_param(vgif, int, 0444);
-> -/* enable / disable AVIC */
-> -static int avic;
-> -module_param(avic, int, 0444);
-> +/*
-> + * enable / disable AVIC.  Because the defaults differ for APICv
-> + * support between VMX and SVM we cannot use module_param_named.
-> + */
-> +static bool avic;
-> +module_param(avic, bool, 0444);
->  bool __read_mostly dump_invalid_vmcb;
->  module_param(dump_invalid_vmcb, bool, 0644);
-> @@ -1013,11 +1016,7 @@ static __init int svm_hardware_setup(void)
->  			nrips = false;
->  	}
-> -	if (!npt_enabled || !boot_cpu_has(X86_FEATURE_AVIC))
-> -		avic = false;
-> -
-> -	/* 'enable_apicv' is common between VMX/SVM but the defaults differ */
-> -	enable_apicv = avic;
-> +	enable_apicv = avic && npt_enabled && boot_cpu_has(X86_FEATURE_AVIC);
->  	if (enable_apicv) {
->  		pr_info("AVIC enabled\n");
-> 
-> The "if" can come back when AVIC is enabled by default.
+On Mon, May 24, 2021 at 3:51 AM Andy Shevchenko
+<andriy.shevchenko@intel.com> wrote:
+>
+> On Sat, May 22, 2021 at 05:18:06PM -0700, Trent Piepho wrote:
+>
+> Thanks for the fix! My comments below.
+>
+> > If the input is out of the range of the allowed values, either larger
+> > than the largest value or closer to zero than the smallest non-zero
+> > allowed value, then a division by zero would occur.
+> >
+> > In the case of input too large, the division by zero will occur on the
+> > first iteration.  The best result (largest allowed value) will be found
+> > by always choosing the semi-convergent and excluding the denominator
+> > based limit when finding it.
+> >
+> > In the case of the input too small, the division by zero will occur on
+> > the second iteration.  The numerator based semi-convergent should not be
+> > calculated to avoid the division by zero.  But the semi-convergent vs
+> > previous convergent test is still needed, which effectively chooses
+> > between 0 (the previous convergent) vs the smallest allowed fraction
+> > (best semi-convergent) as the result.
+>
+> This misses the test cases (*). Please, develop them with Daniel.
 
-But "avic" is connected to the module param, even if it's off by default its
-effective value should be reflected in sysfs.  E.g. the user may incorrectly
-think AVIC is in use if they set avic=1 but the CPU doesn't support AVIC.
-Forcing the user to check /proc/cpuinfo or look for "AVIC enabled" in dmesg is
-kludgy at best.
+FYI, I was leaning towards not having this in the proposed
+math_kunit.c, since this code is gated behind CONFIG_RATIONAL=y, while
+the others are not.
+I.e. I think we want to add a new rational_kunit.c to contain this test case.
+
+I can help write it up if wanted, but I'll give some pointers on how
+to do so below.
+
+Trent, https://www.kernel.org/doc/html/latest/dev-tools/kunit/start.html
+would be the entry point for KUnit documentation.
+After you feel comfortable with the following, I'd recommend
+https://www.kernel.org/doc/html/latest/dev-tools/kunit/usage.html#testing-against-multiple-inputs
+
+You can run the tests added via something like this
+
+$ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
+CONFIG_KUNIT=y
+CONFIG_RATIONAL=y
+CONFIG_RATIONAL_KUNIT_TEST=y
+EOF
+
+(feel free to put the heredoc into a file, just using it for a
+copy-paste friendly one-liner)
+
+given a starting change like this (which I can see crash w/o the fix,
+and pass w/ it).
+
+diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+index f19bc9734fa7..20460b567493 100644
+--- a/lib/math/Kconfig
++++ b/lib/math/Kconfig
+@@ -15,3 +15,14 @@ config PRIME_NUMBERS
+
+ config RATIONAL
+        bool
++
++config RATIONAL_KUNIT_TEST
++       tristate "KUnit test for rational number support" if !KUNIT_ALL_TESTS
++       # depends on KUNIT && RATIONAL  # this is how it should work, but
++       depends on KUNIT
++       select RATIONAL # I don't grok kconfig enough to know why this
+is necessary
++       default KUNIT_ALL_TESTS
++       help
++               This builds unit tests for the rational number support.
++
++               If unsure, say N.
+diff --git a/lib/math/Makefile b/lib/math/Makefile
+index 7456edb864fc..a11ffdb953ef 100644
+--- a/lib/math/Makefile
++++ b/lib/math/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_PRIME_NUMBERS)     += prime_numbers.o
+ obj-$(CONFIG_RATIONAL)         += rational.o
+
+ obj-$(CONFIG_TEST_DIV64)       += test_div64.o
++obj-$(CONFIG_RATIONAL_KUNIT_TEST)      += rational_kunit.o
+diff --git a/lib/math/rational_kunit.c b/lib/math/rational_kunit.c
+new file mode 100644
+index 000000000000..88ad0e2baece
+--- /dev/null
++++ b/lib/math/rational_kunit.c
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <kunit/test.h>
++
++#include <linux/rational.h>
++
++static void rational_bug_test(struct kunit *test)
++{
++       unsigned long n = 0, d = 0;
++
++       rational_best_approximation(31415, 100, (1 << 8) - 1, (1 << 5)
+- 1, &n, &d);
++       KUNIT_EXPECT_EQ(test, n, 255);
++       KUNIT_EXPECT_EQ(test, d, 1);
++}
++
++static struct kunit_case rational_test_cases[] = {
++       KUNIT_CASE(rational_bug_test),
++       {}
++};
++
++static struct kunit_suite rational_test_suite = {
++       .name = "rational",
++       .test_cases = rational_test_cases,
++};
++
++kunit_test_suites(&rational_test_suite);
++
++MODULE_LICENSE("GPL v2");
+
+
+
+>
+> *) We usually don't accept changes in the generic libraries without test cases.
+>
+> Fixes tag?
+>
+> > Reported-by: Yiyuan Guo <yguoaz@gmail.com>
+> > Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+>
+> ...
+>
+> > +                     /* This tests if the semi-convergent is closer than the previous
+> > +                      * convergent.  If d1 is zero there is no previous convergent as this
+> > +                      * is the 1st iteration, so always choose the semi-convergent.
+> >                        */
+> > -                     if (2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+> > +                     if (!d1 || 2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+> >                               n1 = n0 + t * n1;
+> >                               d1 = d0 + t * d1;
+> >                       }
+>
+> I think that refactoring may lead us to check first iteration before even going
+> into the loop. But it's another story and we may do it later (the algo uses
+> heavy division anyway, so couple of additional branches probably won't affect
+> performance too much).
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
