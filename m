@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE2D38EFD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD738F07C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhEXP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+        id S236185AbhEXQDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235117AbhEXPy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C8361923;
-        Mon, 24 May 2021 15:40:27 +0000 (UTC)
+        id S233519AbhEXP4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF546144A;
+        Mon, 24 May 2021 15:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870827;
-        bh=/1Yh/HBLKb6KqicjCCwW7ViIO/vqvPEuwUkgWk8PZ6A=;
+        s=korg; t=1621870985;
+        bh=1dAMraQ5B+FymVoCYVg+XAajTuiOTDxvtot00gCCi/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AaC2xr8IOcKuSCdGdnqxtpq//GEFUH6CFjXTlSpQcfRnYCfeAHgeZlA70squN5PDA
-         rDcTrLD2ksKTbjcnzAGW4LN2zwFY1Aeae/9lRLdr1wY7T5FkAHMOS5BZsv0fmIKgmU
-         PL4Lfy+xUoFmaUmr/W4Dq/fvnKCucJmWYWvetQZw=
+        b=r6OCVE0QyVnz36pKPxRDis6asHRgSKn8bRr0ESd7XT4WUYvd4Uxv+IFqTpSkNTTiD
+         ZdchwYiocSgPlHxYHfq3o+l7VeTPCwklnUeghLYpx6MQwWDG8SqI2uUlF9WPAAe9bE
+         9TPwoT+FOH0dDQKLS6TaP+jlEJFzSbNkWgGBsnpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 043/104] Revert "ALSA: sb8: add a check for request_region"
+        stable@vger.kernel.org, Liming Sun <limings@nvidia.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 021/127] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier issue
 Date:   Mon, 24 May 2021 17:25:38 +0200
-Message-Id: <20210524152334.250893075@linuxfoundation.org>
+Message-Id: <20210524152335.572887795@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Liming Sun <limings@nvidia.com>
 
-commit 94f88309f201821073f57ae6005caefa61bf7b7e upstream.
+[ Upstream commit 1c0e5701c5e792c090aef0e5b9b8923c334d9324 ]
 
-This reverts commit dcd0feac9bab901d5739de51b3f69840851f8919.
+The virtio framework uses wmb() when updating avail->idx. It
+guarantees the write order, but not necessarily loading order
+for the code accessing the memory. This commit adds a load barrier
+after reading the avail->idx to make sure all the data in the
+descriptor is visible. It also adds a barrier when returning the
+packet to virtio framework to make sure read/writes are visible to
+the virtio code.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit message for this change was incorrect as the code
-path can never result in a NULL dereference, alluding to the fact that
-whatever tool was used to "find this" is broken.  It's just an optional
-resource reservation, so removing this check is fine.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Fixes: dcd0feac9bab ("ALSA: sb8: add a check for request_region")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-35-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox BlueField Soc")
+Signed-off-by: Liming Sun <limings@nvidia.com>
+Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/1620433812-17911-1-git-send-email-limings@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb8.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -96,10 +96,6 @@ static int snd_sb8_probe(struct device *
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index bbc4e71a16ff..38800e86ed8a 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -294,6 +294,9 @@ mlxbf_tmfifo_get_next_desc(struct mlxbf_tmfifo_vring *vring)
+ 	if (vring->next_avail == virtio16_to_cpu(vdev, vr->avail->idx))
+ 		return NULL;
  
- 	/* block the 0x388 port to avoid PnP conflicts */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
--	if (!acard->fm_res) {
--		err = -EBUSY;
--		goto _err;
--	}
++	/* Make sure 'avail->idx' is visible already. */
++	virtio_rmb(false);
++
+ 	idx = vring->next_avail % vr->num;
+ 	head = virtio16_to_cpu(vdev, vr->avail->ring[idx]);
+ 	if (WARN_ON(head >= vr->num))
+@@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct mlxbf_tmfifo_vring *vring,
+ 	 * done or not. Add a memory barrier here to make sure the update above
+ 	 * completes before updating the idx.
+ 	 */
+-	mb();
++	virtio_mb(false);
+ 	vr->used->idx = cpu_to_virtio16(vdev, vr_idx + 1);
+ }
  
- 	if (port[dev] != SNDRV_AUTO_PORT) {
- 		if ((err = snd_sbdsp_create(card, port[dev], irq[dev],
+@@ -733,6 +736,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct mlxbf_tmfifo_vring *vring,
+ 		desc = NULL;
+ 		fifo->vring[is_rx] = NULL;
+ 
++		/*
++		 * Make sure the load/store are in order before
++		 * returning back to virtio.
++		 */
++		virtio_mb(false);
++
+ 		/* Notify upper layer that packet is done. */
+ 		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
+ 		vring_interrupt(0, vring->vq);
+-- 
+2.30.2
+
 
 
