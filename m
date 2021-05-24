@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C03338EF64
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E997F38F0A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234675AbhEXP5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+        id S237074AbhEXQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234920AbhEXPuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:50:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 176FE6161C;
-        Mon, 24 May 2021 15:38:20 +0000 (UTC)
+        id S235562AbhEXP6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 677C66195A;
+        Mon, 24 May 2021 15:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870701;
-        bh=KavB21UWyYwKxqbItFItqax84gN40grfVffgVMaoibw=;
+        s=korg; t=1621871063;
+        bh=ZUTBNKxxxfq9G9Y4cC7y7d4x5/l8iXdOoffAoaWCkKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o1Gyj7hTBFsCJZERw+wh+IYZdUZP/RJ0IWeHrKJJs5TQ4EqtRdaDNev3W9sUNFeGG
-         U7F5Pg3Hy42LftPaiXo6OVjYg5Esz2BkudCQChu/w3OsplcM3aev9LyLbWfiST3j6l
-         OZPumIPlmPNRttVf0ZaPC6TMhXUcLE4aqPucX8VA=
+        b=GJ7LjRgfscxpJ6+G0ilolAcEPHXZ7ns8PwLvTtSyK1VDV0XY8toSOHp+VTdcYjumz
+         iKEqD5MpMW8jdMzTVJFsZ7dy/OE+kT3od+frCFLVzEPqfXk8nq66Mo/8HTyIQhZGRU
+         kYp9ikLvkmlDLxEI0OidgZ/3d8mnRzkkF+Ygfa58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 67/71] vt: Fix character height handling with VT_RESIZEX
-Date:   Mon, 24 May 2021 17:26:13 +0200
-Message-Id: <20210524152328.625654526@linuxfoundation.org>
+        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 057/127] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
+Date:   Mon, 24 May 2021 17:26:14 +0200
+Message-Id: <20210524152336.771338275@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,225 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Elia Devito <eliadevito@gmail.com>
 
-commit 860dafa902595fb5f1d23bbcce1215188c3341e6 upstream.
+commit f2be77fee648ddd6d0d259d3527344ba0120e314 upstream.
 
-Restore the original intent of the VT_RESIZEX ioctl's `v_clin' parameter
-which is the number of pixel rows per character (cell) rather than the
-height of the font used.
+Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
+on similar models.
 
-For framebuffer devices the two values are always the same, because the
-former is inferred from the latter one.  For VGA used as a true text
-mode device these two parameters are independent from each other: the
-number of pixel rows per character is set in the CRT controller, while
-font height is in fact hardwired to 32 pixel rows and fonts of heights
-below that value are handled by padding their data with blanks when
-loaded to hardware for use by the character generator.  One can change
-the setting in the CRT controller and it will update the screen contents
-accordingly regardless of the font loaded.
+0x14 pin config override is required to enable all speakers and
+alc285-speaker2-to-dac1 fixup to enable volume adjustment.
 
-The `v_clin' parameter is used by the `vgacon' driver to set the height
-of the character cell and then the cursor position within.  Make the
-parameter explicit then, by defining a new `vc_cell_height' struct
-member of `vc_data', set it instead of `vc_font.height' from `v_clin' in
-the VT_RESIZEX ioctl, and then use it throughout the `vgacon' driver
-except where actual font data is accessed which as noted above is
-independent from the CRTC setting.
-
-This way the framebuffer console driver is free to ignore the `v_clin'
-parameter as irrelevant, as it always should have, avoiding any issues
-attempts to give the parameter a meaning there could have caused, such
-as one that has led to commit 988d0763361b ("vt_ioctl: make VT_RESIZEX
-behave like VT_RESIZE"):
-
- "syzbot is reporting UAF/OOB read at bit_putcs()/soft_cursor() [1][2],
-  for vt_resizex() from ioctl(VT_RESIZEX) allows setting font height
-  larger than actual font height calculated by con_font_set() from
-  ioctl(PIO_FONT). Since fbcon_set_font() from con_font_set() allocates
-  minimal amount of memory based on actual font height calculated by
-  con_font_set(), use of vt_resizex() can cause UAF/OOB read for font
-  data."
-
-The problem first appeared around Linux 2.5.66 which predates our repo
-history, but the origin could be identified with the old MIPS/Linux repo
-also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>
-as commit 9736a3546de7 ("Merge with Linux 2.5.66."), where VT_RESIZEX
-code in `vt_ioctl' was updated as follows:
-
- 		if (clin)
--			video_font_height = clin;
-+			vc->vc_font.height = clin;
-
-making the parameter apply to framebuffer devices as well, perhaps due
-to the use of "font" in the name of the original `video_font_height'
-variable.  Use "cell" in the new struct member then to avoid ambiguity.
-
-
-[1] https://syzkaller.appspot.com/bug?id=32577e96d88447ded2d3b76d71254fb855245837
-[2] https://syzkaller.appspot.com/bug?id=6b8355d27b2b94fb5cedf4655e3a59162d9e48e3
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org # v2.6.12+
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210511124651.4802-1-eliadevito@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/vt/vt_ioctl.c      |    6 ++---
- drivers/video/console/vgacon.c |   44 ++++++++++++++++++++---------------------
- include/linux/console_struct.h |    1 
- 3 files changed, 26 insertions(+), 25 deletions(-)
+ sound/pci/hda/patch_realtek.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -895,17 +895,17 @@ int vt_ioctl(struct tty_struct *tty,
- 			if (vcp) {
- 				int ret;
- 				int save_scan_lines = vcp->vc_scan_lines;
--				int save_font_height = vcp->vc_font.height;
-+				int save_cell_height = vcp->vc_cell_height;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6534,6 +6534,7 @@ enum {
+ 	ALC285_FIXUP_IDEAPAD_S740_COEF,
+ 	ALC295_FIXUP_ASUS_DACS,
+ 	ALC295_FIXUP_HP_OMEN,
++	ALC285_FIXUP_HP_SPECTRE_X360,
+ };
  
- 				if (v.v_vlin)
- 					vcp->vc_scan_lines = v.v_vlin;
- 				if (v.v_clin)
--					vcp->vc_font.height = v.v_clin;
-+					vcp->vc_cell_height = v.v_clin;
- 				vcp->vc_resize_user = 1;
- 				ret = vc_resize(vcp, v.v_cols, v.v_rows);
- 				if (ret) {
- 					vcp->vc_scan_lines = save_scan_lines;
--					vcp->vc_font.height = save_font_height;
-+					vcp->vc_cell_height = save_cell_height;
- 					console_unlock();
- 					return ret;
- 				}
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -384,7 +384,7 @@ static void vgacon_init(struct vc_data *
- 		vc_resize(c, vga_video_num_columns, vga_video_num_lines);
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8085,6 +8086,15 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	},
++	[ALC285_FIXUP_HP_SPECTRE_X360] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x14, 0x90170110 }, /* enable top speaker */
++			{}
++		},
++		.chained = true,
++		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
++	},
+ };
  
- 	c->vc_scan_lines = vga_scan_lines;
--	c->vc_font.height = vga_video_font_height;
-+	c->vc_font.height = c->vc_cell_height = vga_video_font_height;
- 	c->vc_complement_mask = 0x7700;
- 	if (vga_512_chars)
- 		c->vc_hi_font_mask = 0x0800;
-@@ -517,32 +517,32 @@ static void vgacon_cursor(struct vc_data
- 		switch (c->vc_cursor_type & 0x0f) {
- 		case CUR_UNDERLINE:
- 			vgacon_set_cursor_size(c->vc_x,
--					       c->vc_font.height -
--					       (c->vc_font.height <
-+					       c->vc_cell_height -
-+					       (c->vc_cell_height <
- 						10 ? 2 : 3),
--					       c->vc_font.height -
--					       (c->vc_font.height <
-+					       c->vc_cell_height -
-+					       (c->vc_cell_height <
- 						10 ? 1 : 2));
- 			break;
- 		case CUR_TWO_THIRDS:
- 			vgacon_set_cursor_size(c->vc_x,
--					       c->vc_font.height / 3,
--					       c->vc_font.height -
--					       (c->vc_font.height <
-+					       c->vc_cell_height / 3,
-+					       c->vc_cell_height -
-+					       (c->vc_cell_height <
- 						10 ? 1 : 2));
- 			break;
- 		case CUR_LOWER_THIRD:
- 			vgacon_set_cursor_size(c->vc_x,
--					       (c->vc_font.height * 2) / 3,
--					       c->vc_font.height -
--					       (c->vc_font.height <
-+					       (c->vc_cell_height * 2) / 3,
-+					       c->vc_cell_height -
-+					       (c->vc_cell_height <
- 						10 ? 1 : 2));
- 			break;
- 		case CUR_LOWER_HALF:
- 			vgacon_set_cursor_size(c->vc_x,
--					       c->vc_font.height / 2,
--					       c->vc_font.height -
--					       (c->vc_font.height <
-+					       c->vc_cell_height / 2,
-+					       c->vc_cell_height -
-+					       (c->vc_cell_height <
- 						10 ? 1 : 2));
- 			break;
- 		case CUR_NONE:
-@@ -553,7 +553,7 @@ static void vgacon_cursor(struct vc_data
- 			break;
- 		default:
- 			vgacon_set_cursor_size(c->vc_x, 1,
--					       c->vc_font.height);
-+					       c->vc_cell_height);
- 			break;
- 		}
- 		break;
-@@ -564,13 +564,13 @@ static int vgacon_doresize(struct vc_dat
- 		unsigned int width, unsigned int height)
- {
- 	unsigned long flags;
--	unsigned int scanlines = height * c->vc_font.height;
-+	unsigned int scanlines = height * c->vc_cell_height;
- 	u8 scanlines_lo = 0, r7 = 0, vsync_end = 0, mode, max_scan;
- 
- 	raw_spin_lock_irqsave(&vga_lock, flags);
- 
- 	vgacon_xres = width * VGA_FONTWIDTH;
--	vgacon_yres = height * c->vc_font.height;
-+	vgacon_yres = height * c->vc_cell_height;
- 	if (vga_video_type >= VIDEO_TYPE_VGAC) {
- 		outb_p(VGA_CRTC_MAX_SCAN, vga_video_port_reg);
- 		max_scan = inb_p(vga_video_port_val);
-@@ -625,9 +625,9 @@ static int vgacon_doresize(struct vc_dat
- static int vgacon_switch(struct vc_data *c)
- {
- 	int x = c->vc_cols * VGA_FONTWIDTH;
--	int y = c->vc_rows * c->vc_font.height;
-+	int y = c->vc_rows * c->vc_cell_height;
- 	int rows = screen_info.orig_video_lines * vga_default_font_height/
--		c->vc_font.height;
-+		c->vc_cell_height;
- 	/*
- 	 * We need to save screen size here as it's the only way
- 	 * we can spot the screen has been resized and we need to
-@@ -1058,7 +1058,7 @@ static int vgacon_adjust_height(struct v
- 				cursor_size_lastto = 0;
- 				c->vc_sw->con_cursor(c, CM_DRAW);
- 			}
--			c->vc_font.height = fontheight;
-+			c->vc_font.height = c->vc_cell_height = fontheight;
- 			vc_resize(c, 0, rows);	/* Adjust console size */
- 		}
- 	}
-@@ -1113,12 +1113,12 @@ static int vgacon_resize(struct vc_data
- 		 */
- 		screen_info.orig_video_cols = width;
- 		screen_info.orig_video_lines = height;
--		vga_default_font_height = c->vc_font.height;
-+		vga_default_font_height = c->vc_cell_height;
- 		return 0;
- 	}
- 	if (width % 2 || width > screen_info.orig_video_cols ||
- 	    height > (screen_info.orig_video_lines * vga_default_font_height)/
--	    c->vc_font.height)
-+	    c->vc_cell_height)
- 		return -EINVAL;
- 
- 	if (con_is_visible(c) && !vga_is_gfx) /* who knows */
---- a/include/linux/console_struct.h
-+++ b/include/linux/console_struct.h
-@@ -62,6 +62,7 @@ struct vc_data {
- 	unsigned int	vc_rows;
- 	unsigned int	vc_size_row;		/* Bytes per row */
- 	unsigned int	vc_scan_lines;		/* # of scan lines */
-+	unsigned int	vc_cell_height;		/* CRTC character cell height */
- 	unsigned long	vc_origin;		/* [!] Start of real screen */
- 	unsigned long	vc_scr_end;		/* [!] End of real screen */
- 	unsigned long	vc_visible_origin;	/* [!] Top of visible window */
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8245,6 +8255,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32", ALC274_FIXUP_HP_ENVY_GPIO),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+@@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+ 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
++	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
 
 
