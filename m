@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C0638F131
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C217938F0BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhEXQK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
+        id S234662AbhEXQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235718AbhEXQCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E086613CC;
-        Mon, 24 May 2021 15:50:41 +0000 (UTC)
+        id S233873AbhEXP70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:59:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FAA961460;
+        Mon, 24 May 2021 15:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871441;
-        bh=lEzhyswRQz0a32+jIaadoHn//sYNrwNS/k4Erb9bMLg=;
+        s=korg; t=1621871116;
+        bh=w3Ia2r71cN2cvp8lBH70gm/X5DTjz7UfEGZ04VnHTPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dlky+DWOEuhqs6eDx+fWDNXBogPyTlPVaKPoA5FOEZBDq/6rtQopT/HU+/9260wva
-         g/WUK0pOUytNfts0yox/YwcqWnZ3hsno9TfiVJ5zUzxZqtZFeeWtAXiUjRFkNIdBJj
-         W60FeE9jt3MPSFnxCjUdttRKxWtM7Gkw+uiTo9zw=
+        b=oBbLHCJ82O0HIz5XvY9+DzAPea53S5B4IOErKccV++UFOhc5GPjIXJAiBVzskddG/
+         U3azGFTRLsVgeNbxiCyJ6WK3XnzzIZZq4ILvGmawq7m46LwzBeutb6NAJ/tcDBo1X4
+         /iOnCuaAsqxmpMwQxIE6SeDVHntcqe2DcXoJkmZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 101/104] x86/Xen: swap NX determination and GDT setup on BSP
-Date:   Mon, 24 May 2021 17:26:36 +0200
-Message-Id: <20210524152336.197402418@linuxfoundation.org>
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 080/127] drm/amdgpu: update sdma golden setting for Navi12
+Date:   Mon, 24 May 2021 17:26:37 +0200
+Message-Id: <20210524152337.561311259@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-commit ae897fda4f507e4b239f0bdfd578b3688ca96fb4 upstream.
+commit 77194d8642dd4cb7ea8ced77bfaea55610574c38 upstream.
 
-xen_setup_gdt(), via xen_load_gdt_boot(), wants to adjust page tables.
-For this to work when NX is not available, x86_configure_nx() needs to
-be called first.
+Current golden setting is out of date.
 
-[jgross] Note that this is a revert of 36104cb9012a82e73 ("x86/xen:
-Delay get_cpu_cap until stack canary is established"), which is possible
-now that we no longer support running as PV guest in 32-bit mode.
-
-Cc: <stable.vger.kernel.org> # 5.9
-Fixes: 36104cb9012a82e73 ("x86/xen: Delay get_cpu_cap until stack canary is established")
-Reported-by: Olaf Hering <olaf@aepfle.de>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Kenneth Feng <kenneth.feng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Link: https://lore.kernel.org/r/12a866b0-9e89-59f7-ebeb-a2a6cec0987a@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/xen/enlighten_pv.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1262,16 +1262,16 @@ asmlinkage __visible void __init xen_sta
- 	/* Get mfn list */
- 	xen_build_dynamic_phys_to_machine();
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+@@ -123,6 +123,10 @@ static const struct soc15_reg_golden gol
  
-+	/* Work out if we support NX */
-+	get_cpu_cap(&boot_cpu_data);
-+	x86_configure_nx();
-+
- 	/*
- 	 * Set up kernel GDT and segment registers, mainly so that
- 	 * -fstack-protector code can be executed.
- 	 */
- 	xen_setup_gdt(0);
- 
--	/* Work out if we support NX */
--	get_cpu_cap(&boot_cpu_data);
--	x86_configure_nx();
--
- 	/* Determine virtual and physical address sizes */
- 	get_cpu_address_sizes(&boot_cpu_data);
+ static const struct soc15_reg_golden golden_settings_sdma_nv12[] = {
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_RLC3_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_GB_ADDR_CONFIG, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA0_GB_ADDR_CONFIG_READ, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_GB_ADDR_CONFIG, 0x001877ff, 0x00000044),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_GB_ADDR_CONFIG_READ, 0x001877ff, 0x00000044),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSDMA1_RLC3_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+ };
  
 
 
