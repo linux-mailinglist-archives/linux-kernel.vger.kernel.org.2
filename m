@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2662438E300
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90E838E304
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhEXJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:13:14 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:42584 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhEXJNM (ORCPT
+        id S232487AbhEXJNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:13:52 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:38439 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232313AbhEXJNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:13:12 -0400
-Received: by mail-ua1-f45.google.com with SMTP id 14so9097271uac.9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:11:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u2sASwauofjg7T0woopah+DK+Yb9wrfPhSPc8kUL6dI=;
-        b=V6CmoqO0A2rz5Hqc18anvoFllUhCU7wCOFQSwyR/eZ4P2iEcP6QQo4hLNm7c/BCX4Q
-         wGseE1iqClT+i0L7s/P0GeYpnit54JSCN7P2Vtb8KVudcs+b19C4QAhh6DruxPwUvM7n
-         niKZzK5VJA33lNyJ6q/hKjA1kISGa2KeQvI1/SZbOnx32YV+WAmyVwvAMEJc/7uyoMby
-         E5PRIFSZlQs0m4cIylBrw7SEwywYWlTBXLbL7LteMs4CxQKBTU4spwIZiBE64+Pklmoa
-         gYGDncUt5Z2Fo0HixVje6OYBjNGwn5TR8rMlK/40i+ZzoC8yHQf4v6z+ND3cqTrTB1WX
-         ywhQ==
-X-Gm-Message-State: AOAM531mrUJ4agLeX24iT4LztiOybXBVU0LZy8gnSDVcbmAfgd/4iD7x
-        vAjAnIdCQQ9/sZj9TsxUZdrEr8vXu6yNKLKauCFQt6IfdO4=
-X-Google-Smtp-Source: ABdhPJw0keOPUDxoobO98s1aJB78TQSDm1ODYuwfqEBroOdjcoWzzJ/zUeC75NVZwnpQkSNKr+SImYKqgEco6N0IfDs=
-X-Received: by 2002:ab0:2a8b:: with SMTP id h11mr21517917uar.4.1621847503771;
- Mon, 24 May 2021 02:11:43 -0700 (PDT)
+        Mon, 24 May 2021 05:13:51 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id A0FC4CAD42
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:12:22 +0100 (IST)
+Received: (qmail 26294 invoked from network); 24 May 2021 09:12:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 May 2021 09:12:22 -0000
+Date:   Mon, 24 May 2021 10:12:20 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] mm/page_alloc: Scale the number of pages that are
+ batch freed
+Message-ID: <20210524091220.GC30378@techsingularity.net>
+References: <20210521102826.28552-1-mgorman@techsingularity.net>
+ <20210521102826.28552-5-mgorman@techsingularity.net>
+ <8646d3ad-345f-7ec7-fe4a-ada2680487a3@intel.com>
 MIME-Version: 1.0
-References: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
-In-Reply-To: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 May 2021 11:11:32 +0200
-Message-ID: <CAMuHMdW42UAWRPWe09=0c=pkNLwwswoQHEbSHyXEjsfF6UZJdw@mail.gmail.com>
-Subject: Re: [PATCH] debugfs: remove return value of debugfs_create_bool()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <8646d3ad-345f-7ec7-fe4a-ada2680487a3@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, May 21, 2021 at 03:36:05PM -0700, Dave Hansen wrote:
+> ...
+> > +static int nr_pcp_free(struct per_cpu_pages *pcp, int high, int batch)
+> > +{
+> > +	int min_nr_free, max_nr_free;
+> > +
+> > +	/* Check for PCP disabled or boot pageset */
+> > +	if (unlikely(high < batch))
+> > +		return 1;
+> > +
+> > +	min_nr_free = batch;
+> > +	max_nr_free = high - batch;
+> 
+> I puzzled over this for a minute.  I *think* it means to say: "Leave at
+> least one batch worth of pages in the pcp at all times so that the next
+> allocation can still be satisfied from this pcp."
+> 
 
-Thanks for your patch!
+Yes, I added a comment.
 
-On Fri, May 21, 2021 at 10:28 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> No one checks the return value of debugfs_create_bool(), as it's not
-> needed, so make the return value void, so that no one tries to do so in
+> > +	batch <<= pcp->free_factor;
+> > +	if (batch < max_nr_free)
+> > +		pcp->free_factor++;
+> > +	batch = clamp(batch, min_nr_free, max_nr_free);
+> > +
+> > +	return batch;
+> > +}
+> > +
+> >  static void free_unref_page_commit(struct page *page, unsigned long pfn,
+> >  				   int migratetype)
+> >  {
+> >  	struct zone *zone = page_zone(page);
+> >  	struct per_cpu_pages *pcp;
+> > +	int high;
+> >  
+> >  	__count_vm_event(PGFREE);
+> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> >  	list_add(&page->lru, &pcp->lists[migratetype]);
+> >  	pcp->count++;
+> > -	if (pcp->count >= READ_ONCE(pcp->high))
+> > -		free_pcppages_bulk(zone, READ_ONCE(pcp->batch), pcp);
+> > +	high = READ_ONCE(pcp->high);
+> > +	if (pcp->count >= high) {
+> > +		int batch = READ_ONCE(pcp->batch);
+> > +
+> > +		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch), pcp);
+> > +	}
+> >  }
+> >  
+> >  /*
+> > @@ -3531,6 +3555,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+> >  
+> >  	local_lock_irqsave(&pagesets.lock, flags);
+> >  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> > +	pcp->free_factor >>= 1;
+> >  	list = &pcp->lists[migratetype];
+> >  	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
+> >  	local_unlock_irqrestore(&pagesets.lock, flags);
+> 
+> A high-level description of the algorithm in the changelog would also be
+> nice.  I *think* it's basically:
+> 
+> After hitting the high pcp mark, free one pcp->batch at a time.  But, as
+> subsequent pcp free operations occur, keep doubling the size of the
+> freed batches.  Cap them so that they always leave at least one
+> pcp->batch worth of pages.  Scale the size back down by half whenever an
+> allocation that consumes a page from the pcp occurs.
+> 
+> While I'd appreciate another comment or two, I do think this is worth
+> doing, and the approach seems sound:
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Please explain in the patch description why it is not needed.
-
-> the future.
->
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-> --- a/fs/debugfs/file.c
-> +++ b/fs/debugfs/file.c
-> @@ -836,20 +836,11 @@ static const struct file_operations fops_bool_wo = {
->   * This function creates a file in debugfs with the given name that
->   * contains the value of the variable @value.  If the @mode variable is so
->   * set, it can be read from, and written to.
-> - *
-> - * This function will return a pointer to a dentry if it succeeds.  This
-> - * pointer must be passed to the debugfs_remove() function when the file is
-> - * to be removed (no automatic cleanup happens if your module is unloaded,
-
-Why isn't the above no longer true?
-Are we no longer allowed to remove individual debugfs entries?
-Do we always have to remove the whole parent directory and all its
-contents together?
-
-> - * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-> - * returned.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Thanks, I added a few additional comments.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Mel Gorman
+SUSE Labs
