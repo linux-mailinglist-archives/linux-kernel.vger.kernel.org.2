@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA7D38EF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D337138EE5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235561AbhEXP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
+        id S234280AbhEXPsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234762AbhEXPyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E88B6142A;
-        Mon, 24 May 2021 15:39:43 +0000 (UTC)
+        id S233527AbhEXPn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D02613D2;
+        Mon, 24 May 2021 15:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870784;
-        bh=CDRMBNjaStc0Wy7yYEz1n1EtEWzMYRWonj//RK82c3s=;
+        s=korg; t=1621870536;
+        bh=Z3zGwuJMu1s7oxzBcme5AR4esJ+RPG+VoadQoE8uIcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=miqslYpa5XHzVDoGbXHwC0t8vigybL2jp5WblqfCF1Z5r7HwvVdIed2cthmaUmkJE
-         06QeZOiilM4CM/bVY5vJTlNNCUsOiaE/nVXz5tqljsniKVb/gkbkl5+J0qbzUESHP5
-         1WJygN/LVCLT9eYT8fob3aC5keudbKJmhRQaJ3Ag=
+        b=LrQ30IeJgfMP/j++RnWaDnohYDHODNlT1qDmJL2yJW3ShYLSgErHz+6VHfFw194GC
+         tmpCrLJBZwRq9IQ5ZaqhiKOmHWRwu4fVWWiXSCj1aKBEKyQkOL4PhEgGyejYmQb0HB
+         b0gPaxyOwrSqrx6m4X5YduTnDMKD+U9FNMAvVuGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH 5.10 033/104] misc: eeprom: at24: check suspend status before disable regulator
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 17/49] ALSA: hda/realtek: reset eapd coeff to default value for alc287
 Date:   Mon, 24 May 2021 17:25:28 +0200
-Message-Id: <20210524152333.924476885@linuxfoundation.org>
+Message-Id: <20210524152324.935021212@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 2962484dfef8dbb7f9059822bc26ce8a04d0e47c upstream.
+commit 8822702f6e4c8917c83ba79e0ebf2c8c218910d4 upstream.
 
-cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
-regulator in runtime suspend. If runtime suspend is called before
-regulator disable, it will results in regulator unbalanced disabling.
+Ubuntu users reported an audio bug on the Lenovo Yoga Slim 7 14IIL05,
+he installed dual OS (Windows + Linux), if he booted to the Linux
+from Windows, the Speaker can't work well, it has crackling noise,
+if he poweroff the machine first after Windows, the Speaker worked
+well.
 
-Fixes: cd5676db0574 ("misc: eeprom: at24: support pm_runtime control")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Link: https://lore.kernel.org/r/20210420133050.377209-1-hsinyi@chromium.org
+Before rebooting or shutdown from Windows, the Windows changes the
+codec eapd coeff value, but the BIOS doesn't re-initialize its value,
+when booting into the Linux from Windows, the eapd coeff value is not
+correct. To fix it, set the codec default value to that coeff register
+in the alsa driver.
+
+BugLink: http://bugs.launchpad.net/bugs/1925057
+Suggested-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210507024452.8300-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/at24.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client
- 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
- 	if (IS_ERR(at24->nvmem)) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return PTR_ERR(at24->nvmem);
- 	}
- 
-@@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client
- 	err = at24_read(at24, 0, &test_byte, 1);
- 	if (err) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return -ENODEV;
- 	}
- 
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -388,7 +388,6 @@ static void alc_fill_eapd_coef(struct hd
+ 	case 0x10ec0282:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
+-	case 0x10ec0287:
+ 	case 0x10ec0288:
+ 	case 0x10ec0285:
+ 	case 0x10ec0298:
+@@ -399,6 +398,10 @@ static void alc_fill_eapd_coef(struct hd
+ 	case 0x10ec0275:
+ 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
+ 		break;
++	case 0x10ec0287:
++		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
++		alc_write_coef_idx(codec, 0x8, 0x4ab7);
++		break;
+ 	case 0x10ec0293:
+ 		alc_update_coef_idx(codec, 0xa, 1<<13, 0);
+ 		break;
 
 
