@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D67F38EFA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9259438EE5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbhEXP6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
+        id S234346AbhEXPtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235014AbhEXPy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 257216191D;
-        Mon, 24 May 2021 15:40:13 +0000 (UTC)
+        id S234081AbhEXPnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E14AB613B0;
+        Mon, 24 May 2021 15:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870814;
-        bh=z2eIPfHlRvsODbuIyZGha1jLAqD9QuYkyOP1+L8sMN8=;
+        s=korg; t=1621870514;
+        bh=3ctF/2MKSV8si6spw2r6srfUaoErhN2JNMcTgTnI9D4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBxWVO0Du4ZoSMGuAw40MQ0FgrojdUVSclnihd/u0A2IPwYmvL0vHEUyUFpamCG3x
-         59wfFk5BHPKe1PNuBVFL0zyRKZJl/PapOYzq2d2aHKQfJNQdF1J4jbyuPlvxby+wqD
-         ng4NvfYhH9hl3ELZYxiOP3B7zUAJdh540aV89Y8Q=
+        b=F11ckea44Zm4Y/toUR9pxj8iydQZhL0ko3OaM5GkjE8uZ0tIFfx9COlA2YbGs88gQ
+         DQWI5FvdQiW/Lejq7tTXDEHD0bvP3j+awbVjekfgtVx3iWR6Y7sbPeWCMclAR3gTOF
+         blYjufar5u6C5XVeYHlNi5f2lKl/z3WUPZW5/4xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 047/104] ALSA: hda/realtek: Fix silent headphone output on ASUS UX430UA
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Avri Altman <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 31/49] Revert "scsi: ufs: fix a missing check of devm_reset_control_get"
 Date:   Mon, 24 May 2021 17:25:42 +0200
-Message-Id: <20210524152334.392116907@linuxfoundation.org>
+Message-Id: <20210524152325.390700096@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,76 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 8eedd3a70a70f51fa963f3ad7fa97afd0c75bd44 upstream.
+commit 4d427b408c4c2ff1676966c72119a3a559f8e39b upstream.
 
-It was reported that the headphone output on ASUS UX430UA (SSID
-1043:1740) with ALC295 codec is silent while the speaker works.
-After the investigation, it turned out that the DAC assignment has to
-be fixed on this machine; unlike others, it expects DAC 0x02 to be
-assigned to the speaker pin 0x07 while DAC 0x03 to headphone pin
-0x21.
+This reverts commit 63a06181d7ce169d09843645c50fea1901bc9f0a.
 
-This patch provides a fixup for the fixed DAC/pin mapping for this
-device.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212933
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210504082057.6913-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit is incorrect, it does not properly clean up on the
+error path, so I'll keep the revert and fix it up properly with a
+follow-on patch.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 63a06181d7ce ("scsi: ufs: fix a missing check of devm_reset_control_get")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-31-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/scsi/ufs/ufs-hisi.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5720,6 +5720,18 @@ static void alc_fixup_tpt470_dacs(struct
- 		spec->gen.preferred_dacs = preferred_pairs;
- }
+--- a/drivers/scsi/ufs/ufs-hisi.c
++++ b/drivers/scsi/ufs/ufs-hisi.c
+@@ -544,10 +544,6 @@ static int ufs_hisi_init_common(struct u
+ 	ufshcd_set_variant(hba, host);
  
-+static void alc295_fixup_asus_dacs(struct hda_codec *codec,
-+				   const struct hda_fixup *fix, int action)
-+{
-+	static const hda_nid_t preferred_pairs[] = {
-+		0x17, 0x02, 0x21, 0x03, 0
-+	};
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE)
-+		spec->gen.preferred_dacs = preferred_pairs;
-+}
-+
- static void alc_shutup_dell_xps13(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-@@ -6520,6 +6532,7 @@ enum {
- 	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
- 	ALC256_FIXUP_ACER_HEADSET_MIC,
- 	ALC285_FIXUP_IDEAPAD_S740_COEF,
-+	ALC295_FIXUP_ASUS_DACS,
- };
+ 	host->rst  = devm_reset_control_get(dev, "rst");
+-	if (IS_ERR(host->rst)) {
+-		dev_err(dev, "%s: failed to get reset control\n", __func__);
+-		return PTR_ERR(host->rst);
+-	}
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8047,6 +8060,10 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
-+	[ALC295_FIXUP_ASUS_DACS] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc295_fixup_asus_dacs,
-+	},
- };
+ 	ufs_hisi_set_pm_lvl(hba);
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8245,6 +8262,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
- 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
-+	SND_PCI_QUIRK(0x1043, 0x1740, "ASUS UX430UA", ALC295_FIXUP_ASUS_DACS),
- 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
 
 
