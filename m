@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5A238F12F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B693838EF82
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236262AbhEXQKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:10:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
+        id S234331AbhEXP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235997AbhEXQCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C4561376;
-        Mon, 24 May 2021 15:50:39 +0000 (UTC)
+        id S233967AbhEXPwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52BA0613E6;
+        Mon, 24 May 2021 15:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871439;
-        bh=Z87IyYhw8VNqCVTMOSBY3ZV/P8EfPVu5Q8WRoURoiCc=;
+        s=korg; t=1621870729;
+        bh=YcawyIa5JM/v67/x5EWCPn9a+PgZuDJiyGAyh6FWTfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xeLDyw+50gaSeWdUskKabkWJnJ9BBcr24X34BhiUmr+6zlHKGlbtVnPmK3jBFFRkc
-         TNZbPj9vRS2RZCouFWNpZgn83pPt0tnXFW56WUrXjb6bMGqPQ5FFLoMe5CTXJyf1LF
-         zYhdfLP/dlOyMZy3zuylIr6bZIlYAKHGVcBcn48o=
+        b=Lbn0TxDzkh5pTjtVQh5k8eJ05iAtALxySO4q9tFKCkOnZUOMdeI0hgIu8X2VaIpAU
+         S5gq/RGeTbzI3bN1fW/5ZOQ2uaj+t4dn8Am5FHx0padzhsffNVFAExbgNE7iaICZQA
+         ZA5dADLKypPNKDEr7oR15J68LnlqrcZkegZX2kgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.19 49/49] x86/Xen: swap NX determination and GDT setup on BSP
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Subject: [PATCH 5.4 54/71] Revert "media: rcar_drif: fix a memory disclosure"
 Date:   Mon, 24 May 2021 17:26:00 +0200
-Message-Id: <20210524152325.958181984@linuxfoundation.org>
+Message-Id: <20210524152328.215491912@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit ae897fda4f507e4b239f0bdfd578b3688ca96fb4 upstream.
+commit 3e465fc3846734e9489273d889f19cc17b4cf4bd upstream.
 
-xen_setup_gdt(), via xen_load_gdt_boot(), wants to adjust page tables.
-For this to work when NX is not available, x86_configure_nx() needs to
-be called first.
+This reverts commit d39083234c60519724c6ed59509a2129fd2aed41.
 
-[jgross] Note that this is a revert of 36104cb9012a82e73 ("x86/xen:
-Delay get_cpu_cap until stack canary is established"), which is possible
-now that we no longer support running as PV guest in 32-bit mode.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Cc: <stable.vger.kernel.org> # 5.9
-Fixes: 36104cb9012a82e73 ("x86/xen: Delay get_cpu_cap until stack canary is established")
-Reported-by: Olaf Hering <olaf@aepfle.de>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Upon review, it was determined that this commit is not needed at all as
+the media core already prevents memory disclosure on this codepath, so
+just drop the extra memset happening here.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Fixes: d39083234c60 ("media: rcar_drif: fix a memory disclosure")
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-4-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Link: https://lore.kernel.org/r/12a866b0-9e89-59f7-ebeb-a2a6cec0987a@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/xen/enlighten_pv.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/platform/rcar_drif.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1246,16 +1246,16 @@ asmlinkage __visible void __init xen_sta
- 	/* Get mfn list */
- 	xen_build_dynamic_phys_to_machine();
+--- a/drivers/media/platform/rcar_drif.c
++++ b/drivers/media/platform/rcar_drif.c
+@@ -911,7 +911,6 @@ static int rcar_drif_g_fmt_sdr_cap(struc
+ {
+ 	struct rcar_drif_sdr *sdr = video_drvdata(file);
  
-+	/* Work out if we support NX */
-+	get_cpu_cap(&boot_cpu_data);
-+	x86_configure_nx();
-+
- 	/*
- 	 * Set up kernel GDT and segment registers, mainly so that
- 	 * -fstack-protector code can be executed.
- 	 */
- 	xen_setup_gdt(0);
- 
--	/* Work out if we support NX */
--	get_cpu_cap(&boot_cpu_data);
--	x86_configure_nx();
--
- 	/* Determine virtual and physical address sizes */
- 	get_cpu_address_sizes(&boot_cpu_data);
+-	memset(f->fmt.sdr.reserved, 0, sizeof(f->fmt.sdr.reserved));
+ 	f->fmt.sdr.pixelformat = sdr->fmt->pixelformat;
+ 	f->fmt.sdr.buffersize = sdr->fmt->buffersize;
  
 
 
