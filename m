@@ -2,217 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CFA38F627
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F07338F63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbhEXXVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:21:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:49106 "EHLO foss.arm.com"
+        id S229651AbhEXX3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:29:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:20410 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhEXXVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:21:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B5A6D;
-        Mon, 24 May 2021 16:19:48 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4943F73D;
-        Mon, 24 May 2021 16:19:47 -0700 (PDT)
-Date:   Tue, 25 May 2021 00:19:44 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210524231944.GB14880@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
+        id S229503AbhEXX3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:29:40 -0400
+IronPort-SDR: 2O6yvtNwJ1dXdmdEnpad85yRlVc1xb87mx6M0QuV7VRl9yl3ZmfbIqRxyCxtm1hkY4P508A0H0
+ URaJLNgMtPWA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="182378901"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="182378901"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:28:03 -0700
+IronPort-SDR: FdxHIKhN0Byh76JtaTvmtlQIR0LNRdBo3t86k+nwf5ZAmSwUqC903YoSsEYrpftyrQ19e9j8Kz
+ WmIXJLVYVPAA==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="442267330"
+Received: from eyoukerh-mobl.ger.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.2.69])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:28:01 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2-fix-v3 1/1] x86/boot: Avoid #VE during boot for TDX platforms
+Date:   Mon, 24 May 2021 16:27:35 -0700
+Message-Id: <20210524232735.801740-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <d90b689d-4716-1a3b-1e6d-f32a9a25894a@linux.intel.com>
+References: <d90b689d-4716-1a3b-1e6d-f32a9a25894a@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210524225508.GA14880@e120325.cambridge.arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 11:55:08PM +0100, Beata Michalska wrote:
-> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> > Hi Beata,
-> > 
-> > On 24/05/21 11:16, Beata Michalska wrote:
-> > > Currently the CPU capacity asymmetry detection, performed through
-> > > asym_cpu_capacity_level, tries to identify the lowest topology level
-> > > at which the highest CPU capacity is being observed, not necessarily
-> > > finding the level at which all possible capacity values are visible
-> > > to all CPUs, which might be bit problematic for some possible/valid
-> > > asymmetric topologies i.e.:
-> > >
-> > > DIE      [                                ]
-> > > MC       [                       ][       ]
-> > >
-> > > CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-> > > Capacity  |.....| |.....| |.....|  |.....|
-> > >            L	     M       B        B
-> > >
-> > > Where:
-> > >  arch_scale_cpu_capacity(L) = 512
-> > >  arch_scale_cpu_capacity(M) = 871
-> > >  arch_scale_cpu_capacity(B) = 1024
-> > >
-> > > In this particular case, the asymmetric topology level will point
-> > > at MC, as all possible CPU masks for that level do cover the CPU
-> > > with the highest capacity. It will work just fine for the first
-> > > cluster, not so much for the second one though (consider the
-> > > find_energy_efficient_cpu which might end up attempting the energy
-> > > aware wake-up for a domain that does not see any asymmetry at all)
-> > >
-> > > Rework the way the capacity asymmetry levels are being detected,
-> > > allowing to point to the lowest topology level (for a given CPU), where
-> > > full set of available CPU capacities is visible to all CPUs within given
-> > > domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
-> > > the domains. This will have an impact on EAS wake-up placement in a way
-> > > that it might see different rage of CPUs to be considered, depending on
-> > > the given current and target CPUs.
-> > >
-> > > Additionally, those levels, where any range of asymmetry (not
-> > > necessarily full) is being detected will get identified as well.
-> > > The selected asymmetric topology level will be denoted by
-> > > SD_ASYM_CPUCAPACITY_FULL sched domain flag whereas the 'sub-levels'
-> > > would receive the already used SD_ASYM_CPUCAPACITY flag. This allows
-> > > maintaining the current behaviour for asymmetric topologies, with
-> > > misfit migration operating correctly on lower levels, if applicable,
-> > > as any asymmetry is enough to trigger the misfit migration.
-> > > The logic there relies on the SD_ASYM_CPUCAPACITY flag and does not
-> > > relate to the full asymmetry level denoted by the sd_asym_cpucapacity
-> > > pointer.
-> > >
-> > > Detecting the CPU capacity asymmetry is being based on a set of
-> > > available CPU capacities for all possible CPUs. This data is being
-> > > generated upon init and updated once CPU topology changes are being
-> > > detected (through arch_update_cpu_topology). As such, any changes
-> > > to identified CPU capacities (like initializing cpufreq) need to be
-> > > explicitly advertised by corresponding archs to trigger rebuilding
-> > > the data.
-> > >
-> > > This patch also removes the additional -dflags- parameter used when
-> >   ^^^^^^^^^^^^^^^^^^^^^^^
-> > s/^/Also remove/
-> I would kind of ... disagree.
-> All the commit msg is constructed using passive structure, the suggestion
-> would actually break that. And it does 'sound' bit imperative but I guess
-> that is subjective. I'd rather stay with impersonal structure (which is
-> applied through out the whole patchset).
-> > 
-> > > building sched domains as the asymmetry flags are now being set
-> > > directly in sd_init.
-> > >
-> > 
-> > Few nits below, but beyond that:
-> > 
-> > Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-> > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > 
-> Thanks a lot for the review and testing!
-> 
-> > > +static inline int
-> > > +asym_cpu_capacity_classify(struct sched_domain *sd,
-> > > +			   const struct cpumask *cpu_map)
-> > > +{
-> > > +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> > > +	struct asym_cap_data *entry;
-> > > +	int asym_cap_count = 0;
-> > > +
-> > > +	if (list_is_singular(&asym_cap_list))
-> > > +		goto leave;
-> > > +
-> > > +	list_for_each_entry(entry, &asym_cap_list, link) {
-> > > +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> > > +			++asym_cap_count;
-> > > +		} else {
-> > > +			/*
-> > > +			 * CPUs with given capacity might be offline
-> > > +			 * so make sure this is not the case
-> > > +			 */
-> > > +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> > > +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
-> > > +				if (asym_cap_count > 1)
-> > > +					break;
-> > > +			}
-> > 
-> > Readability nit: That could be made into an else if ().
-> It could but then this way the -comment- gets more exposed.
-> But that might be my personal perception so I can change that.
-> > 
-> > 
-> > > +		}
-> > > +	}
-> > > +	WARN_ON_ONCE(!asym_cap_count);
-> > > +leave:
-> > > +	return asym_cap_count > 1 ? sd_asym_flags : 0;
-> > > +}
-> > > +
-> > 
-> > > +static void asym_cpu_capacity_scan(void)
-> > > +{
-> > > +	struct asym_cap_data *entry, *next;
-> > > +	int cpu;
-> > > +
-> > > +	list_for_each_entry(entry, &asym_cap_list, link)
-> > > +		cpumask_clear(entry->cpu_mask);
-> > > +
-> > > +	entry = list_first_entry_or_null(&asym_cap_list,
-> > > +					 struct asym_cap_data, link);
-> > > +
-> > > +	for_each_cpu_and(cpu, cpu_possible_mask,
-> > > +			 housekeeping_cpumask(HK_FLAG_DOMAIN)) {
-> > > +		unsigned long capacity = arch_scale_cpu_capacity(cpu);
-> > > +
-> > > +		if (!entry || capacity != entry->capacity)
-> > > +			entry = asym_cpu_capacity_get_data(capacity);
-> > > +		if (entry)
-> > > +			__cpumask_set_cpu(cpu, entry->cpu_mask);
-> > 
-> > That 'if' is only there in case the alloc within the helper failed, which
-> > is a bit of a shame.
-> > 
-> > You could pass the CPU to that helper function and have it set the right
-> > bit, or you could even forgo the capacity != entry->capacity check here and
-> > let the helper function do it all.
-> > 
-> > Yes, that means more asym_cap_list iterations, but that's
-> > O(nr_cpus * nr_caps); a topology rebuild is along the lines of
-> > O(nr_cpus� * nr_topology_levels), so not such a big deal comparatively.
-> > 
-> I could drop that check and make the helper function update the CPUs mask
-> (along with dropping the initial grabbing of the first entry)
-> +
-> switching to list_for_each_entry_reverse which would result in less
-> iterations for most (if not all) of the use cases.
-> 
-Ignore the 'reverse' idea - the items are already prepended so regular
-iteration should pick the last item added.
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
+In TDX guests, Virtualization Exceptions (#VE) are delivered
+to TDX guests due to specific guest actions like MSR writes,
+CPUID leaf accesses or I/O access. But in early boot code, #VE
+cannot be allowed because the required exception handler setup
+support code is missing. If #VE is triggered without proper
+handler support, it would lead to triple fault or kernel hang.
+So, avoid operations which will inject #VE during boot process.
+They're easy to avoid and it is less complex than handling the
+exceptions.
+
+There are a few MSRs and control register bits which the kernel
+normally needs to modify during boot. But, TDX disallows
+modification of these registers to help provide consistent
+security guarantees. Fortunately, TDX ensures that these are all
+in the correct state before the kernel loads, which means the
+kernel has no need to modify them.
+
+The conditions to avoid are:
+
+  * Any writes to the EFER MSR
+  * Clearing CR0.NE
+  * Clearing CR3.MCE
+
+This theoretically makes guest boot more fragile. If, for
+instance, EFER was set up incorrectly and a WRMSR was performed,
+the resulting (unhandled) #VE would triple fault. However, this
+is likely to trip up the guest BIOS long before control reaches
+the kernel. In any case, these kinds of problems are unlikely to
+occur in production environments, and developers have good debug
+tools to fix them quickly. 
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
-BR
-B.
+Changes since RFC v2-fix-v2:
+ * Fixed commit log as per review comments.
 
-> 
-> ---
-> BR
-> B
-> > > +	}
-> > > +
-> > > +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> > > +		if (cpumask_empty(entry->cpu_mask)) {
-> > > +			list_del(&entry->link);
-> > > +			kfree(entry);
-> > > +		}
-> > > +	}
-> > > +}
-> > > +
+Changes since RFC v2-fix:
+ * Fixed commit and comments as per Dave and Dan's suggestions.
+ * Merged CR0.NE related change in pa_trampoline_compat() from patch
+   titled "x86/boot: Add a trampoline for APs booting in 64-bit mode"
+   to this patch. It belongs in this patch.
+ * Merged TRAMPOLINE_32BIT_CODE_SIZE related change from patch titled
+   "x86/boot: Add a trampoline for APs booting in 64-bit mode" to this
+   patch (since it was wrongly merged to that patch during patch split).
+
+ arch/x86/boot/compressed/head_64.S   | 16 ++++++++++++----
+ arch/x86/boot/compressed/pgtable.h   |  2 +-
+ arch/x86/kernel/head_64.S            | 20 ++++++++++++++++++--
+ arch/x86/realmode/rm/trampoline_64.S | 23 +++++++++++++++++++----
+ 4 files changed, 50 insertions(+), 11 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e94874f4bbc1..f848569e3fb0 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -616,12 +616,20 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
+ 	btsl	$_EFER_LME, %eax
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++	jc	1f
+ 	wrmsr
+-	popl	%edx
++1:	popl	%edx
+ 	popl	%ecx
+ 
+ 	/* Enable PAE and LA57 (if required) paging modes */
+-	movl	$X86_CR4_PAE, %eax
++	movl	%cr4, %eax
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %eax
++	orl	$X86_CR4_PAE, %eax
+ 	testl	%edx, %edx
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
+@@ -635,8 +643,8 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	pushl	$__KERNEL_CS
+ 	pushl	%eax
+ 
+-	/* Enable paging again */
+-	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
++	/* Enable paging again. Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 
+ 	lret
+diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
+index 6ff7e81b5628..cc9b2529a086 100644
+--- a/arch/x86/boot/compressed/pgtable.h
++++ b/arch/x86/boot/compressed/pgtable.h
+@@ -6,7 +6,7 @@
+ #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
+ 
+ #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
+-#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
++#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
+ 
+ #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
+ 
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 04bddaaba8e2..6cf8d126b80a 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -141,7 +141,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 1:
+ 
+ 	/* Enable PAE mode, PGE and LA57 */
+-	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
++	movq	%cr4, %rcx
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %ecx
++	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+ 	testl	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
+@@ -229,13 +235,23 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	/* Setup EFER (Extended Feature Enable Register) */
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
++	/*
++	 * Preserve current value of EFER for comparison and to skip
++	 * EFER writes if no change was made (for TDX guest)
++	 */
++	movl    %eax, %edx
+ 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
+ 	btl	$20,%edi		/* No Execute supported? */
+ 	jnc     1f
+ 	btsl	$_EFER_NX, %eax
+ 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
+-1:	wrmsr				/* Make changes effective */
+ 
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++1:	cmpl	%edx, %eax
++	je	1f
++	xor	%edx, %edx
++	wrmsr				/* Make changes effective */
++1:
+ 	/* Setup cr0 */
+ 	movl	$CR0_STATE, %eax
+ 	/* Make changes effective */
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index 957bb21ce105..cf14d0326a48 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -143,13 +143,27 @@ SYM_CODE_START(startup_32)
+ 	movl	%eax, %cr3
+ 
+ 	# Set up EFER
++	movl	$MSR_EFER, %ecx
++	rdmsr
++	/*
++	 * Skip writing to EFER if the register already has desiered
++	 * value (to avoid #VE for TDX guest).
++	 */
++	cmp	pa_tr_efer, %eax
++	jne	.Lwrite_efer
++	cmp	pa_tr_efer + 4, %edx
++	je	.Ldone_efer
++.Lwrite_efer:
+ 	movl	pa_tr_efer, %eax
+ 	movl	pa_tr_efer + 4, %edx
+-	movl	$MSR_EFER, %ecx
+ 	wrmsr
+ 
+-	# Enable paging and in turn activate Long Mode
+-	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
++.Ldone_efer:
++	/*
++	 * Enable paging and in turn activate Long Mode. Avoid clearing
++	 * X86_CR0_NE for TDX.
++	 */
++	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 
+ 	/*
+@@ -169,7 +183,8 @@ SYM_CODE_START(pa_trampoline_compat)
+ 	movl	$rm_stack_end, %esp
+ 	movw	$__KERNEL_DS, %dx
+ 
+-	movl	$X86_CR0_PE, %eax
++	/* Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 	ljmpl   $__KERNEL32_CS, $pa_startup_32
+ SYM_CODE_END(pa_trampoline_compat)
+-- 
+2.25.1
+
