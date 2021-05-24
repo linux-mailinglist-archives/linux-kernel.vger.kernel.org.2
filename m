@@ -2,110 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2C138F66D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC9F38F671
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhEXXo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:44:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:47369 "EHLO mga11.intel.com"
+        id S229968AbhEXXpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:45:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhEXXnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:43:42 -0400
-IronPort-SDR: eo40VmN2Az43GYOqdog8Wvev3+TA96Bx2GejaijS16MPZMEPYzNprqdAYGoLyQCN+QPW9ZeVvp
- lZbInqTiNYSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="199001896"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="199001896"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:42:11 -0700
-IronPort-SDR: b2QzJcpdMtdNQHjWqD3B0Xw4Ov8E9yoeGWxxM+39Kcs7BoZslPNs32NZZk3RfE9SYQqmiJQJIL
- 7CrliabdG+Hw==
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="478844448"
-Received: from caknoll-mobl.amr.corp.intel.com (HELO [10.209.100.8]) ([10.209.100.8])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 16:42:10 -0700
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX
- guest
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6d336ac9-72ad-aae5-0b4c-f30a695d198b@intel.com>
-Date:   Mon, 24 May 2021 16:42:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230033AbhEXXov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:44:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E90176140F;
+        Mon, 24 May 2021 23:43:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621899803;
+        bh=bzWATNTPaYHTgas/Ru4ikVqAuF22p6QgBAnd0xCRvlM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=U0ndxR7l73gsZ4FDhlPe62bGK9fQ6j+qvxlo1GuEKzYiC68TVizE/HT2E9Upsfh5N
+         QeEH2jnkKAN+9Vkr55FoBr6E53fCF7Yg/7SwvnnyfHhY+Zzimvk3wfzmadG9negzuf
+         AeKvIR7/vABzouc/W3ofMYHw0GsU1sIZdvL6d5dB4TVe0UmKNhxGGd6+tYlLOE4McX
+         dj4J2kg6jmqOy+rKvmVyf7RKH5YccwjdNzTcYG2vlIWFw0nIa3WoFtTHPzTUfHHZ06
+         XeC3sany43hxiV02zxV3ssbD7NKOcG2VhmM+4cuCdm3Fz1JEaxvLvXv8swhbJxBkTX
+         FbQrGFvEYzRsQ==
+Date:   Mon, 24 May 2021 18:43:21 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Chiqijun <chiqijun@huawei.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        yin.yinshi@huawei.com, cloud.wangxiaoyun@huawei.com,
+        zengweiliang.zengweiliang@huawei.com, chenlizhong@huawei.com
+Subject: Re: [v6] PCI: Add reset quirk for Huawei Intelligent NIC virtual
+ function
+Message-ID: <20210524234321.GA1141045@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414132301.1793-1-chiqijun@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 4:32 PM, Kuppuswamy Sathyanarayanan wrote:
-> Functionally only DMA devices can notice a side effect from
-> WBINVD's cache flushing.
+On Wed, Apr 14, 2021 at 09:23:01PM +0800, Chiqijun wrote:
+> When we do an FLR on several VFs at the same time, the Huawei
+> Intelligent NIC processes them serially, resulting in some VF
+> FLRs being delayed more than 100ms, when the virtual machine
+> restarts and the device driver is loaded, the firmware is doing
+> the corresponding VF FLR, causing the driver to fail to load.
+> Link: https://support.huawei.com/enterprise/en/doc/EDOC1100063073/87950645/vm-oss-occasionally-fail-to-load-the-in200-driver-when-the-vf-performs-flr
+> 
+> To solve this problem, add host and firmware status synchronization
+> during FLR.
+> 
+> Signed-off-by: Chiqijun <chiqijun@huawei.com>
 
-This seems to be trying to make some kind of case that the only visible
-effects from WBINVD are for DMA devices.  That's flat out wrong.  It
-might be arguable that none of the other cases exist in a TDX guest, but
-it doesn't excuse making such a broad statement without qualification.
+Applied to pci/reset for v5.14 with subject
+"PCI: Work around Huawei Intelligent NIC VF FLR erratum" and the
+following commit log:
 
-Just grep in the kernel for a bunch of reasons this is wrong.
+  pcie_flr() starts a Function Level Reset (FLR), waits 100ms (the maximum
+  time allowed for FLR completion by PCIe r5.0, sec 6.6.2), and waits for the
+  FLR to complete.  It assumes the FLR is complete when a config read returns
+  valid data.
 
-Where did this come from?
+  When we do an FLR on several Huawei Intelligent NIC VFs at the same time,
+  firmware on the NIC processes them serially.  The VF may respond to config
+  reads before the firmware has completed its reset processing.  If we bind a
+  driver to the VF (e.g., by assigning the VF to a virtual machine) in the
+  interval between the successful config read and completion of the firmware
+  reset processing, the NIC VF driver may fail to load.
+
+  Prevent this driver failure by waiting for the NIC firmware to complete its
+  reset processing.  Not all NIC firmware supports this feature.
+
+Let me know if that's not accurate.
+
+I applied Alex's Reviewed-by (from v3) because the patch is basically
+identical except for cosmetic changes.
+
+> ---
+> v6:
+>  - Addressed Bjorn's review comments
+> 
+> v5:
+>  - Fix build warning reported by kernel test robot
+> 
+> v4:
+>  - Addressed Bjorn's review comments
+> 
+> v3:
+>  - The MSE bit in the VF configuration space is hardwired to zero,
+>    remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
+>    set PCI_COMMAND register.
+> 
+> v2:
+>  - Update comments
+>  - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
+>    macro instead of the magic number
+> ---
+>  drivers/pci/quirks.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3ba9e..6677b7220442 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3913,6 +3913,73 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+>  	return 0;
+>  }
+>  
+> +#define PCI_DEVICE_ID_HINIC_VF      0x375E
+> +#define HINIC_VF_FLR_TYPE           0x1000
+> +#define HINIC_VF_FLR_CAP_BIT        (1UL << 30)
+> +#define HINIC_VF_OP                 0xE80
+> +#define HINIC_VF_FLR_PROC_BIT       (1UL << 18)
+> +#define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
+> +
+> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
+> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
+> +{
+> +	unsigned long timeout;
+> +	void __iomem *bar;
+> +	u32 val;
+> +
+> +	if (probe)
+> +		return 0;
+> +
+> +	bar = pci_iomap(pdev, 0, 0);
+> +	if (!bar)
+> +		return -ENOTTY;
+> +
+> +	/* Get and check firmware capabilities. */
+> +	val = ioread32be(bar + HINIC_VF_FLR_TYPE);
+> +	if (!(val & HINIC_VF_FLR_CAP_BIT)) {
+> +		pci_iounmap(pdev, bar);
+> +		return -ENOTTY;
+> +	}
+> +
+> +	/*
+> +	 * Set the processing bit for the start of FLR, which will be cleared
+> +	 * by the firmware after FLR is completed.
+> +	 */
+> +	val = ioread32be(bar + HINIC_VF_OP);
+> +	val = val | HINIC_VF_FLR_PROC_BIT;
+> +	iowrite32be(val, bar + HINIC_VF_OP);
+> +
+> +	/* Perform the actual device function reset */
+> +	pcie_flr(pdev);
+> +
+> +	/*
+> +	 * The device must learn BDF after FLR in order to respond to BAR's
+> +	 * read request, therefore, we issue a configure write request to let
+> +	 * the device capture BDF.
+> +	 */
+> +	pci_write_config_word(pdev, PCI_VENDOR_ID, 0);
+> +
+> +	/* Waiting for device reset complete */
+> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
+> +	do {
+> +		val = ioread32be(bar + HINIC_VF_OP);
+> +		if (!(val & HINIC_VF_FLR_PROC_BIT))
+> +			goto reset_complete;
+> +		msleep(20);
+> +	} while (time_before(jiffies, timeout));
+> +
+> +	val = ioread32be(bar + HINIC_VF_OP);
+> +	if (!(val & HINIC_VF_FLR_PROC_BIT))
+> +		goto reset_complete;
+> +
+> +	pci_warn(pdev, "Reset dev timeout, FLR ack reg: %#010x\n", val);
+> +
+> +reset_complete:
+> +	pci_iounmap(pdev, bar);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+>  		 reset_intel_82599_sfp_virtfn },
+> @@ -3924,6 +3991,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+>  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+>  		reset_chelsio_generic_dev },
+> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
+> +		reset_hinic_vf_dev },
+>  	{ 0 }
+>  };
+>  
+> -- 
+> 2.17.1
+> 
