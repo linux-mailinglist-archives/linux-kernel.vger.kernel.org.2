@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0506538E387
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DC838E38B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhEXJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhEXJw0 (ORCPT
+        id S232554AbhEXJxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:53:24 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:39667 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhEXJxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:52:26 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92FCBC061574;
-        Mon, 24 May 2021 02:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=WOEXKCrrEO
-        cMZcKBfbLEX3WCUQswPe8nxFTolMbRVOQ=; b=rqMPcfbUy3I9VlnjWXnWUa4mKt
-        JJhrncZpLUvLFL1yxj7QCdK8mupRvY0z7xvwymOMm10mvj8OZ4r9H2dMJTsgIiRk
-        QnThgw/yWK3eSCDgBCwKyhv0MCVmPInkWiqex5Esn8irukmuIodVJcsP51r3DIoG
-        6B19RKjYxY1s/m7sw=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3P4v7dqtg0GQKAA--.3270S4;
-        Mon, 24 May 2021 17:50:51 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
-        jitendra.bhivare@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] scsi: be2iscsi: Fix a use after free in beiscsi_if_clr_ip
-Date:   Mon, 24 May 2021 02:50:39 -0700
-Message-Id: <20210524095039.9033-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 24 May 2021 05:53:23 -0400
+Received: by mail-vk1-f180.google.com with SMTP id k22so3778885vko.6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:51:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FdID2BEuxoRnqjJsnNdl4my42gI0MVgfVoHurnKijwA=;
+        b=ObcK2NKVFxl9rZpDd4SSJPNWAi446ulP0aCnFXgX9vc+gHo8u8vEhjF4dlt4KAsRSq
+         56O30fzxaQX1i2Zu6wcL/vw9NkKGmGLh3EoUgJ4vKYrqttv/e8yQpyWekqWo8O8qHAkF
+         7aQJGW7lEPuzGelHJujrt1kTE1cL9Jx7RRmQ8uwh9DQ5y26O39bJslGyBUAp45UTDH/h
+         gWw/0KVQ7J+6kVLyMovDAQ63k5/tsgH33c8UBbuLEBNOddDkO5ZxPrtkB3/d+cZv0MIb
+         wBUDXyFdeat0D84b/I5yBQchouW2TqHlhr1I7nCGQi3Z5FmX4BmhWTv47VKnN1GDKMRK
+         xSfA==
+X-Gm-Message-State: AOAM531s2Alte8v4KGhYqhdAVoOT2JbjRjoiAXx6GX3uT+DkzraFpISu
+        0HoJ1fpTVqjSJfP4oBV3Ym43ZufUIURHZnIIUmkOnJj57ak=
+X-Google-Smtp-Source: ABdhPJx4qhnfAbDvoVSQLLCsHe5xfGZBGFsXjTmrXn3OCkdcTtO5MMqbiWgwqk8gZ3uFbM45PN1NVOETyngX3sti6gI=
+X-Received: by 2002:a1f:2504:: with SMTP id l4mr20263616vkl.5.1621849914064;
+ Mon, 24 May 2021 02:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygA3P4v7dqtg0GQKAA--.3270S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr17Wr48Cw1kKw4fKw4DJwb_yoW8Xw18pa
-        4UX3WjyaykGF40kFnrAFWa9rnY9ayrKa42vFy2g3y5uFn5urWj9r98Ga4j9FnFkrZ5Jry7
-        JF1kJr98GF4ktaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUjAsqPUUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
+ <CAMuHMdW42UAWRPWe09=0c=pkNLwwswoQHEbSHyXEjsfF6UZJdw@mail.gmail.com> <YKt0v2etlFzpvE9r@kroah.com>
+In-Reply-To: <YKt0v2etlFzpvE9r@kroah.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 May 2021 11:51:42 +0200
+Message-ID: <CAMuHMdWL=Jy-PHMU3NTuc2YT=oK7gGGrrj008_k0ATivPsPc8w@mail.gmail.com>
+Subject: Re: [PATCH] debugfs: remove return value of debugfs_create_bool()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the free_cmd error path of callee beiscsi_exec_nemb_cmd(),
-nonemb_cmd->va is freed by dma_free_coherent().
-As req = nonemb_cmd.va, we can see that the freed nonemb_cmd.va
-is still dereferenced and used by req->ip_params.ip_record.status.
+Hi Greg,
 
-My patch uses status to replace req->ip_params.ip_record.status
-to avoid the uaf.
+On Mon, May 24, 2021 at 11:41 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Mon, May 24, 2021 at 11:11:32AM +0200, Geert Uytterhoeven wrote:
+> > On Fri, May 21, 2021 at 10:28 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > No one checks the return value of debugfs_create_bool(), as it's not
+> > > needed, so make the return value void, so that no one tries to do so in
+> >
+> > Please explain in the patch description why it is not needed.
+>
+> Because you just do not need it, like almost all other debugfs calls
+> now.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/scsi/be2iscsi/be_mgmt.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Why do I just not need it?
 
-diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
-index 462717bbb5b7..f05fcea707cd 100644
---- a/drivers/scsi/be2iscsi/be_mgmt.c
-+++ b/drivers/scsi/be2iscsi/be_mgmt.c
-@@ -509,6 +509,7 @@ beiscsi_if_clr_ip(struct beiscsi_hba *phba,
- {
- 	struct be_cmd_set_ip_addr_req *req;
- 	struct be_dma_mem nonemb_cmd;
-+	u32 status;
- 	int rc;
- 
- 	rc = beiscsi_prep_nemb_cmd(phba, &nonemb_cmd, CMD_SUBSYSTEM_ISCSI,
-@@ -531,11 +532,12 @@ beiscsi_if_clr_ip(struct beiscsi_hba *phba,
- 	memcpy(req->ip_params.ip_record.ip_addr.subnet_mask,
- 	       if_info->ip_addr.subnet_mask,
- 	       sizeof(if_info->ip_addr.subnet_mask));
-+	status = req->ip_params.ip_record.status;
- 	rc = beiscsi_exec_nemb_cmd(phba, &nonemb_cmd, NULL, NULL, 0);
--	if (rc < 0 || req->ip_params.ip_record.status) {
-+	if (rc < 0 || status) {
- 		beiscsi_log(phba, KERN_INFO, BEISCSI_LOG_CONFIG,
- 			    "BG_%d : failed to clear IP: rc %d status %d\n",
--			    rc, req->ip_params.ip_record.status);
-+			    rc, status);
- 	}
- 	return rc;
- }
+> > > the future.
+> > >
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > > --- a/fs/debugfs/file.c
+> > > +++ b/fs/debugfs/file.c
+> > > @@ -836,20 +836,11 @@ static const struct file_operations fops_bool_wo = {
+> > >   * This function creates a file in debugfs with the given name that
+> > >   * contains the value of the variable @value.  If the @mode variable is so
+> > >   * set, it can be read from, and written to.
+> > > - *
+> > > - * This function will return a pointer to a dentry if it succeeds.  This
+> > > - * pointer must be passed to the debugfs_remove() function when the file is
+> > > - * to be removed (no automatic cleanup happens if your module is unloaded,
+> >
+> > Why isn't the above no longer true?
+>
+> Because there is no return value.
+
+Why is there no longer a return value?
+Please stop giving circular answers as justifications.
+
+> > Are we no longer allowed to remove individual debugfs entries?
+>
+> It's not something that is almost ever needed.
+
+Why not?
+
+> > Do we always have to remove the whole parent directory and all its
+> > contents together?
+>
+> For 99% of all debugfs usages, yes, that is true.
+
+So 1% of the users still need it...
+
+> If you really do need the file dentry, there is still a call to create
+> it, and you can always query debugfs for the dentry after it is created
+
+... and will have to duplicate debugfs_create_bool() and friends, but
+with a return value.  This may introduce bugs, and will complicate
+maintenance, as any change to debugfs_create_bool() means all those
+copies need to be found and updated, too.
+
+> if you need it later on.
+
+Which involves looking up something again...
+
+Seriously, what's the added value of removing the return value from
+debugfs_create_bool() and friends?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
