@@ -2,148 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950B138ECC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB8A38F069
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhEXPYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:24:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235160AbhEXPJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:09:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621868885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Jmqz6BcAV4sgU0W+YCi555UhdpmhQ/W0XK3YXYPUp4=;
-        b=XpEOgdetWkdVmZD2StG26Vo+v/2PzFKf83EWwnYkCD26KY55xkDPOorhb/svqkbw58Mc27
-        dttUtBFh5nydKk3WMLei4cV2WXOKfpWxVhreWlPTwCtS53Rk935jyploCrzYhEMJ8wF38u
-        gfz3fGZvKkv22bpJCg2sijgjKn38DVI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9BB5CAB6D;
-        Mon, 24 May 2021 15:08:05 +0000 (UTC)
-Date:   Mon, 24 May 2021 17:08:04 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     akpm@linux-foundation.org, bp@suse.de, davidchao@google.com,
-        jenhaochen@google.com, jkosina@suse.cz, josh@joshtriplett.org,
-        liumartin@google.com, mhocko@suse.cz, mingo@redhat.com,
-        mm-commits@vger.kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, paulmck@linux.vnet.ibm.com,
-        peterz@infradead.org, rostedt@goodmis.org, stable@vger.kernel.org,
-        tglx@linutronix.de, tj@kernel.org, vbabka@suse.cz,
-        linux-kernel@vger.kernel.org
-Subject: Re: +
- kthread-fix-kthread_mod_delayed_work-vs-kthread_cancel_delayed_work_sync-race.patch
- added to -mm tree
-Message-ID: <YKvBVIJAc8/Qasdu@alley>
-References: <20210520214737.MrGGKbPrJ%akpm@linux-foundation.org>
- <20210521163526.GA17916@redhat.com>
+        id S234215AbhEXQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234801AbhEXP4O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:14 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA50C061143
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:08:18 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id v22so27342942oic.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qd2GGNOqjcoVwR9/InTy3gHaTefuQ8PzIzZm4PfwF+Q=;
+        b=pHUsCN/IDaId/ipsKoG3ZrMYVpOUrGYrLef0xTZtQqyz5XEMvN+lSpLTWg7jqjs6Jg
+         8wJ0pQL7+XaAsnBMSaWQCy7vQ/ZJnhOkVL0wp8RSeBJ7P47eTtE07yeR4+A6SNbbViAa
+         iet9G/GM1FfaXkBxAschybOUCLj4dh8QNh+vYyRua3BmM2eulhIfr9X1rl0wIRCwsWd+
+         pISDWphupk3cSrSJvfwLRLkVetuRq3bdIaT1ju8SB684mx/GMUIuCsIkN5+XbviAupjL
+         9P0mdNOzaKLEQ+SZt9yQ2d8SL3naZn+5M6s/xOz5hGkwU900zBI4ruNo/Nh5jzk7aRTk
+         Bqjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qd2GGNOqjcoVwR9/InTy3gHaTefuQ8PzIzZm4PfwF+Q=;
+        b=J1uQsxSKmB2ZZmCF7gEbJXeRHnM/zcOqbYR/EFQ4W5cIFeFVgnTaxv9Rue4ky8D4/1
+         mH/KGUDGTgqzhCtRqbxZHa9ZyPgRYBCUMCtX8gdkf+ck4o1uIsQ6u2Nstzv4OsT24n38
+         GK6Lp3ugRf0PhbSl456b2eqON1zo7aEJAajLRKwk8UsvXItNxolJsqQdY3XUtDyhgSjO
+         obI5EXin15tbZPlNtiCgAQX07Q1uFeFtmeivdwb3zNq15lyvwAEMJd27IcJmrxXdYfVn
+         7utierwQR4FbGPDpT/0wnikXfHaeZHEvMHTaY6ULzFK9gj3pOhtXA9ywgyZMIKGiWb6k
+         fDHQ==
+X-Gm-Message-State: AOAM530PgqURvVeTrgzicOXyiH780Gn9xH/aoSgYGZMzIEdFGGS6fXtk
+        kUYTGNYgSAHG2LBe2o7ByLDFHw==
+X-Google-Smtp-Source: ABdhPJzQwEXxT63vulS4Mr1iXuUiQVfsntslWby9WpFJQ1i6LL+g6rwKWyZorlvtptAuR0hvccJ5Xg==
+X-Received: by 2002:aca:230e:: with SMTP id e14mr11102837oie.58.1621868898078;
+        Mon, 24 May 2021 08:08:18 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n11sm2564001oom.1.2021.05.24.08.08.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 08:08:17 -0700 (PDT)
+Date:   Mon, 24 May 2021 10:08:15 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 02/13] dt-bindings: msm/dsi: Document Display Stream
+ Compression (DSC) parameters
+Message-ID: <20210524150815.GH2484@yoga>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-3-vkoul@kernel.org>
+ <20210521144237.GZ2484@yoga>
+ <YKtWM+BYeIA+P+55@vkoul-mobl.Dlink>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521163526.GA17916@redhat.com>
+In-Reply-To: <YKtWM+BYeIA+P+55@vkoul-mobl.Dlink>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-05-21 18:35:27, Oleg Nesterov wrote:
-> On 05/20, Andrew Morton wrote:
-> >
-> > --- a/kernel/kthread.c~kthread-fix-kthread_mod_delayed_work-vs-kthread_cancel_delayed_work_sync-race
-> > +++ a/kernel/kthread.c
-> > @@ -1181,6 +1181,19 @@ bool kthread_mod_delayed_work(struct kth
-> >  		goto out;
-> >
-> >  	ret = __kthread_cancel_work(work, true, &flags);
-> > +
-> > +	/*
-> > +	 * Canceling could run in parallel from kthread_cancel_delayed_work_sync
-> > +	 * and change work's canceling count as the spinlock is released and regain
-> > +	 * in __kthread_cancel_work so we need to check the count again. Otherwise,
-> > +	 * we might incorrectly queue the dwork and further cause
-> > +	 * cancel_delayed_work_sync thread waiting for flush dwork endlessly.
-> > +	 */
-> > +	if (work->canceling) {
-> > +		ret = false;
-> > +		goto out;
-> > +	}
-> > +
-> >  fast_queue:
-> >  	__kthread_queue_delayed_work(worker, dwork, delay);
+On Mon 24 May 02:30 CDT 2021, Vinod Koul wrote:
+
+> On 21-05-21, 09:42, Bjorn Andersson wrote:
+> > On Fri 21 May 07:49 CDT 2021, Vinod Koul wrote:
+> > 
+> > > DSC enables streams to be compressed before we send to panel. This
+> > > requires DSC enabled encoder and a panel to be present. So we add this
+> > > information in board DTS and find if DSC can be enabled and the
+> > > parameters required to configure DSC are added to binding document along
+> > > with example
+> > > 
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  .../devicetree/bindings/display/msm/dsi.txt       | 15 +++++++++++++++
+> > >  1 file changed, 15 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
+> > > index b9a64d3ff184..83d2fb92267e 100644
+> > > --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
+> > > +++ b/Documentation/devicetree/bindings/display/msm/dsi.txt
+> > > @@ -48,6 +48,13 @@ Optional properties:
+> > >  - pinctrl-n: the "sleep" pinctrl state
+> > >  - ports: contains DSI controller input and output ports as children, each
+> > >    containing one endpoint subnode.
+> > > +- qcom,mdss-dsc-enabled: Display Stream Compression (DSC) is enabled
+> > > +- qcom,mdss-slice-height: DSC slice height in pixels
+> > > +- qcom,mdss-slice-width: DSC slice width in pixels
+> > > +- qcom,mdss-slice-per-pkt: DSC slices per packet
+> > > +- qcom,mdss-bit-per-component: DSC bits per component
+> > > +- qcom,mdss-bit-per-pixel: DSC bits per pixel
+> > > +- qcom,mdss-block-prediction-enable: Block prediction mode of DSC enabled
+> > >  
+> > >    DSI Endpoint properties:
+> > >    - remote-endpoint: For port@0, set to phandle of the connected panel/bridge's
+> > > @@ -188,6 +195,14 @@ Example:
+> > >  		qcom,master-dsi;
+> > >  		qcom,sync-dual-dsi;
+> > >  
+> > > +		qcom,mdss-dsc-enabled;
+> > 
+> > To me the activation of DSC seems to be a property of the panel.
 > 
-> Never looked at this code before, can't review...
+> I think there are three parts to the problem
+> 1. Panel needs to support it
+
+In the case of DP there's bits to be read in the panel to figure this
+out, for DSI panels this seems like a property that the panel (driver)
+should know about.
+
+> 2. Host needs to support it
+
+Right, so this needs to be known by the driver. My suggestion is that we
+derive it from the compatible or from the HW version.
+
+> 3. Someone needs to decide to use when both the above conditions are
+> met.
 > 
-> but note that another caller of __kthread_queue_delayed_work() needs to
-> check work->canceling too. So perhaps we should simply add queuing_blocked()
-> into __kthread_queue_delayed_work() ?
-
-Good point. I do not have strong opinion. But if we move the check
-to __kthread_queue_delayed_work() than it would make sense to
-move it also into kthread_insert_work() to keep it symmetric.
-But then we would do the check twice in some code paths.
-Well, it would make the API more safe.
-
-
-> Something like below, uncompiled/untested, most probably incorrect.
+> There are cases where above 1, 2 will be satisfied, but we might be okay
+> without DSC too.. so how to decide when to do DSC :)
 > 
-> Either way, this comment
+
+Can we describe those cases? E.g. is it because enabling DSC would not
+cause a reduction in clock speed that's worth the effort? Or do we only
+use DSC for DSI when it allows us to squeeze everything into a single
+link?
+
+Regards,
+Bjorn
+
+> I feel it is more of a system property. And I also think that these
+> parameters here are host configuration and not really for panel...
 > 
-> 	 * Return: %true if @dwork was pending and its timer was modified,
-> 	 * %false otherwise.
+> > 
+> > > +		qcom,mdss-slice-height = <16>;
+> > > +		qcom,mdss-slice-width = <540>;
+> > > +		qcom,mdss-slice-per-pkt = <1>;
+> > > +		qcom,mdss-bit-per-component = <8>;
+> > > +		qcom,mdss-bit-per-pixel = <8>;
+> > > +		qcom,mdss-block-prediction-enable;
+> > 
+> > Which of these properties relates to the DSC encoder and what needs to
+> > be agreed with the sink? Can't we derive e.g. bpp from the information
+> > we have from the attached panel already?
 > 
-> above kthread_mod_delayed_work looks obviously wrong. Currently it returns
-> true if this work was pending. With your patch it returns true if it was
-> pending and not canceling.
->
-> With the patch below it returns true if the work was (re)queued successfully,
-> and this makes more sense to me. But again, I can easily misread this code.
-
-Your patch changes the semantic. The current semantic is the same for
-the workqueue's counter-part mod_delayed_work_on().
-
-It look's weird by it makes sense.
-
-kthread_mod_delayed_work() should always succeed and queue the work
-with the new delay. Normally, the only interesting information is
-whether the work was canceled (queued but not proceed). It means
-that some job was not done.
-
-The only situation when kthread_mod_delayed_work() is not able to
-queue the work is when another process is canceling the work at
-the same time. But it means that kthread_mod_delayed_work()
-and kthread_cancel_delayed_work_sync() are called in parallel.
-The result is racy by definition. It means that the code is racy.
-And it typically means that the API is used a wrong way.
-Note the comment:
-
- * A special case is when the work is being canceled in parallel.
- * It might be caused either by the real kthread_cancel_delayed_work_sync()
- * or yet another kthread_mod_delayed_work() call. We let the other command
- * win and return %false here. The caller is supposed to synchronize these
- * operations a reasonable way.
-
-
-But you have a point. The new code returns "false" even when the work
-was canceled. It means that the previously queue work was not
-proceed.
-
-We should actually keep the "ret" value as is to stay compatible with
-workqueue API:
-
-	/*
-	 * Canceling could run in parallel from kthread_cancel_delayed_work_sync
-	 * and change work's canceling count as the spinlock is released and regain
-	 * in __kthread_cancel_work so we need to check the count again. Otherwise,
-	 * we might incorrectly queue the dwork and further cause
-	 * cancel_delayed_work_sync thread waiting for flush dwork endlessly.
-	 *
-	 * Keep the ret code. The API primary informs the caller
-	 * whether some pending work has been canceled (not proceed).
-	 */
-	if (work->canceling)
-		goto out;
-
-Best Regards,
-Petr
+> Let me go back and check on this a bit more
+> 
+> Thanks
+> -- 
+> ~Vinod
