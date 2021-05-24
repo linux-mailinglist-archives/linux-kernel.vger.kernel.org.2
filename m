@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC9F38F1F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1757838F1F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhEXRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 13:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        id S233342AbhEXRFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 13:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbhEXRFD (ORCPT
+        with ESMTP id S233280AbhEXRFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 13:05:03 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF19C06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:03:35 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id f9so8119339vsp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:03:35 -0700 (PDT)
+        Mon, 24 May 2021 13:05:02 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B72CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:03:34 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso11481107pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:03:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MrqSOYj5g/obDVKIYAxmyXoOnQCVk6QwshkTvwsi7m4=;
-        b=XyizKqOVbO1O1kqzeiPXF8NjsBV2U9Z+KYkApDRPMhoQY9Wd7aF4XJyesh+GK1YVA5
-         Ub6EukTa0vgpcTPIyPKsHpKh8SRsQbQFCcP+++VNYz1YXYz2lXhoZ9bBghOFurhlwHUk
-         ntb6/JFWmPTTq0gQYS4pNRcJkazgXeDtfbxp9tzTP5JJPQigo4i7WjDXP7dQV6MLvvtw
-         Qq5CbguJpgjiczI1re747pjjYIB5h37C9+mXIwbmORKayNQgqiFyUkiDzDaCY3IBenHt
-         FoTmh0hk4Y2MQQcmxH9KYKLxjMIIAayyNq0B4tqy1nc2mlsNk7avsezzUrjOaV2gKEQJ
-         ohfw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c6Iy6FMGjuqTNcke/wtyVN9yLyUyNWeFx4AIjoXtdGM=;
+        b=mlaxQ74HN0sNwu+oG2Ld4AqVBNmKroxXRBMuvQZnV4xskZzsABo1JEEDORZVOGfckh
+         M7Zev5Rjx8fkNu6umrXA2eEOY5yHYlGp010dYWIFtFiB1KoHYM8TdzdOIGw8K908g49L
+         MjpVY5yGCw278Opbod19Aqytfdl+XarmBvTC5KSU2uLvg3N9HNkg4ZnnqfpAIMS5y3TW
+         fL76zBcEhZQi5P1xu7CrkGAVbbNvDc3gz4b2ea2DDuHx4KdCjCPo1zOOEfkRJgJ7lKyV
+         BjODbkFhTvb8m9Ou6hskxROp+i61flyfMaK3ROKa+XfShw6UK4C3cWk/8A/sJIp6elyE
+         JAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MrqSOYj5g/obDVKIYAxmyXoOnQCVk6QwshkTvwsi7m4=;
-        b=rHkEDLcfrMsnWXMPSLaEpZ8txeCXD0pCOccdCcxNIl70iOpDMWrv3a8Ils+2JWybaB
-         iNt7ZFTqrKX6uJY4ZjPrHDTVKUf7zkGHWZl+ay3tuOY82XHS99MLoRHIA1GOCXFHUYMp
-         6ig6GYo3Im575EZXRAXRjGjTw6XKbRuOgknbPcXDMc6phy19PkDFRMt9aa0SnKi4Z4pz
-         1VR6EW6/qvdGHiotBkSvKaK4uCeUUTgJzD5Qr3xH2bGKehWo32QJ3vOX2O3XUwBLu0Hi
-         fH9YPDRV1gQ+TlhbQR753BiSN6sK0ownt1KmmpDuTImTkgMukrnzlcpJpe0k0ULhXlOG
-         G90w==
-X-Gm-Message-State: AOAM531P6OXMZgD5LnjDyCPiSBniCSiNh4Em+H6vIiEMK9u0T0vBQlMm
-        9iN8hEpm+Iqf0BpnMYV83jSKeITZudEEFNJndeiPgA==
-X-Google-Smtp-Source: ABdhPJwH7kYxWSa0u/62FyAK1s59dR0TfrwpFa2o7rML8WoewkAZu/jGtDNEsxL3yqDKybD0PBSBisVCRwo/3Ef5YLg=
-X-Received: by 2002:a05:6102:7b4:: with SMTP id x20mr23350062vsg.48.1621875814897;
- Mon, 24 May 2021 10:03:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c6Iy6FMGjuqTNcke/wtyVN9yLyUyNWeFx4AIjoXtdGM=;
+        b=Lyb1FWY5iPLaCpbnP9ZbOqDnaODhQI6xAxvgps/UUeml+1ktZWhRD7OsDBsCz210Gh
+         P3jofyOLcG0WLk2fKKWF8xrlryaXhBBJ2Rj577q0TrFiJ3Lp8eq4ma/+47kSlo7mA/+P
+         J2UrM70BsAW9e7bjPlPsRsuwjm+1LWDF+gkhUOIgCIAVOPieriDH4P29t1HGWaZC5NGw
+         dfz8iI4shlRLGw80p5nRPAMetEkJN5hJOCYbENBMR1Vb1qzDFw2ipmJQjengVt+fTQxO
+         WtItUq5ioW5h0qU2+ainE6Ctt+hrsm82YzggVXrWfyXblmbXfNmT63OwEMzYMui4cNZz
+         xFSQ==
+X-Gm-Message-State: AOAM530/Yo4wAXZiJTpKim6B3jETCw/aZGzP/CqlvEaQFLVDKMpeKMYl
+        xytBZSzduPvnpl9gvfQIXODE9w==
+X-Google-Smtp-Source: ABdhPJyU6NnplYdMxlnsV2vJ0azspjxXb/mL29igsx7D8M4cqgMnVkqLn2NBHPnUKtkbOhSbiOjOtw==
+X-Received: by 2002:a17:90a:29c4:: with SMTP id h62mr27052028pjd.177.1621875813567;
+        Mon, 24 May 2021 10:03:33 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s65sm10654632pjd.15.2021.05.24.10.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 10:03:32 -0700 (PDT)
+Date:   Mon, 24 May 2021 17:03:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with
+ protected state
+Message-ID: <YKvcYeXaxTQ//87M@google.com>
+References: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
+ <87pmxg73h7.fsf@vitty.brq.redhat.com>
+ <a947ee05-4205-fb3d-a1e6-f5df7275014e@amd.com>
+ <87tums8cn0.fsf@vitty.brq.redhat.com>
+ <211d5285-e209-b9ef-3099-8da646051661@amd.com>
+ <c6864982-b30a-29b5-9a10-3cfdd331057e@redhat.com>
 MIME-Version: 1.0
-References: <20210523231335.8238-1-digetx@gmail.com> <20210523231335.8238-13-digetx@gmail.com>
-In-Reply-To: <20210523231335.8238-13-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 19:02:58 +0200
-Message-ID: <CAPDyKFqp1TN1JUa9R3c2VZ3tyD+FRVhYEVc1rw76Uq5r8n9dWw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/14] dt-bindings: soc: tegra-pmc: Document core power domain
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?Q?Nikola_Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6864982-b30a-29b5-9a10-3cfdd331057e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 01:13, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> All NVIDIA Tegra SoCs have a core power domain where majority of hardware
-> blocks reside. Document the new core power domain properties.
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Mon, May 24, 2021, Paolo Bonzini wrote:
+> On 24/05/21 15:58, Tom Lendacky wrote:
+> > > Would it hurt if we just move 'vcpu->arch.guest_state_protected' check
+> > > to is_64_bit_mode() itself? It seems to be too easy to miss this
+> > > peculiar detail about SEV in review if new is_64_bit_mode() users are to
+> > > be added.
+> > I thought about that, but wondered if is_64_bit_mode() was to be used in
+> > other places in the future, if it would be a concern. I think it would be
+> > safe since anyone adding it to a new section of code is likely to look at
+> > what that function is doing first.
+> > 
+> > I'm ok with this. Paolo, I know you already queued this, but would you
+> > prefer moving the check into is_64_bit_mode()?
+> 
+> Let's introduce a new wrapper is_64_bit_hypercall, and add a
+> WARN_ON_ONCE(vcpu->arch.guest_state_protected) to is_64_bit_mode.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Can we introduce the WARN(s) in a separate patch, and deploy them much more
+widely than just is_64_bit_mode()?  I would like to have them lying in wait at
+every path that should be unreachable, e.g. get/set segments, get_cpl(), etc...
 
-Kind regards
-Uffe
-
-
-> ---
->  .../arm/tegra/nvidia,tegra20-pmc.yaml         | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml
-> index 43fd2f8927d0..0afec83cc723 100644
-> --- a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml
-> +++ b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml
-> @@ -301,6 +301,33 @@ patternProperties:
->
->      additionalProperties: false
->
-> +  core-domain:
-> +    type: object
-> +    description: |
-> +      The vast majority of hardware blocks of Tegra SoC belong to a
-> +      Core power domain, which has a dedicated voltage rail that powers
-> +      the blocks.
-> +
-> +    properties:
-> +      operating-points-v2:
-> +        description:
-> +          Should contain level, voltages and opp-supported-hw property.
-> +          The supported-hw is a bitfield indicating SoC speedo or process
-> +          ID mask.
-> +
-> +      "#power-domain-cells":
-> +        const: 0
-> +
-> +    required:
-> +      - operating-points-v2
-> +      - "#power-domain-cells"
-> +
-> +    additionalProperties: false
-> +
-> +  core-supply:
-> +    description:
-> +      Phandle to voltage regulator connected to the SoC Core power rail.
-> +
->  required:
->    - compatible
->    - reg
-> @@ -325,6 +352,7 @@ examples:
->      tegra_pmc: pmc@7000e400 {
->                compatible = "nvidia,tegra210-pmc";
->                reg = <0x7000e400 0x400>;
-> +              core-supply = <&regulator>;
->                clocks = <&tegra_car TEGRA210_CLK_PCLK>, <&clk32k_in>;
->                clock-names = "pclk", "clk32k_in";
->                #clock-cells = <1>;
-> @@ -338,17 +366,24 @@ examples:
->                nvidia,core-power-req-active-high;
->                nvidia,sys-clock-req-active-high;
->
-> +              pd_core: core-domain {
-> +                      operating-points-v2 = <&core_opp_table>;
-> +                      #power-domain-cells = <0>;
-> +              };
-> +
->                powergates {
->                      pd_audio: aud {
->                              clocks = <&tegra_car TEGRA210_CLK_APE>,
->                                       <&tegra_car TEGRA210_CLK_APB2APE>;
->                              resets = <&tegra_car 198>;
-> +                            power-domains = <&pd_core>;
->                              #power-domain-cells = <0>;
->                      };
->
->                      pd_xusbss: xusba {
->                              clocks = <&tegra_car TEGRA210_CLK_XUSB_SS>;
->                              resets = <&tegra_car TEGRA210_CLK_XUSB_SS>;
-> +                            power-domains = <&pd_core>;
->                              #power-domain-cells = <0>;
->                      };
->                };
-> --
-> 2.30.2
->
+Side topic, kvm_get_cs_db_l_bits() should be moved to svm.c.  Functionally, it's
+fine to have it as a vendor-agnostic helper, but practically speaking it should
+never be called directly.
