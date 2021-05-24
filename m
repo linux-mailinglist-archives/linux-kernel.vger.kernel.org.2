@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762FC38EE69
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4323438EE71
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhEXPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
+        id S233864AbhEXPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234331AbhEXPoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:44:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FB0D61403;
-        Mon, 24 May 2021 15:35:42 +0000 (UTC)
+        id S234407AbhEXPoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7EA2613FE;
+        Mon, 24 May 2021 15:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870543;
-        bh=vRPb5bbdFlXhDT9/MX5I0AwXk6wBI1jLoV7lvKlY5pw=;
+        s=korg; t=1621870545;
+        bh=31in1cW+DvIMf3ESdwdUc/oOt9H6+/rRIMR2gEMl2yE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2fQW1wfTolvmFvArC7ij5W3D9Sr7QAcyXl64yT+O+6A8NJ91zne+gEycAo5288F2c
-         mjGpe0KqhAAHX5IJ/r5qXzK1EQYWJLXxcU4vwheVcfppUb7hXhlEcKyMK/RHqXHhBx
-         FCl4xGmmyv8NJqeXefRxpA8OtzEVetkhr/6+JW5g=
+        b=IJXBr66oGfLgC6T2hw0sV19sRYqMHY3zMgLD2bb2HfKWl6BYrmwhxQnxiOYTNvrep
+         3MFeFV20ktiarzfu4O5UNEJOYKJ04Kc8HTdTKtB45MBr9Rc2wDL+hpWvIWNbONUm3N
+         NpsZEKqIiDzpY7wRNDrCTBKsbo4P13cPZw+6buFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexandre Bounine <alex.bou9@gmail.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>
-Subject: [PATCH 4.19 20/49] rapidio: handle create_workqueue() failure
-Date:   Mon, 24 May 2021 17:25:31 +0200
-Message-Id: <20210524152325.035108781@linuxfoundation.org>
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH 4.19 21/49] Revert "serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference"
+Date:   Mon, 24 May 2021 17:25:32 +0200
+Message-Id: <20210524152325.066693613@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
 References: <20210524152324.382084875@linuxfoundation.org>
@@ -42,51 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 69ce3ae36dcb03cdf416b0862a45369ddbf50fdf upstream.
+commit 754f39158441f4c0d7a8255209dd9a939f08ce80 upstream.
 
-In case create_workqueue() fails, release all resources and return -ENOMEM
-to caller to avoid potential NULL pointer deref later. Move up the
-create_workequeue() call to return early and avoid unwinding the call to
-riocm_rx_fill().
+This reverts commit 32f47179833b63de72427131169809065db6745e.
 
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be not be needed at all as the
+change was useless because this function can only be called when
+of_match_device matched on something.  So it should be reverted.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-46-gregkh@linuxfoundation.org
+Fixes: 32f47179833b ("serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference")
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-6-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/rapidio/rio_cm.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/tty/serial/mvebu-uart.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -2136,6 +2136,14 @@ static int riocm_add_mport(struct device
- 		return -ENODEV;
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -807,9 +807,6 @@ static int mvebu_uart_probe(struct platf
+ 		return -EINVAL;
  	}
  
-+	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
-+	if (!cm->rx_wq) {
-+		rio_release_inb_mbox(mport, cmbox);
-+		rio_release_outb_mbox(mport, cmbox);
-+		kfree(cm);
-+		return -ENOMEM;
-+	}
-+
- 	/*
- 	 * Allocate and register inbound messaging buffers to be ready
- 	 * to receive channel and system management requests
-@@ -2146,7 +2154,6 @@ static int riocm_add_mport(struct device
- 	cm->rx_slots = RIOCM_RX_RING_SIZE;
- 	mutex_init(&cm->rx_lock);
- 	riocm_rx_fill(cm, RIOCM_RX_RING_SIZE);
--	cm->rx_wq = create_workqueue(DRV_NAME "/rxq");
- 	INIT_WORK(&cm->rx_work, rio_ibmsg_handler);
- 
- 	cm->tx_slot = 0;
+-	if (!match)
+-		return -ENODEV;
+-
+ 	/* Assume that all UART ports have a DT alias or none has */
+ 	id = of_alias_get_id(pdev->dev.of_node, "serial");
+ 	if (!pdev->dev.of_node || id < 0)
 
 
