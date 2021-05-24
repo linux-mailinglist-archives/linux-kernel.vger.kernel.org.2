@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE14B38F0ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2F338EFAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236677AbhEXQHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
+        id S234047AbhEXP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233194AbhEXP6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B1661961;
-        Mon, 24 May 2021 15:44:14 +0000 (UTC)
+        id S235274AbhEXPzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6BE161926;
+        Mon, 24 May 2021 15:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871055;
-        bh=CDRMBNjaStc0Wy7yYEz1n1EtEWzMYRWonj//RK82c3s=;
+        s=korg; t=1621870851;
+        bh=zikGe0gfOoKmYyTHHPQ1mc8TL64JMBEfZkConVgDtTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDN0/qK9aBnY5mP7nNHQw7tgO399fA+5gaP47sWcQ4KKvcDHWM0a5DPByH4KnMm9c
-         qJlSU7FCmXdbY0LUN2gkDmWcodT5U15/9o5XsNDNRe1vA+h7FOtdEnD/aAa8dW8DSU
-         8YsfgLtvbSqubMwwN4hAZknQ0EI4eAw9ZbKFEL7I=
+        b=WhhM3qTzf1+7k9bsNrhYajEKV4x1M2TjBmrW3BJXuS/jHIVODcthaaBq3ZYZgGson
+         4jzbnr9AEAVev01VQ9D+QXwaDoDZQ/vNOqPTrmYFFeyWCNwpkYTdDz/lNQ96sKRrtV
+         m3j75jD85Wnr/nYPQzQNkpdaObUusDvD+Mx4nixA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH 5.12 041/127] misc: eeprom: at24: check suspend status before disable regulator
-Date:   Mon, 24 May 2021 17:25:58 +0200
-Message-Id: <20210524152336.237370210@linuxfoundation.org>
+        stable@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 064/104] powerpc/64s/syscall: Use pt_regs.trap to distinguish syscall ABI difference between sc and scv syscalls
+Date:   Mon, 24 May 2021 17:25:59 +0200
+Message-Id: <20210524152334.971284393@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 2962484dfef8dbb7f9059822bc26ce8a04d0e47c upstream.
+commit 5665bc35c1ed917ac8fd06cb651317bb47a65b10 upstream.
 
-cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
-regulator in runtime suspend. If runtime suspend is called before
-regulator disable, it will results in regulator unbalanced disabling.
+The sc and scv 0 system calls have different ABI conventions, and
+ptracers need to know which system call type is being used if they want
+to look at the syscall registers.
 
-Fixes: cd5676db0574 ("misc: eeprom: at24: support pm_runtime control")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Link: https://lore.kernel.org/r/20210420133050.377209-1-hsinyi@chromium.org
+Document that pt_regs.trap can be used for this, and fix one in-tree user
+to work with scv 0 syscalls.
+
+Fixes: 7fa95f9adaee ("powerpc/64s: system call support for scv/rfscv instructions")
+Cc: stable@vger.kernel.org # v5.9+
+Reported-by: "Dmitry V. Levin" <ldv@altlinux.org>
+Suggested-by: "Dmitry V. Levin" <ldv@altlinux.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210520111931.2597127-1-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/at24.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Documentation/powerpc/syscall64-abi.rst       |   10 +++++++++
+ tools/testing/selftests/seccomp/seccomp_bpf.c |   27 +++++++++++++++++---------
+ 2 files changed, 28 insertions(+), 9 deletions(-)
 
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client
- 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
- 	if (IS_ERR(at24->nvmem)) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return PTR_ERR(at24->nvmem);
- 	}
+--- a/Documentation/powerpc/syscall64-abi.rst
++++ b/Documentation/powerpc/syscall64-abi.rst
+@@ -96,6 +96,16 @@ auxiliary vector.
  
-@@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client
- 	err = at24_read(at24, 0, &test_byte, 1);
- 	if (err) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return -ENODEV;
- 	}
+ scv 0 syscalls will always behave as PPC_FEATURE2_HTM_NOSC.
  
++ptrace
++------
++When ptracing system calls (PTRACE_SYSCALL), the pt_regs.trap value contains
++the system call type that can be used to distinguish between sc and scv 0
++system calls, and the different register conventions can be accounted for.
++
++If the value of (pt_regs.trap & 0xfff0) is 0xc00 then the system call was
++performed with the sc instruction, if it is 0x3000 then the system call was
++performed with the scv 0 instruction.
++
+ vsyscall
+ ========
+ 
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1753,16 +1753,25 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ # define SYSCALL_RET_SET(_regs, _val)				\
+ 	do {							\
+ 		typeof(_val) _result = (_val);			\
+-		/*						\
+-		 * A syscall error is signaled by CR0 SO bit	\
+-		 * and the code is stored as a positive value.	\
+-		 */						\
+-		if (_result < 0) {				\
+-			SYSCALL_RET(_regs) = -_result;		\
+-			(_regs).ccr |= 0x10000000;		\
+-		} else {					\
++		if ((_regs.trap & 0xfff0) == 0x3000) {		\
++			/*					\
++			 * scv 0 system call uses -ve result	\
++			 * for error, so no need to adjust.	\
++			 */					\
+ 			SYSCALL_RET(_regs) = _result;		\
+-			(_regs).ccr &= ~0x10000000;		\
++		} else {					\
++			/*					\
++			 * A syscall error is signaled by the	\
++			 * CR0 SO bit and the code is stored as	\
++			 * a positive value.			\
++			 */					\
++			if (_result < 0) {			\
++				SYSCALL_RET(_regs) = -_result;	\
++				(_regs).ccr |= 0x10000000;	\
++			} else {				\
++				SYSCALL_RET(_regs) = _result;	\
++				(_regs).ccr &= ~0x10000000;	\
++			}					\
+ 		}						\
+ 	} while (0)
+ # define SYSCALL_RET_SET_ON_PTRACE_EXIT
 
 
