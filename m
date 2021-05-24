@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF37538ED20
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3A938ED73
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbhEXPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:34:17 -0400
+        id S233231AbhEXPiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:38:10 -0400
 Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233245AbhEXPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E18D613B0;
-        Mon, 24 May 2021 15:30:51 +0000 (UTC)
+        id S233066AbhEXPed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:34:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E69A6140A;
+        Mon, 24 May 2021 15:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870251;
-        bh=XNHfIXa8t0pA/6xQpixIYGs+1qBhbJw9btNSV41bm/w=;
+        s=korg; t=1621870320;
+        bh=66DK00cfMraeU8Qxk2uVkIHsod0JpJCQcU7w9QKOs64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i2HFrV0n/EJFVqnct/8ZvFgpgWN2KCsLcOdESaIFPhebN5pWOO83AftTiePyvpclN
-         bu+VNxe0abRqtb9MxnxIWfeoqApRprKvuBdIFEZQitqatdIl446e09NYAyqbGlsyYt
-         JY1kv6yWkcMX59DJPz0bekKp/ewcwTIW6ajR7/F0=
+        b=2wJWpHKf9jfHZ2PwuCRPnysdXFN9KNHYVU26k2pkJenHWCgCjtEWoxVv6FJOp/jfV
+         RCevGpGSh7WTpl9RHVjhd5v2JaDQO7XMFB4UzPEHmljn41twYo1qzsAjXpRKZIi5W+
+         XkqVtms9SVYpExDVoeFNJwuyJd5bWaDJIwffveAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Peter Rosin <peda@axentia.se>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Subject: [PATCH 4.4 18/31] cdrom: gdrom: deallocate struct gdrom_unit fields in remove_gdrom
-Date:   Mon, 24 May 2021 17:25:01 +0200
-Message-Id: <20210524152323.516777289@linuxfoundation.org>
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: [PATCH 4.9 17/36] Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+Date:   Mon, 24 May 2021 17:25:02 +0200
+Message-Id: <20210524152324.719732027@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit d03d1021da6fe7f46efe9f2a7335564e7c9db5ab upstream.
+commit 8d1beda5f11953ffe135a5213287f0b25b4da41b upstream.
 
-The fields, "toc" and "cd_info", of "struct gdrom_unit gd" are allocated
-in "probe_gdrom()". Prevent a memory leak by making sure "gd.cd_info" is
-deallocated in the "remove_gdrom()" function.
+This reverts commit 248b57015f35c94d4eae2fdd8c6febf5cd703900.
 
-Also prevent double free of the field "gd.toc" by moving it from the
-module's exit function to "remove_gdrom()". This is because, in
-"probe_gdrom()", the function makes sure to deallocate "gd.toc" in case
-of any errors, so the exit function invoked later would again free
-"gd.toc".
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-The patch also maintains consistency by deallocating the above mentioned
-fields in "remove_gdrom()" along with another memory allocated field
-"gd.disk".
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Cc: Peter Rosin <peda@axentia.se>
+The original commit does not properly unwind if there is an error
+condition so it needs to be reverted at this point in time.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-28-gregkh@linuxfoundation.org
+Fixes: 248b57015f35 ("leds: lp5523: fix a missing check of return value of lp55xx_read")
+Link: https://lore.kernel.org/r/20210503115736.2104747-9-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cdrom/gdrom.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/leds/leds-lp5523.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -850,6 +850,8 @@ static int remove_gdrom(struct platform_
- 	if (gdrom_major)
- 		unregister_blkdev(gdrom_major, GDROM_DEV_NAME);
- 	unregister_cdrom(gd.cd_info);
-+	kfree(gd.cd_info);
-+	kfree(gd.toc);
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -318,9 +318,7 @@ static int lp5523_init_program_engine(st
  
- 	return 0;
- }
-@@ -881,7 +883,6 @@ static void __exit exit_gdrom(void)
- {
- 	platform_device_unregister(pd);
- 	platform_driver_unregister(&gdrom_driver);
--	kfree(gd.toc);
- }
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+-	if (ret)
+-		return ret;
++	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+ 	status &= LP5523_ENG_STATUS_MASK;
  
- module_init(init_gdrom);
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
