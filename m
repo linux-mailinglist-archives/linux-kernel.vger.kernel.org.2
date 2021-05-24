@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C429E38EF7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093CA38F000
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbhEXP6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39476 "EHLO mail.kernel.org"
+        id S235946AbhEXQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234188AbhEXPvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91FDE6162C;
-        Mon, 24 May 2021 15:38:40 +0000 (UTC)
+        id S235398AbhEXPzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 622D96143B;
+        Mon, 24 May 2021 15:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870721;
-        bh=MpWRxG7I+/VrDH92dYHO/81/4SPP3cft1Qn8DSyizvA=;
+        s=korg; t=1621870870;
+        bh=5mib4CZtgWgB8CCMyhXcqN7oYJH/iNBMul8UDElOprg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJCWSQiaYA452D3DNsRTrr4MfctE235mmy5rEmho6l1x7AaXYq0k+olus2Jn+fgbz
-         N6VrqpSvbm0COIBzSfBg8cdB6UHBdJCnDOjjv2ES1ft+yQhKZHcRaQUJrrF8cebt08
-         yX9ATFx3fsY+iD5i2b9uiwxEHUOUA4SDpLicecdQ=
+        b=D6B7DmZSU1xMbq01m5yTt0Xa3KrCMOBXY4f75VPss8wFIiMUpIGVbi3iADu5hs0ek
+         rdsnR69s43p99LkUTndGdHXHzVVjzczcsIbiwn+onUU7oZgvUIXgGNoC8N76pXmdux
+         fqfLA+/jc953QtVyw/Rx5WP0PNPSHd95F59Cswb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: [PATCH 5.4 60/71] scsi: ufs: handle cleanup correctly on devm_reset_control_get error
-Date:   Mon, 24 May 2021 17:26:06 +0200
-Message-Id: <20210524152328.403765715@linuxfoundation.org>
+        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5.10 072/104] kcsan: Fix debugfs initcall return type
+Date:   Mon, 24 May 2021 17:26:07 +0200
+Message-Id: <20210524152335.238157502@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 2f4a784f40f8d337d6590e2e93f46429052e15ac upstream.
+commit 976aac5f882989e4f6c1b3a7224819bf0e801c6a upstream.
 
-Move ufshcd_set_variant call in ufs_hisi_init_common to common error
-section at end of the function, and then jump to this from the error
-checking statements for both devm_reset_control_get and
-ufs_hisi_get_resource. This fixes the original commit (63a06181d7ce)
-which was reverted due to the University of Minnesota problems.
+clang with CONFIG_LTO_CLANG points out that an initcall function should
+return an 'int' due to the changes made to the initcall macros in commit
+3578ad11f3fb ("init: lto: fix PREL32 relocations"):
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Avri Altman <avri.altman@wdc.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+late_initcall(kcsan_debugfs_init);
+~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+ #define late_initcall(fn)               __define_initcall(fn, 7)
+
+Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-32-gregkh@linuxfoundation.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufs-hisi.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ kernel/kcsan/debugfs.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/scsi/ufs/ufs-hisi.c
-+++ b/drivers/scsi/ufs/ufs-hisi.c
-@@ -481,17 +481,24 @@ static int ufs_hisi_init_common(struct u
- 	host->hba = hba;
- 	ufshcd_set_variant(hba, host);
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -261,9 +261,10 @@ static const struct file_operations debu
+ 	.release = single_release
+ };
  
--	host->rst  = devm_reset_control_get(dev, "rst");
-+	host->rst = devm_reset_control_get(dev, "rst");
-+	if (IS_ERR(host->rst)) {
-+		dev_err(dev, "%s: failed to get reset control\n", __func__);
-+		err = PTR_ERR(host->rst);
-+		goto error;
-+	}
- 
- 	ufs_hisi_set_pm_lvl(hba);
- 
- 	err = ufs_hisi_get_resource(host);
--	if (err) {
--		ufshcd_set_variant(hba, NULL);
--		return err;
--	}
-+	if (err)
-+		goto error;
- 
- 	return 0;
-+
-+error:
-+	ufshcd_set_variant(hba, NULL);
-+	return err;
+-static void __init kcsan_debugfs_init(void)
++static int __init kcsan_debugfs_init(void)
+ {
+ 	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
++	return 0;
  }
  
- static int ufs_hi3660_init(struct ufs_hba *hba)
+ late_initcall(kcsan_debugfs_init);
 
 
