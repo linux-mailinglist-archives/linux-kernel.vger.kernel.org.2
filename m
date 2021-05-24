@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E548738EE9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E4A38EFFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhEXPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:52:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33560 "EHLO mail.kernel.org"
+        id S235756AbhEXP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233780AbhEXPpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:45:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A28361466;
-        Mon, 24 May 2021 15:36:17 +0000 (UTC)
+        id S234863AbhEXPyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C86696186A;
+        Mon, 24 May 2021 15:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870577;
-        bh=f5ddls+VuT5JBb48jcU41nRyF9h14kPR2cFe+BNEdsI=;
+        s=korg; t=1621870797;
+        bh=vdoP4yMYzxFXHcybiFzw8eogToT0ph495trWNwqm/ek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRIyzaqKpG3eIqzmi0Dl9f4EY+9yqeXNJVvnRwDZO7tdHmINLN4+Qx5F5xxZUbX7Y
-         zLdhkYj10ulAZsZT5VhzzFFL3lIQGXd7f9uxxsD3x3qjzbdruIwvdwQuc0Ifo7g/DN
-         vJZlTu1mu7BCPNz4pXGS8PL4ycxm8U/PIHgSEGSk=
+        b=uqRhff6ZlwbPla2IjeOjlbuljhAQvEy5uV+LWa7Tnj8LAuaf1QTjZt3Sbdf1Tg2F6
+         sQ1DNFxAV8APLOdD9sA0N3LlchGjxHbv4VrYlARgtQkk9z3c/e4/FeMYV0wBqR9aNp
+         7SSWA+G36e17rOwGTGv3mm3fxBFbHA4TiAGSywuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liming Sun <limings@nvidia.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/71] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier issue
+Subject: [PATCH 5.10 021/104] RDMA/mlx5: Fix query DCT via DEVX
 Date:   Mon, 24 May 2021 17:25:16 +0200
-Message-Id: <20210524152326.789722225@linuxfoundation.org>
+Message-Id: <20210524152333.526920968@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liming Sun <limings@nvidia.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-[ Upstream commit 1c0e5701c5e792c090aef0e5b9b8923c334d9324 ]
+[ Upstream commit cfa3b797118eda7d68f9ede9b1a0279192aca653 ]
 
-The virtio framework uses wmb() when updating avail->idx. It
-guarantees the write order, but not necessarily loading order
-for the code accessing the memory. This commit adds a load barrier
-after reading the avail->idx to make sure all the data in the
-descriptor is visible. It also adds a barrier when returning the
-packet to virtio framework to make sure read/writes are visible to
-the virtio code.
+When executing DEVX command to query QP object, we need to take the QP
+type from the mlx5_ib_qp struct which hold the driver specific QP types as
+well, such as DC.
 
-Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox BlueField Soc")
-Signed-off-by: Liming Sun <limings@nvidia.com>
-Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/1620433812-17911-1-git-send-email-limings@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 34613eb1d2ad ("IB/mlx5: Enable modify and query verbs objects via DEVX")
+Link: https://lore.kernel.org/r/6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com
+Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/devx.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 5739a9669b29..92bda873d44a 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -294,6 +294,9 @@ mlxbf_tmfifo_get_next_desc(struct mlxbf_tmfifo_vring *vring)
- 	if (vring->next_avail == virtio16_to_cpu(vdev, vr->avail->idx))
- 		return NULL;
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index efb9ec99b68b..06a873257619 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -559,9 +559,8 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 	case UVERBS_OBJECT_QP:
+ 	{
+ 		struct mlx5_ib_qp *qp = to_mqp(uobj->object);
+-		enum ib_qp_type	qp_type = qp->ibqp.qp_type;
  
-+	/* Make sure 'avail->idx' is visible already. */
-+	virtio_rmb(false);
-+
- 	idx = vring->next_avail % vr->num;
- 	head = virtio16_to_cpu(vdev, vr->avail->ring[idx]);
- 	if (WARN_ON(head >= vr->num))
-@@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct mlxbf_tmfifo_vring *vring,
- 	 * done or not. Add a memory barrier here to make sure the update above
- 	 * completes before updating the idx.
- 	 */
--	mb();
-+	virtio_mb(false);
- 	vr->used->idx = cpu_to_virtio16(vdev, vr_idx + 1);
- }
+-		if (qp_type == IB_QPT_RAW_PACKET ||
++		if (qp->type == IB_QPT_RAW_PACKET ||
+ 		    (qp->flags & IB_QP_CREATE_SOURCE_QPN)) {
+ 			struct mlx5_ib_raw_packet_qp *raw_packet_qp =
+ 							 &qp->raw_packet_qp;
+@@ -578,10 +577,9 @@ static bool devx_is_valid_obj_id(struct uverbs_attr_bundle *attrs,
+ 					       sq->tisn) == obj_id);
+ 		}
  
-@@ -730,6 +733,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct mlxbf_tmfifo_vring *vring,
- 		desc = NULL;
- 		fifo->vring[is_rx] = NULL;
- 
-+		/*
-+		 * Make sure the load/store are in order before
-+		 * returning back to virtio.
-+		 */
-+		virtio_mb(false);
-+
- 		/* Notify upper layer that packet is done. */
- 		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
- 		vring_interrupt(0, vring->vq);
+-		if (qp_type == MLX5_IB_QPT_DCT)
++		if (qp->type == MLX5_IB_QPT_DCT)
+ 			return get_enc_obj_id(MLX5_CMD_OP_CREATE_DCT,
+ 					      qp->dct.mdct.mqp.qpn) == obj_id;
+-
+ 		return get_enc_obj_id(MLX5_CMD_OP_CREATE_QP,
+ 				      qp->ibqp.qp_num) == obj_id;
+ 	}
 -- 
 2.30.2
 
