@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4934F38E0F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBA138E0F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhEXGSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:18:48 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:34652 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbhEXGSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:18:47 -0400
-Received: by mail-lf1-f54.google.com with SMTP id f30so2026729lfj.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 23:17:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=w+uXbwcpYa351KpyXBaA7CGKwFt4BTnB/7IpdjhbrNA=;
-        b=jifGtBLJOWmme5f9cdDHDXvc7TQhqEnPhQlfar9K6JgbY5fdFOtzhtW/flbeBdKmzo
-         W9PBIPvE0LiTnsKidNXozxxHukS1SGy5zv1uIrET35LkII3BPdVqrNt1mxhOu9pGzw2J
-         tdI2f4zECJ1dfUWbgk46nNTLTmIEmz6KuPbGwM4gCq8ZOtR6NWc5cf2WqvjgzvwxuWQP
-         BtFih1XmGIYdrzZd6po+U2diQGB+/rLkqBFSB4woq8DUlTGdv2l7NXllw85s/xWfmqL5
-         lplUwAl+w99XZFT9vCpjj9P7PcUCpfCgpCRT16TO2tHdpu94EOK1TnUJGeNEoOQTVqhH
-         9dnw==
-X-Gm-Message-State: AOAM531D30q3CkktCIUUSVLyS989QAQ3heOisHAVEvL6mOIm0GY1c1zA
-        iza4lLi+xiorQoEsjDh6bmM=
-X-Google-Smtp-Source: ABdhPJz6FGIcUy/AV24s5nxWESb2UrFPRhfLaETBmlSSSAXqjT1Vh6201gPoAOloaQxWk21jBAyrAw==
-X-Received: by 2002:a19:7d82:: with SMTP id y124mr9456517lfc.76.1621837038630;
-        Sun, 23 May 2021 23:17:18 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id l6sm1333365lfk.49.2021.05.23.23.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 23:17:18 -0700 (PDT)
-Message-ID: <5639c1af646367caf345d0c346dded4e52178030.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH 2/2] regulator: bd71828: Fix .n_voltages settings
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-In-Reply-To: <20210523071045.2168904-2-axel.lin@ingics.com>
-References: <20210523071045.2168904-1-axel.lin@ingics.com>
-         <20210523071045.2168904-2-axel.lin@ingics.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232289AbhEXGUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 02:20:51 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50413 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231605AbhEXGUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 02:20:49 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FpRr829Pwz9s5R;
+        Mon, 24 May 2021 16:19:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621837161;
+        bh=rAM38WHocLc+LyDYrA7kVfPtaJ6djnNmloCRBT+YLpQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jb7ftveOX5hpSk6sgLU9FveePObUsBYmM80t0TL9Vl1KiEfiuuK+5htPhFL9vNup1
+         l1TCRnPdMosmhtz7RVoXK2L/huBbcJ8wvZymjwxJOWaf1VdXBfVNa7rbQyk7srKoax
+         Jw4G60e1Ybg+Yvr0OEGLgY0jGLPNvS1DvhiEunfKNogkQc/+3qyb8gpvpy2hPcp6+u
+         r6I54DXJvU95rnNlBWQPweRTsUBnm6eirkOzeK1219nJNcIU1QpRLF0b/ZK8BEB4U6
+         mQrcRpNWCHwrj6315ZhGljm0r1c5kqwWiF4W8wn/QIe++/iNySUDy0RnTlf0HRvDWu
+         RAN7byhuMtVeA==
+Date:   Mon, 24 May 2021 16:19:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Luiz Sampaio <sampaio.ime@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the char-misc tree
+Message-ID: <20210524161919.626b3344@canb.auug.org.au>
 MIME-Version: 1.0
-Date:   Mon, 24 May 2021 09:17:11 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/lhKHB4zHdYlpkNZQwqisKqW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/lhKHB4zHdYlpkNZQwqisKqW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2021-05-23 at 15:10 +0800, Axel Lin wrote:
-> Current .n_voltages settings do not cover the latest 2 valid
-> selectors,
-> so it fails to set voltage for the hightest voltage support.
-> The latest linear range has step_uV = 0, so it does not matter if we
-> count the .n_voltages to maximum selector + 1 or the first selector
-> of
-> latest linear range + 1.
-> To simplify calculating the n_voltages, let's just set the
-> .n_voltages to maximum selector + 1.
-> 
-> Fixes: 522498f8cb8c ("regulator: bd71828: Basic support for ROHM
-> bd71828 PMIC regulators")
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
+Hi all,
 
-Thank you Axel. I never stop being surprized by your accuracy what
-comes spotting errors like this. I had to look-up my calculator and the
-data-sheet to verify your fix - and you did find this just by reviewing
-the existing code(?) Really impressive. It seems the biggest supported
-voltage (2V) was really not reachable as it only belonged to the last
-(step 0) range. Big thanks!
+After merging the char-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Documentation/w1/slaves/w1_ds2438.rst:56: WARNING: Title underline too shor=
+t.
 
->  include/linux/mfd/rohm-bd71828.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/mfd/rohm-bd71828.h
-> b/include/linux/mfd/rohm-bd71828.h
-> index c7ab69c87ee8..3b5f3a7db4bd 100644
-> --- a/include/linux/mfd/rohm-bd71828.h
-> +++ b/include/linux/mfd/rohm-bd71828.h
-> @@ -26,11 +26,11 @@ enum {
->  	BD71828_REGULATOR_AMOUNT,
->  };
->  
-> -#define BD71828_BUCK1267_VOLTS		0xEF
-> -#define BD71828_BUCK3_VOLTS		0x10
-> -#define BD71828_BUCK4_VOLTS		0x20
-> -#define BD71828_BUCK5_VOLTS		0x10
-> -#define BD71828_LDO_VOLTS		0x32
-> +#define BD71828_BUCK1267_VOLTS		0x100
-> +#define BD71828_BUCK3_VOLTS		0x20
-> +#define BD71828_BUCK4_VOLTS		0x40
-> +#define BD71828_BUCK5_VOLTS		0x20
-> +#define BD71828_LDO_VOLTS		0x40
->  /* LDO6 is fixed 1.8V voltage */
->  #define BD71828_LDO_6_VOLTAGE		1800000
->  
+"offset"
+-------
 
+Introduced by commit
 
+  c999fbbdcf77 ("w1: ds2438: support for writing to offset register")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lhKHB4zHdYlpkNZQwqisKqW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCrRWcACgkQAVBC80lX
+0Gw3FQgAle2kxZFnjCS4POrwIJ5FoNDa2izLuXXysK3AcreaOYHlEUK9+2wlDhRh
+M7jV/rwNt2zSrdu5XWCHTZWQaBR4Km54aNX5gqPohTnOT3B7zfHOr3lgq9SHGWVU
+tht2j37uAfShQllsYpUOiVoaU4xu+vQyo+kL+zy/JzGhRKAOJKzSNm5lxpdmn9pZ
+bAN7Cozfeo5I857OKGDIv/QiDWTwA9L340nKPGxqsvb/I3MKoai66ixha+XjoeZD
+NRioKIjbWDRL5LHDzt41Yo5ESmPy5whAIETNxPRSnAFZX8b1qtMpXRaZLIjllhx8
+url7aX25P0yl7Yt505zKmfFDfEw/wQ==
+=sCSP
+-----END PGP SIGNATURE-----
+
+--Sig_/lhKHB4zHdYlpkNZQwqisKqW--
