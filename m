@@ -2,161 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0DF38F4C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44AE38F527
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhEXVQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:16:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232693AbhEXVQl (ORCPT
+        id S233924AbhEXVt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:49:29 -0400
+Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:55690 "EHLO
+        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233353AbhEXVt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:16:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621890912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tSqH+teOXpDHWZon+DBvYi3eou87Q03md2WpxZpsMus=;
-        b=iD+ZcrvpkHK3YpOS0c0zJUc2hFeHB4e7O6Ad4fjO40eGs1wmMYV/EEbiZPW+/PRVJtPxAd
-        7KYaslf9NWsBzs4y12OMxl0KRFzkADC1UFGSbQwJTaoj5ndGDjp/TOt0zqkgYWBMGqD2Y5
-        37p4poIP8HVJ5HpqFcLUFp7940u1axs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-9l-R3px_NOKbjhKIBZEYiw-1; Mon, 24 May 2021 17:15:10 -0400
-X-MC-Unique: 9l-R3px_NOKbjhKIBZEYiw-1
-Received: by mail-ej1-f71.google.com with SMTP id p18-20020a1709067852b02903dab2a3e1easo5081574ejm.17
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:15:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tSqH+teOXpDHWZon+DBvYi3eou87Q03md2WpxZpsMus=;
-        b=OgeIFpfSgmJgx2brd7CaEnLx4Ta2MVpRWQWiBhVOijYFT0xGXIdybpH8NQM03OrRk5
-         q0LE2zM3/VPVr0dtXi7+PvapZzZAF/i8kA1D2itxNSHi52/IR2n/T9ldr096AiEZn/Qg
-         B4Sc5qqg8o2TwFmKIgfKpp5qJjGLiqGCH+H4awLKUZht8cB19dHkoKZm2ZVh1sxldnRW
-         FdcQK+JokM1S+d6FHpw1kN492QW1HJwCsXoC4zueoR8x9+VIF4H2HYdihynFnbKQjAAp
-         VRO6qoRKVieG3RwAFJYpM7/H9BDJTgazagjZVTpntIYRFyspK0zHoewy36SB6/f1q5gZ
-         iPtw==
-X-Gm-Message-State: AOAM533tz7k9B05YEFcmBYhH4RFj+y9jpqL8w6Eeww9uiTCp5/h6HurN
-        PzFiAFvJ13PADDu/c0kNuT+Ahk98sqH1UHU4l5XpVnNgA9LquCXYiG9PWkFrgjM4qrovi31GA0A
-        ekFqNur1KqC9NqVqGIlPfPX5SSNRwYvgT1D1MfRyz/9OlsgnoRyZv6GV0tHUfX6tg2besKA7ZBc
-        s6
-X-Received: by 2002:a17:906:c04b:: with SMTP id bm11mr25020159ejb.263.1621890908976;
-        Mon, 24 May 2021 14:15:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz51YimQBkMpa9ns4Adz91j+xw6D5Bn0s1GpKaDoZphhcT9OIEOBiGHwPu/jv+luDjGbwmtog==
-X-Received: by 2002:a17:906:c04b:: with SMTP id bm11mr25020137ejb.263.1621890908744;
-        Mon, 24 May 2021 14:15:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u1sm9837524edv.91.2021.05.24.14.15.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 14:15:08 -0700 (PDT)
-Subject: Re: [PATCH 42/43] KVM: VMX: Drop VMWRITEs to zero fields at vCPU
- RESET
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210424004645.3950558-1-seanjc@google.com>
- <20210424004645.3950558-43-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e2974b79-a6e5-81be-2adb-456f114391da@redhat.com>
-Date:   Mon, 24 May 2021 23:15:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210424004645.3950558-43-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 24 May 2021 17:49:27 -0400
+X-Greylist: delayed 1883 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 May 2021 17:49:27 EDT
+Received: from pps.filterd (m0165119.ppops.net [127.0.0.1])
+        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OLCxD2015580;
+        Mon, 24 May 2021 21:16:15 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by mx0a-00268f01.pphosted.com with ESMTP id 38rbpw1rcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 May 2021 21:16:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TPcF+ROJ+iXhkNto9bX0tCZOQNxF2SgazwUZ8b+wFv/1xsfWqQCnus/OOnG7F+CBkcngjp024my/nWXryO9wgyvBjs8vsGlnAVVTT5Vq0HRYvvhf2T/WOsAKbGYuwbugbHvPObIJXn5xHNg4KaN8g3VMmulMOx0r/V+HOBOOqdktRRRmBLg2eujNlxHsnr8SNKdA5ttVZLfTzuvohboSLSApkLf4Dj6a49pR0gVqikDR2rQhiFhpSxGhjyTVKsjIF0iBeF2MYYP6WZ7n65IQ9epS86qbOvfUaTs93Wq2yZES48zwXaB9ywns0Spt/T1O29WYcfEM071AWHAva7YhBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NYVbbjuidkDj3FaToWnAMg/O4JQExq9LOHS7Ih2SPMc=;
+ b=lecNS37zYLe0i3bBm8Kno9hhrjnZA8T1LymsQNsCvVNcgzRo/h9Ruxfps4AtTCwvG1sxaWC+ZtASGGq+mhMScNU+e5Tj86MuEuyLXh/Tlr2ZOJh/VP94wgzsUgLtxU30uL7rOxvKX52zAIcgFnx053I7qA8/2AI5co9BM9W4B0bppAZFPnE8lbN3CIcJba8+mqxkaJtoQSFqL2Ka9ZjUtvOAi/4rYEcwKUShHotrvEck31UhhjUHIS/OeDyBd9RhoyBzNB0Rw9rD4q1xTzM8rQsaYubZyfrF8gMHP8gVVyLq0v2DiO/EWS9+jKGzr2TZd1qAGHJG+hqjinqPv83rog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NYVbbjuidkDj3FaToWnAMg/O4JQExq9LOHS7Ih2SPMc=;
+ b=fD2iLFRS+sFmylCy/1VPRIx/T+DXn+GLoZixHnl1o8GKQN4CKBS0IR4zl7Y9f4VHG7+JTo85vt9lE8J20avb4xC5cthDyMkQkq+MMpk03A45I0zJmvVQwVbNKyi2TwYZcpX9JDA0s29mZF/aCWHkLkTLM9C8Qb31z5RlB1D7X9I=
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
+ DM5PR04MB0364.namprd04.prod.outlook.com (2603:10b6:3:a8::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4150.27; Mon, 24 May 2021 21:16:13 +0000
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::d9ba:6e7f:b51e:6cab]) by DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::d9ba:6e7f:b51e:6cab%2]) with mapi id 15.20.4150.027; Mon, 24 May 2021
+ 21:16:13 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        Steven Lee <steven_lee@aspeedtech.com>,
+        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Thread-Topic: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Thread-Index: AQHXUOIG88H/dxjruU+R5Lxy+695eA==
+Date:   Mon, 24 May 2021 21:16:13 +0000
+Message-ID: <YKwXnPH0XyYLRtfa@packtop>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+ <20210519080436.18975-2-jamin_lin@aspeedtech.com> <YKVg2Kfbex3DYbNI@packtop>
+ <20210524020846.GB2591@aspeedtech.com>
+In-Reply-To: <20210524020846.GB2591@aspeedtech.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aspeedtech.com; dkim=none (message not signed)
+ header.d=none;aspeedtech.com; dmarc=none action=none header.from=equinix.com;
+x-originating-ip: [24.181.166.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3cc9909e-21e3-4934-ab87-08d91ef92946
+x-ms-traffictypediagnostic: DM5PR04MB0364:
+x-microsoft-antispam-prvs: <DM5PR04MB0364A95274B473ADE95DC4CAC3269@DM5PR04MB0364.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pm7vn4YkLswVq3SajXWxyA/ngdnm+KcMvz63wGaSakMbWJtWgGhpHzTcgQYU88F/OksBQvMkRk1ORQAUEJt3t7a1sqI7S2/QpDobv5c91cUuJzgXOVR6yyJtFfMddUL27VGoArPUTZaZn5Ysai4CuriTsADq8uImGfMUTIQ5pO3SDy08qgx5QVZcogyG6NC6H/aeb7k45rPa/+QMEu9Jan7WL/X8oN/iSBNqS30WcwUNR3UGD8lkOH2f2SLpZgm236fuIwYnt4hlZXyGtaK8qSeNlv+n7rU1b1bfhpxPIA7++Yw3wnoEtWeI2oxuJMCVHUlWLgR+d4oSGQQ1AbKBDOTJjoYUcu0U82ESJScQ+5Y5dB/n9R+I3Rw3zSgPtXXHW7sTxAnMbSHkbnDjiRcbJAhKR8bo2qcRKMMzRtJ5WE87DfkLrUbEbttKc+vuCPpfIyyD5juFELUR2GcLJI/WJ0ZE66M4SAXhMcAje7i6UZYM/S5HuCwtxvtJ48N2aGer0Yqlp1iG2h8nyOHBkpDpm4Mqkyuo4IUCY7t3THmnknegAyXU28J5tcfk2Semt/n83xVcAK6Xu1Lpxsptp3J3JL2xp6RAIwKVlYw98u24ZdA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(376002)(396003)(136003)(39850400004)(366004)(6512007)(9686003)(26005)(64756008)(66446008)(66556008)(76116006)(66946007)(6506007)(8936002)(6916009)(86362001)(7416002)(122000001)(66476007)(38100700002)(8676002)(83380400001)(54906003)(5660300002)(4326008)(71200400001)(2906002)(316002)(6486002)(186003)(33716001)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xxuJ+LhySHOpjRypQ0+w1DoxdMiI1WZdMyy14v0tVFPiyYpwNtILAkTMVsDY?=
+ =?us-ascii?Q?VOnylA8SXyT+O42d/hquUHxQO0wCvAzvr4H1IHhoZS+/R28uFFLakdZkqjku?=
+ =?us-ascii?Q?k9zjhsQPmTwW5cSMb+wSjUHPe+LdoWfJfS0v7uLDY+GUdlak55tdAcmEHf4y?=
+ =?us-ascii?Q?xuKPVo2nUHBGoxiHLeWH5Ds6PjcxZwg0rdeZ5RyC1lOnTCXuuZU/92xuo3BQ?=
+ =?us-ascii?Q?/+5bPo7XPCQCTpoROGi7eFJa0d2UyTzvwB+QydMDbESTpoJvQF4fmpCMfqCZ?=
+ =?us-ascii?Q?ugtlX2vQ+lo2L11SaWYidm6sUomdvSlcuHExxM2h+b3CCKGKL12o42SlhBT9?=
+ =?us-ascii?Q?bXXGysv7EnQjQC/jZrXFIVVZi/Kk8dP7LbGs9+ONB8DrCfsYplwFuXNb3EzV?=
+ =?us-ascii?Q?R1p67bKzFrinlCX5XVqEoxkNNFneA7bF9fagNSFIMzFF/jnptSCMq9+C81Ch?=
+ =?us-ascii?Q?yt7DNSlW+t7ZP2ym+3It7By8mP7VJrRnq5ubRTTa3HoUzG1fWJe+92pxvmuU?=
+ =?us-ascii?Q?c8pXrFwdB2px2FscZsCcyyjBTQQ+u1hIq/BJaATzDYcz4b8r99draj9eYg00?=
+ =?us-ascii?Q?/Bqm6wHguO4PXPh/dhpRCL7MXB9VKL8rT6Os5zYKTIGWnSo7Icadxc4v3UeS?=
+ =?us-ascii?Q?VCtLP45vphaPLowH/YRABjwHbp4zfqWgKdxRb53QzlEZ1aVUHNFYAsM8r7+i?=
+ =?us-ascii?Q?tngB7hoGnBEYJgEpMs2GrKQgPgMbU3SlRTToP0bd3Ysu9D+gy8YLci7Wjz4l?=
+ =?us-ascii?Q?PpIR5U3MA0Jsq/l+mgMmTkmEUSIu7fuFuRwS0ogt3mlQrGBo843lejeFZegx?=
+ =?us-ascii?Q?0oB8pP6CdjYhKRP6LKeR7UiEDmDS8cTlxX8FcKHdNnTpIxiL/QUsNKjdj9tn?=
+ =?us-ascii?Q?UwjUR7SBSoysi0Atpk2ScxgDaDUukDHF+Rhg66sZ9pObQm5LYNMskmsIql0R?=
+ =?us-ascii?Q?gajxsG3NZl5YOUZPI177pHrRHRxSnhGbXdMD6o5x7lsOu5gDT5GLOlDE0t3B?=
+ =?us-ascii?Q?//oK3URFvod7hrIZUbgv9j7u0YEgbRug8aBoz9wwlWc7Q0BNHzxgWBQDrrDo?=
+ =?us-ascii?Q?nXO027LI/mZgw8rVN8Bf6eLrxOxbspFBeZuMRSL0Wk4W85sZO8tBFM/LSLU5?=
+ =?us-ascii?Q?1OiWqTVMvXrCs8uy4NgmIJm6PV+qDTDq9rAt1w95c7x3tCozxQ7zgBTG1BtZ?=
+ =?us-ascii?Q?By6i+iT6oq9EHdqY5OE8fHYtZzEYvJ9l11eH85CyKr3LjTFoZqAGrZ5iHGh6?=
+ =?us-ascii?Q?a54AY2QwjOfM+5D3lntijamT7+503JQyuDGVeV1oLjW7tk+raKoWTTpBbDyu?=
+ =?us-ascii?Q?5DB/20WZ/Ze4kZcldtkeRmOi5Y75ktuIFKjjZ0TlW6QHbA=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DC05F5B0E7C4C249B02B5CE459090DFE@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cc9909e-21e3-4934-ab87-08d91ef92946
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2021 21:16:13.7213
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LK0XyFvfJHfL4HXHZwJcmGuOwqhIEqjlFE/GNymjC9eX4Uk/8v2yd5eO5F1OvvBbnXDoNgCFS7p9m7BB5GB7kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0364
+X-Proofpoint-GUID: WnbUeubIyoxiFUOdvot_Te8wxziVxV-f
+X-Proofpoint-ORIG-GUID: WnbUeubIyoxiFUOdvot_Te8wxziVxV-f
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-24_09:2021-05-24,2021-05-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105240126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/04/21 02:46, Sean Christopherson wrote:
-> Don't waste time writing zeros via VMWRITE during vCPU RESET, the VMCS
-> is zero allocated.
+On Sun, May 23, 2021 at 09:08:47PM CDT, Jamin Lin wrote:
+>The 05/19/2021 19:02, Zev Weiss wrote:
+>> On Wed, May 19, 2021 at 03:04:27AM CDT, Jamin Lin wrote:
+>> >The register definition between AST2600 A2 and A3 is different.
+>> >This patch avoid new registers definition of AST2600 to use
+>> >this driver. We will submit the path for the new registers
+>> >definition of AST2600.
+>> >
+>> >Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+>> >---
+>> > drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
+>> > 1 file changed, 22 insertions(+)
+>> >
+>> >diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-a=
+speed.c
+>> >index 724bf30600d6..007309077d9f 100644
+>> >--- a/drivers/i2c/busses/i2c-aspeed.c
+>> >+++ b/drivers/i2c/busses/i2c-aspeed.c
+>> >@@ -19,14 +19,20 @@
+>> > #include <linux/irqchip/chained_irq.h>
+>> > #include <linux/irqdomain.h>
+>> > #include <linux/kernel.h>
+>> >+#include <linux/mfd/syscon.h>
+>> > #include <linux/module.h>
+>> > #include <linux/of_address.h>
+>> > #include <linux/of_irq.h>
+>> > #include <linux/of_platform.h>
+>> > #include <linux/platform_device.h>
+>> >+#include <linux/regmap.h>
+>> > #include <linux/reset.h>
+>> > #include <linux/slab.h>
+>> >
+>> >+/* I2C Global Registers */
+>> >+/* 0x0c : I2CG Global Control Register (AST2500)  */
+>> >+#define ASPEED_I2CG_GLOBAL_CTRL_REG			0x0c
+>> >+
+>> > /* I2C Register */
+>> > #define ASPEED_I2C_FUN_CTRL_REG				0x00
+>> > #define ASPEED_I2C_AC_TIMING_REG1			0x04
+>> >@@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_de=
+vice *pdev)
+>> > 	struct resource *res;
+>> > 	int irq, ret;
+>> >
+>> >+	if (of_device_is_compatible(pdev->dev.of_node,
+>> >+				    "aspeed,ast2600-i2c-bus")) {
+>> >+		u32 global_ctrl;
+>> >+		struct regmap *gr_regmap;
+>> >+
+>> >+		gr_regmap =3D syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c=
+-global");
+>> >+
+>> >+		if (IS_ERR(gr_regmap)) {
+>> >+			ret =3D PTR_ERR(gr_regmap);
+>> >+		} else {
+>> >+			regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
+>> >+			if (global_ctrl & BIT(2))
+>> >+				return -EIO;
+>>
+>> A macro definition might be a bit nicer than a raw BIT(2) here I'd
+>> think.
+>Will modify
+>>
+>> Also, it seems a bit unfortunate to just bail on the device entirely if
+>> we find this bit set (seems like a good way for a bootloader to
+>> inadvertently DoS the kernel), though I guess poking global syscon bits
+>> in the bus probe function might not be ideal.  Could/should we consider
+>> some module-level init code to ensure that bit is cleared?
+>>
+>>
+>We use syscon API to get the global register of i2c not the specific i2c
+>bus.
+>Can you describe it more detail?
 
-Is this guaranteed to be valid, or could the VMCS in principle use some 
-weird encoding? (Like it does for the access rights, even though this 
-does not matter for this patch).
+Sure -- I just meant that if for whatever reason the kernel is booting
+on a system that's had that syscon bit set to enable the new register
+access mode (e.g. by a newer bootloader or something), it seems like
+we'd just give up entirely on enabling any i2c busses, when as far as I
+know there shouldn't be anything stopping us from resetting the bit back
+to be in the state this driver needs it to be in (old register mode) and
+then continuing along normally.
 
-Paolo
 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/vmx/vmx.c | 29 -----------------------------
->   1 file changed, 29 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 78d17adce7e6..74258ba4832a 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4427,13 +4427,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->   	}
->   
->   	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
-> -		vmcs_write64(EOI_EXIT_BITMAP0, 0);
-> -		vmcs_write64(EOI_EXIT_BITMAP1, 0);
-> -		vmcs_write64(EOI_EXIT_BITMAP2, 0);
-> -		vmcs_write64(EOI_EXIT_BITMAP3, 0);
-> -
-> -		vmcs_write16(GUEST_INTR_STATUS, 0);
-> -
->   		vmcs_write16(POSTED_INTR_NV, POSTED_INTR_VECTOR);
->   		vmcs_write64(POSTED_INTR_DESC_ADDR, __pa((&vmx->pi_desc)));
->   	}
-> @@ -4444,23 +4437,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->   		vmx->ple_window_dirty = true;
->   	}
->   
-> -	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
-> -	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
-> -	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
-> -
-> -	vmcs_write16(HOST_FS_SELECTOR, 0);            /* 22.2.4 */
-> -	vmcs_write16(HOST_GS_SELECTOR, 0);            /* 22.2.4 */
->   	vmx_set_constant_host_state(vmx);
-> -	vmcs_writel(HOST_FS_BASE, 0); /* 22.2.4 */
-> -	vmcs_writel(HOST_GS_BASE, 0); /* 22.2.4 */
->   
-> -	if (cpu_has_vmx_vmfunc())
-> -		vmcs_write64(VM_FUNCTION_CONTROL, 0);
-> -
-> -	vmcs_write32(VM_EXIT_MSR_STORE_COUNT, 0);
-> -	vmcs_write32(VM_EXIT_MSR_LOAD_COUNT, 0);
->   	vmcs_write64(VM_EXIT_MSR_LOAD_ADDR, __pa(vmx->msr_autoload.host.val));
-> -	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, 0);
->   	vmcs_write64(VM_ENTRY_MSR_LOAD_ADDR, __pa(vmx->msr_autoload.guest.val));
->   
->   	if (vmcs_config.vmentry_ctrl & VM_ENTRY_LOAD_IA32_PAT)
-> @@ -4493,7 +4472,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->   		memset(&vmx->pt_desc, 0, sizeof(vmx->pt_desc));
->   		/* Bit[6~0] are forced to 1, writes are ignored. */
->   		vmx->pt_desc.guest.output_mask = 0x7F;
-> -		vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
->   	}
->   
->   	vmx_setup_uret_msrs(vmx);
-> @@ -4536,13 +4514,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->   	vmcs_write32(GUEST_LDTR_LIMIT, 0xffff);
->   	vmcs_write32(GUEST_LDTR_AR_BYTES, 0x00082);
->   
-> -	if (!init_event) {
-> -		vmcs_write32(GUEST_SYSENTER_CS, 0);
-> -		vmcs_writel(GUEST_SYSENTER_ESP, 0);
-> -		vmcs_writel(GUEST_SYSENTER_EIP, 0);
-> -		vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
-> -	}
-> -
->   	vmcs_writel(GUEST_GDTR_BASE, 0);
->   	vmcs_write32(GUEST_GDTR_LIMIT, 0xffff);
->   
-> 
-
+Zev
