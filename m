@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A0038EF9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB48938EEB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhEXP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:58:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39476 "EHLO mail.kernel.org"
+        id S235029AbhEXPy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234934AbhEXPyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E83C6187E;
-        Mon, 24 May 2021 15:40:07 +0000 (UTC)
+        id S233363AbhEXPpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:45:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 207F66146D;
+        Mon, 24 May 2021 15:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870808;
-        bh=3Tr08Y78fD2cRH+schCpVdrD0QHHKQyBNwEkv7fNgL8=;
+        s=korg; t=1621870588;
+        bh=y4gE5u2iTP1KQezPI+ihblRALTW23y/htA7AjUmTlmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VdW0AXISlRPLWB7YDcviH18SRsF+c7QJ2h/iLwMA+NZxVTv1dYaKoFPoSPD8LDhh+
-         bE1K6cgjJ7vSlr5wMo/JqEihU2wdcwSRtq374N4D6n2C1emeUWnfIgTxU648yEgzTJ
-         VtAtmqe95aSnV1EjPFeqUuGQ+CRP8D39drXMP7qU=
+        b=SUCt+/kGE9K6IKVHsiz0f/ULMZTQ/EUzjeMpUBGUfadh1boiCD4lGiRmgtB6/KsWX
+         dmP4toK90zK9naE47G4LVsQ+O7Oth5R5mv0tz17grD4pyBLy3yq5mIDYg14EkLoeLv
+         Q8OxhcSYvCO9CfZLpXx1yATEXO5p3t/9BhGUl5Mo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Enzo Matsumiya <ematsumiya@suse.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 026/104] nvmet: seset ns->file when open fails
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Zqiang <qiang.zhang@windriver.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 15/71] locking/mutex: clear MUTEX_FLAGS if wait_list is empty due to signal
 Date:   Mon, 24 May 2021 17:25:21 +0200
-Message-Id: <20210524152333.685566656@linuxfoundation.org>
+Message-Id: <20210524152326.958132034@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+From: Zqiang <qiang.zhang@windriver.com>
 
-[ Upstream commit 85428beac80dbcace5b146b218697c73e367dcf5 ]
+[ Upstream commit 3a010c493271f04578b133de977e0e5dd2848cea ]
 
-Reset the ns->file value to NULL also in the error case in
-nvmet_file_ns_enable().
+When a interruptible mutex locker is interrupted by a signal
+without acquiring this lock and removed from the wait queue.
+if the mutex isn't contended enough to have a waiter
+put into the wait queue again, the setting of the WAITER
+bit will force mutex locker to go into the slowpath to
+acquire the lock every time, so if the wait queue is empty,
+the WAITER bit need to be clear.
 
-The ns->file variable points either to file object or contains the
-error code after the filp_open() call. This can lead to following
-problem:
-
-When the user first setups an invalid file backend and tries to enable
-the ns, it will fail. Then the user switches over to a bdev backend
-and enables successfully the ns. The first received I/O will crash the
-system because the IO backend is chosen based on the ns->file value:
-
-static u16 nvmet_parse_io_cmd(struct nvmet_req *req)
-{
-	[...]
-
-	if (req->ns->file)
-		return nvmet_file_parse_io_cmd(req);
-
-	return nvmet_bdev_parse_io_cmd(req);
-}
-
-Reported-by: Enzo Matsumiya <ematsumiya@suse.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 040a0a371005 ("mutex: Add support for wound/wait style locks")
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210517034005.30828-1-qiang.zhang@windriver.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/io-cmd-file.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/locking/mutex-debug.c |  4 ++--
+ kernel/locking/mutex-debug.h |  2 +-
+ kernel/locking/mutex.c       | 18 +++++++++++++-----
+ kernel/locking/mutex.h       |  4 +---
+ 4 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
-index 0abbefd9925e..b57599724448 100644
---- a/drivers/nvme/target/io-cmd-file.c
-+++ b/drivers/nvme/target/io-cmd-file.c
-@@ -49,9 +49,11 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
+index 771d4ca96dda..4fe40910f471 100644
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -57,7 +57,7 @@ void debug_mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 	task->blocked_on = waiter;
+ }
  
- 	ns->file = filp_open(ns->device_path, flags, 0);
- 	if (IS_ERR(ns->file)) {
--		pr_err("failed to open file %s: (%ld)\n",
--				ns->device_path, PTR_ERR(ns->file));
--		return PTR_ERR(ns->file);
-+		ret = PTR_ERR(ns->file);
-+		pr_err("failed to open file %s: (%d)\n",
-+			ns->device_path, ret);
-+		ns->file = NULL;
-+		return ret;
+-void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
++void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 			 struct task_struct *task)
+ {
+ 	DEBUG_LOCKS_WARN_ON(list_empty(&waiter->list));
+@@ -65,7 +65,7 @@ void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 	DEBUG_LOCKS_WARN_ON(task->blocked_on != waiter);
+ 	task->blocked_on = NULL;
+ 
+-	list_del_init(&waiter->list);
++	INIT_LIST_HEAD(&waiter->list);
+ 	waiter->task = NULL;
+ }
+ 
+diff --git a/kernel/locking/mutex-debug.h b/kernel/locking/mutex-debug.h
+index 1edd3f45a4ec..53e631e1d76d 100644
+--- a/kernel/locking/mutex-debug.h
++++ b/kernel/locking/mutex-debug.h
+@@ -22,7 +22,7 @@ extern void debug_mutex_free_waiter(struct mutex_waiter *waiter);
+ extern void debug_mutex_add_waiter(struct mutex *lock,
+ 				   struct mutex_waiter *waiter,
+ 				   struct task_struct *task);
+-extern void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
++extern void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 				struct task_struct *task);
+ extern void debug_mutex_unlock(struct mutex *lock);
+ extern void debug_mutex_init(struct mutex *lock, const char *name,
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 07a9f9f46e03..c0c7784f074b 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -204,7 +204,7 @@ static inline bool __mutex_waiter_is_first(struct mutex *lock, struct mutex_wait
+  * Add @waiter to a given location in the lock wait_list and set the
+  * FLAG_WAITERS flag if it's the first waiter.
+  */
+-static void __sched
++static void
+ __mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 		   struct list_head *list)
+ {
+@@ -215,6 +215,16 @@ __mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+ 		__mutex_set_flag(lock, MUTEX_FLAG_WAITERS);
+ }
+ 
++static void
++__mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter)
++{
++	list_del(&waiter->list);
++	if (likely(list_empty(&lock->wait_list)))
++		__mutex_clear_flag(lock, MUTEX_FLAGS);
++
++	debug_mutex_remove_waiter(lock, waiter, current);
++}
++
+ /*
+  * Give up ownership to a specific task, when @task = NULL, this is equivalent
+  * to a regular unlock. Sets PICKUP on a handoff, clears HANDOF, preserves
+@@ -1071,9 +1081,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 			__ww_mutex_check_waiters(lock, ww_ctx);
  	}
  
- 	ret = nvmet_file_ns_revalidate(ns);
+-	mutex_remove_waiter(lock, &waiter, current);
+-	if (likely(list_empty(&lock->wait_list)))
+-		__mutex_clear_flag(lock, MUTEX_FLAGS);
++	__mutex_remove_waiter(lock, &waiter);
+ 
+ 	debug_mutex_free_waiter(&waiter);
+ 
+@@ -1090,7 +1098,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 
+ err:
+ 	__set_current_state(TASK_RUNNING);
+-	mutex_remove_waiter(lock, &waiter, current);
++	__mutex_remove_waiter(lock, &waiter);
+ err_early_kill:
+ 	spin_unlock(&lock->wait_lock);
+ 	debug_mutex_free_waiter(&waiter);
+diff --git a/kernel/locking/mutex.h b/kernel/locking/mutex.h
+index 1c2287d3fa71..f0c710b1d192 100644
+--- a/kernel/locking/mutex.h
++++ b/kernel/locking/mutex.h
+@@ -10,12 +10,10 @@
+  * !CONFIG_DEBUG_MUTEXES case. Most of them are NOPs:
+  */
+ 
+-#define mutex_remove_waiter(lock, waiter, task) \
+-		__list_del((waiter)->list.prev, (waiter)->list.next)
+-
+ #define debug_mutex_wake_waiter(lock, waiter)		do { } while (0)
+ #define debug_mutex_free_waiter(waiter)			do { } while (0)
+ #define debug_mutex_add_waiter(lock, waiter, ti)	do { } while (0)
++#define debug_mutex_remove_waiter(lock, waiter, ti)     do { } while (0)
+ #define debug_mutex_unlock(lock)			do { } while (0)
+ #define debug_mutex_init(lock, name, key)		do { } while (0)
+ 
 -- 
 2.30.2
 
