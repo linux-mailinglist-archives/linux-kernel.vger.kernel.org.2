@@ -2,120 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6FE38DF3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5815538DF43
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 04:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhEXCga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 22:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhEXCg3 (ORCPT
+        id S232215AbhEXCho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 22:37:44 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:36515 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231867AbhEXChl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 22:36:29 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3556CC061574;
-        Sun, 23 May 2021 19:35:01 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id j189so4924467qkf.2;
-        Sun, 23 May 2021 19:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jJuutPWSYZAO28hQHvByxbn0puUm3ID8Bjg9Q7zuB7I=;
-        b=gyn3CX5lKh7USWncJLEqq50UPHkDuQtOOqqvL9MqVnZjhmT5Y7orqLXwlWHS8bWlbm
-         u49FBbUwu3mSCq+sY/aDG8zv7KOpP/YNiBdr8myFB86xFTR2RRblZiWODTK8z0x2CASk
-         9gvfahTH8t+zsivcrREBshWk/QZhFbE7BZCEo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jJuutPWSYZAO28hQHvByxbn0puUm3ID8Bjg9Q7zuB7I=;
-        b=FD6+aYGAoNcdvKgYGNhu093/53lqpRyv0Nd0lC/QFZ/HMmZN4XOm7XsTeIPJSF6q6a
-         aVMa8abomaJDsPn00BO0SNYWybEZ+sa0EA6xTpll/eVBizf+1tUJ2PeFON6HYSqa2LA1
-         Zo7EsU7/ga/pXJ9OwuuOdd0sfDpptNLHgFNDD6WuleDVPMYlFp9UZmAC/HMdSMmJfgCQ
-         +jvq+65UjncfpDz6w9TrdGmxVhUsexwUoX1hTzIzHWt3fIYc7o4NSxqe9cuhfKGeFast
-         vCd4io9jj0hAHfOXmPfqKM+UoeL3J/muWiKDb/HeFnoxdgD/Bdkaef6dozqKvEdo7sHR
-         gLcw==
-X-Gm-Message-State: AOAM533tkFH8ZcDoqzNcLoZ9RGejBr1PdbmWqbfP3jk1CVk0V/y9FXEd
-        32FQ4zAtT3Ccst/qR2v2u05II2o6ZCdMBPVkgCY=
-X-Google-Smtp-Source: ABdhPJxlXMLLdn72u71hp/PqNVkvxZeVT04/cLpqvway+mxqT+thSozVVCebxD5BCKvPl0m1TBVjHyy5U+KsEdKwvf4=
-X-Received: by 2002:ae9:e105:: with SMTP id g5mr28234682qkm.55.1621823699912;
- Sun, 23 May 2021 19:34:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
- <20210519080436.18975-2-jamin_lin@aspeedtech.com> <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
- <20210520033140.GA3656@aspeedtech.com> <20210521020033.GB19153@taoren-ubuntu-R90MNF91>
- <20210524015310.GA2591@aspeedtech.com>
-In-Reply-To: <20210524015310.GA2591@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 24 May 2021 02:34:47 +0000
-Message-ID: <CACPK8Xd5HTNAR8MpQPWGp+-t9ixz2r3JYDjr6jUS+9ExyB94zg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of AST2600
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Tao Ren <rentao.bupt@gmail.com>,
+        Sun, 23 May 2021 22:37:41 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14O2Mac0077814;
+        Mon, 24 May 2021 10:22:36 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 24 May
+ 2021 10:35:29 +0800
+Date:   Mon, 24 May 2021 10:35:27 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
         "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        Steven Lee <steven_lee@aspeedtech.com>,
+        <linux-arm-kernel@lists.infradead.org>,
         "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Subject: Re: [PATCH v4 1/3] ARM: dts: aspeed: ast2600evb: Add sdhci node and
+ gpio regulator for A2 evb.
+Message-ID: <20210524023526.GA2727@aspeedtech.com>
+References: <20210520101346.16772-1-steven_lee@aspeedtech.com>
+ <20210520101346.16772-2-steven_lee@aspeedtech.com>
+ <CACPK8XcSYgQKRp7C5gZ9LKekL0LCHYPDwjC49EDTEr5__T2M3Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CACPK8XcSYgQKRp7C5gZ9LKekL0LCHYPDwjC49EDTEr5__T2M3Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14O2Mac0077814
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 01:53, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
->
-> The 05/21/2021 02:00, Tao Ren wrote:
-> > Hi Jamin,
+The 05/21/2021 09:25, Joel Stanley wrote:
+> Hi Steven,
+> 
+> On Thu, 20 May 2021 at 10:16, Steven Lee <steven_lee@aspeedtech.com> wrote:
 > >
-> > On Thu, May 20, 2021 at 11:31:41AM +0800, Jamin Lin wrote:
-> > > The 05/19/2021 22:59, Joel Stanley wrote:
-> > > > On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
-> > > > >
-> > > > > The register definition between AST2600 A2 and A3 is different.
-> > > > > This patch avoid new registers definition of AST2600 to use
-> > > > > this driver. We will submit the path for the new registers
-> > > > > definition of AST2600.
-> > > >
-> > > > The AST2600 v9 datasheet says that bit 2 selects between old and new
-> > > > register sets, and that the old register set is the default.
-> > > >
-> > > > Has the default changed for the A3?, and the datasheet is incorrect?
-> > > >
-> > > > Does the A3 still support the old register set?
-> > > >
-> > > We suggest user to use the new i2c driver for AST2600 and we will sumbit
-> > > it. This driver is used to AST2500 and AST2400 SOCs. Change this
-> > > driver to check global register of i2c to avoid user build the wrong driver.
+> > AST2600 A2(or newer) EVB has gpio regulators for toggling signal voltage
+> > between 3.3v and 1.8v, the patch adds sdhci node and gpio regulator in the
+> > new dts file and adds commment for describing the reference design.
+> 
+> spelling: comment
+> 
+
+Thanks, will correct the typo.
+
+> I need you to justify the separate dts for the A2 EVB.
+> 
+> What would happen if this device tree was loaded on to an A1 or A0?
+> 
+
+Since the clock default value(SCU210) of A1 and A0 are different to A2,
+the following error would happen if A2 device tree was loaded on A1/A0.
+
+```
+[  133.179825] mmc1: Reset 0x4 never completed.
+[  133.184599] mmc1: sdhci: ============ SDHCI REGISTER DUMP ===========
+[  133.191786] mmc1: sdhci: Sys addr:  0x00000000 | Version:  0x00000002
+[  133.198972] mmc1: sdhci: Blk size:  0x00007008 | Blk cnt:  0x00000001
+[  133.206158] mmc1: sdhci: Argument:  0x00000c00 | Trn mode: 0x00000013
+[  133.213343] mmc1: sdhci: Present:   0x01f70001 | Host ctl: 0x00000011
+[  133.220528] mmc1: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+[  133.227713] mmc1: sdhci: Wake-up:   0x00000000 | Clock:    0x00008007
+[  133.234898] mmc1: sdhci: Timeout:   0x0000000b | Int stat: 0x00000000
+[  133.242083] mmc1: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+[  133.249268] mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[  133.256453] mmc1: sdhci: Caps:      0x07f80080 | Caps_1:   0x00000007
+[  133.263638] mmc1: sdhci: Cmd:       0x0000341a | Max curr: 0x001f0f08
+[  133.270824] mmc1: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x01dd7f7f
+[  133.278009] mmc1: sdhci: Resp[2]:   0x325b5900 | Resp[3]:  0x00400e00
+[  133.285193] mmc1: sdhci: Host ctl2: 0x00000000
+[  133.290148] mmc1: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0xbe041200
+[  133.297332] mmc1: sdhci: ============================================
+
+```
+
+Besides, A1/A0 EVBs don't have regulator, vmmc and vqmmc should be
+removed from sdhci node of A1/A0 dts.
+
+> Would this device tree be used for the A3 (and any future revision?)
+> 
+
+Yes, A3 can use the A2 dts.
+
+> An alternative proposal: we modify the ast2600-evb.dts to support the
+> A2 (which I assume would also support the A3).
+> 
+> If we need a separate board file for the A0 and A1 EVB, we add a new
+> one that supports these earlier revisions. Or we decide to only
+> support the latest revision in mainline.
+> 
+
+In this patch, I add a new dts to support A2 sdhci, and include the
+original dts since the other settings can be loaded on A2.
+Do you mean creating a new file(e.g. aspeed-ast2600-evb-a1.dts) for A1,
+and modifying the original aspeed-ast2600-evb.dts for supporting A2?
+
+If we decide to only support the latest version in mainline, users
+should mark vmmc and vqmmc as comment and modify clk-phase manually
+for supporting A1.
+
 > >
-> > If I understand correctly, the answer implies old register set is still
-> > supported in A3 although aspeed suggest people using the new driver/mode?
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts | 98 +++++++++++++++++++++
+> >  1 file changed, 98 insertions(+)
+> >  create mode 100644 arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts
 > >
-> > Can you please share more context behind the suggestion? Such as new
-> > register mode has better performance? Or some known issues that were
-> > deteted in old mode are fixed in new register mode?
+> > diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts b/arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts
+> > new file mode 100644
+> > index 000000000000..d581e8069a82
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts
+> > @@ -0,0 +1,98 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +// Copyright 2021 IBM Corp.
+> > +
+> > +#include "aspeed-ast2600-evb.dts"
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +
+> > +/ {
+> > +       model = "AST2600 A2 EVB";
+> > +       compatible = "aspeed,ast2600";
+> 
+> Will this override the "aspeed,ast2600-evb" compatible in the dts? I
+> think you can drop the compatible string here and just use the one
+> from the DTS.
+> 
+
+Thanks for review, I will remove it.
+
+> > +
+> > +       vcc_sdhci0: regulator-vcc-sdhci0 {
+> > +               compatible = "regulator-fixed";
+> > +               regulator-name = "SDHCI0 Vcc";
+> > +               regulator-min-microvolt = <3300000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +               gpios = <&gpio0 168
+> 
+> We have macros for describing the GPIOs:
+> 
+> ASPEED_GPIO(V, 0)
+> 
+> > +                        GPIO_ACTIVE_HIGH>;
+> 
+> This can go on one line.
+> 
+> > +               enable-active-high;
+> > +       };
+> > +
+> > +       vccq_sdhci0: regulator-vccq-sdhci0 {
+> > +               compatible = "regulator-gpio";
+> > +               regulator-name = "SDHCI0 VccQ";
+> > +               regulator-min-microvolt = <1800000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +               gpios = <&gpio0 169
+> > +                        GPIO_ACTIVE_HIGH>;
+> > +               gpios-states = <1>;
+> > +               states = <3300000 1>,
+> > +                        <1800000 0>;
+> > +       };
+> > +
+> > +       vcc_sdhci1: regulator-vcc-sdhci1 {
+> > +               compatible = "regulator-fixed";
+> > +               regulator-name = "SDHCI1 Vcc";
+> > +               regulator-min-microvolt = <3300000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +               gpios = <&gpio0 170
+> > +                        GPIO_ACTIVE_HIGH>;
+> > +               enable-active-high;
+> > +       };
+> > +
+> > +       vccq_sdhci1: regulator-vccq-sdhci1 {
+> > +               compatible = "regulator-gpio";
+> > +               regulator-name = "SDHCI1 VccQ";
+> > +               regulator-min-microvolt = <1800000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +               gpios = <&gpio0 171
+> > +                        GPIO_ACTIVE_HIGH>;
+> > +               gpios-states = <1>;
+> > +               states = <3300000 1>,
+> > +                        <1800000 0>;
+> > +       };
+> > +};
+> > +
+> > +&sdc {
+> > +       status = "okay";
+> > +};
+> > +
+> > +/*
+> > + * The signal voltage of sdhci0 and sdhci1 on AST2600-A2 EVB is able to be
+> > + * toggled by GPIO pins.
+> > + * In the reference design, GPIOV0 of AST2600-A2 EVB is connected to the
+> > + * power load switch that providing 3.3v to sdhci0 vdd, GPIOV1 is connected to
+> > + * a 1.8v and a 3.3v power load switch that providing signal voltage to
+> 
+> nit: provides
+> 
+
+Will modify it.
+
+> > + * sdhci0 bus.
+> > + * If GPIOV0 is active high, sdhci0 is enabled, otherwise, sdhci0 is disabled.
+> > + * If GPIOV1 is active high, 3.3v power load switch is enabled, sdhci0 signal
+> > + * voltage is 3.3v, otherwise, 1.8v power load switch will be enabled,
+> > + * sdhci0 signal voltage becomes 1.8v.
+> > + * AST2600-A2 EVB also support toggling signal voltage for sdhci1.
+> 
+> nit: supports
+> 
+
+Will modify it.
+
+> > + * The design is the same as sdhci0, it uses GPIOV2 as power-gpio and GPIOV3
+> > + * as power-switch-gpio.
+> > + */
+> > +&sdhci0 {
+> > +       status = "okay";
+> > +       bus-width = <4>;
+> > +       max-frequency = <100000000>;
+> > +       sdhci-drive-type = /bits/ 8 <3>;
+> > +       sdhci-caps-mask = <0x7 0x0>;
+> > +       sdhci,wp-inverted;
+> > +       vmmc-supply = <&vcc_sdhci0>;
+> > +       vqmmc-supply = <&vccq_sdhci0>;
+> > +       clk-phase-sd-hs = <7>, <200>;
+> > +};
+> > +
+> > +&sdhci1 {
+> > +       status = "okay";
+> > +       bus-width = <4>;
+> > +       max-frequency = <100000000>;
+> > +       sdhci-drive-type = /bits/ 8 <3>;
+> > +       sdhci-caps-mask = <0x7 0x0>;
+> > +       sdhci,wp-inverted;
+> > +       vmmc-supply = <&vcc_sdhci1>;
+> > +       vqmmc-supply = <&vccq_sdhci1>;
+> > +       clk-phase-sd-hs = <7>, <200>;
+> > +};
+> > +
+> > --
+> > 2.17.1
 > >
-> Yes, AST2600 A1, A2 and A3 support both old and new register set. The difference
-> between old and new register set are the register address and supported registers.
-> User can choose to use both old and new register set. However, ASPEED would like to
-> change new register set by default for AST2600.
-
-We can certainly make the driver for the new register set the default
-for AST2600 when the new driver is merged.
-
-I disagree that we should introduce a run time check to fail to probe
-the old driver. Please do not merge this patch.
-
-Please focus your effort on getting the new driver merged instead.
-
-Cheers,
-
-Joel
