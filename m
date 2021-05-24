@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB16E38EE4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6329A38F027
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhEXPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        id S235827AbhEXQBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232704AbhEXPnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25149613BF;
-        Mon, 24 May 2021 15:35:29 +0000 (UTC)
+        id S233991AbhEXPzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB43F613F6;
+        Mon, 24 May 2021 15:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870529;
-        bh=8Fc8KHRbYELJMHUzT3bl6rJhu3JG5Bk4W8LjYl8wVKM=;
+        s=korg; t=1621870903;
+        bh=eSo3u7S8Y8x03P5HuFzkqcHPD8cByTV/ijpy0qViCm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sLDhKuPtmxSRuEi81LV5GJtam2p9H+X/KINpZmo7BvB595sSzBz6cBdAXIyVJDd90
-         dTYxiN92JhBkxRR/fS0XDCxMgsSq9eG91N6SHrv7uynxBI8MVOg9EBGnW8Aabdh4Ju
-         WxRrpeoVuMY3ccU7okLUYj8gOeQnZD/JdltwZ0Ys=
+        b=YdkskQtXOCv2swJnsKdcJxwS0GlcravoZraUJ0WcQx0ZnoZRfF7TxnW9mqFrcMXa7
+         ssw7VG+WGAQebCYYqL1RTieZOYHa77aVXUcazVGh+rmuOv9rwry+ywaBrYClQJrGtz
+         Qh71zKSPaUhtINTZQOWTG4GiFVEsHK8eW5+/G6tM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 37/49] Revert "qlcnic: Avoid potential NULL pointer dereference"
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH 5.10 053/104] Revert "serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference"
 Date:   Mon, 24 May 2021 17:25:48 +0200
-Message-Id: <20210524152325.573179480@linuxfoundation.org>
+Message-Id: <20210524152334.604507033@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit b95b57dfe7a142bf2446548eb7f49340fd73e78b upstream.
+commit 754f39158441f4c0d7a8255209dd9a939f08ce80 upstream.
 
-This reverts commit 5bf7295fe34a5251b1d241b9736af4697b590670.
+This reverts commit 32f47179833b63de72427131169809065db6745e.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
 correct or not.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-This commit does not properly detect if an error happens because the
-logic after this loop will not detect that there was a failed
-allocation.
+Upon review, this commit was found to be not be needed at all as the
+change was useless because this function can only be called when
+of_match_device matched on something.  So it should be reverted.
 
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Fixes: 5bf7295fe34a ("qlcnic: Avoid potential NULL pointer dereference")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-25-gregkh@linuxfoundation.org
+Fixes: 32f47179833b ("serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference")
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-6-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/serial/mvebu-uart.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-@@ -1048,8 +1048,6 @@ int qlcnic_do_lb_test(struct qlcnic_adap
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -818,9 +818,6 @@ static int mvebu_uart_probe(struct platf
+ 		return -EINVAL;
+ 	}
  
- 	for (i = 0; i < QLCNIC_NUM_ILB_PKT; i++) {
- 		skb = netdev_alloc_skb(adapter->netdev, QLCNIC_ILB_PKT_SIZE);
--		if (!skb)
--			break;
- 		qlcnic_create_loopback_buff(skb->data, adapter->mac_addr);
- 		skb_put(skb, QLCNIC_ILB_PKT_SIZE);
- 		adapter->ahw->diag_cnt = 0;
+-	if (!match)
+-		return -ENODEV;
+-
+ 	/* Assume that all UART ports have a DT alias or none has */
+ 	id = of_alias_get_id(pdev->dev.of_node, "serial");
+ 	if (!pdev->dev.of_node || id < 0)
 
 
