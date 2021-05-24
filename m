@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7720838F33C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B60638F33E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhEXSui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S233096AbhEXSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbhEXSuf (ORCPT
+        with ESMTP id S233000AbhEXSvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:50:35 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAB7C061574;
-        Mon, 24 May 2021 11:49:06 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u11so27946709oiv.1;
-        Mon, 24 May 2021 11:49:06 -0700 (PDT)
+        Mon, 24 May 2021 14:51:39 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB0EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:50:10 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so26133841oth.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dYnEhzkp1dbbf9fIGVRRORFDdaTodcnnOdSTVqP9m0o=;
-        b=J3EkV+L9cKqEC9dducGQe+dlBDeMynfnUMq+roxzZEzKLRGNcT56FSxo8Ei5FeMx9C
-         5OeCXpu0A4JO9WW4UhE3RpEM26Ari6+3g4EcsBxkChmBIzewPsSA9EBS2SLG5QaR27f+
-         wj6/1NBybMiWJZwBBPkUyzliWdjaSUvZDPHlcEiMBw9DeugmzMAcZUBbM6sF7CsYghl/
-         ghnzS0dH/qs9krdIbeCr+R2u00qPaEQ8aM5DeVSD/u0sD5nyJUNQ/Iw5a4taqbyDdoT2
-         05GQday22Hv7KDHRrMyHlo9lWGmOaEKIDUdPmh4JIjhM1gjsq/IT7F70IZF1gH2nTYTV
-         v+3Q==
+        bh=OA4u1hUVW7+czWLOl7FPRNPAHAh/vc/gl/M2fiIZYJo=;
+        b=tQ32gaJ+K524LKDCVZIVsFdMx5pCHrP/SDGMrpfkp0V7f+aQg0NutnYXMkesDoexif
+         n2+tK4S+bphjLSN2kEcC6C7z9YBFVFBIreIhdg0x4rRIMU0jkHEkla0y5cDBNr3mHaPn
+         kl8H3/DFY/rz9Dl+uqpvH3aJCCgzHC7tfzu/wQlTFe+UWJf9hTPXJ12olYhHAgghQGgO
+         FSYeEShH7WQ1ssMxvkzVLmVtMoOpF7BFQdFzoPKM1HQYO+GKODiYM5nw84om2K2sR5Hf
+         LJ9MmwmflUEZffrDx/bUSw6EugvN8R10GbN5W5H9uShfTJaZGM9EWKVUfVjCP36awygI
+         55fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dYnEhzkp1dbbf9fIGVRRORFDdaTodcnnOdSTVqP9m0o=;
-        b=Ab9wGhSIAvtkdvCkS0bb92QpWR8ciHVmHw/6NRov27etJK38haEFOU2dxHjt9TUcV7
-         9QT29L04ztPx28tITuCxzC49927YFZMIydHGOMiGI0N7VhI8nS1miPXv9vUyWtzoasuk
-         dRn5ZnDAq/ZdXuqrsQ/qiiJYV2J03cm4kN/NwtyaIuWvSqbnXuUzPtdRvaH8Zd1kQNAz
-         yBphWjhJy4uA8YUHhm+kk33ixzqwUwcjAihIV6788rXWa7OgrZGLIySanKqu1IMsPjAG
-         h1GFZGHVmi3hdJIjqm+XPSfMJMczP//e9Y4yTqm5OOW6+VTKc1gZm0ci0ErVuV/LyfaU
-         g3NQ==
-X-Gm-Message-State: AOAM5339ZeceYgyP6lCSCbYCZV4/ksEE63vSHGMPPsyc4NM+iE2/5BfQ
-        buxbBkS8ENN/rP+nPSf1DrE1uJ67wzFt1Wi8Tfc=
-X-Google-Smtp-Source: ABdhPJwVX9evJqZgQ8DoevhP5UkPf9wyiPN6kdoDCnSMac0ZTswKiitlAwMr0DjZ60GMh/dFVtX2UO7EU+ZEJZcSc34=
-X-Received: by 2002:a05:6808:206:: with SMTP id l6mr329581oie.5.1621882146073;
- Mon, 24 May 2021 11:49:06 -0700 (PDT)
+        bh=OA4u1hUVW7+czWLOl7FPRNPAHAh/vc/gl/M2fiIZYJo=;
+        b=O2mB5BIX/LUm3i3zQD+senX0XYxfMjjT2KVlvXYGV8W8iniscqXTLYJU0T0DoIvte1
+         aQMgdgwBpAuaRYPr8Z29A/FLBiu8RjTHCTg0RGKFznmlk+iziOFCp07/2PtE/7o97UG6
+         /LUROLtW69pjkU5uN4TATq88mewH0UNJnuAeUTEBZgEcP6H+QGEhFXW5jrMDRcWfaF1n
+         OfBYQ/f7qlJqZ+9eFxFUbWWkYyw8NaGvky0kwqiy8SZTOTEh3xG4Wm3B+sxC9xenkXba
+         gMvRxcCjw1LZCRL7eb35JPLBbJXrOMzdoV9Ooig57s9bH1Lyh57tjEKvkc4QOhnwiO5P
+         ny4Q==
+X-Gm-Message-State: AOAM531SQ+Xpg4OPIMea73Z3UHbBN6rQiPC6zMz0lhGn+cEDH3zYd30I
+        +m32hYEl248ubnnGe14NaDmEu4xHGS70xovncrU=
+X-Google-Smtp-Source: ABdhPJwiKzX9Gj1sMzHOgN92igF3UyXdCiTIb4xlUH7OP/tM0D4aeQ/+U1aKEUBnpy8WLZa75emQN038NmfSWdArwjY=
+X-Received: by 2002:a9d:57cd:: with SMTP id q13mr19783026oti.23.1621882209553;
+ Mon, 24 May 2021 11:50:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <1621853213-55876-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1621853213-55876-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <20210524071554.12344-1-nswdhpyhwt@163.com>
+In-Reply-To: <20210524071554.12344-1-nswdhpyhwt@163.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 May 2021 14:48:55 -0400
-Message-ID: <CADnq5_N3WkoYHcn8b1-qZ23+t=E9xxV5fV_1Lwqck6x2dUPqmA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: remove unreachable code
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Date:   Mon, 24 May 2021 14:49:58 -0400
+Message-ID: <CADnq5_OoFF=zEr61yRj0c6xXTBO4qLwor76e4knyyPg1ZhHF0g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fix typo
+To:     nswdhpyhwt@163.com
 Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
         Dave Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sonny Jiang <sonny.jiang@amd.com>, Leo Liu <leo.liu@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "tony.huang_cp" <huangwentao@yulong.com>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,37 +73,39 @@ Applied.  Thanks!
 
 Alex
 
-On Mon, May 24, 2021 at 6:47 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
+On Mon, May 24, 2021 at 3:45 AM <nswdhpyhwt@163.com> wrote:
 >
-> In the function amdgpu_uvd_cs_msg(), every branch in the switch
-> statement will have a return, so the code below the switch statement
-> will not be executed.
+> From: "tony.huang_cp" <huangwentao@yulong.com>
 >
-> Eliminate the follow smatch warning:
+> change 'interupt' to 'interrupt'
 >
-> drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
-> ignoring unreachable code.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: tony.huang_cp <huangwentao@yulong.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> index 82f0542..375b346 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> @@ -842,8 +842,6 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_ctx *ctx,
->                 DRM_ERROR("Illegal UVD message type (%d)!\n", msg_type);
->                 return -EINVAL;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
+> index 284447d..6c0e914 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c
+> @@ -340,7 +340,7 @@ static int uvd_v3_1_start(struct amdgpu_device *adev)
+>         /* enable VCPU clock */
+>         WREG32(mmUVD_VCPU_CNTL,  1 << 9);
+>
+> -       /* disable interupt */
+> +       /* disable interrupt */
+>         WREG32_P(mmUVD_MASTINT_EN, 0, ~(1 << 1));
+>
+>  #ifdef __BIG_ENDIAN
+> @@ -405,7 +405,7 @@ static int uvd_v3_1_start(struct amdgpu_device *adev)
+>                 return r;
 >         }
-> -       BUG();
-> -       return -EINVAL;
->  }
 >
->  /**
+> -       /* enable interupt */
+> +       /* enable interrupt */
+>         WREG32_P(mmUVD_MASTINT_EN, 3<<1, ~(3 << 1));
+>
+>         WREG32_P(mmUVD_STATUS, 0, ~(1<<2));
 > --
-> 1.8.3.1
+> 1.9.1
 >
