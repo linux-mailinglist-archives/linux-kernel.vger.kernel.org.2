@@ -2,145 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB7538E740
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1538B38E742
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhEXNTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhEXNTt (ORCPT
+        id S232785AbhEXNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:20:27 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37691 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232401AbhEXNU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:19:49 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506B0C061574;
-        Mon, 24 May 2021 06:18:20 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w7so20171500lji.6;
-        Mon, 24 May 2021 06:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYeENMZqICNqwNEdOZ74tQtw/Ef3oNWWuv3P25XAd+U=;
-        b=eIGrKvllk269Xsalcub08+tKQrLaQMeAD9UDifih7ZgmeRLps2KJ2P/AXnToTWWyEt
-         mD1CzB9k0znR9KScbxl8/AnNn3Ska3pEysogZVGBoStwa6riVNktMI/FnofSPciOXObk
-         o4lUHQlpNcY81p/uZANB0hSaC35WlCJbV5+XpoypMQWIYxOHAODxDHqDj54xaRyKQ/qe
-         COi7+DXFb8cCrZkph9Gi6PxJIHiYbsQX6TdUk4n3v8UanedGfgSFn7I+pTt5R+Z20fqj
-         iQ3AhhQ+OkPTNPvJVveqb97BXVaJocNkW5bZVIV9OwAU3wI//uzRPmgDt90ZTR+84k+W
-         grDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYeENMZqICNqwNEdOZ74tQtw/Ef3oNWWuv3P25XAd+U=;
-        b=MzIUmdXp9+gYMHuPk/iQB5pRH2tTjV7kfmQWL61OrfDT1UOKptZaDrB/fIs4DpHxau
-         GRvh+6jxqiqHTzShWTt2KVOp9ewSldv6v+UMl52S9YAu7k6Q3aeEuZSdHII+EMJnBQJZ
-         IqayW7OdvPXOKkpV26JdMGOb/RlJoXsds0U/dhQMoCsuYSNTHIhinY4l4PZZFag2NnnB
-         x7MEQuUhwAXTJwcK//vtvZAwSbeaCuXUFbPUVeUv43V4yPlXJnebOm4oKpP1QzgBamFi
-         Rvpmop4X40uVyMPDGP89b+K96eSk9cJMxYwPLwLsZoWXkxiiDpzAhSZSAsqw+7iWaZbt
-         FhIA==
-X-Gm-Message-State: AOAM532EeqBvG2230Bqb8nG1Q1yDquKUDddeXEuFl2aetvur5FXOKw3o
-        WguysIlQzxoxvHFBDGoOhxCjefT4vd5LgogGpFM=
-X-Google-Smtp-Source: ABdhPJxMdkP9zbJg3gLbxKU38KxPES/NtdhxQc+eYMNFikv0NMD5gXBnld/mMwch97MCypWOUJ1DM60xDEVzJ5HgtYM=
-X-Received: by 2002:a2e:b4ed:: with SMTP id s13mr17008484ljm.86.1621862298712;
- Mon, 24 May 2021 06:18:18 -0700 (PDT)
+        Mon, 24 May 2021 09:20:26 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 8A391395B;
+        Mon, 24 May 2021 09:18:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 24 May 2021 09:18:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=A4U8f622y15xN+ZagXBG9NpEC5
+        YDva9tV4Lav/1ucwM=; b=F3ynUO4APQaMxLO/ocrADPqrX6M27XLkniI2nEhnbj
+        aajvXV6vvOKgSEAVvsP/4L600n9a4/MeUZop4nGHymNHJ9I9qeWDkMUzH2YwuR/x
+        jxD2WIbA9mSTPMNFNaJZxAaLun4cWMRbTuh49L9+5/UeZ6pv30yED+lQ24N+ygn+
+        oxZ4pfaD3GgyvYf2BJvOdbvkc0Vhx/o7f17iX1jziXzqjKL35KeTLz9TATv3uIlW
+        nR7UoVEDkYKC+Yaq7Cus6mSBBjCY2o7GjrHWvsNFAiyiiq996vQ61AYy5e70YK2Y
+        4h9Lkv1Am3AWkQVdsABgwSNvsiyBZ8OV5OL0yuOeIzwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=A4U8f622y15xN+Zag
+        XBG9NpEC5YDva9tV4Lav/1ucwM=; b=jzIUuTKnJfSXe7D9TrvlpHwRUFH+2/S9i
+        pzlS0SNUF5ddkhNkJQ9qQSZx2gpAP89Si6joYT+wQ5N5uept7EPi13ostt4f9+CZ
+        nrRVuWDIO1NlMZ1mcQo8WAiA8xDKxI45pF/c7gKdbInAZF4hHSi+PxuezivJG0TT
+        ZyGJgWLoJlUIkb0Ak8u+KPTv4x7FbulGWerKZ95LakFglRyNV6zKgHp4Q+NsdunZ
+        Hsna8g5QR8buCa54QsWtt7A44szBWcDDGyXJ4Q1qcTgnfBx3G63ipb3XswOYUt6j
+        qXJDTWDeQoHrOVP2O9vyk70BwX7+RDj+duobk541KnIZSThwgtKmg==
+X-ME-Sender: <xms:vqerYO6fKQa1oonH4DaF10jg1P2qWxozCS3U0J2UqVD5UpFPGXkvHQ>
+    <xme:vqerYH4IxyCS9p8M8SCq9_Y83_1IFXeNLXagUYl6p5rNolSSurxXzPqKzw3oOx-FV
+    b7oGW9Dq-Mgd21FdiQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+    necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:vqerYNcp6NULpyIzNbLohI3f1mSdLFn3RNuDHRMKmKFDPT6RvyJVww>
+    <xmx:vqerYLJmiPKkhimIqF1SuohdRkcjGr1VmNh5_EixbVe81ZRWtxNeIw>
+    <xmx:vqerYCJqsxTsZUuhmZ-ZIRA5j78a2UrltQPjQAs5FbA6KjTx5GbNdA>
+    <xmx:waerYNa3SyqoTN2xVFzh7KkhUoqXY_NdBmnMU4IkK-1pz4M6nAAaBKDKluk>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 24 May 2021 09:18:53 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>, linux-kernel@vger.kernel.org,
+        Linus Wallei <linus.walleij@linaro.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH 1/2] drm/vc4: hdmi: Fix error path of hpd-gpios
+Date:   Mon, 24 May 2021 15:18:51 +0200
+Message-Id: <20210524131852.263883-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1621578594-13237-1-git-send-email-sxwjean@me.com>
- <e0c0302f-e63f-7eba-872b-85e21b0b1622@redhat.com> <CAEVVKH9nwPmQo8L-eRsWST+gPaJ73MSHZfJ-mM8qWvPaiejdrA@mail.gmail.com>
- <YKuAvt3WXBVASuhY@boqun-archlinux>
-In-Reply-To: <YKuAvt3WXBVASuhY@boqun-archlinux>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Mon, 24 May 2021 21:17:52 +0800
-Message-ID: <CAEVVKH-Tun1Bh2BoYq_3UXXWgZMOHbmDu1jCMowWBj4uJ1MZuw@mail.gmail.com>
-Subject: Re: [PATCH] docs: lockdep-design: correct the notation for writer
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Waiman Long <llong@redhat.com>, Xiongwei Song <sxwjean@me.com>,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        corbet@lwn.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 6:33 PM Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> On Mon, May 24, 2021 at 12:24:00PM +0800, Xiongwei Song wrote:
-> > On Fri, May 21, 2021 at 11:17 PM Waiman Long <llong@redhat.com> wrote:
-> > >
-> > > On 5/21/21 2:29 AM, Xiongwei Song wrote:
-> > > > From: Xiongwei Song <sxwjean@gmail.com>
-> > > >
-> > > > The block condition matrix is using 'E' as the writer noation here, so it
-> > > > would be better to use 'E' as the reminder rather than 'W'.
-> > > >
-> > > > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> > > > ---
-> > > >   Documentation/locking/lockdep-design.rst | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
-> > > > index 9f3cfca..c3b923a 100644
-> > > > --- a/Documentation/locking/lockdep-design.rst
-> > > > +++ b/Documentation/locking/lockdep-design.rst
-> > > > @@ -462,7 +462,7 @@ Block condition matrix, Y means the row blocks the column, and N means otherwise
-> > > >       | R | Y | Y | N |
-> > > >       +---+---+---+---+
-> > > >
-> > > > -     (W: writers, r: non-recursive readers, R: recursive readers)
-> > > > +     (E: writers, r: non-recursive readers, R: recursive readers)
-> > > >
-> > > >
-> > > >   acquired recursively. Unlike non-recursive read locks, recursive read locks
-> > >
-> > > I would say it should be the other way around. Both W and E refer to the
-> > > same type of lockers. W emphasizes writer aspect of it and E for
-> > > exclusive. I think we should change the block condition matrix to use W
-> > > instead of E.
-> >
-> > The doc uses 'E'  to describe dependency egdes too. Should we change them
-> > to 'W'? Personally,  both 'W' and 'E' are fine.
-> >
->
-> I also think Waiman's suggestion is solid, there are two ways to
-> classify locks:
->
-> 1.      W (Writers), R (Recursive Readers), r (Non-recursive Readers)
->
-> 2.      E (Exclusive locks), S (Shared locks), R (Recursive Readers),
->         N (Non-recursive locks)
->
-> And the relations between them are as follow:
->
->         E = W
->         R = R
->         N = W \/ r
->         S = R \/ r
->
-> , where "\/" is the set union.
->
-> The story is that I used the way #1 at first, and later on realized way
-> #2 is better for BFS implementation, also for reasoning, so here came
-> this leftover..
+If the of_get_named_gpio_flags call fails in vc4_hdmi_bind, we jump to
+the err_unprepare_hsm label. That label will then call
+pm_runtime_disable and put_device on the DDC device.
 
-Thanks for the explanation.
+We just retrieved the DDC device, so the latter is definitely justified.
+However at that point we still haven't called pm_runtime_enable, so the
+call to pm_runtime_disable is not supposed to be there.
 
->
-> If you are interested, go ahead sending a patch fixing this, otherwise,
-> I will fix this.
+Fixes: 10ee275cb12f ("drm/vc4: prepare for CEC support")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ok.  Let me fix.
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index c27b287d2053..ccc6c8079dc6 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -2039,7 +2039,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 							     &hpd_gpio_flags);
+ 		if (vc4_hdmi->hpd_gpio < 0) {
+ 			ret = vc4_hdmi->hpd_gpio;
+-			goto err_unprepare_hsm;
++			goto err_put_ddc;
+ 		}
+ 
+ 		vc4_hdmi->hpd_active_low = hpd_gpio_flags & OF_GPIO_ACTIVE_LOW;
+@@ -2080,8 +2080,8 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	vc4_hdmi_connector_destroy(&vc4_hdmi->connector);
+ err_destroy_encoder:
+ 	drm_encoder_cleanup(encoder);
+-err_unprepare_hsm:
+ 	pm_runtime_disable(dev);
++err_put_ddc:
+ 	put_device(&vc4_hdmi->ddc->dev);
+ 
+ 	return ret;
+-- 
+2.31.1
 
-Thanks,
-Xiongwei
->
-> Regards,
-> Boqun
->
-> > Thanks,
-> > Xiongwei
-> > >
-> > > Cheers,
-> > > Longman
-> > >
