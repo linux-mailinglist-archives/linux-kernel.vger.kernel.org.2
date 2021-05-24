@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5C738F34C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E0D38F356
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhEXSw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:52:58 -0400
-Received: from mga05.intel.com ([192.55.52.43]:59146 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232803AbhEXSw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:52:58 -0400
-IronPort-SDR: iYCIIjaymPnozQdVbEbxtnsoopmNQIl0lNrWFPF5XuiIMqEKWCpxHipUJywLumugKEtqKCQb5y
- m0WP08RKo6pw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="287575831"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="287575831"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 11:51:29 -0700
-IronPort-SDR: RNZ8k4y7Dqu3VMsWlUlKIJhsjK32Ac+Vjq5htQ4XbAxZ7FPuAoF4iIVMPRWMABZtl/e+i4ERa4
- xDq5jozJnwAg==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="546467113"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 11:51:28 -0700
-Date:   Mon, 24 May 2021 11:54:00 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, <ashok.raj@intel.com>,
-        <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        jacob.jun.pan@intel.com
-Subject: Re: [PATCH 01/11] iommu/vt-d: Add pasid private data helpers
-Message-ID: <20210524115400.52df4d97@jacob-builder>
-In-Reply-To: <15bdf989-40c9-2b45-0fb6-273a43479789@linux.intel.com>
-References: <20210520031531.712333-1-baolu.lu@linux.intel.com>
-        <20210520031531.712333-2-baolu.lu@linux.intel.com>
-        <20210521142518.25087d34@jacob-builder>
-        <15bdf989-40c9-2b45-0fb6-273a43479789@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233190AbhEXS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:56:51 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40331 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232983AbhEXS4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:56:49 -0400
+Received: (qmail 1333070 invoked by uid 1000); 24 May 2021 14:55:20 -0400
+Date:   Mon, 24 May 2021 14:55:20 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Guido Kiener <Guido.Kiener@rohde-schwarz.com>,
+        dave penkler <dpenkler@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210524185520.GA1332625@rowland.harvard.edu>
+References: <d673611ca53f42a3a629eb051cabc6eb@rohde-schwarz.com>
+ <20210519173545.GA1173157@rowland.harvard.edu>
+ <12088413-2f7d-a1e5-5e8a-25876d85d18a@synopsys.com>
+ <20210520020117.GA1186755@rowland.harvard.edu>
+ <74b2133b-2f77-c86f-4c8b-1189332617d3@synopsys.com>
+ <37c41d87-6e30-1557-7991-0b7bca615be1@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37c41d87-6e30-1557-7991-0b7bca615be1@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu,
-
-On Mon, 24 May 2021 10:16:18 +0800, Lu Baolu <baolu.lu@linux.intel.com>
-wrote:
-
-> Hi Jacob,
-> 
-> Thanks for reviewing my patch.
-> 
-> On 5/22/21 5:25 AM, Jacob Pan wrote:
-> > Hi BaoLu,
+On Mon, May 24, 2021 at 06:18:59PM +0300, Mathias Nyman wrote:
+> On 20.5.2021 23.30, Thinh Nguyen wrote:
+> > As for the xhci driver, there maybe a case where the stream URB never
+> > gets to complete because the transaction err_count is not properly
+> > updated. The err_count for transaction error is stored in ep_ring, but
+> > the xhci driver may not be able to lookup the correct ep_ring based on
+> > TRB address for streams. There are cases for streams where the event
+> > TRBs have their TRB pointer field cleared to '0' (xhci spec section
+> > 4.12.2). If the xhci driver doesn't see ep_ring for transaction error,
+> > it automatically does a soft-retry. This is seen from one of our
+> > testings that the driver was repeatedly doing soft-retry until the class
+> > driver timed out.
 > > 
-> > On Thu, 20 May 2021 11:15:21 +0800, Lu Baolu <baolu.lu@linux.intel.com>
-> > wrote:
-> >   
-> >> We are about to use iommu_sva_alloc/free_pasid() helpers in iommu core.
-> >> That means the pasid life cycle will be managed by iommu core. Use a
-> >> local array to save the per pasid private data instead of attaching it
-> >> the real pasid.
-> >>  
-> > I feel a little awkward to have a separate xarray for storing per IOASID
-> > data. Seems duplicated.
-> > Jason suggested in another thread that we can make ioasid_data public
-> > and embeded in struct intel_svm, then we can get rid of the private data
-> > pointer. ioasid_find will return the ioasid_data, then we can retrieve
-> > the private data with container_of.  
+> > Hi Mathias, maybe you have some comment on this? Thanks.
 > 
-> The problem that this patch wants to solve is that the
-> iommu_sva_alloc_pasid() will attach the mm pointer to the sva pasid.
+> This is true, if TRB pointer is 0 then there is no retry limit for soft retry.
+> We should add one and prevent a loop. after e few soft resets we can end with a
+> hard reset to clear the host side endpoint halt.
 > 
->          pasid = ioasid_alloc(&iommu_sva_pasid, min, max, mm);
-> 
-> Assuming that each sva pasid can have only a single private data
-> pointer, the vendor iommu driver shouldn't set the private data again.
-> 
-You are right. I got confused with vSVM, the guest will have the private
-data assigned after the bind.
+> We don't know the URB that was being tansferred during the error, and can't 
+> give it back with a proper error code.
+> In that sense we still end up waiting for a timeout and someone to cancel
+> the urb.
 
-> > 
-> > roughly,
-> > 
-> > struct intel_svm {
-> > 	...
-> > 	struct ioasid_data;
-> > };
-> > 
-> > struct ioasid_data {
-> > 	ioasid_t id;
-> > 	refcount_t refs;
-> > 	struct mm_struct *mm;
-> > };
-> > 
-> > This can be a separate patch/effort if it make sense to you.  
-> 
-> Yes if we have a better solution.
-> 
-Will be part of the IOASID core change.
+That's not good.  There may not be a timeout; drivers expect transfers 
+to complete with a failure, not to be retried indefinitely.
 
-Thanks,
-> Best regards,
-> baolu
+However, if you do know which endpoint/stream the error is connected to, 
+you should be able to get the URB.  It will be the first one queued for 
+that endpoint/stream.
 
-
-Thanks,
-
-Jacob
+Alan Stern
