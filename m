@@ -2,183 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A2338F2B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEF338F2B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbhEXSCl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 14:02:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:46100 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233244AbhEXSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:02:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1107E6D;
-        Mon, 24 May 2021 11:01:11 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1A603F73B;
-        Mon, 24 May 2021 11:01:09 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry detection
-In-Reply-To: <20210524101617.8965-3-beata.michalska@arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com> <20210524101617.8965-3-beata.michalska@arm.com>
-Date:   Mon, 24 May 2021 19:01:04 +0100
-Message-ID: <87fsyc6mfz.mognet@arm.com>
+        id S233670AbhEXSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233243AbhEXSDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 14:03:22 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15CAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:01:53 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id f1so9599709uaj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Yts7qQiY5cVw+gZuSHeCN8lE/arX6Qto1/OwLEXAhQ=;
+        b=H8BM+oDJsRf44M+gFJkkX2QGVohKPWVfWWJU1mhWKhdIAEex/y5Apwy3ws0LA6RZyi
+         6WnwtyNXX+DOUwTZSzorRoijv7lG0bmMnBRaGIkcCaoKmNIIngJHaeJm+gWvkADlTnX6
+         SMrzNlrJWO25a0iSaOrEJWWo0PzSp6eAMvxpc7k7v4OrARj2Fg/NJkS9tYYMhFlE7frh
+         pBipM/2BBB75n9EseQ9DXqjJrBVWZ9eTAUPph4y3yvHa4C6eDqQyrVxDSBnh3sLXG2JK
+         BlL8LVo2mGZLNKqM8rm1n8F4ahX4fi67nCHB5iam3AIvB7K97PmRBIlxzXzwAX/EqoGm
+         qLgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Yts7qQiY5cVw+gZuSHeCN8lE/arX6Qto1/OwLEXAhQ=;
+        b=qBGev2vVjLjwzHhaoyGsdCwFXQEFe90STVI+GvZ2MdwM1OZJ+sbhGc3pho25rWwQrl
+         PFDodqSh35RUkQ+A/B8ehLJPn6K3gJH1q7+CcwT/TKyPDa6quRZsB3aOc3O3sTPl/waR
+         l6WC8i0cBd1oFAJBcKMc9xfHdgfjvCBwv5w1vUiqmrWauQ5bqrMSBlW1bMnIEKzl6/oa
+         Fm5D53tzR5Wlv/jdz0eASY+4PW5z1bBTNAUFu4K2XOtppqFEEsnv411NuVP5Hq6KNFpp
+         kJ74msJcd8CXTeBr2cqSf8upw82fKgozAzua7S0pcQu2WXp7j7iL+0sZTZxbOlCsylbM
+         N0VQ==
+X-Gm-Message-State: AOAM533XVJoi/xQonJ3a5gyrE4DpIeN19WKsM3mqqYLshL8AcrouNXlJ
+        6z5Vhv+uGVy3Wi+GvvSEhu0/Avbb2PNqmW1X50YBtg==
+X-Google-Smtp-Source: ABdhPJzldT2KtNW5LanITjVVU8o7Tu39YI61SMrwMRReheJzUy03Rj2D1eZAzB04TnuGNIFPO+/hkePdl+GMFf+OCc0=
+X-Received: by 2002:a9f:24b4:: with SMTP id 49mr14197782uar.100.1621879313042;
+ Mon, 24 May 2021 11:01:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20210517130823.796963-1-anup.patel@wdc.com> <20210517130823.796963-6-anup.patel@wdc.com>
+In-Reply-To: <20210517130823.796963-6-anup.patel@wdc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 24 May 2021 20:01:16 +0200
+Message-ID: <CAPDyKFpxx-jBbL4o_iJCcivFL2ei5a7PcWVfUaBmLu-q89Mkjg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 5/8] cpuidle: Factor-out power domain related code
+ from PSCI domain driver
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        Anup Patel <anup@brainfault.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beata,
+On Mon, 17 May 2021 at 15:10, Anup Patel <anup.patel@wdc.com> wrote:
+>
+> The generic power domain related code in PSCI domain driver is largely
+> independent of PSCI and can be shared with RISC-V SBI domain driver
+> hence we factor-out this code into dt_idle_genpd.c and dt_idle_genpd.h.
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 
-On 24/05/21 11:16, Beata Michalska wrote:
-> Currently the CPU capacity asymmetry detection, performed through
-> asym_cpu_capacity_level, tries to identify the lowest topology level
-> at which the highest CPU capacity is being observed, not necessarily
-> finding the level at which all possible capacity values are visible
-> to all CPUs, which might be bit problematic for some possible/valid
-> asymmetric topologies i.e.:
->
-> DIE      [                                ]
-> MC       [                       ][       ]
->
-> CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
-> Capacity  |.....| |.....| |.....|  |.....|
->            L	     M       B        B
->
-> Where:
->  arch_scale_cpu_capacity(L) = 512
->  arch_scale_cpu_capacity(M) = 871
->  arch_scale_cpu_capacity(B) = 1024
->
-> In this particular case, the asymmetric topology level will point
-> at MC, as all possible CPU masks for that level do cover the CPU
-> with the highest capacity. It will work just fine for the first
-> cluster, not so much for the second one though (consider the
-> find_energy_efficient_cpu which might end up attempting the energy
-> aware wake-up for a domain that does not see any asymmetry at all)
->
-> Rework the way the capacity asymmetry levels are being detected,
-> allowing to point to the lowest topology level (for a given CPU), where
-> full set of available CPU capacities is visible to all CPUs within given
-> domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
-> the domains. This will have an impact on EAS wake-up placement in a way
-> that it might see different rage of CPUs to be considered, depending on
-> the given current and target CPUs.
->
-> Additionally, those levels, where any range of asymmetry (not
-> necessarily full) is being detected will get identified as well.
-> The selected asymmetric topology level will be denoted by
-> SD_ASYM_CPUCAPACITY_FULL sched domain flag whereas the 'sub-levels'
-> would receive the already used SD_ASYM_CPUCAPACITY flag. This allows
-> maintaining the current behaviour for asymmetric topologies, with
-> misfit migration operating correctly on lower levels, if applicable,
-> as any asymmetry is enough to trigger the misfit migration.
-> The logic there relies on the SD_ASYM_CPUCAPACITY flag and does not
-> relate to the full asymmetry level denoted by the sd_asym_cpucapacity
-> pointer.
->
-> Detecting the CPU capacity asymmetry is being based on a set of
-> available CPU capacities for all possible CPUs. This data is being
-> generated upon init and updated once CPU topology changes are being
-> detected (through arch_update_cpu_topology). As such, any changes
-> to identified CPU capacities (like initializing cpufreq) need to be
-> explicitly advertised by corresponding archs to trigger rebuilding
-> the data.
->
-> This patch also removes the additional -dflags- parameter used when
-  ^^^^^^^^^^^^^^^^^^^^^^^
-s/^/Also remove/
+This is clearly a big step in the right direction. Just a couple minor
+things, see more below.
 
-> building sched domains as the asymmetry flags are now being set
-> directly in sd_init.
->
+Note that, I have a couple of patches in the pipe for the
+cpuidle-psci-domain driver (not ready to be posted). I need a couple
+of more days to confirm this restructuring still makes sense beyond
+these potential new changes. I will let you know as soon as I can with
+the outcome.
 
-Few nits below, but beyond that:
+[...]
 
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> diff --git a/drivers/cpuidle/dt_idle_genpd.c b/drivers/cpuidle/dt_idle_genpd.c
 
-> +static inline int
-> +asym_cpu_capacity_classify(struct sched_domain *sd,
-> +			   const struct cpumask *cpu_map)
+I think it would be a good idea to add a new section for this to the
+MAINTAINERS file. Perhaps a "DT IDLE DOMAIN" section? Or perhaps you
+have another idea?
+
+In any case, I am happy to continue with maintenance of this code,
+even in the new restructured form.
+
+> new file mode 100644
+> index 000000000000..5a901773db60
+> --- /dev/null
+> +++ b/drivers/cpuidle/dt_idle_genpd.c
+> @@ -0,0 +1,182 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * PM domains for CPUs via genpd.
+> + *
+> + * Copyright (C) 2019 Linaro Ltd.
+> + * Author: Ulf Hansson <ulf.hansson@linaro.org>
+> + *
+> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#define pr_fmt(fmt) "dt-idle-genpd: " fmt
+> +
+> +#include <linux/cpu.h>
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+> +
+> +#include "dt_idle_genpd.h"
+> +
+> +static int dt_pd_parse_state_nodes(
+> +                       int (*parse_state)(struct device_node *, u32 *),
+> +                       struct genpd_power_state *states, int state_count)
 > +{
-> +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> +	struct asym_cap_data *entry;
-> +	int asym_cap_count = 0;
+> +       int i, ret;
+> +       u32 state, *state_buf;
 > +
-> +	if (list_is_singular(&asym_cap_list))
-> +		goto leave;
+> +       for (i = 0; i < state_count; i++) {
+> +               ret = parse_state(to_of_node(states[i].fwnode), &state);
+> +               if (ret)
+> +                       goto free_state;
 > +
-> +	list_for_each_entry(entry, &asym_cap_list, link) {
-> +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> +			++asym_cap_count;
-> +		} else {
-> +			/*
-> +			 * CPUs with given capacity might be offline
-> +			 * so make sure this is not the case
-> +			 */
-> +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
-> +				if (asym_cap_count > 1)
-> +					break;
-> +			}
-
-Readability nit: That could be made into an else if ().
-
-
-> +		}
-> +	}
-> +	WARN_ON_ONCE(!asym_cap_count);
-> +leave:
-> +	return asym_cap_count > 1 ? sd_asym_flags : 0;
+> +               state_buf = kmalloc(sizeof(u32), GFP_KERNEL);
+> +               if (!state_buf) {
+> +                       ret = -ENOMEM;
+> +                       goto free_state;
+> +               }
+> +               *state_buf = state;
+> +               states[i].data = state_buf;
+> +       }
+> +
+> +       return 0;
+> +
+> +free_state:
+> +       i--;
+> +       for (; i >= 0; i--)
+> +               kfree(states[i].data);
+> +       return ret;
 > +}
 > +
-
-> +static void asym_cpu_capacity_scan(void)
+> +static int dt_pd_parse_states(struct device_node *np,
+> +                       int (*parse_state)(struct device_node *, u32 *),
+> +                       struct genpd_power_state **states,
+> +                       int *state_count)
 > +{
-> +	struct asym_cap_data *entry, *next;
-> +	int cpu;
+> +       int ret;
 > +
-> +	list_for_each_entry(entry, &asym_cap_list, link)
-> +		cpumask_clear(entry->cpu_mask);
+> +       /* Parse the domain idle states. */
+> +       ret = of_genpd_parse_idle_states(np, states, state_count);
+> +       if (ret)
+> +               return ret;
 > +
-> +	entry = list_first_entry_or_null(&asym_cap_list,
-> +					 struct asym_cap_data, link);
+> +       /* Fill out the dt specifics for each found state. */
+> +       ret = dt_pd_parse_state_nodes(parse_state, *states, *state_count);
+> +       if (ret)
+> +               kfree(*states);
 > +
-> +	for_each_cpu_and(cpu, cpu_possible_mask,
-> +			 housekeeping_cpumask(HK_FLAG_DOMAIN)) {
-> +		unsigned long capacity = arch_scale_cpu_capacity(cpu);
-> +
-> +		if (!entry || capacity != entry->capacity)
-> +			entry = asym_cpu_capacity_get_data(capacity);
-> +		if (entry)
-> +			__cpumask_set_cpu(cpu, entry->cpu_mask);
-
-That 'if' is only there in case the alloc within the helper failed, which
-is a bit of a shame.
-
-You could pass the CPU to that helper function and have it set the right
-bit, or you could even forgo the capacity != entry->capacity check here and
-let the helper function do it all.
-
-Yes, that means more asym_cap_list iterations, but that's
-O(nr_cpus * nr_caps); a topology rebuild is along the lines of
-O(nr_cpus² * nr_topology_levels), so not such a big deal comparatively.
-
-> +	}
-> +
-> +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> +		if (cpumask_empty(entry->cpu_mask)) {
-> +			list_del(&entry->link);
-> +			kfree(entry);
-> +		}
-> +	}
+> +       return ret;
 > +}
 > +
+> +static void dt_pd_free_states(struct genpd_power_state *states,
+> +                             unsigned int state_count)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < state_count; i++)
+> +               kfree(states[i].data);
+> +       kfree(states);
+> +}
+> +
+> +void dt_pd_free(struct generic_pm_domain *pd)
+> +{
+> +       dt_pd_free_states(pd->states, pd->state_count);
+> +       kfree(pd->name);
+> +       kfree(pd);
+> +}
+> +EXPORT_SYMBOL_GPL(dt_pd_free);
+> +
+> +struct generic_pm_domain *dt_pd_alloc(struct device_node *np,
+> +                       int (*parse_state)(struct device_node *, u32 *))
+> +{
+> +       struct generic_pm_domain *pd;
+> +       struct genpd_power_state *states = NULL;
+> +       int ret, state_count = 0;
+> +
+> +       pd = kzalloc(sizeof(*pd), GFP_KERNEL);
+> +       if (!pd)
+> +               goto out;
+> +
+> +       pd->name = kasprintf(GFP_KERNEL, "%pOF", np);
+> +       if (!pd->name)
+> +               goto free_pd;
+> +
+> +       /*
+> +        * Parse the domain idle states and let genpd manage the state selection
+> +        * for those being compatible with "domain-idle-state".
+> +        */
+> +       ret = dt_pd_parse_states(np, parse_state, &states, &state_count);
+> +       if (ret)
+> +               goto free_name;
+> +
+> +       pd->free_states = dt_pd_free_states;
+> +       pd->name = kbasename(pd->name);
+> +       pd->states = states;
+> +       pd->state_count = state_count;
+> +
+> +       pr_debug("alloc PM domain %s\n", pd->name);
+> +       return pd;
+> +
+> +free_name:
+> +       kfree(pd->name);
+> +free_pd:
+> +       kfree(pd);
+> +out:
+> +       pr_err("failed to alloc PM domain %pOF\n", np);
+> +       return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(dt_pd_alloc);
+> +
+> +int dt_pd_init_topology(struct device_node *np)
+> +{
+> +       struct device_node *node;
+> +       struct of_phandle_args child, parent;
+> +       int ret;
+> +
+> +       for_each_child_of_node(np, node) {
+> +               if (of_parse_phandle_with_args(node, "power-domains",
+> +                                       "#power-domain-cells", 0, &parent))
+> +                       continue;
+> +
+> +               child.np = node;
+> +               child.args_count = 0;
+> +               ret = of_genpd_add_subdomain(&parent, &child);
+> +               of_node_put(parent.np);
+> +               if (ret) {
+> +                       of_node_put(node);
+> +                       return ret;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(dt_pd_init_topology);
+
+May I suggest that we stick to dt_idle_* as the prefix for all of the
+exported functions in this file. Static functions can just skip the
+prefix altogether.
+
+> +
+> +struct device *dt_idle_genpd_attach_cpu(int cpu, const char *name)
+> +{
+> +       struct device *dev;
+> +
+> +       dev = dev_pm_domain_attach_by_name(get_cpu_device(cpu), name);
+> +       if (IS_ERR_OR_NULL(dev))
+> +               return dev;
+> +
+> +       pm_runtime_irq_safe(dev);
+> +       if (cpu_online(cpu))
+> +               pm_runtime_get_sync(dev);
+> +
+> +       dev_pm_syscore_device(dev, true);
+> +
+> +       return dev;
+> +}
+> +EXPORT_SYMBOL_GPL(dt_idle_genpd_attach_cpu);
+> +
+> +void dt_idle_genpd_detach_cpu(struct device *dev)
+> +{
+> +       if (IS_ERR_OR_NULL(dev))
+> +               return;
+> +
+> +       dev_pm_domain_detach(dev, false);
+> +}
+> +EXPORT_SYMBOL_GPL(dt_idle_genpd_detach_cpu);
+
+Again, a minor comment on the naming of the functions. How about
+skipping "genpd" in the prefix, thus just dt_idle_attach|detach_cpu()?
+
+[...]
+
+Kind regards
+Uffe
