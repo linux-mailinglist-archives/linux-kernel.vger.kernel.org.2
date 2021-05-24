@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C5B38EDAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB7138EE04
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhEXPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:39:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S234898AbhEXPpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233892AbhEXPgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFA461414;
-        Mon, 24 May 2021 15:32:41 +0000 (UTC)
+        id S233753AbhEXPlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:41:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B994F6142F;
+        Mon, 24 May 2021 15:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870362;
-        bh=mbTBEpLuOGOSt73j/DVn5yuJombL/qCnen1JDX7faB4=;
+        s=korg; t=1621870471;
+        bh=pzldK/ODVQn7pBn2K65hBAv2hXuUOjSPmxb6eH4ybLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z7sBZnXaguojsLziOD2NaxL99V53qxi2pBlGmqFyK2rCQs3f687i7m/s6xhw3715x
-         LHqMftHmY4oN6mYx1gDUnL56Gua0cmPUm0eR/DY0UZyTYo2Yqh0MzaqLvdIv0eRM1N
-         qXDBLjhw5Ef/Eh1R1R+FPiaT1GJkqvMVgfDcRl/Y=
+        b=e3CEJ37UP1j4NCBkneEA5LHFTp7PdNgbsXgqtG6UjNlOXkhF7Gi0zSq4Oe8iY106R
+         jhVAAlyETjrN1GqcbxEgbyFAiM/u8sd/WvLp9wV0OafBv9i9nUrDAxScvAUn0UHk2D
+         i16M4zYK5RWOTejnD5QwRYlAKk8zlG9/4g7OXhS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 36/36] iio: tsl2583: Fix division by a zero lux_val
-Date:   Mon, 24 May 2021 17:25:21 +0200
-Message-Id: <20210524152325.329346979@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 11/49] ALSA: dice: fix stream format for TC Electronic Konnekt Live at high sampling transfer frequency
+Date:   Mon, 24 May 2021 17:25:22 +0200
+Message-Id: <20210524152324.754139475@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit af0e1871d79cfbb91f732d2c6fa7558e45c31038 upstream.
+commit 4c6fe8c547e3c9e8c15dabdd23c569ee0df3adb1 upstream.
 
-The lux_val returned from tsl2583_get_lux can potentially be zero,
-so check for this to avoid a division by zero and an overflowed
-gain_trim_val.
+At high sampling transfer frequency, TC Electronic Konnekt Live
+transfers/receives 6 audio data frames in multi bit linear audio data
+channel of data block in CIP payload. Current hard-coded stream format
+is wrong.
 
-Fixes clang scan-build warning:
-
-drivers/iio/light/tsl2583.c:345:40: warning: Either the
-condition 'lux_val<0' is redundant or there is division
-by zero at line 345. [zerodivcond]
-
-Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-[Colin Ian King: minor context adjustments for 4.9.y]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc: <stable@vger.kernel.org>
+Fixes: f1f0f330b1d0 ("ALSA: dice: add parameters of stream formats for models produced by TC Electronic")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518012612.37268-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/iio/light/tsl2583.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/firewire/dice/dice-tcelectronic.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/iio/light/tsl2583.c
-+++ b/drivers/staging/iio/light/tsl2583.c
-@@ -382,6 +382,15 @@ static int taos_als_calibrate(struct iio
- 		dev_err(&chip->client->dev, "taos_als_calibrate failed to get lux\n");
- 		return lux_val;
- 	}
-+
-+	/* Avoid division by zero of lux_value later on */
-+	if (lux_val == 0) {
-+		dev_err(&chip->client->dev,
-+			"%s: lux_val of 0 will produce out of range trim_value\n",
-+			__func__);
-+		return -ENODATA;
-+	}
-+
- 	gain_trim_val = (unsigned int)(((chip->taos_settings.als_cal_target)
- 			* chip->taos_settings.als_gain_trim) / lux_val);
+--- a/sound/firewire/dice/dice-tcelectronic.c
++++ b/sound/firewire/dice/dice-tcelectronic.c
+@@ -38,8 +38,8 @@ static const struct dice_tc_spec konnekt
+ };
+ 
+ static const struct dice_tc_spec konnekt_live = {
+-	.tx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
+-	.rx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.tx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
+ 	.has_midi = true,
+ };
  
 
 
