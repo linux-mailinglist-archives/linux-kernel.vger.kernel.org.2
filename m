@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD33238DF07
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B029138DF09
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhEXB6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 21:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        id S232198AbhEXB7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 21:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbhEXB6S (ORCPT
+        with ESMTP id S231744AbhEXB7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 21:58:18 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BCCC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 18:56:50 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g24so13912791pji.4
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 18:56:50 -0700 (PDT)
+        Sun, 23 May 2021 21:59:32 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB21C061574;
+        Sun, 23 May 2021 18:58:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id q6so13931850pjj.2;
+        Sun, 23 May 2021 18:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FM+e38Wml7m54RkS7j2rn27xqbrXlTey4W5nT4IOzRY=;
-        b=kgUtrQAVbJ90/URD++DxPVVktR7e+fQ6cpKz9a8Bdne0dhW9wsTUhXFpEAuiXLnjAb
-         RcYUBACPQTdxyl3piDXOJ6yb9iQrSw/wT13J8c5MJUaHeEuMefb87rjCtJ+OAF57m1Qf
-         alNUUiWm17hDddpVqiSG55uHd0hGFb+VTmaWE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jCtgzjCClBSQtUU7LwrqukXj+kZVkiIw6coIo/OGtnU=;
+        b=Ofwdln73QEDuF45bdqyN1Fk+P3+jtMNZ02BpWhl7sly8T7z9eGHTdQeOCC4hTbOwY9
+         rMNySOVLNji2Eu7KJoY0p7xd9cmd1PNuzExwZ78dzs4yKsJ5jMzNdw0Dt2f3A3t7X+7F
+         +O1AN+w/r65jw/ADEWv/MoXWflgLz4+xCs5LbV70CEd17hJku9e2RdSDPxMnJAsYl+kY
+         sGuA9GObHVTajH9lcgOzGOHlt0cfgmCvBnwO+OBpiMLS33xfXArF2zAxx/j006X02OIL
+         B7rIjRqrWerrA7jXdiOYkVKuriECUVANc1L0EIUy6CHvpqRxvTT6k7E+Sc1TKxyYsU8g
+         00Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FM+e38Wml7m54RkS7j2rn27xqbrXlTey4W5nT4IOzRY=;
-        b=ZmspQraaFTvMKCcZxi3c6+zaEIBl5h/xZK4iqiCSqu3yFU0TIwIyi817Ile8lsrnHk
-         LrrjYlVLsPgV8b3x8CEuKunbGl6XKwK1sUtGInmeeGYB3s7nSyWjXZAKzOll9HrQ2Zul
-         iU02F/iCfAR7epHFVECHFbNg3xttdX/N3hhOGm4Deuws/Sn2w697sG+WOpR3C5CnlH1v
-         lIa7eCq/qZtlmxnksMt7Z3fcSF8QAqUT07iurWGQVPPCdNUJB6cvBojG7WLPoFfNxSxJ
-         AeZNsg1orA6eh36eLtG9t1skuN+3JZozKwiT7dQHiH7uMQk2wg32tcTuyjwVKcC5igvB
-         SzCg==
-X-Gm-Message-State: AOAM531fWsnpjRVahTDDukoyVJoVkmGNK2yBnp01xf4jWhQs0iYnlIJf
-        MACl5MqeExAzuhjwzLsnZOVbBVyxTuX+WA==
-X-Google-Smtp-Source: ABdhPJy8vY4fjpNXm+3Ebx73BqIL5wz4RB5QpEnA4CRnwfzSdC0pRLC3rrYVy1abizhxJ5haM7h7/w==
-X-Received: by 2002:a17:90a:a25:: with SMTP id o34mr19684348pjo.221.1621821409698;
-        Sun, 23 May 2021 18:56:49 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:7357:1320:fdb3:1853])
-        by smtp.gmail.com with ESMTPSA id o4sm8790658pjf.9.2021.05.23.18.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 18:56:49 -0700 (PDT)
-Date:   Mon, 24 May 2021 10:56:44 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
-Message-ID: <YKsH3GrEoxcMf4j0@google.com>
-References: <20210521155624.174524-1-senozhatsky@chromium.org>
- <20210521180127.GD4441@paulmck-ThinkPad-P17-Gen-1>
- <20210521213855.GA3437356@paulmck-ThinkPad-P17-Gen-1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jCtgzjCClBSQtUU7LwrqukXj+kZVkiIw6coIo/OGtnU=;
+        b=FVy1XesRn+Ym2dU7ZxcW4jlEy17MjcUfFSghf7inkc9imHAvzi4UY8079KszYCuXNe
+         RCQfwEjn1c2ZY8GpRqYJ0h14hjEQt27cva2I1qs1OZug5lYQQfPEzYjo3DtgWS4k7YN8
+         APAyf64zQFvxFIQrshZ1RAtnTg2HIHbwr5sLz1fH3twi2W+N31El4vuL6FwMwcLGa5ab
+         DMnp5GWTofMCfO0NkR+wzHl42S5oreskbtJowqYF1WwAUs1DCDSSGvTQ89oFA2O5kGqn
+         mpToD/avTdiIJxnBJ6/or95lfvL9qih+eQxd+la3jKRUlltyfDn5TbYs/zu+4omzc22M
+         oK9Q==
+X-Gm-Message-State: AOAM532Y7I2c1X1tyGCC/RmECThkDIZ77IW5x/c4ntZY9XHxyJqKnz2l
+        xcO2LZfneVrqdK6gfOxPMizbwct0YZSU+td+1Q8=
+X-Google-Smtp-Source: ABdhPJy4MRqed6QyTy9fd1+WYGe0qFlie4CNYug1y1uiYMMcObYFXIP4KQaIYLBBSINpcDTN9lHlxuLAudEuzoAgKGg=
+X-Received: by 2002:a17:90b:1885:: with SMTP id mn5mr21871211pjb.24.1621821484572;
+ Sun, 23 May 2021 18:58:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521213855.GA3437356@paulmck-ThinkPad-P17-Gen-1>
+References: <20210522080214.88050-1-src.res@email.cn>
+In-Reply-To: <20210522080214.88050-1-src.res@email.cn>
+From:   teng sterling <sterlingteng@gmail.com>
+Date:   Mon, 24 May 2021 09:57:55 +0800
+Message-ID: <CAMU9jJqdaKXWtUz_s=muFcJq81SouUJNOHSa-ZGCWXOFLK6wQw@mail.gmail.com>
+Subject: Re: [PATCH] docs/zh_CN: Add Chinese translations for new contents
+To:     Hu Haowen <src.res@email.cn>
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        "Wu X.C." <bobwxc@email.cn>, jaixun.yang@flygoat.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/21 14:38), Paul E. McKenney wrote:
-> 
-> And on that otherwise inexplicable refetch of the jiffies counter within
-> check_cpu_stall(), the commit below makes it more effective.
-> 
-> If check_cpu_stall() is delayed before or while printing the stall
-> warning, we really want to wait the full time duration between the
-> end of that stall warning and the start of the next one.
->
-
-Nice improvement!
-
-> Of course, if there is some way to learn whether printk() is overloaded,
-> even more effective approaches could be taken.
-
-There is no better to do this.
-
-> commit b9c5dc2856c1538ccf2d09246df2b58bede72cca
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Fri May 21 14:23:03 2021 -0700
-> 
->     rcu: Start timing stall repetitions after warning complete
->     
->     Systems with low-bandwidth consoles can have very large printk()
->     latencies, and on such systems it makes no sense to have the next RCU CPU
->     stall warning message start output before the prior message completed.
->     This commit therefore sets the time of the next stall only after the
->     prints have completed.  While printing, the time of the next stall
->     message is set to ULONG_MAX/2 jiffies into the future.
->     
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-FWIW,
-
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 05012a8081a1..ff239189a627 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -648,6 +648,7 @@ static void print_cpu_stall(unsigned long gps)
->  
->  static void check_cpu_stall(struct rcu_data *rdp)
->  {
-> +	bool didstall = false;
->  	unsigned long gs1;
->  	unsigned long gs2;
->  	unsigned long gps;
-> @@ -693,7 +694,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  	    ULONG_CMP_GE(gps, js))
->  		return; /* No stall or GP completed since entering function. */
->  	rnp = rdp->mynode;
-> -	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> +	jn = jiffies + ULONG_MAX / 2;
->  	if (rcu_gp_in_progress() &&
->  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
->  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-> @@ -710,6 +711,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		print_cpu_stall(gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
->  			rcu_ftrace_dump(DUMP_ALL);
-> +		didstall = true;
->  
->  	} else if (rcu_gp_in_progress() &&
->  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
-> @@ -727,6 +729,11 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		print_other_cpu_stall(gs2, gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
->  			rcu_ftrace_dump(DUMP_ALL);
-> +		didstall = true;
-> +	}
-> +	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-
-Can `rcu_state.jiffies_stall` change here?
-
-> +		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> +		WRITE_ONCE(rcu_state.jiffies_stall, jn);
->  	}
->  }
+SGkgaGFvd2VuOg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgdXBkYXRlLCBidXQgdGhpcyB1cGRhdGUg
+aXMgYWxyZWFkeSBpbmNsdWRlZCBpbjoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWRv
+Yy8yMDIxMDUyMTExMzc1Mi5HQTI0NTgxQGJvYnd4Yy50b3AvVC8jdA0KDQpIdSBIYW93ZW4gPHNy
+Yy5yZXNAZW1haWwuY24+IOS6jjIwMjHlubQ15pyIMjLml6Xlkajlha0g5LiL5Y2INDowMuWGmemB
+k++8mg0KPg0KPiBBIGRvY3VtZW50IHVwZGF0ZWQgaW4gY29tbWl0IDFjMzFmMGI2N2NmYTZkNGNk
+NDFkICgibW9kdWxlOiBhZGQgcHJpbnRrDQo+IGZvcm1hdHMgdG8gYWRkIG1vZHVsZSBidWlsZCBJ
+RCB0byBzdGFja3RyYWNlcyIpLCBoZW5jZSBhZGQgQ2hpbmVzZQ0KPiB0cmFuc2xhdGlvbnMgZm9y
+IGl0Lg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBIdSBIYW93ZW4gPHNyYy5yZXNAZW1haWwuY24+DQo+
+IC0tLQ0KPiAgLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9jb3JlLWFwaS9wcmludGstZm9ybWF0cy5y
+c3QgICAgICAgfCA5ICsrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygr
+KQ0KPg0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vY29y
+ZS1hcGkvcHJpbnRrLWZvcm1hdHMucnN0IGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhf
+Q04vY29yZS1hcGkvcHJpbnRrLWZvcm1hdHMucnN0DQo+IGluZGV4IDYyNGEwOTBlNmVlNS4uMTE2
+YWJjMDQ2YmZlIDEwMDY0NA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9D
+Ti9jb3JlLWFwaS9wcmludGstZm9ybWF0cy5yc3QNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi90cmFu
+c2xhdGlvbnMvemhfQ04vY29yZS1hcGkvcHJpbnRrLWZvcm1hdHMucnN0DQo+IEBAIC0xMjIsNiAr
+MTIyLDE1IEBAIHNlcV9wcmludGYoKe+8jOiAjOS4jeaYr3ByaW50aygp77yJ55Sx55So5oi356m6
+6Ze06L+b56iL6K+75Y+W77yM5L2/55So5LiL6Z2i5o+PDQo+ICBgYEJgYCDljaDkvY3nrKbnmoTn
+u5PmnpzmmK/luKbmnInlgY/np7vph4/nmoTnrKblj7flkI3vvIzlnKjmiZPljbDloIbmoIjlm57m
+uq/ml7blupTor6Xkvb/nlKjjgILljaDkvY3nrKblsIbogIPomZHnvJbor5HlmajkvJjljJYNCj4g
+IOeahOW9seWTje+8jOW9k+S9v+eUqOWwvumDqOiwg+eUqOW5tuS9v+eUqG5vcmV0dXJuIEdDQ+Wx
+nuaAp+agh+iusOaXtu+8jOWPr+iDveS8muWPkeeUn+i/meenjeS8mOWMluOAgg0KPg0KPiAr5aaC
+5p6c5Y2g5L2N56ym5piv5Zyo5LiA5Liq5qih5Z2X5LmL5Lit77yM5Y+v5Zyo5Y2g5L2N56ym5pyr
+5bC+5re75YqgIGBgYmBgIOS7peWcqOespuWPt+WQjeWQjuaJk+WNsOaooeWdl+WQjeensOWSjOWP
+r+mAieaehOW7uklE44CCDQo+ICsNCj4gKzo6DQpidWlsZCB3YXJuaW5nISBhZGQgb25lIGJsYWNr
+IGxpbmUgaGVyZS4NCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWRvYy9DQUUtMG41MFV2
+ZTRnRXdEZko0d3QtdEZCakprU3RKMUViNmpIbnRqY1JNTC1IQ2tHVXdAbWFpbC5nbWFpbC5jb20v
+VC8jdA0KDQpUaGFua3MsDQpZYW50ZW5nDQo+ICsgICAgICAgICVwUyAgICAgdmVyc2F0aWxlX2lu
+aXQrMHgwLzB4MTEwIFttb2R1bGVfbmFtZV0NCj4gKyAgICAgICAgJXBTYiAgICB2ZXJzYXRpbGVf
+aW5pdCsweDAvMHgxMTAgW21vZHVsZV9uYW1lIGVkNTAxOWZkZjVlNTNiZTM3Y2IxYmE3ODk5Mjky
+ZDdlMTQzYjI1OWVdDQo+ICsgICAgICAgICVwU1JiICAgdmVyc2F0aWxlX2luaXQrMHg5LzB4MTEw
+IFttb2R1bGVfbmFtZSBlZDUwMTlmZGY1ZTUzYmUzN2NiMWJhNzg5OTI5MmQ3ZTE0M2IyNTllXQ0K
+PiArICAgICAgICAgICAgICAgICh3aXRoIF9fYnVpbHRpbl9leHRyYWN0X3JldHVybl9hZGRyKCkg
+dHJhbnNsYXRpb24pDQo+ICsgICAgICAgICVwQmIgICAgcHJldl9mbl9vZl92ZXJzYXRpbGVfaW5p
+dCsweDg4LzB4ODggW21vZHVsZV9uYW1lIGVkNTAxOWZkZjVlNTNiZTM3Y2IxYmE3ODk5MjkyZDdl
+MTQzYjI1OWVdDQo+ICsNCj4gIOadpeiHqkJQRiAvIHRyYWNpbmfov73ouKrnmoTmjqLmn6XmjIfp
+kogNCj4gIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4NCj4gLS0NCj4gMi4y
+NS4xDQo+DQo=
