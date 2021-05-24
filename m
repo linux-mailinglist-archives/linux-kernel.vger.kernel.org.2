@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BED938E097
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 07:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C42738E087
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhEXFFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 01:05:51 -0400
-Received: from fallback16.mail.ru ([94.100.177.128]:48670 "EHLO
-        fallback16.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhEXFFt (ORCPT
+        id S232211AbhEXE7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhEXE7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 01:05:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=A6mQ6XXTAtiDXUBAWT7HV2+69EFPzQ3wZCDTdVg/Boc=;
-        b=Ja8/iVJOyhhxVziEMfm6symjOXYpMjbR7TaYi+KNdqJ81VyJf5S6VqX49tTSv8tnB3UFQd4cWwmbCmVWme0/6UCx7EZ9K812Hbc/B8Pb+msEIe5Vb1NUMRl6KYCiaf+meDMaHBNs8lE3xDEWLm5f8uq8CEWSZ30zNmaZOcx8xvE=;
-Received: from [10.161.64.57] (port=35608 helo=smtp49.i.mail.ru)
-        by fallback16.i with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1ll2Yp-0004kX-Mq; Mon, 24 May 2021 07:51:27 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=A6mQ6XXTAtiDXUBAWT7HV2+69EFPzQ3wZCDTdVg/Boc=;
-        b=ibzshwWZrEcQvU28BA/96SOwr4l5uf3wgLYIBUInBIZN24qGWWXKexsrzKc7bDkcEDtRnWNx8CjvTcVJm47kUjQIR7YiRusDnUt2v+I07bEHEbCqbw2PBoUXoO9STg1CstKjNhutOEyInkoyEfrHxFjWTOUhbl/PcQH1qWpneUo=;
-Received: by smtp49.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1ll2Yf-0006Mi-44; Mon, 24 May 2021 07:51:17 +0300
-Subject: Re: [PATCH 1/1] regmap-irq: Introduce inverted status registers
- support
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-References: <20210518094441.142547-1-fido_max@inbox.ru>
- <20210518120640.GB4358@sirena.org.uk>
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-Message-ID: <c4fa6dbe-0e5c-3d8a-7c35-b34b7c18a244@inbox.ru>
-Date:   Mon, 24 May 2021 07:53:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 24 May 2021 00:59:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E6BC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:57:48 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g18so18181453pfr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5elIPDTXRjLLPudcp8o02c7J6ZLjvAHG6TdyshBpqHM=;
+        b=GWDeEevlJHCXyEL1BH5HMf5da6qvir0//wvvQybCoUH2K+Q2NqDqUCJp7MH7jOQI5g
+         QKF/OOjUn+h+YmGjjHES0dGefuvap12Tr8lrjCxE8s9e2bId60fT490TEHBs1vtN0a+r
+         ix9YhH1hTViU72dRKmc8cZl6nidX1fM/fhPBfsHWblsJywSPXlJUzOrdRS6tMMbvAVKK
+         O2yLR1XwJth/8XHsuLJ+Rz2NUGlU1Q5IXK3Ttw3+cve/Uxqf7CqhvPJkSpNwfnn+KSbA
+         c20a31xQuZGDFCMpLBACa4GOfpEz6kHEUw2PWJeJ/kmKJSPTXWADzF2OOQHpc+G0p1s1
+         UOfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5elIPDTXRjLLPudcp8o02c7J6ZLjvAHG6TdyshBpqHM=;
+        b=RcD7Tx7UmuUVe2tk6Ratn5ywqjzPoDaRxStfMqTxKebcx7AirRiINqqYoMPgLGkyxN
+         kZD91xLBVO/SjK7wvRdPy+n50SlgOKN2KWeSCUGUbirpXfJ0i2UwZ/Kw6JUlkV6bHMFM
+         FbKgPXYiQFyM0a3XY8yey327GbhiXvDscO+tHuqcDMBalukhj33a1Pq4Zp7vaa7jsqbw
+         4udTgvrLNaMC7vJA0EFEtgqfTiE7J2R7K47ibC5aUWw3rLio0Pkqw/Kg6U41wrckIZ/A
+         OuBmybIC3o4Mg6P7wSLtgZ3zeb8YSOh9InY9xmr2TK7w1kO0IcM+DFSalMu7Qs/okIH7
+         LQtw==
+X-Gm-Message-State: AOAM5322vpuoF/Ruvev7pgyTF455l5KF0zNDVDtbxg9xug7mFkzH8GKI
+        N6y5hqhgWfO2MSaLD+ofYACz3PYn7G5s0mXcRV7VTw==
+X-Google-Smtp-Source: ABdhPJz2s/6JAGw+NL3QrTHg+jeS1T5q4PDbtAvgk6IlTF0h9XB36MnFhjRoAg+6LOvjbpKDPjYCubpOO5MD1FRK2x0=
+X-Received: by 2002:a63:1e4f:: with SMTP id p15mr11633324pgm.40.1621832267459;
+ Sun, 23 May 2021 21:57:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210518120640.GB4358@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD91B019B01C53E51AFBEA66046F15EAF23C5E2F255C2D74AA700894C459B0CD1B93E6C79F09ECDD8174EA5F3BDC81F06853CD11F706BF6B6703B9FC492F4C8D7B4
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7C6068CE86C2B75F5EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006374D0D183F14C070BA8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D86FF8FE73FFD24581CD035F8EF94C65A4117882F4460429724CE54428C33FAD305F5C1EE8F4F765FCAA867293B0326636D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BAA867293B0326636D2E47CDBA5A96583BA9C0B312567BB2376E601842F6C81A19E625A9149C048EEB1593CA6EC85F86D49AF716F719AB83ED8FC6C240DEA7642DBF02ECDB25306B2B78CF848AE20165D0A6AB1C7CE11FEE39E541A154B51D14B2D242C3BD2E3F4C6C4224003CC836476EA7A3FFF5B025636E2021AF6380DFAD1A18204E546F3947CB11811A4A51E3B096D1867E19FE1407959CC434672EE6371089D37D7C0E48F6C8AA50765F79006377870F476E0DB9443EFF80C71ABB335746BA297DBC24807EABDAD6C7F3747799A
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824A2A04A2ABAA09D25379311020FFC8D4ADB48D0DF8BC27391B496A29BAB8517C7F
-X-C1DE0DAB: 0D63561A33F958A5DFC64086A20DC86DA77BF6358A29E74FB65DBAA05816C37DD59269BC5F550898D99A6476B3ADF6B47008B74DF8BB9EF7333BD3B22AA88B938A852937E12ACA754263BA4E959D734C410CA545F18667F91A7EA1CDA0B5A7A0
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34D041FB2E16F174C4BB6820106AE9735D8BE144FFE9D6DCF06601664AC8D5697909486C6E5B133CCF1D7E09C32AA3244C888FA3FE6A00E80140AA5774266360567101BF96129E4011927AC6DF5659F194
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+gjVyQcIK6I4xoQAk15MYA==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB249AD67B68AD1711E0AB3D1DA48BC4372E56D7F21BDCCCDD9FEE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: B8F34718100C35BD
-X-77F55803: 6242723A09DB00B4935A4DD83856F5F211EB3CDE1FDD2419BAFE2BE684A96E1F049FFFDB7839CE9E8461634FFA5C5E3C03D7EFDDE6D1ADC6C7FF69E2E5D7F4BA91C72E081E848CE0
-X-C1DE0DAB: 0D63561A33F958A5F32CD9214611EEA4F39DD1F950ED2800FE01BEBA8F28A09CD59269BC5F550898D99A6476B3ADF6B4886A5961035A09600383DAD389E261318FB05168BE4CE3AF
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFdNO8XxRrSv8Ln1uNZIRpmhA==
-X-Mailru-MI: 800
-X-Mras: Ok
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-7-seanjc@google.com>
+ <CAAeT=FzS0bP_7_wz6G6cL8-7pudTD7fhavLCVsOE0KnPXf99dQ@mail.gmail.com>
+ <YKQiTlDG1sZ4Zd2E@google.com> <CAAeT=FzsXFNiteMB3sjskM401Ty4Ry_w80YcYB4ZYcZn0dqv5Q@mail.gmail.com>
+ <YKVH4mzdAa+H9ROJ@google.com>
+In-Reply-To: <YKVH4mzdAa+H9ROJ@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Sun, 23 May 2021 21:57:31 -0700
+Message-ID: <CAAeT=Fz0Mn26riv3rG_x0ZXdrWLvqz=zv2g1064Os_jUdOhUaA@mail.gmail.com>
+Subject: Re: [PATCH 06/43] KVM: x86: Properly reset MMU context at vCPU RESET/INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.05.2021 15:06, Mark Brown wrote:
-> On Tue, May 18, 2021 at 12:44:41PM +0300, Maxim Kochetkov wrote:
-> 
->> +	if (chip->status_invert)
->> +		for (i = 0; i < data->chip->num_regs; i++)
->> +			data->status_buf[i] = ~data->status_buf[i];
->> +
-> 
-> This is the only active change so this only affects readback meaning
-> that if both read and write are inverted this won't do what's expected,
-> breaking acks.
+On Wed, May 19, 2021 at 10:16 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, May 18, 2021, Reiji Watanabe wrote:
+> > > > > +       if (kvm_cr0_mmu_role_changed(old_cr0, kvm_read_cr0(vcpu)) ||
+> > > > > +           kvm_cr4_mmu_role_changed(old_cr4, kvm_read_cr4(vcpu)))
+> > > > > +               kvm_mmu_reset_context(vcpu);
+> > > > >  }
+> > > >
+> > > > I'm wondering if kvm_vcpu_reset() should call kvm_mmu_reset_context()
+> > > > for a change in EFER.NX as well.
+> > >
+> > > Oooh.  So there _should_ be no need.   Paging has to be enabled for EFER.NX to
+> > > be relevant, and INIT toggles CR0.PG 1=>0 if paging was enabled and so is
+> > > guaranteed to trigger a context reset.  And we do want to skip the context reset,
+> > > e.g. INIT-SIPI-SIPI when the vCPU has paging disabled should continue using the
+> > > same MMU.
+> > >
+> > > But, kvm_calc_mmu_role_common() neglects to ignore NX if CR0.PG=0, and so the
+> > > MMU role will be stale if INIT clears EFER.NX without forcing a context reset.
+> > > However, that's benign from a functionality perspective because the context
+> > > itself correctly incorporates CR0.PG, it's only the role that's borked.  I.e.
+> > > KVM will fail to reuse a page/context due to the spurious role.nxe, but the
+> > > permission checks are always be correct.
+> > >
+> > > I'll add a comment here and send a patch to fix the role calculation.
+> >
+> > Thank you so much for the explanation !
+> > I understand your intention and why it would be benign.
+> >
+> > Then, I'm wondering if kvm_cr4_mmu_role_changed() needs to be
+> > called here.  Looking at the Intel SDM, in my understanding,
+> > all the bits kvm_cr4_mmu_role_changed() checks are relevant
+> > only if paging is enabled.  (Or is my understanding incorrect ??)
+>
+> Duh, yes.  And it goes even beyond that, CR0.WP is only relevant if CR0.PG=1,
+> i.e. INIT with CR0.PG=0 and CR0.WP=1 will incorrectly trigger a MMU reset with
+> the current logic.
+>
+> Sadly, simply omitting the CR4 check puts us in an awkward situation where, due
+> to the MMU role CR4 calculations not accounting for CR0.PG=0, KVM will run with
+> a stale role.
+>
+> The other consideration is that kvm_post_set_cr4() and kvm_post_set_cr0() should
+> also skip kvm_mmu_reset_context() if CR0.PG=0, but again that requires fixing
+> the role calculations first (or at the same time).
+>
+> I think I'll throw in those cleanups to the beginning of this series.  The result
+> is going to be disgustingly long, but I really don't want to introduce code that
+> knowingly leaves KVM in an inconsistent state, nor do I want to add useless
+> checks on CR4 and EFER.
 
-I mean 'status_invert' as just status register has inverted bits. So to 
-keep all other logic we just need to invert status register after read. 
-It will not break acks because we can use ack_invert option to invert 
-status back if needed. Anyway it will not affect existing devices just 
-new ones with inverted status.
+Yes, I would think having the cleanups would be better.
 
-> I'm guessing your device either mixes things or is clear on read?
-
-Yes my device is clear on read. It don`t use ack registers. It has only 
-mask and status.
-
-
-I missed read status register at regmap_add_irq_chip_fwnode(). I will 
-send v2.
-
+Thank you !
+Reiji
