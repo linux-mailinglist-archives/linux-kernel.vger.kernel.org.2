@@ -2,84 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BE138E0FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADAA38E152
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhEXGbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:31:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3919 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbhEXGbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:31:08 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FpS0l6NlLz80vB;
-        Mon, 24 May 2021 14:26:47 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 14:29:38 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm000001.china.huawei.com
- (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 24 May
- 2021 14:29:37 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
-        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-Subject: [PATCH -next] riscv: mm: fix build errors caused by mk_pmd()
-Date:   Mon, 24 May 2021 15:02:20 +0800
-Message-ID: <20210524070220.793082-1-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        id S232317AbhEXHGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 03:06:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232120AbhEXHGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 03:06:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C56A6109E;
+        Mon, 24 May 2021 07:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621839893;
+        bh=5zRR35sopPhIcbOdDfJMCF+fxbhWMxuprvD3qD7vU90=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DTUHXiEmEu4Z38Xe70Xhzj+FH+CoG8u+7HhiAlIAuuAmZ3Xhr+Jg8TZggNPeypDmK
+         HrsAZ9j8Tehr83WzRDC0+UZ/CHOvUsNg/ZcLbR4sr45DzQrILOEuNh7E79Xwu8Fyc3
+         6lI4osyFqxW7eXDFVRlj0SgClrnN+kR/kFbQSzLA=
+Date:   Mon, 24 May 2021 09:04:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     nizamhaider786@gmail.com
+Cc:     lkundrak@v3.sk, arnd@arndb.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] char: pcmcia: scr24x_cs: Fix failure handling
+ Handled failure cases of pcmcia_enable_device() and device_create()
+Message-ID: <YKtQFL1AIunsyZhn@kroah.com>
+References: <20210523151111.2968-1-nizamhaider786@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210523151111.2968-1-nizamhaider786@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With "riscv: mm: add THP support on 64-bit", mk_pmd() function
-introduce build errors,
-1.build with CONFIG_ARCH_RV32I=y:
-arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
-arch/riscv/include/asm/pgtable.h:513:9: error: implicit declaration of function 'pfn_pmd';
- did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
+On Sun, May 23, 2021 at 08:41:10PM +0530, nizamhaider786@gmail.com wrote:
+> From: Nijam Haider <nizamhaider786@gmail.com>
+> 
+> Signed-off-by: Nijam Haider <nizamhaider786@gmail.com>
 
-2.build with CONFIG_SPARSEMEM=y && CONFIG_SPARSEMEM_VMEMMAP=n
-arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
-include/asm-generic/memory_model.h:64:14: error: implicit declaration of function 'page_to_section';
- did you mean 'present_section'? [-Werror=implicit-function-declaration]
-
-Use macro definition instead of inline function for mk_pmd
-to fix the above problems.It is similar to the mk_pte macro.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
----
- arch/riscv/include/asm/pgtable.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 4b708ae08910..f35d9c90d4cb 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -508,10 +508,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
- 	return ((__pmd_to_phys(pmd) & PMD_MASK) >> PAGE_SHIFT);
- }
- 
--static inline pmd_t mk_pmd(struct page *page, pgprot_t prot)
--{
--	return pfn_pmd(page_to_pfn(page), prot);
--}
-+#define mk_pmd(page, prot)    pfn_pmd(page_to_pfn(page), prot)
- 
- static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
- {
--- 
-2.18.0.huawei.25
+I can not take patches without any changelog text :(
 
