@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDE338EDAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD3338EFFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhEXPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
+        id S235814AbhEXP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233482AbhEXPg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10E126141C;
-        Mon, 24 May 2021 15:32:58 +0000 (UTC)
+        id S234860AbhEXPyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A9D5617ED;
+        Mon, 24 May 2021 15:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870379;
-        bh=y8tKCc8MNmhJbgdeqlnUMymJi7u75jq1rEAUQ5u/ucY=;
+        s=korg; t=1621870795;
+        bh=lVF9Ze/S06Eg1A+PMOGSpVDkwzSF0NNTQ75Reo2VATk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vIgOa+fCdWsEDxYkpvAJ/G1lSakAZzmxdz4BlJpzLvjHlMqPJVKS3fVtC66wyjqDv
-         EwcMhODEGc9+KT2KiahLhTdstvxSwqZTQE6RJTbVgF7Nr/NqBkmOHIUXZpEMP2Vugi
-         PYCFrJzRl5vzIN0e2Zgf8Wog6oeAOoUEooCIUF9M=
+        b=0OK8IHh/8EkTiN/Ea0hqcbp0kef6MXZ8OWdjR/o05oP/YwGeTkM4Wx8irL+LsjAk9
+         WjoGTjqBNRm3q6drJ3CWQ28LigHtKyUCEfQOllwwx4OlyNU1yeyI+DCdG2+poPLYf1
+         Y7dVd+c5MNMK08Rrvz556OGIW08h0bsj/6Tex3Y4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: [PATCH 4.9 30/36] leds: lp5523: check return value of lp5xx_read and jump to cleanup code
+        Mario Limonciello <mario.limonciello@outlook.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 020/104] platform/x86: dell-smbios-wmi: Fix oops on rmmod dell_smbios
 Date:   Mon, 24 May 2021 17:25:15 +0200
-Message-Id: <20210524152325.132767561@linuxfoundation.org>
+Message-Id: <20210524152333.495739224@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 6647f7a06eb030a2384ec71f0bb2e78854afabfe upstream.
+[ Upstream commit 3a53587423d25c87af4b4126a806a0575104b45e ]
 
-Check return value of lp5xx_read and if non-zero, jump to code at end of
-the function, causing lp5523_stop_all_engines to be executed before
-returning the error value up the call chain. This fixes the original
-commit (248b57015f35) which was reverted due to the University of Minnesota
-problems.
+init_dell_smbios_wmi() only registers the dell_smbios_wmi_driver on systems
+where the Dell WMI interface is supported. While exit_dell_smbios_wmi()
+unregisters it unconditionally, this leads to the following oops:
 
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-10-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[  175.722921] ------------[ cut here ]------------
+[  175.722925] Unexpected driver unregister!
+[  175.722939] WARNING: CPU: 1 PID: 3630 at drivers/base/driver.c:194 driver_unregister+0x38/0x40
+...
+[  175.723089] Call Trace:
+[  175.723094]  cleanup_module+0x5/0xedd [dell_smbios]
+...
+[  175.723148] ---[ end trace 064c34e1ad49509d ]---
+
+Make the unregister happen on the same condition the register happens
+to fix this.
+
+Cc: Mario Limonciello <mario.limonciello@outlook.com>
+Fixes: 1a258e670434 ("platform/x86: dell-smbios-wmi: Add new WMI dispatcher driver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@outlook.com>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Link: https://lore.kernel.org/r/20210518125027.21824-1-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-lp5523.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/dell-smbios-wmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -318,7 +318,9 @@ static int lp5523_init_program_engine(st
+diff --git a/drivers/platform/x86/dell-smbios-wmi.c b/drivers/platform/x86/dell-smbios-wmi.c
+index 27a298b7c541..c97bd4a45242 100644
+--- a/drivers/platform/x86/dell-smbios-wmi.c
++++ b/drivers/platform/x86/dell-smbios-wmi.c
+@@ -271,7 +271,8 @@ int init_dell_smbios_wmi(void)
  
- 	/* Let the programs run for couple of ms and check the engine status */
- 	usleep_range(3000, 6000);
--	lp55xx_read(chip, LP5523_REG_STATUS, &status);
-+	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
-+	if (ret)
-+		goto out;
- 	status &= LP5523_ENG_STATUS_MASK;
+ void exit_dell_smbios_wmi(void)
+ {
+-	wmi_driver_unregister(&dell_smbios_wmi_driver);
++	if (wmi_supported)
++		wmi_driver_unregister(&dell_smbios_wmi_driver);
+ }
  
- 	if (status != LP5523_ENG_STATUS_MASK) {
+ MODULE_DEVICE_TABLE(wmi, dell_smbios_wmi_id_table);
+-- 
+2.30.2
+
 
 
