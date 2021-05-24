@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789DB38EEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB7D38ED3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235287AbhEXPzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
+        id S233290AbhEXPfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233279AbhEXPqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:46:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F99061474;
-        Mon, 24 May 2021 15:36:39 +0000 (UTC)
+        id S233072AbhEXPdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:33:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E635A613E6;
+        Mon, 24 May 2021 15:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870599;
-        bh=xRDxPjz1/JDXns6zj7yVp2y8VRABqOmVzDY89jckC54=;
+        s=korg; t=1621870271;
+        bh=y8tKCc8MNmhJbgdeqlnUMymJi7u75jq1rEAUQ5u/ucY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQN3490asOXk2IVKlEgahW9VWLi8GDwyUyxPSNHPz4FfFo3VMikROCkVC5w6I10uY
-         OaRdk0J15Uoyd0k9zMdPaWgXiaiVqqBIxQj4NlyM2JCOUMbbZyOMY4ptolulmR/Y9c
-         /simHmlePXMkBj/Sn0qOtVKHrmFnB2FpsUUfKwRI=
+        b=rE8ujamSOUHnwwtx6VhmnpCC3O3m1Ax8c1nZjNfI96TOL0uNS+BwCcFpt3wanxybc
+         NHyAlc2UC4kx6ZMJyivYTBI+hkQ18CQ86O/NX2X8W7y1fAO3kOyFl42vvpGJgPlM8p
+         65y/AkvqWvw2rqzGVWwO5YDi3cr90/I5AFCmg2oU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Stafford Horne <shorne@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/71] openrisc: Fix a memory leak
-Date:   Mon, 24 May 2021 17:25:08 +0200
-Message-Id: <20210524152326.530698558@linuxfoundation.org>
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH 4.4 26/31] leds: lp5523: check return value of lp5xx_read and jump to cleanup code
+Date:   Mon, 24 May 2021 17:25:09 +0200
+Message-Id: <20210524152323.771512900@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
+References: <20210524152322.919918360@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit c019d92457826bb7b2091c86f36adb5de08405f9 ]
+commit 6647f7a06eb030a2384ec71f0bb2e78854afabfe upstream.
 
-'setup_find_cpu_node()' take a reference on the node it returns.
-This reference must be decremented when not needed anymore, or there will
-be a leak.
+Check return value of lp5xx_read and if non-zero, jump to code at end of
+the function, causing lp5523_stop_all_engines to be executed before
+returning the error value up the call chain. This fixes the original
+commit (248b57015f35) which was reverted due to the University of Minnesota
+problems.
 
-Add the missing 'of_node_put(cpu)'.
-
-Note that 'setup_cpuinfo()' that also calls this function already has a
-correct 'of_node_put(cpu)' at its end.
-
-Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-10-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/openrisc/kernel/setup.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/leds/leds-lp5523.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
-index d668f5be3a99..ae104eb4becc 100644
---- a/arch/openrisc/kernel/setup.c
-+++ b/arch/openrisc/kernel/setup.c
-@@ -274,6 +274,8 @@ void calibrate_delay(void)
- 	pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
- 		loops_per_jiffy / (500000 / HZ),
- 		(loops_per_jiffy / (5000 / HZ)) % 100, loops_per_jiffy);
-+
-+	of_node_put(cpu);
- }
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -318,7 +318,9 @@ static int lp5523_init_program_engine(st
  
- void __init setup_arch(char **cmdline_p)
--- 
-2.30.2
-
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	if (ret)
++		goto out;
+ 	status &= LP5523_ENG_STATUS_MASK;
+ 
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
