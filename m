@@ -2,189 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3372138E2B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8539838E2B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhEXIur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbhEXIu0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:50:26 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D2EC06138F
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:48:53 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id q5so27648847wrs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qctUSYHr5HUHKNeM+US54ACn680xy5JVgv6pYiAbRJA=;
-        b=rff3oXBQN1KWOufY2wiB5c6bIHYakPPlTw5ELevddWVaHSHZToKwBLoyZjda6vIV/V
-         zSz4okq1a5U1vmzByBndO4L5mtS8xTI0+aPSOc6+nzFpq/Ir8tSSAwJnk22QKW7oZrvn
-         p6eaJVsFRT+d2fE9cY69UwP788q9M0QfKgJqtN+ruXPsj5lEEFsPK5d5LLDpgMhbshBC
-         dGQz+nKmPR5ai02yt2YhO4my5vxuVfym7GeLCD0sWN9sQzHjyWLTXcWDTHPcIQojoWV3
-         geXmO8rU+LXKstvtqzn7XlwITOq4B2pMsTpMtLpnolgNlP91gTOHEzOMSDtd3rB9jkgP
-         PjNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qctUSYHr5HUHKNeM+US54ACn680xy5JVgv6pYiAbRJA=;
-        b=tVFmISDnFqaW0WITm1a/XIZCYtvF1MCY70IqKRevq/jsaks8QQEFPGXCoddR8BPX96
-         aMdLtvndx8xBfgFPWWU1XO3a2xxhdw5tC8ey7qVxAtLkpd6HCfEehWQCW5Ty6sGo5824
-         fLsDNXA8esZNojuKKEuru3qJPiWFNW+cLP7Fm1EZX7eubPbG73FQVo/70FLmPUc9Zl9S
-         Y/T9tWRhhNPLhLEUVqiIYYAygiHYCvrlNlGxJFEfoY9wDta0pI5EsNxhxKv6iVgYZiVt
-         r5um3lo5qBHX3UkMiIKi6murOaMH2M3k/+WkGj9BroFsnkbxFyOGg5ou5IQ++lALqakH
-         S4lg==
-X-Gm-Message-State: AOAM5304IvTNXoG1YtyyA5QLNu8GJeH8BekSlIT2wNY17JmYOwJbnGSp
-        RtW0fNrbCFGT2x2E+n0Bijfqyg==
-X-Google-Smtp-Source: ABdhPJzZgwh6UUN40XEqNV9IWRSczT/atmMtaL1unQspj/ho+ExIole3u1y/SFdBFWqkH20FuCfDyA==
-X-Received: by 2002:a5d:4744:: with SMTP id o4mr20229008wrs.86.1621846131907;
-        Mon, 24 May 2021 01:48:51 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id x206sm4034548wmx.47.2021.05.24.01.48.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 01:48:51 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v7 9/9] ASoC: codecs: wcd938x: add audio routing
-Date:   Mon, 24 May 2021 09:48:28 +0100
-Message-Id: <20210524084828.12787-10-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210524084828.12787-1-srinivas.kandagatla@linaro.org>
-References: <20210524084828.12787-1-srinivas.kandagatla@linaro.org>
+        id S232615AbhEXIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:50:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33584 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232623AbhEXIum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 04:50:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621846152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jpE9YGrCjrEpHsW3uIKMlS6XsBu4wdObU8VGSrpMBhU=;
+        b=TQSoNE8TH8Qw/0nXV4p4prxRuZHyAGLtNsnT71NNZvBuaWH1gbkvAxRXfDZgQA8sIbDwma
+        5gMLetD5QwQVxTGM2c7fk/d+RT5EF66jMlM8U4RxKXXYtVeZzdFGJ6Zcji4MFCaQgiWwIX
+        DNVbY0eJfqLQwXRIWG6U1KWtOzPfoKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621846152;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jpE9YGrCjrEpHsW3uIKMlS6XsBu4wdObU8VGSrpMBhU=;
+        b=9CU/XjoMjdxhBrK3qpgq8XzBbWs1+NP4iDMf3mat82Qp4+bb6af3LxjTm6UrVH0MarzXe2
+        XdS5UarcZ3H309CA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B955EABB1;
+        Mon, 24 May 2021 08:49:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7E08C1F2CA2; Mon, 24 May 2021 10:49:12 +0200 (CEST)
+Date:   Mon, 24 May 2021 10:49:12 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
+        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v3 0/2] quota: Add mountpath based quota support
+Message-ID: <20210524084912.GC32705@quack2.suse.cz>
+References: <20210304123541.30749-1-s.hauer@pengutronix.de>
+ <20210316112916.GA23532@quack2.suse.cz>
+ <20210512110149.GA31495@quack2.suse.cz>
+ <20210512150346.GQ19819@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512150346.GQ19819@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds audio routing for both playback and capture.
+On Wed 12-05-21 17:03:46, Sascha Hauer wrote:
+> On Wed, May 12, 2021 at 01:01:49PM +0200, Jan Kara wrote:
+> > Added a few more CCs.
+> > 
+> > On Tue 16-03-21 12:29:16, Jan Kara wrote:
+> > > On Thu 04-03-21 13:35:38, Sascha Hauer wrote:
+> > > > Current quotactl syscall uses a path to a block device to specify the
+> > > > filesystem to work on which makes it unsuitable for filesystems that
+> > > > do not have a block device. This series adds a new syscall quotactl_path()
+> > > > which replaces the path to the block device with a mountpath, but otherwise
+> > > > behaves like original quotactl.
+> > > > 
+> > > > This is done to add quota support to UBIFS. UBIFS quota support has been
+> > > > posted several times with different approaches to put the mountpath into
+> > > > the existing quotactl() syscall until it has been suggested to make it a
+> > > > new syscall instead, so here it is.
+> > > > 
+> > > > I'm not posting the full UBIFS quota series here as it remains unchanged
+> > > > and I'd like to get feedback to the new syscall first. For those interested
+> > > > the most recent series can be found here: https://lwn.net/Articles/810463/
+> > > 
+> > > Thanks. I've merged the two patches into my tree and will push them to
+> > > Linus for the next merge window.
+> > 
+> > So there are some people at LWN whining that quotactl_path() has no dirfd
+> > and flags arguments for specifying the target. Somewhat late in the game
+> > but since there's no major release with the syscall and no userspace using
+> > it, I think we could still change that. What do you think? What they
+> > suggest does make some sense. But then, rather then supporting API for
+> > million-and-one ways in which I may wish to lookup a fs object, won't it be
+> > better to just pass 'fd' in the new syscall (it may well be just O_PATH fd
+> > AFAICT) and be done with that?
+> 
+> This sounds like a much cleaner interface to me. If we agree on this I
+> wouldn't mind spinning this patch for another few rounds.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd938x.c | 94 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+So the syscall is currently disabled in Linus' tree. Will you send a patch
+for new fd-based quotactl variant?
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index dfd14b223bff..c16ec8c1620d 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3133,6 +3133,98 @@ static const struct snd_soc_dapm_widget wcd938x_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("AUX"),
- 	SND_SOC_DAPM_OUTPUT("HPHL"),
- 	SND_SOC_DAPM_OUTPUT("HPHR"),
-+
-+};
-+
-+static const struct snd_soc_dapm_route wcd938x_audio_map[] = {
-+	{"ADC1_OUTPUT", NULL, "ADC1_MIXER"},
-+	{"ADC1_MIXER", "Switch", "ADC1 REQ"},
-+	{"ADC1 REQ", NULL, "ADC1"},
-+	{"ADC1", NULL, "AMIC1"},
-+
-+	{"ADC2_OUTPUT", NULL, "ADC2_MIXER"},
-+	{"ADC2_MIXER", "Switch", "ADC2 REQ"},
-+	{"ADC2 REQ", NULL, "ADC2"},
-+	{"ADC2", NULL, "HDR12 MUX"},
-+	{"HDR12 MUX", "NO_HDR12", "ADC2 MUX"},
-+	{"HDR12 MUX", "HDR12", "AMIC1"},
-+	{"ADC2 MUX", "INP3", "AMIC3"},
-+	{"ADC2 MUX", "INP2", "AMIC2"},
-+
-+	{"ADC3_OUTPUT", NULL, "ADC3_MIXER"},
-+	{"ADC3_MIXER", "Switch", "ADC3 REQ"},
-+	{"ADC3 REQ", NULL, "ADC3"},
-+	{"ADC3", NULL, "HDR34 MUX"},
-+	{"HDR34 MUX", "NO_HDR34", "ADC3 MUX"},
-+	{"HDR34 MUX", "HDR34", "AMIC5"},
-+	{"ADC3 MUX", "INP4", "AMIC4"},
-+	{"ADC3 MUX", "INP6", "AMIC6"},
-+
-+	{"ADC4_OUTPUT", NULL, "ADC4_MIXER"},
-+	{"ADC4_MIXER", "Switch", "ADC4 REQ"},
-+	{"ADC4 REQ", NULL, "ADC4"},
-+	{"ADC4", NULL, "ADC4 MUX"},
-+	{"ADC4 MUX", "INP5", "AMIC5"},
-+	{"ADC4 MUX", "INP7", "AMIC7"},
-+
-+	{"DMIC1_OUTPUT", NULL, "DMIC1_MIXER"},
-+	{"DMIC1_MIXER", "Switch", "DMIC1"},
-+
-+	{"DMIC2_OUTPUT", NULL, "DMIC2_MIXER"},
-+	{"DMIC2_MIXER", "Switch", "DMIC2"},
-+
-+	{"DMIC3_OUTPUT", NULL, "DMIC3_MIXER"},
-+	{"DMIC3_MIXER", "Switch", "DMIC3"},
-+
-+	{"DMIC4_OUTPUT", NULL, "DMIC4_MIXER"},
-+	{"DMIC4_MIXER", "Switch", "DMIC4"},
-+
-+	{"DMIC5_OUTPUT", NULL, "DMIC5_MIXER"},
-+	{"DMIC5_MIXER", "Switch", "DMIC5"},
-+
-+	{"DMIC6_OUTPUT", NULL, "DMIC6_MIXER"},
-+	{"DMIC6_MIXER", "Switch", "DMIC6"},
-+
-+	{"DMIC7_OUTPUT", NULL, "DMIC7_MIXER"},
-+	{"DMIC7_MIXER", "Switch", "DMIC7"},
-+
-+	{"DMIC8_OUTPUT", NULL, "DMIC8_MIXER"},
-+	{"DMIC8_MIXER", "Switch", "DMIC8"},
-+
-+	{"IN1_HPHL", NULL, "VDD_BUCK"},
-+	{"IN1_HPHL", NULL, "CLS_H_PORT"},
-+
-+	{"RX1", NULL, "IN1_HPHL"},
-+	{"RX1", NULL, "RXCLK"},
-+	{"RDAC1", NULL, "RX1"},
-+	{"HPHL_RDAC", "Switch", "RDAC1"},
-+	{"HPHL PGA", NULL, "HPHL_RDAC"},
-+	{"HPHL", NULL, "HPHL PGA"},
-+
-+	{"IN2_HPHR", NULL, "VDD_BUCK"},
-+	{"IN2_HPHR", NULL, "CLS_H_PORT"},
-+	{"RX2", NULL, "IN2_HPHR"},
-+	{"RDAC2", NULL, "RX2"},
-+	{"RX2", NULL, "RXCLK"},
-+	{"HPHR_RDAC", "Switch", "RDAC2"},
-+	{"HPHR PGA", NULL, "HPHR_RDAC"},
-+	{"HPHR", NULL, "HPHR PGA"},
-+
-+	{"IN3_AUX", NULL, "VDD_BUCK"},
-+	{"IN3_AUX", NULL, "CLS_H_PORT"},
-+	{"RX3", NULL, "IN3_AUX"},
-+	{"RDAC4", NULL, "RX3"},
-+	{"RX3", NULL, "RXCLK"},
-+	{"AUX_RDAC", "Switch", "RDAC4"},
-+	{"AUX PGA", NULL, "AUX_RDAC"},
-+	{"AUX", NULL, "AUX PGA"},
-+
-+	{"RDAC3_MUX", "RX3", "RX3"},
-+	{"RDAC3_MUX", "RX1", "RX1"},
-+	{"RDAC3", NULL, "RDAC3_MUX"},
-+	{"EAR_RDAC", "Switch", "RDAC3"},
-+	{"EAR PGA", NULL, "EAR_RDAC"},
-+	{"EAR", NULL, "EAR PGA"},
- };
- 
- static int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
-@@ -3300,6 +3392,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x = {
- 	.num_controls = ARRAY_SIZE(wcd938x_snd_controls),
- 	.dapm_widgets = wcd938x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_dapm_widgets),
-+	.dapm_routes = wcd938x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_audio_map),
- };
- 
- static void wcd938x_dt_parse_micbias_info(struct device *dev, struct wcd938x_priv *wcd)
+								Honza
 -- 
-2.21.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
