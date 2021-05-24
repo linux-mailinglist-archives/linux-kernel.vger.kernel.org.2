@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C2F38F429
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4076A38F41B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233363AbhEXUUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbhEXUUP (ORCPT
+        id S233191AbhEXUM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:12:27 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:44630 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232676AbhEXUM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 16:20:15 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1ABC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 13:18:45 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id n2so29884301wrm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 13:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=23rteGegUlHTggOe+XdQ3mFcbGkqC9/JU3+UkJ+AdDw=;
-        b=AKBTYirM+lU3E/J3fIOit0ayAjArUGEyuj/tDdc33A8qpLUK4NsskX2z3AuH/m3HXB
-         wa/kDyx0DjrEgGhx+/Sr5TzdKl3BSZ24l8aXPb8ntXsg40NQmgMaHndfhhDP59MNlMze
-         OqseXy/xT38w/14HFNf5iRUjJF1OFUypoXdIRgslw7ChgWjn/z3/KxIOpsUee2GCbGcj
-         lAF2QF81Lur2AZ9Gm3bXM3eCU4pXKY7LIkzwiYiruAYvO3CW3OlW9RKsBphPWSi3eed7
-         p16CSzt4vVEBY/OhWYz2OA+MTHlSRaZpCfOtJ1mcMbsNGZYtykoUYDI0zP+H9yEdqWue
-         4MJQ==
+        Mon, 24 May 2021 16:12:26 -0400
+Received: by mail-pg1-f173.google.com with SMTP id 29so9825853pgu.11;
+        Mon, 24 May 2021 13:10:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=23rteGegUlHTggOe+XdQ3mFcbGkqC9/JU3+UkJ+AdDw=;
-        b=rqyIV7aO4DT0OZti1XMSpS8EtqwKLmpCC+HqpcafF7qZb2vnD01PIi0H4MycyL5iB/
-         Zr6+adM9m3maFO2coHub+RnAsBiIdEuWIFsqJVL0+1+h+Esz5sYkJvBhSY9vXcpitIhV
-         kZpCb9uDIwMFy66zd7WTHz/Jd3YpcVGTkl4zei2uXiRMalIXbE4FarBPvuRwW9D4dYhI
-         t/MgjjH7A0wKejyQGnDcKbqd6B19rYsytGz3wOYpVcw4GXTqUr8E0SZa6MQmsufTbepA
-         89exaeI9obscI2PQKMuwHKSkwTT0WFtVx2uzWh55aU2JeuSX+gqUxvMG1Ugyxj2v/wTH
-         AfGw==
-X-Gm-Message-State: AOAM533t8ldaJFd1MUK1P22zjf2dZg1r2cknO18elkSZY/S+B61HndzL
-        lC08HP+P6/Nr3x9Qoqx0P/2lyW0OCtw=
-X-Google-Smtp-Source: ABdhPJw1GAQcr+9sT2mGivqoJfXEu2/vwLgT8bUbeO4d7oUbVLKLY8uEzjacoM2P8iu8IKiKTmMnsw==
-X-Received: by 2002:a05:6000:184a:: with SMTP id c10mr25090633wri.244.1621887523900;
-        Mon, 24 May 2021 13:18:43 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:8954:39a5:6045:cd0c? (p200300ea8f384600895439a56045cd0c.dip0.t-ipconnect.de. [2003:ea:8f38:4600:8954:39a5:6045:cd0c])
-        by smtp.googlemail.com with ESMTPSA id r17sm481913wmh.25.2021.05.24.13.18.41
+        bh=cZcmrRKl8MZj6EByHFj+TpMs1Z1/LuL5LS/wikT3fk4=;
+        b=rvq1lpXbXok9aDhT19RncQHuVnr6owjZ/maJaGE4OhJ0yfJ8D4kUAb7o54bh4OfDzH
+         Y9YFhpt0hMDHUQ3oJWYggkwavwqQtEVTTy7jWP/LBD5t0DFOty6CrQes0VIsF9+Zj9Fv
+         H5R+0Fge0hX/8gv/6Nci5RLBOWOQZ4guTEw1cD8K0AMYUYR4iNuFTPVlvtvQd3I9lP3f
+         PeGJ8QBqqyfviUXlpGNYfpSsWTm/r3gLSmzOGOxd6Nx/fsmemD44fkOTrYJJsIeIrJaW
+         QIeYIi7xyP7pJzbUo+2XmnfqVTw5++PwWNN2Kt/qiX71nZmG1IkgCG6GwNkePhA2DNUD
+         Lb+w==
+X-Gm-Message-State: AOAM532pf1qk8tHz8O1RqRiXXtXdIL6pkqqtcfMHnc9JpeoaSmywkOhm
+        R8adyZYco3h53jcUONvgMzs=
+X-Google-Smtp-Source: ABdhPJxD4+pUlQXbF50GPoHknO4liqzl56WqMATugX+MXNqgIs5tXgBUmR5SEERjMs7Ux8i4dGIotQ==
+X-Received: by 2002:aa7:9aed:0:b029:2e1:fdad:ac11 with SMTP id y13-20020aa79aed0000b02902e1fdadac11mr24869896pfp.58.1621887056093;
+        Mon, 24 May 2021 13:10:56 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id w125sm11621528pfw.214.2021.05.24.13.10.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 13:18:43 -0700 (PDT)
-Subject: [PATCH 03/13] eeprom: ee1004: Remove not needed check in
- ee1004_eeprom_read
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <bd8439bc-3a6f-fd52-5fd1-bf9782061612@gmail.com>
-Message-ID: <eb2a8bff-43ec-c763-a417-9d741e6f0034@gmail.com>
-Date:   Mon, 24 May 2021 22:10:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Mon, 24 May 2021 13:10:55 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
+ send/compl paths
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+ <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <41a08b3e-122d-4f1a-abbd-4b5730f880b2@acm.org>
+Date:   Mon, 24 May 2021 13:10:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <bd8439bc-3a6f-fd52-5fd1-bf9782061612@gmail.com>
+In-Reply-To: <1621845419-14194-3-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,32 +72,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i2c_smbus_read_i2c_block_data_or_emulated() checks its length argument,
-so we don't have to do it. In addition remove the unlikely hint from
-the checks, we do i2c reads and therefore are in a slow path.
+On 5/24/21 1:36 AM, Can Guo wrote:
+> Current UFS IRQ handler is completely wrapped by host lock, and because
+> ufshcd_send_command() is also protected by host lock, when IRQ handler
+> fires, not only the CPU running the IRQ handler cannot send new requests,
+> the rest CPUs can neither. Move the host lock wrapping the IRQ handler into
+> specific branches, i.e., ufshcd_uic_cmd_compl(), ufshcd_check_errors(),
+> ufshcd_tmc_handler() and ufshcd_transfer_req_compl(). Meanwhile, to further
+> reduce occpuation of host lock in ufshcd_transfer_req_compl(), host lock is
+> no longer required to call __ufshcd_transfer_req_compl(). As per test, the
+> optimization can bring considerable gain to random read/write performance.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/misc/eeprom/ee1004.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Hi Can,
 
-diff --git a/drivers/misc/eeprom/ee1004.c b/drivers/misc/eeprom/ee1004.c
-index 6aff333ff..2824dba76 100644
---- a/drivers/misc/eeprom/ee1004.c
-+++ b/drivers/misc/eeprom/ee1004.c
-@@ -76,10 +76,8 @@ static ssize_t ee1004_eeprom_read(struct i2c_client *client, char *buf,
- {
- 	int status;
- 
--	if (count > I2C_SMBUS_BLOCK_MAX)
--		count = I2C_SMBUS_BLOCK_MAX;
- 	/* Can't cross page boundaries */
--	if (unlikely(offset + count > EE1004_PAGE_SIZE))
-+	if (offset + count > EE1004_PAGE_SIZE)
- 		count = EE1004_PAGE_SIZE - offset;
- 
- 	status = i2c_smbus_read_i2c_block_data_or_emulated(client, offset,
--- 
-2.31.1
+Using the host lock to serialize the completion path against the
+submission path was a common practice 11 years ago, before the host lock
+push-down (see also
+https://linux-scsi.vger.kernel.narkive.com/UEmGgwAc/rfc-patch-scsi-host-lock-push-down).
+Modern SCSI LLDs should not use the SCSI host lock. Please consider
+introducing one or more new synchronization objects in struct ufs_hba
+and to use these instead of the SCSI host lock. That will save multiple
+pointer dereferences in the hot path since hba->host->host_lock will
+become hba->new_spin_lock.
 
+An additional question is whether it is necessary for v3.0 UFS devices
+to serialize the submission path against the completion path? Multiple
+high-performance SCSI LLDs support hardware with separate submission and
+completion queues and hence do not need any serialization between the
+submission and the completion path. I'm asking this because it is likely
+that sooner or later multiqueue support will be added in the UFS
+specification. Benefiting from multiqueue support will require to rework
+locking in the UFS driver anyway.
 
+Thanks,
+
+Bart.
