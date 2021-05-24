@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC2538F0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0F938F126
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237395AbhEXQHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:07:49 -0400
-Received: from m32-153.88.com ([43.250.32.153]:60956 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235702AbhEXQAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=eTi1+Ts+2Eo57YYXEQfPHusA2s3E5JfUy53ss
-        sDiL7A=; b=lawxqCx5Oz/PZTRgGYJSV3O5fWUGiJDnVY8z6z2ePoJZ/c/1GRBl6
-        FZuqpKvg0/EM8t7vi6apjH+u5g+X3Xa8kcrUa+ZIm14KMtoMge9Gs+ptPv4hzka4
-        o3k3UwIQdQnyZkZX1Qbed/mkUFxAw2S7UjJ8U+8F64b2pDZJhgecrE=
-Received: from bobwxc.top (unknown [120.238.248.9])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDXJlkgzatgBVFGAA--.41751S2;
-        Mon, 24 May 2021 23:58:26 +0800 (CST)
-Date:   Mon, 24 May 2021 23:58:24 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Hu Haowen <src.res@email.cn>
-Cc:     alexs@kernel.org, corbet@lwn.net, maskray@google.com,
-        bernard@vivo.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] docs/zh_CN: create new translations for
- zh_CN/dev-tools/testing-overview
-Message-ID: <20210524155823.GA28790@bobwxc.top>
-References: <20210523140332.GA1097@bobwxc.top>
- <c5f5ee6a-46f8-ff72-059d-baeba42d234f@email.cn>
+        id S238442AbhEXQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:10:07 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:59140 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234967AbhEXQCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 12:02:11 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OFv7WI009692;
+        Mon, 24 May 2021 10:59:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=S7FQg2IR5Mf3ip3RJT1rmhF6CLbED/7CxbMJUwPMbeg=;
+ b=jRNr5gpjiUklo9RnEDw9Hl0fhTLUcasmKe9rvfmUwItre8tB52+nFqqlO/qX5Vy37ui4
+ tCvRQjTmXVS3EKwlOqu8uExXuMcocBTIfg1VgVK1+T6mXEpKpde+7VUlFKjU4j2Op3lX
+ SDET2dNCB2KCuARZdoyXJajiXvpnaul2q6jog+YbB3DTliaKdKN0q6KEr+4BIcgJhTG/
+ Wd8YbDTWYN88cj40Ffj1SsXgXnVqL8RXRTR5I8JIPLaTkOUG5oSO7JqnGEM0fCKlhdGR
+ dBqE04rxYjxfYdSgQU/YmHacEwchmxqk9av2on3Wssos9ZueJRrfxGJ9fM2kx8drh4fk 8w== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 38r28v0qh4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 24 May 2021 10:59:44 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 24 May
+ 2021 16:59:42 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 24 May 2021 16:59:42 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.127])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0BC8E11D6;
+        Mon, 24 May 2021 15:59:42 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>,
+        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
+        <w@1wt.eu>, <lkml@sdf.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 0/2] Fix truncation warnings from building test_scanf.c
+Date:   Mon, 24 May 2021 16:59:39 +0100
+Message-ID: <20210524155941.16376-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
-Content-Disposition: inline
-In-Reply-To: <c5f5ee6a-46f8-ff72-059d-baeba42d234f@email.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgDXJlkgzatgBVFGAA--.41751S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5d7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcV
-        AFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv
-        67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wASzI0EjI02j7AqF2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5V
-        A0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1U
-        JwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU0mhF7UUUUU==
-X-Originating-IP: [120.238.248.9]
-X-CM-SenderInfo: pere453f6hztlloou0/
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 5XI6TMK2TrxJFx0TsxnEbSe47ggppj5O
+X-Proofpoint-GUID: 5XI6TMK2TrxJFx0TsxnEbSe47ggppj5O
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=714 bulkscore=0 impostorscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105240096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernel test robot is reporting truncation warnings when building
+lib/test_scanf.c:
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1) lib/test_scanf.c:250:9: sparse: sparse: cast truncates bits from
+   constant value (ffff0001 becomes 1)
+   Reported on several lines.
 
-On Mon, May 24, 2021 at 08:13:50PM +0800, Hu Haowen wrote:
->=20
-> OK, I'll correct them.
->=20
->=20
-> Because this is my first time to kernel translation work, there might
-> be something wrong, after all thanks for pointing them out.
->=20
-
-Welcome to join us! <http://fars.ee/3TKR.gif>
-
-The points which I given are just suggestions. If you have any ideas or
-questions, just ask/say.
-
-Thanks,
-         Wu X.C.
+2) include/linux/prandom.h:114:45: sparse: sparse: cast truncates bits
+   from constant value (4f2e5357408c3c09 becomes 408c3c09)
 
 
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
+(1) is caused by test_scanf.c using type_min() on an unsigned type. The
+type_min() macro calculates -type_max() - 1, so is only meaningful for
+signed types.
 
------BEGIN PGP SIGNATURE-----
+(2) is caused by prandom_seed_state() storing a modified u64 seed value
+into a u32 - sparse will warn that this causes a truncation. 
 
-iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmCrzRsACgkQtlsoEiKC
-sIWA3gv9FX1AiiM5eHPPqkPAK9HTqqjE/U89WpSgnfdx5hyxO3AQxdmLWj+MudOc
-rWE3bBj1Sy4K1AKmeUliKl94Z/8l2cAGREASbpHGIVR7WevS8sdTiry7Wm18yOjT
-GZoLYDomq1JBfsT1Emnfvpu58RrOHEw+9+1hShaA6yWCsR08BPiYmaMwm4o7NgxW
-ClXgbo2rT+MqEyybfDkKf+WodZq9CPcoG5gr6JVuVBPhhvAs7JeiLwrb6EhOi70c
-yr/gJrQZc0tmoazTC+HcSdrgDqto5EfRbPwftUDfdj69FPdutviPg2qRaipfiZT1
-TOwFzWy87+aS+p0Vdu2OUrmusLSjWdvoDu/FtiHUZ2ojnw+fHLctu+d9LYcXtc0D
-WO0w0qkSS40TJ3U0moWFrxuT1HQZXK6+yiZzllUzKoeuMY2FNsVgudcX3MM8vLpf
-F/pqzvUXJdweAk9wv/XHQep4XXqcUv8nQaE7rcKoBLhvZ07JhrL6U1Z1Z7QHss3v
-L5yc3F7T
-=wHUy
------END PGP SIGNATURE-----
+The two patches in this series fix these problems.
 
---gBBFr7Ir9EOA20Yy--
+Richard Fitzgerald (2):
+  lib: test_scanf: Fix incorrect use of type_min() with unsigned types
+  random32: Fix implicit truncation warning in prandom_seed_state()
+
+ include/linux/prandom.h |  2 +-
+ lib/test_scanf.c        | 13 ++++++-------
+ 2 files changed, 7 insertions(+), 8 deletions(-)
+
+-- 
+2.20.1
 
