@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFEC38E743
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4BF38E749
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhEXNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:20:34 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:49905 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232842AbhEXNUa (ORCPT
+        id S232781AbhEXNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:20:54 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:38652 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232483AbhEXNUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:20:30 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 01FB441FB;
-        Mon, 24 May 2021 09:19:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 09:19:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=fuDtBAgTxfRRs
-        uyiHlaCiOfs3SONm3r054MQGPMRRUY=; b=XxvgFUkz2aWr5l2is4drQF7faLYdr
-        w+dS80w6gSL/2Ll5fqL9auUmv7BR70la607qX8Ngz2NZmbcVdwmPjCHEKMbZHUIi
-        Rj9ldDb4DZ9VLlvXo8tcEwICHO7awZ3mN/xMrVgGY4sr/bK6UCvuGNn54P0J7O9H
-        lXwWpwpj9xj/4gwWiqrPZfeGUH1+bLh2TbUD/rWSGU9tOY8gsc++9V2or/ktVV9m
-        bN3n1cNYJTfkHVpuRM+IkthFeslCZ3kfj0TbNqGsxi4uHCDguqP19tlW2JENQ5r9
-        cMHgbLQHXKlZzHz4bYrWcQcDkowxkzHBnNGKc/TTayJCOPsjOde+iprbw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=fuDtBAgTxfRRsuyiHlaCiOfs3SONm3r054MQGPMRRUY=; b=RAB2wBaX
-        Qwg/7bHVXxBBs9/SndDvot7NezO38EvTuNqQbzPGKna/9XlBsmXcqvwAg53zFUQs
-        evwu/gPmA6Q+NScYCURz0PTNpM8wJGRtf5TNbCGr7jblEncO6GuE+Fuh84e7yXQc
-        azDrY4B4vRMi5kG2aTihTEE3ACSzQbFKh56ivyj5N63+w096M17v431PZYV6W5+V
-        9PZWfTXXxivBinlV32PHIop5c7oyFzBQJG80B5nHG4qiWLX8r3dD9aAT58p68f90
-        g2bIywED44ACDY8QRWiA18IqFvCDBh/y0jQkuEBQET3q6ecTNaEkHB0UMmWCNu34
-        BHYCfRI5Zd7QZg==
-X-ME-Sender: <xms:xKerYFEsNyclnpGV5lJxsjMUWape7M4WCYOPjr7yrIMt8hl8UjQ2lw>
-    <xme:xKerYKXA8KQzAxbQp7uNnFZgyRCLOjQu4RFYKBiWC65NRtyYE3tRRGc-zWsaaqOCE
-    IkTk8I6g1f-uVoGxb8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgieegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:xKerYHKcEi3gwderZ-kJC-0aJMnjdQ4AQ65vFXc45zaTEyUiuN8QFA>
-    <xmx:xKerYLF0dkMKYRJYnVznuscy19XMIh1P7HmQkN587O4SI7loZKDByw>
-    <xmx:xKerYLV5tnMfKmJnU9XM1h9bllgQ0w_WlZ5cWfyijRWGD4laTc0x-w>
-    <xmx:xKerYIXgrdT9hfmSlwe7fn6AhZE3-N1B3omnUO3CXETtVcXnzEK92P-KYYg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 09:19:00 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>, linux-kernel@vger.kernel.org,
-        Linus Wallei <linus.walleij@linaro.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 2/2] drm/vc4: hdmi: Convert to gpiod
-Date:   Mon, 24 May 2021 15:18:52 +0200
-Message-Id: <20210524131852.263883-2-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524131852.263883-1-maxime@cerno.tech>
-References: <20210524131852.263883-1-maxime@cerno.tech>
+        Mon, 24 May 2021 09:20:51 -0400
+Received: by mail-io1-f69.google.com with SMTP id i13-20020a5e9e0d0000b029042f7925649eso27448772ioq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:19:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=xlJyul8EX30BPfx0IrWN2X0dWiT6NoPE1yBME7Ku8yY=;
+        b=Sj1Qv4KE+L0dsRPMmWIbx0MJB62DAzZa8Dp4R7IywwA77OQpINtwOjUD2GVKZ9GjBP
+         Wsq46Mb0EwdkaACE/Nwpqllfq/YyTsix0260QlBL2zrVv4nqgkHshGUgZbKasdpQPmU9
+         9RvDhyyqlL8A/+LZLzFO5Bn/zEL3m1OMAhC8/m1K6iikfEZ1b4HZpvro1hqiRGPYSRQy
+         zXhb+8USMwAx9E6FF1X04lSaOQUPELSm2sbKqTpns1l4ZCFIUUjpl2/nE+1IFhh3Fis5
+         eXRtEO1dpJD+p1+/L0SE7t+FUnkh9RQ0D8ZPZ942TSTSImA4Xf/DW54D0+jOBczeuyzm
+         LvFw==
+X-Gm-Message-State: AOAM530NntXioHDwrpSYmjJ4hXP5OedeQdGUqmN+Sid+iUEGfrYYrtxu
+        yeHZ9klHb59bIvFG2dxBiVtozxn++97yQdAeFtEcW0l+iX/l
+X-Google-Smtp-Source: ABdhPJzWg5EheSUX48l72MPSH9pGe+SyqFLJi+CvgWH+f8EzYpTz/N9nLnSDP/N6AY7rcG4uM2y87svB8dHUB9euCm+kwxK4BWSE
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:cd08:: with SMTP id d8mr16023343iog.86.1621862363043;
+ Mon, 24 May 2021 06:19:23 -0700 (PDT)
+Date:   Mon, 24 May 2021 06:19:23 -0700
+In-Reply-To: <000000000000f96caf05c30fd10f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000061f5105c3134231@google.com>
+Subject: Re: [syzbot] WARNING in rtl28xxu_ctrl_msg/usb_submit_urb
+From:   syzbot <syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com>
+To:     crope@iki.fi, gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
+        johan@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, mchehab@kernel.org,
+        stable@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new gpiod interface takes care of parsing the GPIO flags and to
-return the logical value when accessing an active-low GPIO, so switching
-to it simplifies a lot the driver.
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 24 +++++++-----------------
- drivers/gpu/drm/vc4/vc4_hdmi.h |  3 +--
- 2 files changed, 8 insertions(+), 19 deletions(-)
+HEAD commit:    5cc59c41 USB: core: WARN if pipe direction != setup packet..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=17aa9217d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1206ee92dd3d988d
+dashboard link: https://syzkaller.appspot.com/bug?extid=faf11bbadc5a372564da
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e839d1d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1242ce8dd00000
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index ccc6c8079dc6..34622c59f6a7 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -159,10 +159,9 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	struct vc4_hdmi *vc4_hdmi = connector_to_vc4_hdmi(connector);
- 	bool connected = false;
- 
--	if (vc4_hdmi->hpd_gpio) {
--		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
--		    vc4_hdmi->hpd_active_low)
--			connected = true;
-+	if (vc4_hdmi->hpd_gpio &&
-+	    gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio)) {
-+		connected = true;
- 	} else if (drm_probe_ddc(vc4_hdmi->ddc)) {
- 		connected = true;
- 	} else if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED) {
-@@ -1993,7 +1992,6 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	struct vc4_hdmi *vc4_hdmi;
- 	struct drm_encoder *encoder;
- 	struct device_node *ddc_node;
--	u32 value;
- 	int ret;
- 
- 	vc4_hdmi = devm_kzalloc(dev, sizeof(*vc4_hdmi), GFP_KERNEL);
-@@ -2031,18 +2029,10 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	/* Only use the GPIO HPD pin if present in the DT, otherwise
- 	 * we'll use the HDMI core's register.
- 	 */
--	if (of_find_property(dev->of_node, "hpd-gpios", &value)) {
--		enum of_gpio_flags hpd_gpio_flags;
--
--		vc4_hdmi->hpd_gpio = of_get_named_gpio_flags(dev->of_node,
--							     "hpd-gpios", 0,
--							     &hpd_gpio_flags);
--		if (vc4_hdmi->hpd_gpio < 0) {
--			ret = vc4_hdmi->hpd_gpio;
--			goto err_put_ddc;
--		}
--
--		vc4_hdmi->hpd_active_low = hpd_gpio_flags & OF_GPIO_ACTIVE_LOW;
-+	vc4_hdmi->hpd_gpio = devm_gpiod_get_optional(dev, "hpd", GPIOD_IN);
-+	if (IS_ERR(vc4_hdmi->hpd_gpio)) {
-+		ret = PTR_ERR(vc4_hdmi->hpd_gpio);
-+		goto err_put_ddc;
- 	}
- 
- 	vc4_hdmi->disable_wifi_frequencies =
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-index 060bcaefbeb5..2688a55461d6 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-@@ -146,8 +146,7 @@ struct vc4_hdmi {
- 	/* VC5 Only */
- 	void __iomem *rm_regs;
- 
--	int hpd_gpio;
--	bool hpd_active_low;
-+	struct gpio_desc *hpd_gpio;
- 
- 	/*
- 	 * On some systems (like the RPi4), some modes are in the same
--- 
-2.31.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
+
+usb 1-1: New USB device found, idVendor=0413, idProduct=6a03, bcdDevice=39.7e
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+usb 1-1: Product: syz
+usb 1-1: Manufacturer: syz
+usb 1-1: SerialNumber: syz
+------------[ cut here ]------------
+usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType c0
+WARNING: CPU: 1 PID: 32 at drivers/usb/core/urb.c:410 usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
+Modules linked in:
+CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.13.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
+Code: 84 4c 01 00 00 e8 a6 14 b3 fd 4c 89 f7 e8 4e a7 1b ff 45 89 e8 44 89 e1 48 89 ea 48 89 c6 48 c7 c7 c0 09 63 86 e8 18 f1 fb 01 <0f> 0b 49 8d 4f 5c 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 89 4c
+RSP: 0018:ffffc900001a6d50 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff88811ab8a058 RCX: 0000000000000000
+RDX: ffff888107fc0000 RSI: ffffffff812a6013 RDI: fffff52000034d9c
+RBP: ffff88810e79f7a8 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff814b996b R11: 0000000000000000 R12: 0000000080000280
+R13: 00000000000000c0 R14: ffff88811ab8a0a8 R15: ffff8881097a2500
+FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d9ffcec928 CR3: 00000001103c2000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
+ usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+ usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+ rtl28xxu_ctrl_msg+0x4b7/0x700 drivers/media/usb/dvb-usb-v2/rtl28xxu.c:43
+ rtl28xxu_identify_state+0xb6/0x320 drivers/media/usb/dvb-usb-v2/rtl28xxu.c:624
+ dvb_usbv2_probe+0x55b/0x7d0 drivers/media/usb/dvb-usb-v2/dvb_usb_core.c:947
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4b0 drivers/base/dd.c:938
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbe0/0x2100 drivers/base/core.c:3320
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4b0 drivers/base/dd.c:938
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbe0/0x2100 drivers/base/core.c:3320
+ usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
+ hub_port_connect drivers/usb/core/hub.c:5297 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5437 [inline]
+ port_event drivers/usb/core/hub.c:5583 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5665
+ process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
