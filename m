@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0C238EE27
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C0138F09F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhEXPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S236926AbhEXQEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233045AbhEXPmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:42:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1894C61449;
-        Mon, 24 May 2021 15:34:47 +0000 (UTC)
+        id S234644AbhEXP6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 191A36195B;
+        Mon, 24 May 2021 15:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870488;
-        bh=eOKaja5hCBW7m2c8I8KG96QDT2EdqZCH3DzPKDvwX6c=;
+        s=korg; t=1621871046;
+        bh=nb5gPHQ0lc71Pv8hxVx6JmpASmurqXzUg7X9LXFRH3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zHAfMS8/quoPpFNKVXx+TtSsx/Zo2w5uGfKa9zL9IxrWVEoGzukIj7F/oxaz34rWw
-         8RZoUkyENemlfP54jKgye4nyRLyJYsdVgcX7S4W4t7BEkWuMmNEbKCBUZIUPYLpaW1
-         r6I538hWMs7mcCrg4J1fd/2bdf4WhWLi4tDSf/sw=
+        b=jrUFbH4pfx6eO8PIxAZSeAESaV/PP4oRu14hmh98RPir2OStr5llSFrErFj30bjN+
+         R/s4JiCtL1zPNkUO+lndtzrGgSDBhgpvCjmJ0UGPPh8DjWkMAqRX7B2Nma5hOJOIT6
+         XbvuHQ18R/otvPjR4sXKguiD218MyRhZzobogOAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Zqiang <qiang.zhang@windriver.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/49] locking/mutex: clear MUTEX_FLAGS if wait_list is empty due to signal
-Date:   Mon, 24 May 2021 17:25:20 +0200
-Message-Id: <20210524152324.694690812@linuxfoundation.org>
+Subject: [PATCH 5.12 004/127] habanalabs/gaudi: Fix a potential use after free in gaudi_memset_device_memory
+Date:   Mon, 24 May 2021 17:25:21 +0200
+Message-Id: <20210524152335.006868701@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,134 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 3a010c493271f04578b133de977e0e5dd2848cea ]
+[ Upstream commit 115726c5d312b462c9d9931ea42becdfa838a076 ]
 
-When a interruptible mutex locker is interrupted by a signal
-without acquiring this lock and removed from the wait queue.
-if the mutex isn't contended enough to have a waiter
-put into the wait queue again, the setting of the WAITER
-bit will force mutex locker to go into the slowpath to
-acquire the lock every time, so if the wait queue is empty,
-the WAITER bit need to be clear.
+Our code analyzer reported a uaf.
 
-Fixes: 040a0a371005 ("mutex: Add support for wound/wait style locks")
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210517034005.30828-1-qiang.zhang@windriver.com
+In gaudi_memset_device_memory, cb is get via hl_cb_kernel_create()
+with 2 refcount.
+If hl_cs_allocate_job() failed, the execution runs into release_cb
+branch. One ref of cb is dropped by hl_cb_put(cb) and could be freed
+if other thread also drops one ref. Then cb is used by cb->id later,
+which is a potential uaf.
+
+My patch add a variable 'id' to accept the value of cb->id before the
+hl_cb_put(cb) is called, to avoid the potential uaf.
+
+Fixes: 423815bf02e25 ("habanalabs/gaudi: remove PCI access to SM block")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/mutex-debug.c |  4 ++--
- kernel/locking/mutex-debug.h |  2 +-
- kernel/locking/mutex.c       | 18 +++++++++++++-----
- kernel/locking/mutex.h       |  4 +---
- 4 files changed, 17 insertions(+), 11 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
-index 9aa713629387..839df4383799 100644
---- a/kernel/locking/mutex-debug.c
-+++ b/kernel/locking/mutex-debug.c
-@@ -57,7 +57,7 @@ void debug_mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 	task->blocked_on = waiter;
- }
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 9152242778f5..ecdedd87f8cc 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -5546,6 +5546,7 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
+ 	struct hl_cs_job *job;
+ 	u32 cb_size, ctl, err_cause;
+ 	struct hl_cb *cb;
++	u64 id;
+ 	int rc;
  
--void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
-+void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 			 struct task_struct *task)
- {
- 	DEBUG_LOCKS_WARN_ON(list_empty(&waiter->list));
-@@ -65,7 +65,7 @@ void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 	DEBUG_LOCKS_WARN_ON(task->blocked_on != waiter);
- 	task->blocked_on = NULL;
- 
--	list_del_init(&waiter->list);
-+	INIT_LIST_HEAD(&waiter->list);
- 	waiter->task = NULL;
- }
- 
-diff --git a/kernel/locking/mutex-debug.h b/kernel/locking/mutex-debug.h
-index 1edd3f45a4ec..53e631e1d76d 100644
---- a/kernel/locking/mutex-debug.h
-+++ b/kernel/locking/mutex-debug.h
-@@ -22,7 +22,7 @@ extern void debug_mutex_free_waiter(struct mutex_waiter *waiter);
- extern void debug_mutex_add_waiter(struct mutex *lock,
- 				   struct mutex_waiter *waiter,
- 				   struct task_struct *task);
--extern void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
-+extern void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 				struct task_struct *task);
- extern void debug_mutex_unlock(struct mutex *lock);
- extern void debug_mutex_init(struct mutex *lock, const char *name,
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index b3da782cdfbd..354151fef06a 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -177,7 +177,7 @@ static inline bool __mutex_waiter_is_first(struct mutex *lock, struct mutex_wait
-  * Add @waiter to a given location in the lock wait_list and set the
-  * FLAG_WAITERS flag if it's the first waiter.
-  */
--static void __sched
-+static void
- __mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 		   struct list_head *list)
- {
-@@ -188,6 +188,16 @@ __mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 		__mutex_set_flag(lock, MUTEX_FLAG_WAITERS);
- }
- 
-+static void
-+__mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter)
-+{
-+	list_del(&waiter->list);
-+	if (likely(list_empty(&lock->wait_list)))
-+		__mutex_clear_flag(lock, MUTEX_FLAGS);
-+
-+	debug_mutex_remove_waiter(lock, waiter, current);
-+}
-+
- /*
-  * Give up ownership to a specific task, when @task = NULL, this is equivalent
-  * to a regular unlock. Sets PICKUP on a handoff, clears HANDOF, preserves
-@@ -1040,9 +1050,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 			__ww_mutex_check_waiters(lock, ww_ctx);
+ 	cb = hl_cb_kernel_create(hdev, PAGE_SIZE, false);
+@@ -5612,8 +5613,9 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
  	}
  
--	mutex_remove_waiter(lock, &waiter, current);
--	if (likely(list_empty(&lock->wait_list)))
--		__mutex_clear_flag(lock, MUTEX_FLAGS);
-+	__mutex_remove_waiter(lock, &waiter);
+ release_cb:
++	id = cb->id;
+ 	hl_cb_put(cb);
+-	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, cb->id << PAGE_SHIFT);
++	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, id << PAGE_SHIFT);
  
- 	debug_mutex_free_waiter(&waiter);
- 
-@@ -1059,7 +1067,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 
- err:
- 	__set_current_state(TASK_RUNNING);
--	mutex_remove_waiter(lock, &waiter, current);
-+	__mutex_remove_waiter(lock, &waiter);
- err_early_kill:
- 	spin_unlock(&lock->wait_lock);
- 	debug_mutex_free_waiter(&waiter);
-diff --git a/kernel/locking/mutex.h b/kernel/locking/mutex.h
-index 1c2287d3fa71..f0c710b1d192 100644
---- a/kernel/locking/mutex.h
-+++ b/kernel/locking/mutex.h
-@@ -10,12 +10,10 @@
-  * !CONFIG_DEBUG_MUTEXES case. Most of them are NOPs:
-  */
- 
--#define mutex_remove_waiter(lock, waiter, task) \
--		__list_del((waiter)->list.prev, (waiter)->list.next)
--
- #define debug_mutex_wake_waiter(lock, waiter)		do { } while (0)
- #define debug_mutex_free_waiter(waiter)			do { } while (0)
- #define debug_mutex_add_waiter(lock, waiter, ti)	do { } while (0)
-+#define debug_mutex_remove_waiter(lock, waiter, ti)     do { } while (0)
- #define debug_mutex_unlock(lock)			do { } while (0)
- #define debug_mutex_init(lock, name, key)		do { } while (0)
- 
+ 	return rc;
+ }
 -- 
 2.30.2
 
