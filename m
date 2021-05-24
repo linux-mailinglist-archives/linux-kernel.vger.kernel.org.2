@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34A138F08C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB16E38EE4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236231AbhEXQED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
+        id S233988AbhEXPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235000AbhEXP5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14D1D6194E;
-        Mon, 24 May 2021 15:43:26 +0000 (UTC)
+        id S232704AbhEXPnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:43:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25149613BF;
+        Mon, 24 May 2021 15:35:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871007;
-        bh=Bc053HPaJe0xqf2Y0GabxuPN8VVuRr4PB/4xGxebFr8=;
+        s=korg; t=1621870529;
+        bh=8Fc8KHRbYELJMHUzT3bl6rJhu3JG5Bk4W8LjYl8wVKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0Gf67kUeTF/qMTbyWjLqEXr25CLuKAFG8/BXveLWOZaTwx7U0eP1//hnqgMAgAsK
-         sqTTqhLCui5KKnczZNHQohEmp9/+lJW/f5P2lyz9AlZbtt02igdQ7gkJbbr/mUvTQA
-         Pz7mDzwdxCY3s8IAPwWBL2tGd99tmpcmq65ZLBdA=
+        b=sLDhKuPtmxSRuEi81LV5GJtam2p9H+X/KINpZmo7BvB595sSzBz6cBdAXIyVJDd90
+         dTYxiN92JhBkxRR/fS0XDCxMgsSq9eG91N6SHrv7uynxBI8MVOg9EBGnW8Aabdh4Ju
+         WxRrpeoVuMY3ccU7okLUYj8gOeQnZD/JdltwZ0Ys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Enzo Matsumiya <ematsumiya@suse.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 030/127] nvmet: seset ns->file when open fails
-Date:   Mon, 24 May 2021 17:25:47 +0200
-Message-Id: <20210524152335.863598658@linuxfoundation.org>
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 37/49] Revert "qlcnic: Avoid potential NULL pointer dereference"
+Date:   Mon, 24 May 2021 17:25:48 +0200
+Message-Id: <20210524152325.573179480@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 85428beac80dbcace5b146b218697c73e367dcf5 ]
+commit b95b57dfe7a142bf2446548eb7f49340fd73e78b upstream.
 
-Reset the ns->file value to NULL also in the error case in
-nvmet_file_ns_enable().
+This reverts commit 5bf7295fe34a5251b1d241b9736af4697b590670.
 
-The ns->file variable points either to file object or contains the
-error code after the filp_open() call. This can lead to following
-problem:
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-When the user first setups an invalid file backend and tries to enable
-the ns, it will fail. Then the user switches over to a bdev backend
-and enables successfully the ns. The first received I/O will crash the
-system because the IO backend is chosen based on the ns->file value:
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-static u16 nvmet_parse_io_cmd(struct nvmet_req *req)
-{
-	[...]
+This commit does not properly detect if an error happens because the
+logic after this loop will not detect that there was a failed
+allocation.
 
-	if (req->ns->file)
-		return nvmet_file_parse_io_cmd(req);
-
-	return nvmet_bdev_parse_io_cmd(req);
-}
-
-Reported-by: Enzo Matsumiya <ematsumiya@suse.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Fixes: 5bf7295fe34a ("qlcnic: Avoid potential NULL pointer dereference")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-25-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/target/io-cmd-file.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
-index 715d4376c997..7fdbdc496597 100644
---- a/drivers/nvme/target/io-cmd-file.c
-+++ b/drivers/nvme/target/io-cmd-file.c
-@@ -49,9 +49,11 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
+@@ -1048,8 +1048,6 @@ int qlcnic_do_lb_test(struct qlcnic_adap
  
- 	ns->file = filp_open(ns->device_path, flags, 0);
- 	if (IS_ERR(ns->file)) {
--		pr_err("failed to open file %s: (%ld)\n",
--				ns->device_path, PTR_ERR(ns->file));
--		return PTR_ERR(ns->file);
-+		ret = PTR_ERR(ns->file);
-+		pr_err("failed to open file %s: (%d)\n",
-+			ns->device_path, ret);
-+		ns->file = NULL;
-+		return ret;
- 	}
- 
- 	ret = nvmet_file_ns_revalidate(ns);
--- 
-2.30.2
-
+ 	for (i = 0; i < QLCNIC_NUM_ILB_PKT; i++) {
+ 		skb = netdev_alloc_skb(adapter->netdev, QLCNIC_ILB_PKT_SIZE);
+-		if (!skb)
+-			break;
+ 		qlcnic_create_loopback_buff(skb->data, adapter->mac_addr);
+ 		skb_put(skb, QLCNIC_ILB_PKT_SIZE);
+ 		adapter->ahw->diag_cnt = 0;
 
 
