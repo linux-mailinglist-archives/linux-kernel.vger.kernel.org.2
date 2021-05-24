@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E9338E87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92A438E87F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhEXOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:14:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44594 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232486AbhEXOOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:14:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621865568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YuolNKAChmee9Jf+0VWBlg4DUVbOcHignWbWcealYiA=;
-        b=Wr9+rZY0haqMTauJefBWqaFStiBM1Na5cCtnTFzQVZ3js8AeUOE/fCCGFEwCEnwDmjMRyw
-        416ljVUclW+qqDZ1bfmzM9olTLyR7yUidEIzsTQWgJLje4VaLvvLrJIo0JOUgz+pV+oFCr
-        iAox/S2WEozKQfTmnUicYuVuiX747do=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-Dak9Ja1jOFaxQKlFKfOmhA-1; Mon, 24 May 2021 10:12:46 -0400
-X-MC-Unique: Dak9Ja1jOFaxQKlFKfOmhA-1
-Received: by mail-wr1-f72.google.com with SMTP id i102-20020adf90ef0000b029010dfcfc46c0so13200156wri.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:12:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=YuolNKAChmee9Jf+0VWBlg4DUVbOcHignWbWcealYiA=;
-        b=RXsVy8Q4ht11O48b6CDbx/hjS1UuIJM6D0DzmSvdd69VTbrjrxI58z+Gg3HxAz4l7D
-         s7jXYVPwD1N65zegBWODkTaod/7fQvRrHqr/oIMzbDt7fKNFTE/fddivkePsUPHT7zfk
-         diISMWskLnhyAtO5SEf1iksxhhs8p5UzAgvcwOJTvimmibdXlwkQ+6OOl5K/uHBSFlSy
-         jMnMEs4N8V4klRKD0GF6X8AI3Qeypttg+XF6fB0mgkPtkIjJz5GSXqLM844UuGYNV4We
-         diVlQg3Fq/QWnr4bmzmZlS6AGoVQOGB4hlwvSgabOpS/jFJKUOzSnc1vKlLx8++uyo+Y
-         hmcw==
-X-Gm-Message-State: AOAM533HUYle+d5Sz8sSV4vG7AL/HVaPW9eTCOZPyjA79BCW277mNlKm
-        ZIhcyTtSqa9ZO3TW1Tr0K3hnzHe4Rf8KUBKuT/SMQoEdRB6NZ4s4pe66yI0SZdPyuauQoENI2xF
-        Ow0y+QyTrIwmEzvlh8H0lvOlHgijzl/0Gct0xUBfdTr7Azz/VZuk5IF1E8hg7CDTemrj2OP5Tu5
-        ol
-X-Received: by 2002:a7b:cb1a:: with SMTP id u26mr3107077wmj.125.1621865565273;
-        Mon, 24 May 2021 07:12:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxD/BIip0u5D6aGgEPMzrRFJXFZvyigKfUb5+MO/5Z1Q7Fui91N4UswBlkNcyzQrACC9tXQkg==
-X-Received: by 2002:a7b:cb1a:: with SMTP id u26mr3107060wmj.125.1621865565105;
-        Mon, 24 May 2021 07:12:45 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c64sm8206839wma.15.2021.05.24.07.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 07:12:44 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when
- eVMCS data is copied in vmx_get_nested_state()
-In-Reply-To: <b79562d2-c517-b86c-8871-e8f81537f247@redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
- <20210517135054.1914802-4-vkuznets@redhat.com>
- <b79562d2-c517-b86c-8871-e8f81537f247@redhat.com>
-Date:   Mon, 24 May 2021 16:12:43 +0200
-Message-ID: <87o8d08bl0.fsf@vitty.brq.redhat.com>
+        id S232867AbhEXORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:17:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:42482 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232424AbhEXORo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:17:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59F5BED1;
+        Mon, 24 May 2021 07:16:15 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 696243F719;
+        Mon, 24 May 2021 07:16:13 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Subject: Re: [PATCH 1/3] sched/topology: Allow archs to populate distance map
+In-Reply-To: <20210521092830.GF2633526@linux.vnet.ibm.com>
+References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com> <20210520154427.1041031-2-srikar@linux.vnet.ibm.com> <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net> <20210521023802.GE2633526@linux.vnet.ibm.com> <YKdr0g6+eIHncqej@hirez.programming.kicks-ass.net> <20210521092830.GF2633526@linux.vnet.ibm.com>
+Date:   Mon, 24 May 2021 15:16:09 +0100
+Message-ID: <87k0no6wuu.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
-
-> On 17/05/21 15:50, Vitaly Kuznetsov wrote:
->> 'Clean fields' data from enlightened VMCS is only valid upon vmentry: L1
->> hypervisor is not obliged to keep it up-to-date while it is mangling L2's
->> state, KVM_GET_NESTED_STATE request may come at a wrong moment when actual
->> eVMCS changes are unsynchronized with 'hv_clean_fields'. As upon migration
->> VMCS12 is used as a source of ultimate truth, we must make sure we pick all
->> the changes to eVMCS and thus 'clean fields' data must be ignored.
+On 21/05/21 14:58, Srikar Dronamraju wrote:
+> * Peter Zijlstra <peterz@infradead.org> [2021-05-21 10:14:10]:
 >
-> While you're at it, would you mind making copy_vmcs12_to_enlightened and 
-> copy_enlightened_to_vmcs12 void?
+>> On Fri, May 21, 2021 at 08:08:02AM +0530, Srikar Dronamraju wrote:
+>> > * Peter Zijlstra <peterz@infradead.org> [2021-05-20 20:56:31]:
+>> >
+>> > > On Thu, May 20, 2021 at 09:14:25PM +0530, Srikar Dronamraju wrote:
+>> > > > Currently scheduler populates the distance map by looking at distance
+>> > > > of each node from all other nodes. This should work for most
+>> > > > architectures and platforms.
+>> > > >
+>> > > > However there are some architectures like POWER that may not expose
+>> > > > the distance of nodes that are not yet onlined because those resources
+>> > > > are not yet allocated to the OS instance. Such architectures have
+>> > > > other means to provide valid distance data for the current platform.
+>> > > >
+>> > > > For example distance info from numactl from a fully populated 8 node
+>> > > > system at boot may look like this.
+>> > > >
+>> > > > node distances:
+>> > > > node   0   1   2   3   4   5   6   7
+>> > > >   0:  10  20  40  40  40  40  40  40
+>> > > >   1:  20  10  40  40  40  40  40  40
+>> > > >   2:  40  40  10  20  40  40  40  40
+>> > > >   3:  40  40  20  10  40  40  40  40
+>> > > >   4:  40  40  40  40  10  20  40  40
+>> > > >   5:  40  40  40  40  20  10  40  40
+>> > > >   6:  40  40  40  40  40  40  10  20
+>> > > >   7:  40  40  40  40  40  40  20  10
+>> > > >
+>> > > > However the same system when only two nodes are online at boot, then the
+>> > > > numa topology will look like
+>> > > > node distances:
+>> > > > node   0   1
+>> > > >   0:  10  20
+>> > > >   1:  20  10
+>> > > >
+>> > > > It may be implementation dependent on what node_distance(0,3) where
+>> > > > node 0 is online and node 3 is offline. In POWER case, it returns
+>> > > > LOCAL_DISTANCE(10). Here at boot the scheduler would assume that the max
+>> > > > distance between nodes is 20. However that would not be true.
+>> > > >
+>> > > > When Nodes are onlined and CPUs from those nodes are hotplugged,
+>> > > > the max node distance would be 40.
+>> > > >
+>> > > > To handle such scenarios, let scheduler allow architectures to populate
+>> > > > the distance map. Architectures that like to populate the distance map
+>> > > > can overload arch_populate_distance_map().
+>> > >
+>> > > Why? Why can't your node_distance() DTRT? The arch interface is
+>> > > nr_node_ids and node_distance(), I don't see why we need something new
+>> > > and then replace one special use of it.
+>> > >
+>> > > By virtue of you being able to actually implement this new hook, you
+>> > > supposedly can actually do node_distance() right too.
+>> >
+>> > Since for an offline node, arch interface code doesn't have the info.
+>> > As far as I know/understand, in POWER, unless there is an active memory or
+>> > CPU that's getting onlined, arch can't fetch the correct node distance.
+>> >
+>> > Taking the above example: node 3 is offline, then node_distance of (3,X)
+>> > where X is anything other than 3, is not reliable. The moment node 3 is
+>> > onlined, the node distance is reliable.
+>> >
+>> > This problem will not happen even on POWER if all the nodes have either
+>> > memory or CPUs active at the time of boot.
+>>
+>> But then how can you implement this new hook? Going by the fact that
+>> both nr_node_ids and distance_ref_points_depth are fixed, how many
+>> possible __node_distance() configurations are there left?
+>>
+>
+> distance_ref_point_depth is provided as a different property and is readily
+> available at boot. The new api will use just use that. So based on the
+> distance_ref_point_depth, we know all possible node distances for that
+> platform.
+>
+> For an offline node, we don't have that specific nodes distance_lookup_table
+> array entries. Each array would be of distance_ref_point_depth entries.
+> Without the distance_lookup_table for an array populated, we will not be
+> able to tell how far the node is with respect to other nodes.
+>
+> We can lookup the correct distance_lookup_table for a node based on memory
+> or the CPUs attached to that node. Since in an offline node, both of them
+> would not be around, the distance_lookup_table will have stale values.
 >
 
-Sure, no problem.
+Ok so from your arch you can figure out the *size* of the set of unique
+distances, but not the individual node_distance(a, b)... That's quite
+unfortunate.
 
--- 
-Vitaly
+I suppose one way to avoid the hook would be to write some "fake" distance
+values into your distance_lookup_table[] for offline nodes using your
+distance_ref_point_depth thing, i.e. ensure an iteration of
+node_distance(a, b) covers all distance values [1]. You can then keep patch
+3 around, and that should roughly be it.
 
+
+>> The example provided above does not suggest there's much room for
+>> alternatives, and hence for actual need of this new interface.
+>>
+>
+> --
+> Thanks and Regards
+> Srikar Dronamraju
