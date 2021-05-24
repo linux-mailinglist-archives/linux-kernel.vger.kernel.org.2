@@ -2,109 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7689138E655
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA9838E65A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhEXMMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:12:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:41540 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232110AbhEXMMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:12:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 493E931B;
-        Mon, 24 May 2021 05:10:44 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.38.161])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BBA53F719;
-        Mon, 24 May 2021 05:10:36 -0700 (PDT)
-Date:   Mon, 24 May 2021 13:10:34 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        Arnd Bergmann <arnd@arndb.de>, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-Subject: Re: [PATCH 28/33] locking/atomic: riscv: move to ARCH_ATOMIC
-Message-ID: <20210524121034.GG1040@C02TD0UTHF1T.local>
-References: <20210510093753.40683-29-mark.rutland@arm.com>
- <mhng-4414d6c5-89dd-476a-b08c-ce34d0467781@palmerdabbelt-glaptop>
+        id S232813AbhEXMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:13:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232782AbhEXMM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 08:12:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621858291;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t4Ck7JW/it+WkxekzEcK+Q4d7evwM/U5ne/XMWEIO/o=;
+        b=CkN4lum96YnIZEaTZ0pAaD03RH+fL6XCP0jBIvhSV2EmtHnb4in7BRoCudufUPB6fdWUTV
+        Ua9oiN9HEF/4LEwh00TKnH8FOfEHjsKW2OB+X6z1otlcXIe9b6AZTX5I4QmSDFFLSheYLU
+        YhPQH+mqxmdwUc7bijLPF8+I8tmDpCs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-P7ZEpIegMvSKOhmvewhgCw-1; Mon, 24 May 2021 08:11:27 -0400
+X-MC-Unique: P7ZEpIegMvSKOhmvewhgCw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4911E8049CD;
+        Mon, 24 May 2021 12:11:26 +0000 (UTC)
+Received: from starship (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC21A6684A;
+        Mon, 24 May 2021 12:11:23 +0000 (UTC)
+Message-ID: <80892ca2e3d7122b5b92f696ecf4c1943b0245b9.camel@redhat.com>
+Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 24 May 2021 15:11:22 +0300
+In-Reply-To: <20210517135054.1914802-2-vkuznets@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+         <20210517135054.1914802-2-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-4414d6c5-89dd-476a-b08c-ce34d0467781@palmerdabbelt-glaptop>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 12:02:45PM -0700, Palmer Dabbelt wrote:
-> On Mon, 10 May 2021 02:37:48 PDT (-0700), mark.rutland@arm.com wrote:
-> > We'd like all architectures to convert to ARCH_ATOMIC, as once all
-> > architectures are converted it will be possible to make significant
-> > cleanups to the atomics headers, and this will make it much easier to
-> > generically enable atomic functionality (e.g. debug logic in the
-> > instrumented wrappers).
-> > 
-> > As a step towards that, this patch migrates riscv to ARCH_ATOMIC. The
-> > arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
-> > code wraps these with optional instrumentation to provide the regular
-> > functions.
-> > 
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > ---
-> >  arch/riscv/Kconfig               |   1 +
-> >  arch/riscv/include/asm/atomic.h  | 128 +++++++++++++++++++--------------------
-> >  arch/riscv/include/asm/cmpxchg.h |  34 +++++------
-> >  3 files changed, 82 insertions(+), 81 deletions(-)
-
-[...]
-
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-Thanks!
-
-> Sorry this took a bit, I had this put on the slow queue because I thought it
-> would conflict with Guo's patch set but from reading the rest of that thread
-> it appears this is just supersedes which makes things much simpler.
+On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
+> Unlike regular set_current_vmptr(), nested_vmx_handle_enlightened_vmptrld()
+> can not be called directly from vmx_set_nested_state() as KVM may not have
+> all the information yet (e.g. HV_X64_MSR_VP_ASSIST_PAGE MSR may not be
+> restored yet). Enlightened VMCS is mapped later while getting nested state
+> pages. In the meantime, vmx->nested.hv_evmcs remains NULL and using it
+> for various checks is incorrect. In particular, if KVM_GET_NESTED_STATE is
+> called right after KVM_SET_NESTED_STATE, KVM_STATE_NESTED_EVMCS flag in the
+> resulting state will be unset (and such state will later fail to load).
 > 
-> I'm assuming this would be for 5.14, and you'd be merging it along with the
-> prep work?
+> Introduce nested_evmcs_is_used() and use 'is_guest_mode(vcpu) &&
+> vmx->nested.current_vmptr == -1ull' check to detect not-yet-mapped eVMCS
+> after restore.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 31 ++++++++++++++++++++++++++-----
+>  1 file changed, 26 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 6058a65a6ede..3080e00c8f90 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -141,6 +141,27 @@ static void init_vmcs_shadow_fields(void)
+>  	max_shadow_read_write_fields = j;
+>  }
+>  
+> +static inline bool nested_evmcs_is_used(struct vcpu_vmx *vmx)
+> +{
+> +	struct kvm_vcpu *vcpu = &vmx->vcpu;
+> +
+> +	if (vmx->nested.hv_evmcs)
+> +		return true;
+> +
+> +	/*
+> +	 * After KVM_SET_NESTED_STATE, enlightened VMCS is mapped during
+> +	 * KVM_REQ_GET_NESTED_STATE_PAGES handling and until the request is
+> +	 * processed vmx->nested.hv_evmcs is NULL. It is, however, possible to
+> +	 * detect such state by checking 'nested.current_vmptr == -1ull' when
+> +	 * vCPU is in guest mode, it is only possible with eVMCS.
+> +	 */
+> +	if (unlikely(vmx->nested.enlightened_vmcs_enabled && is_guest_mode(vcpu) &&
+> +		     (vmx->nested.current_vmptr == -1ull)))
+> +		return true;
+> +
+> +	return false;
+> +}
 
-Yup; the plan is to take the whole series through the tip tree for
-v5.14.
 
-I'll post a v2 soon with some minor fixups.
+I think that this is a valid way to solve the issue,
+but it feels like there might be a better way.
+I don't mind though to accept this patch as is.
 
-> I don't think we have anything else in the works that would
-> require atomic changes for 5.14 yet so that seems OK for now, but it'd be
-> nice to have some shared tag I could pull in both so I can test this and in
-> case we have more to put on top of it.  I'm fine waiting until something
-> comes up if that's a headache on your end, though.
+So here are my 2 cents about this:
 
-I think we can arrange a stable tag soon.
+First of all after studying how evmcs works I take my words back
+about needing to migrate its contents. 
 
-The Kbuild test robot is still finding a few edge cases with the
-preprocessor glue on a few architectures, so my branch isn't stable yet,
-but I think the core bit is solid, so if you wanted to test you should
-be able to fetch my branch from:
+It is indeed enough to migrate its physical address, 
+or maybe even just a flag that evmcs is loaded
+(and to my surprise we already do this - KVM_STATE_NESTED_EVMCS)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git atomics/arch-atomic
+So how about just having a boolean flag that indicates that evmcs is in use, 
+but doesn't imply that we know its address or that it is mapped 
+to host address space, something like 'vmx->nested.enlightened_vmcs_loaded'
 
-Thanks,
-Mark.
+On migration that flag saved and restored as the KVM_STATE_NESTED_EVMCS,
+otherwise it set when we load an evmcs and cleared when it is released.
+
+Then as far as I can see we can use this flag in nested_evmcs_is_used
+since all its callers don't touch evmcs, thus don't need it to be
+mapped.
+
+What do you think?
+
+Best regards,
+	Maxim Levitsky
+
+
+
+
+
+>  /*
+>   * The following 3 functions, nested_vmx_succeed()/failValid()/failInvalid(),
+>   * set the success or error code of an emulated VMX instruction (as specified
+> @@ -187,7 +208,7 @@ static int nested_vmx_fail(struct kvm_vcpu *vcpu, u32 vm_instruction_error)
+>  	 * failValid writes the error number to the current VMCS, which
+>  	 * can't be done if there isn't a current VMCS.
+>  	 */
+> -	if (vmx->nested.current_vmptr == -1ull && !vmx->nested.hv_evmcs)
+> +	if (vmx->nested.current_vmptr == -1ull && !nested_evmcs_is_used(vmx))
+>  		return nested_vmx_failInvalid(vcpu);
+>  
+>  	return nested_vmx_failValid(vcpu, vm_instruction_error);
+> @@ -2208,7 +2229,7 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  	u32 exec_control;
+>  	u64 guest_efer = nested_vmx_calc_efer(vmx, vmcs12);
+>  
+> -	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs)
+> +	if (vmx->nested.dirty_vmcs12 || nested_evmcs_is_used(vmx))
+>  		prepare_vmcs02_early_rare(vmx, vmcs12);
+>  
+>  	/*
+> @@ -3437,7 +3458,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>  
+>  	load_vmcs12_host_state(vcpu, vmcs12);
+>  	vmcs12->vm_exit_reason = exit_reason.full;
+> -	if (enable_shadow_vmcs || vmx->nested.hv_evmcs)
+> +	if (enable_shadow_vmcs || nested_evmcs_is_used(vmx))
+>  		vmx->nested.need_vmcs12_to_shadow_sync = true;
+>  	return NVMX_VMENTRY_VMEXIT;
+>  }
+> @@ -4032,7 +4053,7 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  
+> -	if (vmx->nested.hv_evmcs)
+> +	if (nested_evmcs_is_used(vmx))
+>  		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
+>  
+>  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = !vmx->nested.hv_evmcs;
+> @@ -6056,7 +6077,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+>  		if (vmx_has_valid_vmcs12(vcpu)) {
+>  			kvm_state.size += sizeof(user_vmx_nested_state->vmcs12);
+>  
+> -			if (vmx->nested.hv_evmcs)
+> +			if (nested_evmcs_is_used(vmx))
+>  				kvm_state.flags |= KVM_STATE_NESTED_EVMCS;
+>  
+>  			if (is_guest_mode(vcpu) &&
+
+
+
+
+
