@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CCE38F038
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A2C38EF14
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhEXQCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:02:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        id S235119AbhEXP4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234767AbhEXPzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D8461404;
-        Mon, 24 May 2021 15:41:55 +0000 (UTC)
+        id S233405AbhEXPsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:48:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 533E461481;
+        Mon, 24 May 2021 15:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870916;
-        bh=ZUTBNKxxxfq9G9Y4cC7y7d4x5/l8iXdOoffAoaWCkKs=;
+        s=korg; t=1621870638;
+        bh=xfpbtCYOgj/mHQkgMoGWUuFqbIMSieEkqd5zln9Vf2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zd/yHCGOaQBm2Av5Id3AabSEgvEF5YxvLTpcJTPvPdmNDH485UMK1L/6Op4saB+s5
-         eAw8kTQJ5FkvqLWHwJdEatTzVHbDu+ZV6z7u9W5aBNA5yU+vLK3XhqmCputrQwL0II
-         8db/ptkYznndxWZ6ZBjvxqCj/nvMohLjreyTe5Dg=
+        b=DVi2doIsfe5CLhXGuE7ogmuRX99WWaKT2551aHTW0DUe0oLQ+ieSvxLLqJtYFAQ5P
+         pR3q30Jv/+p2tzp54BABb73N/l7wY6L4n3UAH3/LVQRRhhIQF/UrO0crX5laYhaOIq
+         QsNudKESUPP9mjNASZrJh1rooBZ5LyzuDec0I0ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 049/104] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 38/71] drm/amdgpu: update gc golden setting for Navi12
 Date:   Mon, 24 May 2021 17:25:44 +0200
-Message-Id: <20210524152334.465869762@linuxfoundation.org>
+Message-Id: <20210524152327.709112285@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elia Devito <eliadevito@gmail.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-commit f2be77fee648ddd6d0d259d3527344ba0120e314 upstream.
+commit 99c45ba5799d6b938bd9bd20edfeb6f3e3e039b9 upstream.
 
-Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
-on similar models.
+Current golden setting is out of date.
 
-0x14 pin config override is required to enable all speakers and
-alc285-speaker2-to-dac1 fixup to enable volume adjustment.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210511124651.4802-1-eliadevito@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Kenneth Feng <kenneth.feng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6534,6 +6534,7 @@ enum {
- 	ALC285_FIXUP_IDEAPAD_S740_COEF,
- 	ALC295_FIXUP_ASUS_DACS,
- 	ALC295_FIXUP_HP_OMEN,
-+	ALC285_FIXUP_HP_SPECTRE_X360,
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -190,9 +190,10 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG, 0xffffffff, 0x20000000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG2, 0xffffffff, 0x00000420),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG3, 0xffffffff, 0x00000200),
+-	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG4, 0xffffffff, 0x04800000),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DEBUG4, 0xffffffff, 0x04900000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_DFSM_TILES_IN_FLIGHT, 0x0000ffff, 0x0000003f),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmDB_LAST_OF_BURST_CONFIG, 0xffffffff, 0x03860204),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGB_ADDR_CONFIG, 0x0c1800ff, 0x00000044),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGCR_GENERAL_CNTL, 0x1ff0ffff, 0x00000500),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGE_PRIV_CONTROL, 0x00007fff, 0x000001fe),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmGL1_PIPE_STEER, 0xffffffff, 0xe4e4e4e4),
+@@ -210,12 +211,13 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_ENHANCE_2, 0x00000820, 0x00000820),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmPA_SC_LINE_STIPPLE_STATE, 0x0000ff0f, 0x00000000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmRMI_SPARE, 0xffffffff, 0xffff3101),
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSPI_CONFIG_CNTL_1, 0x001f0000, 0x00070104),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_ALU_CLK_CTRL, 0xffffffff, 0xffffffff),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_ARB_CONFIG, 0x00000133, 0x00000130),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmSQ_LDS_CLK_CTRL, 0xffffffff, 0xffffffff),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmTA_CNTL_AUX, 0xfff7ffff, 0x01030000),
+ 	SOC15_REG_GOLDEN_VALUE(GC, 0, mmTCP_CNTL, 0xffdf80ff, 0x479c0010),
+-	SOC15_REG_GOLDEN_VALUE(GC, 0, mmUTCL1_CTRL, 0xffffffff, 0x00800000)
++	SOC15_REG_GOLDEN_VALUE(GC, 0, mmUTCL1_CTRL, 0xffffffff, 0x00c00000)
  };
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8085,6 +8086,15 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
- 	},
-+	[ALC285_FIXUP_HP_SPECTRE_X360] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170110 }, /* enable top speaker */
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8245,6 +8255,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
-+	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32", ALC274_FIXUP_HP_ENVY_GPIO),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
-@@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
- 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
-+	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+ static const struct soc15_reg_golden golden_settings_gc_10_1_nv14[] =
 
 
