@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ED738EF73
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC8B38F0A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhEXP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
+        id S237296AbhEXQFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233114AbhEXPvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:51:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 681F361628;
-        Mon, 24 May 2021 15:38:38 +0000 (UTC)
+        id S235408AbhEXP6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18D456196C;
+        Mon, 24 May 2021 15:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870718;
-        bh=3eB4CpqZbQMODAApH7fn0fg282KuU6e5dh0PHqES+io=;
+        s=korg; t=1621871072;
+        bh=yiU8zdIvYxIC9N2pYR+ykiaGI3Da4dRhuRNqlvARqOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u2HFcdHstfCozMLQu3qCjQ1nuoIvu9Y3LIIZLlKYSiWjoVmhAQbXwnz39yhkkLGrc
-         upjuS5UQ/qi5ZpT97weh/g+mL0Sgrl94/NzKcycICrDrDVM0S3WWqiU/v3P3+UvoNe
-         NMq7oczUzLYI5GbgPTzaORtEo+wzwg9C7jD2xMgk=
+        b=Wqvae/+pqq3852i5BiCzCtOlmZ1/DrSm+9ZbEo+RFSCzdxWWrbyRxk/z6TWUFUQrD
+         fnWTsdVFjf5TyykWl1WIvoyPEN96QFLKuvuISLRHq0ufxxqzI88fSC1xbrXnhOxR7T
+         19tuc4yxTGDFlbxB3Fb4jLD+2WKbHHip9zrYEyoY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 59/71] net: stmicro: handle clk_prepare() failure during init
+        stable@vger.kernel.org,
+        syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 048/127] ALSA: usb-audio: Validate MS endpoint descriptors
 Date:   Mon, 24 May 2021 17:26:05 +0200
-Message-Id: <20210524152328.372204007@linuxfoundation.org>
+Message-Id: <20210524152336.470419655@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 0c32a96d000f260b5ebfabb4145a86ae1cd71847 upstream.
+commit e84749a78dc82bc545f12ce009e3dbcc2c5a8a91 upstream.
 
-In case clk_prepare() fails, capture and propagate the error code up the
-stack. If regulator_enable() was called earlier, properly unwind it by
-calling regulator_disable().
+snd_usbmidi_get_ms_info() may access beyond the border when a
+malformed descriptor is passed.  This patch adds the sanity checks of
+the given MS endpoint descriptors, and skips invalid ones.
 
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-22-gregkh@linuxfoundation.org
+Reported-by: syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210510150659.17710-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-@@ -30,7 +30,7 @@ struct sunxi_priv_data {
- static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
- {
- 	struct sunxi_priv_data *gmac = priv;
--	int ret;
-+	int ret = 0;
- 
- 	if (gmac->regulator) {
- 		ret = regulator_enable(gmac->regulator);
-@@ -50,10 +50,12 @@ static int sun7i_gmac_init(struct platfo
- 		gmac->clk_enabled = 1;
- 	} else {
- 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
--		clk_prepare(gmac->tx_clk);
-+		ret = clk_prepare(gmac->tx_clk);
-+		if (ret && gmac->regulator)
-+			regulator_disable(gmac->regulator);
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static void sun7i_gmac_exit(struct platform_device *pdev, void *priv)
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1889,8 +1889,12 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bLength <= sizeof(*ms_ep))
++			continue;
+ 		if (ms_ep->bNumEmbMIDIJack > 0x10)
+ 			continue;
++		if (ms_ep->bLength < sizeof(*ms_ep) + ms_ep->bNumEmbMIDIJack)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
 
 
