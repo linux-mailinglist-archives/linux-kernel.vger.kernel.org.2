@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A87238ED8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F65938ED6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233860AbhEXPix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51614 "EHLO mail.kernel.org"
+        id S233085AbhEXPhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233529AbhEXPe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B9FC613D0;
-        Mon, 24 May 2021 15:32:24 +0000 (UTC)
+        id S233886AbhEXPec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:34:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15BA9613F2;
+        Mon, 24 May 2021 15:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870344;
-        bh=4HOjAGHMT/mLxQ+ZWKE9kSuVmLG91trN+tFHhEclEC8=;
+        s=korg; t=1621870318;
+        bh=3iOAUpIunq8o5uXAQzDcoek9kBPjKvTpZGYDo5alVaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nJhLHdoZhP7i7vnEwI4SgZMe2PAi5phC5wP4brsXZepMp0oZvPoGBFQj4iDs1cqkq
-         OzzIxIer9Ep+NkYb/ClnpkPk3/gDHH39taTritvpSgklH+7YM+M0Jtae/dwWtwDD3+
-         GWWEFBG6hi50lTSMIlKAedGccd4+GanZdRmM4q8Y=
+        b=xGIzVqW+Iu0fIftBFnM9M0knpRmL/H1fWJkQWi+0WnIhcpJa6Aq45YYKXP6xHg/LS
+         GuE52X4kbjmGWDHEC4cGUqqkwQUQx34OfjuquYS8zkJy0mQhVhfJ5kzSqJWuCpro4G
+         tfRWVFlMy45F+Gykwa6jVbFZ6/7W/Tc8opVh/4/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH 4.9 15/36] Revert "video: hgafb: fix potential NULL pointer dereference"
-Date:   Mon, 24 May 2021 17:25:00 +0200
-Message-Id: <20210524152324.660125436@linuxfoundation.org>
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 16/36] Revert "net: stmicro: fix a missing check of clk_prepare"
+Date:   Mon, 24 May 2021 17:25:01 +0200
+Message-Id: <20210524152324.690959122@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
 References: <20210524152324.158146731@linuxfoundation.org>
@@ -43,9 +41,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 58c0cc2d90f1e37c4eb63ae7f164c83830833f78 upstream.
+commit bee1b0511844c8c79fccf1f2b13472393b6b91f7 upstream.
 
-This reverts commit ec7f6aad57ad29e4e66cc2e18e1e1599ddb02542.
+This reverts commit f86a3b83833e7cfe558ca4d70b64ebc48903efec.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -55,35 +53,32 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-This patch "looks" correct, but the driver keeps on running and will
-fail horribly right afterward if this error condition ever trips.
-
-So points for trying to resolve an issue, but a huge NEGATIVE value for
-providing a "fake" fix for the problem as nothing actually got resolved
-at all.  I'll go fix this up properly...
+The original commit causes a memory leak when it is trying to claim it
+is properly handling errors.  Revert this change and fix it up properly
+in a follow-on commit.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Fixes: ec7f6aad57ad ("video: hgafb: fix potential NULL pointer dereference")
+Cc: David S. Miller <davem@davemloft.net>
+Fixes: f86a3b83833e ("net: stmicro: fix a missing check of clk_prepare")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-39-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-21-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/hgafb.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/video/fbdev/hgafb.c
-+++ b/drivers/video/fbdev/hgafb.c
-@@ -285,8 +285,6 @@ static int hga_card_detect(void)
- 	hga_vram_len  = 0x08000;
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
+@@ -59,9 +59,7 @@ static int sun7i_gmac_init(struct platfo
+ 		gmac->clk_enabled = 1;
+ 	} else {
+ 		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+-		ret = clk_prepare(gmac->tx_clk);
+-		if (ret)
+-			return ret;
++		clk_prepare(gmac->tx_clk);
+ 	}
  
- 	hga_vram = ioremap(0xb0000, hga_vram_len);
--	if (!hga_vram)
--		goto error;
- 
- 	if (request_region(0x3b0, 12, "hgafb"))
- 		release_io_ports = 1;
+ 	return 0;
 
 
