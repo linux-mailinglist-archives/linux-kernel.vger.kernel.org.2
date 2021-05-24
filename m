@@ -2,196 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846AB38F3C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3972538F3CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233551AbhEXTje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 15:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhEXTjc (ORCPT
+        id S233593AbhEXTmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 15:42:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233009AbhEXTmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 15:39:32 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DACFC061574;
-        Mon, 24 May 2021 12:38:04 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id z12so42094672ejw.0;
-        Mon, 24 May 2021 12:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8oAOXzof0N1+90KYKcnDoG7KO0XKY2BDmkA3DIOawcs=;
-        b=e9L3/H+fekzU7kJQHZ6qnNscSpr2lz3gmVl+ygAMlosfr9CFdZaSsdVMyV42WXuS2Z
-         vmL14YGf8Mg3UjcS3rt/rSOaIJo/suaGdX0QCkrIpAa57mIFtd+mrhHT0zgXwckRGk7i
-         FpwarZaXTUf9j3XRDQBH8r0te6U//eoM+sw7ZqJZHaeNfEapcikIcv4kDwKByio+WInO
-         H9a1M0wFNHXYyzawqFc89DrC2w1YN6ToLWep6XGS3kZcDNzu0y7/yZN6nqkTJ7vXwj/f
-         VMvpEb7FHdPrF7JVZBwTkonOk2xMHcy9BiZW8BU1IMA/pX38JUl4sMiAv9l+ai3zrWUO
-         eC5A==
+        Mon, 24 May 2021 15:42:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621885268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QcfSAHV/HbBYuaNWDdQvTZ83TZMYeFvwpY5VZffsoCQ=;
+        b=grIN13C7EQn4IgpAWyeyS7JixRWDGWmvo8n3IaU8LXL8MRb4zIu7RD+8NbK/Jzt5A2vO3R
+        GqqaVWOkYYRe5TMO2zVTSgvw+bHHj4oin/am6ysAWCP808gBR/ec7R4wbPAqMHqWQ5I/qB
+        Bk0uThhlppaB/aKf4SJvpwd2bnarxgY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-FPtmFBYlPR-2Nh72jc6Wpw-1; Mon, 24 May 2021 15:41:06 -0400
+X-MC-Unique: FPtmFBYlPR-2Nh72jc6Wpw-1
+Received: by mail-ed1-f69.google.com with SMTP id w1-20020aa7da410000b029038d323eeee3so14127287eds.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:41:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8oAOXzof0N1+90KYKcnDoG7KO0XKY2BDmkA3DIOawcs=;
-        b=SCXCPS7BOmn0/QzoYeTxkZ0ehdGG8QQWvPSldTvnN/3QHHuFjoV+uwDL1Xwk/sIrzh
-         jNuE55D2FL+bdbUCQu0zaBDghsBCwoGRaGcppbIV8gQ3V5iA9LRse8AqyyJYrPTTt8O1
-         yJH7XrNRPKM3pt6x8WjPBNJ3kDbC4SFjt0bhY/zJx1EAlDOVbUjIirfH7cwcnd5QCE+V
-         BIQPcQiPBJKFadG9bRW5KRsgUidDn9Ovv6soCiH627jwNpP9sklHKLRwayalH2FEcACE
-         p6p6IJPt8jYLgaGb0Qms9kqKf4DnUDFW/s1KB/hNGlhSlkpVxAv7Fu9BDcbHbNDrLUbT
-         K8Xg==
-X-Gm-Message-State: AOAM530/ZVVYWGjWAzpY4GSlGf/SlSrbfLy6T3Aod8Wyiry0Gg/x7Ni3
-        selLe63dJ83u7KEUJBFxGMkax32nm5MzZIerTGo=
-X-Google-Smtp-Source: ABdhPJxagI/07bet2pfWu3ypCK7p/EojciJg5sT2GKagYo2DrLuKVD0kjMqRrySffxHtLw7vELKs+XMDVEt7LaMOOT8=
-X-Received: by 2002:a17:906:3b92:: with SMTP id u18mr24693138ejf.450.1621885081595;
- Mon, 24 May 2021 12:38:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QcfSAHV/HbBYuaNWDdQvTZ83TZMYeFvwpY5VZffsoCQ=;
+        b=jDqTfmgNA1UX/FNJ4k9pZwo/Jp5MyofvYtRv9q/+fbahSarOZK6fRXAgdd5BZQH4XO
+         ep8Ky/xe3agWwpf7W3izsxjkTXX01/eYqtKUL+D0k6d5w6/hhRnkP2waWOjBhnMHzS4h
+         WxNMviTvtulSLEUckJ1P4aUlJW+M5QXpruPWXbZ29ZKvUBRUJ1c+7k+IKVXDCeTtXwHe
+         AYVTtF9nqxOnHcwEccZ1siYJHH6n/2gBlESmsdZADa84FgPHkuVl1ZY4uT8Rt21AYzdW
+         KdJ9v+wUa1ThInNEeJ743H0EdRN0peOWllRF0TsNW7P3LRNL6zhCEs/pC1Yr4ov6HMT2
+         yGuQ==
+X-Gm-Message-State: AOAM530ZTU/q2cqif5HzNSrdGusDWBx+JUcm8aaKGhR5koljE03+2vSW
+        E8aFLjDFM6rrADlAVB+tMt0Qk1YVI+JVZFYahgu/G7ky2ykdNUJFwBHQhYba4vYJDqTJyrO4Dxq
+        QqVkzPEsiyP9DPInd+3GFJUJu
+X-Received: by 2002:a17:906:9bd6:: with SMTP id de22mr24479784ejc.382.1621885264646;
+        Mon, 24 May 2021 12:41:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxb4isv8pBsruVvEy4nUeVgEq0+hKwTOOLp/Fu8OxjdxDfKOhmSPBcjZq+SxEFJohnfubgZfQ==
+X-Received: by 2002:a17:906:9bd6:: with SMTP id de22mr24479772ejc.382.1621885264427;
+        Mon, 24 May 2021 12:41:04 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t9sm10273326edf.70.2021.05.24.12.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 12:41:03 -0700 (PDT)
+Subject: Re: [PATCH 1/1] virtio: disable partitions scanning for no partitions
+ block
+To:     =?UTF-8?B?0K7RgNC40Lkg0JrQsNC80LXQvdC10LI=?= 
+        <damtev@yandex-team.ru>, Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210520133908.98891-1-damtev@yandex-team.ru>
+ <20210520133908.98891-2-damtev@yandex-team.ru>
+ <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
+ <90021621883891@mail.yandex-team.ru>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <21b08ea7-71c6-1b4b-3833-1c51d0e1d310@redhat.com>
+Date:   Mon, 24 May 2021 21:41:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210522134249.15322-1-peng.fan@oss.nxp.com> <CAHCN7xKU=o8J5==VbjVY8E6iRXEXP7jvGP-TWKp+9BZfZaA4Dw@mail.gmail.com>
-In-Reply-To: <CAHCN7xKU=o8J5==VbjVY8E6iRXEXP7jvGP-TWKp+9BZfZaA4Dw@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 24 May 2021 14:37:50 -0500
-Message-ID: <CAHCN7x+YZfAk=3RumT6BAxB3gyB7-THT4ACt5PvQRGiMqB-9Sg@mail.gmail.com>
-Subject: Re: [PATCH V6 0/4] soc: imx: add i.MX BLK-CTL support
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Marek Vasut <marex@denx.de>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <90021621883891@mail.yandex-team.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 2:29 PM Adam Ford <aford173@gmail.com> wrote:
->
-> On Sat, May 22, 2021 at 8:10 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
-> >
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > V6:
-> >  Thanks for Adam's report on V5.
-> >  Resolve the error message dump, it is the child device reuse
-> >  the parent device node and matches the parent driver.
-> >  Filled the remove function for child device.
-> >  A diff dts file for upstream:
-> >  https://gist.github.com/MrVan/d73888d8273c43ea4a3b28fa668ca1d0
->
-Peng,
+On 24/05/21 21:34, Юрий Каменев wrote:
+> Hi
+> 
+>     Is your goal to avoid accidentally detecting partitions because it's
+>     confusing when that happens?
+> 
+> The main goal is reducing the kernel start time. It might be use useful 
+> in tiny systems that use, for example, squashfs images with certainly no 
+> partitions. Disabling partitions scanning for these images can save a 
+> few tens of milliseconds which can be a significant acceleration for 
+> starting such systems.
 
-> Since Shawn has merged the pgc portion [1], can you post the device
-> tree to the mailing list, so he can pull that in too? Without the DT,
-> the PGC's won't do anything.
+Perhaps that could be configured in the image, for example in the kernel 
+command line?
 
-On that note, you may want to double check the VPU power domain nodes.
-I think they should be:
+Paolo
 
-vpumix_pd: power-domain@6
-vpu_g1_pd: power-domain@7
-vpu_g2_pd: power-domain@8
-vpu_h1_pd: power-domain@9
+> 24.05.2021, 17:29, "Stefan Hajnoczi" <stefanha@redhat.com>:
+> 
+>     On Thu, May 20, 2021 at 04:39:08PM +0300, Yury Kamenev wrote:
+> 
+>     Hi,
+>     Is there a VIRTIO spec change for the new VIRTIO_BLK_F_NO_PS feature
+>     bit? Please send one:
+>     https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio#feedback
+>     <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio#feedback>
+> 
+>     GENHD_FL_NO_PART_SCAN is not used much in other drivers. This makes me
+>     wonder if the same use case is addressed through other means with SCSI,
+>     NVMe, etc devices. Maybe Christoph or Jens can weigh in on whether
+>     adding a bit to disable partition scanning for a virtio-blk fits into
+>     the big picture?
+> 
+>     Is your goal to avoid accidentally detecting partitions because it's
+>     confusing when that happens?
+> 
+>     VIRTIO is currently undergoing auditing and changes to support untrusted
+>     devices. From that perspective adding a device feature bit to disable
+>     partition scanning does not help protect the guest from an untrusted
+>     disk. The guest cannot trust the device, instead the guest itself would
+>     need to be configured to avoid partition scanning of untrusted devices.
+> 
+>     Stefan
+> 
+>           Signed-off-by: Yury Kamenev <damtev@yandex-team.ru
+>         <mailto:damtev@yandex-team.ru>>
+>           ---
+>            drivers/block/virtio_blk.c | 6 ++++++
+>            include/uapi/linux/virtio_blk.h | 1 +
+>            2 files changed, 7 insertions(+)
+> 
+>           diff --git a/drivers/block/virtio_blk.c
+>         b/drivers/block/virtio_blk.c
+>           index b9fa3ef5b57c..17edcfee2208 100644
+>           --- a/drivers/block/virtio_blk.c
+>           +++ b/drivers/block/virtio_blk.c
+>           @@ -799,6 +799,10 @@ static int virtblk_probe(struct
+>         virtio_device *vdev)
+>                    vblk->disk->flags |= GENHD_FL_EXT_DEVT;
+>                    vblk->index = index;
+> 
+>           + /*Disable partitions scanning for no-partitions block*/
+> 
+> 
+>     Formatting cleanup and rephrasing:
+> 
+>        /* Disable partition scanning for devices with no partitions */
+> 
+>           + if (virtio_has_feature(vdev, VIRTIO_BLK_F_NO_PS))
+> 
+> 
+>     I suggest user a more obvious name:
+> 
+>        VIRTIO_BLK_F_NO_PART_SCAN
+> 
+>           + vblk->disk->flags |= GENHD_FL_NO_PART_SCAN;
+>           +
+>                    /* configure queue flush support */
+>                    virtblk_update_cache_mode(vdev);
+> 
+>           @@ -977,6 +981,7 @@ static unsigned int features_legacy[] = {
+>                    VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
+>                    VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY,
+>         VIRTIO_BLK_F_CONFIG_WCE,
+>                    VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD,
+>         VIRTIO_BLK_F_WRITE_ZEROES,
+>           + VIRTIO_BLK_F_NO_PS,
+>            }
+>            ;
+>            static unsigned int features[] = {
+>           @@ -984,6 +989,7 @@ static unsigned int features[] = {
+>                    VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
+>                    VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY,
+>         VIRTIO_BLK_F_CONFIG_WCE,
+>                    VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD,
+>         VIRTIO_BLK_F_WRITE_ZEROES,
+>           + VIRTIO_BLK_F_NO_PS,
+>            };
+> 
+>            static struct virtio_driver virtio_blk = {
+>           diff --git a/include/uapi/linux/virtio_blk.h
+>         b/include/uapi/linux/virtio_blk.h
+>           index d888f013d9ff..f197d07afb05 100644
+>           --- a/include/uapi/linux/virtio_blk.h
+>           +++ b/include/uapi/linux/virtio_blk.h
+>           @@ -40,6 +40,7 @@
+>            #define VIRTIO_BLK_F_MQ 12 /* support more than one vq */
+>            #define VIRTIO_BLK_F_DISCARD 13 /* DISCARD is supported */
+>            #define VIRTIO_BLK_F_WRITE_ZEROES 14 /* WRITE ZEROES is
+>         supported */
+>           +#define VIRTIO_BLK_F_NO_PS 16 /* No partitions */
+> 
+>            /* Legacy feature bits */
+>            #ifndef VIRTIO_BLK_NO_LEGACY
+>           --
+>           2.24.3 (Apple Git-128)
+> 
 
-> If you want me to do it, can I do it, but you've done all the work.
->
-> [1] - https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/log/?h=for-next
->
-> thanks
->
-> adam
->
-> >
-> > V5:
-> >  Rework the blk-ctl driver to let sub-PGC use blk-ctl as parent power
-> >  domain to fix the potential handshake issue.
-> >  I still keep R-b/A-b tag for Patch 1,2,4, since very minor changes
-> >  I only drop R-b tag for Patch 3, since it has big change.
-> >  An example, the pgc_mipi not take pgc_dispmix as parent:
-> >
-> >         pgc_dispmix: power-domain@10 {
-> >                 #power-domain-cells = <0>;
-> >                 reg = <IMX8MM_POWER_DOMAIN_DISPMIX>;
-> >                 clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
-> >                          <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
-> >                          <&clk IMX8MM_CLK_DISP_APB_ROOT>;
-> >         };
-> >
-> >         pgc_mipi: power-domain@11 {
-> >                 #power-domain-cells = <0>;
-> >                 reg = <IMX8MM_POWER_DOMAIN_MIPI>;
-> >                 power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_BUS>;
-> >         };
-> >
-> >         dispmix_blk_ctl: clock-controller@32e28000 {
-> >                 compatible = "fsl,imx8mm-dispmix-blk-ctl", "syscon";
-> >                 reg = <0x32e28000 0x100>;
-> >                 #power-domain-cells = <1>;
-> >                 power-domains = <&pgc_dispmix>, <&pgc_mipi>;
-> >                 power-domain-names = "dispmix", "mipi";
-> >                 clocks = <&clk IMX8MM_CLK_DISP_ROOT>, <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
-> >                          <&clk IMX8MM_CLK_DISP_APB_ROOT>;
-> >         };
-> >
-> > V4:
-> >  Add R-b tag
-> >  Typo fix
-> >  Update the power domain macro names Per Abel and Frieder
-> >
-> > V3:
-> >  Add explaination for not listing items in patch 2 commit log Per Rob.
-> >  Addressed comments from Lucas and Frieder on patch [3,4].
-> >  A few comments from Jacky was ignored, because following gpcv2
-> >  coding style.
-> >
-> > V2:
-> >  Fix yaml check failure.
-> >
-> > Previously there is an effort from Abel that take BLK-CTL as clock
-> > provider, but it turns out that there is A/B lock issue and we are
-> > not able resolve that.
-> >
-> > Per discuss with Lucas and Jacky, we made an agreement that take BLK-CTL
-> > as a power domain provider and use GPC's domain as parent, the consumer
-> > node take BLK-CTL as power domain input.
-> >
-> > This patchset has been tested on i.MX8MM EVK board, but one hack
-> > is not included in the patchset is that the DISPMIX BLK-CTL
-> > MIPI_M/S_RESET not implemented. Per Lucas, we will finally have a MIPI
-> > DPHY driver, so fine to leave it.
-> >
-> > Thanks for Lucas's suggestion, Frieder Schrempf for collecting
-> > all the patches, Abel's previous BLK-CTL work, Jacky Bai on help
-> > debug issues.
-> >
-> >
-> > Peng Fan (4):
-> >   dt-bindings: power: Add defines for i.MX8MM BLK-CTL power domains
-> >   Documentation: bindings: clk: Add bindings for i.MX BLK_CTL
-> >   soc: imx: Add generic blk-ctl driver
-> >   soc: imx: Add blk-ctl driver for i.MX8MM
-> >
-> >  .../bindings/soc/imx/fsl,imx-blk-ctl.yaml     |  66 ++++
-> >  drivers/soc/imx/Makefile                      |   2 +-
-> >  drivers/soc/imx/blk-ctl-imx8mm.c              | 139 ++++++++
-> >  drivers/soc/imx/blk-ctl.c                     | 334 ++++++++++++++++++
-> >  drivers/soc/imx/blk-ctl.h                     |  85 +++++
-> >  include/dt-bindings/power/imx8mm-power.h      |  13 +
-> >  6 files changed, 638 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
-> >  create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
-> >  create mode 100644 drivers/soc/imx/blk-ctl.c
-> >  create mode 100644 drivers/soc/imx/blk-ctl.h
-> >
-> > --
-> > 2.30.0
-> >
