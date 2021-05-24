@@ -2,170 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9302538E815
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70AE38E814
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhEXNwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbhEXNwv (ORCPT
+        id S232959AbhEXNwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:52:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5685 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232954AbhEXNwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 09:52:51 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2CAC06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:23 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso9500681pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YV3QWporRSMJ3f8RtEYw0j1RbTzpRz2DPRalTB4xuQE=;
-        b=tf6SN8VnD7pKCXGSuMvJ+XMmrBk9KvhIyl7H8gB4sDx5fqQ+6f0i4aI9ApwIt5B12i
-         enGTQIiWWR6EpaYz8LkHG9BY1sGR0ojlcNAY+9/AUnSRw+JtnOOp++qN1o2fBDNzAOlz
-         AXS7oQarU1YPPAyW1mNbWqtJdh+VEVxsza038vBlIW/2nhTpMtj0SngS3f5Ba7BeN6F4
-         Ui6LRCm3D5Tn+3PwwsMwN1Yx/Xjxi2Iax49zOLjX5JxI9tNar4R5KNgwbaNWqRcJ2Pjn
-         tobqJ68ILTTGDcdgDN+rkp4cSabUGyggQXRgbnBCdJeb2p17xuWcKUwY0BTnNHRqmMT6
-         SIcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YV3QWporRSMJ3f8RtEYw0j1RbTzpRz2DPRalTB4xuQE=;
-        b=FWAMCHBHD5UW2OHmZ48ZDMiFDDBtOmGeHmnJ1fFfnCq8VkTNJavO5jSZPKhUUfffIv
-         A/NwDg6vnOh/4KmnuKb0orketHI9Hq0QdFnsab8JXr+wG68ZDmZOEtx23inKbG9dVmQP
-         oVGg5DmtIShQovp/HT0+qhYJqcnK+DTK8Yi7Oeu2g4BVH39RCw+LV4JI8TDaAq/RRXwJ
-         DLCh7+Io+iXrNyziwCTu3BAmUO/VQiKX98GhcOiYHq93GXLy8anD0JzVCSgo/g5s+0Qn
-         S+NBy8WzJpNXAnuMn1ZN+yIYaRYrRYFYsieU7pKyGmFGhj6ngVFc7XZRzOMPgpipc/C4
-         Y8XA==
-X-Gm-Message-State: AOAM531E9EiG/VBkfVIsd2nzFlo100+drvOF0S5maP/ZrrpvpwLm9v/z
-        D/7gIDQLr49P72Bs145xftc=
-X-Google-Smtp-Source: ABdhPJwYDNhk5T10mJKLjmqf9RIdw4fPBpd8EbvHIbtw4OmJQu+0XCNsdxPs3GIIKfnK/lRTw/Y5rw==
-X-Received: by 2002:a17:90a:4f01:: with SMTP id p1mr25073970pjh.28.1621864282485;
-        Mon, 24 May 2021 06:51:22 -0700 (PDT)
-Received: from fedora.. ([49.36.218.98])
-        by smtp.googlemail.com with ESMTPSA id z9sm8638106pji.47.2021.05.24.06.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 06:51:22 -0700 (PDT)
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        straube.linux@gmail.com, fabioaiuto83@gmail.com
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: rtl8723bs: fix suspect indents
-Date:   Mon, 24 May 2021 19:21:05 +0530
-Message-Id: <20210524135105.5550-4-chouhan.shreyansh630@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524135105.5550-1-chouhan.shreyansh630@gmail.com>
-References: <20210524135105.5550-1-chouhan.shreyansh630@gmail.com>
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FpdpQ4x8Sz1BRDF;
+        Mon, 24 May 2021 21:48:30 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 21:51:20 +0800
+Received: from [10.174.178.95] (10.174.178.95) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 21:51:20 +0800
+Subject: Re: [RFC PATCH] riscv: add VMAP_STACK overflow detection
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+References: <mhng-6eadf458-2777-4b73-acd4-ff4339a32923@palmerdabbelt-glaptop>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <7758ffa3-d681-92b8-24b2-7d1f0e7f02a7@huawei.com>
+Date:   Mon, 24 May 2021 21:51:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <mhng-6eadf458-2777-4b73-acd4-ff4339a32923@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.95]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed extra spaces and indents from core/rtw_wlan_util.c.
 
-Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
----
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 50 +++++++++----------
- 1 file changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index dd965c810967..afabb9d48021 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -1254,34 +1254,34 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 	/* parsing HT_CAP_IE */
- 	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, WLAN_EID_HT_CAPABILITY, &len, bssid->IELength - _FIXED_IE_LENGTH_);
- 	if (p && len > 0) {
--			pht_cap = (struct ieee80211_ht_cap *)(p + 2);
--			ht_cap_info = le16_to_cpu(pht_cap->cap_info);
-+		pht_cap = (struct ieee80211_ht_cap *)(p + 2);
-+		ht_cap_info = le16_to_cpu(pht_cap->cap_info);
- 	} else {
--			ht_cap_info = 0;
-+		ht_cap_info = 0;
- 	}
- 	/* parsing HT_INFO_IE */
- 	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, WLAN_EID_HT_OPERATION, &len, bssid->IELength - _FIXED_IE_LENGTH_);
- 	if (p && len > 0) {
--			pht_info = (struct HT_info_element *)(p + 2);
--			ht_info_infos_0 = pht_info->infos[0];
-+		pht_info = (struct HT_info_element *)(p + 2);
-+		ht_info_infos_0 = pht_info->infos[0];
- 	} else {
--			ht_info_infos_0 = 0;
-+		ht_info_infos_0 = 0;
- 	}
- 	if (ht_cap_info != cur_network->BcnInfo.ht_cap_info ||
--		((ht_info_infos_0&0x03) != (cur_network->BcnInfo.ht_info_infos_0&0x03))) {
--			{
--				/* bcn_info_update */
--				cur_network->BcnInfo.ht_cap_info = ht_cap_info;
--				cur_network->BcnInfo.ht_info_infos_0 = ht_info_infos_0;
--				/* to do : need to check that whether modify related register of BB or not */
--			}
--			/* goto _mismatch; */
-+	    ((ht_info_infos_0&0x03) != (cur_network->BcnInfo.ht_info_infos_0&0x03))) {
-+		{
-+			/* bcn_info_update */
-+			cur_network->BcnInfo.ht_cap_info = ht_cap_info;
-+			cur_network->BcnInfo.ht_info_infos_0 = ht_info_infos_0;
-+			/* to do : need to check that whether modify related register of BB or not */
-+		}
-+		/* goto _mismatch; */
- 	}
- 
- 	/* Checking for channel */
- 	p = rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, WLAN_EID_DS_PARAMS, &len, bssid->IELength - _FIXED_IE_LENGTH_);
- 	if (p) {
--			bcn_channel = *(p + 2);
-+		bcn_channel = *(p + 2);
- 	} else {/* In 5G, some ap do not have DSSET IE checking HT info for channel */
- 		rtw_get_ie(bssid->IEs + _FIXED_IE_LENGTH_, WLAN_EID_HT_OPERATION,
- 			   &len, bssid->IELength - _FIXED_IE_LENGTH_);
-@@ -1292,7 +1292,7 @@ int rtw_check_bcn_info(struct adapter *Adapter, u8 *pframe, u32 packet_len)
- 	}
- 
- 	if (bcn_channel != Adapter->mlmeextpriv.cur_channel)
--			goto _mismatch;
-+		goto _mismatch;
- 
- 	/* checking SSID */
- 	ssid_len = 0;
-@@ -1535,21 +1535,21 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
- 			if ((!memcmp(pIE->data, ARTHEROS_OUI1, 3)) || (!memcmp(pIE->data, ARTHEROS_OUI2, 3)))
- 				return HT_IOT_PEER_ATHEROS;
- 			else if ((!memcmp(pIE->data, BROADCOM_OUI1, 3)) ||
--			         (!memcmp(pIE->data, BROADCOM_OUI2, 3)) ||
--			         (!memcmp(pIE->data, BROADCOM_OUI3, 3)))
--			      return HT_IOT_PEER_BROADCOM;
-+				 (!memcmp(pIE->data, BROADCOM_OUI2, 3)) ||
-+				 (!memcmp(pIE->data, BROADCOM_OUI3, 3)))
-+				return HT_IOT_PEER_BROADCOM;
- 			else if (!memcmp(pIE->data, MARVELL_OUI, 3))
--			      return HT_IOT_PEER_MARVELL;
-+				return HT_IOT_PEER_MARVELL;
- 			else if (!memcmp(pIE->data, RALINK_OUI, 3))
--			      return HT_IOT_PEER_RALINK;
-+				return HT_IOT_PEER_RALINK;
- 			else if (!memcmp(pIE->data, CISCO_OUI, 3))
--			      return HT_IOT_PEER_CISCO;
-+				return HT_IOT_PEER_CISCO;
- 			else if (!memcmp(pIE->data, REALTEK_OUI, 3))
--			      return get_realtek_assoc_AP_vender(pIE);
-+				return get_realtek_assoc_AP_vender(pIE);
- 			else if (!memcmp(pIE->data, AIRGOCAP_OUI, 3))
--			      return HT_IOT_PEER_AIRGO;
-+				return HT_IOT_PEER_AIRGO;
- 			else
--			      break;
-+				break;
- 
- 		default:
- 			break;
--- 
-2.31.1
+On 2021/5/23 9:49, Palmer Dabbelt wrote:
+> On Fri, 07 May 2021 02:25:09 PDT (-0700), tongtiangen@huawei.com wrote:
+>> This patch adds stack overflow detection to riscv, usable when
+>> CONFIG_VMAP_STACK=y.
+>>
+>> Overflow is detected in kernel exception entry(kernel/entry.S), if 
+>> the kernel
+>> stack is overflow and been detected, the overflow handler is invoked 
+>> on a
+>> per-cpu overflow stack. This approach preserves GPRs and the original 
+>> exception
+>> information.
+>>
+>> The overflow detect is performed before any attempt is made to access 
+>> the stack
+>> and the principle of stack overflow detection: kernel stacks are 
+>> aligned to
+>> double their size, enabling overflow to be detected with a single bit 
+>> test. For
+>> example, a 16K stack is aligned to 32K, ensuring that bit 14 of the 
+>> SP must be
+>> zero. On an overflow (or underflow), this bit is flipped. Thus, 
+>> overflow (of
+>> less than the size of the stack) can be detected by testing whether 
+>> this bit is
+>> set.
+>>
+>> This gives us a useful error message on stack overflow, as can be 
+>> trigger with
+>> the LKDTM overflow test:
+>>
+>> [  388.053267] lkdtm: Performing direct entry EXHAUST_STACK
+>> [  388.053663] lkdtm: Calling function with 1024 frame size to depth 
+>> 32 ...
+>> [  388.054016] lkdtm: loop 32/32 ...
+>> [  388.054186] lkdtm: loop 31/32 ...
+>> [  388.054491] lkdtm: loop 30/32 ...
+>> [  388.054672] lkdtm: loop 29/32 ...
+>> [  388.054859] lkdtm: loop 28/32 ...
+>> [  388.055010] lkdtm: loop 27/32 ...
+>> [  388.055163] lkdtm: loop 26/32 ...
+>> [  388.055309] lkdtm: loop 25/32 ...
+>> [  388.055481] lkdtm: loop 24/32 ...
+>> [  388.055653] lkdtm: loop 23/32 ...
+>> [  388.055837] lkdtm: loop 22/32 ...
+>> [  388.056015] lkdtm: loop 21/32 ...
+>> [  388.056188] lkdtm: loop 20/32 ...
+>> [  388.058145] Insufficient stack space to handle exception!
+>> [  388.058153] Task stack: [0xffffffd014260000..0xffffffd014264000]
+>> [  388.058160] Overflow stack: [0xffffffe1f8d2c220..0xffffffe1f8d2d220]
+>> [  388.058168] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty 
+>> #90
+>> [  388.058175] Hardware name: riscv-virtio,qemu (DT)
+>> [  388.058187] epc : number+0x32/0x2c0
+>> [  388.058247]  ra : vsnprintf+0x2ae/0x3f0
+>> [  388.058255] epc : ffffffe0002d38f6 ra : ffffffe0002d814e sp : 
+>> ffffffd01425ffc0
+>> [  388.058263]  gp : ffffffe0012e4010 tp : ffffffe08014da00 t0 : 
+>> ffffffd0142606e8
+>> [  388.058271]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : 
+>> ffffffd014260070
+>> [  388.058303]  s1 : ffffffd014260158 a0 : ffffffd01426015e a1 : 
+>> ffffffd014260158
+>> [  388.058311]  a2 : 0000000000000013 a3 : ffff0a01ffffff10 a4 : 
+>> ffffffe000c398e0
+>> [  388.058319]  a5 : 511b02ec65f3e300 a6 : 0000000000a1749a a7 : 
+>> 0000000000000000
+>> [  388.058327]  s2 : ffffffff000000ff s3 : 00000000ffff0a01 s4 : 
+>> ffffffe0012e50a8
+>> [  388.058335]  s5 : 0000000000ffff0a s6 : ffffffe0012e50a8 s7 : 
+>> ffffffe000da1cc0
+>> [  388.058343]  s8 : ffffffffffffffff s9 : ffffffd0142602b0 s10: 
+>> ffffffd0142602a8
+>> [  388.058351]  s11: ffffffd01426015e t3 : 00000000000f0000 t4 : 
+>> ffffffffffffffff
+>> [  388.058359]  t5 : 000000000000002f t6 : ffffffd014260158
+>> [  388.058366] status: 0000000000000100 badaddr: ffffffd01425fff8 
+>> cause: 000000000000000f
+>> [  388.058374] Kernel panic - not syncing: Kernel stack overflow
+>> [  388.058381] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty 
+>> #90
+>> [  388.058387] Hardware name: riscv-virtio,qemu (DT)
+>> [  388.058393] Call Trace:
+>> [  388.058400] [<ffffffe000004944>] walk_stackframe+0x0/0xce
+>> [  388.058406] [<ffffffe0006f0b28>] dump_backtrace+0x38/0x46
+>> [  388.058412] [<ffffffe0006f0b46>] show_stack+0x10/0x18
+>> [  388.058418] [<ffffffe0006f3690>] dump_stack+0x74/0x8e
+>> [  388.058424] [<ffffffe0006f0d52>] panic+0xfc/0x2b2
+>> [  388.058430] [<ffffffe0006f0acc>] print_trace_address+0x0/0x24
+>> [  388.058436] [<ffffffe0002d814e>] vsnprintf+0x2ae/0x3f0
+>> [  388.058956] SMP: stopping secondary CPUs
+>>
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>> ---
+>>  arch/riscv/Kconfig                   |   1 +
+>>  arch/riscv/include/asm/thread_info.h |  15 ++++
+>>  arch/riscv/kernel/entry.S            | 108 +++++++++++++++++++++++++++
+>>  arch/riscv/kernel/traps.c            |  35 +++++++++
+>>  4 files changed, 159 insertions(+)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 4515a10c5d22..587f001e84f4 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -63,6 +63,7 @@ config RISCV
+>>      select HAVE_ARCH_MMAP_RND_BITS if MMU
+>>      select HAVE_ARCH_SECCOMP_FILTER
+>>      select HAVE_ARCH_TRACEHOOK
+>> +    select HAVE_ARCH_VMAP_STACK
+>>      select HAVE_ASM_MODVERSIONS
+>>      select HAVE_CONTEXT_TRACKING
+>>      select HAVE_DEBUG_KMEMLEAK
+>> diff --git a/arch/riscv/include/asm/thread_info.h 
+>> b/arch/riscv/include/asm/thread_info.h
+>> index 0e549a3089b3..60da0dcacf14 100644
+>> --- a/arch/riscv/include/asm/thread_info.h
+>> +++ b/arch/riscv/include/asm/thread_info.h
+>> @@ -19,6 +19,21 @@
+>>  #endif
+>>  #define THREAD_SIZE        (PAGE_SIZE << THREAD_SIZE_ORDER)
+>>
+>> +/*
+>> + * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect 
+>> overflow by
+>> + * checking sp & (1 << THREAD_SHIFT), which we can do cheaply in the 
+>> entry
+>> + * assembly.
+>> + */
+>> +#ifdef CONFIG_VMAP_STACK
+>> +#define THREAD_ALIGN            (2 * THREAD_SIZE)
+>> +#else
+>> +#define THREAD_ALIGN            THREAD_SIZE
+>> +#endif
+>> +
+>> +#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
+>> +#define OVERFLOW_STACK_SIZE     SZ_4K
+>> +#define SHADOW_OVERFLOW_STACK_SIZE (1024)
+>> +
+>>  #ifndef __ASSEMBLY__
+>>
+>>  #include <asm/processor.h>
+>> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+>> index 83095faa680e..deadf4000b86 100644
+>> --- a/arch/riscv/kernel/entry.S
+>> +++ b/arch/riscv/kernel/entry.S
+>> @@ -29,6 +29,15 @@ ENTRY(handle_exception)
+>>  _restore_kernel_tpsp:
+>>      csrr tp, CSR_SCRATCH
+>>      REG_S sp, TASK_TI_KERNEL_SP(tp)
+>> +
+>> +#ifdef CONFIG_VMAP_STACK
+>> +    addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +    srli sp, sp, THREAD_SHIFT
+>> +    andi sp, sp, 0x1
+>> +    bnez sp, handle_kernel_stack_overflow
+>> +    REG_L sp, TASK_TI_KERNEL_SP(tp)
+>> +#endif
+>> +
+>>  _save_context:
+>>      REG_S sp, TASK_TI_USER_SP(tp)
+>>      REG_L sp, TASK_TI_KERNEL_SP(tp)
+>> @@ -375,6 +384,105 @@ handle_syscall_trace_exit:
+>>      call do_syscall_trace_exit
+>>      j ret_from_exception
+>>
+>> +#ifdef CONFIG_VMAP_STACK
+>> +handle_kernel_stack_overflow:
+>> +    la sp, shadow_stack
+>> +    addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
+>> +
+>> +    //save caller register to shadow stack
+>> +    addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +    REG_S x1,  PT_RA(sp)
+>> +    REG_S x5,  PT_T0(sp)
+>> +    REG_S x6,  PT_T1(sp)
+>> +    REG_S x7,  PT_T2(sp)
+>> +    REG_S x10, PT_A0(sp)
+>> +    REG_S x11, PT_A1(sp)
+>> +    REG_S x12, PT_A2(sp)
+>> +    REG_S x13, PT_A3(sp)
+>> +    REG_S x14, PT_A4(sp)
+>> +    REG_S x15, PT_A5(sp)
+>> +    REG_S x16, PT_A6(sp)
+>> +    REG_S x17, PT_A7(sp)
+>> +    REG_S x28, PT_T3(sp)
+>> +    REG_S x29, PT_T4(sp)
+>> +    REG_S x30, PT_T5(sp)
+>> +    REG_S x31, PT_T6(sp)
+>> +
+>> +    la ra, restore_caller_reg
+>> +    tail get_overflow_stack
+>> +
+>> +restore_caller_reg:
+>> +    //save per-cpu overflow stack
+>> +    sd a0, -8(sp)
+>> +    //restore caller register from shadow_stack
+>> +    REG_L x1,  PT_RA(sp)
+>> +    REG_L x5,  PT_T0(sp)
+>> +    REG_L x6,  PT_T1(sp)
+>> +    REG_L x7,  PT_T2(sp)
+>> +    REG_L x10, PT_A0(sp)
+>> +    REG_L x11, PT_A1(sp)
+>> +    REG_L x12, PT_A2(sp)
+>> +    REG_L x13, PT_A3(sp)
+>> +    REG_L x14, PT_A4(sp)
+>> +    REG_L x15, PT_A5(sp)
+>> +    REG_L x16, PT_A6(sp)
+>> +    REG_L x17, PT_A7(sp)
+>> +    REG_L x28, PT_T3(sp)
+>> +    REG_L x29, PT_T4(sp)
+>> +    REG_L x30, PT_T5(sp)
+>> +    REG_L x31, PT_T6(sp)
+>> +
+>> +    //load per-cpu overflow stack
+>> +    ld sp, -8(sp)
+>> +    addi sp, sp, -(PT_SIZE_ON_STACK)
+>> +
+>> +    //save context to overflow stack
+>> +    REG_S x1,  PT_RA(sp)
+>> +    REG_S x3,  PT_GP(sp)
+>> +    REG_S x5,  PT_T0(sp)
+>> +    REG_S x6,  PT_T1(sp)
+>> +    REG_S x7,  PT_T2(sp)
+>> +    REG_S x8,  PT_S0(sp)
+>> +    REG_S x9,  PT_S1(sp)
+>> +    REG_S x10, PT_A0(sp)
+>> +    REG_S x11, PT_A1(sp)
+>> +    REG_S x12, PT_A2(sp)
+>> +    REG_S x13, PT_A3(sp)
+>> +    REG_S x14, PT_A4(sp)
+>> +    REG_S x15, PT_A5(sp)
+>> +    REG_S x16, PT_A6(sp)
+>> +    REG_S x17, PT_A7(sp)
+>> +    REG_S x18, PT_S2(sp)
+>> +    REG_S x19, PT_S3(sp)
+>> +    REG_S x20, PT_S4(sp)
+>> +    REG_S x21, PT_S5(sp)
+>> +    REG_S x22, PT_S6(sp)
+>> +    REG_S x23, PT_S7(sp)
+>> +    REG_S x24, PT_S8(sp)
+>> +    REG_S x25, PT_S9(sp)
+>> +    REG_S x26, PT_S10(sp)
+>> +    REG_S x27, PT_S11(sp)
+>> +    REG_S x28, PT_T3(sp)
+>> +    REG_S x29, PT_T4(sp)
+>> +    REG_S x30, PT_T5(sp)
+>> +    REG_S x31, PT_T6(sp)
+>> +
+>> +    REG_L s0, TASK_TI_KERNEL_SP(tp)
+>> +    csrr s1, CSR_STATUS
+>> +    csrr s2, CSR_EPC
+>> +    csrr s3, CSR_TVAL
+>> +    csrr s4, CSR_CAUSE
+>> +    csrr s5, CSR_SCRATCH
+>> +    REG_S s0, PT_SP(sp)
+>> +    REG_S s1, PT_STATUS(sp)
+>> +    REG_S s2, PT_EPC(sp)
+>> +    REG_S s3, PT_BADADDR(sp)
+>> +    REG_S s4, PT_CAUSE(sp)
+>> +    REG_S s5, PT_TP(sp)
+>> +    move a0, sp
+>> +    tail handle_bad_stack
+>> +#endif
+>> +
+>>  END(handle_exception)
+>>
+>>  ENTRY(ret_from_fork)
+>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>> index 1357abf79570..ff8033b9fdd6 100644
+>> --- a/arch/riscv/kernel/traps.c
+>> +++ b/arch/riscv/kernel/traps.c
+>> @@ -200,3 +200,38 @@ int is_valid_bugaddr(unsigned long pc)
+>>  void trap_init(void)
+>>  {
+>>  }
+>> +
+>> +#ifdef CONFIG_VMAP_STACK
+>> +DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], 
+>> overflow_stack)
+>> +        __aligned(16);
+>> +/*
+>> + * shadow stack, handled_ kernel_ stack_ overflow(in kernel/entry.S) 
+>> is used
+>> + * to get per-cpu overflow stack(get_overflow_stack).
+>> + */
+>> +long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)];
+>> +asmlinkage unsigned long get_overflow_stack(void)
+>> +{
+>> +    return (unsigned long)this_cpu_ptr(overflow_stack) +
+>> +        OVERFLOW_STACK_SIZE;
+>> +}
+>> +
+>> +asmlinkage void handle_bad_stack(struct pt_regs *regs)
+>> +{
+>> +    unsigned long tsk_stk = (unsigned long)current->stack;
+>> +    unsigned long ovf_stk = (unsigned 
+>> long)this_cpu_ptr(overflow_stack);
+>> +
+>> +    console_verbose();
+>> +
+>> +    pr_emerg("Insufficient stack space to handle exception!\n");
+>> +    pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
+>> +            tsk_stk, tsk_stk + THREAD_SIZE);
+>> +    pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
+>> +            ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
+>> +
+>> +    __show_regs(regs);
+>> +    panic("Kernel stack overflow");
+>> +
+>> +    for (;;)
+>> +        wait_for_interrupt();
+>> +}
+>> +#endif
+>
+> This LGTM.  It seems good enough to take, I'm not sure why this is an 
+> RFC?
+> .
+Thank you for your reply.
+The purpose of my RFC is that I don't think the scheme of getting 
+per-cpu overflow stack is optimal.
+At present, the patch based on next has been issued.
+
 
