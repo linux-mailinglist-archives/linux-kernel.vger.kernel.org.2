@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2E038F034
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C2C38F092
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhEXQBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41136 "EHLO mail.kernel.org"
+        id S236396AbhEXQES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233634AbhEXPz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 634706143D;
-        Mon, 24 May 2021 15:41:49 +0000 (UTC)
+        id S235136AbhEXP51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E169061953;
+        Mon, 24 May 2021 15:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870909;
-        bh=2eixtHJtGhNm7iHprTMw6XRac/mdtTXk6JyXaKcgtyk=;
+        s=korg; t=1621871018;
+        bh=kNTEj5zBvkI/7YAJ9QJOgb1fSb78jcpXW6MHyOJMBDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nBKerwg30cn84AIFdnZINKdxEzX1w2CLZYckiDJfhMoBgWBJ/+bDgznl20CBtHGD
-         5bVBr5pBdbVel7qI98KOs4bfi29l280TKBAJwpDN9CmIm3ooTaZJ5jBORTQKxHl5vM
-         /w0zIC+dtht5SQS1GvPxgcnQQowEMBqMeN4Ft1WY=
+        b=ovqgJHEK/Yz+0tIbI5C+yv2Hr9Men5idrNjl4nMP5LtHmwau01i9KSzyU83nnW4u+
+         39sXqQbFb9REL4WeIxiY26oXUR5grUEVcRj7G12T69GOLmHacVXpr4PLhrAyRcUnj7
+         si6qY++vZl9eVfpMVJSuzSeEPefuMx7WJ1isMpyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.10 056/104] x86/sev-es: Invalidate the GHCB after completing VMGEXIT
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 034/127] powerpc: Fix early setup to make early_ioremap() work
 Date:   Mon, 24 May 2021 17:25:51 +0200
-Message-Id: <20210524152334.720956848@linuxfoundation.org>
+Message-Id: <20210524152336.006587324@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-commit a50c5bebc99c525e7fbc059988c6a5ab8680cb76 upstream.
+[ Upstream commit e2f5efd0f0e229bd110eab513e7c0331d61a4649 ]
 
-Since the VMGEXIT instruction can be issued from userspace, invalidate
-the GHCB after performing VMGEXIT processing in the kernel.
+The immediate problem is that after commit
+0bd3f9e953bd ("powerpc/legacy_serial: Use early_ioremap()") the kernel
+silently reboots on some systems.
 
-Invalidation is only required after userspace is available, so call
-vc_ghcb_invalidate() from sev_es_put_ghcb(). Update vc_ghcb_invalidate()
-to additionally clear the GHCB exit code so that it is always presented
-as 0 when VMGEXIT has been issued by anything else besides the kernel.
+The reason is that early_ioremap() returns broken addresses as it uses
+slot_virt[] array which initialized with offsets from FIXADDR_TOP ==
+IOREMAP_END+FIXADDR_SIZE == KERN_IO_END - FIXADDR_SIZ + FIXADDR_SIZE ==
+__kernel_io_end which is 0 when early_ioremap_setup() is called.
+__kernel_io_end is initialized little bit later in early_init_mmu().
 
-Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/5a8130462e4f0057ee1184509cd056eedd78742b.1621273353.git.thomas.lendacky@amd.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes the initialization by swapping early_ioremap_setup() and
+early_init_mmu().
+
+Fixes: 265c3491c4bc ("powerpc: Add support for GENERIC_EARLY_IOREMAP")
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Drop unrelated cleanup & cleanup change log]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210520032919.358935-1-aik@ozlabs.ru
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/sev-es-shared.c |    1 +
- arch/x86/kernel/sev-es.c        |    5 +++++
- 2 files changed, 6 insertions(+)
+ arch/powerpc/kernel/setup_64.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -63,6 +63,7 @@ static bool sev_es_negotiate_protocol(vo
+diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+index 830fee91b2d9..c914fe8a2c67 100644
+--- a/arch/powerpc/kernel/setup_64.c
++++ b/arch/powerpc/kernel/setup_64.c
+@@ -369,11 +369,11 @@ void __init early_setup(unsigned long dt_ptr)
+ 	apply_feature_fixups();
+ 	setup_feature_keys();
  
- static __always_inline void vc_ghcb_invalidate(struct ghcb *ghcb)
- {
-+	ghcb->save.sw_exit_code = 0;
- 	memset(ghcb->save.valid_bitmap, 0, sizeof(ghcb->save.valid_bitmap));
- }
+-	early_ioremap_setup();
+-
+ 	/* Initialize the hash table or TLB handling */
+ 	early_init_mmu();
  
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -430,6 +430,11 @@ static __always_inline void sev_es_put_g
- 		data->backup_ghcb_active = false;
- 		state->ghcb = NULL;
- 	} else {
-+		/*
-+		 * Invalidate the GHCB so a VMGEXIT instruction issued
-+		 * from userspace won't appear to be valid.
-+		 */
-+		vc_ghcb_invalidate(ghcb);
- 		data->ghcb_active = false;
- 	}
- }
++	early_ioremap_setup();
++
+ 	/*
+ 	 * After firmware and early platform setup code has set things up,
+ 	 * we note the SPR values for configurable control/performance
+-- 
+2.30.2
+
 
 
