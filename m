@@ -2,107 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905CB38F033
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E371A38ECC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbhEXQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhEXPz3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:29 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5AC0611B4;
-        Mon, 24 May 2021 08:06:33 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id s6so32308035edu.10;
-        Mon, 24 May 2021 08:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=hYc9RqsGPOFH4b9ZCxZD1i1R6dOMPd4eh7fzqVzT0H8=;
-        b=IYggH2+zUrbdnBrdf/jTJBsFvsk4fNzJueTFJWS2wav+i4qdiNx+Cg0ds2JTrtFcJK
-         T0RtnoZxttQZp0nj6iOlzrT7rkaHfWvs5EQDRIMjbwVcQDab1kFlwtrzAhAUmNszUMXE
-         mlWELyPzvUT5Hwby3Mu+xJRDzQt2R3Dhpe3/qxCxniY/MO4vxeVuu8Gj2tgy9IDFoe9q
-         XuiY4wOt76aQ6kgEv9nz8fWdfq2lue434npLku5Ss7xpDFDkllkfdX9CZyAfQxQ+OtsS
-         TncgOK/EWbljBM15dTijeALKHyo5V+bt98Jx2zJXFkesK/GaSJ88AfBd+7rTvBLXdrG7
-         Hdxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=hYc9RqsGPOFH4b9ZCxZD1i1R6dOMPd4eh7fzqVzT0H8=;
-        b=GUj6USM/ECCiY4t7WeQxefutyqudkF6pIa0EBMdzw+VJEP1avOvoVnQiEjyYt0XA5q
-         s68uYuFw9MDTlUc5awaMfFYadouF+/H60X12ND1o/Pt85sGS1R3nWjhmilfsNWy+pktm
-         qyMFm6ciSwwj+K4l1EYDCrGw2BgXdMxLaamy1Pv4RZ1C7gd4TsWgdtwdhZw6fH/JhTT6
-         lJNZKeOobLfgtQcTZX5M4P0BuoqoKvvfjMrOUlsavzJv9nQ14MYQYrEFPUCDzB93Ul7e
-         dkbG+pLSSyn4UooX+u/CcjYxbNGBBCnaMFGci+aLfQodGWGr6eA1MS9idbKbE35iP2Xf
-         mDVw==
-X-Gm-Message-State: AOAM530LnHVRqjcwx+fW20km5ItWUUX8ZU9fypKZwnZ39p/XnupBGyOz
-        Iw1iTNE/zQ/+A/R77VBeDLyjWG5pYHBmzNgW/Xs=
-X-Google-Smtp-Source: ABdhPJxnql6m4jMoSsNIXd+822UQ+FgMCyWYYrxYDrZNdFQtMwci4jKmziipZTven+e/600RCUx8aswTUzA0OJJ9xKs=
-X-Received: by 2002:a05:6402:4256:: with SMTP id g22mr25643956edb.214.1621868792568;
- Mon, 24 May 2021 08:06:32 -0700 (PDT)
-MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Mon, 24 May 2021 23:06:11 +0800
-Message-ID: <CAD-N9QU7T0vb1YaZ_NJfySEGiUsQ1ix6ved6TJKSUBQ+HqO1eQ@mail.gmail.com>
-Subject: Is this a bug between dvb_usb_adapter_frontend_init and cinergyt2_frontend_attach?
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233466AbhEXPXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:23:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235247AbhEXPJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:09:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C2096128B;
+        Mon, 24 May 2021 15:06:25 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1llC9v-003FRa-3J; Mon, 24 May 2021 16:06:23 +0100
+Date:   Mon, 24 May 2021 16:06:21 +0100
+Message-ID: <87im38w4r6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 30/39] PCI: Bulk conversion to generic_handle_domain_irq()
+In-Reply-To: <CAL_JsqLWLLRmusfvAweahA=ZKxOChRWAVUKehShpvn60kScsrw@mail.gmail.com>
+References: <20210520163751.27325-1-maz@kernel.org>
+        <20210520163751.27325-31-maz@kernel.org>
+        <CAL_Jsq+nu8PmONzx2AfysRWuhJDV9Xn3O5rCOfEZL0KoC12_qw@mail.gmail.com>
+        <87tumswmqc.wl-maz@kernel.org>
+        <CAL_JsqLWLLRmusfvAweahA=ZKxOChRWAVUKehShpvn60kScsrw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: robh@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi kernel developers,
+On Mon, 24 May 2021 14:28:42 +0100,
+Rob Herring <robh@kernel.org> wrote:
+> 
+> On Mon, May 24, 2021 at 3:38 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 20 May 2021 18:47:06 +0100,
+> > Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Thu, May 20, 2021 at 11:57 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > Wherever possible, replace constructs that match either
+> > > > generic_handle_irq(irq_find_mapping()) or
+> > > > generic_handle_irq(irq_linear_revmap()) to a single call to
+> > > > generic_handle_domain_irq().
+> > > >
+> > > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pci-dra7xx.c        | 14 +++++---------
+> > > >  drivers/pci/controller/dwc/pci-keystone.c      |  5 ++---
+> > > >  .../pci/controller/dwc/pcie-designware-host.c  |  9 ++++-----
+> > > >  drivers/pci/controller/dwc/pcie-uniphier.c     |  6 ++----
+> > > >  .../controller/mobiveil/pcie-mobiveil-host.c   | 15 ++++++---------
+> > > >  drivers/pci/controller/pci-aardvark.c          |  5 ++---
+> > > >  drivers/pci/controller/pci-ftpci100.c          |  2 +-
+> > > >  drivers/pci/controller/pci-tegra.c             |  8 +++-----
+> > > >  drivers/pci/controller/pci-xgene-msi.c         |  9 +++------
+> > > >  drivers/pci/controller/pcie-altera-msi.c       | 10 ++++------
+> > > >  drivers/pci/controller/pcie-altera.c           | 10 ++++------
+> > > >  drivers/pci/controller/pcie-brcmstb.c          |  9 ++++-----
+> > > >  drivers/pci/controller/pcie-iproc-msi.c        |  4 +---
+> > > >  drivers/pci/controller/pcie-mediatek-gen3.c    | 13 ++++---------
+> > > >  drivers/pci/controller/pcie-mediatek.c         | 12 ++++--------
+> > > >  drivers/pci/controller/pcie-microchip-host.c   | 18 +++++++-----------
+> > > >  drivers/pci/controller/pcie-rcar-host.c        |  8 +++-----
+> > > >  drivers/pci/controller/pcie-rockchip-host.c    |  8 +++-----
+> > > >  drivers/pci/controller/pcie-xilinx-cpm.c       |  4 ++--
+> > > >  drivers/pci/controller/pcie-xilinx-nwl.c       | 13 +++----------
+> > > >  drivers/pci/controller/pcie-xilinx.c           |  9 ++++-----
+> > > >  21 files changed, 71 insertions(+), 120 deletions(-)
+> > >
+> > >
+> > > > diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+> > > > index 1c34c897a7e2..cf3832b905e8 100644
+> > > > --- a/drivers/pci/controller/pci-xgene-msi.c
+> > > > +++ b/drivers/pci/controller/pci-xgene-msi.c
+> > > > @@ -291,8 +291,7 @@ static void xgene_msi_isr(struct irq_desc *desc)
+> > > >         struct irq_chip *chip = irq_desc_get_chip(desc);
+> > > >         struct xgene_msi_group *msi_groups;
+> > > >         struct xgene_msi *xgene_msi;
+> > > > -       unsigned int virq;
+> > > > -       int msir_index, msir_val, hw_irq;
+> > > > +       int msir_index, msir_val, hw_irq, ret;
+> > > >         u32 intr_index, grp_select, msi_grp;
+> > > >
+> > > >         chained_irq_enter(chip, desc);
+> > > > @@ -330,10 +329,8 @@ static void xgene_msi_isr(struct irq_desc *desc)
+> > > >                          * CPU0
+> > > >                          */
+> > > >                         hw_irq = hwirq_to_canonical_hwirq(hw_irq);
+> > > > -                       virq = irq_find_mapping(xgene_msi->inner_domain, hw_irq);
+> > > > -                       WARN_ON(!virq);
+> > > > -                       if (virq != 0)
+> > > > -                               generic_handle_irq(virq);
+> > > > +                       ret = generic_handle_domain_irq(xgene_msi->inner_domain, hw_irq);
+> > > > +                       WARN_ON(ret);
+> > >
+> > > There's various error prints in some of the handlers. I think they
+> > > should be moved to the core. I can't imagine handling the irq is ever
+> > > optional.
+> >
+> > Printing stuff like this is a sure recipe for disaster, and there is
+> > no way I'm moving such crap into core code.
+> 
+> Then why maintain such crap code? I'm fine with just removing. I just
+> think we should have some consistency.
 
-I doubt there is a bug between dvb_usb_adapter_frontend_init [1] and
-cinergyt2_frontend_attach [2]. The following source code includes the
-critical part.
+Then by any mean, remove it. I'd even be tempted to say "remove the
+driver", but there is an XGene-1 box right behind me...
 
------------------------------------------------------------------------------------------------------
-int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
-{
-        ......
-        /* register all given adapter frontends */
-        for (i = 0; i < adap->props.num_frontends; i++) {
-                ret = adap->props.fe[i].frontend_attach(adap);
-                if (ret || adap->fe_adap[i].fe == NULL) {
-                        return 0;
-                }
-        }
-        ......
-}
+> 
+> > If the interrupt handling
+> > fails (most likely because there is no mapping for this interrupt), it
+> > is the driver's responsibility to handle the error (either disabling
+> > the input or the output of the secondary irqchip). There isn't much
+> > the core code can do about it.
+> 
+> I would imagine the errors here would be the 'this should never
+> happen' kind. Maybe a race with tearing down the domain. Seems to me
+> the core code should be warning when the calling code has made
+> mistakes.
 
-static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
-{
-        ......
-        adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
-        ......
-        return ret;
-}
------------------------------------------------------------------------------------------------------
+The core code already returns an error, which is plenty. It doesn't
+have the context to actually *do* anything, and I don't think moaning
+on the console helps much.
 
-In the dvb_usb_adapter_frontend_init, the function pointer -
-frontend_attach points to cinergyt2_frontend_attach. Then the parent
-function dvb_usb_adapter_frontend_init checks the return value and
-adap->fe_adap[i].fe to verify the execution of the child function.
-However, the child function - cinergyt2_frontend_attach passes the
-allocated dvb_frontend with adap->fe_adap[0].fe, but the check is
-performed on adap->fe_adap[i].fe. At the same time, the adap in both
-expressions should be the same data pointer.
+The onus is firmly on the caller side to get their act together.
 
-Please correct me if you have any opinions with the above statements.
+	M.
 
-[1] dvb_usb_adapter_frontend_init:
-https://elixir.bootlin.com/linux/latest/source/drivers/media/usb/dvb-usb/dvb-usb-dvb.c#L276
-
-[2] cinergyt2_frontend_attach:
-https://elixir.bootlin.com/linux/latest/source/drivers/media/usb/dvb-usb/cinergyT2-core.c#L68
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
+-- 
+Without deviation from the norm, progress is not possible.
