@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83D038EEF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2E738EEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhEXPzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33560 "EHLO mail.kernel.org"
+        id S235045AbhEXPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:55:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234461AbhEXPrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2DA61415;
-        Mon, 24 May 2021 15:37:05 +0000 (UTC)
+        id S233582AbhEXPrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:47:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7800061417;
+        Mon, 24 May 2021 15:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870625;
-        bh=il5dChJjhFtRvXPyUfOQ5OG42G5UnANpeqwOXJFXj4E=;
+        s=korg; t=1621870627;
+        bh=0/p0tc9WrNj0jr3ZyF9G/zdESfFGAEkfgCe3qd7ps5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d5v+U6LT51cyMe1FoBgqWlhA1UuVyLnz5floJKYQpJbur3JA2EXb575Tyd38yePDq
-         PfOHzc4y7jS1Y8yHSUZJl3UsKNGw6D4aEAedWvlH2oDBhAycs12DbNq1ENmNpZpjs6
-         5dvYUG2xSehQ14xXXBBoF+nQgwhpvsxTXRfp5tBQ=
+        b=GZ2UKmFTtiM8RJtgOrm3UI0WkPaHfzqJbnRGHw8MmpmNOaQ65HKoAl1tpdgWZHHA9
+         XdYTkOGQ9cbNrk4qkxJL8rC7AtSv7GxqSe1pBeuV7vJ1VB0F+PGqCXLjqTAMEn+Qqy
+         O61TmgRRcAQYZLpE2KzDNcPA8aE7Xnlqq+wdxCn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 32/71] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
-Date:   Mon, 24 May 2021 17:25:38 +0200
-Message-Id: <20210524152327.506934903@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 5.4 33/71] uio_hv_generic: Fix a memory leak in error handling paths
+Date:   Mon, 24 May 2021 17:25:39 +0200
+Message-Id: <20210524152327.538000879@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
 References: <20210524152326.447759938@linuxfoundation.org>
@@ -39,67 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elia Devito <eliadevito@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit f2be77fee648ddd6d0d259d3527344ba0120e314 upstream.
+commit 3ee098f96b8b6c1a98f7f97915f8873164e6af9d upstream.
 
-Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
-on similar models.
+If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
+updated and 'hv_uio_cleanup()' in the error handling path will not be
+able to free the corresponding buffer.
 
-0x14 pin config override is required to enable all speakers and
-alc285-speaker2-to-dac1 fixup to enable volume adjustment.
+In such a case, we need to free the buffer explicitly.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210511124651.4802-1-eliadevito@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/uio/uio_hv_generic.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6391,6 +6391,7 @@ enum {
- 	ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
- 	ALC295_FIXUP_ASUS_DACS,
- 	ALC295_FIXUP_HP_OMEN,
-+	ALC285_FIXUP_HP_SPECTRE_X360,
- };
+--- a/drivers/uio/uio_hv_generic.c
++++ b/drivers/uio/uio_hv_generic.c
+@@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7880,6 +7881,15 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
- 	},
-+	[ALC285_FIXUP_HP_SPECTRE_X360] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170110 }, /* enable top speaker */
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
-+	},
- };
+ 	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
+ 				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
+-	if (ret)
++	if (ret) {
++		vfree(pdata->recv_buf);
+ 		goto fail_close;
++	}
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8032,6 +8042,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
-+	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
-@@ -8436,6 +8447,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
- 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
-+	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+ 	/* put Global Physical Address Label in name */
+ 	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
+@@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
+ 
+ 	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
+ 				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
+-	if (ret)
++	if (ret) {
++		vfree(pdata->send_buf);
+ 		goto fail_close;
++	}
+ 
+ 	snprintf(pdata->send_name, sizeof(pdata->send_name),
+ 		 "send:%u", pdata->send_gpadl);
 
 
