@@ -2,228 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67F138F1FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B9E38F1FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhEXRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 13:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233221AbhEXRGq (ORCPT
+        id S233350AbhEXRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 13:08:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232543AbhEXRIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 13:06:46 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A42C06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:05:17 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id c6so9007289uat.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eZESf2+UaWJEsGgPUeGFqkYRrVF4ir0zTy9O8j+JZj0=;
-        b=F7m/3fCzNq2FjVowZE3b6kOUYNK0yc/QidlGDaLPRVfmD9v1gRRu7OVOrRBpTgyBAq
-         RN6dpQp83jnaFaGvshIYnM+xXVDEAHcTxHRfUPB/SmG3IQsfVTPBnvWXIelgpaqEIIRp
-         RbgRetkJQ+yYYTmV5IcLZ929/NeBfAGKyLUmXky1ShOLjOahGqBcLXtVlRg11DvEYpYd
-         eIADl4LA6Dvl82BB+Ief4vDAB6PximvEmlgWhpWBcG4HyoBXvYyA9llRubapIvYM1pJi
-         IwFJz0jr7NufaHk0RMW3QO5k29azEzEUM8yNELd2fPWiK5/1i9kbxxYnfWv9zDUII/Nj
-         ggDg==
+        Mon, 24 May 2021 13:08:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621876009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eOn3/qS2T3cmcuTz6xvQsP5/9wBu95Fvay4pLeoTJwo=;
+        b=YYWAVyaRhAHZa57A2xzJKjD3x/oru0yjKxAgV0p7t1fkRHmRq2ngzFg9QVSv9iWdxxF17c
+        cjidMlhsEM4XbM3J7y/pN9JckvVYfM30QBxRClVhrDYghdMJOLizS6osjHJYURJqhtpG9Y
+        hPwhWka1iEV70vFIxHNbpBeVrzBIK44=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-P4cqJrf-OW-yYsBoqp-3-w-1; Mon, 24 May 2021 13:06:48 -0400
+X-MC-Unique: P4cqJrf-OW-yYsBoqp-3-w-1
+Received: by mail-ej1-f70.google.com with SMTP id i8-20020a1709068508b02903d75f46b7aeso7516470ejx.18
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 10:06:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eZESf2+UaWJEsGgPUeGFqkYRrVF4ir0zTy9O8j+JZj0=;
-        b=KVWWdaCRPVKpB96Kbks4xiiAGVv3A9hZnPKeXK62FcFjIgS3Enhjl320M2h1YaBYPT
-         Dz/V3hJqgEqTmACCZ6jLc/cHCesBBz3ZDR1BEJI7Lb7PEYnAzDnXyH0QGWRxBzSTzlMD
-         SSvN/j6Ng/4b3r53V4lF9zhuwrGj4DD8uYNziNtkZe1ghgaJFjFliF24F4gDHwTAL1f2
-         7jQnYmhW5RQPz2VzXF0n4OpnkCTj+nNFRHPLVWY4GSfhOTmPF0w9P2UXaNXXTtzKZm+w
-         LKNhC/onoQAZURNC7wYeAbpdZ/xMVCZKwrxLfRirSDeIC5vlMcGih73Wi3kA/l9BJw4P
-         EvoQ==
-X-Gm-Message-State: AOAM531cSjUb3b6Q3rIceqUzxLNwFeVY5BBuRelMwG+BA9eStQbdAnaZ
-        YT6INHQAl3MA1LVV6iSB2wjG6DjEt1wz9UD5MXYvWw==
-X-Google-Smtp-Source: ABdhPJwVnMsBxavUG6WhLD7276brAnw7avHoO4W5DwCb7iPsdb9pe0vuL7T8bKsnZFn6ouLaui6EqThOSbhN4pDxRHE=
-X-Received: by 2002:ab0:d8f:: with SMTP id i15mr4749618uak.104.1621875916371;
- Mon, 24 May 2021 10:05:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eOn3/qS2T3cmcuTz6xvQsP5/9wBu95Fvay4pLeoTJwo=;
+        b=BB14tJ8DE+WprwF+OzgEs7y/wAgYAHZCmqnTWz/SsGc3pS72A+dYu9F4q6Xjy9HyK/
+         8eKMEKHRvn6dsrb+vQgt7kvx3iat21ovZsXf6V/6MOg22Cq3e038rum6VOEAK8g7dige
+         q7Rs0FONed9PZT4EWIYv1G7AkA+JnDiCYl7vGH9cEB2/tf4xFmjOsMrByoGx/cXuB4rE
+         7sYJFo11wsnZT/TSlIr4B1NZ72VhH14D/+VFBTSz2P7a87FAaqU0fn/BxBuac7LcXAPH
+         Q2nZbvVVGfV5dFpwvcDIaRdjxwsk9ZiYS4/vYN0P5pnoIkJ0aZ2Go9DRwZh5nyi5Il7B
+         4Fww==
+X-Gm-Message-State: AOAM531jvQBEjfWxfH/YbSl5gl+S315UCtHFr3Gf74UuuF4LKB1dwhhE
+        q3iVmX1+DHSz8gTyKWhnKii3GLDGpKMBX+56VFGi+q0rhh/XFSTzCKtx0+dcAPPH8+wKDgpl33/
+        v/eQ7Gn8cpuNedUVpN2h6BiJ4
+X-Received: by 2002:a17:906:1b42:: with SMTP id p2mr24347759ejg.550.1621876007084;
+        Mon, 24 May 2021 10:06:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1/UdQHH7jmu5hfuqX/tqFGzK50pobk7I8Kt7VwHNYQD/F/6XWGGV9hiICdnq7AMbs/2RqPQ==
+X-Received: by 2002:a17:906:1b42:: with SMTP id p2mr24347740ejg.550.1621876006889;
+        Mon, 24 May 2021 10:06:46 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h9sm9533465edr.10.2021.05.24.10.06.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 10:06:46 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with
+ protected state
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
+ <87pmxg73h7.fsf@vitty.brq.redhat.com>
+ <a947ee05-4205-fb3d-a1e6-f5df7275014e@amd.com>
+ <87tums8cn0.fsf@vitty.brq.redhat.com>
+ <211d5285-e209-b9ef-3099-8da646051661@amd.com>
+ <c6864982-b30a-29b5-9a10-3cfdd331057e@redhat.com>
+ <YKvcYeXaxTQ//87M@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0e2544cd-b594-7266-4400-f9c5886ff1c4@redhat.com>
+Date:   Mon, 24 May 2021 19:06:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210523231335.8238-1-digetx@gmail.com> <20210523231335.8238-14-digetx@gmail.com>
-In-Reply-To: <20210523231335.8238-14-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 19:04:40 +0200
-Message-ID: <CAPDyKFrto2cosX3Ben_QWCYVqgeoF1Yv=8gEx4Y86WNyjeHvdg@mail.gmail.com>
-Subject: Re: [PATCH v2 13/14] soc/tegra: pmc: Add core power domain
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?Q?Nikola_Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKvcYeXaxTQ//87M@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 01:13, Dmitry Osipenko <digetx@gmail.com> wrote:
+On 24/05/21 19:03, Sean Christopherson wrote:
+>> Let's introduce a new wrapper is_64_bit_hypercall, and add a
+>> WARN_ON_ONCE(vcpu->arch.guest_state_protected) to is_64_bit_mode.
 >
-> NVIDIA Tegra SoCs have multiple power domains, each domain corresponds
-> to an external SoC power rail. Core power domain covers vast majority of
-> hardware blocks within a Tegra SoC. The voltage of a power domain should
-> be set to a level which satisfies all devices within the power domain.
-> Add support for the core power domain which controls voltage state of the
-> domain. This allows us to support system-wide DVFS on Tegra20-210 SoCs.
-> The PMC powergate domains now are sub-domains of the core domain, this
-> requires device-tree updating, older DTBs are unaffected.
->
-> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Can we introduce the WARN(s) in a separate patch, and deploy them much more
+> widely than just is_64_bit_mode()?  I would like to have them lying in wait at
+> every path that should be unreachable, e.g. get/set segments, get_cpl(), etc...
 
-[...]
+Each WARN that is added must be audited separately, so this one I'd like 
+to have now; it is pretty much the motivation for introducing a new 
+function, as the other caller of is_64_bit_mode, kvm_get_linear_rip() is 
+already "handling" SEV-ES by always returning 0.
 
-> +
-> +static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
-> +{
-> +       static struct lock_class_key tegra_core_domain_lock_class;
-> +       struct generic_pm_domain *genpd;
-> +       const char *rname = "core";
-> +       int err;
-> +
-> +       genpd = devm_kzalloc(pmc->dev, sizeof(*genpd), GFP_KERNEL);
-> +       if (!genpd)
-> +               return -ENOMEM;
-> +
-> +       genpd->name = np->name;
-> +       genpd->set_performance_state = tegra_pmc_core_pd_set_performance_state;
-> +       genpd->opp_to_performance_state = tegra_pmc_core_pd_opp_to_performance_state;
-> +
-> +       err = devm_pm_opp_set_regulators(pmc->dev, &rname, 1);
-> +       if (err)
-> +               return dev_err_probe(pmc->dev, err,
-> +                                    "failed to set core OPP regulator\n");
-> +
-> +       err = pm_genpd_init(genpd, NULL, false);
-> +       if (err) {
-> +               dev_err(pmc->dev, "failed to init core genpd: %d\n", err);
-> +               return err;
-> +       }
-> +
-> +       /*
-> +        * We have a "PMC pwrgate -> Core" hierarchy of the power domains
-> +        * where PMC needs to resume and change performance (voltage) of the
-> +        * Core domain from the PMC GENPD on/off callbacks, hence we need
-> +        * to annotate the lock in order to remove confusion from the
-> +        * lockdep checker when a nested access happens.
-> +        */
+But yes adding more WARNs can only be good.
 
-Can you elaborate a bit more on this?
+Paolo
 
-Are you saying that when the child domain (PMC pwrgate) gets powered
-off, you want to drop its aggregated votes it may hold for the
-performance state, as otherwise it may affect the parent domain (core
-domain)?
+> Side topic, kvm_get_cs_db_l_bits() should be moved to svm.c.  Functionally, it's
+> fine to have it as a vendor-agnostic helper, but practically speaking it should
+> never be called directly.
+> 
 
-I guess this would be a valid scenario to optimize for, especially if
-you have more than one child domain of the core power domain, right?
-
-If you have only one child domain, would it be sufficient to assign
-->power_on|off() callbacks for the core domain and deal with the
-performance stare votes from there instead?
-
-> +       lockdep_set_class(&genpd->mlock, &tegra_core_domain_lock_class);
-> +
-> +       err = of_genpd_add_provider_simple(np, genpd);
-> +       if (err) {
-> +               dev_err(pmc->dev, "failed to add core genpd: %d\n", err);
-> +               goto remove_genpd;
-> +       }
-> +
-> +       return 0;
-> +
-> +remove_genpd:
-> +       pm_genpd_remove(genpd);
-> +
-> +       return err;
-> +}
-
-[...]
-
-> +static void tegra_pmc_sync_state(struct device *dev)
-> +{
-> +       int err;
-> +
-> +       pmc->core_domain_state_synced = true;
-> +
-> +       /* this is a no-op if core regulator isn't used */
-> +       mutex_lock(&pmc->powergates_lock);
-> +       err = dev_pm_opp_sync_regulators(dev);
-> +       mutex_unlock(&pmc->powergates_lock);
-> +
-> +       if (err)
-> +               dev_err(dev, "failed to sync regulators: %d\n", err);
-> +}
-> +
-
-Nitpick.
-
-Would you mind splitting the "sync_state" thingy out into a separate
-patch on top of $subject patch?
-
-I think it would be nice, especially since it shares a function via
-include/soc/tegra/common.h - that would make it clear to what part
-that belongs to.
-
->  static struct platform_driver tegra_pmc_driver = {
->         .driver = {
->                 .name = "tegra-pmc",
-> @@ -3680,6 +3822,7 @@ static struct platform_driver tegra_pmc_driver = {
->  #if defined(CONFIG_PM_SLEEP) && defined(CONFIG_ARM)
->                 .pm = &tegra_pmc_pm_ops,
->  #endif
-> +               .sync_state = tegra_pmc_sync_state,
->         },
->         .probe = tegra_pmc_probe,
->  };
-> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
-> index af41ad80ec21..135a6956a18c 100644
-> --- a/include/soc/tegra/common.h
-> +++ b/include/soc/tegra/common.h
-> @@ -23,6 +23,8 @@ struct tegra_core_opp_params {
->  #ifdef CONFIG_ARCH_TEGRA
->  bool soc_is_tegra(void);
->
-> +bool tegra_soc_core_domain_state_synced(void);
-> +
->  int devm_tegra_core_dev_init_opp_table(struct device *dev,
->                                        struct tegra_core_opp_params *params);
->  #else
-> @@ -31,6 +33,11 @@ static inline bool soc_is_tegra(void)
->         return false;
->  }
->
-> +static inline bool tegra_soc_core_domain_state_synced(void)
-> +{
-> +       return false;
-> +}
-> +
->  static inline int
->  devm_tegra_core_dev_init_opp_table(struct device *dev,
->                                    struct tegra_core_opp_params *params)
-
-Kind regards
-Uffe
