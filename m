@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFE838DE5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2328138DE65
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 02:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhEXAbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 20:31:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
+        id S232116AbhEXAbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 20:31:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232118AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232114AbhEXAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 20:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 55E9861261;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4BC1961285;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621816211;
-        bh=E7tnaemu0GzBxIfKbRL9F0Yny0DeG2d4Q2JCnRY0nKg=;
+        bh=b/aXQGlDYmgAHBpyI09++ZdbYVEwZR4M1M0VJKJ2Tp8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BQu1wm62RiFoBBf4VJT0MY1fblIJ048zTESo+P/J0wc6bYuCG2E5Q3yqgtsYeD36Y
-         1N5tihl5obTPkQFyn3W2qk1/zyUneyqI486ZMc8ZJeB2zu6wKwojrEA+kmmG20KM83
-         ipMmE8f1a0peEAicfYKlExY8wyCwdFsz8PEYm9Dmd5G/cGjNkzwBr/8h5MqZ6Y20nI
-         o0yV7VQf7tE/j+cwtumHx84o72whUbgn4GRpPotkYSP/T10nU3nYz8FZ6IJjrBq4BF
-         YbyAwP0SKlur17BRCSzREOPVslNrjQhUiv+ZdAF30HYID6RC2pPYzv4XMUinbtEHYv
-         6GpWG6ZbMjCZw==
+        b=K6VQfJFeU5wxZtiSvN3RU/TMff22Vdd7w0CRF5DBQzKcCwsU4vDiXiXQLuHszStaS
+         OSBoNRpZBLC6Hy+xZ7ZGNB9y5b9ZazVeMiCWyvZN4+Oy1aiq2WS1/q67i4Qxg+nzCL
+         VBrqWhBvYM0g01XSsQ+a2eSjBZXiB6ncFNKOWAPi0EJMxyHDnV31fT6Ejvi78lQYpk
+         kRLPsj6nuyzSS6il9MJYuF28+MpGVczMtDlQ9YACHyF4ES/jc6W+qU86E1SB4z4+/S
+         ge62fbsq5iz7aC5YIVsGVWbBAP/wQNPHtlktqUz96MCLZKBZBygaC52qir7t4eec7k
+         zyNXrJz2V8oFg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A32E60CE2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4127F60283;
         Mon, 24 May 2021 00:30:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] sfc: use DEVICE_ATTR_*() macro
+Subject: Re: [PATCH v2 net-next] ehea: Use DEVICE_ATTR_*() macro
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162181621130.30453.15592805092018753382.git-patchwork-notify@kernel.org>
+Message-Id: <162181621126.30453.14677567365957496075.git-patchwork-notify@kernel.org>
 Date:   Mon, 24 May 2021 00:30:11 +0000
-References: <20210523032030.42052-1-yuehaibing@huawei.com>
-In-Reply-To: <20210523032030.42052-1-yuehaibing@huawei.com>
+References: <20210523060223.41936-1-yuehaibing@huawei.com>
+In-Reply-To: <20210523060223.41936-1-yuehaibing@huawei.com>
 To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Cc:     dougmill@linux.ibm.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,20 +46,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sun, 23 May 2021 11:20:30 +0800 you wrote:
+On Sun, 23 May 2021 14:02:23 +0800 you wrote:
 > Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
 > which makes the code a bit shorter and easier to read.
 > 
 > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  drivers/net/ethernet/sfc/ef10.c       | 17 ++++++++---------
->  drivers/net/ethernet/sfc/efx.c        |  6 +++---
->  drivers/net/ethernet/sfc/efx_common.c | 12 +++++++-----
->  3 files changed, 18 insertions(+), 17 deletions(-)
+> v2: probe_port_show should be probe_port_store
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] sfc: use DEVICE_ATTR_*() macro
-    https://git.kernel.org/netdev/net-next/c/3880fc37beba
+  - [v2,net-next] ehea: Use DEVICE_ATTR_*() macro
+    https://git.kernel.org/netdev/net-next/c/0056982f093d
 
 You are awesome, thank you!
 --
