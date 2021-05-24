@@ -2,535 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DCB38E84F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97CD38E851
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhEXOKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhEXOKf (ORCPT
+        id S232909AbhEXOKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:10:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48542 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232946AbhEXOKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:10:35 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50C6C061574;
-        Mon, 24 May 2021 07:09:07 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c196so18954968oib.9;
-        Mon, 24 May 2021 07:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o7CLir1PLpSoekN7HG+8aA3BrPc01kxQajb9KjLV5l4=;
-        b=tEju27IHwOw6efgYeLMuBKQncK+4X3DyXW/zeSO/V1OkNbYFV/NwLJveOGUekswyna
-         z3xj9R3y09rxxMUNsf1EwIAymuhVpxXnov3uZpdSDX648CHSBk9iVYZIPlZCKTAQhn2k
-         V7MeX4W39IZ+2If2sInL9lCQLdJT4nSpf5/fViLm1r5IVU+9NmYbyca5R3+wiEo72OG3
-         Zdu0cbzUcIkV8j23WYmst2dhLCjmNmTqRlbjzLumB79x/JL8imrbROFWZajIZCDhRqHC
-         Gnsl7EXBftMup+dQEej2pa6qG7Tf71Se4RsB/FEpzHx8sCZAVzdyjUjDU3xqSQmvHMtb
-         WXRw==
+        Mon, 24 May 2021 10:10:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621865351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=12FwMZTRzbjpzB5CkuDibzmmFS/xQehJ1Wh5iST0PjI=;
+        b=hse7U/tIt3xBLRyAPscjWiV1vdmXt8NvXb3YLbFjttGQpHZxaNRTSZuZdeGQjZHNwZq0ob
+        4LmO94oW5f3a5ON93DyAiMJymR7/Lb9GHXsuvY153fScfFVy49RhxJW+XTSi+4pcSlMiTg
+        1b+1AauDitD/ew4NTGE7AQubSL7tWNM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-X2GrSOpkMIibPbq7IuRhkw-1; Mon, 24 May 2021 10:09:10 -0400
+X-MC-Unique: X2GrSOpkMIibPbq7IuRhkw-1
+Received: by mail-wr1-f72.google.com with SMTP id u5-20020adf9e050000b029010df603f280so13119049wre.18
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:09:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o7CLir1PLpSoekN7HG+8aA3BrPc01kxQajb9KjLV5l4=;
-        b=iYq7+QaiSPVLkn0XXoGN7Psly7YDDuZyUrhIwUJBvsUuDqOYvcTWZSlRXrBJofm0DA
-         ebJdmz57bIQB7mWznLYnqoJPhmRBLi3s3o84QlCjsefQsaq29Ed6QLd6l0B24J/lG9xB
-         zEAG3/3n8EGVfPX4iJSOeuxJ4h9KQZPY8KiONn1vXpk7bLRR2wHbV4UFi+stPaHIHjRs
-         sbOchC2Jxc5ByHtAa1TqcerUPB+9tEka8Wk6qBzRiQuJS6hGqcVTkfyeHVZbrDqFsyBM
-         pausakp3CPM6BtowExkZJ5bTxIu3zHSpYJ8Vs4yQ7yCgycO6zhG/Gj5b1Xk93v8lGBz2
-         yXLQ==
-X-Gm-Message-State: AOAM5325F4BEXEkwdAgLFEp9U2fHjzq7EhWH1r0N2y3s3WVLY6OXAHpz
-        lvJeVgFiMHfjMfS2lGDSzo5lak6aM18=
-X-Google-Smtp-Source: ABdhPJzgz3pU39JQUzGqVImlOvQ1V/Zg32t/Us+gwAIjc4mp6rL/PgYC3mDTlmbr6YMUYb1b2LXwng==
-X-Received: by 2002:a05:6808:128b:: with SMTP id a11mr10775351oiw.88.1621865347239;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=12FwMZTRzbjpzB5CkuDibzmmFS/xQehJ1Wh5iST0PjI=;
+        b=WGamqBUaHR0Y8hESu//xMncM3nBcBvunL1HIOCYxJA+0kCXDhKXDhZ91jHzJ0NlKhe
+         NAArnj48INjBDrHjJwR3m9TXgyTJ6syEzAkD1La8Brr29aeDaEk/5/vrlsH7j8aEs6tq
+         feb2PCnj4WI8Lu+rnQAsD+JZdrXT3fk8oVnxsufg6DlFPFOyA8nlz+43ctgPfr60lwuo
+         WfpvvpJRcY93AXmaVWoY2gVFVUNEylSCw9CMJBQAjEdMZ/GIDZpYfSMB/CKK9SCiQdUg
+         rd3b0ewvbh/ahxFB3RsGF9Y3oyUjo1HPZFWmndWUiWVjqNc2o0hp5PjWBjiclW2ZSoIi
+         csww==
+X-Gm-Message-State: AOAM530dKGs1w9qy97LenyaHNBMrwhQVNdr3E78sZMpm4eLB7H0JB67t
+        yFRPKjrftseRpEmTYCLqybg9EexTT1VtruIVyxFYiSapb32K+hzLFFHrJ5ok2Gpgttqx3DiwkYJ
+        LYGIckLEmF5go3Axuyn/kTASrHdOkbEti+z1wjyNcLyEk/RhyD+prVTqLCqKELRq/DSXA0Ja5Yj
+        yr
+X-Received: by 2002:a1c:f219:: with SMTP id s25mr20539175wmc.31.1621865348769;
+        Mon, 24 May 2021 07:09:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRTQDbwe1r58jz3cAVOkl0hhzua5WT+mRkk4szq+pmofP6oSmBhq+OLKDfxx/xrUOmw6FnbA==
+X-Received: by 2002:a1c:f219:: with SMTP id s25mr20539144wmc.31.1621865348429;
+        Mon, 24 May 2021 07:09:08 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id e8sm12445959wrt.30.2021.05.24.07.09.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 24 May 2021 07:09:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 129sm2814742ooq.34.2021.05.24.07.09.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 07:09:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v7] hwmon: Add sht4x Temperature and Humidity Sensor
- Driver
-To:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
         linux-kernel@vger.kernel.org
-Cc:     jdelvare@suse.com, corbet@lwn.net
-References: <20210524100425.64052-1-navin@linumiz.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <8ae3dac2-54d5-d64c-cc9b-d1e661d6a4c5@roeck-us.net>
-Date:   Mon, 24 May 2021 07:09:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
+In-Reply-To: <115fcae7-0c88-4865-6494-bdf6fb672382@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+ <20210517135054.1914802-2-vkuznets@redhat.com>
+ <115fcae7-0c88-4865-6494-bdf6fb672382@redhat.com>
+Date:   Mon, 24 May 2021 16:09:06 +0200
+Message-ID: <87r1hw8br1.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524100425.64052-1-navin@linumiz.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 3:04 AM, Navin Sankar Velliangiri wrote:
-> This patch adds a hwmon driver for the SHT4x Temperature and
-> Humidity sensor.
-> 
-> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
-> 
-> Changes in v2:
-> 
-> * Removed unused macro SHT4X_MIN_POLL_INTERVAL
-> * Replaced time_after instead of ktime_after
-> * Used goto statements for error handling
-> * Hardcoded the interval_time instead of clamp_val().
-> 
-> Changes in v3:
-> 
-> * Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
->    return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
-> * Changed the data type of update_interval and last_updated to long.
-> 
-> Changes in v4:
-> 
-> * "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
->    clamp_val() api is used to assign the update_interval stays within UINT_MAX.
-> 
-> Changes in v5:
-> 
-> * Added error handling when master unable to send the data.
-> 
-> Changes in v6:
-> 
-> * clamp_val() alone is used to set the update interval. since the update
->    interval is a continuous setting.
-> 
-> Changes in v7:
-> 
-> * initialized the ret variable to -EINVAL in sht4x_read_values() function,
->    whenever if condition fail's it return's -EINVAL.
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-That wasn't the problem; it needs to be initialized with 0.
-And you did not actually do it.
+> On 17/05/21 15:50, Vitaly Kuznetsov wrote:
+>> Unlike regular set_current_vmptr(), nested_vmx_handle_enlightened_vmptrld()
+>> can not be called directly from vmx_set_nested_state() as KVM may not have
+>> all the information yet (e.g. HV_X64_MSR_VP_ASSIST_PAGE MSR may not be
+>> restored yet). Enlightened VMCS is mapped later while getting nested state
+>> pages. In the meantime, vmx->nested.hv_evmcs remains NULL and using it
+>> for various checks is incorrect. In particular, if KVM_GET_NESTED_STATE is
+>> called right after KVM_SET_NESTED_STATE, KVM_STATE_NESTED_EVMCS flag in the
+>> resulting state will be unset (and such state will later fail to load).
+>> 
+>> Introduce nested_evmcs_is_used() and use 'is_guest_mode(vcpu) &&
+>> vmx->nested.current_vmptr == -1ull' check to detect not-yet-mapped eVMCS
+>> after restore.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>
+> Would it make sense to instead use hv_evmcs_ptr, making the unused
+> value -1 instead of 0?
 
-Guenter
+You mean we'll be using:
 
-> ---
->   Documentation/hwmon/index.rst |   1 +
->   Documentation/hwmon/sht4x.rst |  45 +++++
->   drivers/hwmon/Kconfig         |  11 ++
->   drivers/hwmon/Makefile        |   1 +
->   drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
->   5 files changed, 363 insertions(+)
->   create mode 100644 Documentation/hwmon/sht4x.rst
->   create mode 100644 drivers/hwmon/sht4x.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 9ed60fa84cbe..b6fcae40258c 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -164,6 +164,7 @@ Hardware Monitoring Kernel Drivers
->      sht15
->      sht21
->      sht3x
-> +   sht4x
->      shtc1
->      sis5595
->      sl28cpld
-> diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
-> new file mode 100644
-> index 000000000000..3b37abcd4a46
-> --- /dev/null
-> +++ b/Documentation/hwmon/sht4x.rst
-> @@ -0,0 +1,45 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Kernel driver sht4x
-> +===================
-> +
-> +Supported Chips:
-> +
-> +  * Sensirion SHT4X
-> +
-> +    Prefix: 'sht4x'
-> +
-> +    Addresses scanned: None
-> +
-> +    Datasheet:
-> +
-> +      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
-> +
-> +Author: Navin Sankar Velliangiri <navin@linumiz.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for the Sensirion SHT4x chip, a humidity
-> +and temperature sensor. Temperature is measured in degree celsius, relative
-> +humidity is expressed as a percentage. In sysfs interface, all values are
-> +scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +The device communicates with the I2C protocol. Sensors can have the I2C
-> +address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
-> +to instantiate the device.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +=============== ============================================
-> +temp1_input     Measured temperature in millidegrees Celcius
-> +humidity1_input Measured humidity in %H
-> +update_interval The minimum interval for polling the sensor,
-> +                in milliseconds. Writable. Must be at least
-> +                2000.
-> +============== =============================================
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 87624902ea80..e3675377bc5d 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
->   	  This driver can also be built as a module. If so, the module
->   	  will be called sht3x.
+"hv_evmcs_ptr == 0" meaning "no evmcs" (like now)
+"hv_evmcs_ptr == -1" meaing "evmcs not yet mapped" (and
+nested_evmcs_is_used() will check for both '0' and '-1')
+"hv_evmcs_ptr == anything else" - eVMCS mapped.
+
+Right?
+
+>
+> I even had this untested patch already lying around as a cleanup I
+> never bothered to submit:
+
+...
+
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index a19cfcb625da..dd3e4ddaaf26 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -187,7 +187,7 @@ static int nested_vmx_fail(struct kvm_vcpu *vcpu, u32 vm_instruction_error)
+>   	 * failValid writes the error number to the current VMCS, which
+>   	 * can't be done if there isn't a current VMCS.
+>   	 */
+> -	if (vmx->nested.current_vmptr == -1ull && !vmx->nested.hv_evmcs)
+> +	if (vmx->nested.current_vmptr == -1ull && vmx->nested.hv_evmcs_vmptr == -1)
+
+Or, if we decide to integrate this patch, it'll be:
+
+"hv_evmcs_ptr == -1" meaning "no evmcs" (what is '0' now)
+"hv_evmcs_ptr == 0" meaing "evmcs not yet mapped"
+
+I'm not against the idea, hope we won't forget that we have two 'special'
+values for 'hv_evmcs_vmptr' and not just one.
+
+>   		return nested_vmx_failInvalid(vcpu);
 >   
-> +config SENSORS_SHT4x
-> +	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
-> +	depends on I2C
-> +	select CRC8
-> +	help
-> +	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
-> +	  SHT45 humidity and temperature sensors.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called sht4x.
-> +
->   config SENSORS_SHTC1
->   	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
->   	depends on I2C
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 59e78bc212cf..d712c61c1f5e 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -171,6 +171,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
->   obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
->   obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
->   obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
-> +obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
->   obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
->   obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
->   obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-> new file mode 100644
-> index 000000000000..39e1b4a123fa
-> --- /dev/null
-> +++ b/drivers/hwmon/sht4x.c
-> @@ -0,0 +1,305 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +/*
-> + * Copyright (c) Linumiz 2021
-> + *
-> + * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
-> + *
-> + * Author: Navin Sankar Velliangiri <navin@linumiz.com>
-> + */
-> +
-> +#include <linux/crc8.h>
-> +#include <linux/delay.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/i2c.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/module.h>
-> +
-> +/*
-> + * Poll intervals (in milliseconds)
-> + */
-> +#define SHT4X_MIN_POLL_INTERVAL	2000
-> +
-> +/*
-> + * I2C command delays (in microseconds)
-> + */
-> +#define SHT4X_MEAS_DELAY	1000
-> +#define SHT4X_DELAY_EXTRA	10000
-> +
-> +/*
-> + * Command Bytes
-> + */
-> +#define SHT4X_CMD_MEASURE_HPM	0b11111101
-> +#define SHT4X_CMD_RESET		0b10010100
-> +
-> +#define SHT4X_CMD_LEN		1
-> +#define SHT4X_CRC8_LEN		1
-> +#define SHT4X_WORD_LEN		2
-> +#define SHT4X_RESPONSE_LENGTH	6
-> +#define SHT4X_CRC8_POLYNOMIAL	0x31
-> +#define SHT4X_CRC8_INIT		0xff
-> +#define SHT4X_MIN_TEMPERATURE	-45000
-> +#define SHT4X_MAX_TEMPERATURE	125000
-> +#define SHT4X_MIN_HUMIDITY	0
-> +#define SHT4X_MAX_HUMIDITY	100000
-> +
-> +DECLARE_CRC8_TABLE(sht4x_crc8_table);
-> +
-> +/**
-> + * struct sht4x_data - All the data required to operate an SHT4X chip
-> + * @client: the i2c client associated with the SHT4X
-> + * @lock: a mutex that is used to prevent parallel access to the i2c client
-> + * @update_interval: the minimum poll interval
-> + * @last_updated: the previous time that the SHT4X was polled
-> + * @temperature: the latest temperature value received from the SHT4X
-> + * @humidity: the latest humidity value received from the SHT4X
-> + */
-> +struct sht4x_data {
-> +	struct i2c_client	*client;
-> +	struct mutex		lock;	/* atomic read data updates */
-> +	bool			valid;	/* validity of fields below */
-> +	long			update_interval;	/* in milli-seconds */
-> +	long			last_updated;	/* in jiffies */
-> +	s32			temperature;
-> +	s32			humidity;
-> +};
-> +
-> +/**
-> + * sht4x_read_values() - read and parse the raw data from the SHT4X
-> + * @sht4x_data: the struct sht4x_data to use for the lock
-> + * Return: 0 if succesfull, 1 if not
-> + */
-> +static int sht4x_read_values(struct sht4x_data *data)
-> +{
-> +	int ret;
-> +	u16 t_ticks, rh_ticks;
-> +	unsigned long next_update;
-> +	struct i2c_client *client = data->client;
-> +	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
-> +	cmd[] = {SHT4X_CMD_MEASURE_HPM};
-> +
-> +	mutex_lock(&data->lock);
-> +	next_update = data->last_updated +
-> +		      msecs_to_jiffies(data->update_interval);
-> +	if (!data->valid || time_after(jiffies, next_update)) {
-> +		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-> +		if (ret < 0)
-> +			goto unlock;
-> +
-> +		usleep_range(SHT4X_MEAS_DELAY,
-> +			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-> +
-> +		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-> +		if (ret != SHT4X_RESPONSE_LENGTH) {
-> +			if (ret >= 0)
-> +				ret = -ENODATA;
-> +
-> +			goto unlock;
-> +		}
-> +
-> +		t_ticks = raw_data[0] << 8 | raw_data[1];
-> +		rh_ticks = raw_data[3] << 8 | raw_data[4];
-> +
-> +		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> +		if (crc != raw_data[2]) {
-> +			dev_err(&client->dev, "data integrity check failed\n");
-> +			ret = -EIO;
-> +			goto unlock;
-> +		}
-> +
-> +		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-> +		if (crc != raw_data[5]) {
-> +			dev_err(&client->dev, "data integrity check failed\n");
-> +			ret = -EIO;
-> +			goto unlock;
-> +		}
-> +
-> +		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-> +		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-> +		data->last_updated = jiffies;
-> +		data->valid = true;
-> +	}
-> +
-> +unlock:
-> +	mutex_unlock(&data->lock);
-> +	return ret;
-> +}
-> +
-> +static ssize_t sht4x_interval_write(struct sht4x_data *data,
-> +				    long val)
-> +{
-> +
-> +	data->update_interval = clamp_val(val, SHT4X_MIN_POLL_INTERVAL,
-> +					  UINT_MAX);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sht4x_interval_read() - read the minimum poll interval
-> + *			   in milliseconds
-> + */
-> +static size_t sht4x_interval_read(struct sht4x_data *data,
-> +				  long *val)
-> +{
-> +	*val = data->update_interval;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sht4x_temperature1_read() - read the temperature in millidegrees
-> + */
-> +static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
-> +{
-> +	int ret;
-> +
-> +	ret = sht4x_read_values(data);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	*val = data->temperature;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sht4x_humidity1_read() - read a relative humidity in millipercent
-> + */
-> +static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
-> +{
-> +	int ret;
-> +
-> +	ret = sht4x_read_values(data);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	*val = data->humidity;
-> +
-> +	return 0;
-> +}
-> +
-> +static umode_t sht4x_hwmon_visible(const void *data,
-> +				   enum hwmon_sensor_types type,
-> +				   u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +	case hwmon_humidity:
-> +		return 0444;
-> +	case hwmon_chip:
-> +		return 0644;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int sht4x_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> +			    u32 attr, int channel, long *val)
-> +{
-> +	struct sht4x_data *data = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		return sht4x_temperature1_read(data, val);
-> +	case hwmon_humidity:
-> +		return sht4x_humidity1_read(data, val);
-> +	case hwmon_chip:
-> +		return sht4x_interval_read(data, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int sht4x_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
-> +			     u32 attr, int channel, long val)
-> +{
-> +	struct sht4x_data *data = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_chip:
-> +		return sht4x_interval_write(data, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static const struct hwmon_channel_info *sht4x_info[] = {
-> +	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
-> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
-> +	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
-> +	NULL,
-> +};
-> +
-> +static const struct hwmon_ops sht4x_hwmon_ops = {
-> +	.is_visible = sht4x_hwmon_visible,
-> +	.read = sht4x_hwmon_read,
-> +	.write = sht4x_hwmon_write,
-> +};
-> +
-> +static const struct hwmon_chip_info sht4x_chip_info = {
-> +	.ops = &sht4x_hwmon_ops,
-> +	.info = sht4x_info,
-> +};
-> +
-> +static int sht4x_probe(struct i2c_client *client,
-> +		       const struct i2c_device_id *sht4x_id)
-> +{
-> +	struct device *device = &client->dev;
-> +	struct device *hwmon_dev;
-> +	struct sht4x_data *data;
-> +	u8 cmd[] = {SHT4X_CMD_RESET};
-> +	int ret;
-> +
-> +	/*
-> +	 * we require full i2c support since the sht4x uses multi-byte read and
-> +	 * writes as well as multi-byte commands which are not supported by
-> +	 * the smbus protocol
-> +	 */
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-> +		return -EOPNOTSUPP;
-> +
-> +	data = devm_kzalloc(device, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->update_interval = SHT4X_MIN_POLL_INTERVAL;
-> +	data->client = client;
-> +
-> +	mutex_init(&data->lock);
-> +
-> +	crc8_populate_msb(sht4x_crc8_table, SHT4X_CRC8_POLYNOMIAL);
-> +
-> +	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-> +	if (ret < 0)
-> +		return ret;
-> +	if (ret != SHT4X_CMD_LEN)
-> +		return -EIO;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(device,
-> +							 client->name,
-> +							 data,
-> +							 &sht4x_chip_info,
-> +							 NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct i2c_device_id sht4x_id[] = {
-> +	{ "sht4x", 0 },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(i2c, sht4x_id);
-> +
-> +static struct i2c_driver sht4x_driver = {
-> +	.driver = {
-> +		.name = "sht4x",
-> +	},
-> +	.probe		= sht4x_probe,
-> +	.id_table	= sht4x_id,
-> +};
-> +
-> +module_i2c_driver(sht4x_driver);
-> +
-> +MODULE_AUTHOR("Navin Sankar Velliangiri <navin@linumiz.com>");
-> +MODULE_DESCRIPTION("Sensirion SHT4x humidity and temperature sensor driver");
-> +MODULE_LICENSE("GPL v2");
-> 
+>   	return nested_vmx_failValid(vcpu, vm_instruction_error);
+> @@ -221,11 +221,11 @@ static inline void nested_release_evmcs(struct kvm_vcpu *vcpu)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   
+> -	if (!vmx->nested.hv_evmcs)
+> +	if (vmx->nested.hv_evmcs_vmptr == -1)
+>   		return;
+>   
+>   	kvm_vcpu_unmap(vcpu, &vmx->nested.hv_evmcs_map, NULL, true);
+> -	vmx->nested.hv_evmcs_vmptr = 0;
+> +	vmx->nested.hv_evmcs_vmptr = -1;
+>   	vmx->nested.hv_evmcs = NULL;
+>   }
+>   
+> @@ -1978,10 +1978,8 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+>   	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
+>   		return EVMPTRLD_DISABLED;
+>   
+> -	if (unlikely(!vmx->nested.hv_evmcs ||
+> -		     evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
+> -		if (!vmx->nested.hv_evmcs)
+> -			vmx->nested.current_vmptr = -1ull;
+> +	if (unlikely(evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
+> +		vmx->nested.current_vmptr = -1ull;
+>   
+>   		nested_release_evmcs(vcpu);
+>   
+> @@ -2052,7 +2050,7 @@ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   
+> -	if (vmx->nested.hv_evmcs) {
+> +	if (vmx->nested.hv_evmcs_vmptr != -1) {
+>   		copy_vmcs12_to_enlightened(vmx);
+>   		/* All fields are clean */
+>   		vmx->nested.hv_evmcs->hv_clean_fields |=
+> @@ -2204,7 +2202,7 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>   	u32 exec_control;
+>   	u64 guest_efer = nested_vmx_calc_efer(vmx, vmcs12);
+>   
+> -	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs)
+> +	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs_vmptr != -1)
+>   		prepare_vmcs02_early_rare(vmx, vmcs12);
+>   
+>   	/*
+> @@ -2487,9 +2485,8 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>   			  enum vm_entry_failure_code *entry_failure_code)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> -	struct hv_enlightened_vmcs *hv_evmcs = vmx->nested.hv_evmcs;
+>   
+> -	if (vmx->nested.dirty_vmcs12 || hv_evmcs) {
+> +	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs_vmptr != -1) {
+>   		prepare_vmcs02_rare(vmx, vmcs12);
+>   		vmx->nested.dirty_vmcs12 = false;
+>   	}
+> @@ -3075,7 +3072,7 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>   	 * L2 was running), map it here to make sure vmcs12 changes are
+>   	 * properly reflected.
+>   	 */
+> -	if (vmx->nested.enlightened_vmcs_enabled && !vmx->nested.hv_evmcs) {
+> +	if (vmx->nested.enlightened_vmcs_enabled && vmx->nested.hv_evmcs_vmptr == -1) {
+>   		enum nested_evmptrld_status evmptrld_status =
+>   			nested_vmx_handle_enlightened_vmptrld(vcpu, false);
+>   
+> @@ -3419,7 +3416,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>   
+>   	load_vmcs12_host_state(vcpu, vmcs12);
+>   	vmcs12->vm_exit_reason = exit_reason.full;
+> -	if (enable_shadow_vmcs || vmx->nested.hv_evmcs)
+> +	if (enable_shadow_vmcs || vmx->nested.hv_evmcs_vmptr != -1)
+>   		vmx->nested.need_vmcs12_to_shadow_sync = true;
+>   	return NVMX_VMENTRY_VMEXIT;
+>   }
+> @@ -3449,7 +3446,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>   		return nested_vmx_failInvalid(vcpu);
+>   	}
+>   
+> -	if (CC(!vmx->nested.hv_evmcs && vmx->nested.current_vmptr == -1ull))
+> +	if (CC(vmx->nested.hv_evmcs_vmptr == -1 && vmx->nested.current_vmptr == -1ull))
+>   		return nested_vmx_failInvalid(vcpu);
+>   
+>   	vmcs12 = get_vmcs12(vcpu);
+> @@ -3463,7 +3460,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>   	if (CC(vmcs12->hdr.shadow_vmcs))
+>   		return nested_vmx_failInvalid(vcpu);
+>   
+> -	if (vmx->nested.hv_evmcs) {
+> +	if (vmx->nested.hv_evmcs_vmptr != -1) {
+>   		copy_enlightened_to_vmcs12(vmx);
+>   		/* Enlightened VMCS doesn't have launch state */
+>   		vmcs12->launch_state = !launch;
+> @@ -4014,10 +4011,10 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
+>   {
+>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>   
+> -	if (vmx->nested.hv_evmcs)
+> +	if (vmx->nested.hv_evmcs_vmptr != -1)
+>   		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
+>   
+> -	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = !vmx->nested.hv_evmcs;
+> +	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = (vmx->nested.hv_evmcs_vmptr == -1);
+>   
+>   	vmcs12->guest_cr0 = vmcs12_guest_cr0(vcpu, vmcs12);
+>   	vmcs12->guest_cr4 = vmcs12_guest_cr4(vcpu, vmcs12);
+> @@ -4514,7 +4511,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+>   	}
+>   
+>   	if ((vm_exit_reason != -1) &&
+> -	    (enable_shadow_vmcs || vmx->nested.hv_evmcs))
+> +	    (enable_shadow_vmcs || vmx->nested.hv_evmcs_vmptr != -1))
+>   		vmx->nested.need_vmcs12_to_shadow_sync = true;
+>   
+>   	/* in case we halted in L2 */
+> @@ -5210,7 +5207,7 @@ static int handle_vmptrld(struct kvm_vcpu *vcpu)
+>   		return nested_vmx_fail(vcpu, VMXERR_VMPTRLD_VMXON_POINTER);
+>   
+>   	/* Forbid normal VMPTRLD if Enlightened version was used */
+> -	if (vmx->nested.hv_evmcs)
+> +	if (vmx->nested.hv_evmcs_vmptr != -1)
+>   		return 1;
+>   
+>   	if (vmx->nested.current_vmptr != vmptr) {
+> @@ -5266,7 +5263,7 @@ static int handle_vmptrst(struct kvm_vcpu *vcpu)
+>   	if (!nested_vmx_check_permission(vcpu))
+>   		return 1;
+>   
+> -	if (unlikely(to_vmx(vcpu)->nested.hv_evmcs))
+> +	if (unlikely(to_vmx(vcpu)->nested.hv_evmcs_vmptr != -1))
+>   		return 1;
+>   
+>   	if (get_vmx_mem_address(vcpu, exit_qual, instr_info,
+> @@ -6038,7 +6035,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+>   		if (vmx_has_valid_vmcs12(vcpu)) {
+>   			kvm_state.size += sizeof(user_vmx_nested_state->vmcs12);
+>   
+> -			if (vmx->nested.hv_evmcs)
+> +			if (vmx->nested.hv_evmcs_vmptr != -1)
+>   				kvm_state.flags |= KVM_STATE_NESTED_EVMCS;
+>   
+>   			if (is_guest_mode(vcpu) &&
+> @@ -6094,7 +6091,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+>   	} else  {
+>   		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
+>   		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
+> -			if (vmx->nested.hv_evmcs)
+> +			if (vmx->nested.hv_evmcs_vmptr != -1)
+>   				copy_enlightened_to_vmcs12(vmx);
+>   			else if (enable_shadow_vmcs)
+>   				copy_shadow_to_vmcs12(vmx);
+> diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
+> index 184418baeb3c..55925be48973 100644
+> --- a/arch/x86/kvm/vmx/nested.h
+> +++ b/arch/x86/kvm/vmx/nested.h
+> @@ -63,7 +63,7 @@ static inline int vmx_has_valid_vmcs12(struct kvm_vcpu *vcpu)
+>   	 * have vmcs12 if it is true.
+>   	 */
+>   	return is_guest_mode(vcpu) || vmx->nested.current_vmptr != -1ull ||
+> -		vmx->nested.hv_evmcs;
+> +		vmx->nested.hv_evmcs_vmptr != -1;
+>   }
+>   
+>   static inline u16 nested_get_vpid02(struct kvm_vcpu *vcpu)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index f2fd447eed45..33208aa4ac87 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6974,6 +6974,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>   
+>   	vmx->nested.posted_intr_nv = -1;
+>   	vmx->nested.current_vmptr = -1ull;
+> +	vmx->nested.hv_evmcs_vmptr = -1;
+>   
+>   	vcpu->arch.microcode_version = 0x100000000ULL;
+>   	vmx->msr_ia32_feature_control_valid_bits = FEAT_CTL_LOCKED;
+>
+> Paolo
+>
+
+-- 
+Vitaly
 
