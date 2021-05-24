@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CAF38EB95
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E1E38ED0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbhEXPFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:05:20 -0400
-Received: from verein.lst.de ([213.95.11.211]:54883 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233090AbhEXO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:58:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9AC5068AFE; Mon, 24 May 2021 16:56:55 +0200 (CEST)
-Date:   Mon, 24 May 2021 16:56:54 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Yury Kamenev <damtev@yandex-team.ru>, mst@redhat.com,
-        jasowang@redhat.com, pbonzini@redhat.com, axboe@kernel.dk,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Lauri Kasanen <cand@gmx.com>
-Subject: Re: [PATCH 1/1] virtio: disable partitions scanning for no
- partitions block
-Message-ID: <20210524145654.GA2632@lst.de>
-References: <20210520133908.98891-1-damtev@yandex-team.ru> <20210520133908.98891-2-damtev@yandex-team.ru> <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
+        id S232873AbhEXPd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233193AbhEXPce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:32:34 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEBDC08E820;
+        Mon, 24 May 2021 07:57:48 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso93735pjx.1;
+        Mon, 24 May 2021 07:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=UpgWWaqRJSv+ldPuvlsNrJYw/LOoZUhMrwWVqwyHvOw=;
+        b=tnrr8MNN8/zoyRJbbrHI80mW2pYIue6ZNjCt8Ps2cTfG+2J9DCTw/WwenQefR6ZZz4
+         7omiZS16IC5BU/B+m9mfGSiOZewzcr53BDSlmAPKg30wSNVvfi2OmdhN4jZrq50ZERb4
+         qnSp8y9EOqYPkSM7ZN9dqTbvu08Tc9l9VfSVybB3Vd6iPt8TZfJ4GP/akCel85k51rC0
+         4irox27haDgAdgchUoNO9Ols2TTB3+j9SBl+QIG3L6/6DhgRsnjfWaPM8NqgXJQdcdl7
+         tabV9bieSlsrNHkQEMU0jXyLwFI8owl5ZJxanucs5y7kwjgb5k1CfnKKXrsj8aPnOy2b
+         Wsfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=UpgWWaqRJSv+ldPuvlsNrJYw/LOoZUhMrwWVqwyHvOw=;
+        b=XYM+zZDW3utOwm585NZnPE3ugeBQTYDAvvz7QCfDMo6QcUZKBOlTSTmYNilwpAGU2O
+         C1LuIReIPknHpjFb3eNnrvaPwNBg6Ic1Cr9fD4YKJyrQWm904U7v/NIg3f8VoGEfb+W7
+         tX9yuun5MCp+7KfksTsOpEuZzXXU1JXRqv2Kru9fqZAFH8/VAJQRfIpja1wYmY7WVvHw
+         cRLOTRhbCLDund6XzQkrlTWElwqOfk3pJRgcGC4KKBPkVduqS6yZx1a/OjSRauZ+4WhK
+         GT4CrXobhFuYqD7mHWDo39jOL6hG3IHclmfnMdoSQl2UPWUaDyAFOqNrpFpsmUpc7soa
+         JZPg==
+X-Gm-Message-State: AOAM531sn2rnJl401lsW3PwVMidDb9LZhYzwxAFfW+JPf87DiFcpqDTb
+        5yY4aFuVqb+9WeQVPI/TIxh4WDiXdoJrWQ==
+X-Google-Smtp-Source: ABdhPJyB0Ko8atad96hwk3nC5Zcn43hhK9rwbzdEy3Gm93tqfuP2pu+UjjqNja9NadL6ycV2nGO6SQ==
+X-Received: by 2002:a17:90b:1244:: with SMTP id gx4mr26232703pjb.210.1621868268447;
+        Mon, 24 May 2021 07:57:48 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id y66sm11478001pgb.14.2021.05.24.07.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 07:57:48 -0700 (PDT)
+Date:   Mon, 24 May 2021 23:57:43 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: usbmouse: Avoid GFP_ATOMIC when GFP_KERNEL is possible
+Message-ID: <20210524145743.GA92203@hyeyoo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 03:29:22PM +0100, Stefan Hajnoczi wrote:
-> GENHD_FL_NO_PART_SCAN is not used much in other drivers. This makes me
-> wonder if the same use case is addressed through other means with SCSI,
-> NVMe, etc devices. Maybe Christoph or Jens can weigh in on whether
-> adding a bit to disable partition scanning for a virtio-blk fits into
-> the big picture?
-> 
-> Is your goal to avoid accidentally detecting partitions because it's
-> confusing when that happens?
+probe in usb don't need to be atomic. So GFP_KERNEL can be used here,
+instead of GFP_ATOMIC.
 
-I'm really confused what the use case is here.  GENHD_FL_NO_PART_SCAN
-has four users:
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ drivers/hid/usbhid/usbmouse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- - the block core setting it for hidden devices, for which the concept
-   of paritions doesn't make sense.  Looking back this should have never
-   used GENHD_FL_NO_PART_SCAN, and instead the partition scanning code
-   should just check GENHD_FL_HIDDEN as well.
- - mmc uses it for boot partitions and rpmb.  I'm not even sure how
-   these can be exposed as block devices as they don't require block
-   granularity access IIRC, but if the allow block layer access there
-   is no reason to ever set these flags.
- - loop is a bit of a mess.  IIRC the story is that originally the
-   loop device did not support partitions, then in 2008 support for
-   partitions was added by partitioning the minor number space, and
-   then in 2011 support for partitions without that parameter was
-   added using a new flag in the loop device creation ioctl that uses
-   the extended dev_t space added since.  But even that might be
-   something we can handled without that flag without breaking the
-   userspace ABI
- - m64card sets it for no good reason at all
+diff --git a/drivers/hid/usbhid/usbmouse.c b/drivers/hid/usbhid/usbmouse.c
+index 073127e65ac1..c89332017d5d 100644
+--- a/drivers/hid/usbhid/usbmouse.c
++++ b/drivers/hid/usbhid/usbmouse.c
+@@ -130,7 +130,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
+ 	if (!mouse || !input_dev)
+ 		goto fail1;
+ 
+-	mouse->data = usb_alloc_coherent(dev, 8, GFP_ATOMIC, &mouse->data_dma);
++	mouse->data = usb_alloc_coherent(dev, 8, GFP_KERNEL, &mouse->data_dma);
+ 	if (!mouse->data)
+ 		goto fail1;
+ 
+-- 
+2.25.1
 
-In other words: in a perfect would GENHD_FL_NO_PART_SCAN would not
-exist, and it certainly should not be added to a new driver, never
-mind a protocol.
