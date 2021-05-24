@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA16C38E875
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E9338E87E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232966AbhEXONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233049AbhEXONS (ORCPT
+        id S232954AbhEXOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:14:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44594 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232486AbhEXOOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:13:18 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E70C06138E
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:49 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i22so40669036lfl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/yZGsZDGj6VwJI2huNhq3QoEWnA9XjvVe/EfZq4y7IU=;
-        b=pbgNUmfpmE+TUnwYGWa4+Cr8UT5p+RNDrrQf6fokKwwro+TbWKERs2VaUCqCAqsBxA
-         I5TWFMPioWQdKlL+6MfKFR/wp6EmqQGuoA1C+6bhCqfstK6RzS/ZhkqYuPyoxo8WbNBc
-         XlsOS3fFXH+dAkql4342osYDPx8Ey7GqFptWyAYbp/ASsmyS6WraUNbATVAUcgzJWo/K
-         T6rVcFOxsVeIqWjoSbjOdE7Eb1irD5xl1pBziojPDGreqr1x00ExHeA284yUpteD6x6y
-         euIdJh+5pr5YNBBWZJPQM0Fvc9Dg+KbpX6mRFnYuB28NPTOIu37uncKP0J3Z/9GJZ8gM
-         63ew==
+        Mon, 24 May 2021 10:14:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621865568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YuolNKAChmee9Jf+0VWBlg4DUVbOcHignWbWcealYiA=;
+        b=Wr9+rZY0haqMTauJefBWqaFStiBM1Na5cCtnTFzQVZ3js8AeUOE/fCCGFEwCEnwDmjMRyw
+        416ljVUclW+qqDZ1bfmzM9olTLyR7yUidEIzsTQWgJLje4VaLvvLrJIo0JOUgz+pV+oFCr
+        iAox/S2WEozKQfTmnUicYuVuiX747do=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-Dak9Ja1jOFaxQKlFKfOmhA-1; Mon, 24 May 2021 10:12:46 -0400
+X-MC-Unique: Dak9Ja1jOFaxQKlFKfOmhA-1
+Received: by mail-wr1-f72.google.com with SMTP id i102-20020adf90ef0000b029010dfcfc46c0so13200156wri.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:12:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/yZGsZDGj6VwJI2huNhq3QoEWnA9XjvVe/EfZq4y7IU=;
-        b=iHyC+9zT5C9wwHQmVCBfyv3hD5bM10rq33bdmfpd1vmSxv4gWzRktA96psuuIa/ddx
-         MtCMAUVLcz5S42FLg4cQOA87uvZ8UD6Rb+igPTE2ADaLkZ45orJHNL2q6gvLhAs/wx6y
-         1ej+LMhHqnU3DEDrt8s0poyAyH8sIslOwX2N7sDIWYO3ShfPQMzaxg2BrVhapts9xfWm
-         WnRq1Kex+0huVOZ+vZqyDRWx5wiDurCHpfJbkPBtvA2P2meS3xhTm9rdoW2/JRLyezSB
-         WlWXTQubWoGPcdL+swMUQbFxh9oDyNt51NIqHRmhUyJwz9Wtay3A4WSPVMyNu2qzV3Gu
-         mNTA==
-X-Gm-Message-State: AOAM530TI1T3QC+UEYpc9ghGHLWh5XaflD1CgLnwl/fh0aTW+N6R7+4a
-        3GMGHPi9MGgcAV3FO3kxjzVKi3ASKs3RJ7rNZGZ2cqslnPULzQ==
-X-Google-Smtp-Source: ABdhPJw3DDszILd4fOwSk02DmS3LBF/6L9iWayO0ZEI9oK+oW8u6lCsJSES4QzzosVigXKy0dhQfIFXD4tnEHBmlMEw=
-X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr11106312lfq.29.1621865507531;
- Mon, 24 May 2021 07:11:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=YuolNKAChmee9Jf+0VWBlg4DUVbOcHignWbWcealYiA=;
+        b=RXsVy8Q4ht11O48b6CDbx/hjS1UuIJM6D0DzmSvdd69VTbrjrxI58z+Gg3HxAz4l7D
+         s7jXYVPwD1N65zegBWODkTaod/7fQvRrHqr/oIMzbDt7fKNFTE/fddivkePsUPHT7zfk
+         diISMWskLnhyAtO5SEf1iksxhhs8p5UzAgvcwOJTvimmibdXlwkQ+6OOl5K/uHBSFlSy
+         jMnMEs4N8V4klRKD0GF6X8AI3Qeypttg+XF6fB0mgkPtkIjJz5GSXqLM844UuGYNV4We
+         diVlQg3Fq/QWnr4bmzmZlS6AGoVQOGB4hlwvSgabOpS/jFJKUOzSnc1vKlLx8++uyo+Y
+         hmcw==
+X-Gm-Message-State: AOAM533HUYle+d5Sz8sSV4vG7AL/HVaPW9eTCOZPyjA79BCW277mNlKm
+        ZIhcyTtSqa9ZO3TW1Tr0K3hnzHe4Rf8KUBKuT/SMQoEdRB6NZ4s4pe66yI0SZdPyuauQoENI2xF
+        Ow0y+QyTrIwmEzvlh8H0lvOlHgijzl/0Gct0xUBfdTr7Azz/VZuk5IF1E8hg7CDTemrj2OP5Tu5
+        ol
+X-Received: by 2002:a7b:cb1a:: with SMTP id u26mr3107077wmj.125.1621865565273;
+        Mon, 24 May 2021 07:12:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxD/BIip0u5D6aGgEPMzrRFJXFZvyigKfUb5+MO/5Z1Q7Fui91N4UswBlkNcyzQrACC9tXQkg==
+X-Received: by 2002:a7b:cb1a:: with SMTP id u26mr3107060wmj.125.1621865565105;
+        Mon, 24 May 2021 07:12:45 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c64sm8206839wma.15.2021.05.24.07.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 07:12:44 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when
+ eVMCS data is copied in vmx_get_nested_state()
+In-Reply-To: <b79562d2-c517-b86c-8871-e8f81537f247@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+ <20210517135054.1914802-4-vkuznets@redhat.com>
+ <b79562d2-c517-b86c-8871-e8f81537f247@redhat.com>
+Date:   Mon, 24 May 2021 16:12:43 +0200
+Message-ID: <87o8d08bl0.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210524073308.9328-1-steven_lee@aspeedtech.com> <20210524073308.9328-5-steven_lee@aspeedtech.com>
-In-Reply-To: <20210524073308.9328-5-steven_lee@aspeedtech.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 16:11:08 +0200
-Message-ID: <CAPDyKFqd+ZdPVuFKf-C7ztQp_aH9HOXByq6qwykkdU9Aku3pAA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] mmc: sdhci-of-aspeed: Configure the SDHCIs as
- specified by the devicetree.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        Hongweiz@ami.com, ryan_chen@aspeedtech.com,
-        chin-ting_kuo@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 09:33, Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> The hardware provides capability configuration registers for each SDHCI
-> in the global configuration space for the SD controller. Writes to the
-> global capability registers are mirrored to the capability registers in
-> the associated SDHCI. Configuration of the capabilities must be written
-> through the mirror registers prior to initialisation of the SDHCI.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-Applied for next, thanks!
+> On 17/05/21 15:50, Vitaly Kuznetsov wrote:
+>> 'Clean fields' data from enlightened VMCS is only valid upon vmentry: L1
+>> hypervisor is not obliged to keep it up-to-date while it is mangling L2's
+>> state, KVM_GET_NESTED_STATE request may come at a wrong moment when actual
+>> eVMCS changes are unsynchronized with 'hv_clean_fields'. As upon migration
+>> VMCS12 is used as a source of ultimate truth, we must make sure we pick all
+>> the changes to eVMCS and thus 'clean fields' data must be ignored.
+>
+> While you're at it, would you mind making copy_vmcs12_to_enlightened and 
+> copy_enlightened_to_vmcs12 void?
+>
 
-Kind regards
-Uffe
+Sure, no problem.
 
+-- 
+Vitaly
 
-> ---
->  drivers/mmc/host/sdhci-of-aspeed.c | 48 ++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-> index d001c51074a0..65b5685f6c15 100644
-> --- a/drivers/mmc/host/sdhci-of-aspeed.c
-> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-> @@ -31,6 +31,11 @@
->  #define   ASPEED_SDC_S0_PHASE_OUT_EN   GENMASK(1, 0)
->  #define   ASPEED_SDC_PHASE_MAX         31
->
-> +/* SDIO{10,20} */
-> +#define ASPEED_SDC_CAP1_1_8V           (0 * 32 + 26)
-> +/* SDIO{14,24} */
-> +#define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
-> +
->  struct aspeed_sdc {
->         struct clk *clk;
->         struct resource *res;
-> @@ -72,6 +77,37 @@ struct aspeed_sdhci {
->         const struct aspeed_sdhci_phase_desc *phase_desc;
->  };
->
-> +/*
-> + * The function sets the mirror register for updating
-> + * capbilities of the current slot.
-> + *
-> + *   slot | capability  | caps_reg | mirror_reg
-> + *   -----|-------------|----------|------------
-> + *     0  | CAP1_1_8V   | SDIO140  |   SDIO10
-> + *     0  | CAP2_SDR104 | SDIO144  |   SDIO14
-> + *     1  | CAP1_1_8V   | SDIO240  |   SDIO20
-> + *     1  | CAP2_SDR104 | SDIO244  |   SDIO24
-> + */
-> +static void aspeed_sdc_set_slot_capability(struct sdhci_host *host, struct aspeed_sdc *sdc,
-> +                                          int capability, bool enable, u8 slot)
-> +{
-> +       u32 mirror_reg_offset;
-> +       u32 cap_val;
-> +       u8 cap_reg;
-> +
-> +       if (slot > 1)
-> +               return;
-> +
-> +       cap_reg = capability / 32;
-> +       cap_val = sdhci_readl(host, 0x40 + (cap_reg * 4));
-> +       if (enable)
-> +               cap_val |= BIT(capability % 32);
-> +       else
-> +               cap_val &= ~BIT(capability % 32);
-> +       mirror_reg_offset = ((slot + 1) * 0x10) + (cap_reg * 4);
-> +       writel(cap_val, sdc->regs + mirror_reg_offset);
-> +}
-> +
->  static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
->                                            struct aspeed_sdhci *sdhci,
->                                            bool bus8)
-> @@ -328,6 +364,7 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
->  static int aspeed_sdhci_probe(struct platform_device *pdev)
->  {
->         const struct aspeed_sdhci_pdata *aspeed_pdata;
-> +       struct device_node *np = pdev->dev.of_node;
->         struct sdhci_pltfm_host *pltfm_host;
->         struct aspeed_sdhci *dev;
->         struct sdhci_host *host;
-> @@ -372,6 +409,17 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
->
->         sdhci_get_of_property(pdev);
->
-> +       if (of_property_read_bool(np, "mmc-hs200-1_8v") ||
-> +           of_property_read_bool(np, "sd-uhs-sdr104")) {
-> +               aspeed_sdc_set_slot_capability(host, dev->parent, ASPEED_SDC_CAP1_1_8V,
-> +                                              true, slot);
-> +       }
-> +
-> +       if (of_property_read_bool(np, "sd-uhs-sdr104")) {
-> +               aspeed_sdc_set_slot_capability(host, dev->parent, ASPEED_SDC_CAP2_SDR104,
-> +                                              true, slot);
-> +       }
-> +
->         pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
->         if (IS_ERR(pltfm_host->clk))
->                 return PTR_ERR(pltfm_host->clk);
-> --
-> 2.17.1
->
