@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC4D38F4F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300C138F4F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhEXVdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhEXVdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:33:44 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E93C061574;
-        Mon, 24 May 2021 14:32:15 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id 22so21520432pfv.11;
-        Mon, 24 May 2021 14:32:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Su0Fl4wQCNXBOF4oM6+KVolqDcfXCaN+Ud//FfTMd5U=;
-        b=IWeDv9aMFYjtEWtGg3dwxjBXe9FzdOYAjeLH1l+gW6/Q6KLINlYCQPL/DV9Oi9BxX6
-         5Y8lQ9RpaFBm5OXf9GL8QhTNpMl6qC/10f6EtTweSfWexCgXPgPp9hRL6Sn6jvjr3YbQ
-         YawAHEVjVBySxsR3B6iud1nN3Er34+WUFG+Y+SXUxcGol1WSNXm4eW9OPqnJ7SXyblR0
-         YUL329/PRoTPi31fXznhKMMhPopgfjmtKii2lwAb99WEDDyFdxvCh6MCCoUYWcum2O4c
-         Q0Y0gU2HZRUWV1yc/3FdIShN/dut/pi9IEMZFhzwVfshSay2aQ3yx83iSdwOvcrpmFYM
-         QZpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Su0Fl4wQCNXBOF4oM6+KVolqDcfXCaN+Ud//FfTMd5U=;
-        b=iaGzL6Dd3xGxphjX/YcjWnDHNKhK89QmaI7bWHZn7Ug/V3P+KIMSL8n9LLKVJtltO9
-         xu0EzvLzymSWVAtFY6uNRq1FoyEL/yis2uQcFTMp2m9ER7N6+UmtuaxbJSLT97Q/VayK
-         wNAU47XpvrOWN+HsyNYS2Qy5Bub/4FJb9DvSFUxgaOr+JDDWhe/9tGU5icFhma+O5DwT
-         qsNChDWj1XW0e5V0FQ0eLDQS7NGTNmdlhvfnUYXM5YBxCD7GcRpTEm/OHAJiNxbGO5XX
-         rc9saNNgvX2cDBkG1T3fvbzO38holq5TNQkXyYxpeydiipBg2GZDP8im3qmnx+3bsUjL
-         Vu2w==
-X-Gm-Message-State: AOAM533CQ5WqJlpd1KjJjIuszkdR/Jo6BDzBQMJYlCGfXbDQtrvkaNVG
-        opKIrIqzvyHQLawOqUaQJBZ3jSPh/cs=
-X-Google-Smtp-Source: ABdhPJwDS+QX7YIXVrmpcZAOug1r1tPJigF4nRqhYAjq/uKtZFcjP6xd/wa7wieTnAND5FRcfu2quQ==
-X-Received: by 2002:a63:ba1b:: with SMTP id k27mr15611722pgf.381.1621891934334;
-        Mon, 24 May 2021 14:32:14 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id gj21sm312426pjb.49.2021.05.24.14.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 14:32:13 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/71] 5.4.122-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210524152326.447759938@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2438c6df-dc68-a167-354b-8b53689cd4a0@gmail.com>
-Date:   Mon, 24 May 2021 14:32:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233642AbhEXVfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232911AbhEXVfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:35:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA206140A;
+        Mon, 24 May 2021 21:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621892016;
+        bh=WBD2e9btmxzFICv0BVxtiErmuAMyfocstBLKIppfHWY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p2MYVMlcO1FbZIp10u3/ossHfO/cul/EMEiUkkbpFmjwRE4HjIcLp/V6ZArMhd5Zv
+         KVijKoFqmbMrg5q1P8e9E6vSjNAEGPPyM0HSpGVKgDgkcQMMC/Vsgdr90jLhVJamUg
+         81kxjVY0cO1RS/ux6EobSoYgBlJsC9Aix/s854D46UXC2pxdxFWR48xJgWflXCfDjH
+         fPmcryCWaHwaE4hzhRovn+LnGJOySE0bdWB8ClQDh7PmJlpz/j6l3ZCX4AxaufnOuC
+         MZkDxQ9a1GGy8kE3yvwZUggk2IKVWgY0aa0YCvZc6fXiBgP7dKxl13hqDWOuoOrfV5
+         VUbqMJrCIjj5w==
+Date:   Tue, 25 May 2021 00:33:34 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>,
+        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH v8,1/4] X.509: Add CodeSigning extended key usage parsing
+Message-ID: <YKwbrlXGePkinTHb@kernel.org>
+References: <20210524021540.18736-1-jlee@suse.com>
+ <20210524021540.18736-2-jlee@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524021540.18736-2-jlee@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 8:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.122 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, May 24, 2021 at 10:15:37AM +0800, Lee, Chun-Yi wrote:
+> This patch adds the logic for parsing the CodeSign extended key usage
+> extension in X.509. The parsing result will be set to the eku flag
+> which is carried by public key. It can be used in the PKCS#7
+> verification.
 > 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> ---
+>  crypto/asymmetric_keys/x509_cert_parser.c | 25 +++++++++++++++++++++++++
+>  include/crypto/public_key.h               |  1 +
+>  include/linux/oid_registry.h              |  5 +++++
+>  3 files changed, 31 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.122-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 6d003096b5bc..996db9419474 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -542,6 +542,8 @@ int x509_process_extension(void *context, size_t hdrlen,
+>  	struct x509_parse_context *ctx = context;
+>  	struct asymmetric_key_id *kid;
+>  	const unsigned char *v = value;
+> +	int i = 0;
+> +	enum OID oid;
+>  
+>  	pr_debug("Extension: %u\n", ctx->last_oid);
+>  
+> @@ -571,6 +573,29 @@ int x509_process_extension(void *context, size_t hdrlen,
+>  		return 0;
+>  	}
+>  
+> +	if (ctx->last_oid == OID_extKeyUsage) {
+> +		if (vlen < 2 ||
+> +		    v[0] != ((ASN1_UNIV << 6) | ASN1_CONS_BIT | ASN1_SEQ) ||
+> +		    v[1] != vlen - 2)
+> +			return -EBADMSG;
+> +		i += 2;
+> +
+> +		while (i < vlen) {
+> +			/* A 10 bytes EKU OID Octet blob =
+> +			 * ASN1_OID + size byte + 8 bytes OID */
+> +			if ((i + 10) > vlen || v[i] != ASN1_OID || v[i + 1] != 8)
+> +				return -EBADMSG;
+> +
+> +			oid = look_up_OID(v + i + 2, v[i + 1]);
+> +			if (oid == OID_codeSigning) {
+> +				ctx->cert->pub->eku |= EKU_codeSigning;
+> +			}
+> +			i += 10;
+> +		}
+> +		pr_debug("extKeyUsage: %d\n", ctx->cert->pub->eku);
+> +		return 0;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+> index 47accec68cb0..1ccaebe2a28b 100644
+> --- a/include/crypto/public_key.h
+> +++ b/include/crypto/public_key.h
+> @@ -28,6 +28,7 @@ struct public_key {
+>  	bool key_is_private;
+>  	const char *id_type;
+>  	const char *pkey_algo;
+> +	unsigned int eku : 9;      /* Extended Key Usage (9-bit) */
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Why no just name it ext_key_usage? I get the use of "EKU" elsewhere
+but not in the variable name. Now you have to remember too much
+context when just looking at this (and it's even undocumented to
+add that).
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>  };
+>  
+>  extern void public_key_free(struct public_key *key);
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index 461b7aa587ba..8c8935f0eb73 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -125,9 +125,14 @@ enum OID {
+>  	OID_TPMImportableKey,		/* 2.23.133.10.1.4 */
+>  	OID_TPMSealedData,		/* 2.23.133.10.1.5 */
+>  
+> +	/* Extended key purpose OIDs [RFC 5280] */
+> +	OID_codeSigning,		/* 1.3.6.1.5.5.7.3.3 */
+> +
+>  	OID__NR
+>  };
+>  
+> +#define EKU_codeSigning	(1 << 2)
+> +
+>  extern enum OID look_up_OID(const void *data, size_t datasize);
+>  extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
+>  extern int sprint_oid(const void *, size_t, char *, size_t);
+> -- 
+> 2.16.4
+> 
+>005diaq6539262 
+
+
+/Jarkko
