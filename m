@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2017238EFF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1899238F09E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhEXQAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38718 "EHLO mail.kernel.org"
+        id S236891AbhEXQEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234763AbhEXPyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:54:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFCA661420;
-        Mon, 24 May 2021 15:39:45 +0000 (UTC)
+        id S235485AbhEXP6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD6D061965;
+        Mon, 24 May 2021 15:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870786;
-        bh=pzldK/ODVQn7pBn2K65hBAv2hXuUOjSPmxb6eH4ybLo=;
+        s=korg; t=1621871042;
+        bh=tLit2fks7rXXXfgitzjpcmmAtQRcj2PjNJMhFUkd6tk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ny5ms9/9duPzv65CM2qNWU/a9dTLdHY9OIxid2Fc1+X8pel/qZ2ruEyvxBol2Z5dn
-         GTo95CXt5X5ch9NPdNLXQlxXyM3iIKK7tsiZaRjruzApn49TF45YMDfBTiO3ptc6F2
-         IgioWstbDOqamtZQ7b8CQVzIc1JxtH+qWPQaZhBE=
+        b=YTyXTemCURanICd3XqwzeKq3q+0aE11NJwh84fls6R3N4zr6lvP+BxRud671bJkLF
+         aAZIZgbKBG+sJC4z7qxlDTyGZpUWoCGIWviqRhzKXWA3hPgFd1QbI31EbWlgjbdFvR
+         UdB4x8glORcyjw1s5T+GZLC06NntIdhfxnOuMuwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 034/104] ALSA: dice: fix stream format for TC Electronic Konnekt Live at high sampling transfer frequency
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 012/127] scsi: qla2xxx: Fix error return code in qla82xx_write_flash_dword()
 Date:   Mon, 24 May 2021 17:25:29 +0200
-Message-Id: <20210524152333.954556458@linuxfoundation.org>
+Message-Id: <20210524152335.270424557@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-commit 4c6fe8c547e3c9e8c15dabdd23c569ee0df3adb1 upstream.
+[ Upstream commit 5cb289bf2d7c34ca1abd794ce116c4f19185a1d4 ]
 
-At high sampling transfer frequency, TC Electronic Konnekt Live
-transfers/receives 6 audio data frames in multi bit linear audio data
-channel of data block in CIP payload. Current hard-coded stream format
-is wrong.
+Fix to return a negative error code from the error handling case instead of
+0 as done elsewhere in this function.
 
-Cc: <stable@vger.kernel.org>
-Fixes: f1f0f330b1d0 ("ALSA: dice: add parameters of stream formats for models produced by TC Electronic")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210518012612.37268-1-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210514090952.6715-1-thunder.leizhen@huawei.com
+Fixes: a9083016a531 ("[SCSI] qla2xxx: Add ISP82XX support.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/dice/dice-tcelectronic.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/qla2xxx/qla_nx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/firewire/dice/dice-tcelectronic.c
-+++ b/sound/firewire/dice/dice-tcelectronic.c
-@@ -38,8 +38,8 @@ static const struct dice_tc_spec konnekt
- };
+diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
+index 0677295957bc..615e44af1ca6 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.c
++++ b/drivers/scsi/qla2xxx/qla_nx.c
+@@ -1063,7 +1063,8 @@ qla82xx_write_flash_dword(struct qla_hw_data *ha, uint32_t flashaddr,
+ 		return ret;
+ 	}
  
- static const struct dice_tc_spec konnekt_live = {
--	.tx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
--	.rx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
-+	.tx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
-+	.rx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
- 	.has_midi = true,
- };
+-	if (qla82xx_flash_set_write_enable(ha))
++	ret = qla82xx_flash_set_write_enable(ha);
++	if (ret < 0)
+ 		goto done_write;
  
+ 	qla82xx_wr_32(ha, QLA82XX_ROMUSB_ROM_WDATA, data);
+-- 
+2.30.2
+
 
 
