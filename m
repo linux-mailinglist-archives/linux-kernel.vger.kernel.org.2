@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA9E38F0A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D3838EFED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbhEXQFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:05:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S234807AbhEXQAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235579AbhEXP6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4348961971;
-        Mon, 24 May 2021 15:44:34 +0000 (UTC)
+        id S235321AbhEXPzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B25161929;
+        Mon, 24 May 2021 15:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871074;
-        bh=FSdIMv0t6WOVMg1tM4ISl7GWaij0K9e0QSsNCjkQ1Pc=;
+        s=korg; t=1621870868;
+        bh=AcoVqIUKAS83PBtxU0e3MSBpKP24FUWomHUDJy5W7Tc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fk7a14eBgNfAhUusJ8rQkG+o6TwXXlQM1mEIee46Tn4mqx3CtIc5SPbnwGwq/vUvB
-         XzlPLMXd9sDuwcRcLoGO/UZQlgR+OQVWSwoe79hvC11QWMeniMRmNhVqzfnziTRbzA
-         uOyM+a3M0S714LX6WM6xw4mdcl1xZMBpXZ3rXbr4=
+        b=QeSV1foqFuzKBbOP8jbcL0sfCRKojDPV/5xpbTDE+y+uAGtV2iBhW4MoXAHsf3ox0
+         VwK6qsXRg8sJ76Ed/ypcluUW9iaf9Wa5KQOxCAMhABc/eSngohVU24VEj+bTL/mgGd
+         Z1FQG1YWKuWCg00tvNgp7dTC0PW6VIBEe5oprsNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 049/127] ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 071/104] dm snapshot: fix crash with transient storage and zero chunk size
 Date:   Mon, 24 May 2021 17:26:06 +0200
-Message-Id: <20210524152336.505521048@linuxfoundation.org>
+Message-Id: <20210524152335.204900466@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 0edabdfe89581669609eaac5f6a8d0ae6fe95e7f upstream.
+commit c699a0db2d62e3bbb7f0bf35c87edbc8d23e3062 upstream.
 
-Mackie d.2 has an extension card for IEEE 1394 communication, which uses
-BridgeCo DM1000 ASIC. On the other hand, Mackie d.4 Pro has built-in
-function for IEEE 1394 communication by Oxford Semiconductor OXFW971,
-according to schematic diagram available in Mackie website. Although I
-misunderstood that Mackie d.2 Pro would be also a model with OXFW971,
-it's wrong. Mackie d.2 Pro is a model which includes the extension card
-as factory settings.
+The following commands will crash the kernel:
 
-This commit fixes entries in Kconfig and comment in ALSA OXFW driver.
+modprobe brd rd_size=1048576
+dmsetup create o --table "0 `blockdev --getsize /dev/ram0` snapshot-origin /dev/ram0"
+dmsetup create s --table "0 `blockdev --getsize /dev/ram0` snapshot /dev/ram0 /dev/ram1 N 0"
 
-Cc: <stable@vger.kernel.org>
-Fixes: fd6f4b0dc167 ("ALSA: bebob: Add skelton for BeBoB based devices")
-Fixes: ec4dba5053e1 ("ALSA: oxfw: Add support for Behringer/Mackie devices")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-3-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The reason is that when we test for zero chunk size, we jump to the label
+bad_read_metadata without setting the "r" variable. The function
+snapshot_ctr destroys all the structures and then exits with "r == 0". The
+kernel then crashes because it falsely believes that snapshot_ctr
+succeeded.
+
+In order to fix the bug, we set the variable "r" to -EINVAL.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/Kconfig       |    4 ++--
- sound/firewire/bebob/bebob.c |    2 +-
- sound/firewire/oxfw/oxfw.c   |    1 -
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ drivers/md/dm-snap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -38,7 +38,7 @@ config SND_OXFW
- 	   * Mackie(Loud) Onyx 1640i (former model)
- 	   * Mackie(Loud) Onyx Satellite
- 	   * Mackie(Loud) Tapco Link.Firewire
--	   * Mackie(Loud) d.2 pro/d.4 pro
-+	   * Mackie(Loud) d.4 pro
- 	   * Mackie(Loud) U.420/U.420d
- 	   * TASCAM FireOne
- 	   * Stanton Controllers & Systems 1 Deck/Mixer
-@@ -84,7 +84,7 @@ config SND_BEBOB
- 	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
- 	  * BridgeCo RDAudio1/Audio5
- 	  * Mackie Onyx 1220/1620/1640 (FireWire I/O Card)
--	  * Mackie d.2 (FireWire Option)
-+	  * Mackie d.2 (FireWire Option) and d.2 Pro
- 	  * Stanton FinalScratch 2 (ScratchAmp)
- 	  * Tascam IF-FW/DM
- 	  * Behringer XENIX UFX 1204/1604
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -387,7 +387,7 @@ static const struct ieee1394_device_id b
- 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
- 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
- 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
--	/* Mackie, d.2 (Firewire Option) */
-+	// Mackie, d.2 (Firewire option card) and d.2 Pro (the card is built-in).
- 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
- 	/* Stanton, ScratchAmp */
- 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -355,7 +355,6 @@ static const struct ieee1394_device_id o
- 	 *  Onyx-i series (former models):	0x081216
- 	 *  Mackie Onyx Satellite:		0x00200f
- 	 *  Tapco LINK.firewire 4x6:		0x000460
--	 *  d.2 pro:				Unknown
- 	 *  d.4 pro:				Unknown
- 	 *  U.420:				Unknown
- 	 *  U.420d:				Unknown
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -1407,6 +1407,7 @@ static int snapshot_ctr(struct dm_target
+ 
+ 	if (!s->store->chunk_size) {
+ 		ti->error = "Chunk size not set";
++		r = -EINVAL;
+ 		goto bad_read_metadata;
+ 	}
+ 
 
 
