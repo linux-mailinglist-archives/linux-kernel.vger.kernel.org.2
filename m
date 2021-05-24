@@ -2,148 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300C138F4F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B6A38F4FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhEXVfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232911AbhEXVfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA206140A;
-        Mon, 24 May 2021 21:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621892016;
-        bh=WBD2e9btmxzFICv0BVxtiErmuAMyfocstBLKIppfHWY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p2MYVMlcO1FbZIp10u3/ossHfO/cul/EMEiUkkbpFmjwRE4HjIcLp/V6ZArMhd5Zv
-         KVijKoFqmbMrg5q1P8e9E6vSjNAEGPPyM0HSpGVKgDgkcQMMC/Vsgdr90jLhVJamUg
-         81kxjVY0cO1RS/ux6EobSoYgBlJsC9Aix/s854D46UXC2pxdxFWR48xJgWflXCfDjH
-         fPmcryCWaHwaE4hzhRovn+LnGJOySE0bdWB8ClQDh7PmJlpz/j6l3ZCX4AxaufnOuC
-         MZkDxQ9a1GGy8kE3yvwZUggk2IKVWgY0aa0YCvZc6fXiBgP7dKxl13hqDWOuoOrfV5
-         VUbqMJrCIjj5w==
-Date:   Tue, 25 May 2021 00:33:34 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Malte Gell <malte.gell@gmx.de>,
-        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [PATCH v8,1/4] X.509: Add CodeSigning extended key usage parsing
-Message-ID: <YKwbrlXGePkinTHb@kernel.org>
-References: <20210524021540.18736-1-jlee@suse.com>
- <20210524021540.18736-2-jlee@suse.com>
+        id S233996AbhEXVfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232744AbhEXVfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:35:41 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62049C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:34:12 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso11926775pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bK50K0ZuzWopvsRPDO/W9edrVLo3uYNgj7H36Mg20zU=;
+        b=rLfM8Es5WWlEOUqQlzKFMrBsWdFS+YBM0GERCq4zR4U0U8d0oa3zPx8ltLXnFCF+M9
+         1HgkeNANlCEAbjeUebYF853F9yCjUr7ldIbCtq3bTF2gJBUjUwnierbTlYzb1gKf7iZz
+         W0XzH189RCcLJRRFG6fyC1zKpSnFrCK1gKbXmaO0LHgCNWXHDe+44nmbmHuswCiNfvVr
+         6x7NQsEQfOygXQZuouwO2ECAPnnzCpF1yUNKvEfx/fxuLRRMy5ihCHZ58qTBaMC8D/co
+         A5tBrYjvyVf0SJSj03RZ3qRgxSVcUthKaI6tfEXcJRiK9nhHTMfNVG1uezekObJZ+rjV
+         O2kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bK50K0ZuzWopvsRPDO/W9edrVLo3uYNgj7H36Mg20zU=;
+        b=cN7O/CGnBIRIAlwYdb7iWYXhZYub3ffjcscKyou0hd6x28wVcBN2KESRzzKKtCH+Wy
+         m6zJFINjKhcZbLX/W8pmFFsBvfusgYTb2y3Z20tn2AbYG8M08auEMc5Ioe9sPB123VfD
+         AzaiXa4gvBAT0Kxvhyd+pgyi54tAbfq8b8PL3Zvy2+0gX6KaxtNKUHpEn8mBelw+JbQy
+         xTwxPD0ZaxotA2mMQeNPr64YjvbwPMo541UY2s60kx6skaZiG2/dC3znBC3dQzEQcmyX
+         BBO+5PaYK2GHjOXl+tbF098H9WzZmgQhGSLQQBllWn8+o7GINUM6rH5hX92TebUS2n2Y
+         20ZQ==
+X-Gm-Message-State: AOAM531aJzdnbbqANVIvyurwIBiX33tSZGj8uTDY6XY84ArAbJdw+YbX
+        bsWUVbRAhen3o8DZx5K+bzjnTw==
+X-Google-Smtp-Source: ABdhPJwR+sUklgjM5cKeSrUw8qvy5Zyr+dYz/5Xqsq3ODHfVzoA+/YiYBtJlsvLZXr8k4NBtHWMRzw==
+X-Received: by 2002:a17:90a:6402:: with SMTP id g2mr26855568pjj.82.1621892051796;
+        Mon, 24 May 2021 14:34:11 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h1sm11585614pfh.72.2021.05.24.14.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 14:34:11 -0700 (PDT)
+Date:   Mon, 24 May 2021 21:34:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jing Liu <jing2.liu@linux.intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+Subject: Re: [PATCH RFC 1/7] kvm: x86: Expose XFD CPUID to guest
+Message-ID: <YKwbz3zuPhR7u1dw@google.com>
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-2-jing2.liu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210524021540.18736-2-jlee@suse.com>
+In-Reply-To: <20210207154256.52850-2-jing2.liu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 10:15:37AM +0800, Lee, Chun-Yi wrote:
-> This patch adds the logic for parsing the CodeSign extended key usage
-> extension in X.509. The parsing result will be set to the eku flag
-> which is carried by public key. It can be used in the PKCS#7
-> verification.
+I need a formletter for these...
+
+GET_SUPPORTED_CPUID advertises support to userspace, it does not expose anything
+to the guest.
+
+On Sun, Feb 07, 2021, Jing Liu wrote:
+> Intel's Extended Feature Disable (XFD) feature is an extension
+> to the XSAVE feature that allows an operating system to enable
+> a feature while preventing specific user threads from using
+> the feature. A processor that supports XFD enumerates
+> CPUID.(EAX=0DH,ECX=1):EAX[4] as 1.
 > 
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
 > ---
->  crypto/asymmetric_keys/x509_cert_parser.c | 25 +++++++++++++++++++++++++
->  include/crypto/public_key.h               |  1 +
->  include/linux/oid_registry.h              |  5 +++++
->  3 files changed, 31 insertions(+)
+>  arch/x86/kvm/cpuid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 6d003096b5bc..996db9419474 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -542,6 +542,8 @@ int x509_process_extension(void *context, size_t hdrlen,
->  	struct x509_parse_context *ctx = context;
->  	struct asymmetric_key_id *kid;
->  	const unsigned char *v = value;
-> +	int i = 0;
-> +	enum OID oid;
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 83637a2ff605..04a73c395c71 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -437,7 +437,7 @@ void kvm_set_cpu_caps(void)
+>  	);
 >  
->  	pr_debug("Extension: %u\n", ctx->last_oid);
->  
-> @@ -571,6 +573,29 @@ int x509_process_extension(void *context, size_t hdrlen,
->  		return 0;
->  	}
->  
-> +	if (ctx->last_oid == OID_extKeyUsage) {
-> +		if (vlen < 2 ||
-> +		    v[0] != ((ASN1_UNIV << 6) | ASN1_CONS_BIT | ASN1_SEQ) ||
-> +		    v[1] != vlen - 2)
-> +			return -EBADMSG;
-> +		i += 2;
-> +
-> +		while (i < vlen) {
-> +			/* A 10 bytes EKU OID Octet blob =
-> +			 * ASN1_OID + size byte + 8 bytes OID */
-> +			if ((i + 10) > vlen || v[i] != ASN1_OID || v[i + 1] != 8)
-> +				return -EBADMSG;
-> +
-> +			oid = look_up_OID(v + i + 2, v[i + 1]);
-> +			if (oid == OID_codeSigning) {
-> +				ctx->cert->pub->eku |= EKU_codeSigning;
-> +			}
-> +			i += 10;
-> +		}
-> +		pr_debug("extKeyUsage: %d\n", ctx->cert->pub->eku);
-> +		return 0;
-> +	}
-> +
->  	return 0;
->  }
->  
-> diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
-> index 47accec68cb0..1ccaebe2a28b 100644
-> --- a/include/crypto/public_key.h
-> +++ b/include/crypto/public_key.h
-> @@ -28,6 +28,7 @@ struct public_key {
->  	bool key_is_private;
->  	const char *id_type;
->  	const char *pkey_algo;
-> +	unsigned int eku : 9;      /* Extended Key Usage (9-bit) */
+>  	kvm_cpu_cap_mask(CPUID_D_1_EAX,
+> -		F(XSAVEOPT) | F(XSAVEC) | F(XGETBV1) | F(XSAVES)
+> +		F(XSAVEOPT) | F(XSAVEC) | F(XGETBV1) | F(XSAVES) | F(XFD)
 
-Why no just name it ext_key_usage? I get the use of "EKU" elsewhere
-but not in the variable name. Now you have to remember too much
-context when just looking at this (and it's even undocumented to
-add that).
+KVM must not advertise support until it actually has said support, i.e. this
+patch needs to go at the end of the series.
 
->  };
+Also, adding the kvm_cpu_cap flag in a separate patch isn't strictly required.
+In most cases, I would go so far as to say that if there is additional enabling
+to be done, advertising the feature should be done in the same patch that adds
+the last bits of enabling.  Putting the CPUID stuff in its own patch doesn't
+usually add values, e.g. if there's a bug in the actual support code bisecting
+will point at the wrong patch if userspace conditions its vCPU model on
+GET_SUPPORTED_CPUID.
+
+>  	);
 >  
->  extern void public_key_free(struct public_key *key);
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index 461b7aa587ba..8c8935f0eb73 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -125,9 +125,14 @@ enum OID {
->  	OID_TPMImportableKey,		/* 2.23.133.10.1.4 */
->  	OID_TPMSealedData,		/* 2.23.133.10.1.5 */
->  
-> +	/* Extended key purpose OIDs [RFC 5280] */
-> +	OID_codeSigning,		/* 1.3.6.1.5.5.7.3.3 */
-> +
->  	OID__NR
->  };
->  
-> +#define EKU_codeSigning	(1 << 2)
-> +
->  extern enum OID look_up_OID(const void *data, size_t datasize);
->  extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
->  extern int sprint_oid(const void *, size_t, char *, size_t);
+>  	kvm_cpu_cap_mask(CPUID_8000_0001_ECX,
 > -- 
-> 2.16.4
+> 2.18.4
 > 
->005diaq6539262 
-
-
-/Jarkko
