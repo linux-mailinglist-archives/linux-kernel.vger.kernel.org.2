@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4E738EE48
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F0438F08D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhEXPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
+        id S236079AbhEXQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234167AbhEXPnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:43:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C436D6144E;
-        Mon, 24 May 2021 15:35:24 +0000 (UTC)
+        id S234563AbhEXP5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F566194D;
+        Mon, 24 May 2021 15:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870525;
-        bh=MWJ2Zz2Yel3zVBoC8jYfA9RGWuteaSKbd/b/YE8ezTM=;
+        s=korg; t=1621871005;
+        bh=BvoudYNHzNRPu6mijythgk8EltG3vum/jxPbCPSN2dA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ko8HZ1PtrtTJWOoyIv3q10zFB6XqnqXOvIcO7D9JB4y3o0h0tH3nqXeNW/MUDALox
-         L93dqWpISzgMX6u9fMrI3yYfqp+Tqrr5v40sPQ7em21VpuwcfAlK9FAWfD/N3/vu0N
-         3MJhFWtb5SSnmtyTI8Y6wbobQt2RDU6/sUZmXjek=
+        b=WGPmZkbnOlk1mbrWU9KfwQarjD8N7SJkoJUeGGWpO75c3a07EZWzxeIz1qoHRyX3v
+         OOP+PbraGeAivwjzKwZz8O/CwjWSM6SFvSJD64rsbM0knzMicB3YJnB4w6K0mgucov
+         YwHSYBnlKzy27oC6lhAgU77jceoi2tUGvgzsWd1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Subject: [PATCH 4.19 35/49] Revert "media: rcar_drif: fix a memory disclosure"
+        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Pedro Alves <palves@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 029/127] ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
 Date:   Mon, 24 May 2021 17:25:46 +0200
-Message-Id: <20210524152325.510677822@linuxfoundation.org>
+Message-Id: <20210524152335.826938699@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Oleg Nesterov <oleg@redhat.com>
 
-commit 3e465fc3846734e9489273d889f19cc17b4cf4bd upstream.
+[ Upstream commit dbb5afad100a828c97e012c6106566d99f041db6 ]
 
-This reverts commit d39083234c60519724c6ed59509a2129fd2aed41.
+Suppose we have 2 threads, the group-leader L and a sub-theread T,
+both parked in ptrace_stop(). Debugger tries to resume both threads
+and does
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+	ptrace(PTRACE_CONT, T);
+	ptrace(PTRACE_CONT, L);
 
-Upon review, it was determined that this commit is not needed at all as
-the media core already prevents memory disclosure on this codepath, so
-just drop the extra memset happening here.
+If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
+resume the old leader L, it resumes the post-exec thread T which was
+actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+tracee changed its pid.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Fixes: d39083234c60 ("media: rcar_drif: fix a memory disclosure")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-4-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch makes ptrace() fail in this case until debugger does wait()
+and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
+ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
+
+The patch doesn't add the new PTRACE_ option to not complicate the API,
+and I _hope_ this won't cause any noticeable regression:
+
+	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
+	  and the tracer does a ptrace request without having consumed
+	  the exec event, it's 100% sure that the thread the ptracer
+	  thinks it is targeting does not exist anymore, or isn't the
+	  same as the one it thinks it is targeting.
+
+	- To some degree this patch adds nothing new. In the scenario
+	  above ptrace(L) can fail with -ESRCH if it is called after the
+	  execing sub-thread wakes the leader up and before it "steals"
+	  the leader's pid.
+
+Test-case:
+
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/ptrace.h>
+	#include <sys/wait.h>
+	#include <errno.h>
+	#include <pthread.h>
+	#include <assert.h>
+
+	void *tf(void *arg)
+	{
+		execve("/usr/bin/true", NULL, NULL);
+		assert(0);
+
+		return NULL;
+	}
+
+	int main(void)
+	{
+		int leader = fork();
+		if (!leader) {
+			kill(getpid(), SIGSTOP);
+
+			pthread_t th;
+			pthread_create(&th, NULL, tf, NULL);
+			for (;;)
+				pause();
+
+			return 0;
+		}
+
+		waitpid(leader, NULL, WSTOPPED);
+
+		ptrace(PTRACE_SEIZE, leader, 0,
+				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
+		waitpid(leader, NULL, 0);
+
+		ptrace(PTRACE_CONT, leader, 0,0);
+		waitpid(leader, NULL, 0);
+
+		int status, thread = waitpid(-1, &status, 0);
+		assert(thread > 0 && thread != leader);
+		assert(status == 0x80137f);
+
+		ptrace(PTRACE_CONT, thread, 0,0);
+		/*
+		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
+		 * report status. Why ????
+		 *
+		 * Why WEXITED? because we have another kernel problem connected
+		 * to mt-exec.
+		 */
+		siginfo_t info;
+		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
+		assert(info.si_pid == leader && info.si_status == 0x0405);
+
+		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
+		assert(errno == ESRCH);
+
+		assert(leader == waitpid(leader, &status, WNOHANG));
+		assert(status == 0x04057f);
+
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
+
+		return 0;
+	}
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Reported-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Acked-by: Pedro Alves <palves@redhat.com>
+Acked-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar_drif.c |    1 -
- 1 file changed, 1 deletion(-)
+ kernel/ptrace.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
---- a/drivers/media/platform/rcar_drif.c
-+++ b/drivers/media/platform/rcar_drif.c
-@@ -912,7 +912,6 @@ static int rcar_drif_g_fmt_sdr_cap(struc
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 61db50f7ca86..5f50fdd1d855 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -169,6 +169,21 @@ void __ptrace_unlink(struct task_struct *child)
+ 	spin_unlock(&child->sighand->siglock);
+ }
+ 
++static bool looks_like_a_spurious_pid(struct task_struct *task)
++{
++	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
++		return false;
++
++	if (task_pid_vnr(task) == task->ptrace_message)
++		return false;
++	/*
++	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
++	 * was not wait()'ed, most probably debugger targets the old
++	 * leader which was destroyed in de_thread().
++	 */
++	return true;
++}
++
+ /* Ensure that nothing can wake it up, even SIGKILL */
+ static bool ptrace_freeze_traced(struct task_struct *task)
  {
- 	struct rcar_drif_sdr *sdr = video_drvdata(file);
+@@ -179,7 +194,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 		return ret;
  
--	memset(f->fmt.sdr.reserved, 0, sizeof(f->fmt.sdr.reserved));
- 	f->fmt.sdr.pixelformat = sdr->fmt->pixelformat;
- 	f->fmt.sdr.buffersize = sdr->fmt->buffersize;
- 
+ 	spin_lock_irq(&task->sighand->siglock);
+-	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
++	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
++	    !__fatal_signal_pending(task)) {
+ 		task->state = __TASK_TRACED;
+ 		ret = true;
+ 	}
+-- 
+2.30.2
+
 
 
