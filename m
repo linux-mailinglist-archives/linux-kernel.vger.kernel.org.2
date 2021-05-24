@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE1D38F529
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC7038F530
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhEXVwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
+        id S233700AbhEXVxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbhEXVwO (ORCPT
+        with ESMTP id S232662AbhEXVxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:52:14 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B0DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:50:45 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so12049048pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:50:45 -0700 (PDT)
+        Mon, 24 May 2021 17:53:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F92FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:52:12 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso11951127pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 14:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1LIxY7Ij3UrUOv7Il7P47ofsQIlqfktbuapxHDHzy9s=;
-        b=XSHnRITS8nxoftyiOoXlCMe4sR9i1NxJcUp5NBp6zR97O3o1TsPjpDr4wYxD3WdWhc
-         i5sThETjwzSJZTDPMKR1n3eyrmop8QhDSda4cNgpLVHhNvqtBvwm02GoAHJDuANs0SYE
-         dsU52zcDMiSpL9eGDdqQOF4f81bgfzFZCPi7KnzL//GiH/LsAcKL3q5fT9eZk5YprqEw
-         wcj9SZoTmGMMWPRyYaEAGqJROGe20yQbXcfzETZczk+vMwzdcWeZiyAvxvC54rBfxfQY
-         9Bl1LUaVxr1LkcHroTYIh89UyQF6DukJbePqTrdz2F3+GYrTUFyOPcE0rJXLQob7MijR
-         6ZxA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1uWZ+NAHubgjanKEPmNXVpKwJ6EadaqwsLZyvUrqkaY=;
+        b=goCM3ND7G1zeMucnRJt8nicQIOO+SOqc1h3FmK4+SIebD7dYEL3fL6HBrJrqQfGmWU
+         si34CYLeIRc79Yf39VdhDjFJaDteeIQwMw0LGnJJ3sANRZ2PrUpNuLgOWy29HKPNfeVr
+         M5efC8IWweo3GNUZw10VrALniXQ83Ck8IRKfyMY7Hi+q90cp4QRS+R8AnzGLFgqkTwRP
+         LkH8V8klJsO1GtM0kozkENo8uaNeJepMvtB9xCNyztim18/PpS5Yh+ltke1WQAgqfYoE
+         ZbrKxBpSIA/WShw3b+sBgMgEx15aYV9LmXzIv4dkuwgt1VgOfsCvZ27m4NHaHfN66kNl
+         vguA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1LIxY7Ij3UrUOv7Il7P47ofsQIlqfktbuapxHDHzy9s=;
-        b=acD6zwDqamG7/Mir22TqjZDR2DijlxqK+zP+Vyz2+C4SO3PXmdHqnvlEgtnCIpKQij
-         ct/rIgQzjyOXthLe34bUQEqGvTE0Hmsy6BzY0CXkLf/4vKgIKGne0mpFgRzKfc9salfw
-         /6YygrvQXlfmUkmq+ETfNjsFVDptydtWnmb+hx1C+W2InAOzI9heQwSZWAiITqOsiszL
-         zJQfTQxHatoMsSybRgvNWgUd6n+4efPo+OZ5lLbHOa13H4Hy/5dc1ovUhR6MARxIHc7Y
-         aSkhgkAixMuS3YoC0UgUG1RA3oI+rO2eyOWT2r88xTq5xl5yeXZH9WgN7XPA4gcRb5BU
-         zIsA==
-X-Gm-Message-State: AOAM533xCEmWxFZ5lz1AmWAtRJUHti0FtryHgGy3uTvnTtX5ArhDRjqu
-        6R8Kd9i5VcOKn6MLSlD3KYdAjw==
-X-Google-Smtp-Source: ABdhPJwemR0Csu7duh/l9o7U7SM+60b46wfosFlH/WytvymUKyVC7vyQyWpdSfuaq8B26q2ab5Cl6g==
-X-Received: by 2002:a17:90a:cc06:: with SMTP id b6mr1298484pju.19.1621893044680;
-        Mon, 24 May 2021 14:50:44 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k21sm11880753pgb.56.2021.05.24.14.50.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1uWZ+NAHubgjanKEPmNXVpKwJ6EadaqwsLZyvUrqkaY=;
+        b=rvAjwnqjpIMYPz1ST9ib8mVR5Jm8W0wL+LaiifNb2fqsKAhpkyXIUErQEajwsarIdt
+         QnUnwTjmbPuIwxqW2Vv+PswdGBy3YJYU6zJMXiCEAsIiebSqkzoXmzDP2oz27CeiEJTf
+         blxk/CB88r4U7ilM0zzsxqNX3fThzJE/+uJZl5JG3LSf2QSvTYk1WhSc8/4hAv2kl2AP
+         cHr7asrg/i3Atu64uJO9vLehP6cdcXIVDP23046muLJHBCJdaOAhV0KS6nt6HK+V/RAh
+         oBazAHxnqQtYl1P8eFYKmMsfy8f5ON91ljJtLgkshxQ0lCUhxPNZJF4slGYS819rF5Ha
+         fWvQ==
+X-Gm-Message-State: AOAM532qNBPmRQKwxeqcePHp3TAuIdRWgHWFfTJTQOb/z2uhRj/cwMd6
+        NjOjVnhzcUdh2VXzX4XWEiOA1+mbADXQSm8I
+X-Google-Smtp-Source: ABdhPJxTsHfRPS5HHKfpkTBhKoiFzNQgGu1KoN2fYoeM+jqUAPcFTYOTWd3c8JymzrI3EHkz93aq5A==
+X-Received: by 2002:a17:90a:bd08:: with SMTP id y8mr1323187pjr.8.1621893131421;
+        Mon, 24 May 2021 14:52:11 -0700 (PDT)
+Received: from nhaiderx-mobl1.gar.corp.intel.com ([2409:4063:2309:9691:60bf:7a61:5dc3:9ca1])
+        by smtp.gmail.com with ESMTPSA id n28sm5447800pfq.139.2021.05.24.14.52.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 14:50:43 -0700 (PDT)
-Date:   Mon, 24 May 2021 21:50:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jing Liu <jing2.liu@linux.intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com
-Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
-Message-ID: <YKwfsIT5DuE+L+4M@google.com>
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-5-jing2.liu@linux.intel.com>
+        Mon, 24 May 2021 14:52:11 -0700 (PDT)
+From:   nizamhaider786@gmail.com
+To:     lkundrak@v3.sk
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Nijam Haider <nizamhaider786@gmail.com>
+Subject: [PATCH v3 1/2] char: pcmcia: scr24x_cs: Fix failure handling of device_create()
+Date:   Tue, 25 May 2021 03:22:01 +0530
+Message-Id: <20210524215202.495-1-nizamhaider786@gmail.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207154256.52850-5-jing2.liu@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021, Jing Liu wrote:
-> The static xstate buffer kvm_xsave contains the extended register
-> states, but it is not enough for dynamic features with large state.
-> 
-> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
-> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
-> new ioctl interfaces to get/set the whole xstate using struct
-> kvm_xsave_extension buffer containing both static and dynamic
-> xfeatures. Reuse fill_xsave and load_xsave for both cases.
-> 
-> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
-> ---
->  arch/x86/include/uapi/asm/kvm.h |  5 +++
->  arch/x86/kvm/x86.c              | 70 +++++++++++++++++++++++++--------
->  include/uapi/linux/kvm.h        |  8 ++++
->  3 files changed, 66 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 89e5f3d1bba8..bf785e89a728 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -362,6 +362,11 @@ struct kvm_xsave {
->  	__u32 region[1024];
->  };
->  
-> +/* for KVM_CAP_XSAVE_EXTENSION */
-> +struct kvm_xsave_extension {
-> +	__u32 region[3072];
+From: Nijam Haider <nizamhaider786@gmail.com>
 
-Fool me once, shame on you (Intel).  Fool me twice, shame on me (KVM).
+Ignored error in device_create() and pcmcia_enable_device()
+this patch implements proper error handling.
 
-As amusing as kvm_xsave_really_extended would be, the required size should be
-discoverable, not hardcoded.  Nothing prevents a hardware vendor from inventing
-a newfangled feature that requires yet more space.
+Signed-off-by: Nijam Haider <nizamhaider786@gmail.com>
+---
+V2 -> V3: Added description, Changelog and removed whitespace error
+V1 -> V2: Split the patch into two parts and addressed review comments
+---
+ drivers/char/pcmcia/scr24x_cs.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-As an alternative to adding a dedicated capability, can we leverage
-GET_SUPPORTED_CPUID, leaf CPUID.0xD, to enumerate the minimum required size and
-state that the new ioctl() is available if the min size is greater than 1024?
-Or is that unnecessarily convoluted...
+diff --git a/drivers/char/pcmcia/scr24x_cs.c b/drivers/char/pcmcia/scr24x_cs.c
+index 47feb39af34c..b48e79356611 100644
+--- a/drivers/char/pcmcia/scr24x_cs.c
++++ b/drivers/char/pcmcia/scr24x_cs.c
+@@ -233,6 +233,7 @@ static int scr24x_probe(struct pcmcia_device *link)
+ {
+ 	struct scr24x_dev *dev;
+ 	int ret;
++	struct device *dev_ret;
+ 
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+@@ -272,12 +273,20 @@ static int scr24x_probe(struct pcmcia_device *link)
+ 
+ 	ret = pcmcia_enable_device(link);
+ 	if (ret < 0) {
++		cdev_del(&dev->c_dev);
+ 		pcmcia_disable_device(link);
+ 		goto err;
+ 	}
+ 
+-	device_create(scr24x_class, NULL, MKDEV(MAJOR(scr24x_devt), dev->devno),
++	dev_ret = device_create(scr24x_class, NULL, MKDEV(MAJOR(scr24x_devt), dev->devno),
+ 		      NULL, "scr24x%d", dev->devno);
++	if (IS_ERR(dev_ret)) {
++		dev_err(&link->dev, "device_create failed for %d\n",
++			dev->devno);
++		cdev_del(&dev->c_dev);
++		pcmcia_disable_device(link);
++		goto err;
++	}
+ 
+ 	dev_info(&link->dev, "SCR24x Chip Card Interface\n");
+ 	return 0;
+-- 
+2.7.4
+
