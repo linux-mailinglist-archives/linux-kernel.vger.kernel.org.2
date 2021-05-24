@@ -2,188 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FEE38E6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3090038E6B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhEXMiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:38:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50188 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232530AbhEXMiR (ORCPT
+        id S232530AbhEXMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232371AbhEXMjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:38:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621859809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TU9JFGb98TwfxNEATQSa4BRYEe1Afr7B5gEsKljFCxY=;
-        b=LiOYvteXDV2A2yIzxAeIU7eU7sgvoXV1vcmBWlKLJ5Ww8Yzs6kyIBxVsSBi5eOANf0eWyH
-        zQLO5MEsmcS2AbJWgVJ7yPb0ojKb6u+xfSSjNlYUhMmNpzpVZDLGgHd2bZSkA/+KfXFvuE
-        24H1C8pJDP3B1FBLeF2r0lHbv6mmL+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-cjR2KybPP3iDeSUbNr5fIA-1; Mon, 24 May 2021 08:36:45 -0400
-X-MC-Unique: cjR2KybPP3iDeSUbNr5fIA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3117F1B18BED;
-        Mon, 24 May 2021 12:36:19 +0000 (UTC)
-Received: from starship (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0ECB3189C4;
-        Mon, 24 May 2021 12:36:16 +0000 (UTC)
-Message-ID: <4b0f9fbea71bd779164e8a703f94fb68ae0d43df.camel@redhat.com>
-Subject: Re: [PATCH v2 7/7] KVM: selftests: evmcs_test: Test that
- KVM_STATE_NESTED_EVMCS is never lost
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 24 May 2021 15:36:15 +0300
-In-Reply-To: <20210517135054.1914802-8-vkuznets@redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
-         <20210517135054.1914802-8-vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 24 May 2021 08:39:21 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29F8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:37:52 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id e17so10136047pfl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r4dVLGHWu3In2mmlnxf97heOuU6nZM6itV2qQ+TUyo4=;
+        b=vwef9bUvnLU0oebljZhynCRmnyNDr1NElN7oXxz43eVPEzP5Ssyd21VDykwUpQ6641
+         PJ93QVLFVfCkAVCvhs+a337kkIOxE4wT2jXgDUtkxjcnKRCUe4LaIijW6cJrEXcXlMtU
+         ozkseNUylXYrVRXlk0nw+yv2j6NCUWL5mVXZ1+3l7nwGBvf04hNSZMDLUAy1YwhLnjwr
+         dZDUNRdl7zt2mYVyKEQa/ygEX0RwGauo/sxCAz4VaxqcX0cWeMjExvo5PwPPG2g2i9FG
+         hvgj4tGG3XFoNCl050KcFmjEPtpkke5kslUM6UCag3Mb0od1NhROrH8iLTwdk5zwJauw
+         UEAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r4dVLGHWu3In2mmlnxf97heOuU6nZM6itV2qQ+TUyo4=;
+        b=rqyJi0pYCmCNyhY+Qsm/uUiXrVXif98AkpeG9lGKGweUs8bkInW59dMkQiHwHRazw7
+         HaT/RxOYQxwczsXuiaFEq+hXvxRRmNdDgdmSukNT0dwapsTavrh0umnD/2uSgPKEA0LR
+         OzNNbMcG88nAryMeq6Zm3aXa+U/Wl2W4H6QKl8+nybstd4mQ5lSKknbk+t5p+vJSvxSm
+         5EQbJtf2/bk+TTAZn4KwqB3HF9y3OEo8G8t/5TP6bnuvGMNc2uRkp7GOV+YikFLQ9zlm
+         7tCpCPAQtXDnPSbe2YsBAeQ+hL+E8aEREdAQ0Rlk3VFSE6fk2FJ9/ybyHL2VxNdWol9g
+         fuQQ==
+X-Gm-Message-State: AOAM5324BpW2alMLeK90vYgDt/YcSv/pP9JilXmRLDNT1mhuPD8pTYQ8
+        oFeMeJUc3bNcaCvlrtuLqKLseYRObkCJHB0R
+X-Google-Smtp-Source: ABdhPJxmH1MIMprnrunYaUYr0IaXdQOMax4tzuj/gM/XO4si6GFEOFVkKSvZwn/TB4Q53y39IBK19w==
+X-Received: by 2002:a63:79c5:: with SMTP id u188mr13347009pgc.198.1621859872034;
+        Mon, 24 May 2021 05:37:52 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id 35sm11215006pgq.91.2021.05.24.05.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 05:37:51 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     ChiYuan Huang <cy_huang@richtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: rt4831: Add missing .owner field in regulator_desc
+Date:   Mon, 24 May 2021 20:37:35 +0800
+Message-Id: <20210524123735.2363676-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
-> Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly restored VM
-> (before the first KVM_RUN) to check that KVM_STATE_NESTED_EVMCS is not
-> lost.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  .../testing/selftests/kvm/x86_64/evmcs_test.c | 64 +++++++++++--------
->  1 file changed, 38 insertions(+), 26 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/evmcs_test.c b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-> index 63096cea26c6..fcef347a681a 100644
-> --- a/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-> @@ -121,14 +121,38 @@ void inject_nmi(struct kvm_vm *vm)
->  	vcpu_events_set(vm, VCPU_ID, &events);
->  }
->  
-> +static void save_restore_vm(struct kvm_vm *vm)
-> +{
-> +	struct kvm_regs regs1, regs2;
-> +	struct kvm_x86_state *state;
-> +
-> +	state = vcpu_save_state(vm, VCPU_ID);
-> +	memset(&regs1, 0, sizeof(regs1));
-> +	vcpu_regs_get(vm, VCPU_ID, &regs1);
-> +
-> +	kvm_vm_release(vm);
-> +
-> +	/* Restore state in a new VM.  */
-> +	kvm_vm_restart(vm, O_RDWR);
-> +	vm_vcpu_add(vm, VCPU_ID);
-> +	vcpu_set_hv_cpuid(vm, VCPU_ID);
-> +	vcpu_enable_evmcs(vm, VCPU_ID);
-> +	vcpu_load_state(vm, VCPU_ID, state);
-> +	free(state);
-> +
-> +	memset(&regs2, 0, sizeof(regs2));
-> +	vcpu_regs_get(vm, VCPU_ID, &regs2);
-> +	TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
-> +		    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
-> +		    (ulong) regs2.rdi, (ulong) regs2.rsi);
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	vm_vaddr_t vmx_pages_gva = 0;
->  
-> -	struct kvm_regs regs1, regs2;
->  	struct kvm_vm *vm;
->  	struct kvm_run *run;
-> -	struct kvm_x86_state *state;
->  	struct ucall uc;
->  	int stage;
->  
-> @@ -145,10 +169,6 @@ int main(int argc, char *argv[])
->  	vcpu_set_hv_cpuid(vm, VCPU_ID);
->  	vcpu_enable_evmcs(vm, VCPU_ID);
->  
-> -	run = vcpu_state(vm, VCPU_ID);
-> -
-> -	vcpu_regs_get(vm, VCPU_ID, &regs1);
-> -
->  	vcpu_alloc_vmx(vm, &vmx_pages_gva);
->  	vcpu_args_set(vm, VCPU_ID, 1, vmx_pages_gva);
->  
-> @@ -160,6 +180,7 @@ int main(int argc, char *argv[])
->  	pr_info("Running L1 which uses EVMCS to run L2\n");
->  
->  	for (stage = 1;; stage++) {
-> +		run = vcpu_state(vm, VCPU_ID);
->  		_vcpu_run(vm, VCPU_ID);
->  		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
->  			    "Stage %d: unexpected exit reason: %u (%s),\n",
-> @@ -184,32 +205,23 @@ int main(int argc, char *argv[])
->  			    uc.args[1] == stage, "Stage %d: Unexpected register values vmexit, got %lx",
->  			    stage, (ulong)uc.args[1]);
->  
-> -		state = vcpu_save_state(vm, VCPU_ID);
-> -		memset(&regs1, 0, sizeof(regs1));
-> -		vcpu_regs_get(vm, VCPU_ID, &regs1);
-> -
-> -		kvm_vm_release(vm);
-> -
-> -		/* Restore state in a new VM.  */
-> -		kvm_vm_restart(vm, O_RDWR);
-> -		vm_vcpu_add(vm, VCPU_ID);
-> -		vcpu_set_hv_cpuid(vm, VCPU_ID);
-> -		vcpu_enable_evmcs(vm, VCPU_ID);
-> -		vcpu_load_state(vm, VCPU_ID, state);
-> -		run = vcpu_state(vm, VCPU_ID);
-> -		free(state);
-> -
-> -		memset(&regs2, 0, sizeof(regs2));
-> -		vcpu_regs_get(vm, VCPU_ID, &regs2);
-> -		TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
-> -			    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
-> -			    (ulong) regs2.rdi, (ulong) regs2.rsi);
-> +		save_restore_vm(vm);
->  
->  		/* Force immediate L2->L1 exit before resuming */
->  		if (stage == 8) {
->  			pr_info("Injecting NMI into L1 before L2 had a chance to run after restore\n");
->  			inject_nmi(vm);
->  		}
-> +
-> +		/*
-> +		 * Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly
-> +		 * restored VM (before the first KVM_RUN) to check that
-> +		 * KVM_STATE_NESTED_EVMCS is not lost.
-> +		 */
-> +		if (stage == 9) {
-> +			pr_info("Trying extra KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE cycle\n");
-> +			save_restore_vm(vm);
-> +		}
->  	}
->  
->  done:
+Add missing .owner field in regulator_desc, which is used for refcounting.
 
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/rt4831-regulator.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-This is a very good test. I do think that in the future we should move save_restore_vm
-to common code so that I could test SVM nested migration (and plain VMX nested migration) 
-in a similar way.
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
-
+diff --git a/drivers/regulator/rt4831-regulator.c b/drivers/regulator/rt4831-regulator.c
+index e3aaac90d238..676b0419e48f 100644
+--- a/drivers/regulator/rt4831-regulator.c
++++ b/drivers/regulator/rt4831-regulator.c
+@@ -108,6 +108,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
+ 		.bypass_reg = RT4831_REG_DSVEN,
+ 		.bypass_val_on = DSV_MODE_BYPASS,
+ 		.bypass_val_off = DSV_MODE_NORMAL,
++		.owner = THIS_MODULE,
+ 	},
+ 	{
+ 		.name = "DSVP",
+@@ -125,6 +126,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
+ 		.enable_mask = RT4831_POSEN_MASK,
+ 		.active_discharge_reg = RT4831_REG_DSVEN,
+ 		.active_discharge_mask = RT4831_POSADEN_MASK,
++		.owner = THIS_MODULE,
+ 	},
+ 	{
+ 		.name = "DSVN",
+@@ -142,6 +144,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
+ 		.enable_mask = RT4831_NEGEN_MASK,
+ 		.active_discharge_reg = RT4831_REG_DSVEN,
+ 		.active_discharge_mask = RT4831_NEGADEN_MASK,
++		.owner = THIS_MODULE,
+ 	}
+ };
+ 
+-- 
+2.25.1
 
