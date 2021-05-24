@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29D938F2EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC1538F2ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhEXSXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:23:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35630 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232516AbhEXSXx (ORCPT
+        id S233663AbhEXS0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:26:36 -0400
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:46895 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232516AbhEXS0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:23:53 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OI3CR6116304;
-        Mon, 24 May 2021 14:21:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=fnHpK9+VpzUR3Ss627T2ieVAfKo8WEgjF+M+DZqxg8k=;
- b=ToWveYqdn2gyvcVG+p15LzAuTYDvrBwrAAKakr5UvSIM5sr4n2mmSVNfAo+PkYOvz+fU
- y9dMlzLW2aGtYTRwRzv/yghGUkPWciJbLRUrShgwl60dkW/qFBSX2oSa2reb6WheRgaV
- fqpimVo3QDcnuTLrYL3bVLZdrb9hhSHfFMeZ3140TuoVWvIfQqf9pxaUrAXaAGN66Ley
- 0O5/R20ZiHtsQWlDDuJu6pun6jzQ8TRO5XypC9fD+OF/W4rMB6spDhWkQbf7CqNOvm8e
- zZZT9YvpIYbfpSKQJ5vVKhozTZqtE4Ar/sInQjhDUg3+ClVyuIWIkzQs2EQFv2fXioB3 BQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38rh0bgp4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 14:21:49 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14OHqUDj007909;
-        Mon, 24 May 2021 18:21:47 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 38psk88gh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 May 2021 18:21:47 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14OILjEF30540070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 May 2021 18:21:45 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D9F3A4053;
-        Mon, 24 May 2021 18:21:45 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE74EA4040;
-        Mon, 24 May 2021 18:21:43 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.80.46])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 24 May 2021 18:21:43 +0000 (GMT)
-Message-ID: <17d48530e2ec9a6f7e2cb868d8ddf8dcd3be14da.camel@linux.ibm.com>
-Subject: Re: [PATCH 5/7] evm: Verify portable signatures against all
- protected xattrs
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@srcf.ucam.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 24 May 2021 14:21:43 -0400
-In-Reply-To: <20210520085701.465369-6-roberto.sassu@huawei.com>
-References: <20210520085701.465369-1-roberto.sassu@huawei.com>
-         <20210520085701.465369-6-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JkAx4NJtmjcUiSTIMUKbB1FOKQFQpv6O
-X-Proofpoint-ORIG-GUID: JkAx4NJtmjcUiSTIMUKbB1FOKQFQpv6O
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-24_08:2021-05-24,2021-05-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0 spamscore=0
- mlxscore=0 clxscore=1011 adultscore=0 mlxlogscore=999 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105240103
+        Mon, 24 May 2021 14:26:34 -0400
+Received: by mail-ed1-f54.google.com with SMTP id r11so33015427edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:25:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QojKTRkPlVVMjB+1f05/ajNnuj9bmWOO2et8XaYKM5g=;
+        b=NbbeIPNZ1RYCYQ/vK3/NhUfZCPwAbUAdAFoFFWWJO2ATkPV/bmO7rhSh+nEwP+Ns6p
+         M694qqX89UugFHtzacbDKpWi9ayeChXVReZqWL/VhWZ0BafeYjHzzmPXGvz7/cgBoFSx
+         kwhcQxPopLU16eeG04RlxSBZ9k4JRw6nY5bblYIo6eooxxkjxAvse5p2ldv+hxl7O547
+         XSdMCCDUFZxynoWcPW01aEE5CJn9LIRd2oT6DJCx8NgGX9B63j/gzQiJTNyEbs8Tow35
+         6LM708LmZLbiZPSOf04ALdfDc56UNABFipyyb8nX2yO+iA8IMu1EztGPcXYFbNmsJygS
+         XStA==
+X-Gm-Message-State: AOAM530eblreyINhZ1KRmFvqY/kKDjngqvlmLnX3ySU7Sv6Tn76az9Mf
+        +vbt23T/avHbxFXMIO2GXrW7LHwUjLCMAbizal0=
+X-Google-Smtp-Source: ABdhPJxfj7BEopPTpi/6NFpSGwSX4JPtG7UGwJig/maIqtxWIKVpDUD/aYrO49NQCQmKO306EvPRqo2mua9xx5JMmaM=
+X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr27261490ede.122.1621880705184;
+ Mon, 24 May 2021 11:25:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-29-chang.seok.bae@intel.com> <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
+ <ff72d7cd-e36d-06d8-d741-645a0504bf65@intel.com> <CAJvTdKmQjTmOCwUBk+3dhYzOdsZBadqVdqFUPKRMkfcTccJHuA@mail.gmail.com>
+ <bd5a5457-edd7-fc1c-2285-c8392a902298@intel.com>
+In-Reply-To: <bd5a5457-edd7-fc1c-2285-c8392a902298@intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 24 May 2021 14:24:54 -0400
+Message-ID: <CAJvTdKmOLb0pt2SDgAKfwjxtMzT=t=UoREoPRUmi=4MWzeJ+QA@mail.gmail.com>
+Subject: Re: [PATCH v5 28/28] x86/fpu/amx: Clear the AMX state when appropriate
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Chen, Tim C" <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-20 at 10:56 +0200, Roberto Sassu wrote:
-> Currently, the evm_config_default_xattrnames array contains xattr names
-> only related to LSMs which are enabled in the kernel configuration.
-> However, EVM portable signatures do not depend on local information and a
-> vendor might include in the signature calculation xattrs that are not
-> enabled in the target platform.
-> 
-> Just including all xattrs names in evm_config_default_xattrnames is not a
-> safe approach, because a target system might have already calculated
-> signatures or HMACs based only on the enabled xattrs. After applying this
-> patch, EVM would verify those signatures and HMACs with all xattrs instead.
-> The non-enabled ones, which could possibly exist, would cause a
-> verification error.
-> 
-> Thus, this patch adds a new field named enabled to the xattr_list
-> structure, which is set to true if the LSM associated to a given xattr name
-> is enabled in the kernel configuration. The non-enabled xattrs are taken
-> into account in only evm_calc_hmac_or_hash(), if the passed security.evm
-> type is EVM_XATTR_PORTABLE_DIGSIG.
-> 
-> The new function evm_protected_xattr_if_enabled() has been defined so that
-> IMA can include all protected xattrs and not only the enabled ones in the
-> measurement list, if the new template field evmxattrs has been included in
-> the template format.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Mon, May 24, 2021 at 1:39 PM Dave Hansen <dave.hansen@intel.com> wrote:
 
-Nice, I really like this idea.
+> >> might be considered nasty.
 
-Mimi
+> > I'm not excited about burdening the generic idle path with a CPU
+> > feature specific check that would need to be checked on every idle
+> > entry.
+>
+> Me neither.
+>
+> But, the check itself should be cheap.  A cpu_feature_enabled(AMX) check
+> will eliminate even the cost of a branch on systems without AMX.  You
+> could probably even get fancy and also use a static branch that doesn't
+> get enabled until the first AMX user shows up.
 
+It isn't just the hardware run-time cost.
+It is the source code complexity.
+That code is 100% generic.
+
+Len Brown, Intel Open Source Technology Center
