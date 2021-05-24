@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5352B38F364
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31E638F368
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 21:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhEXTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 15:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        id S233397AbhEXTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 15:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbhEXTB0 (ORCPT
+        with ESMTP id S233170AbhEXTBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 15:01:26 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD841C061574;
-        Mon, 24 May 2021 11:59:57 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id e22so5050909pgv.10;
-        Mon, 24 May 2021 11:59:57 -0700 (PDT)
+        Mon, 24 May 2021 15:01:47 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72958C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:18 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id w206so7810790ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 12:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=dNmbbm7vV2wdR8BIrLsykmJDRlXUTn+Fo63moxvECms=;
-        b=ofsq6Etij2PRpy7t3jNqI9WiGS0tTNgPHODRcyAfMNp6022PSnuZXcuW5HDpFJxM7v
-         iBDnWp8LNor4wBPX4N9eP5srsMdfOD40ZmAuDYx10+S+xmjjAX6FprafcXXVp9nNlyVi
-         nXzB4MpnJ/JQqUqd8L8o23Ysm8y/JA4gxoMePKdIYuKH8al/9+guoCVryiRV479c7LBQ
-         Fnuez/UoPZZo0thFfseZSkr1Z4LvDkBesnwMKRrBTKoK1WTVasTANjhxAx3q6S8FHuUt
-         0ahBtuGEtBObAfDP81LnjCEJVTBTkZe0Bv1JLeoHZOBzgkBYUQ5DgQIbho2DX6ouu6so
-         iQoQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZCl2405oxq5KUkCKGM+eRztXt4CN2xq0xPJS/JuqGfM=;
+        b=zj9nZ6/JuRnHTaDlHlFp+RiJHDPAzagbZtskw955lQ8H8ABQsFQwL3RzPNYhFEIEua
+         91GpCQ8b53Xj1Gx9FGJeFu7sb7701CmWHzhtQAN2UD0bwFkIU4r3F6IBwBGRzeny06AT
+         aQqDXlfEPtUcU1HLPQfJegmmW4vpKIaCsgeP8e5XOsugBx0opd0wSTttycRI40aT+SRj
+         hLHLFOnWwjPKg/xxPlSSojpgPgA06IdjuN9NKI2AGiUNuZaeHoq1Dreum6e2onhcdHei
+         EIHQUDNs8xOADWV5ag2asNeDG+2yfA3SU24BHWFlQFAUmKSaB2OImMucQOn9QJyfGEtF
+         7fYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=dNmbbm7vV2wdR8BIrLsykmJDRlXUTn+Fo63moxvECms=;
-        b=ifg9ugiBXXLf1npRj2tCBZX0zj2YuTcSt3W8QDCMoe8LGGCmeGaVmxsD9AeLXkp7iK
-         rCV1hkuBOUMjlKR5V0VGdQPgkonKxtfyQqfsISeT8qGE+j+GlMlskKJa3zhulIsFk2AR
-         JGCZHkrBGk7N1mAU90wS/BBEWHubjiKCOyyouDfh0U/7f4ivDH70+S3IZwP5jrwZZlLL
-         nKV3s/mhf4ghovgQH7PSmLzlPPYZV35bytPKPu0CQS92MD/mVHU1lRHCHFJzPbvtkjI1
-         o24aM7ne+OJVG1G724ARVWsUTopfR7qafUoYHRLP+Lfty/uv+9CVPiCXDsosyL2J2gls
-         UPIA==
-X-Gm-Message-State: AOAM531xwU0VXFZ3wR2LeyUuzWet0MNnCW1whpw7Luha1eRN5zljyeZr
-        ijTCnoAImqr0tOKNhuYs6ljTwPDZUG3vn4+1Vrw/3A==
-X-Google-Smtp-Source: ABdhPJzD00sn2trc3wkjjloNvGsiMKB8uLcl70wNn3Cup6baOm64drcasP3Mn/VqHDncJYHxOJ2btQ==
-X-Received: by 2002:aa7:982e:0:b029:2e4:eef5:e0c9 with SMTP id q14-20020aa7982e0000b02902e4eef5e0c9mr17633500pfl.3.1621882796905;
-        Mon, 24 May 2021 11:59:56 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id 25sm11493311pfh.39.2021.05.24.11.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 11:59:56 -0700 (PDT)
-Message-ID: <60abf7ac.1c69fb81.fd61c.6a38@mx.google.com>
-Date:   Mon, 24 May 2021 11:59:56 -0700 (PDT)
-X-Google-Original-Date: Mon, 24 May 2021 18:59:53 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-Subject: RE: [PATCH 5.12 000/127] 5.12.7-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZCl2405oxq5KUkCKGM+eRztXt4CN2xq0xPJS/JuqGfM=;
+        b=ZnHesgI/JbPIPn513tmvNn74dgwQOJLjG9VK85F6IzxLbaObWn2C1kEHa5gCxXhw9o
+         /Deh3wz36YFPnc/KbyK3rqPVCuHmhycv9oti6b8Gmt07Fb7zbSVrhBNg+ghs8cFLLpRa
+         67Yi54gg4Djyd4Brz169Wq4AqE/cQ0mn2/Wa5pIWzQ2dqFmNsLe0BD9sSszS3OtB1dZR
+         Y8VFN9CJkuc3/hbZYieU0ras8ApbOd4GFKRHv7DNFJNYfiK66w/EphA+d+dzuUm1KC9U
+         wpvk8esCcAvT7G7JL8qJCKFNBcPhEyoDfRVNuIyytWk3tGiBBWKzlQvCTzLU0N5X6lJ6
+         LPZw==
+X-Gm-Message-State: AOAM533SUDbi/NpRNhDR76XbboBOlUpftXL8hOEBQzDqW3wl/Wf0ORuZ
+        PI/TbX4ZmbYLAjzcoLtrPS70UjNUjVHUekVQVvGDCg==
+X-Google-Smtp-Source: ABdhPJy8bdhzUaRUmhEBPBRy378KnTQW3q3Z+hxh6rQEPEA4jJVTQLA2JbMZTb8tu2NxGwm1v/w3/r9gUKwE7A8En3M=
+X-Received: by 2002:a25:e08e:: with SMTP id x136mr33361771ybg.0.1621882817789;
+ Mon, 24 May 2021 12:00:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210515075444.9210-1-aardelean@deviqon.com>
+In-Reply-To: <20210515075444.9210-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 24 May 2021 21:00:06 +0200
+Message-ID: <CAMpxmJUoEU=yKw68G0MquVCJoCZteTaAvfvgLqD0tXGW-d5nhQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-tps65218: remove platform_set_drvdata() +
+ cleanup probe
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 17:25:17 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.12.7 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Sat, May 15, 2021 at 9:55 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
+>
+> If this is removed, we can also just do a direct return on
+> devm_gpiochip_add_data(). We don't need to print that this call failed as
+> there are other ways to log/see this during probe.
+>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/gpio/gpio-tps65218.c | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-tps65218.c b/drivers/gpio/gpio-tps65218.c
+> index 43a1150055ce..66461ed192d7 100644
+> --- a/drivers/gpio/gpio-tps65218.c
+> +++ b/drivers/gpio/gpio-tps65218.c
+> @@ -187,7 +187,6 @@ static int tps65218_gpio_probe(struct platform_device *pdev)
+>  {
+>         struct tps65218 *tps65218 = dev_get_drvdata(pdev->dev.parent);
+>         struct tps65218_gpio *tps65218_gpio;
+> -       int ret;
+>
+>         tps65218_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps65218_gpio),
+>                                      GFP_KERNEL);
+> @@ -201,16 +200,7 @@ static int tps65218_gpio_probe(struct platform_device *pdev)
+>         tps65218_gpio->gpio_chip.of_node = pdev->dev.of_node;
+>  #endif
+>
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &tps65218_gpio->gpio_chip,
+> -                                    tps65218_gpio);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Failed to register gpiochip, %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       platform_set_drvdata(pdev, tps65218_gpio);
+> -
+> -       return ret;
+> +       return devm_gpiochip_add_data(&pdev->dev, &tps65218_gpio->gpio_chip, tps65218_gpio);
+>  }
+>
+>  static const struct of_device_id tps65218_dt_match[] = {
+> --
+> 2.31.1
+>
 
-5.12.7-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Applied, thanks!
 
+Bart
