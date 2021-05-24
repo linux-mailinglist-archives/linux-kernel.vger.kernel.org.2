@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A16038EFF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A068238F0A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhEXQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        id S237033AbhEXQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235338AbhEXPzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A49CD6192E;
-        Mon, 24 May 2021 15:40:59 +0000 (UTC)
+        id S234920AbhEXP6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE7CE61459;
+        Mon, 24 May 2021 15:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870860;
-        bh=5ES2YZQKfiX6RzirXVDJOVDKo/CI4se+BaBAsnud5O4=;
+        s=korg; t=1621871057;
+        bh=6uPdLOtWDwPTg23SaBpdldN7cAfKsfp4eOLSq3ZdXgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yba6IaOVZLfu3AbXDrF0WLGCcy3JQ2AvxpijO6zJB98J7kMAbunUCCFfugu4iOG3g
-         9Z7ofWo8ou7r4x79yCfPyM7+e8FwgOJ7wIde5oF7Q5jLDgyebbX+IrbV96eKp7MFDP
-         Svn5NwSU7gkjaqxY1PIimbIR2JCJEHBvZz/9Fj78=
+        b=rq/UHO10Mi+Z7IO+Syzw8AVsbBwKzpwrUhy1fvwkNJuim1IrvD1Y9ojhdVMRdDsod
+         IFIPLmcXS/D2DCyqdGxDtK7SZ8p+kDdZi5EMgTTvU2tfuSHKjOAz/xkp5HjGPvfnyG
+         Lm+gEyF6aFSsGYL1NG6Zd71sL9qRCsqcPTp8MVAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 068/104] xen-pciback: reconfigure also from backend watch handler
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 046/127] ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
 Date:   Mon, 24 May 2021 17:26:03 +0200
-Message-Id: <20210524152335.111589801@linuxfoundation.org>
+Message-Id: <20210524152336.400366751@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit c81d3d24602540f65256f98831d0a25599ea6b87 upstream.
+commit 1b6604896e78969baffc1b6cc6bc175f95929ac4 upstream.
 
-When multiple PCI devices get assigned to a guest right at boot, libxl
-incrementally populates the backend tree. The writes for the first of
-the devices trigger the backend watch. In turn xen_pcibk_setup_backend()
-will set the XenBus state to Initialised, at which point no further
-reconfigures would happen unless a device got hotplugged. Arrange for
-reconfigure to also get triggered from the backend watch handler.
+Alesis iO 26 FireWire has two pairs of digital optical interface. It
+delivers PCM frames from the interfaces by second isochronous packet
+streaming. Although both of the interfaces are available at 44.1/48.0
+kHz, first one of them is only available at 88.2/96.0 kHz. It reduces
+the number of PCM samples to 4 in Multi Bit Linear Audio data channel
+of data blocks on the second isochronous packet streaming.
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/2337cbd6-94b9-4187-9862-c03ea12e0c61@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+This commit fixes hardcoded stream formats.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 28b208f600a3 ("ALSA: dice: add parameters of stream formats for models produced by Alesis")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210513125652.110249-2-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/xen-pciback/xenbus.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ sound/firewire/dice/dice-alesis.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -359,7 +359,8 @@ out:
- 	return err;
- }
+--- a/sound/firewire/dice/dice-alesis.c
++++ b/sound/firewire/dice/dice-alesis.c
+@@ -16,7 +16,7 @@ alesis_io14_tx_pcm_chs[MAX_STREAMS][SND_
+ static const unsigned int
+ alesis_io26_tx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT] = {
+ 	{10, 10, 4},	/* Tx0 = Analog + S/PDIF. */
+-	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
++	{16, 4, 0},	/* Tx1 = ADAT1 + ADAT2 (available at low rate). */
+ };
  
--static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev)
-+static int xen_pcibk_reconfigure(struct xen_pcibk_device *pdev,
-+				 enum xenbus_state state)
- {
- 	int err = 0;
- 	int num_devs;
-@@ -373,9 +374,7 @@ static int xen_pcibk_reconfigure(struct
- 	dev_dbg(&pdev->xdev->dev, "Reconfiguring device ...\n");
- 
- 	mutex_lock(&pdev->dev_lock);
--	/* Make sure we only reconfigure once */
--	if (xenbus_read_driver_state(pdev->xdev->nodename) !=
--	    XenbusStateReconfiguring)
-+	if (xenbus_read_driver_state(pdev->xdev->nodename) != state)
- 		goto out;
- 
- 	err = xenbus_scanf(XBT_NIL, pdev->xdev->nodename, "num_devs", "%d",
-@@ -500,6 +499,10 @@ static int xen_pcibk_reconfigure(struct
- 		}
- 	}
- 
-+	if (state != XenbusStateReconfiguring)
-+		/* Make sure we only reconfigure once. */
-+		goto out;
-+
- 	err = xenbus_switch_state(pdev->xdev, XenbusStateReconfigured);
- 	if (err) {
- 		xenbus_dev_fatal(pdev->xdev, err,
-@@ -525,7 +528,7 @@ static void xen_pcibk_frontend_changed(s
- 		break;
- 
- 	case XenbusStateReconfiguring:
--		xen_pcibk_reconfigure(pdev);
-+		xen_pcibk_reconfigure(pdev, XenbusStateReconfiguring);
- 		break;
- 
- 	case XenbusStateConnected:
-@@ -664,6 +667,15 @@ static void xen_pcibk_be_watch(struct xe
- 		xen_pcibk_setup_backend(pdev);
- 		break;
- 
-+	case XenbusStateInitialised:
-+		/*
-+		 * We typically move to Initialised when the first device was
-+		 * added. Hence subsequent devices getting added may need
-+		 * reconfiguring.
-+		 */
-+		xen_pcibk_reconfigure(pdev, XenbusStateInitialised);
-+		break;
-+
- 	default:
- 		break;
- 	}
+ int snd_dice_detect_alesis_formats(struct snd_dice *dice)
 
 
