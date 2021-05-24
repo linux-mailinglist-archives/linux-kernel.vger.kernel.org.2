@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040FC38F64D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6199038F66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhEXXlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEXXlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:41:25 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A2AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:39:56 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id q15so21263589pgg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ScP+JQEFIOUy2qItnppcbf9xv+MC926aHBMDbL0Nw9U=;
-        b=M6urPmM3g0V4emOnatNp6BiNMDnYW7u0A/GnhbIndDOjpI9JBwEjf6ywlQgDHNI2yG
-         6QDiQkG9ekynmu8cvn58g0l18O3M4UtkdbYeaKsEYT6ghXHfi2wfl/rWLlzKtZqBJJuC
-         fPl4wlWafumvVE7M25KxTo8Um95KtkuAVAGBvhB0Fqdk/fncZbHE8fSniiBkEo9h6ctQ
-         NWo69A1xoalGvD+1biY79Y3oGnYi/Thb9MUqvHjhQiyb3WeLRWHzXCnZvj/7NEFzjD7v
-         fD08n9qqIJK1I4QEEQtngsyg+vm3Bhwe3rXKAhaTlO6uI8H/5UUNWyvB383Z+lXAIo0Z
-         CIuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ScP+JQEFIOUy2qItnppcbf9xv+MC926aHBMDbL0Nw9U=;
-        b=VroUsZze5tTZoDcPBXuspqqCk53sWnb61gF9nSv8ukrVUpJyQzUyixf2/2U4SXgUBX
-         Qfmx1zpZQJ/ysrtF46syIRIRtPkuPQ0wpBilbW8MAF43DStFlsyKh7EuIBYn/8fm2X+L
-         OvB97KB96QJozOKEy0wSStILsBzQOLlDqWZydezhhniPxWPE0Y0PBwnVCkilHqLYAD6v
-         ggH5EEEH42AcMsHL0OTtO/pp46KtdzBKspz/BL9sAWCLxeWZRioJaIqw7liHd2j4Z9GD
-         8jVa9Zdo2l2IVWNiYpS7pcaemOrJ+4o+/e4UgoTjZFBrrT/aA9vv6ZwxGdqSQYmGUMi9
-         fU+A==
-X-Gm-Message-State: AOAM533uSs3696W+X1qImC0OfT7xPPiUx0dDcsMY2MptyxKtxW2f8b0Q
-        i4Z8YaoKcBkz9LKODNtZEfgBsnYitB0MhJojsa7bqQ==
-X-Google-Smtp-Source: ABdhPJyRJfXU68yrQteEganVzmViGo6gUtallvPH1XMRPbIoWbA74YZ6kkO+I2kGrrPpJs0wcqtZzmtvljHRFzxacPU=
-X-Received: by 2002:a63:4b43:: with SMTP id k3mr15974638pgl.450.1621899595958;
- Mon, 24 May 2021 16:39:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com> <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 24 May 2021 16:39:49 -0700
-Message-ID: <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX guest
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230507AbhEXXoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhEXXm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:42:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C64686140F;
+        Mon, 24 May 2021 23:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621899687;
+        bh=WpOkHh4kv1W74/DyvTIZCMl22CrsOB78gu+cKOhCpy0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XgTQfvYe7m5+60/PtvQHLaA/nbLL+nfM+Lz8hGJBFZ+LonNO9HbzYjtxkazadcYoy
+         pHFQdH4uD+3CTKqLO4qYT8QUf7jwQ94APzqOmKEk0texuLqkcRR/PcSgnD/T5UAYkJ
+         6v6dzo8gTHjxqW6ql3eGNMSJfTRZKb2hS+gLLmRMGQKBLV7+DN8YMHSFIBYnQKSnkb
+         9aA8/VzEc8gcQAbZNmMQa0cb4OH7XuhnaFQ8HxkGd7FxE1M7hpfREJ0qZogTuvgdgs
+         7OzzRTwP8K7qULp7xdxVHeVeyQ6OVzPLwFxYvwh3cX0iP4P4ZHITaT+/L2savTVzyR
+         1YdNYNlcNsubg==
+Date:   Tue, 25 May 2021 08:41:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, ast@kernel.org,
+        bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        tglx@linutronix.de, X86 ML <x86@kernel.org>, yhs@fb.com
+Subject: Re: [PATCH -tip v2 02/10] kprobes: treewide: Replace
+ arch_deref_entry_point() with dereference_function_descriptor()
+Message-Id: <20210525084122.983fce68c1b1d8f5e0e2ec9d@kernel.org>
+In-Reply-To: <1621848345.yvip3z0wyn.naveen@linux.ibm.com>
+References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
+        <161553132545.1038734.15042495470069054830.stgit@devnote2>
+        <1621848345.yvip3z0wyn.naveen@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 4:32 PM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> Functionally only DMA devices can notice a side effect from
-> WBINVD's cache flushing. But, TDX does not support DMA,
-> because DMA typically needs uncached access for MMIO, and
-> the current TDX module always sets the IgnorePAT bit, which
-> prevents that.
+Hi Naveen,
 
-I thought we discussed that there are other considerations for wbinvd
-besides DMA? In any event this paragraph is actively misleading
-because it disregards ACPI and Persistent Memory secure-erase whose
-usages of wbinvd have nothing to do with DMA. I would much prefer a
-patch to shutdown all the known wbinvd users as a precursor to this
-patch rather than assuming it's ok to simply ignore it. You have
-mentioned that TDX does not need to use those paths, but rather than
-assume they can't be used why not do the audit to explicitly disable
-them? Otherwise this statement seems to imply that the audit has not
-been done.
+On Mon, 24 May 2021 14:56:50 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.ibm.com> wrote:
+
+> Masami Hiramatsu wrote:
+> > Replace arch_deref_entry_point() with dereference_function_descriptor()
+> > because those are doing same thing.
+> 
+> It's not quite the same -- you need dereference_symbol_descriptor().
+
+Got it! dereference_function_descriptor() doesn't handle the symbols
+in the modules.
+
+Thank you!
+
+> 
+> 
+> - Naveen
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
