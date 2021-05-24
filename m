@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3068D38E7EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADF938E7F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhEXNof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        id S232869AbhEXNq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbhEXNo3 (ORCPT
+        with ESMTP id S232875AbhEXNqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:44:29 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02506C061756;
-        Mon, 24 May 2021 06:43:01 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id y76so17827362oia.6;
-        Mon, 24 May 2021 06:43:00 -0700 (PDT)
+        Mon, 24 May 2021 09:46:54 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C87CC061574;
+        Mon, 24 May 2021 06:45:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id y14so26521467wrm.13;
+        Mon, 24 May 2021 06:45:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nF07paaoG3jGvPxI4nip343c9NWP2ELhNwJytuUtMbI=;
-        b=pp8vSGVbBXgNqo9c8hQQENnz8utSW1ro/pYR1mn3XfB/1hrgyvqQ/JeEe8w71D7E3u
-         laWYwAlw2G047diBzJhfMlCPkzi8XRpuHELXkwPNzBNxJuWZJFEROo968ZUSvZ0Gmiph
-         GS+PNA4LzAS8L2EoEaG+m9ttB0txWtoyZQ8MeIPsXd8DsvKqeREcP6ctyrL2D74XNkxv
-         TcKDB0Tp9D7wJzFBpPdl87Yg/f9rR/Ilw/rPKa4kaIXFc59jp7a1QJEJX3//GAMCTBQV
-         fV8jvC3gX3hRHvugeHLbH+jGH4QeYQ+ufMhD06nleYu43oOJeDNA0Rvng5iW3L+t11fS
-         q89g==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EeXZgICZ0Z3OHOI6Ok7UZ8Rl7RngQhEPXl7GMuZ58Z4=;
+        b=mqHqSvWf0wfZVsJwOA4yoT0GvgyqdORSFVATxX3FS9pw+TQbsGfYNWfByKi9GeDwjk
+         0xi0l5/2FL3ip9OYJcVHqUvc2C0gcGgM5Bn0DNreRpchYwI6nBg8pwMMzPdwOhUjg4lG
+         /qyhqKnKA28WSUgWIehtnP1elwWVLy9FQREWCuqBUhO+qepcUrXFdq4IYrOqzLvOh7O9
+         vhMpGXEIfs+rMVig2KLSMEgAXCL2TSIrNWWqcm0HR2kczawpbSGtEHT5n18Hn97tyJg2
+         1z0Kth5HKKmp6dWrUOuj7VIPtnY2oidk2pafQKGYgDq/CFTAB7lMj4NMfFEZ9dYaMyb+
+         hZsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nF07paaoG3jGvPxI4nip343c9NWP2ELhNwJytuUtMbI=;
-        b=nHpGM4utOQlDjdh0UmK4gc6iEydO9tYPZBoXQ5x3rOf6koHxdaRHWIWaF0kYkftsPz
-         gc+sXruzzamCRqbWAIn4TQaQmHWZxMpjlCOzy6ofxPPZCNNDacBlbFevsAh8C5gzFNJO
-         EecvK7yp+Ge50Zv/mBx29FKaX2lKGTznnZVHXXzaMNRLST0H+zvDuyh2ZBHyre/QI0no
-         OmtyflwRFuBNF4UMfR9mq3b8VmEF2oZAP5OahH8N+/S6N/niIIS4Qvo9EpT5n5WBDszo
-         1RIwjYCR5K2IJ15pDSGCV8qIsK1Kc0KSffKm8lfNjoTlmDVFdvTgyJhfYY3T0QB9QNDN
-         emfQ==
-X-Gm-Message-State: AOAM530WEu8bBYNyF0fOYxcAcRrI3JOfrCtNkbi0vPSPhzViKWQhkoYm
-        gUM3a49lOBKyz3v5bRossSw=
-X-Google-Smtp-Source: ABdhPJw1qWZNHAl/oNtYKGXvY5CoCsK4IKNju8UmdZeSMgRQERXGZ/cO8E7q+Uwak7Z2w4dtmnIDUw==
-X-Received: by 2002:aca:bc8b:: with SMTP id m133mr10646488oif.10.1621863780404;
-        Mon, 24 May 2021 06:43:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c18sm3111268otm.1.2021.05.24.06.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:42:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 0/9] Intel Keem Bay WDT bug fixes
-To:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "Sanil, Shruthi" <shruthi.sanil@intel.com>
-Cc:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kris.pan@linux.intel.com" <kris.pan@linux.intel.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Thokala, Srikanth" <srikanth.thokala@intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>
-References: <20210517174953.19404-1-shruthi.sanil@intel.com>
- <BYAPR11MB312848D2D369C78BD2E969F0F1269@BYAPR11MB3128.namprd11.prod.outlook.com>
- <YKuBppIuUHqkiMg4@smile.fi.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <88c07283-981c-b998-59a1-315f94f10f3e@roeck-us.net>
-Date:   Mon, 24 May 2021 06:42:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=EeXZgICZ0Z3OHOI6Ok7UZ8Rl7RngQhEPXl7GMuZ58Z4=;
+        b=ldcH5/Hxx3rLUk9EAnr5XzYMbZpyNfD1A3NW3YB6dgl7EMRI8mEhI5AIETqNHkl7M5
+         Jvf8RaxgPiVp8G9w/EKZRXDskd6cORoUhbLum0aGmKh5CvFZzHtb2iyM+O3ldBMBVt11
+         OjnbA/iETIozePaNvyftQvebmSBvFTlFuPl6/TvfFa+3dork2/wNVfQV8xoNcJMTGqsj
+         7eNqtpLOZinNNorof4NnRA/zlzpvcBoxjQ9SSqkA9bU3sRi7zfy8vPvGv7DdAx2Y35Wi
+         mpLEKa0MUfslaJxCJFlQdbgFT59dnAdYVsCtPs5ZZWqItGy/4BVILS/jGT5UB38ET7R9
+         6usw==
+X-Gm-Message-State: AOAM532NE2XgJYI1gJQsIoKb3bg1rshG59PuFSzmpSg+ydrvz0EXpcoZ
+        GW2x6MxH2IxMbyPNcgc/oH4=
+X-Google-Smtp-Source: ABdhPJzT63Ul/bqB6pl6ZjLa+2aDy2Jm8I+RrICz2ZatOw7KGfEaFEZk8DVBL1gqsUVVcPv9ctEw5A==
+X-Received: by 2002:adf:ee11:: with SMTP id y17mr22401706wrn.57.1621863923145;
+        Mon, 24 May 2021 06:45:23 -0700 (PDT)
+Received: from localhost.localdomain (p200300f1370a3a00f22f74fffe210725.dip0.t-ipconnect.de. [2003:f1:370a:3a00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id b13sm1470159wmj.40.2021.05.24.06.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 06:45:22 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org
+Cc:     narmstrong@baylibre.com, mturquette@baylibre.com, sboyd@kernel.org,
+        khilman@baylibre.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2] clk: meson: meson8b: Use CLK_SET_RATE_NO_REPARENT for vclk{,2}_in_sel
+Date:   Mon, 24 May 2021 15:45:17 +0200
+Message-Id: <20210524134517.687089-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YKuBppIuUHqkiMg4@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 3:36 AM, andriy.shevchenko@linux.intel.com wrote:
-> On Mon, May 24, 2021 at 06:06:35AM +0000, Sanil, Shruthi wrote:
->> Hi Roeck,
->>
->> I have addressed your review comments in the v2 version of this patch series.
->> Could you please review?
->>
->> If no comments, can I get an Acked-by tag?
->> Thanks!
-> 
-> First of all, do not top post!
-> 
->>> From: Sanil, Shruthi <shruthi.sanil@intel.com>
->>> Sent: Monday, May 17, 2021 11:20 PM
-> 
-> AFAICS Guenter had reviewed (as you put his tags into commits). It means that
-> maintainer will pickup patches when they feel it's a good time.
-> 
+Use CLK_SET_RATE_NO_REPARENT for the vclk{,2}_in_sel clocks. The only
+parent which is actually used is vid_pll_final_div. This should be set
+using assigned-clock-parents in the .dts rather than removing some
+"unwanted" clock parents from the clock driver.
 
-Yes, and the patches are queued in my own watchdog-next branch.
-At this point we'll have to wait for the Wim to pick up the series.
+Suggested-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+After a hint from Jerome (thanks) this is the improved version of
+"clk: meson: meson8b: Don't use MPLL1 as parent of vclk_in_sel" from [0]
 
-Guenter
+
+[0] https://patchwork.kernel.org/project/linux-clk/patch/20210524104533.555953-1-martin.blumenstingl@googlemail.com/
+
+
+ drivers/clk/meson/meson8b.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+index a844d35b553a..0f8bd707217a 100644
+--- a/drivers/clk/meson/meson8b.c
++++ b/drivers/clk/meson/meson8b.c
+@@ -1175,7 +1175,7 @@ static struct clk_regmap meson8b_vclk_in_sel = {
+ 		.ops = &clk_regmap_mux_ro_ops,
+ 		.parent_hws = meson8b_vclk_mux_parent_hws,
+ 		.num_parents = ARRAY_SIZE(meson8b_vclk_mux_parent_hws),
+-		.flags = CLK_SET_RATE_PARENT,
++		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
+ 	},
+ };
+ 
+@@ -1358,7 +1358,7 @@ static struct clk_regmap meson8b_vclk2_in_sel = {
+ 		.ops = &clk_regmap_mux_ro_ops,
+ 		.parent_hws = meson8b_vclk_mux_parent_hws,
+ 		.num_parents = ARRAY_SIZE(meson8b_vclk_mux_parent_hws),
+-		.flags = CLK_SET_RATE_PARENT,
++		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
+ 	},
+ };
+ 
+-- 
+2.31.1
+
