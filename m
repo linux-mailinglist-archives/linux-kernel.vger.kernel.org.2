@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD6738F2D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8300838F2E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhEXSTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233778AbhEXSSy (ORCPT
+        id S233783AbhEXSWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:22:46 -0400
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:42984 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233104AbhEXSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:18:54 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263E5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:17:25 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id o10so24808351ilm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cx7Q03KErO3Qcjdme6iFJ07EvyWiwtMpo7D7QaMiHZY=;
-        b=A9tpYhcO7hkSPF1iOdFkg5OyIo9vA6+I0m06vKNr0mH/VsITvJqporMxuT0SoXZMdk
-         FD6bsMX+xGAxjNP2LCQnpHUuqM+u+B/OrnTYocHDAvz2csKycyL6iTzY/xM4LyHegfyU
-         HqYxtq2gyEaEt0MfD+UceHtegMknIH7wcIUzxJebpGVCN06G8a59pJt3/m/mckidaRvb
-         a4FS2+GwgQAju+KJo/rYWmdXEhpWrMUeqsTa4YNuDhs995OoE927b0E/dOiFoFJ7G3fN
-         zr2xIBDrOrH/PhBYXNc0QzeWXxR0Cgajjal/3Go/wUwVa07+S/u2yy6FRKtKUOJBsLGL
-         cunA==
+        Mon, 24 May 2021 14:22:45 -0400
+Received: by mail-ed1-f54.google.com with SMTP id i13so33076194edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 11:21:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cx7Q03KErO3Qcjdme6iFJ07EvyWiwtMpo7D7QaMiHZY=;
-        b=aAwiU/JvzBctVJKdBjGnS3DQuD/NLwdfgkXJWQQClEm9S89BcbxEtRdjuObgvcrkvK
-         D5gso124HLN8msioZngD3E7TYQN8x9rtZ9NOOtp1ieMhi3WGWaZqFWElPkFS5LFsQrJ9
-         Rl3Oxdg2F/bI6b/dvJQELYQFfmLxOt9YNgc5joBCAGNEo6L/NklNxY83zqGFKkhKZPS6
-         eW8YUX2Ol6G0SPcPJtIiU6NIe3tpMS6j2PN5dQuG038aCLaO4K14xo5Awye/ENCfgCKt
-         fUiX17vWSgq0mxwR4oDZ4Dr4VYrJQ+3ZjliQSnPg/L0hSFndONBFno8VzPY63n7DfZLS
-         e4Xg==
-X-Gm-Message-State: AOAM532kiwKs6xFifT0VSuGKWjJCAg+JlrzaL7EUulvGzwfYqVA0EK+K
-        /4IECWEl0ZWj7cEoRjbow/pixMd6Sw==
-X-Google-Smtp-Source: ABdhPJymzotG4+QeHjmiXGXGaoSTdI8jUv/wDnvvGDK+Yu0xX0CCO6RN0T68gHkwN2kgTdNE4O/9Qg==
-X-Received: by 2002:a92:ddd1:: with SMTP id d17mr14359217ilr.46.1621880244376;
-        Mon, 24 May 2021 11:17:24 -0700 (PDT)
-Received: from citadel.. (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id p5sm11863673ilg.33.2021.05.24.11.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 11:17:24 -0700 (PDT)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 3/3] x86/syscalls: Don't sdjust CFLAGS for syscall tables
-Date:   Mon, 24 May 2021 14:17:07 -0400
-Message-Id: <20210524181707.132844-4-brgerst@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524181707.132844-1-brgerst@gmail.com>
-References: <20210524181707.132844-1-brgerst@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QTRAn6sKnTpFLjexpEsWGr3qh3gJ0MoVGcpa7DMK578=;
+        b=I4D8Gsfnj4uJECQ9i5XFtDvT7/xCeOhehqik0+/T+0I8V+9a0vvpxZ8K/Zy7z2phDx
+         JJ6H4XgPQ5rTXrOcxhtIExL5LFtzyjZReUBZl/NGG1mD8Qq82PwfwMI/+11Oj4A+JCvJ
+         VSWXrd8Qwn8DWoLlzTzR3zpY8lI+2a5QlpWZKxCitI+yE/ZbCIHMMrE2L6r5vd3HRevY
+         fmvQIZnxQdipr9opIEIhsWjOFRxrA3BZEUKv5djua32YVa3KxX+dqjBBY4l76atnwt1E
+         suhEplnIKXTkcqOhz2stq3x/p7h30FUz5IsuwmtdnmL91WHGnpW9oKdpn3xyiYUdmF3N
+         XUug==
+X-Gm-Message-State: AOAM533GGSirB4CzKwxPsI8P5AQAgyAYOn99v4v5Sd8hvU2ZpYuYKsQ8
+        E74lDAThWe8Yd1UvslwgNJntacEK9Sa/JQ9Io6M=
+X-Google-Smtp-Source: ABdhPJw6vU4G3l2YTagz5gO4ugX7pzLV5Gtn3cUx+8qVU48cI3vngX63ipQU5FtBGPv1MOo7BIOPXM8KWajyCChKAwg=
+X-Received: by 2002:a05:6402:5a:: with SMTP id f26mr27248413edu.306.1621880476224;
+ Mon, 24 May 2021 11:21:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-22-chang.seok.bae@intel.com> <8c8d91ae-5a3b-9523-725d-134840102df7@kernel.org>
+ <CAJvTdKnU6g2H-R67G8LCs4cs0_NqnOzoKbC3J+iNGayFE5RGMQ@mail.gmail.com> <5a645958-10ab-46e7-9650-e5746a8d2276@www.fastmail.com>
+In-Reply-To: <5a645958-10ab-46e7-9650-e5746a8d2276@www.fastmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 24 May 2021 14:21:05 -0400
+Message-ID: <CAJvTdKkTSv7zc2eT1Ni6+k=V_faCCWmMo5oNunQQt-P7FkON-Q@mail.gmail.com>
+Subject: Re: [PATCH v5 21/28] x86/fpu/amx: Initialize child's AMX state
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The syscall_*.c files only contain data (the syscall tables).  There
-is no need to adjust CFLAGS for tracing and stack protector since they
-contain no code.
+On Mon, May 24, 2021 at 2:14 PM Andy Lutomirski <luto@kernel.org> wrote:
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/entry/Makefile | 6 ------
- 1 file changed, 6 deletions(-)
+> What does VOLATILE mean in this context?
 
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index 94d2843ce80c..7fec5dcf6438 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -8,14 +8,8 @@ UBSAN_SANITIZE := n
- KCOV_INSTRUMENT := n
- 
- CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
--CFLAGS_REMOVE_syscall_64.o	= $(CC_FLAGS_FTRACE)
--CFLAGS_REMOVE_syscall_32.o	= $(CC_FLAGS_FTRACE)
--CFLAGS_REMOVE_syscall_x32.o	= $(CC_FLAGS_FTRACE)
- 
- CFLAGS_common.o			+= -fno-stack-protector
--CFLAGS_syscall_64.o		+= -fno-stack-protector
--CFLAGS_syscall_32.o		+= -fno-stack-protector
--CFLAGS_syscall_x32.o		+= -fno-stack-protector
- 
- obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
+Volatile means caller-saved.
+
+Volatile registers can not be used for globals, static, or for
+parameter passing.
+
+ie. By the time the callee is running, they must be assumed to be invalid.
+
+This means that any routine, including the target of a system call,
+such as fork/clone, can't assume that any data exists in these
+registers.
+
 -- 
-2.31.1
-
+Len Brown, Intel Open Source Technology Center
