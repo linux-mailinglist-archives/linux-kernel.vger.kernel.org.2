@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507E238EE98
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D468D38F09B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbhEXPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        id S236755AbhEXQEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:04:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234652AbhEXPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:44:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 679A96145A;
-        Mon, 24 May 2021 15:36:06 +0000 (UTC)
+        id S233923AbhEXP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4229613C8;
+        Mon, 24 May 2021 15:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870566;
-        bh=Wjlwndu3maWl4Pu3r737cwkled+6HVuNMWTYCHealns=;
+        s=korg; t=1621871031;
+        bh=KN9/wTIwtYFC3VY1RYKg//I4UbsHp7lVb6coPb4Sxuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A2kRPcIao1GK7fYBNoVGsIo7rb2iMCVsSJ31j5f3oM18DaxKWtaTYMP0D97ZOajqe
-         y/0gpdvqTU7gA5Zv52D8JhTmCNcIkmjAELzQCwjkBQRZUrKHkUzpVhHvQJ4aoPZeaJ
-         qjZYW0dXIx8G+dlYLC8/ITpC/j2MyCHWwSPuJM6c=
+        b=dnHuDhA0TVn+5/TKZOpeT/XN4i4ldR+mDsUUXZ1gALUvaWcAp52JbYKMWBUpVd4K+
+         S13ATLUQx0ZdCgeN4suH2mQpq8zXWslJ6pRrLIB5TRKEjXlNo/EtkV8G2i6uwYkrpN
+         +qK/N8TMqxzjhEWf7n4Od7hG8DwCau21Y3m2DcyY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Subject: [PATCH 4.19 45/49] video: hgafb: fix potential NULL pointer dereference
-Date:   Mon, 24 May 2021 17:25:56 +0200
-Message-Id: <20210524152325.825916178@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 5.12 040/127] fs/mount_setattr: tighten permission checks
+Date:   Mon, 24 May 2021 17:25:57 +0200
+Message-Id: <20210524152336.206780930@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,76 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From: Christian Brauner <christian.brauner@ubuntu.com>
 
-commit dc13cac4862cc68ec74348a80b6942532b7735fa upstream.
+commit 2ca4dcc4909d787ee153272f7efc2bff3b498720 upstream.
 
-The return of ioremap if not checked, and can lead to a NULL to be
-assigned to hga_vram. Potentially leading to a NULL pointer
-dereference.
+We currently don't have any filesystems that support idmapped mounts
+which are mountable inside a user namespace. That was a deliberate
+decision for now as a userns root can just mount the filesystem
+themselves. So enforce this restriction explicitly until there's a real
+use-case for this. This way we can notice it and will have a chance to
+adapt and audit our translation helpers and fstests appropriately if we
+need to support such filesystems.
 
-The fix adds code to deal with this case in the error label and
-changes how the hgafb_probe handles the return of hga_card_detect.
-
-Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-40-gregkh@linuxfoundation.org
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: stable@vger.kernel.org
+CC: linux-fsdevel@vger.kernel.org
+Suggested-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/hgafb.c |   21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ fs/namespace.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/video/fbdev/hgafb.c
-+++ b/drivers/video/fbdev/hgafb.c
-@@ -285,6 +285,8 @@ static int hga_card_detect(void)
- 	hga_vram_len  = 0x08000;
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3853,8 +3853,12 @@ static int can_idmap_mount(const struct
+ 	if (!(m->mnt_sb->s_type->fs_flags & FS_ALLOW_IDMAP))
+ 		return -EINVAL;
  
- 	hga_vram = ioremap(0xb0000, hga_vram_len);
-+	if (!hga_vram)
-+		return -ENOMEM;
- 
- 	if (request_region(0x3b0, 12, "hgafb"))
- 		release_io_ports = 1;
-@@ -344,13 +346,18 @@ static int hga_card_detect(void)
- 			hga_type_name = "Hercules";
- 			break;
- 	}
--	return 1;
-+	return 0;
- error:
- 	if (release_io_ports)
- 		release_region(0x3b0, 12);
- 	if (release_io_port)
- 		release_region(0x3bf, 1);
--	return 0;
++	/* Don't yet support filesystem mountable in user namespaces. */
++	if (m->mnt_sb->s_user_ns != &init_user_ns)
++		return -EINVAL;
 +
-+	iounmap(hga_vram);
-+
-+	pr_err("hgafb: HGA card not detected.\n");
-+
-+	return -EINVAL;
- }
+ 	/* We're not controlling the superblock. */
+-	if (!ns_capable(m->mnt_sb->s_user_ns, CAP_SYS_ADMIN))
++	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
  
- /**
-@@ -548,13 +555,11 @@ static struct fb_ops hgafb_ops = {
- static int hgafb_probe(struct platform_device *pdev)
- {
- 	struct fb_info *info;
-+	int ret;
- 
--	if (! hga_card_detect()) {
--		printk(KERN_INFO "hgafb: HGA card not detected.\n");
--		if (hga_vram)
--			iounmap(hga_vram);
--		return -EINVAL;
--	}
-+	ret = hga_card_detect();
-+	if (!ret)
-+		return ret;
- 
- 	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
- 		hga_type_name, hga_vram_len/1024);
+ 	/* Mount has already been visible in the filesystem hierarchy. */
 
 
