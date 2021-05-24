@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34F438EDD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B4938EF5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhEXPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51440 "EHLO mail.kernel.org"
+        id S233543AbhEXP5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234046AbhEXPiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9990E613E4;
-        Mon, 24 May 2021 15:33:31 +0000 (UTC)
+        id S234875AbhEXPuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:50:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5210D61582;
+        Mon, 24 May 2021 15:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870412;
-        bh=J2hRgjcqHwwKOaAQY1NXUiYhUUmHXXp0YzhfGjhnjW4=;
+        s=korg; t=1621870690;
+        bh=bIjaOzREzXVP/C3vVJuDR7hJDRSMe4Kzm3Mqzhv84To=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9AGSuJFoRPdxLzzXegMBbJUX3GCBmH0CU9Rv0stZQ3U3svmXBjypeAaajsNPI40D
-         PnmT8luuVCUxd1Y5p6Qwlo5TpjHBNglJ4vgzTT6tCtbZntv4ZGquTHcshjpdla6Ng9
-         4ou78CzOg4pUasIKDC8VE/Evu7nNNmLJPsKNjtUs=
+        b=gzTkDjA8Hi0PJEG1mO4RzcLX0EASr2jHELrMDubo7R2mTzm61VFn4XYz67Z/tLzJ1
+         8hFIHFr8b+/e+yyM4uE7L5uwgbwILHZUbu9R6lsY9fFbwZsDI3I4zIxTV5TMJonjr5
+         7xIajob6ZTyBi2tdJU2g4WQjKLMqKBfFSEUaakpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Peter Rosin <peda@axentia.se>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.14 22/37] Revert "gdrom: fix a memory leak bug"
+        stable@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 20/71] ALSA: line6: Fix racy initialization of LINE6 MIDI
 Date:   Mon, 24 May 2021 17:25:26 +0200
-Message-Id: <20210524152324.933788892@linuxfoundation.org>
+Message-Id: <20210524152327.115605803@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 257343d3ed557f11d580d0b7c515dc154f64a42b upstream.
+commit 05ca447630334c323c9e2b788b61133ab75d60d3 upstream.
 
-This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
+The initialization of MIDI devices that are found on some LINE6
+drivers are currently done in a racy way; namely, the MIDI buffer
+instance is allocated and initialized in each private_init callback
+while the communication with the interface is already started via
+line6_init_cap_control() call before that point.  This may lead to
+Oops in line6_data_received() when a spurious event is received, as
+reported by syzkaller.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+This patch moves the MIDI initialization to line6_init_cap_control()
+as well instead of the too-lately-called private_init for avoiding the
+race.  Also this reduces slightly more lines, so it's a win-win
+change.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-Because of this, all submissions from this group must be reverted from
-the kernel tree and will need to be re-reviewed again to determine if
-they actually are a valid fix.  Until that work is complete, remove this
-change to ensure that no problems are being introduced into the
-codebase.
-
-Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Peter Rosin <peda@axentia.se>
-Cc: Jens Axboe <axboe@kernel.dk>
-Fixes: 093c48213ee3 ("gdrom: fix a memory leak bug")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-27-gregkh@linuxfoundation.org
+Reported-by: syzbot+0d2b3feb0a2887862e06@syzkallerlkml..appspotmail.com
+Link: https://lore.kernel.org/r/000000000000a4be9405c28520de@google.com
+Link: https://lore.kernel.org/r/20210517132725.GA50495@hyeyoo
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210518083939.1927-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cdrom/gdrom.c |    1 -
- 1 file changed, 1 deletion(-)
+ sound/usb/line6/driver.c |    4 ++++
+ sound/usb/line6/pod.c    |    5 -----
+ sound/usb/line6/variax.c |    6 ------
+ 3 files changed, 4 insertions(+), 11 deletions(-)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -889,7 +889,6 @@ static void __exit exit_gdrom(void)
- 	platform_device_unregister(pd);
- 	platform_driver_unregister(&gdrom_driver);
- 	kfree(gd.toc);
--	kfree(gd.cd_info);
- }
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -690,6 +690,10 @@ static int line6_init_cap_control(struct
+ 		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
++
++		ret = line6_init_midi(line6);
++		if (ret < 0)
++			return ret;
+ 	} else {
+ 		ret = line6_hwdep_init(line6);
+ 		if (ret < 0)
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *li
+ 	if (err < 0)
+ 		return err;
  
- module_init(init_gdrom);
+-	/* initialize MIDI subsystem: */
+-	err = line6_init_midi(line6);
+-	if (err < 0)
+-		return err;
+-
+ 	/* initialize PCM subsystem: */
+ 	err = line6_init_pcm(line6, &pod_pcm_properties);
+ 	if (err < 0)
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -159,7 +159,6 @@ static int variax_init(struct usb_line6
+ 		       const struct usb_device_id *id)
+ {
+ 	struct usb_line6_variax *variax = line6_to_variax(line6);
+-	int err;
+ 
+ 	line6->process_message = line6_variax_process_message;
+ 	line6->disconnect = line6_variax_disconnect;
+@@ -172,11 +171,6 @@ static int variax_init(struct usb_line6
+ 	if (variax->buffer_activate == NULL)
+ 		return -ENOMEM;
+ 
+-	/* initialize MIDI subsystem: */
+-	err = line6_init_midi(&variax->line6);
+-	if (err < 0)
+-		return err;
+-
+ 	/* initiate startup procedure: */
+ 	schedule_delayed_work(&line6->startup_work,
+ 			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
 
 
