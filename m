@@ -2,122 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4BF38E749
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8D638E74B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbhEXNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:20:54 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:38652 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbhEXNUv (ORCPT
+        id S232881AbhEXNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:21:54 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:40777 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232456AbhEXNVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:20:51 -0400
-Received: by mail-io1-f69.google.com with SMTP id i13-20020a5e9e0d0000b029042f7925649eso27448772ioq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:19:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=xlJyul8EX30BPfx0IrWN2X0dWiT6NoPE1yBME7Ku8yY=;
-        b=Sj1Qv4KE+L0dsRPMmWIbx0MJB62DAzZa8Dp4R7IywwA77OQpINtwOjUD2GVKZ9GjBP
-         Wsq46Mb0EwdkaACE/Nwpqllfq/YyTsix0260QlBL2zrVv4nqgkHshGUgZbKasdpQPmU9
-         9RvDhyyqlL8A/+LZLzFO5Bn/zEL3m1OMAhC8/m1K6iikfEZ1b4HZpvro1hqiRGPYSRQy
-         zXhb+8USMwAx9E6FF1X04lSaOQUPELSm2sbKqTpns1l4ZCFIUUjpl2/nE+1IFhh3Fis5
-         eXRtEO1dpJD+p1+/L0SE7t+FUnkh9RQ0D8ZPZ942TSTSImA4Xf/DW54D0+jOBczeuyzm
-         LvFw==
-X-Gm-Message-State: AOAM530NntXioHDwrpSYmjJ4hXP5OedeQdGUqmN+Sid+iUEGfrYYrtxu
-        yeHZ9klHb59bIvFG2dxBiVtozxn++97yQdAeFtEcW0l+iX/l
-X-Google-Smtp-Source: ABdhPJzWg5EheSUX48l72MPSH9pGe+SyqFLJi+CvgWH+f8EzYpTz/N9nLnSDP/N6AY7rcG4uM2y87svB8dHUB9euCm+kwxK4BWSE
+        Mon, 24 May 2021 09:21:51 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 52C0E4BD8;
+        Mon, 24 May 2021 09:20:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 24 May 2021 09:20:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=PEtdrXwgBvaUwYIYPbiFDWIuN1
+        zy2BnMNjbG9KPDQww=; b=raDgQZ894z5AEx1aq/o4yZGgZfrtlo/rcJpI6s9Xu/
+        +9I1orRC8XaIuCREA85gMuoycLnNA7IKLB0NxuhLP92dE9A1YWgrgomv9TtFkTaa
+        wyqtMWib8zwBtsHy+/H6yHPImgO9ZvhlzrS00HcjAWMEQu0MXGgVX8xxRHMNpRrh
+        Nk037Y3FB3HN61UewzU7Fw0x1K1wEY5jYEMl1xC6SCCIBbq9x4wYAwTAhEz1Wbh6
+        WiE+B6c9Da3ZTqPZBJbBd3ScECzmH6kQhhWIt483CSltHbqbgFsJ5usdLuBvxsYM
+        ixiCRI7w89SVvwNmpfIJU7rduhHBAdyllftUTDWytlww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PEtdrXwgBvaUwYIYP
+        biFDWIuN1zy2BnMNjbG9KPDQww=; b=vtWD0vmBm5kjpA1FZRYLn6uLKvV6fX6xB
+        cSdtbrn15IxqkuQVgJHPzYHXgJyZTGz+n24+D95A1UbLT+DHqKkRLRSQEXoQRqo8
+        O4PwdljJltaGG4e9M7khCRBhemhxBJQL1OX4SK0rco2RBMIwCEs20rx3zGQH4t7y
+        VioAhUKO2ff/ubh2xzRH3lxpJ6hZ007NJDzGCNB9SbuSycZfLYh5i/NdwJAMw+1l
+        fd8XHKLQP5ZB+rgmsqSmtabSx0zi6/G49YBysANo4UABz+yaVcDa78urbsEoy5pV
+        fPLmvSHvCxyXTQSszl17NqUhNaLimn59rg18OmXbPkem8ac+E+vWA==
+X-ME-Sender: <xms:E6irYMZmxfZdnUq12hPR4wwV_qajDO58xQoXWXgRXDjogXrup3rKvg>
+    <xme:E6irYHbC4CYR8wdwRgj4i0K0aTtWJLA4OCTjnHkGyDIhNB4km9_eAFT_pqml79dNM
+    K9Kp0x56MvycQf-gkU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+    necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:E6irYG8okQy7WRH9zoyC125SAYWJ6grssBtvw6kpHH3w9dD8AB3UPw>
+    <xmx:E6irYGpdWZFGWlZBT4OyG30KleE3jY4Y8sHmq8OpEqZ0BBxIJ25_4A>
+    <xmx:E6irYHrG9XLeKlqMKSsaCkpJYizzAiyzfm5Y79bPWivGrFJHkQq-pA>
+    <xmx:FairYATmnu6f8hiqroB0tipVdzUNcte_QxK8pfFJcmZauzWxG0oYt_aJMYQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 24 May 2021 09:20:19 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH] drm/vc4: hdmi: Rely on interrupts to handle hotplug
+Date:   Mon, 24 May 2021 15:20:18 +0200
+Message-Id: <20210524132018.264396-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:cd08:: with SMTP id d8mr16023343iog.86.1621862363043;
- Mon, 24 May 2021 06:19:23 -0700 (PDT)
-Date:   Mon, 24 May 2021 06:19:23 -0700
-In-Reply-To: <000000000000f96caf05c30fd10f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000061f5105c3134231@google.com>
-Subject: Re: [syzbot] WARNING in rtl28xxu_ctrl_msg/usb_submit_urb
-From:   syzbot <syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com>
-To:     crope@iki.fi, gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
-        johan@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, mchehab@kernel.org,
-        stable@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+DRM currently polls for the HDMI connector status every 10s, which can
+be an issue when we connect/disconnect a display quickly or the device
+on the other end only issues a hotplug pulse (for example on EDID
+change).
 
-HEAD commit:    5cc59c41 USB: core: WARN if pipe direction != setup packet..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=17aa9217d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1206ee92dd3d988d
-dashboard link: https://syzkaller.appspot.com/bug?extid=faf11bbadc5a372564da
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e839d1d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1242ce8dd00000
+Switch the driver to rely on the internal controller logic for the
+BCM2711/RPi4.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 44 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-usb 1-1: New USB device found, idVendor=0413, idProduct=6a03, bcdDevice=39.7e
-usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 1-1: Product: syz
-usb 1-1: Manufacturer: syz
-usb 1-1: SerialNumber: syz
-------------[ cut here ]------------
-usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType c0
-WARNING: CPU: 1 PID: 32 at drivers/usb/core/urb.c:410 usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
-Modules linked in:
-CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.13.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
-Code: 84 4c 01 00 00 e8 a6 14 b3 fd 4c 89 f7 e8 4e a7 1b ff 45 89 e8 44 89 e1 48 89 ea 48 89 c6 48 c7 c7 c0 09 63 86 e8 18 f1 fb 01 <0f> 0b 49 8d 4f 5c 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 89 4c
-RSP: 0018:ffffc900001a6d50 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff88811ab8a058 RCX: 0000000000000000
-RDX: ffff888107fc0000 RSI: ffffffff812a6013 RDI: fffff52000034d9c
-RBP: ffff88810e79f7a8 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff814b996b R11: 0000000000000000 R12: 0000000080000280
-R13: 00000000000000c0 R14: ffff88811ab8a0a8 R15: ffff8881097a2500
-FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055d9ffcec928 CR3: 00000001103c2000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- rtl28xxu_ctrl_msg+0x4b7/0x700 drivers/media/usb/dvb-usb-v2/rtl28xxu.c:43
- rtl28xxu_identify_state+0xb6/0x320 drivers/media/usb/dvb-usb-v2/rtl28xxu.c:624
- dvb_usbv2_probe+0x55b/0x7d0 drivers/media/usb/dvb-usb-v2/dvb_usb_core.c:947
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3320
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3320
- usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
- hub_port_connect drivers/usb/core/hub.c:5297 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5437 [inline]
- port_event drivers/usb/core/hub.c:5583 [inline]
- hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5665
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index c27b287d2053..3988969f7410 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1510,6 +1510,46 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 
+ }
+ 
++static irqreturn_t vc4_hdmi_hpd_irq_thread(int irq, void *priv)
++{
++	struct vc4_hdmi *vc4_hdmi = priv;
++	struct drm_device *dev = vc4_hdmi->connector.dev;
++
++	if (dev)
++		drm_kms_helper_hotplug_event(dev);
++
++	return IRQ_HANDLED;
++}
++
++static int vc4_hdmi_hotplug_init(struct vc4_hdmi *vc4_hdmi)
++{
++	struct platform_device *pdev = vc4_hdmi->pdev;
++	struct device *dev = &pdev->dev;
++	int ret;
++
++	if (vc4_hdmi->variant->external_irq_controller) {
++		ret = devm_request_threaded_irq(dev,
++						platform_get_irq_byname(pdev, "hpd-connected"),
++						NULL,
++						vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
++						"vc4 hdmi hpd connected", vc4_hdmi);
++		if (ret)
++			return ret;
++
++		ret = devm_request_threaded_irq(dev,
++						platform_get_irq_byname(pdev, "hpd-removed"),
++						NULL,
++						vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
++						"vc4 hdmi hpd disconnected", vc4_hdmi);
++		if (ret)
++			return ret;
++
++		connector->polled = DRM_CONNECTOR_POLL_HPD;
++	}
++
++	return 0;
++}
++
+ #ifdef CONFIG_DRM_VC4_HDMI_CEC
+ static irqreturn_t vc4_cec_irq_handler_rx_thread(int irq, void *priv)
+ {
+@@ -2060,6 +2100,10 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	if (ret)
+ 		goto err_destroy_encoder;
+ 
++	ret = vc4_hdmi_hotplug_init(vc4_hdmi);
++	if (ret)
++		goto err_destroy_conn;
++
+ 	ret = vc4_hdmi_cec_init(vc4_hdmi);
+ 	if (ret)
+ 		goto err_destroy_conn;
+-- 
+2.31.1
 
