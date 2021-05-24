@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F9A38F132
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBA638ECD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236557AbhEXQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236753AbhEXQEg (ORCPT
+        id S233125AbhEXPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:25:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54042 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233516AbhEXPRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:04:36 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6376FC026BD4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:15:15 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id c17so5980070vke.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2hiXKO119GSaKQpX+psN+usfMuDJQ/GOJx+xCi36V10=;
-        b=U/Ic0oyql6VSf1zMHtEy4mFLp+v9j8wB4h0j/Vp8yHCVYnaly6d7tpSDvlo8G1uHBG
-         onMLvowml45t3Phb7Bu7NbF6vxIoTKOpA8zY6VOsOpeZPNaRe3LNzlYisU6IV8eLRjaT
-         +IRU0yWNE2MZiNO9ukMoaEt1eOKN9HLESVPHk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2hiXKO119GSaKQpX+psN+usfMuDJQ/GOJx+xCi36V10=;
-        b=V+hYH0S1fNtrkxG2k7WPtJ9ZN6UlkcjVYKM57w7bDO7rhwYYXd1CoxY3qXUX33Wfpq
-         tGJ5u3UFZ0naVaKuTQ0Rh+GedXNWilSDAlngSiWmlfQEoXhtRtGadyNCoje/4MmWnZNW
-         6eQitO4q7vbtrWZ2AajYSg4mpu4pLcB2mZdfX8Hr+syGu+FexZ95dLmHVULaJKADXGCn
-         G6jWhouGoUai/v0GztPIKbxJMqP3JR4vJvIJBWvmQwE0MWsY7synTChnvtVJRaF+y6tT
-         wZ3m0Qo+5/T3PViGrBkLq9LlmP3e757OYJwMpOSLxBGpjURSlLs9iqoganFnUf381BbS
-         2X8w==
-X-Gm-Message-State: AOAM531+t0mlSr6wR2jhtIM3kk6Xe13b2Xz+It3vMK8Hk5IBtVMDiZLH
-        UWcS/aOBIvuXZjQXHm1Y5VfOR0vj8LDu4g==
-X-Google-Smtp-Source: ABdhPJyMO5yY2HO6QRIuXudIdYUCevqKHE/0+mrZjnbZW8glQiYUV0KDpATSYHKDtTqna/5lpTvbQQ==
-X-Received: by 2002:a05:6122:152:: with SMTP id r18mr21741251vko.11.1621869313920;
-        Mon, 24 May 2021 08:15:13 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id h137sm1173828vka.27.2021.05.24.08.15.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 08:15:13 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id o192so14393327vsd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:15:11 -0700 (PDT)
-X-Received: by 2002:a05:6102:3239:: with SMTP id x25mr21095761vsf.47.1621869311242;
- Mon, 24 May 2021 08:15:11 -0700 (PDT)
+        Mon, 24 May 2021 11:17:31 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14OFFrGa041504;
+        Mon, 24 May 2021 10:15:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621869353;
+        bh=GboA2Om6dWr6qVDBT1Ckg/PVdLDQm9AAnrekIIVfbC4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ezxz44WojYw81t7cpvqj9sVTor/6Nt3SS+z2gMEgyX+ijRNxI7/ljJP4TlP+YB19C
+         1OIdg9qgMKnbRN+oVdMOyaNGMZ0GGnOOSMe+vN94M+lh5pbxkIoW09groq6bMFamFh
+         JeLJh3J21Hf9L7J4UbCpnzFtDgauuSwUz879qIxk=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14OFFrqk107878
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 May 2021 10:15:53 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
+ May 2021 10:15:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 24 May 2021 10:15:52 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14OFFqY7115517;
+        Mon, 24 May 2021 10:15:52 -0500
+Subject: Re: [PATCH] thermal: ti-soc-thermal: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>, <edubezval@gmail.com>
+CC:     <j-keerthy@ti.com>, <rui.zhang@intel.com>,
+        <daniel.lezcano@linaro.org>, <amitk@kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1621851963-36548-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <011fb94c-7775-6c3f-2215-bf9cb505d6d1@ti.com>
+Date:   Mon, 24 May 2021 10:15:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210517200907.1459182-1-dianders@chromium.org> <2536404ca2ab0e7b785a104ec6b4efb48943a438.camel@redhat.com>
-In-Reply-To: <2536404ca2ab0e7b785a104ec6b4efb48943a438.camel@redhat.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 24 May 2021 08:14:59 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WqM6fTuk3g4Rt9D+Fn=P1aUQwM3Cjz-K2BXurMB2AQ5A@mail.gmail.com>
-Message-ID: <CAD=FV=WqM6fTuk3g4Rt9D+Fn=P1aUQwM3Cjz-K2BXurMB2AQ5A@mail.gmail.com>
-Subject: Re: [PATCH v7 00/10] drm: Fix EDID reading on ti-sn65dsi86 by
- introducing the DP AUX bus
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Linus W <linus.walleij@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Andy Gross <agross@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1621851963-36548-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 5/24/21 5:26 AM, Yang Li wrote:
+> Fix function name in ti-bandgap.c kernel-doc comment
+> to remove a warning.
+> 
+> drivers/thermal/ti-soc-thermal/ti-bandgap.c:787: warning: expecting
+> prototype for ti_bandgap_alert_init(). Prototype was for
+> ti_bandgap_talert_init() instead.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-On Fri, May 21, 2021 at 4:07 PM Lyude Paul <lyude@redhat.com> wrote:
->
-> For patches 5, and 6:
->
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
->
-> This week got really busy so I wasn't able to look at the rest of them, but next
-> week is going to be a lot less busy so I should be able to look at them then
+Acked-by: Suman Anna <s-anna@ti.com>
 
-Thanks for your review on the two patches and for letting me know your
-plans. I know that I still need to spin the bindings patches with Rob
-Herring's feedback, but I won't do that until I know you're done
-reviewing just to avoid spamming everyone an extra time. Assuming no
-emergency comes around and slams me, I should be able to react/respond
-fairly quickly this week M-Th, though I'm taking Friday off.
+> ---
+>  drivers/thermal/ti-soc-thermal/ti-bandgap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> index ebe7cb7..ea0603b 100644
+> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> @@ -770,7 +770,7 @@ static int ti_bandgap_tshut_init(struct ti_bandgap *bgp,
+>  }
+>  
+>  /**
+> - * ti_bandgap_alert_init() - setup and initialize talert handling
+> + * ti_bandgap_talert_init() - setup and initialize talert handling
+>   * @bgp: pointer to struct ti_bandgap
+>   * @pdev: pointer to device struct platform_device
+>   *
+> 
 
-BTW: if anyone reading this happens to have 10 minutes, I'd sorta like
-to get patch #1 in this series landed sooner rather than later and
-it's a dead-simple fix. If I see a review of that one, I'll apply it
-to drm-misc before sending out the next version of the series. ;-)
-
--Doug
