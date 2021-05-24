@@ -2,118 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B048038E37C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5E638E37E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhEXJmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:42:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:40330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhEXJmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:42:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DED0F31B;
-        Mon, 24 May 2021 02:40:46 -0700 (PDT)
-Received: from [10.163.81.166] (unknown [10.163.81.166])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B64F3F73B;
-        Mon, 24 May 2021 02:40:43 -0700 (PDT)
-Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
- PGTABLE_LEVELS > 2
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
- <a4403be6-5b74-2c86-bc4c-42ae4f0764dc@arm.com>
- <20210517161358.49683f34@thinkpad> <20210519130722.7d255b7f@thinkpad>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <06299fb2-2f64-9094-3bf4-77045101ae22@arm.com>
-Date:   Mon, 24 May 2021 15:11:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232532AbhEXJnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:43:41 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:41661 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232396AbhEXJnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 05:43:40 -0400
+Received: by mail-lj1-f180.google.com with SMTP id p20so32745108ljj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:42:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=s1qIoo2mpJomZI8zBF/n2aDzGVvZumG5cCI+hVwl1g4=;
+        b=SjZrXMCOzvIoGwTJCIEclbtibepR2+KJ8kW+6yqWWxJt1XW+k++nnuPNk6lNYgBfqv
+         xxsGRFFxUm5cVrkdFxJLYA5HyrjsxYT4+xPNBavXKfGAb+YADG7CCryUrHMS1VFEDamE
+         UHvxZuJWSeWPb1Dk7llM4xBRYpvElpMNj9c9UiHZBbsy0gHSbvB9cntYJH+y9ruKGBTi
+         ZEd05PalbDUXaICIgjHU2mmY4EXdlXl+Vu0BO+WcvW7rRdHhSwZXSnOHbkxNoWsgEhVk
+         rjRWLI594nC+oNTeABk7OOIp0e/5B9rbrNH6MYL6dTg5AS19F83uUZqmS2oLvPTj4utV
+         lf8w==
+X-Gm-Message-State: AOAM531nURRsodyEdijBQhd/68gsbf2a/HTs7w4jkyDzvgbFRdLC9Ots
+        sAV2BoVAHTuD6oDbOq6RC1MzbEcccEdVmQ==
+X-Google-Smtp-Source: ABdhPJxy0dpGWDO+qkxEPKR/vn1qyhAROHyJMb8XUH2zlj7UNJBpinOoOiXYjkyYdF/EHD+ovFSDJA==
+X-Received: by 2002:a2e:58d:: with SMTP id 135mr15963170ljf.424.1621849330760;
+        Mon, 24 May 2021 02:42:10 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id y18sm1687039ljc.83.2021.05.24.02.42.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 02:42:10 -0700 (PDT)
+Date:   Mon, 24 May 2021 12:42:04 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: bd718x7: Fix the BUCK7 voltage setting on BD71837
+Message-ID: <20210524094204.GA463579@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210519130722.7d255b7f@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/19/21 4:37 PM, Gerald Schaefer wrote:
-> On Mon, 17 May 2021 16:13:57 +0200
-> Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
-> 
->> On Mon, 17 May 2021 09:45:31 +0530
->> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->>
->>>
->>>
->>> On 5/10/21 10:05 AM, Anshuman Khandual wrote:  
->>>> ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are two page table
->>>> levels including PMD (also per Documentation/vm/split_page_table_lock.rst).
->>>> Make this dependency explicit on remaining platforms i.e x86 and s390 where
->>>> ARCH_ENABLE_SPLIT_PMD_PTLOCK is subscribed.  
->>
->> For s390, I don't think this makes a lot of sense. We always have 5 levels
->> defined for PGTABLE_LEVELS, and we would not even compile with any other
->> value, because of the "#error CONFIG_PGTABLE_LEVELS" in include/linux/pgtable.h.
->>
->> Our pagetable folding also works a bit different than it does on other archs,
->> and we would actually have pmd level entries for 2-level pagetables, so it should
->> all work fine also with PGTABLE_LEVELS == 2 (if it was possible).
->>
->> In fact, I do not really see why you would need "more than two levels" on any
->> arch, in order to use split PMD locks. Your description also just says
->> "irrelevant unless there are two page table levels", and not "more than two
->> levels", like in Documentation/vm/split_page_table_lock.rst.
->>
->> Yet, your patch adds checks for "more than", so at least the description
->> seems a bit misleading. I assume that the "more than" has to do with folded
->> PMD on a 2-level system, but the way we fold on s390 I do not see why that
->> should be a problem. Could you please elaborate a bit?
->>
->> We also have different levels of pagetables for kernel (CONFIG_PGTABLE_LEVELS)
->> and user processes on s390. The latter can have dynamic levels, currently
->> starting with 3, but previously we also had 2 levels for compat tasks e.g.
->> These dynamic levels for user processes are also independent from the
->> CONFIG_PGTABLE_LEVELS used for the kernel pagetable, while the split PMD lock
->> of course also affects user process pagetables, so that would be another
->> reason not to add such a dependency for ARCH_ENABLE_SPLIT_PMD_PTLOCK on s390.
-> 
-> Ouch, I guess I was a bit confused here. I thought the split PMD lock
-> was part of the struct page for the 4 KB page where the PMD entry is located,
-> and therefore, with more than one page, it still would make (a little) sense
-> to use it also for 2 pagetable levels.
-> 
-> However, pmd_to_page() always returns the struct page of the first page,
-> so there is only one split PMD lock for the whole thing (4 pages for s390).
-> Of course that means that with 2 pagetable levels, and only one PMD directory,
-> the split PMD lock would be equivalent to the global pagetable lock, and
-> therefore not make any sense.
-> 
-> Maybe you could change the description to also mention "more than two"
-> levels?
+The BD71837 voltages for other regulators except the first 4 BUCKs
+should be forbidden when regulator is enabled. There may be out-of-spec
+voltage spikes if the voltage is changed when these "non DVS" bucks are
+enabled. This restriction was accidentally removed when the LDO voltage
+change was allowed for BD71847. (It was not noticed that the BD71837
+BUCK7 used same voltage setting function as LDOs).
 
-Yes, will change it.
+Additionally this bug causes oncorrect voltage monitoring change if
+BUCK7 voltage is changed when it is enabled.
 
-> 
-> I still do not see a real benefit of the patch, e.g. it does not really
-> fix any possible misconfiguration, at least on s390. But it certainly is not
-> wrong, and at least it had the benefit of making me aware again of how split
-> PMD locks work, so I'll happily add this
+Fixes: 9bcbabafa19b ("regulator: bd718x7: remove voltage change restriction=
+ from BD71847 LDOs")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/regulator/bd718x7-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Right, even though it does not change the functionality, the purpose
-of this patch is to enforce (and also possibly document) an inherent
-assumption which may not hold true on all other platforms like arm64.
+diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd71=
+8x7-regulator.c
+index e61295b30503..b1eb46961993 100644
+--- a/drivers/regulator/bd718x7-regulator.c
++++ b/drivers/regulator/bd718x7-regulator.c
+@@ -334,7 +334,7 @@ BD718XX_OPS(bd71837_buck_regulator_ops, regulator_list_=
+voltage_linear_range,
+ 	    NULL);
+=20
+ BD718XX_OPS(bd71837_buck_regulator_nolinear_ops, regulator_list_voltage_ta=
+ble,
+-	    regulator_map_voltage_ascend, bd718xx_set_voltage_sel_restricted,
++	    regulator_map_voltage_ascend, bd71837_set_voltage_sel_restricted,
+ 	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+ 	    NULL);
+ /*
 
-> 
-> Acked-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com> # s390
-> 
+base-commit: 55f0e3d2ed3d198f639dcbef0366732fa7c71816
+--=20
+2.25.4
 
-Thanks for reviewing.
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--2oS5YaxWCcQjTEyO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCrdOEACgkQeFA3/03a
+ocU0Fwf/VlgwikHznlaBYi98GPEJYGMwH+mOR06cbHuhewR6mTQwt71826k3U95A
+eeMyTlkJmdLuUtyydGS0deg1d1n+4+1taAQxMl+BdM6lld2NamqSawjuaLhouTWz
+wBG2htoZzTryM+ndJhe9aH3WaPpMGBTwbtjgFvaPBuFqTW455pOLcc7CpOLYfnfl
+ZjF760VPpdpk7ss6njFtuJcf/hgGkZesrEyrU4GGmLlw7whPVcOsuaof/tTgLA82
+bloefJm6mAgWGf36/ymdZz0YOr/RF8hVpcon8fSJhzy7sz9IvLIKQjB0TYRgSdu3
++Q+538N365BsuUbu/FM4tq5yg+UEaA==
+=xn/r
+-----END PGP SIGNATURE-----
+
+--2oS5YaxWCcQjTEyO--
