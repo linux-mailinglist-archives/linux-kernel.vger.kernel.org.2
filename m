@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE1538E47C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3AB38E47E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhEXKry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:47:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17601 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232773AbhEXKr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:47:26 -0400
-IronPort-SDR: Y7odz+htvEmrRu4OHzO69y2ySb9FMlZL25KSDMym7++7jQdURAvvOms/SmpL4xXNo0LzTNU0DH
- 4cqgL371lmHQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="198848349"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="198848349"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 03:45:58 -0700
-IronPort-SDR: JaGtdzHez43qZfIPsyzl2IBZn+wHzZjpRMNmQCxGH88p8V07+kJYkPWIKDWcZpcPZUG5fF8xe7
- LJ1/8TK3dB9Q==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="413542294"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 03:45:56 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ll85q-00EIZN-3O; Mon, 24 May 2021 13:45:54 +0300
-Date:   Mon, 24 May 2021 13:45:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mm/dmapool: use DEVICE_ATTR_RO macro
-Message-ID: <YKuD4rturdqC6oZF@smile.fi.intel.com>
-References: <20210523064626.41532-1-yuehaibing@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523064626.41532-1-yuehaibing@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S232617AbhEXKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:48:33 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:56560 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232426AbhEXKsa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 06:48:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UZw1ezY_1621853215;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZw1ezY_1621853215)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 24 May 2021 18:47:01 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu: remove unreachable code
+Date:   Mon, 24 May 2021 18:46:53 +0800
+Message-Id: <1621853213-55876-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 02:46:26PM +0800, YueHaibing wrote:
-> Use DEVICE_ATTR_RO helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+In the function amdgpu_uvd_cs_msg(), every branch in the switch
+statement will have a return, so the code below the switch statement
+will not be executed.
 
-DEVICE_ATTR_RO()
-DEVICE_ATTR()
+Eliminate the follow smatch warning:
 
-After addressing above and below,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
+ignoring unreachable code.
 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  mm/dmapool.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/dmapool.c b/mm/dmapool.c
-> index 16483f86360e..62083ef04878 100644
-> --- a/mm/dmapool.c
-> +++ b/mm/dmapool.c
-> @@ -62,8 +62,8 @@ struct dma_page {		/* cacheable header for 'allocation' bytes */
->  static DEFINE_MUTEX(pools_lock);
->  static DEFINE_MUTEX(pools_reg_lock);
->  
-> -static ssize_t
-> -show_pools(struct device *dev, struct device_attribute *attr, char *buf)
-> +static ssize_t pools_show(struct device *dev,
-> +			  struct device_attribute *attr, char *buf)
->  {
->  	unsigned temp;
->  	unsigned size;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Unrelated change.
-
-> @@ -103,7 +103,7 @@ show_pools(struct device *dev, struct device_attribute *attr, char *buf)
->  	return PAGE_SIZE - size;
->  }
->  
-> -static DEVICE_ATTR(pools, 0444, show_pools, NULL);
-> +static DEVICE_ATTR_RO(pools);
->  
->  /**
->   * dma_pool_create - Creates a pool of consistent memory blocks, for dma.
-> -- 
-> 2.17.1
-> 
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+index 82f0542..375b346 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+@@ -842,8 +842,6 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_ctx *ctx,
+ 		DRM_ERROR("Illegal UVD message type (%d)!\n", msg_type);
+ 		return -EINVAL;
+ 	}
+-	BUG();
+-	return -EINVAL;
+ }
+ 
+ /**
 -- 
-With Best Regards,
-Andy Shevchenko
-
+1.8.3.1
 
