@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319EB38F0AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F1C38F02D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbhEXQF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41116 "EHLO mail.kernel.org"
+        id S233739AbhEXQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235623AbhEXP6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC7261975;
-        Mon, 24 May 2021 15:44:40 +0000 (UTC)
+        id S234056AbhEXPwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 227E861613;
+        Mon, 24 May 2021 15:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871081;
-        bh=zcj1N2YsNW4jSa0/pwPpHGaac4BQZlaVdlLqA796S/Q=;
+        s=korg; t=1621870727;
+        bh=0DVwXL7PYrs3JfPmlESgZ3BmiRo0C+ub21RL2mKSP9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wNfXws2ge6LNSKQozFpgUlBvqldqUtRT2YDsAo64rg9TXBjQ9MY+6T1r+sGAikVj5
-         S+854vhxwWWvGYvDqvE+lpB8G14Qzoj8uJhJkrRpk22q7TkIZfba5ESltE1x1p7i26
-         Xh+Oryo2wDaJ4y+XprlY6KjY4/q+yhZya4KgsSD0=
+        b=zeKyyvgKk+An9jZBph8FAxwn2UzR34YGF/BGkfB0udDQJBm3pk3Xogvk27/R/SN+j
+         Fy/vGqV6pPnqqFLxo8R1wTja05JYZ/AaUd/m5gU206dFQDOiu6MCEEGqRWs0ciHpZH
+         +GMOiz69eU26cwmb+0I4bv7/z0QK9ANrWQBi640U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 052/127] ALSA: firewire-lib: fix check for the size of isochronous packet payload
+        stable@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH 5.4 63/71] leds: lp5523: check return value of lp5xx_read and jump to cleanup code
 Date:   Mon, 24 May 2021 17:26:09 +0200
-Message-Id: <20210524152336.601810437@linuxfoundation.org>
+Message-Id: <20210524152328.497045540@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+References: <20210524152326.447759938@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 395f41e2cdac63e7581fb9574e5ac0f02556e34a upstream.
+commit 6647f7a06eb030a2384ec71f0bb2e78854afabfe upstream.
 
-The check for size of isochronous packet payload just cares of the size of
-IR context payload without the size of CIP header.
+Check return value of lp5xx_read and if non-zero, jump to code at end of
+the function, causing lp5523_stop_all_engines to be executed before
+returning the error value up the call chain. This fixes the original
+commit (248b57015f35) which was reverted due to the University of Minnesota
+problems.
 
-Cc: <stable@vger.kernel.org>
-Fixes: f11453c7cc01 ("ALSA: firewire-lib: use 16 bytes IR context header to separate CIP header")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-4-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-10-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/amdtp-stream.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/leds/leds-lp5523.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -633,18 +633,24 @@ static int parse_ir_ctx_header(struct am
- 			       unsigned int *syt, unsigned int packet_index, unsigned int index)
- {
- 	const __be32 *cip_header;
-+	unsigned int cip_header_size;
- 	int err;
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -305,7 +305,9 @@ static int lp5523_init_program_engine(st
  
- 	*payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
--	if (*payload_length > s->ctx_data.tx.ctx_header_size +
--					s->ctx_data.tx.max_ctx_payload_length) {
-+
-+	if (!(s->flags & CIP_NO_HEADER))
-+		cip_header_size = 8;
-+	else
-+		cip_header_size = 0;
-+
-+	if (*payload_length > cip_header_size + s->ctx_data.tx.max_ctx_payload_length) {
- 		dev_err(&s->unit->device,
- 			"Detect jumbo payload: %04x %04x\n",
--			*payload_length, s->ctx_data.tx.max_ctx_payload_length);
-+			*payload_length, cip_header_size + s->ctx_data.tx.max_ctx_payload_length);
- 		return -EIO;
- 	}
+ 	/* Let the programs run for couple of ms and check the engine status */
+ 	usleep_range(3000, 6000);
+-	lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
++	if (ret)
++		goto out;
+ 	status &= LP5523_ENG_STATUS_MASK;
  
--	if (!(s->flags & CIP_NO_HEADER)) {
-+	if (cip_header_size > 0) {
- 		cip_header = ctx_header + 2;
- 		err = check_cip_header(s, cip_header, *payload_length,
- 				       data_blocks, data_block_counter, syt);
+ 	if (status != LP5523_ENG_STATUS_MASK) {
 
 
