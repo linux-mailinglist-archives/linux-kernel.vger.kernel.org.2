@@ -2,123 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8F438ED03
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C2B38F13B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhEXPcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:32:45 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:35130 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbhEXPcD (ORCPT
+        id S234083AbhEXQL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237882AbhEXQFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:03 -0400
-Received: from [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1] (unknown [IPv6:2a02:a03f:eafb:ee01:cbcc:e481:3e58:4db1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id A19BD202FF0;
-        Mon, 24 May 2021 17:30:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1621870231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5MVM5bUeOBcoLoP3W/nxVP4OlAB5bSPoQyJKgckUz8I=;
-        b=Hmt76Wx3Cn2CJMDd4/vkYSZjhlGEll5naZ+AkO0EURp37WRFFvQgim6ZFQ9EwiPDGmags3
-        9IVFxsG7TCrGSMhThwoJqgjp6kUCbMxUh+izP9iLsySTh6L4HlF4cSVzDh9GnNVz+7A0gK
-        mljJApeRhSZdiANKVcKSfEIdont1J8KcgVi+VZSb0c2bg6dT9CZ5rz7rOhHIaPKz6cWFzL
-        W3hSGYMlsEL69aXJbGeHVpeVLKo83eir9rdGsR9qG8Jny63q5YiU+sG4RhERTY6zZWhlaS
-        gJ4XQNgGMnrTHGCCWRdNnF6poHSTG3O2HKB8ORb6fnv68ZRApU7NliM3KXQ+2Q==
-Message-ID: <867b81680fdf3076e8ce3fbc2dc36247d8e724a8.camel@svanheule.net>
-Subject: Re: [PATCH v3 6/6] leds: Add support for RTL8231 LED scan matrix
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 May 2021 17:30:30 +0200
-In-Reply-To: <CAHp75VfbdmHPsscHOAnH-WjGyWF-8V_00FjQu1PD+xFLcUytig@mail.gmail.com>
-References: <cover.1621809029.git.sander@svanheule.net>
-         <213ab7580a1d3229d32f7aac67bf4e828612153a.1621809029.git.sander@svanheule.net>
-         <CAHp75VdoSfO3Y9Lf+fcoG2=Rb+SBJKq+B0tG+gS7TaHUmN-iYg@mail.gmail.com>
-         <08375439546c04d32b158c20fb59446c3bbafb46.camel@svanheule.net>
-         <CAHp75VfbdmHPsscHOAnH-WjGyWF-8V_00FjQu1PD+xFLcUytig@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 24 May 2021 12:05:43 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC7EC045A7D
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:32:42 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id g24so15017928pji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 08:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wTLQS1Z8FEOlhUo8e2ilHpdsLeUEYIz1e8HwtA36wZk=;
+        b=ELl8gQHks3M1m3jDMgds2oCt9ZzM+QGOqQzNafipEtpgJV3IDTx/dWwW9bOtykOWN4
+         bL0nlV4qIv6mSlWJR9QsfqLylH+wsJlRat9n64rzY2U7khdoAGjD12/9U4Ztk60Pb45s
+         otzNVn6x4WCeK5aFLxqnX/SzETjkZGwszG5xL/lAedFiowI/hN8Pdu2St4HUdCqnxzfJ
+         bM5jToCtqUxksi9U/+qqOkahEGvv6Nvqgk22C3iBCgOv/1wgxpg2MGoy+4BlbFvssZs8
+         2xDtSt/OT3Cg7mY5JcnUi/Lq6bl5mZT0r11pilfsKin4MNThXHZH9UkreA9RzuTeAzmJ
+         iSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wTLQS1Z8FEOlhUo8e2ilHpdsLeUEYIz1e8HwtA36wZk=;
+        b=GGbJRwRoMRrzUBV+HxzQFA6Hy1wqKW9zmIKGf/lNCUvt7hhTTN3Mw3LpMhVnsPwIzz
+         5bRbgdoS+wjTCfbnIQqRtkt4MPsJQphpZv500k0IDEnFhvDpUtK5skIg7nVNIpu7tvOD
+         QBwWgGQf4oAcvtyNfI8zl3iXXNA1Ir9QnDKrBtz0ioIvAAv3mJSGvLMY/APT3j6gvU4e
+         8tWR5m0H5GYbb6Mqn34HLHeYF8i1lKyuRLYdF8YOzOSgQ8+AUjeZM6KS6e/woykdslgi
+         ECACdtaZ8EHFI25w2b1jJARSxNti0yJDZOTXt3tlj5+TBNtRCzVWstvFXp87ZIi/mUmt
+         rpKQ==
+X-Gm-Message-State: AOAM533BDzBZNeJqPx6GfymdpxrQoqT/mwduTzRlLQ4K2Q1fnflfb2uy
+        hdbsiJojEkoWCRHnQa9eh80YgQ==
+X-Google-Smtp-Source: ABdhPJzv8M36y7M+fAk2A5ZVct66fqarKzloUPfE3zH7nFYkpU2HKrbENkvu7RK07vtFMywuEM7+jg==
+X-Received: by 2002:a17:902:b7c3:b029:ef:8d29:a7d1 with SMTP id v3-20020a170902b7c3b02900ef8d29a7d1mr25994712plz.55.1621870362015;
+        Mon, 24 May 2021 08:32:42 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t22sm11118530pfl.50.2021.05.24.08.32.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 08:32:41 -0700 (PDT)
+Date:   Mon, 24 May 2021 15:32:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: X86: Fix warning caused by stale emulation context
+Message-ID: <YKvHFbPfGnaQ4huw@google.com>
+References: <1621830954-31963-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621830954-31963-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-24 at 15:47 +0300, Andy Shevchenko wrote:
-> On Mon, May 24, 2021 at 3:04 PM Sander Vanheule <sander@svanheule.net> wrote:
-> > On Mon, 2021-05-24 at 13:24 +0300, Andy Shevchenko wrote:
-> > > On Mon, May 24, 2021 at 1:34 AM Sander Vanheule <sander@svanheule.net>
-> > > wrote:
+On Sun, May 23, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> ...
+> Reported by syzkaller:
 > 
-> > > > +       if (ret != 2)
-> > > > +               return -ENODEV;
-> > > 
-> > > I would say -EINVAL, but -ENODEV is similarly okay.
-> > 
-> > Any specific reason you think EINVAL is more appropriate than ENODEV?
+>   WARNING: CPU: 7 PID: 10526 at /home/kernel/ssd/linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
+>   RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
+>   Call Trace:
+>    kvm_mmu_page_fault+0x126/0x8f0 [kvm]
+>    vmx_handle_exit+0x11e/0x680 [kvm_intel]
+>    vcpu_enter_guest+0xd95/0x1b40 [kvm]
+>    kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
+>    kvm_vcpu_ioctl+0x389/0x630 [kvm]
+>    __x64_sys_ioctl+0x8e/0xd0
+>    do_syscall_64+0x3c/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> My logic is that the initial values (from resource provider) are incorrect.
-> But as I said, I'm fine with either.
-
-Ok, that makes sense. Actually, I'm already using "address invalid" in the error
-messages when reading the address fails, so I'll change to EINVAL for
-consistency.
-
-
+> Commit 4a1e10d5b5d8c (KVM: x86: handle hardware breakpoints during emulation())
+> adds hardware breakpoints check before emulation the instruction and parts of 
+> emulation context initialization, actually we don't have EMULTYPE_NO_DECODE flag 
+> here and the emulation context will not be reused. Commit c8848cee74ff (KVM: x86: 
+> set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
+> catches the stale emulation context has #UD, however, it is not during instruction 
+> decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
+> the second part emulation context initialization before hardware breakpoints check.
 > 
-> > > > +       int err;
-> > > 
-> > > ret or err? Be consistent across a single driver.
-> > 
-> > I had first used 'err' for both fwnode_property_count_u32() and
-> > fwnode_property_read_u32_array(). The former returns "actual count or error
-> > code", while the latter is only "error code". And I found it weird to read
-> > the
-> > code as "does error code equal 2", if I used 'err' as variable name.
-> > 
-> > I've split this up:
-> >  * addr_count for fwnode_property_count_u32's result
-> >  * err for fwnode_property_read_u32_array's result
-> > 
-> > Since addr_count is only used before err is touched, I guess the compiler
-> > will
-> > optimize this out anyway?
+> syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
 > 
-> Usually we do this pattern (and it seems you missed the point, name of
-> variable is ret in some functions and err in the rest):
+> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+> Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kvm/x86.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> err /* ret */ = foo();
-> if (err < 0)
->   return err;
-> count = err;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04..eca69f9 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7552,6 +7552,13 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+>  
+>  	init_emulate_ctxt(vcpu);
+>  
+> +	ctxt->interruptibility = 0;
+> +	ctxt->have_exception = false;
+> +	ctxt->exception.vector = -1;
+> +	ctxt->perm_ok = false;
 
-I had only used 'ret' specifically in this one function, because I didn't like 
-"if (err != 2)" (and I apparently decided that I disliked that more than the
-inconsistency introduced by using 'ret'). I'll stick to calling the variable
-'err', and change the clause to (err != ARRAY_SIZE(addr)) to make it more
-obvious that 2 isn't just some random return value.
+What about moving this block all the way into init_emulate_ctxt()?
 
+> +	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
 
-Best,
-Sander
+This can be left where it is since ctxt->ud is consumed only by x86_decode_insn().
+I don't have a strong preference as it really only matters for the backport.  For
+upstream, we can kill it off in a follow-up patch by passing emulation_type to
+x86_decode_insn() and dropping ctxt->ud altogether.  Tracking that info in ctxt
+for literally one call is silly.
 
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 8a0ccdb56076..b62944046d7d 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -5322,7 +5322,8 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
+
+        ctxt->execute = opcode.u.execute;
+
+-       if (unlikely(ctxt->ud) && likely(!(ctxt->d & EmulateOnUD)))
++       if (unlikely(emulation_type & EMULTYPE_TRAP_UD) &&
++           likely(!(ctxt->d & EmulateOnUD)))
+                return EMULATION_FAILED;
+
+        if (unlikely(ctxt->d &
+diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
+index f016838faedd..2ad32600a8e3 100644
+--- a/arch/x86/kvm/kvm_emulate.h
++++ b/arch/x86/kvm/kvm_emulate.h
+@@ -314,7 +314,6 @@ struct x86_emulate_ctxt {
+        int interruptibility;
+
+        bool perm_ok; /* do not check permissions if true */
+-       bool ud;        /* inject an #UD if host doesn't support insn */
+        bool tf;        /* TF value before instruction (after for syscall/sysret) */
+
+        bool have_exception;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a224601d89e2..48b49c24c086 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7552,8 +7552,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+
+        init_emulate_ctxt(vcpu);
+
+-       ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+-
+        /*
+         * We will reenter on the same instruction since we do not set
+         * complete_userspace_io. This does not handle watchpoints yet,
+@@ -7563,7 +7561,7 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+            kvm_vcpu_check_breakpoint(vcpu, &r))
+                return r;
+
+-       r = x86_decode_insn(ctxt, insn, insn_len);
++       r = x86_decode_insn(ctxt, insn, insn_len, emulation_type);
+
+        trace_kvm_emulate_insn_start(vcpu);
+        ++vcpu->stat.insn_emulation;
+
+> +
+>  	/*
+>  	 * We will reenter on the same instruction since we do not set
+>  	 * complete_userspace_io. This does not handle watchpoints yet,
+> @@ -7561,13 +7568,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+>  	    kvm_vcpu_check_breakpoint(vcpu, &r))
+>  		return r;
+>  
+> -	ctxt->interruptibility = 0;
+> -	ctxt->have_exception = false;
+> -	ctxt->exception.vector = -1;
+> -	ctxt->perm_ok = false;
+> -
+> -	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> -
+>  	r = x86_decode_insn(ctxt, insn, insn_len);
+>  
+>  	trace_kvm_emulate_insn_start(vcpu);
+> -- 
+> 2.7.4
+> 
