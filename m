@@ -2,109 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEA639071B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631CA39071F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhEYRHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
+        id S233344AbhEYRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbhEYRHa (ORCPT
+        with ESMTP id S232224AbhEYRIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:07:30 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C4CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:06:00 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so18707423oty.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:06:00 -0700 (PDT)
+        Tue, 25 May 2021 13:08:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:07:18 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id k14so45040331eji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LBiWZXaIrz//b8Qdmr6+FgoMBjYgiBG1upZviLq9k1k=;
-        b=Ysu3kljB/I0AjkP3oAgIfLYdr8YdisQu0OSz1pvZv0q+Dn2gcFi3zeoRrQMyG9SyPR
-         jFB+2LW0DFLrW+f0Qn8jHIYwXolYzSlkAX0W6DkNmC0lsbqe5J4HSl2iPyEHN28BDJkg
-         tB7yuY9duaLepYO+0AADYrO6OwqJLiuSDoriTYvZPqSnguG2ZWRD6xQol4VcTsxMLHbZ
-         OW7hteS7nflKneLPs+fguLrl3UgLNab7Prg784RSY+a7LKgqpFP5iaMHc/dMwQZ4VChk
-         eVBDkkNpxlFL3sXY1KBCQ11QaIn0qtgTaUXhLbKZXIxnIY8boAZGLJBzQrwQsy3B5w/j
-         wDXg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=shX5o7fX3QC1vBrjY1MAQkvRCh6xIuYlJU65dj3inTo=;
+        b=EZx5bOBS1D3lFTJnRSsg224irnopnZIFuU9EIi23AcWgi3puLB8NM/RhYBvXIcyv3T
+         5w+Z/FOTRJX1ibduGD4k2I0l0xDoYtM2NgWwpFwBo2XMsIQeBrS3NDlzHgF0/aXSpXt8
+         1cTPMTfNJc9SAr2oN/cE1Ndhc6EUrLQIVcVYoN4ofOU402PhFMQY1PHgnt6Cgp4gBdqM
+         pZgLZbznGnOEYHvN1s21/soP/HcdRNp6jsOpP3AH9mDdJVjBOhz5k4e5zp8HtWYljhFK
+         Ip3h4YvpqZfTh8HATErqgSa9gaabPyTeKjmZTBbU5D9JNQLHiPFGBJPZhu+orzVn8tjh
+         dgVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LBiWZXaIrz//b8Qdmr6+FgoMBjYgiBG1upZviLq9k1k=;
-        b=fgkwa2jDOs9kSoRLL5lR58zsXCFfGxJ/KiU4FIDUefV6GykzH/WDTEjmSwP1sEBDoO
-         Ib21gLO5Cgmn+rDEBejKUIwd0B3TI7BhJqVgep2l13+WEXdwZxqT72zhVQEcm2eTbpN5
-         1GV4v7KSL9Gbhq098zwDOMYSzdTpnbkf+sFPkYRbgl9kJfd2wDBRnNF2sJnl6yJtiW+j
-         Y6D5ERHEVrW2gp+rcJHI1I+Tq1mkGNmPvnATTpTNaNgcQIT6zjaz9qPckecAUtr7pVuf
-         sBQaMBXwJ+dJMrWEXQXuHcDgqEvuJMC0Pk9ffqO5XfPc6dZh7D8sMFFCD8Ecur/ZJAGb
-         EfSQ==
-X-Gm-Message-State: AOAM530FYbnX9nZfNIc2cqY71XeX9FNweL1sM1RMhjcjF5ff0il/ozb+
-        UYz8DKZ3J31vmPZf7j0kk9P3Gg==
-X-Google-Smtp-Source: ABdhPJxHRD/LI5AsXb0JLCjTEcz/D/iT6mOagaeshO4aAuDaoV2kB5ZpQ1HPFS2IxEQzo1DZ5J2Wxg==
-X-Received: by 2002:a05:6830:1e21:: with SMTP id t1mr22335831otr.100.1621962359745;
-        Tue, 25 May 2021 10:05:59 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f21sm3573508oou.24.2021.05.25.10.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 10:05:59 -0700 (PDT)
-Date:   Tue, 25 May 2021 12:05:57 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>,
-        satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        mka@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org
-Subject: Re: [PATCH V5 11/11] mfd: qcom-spmi-pmic: Add support for four
- variants
-Message-ID: <YK0udV1Wbm4Hvk72@builder.lan>
-References: <1621937466-1502-1-git-send-email-skakit@codeaurora.org>
- <1621937466-1502-12-git-send-email-skakit@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=shX5o7fX3QC1vBrjY1MAQkvRCh6xIuYlJU65dj3inTo=;
+        b=bcyqtFpXT/+a8bpoNEYqfs0kmJvSkg80QPu9nEeyh69vjV1AdsH8UnPL6Je88d/+qJ
+         P5h+3JI00a6nocRTuLM1F13iUMfYZtfjMnByOCLUdQWVTeia/DzDUyW7SP+4AIAX8oSy
+         HvQlj4RZr+j4U4MVjql8alYIvL1fEhMf7B5b/cro3+0mDUGU6D0bkIKBRkKYplrsaMIS
+         mRGgTqPYD2ugRNfLjsGXlnryu3mWr5QX/4pJePRwaSsePRh6qoztGbnSyjAWcWGqhpWD
+         z9R/oJTRkN+n9IiWff0yN7StW21nqaFGI3W0K/Vuak7Mhsr/EM0H/CQJfmrVa/FbDtr3
+         8bxA==
+X-Gm-Message-State: AOAM531rXffz72Nw23yyvkE3f8VwpA10ZLcSBZXV29rJ82QRstY0c691
+        QHK30AeqPGBXU/w3qgLc/uHaZvyouA9oz9o/9G8=
+X-Google-Smtp-Source: ABdhPJwf9CiiGaJWdMqwlVDs9Mk0UOGu6dNQmIVUXJqjoqUuy4s3sORqO7ENhE2AE8f8SG0F1GFLXf9GvPoXDEmUphM=
+X-Received: by 2002:a17:906:1699:: with SMTP id s25mr29258812ejd.238.1621962437398;
+ Tue, 25 May 2021 10:07:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621937466-1502-12-git-send-email-skakit@codeaurora.org>
+References: <20210525162145.3510-1-shy828301@gmail.com> <YK0p4fSXk1vhsmKt@google.com>
+In-Reply-To: <YK0p4fSXk1vhsmKt@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 25 May 2021 10:07:05 -0700
+Message-ID: <CAHbLzkqLjB8V0s4S==qv-KFgXcBaCrLuSM4XAsKuj+95WDQhfw@mail.gmail.com>
+Subject: Re: [v3 PATCH 1/2] mm: rmap: make try_to_unmap() void function
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Hugh Dickins <hughd@google.com>, Zi Yan <ziy@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Wang Yugui <wangyugui@e16-tech.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25 May 05:11 CDT 2021, satya priya wrote:
+On Tue, May 25, 2021 at 9:46 AM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Tue, May 25, 2021 at 09:21:44AM -0700, Yang Shi wrote:
+> > Currently try_to_unmap() return bool value by checking page_mapcount(),
+> > however this may return false positive since page_mapcount() doesn't
+> > check all subpages of compound page.  The total_mapcount() could be used
+> > instead, but its cost is higher since it traverses all subpages.
+> >
+> > Actually the most callers of try_to_unmap() don't care about the
+> > return value at all.  So just need check if page is still mapped by
+> > page_mapped() when necessary.  And page_mapped() does bail out early
+> > when it finds mapped subpage.
+> >
+> > Suggested-by: Hugh Dickins <hughd@google.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/rmap.h |  2 +-
+> >  mm/huge_memory.c     |  4 +---
+> >  mm/memory-failure.c  | 13 ++++++-------
+> >  mm/rmap.c            |  6 +-----
+> >  mm/vmscan.c          |  3 ++-
+> >  5 files changed, 11 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> > index def5c62c93b3..116cb193110a 100644
+> > --- a/include/linux/rmap.h
+> > +++ b/include/linux/rmap.h
+> > @@ -194,7 +194,7 @@ static inline void page_dup_rmap(struct page *page, bool compound)
+> >  int page_referenced(struct page *, int is_locked,
+> >                       struct mem_cgroup *memcg, unsigned long *vm_flags);
+> >
+> > -bool try_to_unmap(struct page *, enum ttu_flags flags);
+> > +void try_to_unmap(struct page *, enum ttu_flags flags);
+> >
+> >  /* Avoid racy checks */
+> >  #define PVMW_SYNC            (1 << 0)
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 19195fca1aee..80fe642d742d 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2336,15 +2336,13 @@ static void unmap_page(struct page *page)
+> >  {
+> >       enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
+> >               TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> > -     bool unmap_success;
+> >
+> >       VM_BUG_ON_PAGE(!PageHead(page), page);
+> >
+> >       if (PageAnon(page))
+> >               ttu_flags |= TTU_SPLIT_FREEZE;
+> >
+> > -     unmap_success = try_to_unmap(page, ttu_flags);
+> > -     VM_BUG_ON_PAGE(!unmap_success, page);
+> > +     try_to_unmap(page, ttu_flags);
+> >  }
+> >
+> >  static void remap_page(struct page *page, unsigned int nr)
+> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> > index 9dcc9bcea731..6dd53ff34825 100644
+> > --- a/mm/memory-failure.c
+> > +++ b/mm/memory-failure.c
+> > @@ -1126,7 +1126,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+> >               collect_procs(hpage, &tokill, flags & MF_ACTION_REQUIRED);
+> >
+> >       if (!PageHuge(hpage)) {
+> > -             unmap_success = try_to_unmap(hpage, ttu);
+> > +             try_to_unmap(hpage, ttu);
+> >       } else {
+> >               if (!PageAnon(hpage)) {
+> >                       /*
+> > @@ -1138,17 +1138,16 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+> >                        */
+> >                       mapping = hugetlb_page_mapping_lock_write(hpage);
+> >                       if (mapping) {
+> > -                             unmap_success = try_to_unmap(hpage,
+> > -                                                  ttu|TTU_RMAP_LOCKED);
+> > +                             try_to_unmap(hpage, ttu|TTU_RMAP_LOCKED);
+> >                               i_mmap_unlock_write(mapping);
+> > -                     } else {
+> > +                     } else
+> >                               pr_info("Memory failure: %#lx: could not lock mapping for mapped huge page\n", pfn);
+> > -                             unmap_success = false;
+> > -                     }
+> >               } else {
+> > -                     unmap_success = try_to_unmap(hpage, ttu);
+> > +                     try_to_unmap(hpage, ttu);
+> >               }
+> >       }
+> > +
+> > +     unmap_success = !page_mapped(hpage);
+> >       if (!unmap_success)
+> >               pr_err("Memory failure: %#lx: failed to unmap page (mapcount=%d)\n",
+> >                      pfn, page_mapcount(hpage));
+> > diff --git a/mm/rmap.c b/mm/rmap.c
+> > index a35cbbbded0d..728de421e43a 100644
+> > --- a/mm/rmap.c
+> > +++ b/mm/rmap.c
+> > @@ -1748,10 +1748,8 @@ static int page_not_mapped(struct page *page)
+> >   *
+> >   * Tries to remove all the page table entries which are mapping this
+> >   * page, used in the pageout path.  Caller must hold the page lock.
+> > - *
+> > - * If unmap is successful, return true. Otherwise, false.
+> >   */
+> > -bool try_to_unmap(struct page *page, enum ttu_flags flags)
+> > +void try_to_unmap(struct page *page, enum ttu_flags flags)
+> >  {
+> >       struct rmap_walk_control rwc = {
+> >               .rmap_one = try_to_unmap_one,
+> > @@ -1776,8 +1774,6 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+> >               rmap_walk_locked(page, &rwc);
+> >       else
+> >               rmap_walk(page, &rwc);
+> > -
+> > -     return !page_mapcount(page) ? true : false;
+>
+> Couldn't we use page_mapped instead of page_mapcount here?
 
-> Add support for pm8350c, pmk8350, pm7325 and pmr735a PMICS.
-> 
+Yes, of course. Actually this has been discussed in v2 review. Most
+(or half) callers actually don't check the return value of
+try_to_unmap() except hwpoison, vmscan and THP split. It sounds
+suboptimal to have everyone pay the cost. So I thought Hugh's
+suggestion made sense to me.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Quoted the discussion below:
 
-@Lee, will you take this patch through the mfd tree?
+> @@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+>   else
+>   rmap_walk(page, &rwc);
+>
+> - return !page_mapcount(page) ? true : false;
+> + return !total_mapcount(page) ? true : false;
 
-Regards,
-Bjorn
+That always made me wince: "return !total_mapcount(page);" surely.
 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
-> Changes in V5:
->  - Newly added in V5 to add documentation support for pmics of this series.
-> 
->  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> index 79367a4..5ef79bf 100644
-> --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> @@ -34,6 +34,10 @@ Required properties:
->                     "qcom,pm8998",
->                     "qcom,pmi8998",
->                     "qcom,pm8005",
-> +                   "qcom,pm8350c",
-> +                   "qcom,pmk8350",
-> +                   "qcom,pm7325",
-> +                   "qcom,pmr735a",
->                     or generalized "qcom,spmi-pmic".
->  - reg:             Specifies the SPMI USID slave address for this device.
->                     For more information see:
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+Or slightly better, "return !page_mapped(page);", since at least that
+one breaks out as soon as it sees a mapcount.  Though I guess I'm
+being silly there, since that case should never occur, so both
+total_mapcount() and page_mapped() scan through all pages.
+
+Or better, change try_to_unmap() to void: most callers ignore its
+return value anyway, and make their own decisions; the remaining
+few could be changed to do the same.  Though again, I may be
+being silly, since the expensive THP case is not the common case.
+
+
+> With boolean return of try sematic looks reasonable to me
+> rather than void.
+>
+> >  }
+> >
+> >  /**
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index f96d62159720..fa5052ace415 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -1499,7 +1499,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+> >                       if (unlikely(PageTransHuge(page)))
+> >                               flags |= TTU_SPLIT_HUGE_PMD;
+> >
+> > -                     if (!try_to_unmap(page, flags)) {
+> > +                     try_to_unmap(page, flags);
+> > +                     if (page_mapped(page)) {
+> >                               stat->nr_unmap_fail += nr_pages;
+> >                               if (!was_swapbacked && PageSwapBacked(page))
+> >                                       stat->nr_lazyfree_fail += nr_pages;
+> > --
+> > 2.26.2
+> >
+> >
