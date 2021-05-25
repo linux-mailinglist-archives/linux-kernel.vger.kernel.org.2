@@ -2,263 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43000390A9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B00B390AA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhEYUmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:42:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231826AbhEYUm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D0A610CE;
-        Tue, 25 May 2021 20:40:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621975259;
-        bh=lcx7k3RVs0NCfWu8vmFay20W2MTfz1Oofo22BYHYjeM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VgOhhaonzhHl6B2pw5HBrwQ3OtZqVOQaNBGkAB13xZj6jDgR6qya8wAZCoVoyFNps
-         S7wveqms2svXttOfYOkcYSwKyh6QxRu7VPAE2TfX8sQEEYsaNxBTKZXbo89S6eRN7/
-         5JicQ96xncnIhC8+sFIQ5Lz/jLvIvpxTKxm+BPhxZULc6cSopoecPjghKwZisMMUl3
-         G7jJV2D+cmi7BWKGGkYDKb/sVrVvAOaKijULsAQHCgJYIF+nxkq39l+YK15Xq23xwf
-         MPzEK9w61tgDiQx8LCT3BddZ1XplU6wyOLF9K0FPEw6Bjt9YNjav/IqTAoDlCj8NI1
-         nAKt+KQ54M2vA==
-Date:   Tue, 25 May 2021 15:40:57 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/4] PCI: brcmstb: Add panic/die handler to RC driver
-Message-ID: <20210525204057.GA1227343@bjorn-Precision-5520>
+        id S232191AbhEYUqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhEYUqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:46:20 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581BCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:44:50 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e10so27788741ilu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dx8YUAQzEnba5PQjYOv49O+Z4yv1QCI8CcdX+kElxFE=;
+        b=ds+BZ8WNemLxCRt3hQjDdq00sXt+FZBkfFjPJymgA8OxfQGvoYltlsJs2OuLw9T8CH
+         +h96s3THTlhOj6n2IpEF6PFazNr9/Q3OApCcYNX27r9840LIf70pWlZd2RcyB8q0gSr7
+         jAZXKrlwZLfd7lQWgROH4hKw/K1/64E1E61AA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dx8YUAQzEnba5PQjYOv49O+Z4yv1QCI8CcdX+kElxFE=;
+        b=QDMmJBX5K/0gJnVhJcZoyC3KWU1JuOcXswF1jweGuzD2qoghPTTVSn8NgIZyR2Lral
+         DpphsyenGPjZITnIg/OMCw2iaqVlvNKmUCxqjACR/kIJc8f5DrPJ1FA+2zGXjijCQy7h
+         J5ESg39/ukqgGjnX70n+ME8E8DinJ+oRD2lpJ+vww04hNU24YD66EAIXy8QL63Y1qBo6
+         0BvbMUFys1h6rF+ZrdDC/UarzAV2CYjThgwnTkz9ORbvDjozEhLtq58W7iBBuBLY2V6G
+         myKWGnw+oUKfmbJ8D+PMi12S9MnO8pFEx2Q2GeHQEKvmSCCc9rUFBHABsZGOpfpxW9zY
+         B8ow==
+X-Gm-Message-State: AOAM532ynjo+fHp5UDdePfqs5YI5VkfdpHdTkXm4An9HXl2q98A8YT0W
+        GzAZzQ0sVx3NfUw3XMsuxIVyuc0Zeus0MCJ37ixuFbWwLRY=
+X-Google-Smtp-Source: ABdhPJwOVPdbQ5AimxrE2Fag8ZO6aMG1+Yk/QbKoodRm5vnbn68V97yu0dpyxidaRAv8jDcSxoHgtZrAZroAYA1M9R0=
+X-Received: by 2002:a92:db07:: with SMTP id b7mr21621412iln.282.1621975489294;
+ Tue, 25 May 2021 13:44:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427175140.17800-4-jim2101024@gmail.com>
+References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
+ <CACaBj2Y5YsrbFCw1m9U=8S8uJFiPo_c4riitDE5z-re65a-x9g@mail.gmail.com>
+In-Reply-To: <CACaBj2Y5YsrbFCw1m9U=8S8uJFiPo_c4riitDE5z-re65a-x9g@mail.gmail.com>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Tue, 25 May 2021 13:44:13 -0700
+Message-ID: <CAMp4zn-CFaPpVd3zcANfmUQXaLCUPnuT2SrC_Kw5RrF4_Ubuhw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
+ for new semantics
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:51:38PM -0400, Jim Quinlan wrote:
-> Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
-> by default Broadcom's STB PCIe controller effects an abort.  This simple
-> handler determines if the PCIe controller was the cause of the abort and if
-> so, prints out diagnostic info.
-> 
-> Example output:
->   brcm-pcie 8b20000.pcie: Error: Mem Acc: 32bit, Read, @0x38000000
->   brcm-pcie 8b20000.pcie:  Type: TO=0 Abt=0 UnspReq=1 AccDsble=0 BadAddr=0
+On Tue, May 25, 2021 at 9:04 AM Rodrigo Campos <rodrigo@kinvolk.io> wrote:
+>
+> On Mon, May 17, 2021 at 9:39 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> >
+> > This refactors the user notification code to have a do / while loop around
+> > the completion condition. This has a small change in semantic, in that
+> > previously we ignored addfd calls upon wakeup if the notification had been
+> > responded to, but instead with the new change we check for an outstanding
+> > addfd calls prior to returning to userspace.
+>
+> I understand why this was a readability improvement on the old
+> patchset (that included the wait_killable semantics), as it completely
+> changed the loop. But now we only have the atomic addfd+send reply
+> that does minimal changes to this part (add a param to a function).
+>
+> Is it worth changing the semantics?
+>
+I think that as we add more complexity around different things that
+can cause the notification to change (status), that this is better,
+but I understand wanting to hold off.
 
-What happens to the driver that performed the illegal access?
-
-Does this mean that errors that are recoverable on other hardware (by
-noticing the 0xffffffff and checking for error) are fatal on the
-Broadcom STB?
-
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 122 ++++++++++++++++++++++++++
->  1 file changed, 122 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index 3b6a62dd2e72..d3af8d84f0d6 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -12,11 +12,13 @@
->  #include <linux/ioport.h>
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
-> +#include <linux/kdebug.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
->  #include <linux/log2.h>
->  #include <linux/module.h>
->  #include <linux/msi.h>
-> +#include <linux/notifier.h>
->  #include <linux/of_address.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_pci.h>
-> @@ -184,6 +186,39 @@
->  #define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
->  #define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
->  
-> +/* Error report regiseters */
-> +#define PCIE_OUTB_ERR_TREAT				0x6000
-> +#define  PCIE_OUTB_ERR_TREAT_CONFIG_MASK		0x1
-> +#define  PCIE_OUTB_ERR_TREAT_MEM_MASK			0x2
-> +#define PCIE_OUTB_ERR_VALID				0x6004
-> +#define PCIE_OUTB_ERR_CLEAR				0x6008
-> +#define PCIE_OUTB_ERR_ACC_INFO				0x600c
-> +#define  PCIE_OUTB_ERR_ACC_INFO_CFG_ERR_MASK		0x01
-> +#define  PCIE_OUTB_ERR_ACC_INFO_MEM_ERR_MASK		0x02
-> +#define  PCIE_OUTB_ERR_ACC_INFO_TYPE_64_MASK		0x04
-> +#define  PCIE_OUTB_ERR_ACC_INFO_DIR_WRITE_MASK		0x10
-> +#define  PCIE_OUTB_ERR_ACC_INFO_BYTE_LANES_MASK		0xff00
-> +#define PCIE_OUTB_ERR_ACC_ADDR				0x6010
-> +#define PCIE_OUTB_ERR_ACC_ADDR_BUS_MASK			0xff00000
-> +#define PCIE_OUTB_ERR_ACC_ADDR_DEV_MASK			0xf8000
-> +#define PCIE_OUTB_ERR_ACC_ADDR_FUNC_MASK		0x7000
-> +#define PCIE_OUTB_ERR_ACC_ADDR_REG_MASK			0xfff
-> +#define PCIE_OUTB_ERR_CFG_CAUSE				0x6014
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_TIMEOUT_MASK		0x40
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ABORT_MASK		0x20
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_UNSUPP_REQ_MASK	0x10
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_TIMEOUT_MASK	0x4
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_DISABLED_MASK	0x2
-> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_64BIT__MASK	0x1
-> +#define PCIE_OUTB_ERR_MEM_ADDR_LO			0x6018
-> +#define PCIE_OUTB_ERR_MEM_ADDR_HI			0x601c
-> +#define PCIE_OUTB_ERR_MEM_CAUSE				0x6020
-> +#define  PCIE_OUTB_ERR_MEM_CAUSE_TIMEOUT_MASK		0x40
-> +#define  PCIE_OUTB_ERR_MEM_CAUSE_ABORT_MASK		0x20
-> +#define  PCIE_OUTB_ERR_MEM_CAUSE_UNSUPP_REQ_MASK	0x10
-> +#define  PCIE_OUTB_ERR_MEM_CAUSE_ACC_DISABLED_MASK	0x2
-> +#define  PCIE_OUTB_ERR_MEM_CAUSE_BAD_ADDR_MASK		0x1
-> +
->  /* Forward declarations */
->  struct brcm_pcie;
->  static inline void brcm_pcie_bridge_sw_init_set_7278(struct brcm_pcie *pcie, u32 val);
-> @@ -215,6 +250,7 @@ struct pcie_cfg_data {
->  	const enum pcie_type type;
->  	void (*perst_set)(struct brcm_pcie *pcie, u32 val);
->  	void (*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
-> +	const bool has_err_report;
->  };
->  
->  static const int pcie_offsets[] = {
-> @@ -262,6 +298,7 @@ static const struct pcie_cfg_data bcm7216_cfg = {
->  	.type		= BCM7278,
->  	.perst_set	= brcm_pcie_perst_set_7278,
->  	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_7278,
-> +	.has_err_report = true,
->  };
->  
->  struct brcm_msi {
-> @@ -302,8 +339,87 @@ struct brcm_pcie {
->  	u32			hw_rev;
->  	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
->  	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
-> +	bool			has_err_report;
-> +	struct notifier_block	die_notifier;
->  };
->  
-> +/* Dump out PCIe errors on die or panic */
-> +static int dump_pcie_error(struct notifier_block *self, unsigned long v, void *p)
-> +{
-> +	const struct brcm_pcie *pcie = container_of(self, struct brcm_pcie, die_notifier);
-> +	void __iomem *base = pcie->base;
-> +	int i, is_cfg_err, is_mem_err, lanes;
-> +	char *width_str, *direction_str, lanes_str[9];
-> +	u32 info;
-> +
-> +	if (readl(base + PCIE_OUTB_ERR_VALID) == 0)
-> +		return NOTIFY_DONE;
-> +	info = readl(base + PCIE_OUTB_ERR_ACC_INFO);
-> +
-> +
-> +	is_cfg_err = !!(info & PCIE_OUTB_ERR_ACC_INFO_CFG_ERR_MASK);
-> +	is_mem_err = !!(info & PCIE_OUTB_ERR_ACC_INFO_MEM_ERR_MASK);
-> +	width_str = (info & PCIE_OUTB_ERR_ACC_INFO_TYPE_64_MASK) ? "64bit" : "32bit";
-> +	direction_str = (info & PCIE_OUTB_ERR_ACC_INFO_DIR_WRITE_MASK) ? "Write" : "Read";
-> +	lanes = FIELD_GET(PCIE_OUTB_ERR_ACC_INFO_BYTE_LANES_MASK, info);
-> +	for (i = 0, lanes_str[8] = 0; i < 8; i++)
-> +		lanes_str[i] = (lanes & (1 << i)) ? '1' : '0';
-> +
-> +	if (is_cfg_err) {
-> +		u32 cfg_addr = readl(base + PCIE_OUTB_ERR_ACC_ADDR);
-> +		u32 cause = readl(base + PCIE_OUTB_ERR_CFG_CAUSE);
-> +		int bus = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_BUS_MASK, cfg_addr);
-> +		int dev = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_DEV_MASK, cfg_addr);
-> +		int func = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_FUNC_MASK, cfg_addr);
-> +		int reg = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_REG_MASK, cfg_addr);
-> +
-> +		dev_err(pcie->dev, "Error: CFG Acc, %s, %s, Bus=%d, Dev=%d, Fun=%d, Reg=0x%x, lanes=%s\n",
-> +			width_str, direction_str, bus, dev, func, reg, lanes_str);
-> +		dev_err(pcie->dev, " Type: TO=%d Abt=%d UnsupReq=%d AccTO=%d AccDsbld=%d Acc64bit=%d\n",
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_TIMEOUT_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ABORT_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_UNSUPP_REQ_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_TIMEOUT_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_DISABLED_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_64BIT__MASK));
-> +	}
-> +
-> +	if (is_mem_err) {
-> +		u32 cause = readl(base + PCIE_OUTB_ERR_MEM_CAUSE);
-> +		u32 lo = readl(base + PCIE_OUTB_ERR_MEM_ADDR_LO);
-> +		u32 hi = readl(base + PCIE_OUTB_ERR_MEM_ADDR_HI);
-> +		u64 addr = ((u64)hi << 32) | (u64)lo;
-> +
-> +		dev_err(pcie->dev, "Error: Mem Acc, %s, %s, @0x%llx, lanes=%s\n",
-> +			width_str, direction_str, addr, lanes_str);
-> +		dev_err(pcie->dev, " Type: TO=%d Abt=%d UnsupReq=%d AccDsble=%d BadAddr=%d\n",
-> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_TIMEOUT_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_ABORT_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_UNSUPP_REQ_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_ACC_DISABLED_MASK),
-> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_BAD_ADDR_MASK));
-> +	}
-> +
-> +	/* Clear the error */
-> +	writel(1, base + PCIE_OUTB_ERR_CLEAR);
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static void brcm_register_die_notifiers(struct brcm_pcie *pcie)
-> +{
-> +	pcie->die_notifier.notifier_call = dump_pcie_error;
-> +	register_die_notifier(&pcie->die_notifier);
-> +	atomic_notifier_chain_register(&panic_notifier_list, &pcie->die_notifier);
-> +}
-> +
-> +static void brcm_unregister_die_notifiers(struct brcm_pcie *pcie)
-> +{
-> +	unregister_die_notifier(&pcie->die_notifier);
-> +	atomic_notifier_chain_unregister(&panic_notifier_list, &pcie->die_notifier);
-> +	pcie->die_notifier.notifier_call = NULL;
-> +}
-> +
->  /*
->   * This is to convert the size of the inbound "BAR" region to the
->   * non-linear values of PCIE_X_MISC_RC_BAR[123]_CONFIG_LO.SIZE
-> @@ -1216,6 +1332,8 @@ static int brcm_pcie_remove(struct platform_device *pdev)
->  	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
->  
->  	pci_stop_root_bus(bridge->bus);
-> +	if (pcie->has_err_report)
-> +		brcm_unregister_die_notifiers(pcie);
->  	pci_remove_root_bus(bridge->bus);
->  	__brcm_pcie_remove(pcie);
->  
-> @@ -1255,6 +1373,7 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  	pcie->np = np;
->  	pcie->reg_offsets = data->offsets;
->  	pcie->type = data->type;
-> +	pcie->has_err_report = data->has_err_report;
->  	pcie->perst_set = data->perst_set;
->  	pcie->bridge_sw_init_set = data->bridge_sw_init_set;
->  
-> @@ -1322,6 +1441,9 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, pcie);
->  
-> +	if (pcie->has_err_report)
-> +		brcm_register_die_notifiers(pcie);
-> +
->  	return pci_host_probe(bridge);
->  fail:
->  	__brcm_pcie_remove(pcie);
-> -- 
-> 2.17.1
-> 
+> > Rodrigo Campos also identified a bug that can result in addfd causing
+> > an early return, when the supervisor didn't actually handle the
+> > syscall [1].
+> >
+> > [1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+>
+> I was about to resend this, but I'd like to know what others think.
+>
+> I'm okay with applying any patches to solve the issue (mine linked
+> there or this one), slightly in favor of mine as the diff is way
+> simpler to backport (applies to 5.9+ kernels) and I don't see a reason
+> to change semantics. But no strong opinion.
+>
+> Opinions?
+>
+>
+> Best,
+> Rodrigo
