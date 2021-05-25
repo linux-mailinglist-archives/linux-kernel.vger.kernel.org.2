@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA13390A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD8D390A5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhEYUH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
+        id S232713AbhEYUOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhEYUH4 (ORCPT
+        with ESMTP id S230222AbhEYUOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:07:56 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E81C061574;
-        Tue, 25 May 2021 13:06:24 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 6so23621642pgk.5;
-        Tue, 25 May 2021 13:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hrmAyf4ekB8FpoHtyNAMAZhBlwYB6oLMGVhprZSO18c=;
-        b=fYNcnKcCLJRao2bFYyvroRFzvd90Tw9noB6EwiHO2huhVZKsPGIltNkWhksA1b+dd0
-         M2v+MZGiNxcNvfBagrTHPkglpfKqLvZswqlMNahoFc2ZPYNqPiXTWK5RyLtNLb0Kojuh
-         nbkqaQOkd/rRXM1mnJx1H9aa9PxlBF2OW85TmiD4TcJetxOqPx7m3fGJ1YRE+4LumPwp
-         o/uTV6kkZ3XDoo7vb8kamyBE2LurBAH9DzdRe6HY+iRzRVm1ZqwdY5o8K/SmuASEWPI9
-         Aj/expcKyb6yBG5qzYuzzc8uaTJL4Ouru/aut7S0K7lvmDLfV+FBNxAZrCO4xF3i2yru
-         ocFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hrmAyf4ekB8FpoHtyNAMAZhBlwYB6oLMGVhprZSO18c=;
-        b=B2UA0j+T6XTBFk9VrK8syM68fCcqHdrYvoJZUNzWOZsLkYYNnF2c6Pf+QrhFAo0H7h
-         PDCl/HsykyOXp/0hl7RnGCKd2ZJgl3mqZyoQbwaG/cTwqmxldyEpWjkEZZiwO/2u2EAf
-         Do6hhZg0An1yAgOCtBpj0xioepwdo6ZOIJAZswtAsMn+qdUHBBWkJqrKMaUyenbfohks
-         XZgAIrkyXX71l5pqWvAJo9ZoqWI13tkSO7v23yjQ/l5BSHx8qB3tQJdL0O/gfaxvkPFj
-         cTNQWUn6QHGsgeu9sNX+kSRM9piAi0Jlrk5kTV4vbsXm/eoKCSYdDUx2lWVj5Ybu511j
-         V/6w==
-X-Gm-Message-State: AOAM533Bq8bLr9bFThVKijx+uEjKwipZyhyIbSN07z52DMxA3BAJkOL8
-        dlX974ZvlI+4znwYrKl1Hq4=
-X-Google-Smtp-Source: ABdhPJw505JxwnUALZ6tQJnxKexnvtJwEXchT7PYHpC8VmXCsUQaCt5MWOLf3ak1KCrUtxOBEufFJw==
-X-Received: by 2002:a63:3342:: with SMTP id z63mr20893123pgz.187.1621973183863;
-        Tue, 25 May 2021 13:06:23 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:b993:67d5:4c88:1ac9])
-        by smtp.gmail.com with ESMTPSA id lj13sm2639925pjb.3.2021.05.25.13.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 13:06:22 -0700 (PDT)
-Date:   Tue, 25 May 2021 13:06:19 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] add z1 and z2 channels support for
- resistive-adc-touch driver
-Message-ID: <YK1Yu3k7alGWqEX7@google.com>
-References: <20210525054634.9134-1-o.rempel@pengutronix.de>
+        Tue, 25 May 2021 16:14:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66C5C061574;
+        Tue, 25 May 2021 13:12:52 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c1b002e9a6969de3a19f0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1b00:2e9a:6969:de3a:19f0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 95EB71EC0249;
+        Tue, 25 May 2021 22:12:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621973570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0oczzyVicJSWXsQMSbTAEPrWE1pjbktvObtdG3YBcsA=;
+        b=IbCyWqriver8SMcwlr5ltJeBrU1OL7CN56C99mmkZp6ltV97+p/oZeCw8/05Et4zXvg3fb
+        +2HoFrqsIpn8NejWNAR3CGTkcklmYzTXKwcu6M1MuEsnpeWzMIJsMmrxfAkvxK0j9kA0bT
+        Cr2cA/Cb1A+KbWlIkMb0r+arj+HaPCw=
+Date:   Tue, 25 May 2021 22:12:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "M K, Muralidhara" <Muralidhara.MK@amd.com>
+Subject: Re: [PATCH 1/3] x86/MCE/AMD, EDAC/mce_amd: Add new SMCA bank types.
+Message-ID: <YK1aPCwdO2T/ux9r@zn.tnic>
+References: <20210511152538.148084-1-nchatrad@amd.com>
+ <YJq+ca+kJ4cRl5B8@zn.tnic>
+ <DM6PR12MB4388D2F749166A72974718C6E8269@DM6PR12MB4388.namprd12.prod.outlook.com>
+ <YK07xEG4567yv8vl@zn.tnic>
+ <20210525200327.GA8891@aus-x-yghannam.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210525054634.9134-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210525200327.GA8891@aus-x-yghannam.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Tue, May 25, 2021 at 04:03:27PM -0400, Yazen Ghannam wrote:
+> Yep, that's right. The UMCs are the only case of this so far and in the
+> foreseeable future. Though we may be moving towards more cases like
+> this.
 
-On Tue, May 25, 2021 at 07:46:30AM +0200, Oleksij Rempel wrote:
-> changes v6:
-> - drop other DT changes
-> - add more Reviewed-by tags
-> - remove redundant GRTS_CH_NONE check
+Ok, then you guys really need to make sure those strings are unique
+because they're in sysfs:
 
-Applied the lot, thank you.
+/sys/devices/system/machinecheck/machinecheck...
+
+AFAIR, so we can't have duplicates there.
 
 -- 
-Dmitry
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
