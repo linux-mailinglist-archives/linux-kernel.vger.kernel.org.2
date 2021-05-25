@@ -2,135 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F7838F7F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FB438F7F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhEYCOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 22:14:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:64659 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhEYCOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 22:14:47 -0400
-IronPort-SDR: GJCRIg+Hly4rUbDBwNtPoSU5qg6O7ciDXKl7nu2ku9vF6it4Cc4wCw/iQHB5aXiC0ueTUm4ioJ
- kZ2gtF8zG2EA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="201827766"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="201827766"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 19:13:18 -0700
-IronPort-SDR: l16tqqrH6MTySpNaorQrz93PbUAvT7f0F0dPwLTSguBig3D1Jl4OEmQy+NUSFNpBDMvsoatw44
- ddng3MtoD+SA==
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="546313065"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.195.214]) ([10.212.195.214])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 19:13:17 -0700
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX
- guest
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
- <b420a7af-5202-fee9-9e0b-39680d0cc9c8@linux.intel.com>
- <CAPcyv4gNz9gKsHVcindp3OsHz4hMRWPZgsNu1A5xrDQg7tYqNA@mail.gmail.com>
- <cea7c704-5f1c-3f84-e47b-c62da18e358e@linux.intel.com>
- <CAPcyv4h4=eNZFS7d13WvzpWzTkHAMF7Mxo0frqf2gdmaFN3++Q@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <125f8362-b1e3-d304-f943-3fc2f07b5d79@linux.intel.com>
-Date:   Mon, 24 May 2021 19:13:16 -0700
+        id S230097AbhEYCPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 22:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhEYCPI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 22:15:08 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9755C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 19:13:39 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 29so10407325pgu.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 19:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eTe+TnZWka47XzdYxR4Tb+kvwPnKlvl1m7carpA23+0=;
+        b=vQ93Zkm21b8ODlREXEuF2D82fumsqTWTEkCq1ZrHm2kLdMrNJxLbCwGVg67Tmt1DKD
+         hcWEb78lcoBscnRM+3+HbVa2pUOWjannqZWfboa7izS5ul12BxbD/LA4CF4iz46k+clT
+         PDidvl236m4pNVxmGWpPFw9MoR/ViQVfSy7snua6iX/QPKhYGKWdTbzgYSlO/h94zqd7
+         /tY2ZaxLJQYyFWy6NHqIJemUA+cHUTk8f5MsoZEbXQuuMptiXg7ID13UtFiCpHIgBnIA
+         Am2ffYqotcJNje3pKP860jOTbbzmaO91egzwlbydHapOoRAqG8IOaVe6DLLpwstAK1IF
+         ER4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eTe+TnZWka47XzdYxR4Tb+kvwPnKlvl1m7carpA23+0=;
+        b=pD/Owx4E+IB8ZyYCFqiurMQMs2t6TPMR8aSvN4uRslfjI5PjEMMzTJuTI/8nebMezZ
+         8OJzi7hfUz1zHZALiQXqkZ2b5puRSHYP4T91McgEC1LIODLSacE4x8LEfTZwNVfuPWsA
+         F2Oi8Un2TB8fs/g2o3oaivqbfCozSULb4XTKuoseXmzNuRsQcRoyn9kPD/9o3LHzddx0
+         JPCe0eMfDVV2GCWwmGkmgJGbewfZlnkPt+pDy3k1YXIWKYN62UHzUTxXAauh6ChLLYJI
+         pz8gyj4OL4FCx1bgfM2ieTTInTe4H8+smwqK1MkDv3y8Ai0QlnwB7ZtTSLYFoIzBKFjO
+         Ymyg==
+X-Gm-Message-State: AOAM530RXbbbhCc8FvNuN93Vb79rUpBrTvAts++DQqSXXp1JoYYoTdfr
+        FSLdSZfr1M/4ZXL5Nt+MXIA=
+X-Google-Smtp-Source: ABdhPJybAMHkQ4/DFc8FbBn/wDHTRPUFlKBtA8RA12mPH+X4Vt0d1iJUVa1m/hjFV2nCADyJdQDTmA==
+X-Received: by 2002:a63:521a:: with SMTP id g26mr16763354pgb.279.1621908819022;
+        Mon, 24 May 2021 19:13:39 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id r4sm4794825pff.197.2021.05.24.19.13.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 19:13:38 -0700 (PDT)
+Subject: Re: [PATCH 3/4] firmware: arm_scmi: Introduce monotonically
+ increasing tokens
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20210524231503.34924-1-cristian.marussi@arm.com>
+ <20210524231503.34924-4-cristian.marussi@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <38fb1a44-3ed4-3a8f-0716-e91159b72a9b@gmail.com>
+Date:   Mon, 24 May 2021 19:13:35 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4h4=eNZFS7d13WvzpWzTkHAMF7Mxo0frqf2gdmaFN3++Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210524231503.34924-4-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 5/24/2021 6:45 PM, Dan Williams wrote:
->
->>
->>> but
->>> it does not make the description of this patch correct.
->> If KVM was broken I'm sure we would hear about it.
-> KVM does not try to support the cases where wbinvd being unavailable
-> would break the system. That is not the claim being made in this
-> patch.
 
-I thought we made that claim.
+On 5/24/2021 4:15 PM, Cristian Marussi wrote:
+> Tokens are sequence numbers embedded in the each SCMI message header: they
+> are used to correlate commands with responses (and delayed responses), but
+> their usage and policy of selection is entirely up to the caller (usually
+> the OSPM agent), while they are completely opaque to the callee (SCMI
+> server platform) which merely copies them back from the command into the
+> response message header.
+> This also means that the platform does not, can not and should not enforce
+> any kind of policy on received messages depending on the contained sequence
+> number: platform can perfectly handle concurrent requests carrying the same
+> identifiying token if that should happen.
+> 
+> Moreover the platform is not required to produce in-order responses to
+> agent requests, the only constraint in these regards is that in case of
+> an asynchronous message the delayed response must be sent after the
+> immediate response for the synchronous part of the command transaction.
+> 
+> Currenly the SCMI stack of the OSPM agent selects as token for the
 
+s/as token/a token/?
 
-"We just want to be the same as KVM"
+> egressing commands the lowest possible number which is not already in use
+> by an existing in-flight transaction, which means, in other words, that
+> we immediately reuse any token after its transaction has completed or it
+> has timed out: this indeed simplifies token and associated xfer management
+> and lookup.
+> 
+> Under the above assumptions and constraints, since there is really no state
+> shared between the agent and the platform to let the platform know when a
+> token and its associated message has timed out, the current policy of early
+> reuse of tokens can easily lead to the situation in which a spurios or late
 
->
->> The ACPI cases are for S3, which is not supported in guests, or for the
->> old style manual IO port C6, which isn't supported either.
->> The persistent memory cases would require working DMA mappings,
-> No, that analysis is wrong.The wbinvd audit would have found that
-> persistent memory secure-erase and unlock, which has nothing to do
-> with DMA, needs wbinvd to ensure that the CPU has not retained a copy
-> of the PMEM contents from before the unlock happened and it needs to
-> make sure that any data that was meant to be destroyed by an erasure
-> is not retained in cache.
+s/spurios/spurious/
 
-But that's all not supported in TDX.
+> received response (or delayed_response), related to an old stale and timed
+> out transaction, can be wrongly associated to a newer valid in-flight xfer
+> that just happens to have reused the same token.
+> 
+> This misbehavior on such ghost responses is more easily exposed on those
+> transports that naturally have an higher level of parallelism in processing
+> multiple concurrent in-flight messages.
+> 
+> This commit introduces a new policy of selection of tokens for the OSPM
+> agent: each new transfer now gets the next available and monotonically
+> increasing token, until tokens are exhausted and the counter rolls over.
+> 
+> Such new policy mitigates the above issues with ghost responses since the
+> tokens are now reused as later as possible (when they roll back ideally)
+> and so it is much easier to identify ghost responses to stale timed out
+> transactions: this also helps in simplifying the specific transports
+> implementation since stale transport messages can be easily identified
+> and discarded early on in the rx path without the need to cross check
+> their actual sate with the core transport layer.
+> This mitigation is even more effective when, as is usual the case, the
 
-And the only way it could work in KVM is when there is some DMA, likely 
-at least an IOMMU, e.g. to set up the persistent memory. That's what I 
-meant with working DMA mappings.
+s/usual/usually/
 
-Otherwise KVM would be really broken, but I don't really believe that 
-without some real evidence.
+> maximum number of pending messages is capped by the platform to a much
+> lower value than whole possible range of tokens.(2^10)
+> 
+> This internal policy change in the core SCMI transport layer is fully
+> transparent to the specific transports so it has not and should not have
+> any impact on the transports implementation.
+> 
+> The empirically observed cost of such new procedure of token selection
+> amounts in the best case to ~10us out of an observed full transaction cost
+> of 3ms for the completion of a synchronous sensor reading command on a
+> platform supporting commmands completion interrupts.
 
+s/commmands/commands/
 
->
-> It's fine to not support the above cases, I am asking for the
-> explanation to demonstrate the known risks and the known mitigations.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
-The analysis is that all this stuff that you are worried about cannot be 
-enabled in a TDX guest
+Overall this looks good to me and is more straightforward than I thought.
+[snip]
 
-(it would be a nightmare if it could, we would need to actually make it 
-secure against a malicious host)
+> +/**
+> + * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
+> + *
+> + * @minfo: Pointer to Tx/Rx Message management info based on channel type
+> + * @xfer: The xfer to act upon
+> + *
+> + * Pick the next unused monotonically increasing token and set it into
+> + * xfer->hdr.seq: picking a monotonically increasing value avoids reusing
+> + * immediately tokens of just completed or timed-out xfers, mitigating the risk
+> + * of wrongly associating a late received answer for an expired xfer to a live
+> + * in-flight transaction which happened to have reused the same token.
 
-> IgnorePAT is not the mitigation, the mitigation is an audit to
-> describe why the known users are unlikely to be triggered. Even better
-> would be an addition patch that does something like:
->
-> iff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
-> index 4b80150e4afa..a6b13a1ae319 100644
-> --- a/drivers/nvdimm/security.c
-> +++ b/drivers/nvdimm/security.c
-> @@ -170,6 +170,9 @@ static int __nvdimm_security_unlock(struct nvdimm *nvdimm)
->          const void *data;
->          int rc;
->
-> +       if (is_protected_guest())
-> +               return -ENXIO;
-> +
->          /* The bus lock should be held at the top level of the call stack */
->          lockdep_assert_held(&nvdimm_bus->reconfig_mutex);
->
-> ...to explicitly error out a wbinvd use case before data is altered
-> and wbinvd is needed.
+This was a bit harder to read than I thought, how about:
 
-I don't see any point of all of this. We really just want to be the same 
-as KVM. Not get into the business of patching a bazillion sub systems 
-that cannot be used in TDX anyways.
-
--Andi
-
+picking a monotonically increasing value avoids immediate reuse of
+freshly completed or timed-out xfers, thus mitigating the risk of
+incorrect association of a late and expired xfer with a live in-flight
+transaction, both happening to re-use the same token identifier.
+-- 
+Florian
