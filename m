@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F84138FD76
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CE638FD7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhEYJLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:11:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60658 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231429AbhEYJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:10:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621933762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VMjceT9vwzkrZQiya/elFoq1dJf0z/5I+bdC8ntYH9k=;
-        b=GIHsAw35IfIvEt+YIwJgiYqbOh/kgsUbhe4zaENhaJJXa9qlBhRfYhMUTJM1pgx5N91Qpm
-        W6eq2qhWpMmMFIFA8pB82aZWBFk+PYravQWcDYoojfgLK5jWD6w8hCDhqFUbJGL77ywahF
-        A6uPQGS152jqRyf/M7Iut5ZzPWSfZes=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621933762;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VMjceT9vwzkrZQiya/elFoq1dJf0z/5I+bdC8ntYH9k=;
-        b=Z1Q27/swwWOpfYBUeRbZC9peLa+e8OjWlTBG8TKTY6KBfMqh6QY3SO7uUUdnF7DXFHCpKm
-        t/xJpL94eLELjkBA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2F739AE1F;
-        Tue, 25 May 2021 09:09:22 +0000 (UTC)
-Date:   Tue, 25 May 2021 11:09:18 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] mm,hwpoison: fix race with hugetlb page allocation
-Message-ID: <20210525090918.GE3300@linux>
-References: <20210518231259.2553203-1-nao.horiguchi@gmail.com>
- <20210518231259.2553203-2-nao.horiguchi@gmail.com>
- <d78f430c-2390-2a5f-564a-e20e0ba6b26a@oracle.com>
- <20210520071717.GA2641190@hori.linux.bs1.fc.nec.co.jp>
- <20210525073559.GA844@linux>
- <20210525080707.GA3325050@hori.linux.bs1.fc.nec.co.jp>
+        id S232360AbhEYJMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:12:36 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:57127 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231384AbhEYJMe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:12:34 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 0BFCC9E2;
+        Tue, 25 May 2021 05:11:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 25 May 2021 05:11:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm2; bh=ihjrZyupxC2RY6LoFXxJCvJTHQ
+        9fJ9jSbr/clQHZS30=; b=pQeXP5AIk15bBOd/X+o0sOjoccxnmHsiH5psfIdsGm
+        pDrEzLuifnSZoayrcHu5lzOEVDsOMuh4TqqA/khZ9Tvkyb1oDMTXOPVUp9dMPJ5U
+        1agg5ZzwlIrMwDHUZAXzvvszeZQKG4WcenIe5LkZcXy1LhnuTo550TpoHm2JQNtq
+        Mv0NM+4ZXwwpA2qDIRVAz711fK2ML3xv7kVZbxN6R3Lq0T4uaz/F4K53WVRNsVGb
+        lwUY2FnSbc/AnppofPjVuFIYPx2fUJaojCcSC60hTwQlzqr/pVMzNpRmsOzkVQ0+
+        HlxzmUTj22XMzJsq5ZcKetamtwQZBkEU3yIvnpPH8Z6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ihjrZy
+        upxC2RY6LoFXxJCvJTHQ9fJ9jSbr/clQHZS30=; b=dsT1bzI4VX4yQaQAdk+pBK
+        Ok9iwk7+5gjLjT7b+G6CpeGZ0dj0DNVHb1ef2Jo1CWN+CX2/pRgEv9bSSUAXJ/dS
+        Z39fNiTKhZQv6CJWCqMnqNpMIwYmkrpw/4s9cylZFU2hon8HP0bo67GtHe3Ne0wn
+        0MzJ+J+7TnQgrSaOYi05cNPgcsry3MjJaRap9Byi/q85gMjYz0iiRqdsFm0t06b4
+        gRXMFwBEahGK2Vmji/CzWsdSV7CXdrXfOncQbZXWBaUlEPfStI0rJNHbFS6ZqGBa
+        fRUu8gtmpNTG/nQO2hDGjQdbicKtGGjlMeviOTMpun7lah7rS/jt06zxpId/5OCg
+        ==
+X-ME-Sender: <xms:Jr-sYPdZjgWyHon9VloJrKpIgRm_QBFIYpkH7tf3OQQcjjQS8LfI2Q>
+    <xme:Jr-sYFNUGqxyEVbQy8glragT-Ddl5Ypz295XmbKIZvXniaACSrUBtYjDkmGbjY7jb
+    A_w5DiERA1sAgQvcZ8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Jr-sYIjR3JxI7jsowegRLQy-GFbLa3JTOb844xTk575txUUNvyrQoA>
+    <xmx:Jr-sYA_TiIwkLzh6DDQU3v-EFQksLMWz7yGeNf-QlS1iyi3lFhBuLQ>
+    <xmx:Jr-sYLsb-ZMk8spN6s3UChRxpSQ49WHCqBUq4Q_J4hYqXYPAgor3UA>
+    <xmx:J7-sYEMSwSF8-HH0RSmo6SeGrvlSPP5_gpYdPvaoh14aG3Qxu1kS1RJnwlE>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 25 May 2021 05:11:01 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        Emma Anholt <emma@anholt.net>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH 0/3] drm/vc4: Fix for the HDMI detect power state
+Date:   Tue, 25 May 2021 11:10:56 +0200
+Message-Id: <20210525091059.234116-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210525080707.GA3325050@hori.linux.bs1.fc.nec.co.jp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 08:07:07AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
-> OK, here's the current draft.
-> 
-> Thanks,
-> Naoya Horiguchi
-> 
-> ---
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Date: Tue, 18 May 2021 23:49:18 +0900
-> Subject: [PATCH] mm,hwpoison: fix race with hugetlb page allocation
-> 
-> When hugetlb page fault (under overcommitting situation) and
-> memory_failure() race, VM_BUG_ON_PAGE() is triggered by the following race:
-> 
->     CPU0:                           CPU1:
-> 
->                                     gather_surplus_pages()
->                                       page = alloc_surplus_huge_page()
->     memory_failure_hugetlb()
->       get_hwpoison_page(page)
->         __get_hwpoison_page(page)
->           get_page_unless_zero(page)
->                                       zero = put_page_testzero(page)
->                                       VM_BUG_ON_PAGE(!zero, page)
->                                       enqueue_huge_page(h, page)
->       put_page(page)
-> 
-> __get_hwpoison_page() only checks the page refcount before taking an
-> additional one for memory error handling, which is wrong because there's
-> a time window where compound pages have non-zero refcount during
-> initialization.  So make __get_hwpoison_page() check page status a bit
-> more for hugetlb pages.
-
-I think that this changelog would benefit from some information about the new
-!PageLRU && !__PageMovable check.
-
->  static int __get_hwpoison_page(struct page *page)
->  {
->  	struct page *head = compound_head(page);
-> +	int ret = 0;
-> +	bool hugetlb = false;
-> +
-> +	ret = get_hwpoison_huge_page(head, &hugetlb);
-> +	if (hugetlb)
-> +		return ret;
-> +
-> +	if (!PageLRU(head) && !__PageMovable(head))
-> +		return 0;
-
-This definitely needs a comment hinting the reader why we need to check for this.
-AFAICS, this is to close the race where a page is about to be a hugetlb page soon,
-so we do not go for get_page_unless_zero(), right?
-
-From soft_offline_page's POV I __guess__ that's fine because we only deal with
-pages we know about.
-But what about memory_failure()? I think memory_failure() is less picky about that,
-so it is okay to not take a refcount on that case?
-
--- 
-Oscar Salvador
-SUSE L3
+Hi,=0D
+=0D
+This fixes an issue found during a rework on the RPi3 where we would=0D
+end up with the detect callback of the HDMI connector called while the=0D
+device would be disabled.=0D
+=0D
+This unfortunately results in a complete CPU hang on the RaspberryPi.=0D
+=0D
+The documentation doesn't really provide any expectation on the power=0D
+state for various operations that could be performed while the device is=0D
+off, so the first patch makes that clear. The next two patches make sure=0D
+the device is sufficiently powered for detect to run without any issue.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+Maxime Ripard (3):=0D
+  drm: Mention the power state requirement on side-channel operations=0D
+  drm/vc4: hdmi: Move the HSM clock enable to runtime_pm=0D
+  drm/vc4: hdmi: Make sure the controller is powered in detect=0D
+=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 45 ++++++++++++++++++++++++++--------=0D
+ include/drm/drm_connector.h    |  5 ++++=0D
+ include/drm/drm_dp_helper.h    |  4 +++=0D
+ include/drm/drm_mipi_dsi.h     |  5 ++++=0D
+ 4 files changed, 49 insertions(+), 10 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
