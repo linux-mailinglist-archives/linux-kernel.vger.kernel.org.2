@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937E938FBF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE8038FBF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhEYHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbhEYHsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:48:22 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D430DC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:46:52 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id i17so31053732wrq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=v55P6S5W7xrOd/7SzhygqC9B4BMec90s1TTSAj2EVxE=;
-        b=JajTsqVKIfsWuZ1YrQXqPuTRbCnCPA8rGan8mjq6zPyXX2H4MFK5L3fnVH7R22ucVi
-         1SYgnolIifkRimEssKJG31YS1HT2fFeZB3zvVt3J9IaFtNnJSThrbl5Yf+TGlZVd59ta
-         D+8wOIOStaAQaJ8ifPspoDD77EDjnSSMhTZGTE+EcuAClrkId1vNjEeWZIXmbYNIqMRu
-         bWqGjVzBQd+FBecuDWce1Pw2msLiJK67HHr2EGDzSkjMeJs9U583NdjCRPKI9Od2S2rZ
-         NDe6OmegGTq7eTb5/TiycCAdK/52GDNoVy+6/062Qq3HZUE4GW8Xp5US/V23Wv48k1Pk
-         29lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=v55P6S5W7xrOd/7SzhygqC9B4BMec90s1TTSAj2EVxE=;
-        b=N1Nk2Fs7nZ23GTsktNEWUb+DZ1Kzl8SlLVbxLDoTvpA+o0DXtqQpsRNaNiz4nMnkJm
-         YHAeCaxLLqdZwgx44Yd1b8sDoSnG1DwK9h1R2RzzAz6P47/beNrxu7MDt+4A3PG01CXr
-         uFyKTQK/lHgIKWAldVepKRcdT27c1qgpsEv2uT9GMp37XuiYlq31jd1GGXWo3woQz1xm
-         A4jlBDlrt7/SpxPuxzjz/c8rnLaNuUkVtri2FUNKAGSZ6EC+9orvrmpRNTFr+EioXe3r
-         h0BExIN6G5Ke5VLfOeie3UCZ17HuR+XVjJHrTvtvJbNPPNzor9+K1Eu/iunwgszo3mA7
-         nLbg==
-X-Gm-Message-State: AOAM531Dw5brYisZbh6TugzvfNkNZ2HRy5MdvnL6mwG4PUfv+q3/cEJi
-        FAPJig+qsH8x4j+J4cuRKwCoQeUGhP6Bow==
-X-Google-Smtp-Source: ABdhPJxra+VdD0HTsZR+c2d1us85Dq8lMeLNrROWhWra+R6dRK5Bqzi5HZanKgKfTsSKdJMTHwMgdg==
-X-Received: by 2002:a5d:4408:: with SMTP id z8mr26244243wrq.2.1621928811370;
-        Tue, 25 May 2021 00:46:51 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y6sm1749432wmy.23.2021.05.25.00.46.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 00:46:50 -0700 (PDT)
-Date:   Tue, 25 May 2021 08:46:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robert Marko <robert.marko@sartura.hr>, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <20210525074649.GC4005783@dell>
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr>
- <20210524230940.GA1350504@robh.at.kernel.org>
+        id S231875AbhEYHtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:49:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231263AbhEYHtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE486128B;
+        Tue, 25 May 2021 07:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621928893;
+        bh=P+PllHqMuh+hS59i4iVdppeAUj9XXQuHIklVnWcWX94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0zyZYtFD7ZgbFRIhaW5NyiomeCGZjHh3SKhOPLveqKrAnP4jT03OervbSUj2n4kNT
+         k3qyHG8q6rFPZ8Y9oR1T0ZYGMfV4HfkATmReSzl7M5i4Q1GKbNoVj3bTmoBYnmafyI
+         tIuv6FWCbvIHtz2zacr4Y4zOKW/1mXCBmEW5B/0g=
+Date:   Tue, 25 May 2021 09:48:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] debugfs: remove return value of debugfs_create_bool()
+Message-ID: <YKyrusKNbH+8tpcY@kroah.com>
+References: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
+ <CAMuHMdW42UAWRPWe09=0c=pkNLwwswoQHEbSHyXEjsfF6UZJdw@mail.gmail.com>
+ <YKt0v2etlFzpvE9r@kroah.com>
+ <CAMuHMdWL=Jy-PHMU3NTuc2YT=oK7gGGrrj008_k0ATivPsPc8w@mail.gmail.com>
+ <YKt9Z82KbBQZIWVl@kroah.com>
+ <CAMuHMdXbSyresZNUqq-g4=HNFXqtj2QkPpN1s0LRjmOnNPxn8w@mail.gmail.com>
+ <YKuedipmEjIW91Jr@kroah.com>
+ <CAMuHMdUhSKFrcaiB0KHsgg1=4_RX3XjUpzMV=Y=RxErRmsn=sA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210524230940.GA1350504@robh.at.kernel.org>
+In-Reply-To: <CAMuHMdUhSKFrcaiB0KHsgg1=4_RX3XjUpzMV=Y=RxErRmsn=sA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021, Rob Herring wrote:
-
-> On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > Add binding documents for the Delta TN48M CPLD drivers.
-> > 
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> > Changes in v2:
-> > * Implement MFD as a simple I2C MFD
-> > * Add GPIO bindings as separate
+On Tue, May 25, 2021 at 09:26:42AM +0200, Geert Uytterhoeven wrote:
+> Hi Greg,
 > 
-> I don't understand why this changed. This doesn't look like an MFD to 
-> me. Make your binding complete if there are missing functions. 
-> Otherwise, stick with what I already ok'ed.
+> On Mon, May 24, 2021 at 2:39 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Mon, May 24, 2021 at 01:44:38PM +0200, Geert Uytterhoeven wrote:
+> > > On Mon, May 24, 2021 at 12:18 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > On Mon, May 24, 2021 at 11:51:42AM +0200, Geert Uytterhoeven wrote:
+> > > > > On Mon, May 24, 2021 at 11:41 AM Greg Kroah-Hartman
+> > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > > On Mon, May 24, 2021 at 11:11:32AM +0200, Geert Uytterhoeven wrote:
+> > > > > > > On Fri, May 21, 2021 at 10:28 PM Greg Kroah-Hartman
+> > > > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > > > > No one checks the return value of debugfs_create_bool(), as it's not
+> > > > > > > > needed, so make the return value void, so that no one tries to do so in
+> > > > > > >
+> > > > > > > Please explain in the patch description why it is not needed.
+> > > > > >
+> > > > > > Because you just do not need it, like almost all other debugfs calls
+> > > > > > now.
+> > > > >
+> > > > > Why do I just not need it?
+> > > >
+> > > > Let me flip it around, why do you need it?  There are no in-kernel users
+> > > > of the return value anymore so what code requires this pointer now?
+> > >
+> > > There still are a few users of other members in the family, and some
+> > > of them are meant to be removed without removing the full parent
+> > > directory.  Having all debugfs_create_*() functions behave the same
+> > > is a bonus.
+> >
+> > I agree, and we are almost there, all that is left is:
+> >         debugfs_create_blob()
+> >         debugfs_create_file()
+> >         debugfs_create_file_unsafe()
+> > for creating debugfs files.
+> >
+> > There is still:
+> >         debugfs_create_dir()
+> >         debugfs_create_symlink()
+> >         debugfs_create_automount()
+> > for non-file creations that do not return void.
+> >
+> > The majority of the debugfs_create_* functions now do not return
+> > anything.
+> >
+> > > But if other people are fine with having to call
+> > > debugfs_remove(debugfs_lookup(...)), well, let it be like that...
+> >
+> > It saves at least a static variable, so what's not to like?  :)
+> 
+> Which is more than offset by the cost of the new debugfs_lookup() call...
 
-Right.  What else, besides GPIO, does this do?
+Not when people were keeping a dentry-per-entry in lots of structures.
+That's from the heap, this dentry pointer sits on the stack, or if we
+are lucky, only in a register :)
 
-> >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 ++++++++++
-> >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 81 +++++++++++++++++++
-> >  2 files changed, 123 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+thanks,
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+greg k-h
