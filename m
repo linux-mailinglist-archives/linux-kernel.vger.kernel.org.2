@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9AD38F754
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BF138F758
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhEYBJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
+        id S229845AbhEYBJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhEYBJO (ORCPT
+        with ESMTP id S229674AbhEYBJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:09:14 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1CEC061574;
-        Mon, 24 May 2021 18:07:45 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id b25so11437322iot.5;
-        Mon, 24 May 2021 18:07:45 -0700 (PDT)
+        Mon, 24 May 2021 21:09:15 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2449EC061756;
+        Mon, 24 May 2021 18:07:47 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id a8so21646340ioa.12;
+        Mon, 24 May 2021 18:07:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tOmSoHd45k/En0UqK1OQagmHQENYt50xkIt6EPZ+HoE=;
-        b=kAUyYTePrexTMYHACbI7T2kFKf67e3C0Npj86gAKh871Nt9/jVTFQjg6JtIrtHJgXk
-         oE39x+qFBP/D6M5y8cbJ2UcqWzOn8HqvVadn1YeX9DsEwYdHjlEpDwvKxP0ekx8sXA8x
-         5QyEcxSVms4dTVehlfGQ80kOyDpf8FzxGBn1bo9WipWP0INBDsX4FIKLt8up9Buo3bit
-         77M4h58T1+i0WhmQblpK6xa4qnWGHMVMyv7bjsPA0PJi9JfkqKkz+7+gCEoiwiUbx3Ov
-         r8VSqT7bOMz+6DaksnvGRFN6a/TSuvKb+DbgeEn5YK4QKQyjhh8VwciSGAxzb+21Jp4M
-         TB5w==
+        bh=jDtRZbhOC2kiaH83Vu38CKuYDq3Ey/spCPAL1xviNrA=;
+        b=qVgb7bRRRAkUJL3NdtKfEnvW7pu6k2zxZ6/jgx9QeiIAYiXWlIUdm3q++cGV4kgG/s
+         ka3oNWeUX7xGccY2Qy5Axh7+9Uvj/bj2gpGMC9vuZCMRBZbmuIaluACLzIRyoklIUzH9
+         KuLbDxC1ea1M3PYAWnBlBCLXa9JfG4K3ETZHldbhfJ17J3bJccqqe4fV7wABYB51QbT8
+         rn6Nwb6BHHBVouzKn5a6uOG9NOInVjFAHtVDnaUqkEiEn5FbwX1lJ6SdK+YZVF74r7v+
+         dl9kiNyaa8yqh8mQHyzWXRG+4J+/gMpdS6Px102o5G93Dw1itDf1Oo1RDlEqIyovMBm0
+         UkGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tOmSoHd45k/En0UqK1OQagmHQENYt50xkIt6EPZ+HoE=;
-        b=TcYz7TKvse/EkgJ8TSyn08iQVfbDJwdMBYPTh0d3C9ER4ZsTPewS8oUg4A4bx6tmGS
-         8o0D6+GksH0jDnbNoAcL/RLP6hn19K3aoqfcGWXV7R89wVILU3ZoowuMMGFEsFUu9A/e
-         d8sDSPEa/kaoqt8CQ46rhRZXye1SR5RmAhm8HWKBTgpW6LjZgtJR33ZmORvESps42QCE
-         Tc6RXqJArt8dyCqadhDiZd2uemartKtkpybzkKicv6gwrKbrAcl5NyFEODqaHuzx5j+d
-         veCrpWx7rwVo17LCw+v6YG1J1sNeIzoYfbEo6qbfDGjb9Ucp38GWew8h2KLZDBYrv9r6
-         ujHA==
-X-Gm-Message-State: AOAM532eK/AZz3XFrN3QovCeJwnG1TBrVUjlkbOhcqu5rmrcwMxgl+99
-        6xqnsYea22ycjpkjJkdlnyM=
-X-Google-Smtp-Source: ABdhPJyHGifYNR3NE2Uja6AAjEFLyQ2Nn4vdEscwH7jHN7qPfFQizAYFbJwP5gR+Re/XGoNr7gbl/A==
-X-Received: by 2002:a5e:a902:: with SMTP id c2mr17710970iod.80.1621904864761;
-        Mon, 24 May 2021 18:07:44 -0700 (PDT)
+        bh=jDtRZbhOC2kiaH83Vu38CKuYDq3Ey/spCPAL1xviNrA=;
+        b=UASmy5uR5TYSdMl14jF6onSCdCElavFZRjMmypFC0LIAfoUEGLvPqOBYYYX9F6eKe4
+         h0wJCeuXEE3b5WUVenbXhgY7ddphTMm2U8r91i4Z6VXEhZTcBoK2lE+qtkEBLxM/O9s8
+         GxlIqNrIWv0+Cx1apmYe0rz8gOaIzYYsCr8cbZdR13Kxj3BiKO3etazo623tRel0FOiX
+         kjsWS3er4IWFZHHhyshvg1TggNfTluEm2NdcQp+x+zAWSqe9ucUqwTCpBOrihXw8CSF5
+         K+cRybDDvwNrvZ8sPyhrlwyYyCukWcuwt6Se6eb1U3kvVzb/Mb8/PrKnK7UEUX6gYN1O
+         Zznw==
+X-Gm-Message-State: AOAM53064WnV3rMMrY7hwsMIVDh+a3hEFNmvecpQz5On5pS4GJR3Y5qi
+        psreFSNjroPS8kFFM/QKUC4=
+X-Google-Smtp-Source: ABdhPJy8FuUWUXY91/rNjnq1m2tRa1xMs1sdlu3dlgxRMPset0cAB2dgqOZZapDj/GkuzECpoKCvCg==
+X-Received: by 2002:a6b:f118:: with SMTP id e24mr18113453iog.125.1621904866310;
+        Mon, 24 May 2021 18:07:46 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:599b:b8c7:b3a9:9f1d])
-        by smtp.gmail.com with ESMTPSA id w20sm12318413ilj.16.2021.05.24.18.07.43
+        by smtp.gmail.com with ESMTPSA id w20sm12318413ilj.16.2021.05.24.18.07.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 18:07:44 -0700 (PDT)
+        Mon, 24 May 2021 18:07:45 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -60,9 +59,9 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Andrey Smirnov <andrew.smirnov@gmail.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] soc: imx: gpcv2: add support for i.MX8MN power domains
-Date:   Mon, 24 May 2021 20:07:29 -0500
-Message-Id: <20210525010732.115562-3-aford173@gmail.com>
+Subject: [PATCH 3/5] arm64: dts: imx8mn: add GPC node and power domains
+Date:   Mon, 24 May 2021 20:07:30 -0500
+Message-Id: <20210525010732.115562-4-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210525010732.115562-1-aford173@gmail.com>
 References: <20210525010732.115562-1-aford173@gmail.com>
@@ -72,160 +71,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the power domains founds on i.MX8MN. The Nano
-has fewer domains than the Mini, and the access to some of these domains
-is different than that of the Mini, the Mini power domains cannot be
-reused.
+This adds the DT nodes to describe the power domains available on the
+i.MX8MN. There are more power domains, but the displaymix and mipi
+power domains need a separate clock block controller which not yet
+available, so this limits it to the HSIO, OTG and GPU domains.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index 35bbb1bc5159..3120718e1dd7 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -20,6 +20,7 @@
- #include <dt-bindings/power/imx7-power.h>
- #include <dt-bindings/power/imx8mq-power.h>
- #include <dt-bindings/power/imx8mm-power.h>
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index d4231e061403..0eb64b59c8e3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -4,6 +4,8 @@
+  */
+ 
+ #include <dt-bindings/clock/imx8mn-clock.h>
 +#include <dt-bindings/power/imx8mn-power.h>
++#include <dt-bindings/reset/imx8mq-reset.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -613,6 +615,40 @@ src: reset-controller@30390000 {
+ 				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+ 				#reset-cells = <1>;
+ 			};
++
++			gpc: gpc@303a0000 {
++				compatible = "fsl,imx8mn-gpc";
++				reg = <0x303a0000 0x10000>;
++				interrupt-parent = <&gic>;
++				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
++
++				pgc {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					pgc_hsiomix: power-domain@0 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_HSIOMIX>;
++						clocks = <&clk IMX8MN_CLK_USB_BUS>;
++					};
++
++					pgc_otg1: power-domain@1 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_OTG1>;
++						power-domains = <&pgc_hsiomix>;
++					};
++
++					pgc_gpumix: power-domain@2 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_GPUMIX>;
++						clocks = <&clk IMX8MN_CLK_GPU_CORE_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_SHADER_DIV>,
++							 <&clk IMX8MN_CLK_GPU_BUS_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_AHB>;
++						resets = <&src IMX8MQ_RESET_GPU_RESET>;
++					};
++				};
++			};
+ 		};
  
- #define GPC_LPCR_A_CORE_BSC			0x000
- 
-@@ -58,6 +59,12 @@
- #define IMX8MM_PCIE_A53_DOMAIN			BIT(3)
- #define IMX8MM_MIPI_A53_DOMAIN			BIT(2)
- 
-+#define IMX8MN_DISPMIX_A53_DOMAIN		BIT(12)
-+#define IMX8MN_GPUMIX_A53_DOMAIN		BIT(9)
-+#define IMX8MN_DDR1_A53_DOMAIN		BIT(7)
-+#define IMX8MN_OTG1_A53_DOMAIN		BIT(4)
-+#define IMX8MN_MIPI_A53_DOMAIN		BIT(2)
-+
- #define GPC_PU_PGC_SW_PUP_REQ		0x0f8
- #define GPC_PU_PGC_SW_PDN_REQ		0x104
- 
-@@ -94,6 +101,12 @@
- #define IMX8MM_PCIE_SW_Pxx_REQ			BIT(1)
- #define IMX8MM_MIPI_SW_Pxx_REQ			BIT(0)
- 
-+#define IMX8MN_DISPMIX_SW_Pxx_REQ		BIT(10)
-+#define IMX8MN_GPUMIX_SW_Pxx_REQ		BIT(7)
-+#define IMX8MN_DDR1_SW_Pxx_REQ		BIT(5)
-+#define IMX8MN_OTG1_SW_Pxx_REQ		BIT(2)
-+#define IMX8MN_MIPI_SW_Pxx_REQ		BIT(0)
-+
- #define GPC_M4_PU_PDN_FLG		0x1bc
- 
- #define GPC_PU_PWRHSK			0x1fc
-@@ -116,6 +129,14 @@
- #define IMX8MM_VPUMIX_HSK_PWRDNREQN		BIT(8)
- #define IMX8MM_DISPMIX_HSK_PWRDNREQN		BIT(7)
- #define IMX8MM_HSIO_HSK_PWRDNREQN		(BIT(5) | BIT(6))
-+
-+#define IMX8MN_GPUMIX_HSK_PWRDNACKN		(BIT(29) | BIT(27))
-+#define IMX8MN_DISPMIX_HSK_PWRDNACKN		BIT(25)
-+#define IMX8MN_HSIO_HSK_PWRDNACKN		BIT(23)
-+#define IMX8MN_GPUMIX_HSK_PWRDNREQN		(BIT(11) | BIT(9))
-+#define IMX8MN_DISPMIX_HSK_PWRDNREQN		BIT(7)
-+#define IMX8MN_HSIO_HSK_PWRDNREQN		BIT(5)
-+
- /*
-  * The PGC offset values in Reference Manual
-  * (Rev. 1, 01/2018 and the older ones) GPC chapter's
-@@ -152,6 +173,12 @@
- #define IMX8MM_PGC_VPUG2		28
- #define IMX8MM_PGC_VPUH1		29
- 
-+#define IMX8MN_PGC_MIPI		16
-+#define IMX8MN_PGC_OTG1		18
-+#define IMX8MN_PGC_DDR1		21
-+#define IMX8MN_PGC_GPUMIX		23
-+#define IMX8MN_PGC_DISPMIX		26
-+
- #define GPC_PGC_CTRL(n)			(0x800 + (n) * 0x40)
- #define GPC_PGC_SR(n)			(GPC_PGC_CTRL(n) + 0xc)
- 
-@@ -764,6 +791,71 @@ static const struct imx_pgc_domain_data imx8mm_pgc_domain_data = {
- 	.reg_access_table = &imx8mm_access_table,
- };
- 
-+static const struct imx_pgc_domain imx8mn_pgc_domains[] = {
-+	[IMX8MN_POWER_DOMAIN_HSIOMIX] = {
-+		.genpd = {
-+			.name = "hsiomix",
-+		},
-+		.bits  = {
-+			.pxx = 0, /* no power sequence control */
-+			.map = 0, /* no power sequence control */
-+			.hskreq = IMX8MN_HSIO_HSK_PWRDNREQN,
-+			.hskack = IMX8MN_HSIO_HSK_PWRDNACKN,
-+		},
-+	},
-+
-+	[IMX8MN_POWER_DOMAIN_OTG1] = {
-+		.genpd = {
-+			.name = "usb-otg1",
-+		},
-+		.bits  = {
-+			.pxx = IMX8MN_OTG1_SW_Pxx_REQ,
-+			.map = IMX8MN_OTG1_A53_DOMAIN,
-+		},
-+		.pgc   = IMX8MN_PGC_OTG1,
-+	},
-+
-+	[IMX8MN_POWER_DOMAIN_GPUMIX] = {
-+		.genpd = {
-+			.name = "gpumix",
-+		},
-+		.bits  = {
-+			.pxx = IMX8MN_GPUMIX_SW_Pxx_REQ,
-+			.map = IMX8MN_GPUMIX_A53_DOMAIN,
-+			.hskreq = IMX8MN_GPUMIX_HSK_PWRDNREQN,
-+			.hskack = IMX8MN_GPUMIX_HSK_PWRDNACKN,
-+		},
-+		.pgc   = IMX8MN_PGC_GPUMIX,
-+	},
-+};
-+
-+static const struct regmap_range imx8mn_yes_ranges[] = {
-+	regmap_reg_range(GPC_LPCR_A_CORE_BSC,
-+			 GPC_PU_PWRHSK),
-+	regmap_reg_range(GPC_PGC_CTRL(IMX8MN_PGC_MIPI),
-+			 GPC_PGC_SR(IMX8MN_PGC_MIPI)),
-+	regmap_reg_range(GPC_PGC_CTRL(IMX8MN_PGC_OTG1),
-+			 GPC_PGC_SR(IMX8MN_PGC_OTG1)),
-+	regmap_reg_range(GPC_PGC_CTRL(IMX8MN_PGC_DDR1),
-+			 GPC_PGC_SR(IMX8MN_PGC_DDR1)),
-+	regmap_reg_range(GPC_PGC_CTRL(IMX8MN_PGC_GPUMIX),
-+			 GPC_PGC_SR(IMX8MN_PGC_GPUMIX)),
-+	regmap_reg_range(GPC_PGC_CTRL(IMX8MN_PGC_DISPMIX),
-+			 GPC_PGC_SR(IMX8MN_PGC_DISPMIX)),
-+};
-+
-+static const struct regmap_access_table imx8mn_access_table = {
-+	.yes_ranges	= imx8mn_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(imx8mn_yes_ranges),
-+};
-+
-+static const struct imx_pgc_domain_data imx8mn_pgc_domain_data = {
-+	.domains = imx8mn_pgc_domains,
-+	.domains_num = ARRAY_SIZE(imx8mn_pgc_domains),
-+	.reg_access_table = &imx8mn_access_table,
-+};
-+
-+
- static int imx_pgc_domain_probe(struct platform_device *pdev)
- {
- 	struct imx_pgc_domain *domain = pdev->dev.platform_data;
-@@ -948,6 +1040,7 @@ static int imx_gpcv2_probe(struct platform_device *pdev)
- static const struct of_device_id imx_gpcv2_dt_ids[] = {
- 	{ .compatible = "fsl,imx7d-gpc", .data = &imx7_pgc_domain_data, },
- 	{ .compatible = "fsl,imx8mm-gpc", .data = &imx8mm_pgc_domain_data, },
-+	{ .compatible = "fsl,imx8mn-gpc", .data = &imx8mn_pgc_domain_data, },
- 	{ .compatible = "fsl,imx8mq-gpc", .data = &imx8m_pgc_domain_data, },
- 	{ }
- };
+ 		aips2: bus@30400000 {
 -- 
 2.25.1
 
