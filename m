@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C293538FF6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C0238FF7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhEYKmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:42:14 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57678 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229663AbhEYKmN (ORCPT
+        id S230517AbhEYKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230361AbhEYKp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:42:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Ua47xFf_1621939218;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ua47xFf_1621939218)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 May 2021 18:40:42 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch, sumit.semwal@linaro.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] amdgpu: remove unreachable code
-Date:   Tue, 25 May 2021 18:40:14 +0800
-Message-Id: <1621939214-57004-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 25 May 2021 06:45:26 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28F3C061574;
+        Tue, 25 May 2021 03:43:56 -0700 (PDT)
+Received: from zn.tnic (p4fed31b3.dip0.t-ipconnect.de [79.237.49.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3FC2D1EC0249;
+        Tue, 25 May 2021 12:43:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621939435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=WWFHfF3RAY6a+oyQek8PAZ9HHRMqle11WO6ub4mR6o8=;
+        b=bAsBYje036C8mLeaxhYCUHfNSjE+vHH7omRPVJSrjxHkut7G5i80HqIDVDgUg9pYqNeOK+
+        MeHxcj8UpaDed8kWtQ10du0mGYrrG6zIJaOvNeQh/7y7pzO0CSMebLM778cUO/HAMVP2xu
+        RnahFWFKiykSnrm43jlLL8a0gPgmkqc=
+Date:   Tue, 25 May 2021 12:41:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 12/20] x86/compressed: Register GHCB memory
+ when SEV-SNP is active
+Message-ID: <YKzUYjecerjTeT+H@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-13-brijesh.singh@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210430121616.2295-13-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function amdgpu_uvd_cs_msg(), every branch in the switch
-statement will have a return, so the code below the switch statement
-will not be executed.
+On Fri, Apr 30, 2021 at 07:16:08AM -0500, Brijesh Singh wrote:
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 733fca403ae5..7487d4768ef0 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -88,6 +88,18 @@
+>  #define GHCB_MSR_PSC_RSVD_MASK		0xfffffULL
+>  #define GHCB_MSR_PSC_RESP_VAL(val)	((val) >> GHCB_MSR_PSC_ERROR_POS)
+>  
+> +/* GHCB GPA Register */
+> +#define GHCB_MSR_GPA_REG_REQ		0x012
+> +#define GHCB_MSR_GPA_REG_VALUE_POS	12
+> +#define GHCB_MSR_GPA_REG_VALUE_MASK	0xfffffffffffffULL
 
-Eliminate the follow smatch warning:
+GENMASK_ULL
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
-ignoring unreachable code.
+> +#define GHCB_MSR_GPA_REQ_VAL(v)		\
+> +		(((v) << GHCB_MSR_GPA_REG_VALUE_POS) | GHCB_MSR_GPA_REG_REQ)
+> +
+> +#define GHCB_MSR_GPA_REG_RESP		0x013
+> +#define GHCB_MSR_GPA_REG_RESP_VAL(v)	((v) >> GHCB_MSR_GPA_REG_VALUE_POS)
+> +#define GHCB_MSR_GPA_REG_ERROR		0xfffffffffffffULL
+> +#define GHCB_MSR_GPA_INVALID		~0ULL
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -For the follow advice: https://lore.kernel.org/patchwork/patch/1435074/
+Ditto.
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 1 -
- 1 file changed, 1 deletion(-)
+> +
+>  /* SNP Page State Change NAE event */
+>  #define VMGEXIT_PSC_MAX_ENTRY		253
+>  #define VMGEXIT_PSC_INVALID_HEADER	0x100000001
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 085d3d724bc8..140c5bc07fc2 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -81,6 +81,22 @@ static bool ghcb_get_hv_features(void)
+>  	return true;
+>  }
+>  
+> +static void snp_register_ghcb(unsigned long paddr)
+> +{
+> +	unsigned long pfn = paddr >> PAGE_SHIFT;
+> +	u64 val;
+> +
+> +	sev_es_wr_ghcb_msr(GHCB_MSR_GPA_REQ_VAL(pfn));
+> +	VMGEXIT();
+> +
+> +	val = sev_es_rd_ghcb_msr();
+> +
+> +	/* If the response GPA is not ours then abort the guest */
+> +	if ((GHCB_RESP_CODE(val) != GHCB_MSR_GPA_REG_RESP) ||
+> +	    (GHCB_MSR_GPA_REG_RESP_VAL(val) != pfn))
+> +		sev_es_terminate(1, GHCB_TERM_REGISTER);
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-index 82f0542..b32ed85 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-@@ -840,7 +840,6 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_ctx *ctx,
- 
- 	default:
- 		DRM_ERROR("Illegal UVD message type (%d)!\n", msg_type);
--		return -EINVAL;
- 	}
- 	BUG();
- 	return -EINVAL;
+Nice, special termination reasons which say why the guest terminates,
+cool!
+
+:-)
+
 -- 
-1.8.3.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
