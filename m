@@ -2,150 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F7D390466
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8A3390476
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhEYPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:01:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39910 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231182AbhEYPBO (ORCPT
+        id S234230AbhEYPCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:02:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40705 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234183AbhEYPCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:01:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PExFOU107432;
-        Tue, 25 May 2021 10:59:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ilqadP6miyG2ucaJRNhnH2nqbLOFKkZD7gQ8vrkxgcQ=;
- b=MZC9s1Pp4IsgjiDys5ewtgn+hG0oMLpezxWhIamRNIhIMiVzvLPCerGXbcbIcwu7qV2i
- wzkzHQms/4PfDtAtvwXxM/6Z8KRHYfDKv4NnUS/kSKD88RCDevsENj4TgPyfKWh/+2Cs
- I4Uok5RkqHlyAfeSu/Ekdl11VmycM6Q21ZvQ4g3t7plYAYkIOhlZQfNubgtaSS9VZmSb
- NaZhc4V3jv6z7wTfstC0b1HUMT58HzYUN880C9l2rfBUzDS9et68dbkupK2ty94EIweX
- WqC81V3Tb1nE5Veh8bSx/0gF6oOPYrETdDLOLNakBxuC00WbNqFS+ZDKXH+yPOmTxAEl Xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s38r0nav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 10:59:42 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PExehG111005;
-        Tue, 25 May 2021 10:59:40 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s38r0mxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 10:59:39 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PErumP024386;
-        Tue, 25 May 2021 14:59:29 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma05wdc.us.ibm.com with ESMTP id 38s1ghh104-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 14:59:28 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PExRhj31916494
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 14:59:27 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9012213604F;
-        Tue, 25 May 2021 14:59:27 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6347A13605D;
-        Tue, 25 May 2021 14:59:26 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 14:59:26 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-3-akrowiak@linux.ibm.com>
- <20210523225746.GF1002214@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <ac5cfe4a-a61b-2226-58aa-a5ea761180be@linux.ibm.com>
-Date:   Tue, 25 May 2021 10:59:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 11:02:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621954859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qc1y1QTC1cV947c5otyGJ64D+/LIRnXVey8bVzJq2lY=;
+        b=Ampl/FqxX+LAKKjeLTXbcVka8fwSWfdpkp/L2NvP2FNgkip95tDhcAG/UgZQxnFup4W7ze
+        XsaAAQaXbtGfW2ieL6r6PGNp/mXvgyOx5gzenXZj2od/r/leiCHJbwW7/0/uoykj907cfG
+        tiLF1cEUtoLDJYg5MFzqI4EB9EtFOlc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-KveZ0Jg6Pfqxjnx6-SlhZQ-1; Tue, 25 May 2021 11:00:55 -0400
+X-MC-Unique: KveZ0Jg6Pfqxjnx6-SlhZQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 163B0C7440;
+        Tue, 25 May 2021 15:00:54 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CB2E60CEB;
+        Tue, 25 May 2021 15:00:41 +0000 (UTC)
+Date:   Tue, 25 May 2021 11:00:38 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Paris <eparis@redhat.com>, linux-fsdevel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>
+Subject: Re: [PATCH v4 3/3] audit: add OPENAT2 record to list how
+Message-ID: <20210525150038.GF2268484@madcap2.tricolour.ca>
+References: <cover.1621363275.git.rgb@redhat.com>
+ <d23fbb89186754487850367224b060e26f9b7181.1621363275.git.rgb@redhat.com>
+ <20210520080318.owvsvvhh5qdhyzhk@wittgenstein>
+ <CAHC9VhRmhtheudAjGyumunC5zfHMVjuuBvjXNZzYEByTJQRt9g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210523225746.GF1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TaWADBqqPkb5YFjg1MtBJSc2-BGjm6FM
-X-Proofpoint-GUID: KRxNCKyuKPDOFaxatL_YT-HVr9VjXiTI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 impostorscore=0
- spamscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRmhtheudAjGyumunC5zfHMVjuuBvjXNZzYEByTJQRt9g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-05-24 19:08, Paul Moore wrote:
+> On Thu, May 20, 2021 at 4:03 AM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> > On Wed, May 19, 2021 at 04:00:22PM -0400, Richard Guy Briggs wrote:
+> > > Since the openat2(2) syscall uses a struct open_how pointer to communicate
+> > > its parameters they are not usefully recorded by the audit SYSCALL record's
+> > > four existing arguments.
+> > >
+> > > Add a new audit record type OPENAT2 that reports the parameters in its
+> > > third argument, struct open_how with fields oflag, mode and resolve.
+> > >
+> > > The new record in the context of an event would look like:
+> > > time->Wed Mar 17 16:28:53 2021
+> > > type=PROCTITLE msg=audit(1616012933.531:184): proctitle=73797363616C6C735F66696C652F6F70656E617432002F746D702F61756469742D7465737473756974652D737641440066696C652D6F70656E617432
+> > > type=PATH msg=audit(1616012933.531:184): item=1 name="file-openat2" inode=29 dev=00:1f mode=0100600 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0
+> > > type=PATH msg=audit(1616012933.531:184): item=0 name="/root/rgb/git/audit-testsuite/tests" inode=25 dev=00:1f mode=040700 ouid=0 ogid=0 rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0
+> > > type=CWD msg=audit(1616012933.531:184): cwd="/root/rgb/git/audit-testsuite/tests"
+> > > type=OPENAT2 msg=audit(1616012933.531:184): oflag=0100302 mode=0600 resolve=0xa
+> > > type=SYSCALL msg=audit(1616012933.531:184): arch=c000003e syscall=437 success=yes exit=4 a0=3 a1=7ffe315f1c53 a2=7ffe315f1550 a3=18 items=2 ppid=528 pid=540 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=ttyS0 ses=1 comm="openat2" exe="/root/rgb/git/audit-testsuite/tests/syscalls_file/openat2" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key="testsuite-1616012933-bjAUcEPO"
+> > >
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > Link: https://lore.kernel.org/r/d23fbb89186754487850367224b060e26f9b7181.1621363275.git.rgb@redhat.com
+> > > ---
+> > >  fs/open.c                  |  2 ++
+> > >  include/linux/audit.h      | 10 ++++++++++
+> > >  include/uapi/linux/audit.h |  1 +
+> > >  kernel/audit.h             |  2 ++
+> > >  kernel/auditsc.c           | 18 +++++++++++++++++-
+> > >  5 files changed, 32 insertions(+), 1 deletion(-)
+> 
+> ...
+> 
+> > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > > index 3f59ab209dfd..faf2485323a9 100644
+> > > --- a/kernel/auditsc.c
+> > > +++ b/kernel/auditsc.c
+> > > @@ -76,7 +76,7 @@
+> > >  #include <linux/fsnotify_backend.h>
+> > >  #include <uapi/linux/limits.h>
+> > >  #include <uapi/linux/netfilter/nf_tables.h>
+> > > -#include <uapi/linux/openat2.h>
+> > > +#include <uapi/linux/openat2.h> // struct open_how
+> > >
+> > >  #include "audit.h"
+> > >
+> > > @@ -1319,6 +1319,12 @@ static void show_special(struct audit_context *context, int *call_panic)
+> > >               audit_log_format(ab, "fd=%d flags=0x%x", context->mmap.fd,
+> > >                                context->mmap.flags);
+> > >               break;
+> > > +     case AUDIT_OPENAT2:
+> > > +             audit_log_format(ab, "oflag=0%llo mode=0%llo resolve=0x%llx",
+> >
+> > Hm, should we maybe follow the struct member names for all entries, i.e.
+> > replace s/oflag/flags?
+> 
+> There is some precedence for using "oflags" to refer to "open" flags,
+> my guess is Richard is trying to be consistent here.  I agree it's a
+> little odd, but it looks like the right thing to me from an audit
+> perspective; the audit perspective is a little odd after all :)
 
+Thanks Paul.
 
-On 5/23/21 6:57 PM, Jason Gunthorpe wrote:
-> On Fri, May 21, 2021 at 03:36:48PM -0400, Tony Krowiak wrote:
->> +static struct kvm_s390_crypto_hook
->> +*kvm_arch_crypto_find_hook(enum kvm_s390_crypto_hook_type type)
->> +{
->> +	struct kvm_s390_crypto_hook *crypto_hook;
->> +
->> +	list_for_each_entry(crypto_hook, &crypto_hooks, node) {
->> +		if (crypto_hook->type == type)
->> +			return crypto_hook;
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +int kvm_arch_crypto_register_hook(struct kvm_s390_crypto_hook *hook)
->> +{
->> +	struct kvm_s390_crypto_hook *crypto_hook;
->> +
->> +	mutex_lock(&crypto_hooks_lock);
->> +	crypto_hook = kvm_arch_crypto_find_hook(hook->type);
->> +	if (crypto_hook) {
->> +		if (crypto_hook->owner != hook->owner)
->> +			return -EACCES;
->> +		list_replace(&crypto_hook->node, &hook->node);
-> This is all dead code right? This is only called from a module init
-> function so it can't be called twice.
+I could have sworn I had a conversation with someone about this but I
+can't find any of that evidence otherwise I'd paste it here.
 
-That is true only if you are considering the current case.
-Is it guaranteed that only the vfio_ap module
-will call this function and is there a guarantee that it will
-always and only be called from the vfio_ap module init
-function? For example, suppose a hook is added to
-intercept the AP NQAP or DQAP instruction? We don't
-know how or when those handlers will be registered
-or unregistered. We don't even know if the handlers
-will be part of the vfio_ap module or not.
+With the help of our audit field dictionary we have some guidance of
+what these new field names should be:
+	https://github.com/linux-audit/audit-documentation/blob/main/specs/fields/field-dictionary.csv
 
-> Just always fail if the hook is
-> already used and delete the owner stuff.
+The "flags" field is used for the mmap record (coincidentally in the
+context diff), so should not be used here because it will cause issues
+in the userspace parser.  The open syscall flags are listed with
+"oflag".  Other flag fields are named after their domain.
 
-I suppose that is reasonable and simpler.
+The value field has a precedence of "val" that is not associated with
+any particular domain and is alphanumeric.  Other value fields take the
+name of their domain, so that was a possibility.
 
->
-> But this is alot of complicated and unused code to solve a lock
-> ordering problem..
+"resolve" would be a new field for which I have a note to add it to this
+document if the patch is accepted.
 
-If you have a better solution, I'm all ears. I've been down this
-road a couple of times now and solving lock ordering for
-multiple asynchronous processes is not trivial. This seems like
-a reasonable solution and provides for flexibility for including
-additional hooks to handle interception of other AP instructions.
+> paul moore
 
->
-> Jason
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
