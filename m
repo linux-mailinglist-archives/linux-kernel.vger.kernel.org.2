@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A5B390C02
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DD6390C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhEYWQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 18:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232129AbhEYWQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 18:16:51 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E67AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:15:21 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so7455444wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lwWvg+8eBSUrALdD90b3evPDsvDCWlcbDSlk/RnjE4I=;
-        b=HiiwB5vFM/WlazygqEXLUp6F9b2XjW1GlGXYxdLPHmuxzY+oPyrI62Zjbt1H/+Wkay
-         u1TOebUXzsbpGqNQWMtnFUUr8KYgWBH5FUP6KUIhAs5UWloevmL6Q3/qOGt+gtahZsUQ
-         0biPoOWIYu90sydoep9XF1SkGoa1TJLdO9Ps+mE3ztY8K92NZP4j6hhFGsfX+Bp1hLoO
-         K5dZAmts+aqXkkfNb0VVJdxNz98ExbxoLdtjbdJJSsHoytGC07b/riApoJrveg+YsKYa
-         z63jKmJblDbnbRhaIqytDk2abj2a/9fXWPFQEQmwm53yAPxrrZ1LRYUjMX9lj/85XlVH
-         KVKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lwWvg+8eBSUrALdD90b3evPDsvDCWlcbDSlk/RnjE4I=;
-        b=DHgFk/E5GRmKSKAn5bHfkawRes4eP07sx+nz/bBcDXKJVRqJJ35kZxhdB+yBEhLW+0
-         eDOLRZX9CtKXh0jWEDmA9PtgMnATKk+HilT35KlOMpz1vcNqAtDlWmnxVLq1xqUI5/Y3
-         b+iYl8wKww+aLUqpaBXRmweHq+9fEgYxLEDHcBYkbIKnEx8MkHPgUTiXLdIc3sa5nxWy
-         uuEiuy5Y35J08F/od99kFLXyK3Z0NYHkwtLpbAe9s0KXFAdWjwb5foutCFH5aUHPO1uE
-         HuNlT3nACeMtVVV0xZMAsBtwJ70uaVIOhxgX4UjTmG+w9UzlbYSCiii453tbvIiCh5d0
-         iIrA==
-X-Gm-Message-State: AOAM532jJCoJPWloMC13i85TvXwx8Wm52BtvaAMRikNuj3bBoETKpxbR
-        +PcZCgIlPAH9/1vdXdznP9m2tw==
-X-Google-Smtp-Source: ABdhPJzGaRvaacHgysu3rMF2tlSe+VL6zv8JVFKVEjR3CD82uVhWkcNFMEg0rz44pjAhIiolMSN4dw==
-X-Received: by 2002:a1c:e243:: with SMTP id z64mr4165947wmg.126.1621980919891;
-        Tue, 25 May 2021 15:15:19 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id 10sm4134722wmi.7.2021.05.25.15.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:15:19 -0700 (PDT)
-Date:   Tue, 25 May 2021 23:15:17 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH AUTOSEL 5.10 30/62] ASoC: rt5645: add error checking to
- rt5645_probe function
-Message-ID: <YK129caVtNBthNDG@equinox>
-References: <20210524144744.2497894-1-sashal@kernel.org>
- <20210524144744.2497894-30-sashal@kernel.org>
- <YK1w+H70aqLGDaDl@sirena.org.uk>
+        id S232455AbhEYWSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 18:18:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232326AbhEYWSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 18:18:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06024613F5;
+        Tue, 25 May 2021 22:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621981041;
+        bh=M2lRYy8u4f8zVD9Cxvaj5twIjqKGVeZ2DFiOuO/QQnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j9GSiuxzKKzi6EjTQq+eB8f3KNwZDcGIlpE5k1mmT6optmrUwvT2XSb09mJtUWkPN
+         +vs38iDKNiLGnUf+oXtMBsjqv4w1OZaMSoDNPLXXXLffXRaFVFL9xNzZXVqsivvNna
+         bIL6XJgsYpyGeloKNaEoE40pSj4ngXa2Qrf25bx5oC5TJxkw+uHByIVSWF6K81sA8R
+         fh8Ysi5CgBYcwtEmiJVhte7BgRANlVIt5lp6I/NgWlHppJsXVP1mfTnIt8YGwMOZDP
+         7yznWfOYGrACAMWil/g+ZFZUaeIi2pHkQnqoBaPlEW7AP53Vw6acFFpr9KJ7rKVUIL
+         sXefyMSr9lHng==
+Date:   Tue, 25 May 2021 15:17:20 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
+        hch@lst.de, rgoldwyn@suse.de,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v6 3/7] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+Message-ID: <20210525221720.GD202144@locust>
+References: <20210519060045.1051226-1-ruansy.fnst@fujitsu.com>
+ <20210519060045.1051226-4-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK1w+H70aqLGDaDl@sirena.org.uk>
+In-Reply-To: <20210519060045.1051226-4-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:49:44PM +0100, Mark Brown wrote:
-> On Mon, May 24, 2021 at 10:47:11AM -0400, Sasha Levin wrote:
-> > From: Phillip Potter <phil@philpotter.co.uk>
-> > 
-> > [ Upstream commit 5e70b8e22b64eed13d5bbebcb5911dae65bf8c6b ]
-> > 
-> > Check for return value from various snd_soc_dapm_* calls, as many of
-> > them can return errors and this should be handled. Also, reintroduce
-> > the allocation failure check for rt5645->eq_param as well. Make all
+On Wed, May 19, 2021 at 02:00:41PM +0800, Shiyang Ruan wrote:
+> Punch hole on a reflinked file needs dax_copy_edge() too.  Otherwise,
+> data in not aligned area will be not correct.  So, add the srcmap to
+> dax_iomap_zero() and replace memset() as dax_copy_edge().
 > 
-> Now I've looked at the patch I don't think it's appropriate for
-> stable, it's essentially equivalent to a patch that adds -Werror
-> - the changes in it are upgrading things from error messages that
-> would be generated by what are essentially static checks (even
-> though we do do them at runtime they're on hard coded strings) to
-> probe failures which would be a regression.  Unfortunately people
-> do ignore warnings like that in shipping stuff so it's possible
-> it's happening, we could do an audit to see if it is but it seems
-> like more effort than it's worth.
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+Looks good now,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/dax.c               | 25 +++++++++++++++----------
+>  fs/iomap/buffered-io.c |  2 +-
+>  include/linux/dax.h    |  3 ++-
+>  3 files changed, 18 insertions(+), 12 deletions(-)
 > 
-> The only case I can think where it might help is if we're
-> managing to OOM during probe() but that feels very unlikely to
-> happen, and improved handling unlikely to make substantial
-> difference compared to the risk that the routing warnings are
-> triggering but being ignored so someone's sound stops working due
-> to a stable update.  Otherwise it won't do much so why risk it?
-
-Dear Mark,
-
-So I frankly don't have the experience to disagree with you :-) Your
-reasoning certainly seems sound to me. My original motivation for the
-patch (after discussion with others within the mentorship process) was
-that some other sound SoC drivers do this, an example being the Ux500. I
-defer to the decision of the community as a whole of course, and am
-happy with whatever is decided.
-
-Regards,
-Phil
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 98531c53d613..baee584cb8ae 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1197,7 +1197,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+>  }
+>  #endif /* CONFIG_FS_DAX_PMD */
+>  
+> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
+> +		struct iomap *srcmap)
+>  {
+>  	sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
+>  	pgoff_t pgoff;
+> @@ -1219,19 +1220,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+>  
+>  	if (page_aligned)
+>  		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
+> -	else
+> +	else {
+>  		rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
+> -	if (rc < 0) {
+> -		dax_read_unlock(id);
+> -		return rc;
+> -	}
+> -
+> -	if (!page_aligned) {
+> -		memset(kaddr + offset, 0, size);
+> +		if (rc < 0)
+> +			goto out;
+> +		if (iomap->addr != srcmap->addr) {
+> +			rc = dax_iomap_cow_copy(pos, size, PAGE_SIZE, srcmap,
+> +						kaddr);
+> +			if (rc < 0)
+> +				goto out;
+> +		} else
+> +			memset(kaddr + offset, 0, size);
+>  		dax_flush(iomap->dax_dev, kaddr + offset, size);
+>  	}
+> +
+> +out:
+>  	dax_read_unlock(id);
+> -	return size;
+> +	return rc < 0 ? rc : size;
+>  }
+>  
+>  static loff_t
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 9023717c5188..fdaac4ba9b9d 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -933,7 +933,7 @@ static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
+>  		s64 bytes;
+>  
+>  		if (IS_DAX(inode))
+> -			bytes = dax_iomap_zero(pos, length, iomap);
+> +			bytes = dax_iomap_zero(pos, length, iomap, srcmap);
+>  		else
+>  			bytes = iomap_zero(inode, pos, length, iomap, srcmap);
+>  		if (bytes < 0)
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..3275e01ed33d 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -237,7 +237,8 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
+>  int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
+>  int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
+>  				      pgoff_t index);
+> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap);
+> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
+> +		struct iomap *srcmap);
+>  static inline bool dax_mapping(struct address_space *mapping)
+>  {
+>  	return mapping->host && IS_DAX(mapping->host);
+> -- 
+> 2.31.1
+> 
+> 
+> 
