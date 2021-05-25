@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBB039000E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A262390017
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhEYLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:35:06 -0400
-Received: from outbound-smtp11.blacknight.com ([46.22.139.106]:33961 "EHLO
-        outbound-smtp11.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231653AbhEYLeu (ORCPT
+        id S231707AbhEYLhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:37:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47702 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhEYLhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:34:50 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp11.blacknight.com (Postfix) with ESMTPS id 018121C3D31
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:33:18 +0100 (IST)
-Received: (qmail 9938 invoked from network); 25 May 2021 11:33:18 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 11:33:18 -0000
-Date:   Tue, 25 May 2021 12:33:17 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC 02/26] mm, slub: allocate private object map for
- validate_slab_cache()
-Message-ID: <20210525113317.GM30378@techsingularity.net>
-References: <20210524233946.20352-1-vbabka@suse.cz>
- <20210524233946.20352-3-vbabka@suse.cz>
- <20210525101742.GK30378@techsingularity.net>
- <aad15d62-23c0-9eeb-d61f-a214eb57fb19@suse.cz>
+        Tue, 25 May 2021 07:37:06 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621942530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sue1luAlZfh7je00Zp3GlmVroxEZDI5J1a5ENqpyiT0=;
+        b=E6jUffNounOYeOiI2eOuxm6u5pv2AK6jLvGbnKSq+EXibGy7JBomsrd+dBiSZNE4GmD3Ll
+        g4kMypRhdBQFTvnzFB0J/3m1ITCyv7nNKjbjCFENdNNSnTDaAZm27PCmYJ9UDmMId5IOn9
+        KJ3VxccqoqZ5SdTwsLctZR9E+zdpD9K+TBZa/la9wL73gUmVxznhvLcvmL+9AQGQxSOh3D
+        ql7ii0Rp0f8GJwNJl5++ZJxO05OSNmp4u2HMo1umvPP9XUvdZVWKqh+Xi1HBy9ujEUfMU/
+        puo6mQq83DRJcb+n4qJL/C7iQXfFsGaqyxks0fRkykloUY6at86162RbTV3eRw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621942530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sue1luAlZfh7je00Zp3GlmVroxEZDI5J1a5ENqpyiT0=;
+        b=dLJjPuTlmS2UC+86ACypSmELc9WsdJP98fBilJWpYSj/XLd8VTItMdJpwG5cC9x6GT6jDv
+        OYcxc/FRqHC+M6Cw==
+To:     Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: Re: [PATCH v6 2/4] printk: Straighten out log_flags into printk_info_flags
+In-Reply-To: <YKzSfQIa99Ld2ZMI@alley>
+References: <cover.1621338324.git.chris@chrisdown.name> <0b4f0e60960217ac36462316cf43497a9fad1747.1621338324.git.chris@chrisdown.name> <YKzSfQIa99Ld2ZMI@alley>
+Date:   Tue, 25 May 2021 13:35:29 +0200
+Message-ID: <87tumr82ri.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <aad15d62-23c0-9eeb-d61f-a214eb57fb19@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 12:36:52PM +0200, Vlastimil Babka wrote:
-> > Most callers of validate_slab_cache don't care about the return value
-> > except when the validate sysfs file is written. Should a simply
-> > informational message be displayed for -ENOMEM in case a writer to
-> > validate fails and it's not obvious it was because of an allocation
-> > failure?
-> 
-> he other callers are all in the effectively dead resiliency_test() code, which
-> has meanwhile been replaced in mmotm by kunit tests meanwhile. But it's true
-> those don't check the results either for now.
-> 
+On 2021-05-25, Petr Mladek <pmladek@suse.com> wrote:
+>> diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+>> index 73cc80e01cef..71918d47ca95 100644
+>> --- a/kernel/printk/printk_ringbuffer.h
+>> +++ b/kernel/printk/printk_ringbuffer.h
+>> @@ -50,6 +50,12 @@ struct prb_data_blk_lpos {
+>>  	unsigned long	next;
+>>  };
+>>  
+>> +/* Flags for a single printk record. */
+>> +enum printk_info_flags {
+>> +	LOG_NEWLINE	= 2,	/* text ended with a newline */
+>> +	LOG_CONT	= 8,	/* text is a fragment of a continuation line */
+>> +};
+>
+> Nit: Could you please move this after "enum desc_state" declaration?
 
-Ok.
+Is there a reason that this enum is moved into printk_ringbuffer.h? The
+ringbuffer does not use this enum.
 
-> > It's a fairly minor concern so whether you add a message or not
-> 
-> I think I'll rather fix up the tests. Or do you mean that -ENOMEM for a sysfs
-> write is also not enough and there should be a dmesg explanation for that case?
-> 
-
-I mean the -ENOMEM for a sysfs write. While it's very unlikely, it might
-would explain an unexpected write failure.
-
--- 
-Mel Gorman
-SUSE Labs
+John Ogness
