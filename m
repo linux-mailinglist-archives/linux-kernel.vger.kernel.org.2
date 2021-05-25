@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C189B390839
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3A5390834
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbhEYSAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233119AbhEYSAk (ORCPT
+        id S233082AbhEYSAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:00:35 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52198 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhEYSAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:00:40 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46764C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:59:09 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id x2-20020a0cda020000b02901edb4c412fdso31209807qvj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=O+kNZR25+vDl6MdOvHlxMTavYKFo24nOs+bV5Xh/gL4=;
-        b=TNKdPm5Lc8m5Yr+Q0Kghvn98kwQPuxloIzdloAJ9QEagHnLD2iGfLjzxZeonKnpoG/
-         TUEp4jFciIHVj73vOLyYeZoDZmoNKjDQ34szJG+z0PDWewTcqraYOscZjJ9vCNh2urKJ
-         GQGdOiSsAs62JvqYeoRdBW0JZeHKEmp7ozjO1FTp2wp9b/HqWj9AllUMGsPFPIo20l+u
-         CKM9/ChrQraKYuNNtEY+gcEyPreHROGOrlSbisWygQYDS0L94zXMUKXq23QG3Etok5v+
-         HyOhNdIwhLJvCYREDN7uOqNTmokffw6ZZUo1rYPu/m9eW0nEyCozmLi8DoRf4epIdAs4
-         o1dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=O+kNZR25+vDl6MdOvHlxMTavYKFo24nOs+bV5Xh/gL4=;
-        b=D55ok01/lQPS8Ch1Xjk1+739H17Xbas/sd3zrQYx+49dgSo9C32WugGxfuPaZHVYAD
-         y5ewLJL+NsCZ9vjk34daV7EmaA300y5JoiV+L7Qlymh0UwtrCAWID2Mtfo/9VANAdcQa
-         9HtA8304LvSLjEp7ppk8KzwhIWWjSgkNKMmQu9Jg7zt3dBvT2ZiHFytDZjrfLqHjhOSM
-         bEtvnz06FvzLz21Wx23141Bd7hCWzgiw5CABcg/qqRIZvw96vxnJZBAFyQYryhnOJOC3
-         ZDQ7m74jVCAFaGOF0CqjGY99nkkr0lwYPDPqvsWbUd0ZLkeFNjwtQGjfQwBP+UaA6zFL
-         ue8A==
-X-Gm-Message-State: AOAM5339gZMnvBVUxh0Pw96KOopky+KUaPL+glwwnLC1XGY64mRr5px3
-        oDjeeWBLdOT1SWRu+iXknGLkxv2zSA==
-X-Google-Smtp-Source: ABdhPJwn51Cp1/KhsmJlAmgL+vnA+kzdgTifCI9Q6t2awhhsv12FHBqJfTrDx3HxZhAn9pYlZmb/hO+IFQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:b328:d556:de65:97a2])
- (user=elver job=sendgmr) by 2002:ad4:4e67:: with SMTP id ec7mr38673270qvb.58.1621965548449;
- Tue, 25 May 2021 10:59:08 -0700 (PDT)
-Date:   Tue, 25 May 2021 19:58:19 +0200
-Message-Id: <20210525175819.699786-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     linux-kernel@vger.kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, ojeda@kernel.org, keescook@chromium.org,
-        akpm@linux-foundation.org, will@kernel.org, ardb@kernel.org,
-        luc.vanoostenryck@gmail.com, nivedita@alum.mit.edu,
-        masahiroy@kernel.org, peterz@infradead.org,
-        samitolvanen@google.com, arnd@arndb.de,
-        clang-built-linux@googlegroups.com,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 25 May 2021 14:00:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14PHx0bE009766;
+        Tue, 25 May 2021 12:59:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621965540;
+        bh=UbudXC1wkF/+ybCjaZx0WguGjl2/QS7ge0kYEPdYsgI=;
+        h=From:To:CC:Subject:Date;
+        b=XA2bGlTE112/6TX15v249Z59MVgMOufVmVnaVTWDXhfocE2gFmS80+B2zcQjTwttL
+         +ZcbAFAZuXj0bxfcqkpU+pvoQdp01HT+TkDO9tdgHyRYL+GdzC+1fYLsWnuqNzf8zw
+         wNBj0E74SCRae7u3hyA+nffvK0EmHYfqn65r6qH8=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14PHx0GN119885
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 25 May 2021 12:59:00 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 25
+ May 2021 12:58:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 25 May 2021 12:58:59 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14PHwwIJ014044;
+        Tue, 25 May 2021 12:58:59 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, <devicetree@vger.kernel.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH v2 0/5] dt-bindings: gpio: omap: Convert to json-schema
+Date:   Tue, 25 May 2021 20:58:53 +0300
+Message-ID: <20210525175858.11611-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until now no compiler supported an attribute to disable coverage
-instrumentation as used by KCOV.
+Hi
 
-To work around this limitation on x86, noinstr functions have their
-coverage instrumentation turned into nops by objtool. However, this
-solution doesn't scale automatically to other architectures, such as
-arm64, which are migrating to use the generic entry code.
+Convert the OMAP GPIO Device Tree binding documentation to json-schema.
+The GPIO hogs node names defined to end with a 'hog' suffix.
 
-Clang [1] and GCC [2] have added support for the attribute recently.
-[1] https://github.com/llvm/llvm-project/commit/280333021e9550d80f5c1152a34e33e81df1e178
-[2] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cec4d4a6782c9bd8d071839c50a239c49caca689
+All existing GPIO Hogs fixed to follow above naming convention
+before changing the binding to avoid dtbs_check warnings.
 
-Add __no_sanitize_coverage for both compilers, and add it to noinstr.
+Changes in v2:
+- Patch 5 fixed "wrong indentation" warning
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- include/linux/compiler-clang.h | 6 ++++++
- include/linux/compiler-gcc.h   | 6 ++++++
- include/linux/compiler_types.h | 2 +-
- 3 files changed, 13 insertions(+), 1 deletion(-)
+v1: https://lore.kernel.org/patchwork/cover/1434566/
 
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index adbe76b203e2..370565f4cfde 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -45,6 +45,12 @@
- #define __no_sanitize_undefined
- #endif
- 
-+#if defined(CONFIG_KCOV) && CONFIG_CLANG_VERSION >= 130000
-+#define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
-+#else
-+#define __no_sanitize_coverage
-+#endif
-+
- /*
-  * Not all versions of clang implement the type-generic versions
-  * of the builtin overflow checkers. Fortunately, clang implements
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 5d97ef738a57..cb9217fc60af 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -122,6 +122,12 @@
- #define __no_sanitize_undefined
- #endif
- 
-+#if defined(CONFIG_KCOV) && __has_attribute(__no_sanitize_coverage__)
-+#define __no_sanitize_coverage __attribute__((no_sanitize_coverage))
-+#else
-+#define __no_sanitize_coverage
-+#endif
-+
- #if GCC_VERSION >= 50100
- #define COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW 1
- #endif
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index d29bda7f6ebd..cc2bee7f0977 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -210,7 +210,7 @@ struct ftrace_likely_data {
- /* Section for code which can't be instrumented at all */
- #define noinstr								\
- 	noinline notrace __attribute((__section__(".noinstr.text")))	\
--	__no_kcsan __no_sanitize_address
-+	__no_kcsan __no_sanitize_address __no_sanitize_coverage
- 
- #endif /* __KERNEL__ */
- 
+Grygorii Strashko (5):
+  ARM: dts: am335x: align GPIO hog names with dt-schema
+  ARM: dts: am437x: align gpio hog names with dt-schema
+  ARM: dts: omap3: align gpio hog names with dt-schema
+  ARM: dts: omap5-board-common: align gpio hog names with dt-schema
+  dt-bindings: gpio: omap: Convert to json-schema
+
+ .../devicetree/bindings/gpio/gpio-omap.txt    |  45 --------
+ .../bindings/gpio/ti,omap-gpio.yaml           | 108 ++++++++++++++++++
+ .../boot/dts/am335x-boneblack-wireless.dts    |   2 +-
+ arch/arm/boot/dts/am335x-boneblue.dts         |   2 +-
+ .../boot/dts/am335x-bonegreen-wireless.dts    |   4 +-
+ arch/arm/boot/dts/am335x-icev2.dts            |   4 +-
+ arch/arm/boot/dts/am335x-shc.dts              |   8 +-
+ arch/arm/boot/dts/am437x-gp-evm.dts           |   4 +-
+ arch/arm/boot/dts/am43x-epos-evm.dts          |   2 +-
+ .../boot/dts/omap3-evm-processor-common.dtsi  |   2 +-
+ arch/arm/boot/dts/omap3-gta04a5.dts           |   2 +-
+ arch/arm/boot/dts/omap5-board-common.dtsi     |   2 +-
+ 12 files changed, 124 insertions(+), 61 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
+
 -- 
-2.31.1.818.g46aad6cb9e-goog
+2.17.1
 
