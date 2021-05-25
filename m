@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1FE390081
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B253390082
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbhEYMEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:04:07 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:46305 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhEYMEC (ORCPT
+        id S232179AbhEYMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:04:17 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:42649 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231912AbhEYMEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:04:02 -0400
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 14PC2AjM007640
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 21:02:12 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14PC2AjM007640
+        Tue, 25 May 2021 08:04:14 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 14PC2V55002350
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 21:02:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 14PC2V55002350
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621944133;
-        bh=e7A10QJ9hFFFi81B003RUSBE28HBLOTm/XCpb/4t66s=;
+        s=dec2015msa; t=1621944151;
+        bh=tvWj8zc1KaZx8oneFEp/D8SkmcxSTtuo3lyEiiqE9JE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xTNVvcUcEqsBbV0oYwav4t+k1rYeqq2UL+kIGLTLZHj3zwA0ZxY7peyiwnXQqvRIw
-         iAuHKYJOtmupCRBgV+PH+V46WFgh5Mr37OLmJV7N+RvkuWImfnLjf0041TxRZDKPdR
-         hrDxbs5A6/MmS5/tJ5qxH+aO2QuzFdY9N3qjJH4lsDTg2HhMV3pEnJdBnuSKPdveAK
-         e4RVcC1e74XkAHXKpen5Nh95zP2akVkPneN0/tf3+hOvw3botuY+Bs7UPX6g6pJjDr
-         Cm8c/7/sSmDWV+GHX8Q2ISWgljiauN/qYOSrEMT8oYchCRnDgtfs5ShCaaFc8qS2By
-         qMSSdr0ecSINw==
-X-Nifty-SrcIP: [209.85.210.177]
-Received: by mail-pf1-f177.google.com with SMTP id f22so15060776pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:02:12 -0700 (PDT)
-X-Gm-Message-State: AOAM531Oywi+6NNmA/M1Ms5/5bR7LPVea4P7GrStdGjS0g2JOtgtSWKG
-        S+wvP2YMEZ+R2IZQY41NIytlow5H2F1ZucBJEGk=
-X-Google-Smtp-Source: ABdhPJxCv4KbHc4MHn9ApsKPvgSFIpE/lIUL3uGz64R5krRd4QknRAM8I6neH8IBvXo4n7vb8oOJCEG8zfcKvit0yhA=
-X-Received: by 2002:a05:6a00:2394:b029:2e0:a27:ba26 with SMTP id
- f20-20020a056a002394b02902e00a27ba26mr29802834pfc.63.1621944128843; Tue, 25
- May 2021 05:02:08 -0700 (PDT)
+        b=zyx9nOCPE7dO2bwtRfTp5gQSVF8gOl8vN32FmyO1z9Toi9mizoyFOQ/WvJxu+5+NI
+         mbHw5MVBOEWSgDdtLURzaWgZiAuN8trmS4lxcSxaTAIfHu4x6BHA0czk9vw/FFtW1a
+         begG705RYJOlcm/DtoRmiXVvqgDwgtJ0bmAhGP9Qkzzo88bEWjLhuPUDM5C//FaC+I
+         9AYJ6W0f3oWtdP5KT/pMp9cVgrIlL6SBhv5sqAXLNKWo0MgYplQW93NZO0lXR8kcHG
+         d/fv1p2ucz6Jh+L1/dlSysuj9ArXJx5IAeaxM407MiteLlcVypWZnAzjiwh/Nx753T
+         JNOU3ZF1Puxcg==
+X-Nifty-SrcIP: [209.85.215.180]
+Received: by mail-pg1-f180.google.com with SMTP id 29so11451836pgu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:02:31 -0700 (PDT)
+X-Gm-Message-State: AOAM5321H4dMGB3JzVT8ZzSJMuGc/j2owzlfOPExDGR+fucN5zHaKZwA
+        fX1lKGhBUTDklRLc87ZWyAodsxtavdTR/QlEzFM=
+X-Google-Smtp-Source: ABdhPJwvJP3lvt31ep8fsoSOxeZtv9Y0qDbFQ3oudffI76qICC9WZp20ooMH2LlR1JddU3KSfrJxUQcYKyWGk0El5ys=
+X-Received: by 2002:a05:6a00:158d:b029:2e0:6ae2:17b1 with SMTP id
+ u13-20020a056a00158db02902e06ae217b1mr28842988pfk.76.1621944150806; Tue, 25
+ May 2021 05:02:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210524181707.132844-1-brgerst@gmail.com> <20210524181707.132844-3-brgerst@gmail.com>
-In-Reply-To: <20210524181707.132844-3-brgerst@gmail.com>
+References: <20210524181707.132844-1-brgerst@gmail.com> <20210524181707.132844-4-brgerst@gmail.com>
+In-Reply-To: <20210524181707.132844-4-brgerst@gmail.com>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 25 May 2021 21:01:31 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATV7J9afWf46QGA2QqGScFVGhLc-ey9+DqN31qUF=zcCw@mail.gmail.com>
-Message-ID: <CAK7LNATV7J9afWf46QGA2QqGScFVGhLc-ey9+DqN31qUF=zcCw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] x86/syscalls: Remove -Wno-override-init for syscall tables
+Date:   Tue, 25 May 2021 21:01:53 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASJAry3dDgg9wHK_Y-eNHNs2Y4iVs89g42c1NKLgVKb4A@mail.gmail.com>
+Message-ID: <CAK7LNASJAry3dDgg9wHK_Y-eNHNs2Y4iVs89g42c1NKLgVKb4A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] x86/syscalls: Don't sdjust CFLAGS for syscall tables
 To:     Brian Gerst <brgerst@gmail.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>,
@@ -56,40 +56,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, May 25, 2021 at 3:17 AM Brian Gerst <brgerst@gmail.com> wrote:
 >
-> Commit 44fe4895f47c ("Stop filling syscall arrays with *_sys_ni_syscall")
-> removes the need for -Wno-override-init, since the table is now filled
-> sequentially instead of overriding a default value.
+> The syscall_*.c files only contain data (the syscall tables).  There
+> is no need to adjust CFLAGS for tracing and stack protector since they
+> contain no code.
 >
 > Signed-off-by: Brian Gerst <brgerst@gmail.com>
 > ---
 
-
 Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-
->  arch/x86/entry/Makefile | 4 ----
->  1 file changed, 4 deletions(-)
+>  arch/x86/entry/Makefile | 6 ------
+>  1 file changed, 6 deletions(-)
 >
 > diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-> index 08bf95dbc911..94d2843ce80c 100644
+> index 94d2843ce80c..7fec5dcf6438 100644
 > --- a/arch/x86/entry/Makefile
 > +++ b/arch/x86/entry/Makefile
-> @@ -17,10 +17,6 @@ CFLAGS_syscall_64.o          += -fno-stack-protector
->  CFLAGS_syscall_32.o            += -fno-stack-protector
->  CFLAGS_syscall_x32.o           += -fno-stack-protector
+> @@ -8,14 +8,8 @@ UBSAN_SANITIZE := n
+>  KCOV_INSTRUMENT := n
 >
-> -CFLAGS_syscall_64.o            += $(call cc-option,-Wno-override-init,)
-> -CFLAGS_syscall_32.o            += $(call cc-option,-Wno-override-init,)
-> -CFLAGS_syscall_x32.o           += $(call cc-option,-Wno-override-init,)
-> -
+>  CFLAGS_REMOVE_common.o         = $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_syscall_64.o     = $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_syscall_32.o     = $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_syscall_x32.o    = $(CC_FLAGS_FTRACE)
+>
+>  CFLAGS_common.o                        += -fno-stack-protector
+> -CFLAGS_syscall_64.o            += -fno-stack-protector
+> -CFLAGS_syscall_32.o            += -fno-stack-protector
+> -CFLAGS_syscall_x32.o           += -fno-stack-protector
+>
 >  obj-y                          := entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
 >  obj-y                          += common.o
->
 > --
 > 2.31.1
 >
 
 
---
+-- 
 Best Regards
 Masahiro Yamada
