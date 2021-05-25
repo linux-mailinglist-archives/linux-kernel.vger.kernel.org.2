@@ -2,222 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B528639042B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81902390430
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhEYOnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbhEYOnc (ORCPT
+        id S234073AbhEYOn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:43:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11934 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233982AbhEYOn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:43:32 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC49C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:42:02 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id b13so41944524ybk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/On+AsJCHChHko3nWc1HB1x+6yZNMWaMGtWubpjuYxQ=;
-        b=e9dc4eVS5ccoxh97fAN+RZ3RAXU7J8VLUXII9uwOOqwHWsPer4hR1yZMlAfW6v1ctF
-         B1WulueDsL/XDnplT3sDyMvwA3RgX7cHSn2pCYJwUTueHmEIShRDDbNQzJsvAhmZ6qlS
-         3+t9ejyDMHhwckKs/J4eaPYKPFumZnWZ+p5Jeh5J9230Zpg+pQA5E5H6ShfnunWmJqfY
-         Q57yLIEzsFuCtEBfHJ5V8DVxFYRWJlvMhmX9/s4mwwjZCfjFzd6WlEMQXhAtBCGCktPE
-         L96HqhmJQyzLeUsvv+ivEwxnECTeMX8De7Z3rKIAXmH0wX6q+P/7Rnc6zZS48nhYwB4n
-         QB7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/On+AsJCHChHko3nWc1HB1x+6yZNMWaMGtWubpjuYxQ=;
-        b=MwS0h0Sg/VbP4o8kS+Sfgpyrc8Z4a/UIgD8VXLb9tJcOe9Nramk4IH1Wb+ZYPrV9ns
-         mzpEei2vfltbjoI2xQzykrfAEKddKg1Gj/ezWepsAAxUTejTPJNv/a9prCvXNq/lCoC2
-         FNL686Mc7D0EUHVQ92KB9bqH/Z/QBpV16h8f9D2K57quST6KaIX+rBbVDaYk4MCIm6EK
-         eEsnAlt5h5uyuiU0QxoUUF+f0CE+uR67Fk2EvGApGIn2J4yuZnI9UeJKKWgZr1PFMMk1
-         iKHde5TQfI0x23Nj1KhruSLsaPpN6chFyWIForCkE+KPLLIzG4sISBJJxVLaWPyKrFvc
-         3Bzg==
-X-Gm-Message-State: AOAM532qxD36otDSSYTcKAKMP09dV4AAdHORTvja5HXarlFCFwJE5+f4
-        uc5UGw7Bhoe0AgASYLvINXQjw+NFNfQN9UDmT1vLoQ==
-X-Google-Smtp-Source: ABdhPJyQOMIqjgrhNRoPhtuTH1gXyccJ8MrD4m2LwBAvp2vIUqqzSKdXxJjgQkn38ykLllH8Tm6Xm/f3FF7bCiN8V7A=
-X-Received: by 2002:a25:1804:: with SMTP id 4mr9058416yby.157.1621953721597;
- Tue, 25 May 2021 07:42:01 -0700 (PDT)
+        Tue, 25 May 2021 10:43:57 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PEb9BX103437;
+        Tue, 25 May 2021 10:42:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=o7F+Sp6lJ2xB4IakTrZySBRmGFa97r7bU8BtCYkJT1U=;
+ b=IVXjeAHjMGCAlkOGLynosC9TH5cFlvKE79Jg436TThPkgulBkG2O918m1Gl25IUs8zjh
+ B2L50n05X62XuYPG6xhQOT+jqKyNFY+w5//OLv+mJNkYJDh5drn6rKTJiYhQ3nJHNzKP
+ FpsDuY9IW/0VfSAAITZ0kS0Zzg9ZeXAZj8dBgUbE/dF8sMnBmJMs7UEDWf0wyXhLsA6G
+ yWhkajQGXXiiGtj2GnOnsutA+rTeYIrIouCLRwIt4HLK3is2ZQe01Z8w7yfjnF4G9Y0F
+ xuvhSUANy9jGl3pv4vJGJ+OXTJNZKD44CXycFKxJU8q00KH4KXQTD+1im3rs+/xTR4LM GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38s1h5v4ew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 10:42:20 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PEbC6k103729;
+        Tue, 25 May 2021 10:42:19 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38s1h5v4e8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 10:42:19 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PEWV2X030723;
+        Tue, 25 May 2021 14:42:18 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 38s1gw0xmw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 14:42:18 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PEgI1a37683556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 14:42:18 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A5CB28058;
+        Tue, 25 May 2021 14:42:18 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6044528059;
+        Tue, 25 May 2021 14:42:17 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.85.178.250])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Tue, 25 May 2021 14:42:17 +0000 (GMT)
+Date:   Tue, 25 May 2021 09:42:15 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, mpe@ellerman.id.au, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com
+Subject: Re: [PATCH] perf vendor events: Fix eventcode of power10 json events
+Message-ID: <20210525144215.GA2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20210525063723.1191514-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210524120539.3267145-1-robert.marko@sartura.hr> <20210524120539.3267145-2-robert.marko@sartura.hr>
-In-Reply-To: <20210524120539.3267145-2-robert.marko@sartura.hr>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 25 May 2021 16:41:51 +0200
-Message-ID: <CAMpxmJVSnC+OYdA3GZEH2K3Q+ETT_g2p8W3E7gQ1BnN7VgwLLw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] gpio: Add Delta TN48M CPLD GPIO driver
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, luka.perkov@sartura.hr,
-        jmp@epiphyte.org, pmenzel@molgen.mpg.de, buczek@molgen.mpg.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525063723.1191514-1-kjain@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9CI8T5O3JgyyXU8psLmowTOOe5SP3-YQ
+X-Proofpoint-GUID: v0tTdXDK-VZlqHG6TCJTcyG6cNFNo5WT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1011 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105250090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 2:05 PM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
->
-> It is a mix of input only and output only pins.
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
-> Changes in v2:
-> * Rewrite to use simple I2C MFD and GPIO regmap
-> * Drop DT bindings for pin numbering
->
->  drivers/gpio/Kconfig      | 12 ++++++
->  drivers/gpio/Makefile     |  1 +
->  drivers/gpio/gpio-tn48m.c | 89 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 102 insertions(+)
->  create mode 100644 drivers/gpio/gpio-tn48m.c
->
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index 1dd0ec6727fd..46caf72960e6 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -1332,6 +1332,18 @@ config GPIO_TIMBERDALE
->         help
->         Add support for the GPIO IP in the timberdale FPGA.
->
-> +config GPIO_TN48M_CPLD
-> +       tristate "Delta Networks TN48M switch CPLD GPIO driver"
-> +       depends on MFD_TN48M_CPLD
-> +       select GPIO_REGMAP
-> +       help
-> +         This enables support for the GPIOs found on the Delta
-> +         Networks TN48M switch CPLD.
-> +         They are used for inputs and outputs on the SFP slots.
-> +
-> +         This driver can also be built as a module. If so, the
-> +         module will be called gpio-tn48m.
-> +
->  config GPIO_TPS65086
->         tristate "TI TPS65086 GPO"
->         depends on MFD_TPS65086
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index d7c81e1611a4..07fa6419305f 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -147,6 +147,7 @@ obj-$(CONFIG_GPIO_TEGRA186)         += gpio-tegra186.o
->  obj-$(CONFIG_GPIO_TEGRA)               += gpio-tegra.o
->  obj-$(CONFIG_GPIO_THUNDERX)            += gpio-thunderx.o
->  obj-$(CONFIG_GPIO_TIMBERDALE)          += gpio-timberdale.o
-> +obj-$(CONFIG_GPIO_TN48M_CPLD)          += gpio-tn48m.o
->  obj-$(CONFIG_GPIO_TPIC2810)            += gpio-tpic2810.o
->  obj-$(CONFIG_GPIO_TPS65086)            += gpio-tps65086.o
->  obj-$(CONFIG_GPIO_TPS65218)            += gpio-tps65218.o
-> diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-> new file mode 100644
-> index 000000000000..41484c002826
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-tn48m.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Delta TN48M CPLD GPIO driver
-> + *
-> + * Copyright 2021 Sartura Ltd
-> + *
-> + * Author: Robert Marko <robert.marko@sartura.hr>
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/gpio/regmap.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +enum tn48m_gpio_type {
-> +       TN48M_SFP_TX_DISABLE = 1,
-> +       TN48M_SFP_PRESENT,
-> +       TN48M_SFP_LOS,
-> +};
-> +
-> +static int tn48m_gpio_probe(struct platform_device *pdev)
-> +{
-> +       struct gpio_regmap_config config = {0};
-> +       enum tn48m_gpio_type type;
-> +       struct regmap *regmap;
-> +       u32 base;
-> +       int ret;
-> +
-> +       if (!pdev->dev.parent)
-> +               return -ENODEV;
-> +
-> +       type = (uintptr_t)device_get_match_data(&pdev->dev);
-> +       if (!type)
-> +               return -ENODEV;
-> +
-> +       ret = device_property_read_u32(&pdev->dev, "reg", &base);
-> +       if (ret)
-> +               return -EINVAL;
-> +
-> +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +       if (!regmap)
-> +               return -ENODEV;
-> +
-> +       config.regmap = regmap;
-> +       config.parent = &pdev->dev;
-> +       config.ngpio = 4;
-> +
-> +       switch (type) {
-> +       case TN48M_SFP_TX_DISABLE:
-> +               config.reg_set_base = base;
-> +               break;
-> +       case TN48M_SFP_PRESENT:
-> +               config.reg_dat_base = base;
-> +               break;
-> +       case TN48M_SFP_LOS:
-> +               config.reg_dat_base = base;
-> +               break;
-> +       default:
-> +               dev_err(&pdev->dev, "unknown type %d\n", type);
-> +               return -ENODEV;
-> +       }
-> +
-> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(&pdev->dev, &config));
-> +}
-> +
-> +static const struct of_device_id tn48m_gpio_of_match[] = {
-> +       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
-> +       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
-> +       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
-> +
-> +static struct platform_driver tn48m_gpio_driver = {
-> +       .driver = {
-> +               .name = "delta-tn48m-gpio",
-> +               .of_match_table = tn48m_gpio_of_match,
-> +       },
-> +       .probe = tn48m_gpio_probe,
-> +};
-> +module_platform_driver(tn48m_gpio_driver);
-> +
-> +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> +MODULE_DESCRIPTION("Delta TN48M CPLD GPIO driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.31.1
->
+On Tue, May 25, 2021 at 12:07:23PM +0530, Kajol Jain wrote:
+> Fixed the eventcode values in the power10 json event files to append
+> "0x" since these are hexadecimal values.
+> Patch also changes event description of PM_EXEC_STALL_LOAD_FINISH and
+> PM_EXEC_STALL_NTC_FLUSH event and move some events to correct files.
+> 
+> Fixes: 32daa5d7899e ("perf vendor events: Initial JSON/events list for power10 platform")
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+I checked that everything that was "removed" was actually just moved
+somewhere else, that all the added EventCodes indeed had '0x', the
+number of EventCodes added matched the number removed, and that the
+additional text added seemed reasonable.  LGTM.
 
-I guess this will go through the MFD tree?
-
-Bart
+Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
