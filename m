@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9165B38FDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3CE38FDF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhEYJf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
+        id S232636AbhEYJhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhEYJfz (ORCPT
+        with ESMTP id S230508AbhEYJhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:35:55 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548E1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:34:26 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id a6so3610054ioe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rGVIBQfA9yaEYKQ7c9uj55/JXYlST++Dmh1T8Dha/l4=;
-        b=I2+wijtYwBgrvry710jQZ3rP7NQ43az4kzhNkjPiJtNH5xP3fgAtsU9gkUf/9lZVim
-         T3NdpcCP/qy3TOExlpqJ3o3n+Bv1N7F9t53nA+i1h1yFSp3TygMjkqbKup7iDp1MOEgo
-         PMSt1hdxuxcDeqpemy2893wnKsVcYneU6P23QZ3oFlWPhMfDoa9K/dOkmb19mswDH3gy
-         PzHoF2cbOq9Xbt2bqgQLNHO9gAjpWkEYF+iofGOsRGz26XSkfV4gO/5PsRchya/TOA1H
-         ATtPWlmaDpftSklsn23JmxRNytssrPNjc5QUHiBfZPMi5b7QwqtTBCtDUGS/Y1pbvRj7
-         aMgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rGVIBQfA9yaEYKQ7c9uj55/JXYlST++Dmh1T8Dha/l4=;
-        b=G6gigfhclQmV8Sbh1nU3jYN9vXTK0Z6KPzEHPKiL+hhGIcINlxQCgBA1n/oCVrlsGe
-         /WOdmi2Gefignv8bbcdHSAoO48zOmntPtwNPfNce/hidWUkayk+B5KqqPKLY0Tl7v6dq
-         Uh8x2BLl7fDcthBRPYdJyKPqxVnIXeWjWV8FpCpYyCgKUe8lxDfxGdxqSuhXtKHiMEHu
-         +HzRuUq5SFBqiZAUt0wbsHEGts4wCaHXi2p0+eYv69JMhmqMD6+H+CC96oYXHStKqAPL
-         IngS6QJLNZ//TDm6ejdbqGAL02fCiLf+vK1t2WCSfYii4UnG1KUk7m2EzJf9qc4vGHwa
-         PXNg==
-X-Gm-Message-State: AOAM531do3SDt0TuNu5ZxgmwnRx8RozVbg/M7PMpDzINVaKlu2H7fxYQ
-        tctzgjO65fGgIdqggptvIM/k5hQoJhdR/6+9y87t+A==
-X-Google-Smtp-Source: ABdhPJyhRwetuxqbSSb5e6pvmDFrqJrDw22vGXVFUtswYnw4/EGcGoFbgXDTHMhwKHDFkyJYEp/drlpV/oEUvD+QBDQ=
-X-Received: by 2002:a05:6602:189:: with SMTP id m9mr19947698ioo.88.1621935265730;
- Tue, 25 May 2021 02:34:25 -0700 (PDT)
+        Tue, 25 May 2021 05:37:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E9AC061574;
+        Tue, 25 May 2021 02:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=77alA0oNaOdxO9Nn5XAmzEZ6uOPGgpzTh0etFfYrlAM=; b=CJtzWCtnRisoGTNMJQCQYaQgVp
+        ZVGRtAAqogEkkwH9F9sBAGoaUIJqf8hyB4tWDL7yuZj/sqQh0U+BWtvZWmQGjuMN34YGl+CVRhKqY
+        SpUjecHol9ErWniyWlQeiZ55SyQ6f5qUrCbAB5OfKHdCF0QtETh17x5xH9Cm8rZZgktR5YKtOhTaY
+        BAo+VxbRlblic7Pi6monzUyPO9BA4KI29sePHIRFeDpFieohokdd8OHlD/lC11YmnpM9AjF2UhJvK
+        mi4DXoLwyN6+LX4/ewdxrfmy4NRfdBhlIaoT1r8+VKmnGA1IUj76nNdLFH4YSTQJZb4oPpyYKmINK
+        b2mPNq0A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1llTSP-003LFb-Qx; Tue, 25 May 2021 09:34:52 +0000
+Date:   Tue, 25 May 2021 10:34:37 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH 2/3] riscv: Fixup PAGE_UP in asm/page.h
+Message-ID: <YKzErU3lpFO58hkY@infradead.org>
+References: <1621839068-31738-1-git-send-email-guoren@kernel.org>
+ <1621839068-31738-2-git-send-email-guoren@kernel.org>
+ <YKyae+8O25A8vxMS@infradead.org>
+ <CAJF2gTRA=tUid7akgVXfk6MHOd0KmJpDQEZ2m9wRfhigBDzQTw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr> <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell>
-In-Reply-To: <20210525074649.GC4005783@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 25 May 2021 11:34:15 +0200
-Message-ID: <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJF2gTRA=tUid7akgVXfk6MHOd0KmJpDQEZ2m9wRfhigBDzQTw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Mon, 24 May 2021, Rob Herring wrote:
->
-> > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > Add binding documents for the Delta TN48M CPLD drivers.
-> > >
-> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > ---
-> > > Changes in v2:
-> > > * Implement MFD as a simple I2C MFD
-> > > * Add GPIO bindings as separate
+On Tue, May 25, 2021 at 05:28:21PM +0800, Guo Ren wrote:
+> On Tue, May 25, 2021 at 2:34 PM Christoph Hellwig <hch@infradead.org> wrote:
 > >
-> > I don't understand why this changed. This doesn't look like an MFD to
-> > me. Make your binding complete if there are missing functions.
-> > Otherwise, stick with what I already ok'ed.
->
-> Right.  What else, besides GPIO, does this do?
+> > On Mon, May 24, 2021 at 06:51:07AM +0000, guoren@kernel.org wrote:
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Current PAGE_UP implementation is wrong. PAGE_UP(0) should be
+> > > 0x1000, but current implementation will give out 0.
+> > >
+> > > Although the current PAGE_UP isn't used, it will soon be used in
+> > > tlb_flush optimization.
+> >
+> > Nak.  Please just remove the PAGE_UP/PAGE_DOWN macros just like they
+> > have been removed from other architectures long ago and use the
+> > generic DIV_ROUND_UP macro for your new code like everyone else.
+> 
+> This patch has been dropped because it's wrong, ref Anup's reply.
+> 
+> Remove PAGE_UP/DOWN is okay for me. How about:
+>  static inline void local_flush_tlb_range_asid(unsigned long start,
+> unsigned long size,
+>                                               unsigned long asid)
+>  {
+> -       unsigned long page_add = PAGE_DOWN(start);
+> -       unsigned long page_end = PAGE_UP(start + size);
+> +       unsigned long page_add = _ALIGN_DOWN(start, PAGE_SIZE);
+> +       unsigned long page_end = _ALIGN_UP(start + size, PAGE_SIZE);
+> 
+> _ALIGN_XXX are also defined in arch/riscv/include/asm/page.h.
 
-It currently does not do anything else as hwmon driver was essentially
-NACK-ed for not exposing standard attributes.
-The CPLD itself has PSU status-related information, bootstrap related
-information,
-various resets for the CPU-s, OOB ethernet PHY, information on the exact bo=
-ard
-model it's running etc.
+And these also are leftovers from days gone by and should be removed.
 
-PSU and model-related info stuff is gonna be exposed via a misc driver
-in debugfs as
-we have user-space SW depending on that.
-I thought we agreed on that as v1 MFD driver was exposing those directly an=
-d
-not doing anything else.
-So I moved to use the simple I2C MFD driver, this is all modeled on the sl2=
-8cpld
-which currently uses the same driver and then GPIO regmap as I do.
+I think this should simply be:
 
-Other stuff like the resets is probably gonna get exposed later when
-it's required
-to control it directly.
+	
+	unsigned long page_add = start & PAGE_MASK;
+	unsigned long page_end = PAGE_ALIGN(start + size);
 
-Regards,
-Robert
->
-> > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 ++++++++++
-> > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 81 +++++++++++++++++=
-++
-> > >  2 files changed, 123 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48=
-m-gpio.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m=
--cpld.yaml
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+(and page_add is a pretty horrible name as well..)
