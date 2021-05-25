@@ -2,61 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68F638FBFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E56538FC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhEYHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:53:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44802 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231640AbhEYHxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:53:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621929142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S231912AbhEYHyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:54:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35119 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231640AbhEYHyC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:54:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621929152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j2fhzr5837zU52YoYCCj7OktYsUUOPoJ2zCaPYIo83k=;
-        b=FYHFW19kcHff0IwGFZ5Mi4waWtuwa+eDq8I9Hvz2IxEKqnsB7CWcTvlz7ytmv5vxSl3XP5
-        C/AhJsLtMbxLxuNScTPxongo0aUnBbL6Mhw4JHQY49U+9aloLF2RlUDr5GAnY8mQbMa7ho
-        K0qabBWmtya5dMLd44GRlbUdZ77olmo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621929142;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j2fhzr5837zU52YoYCCj7OktYsUUOPoJ2zCaPYIo83k=;
-        b=jkKPQIu7zYgNJ/mnzjMS8+pVaCI2J+4jvEvclpUsXmJiPc9yNqKQ8wmzXI60hdr2VYg+l0
-        ERYJWKrnSaq0IjAw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6AF0BAE1F;
-        Tue, 25 May 2021 07:52:22 +0000 (UTC)
-Date:   Tue, 25 May 2021 09:52:21 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>
-Subject: Re: [PATCH] nvme: Use NN for max_namespaces if MNAN is zero
-Message-ID: <20210525075221.uuzabne3qizne3er@beryllium.lan>
-References: <20210521144734.90044-1-dwagner@suse.de>
- <20210521145306.ld7jc6alchimyzny@beryllium.lan>
- <20210521152702.GB29013@redsun51.ssa.fujisawa.hgst.com>
- <f89bf79e-937c-96ba-4622-4a29fce00b0e@grimberg.me>
- <20210524073703.GA24372@lst.de>
- <20210525071259.j5g7koxqad7hwpkp@beryllium.lan>
- <20210525072234.GA13966@lst.de>
+        bh=nHZzxf+ytlYjm3d6c5CzbDAImZNM1V4d4EFj0tNGWZg=;
+        b=FF65hrx3iJ4qDgN50UY3LgYuSjAAY2OcNMCUdNhmROB62LUB+qFNVmqr4yAblReJvVaw2+
+        Ac3lR79Tx3QLZlN4zPQ4RK6nQEGBAYrvqAWei6RnVR4RdWlmcvGqfyOqbhgwDfpsB5t/M5
+        NMqZ6+srLWRgzN+ylZ75GVoxDtWTq3M=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-Iw8HnBU4P6aNdw7Y44VAmA-1; Tue, 25 May 2021 03:52:30 -0400
+X-MC-Unique: Iw8HnBU4P6aNdw7Y44VAmA-1
+Received: by mail-wr1-f70.google.com with SMTP id q15-20020adfc50f0000b0290111f48b865cso10707249wrf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:52:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=nHZzxf+ytlYjm3d6c5CzbDAImZNM1V4d4EFj0tNGWZg=;
+        b=aX2Kha9Nkrv7tgF6uBksRUA/aQNRnk8cjKQT/iJflFRt+d9ZPHV+cKFtPsLW4W3VOp
+         EuYFB1vEZ0lKMuMafzVPLQPlWe8vi0eeWaKJePavcZ0Xf4ziH9W5uPVQQ7PSfTFzSEeq
+         0O/lvkA8q0gc6gw/7C4DbLzkifn5wEN+h1fCOeT0hrJwUGjcokrkam53QDQjwvR/i5cU
+         CBN6HvrmU1zFzPDcCht+rT+1GwZEdRn/YjuoaFrMVhTBFYF2fp7ZSAW+CXN7LsEq2hWj
+         yNOPGkpuqNK/XbxAa8gP9hEJegF/IZG9cN1chtEsK4hrwgLIb8UvCdYteGaVhg+cKBeb
+         wg6w==
+X-Gm-Message-State: AOAM532vCkHWn2+4CVhlvciIARNbOokC70CI6LF3Y4zdQlfVKCYJcGXI
+        M6oB5LbEg4m1nXBqRoe8pCCQmbv5M5Mx44TU/+uzdnjN2xsWYgJNQtM7NGWJh/XkeDFoHr0h0PY
+        nOhZB+mCeRCF2UDhB+U9pIIrX
+X-Received: by 2002:adf:ee86:: with SMTP id b6mr18948543wro.53.1621929149447;
+        Tue, 25 May 2021 00:52:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxHwIj/9rOfNndM5jJAWHzg448cYs0giNs6SHGBNZGGeed+ecAft4vmApavUXRAVUkm647vQ==
+X-Received: by 2002:adf:ee86:: with SMTP id b6mr18948527wro.53.1621929149216;
+        Tue, 25 May 2021 00:52:29 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
+        by smtp.gmail.com with ESMTPSA id d9sm14504444wrx.11.2021.05.25.00.52.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 00:52:28 -0700 (PDT)
+Subject: Re: [PATCH 2/5] mm/sparse: free section usage memory in case
+ populate_section_memmap failed
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210517112044.233138-1-aisheng.dong@nxp.com>
+ <20210517112044.233138-3-aisheng.dong@nxp.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <01356cc7-61c3-fb15-1c85-939b6366a636@redhat.com>
+Date:   Tue, 25 May 2021 09:52:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525072234.GA13966@lst.de>
+In-Reply-To: <20210517112044.233138-3-aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:22:34AM +0200, Christoph Hellwig wrote:
-> For non-ANA MNAN doesn't have to be set indeed.  But we also don't use
-> the value at all either.
+On 17.05.21 13:20, Dong Aisheng wrote:
+> Free section usage memory in case populate_section_memmap failed.
+> We use map_count to track the remain unused memory to be freed.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> ---
+>   mm/sparse.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 7ac481353b6b..98bfacc763da 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -549,12 +549,14 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
+>   			       __func__, nid);
+>   			pnum_begin = pnum;
+>   			sparse_buffer_fini();
+> +			memblock_free_early(__pa(usage), map_count * mem_section_usage_size());
+>   			goto failed;
+>   		}
+>   		check_usemap_section_nr(nid, usage);
+>   		sparse_init_one_section(__nr_to_section(pnum), pnum, map, usage,
+>   				SECTION_IS_EARLY);
+>   		usage = (void *) usage + mem_section_usage_size();
+> +		map_count--;
+>   	}
+>   	sparse_buffer_fini();
+>   	return;
+> 
 
-Ah yes, I somehow though we still allocate the log buffer. Obviously, the
-buffer is only used with ANA... time to fetch a coffee.
+Why care about optimizing something that literally never fails, and if 
+it would fail, leave the system in a sub-optimal, mostly unusable state?
+
+-- 
+Thanks,
+
+David / dhildenb
+
