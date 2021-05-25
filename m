@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D3A3906DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C202E3906E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbhEYQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhEYQsG (ORCPT
+        id S232856AbhEYQtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:49:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232555AbhEYQtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:48:06 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800DBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:36 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id f22so22263284pgb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xwS5IVdCekJk7kv3FtNxGVNuofglwTIwxkn43HaNTJo=;
-        b=LkOcj4gtSJPG6QLSDZLLxKY0eFWqg75E5lt7Vq6by8faYpV4d+j1pbincVWsRHY6cR
-         gehPrbn8jhvFppDxsZ3sUCPBNj+hlo56GFqvOLg3VWW3LtU9Xp5qX8CCW/4zZwfQ2awY
-         Pgd4SE2ggCQEo9OKVolYfCWIBVOqpjCpgvY5S9G90MfYVrZ8jnDbOKyRQNlMA3Lxreqs
-         djtJpam7l9btEoGR6Pd0kZlk3uC9t5y/+i9BxICFj84qhjhmTDim4ZkzBnOB9tnAp5Lu
-         x2LunG+TtD/xW1Z+NWOLEV7pqUMKMXt1+2VMRngnppROoZRhOwCstn8YDpEi8QjkAOS1
-         jkFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xwS5IVdCekJk7kv3FtNxGVNuofglwTIwxkn43HaNTJo=;
-        b=ou9taipcKwMidBW9pIvi/J0swwCSU8qm2fGm2JHt3dO++mF4deR/kH/V/2SVkTfWWZ
-         PF0N7dWSVjG7IpBIXOeK7CQMS3OgQFyaMiUHIayo7dmF4wPHUWD6wYVRZohLTIxKSHId
-         Vq3oW/7Iko1bwiB+JbOVT+DdaG4A20NDl1BRG9x1JfTDz9v+70UYp0FuV1wkyF2bw8hP
-         +FMDR1Fj+pTJVGG2tgzsfxfp29/wuY/g645gm1gVPU64on/z+5OIWKdhu/HLd6u2ojch
-         APTYHrFDQ2qkomhkpSLKIPpaE4XmyxSoAkvdZUcNyWdaydq+kRSugsuOdEHlT2NrU+vM
-         812g==
-X-Gm-Message-State: AOAM531mvpks5tXWSngHDiUZ5P8kGp6gdMHSS0ij671ZYH9tyAaT7eEK
-        1zXxzZpM58Nc8aECIALUVtgyxw==
-X-Google-Smtp-Source: ABdhPJwzX5Z1/XMITezELAhA4gfUFx10BkBRwzCVyyn+CkMr7oR5/cLRKHNBzud+DuLNirYdfDXmxw==
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id p30-20020a056a000a1eb02902e289d85c87mr29438912pfh.73.1621961195812;
-        Tue, 25 May 2021 09:46:35 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 10sm15223768pgl.39.2021.05.25.09.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 09:46:35 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:46:31 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [kbuild-all] Re: [PATCH] kvm: fix boolreturn.cocci warnings
-Message-ID: <YK0p53dAhark4xuy@google.com>
-References: <202105251316.O1igBtAa-lkp@intel.com>
- <20210525055940.GA7291@9b81fe870f96>
- <YKyjCOk2UiVQCh7m@hirez.programming.kicks-ass.net>
- <91885328-dc7f-3d12-3ddb-53a403bb8c60@intel.com>
+        Tue, 25 May 2021 12:49:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621961264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fL6Y/duGHBMJKkmMDJ4jflONRQgZgnAzPjAPflMfB2s=;
+        b=NirqhuDVVDLTpqdbUNHL4TtQ8UcYuD8wcTaOtX0CZxeLb4ir/ucGSE278+bmp/Cbj37WBA
+        bkUiIRMMaM1fl2MAbroxbE8lrDWYo9//TnwbUVpSGlja58E4IZHrd+MAFDhZy+fgWbyOmm
+        1x6uygak2EVcRUXmM/9sEraDQqUrYmQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-M1ILaIflOF2vHlFCyOjrRg-1; Tue, 25 May 2021 12:47:42 -0400
+X-MC-Unique: M1ILaIflOF2vHlFCyOjrRg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B8AA180FD66;
+        Tue, 25 May 2021 16:47:41 +0000 (UTC)
+Received: from localhost (ovpn-115-80.ams2.redhat.com [10.36.115.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 449B9421F;
+        Tue, 25 May 2021 16:47:37 +0000 (UTC)
+Date:   Tue, 25 May 2021 17:47:36 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        virtualization@lists.linux-foundation.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        pbonzini@redhat.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, joe.jin@oracle.com,
+        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
+Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
+ handler
+Message-ID: <YK0qKMF0I8Wm1euN@stefanha-x1.localdomain>
+References: <20210523063843.1177-1-dongli.zhang@oracle.com>
+ <ac161748-15d2-2962-402e-23abca469623@suse.de>
+ <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
+ <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VNMvGmWXBqxStO+j"
 Content-Disposition: inline
-In-Reply-To: <91885328-dc7f-3d12-3ddb-53a403bb8c60@intel.com>
+In-Reply-To: <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021, Rong Chen wrote:
-> 
-> 
-> On 5/25/21 3:11 PM, Peter Zijlstra wrote:
-> > On Tue, May 25, 2021 at 01:59:40PM +0800, kernel test robot wrote:
-> > > From: kernel test robot <lkp@intel.com>
-> > > 
-> > > arch/arm64/kvm/mmu.c:1203:9-10: WARNING: return of 0/1 in function 'kvm_age_gfn' with return type bool
-> > > arch/arm64/kvm/mmu.c:1173:9-10: WARNING: return of 0/1 in function 'kvm_set_spte_gfn' with return type bool
-> > > arch/arm64/kvm/mmu.c:1216:9-10: WARNING: return of 0/1 in function 'kvm_test_age_gfn' with return type bool
-> > > arch/arm64/kvm/mmu.c:1159:9-10: WARNING: return of 0/1 in function 'kvm_unmap_gfn_range' with return type bool
-> > > 
-> > >   Return statements in functions returning bool should use
-> > >   true/false instead of 1/0.
-> > > Generated by: scripts/coccinelle/misc/boolreturn.cocci
-> > Per 2b076054e524 ("remove boolinit.cocci"), I have a very dim view of
-> > this sort of thing.
-> 
-> Hi Peterz,
-> 
-> Sorry for the noise, we'll disable the check.
-> 
-> > 
-> > > Fixes: 63b3f96e1a98 ("kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT")
-> > *how* ?!?
-> 
-> The bot is stupid
 
-LOL.  FWIW, it's not _that_ stupid, or maybe it's the broken clock adage...  The
-proper fix is sitting in the KVM tree, it should soon make its way to Linus.
+--VNMvGmWXBqxStO+j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  fcb8283920b1 ("KVM: arm64: Fix boolreturn.cocci warnings")
+On Mon, May 24, 2021 at 11:33:33PM -0700, Dongli Zhang wrote:
+> On 5/24/21 6:24 AM, Stefan Hajnoczi wrote:
+> > On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
+> >> On 5/23/21 8:38 AM, Dongli Zhang wrote:
+> >>> This RFC is to trigger the discussion about to poll and kick the
+> >>> virtqueue on purpose in virtio-scsi timeout handler.
+> >>>
+> >>> The virtio-scsi relies on the virtio vring shared between VM and host.
+> >>> The VM side produces requests to vring and kicks the virtqueue, while=
+ the
+> >>> host side produces responses to vring and interrupts the VM side.
+> >>>
+> >>> By default the virtio-scsi handler depends on the host timeout handler
+> >>> by BLK_EH_RESET_TIMER to give host a chance to perform EH.
+> >>>
+> >>> However, this is not helpful for the case that the responses are avai=
+lable
+> >>> on vring but the notification from host to VM is lost.
+> >>>
+> >> How can this happen?
+> >> If responses are lost the communication between VM and host is broken,=
+ and
+> >> we should rather reset the virtio rings themselves.
+> >=20
+> > I agree. In principle it's fine to poll the virtqueue at any time, but I
+> > don't understand the failure scenario here. It's not clear to me why the
+> > device-to-driver vq notification could be lost.
+> >=20
+>=20
+> One example is the CPU hotplug issue before the commit bf0beec0607d ("blk=
+-mq:
+> drain I/O when all CPUs in a hctx are offline") was available. The issue =
+is
+> equivalent to loss of interrupt. Without the CPU hotplug fix, while NVMe =
+driver
+> relies on the timeout handler to complete inflight IO requests, the PV
+> virtio-scsi may hang permanently.
+>=20
+> In addition, as the virtio/vhost/QEMU are complex software, we are not ab=
+le to
+> guarantee there is no further lost of interrupt/kick issue in the future.=
+ It is
+> really painful if we encounter such issue in production environment.
+
+Any number of hardware or software bugs might exist that we don't know
+about, yet we don't pre-emptively add workarounds for them because where
+do you draw the line?
+
+I checked other SCSI/block drivers and found it's rare to poll in the
+timeout function so there does not seem to be a consensus that it's
+useful to do this.
+
+That said, it's technically fine to do it, the virtqueue APIs are there
+and can be used like this. So if you and others think this is necessary,
+then it's a pretty small change and I'm not against merging a patch like
+this.
+
+Stefan
+
+--VNMvGmWXBqxStO+j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCtKigACgkQnKSrs4Gr
+c8jE6gf/SzpIij5k5NFqXRfDYjrAoN/hHDK0f8rALj06t2cmrKq1LugoGygtb4nd
+MmJypVvxZZW037iS8fChHC5kcqvBA9Y/N+0tABVJNT8GHLnvDZI8diTONgXVUCzj
+X/u0+3EjQNz2TX6W9pZbEJmeVv0z7JiWCQKcLf9DYq77Xei8U4U5Xv4k0Nks1b1A
+PFH+j4R42eYdziIwwxCPgAQtlCWlTgWbGO9B14kqeybM7I9pq2Ar+WQXIItptuuA
+9R3RBQ6n1cOqtiOHwOXjz2Y4zSa3o4jrLeV8/u3MEmZAwpc2+1A7QL+fW2uxpWJf
+7geSWXbXMdwb7odJ+yKHBNAMOjZqmA==
+=d024
+-----END PGP SIGNATURE-----
+
+--VNMvGmWXBqxStO+j--
+
