@@ -2,146 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7FF38FAF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB8438FAF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhEYGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:32:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231197AbhEYGcJ (ORCPT
+        id S231266AbhEYGdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230465AbhEYGdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:32:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621924239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pIPfv8IYDUTIDMiq+eRnmm+3Pp4NwYwr+GrjUyUW4n4=;
-        b=AlFR/ruGcQ6j/9Radfd4eY9xUoS9alKgr/1aEkwClSPNIQvXKgJq92fCOns3k8XQPl5QIj
-        BHvSL0UANOQw2OvJvzcaMu70a2bw5WnEFoWWXoSyKkyDQORCSmVIsBhuXmwgqcKbm8yMvl
-        IuqxKRhu7IXD8MgKyr1iyeq+D42UhQs=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-vprZu2-BMxSmb3mU0fLrBA-1; Tue, 25 May 2021 02:30:36 -0400
-X-MC-Unique: vprZu2-BMxSmb3mU0fLrBA-1
-Received: by mail-pf1-f199.google.com with SMTP id f19-20020a056a002393b02902d8b0956281so19207729pfc.19
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:30:36 -0700 (PDT)
+        Tue, 25 May 2021 02:33:52 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68A6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:32:22 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id gb17so27457094ejc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1Npec4j21TKcPJnHz/t9cKkJ+ksFmk6C4YwBaFuicIo=;
+        b=YAD0Y2U2SNdW6AmTzETze1shnoNYUN9OFgFgNfjCFstBiArSx7KspTTu1pIW2CqZ68
+         jnKnXKl2Vx7XfBiVk2mMUxFDx2SOSj1xWnzTrBPBa/5F+vmiCm9ZSrc1jaiTcKNqn1iU
+         SMLhCHZc+TRj8djWGezYBEgM2w2wSYq4qj/ymfLFkyjKY3O5ZOmP1eACbOND7kY7h8vw
+         FCm5wDknp2snGrBtUHB5rSvrtSIr1H/ZOValfctrnCxlkDDkpDB+NKhrsS3bll1ChpIq
+         9Jyapk+WKaLEg8bOW6r0ZN4Q3gYKsOunKYUSulj97sve1DEMv+yQgR6SnyL9Gi/W2Yi5
+         pz7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=pIPfv8IYDUTIDMiq+eRnmm+3Pp4NwYwr+GrjUyUW4n4=;
-        b=bvVk5rBQeEvg6qwlicniglYr3Ez9n1BUR9pwdc0wwENJQEIy5NFvOpi8q/X0Zu19KT
-         Hk7IOAf6zY5QP6tpCX0Z0ez3A04xaIumEI95W5MZgYSc7SsM2sMEYTKDKjmmrOn1Y9x4
-         n3U1i025F8e7oKX9t1VRV66tcUCS7pQvx4HpzJn7vXHoAQaAiAStbuBDnHY35RNiJuYf
-         6M3r1dRKP+hIxqF7OClkWUivFj9FdiA2lBSXRyClJDclZ0eyUUf//vHBbVQadXHE6j5f
-         PHKCPiw93Cxy7ovqxW9er5lA8bXObb0dHkMAByrkN50XsDFJi0Qp/SfKQZzkBtF3Fd1a
-         wiGQ==
-X-Gm-Message-State: AOAM533oRU3Tbpo+Jk12UUELArUdybxhehHITR1LGn+VHNATVur/pxjI
-        4HvIL/DHPwa8onyfVkatVzlyvobW64cZlhj3UyOyKYZE4xj4dWP+5GAiid1HECL9fPdFo1W/aCk
-        S/BwgVkIPI7Ytk1xk3ldy+x/akz2r1mmOAD6RPAzZSomGWdZOK22whNPI68Qdvxs2HPbayB8bLI
-        am
-X-Received: by 2002:aa7:80d3:0:b029:28e:f117:4961 with SMTP id a19-20020aa780d30000b029028ef1174961mr29062282pfn.37.1621924235027;
-        Mon, 24 May 2021 23:30:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjxp4RjmBg//wxUGNw5gB2804G2bqHAHLpl0rtSt4C2hFIH3k1hJTSLGBvAz9QuuJ5ei26BA==
-X-Received: by 2002:aa7:80d3:0:b029:28e:f117:4961 with SMTP id a19-20020aa780d30000b029028ef1174961mr29062259pfn.37.1621924234638;
-        Mon, 24 May 2021 23:30:34 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id g202sm13245651pfb.54.2021.05.24.23.30.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 23:30:34 -0700 (PDT)
-Subject: Re: [PATCH] virtio-net: Add validation for used length
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210525045838.1137-1-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <75e26cf1-6ee8-108c-ff48-8a23345b3ccc@redhat.com>
-Date:   Tue, 25 May 2021 14:30:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1Npec4j21TKcPJnHz/t9cKkJ+ksFmk6C4YwBaFuicIo=;
+        b=pS1MIWN3sQKDkwsVySWV5FgKgJOSPdJxuPX8PbAtorjpPCyinAPlNOLRd/Gklh5xV8
+         ELHJchYpPE+CID4WDRDh5+/mIgyx7JTOhKDvwxCXOs/eNyCpjYkie/hVVeWWngmqTJIF
+         aFze8vyjUyBXKdA3Ogiz4N72+rtkx+hTdMJOfLOGOfEQ2/XBXTlpoVgTRfUniqv60Dm6
+         3hIO6Tuf8Rl/tV9ryiwJCQvxYSobPYPhVUoR/QYXrDddwafbfpw7Ltf8ljb/kMeDdG6Q
+         IOZnwvI0b430vmpYNwzC8dXG05YrFmLf3D/M4QaXOblPNycvLcY/coBPUFEDtwPDxIzw
+         lUuQ==
+X-Gm-Message-State: AOAM533J5Wo08iw0TXqzn5QHMR3KAnwvjZuROtxumu+fKWoojI4fshtn
+        ebqpNtD4Y3DXim7P6aV9ASEnHCXQ9bDDei95WBi6jA==
+X-Google-Smtp-Source: ABdhPJytCqlexeIP8Ii4HDaw0F8r74XDTUDMJ0xaWE6dZbP0B8Ce8JwIv2b6n6GJrW1VC4Khsp3Tvb+IvBw97sgXsCA=
+X-Received: by 2002:a17:906:4e59:: with SMTP id g25mr27101842ejw.133.1621924341397;
+ Mon, 24 May 2021 23:32:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525045838.1137-1-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 25 May 2021 12:02:09 +0530
+Message-ID: <CA+G9fYvOABhF_WjGp1NEeWTqBx=0YxNWydr_g6uQGhN5AOHE8A@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/127] 5.12.7-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/5/25 ÏÂÎç12:58, Xie Yongji Ð´µÀ:
-> This adds validation for used length (might come
-> from an untrusted device) to avoid data corruption
-> or loss.
+On Mon, 24 May 2021 at 21:14, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->   drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
+> This is the start of the stable review cycle for the 5.12.7 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c4711e23af88..2dcdc1a3c7e8 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -668,6 +668,13 @@ static struct sk_buff *receive_small(struct net_device *dev,
->   		void *orig_data;
->   		u32 act;
->   
-> +		if (unlikely(len > GOOD_PACKET_LEN)) {
-> +			pr_debug("%s: rx error: len %u exceeds max size %lu\n",
-> +				 dev->name, len, GOOD_PACKET_LEN);
-> +			dev->stats.rx_length_errors++;
-> +			goto err_xdp;
-> +		}
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.7-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.12.7-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: 63b7a7baa77d39a089c1c64e5b046712ef598dc0
+* git describe: v5.12.6-128-g63b7a7baa77d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.6-128-g63b7a7baa77d
+
+## No regressions (compared to v5.12.5-44-gee71fa12d93b)
+
+## No fixes (compared to v5.12.5-44-gee71fa12d93b)
 
 
-Need to count vi->hdr_len here?
+## Test result summary
+ total: 80158, pass: 66564, fail: 1593, skip: 11381, xfail: 620,
 
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
-> +
->   		if (unlikely(hdr->hdr.gso_type))
->   			goto err_xdp;
->   
-> @@ -739,6 +746,14 @@ static struct sk_buff *receive_small(struct net_device *dev,
->   	}
->   	rcu_read_unlock();
->   
-> +	if (unlikely(len > GOOD_PACKET_LEN)) {
-> +		pr_debug("%s: rx error: len %u exceeds max size %lu\n",
-> +			 dev->name, len, GOOD_PACKET_LEN);
-> +		dev->stats.rx_length_errors++;
-> +		put_page(page);
-> +		return NULL;
-> +	}
-> +
->   	skb = build_skb(buf, buflen);
->   	if (!skb) {
->   		put_page(page);
-> @@ -822,6 +837,13 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   		void *data;
->   		u32 act;
->   
-> +		if (unlikely(len > truesize)) {
-> +			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> +				 dev->name, len, (unsigned long)ctx);
-> +			dev->stats.rx_length_errors++;
-> +			goto err_xdp;
-> +		}
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsysca[
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-
-There's a similar check after the XDP, let's simply move it here?
-
-And do we need similar check in receive_big()?
-
-Thanks
-
-
-> +
->   		/* Transient failure which in theory could occur if
->   		 * in-flight packets from before XDP was enabled reach
->   		 * the receive path after XDP is loaded.
-
+--
+Linaro LKFT
+https://lkft.linaro.org
