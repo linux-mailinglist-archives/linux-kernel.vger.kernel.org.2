@@ -2,56 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F228390058
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE7E390067
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhEYLyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229896AbhEYLyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:54:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F6E46128D;
-        Tue, 25 May 2021 11:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621943554;
-        bh=9ZukJetR3nO4OU06xXfgJgJmLtE7I9siMrqqkw8nFDQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qYaXJIsDMEj2wRDMTA4Bxncz77G/IFoPUduc3e8QDKOIE8br0L/bKVZxv33iyK+LN
-         kjGJgepCbrJTTv3ssY5FxzeoQ/7tq/PQwowZQetsrXxCaZ+YYZic39LAB03LFRva4P
-         qioHV7jjvs9t5i/RRAo593DMK+v7pFZ1kXL03O6w=
-Date:   Tue, 25 May 2021 13:52:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Zdenek Kabelac <zkabelac@redhat.com>
-Subject: Re: Patch regression - Re: [PATCH 5.10 070/104] dm snapshot: fix a
- crash when an origin has no snapshots
-Message-ID: <YKzk/2aqQooFsI28@kroah.com>
-References: <20210524152332.844251980@linuxfoundation.org>
- <20210524152335.174655194@linuxfoundation.org>
- <alpine.LRH.2.02.2105250734180.13437@file01.intranet.prod.int.rdu2.redhat.com>
+        id S232151AbhEYL5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:57:46 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:39237 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbhEYL5l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 07:57:41 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 14PBsOwI021380;
+        Tue, 25 May 2021 20:54:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 14PBsOwI021380
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621943665;
+        bh=V+gm1MoogimFfSAAfmNf6D6xHKs8r0D00kjReKhDXG0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n4rH5ypkPPhMhcKjpZWiQX9AIkW6jt8yzL8niiag9si0G+5hkR+AYYohZWW+53djx
+         UYoPuWi39ddfUECJWpRiKOH3UJJhCh+gATpKWIuQUMGgzpbA7S0huyEECx6ID1bu80
+         3ItLw3kTIHCaif0tU/y2w3UYv2dJzlFa9RdABZn7nteF3KIg5GVnEfhG3Vl+DKCpq+
+         GAVGSHHU4bchRl47Kx3WuOWzEuc8mNQiZjiRIu/3Mv44HBpPCYgEW+QqGO5daur8Kn
+         M1q0UNuVzEwN+VriHeJzn/36F06iY16szRRrPJhmD0dDcJnwW18qCPvbntpBc9F/F+
+         RglaiAbIYSgTg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/syscalls: clear 'offset' and 'prefix' in case they are set in env
+Date:   Tue, 25 May 2021 20:54:20 +0900
+Message-Id: <20210525115420.679416-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2105250734180.13437@file01.intranet.prod.int.rdu2.redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 07:36:57AM -0400, Mikulas Patocka wrote:
-> Hi Greg
-> 
-> I'd like to ask you to drop this patch from all stable branches.
-> 
-> It causes regression with snapshot merging and the regression is much 
-> worse than the bug that it fixes.
+If the environment variable 'prefix' is set on the build host,
+it is wrongly used as syscall macro prefixes.
 
-Sure, but is there a fix in Linus's branch for this that I should take
-instead, or is it reverted in linux-next already?
+  $ export prefix=/usr
+  $ make -s defconfig all
+  In file included from ./arch/x86/include/asm/unistd.h:20,
+                   from <stdin>:2:
+  ./arch/x86/include/generated/uapi/asm/unistd_64.h:4:9: warning: missing whitespace after the macro name
+      4 | #define __NR_/usrread 0
+        |         ^~~~~
 
-thanks,
+arch/x86/entry/syscalls/Makefile should clear 'offset' and 'prefix'.
 
-greg k-h
+Link: https://lore.kernel.org/lkml/CA+G9fYvFXTHPKwasdVidF7qEHdqwRht8Xg6qm6CCLL0HGaU1ew@mail.gmail.com/
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: 3cba325b358f ("x86/syscalls: Switch to generic syscallhdr.sh")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/x86/entry/syscalls/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
+index 8eb014bca8c9..5b3efed0e4e8 100644
+--- a/arch/x86/entry/syscalls/Makefile
++++ b/arch/x86/entry/syscalls/Makefile
+@@ -11,6 +11,8 @@ syscall64 := $(src)/syscall_64.tbl
+ 
+ syshdr := $(srctree)/scripts/syscallhdr.sh
+ systbl := $(srctree)/scripts/syscalltbl.sh
++offset :=
++prefix :=
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --abis $(abis) --emit-nr \
+-- 
+2.27.0
+
