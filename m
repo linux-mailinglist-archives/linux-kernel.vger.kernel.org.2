@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F9038FFF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A4E38FFF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhEYLav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:30:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:54908 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230414AbhEYLat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:30:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7187BD6E;
-        Tue, 25 May 2021 04:29:19 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 740C33F719;
-        Tue, 25 May 2021 04:29:17 -0700 (PDT)
-Date:   Tue, 25 May 2021 12:29:01 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v6 12/17] phy: sun4i-usb: Introduce port2 SIDDQ quirk
-Message-ID: <20210525122901.778bfccd@slackpad.fritz.box>
-In-Reply-To: <20210524115946.jwsasjbr3biyixhz@gilmour>
-References: <20210519104152.21119-1-andre.przywara@arm.com>
-        <20210519104152.21119-13-andre.przywara@arm.com>
-        <20210524115946.jwsasjbr3biyixhz@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S231315AbhEYLak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhEYLah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 07:30:37 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE6DC061574;
+        Tue, 25 May 2021 04:29:07 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so28230552otc.12;
+        Tue, 25 May 2021 04:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OoShwNufQbQ2PZjqsVFrN16U7busUrI6QbgoEQ1ik9U=;
+        b=UlUxDSew9qGjS82r1rZpuGLDADXC/09HyxIu97KYoTOIhv1pbPIn0xyx/MbrNGxBoy
+         LGfIQeCGjSA9PESwug5um/Fzper9UjbhOUBKUc+aDp7sjNrE9QRBTod2hyOtzPsfrp9K
+         6oJykwLnNQmoTdInTlFpu90Svej0cJrTYVOxl+kw9HBpLJGSXb/amOcx1MLHSXLIXiUL
+         gIvwbZqRLZNzKdDDngeuMjDarusaqSRk5x1HlmHOcryL+qyDwtuJ2ZGO9JRiJAoHEsKz
+         CO2Xz2bbbgI2tas6F2L9E/iEDlElVsADLALlG1P/R6z7AMxcVV95rfo/tKPUPmjSuar4
+         UG1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=OoShwNufQbQ2PZjqsVFrN16U7busUrI6QbgoEQ1ik9U=;
+        b=STH4ALOWNWonQaVdU3OOSUfcF+lQvR3PRwq4ri7Ix4KLOB8Z74xWQ8uEVFuGcqcAhw
+         LXyaGbh28aw3/REs8utMB5EroSASfkPIoy0TMkoEKS6aKbwXjUFzDXRMgFSrzdPi94y/
+         3DvyTBA+aejKGBTOTyAyjKIZG1gt8/6l3ILIzvBQr3ZbNCaoPubzhfoLZWat0kk7TiPx
+         le2na+rG4khX2+946k+vVj+ZwnjUI24PsKeYPugf8Lswnlvm7VxqM1BZzrQaEZt5wcue
+         PQGxOUA6UE9W8Xb/sh/ZABbC95dCsb4fTDrORS6GRqsDUmSpyd5UxBIi7R4xDrAR6j1l
+         28dQ==
+X-Gm-Message-State: AOAM531K+kTdZI9CdHsNFtugrk91Hw8EN61AOQ41SZykEdqYKoKqQAYM
+        kwxUoJt5ZB5yDVSqyvhEU/4=
+X-Google-Smtp-Source: ABdhPJweJNrVeu6J02faHo9+lC6+Mm+P38lD8sy+b/xV4p1EN+w+OJfUdWVoLf2jWnnWsFzeqIuA4Q==
+X-Received: by 2002:a05:6830:31a1:: with SMTP id q1mr19611535ots.106.1621942146883;
+        Tue, 25 May 2021 04:29:06 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l20sm3395069oop.3.2021.05.25.04.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 04:29:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] drm/msm/disp/dpu1/dpu_encoder: Drop unnecessary NULL checks after container_of
+Date:   Tue, 25 May 2021 04:29:04 -0700
+Message-Id: <20210525112904.1747066-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 13:59:46 +0200
-Maxime Ripard <maxime@cerno.tech> wrote:
+The result of container_of() operations is never NULL unless the embedded
+element is the first element of the structure. This is not the case here.
+The NULL checks on the result of container_of() are therefore unnecessary
+and misleading. Remove them.
 
-Hi Maxime,
+This change was made automatically with the following Coccinelle script.
 
-> On Wed, May 19, 2021 at 11:41:47AM +0100, Andre Przywara wrote:
-> > At least the Allwinner H616 SoC requires a weird quirk to make most
-> > USB PHYs work: Only port2 works out of the box, but all other ports
-> > need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
-> > RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
-> > the PMU PHY control register needs to be cleared. For this register to
-> > be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
-> > 
-> > Instead of disguising this as some generic feature, do exactly that
-> > in our PHY init:
-> > If the quirk bit is set, and we initialise a PHY other than PHY2, ungate
-> > this one special clock, and clear the SIDDQ bit. We can pull in the
-> > other required clocks via the DT.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
-> 
-> What is this SIDDQ bit doing exactly?
+@@
+type t;
+identifier v;
+statement s;
+@@
 
-I probably know as much as you do, but as Jernej pointed out, in some
-Rockchip code it's indeed documented as some analogue PHY supply switch:
-($ git grep -i siddq drivers/phy/rockchip)
+<+...
+(
+  t v = container_of(...);
+|
+  v = container_of(...);
+)
+  ...
+  when != v
+- if (\( !v \| v == NULL \) ) s
+...+>
 
-In fact we had this pin/bit for ages, it was just hidden as BIT(1) in
-our infamous PMU_UNK1 register. Patch 10/17 drags that into the light.
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-> I guess we could also expose this using a power-domain if it's relevant?
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 8d942052db8a..a573fe211375 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -1453,11 +1453,6 @@ static void dpu_encoder_off_work(struct work_struct *work)
+ 	struct dpu_encoder_virt *dpu_enc = container_of(work,
+ 			struct dpu_encoder_virt, delayed_off_work.work);
+ 
+-	if (!dpu_enc) {
+-		DPU_ERROR("invalid dpu encoder\n");
+-		return;
+-	}
+-
+ 	dpu_encoder_resource_control(&dpu_enc->base,
+ 						DPU_ENC_RC_EVENT_ENTER_IDLE);
+ 
+@@ -1797,11 +1792,6 @@ static void dpu_encoder_vsync_event_work_handler(struct kthread_work *work)
+ 			struct dpu_encoder_virt, vsync_event_work);
+ 	ktime_t wakeup_time;
+ 
+-	if (!dpu_enc) {
+-		DPU_ERROR("invalid dpu encoder\n");
+-		return;
+-	}
+-
+ 	if (dpu_encoder_vsync_time(&dpu_enc->base, &wakeup_time))
+ 		return;
+ 
+-- 
+2.25.1
 
-Mmmh, interesting idea. So are you thinking about registering a genpd
-provider in sun4i_usb_phy_probe(), then having a power-domains property
-in the ehci/ohci nodes, pointing to the PHY node? And if yes, should
-the provider be a subnode of the USB PHY node, with a separate
-compatible? That sounds a bit more involved, but would have the
-advantage of allowing us to specify the resets and clocks from PHY2
-there, and would look a bit cleaner than hacking them into the
-other EHCI/OHCI nodes.
-
-I would not touch the existing SoCs (even though it seems to apply to
-them as well, just not in the exact same way), but I can give it a
-try for the H616. It seems like the other SIDDQ bits (in the other
-PHYs) are still needed for operation, but the PD provide could actually
-take care of this as well.
-
-Does that make sense or is this a bit over the top for just clearing an
-extra bit?
-
-Cheers,
-Andre
