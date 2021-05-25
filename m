@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA5938F90D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E234038F918
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhEYD43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
+        id S229551AbhEYEAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhEYD40 (ORCPT
+        with ESMTP id S229446AbhEYEAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:56:26 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9587C06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:54:56 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id b25so29130151oic.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:54:56 -0700 (PDT)
+        Tue, 25 May 2021 00:00:10 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AA8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:58:41 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id w15so36324980ljo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d4k92N6LykWwMxQhzmWCiHnqT4hZBOdVZCUoC5jBhEs=;
-        b=xVBTsraeA0yJoIJPLbHfkCFzVpMzJIzpN7iP5VjYq4c7v85R57995+VX0P5t7NiRPS
-         YFWCrjyBg0CFrWG+R+csdaN6sx70TOJpAdXXYufdC5cLRf8Lh7sjYjhaAfKEz8H2aTH8
-         tCgm8Z8HzmyLtRQ8U6RqMqjzSLiQdVR+u4S5RYORV0VRe5ZSsNLUWRc8ZLsRI8ylTicu
-         NznmbZsCVl2PRlIW0ElryajJyCtcTM2ViG7znOjI5Zj99lJU6RLcY4Tmjk1ZqJTYTAk/
-         rLPmbKQTgm00AJfSeSQIGVM2J1cIACbPMbx3sfxgdc6dAPJ6869Orm/wI2HTiAnjSp+8
-         Oomw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8KoZfY47+etg0JP/Zz64TPz3Kh9vNJ9gmPx9fA+UJ1E=;
+        b=MxlRbsAP5XolN9Xtt4upLjkysqnimbidG9E+iMvEmgCbftg63e/XEdqCpyuPZfrVUA
+         QA2l3vhNcIFqj4HNE42ZEbL/uFGumbqsslVmEGXswlQ+rvDQsIOflEwBRDh7BDLmYYQx
+         zqbNyDQhbXxbAdoaUdjkNxS2JYIOv3EKWmVPuly4UkJz9i69TS5it3svyDEaXZrdts7c
+         hWJ5mp3SH+XRk67TJRT78qoIx+kuPhtjlMYuXoVYEAi918zQl2qEfXBmfI7gQxqJKcD2
+         OzdwX9W2PxA52705hVgtJqEchVFRyJxfoCTx5JUQmR0Y/EPgTNUyt8vB89ZMG7/WFEe4
+         YAZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d4k92N6LykWwMxQhzmWCiHnqT4hZBOdVZCUoC5jBhEs=;
-        b=qjER8vTAkk139iylLgzxfRg+o8L9zr7pY7H22SguWVumbLRx8kELbu4Htbu0sBwNjP
-         5t2Hog2wDvBxrv9LrzNKTBcmTr/rmd0PGWXVt/M3Pn4i8beK4u0nkwjAzJq3lYUSCPLK
-         PizkogyHi4aKJB3hx1DA+p5KasRFEZIWGLpm/poOz4QhwJT+VZLKHUQ3coRhhlbWPB7V
-         2exCVXozce56/a2rlrMWNkIwxa+vJgLXnN3I43j3W4r3OVRlp9FFO0kkIBHuNOhVlp3P
-         jnChB6KGDjizII3Yw0v976jiW7me4ukhnpE3I2YU+wlMEqCD6S6OZBW0oz1R0lTldUsM
-         FnRg==
-X-Gm-Message-State: AOAM533quHk3WY/nSPWMg13xUHDDflHxXOGS7YF+/zQunoAvOrm9ESEf
-        kS8EnuL+A8qcASdactAhTNY21Q==
-X-Google-Smtp-Source: ABdhPJy3r8mCSdU2dsRhAILoa90OUJII3LPqOedt3yLx/88LCJxkEQaPzYBPOXFZrpZZcr/kewdEhw==
-X-Received: by 2002:aca:d18:: with SMTP id 24mr1448467oin.56.1621914896177;
-        Mon, 24 May 2021 20:54:56 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x5sm3414826otg.76.2021.05.24.20.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 20:54:55 -0700 (PDT)
-Date:   Mon, 24 May 2021 22:54:53 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] drivers: qcom: pinctrl: Add pinctrl driver for
- sm6125
-Message-ID: <YKx1DTc4wD5adxgG@yoga>
-References: <20210523211809.734107-1-martin.botka@somainline.org>
- <20210523211809.734107-2-martin.botka@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8KoZfY47+etg0JP/Zz64TPz3Kh9vNJ9gmPx9fA+UJ1E=;
+        b=Mu8WA0o/QTlJKm7Ib/g8X+e+Ji424ZYLmwg8fovutTfS+SSyLpgicsyQRreqrYu1zj
+         JzJOhAyOYAuuENjpdtTR23Sptx7qW6KlvThQiGvloutWxpkFOkXxWvWeZLVRBBEq4zB5
+         dbcG0HD4AhbxW2W7mDZDdbV9h98wrHhEqxjj43QdKTD4XykilPv1bqaqKGb9otGUxh03
+         lkQCEH8oF4TNEItG/piwmLtzOJiX+7XrsmguLvhHwRvd5LXG9Pfw7rXYioQ5MA8SKXB8
+         OKDfAxrxDHzE1MJW5+1OzznqW+Y2r7oGM7MvPttBemCGqCEXACU6haQ7AuHhpqJCBNQM
+         kjnQ==
+X-Gm-Message-State: AOAM531JsqENNGiv6br3c6B5UolVr7MtsMekGWBKFGIJitWXIFYVP6sZ
+        XXP8o5L8TTMSSjJzlfrlf9GUVU+bGlfZweOYr5FfqA==
+X-Google-Smtp-Source: ABdhPJzgkqXi2jDaDd2wVgppJTYoSj+ULr9eNjF0ZZo/RbUD+tja8vY5AcD9358BV5ekoMFZhpKeYI/gIK9KtD+Cg4Y=
+X-Received: by 2002:a2e:b601:: with SMTP id r1mr18761487ljn.203.1621915119234;
+ Mon, 24 May 2021 20:58:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523211809.734107-2-martin.botka@somainline.org>
+References: <20210414021201.2462114-1-lzye@google.com> <YKx0v9K/1TUZrlbD@google.com>
+In-Reply-To: <YKx0v9K/1TUZrlbD@google.com>
+From:   Chris Ye <lzye@google.com>
+Date:   Mon, 24 May 2021 20:58:28 -0700
+Message-ID: <CAFFudd+1+mOsZAc855jFeYkpbKh70Jt9iVYb0F0DQHrUDjbPBg@mail.gmail.com>
+Subject: Re: [PATCH] [v5] Input: Add "Select" button to Microsoft Xbox One controller.
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 23 May 16:18 CDT 2021, Martin Botka wrote:
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sm6125.c b/drivers/pinctrl/qcom/pinctrl-sm6125.c
-[..]
-> +static const struct msm_pingroup sm6125_groups[] = {
-> +	[0] = PINGROUP(0, WEST, qup00, _, qdss_gpio6, _, _, _, _, _, _),
-
-There's no individual pin where we need to distinguish between two
-different qdss_gpio* functions, so please lump all of qdss_gpio*
-together as "qdss".
-
-> +	[1] = PINGROUP(1, WEST, qup00, _, qdss_gpio7, _, _, _, _, _, _),
-> +	[2] = PINGROUP(2, WEST, qup00, _, qdss_gpio8, _, _, _, _, _, _),
-> +	[3] = PINGROUP(3, WEST, qup00, _, qdss_gpio9, _, _, _, _, _, _),
-> +	[4] = PINGROUP(4, WEST, qup01, _, _, _, _, _, _, _, _),
-> +	[5] = PINGROUP(5, WEST, qup01, _, _, _, _, _, _, _, _),
-> +	[6] = PINGROUP(6, WEST, qup02, ddr_pxi0, _, _, _, _, _, _, _),
-> +	[7] = PINGROUP(7, WEST, qup02, ddr_bist, atest_tsens2, vsense_trigger,
-> +		       atest_usb1, ddr_pxi0, _, _, _),
-
-Please ignore the line length limit and leave all these unwrapped.
-
-> +	[8] = PINGROUP(8, WEST, qup02, gp_pdm1, ddr_bist, _, phase_flag23, _,
-
-As with qdss_gpioX, please join all phase_flagNN as "phase_flag".
-
-> +		       _, _, _),
-[..]
-> +	[131] = PINGROUP(131, SOUTH, phase_flag20, _, _, _, _, _, _, _,
-> +			 _),
-> +	[132] = PINGROUP(132, SOUTH, _, _, _, _, _, _, _, _, _),
-> +	[133] = SDC_QDSD_PINGROUP(sdc1_rclk, WEST, 0x18d000, 15, 0),
-> +	[134] = SDC_QDSD_PINGROUP(sdc1_clk, WEST, 0x18d000, 13, 6),
-> +	[135] = SDC_QDSD_PINGROUP(sdc1_cmd, WEST, 0x18d000, 11, 3),
-> +	[136] = SDC_QDSD_PINGROUP(sdc1_data, WEST, 0x18d000, 9, 0),
-> +	[137] = SDC_QDSD_PINGROUP(sdc2_clk, SOUTH, 0x58b000, 14, 6),
-> +	[138] = SDC_QDSD_PINGROUP(sdc2_cmd, SOUTH, 0x58b000, 11, 3),
-> +	[139] = SDC_QDSD_PINGROUP(sdc2_data, SOUTH, 0x58b000, 9, 0),
-> +	[140] = UFS_RESET(ufs_reset, 0x190000),
-
-Move this above the SDC nodes, to make it the item with index 133.
-Together with ngpios = 134 this can then be accessed using the gpio
-framework in the UFS driver.
-
-> +};
-> +
-> +static const struct msm_pinctrl_soc_data sm6125_pinctrl = {
-> +	.pins = sm6125_pins,
-> +	.npins = ARRAY_SIZE(sm6125_pins),
-> +	.functions = sm6125_functions,
-> +	.nfunctions = ARRAY_SIZE(sm6125_functions),
-> +	.groups = sm6125_groups,
-> +	.ngroups = ARRAY_SIZE(sm6125_groups),
-> +	.ngpios = 134,
-> +	.tiles = sm6125_tiles,
-> +	.ntiles = ARRAY_SIZE(sm6125_tiles),
-> +};
-> +
-> +static int sm6125_pinctrl_probe(struct platform_device *pdev)
-> +{
-> +	return msm_pinctrl_probe(pdev, &sm6125_pinctrl);
-> +}
-> +
-> +static const struct of_device_id sm6125_pinctrl_of_match[] = {
-> +	{ .compatible = "qcom,sm6125-pinctrl", },
-
-Please change "pinctrl" to "tlmm".
+Thanks a lot Dmitry!
 
 Regards,
-Bjorn
+Chris
+
+
+On Mon, May 24, 2021 at 8:53 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> On Wed, Apr 14, 2021 at 02:12:01AM +0000, Chris Ye wrote:
+> > Add "Select" button input capability and input event mapping for
+> > Microsoft Xbox One controller. From product site this is also referred as
+> > "Share" button.
+> > Fixed Microsoft Xbox One controller select button not working under USB
+> > connection.
+> >
+> > Signed-off-by: Chris Ye <lzye@google.com>
+>
+> Applied, thank you.
+>
+> --
+> Dmitry
