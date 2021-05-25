@@ -2,97 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7819390626
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CBB390628
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhEYQFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhEYQFq (ORCPT
+        id S233329AbhEYQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:06:51 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58280 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230422AbhEYQGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:05:46 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9B7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:04:15 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id c15so38806680ljr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=etyw4lsngOCwaxz3lAVhGn8wpFc4o+0N4m07CszuHys=;
-        b=WSWDsTyvfIO3jcXBz7rf/aCap0pJvuYkQeFaAHhGi82/yhI/JbGAzmvpxl7wQTCLxP
-         kgCDVKtmyO+cBPm1tNHwAeizaDn/ZxYcVHJjmZLTMKdzwSHCzKrbdRrjDjj8hosTkMaT
-         mncIr1itc7WzFkx59meZztEqeeSHvi6YzLHBk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=etyw4lsngOCwaxz3lAVhGn8wpFc4o+0N4m07CszuHys=;
-        b=XkPSPQtQ3FkMpNIHadVd7AfK+IQlX1sGw3j2q2rlryH1TmXlZxqGu0LLejV21ynCP6
-         W0NO3pfuy756rtdg5okZSoGGopeO4k5IUZPLPbDuGEV8TTiXOfDGTACcWob4OoFq3BG8
-         CBckoaE3zlsuTAR+JwHMAf6G1IN0b0lBUv+7wcRXd5ovCpsp2vSyaJQItued6rmUXdEE
-         VxNTG79BFIkc8/UU87voNMfWhuY03kjHys25rUxKfd75euF1jwmi0O/0WW01z0kYivlJ
-         HKDhz6skwVfBEVyC+4/VBNDpDQs8b838rLh9oQzpSIlZUuA6MhrPJmcH6e3Ui6aazLHs
-         3sqQ==
-X-Gm-Message-State: AOAM530NqfCAFo2RSJTNEvkTmsiWHD0KRlSVsrUqgrKx2iCgtE9HF8Uz
-        i1xr6sNvLGBtY8YnJ+fbQmYVwTsSpLCFIF2t8AEAmw==
-X-Google-Smtp-Source: ABdhPJzpdi9hkHuHgScJG60EVMPuQ6xED6Vl0PloPs9dBGePF9s1iU2bjO0YKLNK+BMtS8rcsUxshhuvWcJjQui+GQ8=
-X-Received: by 2002:a2e:908e:: with SMTP id l14mr21340214ljg.372.1621958653833;
- Tue, 25 May 2021 09:04:13 -0700 (PDT)
+        Tue, 25 May 2021 12:06:41 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PG0s89019506;
+        Tue, 25 May 2021 09:04:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=DGHll5mQSSb6B5JJsJVJhXgotbT3M2ufRWY0rxNnHhg=;
+ b=RflbZgIlvP4V1iEoPSJU1mXXoZ+68/HBqNGeZAMHQ0X35CbIGSglNbTePNIwmqdnYHek
+ ti1vSYMllgp0V40oVUwYfOnflEGkxHkn/eBDFycldOCKxrj0zmncZWn4a8kV2M6+hXd1
+ wBi2IBb0+FlCjJkq4hBrLfmVquXyROb3T3MUyiSj7nKLptJjLeZemjLSiEjfS+TTA9bA
+ s/XnnwjXUdX+T0V3rXPLYmswJ22mquB6Fe5EjVjquiGk53QSddo5wU4bJZ6jZO6vz5ql
+ OkOCz9vY/efVReLrcauQ2aTtcenY/xMrmPPZ4sZPwRJ/jlZKavrbs1F/+iIeeOSHrfYR Fg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 38s0fes35u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:04:52 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 09:04:51 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 25 May 2021 09:04:51 -0700
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 6EFC43F703F;
+        Tue, 25 May 2021 09:04:48 -0700 (PDT)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH net] net: mvpp2: add buffer header handling in RX
+Date:   Tue, 25 May 2021 19:04:41 +0300
+Message-ID: <1621958681-7890-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
-In-Reply-To: <20210517193908.3113-3-sargun@sargun.me>
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-Date:   Tue, 25 May 2021 18:03:38 +0200
-Message-ID: <CACaBj2Y5YsrbFCw1m9U=8S8uJFiPo_c4riitDE5z-re65a-x9g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
- for new semantics
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: JIcBrC6vp_bn4iblFcFW9D8DKK2LokXu
+X-Proofpoint-GUID: JIcBrC6vp_bn4iblFcFW9D8DKK2LokXu
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 9:39 PM Sargun Dhillon <sargun@sargun.me> wrote:
->
-> This refactors the user notification code to have a do / while loop around
-> the completion condition. This has a small change in semantic, in that
-> previously we ignored addfd calls upon wakeup if the notification had been
-> responded to, but instead with the new change we check for an outstanding
-> addfd calls prior to returning to userspace.
+From: Stefan Chulski <stefanc@marvell.com>
 
-I understand why this was a readability improvement on the old
-patchset (that included the wait_killable semantics), as it completely
-changed the loop. But now we only have the atomic addfd+send reply
-that does minimal changes to this part (add a param to a function).
+If Link Partner sends frames larger than RX buffer size, MAC mark it
+as oversize but still would pass it to the Packet Processor.
+In this scenario, Packet Processor scatter frame between multiple buffers,
+but only a single buffer would be returned to the Buffer Manager pool and
+it would not refill the poll.
 
-Is it worth changing the semantics?
+Patch add handling of oversize error with buffer header handling, so all
+buffers would be returned to the Buffer Manager pool.
 
-> Rodrigo Campos also identified a bug that can result in addfd causing
-> an early return, when the supervisor didn't actually handle the
-> syscall [1].
->
-> [1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
+Reported-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 22 ++++++++
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 54 ++++++++++++++++----
+ 2 files changed, 67 insertions(+), 9 deletions(-)
 
-I was about to resend this, but I'd like to know what others think.
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index 8edba5e..4a61c90 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -993,6 +993,14 @@ enum mvpp22_ptp_packet_format {
+ 
+ #define MVPP2_DESC_DMA_MASK	DMA_BIT_MASK(40)
+ 
++/* Buffer header info bits */
++#define MVPP2_B_HDR_INFO_MC_ID_MASK	0xfff
++#define MVPP2_B_HDR_INFO_MC_ID(info)	((info) & MVPP2_B_HDR_INFO_MC_ID_MASK)
++#define MVPP2_B_HDR_INFO_LAST_OFFS	12
++#define MVPP2_B_HDR_INFO_LAST_MASK	BIT(12)
++#define MVPP2_B_HDR_INFO_IS_LAST(info) \
++	   (((info) & MVPP2_B_HDR_INFO_LAST_MASK) >> MVPP2_B_HDR_INFO_LAST_OFFS)
++
+ struct mvpp2_tai;
+ 
+ /* Definitions */
+@@ -1002,6 +1010,20 @@ struct mvpp2_rss_table {
+ 	u32 indir[MVPP22_RSS_TABLE_ENTRIES];
+ };
+ 
++struct mvpp2_buff_hdr {
++	__le32 next_phys_addr;
++	__le32 next_dma_addr;
++	__le16 byte_count;
++	__le16 info;
++	__le16 reserved1;	/* bm_qset (for future use, BM) */
++	u8 next_phys_addr_high;
++	u8 next_dma_addr_high;
++	__le16 reserved2;
++	__le16 reserved3;
++	__le16 reserved4;
++	__le16 reserved5;
++};
++
+ /* Shared Packet Processor resources */
+ struct mvpp2 {
+ 	/* Shared registers' base addresses */
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d415447..f774dcf 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -3840,6 +3840,35 @@ static void mvpp2_xdp_finish_tx(struct mvpp2_port *port, u16 txq_id, int nxmit,
+ 	return ret;
+ }
+ 
++static void mvpp2_buff_hdr_pool_put(struct mvpp2_port *port, struct mvpp2_rx_desc *rx_desc,
++				    int pool, u32 rx_status)
++{
++	phys_addr_t phys_addr, phys_addr_next;
++	dma_addr_t dma_addr, dma_addr_next;
++	struct mvpp2_buff_hdr *buff_hdr;
++
++	phys_addr = mvpp2_rxdesc_dma_addr_get(port, rx_desc);
++	dma_addr = mvpp2_rxdesc_cookie_get(port, rx_desc);
++
++	do {
++		buff_hdr = (struct mvpp2_buff_hdr *)phys_to_virt(phys_addr);
++
++		phys_addr_next = le32_to_cpu(buff_hdr->next_phys_addr);
++		dma_addr_next = le32_to_cpu(buff_hdr->next_dma_addr);
++
++		if (port->priv->hw_version >= MVPP22) {
++			phys_addr_next |= ((u64)buff_hdr->next_phys_addr_high << 32);
++			dma_addr_next |= ((u64)buff_hdr->next_dma_addr_high << 32);
++		}
++
++		mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
++
++		phys_addr = phys_addr_next;
++		dma_addr = dma_addr_next;
++
++	} while (!MVPP2_B_HDR_INFO_IS_LAST(le16_to_cpu(buff_hdr->info)));
++}
++
+ /* Main rx processing */
+ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+ 		    int rx_todo, struct mvpp2_rx_queue *rxq)
+@@ -3886,14 +3915,6 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+ 			MVPP2_RXD_BM_POOL_ID_OFFS;
+ 		bm_pool = &port->priv->bm_pools[pool];
+ 
+-		/* In case of an error, release the requested buffer pointer
+-		 * to the Buffer Manager. This request process is controlled
+-		 * by the hardware, and the information about the buffer is
+-		 * comprised by the RX descriptor.
+-		 */
+-		if (rx_status & MVPP2_RXD_ERR_SUMMARY)
+-			goto err_drop_frame;
+-
+ 		if (port->priv->percpu_pools) {
+ 			pp = port->priv->page_pool[pool];
+ 			dma_dir = page_pool_get_dma_dir(pp);
+@@ -3905,6 +3926,18 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+ 					rx_bytes + MVPP2_MH_SIZE,
+ 					dma_dir);
+ 
++		/* Buffer header not supported */
++		if (rx_status & MVPP2_RXD_BUF_HDR)
++			goto err_drop_frame;
++
++		/* In case of an error, release the requested buffer pointer
++		 * to the Buffer Manager. This request process is controlled
++		 * by the hardware, and the information about the buffer is
++		 * comprised by the RX descriptor.
++		 */
++		if (rx_status & MVPP2_RXD_ERR_SUMMARY)
++			goto err_drop_frame;
++
+ 		/* Prefetch header */
+ 		prefetch(data);
+ 
+@@ -3986,7 +4019,10 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+ 		dev->stats.rx_errors++;
+ 		mvpp2_rx_error(port, rx_desc);
+ 		/* Return the buffer to the pool */
+-		mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
++		if (rx_status & MVPP2_RXD_BUF_HDR)
++			mvpp2_buff_hdr_pool_put(port, rx_desc, pool, rx_status);
++		else
++			mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
+ 	}
+ 
+ 	rcu_read_unlock();
+-- 
+1.9.1
 
-I'm okay with applying any patches to solve the issue (mine linked
-there or this one), slightly in favor of mine as the diff is way
-simpler to backport (applies to 5.9+ kernels) and I don't see a reason
-to change semantics. But no strong opinion.
-
-Opinions?
-
-
-Best,
-Rodrigo
