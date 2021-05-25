@@ -2,125 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824D33908A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FD33908D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhEYSQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhEYSQq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:16:46 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F71C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:15:16 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id s25so39381505ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JDvTiCSdSa6DaxtIYC1tMowbiLo2hs8x4utC1OfqK2o=;
-        b=Y0cT5eNGrR2XbykQQJwT1wOeAUQMHH6SYgDmM+mMFkMkayQ6xD5PUGDOGr3F32/fBk
-         pkNc+6EdG/uSZSm6eLl6qiZD/OKRmROd7jYkTXTN6ouPouIRxsmPSHcvmpdQ4+peCzub
-         huZocnWTLrHULYRTEn0klXNgWfoIQ2ns1VhthONqcOnXNUJdrdbGwDMn9jsSSKBlxigu
-         MZLW27hw6rDXtSoH4SSl0gXNgIt0i3ecQ6w98XGRkEjhvPrZNI/Djihh3ZRjvR+kCpk6
-         pRQIAoD+OXiNKeGF2dVGnKpXsJB9q4Y3guE/VoNosiSTyKkdrxjtkDHkHT/Wm/DtMkxD
-         r3/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JDvTiCSdSa6DaxtIYC1tMowbiLo2hs8x4utC1OfqK2o=;
-        b=pcPe8t09Uk/4Xp4SLgLc6vLrOa3rsZh7cOcx4YUJYlwTJ3b+r5jR+6MEZ9ijDCk6uZ
-         SYd+Nkl9uNJ9YmbmOUM6oc7+Rr3IU6te5314SSdntmFKSKxjI4kjf/08MulUHt6/41nE
-         Or4MCjWnZNyFB8mHR4BoLakF5P0k5tXwx6hwa1KnjMTDvUOQpx93E6zfyUHhvUHY/Jjk
-         Pi7EuieD36+qG5mbT7+vKbtNS/baNBjhaWic0Ycj0ymBQcweuvEfgYL8/vKivzUDpLUf
-         V4/NmQM2hOigKNBSqBoz4AwQMm95OB9G95RhrSBxzUjXkr1j1ZHELu/tOnuopqugInF/
-         +5lw==
-X-Gm-Message-State: AOAM5322n3ShMgKYANcXdIokQqlj6Xnca2MFJdBhDLw9+nJi0smEYvRy
-        AA3jEepv8uDynTzpenrEFNbibw==
-X-Google-Smtp-Source: ABdhPJxK4MtgBJuOAVSzxlU1r+29hap5/+nJwVLbu8fMwzhn270NTK8HImjvnRIAlbRf3BG5N52VSA==
-X-Received: by 2002:a2e:7a02:: with SMTP id v2mr21900894ljc.271.1621966514644;
-        Tue, 25 May 2021 11:15:14 -0700 (PDT)
-Received: from [192.168.88.254] ([85.249.41.56])
-        by smtp.gmail.com with ESMTPSA id m9sm2175810ljh.6.2021.05.25.11.15.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 11:15:13 -0700 (PDT)
-Subject: Re: [PATCH 04/17] media: camss: csid-170: fix non-10bit formats
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     robert.foss@linaro.org, Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210511180728.23781-1-jonathan@marek.ca>
- <20210511180728.23781-5-jonathan@marek.ca>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <fd72befe-f39c-ecb0-1130-50aa8452a90e@linaro.org>
-Date:   Tue, 25 May 2021 21:15:10 +0300
+        id S231768AbhEYSXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:23:01 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36958 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231579AbhEYSW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 14:22:56 -0400
+IronPort-SDR: hKiSgcVorZ71RVYQoyF8alGbVQE/6mpgCw2cwGdwhBaHzYrrfyqkJ3m1eSTTgLcf2BPL1n6ct2
+ /lmd9uB+uWrQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="223440090"
+X-IronPort-AV: E=Sophos;i="5.82,329,1613462400"; 
+   d="scan'208";a="223440090"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 11:21:26 -0700
+IronPort-SDR: 9hkujfQK4bjreWkXMwzMTQupDq3hjBa6ME8RuCJuoaNETJABPw1AZT3fcCHKH1/16RkzmWLOVA
+ XizIz6fVYnYg==
+X-IronPort-AV: E=Sophos;i="5.82,329,1613462400"; 
+   d="scan'208";a="476540674"
+Received: from asewani-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.113.233])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 11:21:24 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+ <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
+ <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+ <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+ <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
+ <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+ <YKfPLlulaqwypNkO@zn.tnic> <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+ <YKgA1od/SqycWWds@zn.tnic> <86b4d995-9619-81fa-5ef4-86f48ab01e96@amd.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <a94e1fb8-50bf-ef69-6553-237937029c5d@linux.intel.com>
+Date:   Tue, 25 May 2021 11:21:21 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210511180728.23781-5-jonathan@marek.ca>
+In-Reply-To: <86b4d995-9619-81fa-5ef4-86f48ab01e96@amd.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Hi,
 
-Thank you for your patch!
-
-On 11.05.2021 21:07, Jonathan Marek wrote:
-> Use the decode_format/data_type from the "format" struct instead of a
-> hardcoded 10-bit format.
+On 5/21/21 2:14 PM, Tom Lendacky wrote:
 > 
-> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   drivers/media/platform/qcom/camss/camss-csid-170.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
-> index ac22ff29d2a9..a81cc94c075f 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
-> @@ -366,7 +366,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
->   			val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
->   			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
->   
-> -			val = DATA_TYPE_RAW_10BIT << TPG_DT_n_CFG_1_DATA_TYPE;
-> +			val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
->   			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
->   
->   			val = tg->mode << TPG_DT_n_CFG_2_PAYLOAD_MODE;
-> @@ -382,8 +382,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
->   		val = 1 << RDI_CFG0_BYTE_CNTR_EN;
->   		val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
->   		val |= 1 << RDI_CFG0_TIMESTAMP_EN;
-> -		val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
-> -		val |= DATA_TYPE_RAW_10BIT << RDI_CFG0_DATA_TYPE;
-> +		val |= format->decode_format << RDI_CFG0_DECODE_FORMAT;
-> +		val |= format->data_type << RDI_CFG0_DATA_TYPE;
-
-I've given it a try on RB3 board (aka db845c plus the navigation mezzanine), which uses ov8856 camera
-sensor (its output format is SGRBG10_1X10).
-
-The above change doesn't work for me because format->decode_format has the value of 0x02 (which is
-DECODE_FORMAT_UNCOMPRESSED_10_BIT). format->data_type has the expected value of 0x2b (DATA_TYPE_RAW_10BIT).
-
-Thanks,
-Andrey
-
->   		val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
->   		val |= dt_id << RDI_CFG0_DT_ID;
->   		writel_relaxed(val, csid->base + CSID_RDI_CFG0(0));
+> On 5/21/21 1:49 PM, Borislav Petkov wrote:
+>> On Fri, May 21, 2021 at 11:19:15AM -0500, Tom Lendacky wrote:
+>>> In arch/x86/mm/mem_encrypt.c, sme_early_init() (should have renamed that
+>>> when SEV support was added), we do:
+>>> 	if (sev_active())
+>>> 		swiotlb_force = SWIOTLB_FORCE;
+>>>
+>>> TDX should be able to do a similar thing without having to touch
+>>> arch/x86/kernel/pci-swiotlb.c.
+>>>
+>>> That would remove any confusion over SME being part of a
+>>> protected_guest_has() call.
+>>
+>> Even better.
+>>
+>>> I kinda like the separate function, though.
+>>
+>> Only if you clean it up and get rid of the inverted logic and drop that
+>> silly switch-case.
+>>
+>>> Except mem_encrypt_active() covers both SME and SEV, so
+>>> protected_guest_has() would be confusing.
+>>
+>> I don't understand - the AMD-specific function amd_protected_guest_has()
+>> would return sme_me_mask just like mem_encrypt_active() does and we can
+>> get rid of latter.
+>>
+>> Or do you have a problem with the name protected_guest_has() containing
+>> "guest" while we're talking about SME here?
 > 
+> The latter.
+> 
+>>
+>> If so, feel free to suggest a better one - the name does not have to
+>> have "guest" in it.
+> 
+> Let me see if I can come up with something that will make sense.
+> 
+> Thanks,
+> Tom
+> 
+>>
+>> Thx.
+>>
+>>
+
+Following is the sample implementation. Please let me know your
+comments.
+
+     tdx: Introduce generic protected_guest abstraction
+
+     Add a generic way to check if we run with an encrypted guest,
+     without requiring x86 specific ifdefs. This can then be used in
+     non architecture specific code.
+
+     is_protected_guest() helper function can be implemented using
+     arch specific CPU feature flags.
+
+     protected_guest_has() is used to check for protected guest
+     feature flags.
+
+     Originally-by: Andi Kleen <ak@linux.intel.com>
+     Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index ecfd3520b676..98c30312555b 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -956,6 +956,9 @@ config HAVE_ARCH_NVRAM_OPS
+  config ISA_BUS_API
+         def_bool ISA
+
++config ARCH_HAS_PROTECTED_GUEST
++       bool
++
+  #
+  # ABI hall of shame
+  #
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index bc91c4aa7ce4..2f31613be965 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -879,6 +879,7 @@ config INTEL_TDX_GUEST
+         select X86_X2APIC
+         select SECURITY_LOCKDOWN_LSM
+         select X86_MEM_ENCRYPT_COMMON
++       select ARCH_HAS_PROTECTED_GUEST
+         help
+           Provide support for running in a trusted domain on Intel processors
+           equipped with Trusted Domain eXtenstions. TDX is a new Intel
+diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+new file mode 100644
+index 000000000000..b2838e58ce94
+--- /dev/null
++++ b/arch/x86/include/asm/protected_guest.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 Intel Corporation */
++#ifndef _ASM_PROTECTED_GUEST
++#define _ASM_PROTECTED_GUEST 1
++
++#include <asm/cpufeature.h>
++#include <asm/tdx.h>
++
++/* Only include through linux/protected_guest.h */
++
++static inline bool is_protected_guest(void)
++{
++       return boot_cpu_has(X86_FEATURE_TDX_GUEST);
++}
++
++static inline bool protected_guest_has(unsigned long flag)
++{
++       if (boot_cpu_has(X86_FEATURE_TDX_GUEST))
++               return tdx_protected_guest_has(flag);
++
++       return false;
++}
++
++#endif
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 175cebb7bf94..d894111f49ea 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -147,6 +147,7 @@ do {                                                                        \
+  extern phys_addr_t tdg_shared_mask(void);
+  extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
+                                 enum tdx_map_type map_type);
++bool tdx_protected_guest_has(unsigned long flag);
+
+  #else // !CONFIG_INTEL_TDX_GUEST
+
+@@ -167,6 +168,11 @@ static inline int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
+  {
+         return -ENODEV;
+  }
++
++static inline bool tdx_protected_guest_has(unsigned long flag)
++{
++       return false;
++}
+  #endif /* CONFIG_INTEL_TDX_GUEST */
+
+  #ifdef CONFIG_INTEL_TDX_GUEST_KVM
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index c613c89d0d6a..cbb893412b43 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -11,6 +11,7 @@
+  #include <linux/sched/signal.h> /* force_sig_fault() */
+  #include <linux/swiotlb.h>
+  #include <linux/security.h>
++#include <linux/protected_guest.h>
+
+  #include <linux/cpu.h>
+
+@@ -122,6 +123,23 @@ bool is_tdx_guest(void)
+  }
+  EXPORT_SYMBOL_GPL(is_tdx_guest);
+
++bool tdx_protected_guest_has(unsigned long flag)
++{
++       if (!is_tdx_guest())
++               return false;
++
++       switch (flag) {
++       case VM_MEM_ENCRYPT:
++       case VM_MEM_ENCRYPT_ACTIVE:
++       case VM_UNROLL_STRING_IO:
++       case VM_HOST_MEM_ENCRYPT:
++               return true;
++       }
++
++       return false;
++}
++EXPORT_SYMBOL_GPL(tdx_protected_guest_has);
++
+  /* The highest bit of a guest physical address is the "sharing" bit */
+  phys_addr_t tdg_shared_mask(void)
+  {
+diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+new file mode 100644
+index 000000000000..f362eea39bd8
+--- /dev/null
++++ b/include/linux/protected_guest.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _LINUX_PROTECTED_GUEST_H
++#define _LINUX_PROTECTED_GUEST_H 1
++
++/* Protected Guest Feature Flags (leave 0-0xff for arch specific flags) */
++
++/* Support for guest encryption */
++#define VM_MEM_ENCRYPT                 0x100
++/* Encryption support is active */
++#define VM_MEM_ENCRYPT_ACTIVE          0x101
++/* Support for unrolled string IO */
++#define VM_UNROLL_STRING_IO            0x102
++/* Support for host memory encryption */
++#define VM_HOST_MEM_ENCRYPT            0x103
++
++#ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
++#include <asm/protected_guest.h>
++#else
++static inline bool is_protected_guest(void) { return false; }
++static inline bool protected_guest_has(unsigned long flag) { return false; }
++#endif
++
++#endif
+
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
