@@ -2,149 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFCD38FC03
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F5638FC06
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhEYHy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231640AbhEYHy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 319E86128B;
-        Tue, 25 May 2021 07:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621929205;
-        bh=i3iKLnAT/uEav9AIigQ8Y+Badv6xYz6k3RQel47yBkg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l1DU/FaBhz7SMVX3dH4z+eoGUA5ci2yPfij1JkOzkuxeDQvZE6jC+zKrvCARJp2D8
-         ZodDjWX/tzNFQ4vCh4BSTy/4Bc31e8pqzF6rv6PoDA8xWcc/1hq82A9qZIRO0kNrH0
-         yLv4csKYEX0+Xxoewfz+o35/sTNj5+DZYizoIIZU=
-Date:   Tue, 25 May 2021 09:53:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        glittao@gmail.com, vinmenon@codeaurora.org
-Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <YKys873HUNp/ZMqV@kroah.com>
-References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+        id S231915AbhEYH4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:56:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30111 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231640AbhEYH4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:56:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621929313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x070tQ5CLRrsBPg2h5b3DfLhZ5uEavvY3kDP5R48Mp4=;
+        b=dipWXxEukWOQwA5mQgRnHfKIFTD62w093UwkWb+s9F1NcwfsvTx11YQTnixyYM3KWtvyP4
+        B3YgHUgZ7QIBdYPGSuyjB9/VvQpXqqMpfDMtR5HiGfx0Kx++hSqnE4DFWmrznOMHp6qy0u
+        pGckVqf2NGiKBCKvEb3hrlCSCq6O7OA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-HcrDiubvPiKOWUxNQa02GA-1; Tue, 25 May 2021 03:55:11 -0400
+X-MC-Unique: HcrDiubvPiKOWUxNQa02GA-1
+Received: by mail-wr1-f71.google.com with SMTP id j33-20020adf91240000b029010e4009d2ffso14214382wrj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:55:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=x070tQ5CLRrsBPg2h5b3DfLhZ5uEavvY3kDP5R48Mp4=;
+        b=WHjcyZKvxHCnzFX+mMuiwZkjXNk/RqJ6IzE6Ei5WKiG2cSrD1DHtTTiPgSrVb0dSD6
+         LdM9sa22qQS8BQG/ViFcq+2ogd5FjFCkYa10peQNfWH9xoA26IfRpZnIFIItQ2AhtM74
+         otMPY7ViY+1khBHlXioLmTvodDurXe5ZsdFamnKs4CECN5Q7XQxuAUXj/EQtzmwksnJc
+         RgamomliQEOh9UIe4w8ZtJenFBGuc0gbozGQY3aE6gf3xhyQYLO0vTaxl8RZBi1IPXhR
+         fTITkGyRZAvPSc6eMpQTp4L9y9Veod5ux2BumyFR1/5bdSXFBhcmZaZqQx0doYH0JMT/
+         F6Sw==
+X-Gm-Message-State: AOAM532t8U9FFND16mN9ZM2vWxhz6fvORV+Ydn30tBTd7OMPqwds7Pxr
+        VZwCoG8MFHz+xWAq4G+ZGPUduwI5LzTK/IZUIJcs8TJ8HpE94aEZ4hWiW93trATmpbXQgmVplib
+        1F0dVO6jyomFMElplhJa4lrNI
+X-Received: by 2002:a1c:6355:: with SMTP id x82mr22644300wmb.178.1621929310339;
+        Tue, 25 May 2021 00:55:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoK+ONNwRVXX+uxmWWrihpve5/LZGVZA6s7eNQLdabYEc3al9o19TUlVGHhEAxZ5DlmA3+Ag==
+X-Received: by 2002:a1c:6355:: with SMTP id x82mr22644280wmb.178.1621929310132;
+        Tue, 25 May 2021 00:55:10 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
+        by smtp.gmail.com with ESMTPSA id o21sm10050808wmr.44.2021.05.25.00.55.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 00:55:09 -0700 (PDT)
+Subject: Re: [PATCH 4/5] mm: rename the global section array to mem_sections
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+References: <20210517112044.233138-1-aisheng.dong@nxp.com>
+ <20210517112044.233138-5-aisheng.dong@nxp.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <a0db36d1-3ad0-ffc7-02ab-dabab346dae9@redhat.com>
+Date:   Tue, 25 May 2021 09:55:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+In-Reply-To: <20210517112044.233138-5-aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:08:05PM +0530, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
+On 17.05.21 13:20, Dong Aisheng wrote:
+> In order to distinguish the struct mem_section for a better code
+> readability and align with kernel doc [1] name below, change the
+> global mem section name to 'mem_sections' from 'mem_section'.
 > 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
+> [1] Documentation/vm/memory-model.rst
+> "The `mem_section` objects are arranged in a two-dimensional array
+> called `mem_sections`."
 > 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: kexec@lists.infradead.org
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 > ---
-> changes in V7:
->         - Drop the older alloc_calls and free_calls interface.
-> changes in v6:
->         - https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+>   include/linux/mmzone.h | 10 +++++-----
+>   kernel/crash_core.c    |  4 ++--
+>   mm/sparse.c            | 16 ++++++++--------
+>   3 files changed, 15 insertions(+), 15 deletions(-)
 > 
-> changes in v5:
->         - https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index fc23e36cb165..b348a06915c5 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1297,9 +1297,9 @@ struct mem_section {
+>   #define SECTION_ROOT_MASK	(SECTIONS_PER_ROOT - 1)
+>   
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -extern struct mem_section **mem_section;
+> +extern struct mem_section **mem_sections;
+>   #else
+> -extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+> +extern struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+>   #endif
+>   
+>   static inline unsigned long *section_to_usemap(struct mem_section *ms)
+> @@ -1310,12 +1310,12 @@ static inline unsigned long *section_to_usemap(struct mem_section *ms)
+>   static inline struct mem_section *__nr_to_section(unsigned long nr)
+>   {
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -	if (!mem_section)
+> +	if (!mem_sections)
+>   		return NULL;
+>   #endif
+> -	if (!mem_section[SECTION_NR_TO_ROOT(nr)])
+> +	if (!mem_sections[SECTION_NR_TO_ROOT(nr)])
+>   		return NULL;
+> -	return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+> +	return &mem_sections[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
+>   }
+>   extern unsigned long __section_nr(struct mem_section *ms);
+>   extern size_t mem_section_usage_size(void);
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 29cc15398ee4..fb1180d81b5a 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -414,8 +414,8 @@ static int __init crash_save_vmcoreinfo_init(void)
+>   	VMCOREINFO_SYMBOL(contig_page_data);
+>   #endif
+>   #ifdef CONFIG_SPARSEMEM
+> -	VMCOREINFO_SYMBOL_ARRAY(mem_section);
+> -	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
+> +	VMCOREINFO_SYMBOL_ARRAY(mem_sections);
+> +	VMCOREINFO_LENGTH(mem_sections, NR_SECTION_ROOTS);
+>   	VMCOREINFO_STRUCT_SIZE(mem_section);
+>   	VMCOREINFO_OFFSET(mem_section, section_mem_map);
+>   	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index df4418c12f04..a96e7e65475f 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -24,12 +24,12 @@
+>    * 1) mem_section	- memory sections, mem_map's for valid memory
+>    */
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+> -struct mem_section **mem_section;
+> +struct mem_section **mem_sections;
+>   #else
+> -struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+> +struct mem_section mem_sections[NR_SECTION_ROOTS][SECTIONS_PER_ROOT]
+>   	____cacheline_internodealigned_in_smp;
+>   #endif
+> -EXPORT_SYMBOL(mem_section);
+> +EXPORT_SYMBOL(mem_sections);
+>   
+>   #ifdef NODE_NOT_IN_PAGE_FLAGS
+>   /*
+> @@ -91,14 +91,14 @@ static int __meminit sparse_index_init(unsigned long section_nr, int nid)
+>   	 *
+>   	 * The mem_hotplug_lock resolves the apparent race below.
+>   	 */
+> -	if (mem_section[root])
+> +	if (mem_sections[root])
+>   		return 0;
+>   
+>   	section = sparse_index_alloc(nid);
+>   	if (!section)
+>   		return -ENOMEM;
+>   
+> -	mem_section[root] = section;
+> +	mem_sections[root] = section;
+>   
+>   	return 0;
+>   }
+> @@ -131,7 +131,7 @@ unsigned long __section_nr(struct mem_section *ms)
+>   #else
+>   unsigned long __section_nr(struct mem_section *ms)
+>   {
+> -	return (unsigned long)(ms - mem_section[0]);
+> +	return (unsigned long)(ms - mem_sections[0]);
+>   }
+>   #endif
+>   
+> @@ -286,8 +286,8 @@ static void __init memblocks_present(void)
+>   #ifdef CONFIG_SPARSEMEM_EXTREME
+>   	size = sizeof(struct mem_section *) * NR_SECTION_ROOTS;
+>   	align = 1 << (INTERNODE_CACHE_SHIFT);
+> -	mem_section = memblock_alloc(size, align);
+> -	if (!mem_section)
+> +	mem_sections = memblock_alloc(size, align);
+> +	if (!mem_sections)
+>   		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+>   		      __func__, size, align);
+>   #endif
 > 
-> changes in v4:
->         - https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
-> 
-> changes in v3:
->         - https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
-> 
-> changes in v2:
->         - https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
-> 
-> changes in v1:
->         - https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
-> 
->  include/linux/slub_def.h |   8 ++
->  mm/slab_common.c         |   9 ++
->  mm/slub.c                | 353 ++++++++++++++++++++++++++++++++++-------------
->  3 files changed, 276 insertions(+), 94 deletions(-)
-> 
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> index dcde82a..b413ebe 100644
-> --- a/include/linux/slub_def.h
-> +++ b/include/linux/slub_def.h
-> @@ -159,6 +159,14 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
->  }
->  #endif
->  
-> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
-> +#define SLAB_SUPPORTS_DEBUGFS
-> +void debugfs_slab_release(struct kmem_cache *);
-> +#else
-> +static inline void debugfs_slab_release(struct kmem_cache *s)
-> +{
-> +}
-> +#endif
->  void object_err(struct kmem_cache *s, struct page *page,
->  		u8 *object, char *reason);
->  
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index a4a5714..873dd79 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -455,6 +455,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
->  #else
->  		slab_kmem_cache_release(s);
->  #endif
-> +#ifdef SLAB_SUPPORTS_DEBUGFS
-> +		debugfs_slab_release(s);
-> +#endif
 
-Why do you need these #ifdef if your slub_dev.h file already provides an
-"empty" function for this?
+Smells like unnecessary code churn. I'd rather just fix the doc because 
+it doesn't really improve readability IMHO.
 
->  	}
->  }
->  
-> @@ -472,6 +475,9 @@ static int shutdown_cache(struct kmem_cache *s)
->  #ifdef SLAB_SUPPORTS_SYSFS
->  		sysfs_slab_unlink(s);
->  #endif
-> +#ifdef SLAB_SUPPORTS_DEBUGFS
-> +		debugfs_slab_release(s);
-> +#endif
+Anyhow, just my 2 cents.
 
-Same here.
+-- 
+Thanks,
 
->  		list_add_tail(&s->list, &slab_caches_to_rcu_destroy);
->  		schedule_work(&slab_caches_to_rcu_destroy_work);
->  	} else {
-> @@ -482,6 +488,9 @@ static int shutdown_cache(struct kmem_cache *s)
->  #else
->  		slab_kmem_cache_release(s);
->  #endif
-> +#ifdef SLAB_SUPPORTS_DEBUGFS
-> +		debugfs_slab_release(s);
-> +#endif
+David / dhildenb
 
-And here.
-
-What is wrong with your .h file that keeps the need for #ifdef in the .c
-file?
-
-I thought I've asked about this a number of times in the past, what am I
-missing?
-
-thanks,
-
-greg k-h
