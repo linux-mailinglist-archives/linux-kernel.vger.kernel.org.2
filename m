@@ -2,249 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2039F39021D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3884390229
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhEYNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:25:05 -0400
-Received: from mga14.intel.com ([192.55.52.115]:57899 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233023AbhEYNY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:24:58 -0400
-IronPort-SDR: KyxXagf5sTeS+MX4h+ls8cBYRtl53p3od18fdgs7V1EejEn2AT7py64xWJsnrfM1Hmb1nsepXA
- N0rHN2zGJdDQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="201942109"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="201942109"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:23:26 -0700
-IronPort-SDR: oeufRP7gtJ1+DYjg5AFGnve3V4dolGGFIaySYlFLNCkZn2t4AWg7hr5tbmWVPEjXUVej15+Gcf
- Zm2ikRffmC0Q==
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="546598434"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:23:21 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1llX1i-00Eahp-FH; Tue, 25 May 2021 16:23:18 +0300
-Date:   Tue, 25 May 2021 16:23:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v4 0/8] Introduce intel_skl_int3472 module
-Message-ID: <YKz6Ro+J1DduULz4@smile.fi.intel.com>
-References: <20210520140928.3252671-1-djrscally@gmail.com>
- <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
- <dbc269f9-c76f-04f9-0900-22171c3ef3a3@redhat.com>
+        id S233287AbhEYN0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:26:01 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34605 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233240AbhEYNZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:25:30 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2D0895806F5;
+        Tue, 25 May 2021 09:24:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 25 May 2021 09:24:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm2; bh=//Ua6fbgPleRns58xLPwp5jsqA
+        31DFCIgTLmVQxIlOI=; b=gY/l9Y4yEV+9tfP6NhGchNf6Fddn5xxWvcbxze7GQn
+        tswF59QrAZiEf2afAPXpxnnWGpf0HWliG54DtxAypGPQ5GXrBgqQfNIGzCx7PVfB
+        isSb0cnYBWjHxjBP18ULuQ6p/Y5K6JSgmTtL7+s3IlmvtD9lPSVu+pzFIcCmPNoK
+        TmZe7SgXPgEAqVvAmaGcLc0xc9dOUVoM1mtSjqRDuW3W4stTdrAeb9RjyKOtc0I1
+        EPn35x/qODsKuUV4OCvOUwIAoQCH91YheC4s8wMKvFuED2a8/9JTCs8GBwSNm6qA
+        lSaSD2gWaK2mSomItDLjlMYG5gHzqTs2OjmGjbFPkPcA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=//Ua6f
+        bgPleRns58xLPwp5jsqA31DFCIgTLmVQxIlOI=; b=iKg6RsbgbJcU90Psd75MtD
+        oDDO9BFYIic1Xh64LQocuvGl1m1hePlfJ+iyOaOTapCwpx+4r3nBfzl8nko+gcjK
+        RaWZirgcmCvZCY2WUCFWPZfmfOU9txtZehPH+vu4Cia3P5FxmS+2gwpHfFSJUgYx
+        yJUZKky58IuhbKV+ZhC3BMGC2NgAjX07WXUnu3dQKFZNApuWGdk8ouKSCmKEkm8L
+        OKDuxuNPfVPSH6j6yW4v4KcCKWWOjoznkAQuGci5YRRQUu7be06nuKf69+v9QlLd
+        tfSV//8NubYLyC0LMX1AnLzVwwx+FxNT3OVLIeLuUwUjAJcGw9ol0bihl9xETmeQ
+        ==
+X-ME-Sender: <xms:bfqsYD7Fw4uQljLFdiipKZQC4sUfQberi_XdDUMBs0MIHpKahwJJ5A>
+    <xme:bfqsYI7Lrka4hcgGATu8PmxwGc7e5cenwruxS5oPE89w20Jwne-3Bm1A1UjhpdSHx
+    Ug7nFZs3bzne1vlvIo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bfqsYKeXluUEyRFpIuLmgDx8_Naxxw5R871SZ_bTtXtLd3j3y5cByw>
+    <xmx:bfqsYEIINvLP5Du-qUwAapcVhrJnl5K6W9Sxtlt0jwkTGF2t02lbsA>
+    <xmx:bfqsYHKUiMEMP6ym6SilSXugksNS91AOZmbj9FU7T9FN291d6lMC6Q>
+    <xmx:cPqsYDDXWC2Iq0Kw3OsuEBXtiABKDAb8RK3xRJ7zjxS0fGy0gXqcIA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 25 May 2021 09:23:57 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 00/12] drm/vc4: hdmi: Enable Channel Mapping, IEC958, HBR Passthrough using hdmi-codec
+Date:   Tue, 25 May 2021 15:23:42 +0200
+Message-Id: <20210525132354.297468-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbc269f9-c76f-04f9-0900-22171c3ef3a3@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 03:12:45PM +0200, Hans de Goede wrote:
-> On 5/25/21 3:10 PM, Hans de Goede wrote:
-> > On 5/20/21 4:09 PM, Daniel Scally wrote:
-> >> Apologies for the long delay since the last version of this series; the time I
-> >> had free to work on it became somewhat restrained.
-> > 
-> > No worries, thank you for all the work you are putting into this.
-> > 
-> > I have not taken a close look at the code yet, but I see that Andy has and
-> > the amount of remarks which he has on patch 7/8 which is the big one seems
-> > to be limited, so I believe that we are getting close to this being ready
-> > for merging.
-> > 
-> > This touches a lot of subsystems, so we need to come up with a plan to
-> > merge this. Here is my proposal for how to do this:
-> > 
-> > 1/8   ACPI: scan: Extend acpi_walk_dep_device_list()
-> > 2/8   ACPI: scan: Add function to fetch dependent of acpi device
-> > 3/8   i2c: core: Add a format macro for I2C device names
-> > 4/8   gpiolib: acpi: Export acpi_get_gpiod()
-> > 5/8   clkdev: Make clkdev_drop() null aware
-> > 6/8   gpiolib: acpi: Add acpi_gpio_get_io_resource()
-> > 7/8   platform/x86: Add intel_skl_int3472 driver
-> > 8/8   mfd: tps68470: Remove tps68470 MFD driver
-> > 
-> > Rafael already indicated that he wants to merge 1/8 (and presumably also 2/8)
-> > through his tree and that he will provide an immutable branch with those
-> > for merging into the pdx86 tree.
-> 
-> p.s.
-> 
-> Daniel it would be good if you can at least send a v5 of patch 2/8 with
-> the suggested renames, then Rafael can merge 1/8 + 2/8 and we are down to 6
-> patches (4 if we also merge the i2c + clk patches independently).
-
-I would also prefer GPIO ACPI patches to be grouped together, so I can simply
-take them in a row.
-
-> > 4/8 and 6/8 are both gpiolib-acpi patches and seem to be ready for merging
-> > now, perhaps the gpiolib-acpi maintainers can already merge these and also
-> > provide an immutable branch ?  Andy/Mika ?
-
-Fine with me. Just need Mika's Ack / Rb tag.
-
-> > 3/8 and 5/8 seem to be nice cleanups, but not really necessary. IMHO it
-> > would be best to park these cleanups for later and for 3/8 add the following
-> > where necessary for now:
-> > 
-> > /* FIXME drop this once the I2C_DEV_NAME_FORMAT macro has been added to include/linux/i2c.h */
-> > #ifndef I2C_DEV_NAME_FORMAT
-> > #define I2C_DEV_NAME_FORMAT		"i2c-%s"
-> > #endif
-> > 
-> > This is not the prettiest but it reduces all the subsys cross-deps and things
-> > like this have been done before for similar reasons.
-> > 
-> > Likewise it would be good if you can add if (foo) as condition before any
-> > clkdev_drop(foo) calls in this patch-set and then merge
-> > 5/8 "clkdev: Make clkdev_drop() null aware" independently of this and then
-> > once both are in Linux tree follow-up with a cleanup patch dropping the if (foo)
-> > guards.
-> > 
-> > So this would leave as deps for 7/8 just the 2 ACPI and 2 gpiolib-acpi patches
-> > which I can hopefully pull-in via immutable branches and then we are good.
-> > 
-> > AFAICT patch 8/8 can be merged independently once 7/8 hits for-next (IOW once
-> > we are sure the next kernel will have 7/8).
-> > 
-> > Or alternatively one of the involved subsys maintainers just merges the entire
-> > set (once it is ready) and then provides an immutable branch with the entire set
-> > on top of 5.13-rc1 (or 5.14-rc1). But that requires acks from all the other
-> > subsys maintainers. Note I'm fine with either approach.
-
-> >> v1 for this series was originally 14-18 of this series:
-> >> https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
-> >>
-> >> v2 was here:
-> >> https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
-> >>
-> >> v3 was here:
-> >> https://lore.kernel.org/lkml/20210222130735.1313443-1-djrscally@gmail.com/
-> >>
-> >> Series level changelog:
-> >>
-> >> 	- Added patch 5/8 to make clkdev_drop() NULL aware to simplify error
-> >> 	handling.
-> >> 	- Added patch 6/8 to add acpi_gpio_get_io_resource().
-> >>
-> >> This has been tested on a number of devices, but currently **not** on a device
-> >> designed for ChromeOS, which we ideally need to do to ensure no regression
-> >> caused by replacing the tps68470 MFD driver. Unfortunately, I don't have a
-> >> device to test it on myself.
-> >>
-> >> =========== Original Cover Letter ===========
-> >>
-> >> At the moment in the kernel the ACPI _HID INT3472 is taken by the tps68470
-> >> MFD driver, but that driver can only handle some of the cases of that _HID
-> >> that we see. There are at least these three possibilities:
-> >>
-> >> 1. INT3472 devices that provide GPIOs through the usual framework and run
-> >>    power and clocks through an operation region; this is the situation that
-> >>    the current module handles and is seen on ChromeOS devices
-> >> 2. INT3472 devices that provide GPIOs, plus clocks and regulators that are
-> >>    meant to be driven through the usual frameworks, usually seen on devices
-> >>    designed to run Windows
-> >> 3. INT3472 devices that don't actually represent a physical tps68470, but
-> >>    are being used as a convenient way of grouping a bunch of system GPIO
-> >>    lines that are intended to enable power and clocks for sensors which
-> >>    are called out as dependent on them. Also seen on devices designed to
-> >>    run Windows.
-> >>
-> >> This series introduces a new module which registers:
-> >>
-> >> 1. An i2c driver that determines which scenario (#1 or #2) applies to the
-> >>    machine and registers platform devices to be bound to GPIO, OpRegion,
-> >>    clock and regulator drivers as appropriate.
-> >> 2. A platform driver that binds to the dummy INT3472 devices described in
-> >>    #3
-> >>
-> >> The platform driver for the dummy device registers the GPIO lines that
-> >> enable the clocks and regulators to the sensors via those frameworks so
-> >> that sensor drivers can consume them in the usual fashion. The existing
-> >> GPIO and OpRegion tps68470 drivers will work with the i2c driver that's
-> >> registered. Clock and regulator drivers are available but have not so far been
-> >> tested, so aren't part of this series.
-> >>
-> >> The existing mfd/tps68470.c driver being thus superseded, it is removed.
-> >>
-> >> Thanks
-> >> Dan
-> >>
-> >> Daniel Scally (8):
-> >>   ACPI: scan: Extend acpi_walk_dep_device_list()
-> >>   ACPI: scan: Add function to fetch dependent of acpi device
-> >>   i2c: core: Add a format macro for I2C device names
-> >>   gpiolib: acpi: Export acpi_get_gpiod()
-> >>   clkdev: Make clkdev_drop() null aware
-> >>   gpiolib: acpi: Add acpi_gpio_get_io_resource()
-> >>   platform/x86: Add intel_skl_int3472 driver
-> >>   mfd: tps68470: Remove tps68470 MFD driver
-> >>
-> >>  MAINTAINERS                                   |   5 +
-> >>  drivers/acpi/ec.c                             |   2 +-
-> >>  drivers/acpi/pmic/Kconfig                     |   2 +-
-> >>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
-> >>  drivers/acpi/scan.c                           | 107 ++++-
-> >>  drivers/clk/clkdev.c                          |   3 +
-> >>  drivers/gpio/Kconfig                          |   2 +-
-> >>  drivers/gpio/gpiolib-acpi.c                   |  61 ++-
-> >>  drivers/i2c/i2c-core-acpi.c                   |   8 +-
-> >>  drivers/i2c/i2c-core-base.c                   |   4 +-
-> >>  drivers/mfd/Kconfig                           |  18 -
-> >>  drivers/mfd/Makefile                          |   1 -
-> >>  drivers/mfd/tps68470.c                        |  97 -----
-> >>  drivers/platform/surface/aggregator/core.c    |   6 +-
-> >>  drivers/platform/surface/surface3_power.c     |  22 +-
-> >>  .../platform/surface/surface_acpi_notify.c    |   7 +-
-> >>  drivers/platform/x86/Kconfig                  |   2 +
-> >>  drivers/platform/x86/Makefile                 |   1 +
-> >>  drivers/platform/x86/intel-int3472/Kconfig    |  31 ++
-> >>  drivers/platform/x86/intel-int3472/Makefile   |   5 +
-> >>  .../intel_skl_int3472_clk_and_regulator.c     | 195 +++++++++
-> >>  .../intel-int3472/intel_skl_int3472_common.c  | 106 +++++
-> >>  .../intel-int3472/intel_skl_int3472_common.h  | 113 +++++
-> >>  .../intel_skl_int3472_discrete.c              | 409 ++++++++++++++++++
-> >>  .../intel_skl_int3472_tps68470.c              | 109 +++++
-> >>  include/acpi/acpi_bus.h                       |   8 +
-> >>  include/linux/acpi.h                          |  11 +-
-> >>  include/linux/gpio/consumer.h                 |   2 +
-> >>  include/linux/i2c.h                           |   3 +
-> >>  29 files changed, 1175 insertions(+), 167 deletions(-)
-> >>  delete mode 100644 drivers/mfd/tps68470.c
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
-> >>
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Hi,=0D
+=0D
+hdmi-codec allows to have a lot of HDMI-audio related infrastructure in pla=
+ce,=0D
+it's missing a few controls to be able to provide HBR passthrough. This ser=
+ies=0D
+adds more infrastructure for the drivers, and leverages it in the vc4 HDMI=
+=0D
+controller driver.=0D
+=0D
+Thanks!=0D
+Maxime=0D
+=0D
+Changes from v1:=0D
+  - Added an extra patch to clarify the iec958 controls iface policy=0D
+  - Added kerneldoc for the new iec958 PCM functions=0D
+  - s/EXPORT_SYMBOL/EXPORT_SYMBOL_GPL=0D
+  - Used the ALSA prefix where relevant=0D
+  - Rebased on drm-misc-next-2021-05-17=0D
+=0D
+Dom Cobley (5):=0D
+  drm/vc4: hdmi: Set HD_CTL_WHOLSMP and HD_CTL_CHALIGN_SET=0D
+  drm/vc4: hdmi: Set HDMI_MAI_FMT=0D
+  drm/vc4: hdmi: Set VC4_HDMI_MAI_CONFIG_FORMAT_REVERSE=0D
+  drm/vc4: hdmi: Remove firmware logic for MAI threshold setting=0D
+  ARM: dts: bcm2711: Tune DMA parameters for HDMI audio=0D
+=0D
+Maxime Ripard (7):=0D
+  ALSA: doc: Clarify IEC958 controls iface=0D
+  ALSA: iec958: Split status creation and fill=0D
+  ASoC: hdmi-codec: Rework to support more controls=0D
+  ASoC: hdmi-codec: Add iec958 controls=0D
+  ASoC: hdmi-codec: Add a prepare hook=0D
+  drm/vc4: hdmi: Register HDMI codec=0D
+  drm/vc4: hdmi: Remove redundant variables=0D
+=0D
+ .../kernel-api/writing-an-alsa-driver.rst     |  13 +-=0D
+ arch/arm/boot/dts/bcm2711.dtsi                |   4 +-=0D
+ drivers/gpu/drm/vc4/Kconfig                   |   1 +=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c                | 322 ++++++++----------=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.h                |   5 +-=0D
+ drivers/gpu/drm/vc4/vc4_regs.h                |  30 ++=0D
+ include/sound/hdmi-codec.h                    |  12 +-=0D
+ include/sound/pcm_iec958.h                    |   8 +=0D
+ sound/core/pcm_iec958.c                       | 176 +++++++---=0D
+ sound/soc/codecs/hdmi-codec.c                 | 219 +++++++++---=0D
+ 10 files changed, 508 insertions(+), 282 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
