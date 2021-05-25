@@ -2,191 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2864A38FDB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16FE38FDB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbhEYJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhEYJXx (ORCPT
+        id S232559AbhEYJZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:25:29 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:41005 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232502AbhEYJZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:23:53 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475F3C061574;
-        Tue, 25 May 2021 02:22:19 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id r11so35242358edt.13;
-        Tue, 25 May 2021 02:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i4WpDFzjrpXp5hP9+v4938PGOuID77BZ1+yoSzNr4bw=;
-        b=aZgrutsc1m9tSr4hBJxEgoXTPkpi+M04jPX97JYoXk0DECbfii3wJvYf/10Qf2eBuK
-         k1wIdc84jsy0PLkiG1QLRUm7WRkFkJNUOJ7kxOcpcWplwI6clR/o52Jnzt2Hnv7CI+iL
-         YApQWP86Q2iCfglmBKUZBEbLewHv3AAGVa+n/bp+Pqyn3BH+WA31yoIyV4/vtwP6K0i5
-         foZx3ib56Gh6Y61t5cGVd3eei85F68GsG+jdSKqqinNG1KZerpnlOTFEjtCm+DBfBel9
-         ke/0+B5oGRNdxlXy+M47uvRh7X/hBT1TobVh7NSwTZF+8y/P6kFDrCX7KTd9kIxL5o7A
-         SGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i4WpDFzjrpXp5hP9+v4938PGOuID77BZ1+yoSzNr4bw=;
-        b=N211E6foPuhhfY3C2eN3VoCOjWx0iVrK08swMVIz5bN3BuZaqMDA23bfueXnv1rbdU
-         XpiMlQROeqxtgtn3eqoHnO4+1pjCjyERSi7XMbbcEOXzNGuq6ZMeJTlzT/j0aMUJvytI
-         pXNvPvyPFh0BAl7mmo0a0OxlEWx6DncDlEK0zKhDH1z4p4vCCXCsDM5Ao94eCFKWCN5v
-         eT3+Rnf3UoqsmnKzUBgKKNvbWRRg3Jk6zI4ldQLWwr6gmekSreJjnSeAgVdzqMCVAkPg
-         8gapWlRNEiDyFymLIXyN272PZpZ6Z0Itw/NSnMtrJqgvF9FAZH1sjM5e1DF38yTiGP6Z
-         Z+Mw==
-X-Gm-Message-State: AOAM533CQQnsa3KLX1H7nefXnTFCP2GREVdTc1q5UbMM6BTzfaJpaIUS
-        mXwsZG6IteOWdwy0dnVHKWb7E2yFZoahw1DSqiI=
-X-Google-Smtp-Source: ABdhPJxSspRrEdzmSkEjEkJp7+mPyCDdSHTlgwh1A+zFibAdE7o8FKoR4TgcbystH6uJzQMBL8BnZShsXhII1ig9tY8=
-X-Received: by 2002:a50:ccdc:: with SMTP id b28mr30538106edj.92.1621934537751;
- Tue, 25 May 2021 02:22:17 -0700 (PDT)
+        Tue, 25 May 2021 05:25:28 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id CD5F4146D;
+        Tue, 25 May 2021 05:23:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 25 May 2021 05:23:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=qhdCG6Qg5hhTfUV1qjjJLTSxYnh
+        gWog/DLM8gX+Rusw=; b=kQDf+JuM1XOO7yWY/YL1k0CL6e3A113Z8bh5JDuafz+
+        z94tfBfnQQg27AIRT06Rsgw04DasL3N7qVNihNOHmNB/G2naEPIbd3IF7gkHRQyB
+        GEOBjUVfRWivgP1xck9qrC1uNcmBo9yo8Un68paBoq041Vx/GXXHQ/6YK4FXF+Qd
+        TVTm+VbQFLJ8GIMReDS8wl1NP8vQ+0iSQDxM374HcGzl3FLB/rs5aDvlKyG/LRMD
+        VioNeGIx+W6JPj7NnkxKevxhJ+A3aLUYm4kgdU3J6VCIzMK3HPlyAO7x7D9SqTyF
+        CaPBvmn9ZdA6U1s50PSQ9L3LCpChe/bJZlqHAEE+fug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qhdCG6
+        Qg5hhTfUV1qjjJLTSxYnhgWog/DLM8gX+Rusw=; b=Mklc8vs2/D9YTg3aQo2JtP
+        t1TF8RrAeXK7XLX2eSBz97ykXhYUVrOxgzC9LOclpg2Uzteh66i6r5sfPqWjqCkm
+        toZtkPuHZjeSPpOC2TdW4M2tN7B3MgLT2N4A+kxDBYt1+3lR7Gc6r5fU2sywDv/g
+        1Mn4ZMttFyaHlRZY73A/wa7VE1odVJ3oV97BlAZnk3dh73SH/HNwoNFChwYNYska
+        UxNm6UTU8HInw0Hyii5M9vRPMrv1I8PdYpj108UpqfUgIoAgBRm9qxLELzxPRCCk
+        0DiVLKYtuI0vX69CIkZ2AumhAjQuERrORIGaf48N5Mppfj5/GkweCvxHRhhNmEBw
+        ==
+X-ME-Sender: <xms:KsKsYLdnP2618sd6zawCSXHzcX4_-iddEzx-a9ZGhUJT-T8BXksu2Q>
+    <xme:KsKsYBOv137-AxhPN7UQOyCS3Vs5OTGg3xC2kbq5T2sc3PjxwfhWs34-jruzrfHcI
+    ImRi_SGooe4rB41IRE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
+    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
+    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:KsKsYEj1BKBHEYxHgdXquEgl9aODqOdbjh81TC1TUIoIW1fz3qZ83Q>
+    <xmx:KsKsYM-Lvmk5qwORpR_7TxuKVFsUgAiFezeESRtA3kTmDRpOXmzWaw>
+    <xmx:KsKsYHtF1dgQHFCO7z2LcUUFfWYHrxXzK_UMXQbLCW-aP837jwl8UA>
+    <xmx:LMKsYMWVbhzXzkPmZC0FkNMnr7FA9uoPQal5hT7tFwKc-vh_jYejiGByJRk>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 25 May 2021 05:23:54 -0400 (EDT)
+Date:   Tue, 25 May 2021 11:23:53 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        Dom Cobley <dom@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/11] drm/vc4: hdmi: Enable Channel Mapping, IEC958, HBR
+ Passthrough using hdmi-codec
+Message-ID: <20210525092353.mvqdv4bi4i4rkqsu@gilmour>
+References: <20210507140334.204865-1-maxime@cerno.tech>
+ <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
+ <s5hzgwjcit9.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
- <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
- <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
- <1762403920.6716767.1621029029246@webmail.123-reg.co.uk> <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
- <486335206.6969995.1621485014357@webmail.123-reg.co.uk> <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
- <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com> <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
- <877196209.4648525.1621840046695@webmail.123-reg.co.uk>
-In-Reply-To: <877196209.4648525.1621840046695@webmail.123-reg.co.uk>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Tue, 25 May 2021 14:52:06 +0530
-Message-ID: <CAOuPNLgrwnqv_=Ux5SeY3XTDG2b0=ntRbciWVshhaVwJYFEZ3g@mail.gmail.com>
-Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
- flashing rootfs volume
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     Sean Nyekjaer <sean@geanix.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="edyfacc36enjbeyb"
+Content-Disposition: inline
+In-Reply-To: <s5hzgwjcit9.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 12:37, Phillip Lougher <phillip@squashfs.org.uk> wrote:
->
-> > No, this is still experimental.
-> > Currently we are only able to write to ubi volumes but after that
-> > device is not booting (with rootfs volume update).
-> > However, with "userdata" it is working fine.
-> >
-> > I have few more questions to clarify.
-> >
-> > a) Is there a way in kernel to do the ubi volume update while the
-> > device is running ?
-> >     I tried "ubiupdatevol" but it does not seem to work.
-> >     I guess it is only to update the empty volume ?
-> >     Or, maybe I don't know how to use it to update the live "rootfs" volume
-> >
-> > b) How to verify the volume checksum as soon as we finish writing the
-> > content, since the device is not booting ?
-> >      Is there a way to verify the rootfs checksum at the bootloader or
-> > kernel level before mounting ?
-> >
-> > c) We are configuring the ubi volumes in this way. Is it fine ?
-> > [rootfs_volume]
-> > mode=ubi
-> > image=.<path>/system.squash
-> > vol_id=0
-> > vol_type=dynamic
-> > vol_name=rootfs
-> > vol_size=62980096  ==> 60.0625 MiB
-> >
-> > Few more info:
-> > ----------------------
-> > Our actual squashfs image size:
-> > $ ls -l ./system.squash
-> > rw-rr- 1 pintu users 49639424 ../system.squash
-> >
-> > after earse_volume: page-size: 4096, block-size-bytes: 262144,
-> > vtbl-count: 2, used-blk: 38, leb-size: 253952, leb-blk-size: 62
-> > Thus:
-> > 49639424 / 253952 = 195.46 blocks
-> >
-> > This then round-off to 196 blocks which does not match exactly.
-> > Is there any issue with this ?
-> >
-> > If you have any suggestions to debug further please help us...
-> >
-> >
-> > Thanks,
-> > Pintu
->
-> Three perhaps obvious questions here:
->
-> 1. As an experimental system, are you using a vanilla (unmodified)
->    Linux kernel, or have you made modifications.  If so, how is it
->    modified?
->
-> 2. What is the difference between "rootfs" and "userdata"?
->    Have you written exactly the same Squashfs image to "rootfs"
->    and "userdata", and has it worked with "userdata" and not
->    worked with "rootfs".
->
->    So far it is unclear whether "userdata" has worked because
->    you've written different images/data to it.
->
->    In other words tell us exactly what you're writing to "userdata"
->    and what you're writing to "rootfs".  The difference or non-difference
->    may be significant.
->
-> 3. The rounding up to a whole 196 blocks should not be a problem.
->    The problem is, obviously, if it is rounding down to 195 blocks,
->    where the tail end of the Squashfs image will be lost.
->
->    Remember this is exactly what the Squashfs error is saying, the image
->    has been truncated.
->
->    You could try adding a lot of padding to the end of the Squashfs image
->    (Squashfs won't care), so it is more than the effective block size,
->    and then writing that, to prevent any rounding down or truncation.
->
 
-Just wanted to share the Good news that the ubi volume flashing is
-working now :)
-First I have created a small read-only volume (instead of rootfs) and
-tried to write to it and then compared the checksum.
-Initially when I checked, the checksum was not matching and when I
-compared the 2 images I found there were around 8192 blocks containing
-FF data at the end of each erase block.
-After the fix, this time the checksum matches exactly.
+--edyfacc36enjbeyb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-/data/pintu # md5sum test-vol-orig.img
-6a8a185ec65fcb212b6b5f72f0b0d206  test-vol-orig.img
+Hi Takashi,
 
-/data/pintu # md5sum test-vol-after.img
-6a8a185ec65fcb212b6b5f72f0b0d206  test-vol-after.img
+On Tue, May 25, 2021 at 10:35:14AM +0200, Takashi Iwai wrote:
+> On Mon, 24 May 2021 15:39:04 +0200,
+> Maxime Ripard wrote:
+> >=20
+> > Hi,
+> >=20
+> > On Fri, May 07, 2021 at 04:03:23PM +0200, Maxime Ripard wrote:
+> > > Hi,
+> > >=20
+> > > hdmi-codec allows to have a lot of HDMI-audio related infrastructure =
+in place,
+> > > it's missing a few controls to be able to provide HBR passthrough. Th=
+is series
+> > > adds more infrastructure for the drivers, and leverages it in the vc4=
+ HDMI
+> > > controller driver.
+> > >=20
+> > > One thing that felt a bit weird is that even though
+> > > https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-al=
+sa-driver.html#iec958-s-pdif
+> > > mentions that the iec958 mask control should be a mixer control and t=
+he
+> > > default control should be a PCM one, it feels a bit weird to have two=
+ different
+> > > control type for two controls so similar, and other drivers are pretty
+> > > inconsistent with this. Should we update the documentation?
+> >=20
+> > Any comments on this series?
+>=20
+> A patch for updating the documentation is welcome.
+> Currently, as de facto standard, we allow both MIXER and PCM ifaces
+> for all IEC958-related controls, and it's unlikely that we would
+> change that in future.
 
-Once this is working, I tried with rootfs volume, and this time the
-device is booting fine :)
+Ok, I'll write a patch for the documentation make it clearer then :)
 
-The fix is related to the data-len and data-offset calculation in our
-volume write code.
-[...]
-size += data_offset;
-[...]
-ubi_block_write(....)
-buf_size -= (size - data_offset);
-offset += (size - data_offset);
-[...]
-In the previous case, we were not adding and subtracting the data_offset.
+Do we want to make sure that all the iec958 controls are on the same
+iface, or is it also left to the driver (or should we just leave the
+existing drivers as is but encourage a consistent use in the future)?
 
-The Kernel command line we are using is this:
-[    0.000000] Kernel command line: ro rootwait
-console=ttyMSM0,115200,n8 [..skip..] rootfstype=squashfs
-root=/dev/mtdblock34 ubi.mtd=30,0,30 [...skip..]
+Maxime
 
-Hope, this parameters are fine (no change here).
+--edyfacc36enjbeyb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thank you Phillip and Sean for your help.
-Phillip I think this checksum trick really helped me in figuring out
-the root cause :)
+-----BEGIN PGP SIGNATURE-----
 
-Glad to work with you...
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKzCKAAKCRDj7w1vZxhR
+xT6GAQCmK74YyTmGnQSUD3qsdks6qIaoPcyMDO73ebQeXm4xZwEAzb0RQ+6uvdWf
+9lgi7PPwMH7RXPFAdijTOOtf4OHrLAU=
+=kqaK
+-----END PGP SIGNATURE-----
 
-Thanks,
-Pintu
+--edyfacc36enjbeyb--
