@@ -2,56 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2DE39029A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4726B3902B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhEYNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:36:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:56228 "EHLO vps0.lunn.ch"
+        id S233373AbhEYNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:47:55 -0400
+Received: from elvis.franken.de ([193.175.24.41]:48737 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233314AbhEYNgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:36:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=QVfCIaJRZFdqpoQnaoHLSToEK5uzlriQqJf3wkiuazc=; b=5R9PKruX3AeXuSgBIK5hbOv6m+
-        y83vfrQcHBqM9gxRwfUDfCXViccGgbQaYYxnThE+jTEmg0PlZq+RSHuEI2x1i+IwQon8hHTiQHXWm
-        ZFhV7NXIVHludp9V4D2izp33zklOGKmv09hgudoXqb31Pm64byQOP+2ULCxi4kU57xfQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1llXCc-006B0y-8r; Tue, 25 May 2021 15:34:34 +0200
-Date:   Tue, 25 May 2021 15:34:34 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <YKz86iMwoP3VT4uh@lunn.ch>
-References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
+        id S233184AbhEYNry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:47:54 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1llXO3-00079x-00; Tue, 25 May 2021 15:46:23 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1B01DC10E2; Tue, 25 May 2021 15:38:58 +0200 (CEST)
+Date:   Tue, 25 May 2021 15:38:58 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER
+ and PREEMPT_TRACER
+Message-ID: <20210525133858.GA11166@alpha.franken.de>
+References: <1621076521-22412-1-git-send-email-yangtiezhu@loongson.cn>
+ <1621076521-22412-3-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <1621076521-22412-3-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:58:03PM +0800, Wong Vee Khee wrote:
-> Synopsys MAC controller is capable of pairing with external PHY devices
-> that accessible via Clause-22 and Clause-45.
+On Sat, May 15, 2021 at 07:02:01PM +0800, Tiezhu Yang wrote:
+> When update the latest mainline kernel with the following three configs,
+> the kernel hangs during startup:
 > 
-> There is a problem when it is paired with Marvell 88E2110 which returns
-> PHY ID of 0 using get_phy_c22_id(). We can add this check in that
-> function, but this will break swphy, as swphy_reg_reg() return 0. [1]
+> (1) CONFIG_FUNCTION_GRAPH_TRACER=y
+> (2) CONFIG_PREEMPT_TRACER=y
+> (3) CONFIG_FTRACE_STARTUP_TEST=y
+> 
+> When update the latest mainline kernel with the above two configs (1)
+> and (2), the kernel starts normally, but it still hangs when execute
+> the following command:
+> 
+> echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
+> 
+> Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
+> disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
+> with function_graph tracer at the first glance.
+> 
+> I use ejtag to find out the epc address is related with preempt_enable()
+> in the file arch/mips/lib/mips-atomic.c, because function tracing can
+> trace the preempt_{enable,disable} calls that are traced, replace them
+> with preempt_{enable,disable}_notrace to prevent function tracing from
+> going into an infinite loop, and then it can fix the kernel hang issue.
+> 
+> By the way, it seems that this commit is a complement and improvement of
+> commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
+> is enabled").
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> ---
+>  arch/mips/lib/mips-atomic.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-Is it possible to identify it is a Marvell PHY? Do any of the other
-C22 registers return anything unique? I'm wondering if adding
-.match_phy_device to genphy would work to identify it is a Marvell PHY
-and not bind to it. Or we can turn it around, make the
-.match_phy_device specifically look for the fixed-link device by
-putting a magic number in one of the vendor registers.
+applied to mips-fixes.
 
-    Andrew
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
