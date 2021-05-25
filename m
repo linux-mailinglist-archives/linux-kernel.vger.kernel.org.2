@@ -2,58 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE4C38FC3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE98138FC3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhEYIKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:10:20 -0400
-Received: from vmi485042.contaboserver.net ([161.97.139.209]:39878 "EHLO
-        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhEYIJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:09:08 -0400
-Received: by gentwo.de (Postfix, from userid 1001)
-        id 570EFB003B1; Tue, 25 May 2021 10:06:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id 536FEB00034;
-        Tue, 25 May 2021 10:06:31 +0200 (CEST)
-Date:   Tue, 25 May 2021 10:06:31 +0200 (CEST)
-From:   Christoph Lameter <cl@gentwo.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC 01/26] mm, slub: allocate private object map for sysfs
- listings
-In-Reply-To: <20210524233946.20352-2-vbabka@suse.cz>
-Message-ID: <alpine.DEB.2.22.394.2105251005260.107680@gentwo.de>
-References: <20210524233946.20352-1-vbabka@suse.cz> <20210524233946.20352-2-vbabka@suse.cz>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S232272AbhEYIKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhEYIJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:09:07 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BE4C061345
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:52 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h16so35015691edr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bd88TalnqZ3LuY6/Du24s6lZTeOXLy91wdCf8bz37vI=;
+        b=VxaQezS2eXZGJC806EUOiml4bqh6+BZ2t6g1CV6E9uZsWy3JBsCa1x5hXGdJ0fm6ra
+         MhKSl75VS6vcuI9YzVq1Ctwpoz/a8/vbmN3Mk7CcSgWyQ3lmVPceZmeVUJzxsEsj5Kc6
+         RK6gH1XjcsNMC4SjRa3U7vCO2Woo9yuryB/Ck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bd88TalnqZ3LuY6/Du24s6lZTeOXLy91wdCf8bz37vI=;
+        b=Q8duaftv9RXk+fCq+eUIwkHf7HuE9dic/ILntnzKBfWI2C9sNNkpytZbqm8p4FdHYc
+         IiZ4CgJ7D+gPlGkdNayKTiczV2kXPlSI7WlrCQ2YBSIu/Cxeq0ZDQc3i7BzX0QtcmNcS
+         0sZOoBATfrV43cNgmlpwKvaNqpOi9K6OniiJ+1dNlFMGlmVa4GN3RNnOkvhbBd8j5z+Q
+         jFvTKGf7zWSEiuOt8vgOrPsw4GNfBXQK+ikl7/cHeCIp3TU9hjtK9IBscA1KkP23q+ZW
+         AGcowXTC0gpsuT4OyBwzs08VRjPemXhUhheFQFcXvhvnSpvCUwCTOcygnsAfbqmmyjaj
+         +i5Q==
+X-Gm-Message-State: AOAM5323/FOS8b/hM9hmSh8eyzqLxU3lijSqi5V4m+rt7b6SkJfF23iI
+        NzD5+/iU9DATHtJuD6KKpFGG8bCwfiKbmg==
+X-Google-Smtp-Source: ABdhPJx/A6ZgUFIYyAgH2CXxCrafH773fndFHgi5J0mgY7LhHUqFMnpGCC+oQruxUiwKeko8OSES5g==
+X-Received: by 2002:aa7:cdd8:: with SMTP id h24mr29937603edw.276.1621930010358;
+        Tue, 25 May 2021 01:06:50 -0700 (PDT)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
+        by smtp.gmail.com with ESMTPSA id i5sm10453234edt.11.2021.05.25.01.06.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 01:06:48 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id q5so31113456wrs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:47 -0700 (PDT)
+X-Received: by 2002:a5d:4385:: with SMTP id i5mr26095922wrq.192.1621930007302;
+ Tue, 25 May 2021 01:06:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210326095840.364424-1-ribalda@chromium.org>
+In-Reply-To: <20210326095840.364424-1-ribalda@chromium.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 25 May 2021 17:06:35 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5AegMJCrcV7Qpb0oUQLjSiDa+Q7=ojrZs+z+WDSwLq6Ng@mail.gmail.com>
+Message-ID: <CAAFQd5AegMJCrcV7Qpb0oUQLjSiDa+Q7=ojrZs+z+WDSwLq6Ng@mail.gmail.com>
+Subject: Re: [PATCH v9 00/22] uvcvideo: Fix v4l2-compliance errors
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Vlastimil Babka wrote:
+Hi everyone,
 
-> Slub has a static spinlock protected bitmap for marking which objects are on
-> freelist when it wants to list them, for situations where dynamically
-> allocating such map can lead to recursion or locking issues, and on-stack
-> bitmap would be too large.
+On Fri, Mar 26, 2021 at 6:58 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
 >
-> The handlers of sysfs files alloc_calls and free_calls also currently use this
-> shared bitmap, but their syscall context makes it straightforward to allocate a
-> private map before entering locked sections, so switch these processing paths
-> to use a private bitmap.
+> *v4l2-compliance -m /dev/media0 -a -f
+> Total for uvcvideo device /dev/media0: 8, Succeeded: 6, Failed: 2, Warnings: 0
+> Total for uvcvideo device /dev/video0: 54, Succeeded: 50, Failed: 4, Warnings: 2
+> Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+> Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 102,
+> Failed: 6, Warnings: 2
+>
+> After fixing all of them we go down to:
+>
+> Total for uvcvideo device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+> Total for uvcvideo device /dev/video0: 54, Succeeded: 54, Failed: 0, Warnings: 0
+> Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+> Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 108,
+> Failed: 0, Warnings: 0
+>
+> YES, NO MORE WARNINGS :)
+>
+> Note that we depend on:
+>
+> https://patchwork.linuxtv.org/project/linux-media/patch/20210317143453.483470-1-ribalda@chromium.org/
+>
+> With Hans patch we can also pass v4l2-compliance -s.
+>
+> Changelog from v8 (Thanks to Hans)
+> - 3 patches from Hans
+> - Add Reviewed-by
+>
+> Hans Verkuil (4):
+>   uvcvideo: uvc_ctrl_is_accessible: check for INACTIVE
+>   uvcvideo: improve error handling in uvc_query_ctrl()
+>   uvcvideo: don't spam the log in uvc_ctrl_restore_values()
+>   uvc: use vb2 ioctl and fop helpers
+>
+> Ricardo Ribalda (18):
+>   media: v4l2-ioctl: Fix check_ext_ctrls
+>   media: pvrusb2: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+>   media: uvcvideo: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+>   media: v4l2-ioctl: S_CTRL output the right value
+>   media: uvcvideo: Remove s_ctrl and g_ctrl
+>   media: uvcvideo: Set capability in s_param
+>   media: uvcvideo: Return -EIO for control errors
+>   media: uvcvideo: refactor __uvc_ctrl_add_mapping
+>   media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+>   media: uvcvideo: Use dev->name for querycap()
+>   media: uvcvideo: Set unique vdev name based in type
+>   media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
+>   media: uvcvideo: Use control names from framework
+>   media: uvcvideo: Check controls flags before accessing them
+>   media: uvcvideo: Set error_idx during ctrl_commit errors
+>   media: uvcvideo: Return -EACCES to inactive controls
+>   media: docs: Document the behaviour of uvcdriver
+>   media: uvcvideo: Downgrade control error messages
+>
+>  .../userspace-api/media/v4l/vidioc-g-ctrl.rst |   5 +
+>  .../media/v4l/vidioc-g-ext-ctrls.rst          |   5 +
+>  drivers/media/usb/pvrusb2/pvrusb2-v4l2.c      |   4 -
+>  drivers/media/usb/uvc/uvc_ctrl.c              | 343 +++++++++++----
+>  drivers/media/usb/uvc/uvc_driver.c            |  22 +-
+>  drivers/media/usb/uvc/uvc_metadata.c          |  10 +-
+>  drivers/media/usb/uvc/uvc_queue.c             | 143 -------
+>  drivers/media/usb/uvc/uvc_v4l2.c              | 389 +++---------------
+>  drivers/media/usb/uvc/uvc_video.c             |  51 ++-
+>  drivers/media/usb/uvc/uvcvideo.h              |  54 +--
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  67 +--
+>  11 files changed, 444 insertions(+), 649 deletions(-)
+>
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
 
-Right in that case a GFP_KERNEL allocation is fine and you can avoid the
-static map.
+Any comments on this? Could we have this merged?
 
-Acked-by: Christoph Lameter <cl@linux.com>
+Thanks,
+Tomasz
