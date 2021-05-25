@@ -2,111 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A55390C9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDC8390CA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhEYXD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:03:27 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:54140 "EHLO gloria.sntech.de"
+        id S231982AbhEYXDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:03:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhEYXD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:03:26 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1llg3b-00070s-VH; Wed, 26 May 2021 01:01:52 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, Alex Bee <knaerzche@gmail.com>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 00/10] Add support for older Rockchip SoCs to V4L2 hantro and rkvdec drivers
-Date:   Wed, 26 May 2021 01:01:51 +0200
-Message-ID: <38327082.10thIPus4b@diego>
-In-Reply-To: <20210525152225.154302-1-knaerzche@gmail.com>
-References: <20210525152225.154302-1-knaerzche@gmail.com>
+        id S230103AbhEYXDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:03:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A217961284;
+        Tue, 25 May 2021 23:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621983734;
+        bh=XWQ4QbZ7knDZ4l/rQ3FBmjdjFtATkZb/gO19aGuRZyo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=abSDXGtKRnADXc7Beo8LuS7RCy66yWKLG4p5KUQSopJm3jKk669zkjJ61yJDsxiY9
+         Zbr2FFe3tfQw4FCnhUPac5D/8nF6+mWsK86t5E8TrVyKD3oL+rzXkp4t8Dw6W3z1dv
+         P3/4AKQhHxFJRa7Nb2jnW4yt5FFn6D3T8e/Ph+z5UvEyW8TIbLplQZyKAQORIrrnfK
+         hn44wUVHUpDGE4UqvyEs/Eep42pxDHHUd0DFb85Sem8cBkf1NnPGj1efrQTZ3DOdOg
+         EaC81G82Apae2x3Msy1Du8pEGBKaxSAIteR/jmkv4gc/DBO6fQ7IVrPQwQgy6mRVOm
+         2Y4yxbyq6pQiA==
+Date:   Tue, 25 May 2021 18:03:10 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] iavf: Replace one-element array in struct
+ virtchnl_vf_resource
+Message-ID: <20210525230310.GA175595@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+There is a regular need in the kernel to provide a way to declare having a
+dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Am Dienstag, 25. Mai 2021, 17:22:15 CEST schrieb Alex Bee:
-> Hi list,
-> 
-> this series adds support for older Rockchip SoCs (RK3036, RK3066, RK3188
-> and RK322x) to the existing V4L2 video decoder/-encoder drivers - namely
-> hantro and rkvdec.
-> They can be used as-is or with very little modifications.
-> 
-> In preparation to that patches 1-3 add power-controller support for RK3036
-> and RK322x, since both drivers rely on pm. The drivers for them exist
-> already in the common Rockchip pm driver, they just haven't be added to
-> the device trees yet.
+Refactor the code according to the use of a flexible-array member in struct
+virtchnl_vf_resource instead of one-element array, and use the struct_size()
+helper.
 
-on first glance, looks good. Just a small ordering nit, if you need to resend
-the series for other reasons:
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
 
-Please try to order patches like:
-(1) dt-binding - compatible addition
-(2) driver patches
-(3) devicetree node patches
+Link: https://github.com/KSPP/linux/issues/79
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 5 ++---
+ drivers/net/ethernet/intel/iavf/iavf.h             | 5 ++---
+ drivers/net/ethernet/intel/iavf/iavf_virtchnl.c    | 9 ++++-----
+ drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c   | 4 ++--
+ include/linux/avf/virtchnl.h                       | 4 ++--
+ 5 files changed, 12 insertions(+), 15 deletions(-)
 
-That makes it way easier to keep track of dependencies when glancing at
-the series. Like for patches 1+2, I need to wait for Lee to apply (or Ack) the
-binding addition in patch 3.
-
-Same for the hantro devicetree additions, that need to wait for both
-bindings (and driver) changes to get applied to the media tree.
-
-Thanks
-Heiko
-
-
-> 
-> Thanks for your feedback,
-> Alex.
-> 
-> Alex Bee (10):
->   ARM: dts: rockchip: add power controller for RK322x
->   ARM: dts: rockchip: add power controller for RK3036
->   dt-bindings: mfd: syscon: add Rockchip RK3036/RK3228 qos compatibles
->   media: hantro: add support for Rockchip RK3066
->   media: hantro: add support for Rockchip RK3036
->   ARM: dts: rockchip: add vpu nodes for RK3066 and RK3188
->   ARM: dts: rockchip: add vpu node for RK322x
->   media: dt-bindings: media: rockchip-vpu: add new compatibles
->   ARM: dts: rockchip: add vdec node for RK322x
->   media: dt-bindings: media: rockchip-vdec: add RK3228 compatible
-> 
->  .../bindings/media/rockchip,vdec.yaml         |  10 +-
->  .../bindings/media/rockchip-vpu.yaml          |  33 +++-
->  .../devicetree/bindings/mfd/syscon.yaml       |   2 +
->  arch/arm/boot/dts/rk3036.dtsi                 |  51 ++++++
->  arch/arm/boot/dts/rk3066a.dtsi                |   4 +
->  arch/arm/boot/dts/rk3188.dtsi                 |   5 +
->  arch/arm/boot/dts/rk322x.dtsi                 | 139 ++++++++++++++-
->  arch/arm/boot/dts/rk3xxx.dtsi                 |  12 ++
->  drivers/staging/media/hantro/hantro_drv.c     |   2 +
->  drivers/staging/media/hantro/hantro_hw.h      |   2 +
->  drivers/staging/media/hantro/rk3288_vpu_hw.c  | 165 ++++++++++++++++++
->  11 files changed, 414 insertions(+), 11 deletions(-)
-> 
-> 
-> base-commit: 5d765451c2409e63563fa6a3e8005bd03ab9e82f
-> 
-
-
-
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index eff0a30790dd..c0afac8cf33b 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -1978,7 +1978,6 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
+ 	struct i40e_pf *pf = vf->pf;
+ 	i40e_status aq_ret = 0;
+ 	struct i40e_vsi *vsi;
+-	int num_vsis = 1;
+ 	size_t len = 0;
+ 	int ret;
+ 
+@@ -1987,7 +1986,7 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
+ 		goto err;
+ 	}
+ 
+-	len = struct_size(vfres, vsi_res, num_vsis);
++	len = struct_size(vfres, vsi_res, 1);
+ 	vfres = kzalloc(len, GFP_KERNEL);
+ 	if (!vfres) {
+ 		aq_ret = I40E_ERR_NO_MEMORY;
+@@ -2061,7 +2060,7 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
+ 	if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_ADQ)
+ 		vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_ADQ;
+ 
+-	vfres->num_vsis = num_vsis;
++	vfres->num_vsis = 1;
+ 	vfres->num_queue_pairs = vf->num_queue_pairs;
+ 	vfres->max_vectors = pf->hw.func_caps.num_msix_vectors_vf;
+ 	vfres->rss_key_size = I40E_HKEY_ARRAY_SIZE;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf.h b/drivers/net/ethernet/intel/iavf/iavf.h
+index e8bd04100ecd..2c212727c50d 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf.h
++++ b/drivers/net/ethernet/intel/iavf/iavf.h
+@@ -89,9 +89,8 @@ struct iavf_vsi {
+ #define IAVF_HLUT_ARRAY_SIZE ((IAVF_VFQF_HLUT_MAX_INDEX + 1) * 4)
+ #define IAVF_MBPS_DIVISOR	125000 /* divisor to convert to Mbps */
+ 
+-#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE (sizeof(struct virtchnl_vf_resource) + \
+-					(IAVF_MAX_VF_VSI * \
+-					 sizeof(struct virtchnl_vsi_resource)))
++#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE (struct_size((struct virtchnl_vf_resource *)0, \
++					vsi_res, IAVF_MAX_VF_VSI))
+ 
+ /* MAX_MSIX_Q_VECTORS of these are allocated,
+  * but we only use one per queue-specific vector.
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+index 0eab3c43bdc5..b2392af4e048 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+@@ -198,8 +198,8 @@ int iavf_get_vf_config(struct iavf_adapter *adapter)
+ 	enum iavf_status err;
+ 	u16 len;
+ 
+-	len =  sizeof(struct virtchnl_vf_resource) +
+-		IAVF_MAX_VF_VSI * sizeof(struct virtchnl_vsi_resource);
++	len = struct_size((struct virtchnl_vf_resource *)0, vsi_res,
++			  IAVF_MAX_VF_VSI);
+ 	event.buf_len = len;
+ 	event.msg_buf = kzalloc(event.buf_len, GFP_KERNEL);
+ 	if (!event.msg_buf) {
+@@ -1662,9 +1662,8 @@ void iavf_virtchnl_completion(struct iavf_adapter *adapter,
+ 		}
+ 		break;
+ 	case VIRTCHNL_OP_GET_VF_RESOURCES: {
+-		u16 len = sizeof(struct virtchnl_vf_resource) +
+-			  IAVF_MAX_VF_VSI *
+-			  sizeof(struct virtchnl_vsi_resource);
++		u16 len = struct_size((struct virtchnl_vf_resource *)0,
++				      vsi_res, IAVF_MAX_VF_VSI);
+ 		memcpy(adapter->vf_res, msg, min(msglen, len));
+ 		iavf_validate_num_queues(adapter);
+ 		iavf_vf_parse_hw_config(&adapter->hw, adapter->vf_res);
+diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+index a1d22d2aa0bd..5f1e0b45b8f5 100644
+--- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+@@ -2295,7 +2295,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
+ 	struct virtchnl_vf_resource *vfres = NULL;
+ 	struct ice_pf *pf = vf->pf;
+ 	struct ice_vsi *vsi;
+-	int len = 0;
++	size_t len = 0;
+ 	int ret;
+ 
+ 	if (ice_check_vf_init(pf, vf)) {
+@@ -2303,7 +2303,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
+ 		goto err;
+ 	}
+ 
+-	len = sizeof(struct virtchnl_vf_resource);
++	len = struct_size(vfres, vsi_res, 1);
+ 
+ 	vfres = kzalloc(len, GFP_KERNEL);
+ 	if (!vfres) {
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index 565deea6ffe8..85a687bc6096 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -273,10 +273,10 @@ struct virtchnl_vf_resource {
+ 	u32 rss_key_size;
+ 	u32 rss_lut_size;
+ 
+-	struct virtchnl_vsi_resource vsi_res[1];
++	struct virtchnl_vsi_resource vsi_res[];
+ };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(36, virtchnl_vf_resource);
++VIRTCHNL_CHECK_STRUCT_LEN(20, virtchnl_vf_resource);
+ 
+ /* VIRTCHNL_OP_CONFIG_TX_QUEUE
+  * VF sends this message to set up parameters for one TX queue.
+-- 
+2.27.0
 
