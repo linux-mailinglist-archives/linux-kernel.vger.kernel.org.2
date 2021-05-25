@@ -2,172 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D47138F8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610DD38F8B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhEYDWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhEYDWS (ORCPT
+        id S230156AbhEYDXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:23:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27801 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230014AbhEYDXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:22:18 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769A7C061574;
-        Mon, 24 May 2021 20:20:48 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so27276411otg.2;
-        Mon, 24 May 2021 20:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sed5JvRLMiaF+0cJiDPgQf1+4i4xNSCm3dc8S6Z16pQ=;
-        b=jkwFbwTn/CLxuDbawKx+Ai7I2fdbLrqNe0hagrkWg8vHDxYqqBb+dOy51ktDABiZZf
-         1gm+owY9hu4NO8qC7NRXEcmGhU3Op6ND2J5cyc1mcDfpi4DBLcF59KZ5KQt9X5bkXMHR
-         40dQLvIVTmBQyrobhyZsnR6O3yj7LUoayZIfH0pSueke9vAjJ555E2ET6+qcqJPmRJH6
-         Rguhm8Xqje3K9Hoj+xa2ggJ1pBUKqiykXe3xokDsR85owUyxLFPiSJ8RLnGemfeaLRn0
-         LdRE7A0ZbQ4nGnViDPuXSHofG2MPMzm/KKIGdR2fYD/Q2rDz+9fJvEH0TA3HxOwYuUtz
-         HivQ==
+        Mon, 24 May 2021 23:23:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621912913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hN/qmFSWE4X1/1WyvflertyODujEppC5hAfuD6ka3nI=;
+        b=ed8W5poqBJoXUeo4AFCqvRWNXI0zEUFSwbvumx+9GNklEkEXA3TmGqQbEfJNPbhmn2CaQI
+        WzG1EtmhvlaHRMXGSJugmei33K0l6jECZao+zf/m2yIZs5G0r/6O7K1SpMEoVpggq8i13O
+        y1gP2OlTyfhBG4/0MR2U1X8/vQAVcyM=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-tWxg3-dWPi65mprNPbu9fg-1; Mon, 24 May 2021 23:21:51 -0400
+X-MC-Unique: tWxg3-dWPi65mprNPbu9fg-1
+Received: by mail-pl1-f197.google.com with SMTP id u3-20020a17090282c3b02900f34346a880so11382097plz.10
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:21:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Sed5JvRLMiaF+0cJiDPgQf1+4i4xNSCm3dc8S6Z16pQ=;
-        b=O4raLSzXldGJpc5TgSmT69QezMl62HYZ2WA74LUlIpRpjeqSjNt3lrlyiSFcdMruqi
-         jWwt2RJbt8S3Wjt3Q0gx3OZPu2ci6djIJAPB63CNr8O+S87O+kZjY+7qrkxJPZYoyUbQ
-         KY9dx+qmhDCBy5AodjL0TVbGaWcx0zqZAwxjiJdCTGOySmyWto4kGJ2HtBPAetRoofKE
-         dfCG/NBYmpDlLJMxos28P5jz0m1d1V6UOP1q0pFX3dpLFjggb+QGjxcgxmHauPTG+/2v
-         u710xLzomAOYI4rY81g5psBhBsh+UHfhDsCgwDHLh8IuTafnPEPyqqdgXSrG87XxQCRD
-         Df8Q==
-X-Gm-Message-State: AOAM531NufEc4M7b7EtlP0qO1dL12cHCNSqnqGMaBppKjfz2a/WjixNa
-        yoOAaX957RTSElpJE/bIlvM=
-X-Google-Smtp-Source: ABdhPJxKOQeYkDInkuL2V3aQoUYr+kbPVlPeMP9q3jy3Uz4aFJzK9uqk6bnPvR4B9/MbmKkZf/JsPw==
-X-Received: by 2002:a9d:60ca:: with SMTP id b10mr20574176otk.242.1621912847670;
-        Mon, 24 May 2021 20:20:47 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 88sm3481873otb.7.2021.05.24.20.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 20:20:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] drm/msm/dp: Drop unnecessary NULL checks after container_of
-Date:   Mon, 24 May 2021 20:20:33 -0700
-Message-Id: <20210525032033.453143-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hN/qmFSWE4X1/1WyvflertyODujEppC5hAfuD6ka3nI=;
+        b=nlw+11pPgp2U00nNrKB/9z5oP7SbEbLS9sBJ5wpb7CLO5TncjMBG9AiUSUf9MGFWyw
+         qSSJg68xhoLfWbnKn23UfRrTrsOwgZgN5bCZQa0K4FSWE9N9STeZOpW1jk3x9NTbfDxG
+         Ukkj/Mi4P5QmrtjVs1Y4kxhAqGTPvKsyuEFa6NqkLbAozx9fskZBXRVmjccNV6R3iZ8K
+         O9a+T2r1oW2X75SOTLRnSHa3mLxRQvODMe0MFe7wiHOjqonYAKxAhlFCMdEJq3KgnNrZ
+         ZaE5Hej3hMDbcndOMuRXfMnmCNMKjfgG2E/BpPdukdc5va67qyJ+D0VKN791CPnT2stE
+         XpEA==
+X-Gm-Message-State: AOAM530FkzFwxnspBed510J0R3b/ITq703TxYOA9H9OkwnDpeDOy9PDC
+        jr2srrl28unC8WptIsth8giQVKBs8k0aUuSgykuF1Kg0bKTANsAUSAaGewO/azdvyFc/gWCza+9
+        uuy0PYsHohpWqDqqJ1ERiYKbP
+X-Received: by 2002:a17:902:f784:b029:ef:8e2f:430e with SMTP id q4-20020a170902f784b02900ef8e2f430emr28826884pln.28.1621912910736;
+        Mon, 24 May 2021 20:21:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDUbseCl+SvcFZTnoFf+aRPtbg6SWGAQweGkBDt3D+VDTBF5zU1ukESHVEzVi0j0Heq4PiHA==
+X-Received: by 2002:a17:902:f784:b029:ef:8e2f:430e with SMTP id q4-20020a170902f784b02900ef8e2f430emr28826854pln.28.1621912910345;
+        Mon, 24 May 2021 20:21:50 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id jz7sm666619pjb.32.2021.05.24.20.21.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 20:21:49 -0700 (PDT)
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
+Date:   Tue, 25 May 2021 11:21:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210520141305.355961-4-stefanha@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The result of container_of() operations is never NULL unless the embedded
-element is the first element of the structure. This is not the case here.
-The NULL check on the result of container_of() is therefore unnecessary
-and misleading. Remove it.
 
-This change was made automatically with the following Coccinelle script.
+ÔÚ 2021/5/20 ÏÂÎç10:13, Stefan Hajnoczi Ð´µÀ:
+> Request completion latency can be reduced by using polling instead of
+> irqs. Even Posted Interrupts or similar hardware support doesn't beat
+> polling. The reason is that disabling virtqueue notifications saves
+> critical-path CPU cycles on the host by skipping irq injection and in
+> the guest by skipping the irq handler. So let's add blk_mq_ops->poll()
+> support to virtio_blk.
+>
+> The approach taken by this patch differs from the NVMe driver's
+> approach. NVMe dedicates hardware queues to polling and submits
+> REQ_HIPRI requests only on those queues. This patch does not require
+> exclusive polling queues for virtio_blk. Instead, it switches between
+> irqs and polling when one or more REQ_HIPRI requests are in flight on a
+> virtqueue.
+>
+> This is possible because toggling virtqueue notifications is cheap even
+> while the virtqueue is running. NVMe cqs can't do this because irqs are
+> only enabled/disabled at queue creation time.
+>
+> This toggling approach requires no configuration. There is no need to
+> dedicate queues ahead of time or to teach users and orchestration tools
+> how to set up polling queues.
+>
+> Possible drawbacks of this approach:
+>
+> - Hardware virtio_blk implementations may find virtqueue_disable_cb()
+>    expensive since it requires DMA.
 
-@@
-type t;
-identifier v;
-statement s;
-@@
 
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
+Note that it's probably not related to the behavior of the driver but 
+the design of the event suppression mechanism.
 
-While at it, remove unused but assigned variable hpd in
-dp_display_usbpd_attention_cb().
+Device can choose to ignore the suppression flag and keep sending 
+interrupts.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 25 -------------------------
- 1 file changed, 25 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 1784e119269b..a74e7ef96fcf 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -208,10 +208,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
- 
- 	dp = container_of(g_dp_display,
- 			struct dp_display_private, dp_display);
--	if (!dp) {
--		DRM_ERROR("DP driver bind failed. Invalid driver data\n");
--		return -EINVAL;
--	}
- 
- 	dp->dp_display.drm_dev = drm;
- 	priv = drm->dev_private;
-@@ -252,10 +248,6 @@ static void dp_display_unbind(struct device *dev, struct device *master,
- 
- 	dp = container_of(g_dp_display,
- 			struct dp_display_private, dp_display);
--	if (!dp) {
--		DRM_ERROR("Invalid DP driver data\n");
--		return;
--	}
- 
- 	dp_power_client_deinit(dp->power);
- 	dp_aux_unregister(dp->aux);
-@@ -406,11 +398,6 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
- 
- 	dp = container_of(g_dp_display,
- 			struct dp_display_private, dp_display);
--	if (!dp) {
--		DRM_ERROR("no driver data found\n");
--		rc = -ENODEV;
--		goto end;
--	}
- 
- 	dp_display_host_init(dp, false);
- 
-@@ -437,11 +424,6 @@ static int dp_display_usbpd_disconnect_cb(struct device *dev)
- 
- 	dp = container_of(g_dp_display,
- 			struct dp_display_private, dp_display);
--	if (!dp) {
--		DRM_ERROR("no driver data found\n");
--		rc = -ENODEV;
--		return rc;
--	}
- 
- 	dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
- 
-@@ -502,7 +484,6 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 	int rc = 0;
- 	u32 sink_request;
- 	struct dp_display_private *dp;
--	struct dp_usbpd *hpd;
- 
- 	if (!dev) {
- 		DRM_ERROR("invalid dev\n");
-@@ -511,12 +492,6 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
- 
- 	dp = container_of(g_dp_display,
- 			struct dp_display_private, dp_display);
--	if (!dp) {
--		DRM_ERROR("no driver data found\n");
--		return -ENODEV;
--	}
--
--	hpd = dp->usbpd;
- 
- 	/* check for any test request issued by sink */
- 	rc = dp_link_process_request(dp->link);
--- 
-2.25.1
+>   If such devices become popular then
+>    the virtio_blk driver could use a similar approach to NVMe when
+>    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+>
+> - If a blk_poll() thread is descheduled it not only hurts polling
+>    performance but also delays completion of non-REQ_HIPRI requests on
+>    that virtqueue since vq notifications are disabled.
+
+
+Can we poll only when only high pri requests are pending?
+
+If the backend is a remote one, I think the polling may cause more cpu 
+cycles.
+
+
+>
+> Performance:
+>
+> - Benchmark: fio ioengine=pvsync2 numjobs=4 direct=1
+> - Guest: 4 vCPUs with one virtio-blk device (4 virtqueues)
+> - Disk: Intel Corporation NVMe Datacenter SSD [Optane] [8086:2701]
+> - CPU: Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz
+>
+> rw          bs hipri=0 hipri=1
+> ------------------------------
+> randread    4k 149,426 170,763 +14%
+> randread   16k 118,939 134,269 +12%
+> randread   64k  34,886  34,906   0%
+> randread  128k  17,655  17,667   0%
+> randwrite   4k 138,578 163,600 +18%
+> randwrite  16k 102,089 120,950 +18%
+> randwrite  64k  32,364  32,561   0%
+> randwrite 128k  16,154  16,237   0%
+> read        4k 146,032 170,620 +16%
+> read       16k 117,097 130,437 +11%
+> read       64k  34,834  35,037   0%
+> read      128k  17,680  17,658   0%
+> write       4k 134,562 151,422 +12%
+> write      16k 101,796 107,606  +5%
+> write      64k  32,364  32,594   0%
+> write     128k  16,259  16,265   0%
+>
+> Larger block sizes do not benefit from polling as much but the
+> improvement is worthwhile for smaller block sizes.
+>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+>   drivers/block/virtio_blk.c | 92 +++++++++++++++++++++++++++++++++++---
+>   1 file changed, 87 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index fc0fb1dcd399..f0243dcd745a 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -29,6 +29,16 @@ static struct workqueue_struct *virtblk_wq;
+>   struct virtio_blk_vq {
+>   	struct virtqueue *vq;
+>   	spinlock_t lock;
+> +
+> +	/* Number of non-REQ_HIPRI requests in flight. Protected by lock. */
+> +	unsigned int num_lopri;
+> +
+> +	/* Number of REQ_HIPRI requests in flight. Protected by lock. */
+> +	unsigned int num_hipri;
+> +
+> +	/* Are vq notifications enabled? Protected by lock. */
+> +	bool cb_enabled;
+
+
+We had event_flag_shadow, is it sufficient to introduce a new helper 
+virtqueue_cb_is_enabled()?
+
+
+> +
+>   	char name[VQ_NAME_LEN];
+>   } ____cacheline_aligned_in_smp;
+>   
+> @@ -171,33 +181,67 @@ static inline void virtblk_request_done(struct request *req)
+>   	blk_mq_end_request(req, virtblk_result(vbr));
+>   }
+>   
+> -static void virtblk_done(struct virtqueue *vq)
+> +/* Returns true if one or more requests completed */
+> +static bool virtblk_complete_requests(struct virtqueue *vq)
+>   {
+>   	struct virtio_blk *vblk = vq->vdev->priv;
+>   	struct virtio_blk_vq *vbq = &vblk->vqs[vq->index];
+>   	bool req_done = false;
+> +	bool last_hipri_done = false;
+>   	struct virtblk_req *vbr;
+>   	unsigned long flags;
+>   	unsigned int len;
+>   
+>   	spin_lock_irqsave(&vbq->lock, flags);
+> +
+>   	do {
+> -		virtqueue_disable_cb(vq);
+> +		if (vbq->cb_enabled)
+> +			virtqueue_disable_cb(vq);
+>   		while ((vbr = virtqueue_get_buf(vq, &len)) != NULL) {
+>   			struct request *req = blk_mq_rq_from_pdu(vbr);
+>   
+> +			if (req->cmd_flags & REQ_HIPRI) {
+> +				if (--vbq->num_hipri == 0)
+> +					last_hipri_done = true;
+> +			} else
+> +				vbq->num_lopri--;
+> +
+>   			if (likely(!blk_should_fake_timeout(req->q)))
+>   				blk_mq_complete_request(req);
+>   			req_done = true;
+>   		}
+>   		if (unlikely(virtqueue_is_broken(vq)))
+>   			break;
+> -	} while (!virtqueue_enable_cb(vq));
+> +
+> +		/* Enable vq notifications if non-polled requests remain */
+> +		if (last_hipri_done && vbq->num_lopri > 0) {
+> +			last_hipri_done = false;
+> +			vbq->cb_enabled = true;
+> +		}
+> +	} while (vbq->cb_enabled && !virtqueue_enable_cb(vq));
+>   
+>   	/* In case queue is stopped waiting for more buffers. */
+>   	if (req_done)
+>   		blk_mq_start_stopped_hw_queues(vblk->disk->queue, true);
+>   	spin_unlock_irqrestore(&vbq->lock, flags);
+> +
+> +	return req_done;
+> +}
+> +
+> +static int virtblk_poll(struct blk_mq_hw_ctx *hctx)
+> +{
+> +	struct virtio_blk *vblk = hctx->queue->queuedata;
+> +	struct virtqueue *vq = vblk->vqs[hctx->queue_num].vq;
+> +
+> +	if (!virtqueue_more_used(vq))
+
+
+I'm not familiar with block polling but what happens if a buffer is made 
+available after virtqueue_more_used() returns false here?
+
+Thanks
+
+
+> +		return 0;
+> +
+> +	return virtblk_complete_requests(vq);
+> +}
+> +
+> +static void virtblk_done(struct virtqueue *vq)
+> +{
+> +	virtblk_complete_requests(vq);
+>   }
+>   
+>   static void virtio_commit_rqs(struct blk_mq_hw_ctx *hctx)
+> @@ -275,6 +319,16 @@ static blk_status_t virtio_queue_rq(struct blk_mq_hw_ctx *hctx,
+>   	}
+>   
+>   	spin_lock_irqsave(&vbq->lock, flags);
+> +
+> +	/* Re-enable vq notifications if first req is non-polling */
+> +	if (!(req->cmd_flags & REQ_HIPRI) &&
+> +	    vbq->num_lopri == 0 && vbq->num_hipri == 0 &&
+> +	    !vbq->cb_enabled) {
+> +		/* Can't return false since there are no in-flight reqs */
+> +		virtqueue_enable_cb(vbq->vq);
+> +		vbq->cb_enabled = true;
+> +	}
+> +
+>   	err = virtblk_add_req(vbq->vq, vbr, vbr->sg, num);
+>   	if (err) {
+>   		virtqueue_kick(vbq->vq);
+> @@ -294,6 +348,21 @@ static blk_status_t virtio_queue_rq(struct blk_mq_hw_ctx *hctx,
+>   		}
+>   	}
+>   
+> +	/*
+> +	 * Disable vq notifications when polled reqs are submitted.
+> +	 *
+> +	 * The virtqueue lock is held so req is still valid here even if the
+> +	 * device polls the virtqueue and completes the request before we call
+> +	 * virtqueue_notify().
+> +	 */
+> +	if (req->cmd_flags & REQ_HIPRI) {
+> +		if (vbq->num_hipri++ == 0 && vbq->cb_enabled) {
+> +			virtqueue_disable_cb(vbq->vq);
+> +			vbq->cb_enabled = false;
+> +		}
+> +	} else
+> +		vbq->num_lopri++;
+> +
+>   	if (bd->last && virtqueue_kick_prepare(vbq->vq))
+>   		notify = true;
+>   	spin_unlock_irqrestore(&vbq->lock, flags);
+> @@ -533,6 +602,9 @@ static int init_vq(struct virtio_blk *vblk)
+>   	for (i = 0; i < num_vqs; i++) {
+>   		spin_lock_init(&vblk->vqs[i].lock);
+>   		vblk->vqs[i].vq = vqs[i];
+> +		vblk->vqs[i].num_lopri = 0;
+> +		vblk->vqs[i].num_hipri = 0;
+> +		vblk->vqs[i].cb_enabled = true;
+>   	}
+>   	vblk->num_vqs = num_vqs;
+>   
+> @@ -681,8 +753,16 @@ static int virtblk_map_queues(struct blk_mq_tag_set *set)
+>   {
+>   	struct virtio_blk *vblk = set->driver_data;
+>   
+> -	return blk_mq_virtio_map_queues(&set->map[HCTX_TYPE_DEFAULT],
+> -					vblk->vdev, 0);
+> +	set->map[HCTX_TYPE_DEFAULT].nr_queues = vblk->num_vqs;
+> +	blk_mq_virtio_map_queues(&set->map[HCTX_TYPE_DEFAULT], vblk->vdev, 0);
+> +
+> +	set->map[HCTX_TYPE_READ].nr_queues = 0;
+> +
+> +	/* HCTX_TYPE_DEFAULT queues are shared with HCTX_TYPE_POLL */
+> +	set->map[HCTX_TYPE_POLL].nr_queues = vblk->num_vqs;
+> +	blk_mq_virtio_map_queues(&set->map[HCTX_TYPE_POLL], vblk->vdev, 0);
+> +
+> +	return 0;
+>   }
+>   
+>   static const struct blk_mq_ops virtio_mq_ops = {
+> @@ -691,6 +771,7 @@ static const struct blk_mq_ops virtio_mq_ops = {
+>   	.complete	= virtblk_request_done,
+>   	.init_request	= virtblk_init_request,
+>   	.map_queues	= virtblk_map_queues,
+> +	.poll		= virtblk_poll,
+>   };
+>   
+>   static unsigned int virtblk_queue_depth;
+> @@ -768,6 +849,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+>   
+>   	memset(&vblk->tag_set, 0, sizeof(vblk->tag_set));
+>   	vblk->tag_set.ops = &virtio_mq_ops;
+> +	vblk->tag_set.nr_maps = 3; /* default, read, and poll */
+>   	vblk->tag_set.queue_depth = queue_depth;
+>   	vblk->tag_set.numa_node = NUMA_NO_NODE;
+>   	vblk->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
 
