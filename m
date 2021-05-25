@@ -2,285 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56F83901D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42A83901F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhEYNO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:14:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233147AbhEYNOT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:14:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621948369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0twBDBD8OnsIb7qcxH3IhWfsLWZlhuInb0dZ2mp3al8=;
-        b=efyePDCttOUfHNIc6Br52CTOkoUAv0raZYO7kT705mg4xvPoKWoeoSZD+DP0rMlK0r4Q6+
-        xBXvD18S0JMXFp9rdZJK0v1OmTXjAdu0lsAhtdEEk6r20a3mcxw9MTpAbSVWC95hhpp6pn
-        HETVfK15m0EYDy0xY7ENLeCVXNqXQfU=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-8zu3dsYVPDONSVg7TQPJIA-1; Tue, 25 May 2021 09:12:47 -0400
-X-MC-Unique: 8zu3dsYVPDONSVg7TQPJIA-1
-Received: by mail-ed1-f70.google.com with SMTP id b8-20020a05640202c8b029038f1782a77eso8826086edx.15
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 06:12:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0twBDBD8OnsIb7qcxH3IhWfsLWZlhuInb0dZ2mp3al8=;
-        b=mlmYMVMLEjbH+nVfFv6kvnxgMJwaz5Kjwj3jyNABimWWyyuDNlvdK6HLDTFLGerWOG
-         5NYs2flO5g564WeRt389Dl/isTdRUu5SuVCQd33g2CHqMfxwywABOLi73W4rfoOXSBoD
-         +d731ujaXk3mREX72UUB4LMrLTR7wvP4pfFwK6jSM5QoNJgxVsTJ6Q91TtJDonBN7TCS
-         sSVK9pVkksb8gaP+6jnKmp3MQS+XV6SOOPeXrVbGLPT4S9u7dymDXNz94SkxO0OSP2XL
-         AzejdeqKD7Uu3qWLO5Fewj56l6X5P8Ybec7EMlxCc2eECDUywI9G5usZFSPxUbASGZIq
-         E33g==
-X-Gm-Message-State: AOAM5337yqLlLd+XnOORtT78WfYeD5BUUgWW2HkAgOdBNHh4VH9GWHpa
-        VPVbS0HxFMKtLVvoSltbWHYFtRZlH2sIKSSFqi2UsnNONRwn/x1G5RY3C/00KjkOkOjvNoxVJl/
-        tZ3E5RLNNlXO9D74CjC/G/yKf
-X-Received: by 2002:a17:906:851:: with SMTP id f17mr12299106ejd.124.1621948366430;
-        Tue, 25 May 2021 06:12:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5oWMM8JXhKtJG6GsKjPFKCO0QrtxE+CalgpgW5rQoYCK06xZCk+5T9ydYfO5Nua7kk6YBVQ==
-X-Received: by 2002:a17:906:851:: with SMTP id f17mr12299066ejd.124.1621948366182;
-        Tue, 25 May 2021 06:12:46 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id j4sm7988955edq.13.2021.05.25.06.12.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 06:12:45 -0700 (PDT)
-Subject: Re: [PATCH v4 0/8] Introduce intel_skl_int3472 module
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Daniel Scally <djrscally@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-Cc:     Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-References: <20210520140928.3252671-1-djrscally@gmail.com>
- <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
-Message-ID: <dbc269f9-c76f-04f9-0900-22171c3ef3a3@redhat.com>
-Date:   Tue, 25 May 2021 15:12:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233162AbhEYNPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:15:35 -0400
+Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:3329
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233039AbhEYNPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:15:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N3/iirh6s3MeOVChN/bu3RUdZiX97j7OU7D0oVuo7wMnVu+9S7QrLSw9s2w1g9+SvGBGlgM8HGBjRUqKPy5z5hY+WGSxSyC8WDnFqP9phcBAEg4obGVzTLMDAXTW9XOPTieazO8Mx+FwDZJejuUljfxG95g+a0Mtu8pky7Du/40ToL76BUrPOJ5YPyqb927bGSZcQ/jg7HjRTw22wymsz96IOZFuqN0RpG0sJJ1vdLP5tnfqfA3naj26XCjmAzYce502402rik9JImrnn+5seBoRtgVqdrVVRUIPoXMR+mzJtbjEyW/uNREBISz4Jh+Elegh+pVrBcEH7XkuW39arg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=065V6Fw/G0niUhR5tIzh0GbC1AuYD5Q9lEJWuSZpRw8=;
+ b=PWwMCmX5D3mIc7spfm5G/5gTeE93DlFVs1uB2nSAL/2SxcUGtJ2ABEwfRW6s2Br038nbCJgB+bmihdEdzuiUWUgNRsyXqbMPF7VJI1Le5vGoADTUN9ml1z3JEKAUG/3L0Uudg+sJkM1/m4rTB0hGHFamMfghESMhWZXjPYv2kMNEuF84pqEF9bDD0nwPZIJkojpiOxAxiva33o9PgKs1bdRxt/LFc354qhcin7NtfOamBrmJQAzMm4/p9X4jjkxGZsmhVZLF1xBaeSKtSQXMHpepNmPKeh0hljDi85q8QDERd1zieMTxytoOR0n9NtvZo1UrYws1ILNg/8/4YCP+/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=065V6Fw/G0niUhR5tIzh0GbC1AuYD5Q9lEJWuSZpRw8=;
+ b=MLJip/1DoXSoftpPMV9R4414ybY0lCC27oyTpDIBPSy2b8biv57KvVJVtm+SXE0TgoM8x8gBAP0Hy6xxWwQHlfnXWmxNqwiRu8834NZ1QnmyBxr41LwGlJRN4KunFUy4mPDpGlgM49bxRlkMQoSNUdRLV5IaIvjxWPULagun4SEzw/4ug969EXZRjDlJg3KIDoyDBc39DtFlATeS855W8SDD8oSWDanzEo3Uw8GXn+JCNlcvJutOCk6lU3XsYvKChe+fbeG4cuFm67I9y4Tvlhkbt24uKSudbnd7YveTPjDjHzD4LU+2LSAOcuQzaBlPORzdP71QSpVlOmuyTNaLmg==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5364.namprd12.prod.outlook.com (2603:10b6:208:314::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Tue, 25 May
+ 2021 13:14:00 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 13:14:00 +0000
+Date:   Tue, 25 May 2021 10:13:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <20210525131358.GU1002214@nvidia.com>
+References: <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
+ <20210514143516.GG1002214@nvidia.com>
+ <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210514150237.GJ1002214@nvidia.com>
+ <YKTDPm6j29jziSxT@unreal>
+ <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+ <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+ <20210519202623.GU1002214@nvidia.com>
+ <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH0PR03CA0217.namprd03.prod.outlook.com
+ (2603:10b6:610:e7::12) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0217.namprd03.prod.outlook.com (2603:10b6:610:e7::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 25 May 2021 13:14:00 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llWsg-00ECph-Q6; Tue, 25 May 2021 10:13:58 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 69cfefc8-1ec7-4f72-992c-08d91f7ef5d7
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5364:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5364BEECAFC084150F460FF2C2259@BL1PR12MB5364.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9YyBeni8qXZ4ZS64WUl8yhahWfUIx3GfnhB+VECq3LxG6yJYHQckEsAzXwQjvwyp0Qel+Wy5JbhQOejRfdL/mq+V4VPSyX7PWQPEKL3kvfIr5te9XRQBvtk7cAwjgmaG+7FeVkovD2YVWK7bA+9zzQvgp/jB8kQ7g64jH+LFn2oQtV2RncomAHHiscMUPXBF7AYi/Simbjr2WWmcdI9CDTDsA8IbS44GOSECJ0RFeEmrOraj2ZCSXcHCgxsJvib9xfF7PlKrc5MeP0yfOQF8WUi1O8uARCRMuDiMTXm/CIqLZd1G7fdNJJ7v3Sg1ThP7h78HMr78+A/2FGdP/0HBoPMD3jfGJWaB9emVUkMdSXhmoj0Fu53tMIv8leaTnHpITHhSR8KlwwahSYOUNIdSKCLXrId79faTy/MdYaMB4YQZMt0aeUd1cuORhEcyfnT6pSin9f3unIIxvrtx58Wy8M1E7iZSP1vm/epikyHBULtTmOlSM6/S9tA6TYPTa1KUSb7CADzOnV5mYafl+6b9Z3cIBNTj5D1FouzFuJjGObySUQiTmYatqXGSxVo7u7lRs3C2t9rpbqZwq9+hffVktrseruo2w5tgoWgVjjmBLcA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(36756003)(54906003)(9786002)(5660300002)(83380400001)(9746002)(86362001)(38100700002)(8676002)(8936002)(1076003)(316002)(66556008)(6916009)(33656002)(66476007)(2906002)(186003)(426003)(4326008)(478600001)(66946007)(2616005)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Dvzvu58N7ec8JNSRFGP37GCGzSXldir9De2pZKmEHXdKtQj9pHzt+uEiCxYP?=
+ =?us-ascii?Q?rADK6lC9cpI2pOji5Yr+46DHle6KSt9uVaUwsYxsaXbt6K+BJQwtiZ2CuwhY?=
+ =?us-ascii?Q?aUJs40S7kNnGfA6PPjnLkA7gxiKxAM+quD9f3U/r0YfPVAItGVeNBRG2nIO+?=
+ =?us-ascii?Q?+UloGMvNb111UERx8f6DCxWAw/C/xQ3x0cf2cwATFHgEEEGULKWDRMQ2Z+7h?=
+ =?us-ascii?Q?NJFhVMDe4jfD7yPQNt6FfTdID/j7ki8AE6SCKIfDiWc4Ks+53jvb+9kHFt4C?=
+ =?us-ascii?Q?VtZIWzgrMAg3bEuFMNQErVLcHjux1qX8hYJU2osxbMLeeS0XfwkLBtfo/uLH?=
+ =?us-ascii?Q?YlFZ1/odL4IHcRooimz6G12qh+Wbjfep6xTJhy6HV2X/UUsWYkibQTNjFxHq?=
+ =?us-ascii?Q?A5Ku7GasKWAPGmD+gPNKK6AJI+Uqxtd4fRkla/2yS7dchI58A3HFhyVVJGA8?=
+ =?us-ascii?Q?ggO2yUF4SoBptqLiTGb+lY+4sTrfQpxSIfopC8Xguncz1YDiI5rmkR7fdfIt?=
+ =?us-ascii?Q?ARnjHfyyJ3/8iWA++pTDaRhPjNCK5odtaQ3bX5bYO0fCsobefMg8EDiFjJPf?=
+ =?us-ascii?Q?Qz8+w+VmBsxdkji2niYGCJE9on34KF4J6KC54Ypr4YaFFNRno9wBv8KYWEau?=
+ =?us-ascii?Q?nD+xElKkrijfxJM5vThNEIhd0GNKJf8BJw0fGotylZdruayeMXns6ocQRL0R?=
+ =?us-ascii?Q?os4NS7Rjlm3Wh8LqIeMpgc+LERw9PEAR+viiZsQCbFPOCJPqOqIXp9ULbhUL?=
+ =?us-ascii?Q?t0ZfZKrm5pXXdAxGn8uem88t7iQQVOoAuP7NJvi69aOdBZ30R6cOZ1wW6Ee8?=
+ =?us-ascii?Q?iXiICO52EUJEcIpBilHb6pVkd5ooPTM0QeTQ6qjCNO0B+Tf1wnD5APGxOJ7L?=
+ =?us-ascii?Q?j14lhKaKozBlC/U7CmtPEzHPGO7Yr/CkgoU/ibpvhBC5+mgT+b45lrpZtAjC?=
+ =?us-ascii?Q?7Yuljcmndkmx+jx/30UvRjUymAky6TFokftqG9j2lHZcsopfJDj+RNCh3Dv4?=
+ =?us-ascii?Q?ui+ekowedaSZFwVBQ9JjX50n62WpX9+CHgjnXws3SEbtzlduoyHW9npJiOHw?=
+ =?us-ascii?Q?Pj5sNYEiOPkqkVjd+OKwc+OwW529AfXyuNgIstUISSVGoxHcAWxeHgSd4jd6?=
+ =?us-ascii?Q?B0+ssqShJpnZyYIke9+FezHWi0DrERCZh4y28AYuuU8LKF4PzqRRCFCA7+hu?=
+ =?us-ascii?Q?S4Dz5Dc0uzQlZqxq2OAN96nYGqy+/h/L5UAd4bMVtIy6E0fH7hMeBngG4njC?=
+ =?us-ascii?Q?sZLSIBX3zKL0ZPjDgereXXftaCI8512GbUQmz0W/w6atxBSjdP9H99wgypV6?=
+ =?us-ascii?Q?6SamzgsU9fY9nDZZqogJZpC3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69cfefc8-1ec7-4f72-992c-08d91f7ef5d7
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 13:14:00.1917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RZ2P/cMISs4CH0NeSXdqsCQgRmS8qztKvL6N/Q/7CGZ9TRRz5veyJ6cq2h7gUMcz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5364
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again,
+On Thu, May 20, 2021 at 06:02:09PM -0400, Dennis Dalessandro wrote:
 
-On 5/25/21 3:10 PM, Hans de Goede wrote:
-> Hi Daniel,
+> > I don't want to encourage other drivers to do the same thing.
 > 
-> On 5/20/21 4:09 PM, Daniel Scally wrote:
->> Hello all
->>
->> Apologies for the long delay since the last version of this series; the time I
->> had free to work on it became somewhat restrained.
-> 
-> No worries, thank you for all the work you are putting into this.
-> 
-> I have not taken a close look at the code yet, but I see that Andy has and
-> the amount of remarks which he has on patch 7/8 which is the big one seems
-> to be limited, so I believe that we are getting close to this being ready
-> for merging.
-> 
-> This touches a lot of subsystems, so we need to come up with a plan to
-> merge this. Here is my proposal for how to do this:
-> 
-> 1/8   ACPI: scan: Extend acpi_walk_dep_device_list()
-> 2/8   ACPI: scan: Add function to fetch dependent of acpi device
-> 3/8   i2c: core: Add a format macro for I2C device names
-> 4/8   gpiolib: acpi: Export acpi_get_gpiod()
-> 5/8   clkdev: Make clkdev_drop() null aware
-> 6/8   gpiolib: acpi: Add acpi_gpio_get_io_resource()
-> 7/8   platform/x86: Add intel_skl_int3472 driver
-> 8/8   mfd: tps68470: Remove tps68470 MFD driver
-> 
-> Rafael already indicated that he wants to merge 1/8 (and presumably also 2/8)
-> through his tree and that he will provide an immutable branch with those
-> for merging into the pdx86 tree.
+> I would imagine they would get the same push back we are getting here. I
+> don't think this would encourage anyone honestly.
 
-p.s.
+Then we are back to making infrastructure that is only useful for one,
+arguably wrong, driver.
+ 
+> > The correct thing to do today in 2021 is to use the standard NUMA
+> > memory policy on already node-affine threads. The memory policy goes
+> > into the kernel and normal non-_node allocations will obey it. When
+> > combined with an appropriate node-affine HCA this will work as you are
+> > expecting right now.
+> 
+> So we shouldn't see any issue in the normal case is what you are
+> saying. I'd like to believe that, proving it is not easy though.
 
-Daniel it would be good if you can at least send a v5 of patch 2/8 with
-the suggested renames, then Rafael can merge 1/8 + 2/8 and we are down to 6
-patches (4 if we also merge the i2c + clk patches independently).
+Well, I said you have to setup the userspace properly, I'm not sure it
+just works out of the box.
 
-Regards,
+> > However you can't do anything like that while the kernel has the _node
+> > annotations, that overrides the NUMA memory policy and breaks the
+> > policy system!
+> 
+> Does our driver doing this break the entire system? I'm not sure how that's
+> possible. 
 
-Hans
+It breaks your driver part of it, and if we lift it to the core code
+then it breaks all drivers, so it is a hard no-go.
 
+> Is there an effort to get rid of these per node allocations so
+> ultimately we won't have a choice at some point?
 
-> 4/8 and 6/8 are both gpiolib-acpi patches and seem to be ready for merging
-> now, perhaps the gpiolib-acpi maintainers can already merge these and also
-> provide an immutable branch ?  Andy/Mika ?
-> 
-> 3/8 and 5/8 seem to be nice cleanups, but not really necessary. IMHO it
-> would be best to park these cleanups for later and for 3/8 add the following
-> where necessary for now:
-> 
-> /* FIXME drop this once the I2C_DEV_NAME_FORMAT macro has been added to include/linux/i2c.h */
-> #ifndef I2C_DEV_NAME_FORMAT
-> #define I2C_DEV_NAME_FORMAT		"i2c-%s"
-> #endif
-> 
-> This is not the prettiest but it reduces all the subsys cross-deps and things
-> like this have been done before for similar reasons.
-> 
-> Likewise it would be good if you can add if (foo) as condition before any
-> clkdev_drop(foo) calls in this patch-set and then merge
-> 5/8 "clkdev: Make clkdev_drop() null aware" independently of this and then
-> once both are in Linux tree follow-up with a cleanup patch dropping the if (foo)
-> guards.
-> 
-> So this would leave as deps for 7/8 just the 2 ACPI and 2 gpiolib-acpi patches
-> which I can hopefully pull-in via immutable branches and then we are good.
-> 
-> AFAICT patch 8/8 can be merged independently once 7/8 hits for-next (IOW once
-> we are sure the next kernel will have 7/8).
-> 
-> 
-> 
-> Or alternatively one of the involved subsys maintainers just merges the entire
-> set (once it is ready) and then provides an immutable branch with the entire set
-> on top of 5.13-rc1 (or 5.14-rc1). But that requires acks from all the other
-> subsys maintainers. Note I'm fine with either approach.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> 
-> 
->> v1 for this series was originally 14-18 of this series:
->> https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
->>
->> v2 was here:
->> https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
->>
->> v3 was here:
->> https://lore.kernel.org/lkml/20210222130735.1313443-1-djrscally@gmail.com/
->>
->> Series level changelog:
->>
->> 	- Added patch 5/8 to make clkdev_drop() NULL aware to simplify error
->> 	handling.
->> 	- Added patch 6/8 to add acpi_gpio_get_io_resource().
->>
->> This has been tested on a number of devices, but currently **not** on a device
->> designed for ChromeOS, which we ideally need to do to ensure no regression
->> caused by replacing the tps68470 MFD driver. Unfortunately, I don't have a
->> device to test it on myself.
->>
->> =========== Original Cover Letter ===========
->>
->> At the moment in the kernel the ACPI _HID INT3472 is taken by the tps68470
->> MFD driver, but that driver can only handle some of the cases of that _HID
->> that we see. There are at least these three possibilities:
->>
->> 1. INT3472 devices that provide GPIOs through the usual framework and run
->>    power and clocks through an operation region; this is the situation that
->>    the current module handles and is seen on ChromeOS devices
->> 2. INT3472 devices that provide GPIOs, plus clocks and regulators that are
->>    meant to be driven through the usual frameworks, usually seen on devices
->>    designed to run Windows
->> 3. INT3472 devices that don't actually represent a physical tps68470, but
->>    are being used as a convenient way of grouping a bunch of system GPIO
->>    lines that are intended to enable power and clocks for sensors which
->>    are called out as dependent on them. Also seen on devices designed to
->>    run Windows.
->>
->> This series introduces a new module which registers:
->>
->> 1. An i2c driver that determines which scenario (#1 or #2) applies to the
->>    machine and registers platform devices to be bound to GPIO, OpRegion,
->>    clock and regulator drivers as appropriate.
->> 2. A platform driver that binds to the dummy INT3472 devices described in
->>    #3
->>
->> The platform driver for the dummy device registers the GPIO lines that
->> enable the clocks and regulators to the sensors via those frameworks so
->> that sensor drivers can consume them in the usual fashion. The existing
->> GPIO and OpRegion tps68470 drivers will work with the i2c driver that's
->> registered. Clock and regulator drivers are available but have not so far been
->> tested, so aren't part of this series.
->>
->> The existing mfd/tps68470.c driver being thus superseded, it is removed.
->>
->> Thanks
->> Dan
->>
->> Daniel Scally (8):
->>   ACPI: scan: Extend acpi_walk_dep_device_list()
->>   ACPI: scan: Add function to fetch dependent of acpi device
->>   i2c: core: Add a format macro for I2C device names
->>   gpiolib: acpi: Export acpi_get_gpiod()
->>   clkdev: Make clkdev_drop() null aware
->>   gpiolib: acpi: Add acpi_gpio_get_io_resource()
->>   platform/x86: Add intel_skl_int3472 driver
->>   mfd: tps68470: Remove tps68470 MFD driver
->>
->>  MAINTAINERS                                   |   5 +
->>  drivers/acpi/ec.c                             |   2 +-
->>  drivers/acpi/pmic/Kconfig                     |   2 +-
->>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
->>  drivers/acpi/scan.c                           | 107 ++++-
->>  drivers/clk/clkdev.c                          |   3 +
->>  drivers/gpio/Kconfig                          |   2 +-
->>  drivers/gpio/gpiolib-acpi.c                   |  61 ++-
->>  drivers/i2c/i2c-core-acpi.c                   |   8 +-
->>  drivers/i2c/i2c-core-base.c                   |   4 +-
->>  drivers/mfd/Kconfig                           |  18 -
->>  drivers/mfd/Makefile                          |   1 -
->>  drivers/mfd/tps68470.c                        |  97 -----
->>  drivers/platform/surface/aggregator/core.c    |   6 +-
->>  drivers/platform/surface/surface3_power.c     |  22 +-
->>  .../platform/surface/surface_acpi_notify.c    |   7 +-
->>  drivers/platform/x86/Kconfig                  |   2 +
->>  drivers/platform/x86/Makefile                 |   1 +
->>  drivers/platform/x86/intel-int3472/Kconfig    |  31 ++
->>  drivers/platform/x86/intel-int3472/Makefile   |   5 +
->>  .../intel_skl_int3472_clk_and_regulator.c     | 195 +++++++++
->>  .../intel-int3472/intel_skl_int3472_common.c  | 106 +++++
->>  .../intel-int3472/intel_skl_int3472_common.h  | 113 +++++
->>  .../intel_skl_int3472_discrete.c              | 409 ++++++++++++++++++
->>  .../intel_skl_int3472_tps68470.c              | 109 +++++
->>  include/acpi/acpi_bus.h                       |   8 +
->>  include/linux/acpi.h                          |  11 +-
->>  include/linux/gpio/consumer.h                 |   2 +
->>  include/linux/i2c.h                           |   3 +
->>  29 files changed, 1175 insertions(+), 167 deletions(-)
->>  delete mode 100644 drivers/mfd/tps68470.c
->>  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
->>  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
->>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
->>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
->>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
->>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
->>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
->>
+Unlikely, subtle stuff like this will just be left broken in drivers
+nobody cares about..
 
+Jason
