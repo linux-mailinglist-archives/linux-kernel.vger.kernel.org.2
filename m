@@ -2,159 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E203905FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F104390600
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhEYP62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:58:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14450 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231918AbhEYP61 (ORCPT
+        id S232742AbhEYP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:59:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55777 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhEYP7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:58:27 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PFXewf161867;
-        Tue, 25 May 2021 11:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sWpa9lvpwKcGlvOMsTYGUtppmcEOL9ULWBsgRjkosaY=;
- b=k9vpN0jsT4DZTvOB5IXRN/v4xK4CRdIkHmFhNs/bQ7e7TzDIcruLb5+rN1pHbaGg82u2
- T3Dc0U4rNK5ajbmGkIAt6Kx01nDG1Jk0UojPzj02/RLkiSE1zNawNznvJULgOIX5eKjJ
- 6II4F0I3VjM4OynH/UXEG/XAZ03F77+yxaAGnw5vWu0ZuL+jYGkfqcJPS332gGO6GsMs
- 5xtxhwSha5hDJ+A9OAFmFJAPnyk/hbiTTXqw5IvBGHxJpE+wX30c1TU9kq1FStpBbWB7
- LlBWKOMByYmSlgzjjr1+4r8tzyF9nrri0xb3cWEZ8sUsbUh8yCxkCMDVf4YEWPVaPdnh gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s2xvbw3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 11:56:54 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PFXh8p162351;
-        Tue, 25 May 2021 11:56:54 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s2xvbw2w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 11:56:54 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PFqKGq003471;
-        Tue, 25 May 2021 15:56:53 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 38s1hbhurg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 15:56:53 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PFuqfS23265758
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 15:56:52 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E90D4136065;
-        Tue, 25 May 2021 15:56:51 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB891136061;
-        Tue, 25 May 2021 15:56:50 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 15:56:50 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-3-akrowiak@linux.ibm.com>
- <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
- <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
- <20210525131912.GW1002214@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <c54ef522-f348-df16-a99f-1e31feb1b0bd@linux.ibm.com>
-Date:   Tue, 25 May 2021 11:56:50 -0400
+        Tue, 25 May 2021 11:59:42 -0400
+Received: from mail-vs1-f70.google.com ([209.85.217.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1llZRa-0007CM-P9
+        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 15:58:10 +0000
+Received: by mail-vs1-f70.google.com with SMTP id s18-20020a05610201d2b029023869267cc8so7233218vsq.21
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:58:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MuGDp3ZHRnFLgtVx3ouCWP4TcKcZPadX0o0zLgLFxe4=;
+        b=VC9f8JDmX0AkJSBugA9OKsaRUltWprFT7dXtin+BZ6JmJDPO6d2qm+y6b4OKOXFpIf
+         /o7Ro33ljbJQsMylnFqc+cUFImGKTCzlu6ARGPbEbMyNObpzOtASJV1V0LSdzmOTDwgd
+         D2exV54Fe0xWFfCRpJc6XrC8Bn2xHvfD7yv5Jm2BKtu+sO3vAEuN3RhoUdUvlXPqKGWj
+         RsKcIIFvb/JYkM+SV3hi4Mqb4IkZFXg/sYurrcMhm55gr215AJJZx2q7piGa3gyitd4s
+         KZVLGtxOUVxvfGd0bUgLYhmhE2Ugr3fx+l2IcLuBe9V2z+cHlKo+WZA5n+fpv2mxnk0U
+         YyIg==
+X-Gm-Message-State: AOAM531P7J1FDMAb9q8zQnKptZHEauqMHzxZNgRqGUL9FaXtKL43mbXr
+        lSXjBVj6nS58eE8HqVTGg0ZvlsYPsoR+C0H63aYEpesFSgBYUY0Hdu1riaKmEoOrhTcj4H2V1il
+        LzbnNPPXfCGqC8MXoDykz1WFz7a2vAILGKjVaoLCjbg==
+X-Received: by 2002:a05:6102:670:: with SMTP id z16mr6166873vsf.5.1621958289524;
+        Tue, 25 May 2021 08:58:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSQIVxDiGujhuPQ5HAuuNtEcc299f+SZv76DjSudei+k8iWKja7l2evoivzlynfZGe6qiO0g==
+X-Received: by 2002:a05:6102:670:: with SMTP id z16mr6166851vsf.5.1621958289334;
+        Tue, 25 May 2021 08:58:09 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id o2sm1736666vsq.30.2021.05.25.08.58.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 08:58:08 -0700 (PDT)
+Subject: Re: [PATCH v2 4/5] extcon: extcon-max8997: Fix IRQ freeing at error
+ path
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     hanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
+ <1a0f3e0d3c9786f97a0a041469a52ee145712619.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <be185a44-43de-59fd-a134-e6a621f74eba@canonical.com>
+Date:   Tue, 25 May 2021 11:58:06 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210525131912.GW1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a0f3e0d3c9786f97a0a041469a52ee145712619.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: iIWHI-nYv2T0RPAeA9u62p6lt1ykuN8u
-X-Proofpoint-GUID: TTqWzYM-uuNS8hmGKB0h1U9sxqDlH2fn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 spamscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250094
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/05/2021 08:32, Matti Vaittinen wrote:
+> If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
+> without freeing the requested IRQs.
+> 
+> Free the IRQs prior returning if reading the status fails.
+> 
+> Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> Changelog:
+>  v2:
+>    - new patch (avoid backporting devm_wq just to fix IRQ freeing)
+> ---
+>  drivers/extcon/extcon-max8997.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-> Why can't you put the locks in the right order? It looked trivial, I'm confused.
->
-> Jason
-
-I explained this in one of my responses to the previous series. Maybe I 
-didn't do
-a good job of it, so let me see if I can provide a more thorough 
-explanation.
-
-The handle_pqap() function in priv.c does not have any access to the
-matrix_dev->lock which lives in the vfio_ap module, so there is no
-way for this function to control the order of locking. The only lock
-it can access is the lock provided for the hook function pointer which
-must be held for the duration of the execution of the hook. When the
-hook function (handle_pqap() in vfio_ap_ops.c) is called, it has to lock
-the matrix_dev->lock mutex to do its thing. The interception of the
-PQAP instruction that sets off the above scenario can happen simultaneously
-with both the vfio_ap_mdev_set_kvm() and vfio_ap_mdev_unset_kvm()
-instructions in vfio_ap_ops.c.
-
-The vfio_ap_mdev_set_kvm() function is called only by the group notifier
-callback when the vfio_ap driver is notified that the KVM pointer has 
-been set.
-In this case, we could set the lock for the hook function before setting
-the matrix_dev->lock and calling the vfio_ap_mdev_set_kvm() function and
-all would be well.
-
-The vfio_ap_mdev_unset_kvm() function, however, is called both by the group
-notifier when the KVM pointer has been cleared or when the mdev is
-being removed. In both cases, the only way to get the KVM pointer - which
-is needed to unplug the AP resources from the guest - is from the 
-matrix_mdev
-which contains it. This, of course, needs to be done while holding the
-matrix_dev->lock mutex. The vfio_ap_mdev_unset_kvm() function also
-clears the hook function pointer, but can only get the lock used to 
-control access
-to it from the matrix_mdev; therein lies the rub. So we can have the 
-following
-scenario which is flagged by lockdep:
-
-CPU x:                                            CPU y:
---------                                             --------
-                                                       lock the 
-matrix_dev->lock:
-vfio_ap_mdev_set_kvm in vfio_ap_ops.c
-
-lock the hook pointer:
-handle_pqap in priv.c
-
-lock the matrix_dev->lock
-handle_pqap in vfio_ap_ops.c
-
-                                                       lock the hook 
-pointer:
-vfio_ap_mdev_set_kvm in vfio_ap_ops.c
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 
-Maybe I'm missing something, but I was unable to find a way around this when
-the hook function pointer and its locking mechanism is stored in a field 
-of a satellite
-structure of struct kvm.
-
-
-
+Best regards,
+Krzysztof
