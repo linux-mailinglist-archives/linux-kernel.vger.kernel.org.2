@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5812738F8C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C9B38F8C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhEYD3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S230229AbhEYDaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhEYD3n (ORCPT
+        with ESMTP id S229890AbhEYDaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:29:43 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE28C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:28:13 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id u11so29012235oiv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:28:13 -0700 (PDT)
+        Mon, 24 May 2021 23:30:04 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55558C061574;
+        Mon, 24 May 2021 20:28:33 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w7so22910500lji.6;
+        Mon, 24 May 2021 20:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yd7WNrW5RgCRq69GG/t641RhzJb1+O9rCNuKEDYZ+UQ=;
-        b=Qihz9q4ulhPC5+jW95HZeqBMuDCzCUu5BXI2aHGC/4iIT85jOP8Merwq+BoCPrrNFl
-         MlvM+x81c5n+TIyIs8D1H+nQNU4q7QNzAI9dT25HByHl0DudUzzbP+m5k87rrr5Q9E2V
-         v5XqwFV+m63TDEQPDv/hWb6ymRQnjJEmWX8UxwOq4fEA9/YflwcPI6/SYvL1XfI9wKyu
-         MX7xrQyiZQxJU57vhRcGOGin7qf+2ErXPVy3Bvl/TmpmCk08rHdDvK3HHWdT5SKcFbKm
-         Ngd5FveLSInfBtCMCRZDjCg1lBKeJGBrXkut5dcay1LhdzWu9x3oZnPqKeQ4HaT3Jee2
-         3LvA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=65k4WCFOtHqMEgupbM4UcMJU/owSoQbR1hZEEycmMGw=;
+        b=JqNwzyU97zIIY46O4vksPHzJXx3fnvuuztr06AwLqhGRvUlxBVnNY7awl+r0fLSV7y
+         V3WXXVfNyydNOmuJbVklEbbt7WNGqRefHb/RQK4xCdiA7yaNCCkdHsQZY2/uG697MfYl
+         h0nggBJw9xhwpYDzuIZDSXiVbsoRfDbVsv76GHXt8+c2/c06VK7ZVB3B97J3RlBMuStU
+         1qKczwxu8AogIFL1QGuDbla/DaNJE6+trs//LypL3CuDKpPap3Fc2s/qeTw8ImpX9kyO
+         ulwzX8Sfw05ZDLOCYkIGsJrg9b1jstkSCJ0azkkuM7arTnZ5cAcfSPlM6FhXjb78eBRq
+         a2TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yd7WNrW5RgCRq69GG/t641RhzJb1+O9rCNuKEDYZ+UQ=;
-        b=OGgueSbLZwSOakJQTBJrS00L1tcnmW6GDTLo95g4dJl5os/3gS7SNl5gB/Yyqirtam
-         e3V4fkK1QQ/kj7T2nD6JGLoO3qW20bfvKk46o0R6uEqjnXbHvuK8j6bdD+PJh5SVTJ/C
-         NO9RnQn1k4RdpXe3W+akS7lHM6Fm7LdDQfUeAN+yN/tH69DXbdZSK5H5rrx7QUWsnKyI
-         /EhYzVUQT93emBDC9v8OtYutwCokYmRL1udwcavF/NBEtF6hGBl5SwzQYfbjnYaSOORB
-         XdnCD4YZdXeXXQcgJwbN4IPoWQKHZlEtafCMUgq6R06q/EZ9a339Djfjl/N5/OoMMlFa
-         5Gqg==
-X-Gm-Message-State: AOAM530yn0Dn2SUDl6pC01Vi6zMYLEefPRUJTmlNaUNfBCi8Lbt1zTM9
-        bL+oqTDt3yyACswO9PhhvqpREw==
-X-Google-Smtp-Source: ABdhPJwKviMyrxlplBS0akvECPGFTv+lWWT2whiGwA05wk4Af21kzQrXyzWmMbn4Mo/QH1n2F7KL+Q==
-X-Received: by 2002:aca:4e8c:: with SMTP id c134mr1436989oib.169.1621913292614;
-        Mon, 24 May 2021 20:28:12 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c19sm2990438oiw.7.2021.05.24.20.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 20:28:12 -0700 (PDT)
-Date:   Mon, 24 May 2021 22:28:10 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Patrick Daly <pdaly@codeaurora.org>,
-        Pratik Patel <pratikp@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH 0/3] iommu/arm-smmu: Qualcomm bootsplash/efifb
-Message-ID: <YKxuynamQBTrNksO@yoga>
-References: <20191226221709.3844244-1-bjorn.andersson@linaro.org>
- <20200108091641.GA15147@willie-the-truck>
- <CAF2Aj3iKk2LSA5XC76pNiLV8a76BkibUitof-dix8rqkc0qiow@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=65k4WCFOtHqMEgupbM4UcMJU/owSoQbR1hZEEycmMGw=;
+        b=LpaE41+y1bxFYEA8KSVMvT4LxYr+1ZJLzXbFL4QAKYfNX7kD/ThRkkcH6V0xQFt9xn
+         OJQDqtvW7jt5hYO7/Lx6u9gsx/eck0b7cqVKJUHy90sOtVBtEy2pFnHuL1Kda+ANARx3
+         imLXNgRhm9EEVLktlH7Xr1MYYhiMw+yoG6yJsvyYLdbzPilBkIWM/G3/1dDJtanvqpnZ
+         R24ytf+gfUaAedk8+gjIngWqubLaV/Oi3s65kO1oACYOdKEZr/sVom2L3+JdWpIATPNN
+         u/otBLvRs/P5ETTZcu3Pe3BCQBe0UrybJja7z6AeEYAJLoao30EDXR1Isk7V+NuC17vs
+         sGrQ==
+X-Gm-Message-State: AOAM532GQZWNuzxHX0GYo/XL81Ae8yNpKY+fXSmhTaK3YAr2k263Nc+x
+        iUHsCA3zIm+53VHkchHRgQNGwICJU10kVw3984E=
+X-Google-Smtp-Source: ABdhPJzkrQ7/XdXfoYOOApgeA+xn5jqgg/BEE79LeXSGanqSD9Vl0LyNOwY9epH8hbO3n1VOcGYf7V5Soa8FH7/2PLY=
+X-Received: by 2002:a2e:5347:: with SMTP id t7mr19166683ljd.464.1621913311671;
+ Mon, 24 May 2021 20:28:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF2Aj3iKk2LSA5XC76pNiLV8a76BkibUitof-dix8rqkc0qiow@mail.gmail.com>
+References: <20210522113155.244796-1-dong.menglong@zte.com.cn>
+ <20210522113155.244796-3-dong.menglong@zte.com.cn> <20210525004422.GB4332@42.do-not-panic.com>
+In-Reply-To: <20210525004422.GB4332@42.do-not-panic.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Tue, 25 May 2021 11:28:19 +0800
+Message-ID: <CADxym3bg=-swV_PbVhwTHwED=5WHzq6779xLQFnaagRai0gJCA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] init/do_cmounts.c: introduce 'user_root' for initramfs
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, joe@perches.com,
+        Menglong Dong <dong.menglong@zte.com.cn>, masahiroy@kernel.org,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
+        song@kernel.org, NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
+        wangkefeng.wang@huawei.com, arnd@arndb.de,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
+        pmladek@suse.com, ebiederm@xmission.com, jojing64@gmail.com,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24 May 07:03 CDT 2021, Lee Jones wrote:
+On Tue, May 25, 2021 at 8:44 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> Cc'ing Josh as I think he might be interested in this.
+>
+......
+>
+> I think you can clarify this a bit more with:
+>
+>   If using container platforms such as Docker, upon initialization it
+>   wants to use pivot_root() so that currently mounted devices do not
+>   propagate to containers. An example of value in this is that
+>   a USB device connected prior to the creation of a containers on the
+>   host gets disconnected after a container is created; if the
+>   USB device was mounted on containers, but already removed and
+>   umounted on the host, the mount point will not go away untill all
+>   containers unmount the USB device.
 
-> On Wed, 8 Jan 2020 at 09:16, Will Deacon <will@kernel.org> wrote:
-> 
-> > On Thu, Dec 26, 2019 at 02:17:06PM -0800, Bjorn Andersson wrote:
-> > > These patches implements the stream mapping inheritance that's necessary
-> > in
-> > > order to not hit a security violation as the display hardware looses its
-> > stream
-> > > mapping during initialization of arm-smmu in various Qualcomm platforms.
-> > >
-> > > This was previously posted as an RFC [1], changes since then involves the
-> > > rebase and migration of the read-back code to the Qualcomm specific
-> > > implementation, the mapping is maintained indefinitely - to handle probe
-> > > deferring clients - and rewritten commit messages.
-> >
-> > I don't think we should solve this in a Qualcomm-specific manner. Please
-> > can
-> > you take a look at the proposal from Thierry [1] and see whether or not it
-> > works for you?
-> >
-> 
-> Did this or Thierry's solution ever gain traction?
-> 
+Thanks! It's really difficult for me to organize these words.
 
-There was a few pieces that landed in the common code which allowed us
-to deal with the quirks of the Qualcomm platform (turned out that just
-reading back the settings wasn't the only piece necessary).
+>
+> So remind me.. so it would seem that if the rootfs uses a ramfs (initrd)
+> that pivot_root works just fine. Why is that? Did someone add support
+> for that? Has that always been the case that it works? If not, was it a
+> consequence of how ramfs (initrd) works?
+>
+> And finally, why can't we share the same mechanism used for ramfs
+> (initrd) for initramfs (tmpfs)?
 
-The "generic" solution is essentially the second half of
-qcom_smmu_cfg_probe(), which ensures that as the SMMU is reset it will
-do so with bypass mappings for all stream mappings the boot loader left
-us.
+In fact, initrd is totally different from initramfs. Initrd is not using
+ramfs, it actually is a block fs, which is mounted on the first mount.
+And initramfs can use ramfs or tmpfs.
 
-> Or are all the parties still 'solving' this downstream?
-> 
+During pivot_root, the mount of the root will be unmounted from its parent
+mount. Initrd or block device fs has a parent mount, which is the first mount.
+However, initramfs doesn't has a parent mount, because the first mount is
+actually the root, which cpio is unpacked to.
 
-I believe that Qualcomm has adopted the upstream solution in their
-downstream kernel.
+The first mount is used by init_task, and I think it can't be unmounted,
+because it is used by the kernel.
 
-Regards,
-Bjorn
+So the primary cause that pivot_root doesn't support is that it use
+the first mount as its root.
+
+>
+> > What's more, after this patch, 'rootflags' in boot cmd is supported
+> > by initramfs. Therefore, users can set the size of tmpfs with
+> > 'rootflags=size=1024M'.
+>
+> Why is that exactly?
+
+During the mount of user_mount, I passed root_mountflags and root_mount_data
+to do_mount_root(), which make 'rootflags' works for 'user root'.
+
+> > +
+> > +struct fs_user_root {
+> > +    bool (*enabled)(void);
+> > +    char *dev_name;
+>
+> What's the point of dev_name if its never set?
+
+Seems it's better to make it be set, I'll do it.
+
+
+>
+> Might be a good place to document that we do this so folks can
+> pivot_root on rootfs, and why that is desirable (mentioned above on the
+> commit log edits I suggested). Otherwise I don't think its easy for a
+> reader of the code to understand why we are doing all this work.
+>
+
+Ok, sounds nice!
+
+>
+> Is anything extra needed on shutdown / reboot?
+>
+
+I'm not sure, seems no. The way I create 'user root' is exactly the same
+as a block root fs does.
+
+Thanks!
+Menglong Dong
