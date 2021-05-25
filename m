@@ -2,158 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42A83901F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AED3901F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhEYNPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:15:35 -0400
-Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:3329
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233039AbhEYNPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:15:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N3/iirh6s3MeOVChN/bu3RUdZiX97j7OU7D0oVuo7wMnVu+9S7QrLSw9s2w1g9+SvGBGlgM8HGBjRUqKPy5z5hY+WGSxSyC8WDnFqP9phcBAEg4obGVzTLMDAXTW9XOPTieazO8Mx+FwDZJejuUljfxG95g+a0Mtu8pky7Du/40ToL76BUrPOJ5YPyqb927bGSZcQ/jg7HjRTw22wymsz96IOZFuqN0RpG0sJJ1vdLP5tnfqfA3naj26XCjmAzYce502402rik9JImrnn+5seBoRtgVqdrVVRUIPoXMR+mzJtbjEyW/uNREBISz4Jh+Elegh+pVrBcEH7XkuW39arg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=065V6Fw/G0niUhR5tIzh0GbC1AuYD5Q9lEJWuSZpRw8=;
- b=PWwMCmX5D3mIc7spfm5G/5gTeE93DlFVs1uB2nSAL/2SxcUGtJ2ABEwfRW6s2Br038nbCJgB+bmihdEdzuiUWUgNRsyXqbMPF7VJI1Le5vGoADTUN9ml1z3JEKAUG/3L0Uudg+sJkM1/m4rTB0hGHFamMfghESMhWZXjPYv2kMNEuF84pqEF9bDD0nwPZIJkojpiOxAxiva33o9PgKs1bdRxt/LFc354qhcin7NtfOamBrmJQAzMm4/p9X4jjkxGZsmhVZLF1xBaeSKtSQXMHpepNmPKeh0hljDi85q8QDERd1zieMTxytoOR0n9NtvZo1UrYws1ILNg/8/4YCP+/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=065V6Fw/G0niUhR5tIzh0GbC1AuYD5Q9lEJWuSZpRw8=;
- b=MLJip/1DoXSoftpPMV9R4414ybY0lCC27oyTpDIBPSy2b8biv57KvVJVtm+SXE0TgoM8x8gBAP0Hy6xxWwQHlfnXWmxNqwiRu8834NZ1QnmyBxr41LwGlJRN4KunFUy4mPDpGlgM49bxRlkMQoSNUdRLV5IaIvjxWPULagun4SEzw/4ug969EXZRjDlJg3KIDoyDBc39DtFlATeS855W8SDD8oSWDanzEo3Uw8GXn+JCNlcvJutOCk6lU3XsYvKChe+fbeG4cuFm67I9y4Tvlhkbt24uKSudbnd7YveTPjDjHzD4LU+2LSAOcuQzaBlPORzdP71QSpVlOmuyTNaLmg==
-Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;cornelisnetworks.com; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5364.namprd12.prod.outlook.com (2603:10b6:208:314::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Tue, 25 May
- 2021 13:14:00 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
- 13:14:00 +0000
-Date:   Tue, 25 May 2021 10:13:58 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <20210525131358.GU1002214@nvidia.com>
-References: <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
- <20210514143516.GG1002214@nvidia.com>
- <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
- <20210514150237.GJ1002214@nvidia.com>
- <YKTDPm6j29jziSxT@unreal>
- <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
- <20210519182941.GQ1002214@nvidia.com>
- <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
- <20210519202623.GU1002214@nvidia.com>
- <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+        id S233108AbhEYNSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:18:08 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44074 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233023AbhEYNSG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:18:06 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PDCCJ5012400;
+        Tue, 25 May 2021 13:16:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=XJAuq/OZuDtD7zY176Gtakirbi9h8vTGRw3NrLyKKAc=;
+ b=K78kHnO/E4S4o6cHA3DKnCtEv5GaE38L6k6FpHFVykUE50aBZDvSl1VWe8qLxPAYIIeJ
+ tMkAKsGzJZWQe9zVlhdOUacKrrF4AjuEerlcFopQSODvNZ7iWOmaLIGSV+bzp0+gDI1I
+ eVd4rR65oQyRXQLPen7aJVKVOCFdBy/sc5U8e8OuHpgA0tN71tCzMiMRsl4WkzyoILxh
+ QZN3lo5nZx7wql0YgT/Ig+lxVzvdd5JfZxTYVPZlP4AO0fJqtPUNZq3OtUlR4NtcwOq+
+ n/i1n207AFSdegJdbU2m6JajeKdzDL+RXBl9iRE+cmlRuZ72WnHjRnlqr6QIIW5Q39F2 QQ== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38qxvxrpdj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:16:30 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14PDGUI0165794;
+        Tue, 25 May 2021 13:16:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38reh9uyvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:16:30 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14PDGTm5165686;
+        Tue, 25 May 2021 13:16:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 38reh9uytq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:16:29 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14PDGM4n007740;
+        Tue, 25 May 2021 13:16:23 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 25 May 2021 06:16:22 -0700
+Date:   Tue, 25 May 2021 16:16:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
+Subject: drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk' not
+ released on lines: 341,354,361.
+Message-ID: <202105252102.h5r94CF9-lkp@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH0PR03CA0217.namprd03.prod.outlook.com
- (2603:10b6:610:e7::12) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0217.namprd03.prod.outlook.com (2603:10b6:610:e7::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 25 May 2021 13:14:00 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llWsg-00ECph-Q6; Tue, 25 May 2021 10:13:58 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69cfefc8-1ec7-4f72-992c-08d91f7ef5d7
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5364:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5364BEECAFC084150F460FF2C2259@BL1PR12MB5364.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9YyBeni8qXZ4ZS64WUl8yhahWfUIx3GfnhB+VECq3LxG6yJYHQckEsAzXwQjvwyp0Qel+Wy5JbhQOejRfdL/mq+V4VPSyX7PWQPEKL3kvfIr5te9XRQBvtk7cAwjgmaG+7FeVkovD2YVWK7bA+9zzQvgp/jB8kQ7g64jH+LFn2oQtV2RncomAHHiscMUPXBF7AYi/Simbjr2WWmcdI9CDTDsA8IbS44GOSECJ0RFeEmrOraj2ZCSXcHCgxsJvib9xfF7PlKrc5MeP0yfOQF8WUi1O8uARCRMuDiMTXm/CIqLZd1G7fdNJJ7v3Sg1ThP7h78HMr78+A/2FGdP/0HBoPMD3jfGJWaB9emVUkMdSXhmoj0Fu53tMIv8leaTnHpITHhSR8KlwwahSYOUNIdSKCLXrId79faTy/MdYaMB4YQZMt0aeUd1cuORhEcyfnT6pSin9f3unIIxvrtx58Wy8M1E7iZSP1vm/epikyHBULtTmOlSM6/S9tA6TYPTa1KUSb7CADzOnV5mYafl+6b9Z3cIBNTj5D1FouzFuJjGObySUQiTmYatqXGSxVo7u7lRs3C2t9rpbqZwq9+hffVktrseruo2w5tgoWgVjjmBLcA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(36756003)(54906003)(9786002)(5660300002)(83380400001)(9746002)(86362001)(38100700002)(8676002)(8936002)(1076003)(316002)(66556008)(6916009)(33656002)(66476007)(2906002)(186003)(426003)(4326008)(478600001)(66946007)(2616005)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Dvzvu58N7ec8JNSRFGP37GCGzSXldir9De2pZKmEHXdKtQj9pHzt+uEiCxYP?=
- =?us-ascii?Q?rADK6lC9cpI2pOji5Yr+46DHle6KSt9uVaUwsYxsaXbt6K+BJQwtiZ2CuwhY?=
- =?us-ascii?Q?aUJs40S7kNnGfA6PPjnLkA7gxiKxAM+quD9f3U/r0YfPVAItGVeNBRG2nIO+?=
- =?us-ascii?Q?+UloGMvNb111UERx8f6DCxWAw/C/xQ3x0cf2cwATFHgEEEGULKWDRMQ2Z+7h?=
- =?us-ascii?Q?NJFhVMDe4jfD7yPQNt6FfTdID/j7ki8AE6SCKIfDiWc4Ks+53jvb+9kHFt4C?=
- =?us-ascii?Q?VtZIWzgrMAg3bEuFMNQErVLcHjux1qX8hYJU2osxbMLeeS0XfwkLBtfo/uLH?=
- =?us-ascii?Q?YlFZ1/odL4IHcRooimz6G12qh+Wbjfep6xTJhy6HV2X/UUsWYkibQTNjFxHq?=
- =?us-ascii?Q?A5Ku7GasKWAPGmD+gPNKK6AJI+Uqxtd4fRkla/2yS7dchI58A3HFhyVVJGA8?=
- =?us-ascii?Q?ggO2yUF4SoBptqLiTGb+lY+4sTrfQpxSIfopC8Xguncz1YDiI5rmkR7fdfIt?=
- =?us-ascii?Q?ARnjHfyyJ3/8iWA++pTDaRhPjNCK5odtaQ3bX5bYO0fCsobefMg8EDiFjJPf?=
- =?us-ascii?Q?Qz8+w+VmBsxdkji2niYGCJE9on34KF4J6KC54Ypr4YaFFNRno9wBv8KYWEau?=
- =?us-ascii?Q?nD+xElKkrijfxJM5vThNEIhd0GNKJf8BJw0fGotylZdruayeMXns6ocQRL0R?=
- =?us-ascii?Q?os4NS7Rjlm3Wh8LqIeMpgc+LERw9PEAR+viiZsQCbFPOCJPqOqIXp9ULbhUL?=
- =?us-ascii?Q?t0ZfZKrm5pXXdAxGn8uem88t7iQQVOoAuP7NJvi69aOdBZ30R6cOZ1wW6Ee8?=
- =?us-ascii?Q?iXiICO52EUJEcIpBilHb6pVkd5ooPTM0QeTQ6qjCNO0B+Tf1wnD5APGxOJ7L?=
- =?us-ascii?Q?j14lhKaKozBlC/U7CmtPEzHPGO7Yr/CkgoU/ibpvhBC5+mgT+b45lrpZtAjC?=
- =?us-ascii?Q?7Yuljcmndkmx+jx/30UvRjUymAky6TFokftqG9j2lHZcsopfJDj+RNCh3Dv4?=
- =?us-ascii?Q?ui+ekowedaSZFwVBQ9JjX50n62WpX9+CHgjnXws3SEbtzlduoyHW9npJiOHw?=
- =?us-ascii?Q?Pj5sNYEiOPkqkVjd+OKwc+OwW529AfXyuNgIstUISSVGoxHcAWxeHgSd4jd6?=
- =?us-ascii?Q?B0+ssqShJpnZyYIke9+FezHWi0DrERCZh4y28AYuuU8LKF4PzqRRCFCA7+hu?=
- =?us-ascii?Q?S4Dz5Dc0uzQlZqxq2OAN96nYGqy+/h/L5UAd4bMVtIy6E0fH7hMeBngG4njC?=
- =?us-ascii?Q?sZLSIBX3zKL0ZPjDgereXXftaCI8512GbUQmz0W/w6atxBSjdP9H99wgypV6?=
- =?us-ascii?Q?6SamzgsU9fY9nDZZqogJZpC3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69cfefc8-1ec7-4f72-992c-08d91f7ef5d7
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 13:14:00.1917
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RZ2P/cMISs4CH0NeSXdqsCQgRmS8qztKvL6N/Q/7CGZ9TRRz5veyJ6cq2h7gUMcz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5364
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: 0-G2PBt5MgWOzirwLbYOKmZuqkxkd_tb
+X-Proofpoint-ORIG-GUID: 0-G2PBt5MgWOzirwLbYOKmZuqkxkd_tb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 06:02:09PM -0400, Dennis Dalessandro wrote:
+Hi Alexandre,
 
-> > I don't want to encourage other drivers to do the same thing.
-> 
-> I would imagine they would get the same push back we are getting here. I
-> don't think this would encourage anyone honestly.
+First bad commit (maybe != root cause):
 
-Then we are back to making infrastructure that is only useful for one,
-arguably wrong, driver.
- 
-> > The correct thing to do today in 2021 is to use the standard NUMA
-> > memory policy on already node-affine threads. The memory policy goes
-> > into the kernel and normal non-_node allocations will obey it. When
-> > combined with an appropriate node-affine HCA this will work as you are
-> > expecting right now.
-> 
-> So we shouldn't see any issue in the normal case is what you are
-> saying. I'd like to believe that, proving it is not easy though.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a050a6d2b7e80ca52b2f4141eaf3420d201b72b3
+commit: 0020868f2a7037e87d6b3b196526de2fb885830d rtc: mxc{,_v2}: enable COMPILE_TEST
+config: microblaze-randconfig-m031-20210525 (attached as .config)
+compiler: microblaze-linux-gcc (GCC) 9.3.0
 
-Well, I said you have to setup the userspace properly, I'm not sure it
-just works out of the box.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> > However you can't do anything like that while the kernel has the _node
-> > annotations, that overrides the NUMA memory policy and breaks the
-> > policy system!
-> 
-> Does our driver doing this break the entire system? I'm not sure how that's
-> possible. 
+smatch warnings:
+drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk' not released on lines: 341,354,361.
 
-It breaks your driver part of it, and if we lift it to the core code
-then it breaks all drivers, so it is a hard no-go.
+vim +361 drivers/rtc/rtc-mxc_v2.c
 
-> Is there an effort to get rid of these per node allocations so
-> ultimately we won't have a choice at some point?
+83c880f79e88cc Patrick Bruenn      2017-12-18  279  static int mxc_rtc_probe(struct platform_device *pdev)
+83c880f79e88cc Patrick Bruenn      2017-12-18  280  {
+83c880f79e88cc Patrick Bruenn      2017-12-18  281  	struct mxc_rtc_data *pdata;
+83c880f79e88cc Patrick Bruenn      2017-12-18  282  	void __iomem *ioaddr;
+83c880f79e88cc Patrick Bruenn      2017-12-18  283  	int ret = 0;
+83c880f79e88cc Patrick Bruenn      2017-12-18  284  
+83c880f79e88cc Patrick Bruenn      2017-12-18  285  	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+83c880f79e88cc Patrick Bruenn      2017-12-18  286  	if (!pdata)
+83c880f79e88cc Patrick Bruenn      2017-12-18  287  		return -ENOMEM;
+83c880f79e88cc Patrick Bruenn      2017-12-18  288  
+874532cdeefefa Anson Huang         2019-07-17  289  	pdata->ioaddr = devm_platform_ioremap_resource(pdev, 0);
+83c880f79e88cc Patrick Bruenn      2017-12-18  290  	if (IS_ERR(pdata->ioaddr))
+83c880f79e88cc Patrick Bruenn      2017-12-18  291  		return PTR_ERR(pdata->ioaddr);
+83c880f79e88cc Patrick Bruenn      2017-12-18  292  
+83c880f79e88cc Patrick Bruenn      2017-12-18  293  	ioaddr = pdata->ioaddr;
+83c880f79e88cc Patrick Bruenn      2017-12-18  294  
+83c880f79e88cc Patrick Bruenn      2017-12-18  295  	pdata->clk = devm_clk_get(&pdev->dev, NULL);
+83c880f79e88cc Patrick Bruenn      2017-12-18  296  	if (IS_ERR(pdata->clk)) {
+83c880f79e88cc Patrick Bruenn      2017-12-18  297  		dev_err(&pdev->dev, "unable to get rtc clock!\n");
+83c880f79e88cc Patrick Bruenn      2017-12-18  298  		return PTR_ERR(pdata->clk);
+83c880f79e88cc Patrick Bruenn      2017-12-18  299  	}
+83c880f79e88cc Patrick Bruenn      2017-12-18  300  
+83c880f79e88cc Patrick Bruenn      2017-12-18  301  	spin_lock_init(&pdata->lock);
+83c880f79e88cc Patrick Bruenn      2017-12-18  302  	pdata->irq = platform_get_irq(pdev, 0);
+83c880f79e88cc Patrick Bruenn      2017-12-18  303  	if (pdata->irq < 0)
+83c880f79e88cc Patrick Bruenn      2017-12-18  304  		return pdata->irq;
+83c880f79e88cc Patrick Bruenn      2017-12-18  305  
+83c880f79e88cc Patrick Bruenn      2017-12-18  306  	device_init_wakeup(&pdev->dev, 1);
+fbc5ee9a6955e6 Anson Huang         2019-04-11  307  	ret = dev_pm_set_wake_irq(&pdev->dev, pdata->irq);
+fbc5ee9a6955e6 Anson Huang         2019-04-11  308  	if (ret)
+fbc5ee9a6955e6 Anson Huang         2019-04-11  309  		dev_err(&pdev->dev, "failed to enable irq wake\n");
+83c880f79e88cc Patrick Bruenn      2017-12-18  310  
+83c880f79e88cc Patrick Bruenn      2017-12-18  311  	ret = clk_prepare_enable(pdata->clk);
+83c880f79e88cc Patrick Bruenn      2017-12-18  312  	if (ret)
+83c880f79e88cc Patrick Bruenn      2017-12-18  313  		return ret;
+83c880f79e88cc Patrick Bruenn      2017-12-18  314  	/* initialize glitch detect */
+83c880f79e88cc Patrick Bruenn      2017-12-18  315  	writel(SRTC_LPPDR_INIT, ioaddr + SRTC_LPPDR);
+83c880f79e88cc Patrick Bruenn      2017-12-18  316  
+83c880f79e88cc Patrick Bruenn      2017-12-18  317  	/* clear lp interrupt status */
+83c880f79e88cc Patrick Bruenn      2017-12-18  318  	writel(0xFFFFFFFF, ioaddr + SRTC_LPSR);
+83c880f79e88cc Patrick Bruenn      2017-12-18  319  
+83c880f79e88cc Patrick Bruenn      2017-12-18  320  	/* move out of init state */
+83c880f79e88cc Patrick Bruenn      2017-12-18  321  	writel((SRTC_LPCR_IE | SRTC_LPCR_NSA), ioaddr + SRTC_LPCR);
+83c880f79e88cc Patrick Bruenn      2017-12-18  322  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_IES);
+83c880f79e88cc Patrick Bruenn      2017-12-18  323  	if (ret) {
+83c880f79e88cc Patrick Bruenn      2017-12-18  324  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_IES\n");
+83c880f79e88cc Patrick Bruenn      2017-12-18  325  		clk_disable_unprepare(pdata->clk);
+83c880f79e88cc Patrick Bruenn      2017-12-18  326  		return ret;
+83c880f79e88cc Patrick Bruenn      2017-12-18  327  	}
+83c880f79e88cc Patrick Bruenn      2017-12-18  328  
+83c880f79e88cc Patrick Bruenn      2017-12-18  329  	/* move out of non-valid state */
+83c880f79e88cc Patrick Bruenn      2017-12-18  330  	writel((SRTC_LPCR_IE | SRTC_LPCR_NVE | SRTC_LPCR_NSA |
+83c880f79e88cc Patrick Bruenn      2017-12-18  331  		SRTC_LPCR_EN_LP), ioaddr + SRTC_LPCR);
+83c880f79e88cc Patrick Bruenn      2017-12-18  332  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_NVES);
+83c880f79e88cc Patrick Bruenn      2017-12-18  333  	if (ret) {
+83c880f79e88cc Patrick Bruenn      2017-12-18  334  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_NVES\n");
+83c880f79e88cc Patrick Bruenn      2017-12-18  335  		clk_disable_unprepare(pdata->clk);
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Unlikely, subtle stuff like this will just be left broken in drivers
-nobody cares about..
+83c880f79e88cc Patrick Bruenn      2017-12-18  336  		return ret;
+83c880f79e88cc Patrick Bruenn      2017-12-18  337  	}
+83c880f79e88cc Patrick Bruenn      2017-12-18  338  
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  339  	pdata->rtc = devm_rtc_allocate_device(&pdev->dev);
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  340  	if (IS_ERR(pdata->rtc))
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  341  		return PTR_ERR(pdata->rtc);
 
-Jason
+clk_disable_unprepare(pdata->clk);
+
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  342  
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  343  	pdata->rtc->ops = &mxc_rtc_ops;
+95fbfa14b431d4 Alexandre Belloni   2018-05-19  344  	pdata->rtc->range_max = U32_MAX;
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  345  
+83c880f79e88cc Patrick Bruenn      2017-12-18  346  	clk_disable(pdata->clk);
+83c880f79e88cc Patrick Bruenn      2017-12-18  347  	platform_set_drvdata(pdev, pdata);
+83c880f79e88cc Patrick Bruenn      2017-12-18  348  	ret =
+83c880f79e88cc Patrick Bruenn      2017-12-18  349  	    devm_request_irq(&pdev->dev, pdata->irq, mxc_rtc_interrupt, 0,
+83c880f79e88cc Patrick Bruenn      2017-12-18  350  			     pdev->name, &pdev->dev);
+83c880f79e88cc Patrick Bruenn      2017-12-18  351  	if (ret < 0) {
+83c880f79e88cc Patrick Bruenn      2017-12-18  352  		dev_err(&pdev->dev, "interrupt not available.\n");
+83c880f79e88cc Patrick Bruenn      2017-12-18  353  		clk_unprepare(pdata->clk);
+
+Should these be clk_disable_unprepare()?  I don't know.  Please tell
+me the rules on this if the warning is wrong.  I also haven't looked up
+exactly why this warning is displayed, I would have expected
+clk_unprepare() to silence it.
+
+83c880f79e88cc Patrick Bruenn      2017-12-18  354  		return ret;
+83c880f79e88cc Patrick Bruenn      2017-12-18  355  	}
+83c880f79e88cc Patrick Bruenn      2017-12-18  356  
+fdcfd854333be5 Bartosz Golaszewski 2020-11-09  357  	ret = devm_rtc_register_device(pdata->rtc);
+5490a1e018a4b4 Alexandre Belloni   2018-05-19  358  	if (ret < 0)
+83c880f79e88cc Patrick Bruenn      2017-12-18  359  		clk_unprepare(pdata->clk);
+
+Same.
+
+83c880f79e88cc Patrick Bruenn      2017-12-18  360  
+5490a1e018a4b4 Alexandre Belloni   2018-05-19 @361  	return ret;
+83c880f79e88cc Patrick Bruenn      2017-12-18  362  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
