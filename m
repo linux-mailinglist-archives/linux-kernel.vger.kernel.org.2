@@ -2,256 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735F938F710
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C0138F712
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhEYAp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:45:56 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:46078 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYApz (ORCPT
+        id S229962AbhEYArI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:47:08 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48992 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhEYArH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:45:55 -0400
-Received: by mail-pj1-f46.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so10984130pjb.4;
-        Mon, 24 May 2021 17:44:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6UpttTrEDW//beA5f8aGYwgPBwdFr5w0s1WSkdYBoYE=;
-        b=LxOEmZQjFVCpuMQEBwWre3LWFWTPYjVcgNUdqhYe7ln8U6WMxKcarxBUTIxrZjc1Yt
-         nwR6BTwFB6jziBK0lwAc9FxUl+b8OIpCdEt/PG2orvWGmFg3iPJfHCeYlFzWgQQTqhEL
-         oZAq/erWX/y93+AadNOn4r59tlyHi92ngHP6yHzr42N/+XyYrcV64SEyYvTg9aGO3K4d
-         r/l+dY3a6+1fPCGp+0tWOdGwQGdB4Nwe1NkfxdMNh8bOhxhTIH+Hv5e/XkY3GOMUILgq
-         d+s8Lny1y9DVpHYrHol6FdbS7AMNbBkPqmWRAqEPeqza0sR0jL+irSCCbexKsNm6kMk9
-         1YYg==
-X-Gm-Message-State: AOAM531stfHFS3StdFvEZIcNYjZoxaLQa6HNefvWBi6BlNvzI48DG6N5
-        tNUy+lO6C+MHUkzc1ezHlkU=
-X-Google-Smtp-Source: ABdhPJyQ1C8ZJbK+nxXRDB7eADNt7MKeNqY08J+MYJsc1ruAwnIuzivaLbUbjWyBnkHHjL/Mrn9ibA==
-X-Received: by 2002:a17:90b:8c5:: with SMTP id ds5mr28440147pjb.127.1621903465074;
-        Mon, 24 May 2021 17:44:25 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id u12sm10871089pfm.2.2021.05.24.17.44.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 17:44:23 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id B25B44025E; Tue, 25 May 2021 00:44:22 +0000 (UTC)
-Date:   Tue, 25 May 2021 00:44:22 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
-        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
-        jeyu@kernel.org, joe@perches.com, dong.menglong@zte.com.cn,
-        masahiroy@kernel.org, jack@suse.cz, axboe@kernel.dk, hare@suse.de,
-        gregkh@linuxfoundation.org, tj@kernel.org, song@kernel.org,
-        neilb@suse.de, akpm@linux-foundation.org, brho@google.com,
-        f.fainelli@gmail.com, wangkefeng.wang@huawei.com, arnd@arndb.de,
-        linux@rasmusvillemoes.dk, mhiramat@kernel.org, rostedt@goodmis.org,
-        vbabka@suse.cz, glider@google.com, pmladek@suse.com,
-        ebiederm@xmission.com, jojing64@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 2/3] init/do_cmounts.c: introduce 'user_root' for
- initramfs
-Message-ID: <20210525004422.GB4332@42.do-not-panic.com>
-References: <20210522113155.244796-1-dong.menglong@zte.com.cn>
- <20210522113155.244796-3-dong.menglong@zte.com.cn>
+        Mon, 24 May 2021 20:47:07 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14P0TYrd055599;
+        Tue, 25 May 2021 00:45:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=lnAFSHBTxW5UMXKLXydGk+vxlTrqq7/vyiRHilOxe5o=;
+ b=Z9uzd40UqhhE8TSA43tHVRmQELoznMZEAM8J1P7QWPSTBxvGgHBkojlm6+goglTEzpuc
+ 5hvu2Weq2KYH2btgoO8FP69wBJC8xACSeMDKurwZrWlwa2v1MNVSBGj1hreOqtkWGPR3
+ qrTphk0pUFlW4PAvnaPQb+wUoS+3wasyqzZa3r5+kfvbbmKATYZjdvWV8xbL1lWCTdnw
+ KzC4x7C7jyZG+VjV9Wfx7HJekJ6UYXUOrofxpi+09Mwuk4UzV/GtJylKeiLw/tR/vvvH
+ 3CiY1qcusS1O2VX3F5R/noTAMygoyZLxSOZ5pp4uY4PTHMVDcJN9PGBBY8+vBL5jvCtX Tw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 38q3q8v03j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 00:45:32 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14P0UA9x080133;
+        Tue, 25 May 2021 00:45:31 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+        by userp3020.oracle.com with ESMTP id 38qbqrpq2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 00:45:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nQzvJRCOQZ5pSuWFw2To/PCkpjlneCPAO1hQEqbRVcFVrdoIvdOCKfmRz80QxKJw7Dixf75Bl9I6OufcWvkM1g5ZHqGTyhcPIgk+0S9e8M5g81u6S6KV4Wc5/+x2Q7DQSPIyQQc0r988cnAmMk0JRL/Kmm/zyp2C/Gh2zBTa0XnF/nsxHggPJXFviBCrhiFPbMOrk16zejCRUX0V4a3ioXXQh9zhuxvIZoMlC343VlvSqxuF+JnIhRkgKNM1YlFynb1/a/8Qdsd9wfWPkVMbuN05clA5+m/Y36IGlZSuHwnVwy1nRu5G7yIfw9Ja/VkAPtfgKcDBXF5wLihfwT7t1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lnAFSHBTxW5UMXKLXydGk+vxlTrqq7/vyiRHilOxe5o=;
+ b=GHRojnGjyr1T3UvX+eO+nBYf+iVRcYqPxXHRdvlB9IVignl//5l1GljgoYIdQwzQFssVffFA8lY0S83Vhryzzd3CnNBGVDpHA2CvvaTNwkd+ZteHcd5ZGYImAMJ1aQO8tkUKvE2DKSD8j51NAYpL/viUpHxFjq35bFThm5Hz5zHJ8ciVDRy3LhNkIRbhTuTblwvC/VsqKMJSG2IlzN6FNQR2Jm9TAt+m92YJoZooONg+e6AHTJmGvPe4uRNx2ZyXf09gxbMA3BvwIjrUxuEBQSFi4iDF/1D7r2VnW4rIdBpjCZrg+2C+f5dnNJDYhK+o9FS/h7m56hD4Om0AaPP+nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lnAFSHBTxW5UMXKLXydGk+vxlTrqq7/vyiRHilOxe5o=;
+ b=z60GBUObL5emSSEZg09AxED5X5xKtWRvJELXXBIvxpzF+xXJhBF22Pw/KOG620aaoRHc/E9jz5vSXa7qH2/tf7eVePlcOqp9yOZS5+2wW9cx+otDE4pzILiROq0CJG55d6YceFXMI1NDMYhl4AHxnwjJL7adC+hIeMyXH8tWhBc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by SJ0PR10MB4702.namprd10.prod.outlook.com (2603:10b6:a03:2af::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Tue, 25 May
+ 2021 00:45:29 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90%9]) with mapi id 15.20.4150.027; Tue, 25 May 2021
+ 00:45:29 +0000
+Subject: Re: [PATCH v3] mm, hugetlb: fix resv_huge_pages underflow on
+ UFFDIO_COPY
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210521074433.931380-1-almasrymina@google.com>
+ <2a983662-ab90-0cdb-850c-eb50b0845b49@oracle.com>
+ <CAHS8izOB6OUsTwv2kvkW13+knrpXTmyA+igT3+jY+7SVwzt4PQ@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <78359cf0-6e28-2aaa-d17e-6519b117b3db@oracle.com>
+Date:   Mon, 24 May 2021 17:45:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <CAHS8izOB6OUsTwv2kvkW13+knrpXTmyA+igT3+jY+7SVwzt4PQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR18CA0066.namprd18.prod.outlook.com
+ (2603:10b6:300:39::28) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210522113155.244796-3-dong.menglong@zte.com.cn>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR18CA0066.namprd18.prod.outlook.com (2603:10b6:300:39::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Tue, 25 May 2021 00:45:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ec12f40-56ce-4ba5-7d79-08d91f16652d
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4702:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB470290B1F7CAF812D3F29348E2259@SJ0PR10MB4702.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +cAScRYuR2Hca5YkQaGfCU1RGpUQJyzi+EZ8JhXF/lXrst9EsjSs+GfSywhc1sh7sYRJJ5K4iVoTRY28G2+7zXwYXfxl/bEMN+azdkjS6oH1+98BpkVxciNzj4f9yRyp3x6BAvziPo3TCFl5K2gAR4bBVQ9/ZjhBZlwJsb+oPXJ2HYxq5TbGXT8kkaeXehhiNU6F3sSduwFc7NTo6sZjYYmXimZk2j3YF6zxP8F6SJ9E04lwrPukQpfzvNXIu1882hbLPDztWAdBezZm6B/JTYJHrGy+LVfs+0sM358xNX1YD7P5H2IQQclVj9QO0QqZAJp9kSUaw75Lu8sZa7QEtjziKQauN4WBPL2urUoCw4pzVXg+tjOLs627LfNQZY9dObfUQcxl42ckKJkOf2WDFy8CBauccZnsxtpyZ45VOCa3m/SVR4PNDZt3Mh3Ic5JN1313ZQBmUkZJAHRqHPPuqLAfgBMjmvbA/nk1n3adda6wzfA45tFWQd9AE8tTvfJvxqJCW8qJkSizF8daztMIHAJMK8qU8chk/XsvI1U2Mx6pXvLkRM95QnUGzZjzgqls5xm6NL0tjWRQWxcYSDKtyWy5qZ09z8M2FwNtBmr7LNjxBBaqwG5HCZhiy100oyS9ve/+dkjk6goVKoP6hckRFjTEgFr34wI7N//ic1emV1ISVhUYc3zpiObaf6LyjG4IpSfO2GUlWDsfeg0nxMqzsFGhEEWf4HettgL6oYXOIb6XVMkUPmDKP3Bodhdqn+H8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(39860400002)(136003)(396003)(54906003)(4326008)(44832011)(38100700002)(53546011)(186003)(16526019)(52116002)(36756003)(8936002)(38350700002)(26005)(2906002)(86362001)(66946007)(478600001)(19627235002)(66476007)(83380400001)(31696002)(316002)(31686004)(5660300002)(66556008)(956004)(16576012)(2616005)(6486002)(8676002)(6916009)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eXBHMncrMENmNHU0N2ZjVFZxU2gyd0IvM01VY3FPR1dxMFNFRXVZMllTTzh6?=
+ =?utf-8?B?MHJBaGlLTC9QY0k5WW9YTmxUcEFVWWhoMTRMSUN2Tk1zUUwzak5EZkd0Qnc5?=
+ =?utf-8?B?c3JCeFZnYVpMVmxrem1PakNjUDkzMk1UOUpDMmtEQnhqekZvVnZ3ZFhQOFZI?=
+ =?utf-8?B?ZFRFOUJEV2pBUExmRUVqT04wZ1NKaWNjUmlXQnBndGVWSnZ5dWlNMU4rU0U5?=
+ =?utf-8?B?MzZENnFBcGZJei80Z1JjbTNDQWVXZWJVejFacDRrQW5SVGQ2bHBQZ1kyWElx?=
+ =?utf-8?B?NDNsUkZoQVQ2VGpCRjZIT0d1N1RHblhGdTNkek5NenF0ODhrUU9PSit0dStW?=
+ =?utf-8?B?d05IZ3BFNkZVNitGbm5HRms1VmZFdmtaZ0hEUFY4NzcyakdhM3dSNUtwV3NB?=
+ =?utf-8?B?TzR3Tlh3V2hZNUxEZm0vcVZ6Z1B2M1pLb0h3UjFraTBoanZ6SzU5MkxvTE5Y?=
+ =?utf-8?B?WjVIWUdQWVRIYUZHdEZLTjRUVGRPQk1Eb05aaDdUY3ZvcEZSN3pKKzJtZXda?=
+ =?utf-8?B?QjJCZUhWc05MazluZmF2d0RQcW80VFNLR3RyWktGaDlZZnkzYitYWC84dmpk?=
+ =?utf-8?B?aVZ0Z0ppWENmMG81Y1VyeXRJL0JYMVgrRjExaFNJNHRoOE9qSzVvMHBYaENa?=
+ =?utf-8?B?TitYVGlaeVVpeFFwUFFTSXhodWVIU1o5ZEdWNHJHaTkrbUluR3A1NTZkSXJS?=
+ =?utf-8?B?Skt4Qi9LVzl1eTFtUVJwN2hPZ3hMeEswUHBFcE9GRGxzSHQ3MlJWWHplbGZH?=
+ =?utf-8?B?ZnJGNk96WFYvZkNaYlJncEhyZDFEa0w0NXAvTFNLeTVoSlFIMVBhUGM3dmlB?=
+ =?utf-8?B?ZzZDTXRZUEdYcjJYcmRiOFhleVFLb3NyRGMrWHNtVk1XRXZYMW9OVmNMVW1s?=
+ =?utf-8?B?d3dsTTY4VFAyL0NNbzlJMjVnbGJFYTVmTEM3SkJsZW9ZUEFCcHVvVGlMWS8r?=
+ =?utf-8?B?Y2IzQzg3Vk1XLzk0eEFlUXFqSjltTTBibmtPeTZCQ2w1WFVmYTcrcERQK25E?=
+ =?utf-8?B?MjdCWWJWalVvR1hZSVErbi9HWXF0OFI2NzZUbVU5RWw0ZCtuR1JoKzlxMGlp?=
+ =?utf-8?B?enlUZzcwaVNLaW12b282NklBNktPNDNoam9EcDFYUmhnS2VITytZYlRUa0Zq?=
+ =?utf-8?B?ZWJPR0N4Ryt4Rm5TaUhiZi9HZUJKQ1c2b2t6Vm5LUGZ0MEU4WFJrbTNFc082?=
+ =?utf-8?B?eHRXeFl2MXlMY2NJd29Wck1rbWZtY0dtK2Z1VTU3NkFwZmo5aWoyekxyeGc5?=
+ =?utf-8?B?a28xRXMwZkk0VW10UlIxVzFnVDlHZE9yL25wbisyOWVvZnZiVnA1aVdKSmJm?=
+ =?utf-8?B?SDhKbjFhaDgwbCtMOVJCQks3WHNESERmcGlEeHZ2RjNralZDeHkyZURhL3Jm?=
+ =?utf-8?B?SjFtbmgvQytYQ0dMQ2pvL0p5Z1Fwa0RjQ2ZQSitna1Q1SlhzMVdJamhVc2Uy?=
+ =?utf-8?B?RWpxU2RvaDNac2dqVyttMk5hWjNOQ1BGY2lOa2NWWEdYSjlBdzg4ZXFKT0Zq?=
+ =?utf-8?B?bUR6SU9ESTN5dUY2UHdNNkI3b3dvY1dTN0hkOHBpdlBQdDd1anpKYlY3N1dR?=
+ =?utf-8?B?SHFiQ3pLeWhiNnpFb3hJOHhhc29tNVlYbkYrNDZVUFB0QzVkMzVYRU1wYmZL?=
+ =?utf-8?B?TVVRUXZuSHloN2ZwNDRvc2thRXI4bjFBa05sbjdTVi81anczaHE0bytISG8z?=
+ =?utf-8?B?U0ViTE5tOFRJWDdHcEk2YTQ2QUNtemtIbWRhdGNWZDQxL0N1T2gwVFE3K3V3?=
+ =?utf-8?Q?EK+0s9NO1TePoH6/A02JomzqcO3cDAc0StO3W+1?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ec12f40-56ce-4ba5-7d79-08d91f16652d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 00:45:29.8131
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l9WiIgNXDzDt9AtlrKcULTXj5FnRW/YNn+iM5k/eNtFk1kz3sKDIJ+UqqgMnkfkaI7mrCpt7KYiaiViDN1d+rQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4702
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9994 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105250001
+X-Proofpoint-GUID: I-uLb5qP2tOJzKEB89XaEjfMo8_cjnDb
+X-Proofpoint-ORIG-GUID: I-uLb5qP2tOJzKEB89XaEjfMo8_cjnDb
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9994 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105250001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc'ing Josh as I think he might be interested in this.
-
-On Sat, May 22, 2021 at 07:31:54PM +0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On 5/24/21 5:11 PM, Mina Almasry wrote:
+>>> +                     if (!HPageRestoreReserve(page)) {
+>>> +                             if (unlikely(hugetlb_unreserve_pages(
+>>> +                                         mapping->host, idx, idx + 1, 1)))
+>>> +                                     hugetlb_fix_reserve_counts(
+>>> +                                             mapping->host);
+>>> +                     }
+>>
+>> I do not understand the need to call hugetlb_unreserve_pages().  The
+>> call to restore_reserve_on_error 'should' fix up the reserve map to
+>> align with restoring the reserve count in put_page/free_huge_page.
+>> Can you explain why that is there?
+>>
 > 
-> During the kernel initialization, the root of the mount tree is
-> created with file system type of ramfs or tmpfs.
-
-ramfs (initrd) 
-
-> While using initramfs as the root file system, cpio file is unpacked
-> into the rootfs. Thus, this rootfs is exactly what users see in user
-> space, and some problems arose: this rootfs has no parent mount,
-> which make it can't be umounted or pivot_root.
-> 'pivot_root' is used to change the rootfs and clean the old mounts,
-> and it is essential for some users, such as docker. Docker use
-> 'pivot_root' to change the root fs of a process if the current root
-> fs is a block device of initrd. However, when it comes to initramfs,
-> things is different: docker has to use 'chroot()' to change the root
-> fs, as 'pivot_root()' is not supported in initramfs.
+> AFAICT here is what happens for a given index *without* the call to
+> hugetlb_unreserve_pages():
 > 
-> The usage of 'chroot()' to create root fs for a container introduced
-> a lot problems.
+> 1. hugetlb_no_page() allocates a page consuming the reservation,
+> resv_huge_pages decrements.
+
+Ok
+
+> 2. remove_inode_hugepages() does remove_huge_page() and
+> hugetlb_unreserve_pages(). This removes the entry from the resv_map,
+> but does NOT increment back the resv_huge_pages. Because we removed
+> the entry, it looks like we have no reservation for this index.
+> free_huge_page() gets called on this page, and resv_huge_pages is not
+> incremented, I'm not sure why. This page should have come from the
+> reserves.
+
+This corresponds to a 'hole punch' operation.  When hugetlbfs hole punch
+was added, a design decision was made to not try to restore reservations.
+IIRC, this is because the hole punch is associated with the file and
+reservations are associated with mappings.  Trying to 'go back' to
+associated mappings and determine if a reservation should be restored
+would be a difficult exercise.
+
+> 3. hugetlb_mcopy_pte_atomic() gets called for this index. Because of
+> the prior call to hugetlb_unreserve_page(), there is no entry in the
+> resv_map for this index, which means it looks like we don't have a
+> reservation for this index. We allocate a page outside the reserves
+> (deferred_reservation=1, HPageRestoreReserve=0), add an entry into
+> resv_map, and don't modify resv_huge_pages.
+
+Ok
+
+> 4. The copy fails and we deallocate the page, since
+> HPageRestoreReserve==0 for this page, restore_reserve_on_error() does
+> nothing.
+
+Yes.  And this may be something we want to fix in the more general case.
+i.e. I believe this can happen in code paths other than
+hugetlb_mcopy_pte_atomic.  Rather than add special code here, I'll look
+into updating restore_reserve_on_error to handle this.  Currently
+restore_reserve_on_error only handles the case where HPageRestoreReserve
+flags is set.
+
+Thanks for explaining this!  I forgot about this 'special case' where
+there is not an entry in the reserve map for a shared mapping.
+
+-- 
+Mike Kravetz
+
+> 5. hugetlb_mcopy_pte_atomic() gets recalled with the temporary page,
+> and we allocate another page. Now, since we added an entry in the
+> resv_map in the previous allocation, it looks like we have a
+> reservation for this allocation. We allocate a page with
+> deferred_reserve=0 && HPageRestoreReserve=1, we decrement
+> resv_huge_pages. Boom, we decremented resv_huge_pages twice for this
+> index, never incremented it.
 > 
-> First, 'chroot()' can't clean the old mountpoints which inherited
-> from the host. It means that the mountpoints in host will have a
-> duplicate in every container. Users may remove a USB after it
-> is umounted successfully in the host. However, the USB may still
-> be mounted in containers, although it can't be seen by the 'mount'
-> commond. This means the USB is not released yet, and data may not
-> write back. Therefore, data lose arise.
->
-> Second, net-namespace leak is another problem. The net-namespace
-> of containers will be mounted in /var/run/docker/netns/ in host
-> by dockerd. It means that the net-namespace of a container will
-> be mounted in containers which are created after it. Things
-> become worse now, as the net-namespace can't be remove after
-> the destroy of that container, as it is still mounted in other
-> containers. If users want to recreate that container, he will
-> fail if a certain mac address is to be binded with the container,
-> as it is not release yet.
-
-I think you can clarify this a bit more with:
-
-  If using container platforms such as Docker, upon initialization it
-  wants to use pivot_root() so that currently mounted devices do not
-  propagate to containers. An example of value in this is that
-  a USB device connected prior to the creation of a containers on the
-  host gets disconnected after a container is created; if the
-  USB device was mounted on containers, but already removed and
-  umounted on the host, the mount point will not go away untill all
-  containers unmount the USB device.
-
-  Another reason for container platforms such as Docker to use pivot_root
-  is that upon initialization the net-namspace is mounted under
-  /var/run/docker/netns/ on the host by dockerd. Without pivot_root
-  Docker must either wait to create the network namespace prior to
-  the creation of containers or simply deal with leaking this to each
-  container.
-
-  pivot_root is supported if the rootfs is a ramfs (initrd), but its
-  not supported if the rootfs uses an initramfs (tmpfs). This means
-  container platforms today must resort to using ramfs (initrd) if
-  they want to pivot_root from the rootfs. A workaround to use chroot()
-  is not a clean viable option given every container will have a
-  duplicate of every mount point on the host.
-
-  In order to support using container platforms such as Docker on
-  all the supported rootfs types we must extend Linux to support
-  pivot_root on initramfs as well. This patch does the work to do
-  just that.
-
-So remind me.. so it would seem that if the rootfs uses a ramfs (initrd)
-that pivot_root works just fine. Why is that? Did someone add support
-for that? Has that always been the case that it works? If not, was it a
-consequence of how ramfs (initrd) works?
-
-And finally, why can't we share the same mechanism used for ramfs
-(initrd) for initramfs (tmpfs)?
-
-> In this patch, a second mount, which is called 'user root', is
-> created before 'cpio' unpacking. The file system of 'user root'
-> is exactly the same as rootfs, and both ramfs and tmpfs are
-> supported. Then, the 'cpio' is unpacked into the 'user root'.
-> Now, the rootfs has a parent mount, and pivot_root() will be
-> supported for initramfs.
-
-How about something like:
-
-  In order to support pivot_root on initramfs we introduce a second
-  "user_root" mount  which is created before we do the cpio unpacking.
-  The filesystem of the "user_root" mount is the same the rootfs.
-
-It begs the question, why add this infrastructure to suppor this for
-ramfs (initrd) if we only need this hack for initramfs (tmpfs)?
-
-> What's more, after this patch, 'rootflags' in boot cmd is supported
-> by initramfs. Therefore, users can set the size of tmpfs with
-> 'rootflags=size=1024M'.
-
-Why is that exactly?
-
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> ---
->  init/do_mounts.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++++
->  init/do_mounts.h |  7 ++++-
->  init/initramfs.c | 10 +++++++
->  3 files changed, 88 insertions(+), 1 deletion(-)
-> 
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index a78e44ee6adb..943cb58846fb 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -617,6 +617,78 @@ void __init prepare_namespace(void)
->  	init_chroot(".");
->  }
->  
-> +#ifdef CONFIG_TMPFS
-> +static __init bool is_tmpfs_enabled(void)
-> +{
-> +	return (!root_fs_names || strstr(root_fs_names, "tmpfs")) &&
-> +	       !saved_root_name[0];
-> +}
-> +#endif
-> +
-> +static __init bool is_ramfs_enabled(void)
-> +{
-> +	return true;
-> +}
-> +
-> +struct fs_user_root {
-> +	bool (*enabled)(void);
-> +	char *dev_name;
-
-What's the point of dev_name if its never set?
-
-> +	char *fs_name;
-> +};
-> +
-> +static struct fs_user_root user_roots[] __initdata = {
-> +#ifdef CONFIG_TMPFS
-> +	{.fs_name = "tmpfs", .enabled = is_tmpfs_enabled },
-> +#endif
-> +	{.fs_name = "ramfs", .enabled = is_ramfs_enabled }
-> +};
-> +static struct fs_user_root * __initdata user_root;
-> +
-> +/* Mount the user_root on '/'. */
-> +int __init mount_user_root(void)
-> +{
-> +	return do_mount_root(user_root->dev_name,
-
-See, isn't dev_name here always NULL?
-
-> +			     user_root->fs_name,
-> +			     root_mountflags & ~MS_RDONLY,
-> +			     root_mount_data);
-> +}
-> +
-> +/*
-> + * This function is used to chroot to new initramfs root that
-> + * we unpacked on success.
-
-Might be a good place to document that we do this so folks can
-pivot_root on rootfs, and why that is desirable (mentioned above on the
-commit log edits I suggested). Otherwise I don't think its easy for a
-reader of the code to understand why we are doing all this work.
-
-> It will chdir to '/' and umount
-> + * the secound mount on failure.
-> + */
-> +void __init end_mount_user_root(bool succeed)
-> +{
-> +	if (!succeed)
-> +		goto on_failed;
-> +
-> +	if (!ramdisk_exec_exist(false))
-> +		goto on_failed;
-> +
-> +	init_mount(".", "/", NULL, MS_MOVE, NULL);
-> +	init_chroot(".");
-> +	return;
-> +
-> +on_failed:
-> +	init_chdir("/");
-> +	init_umount("/..", 0);
-> +}
-
-Is anything extra needed on shutdown / reboot?
-
-  Luis
+> To fix this, in step 4, when I deallocate a page, I check
+> HPageRestoreReserve(page). If HPageRestoreReserve=0, then this
+> reservation was consumed and deallocated before, and so I need to
+> remove the entry from the resv_map.
