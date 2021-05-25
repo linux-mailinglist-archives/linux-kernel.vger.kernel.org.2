@@ -2,175 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D3F38FA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB47A38FA90
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhEYGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231235AbhEYGNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:13:18 -0400
+Received: from muru.com ([72.249.23.125]:60040 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230406AbhEYGNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 02:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhEYGNL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:13:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0038C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:11:41 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1llQHu-0003jC-9d; Tue, 25 May 2021 08:11:34 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1llQHr-0001vZ-U0; Tue, 25 May 2021 08:11:31 +0200
-Date:   Tue, 25 May 2021 08:11:31 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel@pengutronix.de
-Subject: Re: [PATCH v3 2/2] clocksource: Add support for Xilinx AXI Timer
-Message-ID: <20210525061131.omrbcdewf4z75ib7@pengutronix.de>
-References: <20210511191239.774570-1-sean.anderson@seco.com>
- <20210511191239.774570-2-sean.anderson@seco.com>
- <d4bb7b5d-9f38-cf60-fb0b-18f8e0ca2b1e@xilinx.com>
- <5f960034-174d-0ed8-9f52-3d5fde90e16a@seco.com>
- <9f227f96-a310-0fbd-fd34-91eb386306b9@xilinx.com>
- <7a06cf46-0f85-1edb-ca08-abd7b2543ad9@seco.com>
- <41542760-3967-4f9a-0f0c-1206e03ff494@xilinx.com>
- <d206a399-454e-d9c5-e2d3-337d098ed7aa@seco.com>
- <2296d4e5-717a-0470-d487-e0924cf6c076@xilinx.com>
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 09706807E;
+        Tue, 25 May 2021 06:11:50 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCHv3] bus: ti-sysc: Fix am335x resume hang for usb otg module
+Date:   Tue, 25 May 2021 09:11:42 +0300
+Message-Id: <20210525061142.28794-1-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wn37yka2xnftryhr"
-Content-Disposition: inline
-In-Reply-To: <2296d4e5-717a-0470-d487-e0924cf6c076@xilinx.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On am335x, suspend and resume only works once, and the system hangs if
+suspend is attempted again. However, turns out suspend and resume works
+fine multiple times if the USB OTG driver for musb controller is loaded.
 
---wn37yka2xnftryhr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The issue is caused my the interconnect target module losing context
+during suspend, and it needs a restore on resume to be reconfigure again
+as debugged earlier by Dave Gerlach <d-gerlach@ti.com>.
 
-Hello Sean, hello Michal,
+There are also other modules that need a restore on resume, like gpmc as
+noted by Dave. So let's add a common way to restore an interconnect
+target module based on a quirk flag. For now, let's enable the quirk for
+am335x otg only to fix the suspend and resume issue.
 
-On Mon, May 24, 2021 at 09:00:51AM +0200, Michal Simek wrote:
-> On 5/20/21 10:13 PM, Sean Anderson wrote:
-> > On 5/19/21 3:24 AM, Michal Simek wrote:
-> >> On 5/18/21 12:15 AM, Sean Anderson wrote:
-> >>> This could be deprecated, but cannot be removed since existing device
-> >>> trees (e.g. qemu) have neither clocks nor clock-frequency properties.
-> >>
-> >> Rob: Do we have any obligation to keep properties for other projects?
+As gpmc is not causing hangs based on tests with BeagleBone, let's patch
+gpmc separately. For gpmc, we also need a hardware reset done before
+restore according to Dave.
 
-If a binding is in the wild and used to be documented, it has to stay.
+To reinit the modules, we decouple system suspend from PM runtime. We
+replace calls to pm_runtime_force_suspend() and pm_runtime_force_resume()
+with direct calls to internal functions and rely on the driver internal
+state. There no point trying to handle complex system suspend and resume
+quirks via PM runtime.
 
-> >>>> 4. Make driver as module
-> >>>> 5. Do whatever changes you want before adding pwm support
-> >>>> 6. Extend DT binding doc for PWM support
-> >>>> 7. Add PWM support
-> >>>
-> >>> Frankly, I am inclined to just leave the microblaze timer as-is. The =
-PWM
-> >>> driver is completely independent. I have already put too much effort =
-into
-> >>> this driver, and I don't have the energy to continue working on the
-> >>> microblaze timer.
-> >>
-> >> I understand. I am actually using axi timer as pwm driver in one of my
-> >> project but never had time to upstream it because of couple of steps a=
-bove.
-> >> We need to do it right based on steps listed above. If this is too much
-> >> work it will have to wait. I will NACK all attempts to add separate
-> >> driver for IP which we already support in the tree.
-> >=20
-> > 1. Many timers have separate clocksource and PWM drivers. E.g. samsung,
-> > =A0=A0 renesas TPU, etc. It is completely reasonable to keep separate
-> > =A0=A0 drivers for these purposes. There is no Linux requirement that e=
-ach
-> > =A0=A0 device have only one driver, especially if it has multiple funct=
-ions
-> > =A0=A0 or ways to be configured.
->=20
-> It doesn't mean that it was done properly and correctly. Code
-> duplication is bad all the time.
+This is issue should have already been noticed with commit 1819ef2e2d12
+("bus: ti-sysc: Use swsup quirks also for am335x musb") when quirk
+handling was added for am335x otg for swsup. But the issue went unnoticed
+as having musb driver loaded hides the issue, and suspend and resume works
+once without the driver loaded.
 
-IMHO it's not so much about code duplication. Yes, code duplication is
-bad and should be prevented if possible. But it's more important to not
-introduce surprises. So I think it should be obvious from reading the
-device tree source which timer is used to provide the PWM. I don't care
-much if this is from an extra property (like xilinx,provide-pwm),
-overriding the compatible or some other explicit mechanism. IIUC in this
-suggested patch the selection is implicit and so this isn't so nice.
+Fixes: 1819ef2e2d12 ("bus: ti-sysc: Use swsup quirks also for am335x musb")
+Suggested-by: Dave Gerlach <d-gerlach@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
 
-> > 2. If you want to do work on a driver, I'm all for it. However, if you
-> > =A0=A0 have not yet submitted that work to the list, you should not gate
-> > =A0=A0 other work behind it. Saying that X feature must be gated behind=
- Y
-> > =A0=A0 *even if X works completely independently of Y* is just stifling
-> > =A0=A0 development.
->=20
-> I gave you guidance how I think this should be done. I am not gating you
-> from this work. Your patch is not working on Microblaze arch which is
-> what I maintain. And I don't want to go the route that we will have two
-> drivers for the same IP without integration. We were there in past and
-> it is just pain.
-> I am expecting that PWM guys will guide how this should be done
-> properly. I haven't heard any guidance on this yet.
-> Thierry/Uwe: Any comment?
+Changes since v2:
+- Initialize error to 0 as noted by kernel test robot <lkp@intel.com>
 
-Not sure I can and want to provide guidance here. This is not Perl, but
-still TIMTOWTDI. If it was me who cared here, I'd look into the
-auxiliary bus (Documentation/driver-api/auxiliary_bus.rst) to check if
-it can help to solve this problem.
-=20
-> > 3. There is a clear desire for a PWM driver for this device. You, I, and
-> > =A0=A0 Alvaro have all written separate drivers for this device because=
- we
-> > =A0=A0 want to use it as a PWM. By preventing merging this driver, you =
-are
-> > =A0=A0 encouraging duplicate effort by the next person who wants to use=
- this
-> > =A0=A0 device as a PWM, and sees that there is no driver in the tree.
->=20
-> We should do it cleanly that it will be easy to maintain which is not by
-> creating two separate drivers or by switching to completely new driver.
+Changes since v1:
+- Add separate sysc_reinit_module() so also cpu_pm can eventually use it
 
-+1
+---
+ drivers/bus/ti-sysc.c                 | 53 +++++++++++++++++++++++++--
+ include/linux/platform_data/ti-sysc.h |  1 +
+ 2 files changed, 51 insertions(+), 3 deletions(-)
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---wn37yka2xnftryhr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCslRAACgkQwfwUeK3K
-7Ak7YQf/TpIJXkF7drwqBVWLD73Z149/8vSGvkDfPtqJrQq3/B+cxJ2dd9+ehIPH
-3HmLTLu2Uv/BUylaRgFZj8FH0vszNMgRyskYTdbyGgrXti63GhAJDad1C/o8xOax
-92rsl/YE6PqHz6htoyjjq3XxPjKZyeuWtYAQop+IsKYy06p+H0N3d5A+Rdx/YVwC
-IWYfKTrFejAIHADFJuWSesyr8AVjiz5hGq6l8BUd7vkpZ8QS3G3KV0j4aYhgPTpe
-Bai+4VHoArdJYF/jBIcBzT5Oxa8W8xtie1Nu5O5E3XTj6gXuzpxPxCwudML62K85
-dBVqeYouJgmtxoicWFMRXQ0dFmWWMQ==
-=DZ2s
------END PGP SIGNATURE-----
-
---wn37yka2xnftryhr--
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1334,6 +1334,34 @@ static int __maybe_unused sysc_runtime_resume(struct device *dev)
+ 	return error;
+ }
+ 
++static int sysc_reinit_module(struct sysc *ddata, bool leave_enabled)
++{
++	struct device *dev = ddata->dev;
++	int error;
++
++	/* Disable target module if it is enabled */
++	if (ddata->enabled) {
++		error = sysc_runtime_suspend(dev);
++		if (error)
++			dev_warn(dev, "reinit suspend failed: %i\n", error);
++	}
++
++	/* Enable target module */
++	error = sysc_runtime_resume(dev);
++	if (error)
++		dev_warn(dev, "reinit resume failed: %i\n", error);
++
++	if (leave_enabled)
++		return error;
++
++	/* Disable target module if no leave_enabled was set */
++	error = sysc_runtime_suspend(dev);
++	if (error)
++		dev_warn(dev, "reinit suspend failed: %i\n", error);
++
++	return error;
++}
++
+ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
+ {
+ 	struct sysc *ddata;
+@@ -1344,12 +1372,18 @@ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
+ 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
+ 		return 0;
+ 
+-	return pm_runtime_force_suspend(dev);
++	if (!ddata->enabled)
++		return 0;
++
++	ddata->needs_resume = 1;
++
++	return sysc_runtime_suspend(dev);
+ }
+ 
+ static int __maybe_unused sysc_noirq_resume(struct device *dev)
+ {
+ 	struct sysc *ddata;
++	int error = 0;
+ 
+ 	ddata = dev_get_drvdata(dev);
+ 
+@@ -1357,7 +1391,19 @@ static int __maybe_unused sysc_noirq_resume(struct device *dev)
+ 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
+ 		return 0;
+ 
+-	return pm_runtime_force_resume(dev);
++	if (ddata->cfg.quirks & SYSC_QUIRK_REINIT_ON_RESUME) {
++		error = sysc_reinit_module(ddata, ddata->needs_resume);
++		if (error)
++			dev_warn(dev, "noirq_resume failed: %i\n", error);
++	} else if (ddata->needs_resume) {
++		error = sysc_runtime_resume(dev);
++		if (error)
++			dev_warn(dev, "noirq_resume failed: %i\n", error);
++	}
++
++	ddata->needs_resume = 0;
++
++	return error;
+ }
+ 
+ static const struct dev_pm_ops sysc_pm_ops = {
+@@ -1468,7 +1514,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 	SYSC_QUIRK("usb_otg_hs", 0, 0x400, 0x404, 0x408, 0x00000050,
+ 		   0xffffffff, SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("usb_otg_hs", 0, 0, 0x10, -ENODEV, 0x4ea2080d, 0xffffffff,
+-		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY |
++		   SYSC_QUIRK_REINIT_ON_RESUME),
+ 	SYSC_QUIRK("wdt", 0, 0, 0x10, 0x14, 0x502a0500, 0xfffff0f0,
+ 		   SYSC_MODULE_QUIRK_WDT),
+ 	/* PRUSS on am3, am4 and am5 */
+diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
+--- a/include/linux/platform_data/ti-sysc.h
++++ b/include/linux/platform_data/ti-sysc.h
+@@ -50,6 +50,7 @@ struct sysc_regbits {
+ 	s8 emufree_shift;
+ };
+ 
++#define SYSC_QUIRK_REINIT_ON_RESUME	BIT(27)
+ #define SYSC_QUIRK_GPMC_DEBUG		BIT(26)
+ #define SYSC_MODULE_QUIRK_ENA_RESETDONE	BIT(25)
+ #define SYSC_MODULE_QUIRK_PRUSS		BIT(24)
+-- 
+2.31.1
