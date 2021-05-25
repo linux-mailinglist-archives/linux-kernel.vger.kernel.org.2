@@ -2,195 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4523D39008F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006B0390084
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhEYMFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhEYMFn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:05:43 -0400
-X-Greylist: delayed 180 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 25 May 2021 05:04:12 PDT
-Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C95C061574;
-        Tue, 25 May 2021 05:04:12 -0700 (PDT)
-Received: from vla1-fdfb804fb3f3.qloud-c.yandex.net (vla1-fdfb804fb3f3.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3199:0:640:fdfb:804f])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id DC3DA2E1AA4;
-        Tue, 25 May 2021 15:01:05 +0300 (MSK)
-Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
-        by vla1-fdfb804fb3f3.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id JpeZ6PSFUr-151GRSB9;
-        Tue, 25 May 2021 15:01:05 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1621944065; bh=aigr+WKrVt1ocq4yhrHl8FrUviBzCQg0datyEmAK6MU=;
-        h=In-Reply-To:References:Date:Message-ID:From:To:Subject:Cc;
-        b=05DzBrnCTJBST4u8yJtJY14DfmAjCewlI0oVUs8k2OlddnnIWo+7568w7sJmdeJQx
-         oXH2MFq1s0dNZHQh8u3TLbs8L5cywUr7hYA/LXGaz/W3o2551FPJRZHclH09uY0kGc
-         XrtWY3voIPVjZh2Y4riTco9taio0npFVdBqjZyKE=
-Authentication-Results: vla1-fdfb804fb3f3.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:7209::1:15])
-        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id pDtZrO7kJP-15oWwC24;
-        Tue, 25 May 2021 15:01:05 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 1/1] virtio: disable partitions scanning for no partitions
- block
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210520133908.98891-1-damtev@yandex-team.ru>
- <20210520133908.98891-2-damtev@yandex-team.ru>
- <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
- <90021621883891@mail.yandex-team.ru>
- <21b08ea7-71c6-1b4b-3833-1c51d0e1d310@redhat.com>
-From:   Iurii Kamenev <damtev@yandex-team.ru>
-Message-ID: <d7665bc7-1806-ba88-9d7d-0c1352df43d3@yandex-team.ru>
-Date:   Tue, 25 May 2021 15:00:37 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        id S232239AbhEYMFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:05:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56968 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231912AbhEYMFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:05:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621944211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3qsCXFwi67woEmwSeG1dK26F8iNNNRcOFskFnFhj7F0=;
+        b=ttCVl5vS4VN40p3dHXKHJt98jl6Kb0bOSYug4svI1qj7vS/F5+UWdWWT6qirXFLaQRgSLb
+        lt4XfFJasJSVB/XouPZDll26Q6OHzENre8z06DAB7lNpon0fBy40VtIr49saqLjHA/xqgq
+        3d+tdSn2GpuMmDiEA+gST3n+pXTiWzg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621944211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3qsCXFwi67woEmwSeG1dK26F8iNNNRcOFskFnFhj7F0=;
+        b=B+I2e5kjYnqyTyQJ3H6BFiKTYl9t41gP+CD7Nvu32cDqDQlkJxCCQxsG/FEj2vr6ihOYEc
+        tYAcPYNB8Hev+JDQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35C46AE1F;
+        Tue, 25 May 2021 12:03:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A1873DA70B; Tue, 25 May 2021 14:00:54 +0200 (CEST)
+Date:   Tue, 25 May 2021 14:00:54 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH 5.12 038/127] btrfs: zoned: fix parallel compressed writes
+Message-ID: <20210525120054.GU7604@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20210524152334.857620285@linuxfoundation.org>
+ <20210524152336.139215075@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <21b08ea7-71c6-1b4b-3833-1c51d0e1d310@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: ru
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524152336.139215075@linuxfoundation.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your remark. I guess it is possible, I will try to rewrite it 
-that way.
+On Mon, May 24, 2021 at 05:25:55PM +0200, Greg Kroah-Hartman wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> commit 764c7c9a464b68f7c6a5a9ec0b923176a05e8e8f upstream.
+> 
+> When multiple processes write data to the same block group on a
+> compressed zoned filesystem, the underlying device could report I/O
+> errors and data corruption is possible.
+> 
+> This happens because on a zoned file system, compressed data writes
+> where sent to the device via a REQ_OP_WRITE instead of a
+> REQ_OP_ZONE_APPEND operation. But with REQ_OP_WRITE and parallel
+> submission it cannot be guaranteed that the data is always submitted
+> aligned to the underlying zone's write pointer.
+> 
+> The change to using REQ_OP_ZONE_APPEND instead of REQ_OP_WRITE on a
+> zoned filesystem is non intrusive on a regular file system or when
+> submitting to a conventional zone on a zoned filesystem, as it is
+> guarded by btrfs_use_zone_append.
+> 
+> Reported-by: David Sterba <dsterba@suse.com>
+> Fixes: 9d294a685fbc ("btrfs: zoned: enable to mount ZONED incompat flag")
+> CC: stable@vger.kernel.org # 5.12.x: e380adfc213a13: btrfs: zoned: pass start block to btrfs_use_zone_append
+> CC: stable@vger.kernel.org # 5.12.x
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-24.05.2021 22:41, Paolo Bonzini пишет:
-> On 24/05/21 21:34, Юрий Каменев wrote:
->> Hi
->>
->>     Is your goal to avoid accidentally detecting partitions because it's
->>     confusing when that happens?
->>
->> The main goal is reducing the kernel start time. It might be use 
->> useful in tiny systems that use, for example, squashfs images with 
->> certainly no partitions. Disabling partitions scanning for these 
->> images can save a few tens of milliseconds which can be a significant 
->> acceleration for starting such systems.
->
-> Perhaps that could be configured in the image, for example in the 
-> kernel command line?
->
-> Paolo
->
->> 24.05.2021, 17:29, "Stefan Hajnoczi" <stefanha@redhat.com>:
->>
->>     On Thu, May 20, 2021 at 04:39:08PM +0300, Yury Kamenev wrote:
->>
->>     Hi,
->>     Is there a VIRTIO spec change for the new VIRTIO_BLK_F_NO_PS feature
->>     bit? Please send one:
->> https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio#feedback
->> <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio#feedback>
->>
->>     GENHD_FL_NO_PART_SCAN is not used much in other drivers. This 
->> makes me
->>     wonder if the same use case is addressed through other means with 
->> SCSI,
->>     NVMe, etc devices. Maybe Christoph or Jens can weigh in on whether
->>     adding a bit to disable partition scanning for a virtio-blk fits 
->> into
->>     the big picture?
->>
->>     Is your goal to avoid accidentally detecting partitions because it's
->>     confusing when that happens?
->>
->>     VIRTIO is currently undergoing auditing and changes to support 
->> untrusted
->>     devices. From that perspective adding a device feature bit to 
->> disable
->>     partition scanning does not help protect the guest from an untrusted
->>     disk. The guest cannot trust the device, instead the guest itself 
->> would
->>     need to be configured to avoid partition scanning of untrusted 
->> devices.
->>
->>     Stefan
->>
->>           Signed-off-by: Yury Kamenev <damtev@yandex-team.ru
->>         <mailto:damtev@yandex-team.ru>>
->>           ---
->>            drivers/block/virtio_blk.c | 6 ++++++
->>            include/uapi/linux/virtio_blk.h | 1 +
->>            2 files changed, 7 insertions(+)
->>
->>           diff --git a/drivers/block/virtio_blk.c
->>         b/drivers/block/virtio_blk.c
->>           index b9fa3ef5b57c..17edcfee2208 100644
->>           --- a/drivers/block/virtio_blk.c
->>           +++ b/drivers/block/virtio_blk.c
->>           @@ -799,6 +799,10 @@ static int virtblk_probe(struct
->>         virtio_device *vdev)
->>                    vblk->disk->flags |= GENHD_FL_EXT_DEVT;
->>                    vblk->index = index;
->>
->>           + /*Disable partitions scanning for no-partitions block*/
->>
->>
->>     Formatting cleanup and rephrasing:
->>
->>        /* Disable partition scanning for devices with no partitions */
->>
->>           + if (virtio_has_feature(vdev, VIRTIO_BLK_F_NO_PS))
->>
->>
->>     I suggest user a more obvious name:
->>
->>        VIRTIO_BLK_F_NO_PART_SCAN
->>
->>           + vblk->disk->flags |= GENHD_FL_NO_PART_SCAN;
->>           +
->>                    /* configure queue flush support */
->>                    virtblk_update_cache_mode(vdev);
->>
->>           @@ -977,6 +981,7 @@ static unsigned int features_legacy[] = {
->>                    VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
->>                    VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY,
->>         VIRTIO_BLK_F_CONFIG_WCE,
->>                    VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD,
->>         VIRTIO_BLK_F_WRITE_ZEROES,
->>           + VIRTIO_BLK_F_NO_PS,
->>            }
->>            ;
->>            static unsigned int features[] = {
->>           @@ -984,6 +989,7 @@ static unsigned int features[] = {
->>                    VIRTIO_BLK_F_RO, VIRTIO_BLK_F_BLK_SIZE,
->>                    VIRTIO_BLK_F_FLUSH, VIRTIO_BLK_F_TOPOLOGY,
->>         VIRTIO_BLK_F_CONFIG_WCE,
->>                    VIRTIO_BLK_F_MQ, VIRTIO_BLK_F_DISCARD,
->>         VIRTIO_BLK_F_WRITE_ZEROES,
->>           + VIRTIO_BLK_F_NO_PS,
->>            };
->>
->>            static struct virtio_driver virtio_blk = {
->>           diff --git a/include/uapi/linux/virtio_blk.h
->>         b/include/uapi/linux/virtio_blk.h
->>           index d888f013d9ff..f197d07afb05 100644
->>           --- a/include/uapi/linux/virtio_blk.h
->>           +++ b/include/uapi/linux/virtio_blk.h
->>           @@ -40,6 +40,7 @@
->>            #define VIRTIO_BLK_F_MQ 12 /* support more than one vq */
->>            #define VIRTIO_BLK_F_DISCARD 13 /* DISCARD is supported */
->>            #define VIRTIO_BLK_F_WRITE_ZEROES 14 /* WRITE ZEROES is
->>         supported */
->>           +#define VIRTIO_BLK_F_NO_PS 16 /* No partitions */
->>
->>            /* Legacy feature bits */
->>            #ifndef VIRTIO_BLK_NO_LEGACY
->>           --
->>           2.24.3 (Apple Git-128)
->>
->
+We found a bug in this patch, please drop it from 5.12 queue.
