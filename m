@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5FE38F7DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244EA38F7DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhEYCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 22:06:22 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:29125 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhEYCGV (ORCPT
+        id S230075AbhEYCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 22:06:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46763 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhEYCGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 22:06:21 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14P1pJMg007540;
-        Tue, 25 May 2021 09:51:19 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 10:04:16 +0800
-Date:   Tue, 25 May 2021 10:04:13 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>
-CC:     Tao Ren <rentao.bupt@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        Steven Lee <steven_lee@aspeedtech.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
- AST2600
-Message-ID: <20210525020412.GA2489@aspeedtech.com>
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
- <20210519080436.18975-2-jamin_lin@aspeedtech.com>
- <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
- <20210520033140.GA3656@aspeedtech.com>
- <20210521020033.GB19153@taoren-ubuntu-R90MNF91>
- <20210524015310.GA2591@aspeedtech.com>
- <CACPK8Xd5HTNAR8MpQPWGp+-t9ixz2r3JYDjr6jUS+9ExyB94zg@mail.gmail.com>
+        Mon, 24 May 2021 22:06:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621908273; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=KBM7kBuRBC+qyoViVJY/iIDapiWA7HFCDog78oJunKs=;
+ b=vqrfy6pvJ7opIjA4q17wC0v1r6fZLPewj8XMXMQX4oOhY6fYaF29F+QGyt1i5l92mk7dvAJm
+ MqR/Rbr5Sh8LtcSKmsOAUZFJoV3Qe71gEqvvPvT5167jL6cars9eEeM3/jVbyaQRYpswaBWs
+ 5s7zlQEYqTBe4vzB8M370vzPCY0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60ac5b285f788b52a56016bf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 02:04:24
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54854C4360C; Tue, 25 May 2021 02:04:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E04CC4338A;
+        Tue, 25 May 2021 02:04:23 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <CACPK8Xd5HTNAR8MpQPWGp+-t9ixz2r3JYDjr6jUS+9ExyB94zg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14P1pJMg007540
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 25 May 2021 10:04:23 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 5/6] scsi: ufs: Let host_sem cover the entire system
+ suspend/resume
+In-Reply-To: <19b44731-1a4f-c88c-58fd-05eca5df2c2e@acm.org>
+References: <1621846046-22204-1-git-send-email-cang@codeaurora.org>
+ <1621846046-22204-6-git-send-email-cang@codeaurora.org>
+ <19b44731-1a4f-c88c-58fd-05eca5df2c2e@acm.org>
+Message-ID: <423285a089b7dc3fcfcb169e0a553e8a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/24/2021 02:34, Joel Stanley wrote:
-> On Mon, 24 May 2021 at 01:53, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
-> >
-> > The 05/21/2021 02:00, Tao Ren wrote:
-> > > Hi Jamin,
-> > >
-> > > On Thu, May 20, 2021 at 11:31:41AM +0800, Jamin Lin wrote:
-> > > > The 05/19/2021 22:59, Joel Stanley wrote:
-> > > > > On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
-> > > > > >
-> > > > > > The register definition between AST2600 A2 and A3 is different.
-> > > > > > This patch avoid new registers definition of AST2600 to use
-> > > > > > this driver. We will submit the path for the new registers
-> > > > > > definition of AST2600.
-> > > > >
-> > > > > The AST2600 v9 datasheet says that bit 2 selects between old and new
-> > > > > register sets, and that the old register set is the default.
-> > > > >
-> > > > > Has the default changed for the A3?, and the datasheet is incorrect?
-> > > > >
-> > > > > Does the A3 still support the old register set?
-> > > > >
-> > > > We suggest user to use the new i2c driver for AST2600 and we will sumbit
-> > > > it. This driver is used to AST2500 and AST2400 SOCs. Change this
-> > > > driver to check global register of i2c to avoid user build the wrong driver.
-> > >
-> > > If I understand correctly, the answer implies old register set is still
-> > > supported in A3 although aspeed suggest people using the new driver/mode?
-> > >
-> > > Can you please share more context behind the suggestion? Such as new
-> > > register mode has better performance? Or some known issues that were
-> > > deteted in old mode are fixed in new register mode?
-> > >
-> > Yes, AST2600 A1, A2 and A3 support both old and new register set. The difference
-> > between old and new register set are the register address and supported registers.
-> > User can choose to use both old and new register set. However, ASPEED would like to
-> > change new register set by default for AST2600.
-> 
-> We can certainly make the driver for the new register set the default
-> for AST2600 when the new driver is merged.
-> 
-> I disagree that we should introduce a run time check to fail to probe
-> the old driver. Please do not merge this patch.
-> 
-> Please focus your effort on getting the new driver merged instead.
-> 
-> Cheers,
-> 
-> Joel
+Hi Bart,
 
-Thanks for your suggestion. I will submit the new i2c driver for AST2600
-soon.
-Jamin
+On 2021-05-25 00:56, Bart Van Assche wrote:
+> On 5/24/21 1:47 AM, Can Guo wrote:
+>> UFS error handling now is doing more than just re-probing, but also 
+>> sending
+>> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
+>> which
+>> may change runtime status of scsi devices. To protect system 
+>> suspend/resume
+>> from being disturbed by error handling, move the host_sem from wl pm 
+>> ops
+>> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+> 
+> Other SCSI LLDs can perform error handling while system suspend/resume
+> is in progress. Why can't the UFS driver do this?
+
+I don't know about other SCSI LLDs, but UFS error handling is basically
+doing a re-probe/re-initialization to UFS device. Having UFS error 
+handling
+running in parallel with system suspend/resume, neither of them will end
+up well.
+
+I didn't design all this, it is just happening, I am trying to fix it 
+and
+semaphore works well for me. I am really glad to see someone cares about
+error handling and fix it with better ideas (maybe using WQ_FREEZABLE) 
+later.
+
+> 
+> Additionally, please document what the purpose of host_sem is before
+> making any changes to how host_sem is used. The only documentation I
+> have found of host_sem is the following: "* @host_sem: semaphore used 
+> to
+> serialize concurrent contexts". To me that text is less than useful
+> since semaphores are almost always used to serialize concurrent code.
+> 
+
+Sure, host_sem is actually preventing cocurrency happens among any of
+contexts, such as sysfs access, shutdown, error handling, system
+suspend/resume and async probe, I will update its message in next 
+version.
+
+Thanks,
+
+Can Guo.
+
+> Thanks,
+> 
+> Bart.
