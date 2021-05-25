@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA60138FBAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E94638FBAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhEYH3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
+        id S231657AbhEYHaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbhEYH33 (ORCPT
+        with ESMTP id S231263AbhEYHat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:29:29 -0400
-Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFAC061574;
-        Tue, 25 May 2021 00:28:00 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=bute.mt.lv)
-        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <gatis@mikrotik.com>)
-        id 1llRTk-0006jO-7Y; Tue, 25 May 2021 10:27:52 +0300
+        Tue, 25 May 2021 03:30:49 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD995C061574;
+        Tue, 25 May 2021 00:29:20 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id h20so13996978qko.11;
+        Tue, 25 May 2021 00:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4BA6UqvX9jBO1xKa7XUgf1vBNEjKeOfkciRH4B0dC6U=;
+        b=COoIlADa7tLJQD4D95gezEkwp+5F4j8gn7yVIWYsnmw45zVtD4vK9Ao1/x7B0sAMxB
+         pRDMzB8VXzkHizzKtXatIBESytLxPsicU5ezsNYTxaV/ROtdyK/865mXzdXQx8Cfq65X
+         1Tbod/AnylIzvh6WfM1u2KOVASHRYHds+ine4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4BA6UqvX9jBO1xKa7XUgf1vBNEjKeOfkciRH4B0dC6U=;
+        b=BEpHv2zqwQyuSwq4HHgun2Qgk4UidTAa3xwb8JGneia4v/fUky8xlNNLuRItX+7RXU
+         rprnk4YekafIRSeTVrznDgrllwbzR2OJsh8rsJcHvMfsFD1EzR+NdEXt+zMGf7n1M1c9
+         bAjjl1aLV7ld4RHVmZOc67PHGN9sPt376rrDUCRSg7l8oPcCLAq1IZdNXxbxF1Et7w+8
+         dejG633hZ6t2qMdTUIf7JgOiFtD3O4DDkE59KcmuCwS1eytYzzSARcbAbkjUarzjYOp5
+         +tBmKvkVDg3D9F6MAWE6AhNHUUvFas2oN58AQya7xD0lnzYi3SGl4jVEpLxEvr/AKtzO
+         Tvxw==
+X-Gm-Message-State: AOAM531OBcUmHMLLcvPXh7t6cwXREWxkujqUDvhERaUnMAwLZ+bd1/pk
+        nm7XyuoYNxPGSU5jOLvstZl2yFzlZu/EzQrg00s=
+X-Google-Smtp-Source: ABdhPJxKzrDa3VSpt0hXXJcRKDzsseymcQy9t4uFIRJUAQJ3ZUN47DWvKG2QIYS04WN6l520oVab/lNi/ety+HreRjs=
+X-Received: by 2002:a37:6442:: with SMTP id y63mr5995781qkb.273.1621927759742;
+ Tue, 25 May 2021 00:29:19 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Tue, 25 May 2021 10:27:52 +0300
-From:   Gatis Peisenieks <gatis@mikrotik.com>
-To:     Chris Snook <chris.snook@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        jesse.brandeburg@intel.com, dchickles@marvell.com,
-        tully@mikrotik.com, Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] atl1c: add 4 RX/TX queue support for Mikrotik
- 10/25G NIC
-In-Reply-To: <CAMXMK6vhcOUTdMihyo0Umss7T9cvxf_4R8iH4weCJ2Apr6d6OA@mail.gmail.com>
-References: <20210524191115.2760178-1-gatis@mikrotik.com>
- <CAMXMK6vhcOUTdMihyo0Umss7T9cvxf_4R8iH4weCJ2Apr6d6OA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <1b5e9b39d1d0b55c6557e7fb0f571e62@mikrotik.com>
-X-Sender: gatis@mikrotik.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210525055308.31069-1-steven_lee@aspeedtech.com> <20210525055308.31069-3-steven_lee@aspeedtech.com>
+In-Reply-To: <20210525055308.31069-3-steven_lee@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 25 May 2021 07:29:07 +0000
+Message-ID: <CACPK8XcgqmYWw3uL=3zckweepnM0vMucuPU1THPCNowjCkka5w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] ARM: dts: aspeed-g6: Add pinctrl settings
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ASPEED PINCTRL DRIVERS" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 25 May 2021 at 05:53, Steven Lee <steven_lee@aspeedtech.com> wrote:
+>
+> AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
+> Currently, only SGPIO master 1 and SGPIO slve 1 in the pinctrl dtsi.
+> SGPIO master 2 and slave 2 should be added in pinctrl dtsi as well.
+>
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 
-Chris, thank you for taking a look at this!
+Acked-by: Joel Stanley <joel@jms.id.au>
 
-In my experience L4 hashing (adding TCP/UDP ports to the hash to
-determine rx queue) can cause problems with fragmented packets when
-packet parser ignores the "More Fragments" and/or "Fragment Offset"
-fields of the IPv4 header. Only the first fragment contains the ports,
-so if parser blindly assumes ports to be at start of L4 offset, then
-packets belonging to same connection get scattered among the rx queues
-which is not good for performance.
+Linus, feel free to take this entire series through your tree.
 
-Mikrotik 10/25G NIC RX parser stops at L3 if it sees any of those set.
-Essentially it falls back to L2/L3 hashing for fragmented packets.
-So it is ok in that regard.
-
-
-On 2021-05-24 22:52, Chris Snook wrote:
-> Is the L4 part of that hash configurable? That sort of thing tends to
-> cause performance problems for fragmenting workloads, such as NFS over
-> UDP.
-> 
-> - Chris
-> 
+> ---
+>  arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> index 7028e21bdd98..7e90d713f5e5 100644
+> --- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
+> @@ -862,11 +862,21 @@
+>                 groups = "SGPM1";
+>         };
+>
+> +       pinctrl_sgpm2_default: sgpm2_default {
+> +               function = "SGPM2";
+> +               groups = "SGPM2";
+> +       };
+> +
+>         pinctrl_sgps1_default: sgps1_default {
+>                 function = "SGPS1";
+>                 groups = "SGPS1";
+>         };
+>
+> +       pinctrl_sgps2_default: sgps2_default {
+> +               function = "SGPS2";
+> +               groups = "SGPS2";
+> +       };
+> +
+>         pinctrl_sioonctrl_default: sioonctrl_default {
+>                 function = "SIOONCTRL";
+>                 groups = "SIOONCTRL";
+> --
+> 2.17.1
+>
