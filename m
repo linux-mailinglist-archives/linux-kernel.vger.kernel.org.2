@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418BD38F6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF96638F6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhEYAQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S229798AbhEYAUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYAQd (ORCPT
+        with ESMTP id S229547AbhEYAUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:16:33 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E827C061574;
-        Mon, 24 May 2021 17:15:03 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id jt22so233150ejb.7;
-        Mon, 24 May 2021 17:15:03 -0700 (PDT)
+        Mon, 24 May 2021 20:20:08 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3E0C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:18:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id j6so40487394lfr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qsmlRIkgq2zV5frevaV4WTTbksGQGcj6H85aoJ0Ejt8=;
-        b=q7Ocqmkns5l1r5KzX/QKurVUeFmPQH9c1DhFDzd87dFqvC5j4v+cO6y6Y3ndzRX0u5
-         Cl97L0mD2Zp9T7moehtSRy65RmpLbjEM1IgYR0/EfQFTFGtMDOv3WWjDk4QcdMB/oTWe
-         dWl6cnN0quBvaYbBwQGoHSMVOfUg32Il2vtpbBX3kMJAuoM4PLwNFJsqCSIKmM9kutoO
-         UPzSxqi1//NfbTQFS9lsOI8GHdiH0L5FS3fmrYoaNLrpGpAN3VlcC3WV2cTljlKsRzWB
-         Tq2o0Qx/AMkRPMcsI+dALFfDnOfWHeHPYBpZWA+9wKNJcaEyPGXJSUOPVlQ4E7HUHIDI
-         NxRw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lU98oqYZy9LMpWRIVC/iOJVtPr25gCqXEbSC0KE2HyA=;
+        b=Z0A4YTuI+et7WamhQwbpeL7DsoQsF7Ua1YcYV4PuWf/unLg0FK4OyfCPtn8ju23OMV
+         f4ZRHtH3PZ51h0Rx8RGos1KrY0HJbMYeZR3l72jlxAc7gE6eHwgUXJUww9D0pIJu1yCb
+         TN6MSnljzXK2rflr6vC2q845XUCsEuKxHC8iy6LcTiK3RBNB9jXmD4t/qP/N/0pZCD2q
+         NYk7e/nIFxW5bBymJIy+MUr/AaoQgj8xdCucfU/rPEXIk4bBLBP3hvtd0648zeKrNVwB
+         vQEPXtRFtpikG60dHa1v4DPAtX6OlVy77tS5ty44hxWu9Rv1szhLYqkecfdcg1o0Z3ci
+         OfLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qsmlRIkgq2zV5frevaV4WTTbksGQGcj6H85aoJ0Ejt8=;
-        b=GbrIp+0sw+I5UIm0/K9eTPZKpI/8Hku2ahjFoILLmKhlTxCdfm66TVxMXhpvCZxjn2
-         VZMU1KyUG4iP/utDEHay9mfPSRJ57ebOpXNW/JI7Bl45qhXQ78rT31OpSSHEW2vmGVd+
-         gijrAiVmL90t11tKDFd/dyxO000dOdWRsrFFwd4FHL/C/I7wgcEDoVLCyKTF8mvT/k9w
-         xVPeOAoyDyUrfvv62cj8j9mdl/F9hutnjKb9SL3QZ5NV8f/GJCzufLlYqooabaVRyFAO
-         HytK1OFnUn+2uZMjpRmQngN1Ax96RGX4ySsPaEcaLcll/7BJPx4marS8+PEvRxOZgo6H
-         Y2TA==
-X-Gm-Message-State: AOAM5310e+Q9CFmibV9kmTggldCM4UaupnOuKfX5kfhiCRPCBlsvFXsQ
-        zwkG0rFeOhETX4ejt3X38fku1SG7GaO0KQ==
-X-Google-Smtp-Source: ABdhPJxLpRdzFVmTZm9zlKW4qOFdgQStppgfa8WmFcOlQhXn2XulruJIuoMAi/X73ZXZ6n0OJlVMgA==
-X-Received: by 2002:a17:907:d1a:: with SMTP id gn26mr23234142ejc.42.1621901702156;
-        Mon, 24 May 2021 17:15:02 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id yr15sm8448017ejb.16.2021.05.24.17.15.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 17:15:01 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH] mtd: parsers: qcom: Fix leaking of partition name
-Date:   Tue, 25 May 2021 02:14:49 +0200
-Message-Id: <20210525001449.10386-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lU98oqYZy9LMpWRIVC/iOJVtPr25gCqXEbSC0KE2HyA=;
+        b=GjBIECjZH/568zmCrNbHf9FOxtOc8WNnxsJEtW46YHD0AROQPMRDrbwyCibbympsGD
+         41Q7Qci43NXhPlpc2Wc0M2I2L1FreSNLKBS4Pk6fnXxT4qvaqCHrg/KOSB+MMdzik3mv
+         f/GY7zbEyTiONC5P4dZ+wIeZW+7tgX0BudrKJZecT/EcIwo7T3byv1taSlYk5q1TVSSk
+         wuh2f/7zUHARZimPnca/FnjtPx2INfnwEt+kGKNtpOPYuouGRW7wO7C6o6Bv/b6qBUEg
+         do0BvZdB5QDVOpe7YXhf/EoM89LKavc2iHJKkx3dBiPayGaS8gfk879z47tvUU3fu0Ol
+         CKIQ==
+X-Gm-Message-State: AOAM533fD5BDj+CQJjCW21EbSa6AohoHFGJA+ATebNw/pb7m9n9c1Lt3
+        OOa6Zl/+aFBWrMlSHK18UTLhRXXCGxkXczmpz8BGOQ==
+X-Google-Smtp-Source: ABdhPJygddabh5kIV+leOfkKFonaw9VscHm4yErigpg0emiVpFC9RYx8ml0O2HMh08c2oJ8ecYk5w/JjuH7dSDMDRTE=
+X-Received: by 2002:a19:ef10:: with SMTP id n16mr11888963lfh.649.1621901916420;
+ Mon, 24 May 2021 17:18:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210520202730.4444-1-dariobin@libero.it>
+In-Reply-To: <20210520202730.4444-1-dariobin@libero.it>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 25 May 2021 02:18:25 +0200
+Message-ID: <CACRpkdanh32PREaYhN1dW1p0GDamSZ04WgRr-afm+6L-c1fJCg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] am335x: set pinmux registers from pins debug file
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Partition name are already allocated and defined by the ptable struct.
-Skip reallocation of name variable and directly lowercase the name in
-the ptable struct. The name variable was duplicated but never freed.
-The leak was found using kmemleak.
+On Thu, May 20, 2021 at 10:27 PM Dario Binacchi <dariobin@libero.it> wrote:
 
-Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/mtd/parsers/qcomsmempart.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+> The patch was born from the need to change the slew rate of the LCD pins
+> of a custom AM335x board during EMC tests. The AM335x, as described in a
+> note in section 9.1 of its reference manual [1], is unable to write
+> pinmux registers from user space. The series now makes it possible to
+> write these registers from the pins debug file.
 
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-index d9083308f6ba..3d083f0815f8 100644
---- a/drivers/mtd/parsers/qcomsmempart.c
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -62,8 +62,8 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	struct smem_flash_ptable *ptable;
- 	size_t len = SMEM_FLASH_PTABLE_HDR_LEN;
- 	struct mtd_partition *parts;
--	int ret, i, numparts;
--	char *name, *c;
-+	int i, numparts;
-+	char *c;
- 
- 	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS)
- 			&& mtd->type == MTD_NORFLASH) {
-@@ -125,17 +125,11 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 		if (pentry->name[0] == '\0')
- 			continue;
- 
--		name = kstrdup(pentry->name, GFP_KERNEL);
--		if (!name) {
--			ret = -ENOMEM;
--			goto out_free_parts;
--		}
--
- 		/* Convert name to lower case */
--		for (c = name; *c != '\0'; c++)
-+		for (c = pentry->name; *c != '\0'; c++)
- 			*c = tolower(*c);
- 
--		parts[i].name = name;
-+		parts[i].name = pentry->name;
- 		parts[i].offset = le32_to_cpu(pentry->offset) * mtd->erasesize;
- 		parts[i].mask_flags = pentry->attr;
- 		parts[i].size = le32_to_cpu(pentry->length) * mtd->erasesize;
-@@ -149,14 +143,6 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	*pparts = parts;
- 
- 	return numparts;
--
--out_free_parts:
--	while (--i >= 0)
--		kfree(parts[i].name);
--	kfree(parts);
--	*pparts = NULL;
--
--	return ret;
- }
- 
- static const struct of_device_id qcomsmem_of_match_table[] = {
--- 
-2.31.1
+I am going to hold this series back pending more discussion on the ABI
+and whether it is useful.
 
+Yours,
+Linus Walleij
