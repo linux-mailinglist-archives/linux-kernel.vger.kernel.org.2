@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5CD38F889
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315D638F88D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhEYDN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S230145AbhEYDNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhEYDN1 (ORCPT
+        with ESMTP id S229837AbhEYDNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:13:27 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5437C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:11:56 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f30so6666535lfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:11:56 -0700 (PDT)
+        Mon, 24 May 2021 23:13:40 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9822C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:12:10 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id v22so29008682oic.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:12:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KXdwPjLy8p+ZNsFuwTHjb34OCdCdZ+yc5hjsESK2BF8=;
-        b=VoWuibnIL420UYl2n8AsosYrZPnisjXrlOhsUBBlw5MmzcwMF9aDtcTZA9n86EZ04A
-         iKtezaGmdtqOp87nAhTYNsCFAgW07gxImBXhuL8wZaf0s8ZlRDLHhTxtNvByYYlkCKCf
-         MSbtIU2pY4jJV2brIq+Xx1ARPE74uj/QT1t/I=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LzZi3Q25vKg3XhS1Ic0lRTfT6eSF+5WUdcs1/J6hy2Y=;
+        b=KiZ7geh13gcARZT8mSzJFcrIk05fkvTTjIk8CLSHiGYBxiybxhUD1F0ZuRHi56V9S0
+         UMUccQgfUbA4cGGs5yqNLckMrl5KIDcdm7bjjFr0HI7/YCX5wkf7vRb4nWhpo7ccywpH
+         tOWVylQII31yvzek/fzTMlJPc/mBectQvhwumZg/NXiEG30Qb1ks2ngB1BLw8KBPUofY
+         lDHlfDQd/aDqCzf+RI/gsRXwwrkKk+kS4kEE5RlmBvSoeazJ4Tt/adeEo8sLE0dkIjr7
+         P7posTi86TqIcQcUctDyQiJAZdvqW2CM/pt085lwuuwFlQS8FOC2YtNMajwX6JfvupYi
+         UUeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXdwPjLy8p+ZNsFuwTHjb34OCdCdZ+yc5hjsESK2BF8=;
-        b=KOZFqFfLK55pn6/ZV0ihhKeuTZKamlDpikOnbatott5libRv8i81dd0OOP9e99O1pV
-         fPIJ2Fqpp8Pn3qilkH9we44GZcPo3Ex/ewzKYla//sTqmVnVinHiexF4//pWhteLm8kC
-         cCVqJ2Eh6F4ztUlarr4dhouhAAW3jr8Si2ojxnkXXxvA4jXqykjpPKf/lYd/RazuZ3pu
-         0H2Mf5GBv1IwfChLiJkNKNBaBEXYLNP6DXTPArl1GHyp3X+EqkjnRjLGJ7leiR17bhJN
-         DllaLsb2BmY/xiGG5r6apwgwHkB1NwsjjUtpvb8q1R5+IrhaxkCgJ/w0rmvFMlTB3z+H
-         IpgQ==
-X-Gm-Message-State: AOAM5311JIuRb6/w284HjVQMfSmzN7I7WfqJ5eNoGVXJGSvwjejc0BoI
-        mAIVm2kfl+tLPbmkqv7MfwgVGTdGbIxz4xLNkVc=
-X-Google-Smtp-Source: ABdhPJzcI5B7QovzAizjtzJbH+sMNMAHN0dO0tSrj/HIsFN9+nEPC09X36kXdjLvQIVk95P8r/RUJg==
-X-Received: by 2002:a05:6512:40f:: with SMTP id u15mr12267871lfk.271.1621912314767;
-        Mon, 24 May 2021 20:11:54 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id m28sm322489lfj.173.2021.05.24.20.11.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 20:11:53 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id q1so1268742lfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:11:53 -0700 (PDT)
-X-Received: by 2002:a05:6512:36c5:: with SMTP id e5mr12425672lfs.41.1621912313387;
- Mon, 24 May 2021 20:11:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LzZi3Q25vKg3XhS1Ic0lRTfT6eSF+5WUdcs1/J6hy2Y=;
+        b=Cp1iXHqXXNe1+61VS+mdAR4vWmCbB38jaebwImZBT7Qe+MgdTqUk93jm2DiCL9pedW
+         lt3bdE5B0eba7Yy9fsh/3AQbQWySKcOIv7sfkAjPY6ViKLZZScUJ7sdMvjl6TXJ3+T5m
+         6BMpx266XSRW+1atg63lwYWCIMj5/owtoBfdYdVcojD37focmISZZtTe+q0y5/N0gA/L
+         wkIGw2jDzVdKXqrgIMsMAVKy3/irgiSoIfwLx+3w3HS6WJIdf9OSqW49YdJFkoxaBquN
+         T0FE9FKc0AzDTK+GPNZVSYsVsmjwLADnGvi00p/xRU3ysVMfp0+hbohYLIqAGSCB1NLS
+         w0ZA==
+X-Gm-Message-State: AOAM531U7j8gdQpEhOsXE7jPkRv/oeMVMzRaIFB2FodIE8ZFFCEv5W5s
+        DU7YUm+m0gFhmCOpEUDzFMrzLA==
+X-Google-Smtp-Source: ABdhPJwfVJOo2UBAigec/ToH+3zn+ksCtwT3t0kun5HoEK1TJkhAS70gURQ1MwmEquyuXN0SmW90vQ==
+X-Received: by 2002:a05:6808:997:: with SMTP id a23mr1397330oic.129.1621912330250;
+        Mon, 24 May 2021 20:12:10 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a6sm1130940oon.20.2021.05.24.20.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 20:12:09 -0700 (PDT)
+Date:   Mon, 24 May 2021 22:12:07 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] clk: qcom: Add SM6125 (TRINKET) GCC driver
+Message-ID: <YKxrB3xIIqtxXPzf@yoga>
+References: <20210523211016.726736-1-martin.botka@somainline.org>
+ <20210523211016.726736-2-martin.botka@somainline.org>
 MIME-Version: 1.0
-References: <20210525031636.GB7744@xsang-OptiPlex-9020>
-In-Reply-To: <20210525031636.GB7744@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 24 May 2021 17:11:37 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
-Message-ID: <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
-Subject: Re: [mm/gup] 57efa1fe59: will-it-scale.per_thread_ops -9.2% regression
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210523211016.726736-2-martin.botka@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 5:00 PM kernel test robot <oliver.sang@intel.com> wrote:
->
-> FYI, we noticed a -9.2% regression of will-it-scale.per_thread_ops due to commit:
-> commit: 57efa1fe5957694fa541c9062de0a127f0b9acb0 ("mm/gup: prevent gup_fast from racing with COW during fork")
+On Sun 23 May 16:10 CDT 2021, Martin Botka wrote:
 
-Hmm. This looks like one of those "random fluctuations" things.
+> From: Konrad Dybcio <konrad.dybcio@somainline.org>
+> 
+> Add the clocks supported in global clock controller, which clock the
+> peripherals like BLSPs, SDCC, USB, MDSS etc. Register all the clocks
+> to the clock framework for the clients to be able to request for them.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
 
-It would be good to hear if other test-cases also bisect to the same
-thing, but this report already says:
+This looks quite good to me, just two small things below.
 
-> In addition to that, the commit also has significant impact on the following tests:
->
-> +------------------+---------------------------------------------------------------------------------+
-> | testcase: change | will-it-scale: will-it-scale.per_thread_ops 3.7% improvement                    |
+> diff --git a/drivers/clk/qcom/gcc-sm6125.c b/drivers/clk/qcom/gcc-sm6125.c
+[..]
+> +static struct clk_alpha_pll gpll0_out_early = {
+> +	.offset = 0x0,
+> +	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> +	.clkr = {
+> +		.enable_reg = 0x79000,
+> +		.enable_mask = BIT(0),
+> +		.hw.init = &(struct clk_init_data){
+> +			.name = "gpll0_out_early",
+> +			.parent_data = &(const struct clk_parent_data){
+> +				.fw_name = "bi_tcxo",
+> +				.name = "bi_tcxo",
 
-which does kind of reinforce that "this benchmark gives unstable numbers".
+For new drivers we don't need to rely on global name lookup, so just
+keep fw_name for the external clocks.
 
-The perf data doesn't even mention any of the GUP paths, and on the
-pure fork path the biggest impact would be:
+> +			},
+> +			.num_parents = 1,
+> +			.ops = &clk_alpha_pll_ops,
+> +		},
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor gpll0_out_aux2 = {
+> +	.mult = 1,
+> +	.div = 2,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "gpll0_out_aux2",
+> +		.parent_data = &(const struct clk_parent_data){
+> +			.hw = &gpll0_out_early.clkr.hw,
+> +		},
+> +		.num_parents = 1,
+> +		.ops = &clk_fixed_factor_ops,
+> +	},
+> +};
+> +
+> +static struct clk_fixed_factor gpll0_out_main = {
+> +	.mult = 1,
+> +	.div = 2,
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "gpll0_out_main",
+> +		.parent_data = &(const struct clk_parent_data){
 
- (a) maybe "struct mm_struct" changed in size or had a different cache layout
+Please use parent_hws instead when referencing a single hw in the same
+driver.
 
- (b) two added (nonatomic) increment operations in the fork path due
-to the seqcount
+> +			.hw = &gpll0_out_early.clkr.hw,
+> +		},
+> +		.num_parents = 1,
+> +		.ops = &clk_fixed_factor_ops,
+> +	},
+> +};
+> +
 
-and I'm not seeing what would cause that 9% change. Obviously cache
-placement has done it before.
-
-If somebody else sees something that I'm missing, please holler. But
-I'll ignore this as "noise" otherwise.
-
-            Linus
+Regards,
+Bjorn
