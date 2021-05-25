@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C5C3905BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B04E3904A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhEYPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:43:04 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43329 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234294AbhEYPnC (ORCPT
+        id S231468AbhEYPLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:11:43 -0400
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:55170 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229898AbhEYPLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:43:02 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 61D7F1311;
-        Tue, 25 May 2021 11:41:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 25 May 2021 11:41:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tju.me; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=3dOqmWnre8Qli2mInIo3ZkkdNa
-        BOEO5L4G3nLgoVQDM=; b=nPpQn95Jvv5OpxSFlX52gjl8gbM7z4GDxvxUQkRu7u
-        BApLthnY+6468+HYVbcJfIIrrKgWWjrrHPQuWg6Nm8pP1wb7Wx9zsTcGhymsaCj4
-        Dxg9UxSvpsNKL7LrygrTMZKRF38GtYCZOfwHI5/3oJNgGpPcIRCwjv0zs7x4dli7
-        CwTZjBi8GOfqiieR45Lxz783PqVSJIQyOSLOq4kK9xDvSpyfHH29iiIhCMHUl4R2
-        YalUK3hz1VcZ7f0XTAUUH/iZyzddxZ6YuSEaDx24NSNcrCZDkmT4AreZWRcauvpu
-        buU7YWZ9tlHsqGg2FJVBb2BOpFhXBfa1wyNpEoiDZQaQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3dOqmWnre8Qli2mIn
-        Io3ZkkdNaBOEO5L4G3nLgoVQDM=; b=TS7AF0FFCubRJ8JFc7t9ge5fmzE6RRbWJ
-        mv3+MFPaez7u3IeYTfLEAqgE/9I3yUZ8HEk+myW1AngqgMFAX930CK7vArrSW+R9
-        nCeXSy61Y4bIP6R7YF1Pn/RGWfkTeRC7hDUBtTlT/e0mzzKMTyTEh916Qg2F2EXV
-        n2wsis64I3BfDAduj+nO2N2JYJdW8+1/RqiyJRVhUWCEqBh6+qgfPUHdriZ6ShuO
-        wgREp+5ai5TQ7jc7+iSuFUQhlhOduQ2P9A0uDQT+cXYHosvtYgKdbwGGVewBl1ww
-        s4hBReEv4uzW3CHHMKuxDwYVgSxY41Ug6/EMMMhuNcHjNgFbWzE2Q==
-X-ME-Sender: <xms:qRqtYCWt2xrqEw8ayfIIN7HOKpxYx2wruTOTk9ilK8PkAZnhfXOTNg>
-    <xme:qRqtYOkSKsmCT_5oH9d7sFAA1nUF8dSo90BXndfHg2aw5oocv1GO9h6FmSv3aNa8C
-    en4tQs7WQnZGg0eBw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefvihhlucflrghs
-    phgvrhcufghllhhrihgthhcuoehtjhhusehtjhhurdhmvgeqnecuggftrfgrthhtvghrnh
-    epjedugefhkeeuueekueejueefgeevjeeuvdefudfggeeuieehueelteejvdehtdfhnecu
-    kfhppeelgedrudefgedrledtrddvtdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepthhjuhesthhjuhdrmhgv
-X-ME-Proxy: <xmx:qRqtYGa7E-jZ01Tn8OnLccHCCTB9s-524Vrxi9b4vJO_LOSr6vJdDg>
-    <xmx:qRqtYJXarwVlrRMZV0IcT8Iw44w8j-HKH9i9x7QWu_TwuEcSCP6CfQ>
-    <xmx:qRqtYMmz4V3mk_iNdHQgZ_LaLgQcLuIAWfo7dCvryZRwC-ciyeJ3tA>
-    <xmx:qhqtYNAtXJq9Up5MzyBnE6QJ9hsLQywEyyhOLZ8SQ64x_8BapsL_ug>
-Received: from alpha.fritz.box (unknown [94.134.90.204])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 25 May 2021 11:41:27 -0400 (EDT)
-From:   Til Jasper Ullrich <tju@tju.me>
-To:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: thinkpad_acpi: add X1 Carbon Gen 9 second fan support
-Date:   Tue, 25 May 2021 17:09:52 +0200
-Message-Id: <20210525150950.14805-1-tju@tju.me>
-X-Mailer: git-send-email 2.31.1
+        Tue, 25 May 2021 11:11:41 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 25778CCB19
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:10:10 +0100 (IST)
+Received: (qmail 23622 invoked from network); 25 May 2021 15:10:09 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 15:10:09 -0000
+Date:   Tue, 25 May 2021 16:10:08 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC 09/26] mm, slub: move disabling/enabling irqs to
+ ___slab_alloc()
+Message-ID: <20210525151008.GV30378@techsingularity.net>
+References: <20210524233946.20352-1-vbabka@suse.cz>
+ <20210524233946.20352-10-vbabka@suse.cz>
+ <20210525123536.GR30378@techsingularity.net>
+ <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The X1 Carbon Gen 9 uses two fans instead of one like the previous
-generation. This adds support for the second fan. It has been tested
-on my X1 Carbon Gen 9 (20XXS00100) and works fine.
+On Tue, May 25, 2021 at 02:47:10PM +0200, Vlastimil Babka wrote:
+> On 5/25/21 2:35 PM, Mel Gorman wrote:
+> > On Tue, May 25, 2021 at 01:39:29AM +0200, Vlastimil Babka wrote:
+> >> Currently __slab_alloc() disables irqs around the whole ___slab_alloc().  This
+> >> includes cases where this is not needed, such as when the allocation ends up in
+> >> the page allocator and has to awkwardly enable irqs back based on gfp flags.
+> >> Also the whole kmem_cache_alloc_bulk() is executed with irqs disabled even when
+> >> it hits the __slab_alloc() slow path, and long periods with disabled interrupts
+> >> are undesirable.
+> >> 
+> >> As a first step towards reducing irq disabled periods, move irq handling into
+> >> ___slab_alloc(). Callers will instead prevent the s->cpu_slab percpu pointer
+> >> from becoming invalid via migrate_disable(). This does not protect against
+> >> access preemption, which is still done by disabled irq for most of
+> >> ___slab_alloc(). As the small immediate benefit, slab_out_of_memory() call from
+> >> ___slab_alloc() is now done with irqs enabled.
+> >> 
+> >> kmem_cache_alloc_bulk() disables irqs for its fastpath and then re-enables them
+> >> before calling ___slab_alloc(), which then disables them at its discretion. The
+> >> whole kmem_cache_alloc_bulk() operation also disables cpu migration.
+> >> 
+> >> When  ___slab_alloc() calls new_slab() to allocate a new page, re-enable
+> >> preemption, because new_slab() will re-enable interrupts in contexts that allow
+> >> blocking.
+> >> 
+> >> The patch itself will thus increase overhead a bit due to disabled migration
+> >> and increased disabling/enabling irqs in kmem_cache_alloc_bulk(), but that will
+> >> be gradually improved in the following patches.
+> >> 
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > 
+> > Why did you use migrate_disable instead of preempt_disable? There is a
+> > fairly large comment in include/linux/preempt.h on why migrate_disable
+> > is undesirable so new users are likely to be put under the microscope
+> > once Thomas or Peter notice it.
+> 
+> I understood it as while undesirable, there's nothing better for now.
+> 
 
-Signed-off-by: Til Jasper Ullrich <tju@tju.me>
----
- drivers/platform/x86/thinkpad_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+I think the "better" option is to reduce preempt_disable sections as
+much as possible but you probably have limited options there. It might
+be easier to justify if the sections you were protecting need to go to
+sleep like what mm/highmem.c needs but that does not appear to be the case.
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index dd60c9397d35..edd71e744d27 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -8853,6 +8853,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
- 	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
- 	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
- 	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
-+	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
- };
+> > I think you are using it so that an allocation request can be preempted by
+> > a higher priority task but given that the code was disabling interrupts,
+> > there was already some preemption latency.
+> 
+> Yes, and the disabled interrupts will get progressively "smaller" in the series.
+> 
+> > However, migrate_disable
+> > is more expensive than preempt_disable (function call versus a simple
+> > increment).
+> 
+> That's true, I think perhaps it could be reimplemented so that on !PREEMPT_RT
+> and with no lockdep/preempt/whatnot debugging it could just translate to an
+> inline migrate_disable?
+> 
 
- static int __init fan_init(struct ibm_init_struct *iibm)
---
-2.31.1
+It might be a bit too large for that.
 
+> > On that basis, I'd recommend starting with preempt_disable
+> > and only using migrate_disable if necessary.
+> 
+> That's certainly possible and you're right it would be a less disruptive step.
+> My thinking was that on !PREEMPT_RT it's actually just preempt_disable (however
+> with the call overhead currently), but PREEMPT_RT would welcome the lack of
+> preempt disable. I'd be interested to hear RT guys opinion here.
+> 
+
+It does more than preempt_disable even on !PREEMPT_RT. It's only on !SMP
+that it becomes inline. While it might allow a higher priority task to
+preempt, PREEMPT_RT is also not the common case and I think it's better
+to use the lighter-weight option for the majority of configurations.
+
+> > Bonus points for adding a comment where ___slab_alloc disables IRQs to
+> > clarify what is protected -- I assume it's protecting kmem_cache_cpu
+> > from being modified from interrupt context. If so, it's potentially a
+> > local_lock candidate.
+> 
+> Yeah that gets cleared up later :)
+> 
+
+I saw that after glancing through the rest of the series. While I didn't
+spot anything major, I'd also like to hear from Peter or Thomas on whether
+migrate_disable or preempt_disable would be preferred for mm/slub.c. The
+preempt-rt tree does not help answer the question given that the slub
+changes there are mostly about deferring some work until IRQs are enabled.
+
+-- 
+Mel Gorman
+SUSE Labs
