@@ -2,74 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081E3390B07
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C75E390B09
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhEYVH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232526AbhEYVH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 581AC6140F;
-        Tue, 25 May 2021 21:06:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621976786;
-        bh=OUwef6EtHXmnVekXYiaA4JSE4qmt1VGKzGgBd5VR8tQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SNtEYGO5dJbhEHmM2PLqEksXCNkP3QPJLWmzgiNDHIRmRADawxo2tSM/osdPPA8hX
-         AFKyDq3nkGw/j3ou02h7TKdMGIarwsVeGev1QA965iWHuqJG0BNpmM+EaboAAlY7l/
-         yzj5AG3rMHzO+JnyaZXSnqzzFrFFZwYq05D2EiFFcIZvd2y3bf8ATBxr6PB3FdYWAM
-         d6Jk9wbVihFe0w9UWFJLrpe3NMqTgaSWu9U2dce/WP6D4LOMfd+tdjHztI43wyeKD6
-         xtYIafiwthyiVXFoIEITz7K8BThH/bJII6FpfevbF6hlF6k66TVLiyXtGqTPx8gAYk
-         YjvUO4ak7HVSQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 195675C037F; Tue, 25 May 2021 14:06:26 -0700 (PDT)
-Date:   Tue, 25 May 2021 14:06:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Haocheng Xie <xiehaocheng.cn@gmail.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Fix a typo in Documentation/RCU/stallwarn.rst
-Message-ID: <20210525210626.GV4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210525093152.26627-1-xiehaocheng.cn@gmail.com>
+        id S231785AbhEYVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhEYVKk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 17:10:40 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B20C061574;
+        Tue, 25 May 2021 14:09:10 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id w15so40003871ljo.10;
+        Tue, 25 May 2021 14:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
+        b=EDoW110KV9wcfQ30kqQ1ZybqTTE/mSj56bdcleLHZ9K1K65hsPrg9IrsZJ6lqu84SD
+         RuaswPbLyuqVCWQ0oyQgm36Uwfqs9e5USUOw4l22hAuVIBSi0CxekIhx1On8J1Hu+9gv
+         ZF/G3WukVhsQGoQEbSwWKl3XJU0aQWLmoFLDB9+NMilvdBo/Qey7m+ScBsh60Vs9X/G7
+         tfb5FLBY2sQ88qOQom7PT3Kg3cN7B+TXWhT2uw9rcBT1brIlb6UFMfndAakABXqJf3k7
+         tLK3gwnMhy1IclNyskN3N65WqXKwIJcrHn7YXSf4BCWEbttcrpt+SDK+SbYFSu7o0Doj
+         XGvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
+        b=toDXCmVLCfYk9AdEmsKlXDqeeZb5kfh4DqNEwEmPQkHGD1yAWkzlC582QE9AbRv16X
+         zEHWQ/Rrc6D72XLy6hZNr1reoVtW7G/1oFBhjFKMfhOfZUuVfBxHnd6TrbOXMdclaj0a
+         PuXiBh/fvVFzYpHE/59mOVKImETvOX26P8wIKq82k47C9RHjYG5N7aL+F5TTlAhMV8HE
+         mZvwhlebqqYu/nGLH0XHi35ogTPjagBwurPOLovHHkEg3HBwaFeg19DMPqd3ot+7UjNd
+         5MSx7KJfMxgBpwhQUn8ahr1vKmNtAEs0DHYj/YRuPAD0rrSjAV7KRCpT1nf8+c6VPuts
+         znxg==
+X-Gm-Message-State: AOAM532IrwAN4KHl+oL+M3cDuWP0lSBxNXp+lfG33u0MK7hsyNuBy4ME
+        TCYWJWVzUSPKHjNSPeFAfQ2kA/SCmlU=
+X-Google-Smtp-Source: ABdhPJw6PtppkMwP73a5yk5EfcfAd6aWAG1Me5VORks/eZaK+4hqHBA3sKD4WyW5pJwPIO0LUKzKEA==
+X-Received: by 2002:a2e:5045:: with SMTP id v5mr22264105ljd.270.1621976948326;
+        Tue, 25 May 2021 14:09:08 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-180-236.dynamic.spd-mgts.ru. [46.138.180.236])
+        by smtp.googlemail.com with ESMTPSA id w3sm2207406lji.25.2021.05.25.14.09.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 14:09:07 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+ <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
+ <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
+ <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ea7730f6-9ca0-ae06-b610-703f9715ffa2@gmail.com>
+Date:   Wed, 26 May 2021 00:09:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525093152.26627-1-xiehaocheng.cn@gmail.com>
+In-Reply-To: <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 05:31:52PM +0800, Haocheng Xie wrote:
-> Add the missing ')' in the documentation.
+25.05.2021 19:24, Jaroslav Kysela пишет:
+> On 24. 05. 21 16:00, Dmitry Osipenko wrote:
+>> 24.05.2021 13:54, Jaroslav Kysela пишет:
+>>> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
+>>>> Specify components string for Nexus 7 using the Intel BayTrail components
+>>>> format. This may allow us to create a more generic UCM for RT5640 codec.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>>>>  1 file changed, 19 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+>>>> index a81f2ebfc00c..87e0a47040a5 100644
+>>>> --- a/sound/soc/tegra/tegra_asoc_machine.c
+>>>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+>>>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>>>>  	.add_hp_jack = true,
+>>>>  };
+>>>>  
+>>>> +/*
+>>>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+>>>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+>>>> + * Headphones: Connected to HPOL/R pins.
+>>>> + * Headset Microphone: Unconnected.
+>>>> + *
+>>>> + * IF2_DAC/ADC are unpopulated.
+>>>> + */
+>>>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+>>>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+>>>
+>>> Perhaps, it may be better to handle this string via the DT config (create new
+>>> function like snd_soc_of_parse_card_name()).
+>>>
+>>> The "codec:rt5640" should be set in the driver (it's fixed), but the
+>>> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
+>>
+>> Not sure that this is possible. The DT is an ABI, while components
+>> string has no specification. Any changes to the components string will
+>> require DT update.
+>>
+>> I think it's much more feasible to have a database of components within
+>> kernel driver, like Intel sound driver does it for ACPI devices.
 > 
-> Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+> There is no other possibility for ACPI. And while the components string is
+> part of the ALSA ABI, it should not be changed in an incompatible way. Only
+> new information should be added. The DT solution seems more flexible to me.
+> For example the stereo/mono speaker or the AIF number can be set without the
+> driver modification for rt5640.
 
-Good eyes!  Queued for further review and testing, thank you!
+Everything that goes into device-tree needs a firm specification. We
+can't add it into device-tree since there is no specification for the
+components string other than something that Intel driver made up for its
+own needs. So either we could add the components string to the kernel
+driver right now or not add it.
 
-							Thanx, Paul
-
-> ---
->  Documentation/RCU/stallwarn.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> index 7148e9b..a9381e43 100644
-> --- a/Documentation/RCU/stallwarn.rst
-> +++ b/Documentation/RCU/stallwarn.rst
-> @@ -224,7 +224,7 @@ is the number that had executed since boot at the time that this CPU
->  last noted the beginning of a grace period, which might be the current
->  (stalled) grace period, or it might be some earlier grace period (for
->  example, if the CPU might have been in dyntick-idle mode for an extended
-> -time period.  The number after the "/" is the number that have executed
-> +time period).  The number after the "/" is the number that have executed
->  since boot until the current time.  If this latter number stays constant
->  across repeated stall-warning messages, it is possible that RCU's softirq
->  handlers are no longer able to execute on this CPU.  This can happen if
-> -- 
-> 2.9.5
-> 
+I think the best option would be to drop this patch for now.
