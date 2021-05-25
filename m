@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A3D390B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D83390B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhEYV2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:28:20 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:46670 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhEYV2T (ORCPT
+        id S233195AbhEYV2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233125AbhEYV2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:28:19 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:52984 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lleZc-0002Q1-Q5; Tue, 25 May 2021 17:26:48 -0400
-Message-ID: <af1a868ed91466312786f11913cf06118139838e.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 25 May 2021 17:26:47 -0400
-In-Reply-To: <2236ed83-81fd-cd87-8bdb-d3173060cc7c@gmail.com>
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
-         <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-         <2236ed83-81fd-cd87-8bdb-d3173060cc7c@gmail.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        Tue, 25 May 2021 17:28:21 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D401AC061574;
+        Tue, 25 May 2021 14:26:50 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id n3-20020a9d74030000b029035e65d0a0b8so8619939otk.9;
+        Tue, 25 May 2021 14:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WOHN53TtYAkKmFbySvXR26nU4ULHgaiw/p/j9KXY8hQ=;
+        b=dPqbTt7EBovGcexiUHXfi/WzFYRgP70wiVx2KHISV/ICSFK3aggZW5bvQEJn6F7+ws
+         Ar7Vww/dQHW83waJOS3+Tgw4sn7Z7NMpcUiUH9vmNNENPRBm+WyChcUW8QvoJwgx/TCH
+         HEGzzXCaYVPhRwriCsAALgXo1zza0eP95g0vS9nlss1MIbCD5nXtAU2LhFBzi/Wpj1e6
+         nN7o6p6EmKR4Hh/i9qYHTUW18fPedd+cUwtdVImtC+dmhRJLnoopntpZkF2qdMTbhVQ4
+         J5ulMNX65qbYayg8Zth1hcpkHlNkYeWi3kVh1n8hTvRxUYtI5+RaPBx8cejlGV/KnDKp
+         4ygA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WOHN53TtYAkKmFbySvXR26nU4ULHgaiw/p/j9KXY8hQ=;
+        b=Au5rwZF9vdPQ1IIdpgB4qGhrgfUamOTFDe16ReIxTl8DHc4sorIa6nWfKvSyN9MDTd
+         JPPM3/Wj3N88AHJ1nfNSlpWuKMhKqbi0GHEtZiSuL/GDvzT7uNpgwpnkPYv/D4s4QbTt
+         ggOfmfwgPqofUb3yaWrWfjA6NJEcW3dfZtjpNCRnCQDEv4i6yTVK3N5zB10xdYSpuG5j
+         0KF72RZOYgjGm3f/jzlUM+H4gmPQCVMc2UpEXOLbLBCGLspQucb10qTQy6envJTXHQ21
+         pGxY1aNVwRBzmbMrGVSjghCjKO99hby0axsvtINHFMrBtndsugEOmJl3xK/L3YSYG/Qp
+         7PSg==
+X-Gm-Message-State: AOAM532aAl06qdB9Zbux0VIsdTFtmpF7HTUAb1hRe8gTc9Qf3wi5QuUN
+        Pfg9p6hksU5dYBXeE7BNiC4=
+X-Google-Smtp-Source: ABdhPJwb5OSYcqLIobVSeeuWcftL0gxaXL+WSxrW6GrDzIywUHjV9Zn7UAVequy+snFU0v7vodX70Q==
+X-Received: by 2002:a9d:6048:: with SMTP id v8mr25204093otj.30.1621978010301;
+        Tue, 25 May 2021 14:26:50 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k7sm3786803ood.36.2021.05.25.14.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 14:26:49 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 25 May 2021 14:26:48 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
+Message-ID: <20210525212648.GF921026@roeck-us.net>
+References: <20210524152332.844251980@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On Tue, 2021-05-25 at 09:33 +0100, Pavel Begunkov wrote:
-> On 5/25/21 9:21 AM, Pavel Begunkov wrote:
-> > On 5/25/21 6:54 AM, Olivier Langlois wrote:
-> > > The req pointer uniquely identify a specific request.
-> > > Having it in traces can provide valuable insights that is not
-> > > possible
-> > > to have if the calling process is reusing the same user_data value.
-> > 
-> > How about hashing kernel pointers per discussed? Even if it's better
-> > to have it done by tracing or something as you mentioned, there is no
-> > such a thing at the moment, so should be done by hand.
+On Mon, May 24, 2021 at 05:24:55PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.40 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Or do you mean that it's already the case? Can anyone
-> confirm if so?
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+> 
 
-I did consider your option but then I did some research on the pointer
-hashing idea.
+Build results:
+	total: 156 pass: 156 fail: 0
+Qemu test results:
+	total: 455 pass: 455 fail: 0
 
-It turns out to be already addressed by the trace subsystem.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Here is what I have found:
-
-whippet2 /sys/kernel/tracing # cat trace_options 
-print-parent
-nosym-offset
-nosym-addr
-noverbose
-noraw
-nohex
-nobin
-noblock
-trace_printk
-annotate
-nouserstacktrace
-nosym-userobj
-noprintk-msg-only
-context-info
-nolatency-format
-record-cmd
-norecord-tgid
-overwrite
-nodisable_on_free
-irq-info
-markers
-noevent-fork
-nopause-on-trace
-hash-ptr
-function-trace
-nofunction-fork
-nodisplay-graph
-nostacktrace
-notest_nop_accept
-notest_nop_refuse
-
-hash-ptr option is enabled by default.
-
-I am not 100% sure to understand why I am getting naked pointer values
-when I am getting the traces with 'sudo perf':
-
-  9287.369 test/625 io_uring:io_uring_task_run(ctx: 0xffff8fbf9a834800,
-opcode: 22, user_data: 216454257090494477, result: 195)
-  9287.386 test/625 io_uring:io_uring_task_run(ctx: 0xffff8fbf9a834800,
-opcode: 22, user_data: 216454257090494477, result: 195)
-
-but the pointers should be hashed by trace.
-
-That would be nice if someone more knowledgeable about the tracing
-system could jump in and comment about the hash-ptr option and tell
-when it is applied and when it is not...
-
-
+Guenter
