@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B17838F8C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5812738F8C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhEYD2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:28:37 -0400
-Received: from mga12.intel.com ([192.55.52.136]:38160 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhEYD2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:28:37 -0400
-IronPort-SDR: 1bIe6Ap6B8NHIRkgg5Gfq4X4+4lg+tuu3bfBduDkS8MQC2A/4O4Mg3A0oCqltAUOKf+Sb7BWvz
- negNEd71rq/A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="181729283"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="181729283"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 20:27:07 -0700
-IronPort-SDR: bDO7nvJWaEgi8pYE1m5vIndBvhH6MzW+uxUJdfWYznKKDGjNtd8GoHgoctlM048DHrleVCOXeI
- yaJoHL+Ys7OA==
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="546330008"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.195.214]) ([10.212.195.214])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 20:27:06 -0700
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX
- guest
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
- <b420a7af-5202-fee9-9e0b-39680d0cc9c8@linux.intel.com>
- <CAPcyv4gNz9gKsHVcindp3OsHz4hMRWPZgsNu1A5xrDQg7tYqNA@mail.gmail.com>
- <cea7c704-5f1c-3f84-e47b-c62da18e358e@linux.intel.com>
- <CAPcyv4h4=eNZFS7d13WvzpWzTkHAMF7Mxo0frqf2gdmaFN3++Q@mail.gmail.com>
- <125f8362-b1e3-d304-f943-3fc2f07b5d79@linux.intel.com>
- <CAPcyv4gRDnm0y4=RWhvTSoY2sk=BOyeDDNcCifZD=opyJf05LQ@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <6f44fbeb-a8be-d2e4-5161-d46ddf09482e@linux.intel.com>
-Date:   Mon, 24 May 2021 20:27:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230217AbhEYD3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhEYD3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 23:29:43 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE28C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:28:13 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id u11so29012235oiv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yd7WNrW5RgCRq69GG/t641RhzJb1+O9rCNuKEDYZ+UQ=;
+        b=Qihz9q4ulhPC5+jW95HZeqBMuDCzCUu5BXI2aHGC/4iIT85jOP8Merwq+BoCPrrNFl
+         MlvM+x81c5n+TIyIs8D1H+nQNU4q7QNzAI9dT25HByHl0DudUzzbP+m5k87rrr5Q9E2V
+         v5XqwFV+m63TDEQPDv/hWb6ymRQnjJEmWX8UxwOq4fEA9/YflwcPI6/SYvL1XfI9wKyu
+         MX7xrQyiZQxJU57vhRcGOGin7qf+2ErXPVy3Bvl/TmpmCk08rHdDvK3HHWdT5SKcFbKm
+         Ngd5FveLSInfBtCMCRZDjCg1lBKeJGBrXkut5dcay1LhdzWu9x3oZnPqKeQ4HaT3Jee2
+         3LvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yd7WNrW5RgCRq69GG/t641RhzJb1+O9rCNuKEDYZ+UQ=;
+        b=OGgueSbLZwSOakJQTBJrS00L1tcnmW6GDTLo95g4dJl5os/3gS7SNl5gB/Yyqirtam
+         e3V4fkK1QQ/kj7T2nD6JGLoO3qW20bfvKk46o0R6uEqjnXbHvuK8j6bdD+PJh5SVTJ/C
+         NO9RnQn1k4RdpXe3W+akS7lHM6Fm7LdDQfUeAN+yN/tH69DXbdZSK5H5rrx7QUWsnKyI
+         /EhYzVUQT93emBDC9v8OtYutwCokYmRL1udwcavF/NBEtF6hGBl5SwzQYfbjnYaSOORB
+         XdnCD4YZdXeXXQcgJwbN4IPoWQKHZlEtafCMUgq6R06q/EZ9a339Djfjl/N5/OoMMlFa
+         5Gqg==
+X-Gm-Message-State: AOAM530yn0Dn2SUDl6pC01Vi6zMYLEefPRUJTmlNaUNfBCi8Lbt1zTM9
+        bL+oqTDt3yyACswO9PhhvqpREw==
+X-Google-Smtp-Source: ABdhPJwKviMyrxlplBS0akvECPGFTv+lWWT2whiGwA05wk4Af21kzQrXyzWmMbn4Mo/QH1n2F7KL+Q==
+X-Received: by 2002:aca:4e8c:: with SMTP id c134mr1436989oib.169.1621913292614;
+        Mon, 24 May 2021 20:28:12 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c19sm2990438oiw.7.2021.05.24.20.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 20:28:12 -0700 (PDT)
+Date:   Mon, 24 May 2021 22:28:10 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Patrick Daly <pdaly@codeaurora.org>,
+        Pratik Patel <pratikp@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH 0/3] iommu/arm-smmu: Qualcomm bootsplash/efifb
+Message-ID: <YKxuynamQBTrNksO@yoga>
+References: <20191226221709.3844244-1-bjorn.andersson@linaro.org>
+ <20200108091641.GA15147@willie-the-truck>
+ <CAF2Aj3iKk2LSA5XC76pNiLV8a76BkibUitof-dix8rqkc0qiow@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gRDnm0y4=RWhvTSoY2sk=BOyeDDNcCifZD=opyJf05LQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF2Aj3iKk2LSA5XC76pNiLV8a76BkibUitof-dix8rqkc0qiow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 24 May 07:03 CDT 2021, Lee Jones wrote:
 
-On 5/24/2021 7:49 PM, Dan Williams wrote:
-> On Mon, May 24, 2021 at 7:13 PM Andi Kleen <ak@linux.intel.com> wrote:
-> [..]
->>> ...to explicitly error out a wbinvd use case before data is altered
->>> and wbinvd is needed.
->> I don't see any point of all of this. We really just want to be the same
->> as KVM. Not get into the business of patching a bazillion sub systems
->> that cannot be used in TDX anyways.
-> Please let's not start this patch off with dubious claims of safety
-> afforded by IgnorePAT. Instead make the true argument that wbinvd is
-> known to be problematic in guests
+> On Wed, 8 Jan 2020 at 09:16, Will Deacon <will@kernel.org> wrote:
+> 
+> > On Thu, Dec 26, 2019 at 02:17:06PM -0800, Bjorn Andersson wrote:
+> > > These patches implements the stream mapping inheritance that's necessary
+> > in
+> > > order to not hit a security violation as the display hardware looses its
+> > stream
+> > > mapping during initialization of arm-smmu in various Qualcomm platforms.
+> > >
+> > > This was previously posted as an RFC [1], changes since then involves the
+> > > rebase and migration of the read-back code to the Qualcomm specific
+> > > implementation, the mapping is maintained indefinitely - to handle probe
+> > > deferring clients - and rewritten commit messages.
+> >
+> > I don't think we should solve this in a Qualcomm-specific manner. Please
+> > can
+> > you take a look at the proposal from Thierry [1] and see whether or not it
+> > works for you?
+> >
+> 
+> Did this or Thierry's solution ever gain traction?
+> 
 
-That's just another reason to not support WBINVD, but I don't think it's 
-the main reason. The main reason is that it is simply not needed, unless 
-you do DMA in some form.
+There was a few pieces that landed in the common code which allowed us
+to deal with the quirks of the Qualcomm platform (turned out that just
+reading back the settings wasn't the only piece necessary).
 
-(and yes I consider direct mapping of persistent memory with a complex 
-setup procedure a form of DMA -- my guess is that the reason that it 
-works in KVM is that it somehow activates the DMA code paths in KVM)
+The "generic" solution is essentially the second half of
+qcom_smmu_cfg_probe(), which ensures that as the SMMU is reset it will
+do so with bypass mappings for all stream mappings the boot loader left
+us.
 
-IMNSHO that's the true reason.
+> Or are all the parties still 'solving' this downstream?
+> 
 
-> and for that reason many bare metal
-> use cases that require wbinvd have not been ported to guests (like
-> PMEM unlock), and others that only use wbinvd to opportunistically
-> enforce a cache state (like ACPI sleep states)
+I believe that Qualcomm has adopted the upstream solution in their
+downstream kernel.
 
-ACPI sleep states are not supported or needed in virtualization. They 
-are mostly obsolete on real hardware too.
-
-
-> do not see ill effects
-> from missing wbinvd. Given KVM ships with a policy to elide wbinvd in
-> many scenarios adopt the same policy for TDX guests.
+Regards,
+Bjorn
