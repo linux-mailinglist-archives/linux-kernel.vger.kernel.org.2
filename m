@@ -2,104 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999C938F9CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B843938F9D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhEYFL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhEYFLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:11:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAE6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:09:55 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id e11so36426095ljn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:09:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UOMx5+28RlRg9sdHtPpeFxBXs7+mTy/X9upWhP7PZp8=;
-        b=vgMr6dB++UKouqjyL9Wwrs+iuqJuxj9qT0IYEQe2jCCp9iZOhh6EUNd4QEpVc4OyuX
-         8bWNc4f9MDmo4vVBtga2WmTWDwHsJGHtjKFVx/kplQT2Ehpc09U2yLZTBp2l3KinA5HZ
-         gM6t6aMFWdohhaTbHo+GBNOTWuh8IjGUHh/E6nJjd7w5uSV/YD1hPJUODM32dODYjQKB
-         xPmL9Orq1xjWDwx8oDDq9L8TDava4RN4Y4rTyAZ8Y9iJzft1AKMI75UQVJAsOkY5/tlM
-         +zNAEqhtvFhfAiQEvNZG05jOj3hByl7mhYCb8VHYesLrggj3gR7Zm1GOirVapjBO2vMO
-         JEAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=UOMx5+28RlRg9sdHtPpeFxBXs7+mTy/X9upWhP7PZp8=;
-        b=d2zf7qrU70kgR02BWWEPCjipbE9LR/ymyqRcFMEL1Ns0631ETtSdGfiBHE44vAUSGN
-         QsYecFoB7CoWMcf/QvU7uoq5OgFhmOuNUqw9WLn+Qn979WxVpQOBQzaagdU9Dj4JXe2f
-         56rtcTILRCzLF4gBb+KHt+J7qsHfhG2+GN1JesDshu8qE28Gwv2eK/p5KCR4Fzdq/xaG
-         U6Qo/eQkb528uT3VawBoNCFN7s6jEuX7vLIHFWWYD4YGOFDbjREFvoBqTn0a/E1XpfI+
-         jfwjBmd5geJm3KsL2k6+x1boRCQMQqAagskVr3+jymExqG/LFqpjk4hC0gAg9PAdy8mY
-         8KsA==
-X-Gm-Message-State: AOAM530nYq3FRAQJXO9YqojHtGZGDojEjhaxIfrLR0i1MM+EEMyI+QQu
-        gHQyu2U1Z6qZF8EN5UPNp+PLmlV7e4RgigvJ47M=
-X-Google-Smtp-Source: ABdhPJxhoSl5ZBaB7NwXKQghdf7yt0VZUFkm0yQhdwHTEPfmj++JctAWCKmPchTOaKC2W6twkKb3CQp97q62HFy+53o=
-X-Received: by 2002:a2e:7115:: with SMTP id m21mr20195187ljc.33.1621919393465;
- Mon, 24 May 2021 22:09:53 -0700 (PDT)
+        id S230450AbhEYFMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:12:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230290AbhEYFMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 01:12:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621919482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vQy9Yy3gw7RKGoFrMrPZDj3krJ5l5n052HEA+hQR2hs=;
+        b=a1G9rQhrkw7MVyqaginby6ymmKEuEKd0ouu/js+Fmk+E0aMMkLQSdIVIQN6TIYd/8E5oPg
+        xaXF/EUp2y/mgUKcoMGjkjG/U6Ofj9cN7qj9zCecBuN/ul/QI7nJLJH9u/n5Ho+Oc9z3Lm
+        k2fueyzU0S+pzEpyg2N4wvbJJrpfUqQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2AF59AE04;
+        Tue, 25 May 2021 05:11:22 +0000 (UTC)
+Subject: Re: [PATCH 4.19 49/49] x86/Xen: swap NX determination and GDT setup
+ on BSP
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
+        Jan Beulich <jbeulich@suse.com>
+References: <20210524152324.382084875@linuxfoundation.org>
+ <20210524152325.958181984@linuxfoundation.org>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <bdadfa45-0496-9d47-cca0-b0839b811ae9@suse.com>
+Date:   Tue, 25 May 2021 07:11:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Reply-To: hon.barr.desmond.williams.chambers@gmail.com
-Sender: willgod492@gmail.com
-Received: by 2002:a05:6512:1192:0:0:0:0 with HTTP; Mon, 24 May 2021 22:09:52
- -0700 (PDT)
-From:   Hon Barrister Desmond williams 
-        <hon.barr.desmond.william2021@gmail.com>
-Date:   Tue, 25 May 2021 06:09:52 +0100
-X-Google-Sender-Auth: 8EntixG0ZSG6MPmhfDuqNSOYeXU
-Message-ID: <CABB9BwAJj4J4cpQG6p-P=d9wpuknO5_Rohae7knUB_8E9-bhYA@mail.gmail.com>
-Subject: Re:Hon.Barr.Desmond Williams. Esq, urgent reply.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210524152325.958181984@linuxfoundation.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ATH5QzO71TNqzvpwWdCjpiDfHFPpuWRfK"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear ,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ATH5QzO71TNqzvpwWdCjpiDfHFPpuWRfK
+Content-Type: multipart/mixed; boundary="uEevRINPBpsFTVLNmx6wseFe669HMgse2";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
+ Jan Beulich <jbeulich@suse.com>
+Message-ID: <bdadfa45-0496-9d47-cca0-b0839b811ae9@suse.com>
+Subject: Re: [PATCH 4.19 49/49] x86/Xen: swap NX determination and GDT setup
+ on BSP
+References: <20210524152324.382084875@linuxfoundation.org>
+ <20210524152325.958181984@linuxfoundation.org>
+In-Reply-To: <20210524152325.958181984@linuxfoundation.org>
 
-Greetings!
+--uEevRINPBpsFTVLNmx6wseFe669HMgse2
+Content-Type: multipart/mixed;
+ boundary="------------C8F10F2D5F5C1F8416CDE582"
+Content-Language: en-US
 
-Compliment of the day, do accept my apologies if my mail does not meet
-your personal ethics, in due respect I want to introduce myself and
-this business opportunity to you. My name is Hon Barrister Desmond
-Williams Esq. Of Williams Chambers & Associate, a personal attorney to
-my late client. I wish to know if we can work together.
+This is a multi-part message in MIME format.
+--------------C8F10F2D5F5C1F8416CDE582
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-I would like you to stand as the next of kin to my late client who has
-an account valued 4.5million United States dollars, with a deposit
-bank. She died without any registered next of kin and the funds now
-have an open beneficiary mandate.
+On 24.05.21 17:26, Greg Kroah-Hartman wrote:
+> From: Jan Beulich <jbeulich@suse.com>
+>=20
+> commit ae897fda4f507e4b239f0bdfd578b3688ca96fb4 upstream.
+>=20
+> xen_setup_gdt(), via xen_load_gdt_boot(), wants to adjust page tables.
+> For this to work when NX is not available, x86_configure_nx() needs to
+> be called first.
+>=20
+> [jgross] Note that this is a revert of 36104cb9012a82e73 ("x86/xen:
+> Delay get_cpu_cap until stack canary is established"), which is possibl=
+e
+> now that we no longer support running as PV guest in 32-bit mode.
+>=20
+> Cc: <stable.vger.kernel.org> # 5.9
 
-The board of directors of her Bank adopted a resolution and I was
-mandated to provide her next of kin as her personal attorney for the
-payment of this money or else the fund will be diverted to the
-government treasury=E2=80=99s account as an abandoned property.
+Sorry for messing up the stable link, but please don't include this
+patch in stable kernels before 5.9
 
-Fortunately, it=E2=80=99s very easy for me to back you up with certify
-attestation certification on your name to make you become her official
-next of kin. Your seriousness will permit me to send you more details
-on how you will execute this fund into your bank account, kindly
-indicate your interest immediately.
 
-I will give you more details once you reply back with the information
-as stated below:
+Juergen
 
-1. Full name........
-2. Address......
-3. Country.......
-4. Gender/age......
-5. Mobile n=C2=B0......
-6. Occupation.....
-7. E-mail address....
+> Fixes: 36104cb9012a82e73 ("x86/xen: Delay get_cpu_cap until stack canar=
+y is established")
+> Reported-by: Olaf Hering <olaf@aepfle.de>
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+> Link: https://lore.kernel.org/r/12a866b0-9e89-59f7-ebeb-a2a6cec0987a@su=
+se.com
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>   arch/x86/xen/enlighten_pv.c |    8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> --- a/arch/x86/xen/enlighten_pv.c
+> +++ b/arch/x86/xen/enlighten_pv.c
+> @@ -1246,16 +1246,16 @@ asmlinkage __visible void __init xen_sta
+>   	/* Get mfn list */
+>   	xen_build_dynamic_phys_to_machine();
+>  =20
+> +	/* Work out if we support NX */
+> +	get_cpu_cap(&boot_cpu_data);
+> +	x86_configure_nx();
+> +
+>   	/*
+>   	 * Set up kernel GDT and segment registers, mainly so that
+>   	 * -fstack-protector code can be executed.
+>   	 */
+>   	xen_setup_gdt(0);
+>  =20
+> -	/* Work out if we support NX */
+> -	get_cpu_cap(&boot_cpu_data);
+> -	x86_configure_nx();
+> -
+>   	/* Determine virtual and physical address sizes */
+>   	get_cpu_address_sizes(&boot_cpu_data);
+>  =20
+>=20
+>=20
 
-I look urgently to get your response as soon as possible.
 
-Yours sincerely,
-Barr Desmond Williams. Esq.
+--------------C8F10F2D5F5C1F8416CDE582
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------C8F10F2D5F5C1F8416CDE582--
+
+--uEevRINPBpsFTVLNmx6wseFe669HMgse2--
+
+--ATH5QzO71TNqzvpwWdCjpiDfHFPpuWRfK
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCshvkFAwAAAAAACgkQsN6d1ii/Ey93
+jQf+L9Qtt5dITB1jtO/7lJYyWwpc1kUg0YhPmRn3hMOCchjGLb9ewXIvt+avEtNdlQtTVhT3Wui2
+wPsq9vlnEtT/w8jUIx2ySIOHwJUY2la0Q1R+rDFBq1UYXyzqEeJKhGHTKEDc5Mtwsps3PJKpjGyI
+GfB8Bo0JmE5XpwJ9ENMlQGrh2QM2w0Jvmz+UyOY8GXEikoJi5wxp+bJrBh+KQSVllMEM6rstJqi6
+Y9ObqvplyisCASk2NY1SiQL5tsKJ++tqAYnmDX9flDApdosdHrl3bei/JS4VT+R0PsnaDYlmu15P
+SFjxH/GyakwFTBgiuk4KlVvpiowDgDPP/W9qgXsIcA==
+=gWP4
+-----END PGP SIGNATURE-----
+
+--ATH5QzO71TNqzvpwWdCjpiDfHFPpuWRfK--
