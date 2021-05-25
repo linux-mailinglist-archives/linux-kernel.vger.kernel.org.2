@@ -2,157 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16FE38FDB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3B738FDBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhEYJZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:25:29 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:41005 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232502AbhEYJZ2 (ORCPT
+        id S232561AbhEYJ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:26:54 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:59939 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232132AbhEYJ0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:25:28 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id CD5F4146D;
-        Tue, 25 May 2021 05:23:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 25 May 2021 05:23:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=qhdCG6Qg5hhTfUV1qjjJLTSxYnh
-        gWog/DLM8gX+Rusw=; b=kQDf+JuM1XOO7yWY/YL1k0CL6e3A113Z8bh5JDuafz+
-        z94tfBfnQQg27AIRT06Rsgw04DasL3N7qVNihNOHmNB/G2naEPIbd3IF7gkHRQyB
-        GEOBjUVfRWivgP1xck9qrC1uNcmBo9yo8Un68paBoq041Vx/GXXHQ/6YK4FXF+Qd
-        TVTm+VbQFLJ8GIMReDS8wl1NP8vQ+0iSQDxM374HcGzl3FLB/rs5aDvlKyG/LRMD
-        VioNeGIx+W6JPj7NnkxKevxhJ+A3aLUYm4kgdU3J6VCIzMK3HPlyAO7x7D9SqTyF
-        CaPBvmn9ZdA6U1s50PSQ9L3LCpChe/bJZlqHAEE+fug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qhdCG6
-        Qg5hhTfUV1qjjJLTSxYnhgWog/DLM8gX+Rusw=; b=Mklc8vs2/D9YTg3aQo2JtP
-        t1TF8RrAeXK7XLX2eSBz97ykXhYUVrOxgzC9LOclpg2Uzteh66i6r5sfPqWjqCkm
-        toZtkPuHZjeSPpOC2TdW4M2tN7B3MgLT2N4A+kxDBYt1+3lR7Gc6r5fU2sywDv/g
-        1Mn4ZMttFyaHlRZY73A/wa7VE1odVJ3oV97BlAZnk3dh73SH/HNwoNFChwYNYska
-        UxNm6UTU8HInw0Hyii5M9vRPMrv1I8PdYpj108UpqfUgIoAgBRm9qxLELzxPRCCk
-        0DiVLKYtuI0vX69CIkZ2AumhAjQuERrORIGaf48N5Mppfj5/GkweCvxHRhhNmEBw
-        ==
-X-ME-Sender: <xms:KsKsYLdnP2618sd6zawCSXHzcX4_-iddEzx-a9ZGhUJT-T8BXksu2Q>
-    <xme:KsKsYBOv137-AxhPN7UQOyCS3Vs5OTGg3xC2kbq5T2sc3PjxwfhWs34-jruzrfHcI
-    ImRi_SGooe4rB41IRE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
-    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:KsKsYEj1BKBHEYxHgdXquEgl9aODqOdbjh81TC1TUIoIW1fz3qZ83Q>
-    <xmx:KsKsYM-Lvmk5qwORpR_7TxuKVFsUgAiFezeESRtA3kTmDRpOXmzWaw>
-    <xmx:KsKsYHtF1dgQHFCO7z2LcUUFfWYHrxXzK_UMXQbLCW-aP837jwl8UA>
-    <xmx:LMKsYMWVbhzXzkPmZC0FkNMnr7FA9uoPQal5hT7tFwKc-vh_jYejiGByJRk>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 25 May 2021 05:23:54 -0400 (EDT)
-Date:   Tue, 25 May 2021 11:23:53 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Dom Cobley <dom@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/11] drm/vc4: hdmi: Enable Channel Mapping, IEC958, HBR
- Passthrough using hdmi-codec
-Message-ID: <20210525092353.mvqdv4bi4i4rkqsu@gilmour>
-References: <20210507140334.204865-1-maxime@cerno.tech>
- <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
- <s5hzgwjcit9.wl-tiwai@suse.de>
+        Tue, 25 May 2021 05:26:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1621934723; x=1653470723;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=id5jjjYGUYQ5y88qtb+UmsSE5j6OC46ZQvVJFXn8Wyc=;
+  b=hU+OEv2iwi4e3MSXWEqDDjruLVoQ88F2BoNeim6Csaq0VVzVMLa4tlED
+   LgMOUXNFoipDCk+wB0LQR3dCJCjxt5llf5Rlt4OAhd7ud+z38WYi7aLuc
+   v8qbVBK6Q2Km/tdPiZvlTjV1JXgz/kEqrjqM3BsV52yhDZ4lcbP4uZoiQ
+   ydspsjtiIkNBSTZ3ym5VTnrcFKxQdXOlSbN7TsnqZFH0G37WcI7O9F7WV
+   IZIvtNKrV4Np/LDrk7WGI3/cjKx49TnwYxZp1Qzhr/VVuV4ZebjGj5vKi
+   Fp1VcWmkdomhl7r29XZSsJ1nNFFA0Wf1DOFXa3arwTai2O1ltf0UkAxos
+   w==;
+IronPort-SDR: tg+RT8KQ02foJIOL7ihExOxMfJaaEfZF7OcWfCWqUf1mz6TzhnwVXpPCewgCbCH1dCfqqsWpvX
+ P4Y/N/kbxWu/njpWFzPnDg6UTJ9SB/FSgqVYATG83//+QM6ZRO63k0ktkmFwzJdy9ecjEyoohu
+ rZn+PQdDHnNRpggA3/kv95omzzMlEJkKhoUrmA+C7ZlYR20XoLnnFOIFCvc+cr6ubxxavSHvW2
+ ilGsri8AEojsPZYheCw3O2q87NWDfXHG0GKfPZrvcKGNKYUoqTuvpchGoU4QNBmFfoD8K/clPO
+ lII=
+X-IronPort-AV: E=Sophos;i="5.82,328,1613458800"; 
+   d="scan'208";a="129362356"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2021 02:25:23 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 02:25:22 -0700
+Received: from [10.12.74.7] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 25 May 2021 02:25:21 -0700
+Subject: Re: [PATCH v2 2/4] ARM: dts: at91: add sama7g5 SoC DT and sama7g5-ek
+To:     Rob Herring <robh@kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <Eugen.Hristev@microchip.com>,
+        <Ludovic.Desroches@microchip.com>, <soc@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Claudiu.Beznea@microchip.com>,
+        <Codrin.Ciubotariu@microchip.com>
+References: <20210511071223.71379-1-eugen.hristev@microchip.com>
+ <20210511071223.71379-2-eugen.hristev@microchip.com>
+ <070939b0-ec77-a135-b351-4c4c8bc543f0@microchip.com>
+ <YJo0PY2E36v2Pqz/@piout.net>
+ <8c74596c-6d23-c822-fc2e-6cbb984fa4fd@microchip.com>
+ <20210511191653.GA2446068@robh.at.kernel.org>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <bbbb0934-666a-44be-f98c-cb0ad180c792@microchip.com>
+Date:   Tue, 25 May 2021 11:25:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="edyfacc36enjbeyb"
-Content-Disposition: inline
-In-Reply-To: <s5hzgwjcit9.wl-tiwai@suse.de>
+In-Reply-To: <20210511191653.GA2446068@robh.at.kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/05/2021 at 21:16, Rob Herring wrote:
+> On Tue, May 11, 2021 at 09:03:37AM +0000, Eugen.Hristev@microchip.com wrote:
+>> On 5/11/21 10:37 AM, Alexandre Belloni wrote:
+>>> On 11/05/2021 07:18:31+0000, Eugen.Hristev@microchip.com wrote:
+>>>> On 5/11/21 10:12 AM, Eugen Hristev wrote:
+>>>>> Add Device Tree for sama7g5 SoC and associated board sama7g5-ek
+>>>>>
+>>>>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+>>>>> [claudiu.beznea@microchip.com: add clocks, ethernet, timers, power]
+>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+>>>>> [codrin.ciubotariu@microchip.com: add audio]
+>>>>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>>>>> ---
+>>>>
+>>>> Changes in v2:
+>>>> - fixed license
+>>>> - fixed warnings for make dtbs (changed ahb/apb to just soc)
+>>>> - changed some node names as suggested
+>>>> - removed some okay status properties
+>>>> - addressed cpu node by label
+>>>> - removed stdout path
+>>>
+>>> Why would you remove stdout-path? The solution was to remove The console
+>>> parameter from bootargs, especially since you don't know what name the
+>>> console device will have depending on CONFIG_SERIAL_ATMEL_TTYAT.
+>>
+>> Ok, sure, I will add it back and remove console=...
+>>
+>> I will wait to see if Rob has anymore comments before preparing a v3.
+> 
+> No, nothing else.
 
---edyfacc36enjbeyb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Rob,
 
-Hi Takashi,
+v4 was posted some time ago:
+https://lore.kernel.org/linux-arm-kernel/20210514082151.178571-2-eugen.hristev@microchip.com/
 
-On Tue, May 25, 2021 at 10:35:14AM +0200, Takashi Iwai wrote:
-> On Mon, 24 May 2021 15:39:04 +0200,
-> Maxime Ripard wrote:
-> >=20
-> > Hi,
-> >=20
-> > On Fri, May 07, 2021 at 04:03:23PM +0200, Maxime Ripard wrote:
-> > > Hi,
-> > >=20
-> > > hdmi-codec allows to have a lot of HDMI-audio related infrastructure =
-in place,
-> > > it's missing a few controls to be able to provide HBR passthrough. Th=
-is series
-> > > adds more infrastructure for the drivers, and leverages it in the vc4=
- HDMI
-> > > controller driver.
-> > >=20
-> > > One thing that felt a bit weird is that even though
-> > > https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-al=
-sa-driver.html#iec958-s-pdif
-> > > mentions that the iec958 mask control should be a mixer control and t=
-he
-> > > default control should be a PCM one, it feels a bit weird to have two=
- different
-> > > control type for two controls so similar, and other drivers are pretty
-> > > inconsistent with this. Should we update the documentation?
-> >=20
-> > Any comments on this series?
->=20
-> A patch for updating the documentation is welcome.
-> Currently, as de facto standard, we allow both MIXER and PCM ifaces
-> for all IEC958-related controls, and it's unlikely that we would
-> change that in future.
+I plan to include this series in at91 tree these couple of next days: do 
+I wait for your tag?
 
-Ok, I'll write a patch for the documentation make it clearer then :)
+Best regards,
+   Nicolas
 
-Do we want to make sure that all the iec958 controls are on the same
-iface, or is it also left to the driver (or should we just leave the
-existing drivers as is but encourage a consistent use in the future)?
 
-Maxime
-
---edyfacc36enjbeyb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKzCKAAKCRDj7w1vZxhR
-xT6GAQCmK74YyTmGnQSUD3qsdks6qIaoPcyMDO73ebQeXm4xZwEAzb0RQ+6uvdWf
-9lgi7PPwMH7RXPFAdijTOOtf4OHrLAU=
-=kqaK
------END PGP SIGNATURE-----
-
---edyfacc36enjbeyb--
+-- 
+Nicolas Ferre
