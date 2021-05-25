@@ -2,213 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50DC390C55
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135A390C62
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhEYWh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 18:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
+        id S231659AbhEYWrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 18:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhEYWh5 (ORCPT
+        with ESMTP id S229898AbhEYWrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 18:37:57 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9923BC061574;
-        Tue, 25 May 2021 15:36:25 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 29so12814925pgu.11;
-        Tue, 25 May 2021 15:36:25 -0700 (PDT)
+        Tue, 25 May 2021 18:47:15 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C61C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:45:43 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id s22so49580686ejv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:45:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=wn3EG8k3M8Vjrn0xAqTbjN7lE2HqWDMtOWHhAlz2oY0=;
-        b=YUOtOr1AVPer3RmRfek2VbOYVLoUuADSgpiS6RErYIwnz5sVKtwCflo6KEXtRSUEes
-         obeWF2Rq6vwPsTXrlQYdl+MKtwmhAXQYukJrtn4q+pXNJNoQWVFbs+W4Wasvvus2hky5
-         yCZtIxsv6D2xJhTvoX7A4beRiJaYjppiWk0WMQ67un7TyOe8mNelkSi8Wb9poYAEKqeh
-         ejyyGZUJxVPcbNPSQALlx8LXEGQeY5YVNDXubq2ZKSdYThHUMY3VJBz4gSfAYEo0bHFs
-         YzhSL4xNlpZPL2nLyBhzBJ7hccukBgi0xgygdtylVKLZkC2AHm5TmMbFNaLWUDcCPU01
-         K5kw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZEcQbvMhSoHLjMNo49ldT5vNI3t55RutmZvoGxMuPkg=;
+        b=QGRKMAe+uYrh5/cVYSKtIZIu6Vpw2kbCG+B2z0JnIuuv5ol5NCCEEsxp+m0PGp5yhR
+         YvaB1t+ZXx+v6S2fAp1yyTSWC4uxE5P5d01dgVzdGgEI6hBaAYI/N9UoNtx6kyJJWGf6
+         BB4JpkXBvrGg04HTrVRzlDrMh/kuJtO72rfwGRqzT21Vp7LUdKzSm7oVvnhHeHsizYqV
+         oW9aHUV4C23+a/mAZ21hB97oUHpEtjj5sYv1rzf50Pnn9/wA7Pb33b/LRBVtbGkRMSHc
+         xBj17wLFHvCgjg8rGK6TL5UafXc1k8LLZ6iPUwkzAX3gglRW3gCBsrldSibSnXLUGL6i
+         4/cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=wn3EG8k3M8Vjrn0xAqTbjN7lE2HqWDMtOWHhAlz2oY0=;
-        b=lM8PFSZ/Or3pBBnJ8ej/E234czJ1PR5WvSDgh7Qx+ajbqUOvv9RkAvEccJdZRcuZSF
-         B3hl2WkGGuYiby8YgAvTno0Z6tUMWu20HxzQ0UniemMB160UpL72lKgLZjIlzWnd8rM3
-         rUgnMq+dElGi6fjvcHxzUKxd0piBuVltJynSaPk7LFkgK7o62f9xEGqMpoz1khJDh0tu
-         ER4ie7s3H5BLXGDN3D7lFde6wiOaLokr/qofHD8MU0HRdbHOWATqJAAQeEyTFtV94Jzi
-         0AKnGfQzbIt1YfwnGnrjQyCIZp7Fk3fPGXzv9T6brF8i1lQ1URVYpIbPicuznmozZ8pL
-         VIxA==
-X-Gm-Message-State: AOAM531Jy5eGecK+hKnbhBPkLXcgxtGNIuH0OchQG5Z4v4hOweb1OFkF
-        gDzpF116DGCFxURz5G7AhzE=
-X-Google-Smtp-Source: ABdhPJxEkUIBK++KdU+m8mTCWuHu8vAKSq5jd6yKuxNNuc8NGoqmD03GaMJQGv+1pId9Z2BLZCGdkA==
-X-Received: by 2002:a63:aa48:: with SMTP id x8mr21127327pgo.359.1621982184997;
-        Tue, 25 May 2021 15:36:24 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id o186sm14260694pfg.170.2021.05.25.15.36.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:36:24 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        leobras.c@gmail.com, Rob Herring <robh@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
- 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
- memory addresses")
-References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
-        <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
-        <87eedxbtkn.fsf@stealth>
-        <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
-        <877djnaq11.fsf@stealth>
-        <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
-Date:   Wed, 26 May 2021 07:36:21 +0900
-In-Reply-To: <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
-        (Ard Biesheuvel's message of "Tue, 25 May 2021 15:54:30 +0200")
-Message-ID: <871r9ubfve.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZEcQbvMhSoHLjMNo49ldT5vNI3t55RutmZvoGxMuPkg=;
+        b=IB4CRRoSTFGT78UVZAfBoaOVEO/nHmIppRetzrPYbOM1bdWe8iJ5/rWUaqN+WkmYaW
+         tlu9P9xoYY/9/tiLPl5+zH+536GDF+600b4StVQmVJbG9sgNb4DPRzYSTPenzI/OpO7/
+         2P3ciFa88kD5S+9NwFiLKBZ5Yf0eu5JLp/kKtLl9fnFANyd4MhomhcLH6wj001MF5mLw
+         L5LdzwXogdkLBDYNhTYJI0tBchCbRrkStMNA5nekR1wCJscXQ8pGeSVAL46ew9knrwnq
+         yY0MqjRQIk+sJbmx6cX/GJxdokJXv1R0voLemEJ4oeD7QR1LshjMCrkiRAplAnGnXE3W
+         Y0Ng==
+X-Gm-Message-State: AOAM531RMLiZ01evDgxShq5X0OlJta7QW7NB46GEkhZviqefx9RU+2+9
+        OQ2HVD6StoeDZFfiu6S6JSV1DsAOo0dSsZfajNg=
+X-Google-Smtp-Source: ABdhPJzfCBahew97KwA/E0nGsS+tI1s/DjBv3C8PfI/XV4OfaQ16fpUc3t30vmolJa2Fks9NRWlK5D9EpMVgBs5drB8=
+X-Received: by 2002:a17:906:4751:: with SMTP id j17mr18079906ejs.25.1621982742594;
+ Tue, 25 May 2021 15:45:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210525162145.3510-1-shy828301@gmail.com> <20210525162145.3510-2-shy828301@gmail.com>
+ <alpine.LSU.2.11.2105251412140.2003@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2105251412140.2003@eggly.anvils>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 25 May 2021 15:45:31 -0700
+Message-ID: <CAHbLzkqs32HkRiAoQeSv2ik9fBYmdhwUFq5vWkcs7PY0rUu2fA@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/2] mm: thp: check page_mapped instead of
+ page_mapcount for split
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Zi Yan <ziy@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Wang Yugui <wangyugui@e16-tech.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ard Biesheuvel <ardb@kernel.org> writes:
-
-> On Tue, 25 May 2021 at 15:42, Punit Agrawal <punitagrawal@gmail.com> wrote:
->>
->> Hi Ard,
->>
->> Ard Biesheuvel <ardb@kernel.org> writes:
->>
->> > On Sun, 23 May 2021 at 13:06, Punit Agrawal <punitagrawal@gmail.com> wrote:
->> >>
->> >> Robin Murphy <robin.murphy@arm.com> writes:
->> >>
->> >> > [ +linux-pci for visibility ]
->> >> >
->> >> > On 2021-05-18 10:09, Alexandru Elisei wrote:
->> >> >> After doing a git bisect I was able to trace the following error when booting my
->> >> >> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
->> >> >> [..]
->> >> >> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
->> >> >> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
->> >> >> 0x00fa000000
->> >> >> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
->> >> >> 0x00fbe00000
->> >> >> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
->> >> >> regulator
->> >> >> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
->> >> >> regulator
->> >> >> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
->> >> >> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
->> >> >> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
->> >> >> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
->> >> >> address [0xfbe00000-0xfbefffff])
->> >> >> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
->> >> >> [    0.373973] pci 0000:00:00.0: supports D1
->> >> >> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
->> >> >> [    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
->> >> >> reconfiguring
->> >> >> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
->> >> >> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
->> >> >> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
->> >> >> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
->> >> >> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
->> >> >> x4 link)
->> >> >> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
->> >> >> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
->> >> >> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
->> >> >> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
->> >> >> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
->> >> >> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
->> >> >> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
->> >> >> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
->> >> >> [..]
->> >> >> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
->> >> >> resource flags for
->> >> >> 64-bit memory addresses").
->> >> >
->> >> > FWFW, my hunch is that the host bridge advertising no 32-bit memory
->> >> > resource, only only a single 64-bit non-prefetchable one (even though
->> >> > it's entirely below 4GB) might be a bit weird and tripping something
->> >> > up in the resource assignment code. It certainly seems like the thing
->> >> > most directly related to the offending commit.
->> >> >
->> >> > I'd be tempted to try fiddling with that in the DT (i.e. changing
->> >> > 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
->> >> > if it makes any difference. Note that even if it helps, though, I
->> >> > don't know whether that's the correct fix or just a bodge around a
->> >> > corner-case bug somewhere in the resource code.
->> >>
->> >> From digging into this further the failure seems to be due to a mismatch
->> >> of flags when allocating resources in pci_bus_alloc_from_region() -
->> >>
->> >>     if ((res->flags ^ r->flags) & type_mask)
->> >>             continue;
->> >>
->> >> Though I am also not sure why the failure is only being reported on
->> >> RK3399 - does a single 64-bit window have anything to do with it?
->> >>
->> >
->> > The NVMe in the example exposes a single 64-bit non-prefetchable BAR.
->> > Such BARs can not be allocated in a prefetchable host bridge window
->> > (unlike the converse, i.e., allocating a prefetchable BAR in a
->> > non-prefetchable host bridge window is fine)
->> >
->> > 64-bit non-prefetchable host bridge windows cannot be forwarded by PCI
->> > to PCI bridges, they simply lack the BAR registers to describe them.
->> > Therefore, non-prefetchable endpoint BARs (even 64-bit ones) need to
->> > be carved out of a host bridge's non-prefetchable 32-bit window if
->> > they need to pass through a bridge.
->>
->> Thank you for the explanation. I also looked at the PCI-to-PCI Bridge
->> spec to understand where some of the limitations are coming from.
->>
->> > So the error seems to be here that the host bridge's 32-bit
->> > non-prefetchable window has the 64-bit attribute set, even though it
->> > resides below 4 GB entirely. I suppose that the resource allocation
->> > could be made more forgiving (and it was in the past, before commit
->> > 9d57e61bf723 was applied). However, I would strongly recommend not
->> > deviating from common practice, and just describe the 32-bit
->> > addressable non-prefetchable resource window as such.
->>
->> IIUC, the host bridge's configuration (64-bit on non-prefetchable
->> window) is based on what the hardware advertises.
->>
+On Tue, May 25, 2021 at 3:06 PM Hugh Dickins <hughd@google.com> wrote:
 >
-> What do you mean by 'what the hardware advertises'? The host bridge is
-> apparently configured to decode a 32-bit addressable window as MMIO,
-> and the question is why this window has the 64-bit attribute set in
-> the DT description.
-
-Right - I completely missed the fact that the ranges property is also
-encoding the window attributes. Thanks for setting me straight.
-
-git archaeology doesn't provide any explanation - I am wondering if it
-is just an oversight.
-
->> Can you elaborate on what you have in mind to correct the
->> non-prefetchable resource window? Are you thinking of adding a quirk
->> somewhere to address this?
->>
+> On Tue, 25 May 2021, Yang Shi wrote:
 >
-> No. Just fix the DT.
+> > When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
+> > return false positive for PTE-mapped THP since page_mapcount() is used
+> > to check if the THP is unmapped, but it just checks compound mapount and
+> > head page's mapcount.  If the THP is PTE-mapped and head page is not
+> > mapped, it may return false positive.
+>
+> But those false positives did not matter because there was a separate
+> DEBUG_VM check later.
+>
+> It's good to have the link to Wang Yugui's report, but that paragraph
+> is not really about this patch, as it has evolved now: this patch
+> consolidates the two DEBUG_VM checks into one VM_WARN_ON_ONCE_PAGE.
+>
+> >
+> > The try_to_unmap() has been changed to void function, so check
+> > page_mapped() after it.  And changed BUG_ON to WARN_ON since it is not a
+> > fatal issue.
+>
+> The change from DEBUG_VM BUG to VM_WARN_ON_ONCE is the most important
+> part of this, and the reason it's good for stable: and the patch title
+> ought to highlight that, not the page_mapcount business.
 
-After updating the DT to mark the non-prefetchable window as 32-bit
-things work as expected.
+Will update the subject and the commit log accordingly.
 
-Let me send a patch to update the DT - I'll include previous authors
-who've touched that DT fragment. Hopefully somebody will jump in to
-explain the reason it was done that way.
+>
+> >
+> > [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+> >
+> > Reviewed-by: Zi Yan <ziy@nvidia.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> This will be required Cc: stable@vger.kernel.org
+> (but we don't want to Cc them on this mail).
+>
+> As I said on the other, I think this should be 1/2 not 2/2.
 
-Thanks,
-Punit
+Sure.
 
-[...]
+>
+> > ---
+> > v3: Incorporated the comments from Hugh. Keep Zi Yan's reviewed-by tag
+> >     since there is no fundamental change against v2.
+> > v2: Removed dead code and updated the comment of try_to_unmap() per Zi
+> >     Yan.
+> >  mm/huge_memory.c | 17 +++++------------
+> >  1 file changed, 5 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 80fe642d742d..72d81d8e01b1 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2343,6 +2343,8 @@ static void unmap_page(struct page *page)
+> >               ttu_flags |= TTU_SPLIT_FREEZE;
+> >
+> >       try_to_unmap(page, ttu_flags);
+> > +
+> > +     VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
+>
+> There is one useful piece of information that dump_page() will not show:
+> total_mapcount(page).  Is there a way of crafting that into the output?
+>
+> Not with the macros available, I think.  Maybe we should be optimistic
+> and assume I already have the fixes, so not worth trying to refine the
+> message (but I'm not entirely convinced of that!).
+>
+> The trouble with
+>         if (VM_WARN_ON_ONCE_PAGE(page_mapped(page), page))
+>                 pr_warn("total_mapcount:%d\n", total_mapcount(page));
+> is that it's printed regardless of the ONCEness.  Another "trouble"
+> is that it's printed so long after the page_mapped(page) check that
+> it may be 0 by now - but one can see that as itself informative.
 
+We should be able to make dump_page() print total mapcount, right? The
+dump_page() should be just called in some error paths so taking some
+extra overhead to dump more information seems harmless, or am I
+missing something? Of course, this can be done in a separate patch.
+
+>
+> I guess leave it as you have it, I don't see an easy better
+> (without going back to something like the old contortions).
+>
+> >  }
+> >
+> >  static void remap_page(struct page *page, unsigned int nr)
+> > @@ -2653,7 +2655,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >       struct deferred_split *ds_queue = get_deferred_split_queue(head);
+> >       struct anon_vma *anon_vma = NULL;
+> >       struct address_space *mapping = NULL;
+> > -     int count, mapcount, extra_pins, ret;
+> > +     int mapcount, extra_pins, ret;
+>
+> Remove mapcount too.
+>
+> >       pgoff_t end;
+> >
+> >       VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
+> > @@ -2712,7 +2714,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >       }
+> >
+> >       unmap_page(head);
+> > -     VM_BUG_ON_PAGE(compound_mapcount(head), head);
+> >
+> >       /* block interrupt reentry in xa_lock and spinlock */
+> >       local_irq_disable();
+> > @@ -2730,7 +2731,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >
+> >       /* Prevent deferred_split_scan() touching ->_refcount */
+> >       spin_lock(&ds_queue->split_queue_lock);
+> > -     count = page_count(head);
+> >       mapcount = total_mapcount(head);
+> >       if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
+>
+> mapcount was useful for printing in the hand-crafted message deleted,
+> but serves no purpose now: just do the page_ref_freeze() without it.
+
+Aha, yes, good catch. If mapcount is not zero, the refcount freeze
+won't succeed.
+
+>
+> >               if (!list_empty(page_deferred_list(head))) {
+> > @@ -2752,16 +2752,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >               __split_huge_page(page, list, end);
+> >               ret = 0;
+> >       } else {
+> > -             if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+> > -                     pr_alert("total_mapcount: %u, page_count(): %u\n",
+> > -                                     mapcount, count);
+> > -                     if (PageTail(page))
+> > -                             dump_page(head, NULL);
+> > -                     dump_page(page, "total_mapcount(head) > 0");
+> > -                     BUG();
+> > -             }
+> >               spin_unlock(&ds_queue->split_queue_lock);
+> > -fail:                if (mapping)
+> > +fail:
+> > +             if (mapping)
+> >                       xa_unlock(&mapping->i_pages);
+> >               local_irq_enable();
+> >               remap_page(head, thp_nr_pages(head));
+> > --
+> > 2.26.2
