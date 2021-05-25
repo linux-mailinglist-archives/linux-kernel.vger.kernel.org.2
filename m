@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF7638FF53
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB7038FF5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhEYKgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:36:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46490 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232213AbhEYKfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:35:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621938813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jaenNB/41FI7l1H6eXnKw5fm7YclHhGbzv0v463POLI=;
-        b=kkDe7Sfv7/6so47rMx6o10QPDvBPQpt5UYFPWct54RvNJ//CLu0jlzsb1sEI+mNWJJudow
-        e29tg81xRFRrJpnc0kaXT/VsQ/6gzgIGcOY1b9Tt1YJN0Gy8MQlwgFCZ0Nr/9Ew3T9vVOT
-        C7SH2gxt39xJOVEcO26p7s0BFqQWNdY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81314AF09;
-        Tue, 25 May 2021 10:33:33 +0000 (UTC)
-Date:   Tue, 25 May 2021 12:33:33 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v6 2/4] printk: Straighten out log_flags into
- printk_info_flags
-Message-ID: <YKzSfQIa99Ld2ZMI@alley>
-References: <cover.1621338324.git.chris@chrisdown.name>
- <0b4f0e60960217ac36462316cf43497a9fad1747.1621338324.git.chris@chrisdown.name>
+        id S231907AbhEYKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhEYKiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 06:38:21 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8233CC06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:34:16 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id k19so22759124qta.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UD1f1G9Ex4FwbzHzbUArz7WZFjqV4ALpCGYlosc7pFs=;
+        b=rkN2FqQcIKdfrkPyeXVV+a3SZSWeeezHAFurF3wfm7k7x4cdKt9YJPMOwuxYJkYVnW
+         0p/uzXKTTQ8BicHVNLs//N5duQlo3qK5C/6gMDSNen9WXVFn6UZ1Og2D2WHiDeQ6ZnGO
+         pHyJnrV6PB0Eep3Z+tgRiR6wAKeVpJPNprZ8ZBHEvFC5s4o/M4Zdu5ysFXUIS2H8VIqf
+         lS6jE/CKBPrqTseC0B9ICNfTJL9ejNkWFFox2jJRzuJDPPToeQWVRC70eZtE/zWw1Vtc
+         carGqY2HC448jpHA4LhJjVKYKLWZF7dQlxTH9XNS+1WG5rnCJuLpx3es6o5KcAFz3ZjN
+         8C6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UD1f1G9Ex4FwbzHzbUArz7WZFjqV4ALpCGYlosc7pFs=;
+        b=Nv42h4A0iv49OMTt6YtgOLtYR8BOT4g0X0xh7IAe1TAuM18jHMw+xZMwT90qmeg5qS
+         /ZWSepmT7iWA1YgBri/7KFjciGWhPaqLlpvoqiK9Vv+uQcU5QJeAPyMZ0rcdvTrltw4b
+         /QAsqEjjfndOHnwVLRgpAlxJ2T6PeM0PlrOowD5lzBSHSekL5t75tuLT2xeCHNy7sLri
+         KbX2ibqZWYmweNP2GOTu+uIgA85RblLtc0Zd9su3v66UWcm/6jGG6OW7AHsl+zP+Meh+
+         IDRn4favqlt0I5YYgm+hlmAtVPv/Ogs4HzhA6C7N50/FqFjz/z5AkjGgY4qNvXUMzDED
+         oI6w==
+X-Gm-Message-State: AOAM530+LjSDkqlCW/6R2GVM6hb52QPn1+lj6C//xlfCyqwD2gUFTnAt
+        3XuApDWjZ1dOe32WuBHUZVubqH6JJRS4FYwJJ/4vzQ==
+X-Google-Smtp-Source: ABdhPJyXrTAW1sZtIFXE71qO3tx2YGgvBBW5Pt9i94EQ9WAr9BCFfbRKwmHd1UlCVcGcxTZxtKriQ7jYs5+QJA4zKcE=
+X-Received: by 2002:ac8:5a0f:: with SMTP id n15mr31803414qta.313.1621938855655;
+ Tue, 25 May 2021 03:34:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b4f0e60960217ac36462316cf43497a9fad1747.1621338324.git.chris@chrisdown.name>
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+In-Reply-To: <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Tue, 25 May 2021 12:33:35 +0200
+Message-ID: <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-05-18 13:00:38, Chris Down wrote:
-> In the past, `enum log_flags` was part of `struct log`, hence the name.
-> `struct log` has since been reworked and now this struct is stored
-> inside `struct printk_info`. However, the name was never updated, which
-> is somewhat confusing -- especially since these flags operate at the
-> record level rather than at the level of an abstract log.
-> 
-> printk_info_flags also joins its other metadata struct friends in
-> printk_ringbuffer.h.
-> 
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Petr Mladek <pmladek@suse.com>
+Hi,
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> Could you give more details about how cfs_rq->avg.load_avg = 4 but
+> cfs_rq->avg.load_sum = 0 ?
+>
+> cfs_rq->avg.load_sum is decayed and can become null when crossing
+> period which implies an update of cfs_rq->avg.load_avg.  This means
+> that your case is generated by something outside the pelt formula ...
+> like maybe the propagation of load in the tree. If this is the case,
+> we should find the error and fix it
 
-Just one nit below.
+Ahh, yeah, that could probably be described better.
 
-> diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-> index 73cc80e01cef..71918d47ca95 100644
-> --- a/kernel/printk/printk_ringbuffer.h
-> +++ b/kernel/printk/printk_ringbuffer.h
-> @@ -50,6 +50,12 @@ struct prb_data_blk_lpos {
->  	unsigned long	next;
->  };
->  
-> +/* Flags for a single printk record. */
-> +enum printk_info_flags {
-> +	LOG_NEWLINE	= 2,	/* text ended with a newline */
-> +	LOG_CONT	= 8,	/* text is a fragment of a continuation line */
-> +};
+It is (as far as I have found out) because the pelt divider is changed,
+and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
+in a different value being removed than added.
 
-Nit: Could you please move this after "enum desc_state" declaration?
+Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
+recalculates the load_avg based on load_sum, and not the delta, afaik.
 
->  /*
->   * A descriptor: the complete meta-data for a record.
->   *
-> -- 
-> 2.31.1
+And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
+how the pelt divider is changed, I assume it is hard to pinpoint where the issue
+is. I can try to find a clear path where where we can see what is added
+and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
+to better be able to pinpoint what is happening.
 
-Best Regards,
-Petr
+Previously I thought this was a result of precision loss due to division and
+multiplication during load add/remove inside fair.c, but I am not sure that
+is the issue, or is it?
+
+If my above line of thought makes sense, do you still view this as an error
+outside PELT, or do you see another possible/better solution?
+
+Will investigate further.
+
+Thanks
+Odin
