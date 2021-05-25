@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCBF39063E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C6E39063D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhEYQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S231899AbhEYQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhEYQLp (ORCPT
+        with ESMTP id S230150AbhEYQLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:11:45 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF88C061574;
-        Tue, 25 May 2021 09:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=nbSDM8JefRc8OvYh1pCNpmTBA1KFb7T/8MPpBSggPqk=; b=VjaNLPg4qVr5DU+63xuwtcXxrl
-        1f6KeVcRAWlodcm0hye8l5fanLdk8z7eCZYz7t/6lD9Z/F9TsMyMA9hRFuVz0LCQGfRexn7ea/DG/
-        sbFSQSmpDUPfq+R+PkTDCWmJGClwsDfdebkhY8cdLsmVLM5CZ7SqtrNWJnqeFa10FgSY=;
-Received: from p54ae9ff2.dip0.t-ipconnect.de ([84.174.159.242] helo=localhost.localdomain)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1llZd3-0001Mu-11; Tue, 25 May 2021 18:10:01 +0200
-From:   Felix Fietkau <nbd@nbd.name>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf jevents: fix getting maximum number of fds
-Date:   Tue, 25 May 2021 18:07:58 +0200
-Message-Id: <20210525160758.97829-1-nbd@nbd.name>
-X-Mailer: git-send-email 2.30.1
+        Tue, 25 May 2021 12:11:09 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB55BC061574;
+        Tue, 25 May 2021 09:09:39 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h16so36865167edr.6;
+        Tue, 25 May 2021 09:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E6s3ZtPWtmcbcuCeFGZbGrPYTepr+v29FJOymW4C+CY=;
+        b=TI96WuRxMj8Pb/NY0nygtA/+Bl5w6M+BxwVGoRPlVAqEaxjSm8XSyTA6izGFX12/Ul
+         cswyq/6GOFnWHlaXm4bu6LPk+ZzqOPk5SiHTvUcpQuoxIAwlqwh1WddtcFBrJOe0RfyK
+         /HLD3j1Ll/Zxl6eplQ+KPIWGpaeF9WD5jXehoNlTNCB40w5+BKhNYiih8iFIdIKtrtKv
+         CTJIdfSIqH972mbqjwxz1Oeq4ZN3cQef5wSyjbxhHryWuwexoCXy1NUJ7qpkrTckbo6p
+         xYy7uy2ul+TARuzDwtX+4jJLB+V/Wz/jZEuoSCcq714rDsQfvcQFU1miuWz7Wl+KuGfO
+         1Thg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E6s3ZtPWtmcbcuCeFGZbGrPYTepr+v29FJOymW4C+CY=;
+        b=MrqdkXNvQ8j/vURUgQenZ26183FnN88upzqeSJN21jchUb6s2e+/OCR7hXofMCnut8
+         lF1xZM/T4HaELqaYMiSTOargtWaqPaERjMbXjzdGgEnW7R+Mm/OnCr2D8RiqEn1F8918
+         YOaoI4KKFPF8G0PDHYNOINgKTmbWI7QLzxtDDsCy29MsdoGViC2whWtGnHPNFUqRPFG8
+         mT9jfvaH/ZXAa6RFLLKJKM8z12jzUqRB9mG9XqJBz68gMORfFZKYLU/NpbY/Cayt+u6w
+         E0s19bgSMkaM7atRGW5zWUg5drBoicI8lyvPcCNwS95Fnik+matuPry9AwupeqJLTGxV
+         usOg==
+X-Gm-Message-State: AOAM531cUr8A+6m/DaKydmaD5b91xXC1IC1Z4/hjBgKcUfaxDRyQfEJ1
+        svEeMeSeuZqdV0jr/3xxAqKWzlpWAUCptlCejoU=
+X-Google-Smtp-Source: ABdhPJwL63jd+Bw4iwsElTHxLE0xRt0eK9TsXFTrEfzZ9Mb+cpq5NYWjUWMfGLevpfJq0ciG8uGZDIqu8ilR/pnmr9U=
+X-Received: by 2002:a05:6402:3513:: with SMTP id b19mr31060270edd.137.1621958978427;
+ Tue, 25 May 2021 09:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com> <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
+In-Reply-To: <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 25 May 2021 09:09:26 -0700
+Message-ID: <CAHbLzkr1rUM7M5uv=LgCQtOngpwg-tUGMj9MUp7CkirDLMSwHw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: fix kernel-doc
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
-By casting it to int, it is interpreted as -1, which will cause get_maxfds
-to return 0, causing "Invalid argument" errors in nftw() calls.
-Fix this by casting the second argument of min() to rlim_t instead.
+On Tue, May 25, 2021 at 1:34 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 24-05-21 18:24:22, Yang Li wrote:
+> > Fix function name in mm/memcontrol.c kernel-doc comment
+> > to remove a warning.
+> >
+> > mm/memcontrol.c:6546: warning: expecting prototype for
+> > mem_cgroup_protected(). Prototype was for
+> > mem_cgroup_calculate_protection() instead.
+> >
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
----
- tools/perf/pmu-events/jevents.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It seems this has been covered by Mel's W=1 warning cleanup series,
+see https://lore.kernel.org/linux-mm/20210520084809.8576-7-mgorman@techsingularity.net/.
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index ed4f0bd72e5a..412565027fbb 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -960,7 +960,7 @@ static int get_maxfds(void)
- 	struct rlimit rlim;
- 
- 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
--		return min((int)rlim.rlim_max / 2, 512);
-+		return min(rlim.rlim_max / 2, (rlim_t)512);
- 
- 	return 512;
- }
--- 
-2.30.1
-
+>
+> Thanks!
+>
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 64ada9e..030c1dc 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6456,7 +6456,7 @@ static unsigned long effective_protection(unsigned long usage,
+> >  }
+> >
+> >  /**
+> > - * mem_cgroup_protected - check if memory consumption is in the normal range
+> > + * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
+> >   * @root: the top ancestor of the sub-tree being checked
+> >   * @memcg: the memory cgroup to check
+> >   *
+> > --
+> > 1.8.3.1
+>
+> --
+> Michal Hocko
+> SUSE Labs
+>
