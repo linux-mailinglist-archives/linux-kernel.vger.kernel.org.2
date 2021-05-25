@@ -2,37 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA7B38FCC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D7938FCCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhEYI3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:29:06 -0400
-Received: from verein.lst.de ([213.95.11.211]:58161 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231504AbhEYI3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:29:03 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A35A868AFE; Tue, 25 May 2021 10:27:31 +0200 (CEST)
-Date:   Tue, 25 May 2021 10:27:31 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] configfs: Implement the .read_iter and .write_iter
- callbacks
-Message-ID: <20210525082731.GA19018@lst.de>
-References: <20210520034521.16102-1-bvanassche@acm.org>
+        id S231187AbhEYI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:29:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5700 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230462AbhEYI3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:29:38 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fq6b03qY1z1BRl2;
+        Tue, 25 May 2021 16:25:16 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 16:28:07 +0800
+Received: from [10.174.177.91] (10.174.177.91) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 16:28:06 +0800
+Subject: Re: [PATCH -next] module: fix build error when CONFIG_SYSFS is
+ disabled
+To:     Stephen Boyd <swboyd@chromium.org>, <jeyu@kernel.org>
+CC:     <sfr@canb.auug.org.au>, <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210525085400.15854-1-cuibixuan@huawei.com>
+ <CAE-0n522LiGxorhBXtqE2yj8ZKtnmVCikCPFV_iQp8MJzNA+Zg@mail.gmail.com>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <03c7a51d-fad4-da67-36d6-5ab501dea3ed@huawei.com>
+Date:   Tue, 25 May 2021 16:28:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520034521.16102-1-bvanassche@acm.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CAE-0n522LiGxorhBXtqE2yj8ZKtnmVCikCPFV_iQp8MJzNA+Zg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Bart,
 
-I've applied this, but split the unrelated kerneldoc fix into a separate
-commit, and dropped the kerneldoc comments that did not document the API
-entirely.
+
+On 2021/5/25 15:36, Stephen Boyd wrote:
+> Quoting Bixuan Cui (2021-05-25 01:54:00)
+>>  kernel/module.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/module.c b/kernel/module.c
+>> index decf4601e943..7287ecc76714 100644
+>> --- a/kernel/module.c
+>> +++ b/kernel/module.c
+>> @@ -2794,7 +2794,8 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
+>>  }
+>>  #endif /* CONFIG_KALLSYMS */
+>>
+>> -#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+>> +#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && \
+>> +       IS_ENABLED(CONFIG_SYSFS)
+> Thanks for the report. It is the wrong fix though as we don't care that
+> sysfs is enabled or not. How about this patch?
+Hello, your patch solves that problem very well. Will you send a new patch?
+
+Thanks
+Bixuan Cui
