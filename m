@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6923907F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525A23907FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhEYRkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231981AbhEYRkv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:40:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433EAC06138B;
-        Tue, 25 May 2021 10:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=5ekpP0XygexUJbGSJEGJvxYqb4EXTuK7yUfqKx7P93Y=; b=eLce87e2ew0MHu46aHbJU/Sjik
-        BdrCZN8lmcy4NQY6for2m6/qUPDo8863yHIzQcEtFt1wpo9uYOHt7/vKT9nvPb2qgUo55IOQTzOYF
-        uo4Rc9aPKg1odDWgWlsowq78rG/duiOyDTu9wBFNrpNCTqwh/xrWKCy19uzIQn8n4CDq5Y7qxwhB2
-        nCCw30tdFuihdJlsRvHPtK1PaKg12CA1jT7nBhjDHK3Kv00ZISVRWcKwKIAgW2tYUK6Aki0uxu9DX
-        ucelTHT8PBD2z1QjelI+Rqgz/SeRikwye3eDExaNO/Kk8pblltgrneFSojouoPFmo1ZAjPtWUkKpT
-        mtEopdXQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llb1U-006xDX-Ky; Tue, 25 May 2021 17:39:20 +0000
-Subject: Re: linux-next: Tree for May 25 (x86: NR_CPUS undeclared)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-References: <20210525163932.785c1a2a@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e76d764e-9ed2-b11e-cf0f-53e7172745d4@infradead.org>
-Date:   Tue, 25 May 2021 10:39:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231924AbhEYRnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229976AbhEYRn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 13:43:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1E5161400;
+        Tue, 25 May 2021 17:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621964519;
+        bh=dOArAgu7ZC4cRYJFEGVi56ncg4H0XnoVUko1P1dIZn8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kAdF+LoXT11CuF1cPHOzYW1U0M8ChNl0RIvW5F5tmBSOJ/0Zz8FrZQSY6J4Q3diHR
+         hgaUMXW5ejvQia/hozy3hbbyrkdpjOfs3heLX61ZG8H3VgKM4ZUWsPaqrxgsivkbpC
+         6e6Or3oQ7/Zou9F6iMQLY2jf0rhRSOXI5O305K8jE+mEtE3w8/MOJ0tcPAzqD8ChRS
+         D6vMfBOwJbwv4fLGvUUg3EaCwLf7WZYHYzWIw4Ng8kA/DlBVwEh7FzaB54gSSPIqUE
+         PjOAwu+HvnsXgIcT+ihHqaCnXtTsekgnFWoNtoJKV7+QtNtOg8wDOmj+yIKibJkCMl
+         xsWK3rPRNcNhQ==
+Received: by mail-ed1-f44.google.com with SMTP id r11so37180912edt.13;
+        Tue, 25 May 2021 10:41:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531lzpVPgtm1hl6Hmo9i2Ly9YuwuwEYWX6lI8R/QW2XwbF1duUOz
+        rEuURmWQRXGB4a/lga33oCW4IOULXgx4zstBAw==
+X-Google-Smtp-Source: ABdhPJzLJeb1QNBqzEiRLC8bN1RXJUTLRhZ4rPY1kCOuA7jctny5RqRboDeLgsBZKUAq1VQNAVUj3UzKlSCwkNqwaVg=
+X-Received: by 2002:a05:6402:c7:: with SMTP id i7mr33618826edu.194.1621964517456;
+ Tue, 25 May 2021 10:41:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525163932.785c1a2a@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210524182745.22923-1-sven@svenpeter.dev>
+In-Reply-To: <20210524182745.22923-1-sven@svenpeter.dev>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 25 May 2021 12:41:45 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
+Message-ID: <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Apple M1 clock gate driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     devicetree@vger.kernel.org, linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 11:39 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20210524:
-> 
+On Mon, May 24, 2021 at 1:28 PM Sven Peter <sven@svenpeter.dev> wrote:
+>
+>
+> Hi,
+>
+> This series adds support for the clock gates present in Apple's SoCs such as
+> the M1.
+>
+> These SoCs have various clock gates for their peripherals usually located in
+> one or two MMIO regions. Each clock gate is a single 32 bit register which
+> contains bits for the requested and the actual mode. The mode is represented by
+> four bits. We however only care about "everything enabled" (0b1111) and
+> "everything disabled" (0b000) for now. The other modes are probably different
+> low-power states which don't even seem to be used by MacOS. The actual power
+> management is located in a different region (and probably handled by a separate
+> processor on the M1).
+>
+> Additionally, these clocks have a topology that is usually specified in Apple's
+> Device Tree. As far as I can tell most Linux drivers seem to encode this topology
+> directly in the source code though. Despite this, we would still like to encode
+> the topology in the device tree itself:
 
-on x86_64, there can be +/- 100 build errors like so:
+We only define leaf clocks primarily. There's some exceptions such as
+if PLLs are a separate h/w block. The reason for this is because
+typical SoCs have 100s of just leaf clocks. If we tried to model
+everything, it would never be complete nor correct. Actually, we did
+try that at first.
 
-../arch/x86/include/asm/fixmap.h:103:48: error: 'NR_CPUS' undeclared here (not in a function); did you mean 'NR_OPEN'?
-  FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
-                                                ^~~~~~~
-                                                NR_OPEN
+> Apple seems to only change HW blocks when they have a very good reason and even
+> then they seem to keep the changes minimal. This specific clock gate MMIO block
+> has already been used in the Apple A7 released in 2013. The only differences
+> since then are the available clocks (which can be identified by a simple offset)
+> and their topology.
 
-Fix is here:
-https://lore.kernel.org/lkml/20210521195918.2183-1-rdunlap@infradead.org/
+Clock gates are easy. What about muxes, dividers, etc.?
 
+> It's likely that Apple will still use this block in future SoCs as well. By
+> encoding the clock gate topology inside the device tree as well we can use a
+> single driver and only need updates to the device tree once they are released.
+> This might allow end users to already run their favorite distribution by just
+> updating the bootloader with a new device tree instead of having to wait until
+> the new topology is integrated into their distro kernel.
+>
+> Additionally, the driver itself can be kept very simple and not much code needs
+> to be duplicated and then updated for each new SoC between various consumers of
+> these device tree nodes (Linux, u-boot, and OpenBSD for now).
+>
+>
+> This series therefore creates a single device tree node for each clock gate.
+> This unfortunately maps a whole page out of which only a single register will
+> be used for each node.
+>
+> The other alternative I considered was to create a syscon/simple-mfd node
+> and have the clock nodes as children. The gates would then use a regmap which
+> would only require a single entry in the pagetable for all clocks. I decided
+> against this option since the clock gate MMIO region actually isn't a
+> multi-function device.
 
-This is from 10 x86_64 randconfig builds:
+I would do a single node per mmio region with the register offset (or
+offset / 4) being the clock id. This can still support new SoCs easily
+if you have a fallback compatible. If you want/need to get all the
+clocks, just walk the DT 'clocks' properties and extract all the IDs.
 
-$ buildsummary.pl -t build*.out
-build-r9544.out: totals: error/warning files: 4, errors: 145, warnings: 2, Section mismatches: 0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-build-r9547.out: totals: error/warning files: 3, errors: 109, warnings: 1, Section mismatches: 0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-build-r9552.out: totals: error/warning files: 3, errors: 46, warnings: 1, Section mismatches: 0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
--- 
-~Randy
-
+Rob
