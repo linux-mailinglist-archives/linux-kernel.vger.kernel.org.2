@@ -2,229 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AFA3903CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096753903D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhEYOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:22:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27909 "EHLO m43-7.mailgun.net"
+        id S233930AbhEYOWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:22:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233914AbhEYOWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:22:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621952463; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=k3b3VGhhUtXR1YL5/iZcThNS3+h1FIIFPBCi88ZXGJY=; b=iGOcGxmWLCNiZz0Cs2caGBeJ82PtW5K8SczEDkG2kMUPYBSbw5j5wXyxTW7XMp101IMFYYta
- SeYptUyNFLejLu9fAoEVrqAsxJbQSvAeoS7N19kS6eg4jksNcjcYjHyLxhAzqMGfWEmnXAC4
- NNqI8weXszsVwTGFlrOUDsOrBmY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60ad07cc2bff04e53b970a77 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 14:21:00
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95412C43217; Tue, 25 May 2021 14:21:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.158.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 654BBC433F1;
-        Tue, 25 May 2021 14:20:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 654BBC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH V2] mm: compaction: support triggering of proactive
- compaction by user
-To:     akpm@linux-foundation.org, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, vbabka@suse.cz,
-        nigupta@nvidia.com, bhe@redhat.com, mateusznosek0@gmail.com,
-        sh_def@163.com, iamjoonsoo.kim@lge.com, vinmenon@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <fd9dd82c-0728-46db-1647-7e03d43e245d@codeaurora.org>
-Date:   Tue, 25 May 2021 19:50:51 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S233918AbhEYOWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 10:22:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5FD6613F9;
+        Tue, 25 May 2021 14:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621952467;
+        bh=1NVRT3c3rAGoTvn+BDJW+JrM2M2mhYsAZiwJZ/3l5GA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LLUjTXrgKn6t2LhNGBZpvy5ZW1SNqGaV5HPiN/ejj2muRJpl9ou/TjgNJG1RniMX8
+         e1YekYo5ydewHpXdDRCzuF4Wy9A4QBU23BjwmhifQptMHEwIsVAA+gvrb8OY12bsb1
+         Uippvv7ErxH/5sTN82T2I9q6yIZ7Fdg/DBfIbJoozHFuP1laTWDT3TJntKU5PDKw33
+         m8iRSaJf7rk+TEV9ohNPAvUCveD0DocK1ZcA9WBUGWrzQxRhMyuN4J4TxDTEGyrcGj
+         Djl5n9IxPaLWIuk2HeI5CKTjkJLrSFsnXqP5yO+HauA6FFImDSQiuGG+X1Nkt01NRj
+         81DL9htsNEfug==
+Date:   Tue, 25 May 2021 23:21:03 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        rostedt@goodmis.org, naveen.n.rao@linux.vnet.ibm.com,
+        ananth@linux.ibm.com, x86@kernel.org
+Subject: Re: [PATCH 2/2] x86,kprobes: WARN if kprobes tries to handle a
+ fault
+Message-Id: <20210525232103.9d79ff5e396cddd2a9eb818f@kernel.org>
+In-Reply-To: <20210525073213.660594073@infradead.org>
+References: <20210525072518.791889911@infradead.org>
+        <20210525073213.660594073@infradead.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping.
+On Tue, 25 May 2021 09:25:20 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Thanks,
-Charan
+> With the removal of kprobe::handle_fault there is no reason left that
+> kprobe_page_fault() would ever return true on x86, make sure it
+> doesn't happen by accident.
 
-On 5/18/2021 7:07 PM, Charan Teja Reddy wrote:
-> The proactive compaction[1] gets triggered for every 500msec and run
-> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-> pages based on the value set to sysctl.compaction_proactiveness.
-> Triggering the compaction for every 500msec in search of
-> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
-> especially on the embedded system usecases which may have few MB's of
-> RAM. Enabling the proactive compaction in its state will endup in
-> running almost always on such systems.
+OK, this is reasonable to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
 > 
-> Other side, proactive compaction can still be very much useful for
-> getting a set of higher order pages in some controllable
-> manner(controlled by using the sysctl.compaction_proactiveness). Thus on
-> systems where enabling the proactive compaction always may proove not
-> required, can trigger the same from user space on write to its sysctl
-> interface. As an example, say app launcher decide to launch the memory
-> heavy application which can be launched fast if it gets more higher
-> order pages thus launcher can prepare the system in advance by
-> triggering the proactive compaction from userspace.
-> 
-> This triggering of proactive compaction is done on a write to
-> sysctl.compaction_proactiveness by user.
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
-> changes in V2: 
->     - remove /proc interface trigger for proactive compaction
->     - Intention is same that add a way to trigger proactive compaction by user.
+>  arch/x86/mm/fault.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> changes in V1:
->     -  https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
-> 
->  include/linux/compaction.h |  2 ++
->  include/linux/mmzone.h     |  1 +
->  kernel/sysctl.c            |  2 +-
->  mm/compaction.c            | 35 ++++++++++++++++++++++++++++++++---
->  4 files changed, 36 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index 4221888..04d5d9f 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
->  extern unsigned int sysctl_compaction_proactiveness;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
-> +extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
-> +		int write, void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
->  extern int sysctl_compact_unevictable_allowed;
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -1186,7 +1186,7 @@ do_kern_addr_fault(struct pt_regs *regs,
+>  		return;
 >  
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 0d53eba..9455809 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -815,6 +815,7 @@ typedef struct pglist_data {
->  	enum zone_type kcompactd_highest_zoneidx;
->  	wait_queue_head_t kcompactd_wait;
->  	struct task_struct *kcompactd;
-> +	bool proactive_compact_trigger;
->  #endif
+>  	/* kprobes don't want to hook the spurious faults: */
+> -	if (kprobe_page_fault(regs, X86_TRAP_PF))
+> +	if (WARN_ON_ONCE(kprobe_page_fault(regs, X86_TRAP_PF)))
+>  		return;
+>  
 >  	/*
->  	 * This is a per-node reserve of pages that are not available
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 14edf84..bed2fad 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2840,7 +2840,7 @@ static struct ctl_table vm_table[] = {
->  		.data		= &sysctl_compaction_proactiveness,
->  		.maxlen		= sizeof(sysctl_compaction_proactiveness),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec_minmax,
-> +		.proc_handler	= compaction_proactiveness_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= &one_hundred,
->  	},
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 84fde27..9056693 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2708,6 +2708,30 @@ static void compact_nodes(void)
->   */
->  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
->  
-> +int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
-> +		void *buffer, size_t *length, loff_t *ppos)
-> +{
-> +	int rc, nid;
-> +
-> +	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (write && sysctl_compaction_proactiveness) {
-> +		for_each_online_node(nid) {
-> +			pg_data_t *pgdat = NODE_DATA(nid);
-> +
-> +			if (pgdat->proactive_compact_trigger)
-> +				continue;
-> +
-> +			pgdat->proactive_compact_trigger = true;
-> +			wake_up_interruptible(&pgdat->kcompactd_wait);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * This is the entry point for compacting all nodes via
->   * /proc/sys/vm/compact_memory
-> @@ -2752,7 +2776,8 @@ void compaction_unregister_node(struct node *node)
->  
->  static inline bool kcompactd_work_requested(pg_data_t *pgdat)
->  {
-> -	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
-> +	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
-> +		pgdat->proactive_compact_trigger;
->  }
->  
->  static bool kcompactd_node_suitable(pg_data_t *pgdat)
-> @@ -2905,7 +2930,8 @@ static int kcompactd(void *p)
->  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
->  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
->  			kcompactd_work_requested(pgdat),
-> -			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
-> +			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC)) &&
-> +			!pgdat->proactive_compact_trigger) {
->  
->  			psi_memstall_enter(&pflags);
->  			kcompactd_do_work(pgdat);
-> @@ -2919,7 +2945,7 @@ static int kcompactd(void *p)
->  
->  			if (proactive_defer) {
->  				proactive_defer--;
-> -				continue;
-> +				goto loop;
->  			}
->  			prev_score = fragmentation_score_node(pgdat);
->  			proactive_compact_node(pgdat);
-> @@ -2931,6 +2957,9 @@ static int kcompactd(void *p)
->  			proactive_defer = score < prev_score ?
->  					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
->  		}
-> +loop:
-> +		if (pgdat->proactive_compact_trigger)
-> +			pgdat->proactive_compact_trigger = false;
+> @@ -1239,7 +1239,7 @@ void do_user_addr_fault(struct pt_regs *
 >  	}
 >  
->  	return 0;
+>  	/* kprobes don't want to hook the spurious faults: */
+> -	if (unlikely(kprobe_page_fault(regs, X86_TRAP_PF)))
+> +	if (WARN_ON_ONCE(kprobe_page_fault(regs, X86_TRAP_PF)))
+>  		return;
+>  
+>  	/*
+> 
 > 
 
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+Masami Hiramatsu <mhiramat@kernel.org>
