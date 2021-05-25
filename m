@@ -2,177 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF0138FE59
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0461238FE57
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhEYKDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:03:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6705 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhEYKC7 (ORCPT
+        id S232844AbhEYKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232700AbhEYKBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:02:59 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fq8dr0VKkzlYSQ;
-        Tue, 25 May 2021 17:57:52 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 18:01:27 +0800
-Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 11:01:25 +0100
-Date:   Tue, 25 May 2021 10:59:37 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] cxl/mem: Reserve individual register block
- regions
-Message-ID: <20210525105937.00000696@Huawei.com>
-In-Reply-To: <20210522001154.2680157-5-ira.weiny@intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
-        <20210522001154.2680157-5-ira.weiny@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 25 May 2021 06:01:45 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:00:15 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:dd7b:70b:3b48:c76f] (port=61324)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@purplenoise.eu>)
+        id 1llTrA-0003yo-Or
+        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 12:00:12 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@purplenoise.eu>
+Subject: Fair Pay: C% CPU
+Message-ID: <949c80c5-f8bc-554f-0365-04025b579637@purplenoise.eu>
+Date:   Tue, 25 May 2021 12:00:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.147]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:11:53 -0700
-<ira.weiny@intel.com> wrote:
+Earlier talked about a fitting cpu type. This is now called C% CPU, 
+where some deeper level functions could be accelerated on CPU,for 
+optimal scheduling and bus speed.
 
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Now that individual register blocks are mapped; those blocks regions
-> should be reserved individually.
-> 
-> Remove general pci device management and create managed region
-> reservations based on the individual register blocks.
+See also my channel Ic, where we makes jokes on the Hashgod.
+https://www.youtube.com/channel/UCkrhLWMvTc09IxFG9lt9mHg
 
-Would be good to include a bit more of the 'reason why' in the actual
-patch descriptions.  Afterall, who ever goes looking for the cover letter
-after patches are applied ;)
-
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> 
-> ---
-> Changes for V2:
-> 	New patch
-> ---
->  drivers/cxl/core.c | 36 ++++++++++++++++++++++++++++++++----
->  drivers/cxl/pci.c  |  6 ++----
->  2 files changed, 34 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> index add66a6ec875..ae38f17be1e7 100644
-> --- a/drivers/cxl/core.c
-> +++ b/drivers/cxl/core.c
-> @@ -74,11 +74,33 @@ void cxl_probe_device_regs(struct device *dev, void __iomem *base,
->  }
->  EXPORT_SYMBOL_GPL(cxl_probe_device_regs);
->  
-> +static void __iomem *cxl_ioremap_block(struct pci_dev *pdev,
-> +				       resource_size_t addr,
-> +				       resource_size_t length)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	void __iomem *ret_val;
-> +	struct resource *res;
-> +
-> +	res = devm_request_mem_region(dev, addr, length, pci_name(pdev));
-> +	if (!res) {
-> +		dev_err(dev, "Failed to request region %#llx-%#llx\n",
-> +			addr, addr+length);
-> +		return NULL;
-> +	}
-> +
-> +	ret_val = devm_ioremap(dev, addr, length);
-> +	if (!ret_val)
-> +		dev_err(dev, "Failed to map region %#llx-%#llx\n",
-> +			addr, addr+length);
-> +
-> +	return ret_val;
-> +}
-> +
->  int cxl_map_device_regs(struct pci_dev *pdev,
->  			struct cxl_device_regs *regs,
->  			struct cxl_register_map *map)
->  {
-> -	struct device *dev = &pdev->dev;
->  	resource_size_t phys_addr;
->  
->  	phys_addr = pci_resource_start(pdev, map->barno);
-> @@ -90,7 +112,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
->  
->  		addr = phys_addr + map->device_map.status.offset;
->  		length = map->device_map.status.size;
-> -		regs->status = devm_ioremap(dev, addr, length);
-> +		regs->status = cxl_ioremap_block(pdev, addr, length);
-> +		if (!regs->status)
-> +			return -ENOMEM;
->  	}
->  
->  	if (map->device_map.mbox.valid) {
-> @@ -99,7 +123,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
->  
->  		addr = phys_addr + map->device_map.mbox.offset;
->  		length = map->device_map.mbox.size;
-> -		regs->mbox = devm_ioremap(dev, addr, length);
-> +		regs->mbox = cxl_ioremap_block(pdev, addr, length);
-> +		if (!regs->mbox)
-> +			return -ENOMEM;
->  	}
->  
->  	if (map->device_map.memdev.valid) {
-> @@ -108,7 +134,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
->  
->  		addr = phys_addr + map->device_map.memdev.offset;
->  		length = map->device_map.memdev.size;
-> -		regs->memdev = devm_ioremap(dev, addr, length);
-> +		regs->memdev = cxl_ioremap_block(pdev, addr, length);
-> +		if (!regs->memdev)
-> +			return -ENOMEM;
->  	}
->  
->  	return 0;
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 3ffd5fad74b4..776cb8e28c2d 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -1110,6 +1110,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  			goto free_maps;
->  	}
->  
-> +	pci_release_mem_regions(pdev);
-> +
->  	list_for_each_entry(map, &register_maps, list) {
->  		ret = cxl_map_regs(cxlm, map);
->  		if (ret)
-> @@ -1547,10 +1549,6 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	struct cxl_mem *cxlm;
->  	int rc;
->  
-> -	rc = pcim_enable_device(pdev);
-> -	if (rc)
-> -		return rc;
-> -
->  	cxlm = cxl_mem_create(pdev);
->  	if (IS_ERR(cxlm))
->  		return PTR_ERR(cxlm);
-
+Serenity,
+Ywe Cærlyn
