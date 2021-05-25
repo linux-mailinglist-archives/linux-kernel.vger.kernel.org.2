@@ -2,166 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9315C38FB23
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8D538FB29
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhEYGr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbhEYGr5 (ORCPT
+        id S231364AbhEYGuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:50:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20122 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230366AbhEYGuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:47:57 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51502C061574;
-        Mon, 24 May 2021 23:46:27 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y7so17264085eda.2;
-        Mon, 24 May 2021 23:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MtotgoFTvDfN8LrSlpxInob2bAxV6I9xstIAOzQNFEA=;
-        b=gVMO3OeOd5jORoY3jAig0E/p5N5NpWIaJuwYWhbXQzzsbG+Zp1gJLjVvvCDenjqgzc
-         yIwvOMgaNlzlhxdibX5qrgYgNdiy7PgSh8A/1gh7FUC0t6/vel7JBGgKJG5qTyBBvGT4
-         BEPR8wGwuuIJ7afYQFLgzJMW9q4RpYJo8JRR2c+E/SiTB1v127r8e5pzbG1zE5T9YuJJ
-         EVBZpanKFMJ4yVAHRTqz+l4i0xQgGiYjQr0bWuVPaIGbvI4qvXQVNsekpZSo+unRxP8/
-         V7s/oxv2dneGbWwsqzUNKy9aYphxoInetSsLdwFDt5dE8xiqlJot9KUGId2vNibVR4ET
-         XDtg==
+        Tue, 25 May 2021 02:50:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621925320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ul3miHPA+1C0mVf5IsSNMuGBmo+BqIM3N/sQ86Z+ItM=;
+        b=MH3+bMFzvyVKEJIrrqwy0liIA1OeDGOZ6p13LDotaHU67k49XxGwAjuwCzjIGkUvyB/NqF
+        ByHhfqR9PmhqpTyqSx83ll59tRKRxLkCqlF7y8WyeuG7wmK2dqMyX7uHQIQpTrJug5eEND
+        SXnCFoewWC3IN+RwURN9QB6O6rDaxS4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-YHBpRg-vNFydQKGJWhCeEw-1; Tue, 25 May 2021 02:48:38 -0400
+X-MC-Unique: YHBpRg-vNFydQKGJWhCeEw-1
+Received: by mail-wr1-f70.google.com with SMTP id 22-20020adf82960000b02901115ae2f734so14142649wrc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:48:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MtotgoFTvDfN8LrSlpxInob2bAxV6I9xstIAOzQNFEA=;
-        b=r7E84Pl2tpgpgCUiXwlHfV6bUXMG4A7d1iBcjxGzfaGe3SVDanRl4ZQy9xCOpIewj9
-         IPHb4MamYkubuuJvQKMChWBVWr4yMHhiDtex9SKjdVYlOF3YX2NOyMhw6FJkROXbttbq
-         /To20pubnfzNe3owS4fq2n6aA6iijQmYEMhlinaHWfmhw7zhGM2xKPm3t2GE4yzUH6M/
-         V4ilRvj4OmJmLZcEsAYVH3wKeprhAg7dJ5KlGv4x07MYIWAXBIowTF/pHx184GGeuMVW
-         UDmjhbOdkd5BGdiLMMwpRUoL9/kiCntG7ZUoZ7iRzeXMOOLGMhxnej/ExYD4J0Jbs7mg
-         twMg==
-X-Gm-Message-State: AOAM531+WrbKa29cmPwnsaA6zWRz3togoKaRIdK2A+3V/P2xmMw8lcdw
-        hiyWo9wyIpPUAnPalTyXv3L/jiiJ6lIYJmC2wlaSXjQB81RuaorJzBo2uQ==
-X-Google-Smtp-Source: ABdhPJwvyd445NmT3ekuVzvWBD2yw5FCEomPJViNObLfsXON4VQDNT4tHHuELeGc+mu/rTZ6+/bsTbCPPSp+yObzJos=
-X-Received: by 2002:a05:6402:1767:: with SMTP id da7mr12755923edb.174.1621925185880;
- Mon, 24 May 2021 23:46:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ul3miHPA+1C0mVf5IsSNMuGBmo+BqIM3N/sQ86Z+ItM=;
+        b=Yzt3560EEtjgfSKXGGZMF88+IrZUi7L4CbHtYOzkOu85OX073R6bYJyWg752meTkO/
+         Cg29Yx9uA6HvyZ7KDYm3zqKd9ENXoylHUj56H2rwU4SqMawBu3z8ywpnpK6D1vgrcgHW
+         a2mEOIrBz0L38JA820+9hFDAkP2n3kI8Pe5FojDhUTR1weB/gmzTcFAKC9osj2fTaJ5v
+         yjaBh9NN3DSBzZbIW9i88+fd0FlFYw3RVIPxhPOIRNqh5jli7EC8y/31Yz7Q0RSUQhJj
+         Pki3KoCp5F8bUgzp/U8l7U8pjjPNRhB2BfzXUM61d2IghTlHudpA2zJD4Xxf7oDAecmy
+         g2Lg==
+X-Gm-Message-State: AOAM5339ZwfNMG1s2LpJZm3x6ECNwDGPNlQHj/0rJenZiKbnf6LfXLsC
+        ztq48MEF/Gxh1NUCiK9Ja6LI5hm+CLk5U4SiY79zpIFPC44OaY0OdCouvitG17ep177yvSep7gw
+        qAdPvn3n4Kje0JOXmrP5xtrvu
+X-Received: by 2002:a5d:58d0:: with SMTP id o16mr25535513wrf.420.1621925317003;
+        Mon, 24 May 2021 23:48:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHrJfvA/haiL2kDkU2Sc824s/VhxDUz9WKfrjZUVALV+rMusOmrmXdB7xQ8MMFAx4z9xMC5w==
+X-Received: by 2002:a5d:58d0:: with SMTP id o16mr25535496wrf.420.1621925316796;
+        Mon, 24 May 2021 23:48:36 -0700 (PDT)
+Received: from redhat.com ([2a10:8006:fcda:0:90d:c7e7:9e26:b297])
+        by smtp.gmail.com with ESMTPSA id g78sm1839253wme.27.2021.05.24.23.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 23:48:34 -0700 (PDT)
+Date:   Tue, 25 May 2021 02:48:30 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Yongji Xie <xieyongji@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 00/12] Introduce VDUSE - vDPA Device in Userspace
+Message-ID: <20210525024500-mutt-send-email-mst@kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210520014349-mutt-send-email-mst@kernel.org>
+ <CACycT3tKY2V=dmOJjeiZxkqA3cH8_KF93NNbRnNU04e5Job2cw@mail.gmail.com>
+ <2a79fa0f-352d-b8e9-f60a-181960d054ec@redhat.com>
 MIME-Version: 1.0
-References: <20210525053359.1147899-1-mudongliangabcd@gmail.com> <20210525081958.22f1e2b6@coco.lan>
-In-Reply-To: <20210525081958.22f1e2b6@coco.lan>
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Tue, 25 May 2021 14:46:00 +0800
-Message-ID: <CAD-N9QU+f1+CegprF-YOC85jrsOCTm1+W9c3cgebrG3J2psibg@mail.gmail.com>
-Subject: Re: [PATCH] media: dvd_usb: memory leak in cinergyt2_fe_attach
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2a79fa0f-352d-b8e9-f60a-181960d054ec@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 2:20 PM Mauro Carvalho Chehab
-<mchehab@kernel.org> wrote:
->
-> Em Tue, 25 May 2021 13:33:59 +0800
-> Dongliang Mu <mudongliangabcd@gmail.com> escreveu:
->
-> > When cinergyt2_frontend_attach returns a negative value, the allocation
-> > is already successful, but in the error handling, there is no any clean
-> > corresponding operation, which leads to memory leak.
-> >
-> > Fix it by freeing struct cinergyt2_fe_state when the return value is
-> > nonzero.
-> >
-> > backtrace:
-> >   [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
-> >   [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
-> >   [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
-> >   [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
-> >   [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
-> >   [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
-> >   [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
-> >   [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
-> >
-> > Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/media/usb/dvb-usb/dvb-usb-dvb.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-> > index 0a7f8ba90992..f9f004fb0a92 100644
-> > --- a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-> > +++ b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-> > @@ -288,7 +288,7 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
-> >               }
-> >
-> >               ret = adap->props.fe[i].frontend_attach(adap);
-> > -             if (ret || adap->fe_adap[i].fe == NULL) {
-> > +             if (adap->fe_adap[i].fe == NULL) {
-> >                       /* only print error when there is no FE at all */
-> >                       if (i == 0)
-> >                               err("no frontend was attached by '%s'",
-> > @@ -297,6 +297,12 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
-> >                       return 0;
-> >               }
-> >
-> > +             if (ret) {
-> > +                     struct dvb_frontend *fe = adap->fe_adap[i].fe;
-> > +
-> > +                     fe->ops.release(fe);
-> > +                     return 0;
-> > +             }
-> > +
->
-> Touching dvb-usb core doesn't seem the right fix here, as it will
-> affect all other drivers that depend on it.
->
-> Basically, when a driver returns an error, it has to cleanup
-> whatever it did, as the core has no way to know where the
-> error happened inside the driver logic.
->
-> The problem seems to be at cinergyt2_frontend_attach() instead:
->
->         adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
->
->         mutex_lock(&d->data_mutex);
->         st->data[0] = CINERGYT2_EP1_GET_FIRMWARE_VERSION;
->
->         ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
->         if (ret < 0) {
->                 deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
->         }
->         mutex_unlock(&d->data_mutex);
->
->         /* Copy this pointer as we are gonna need it in the release phase */
->         cinergyt2_usb_device = adap->dev;
->
->         return ret;
->
-> See, this driver returns an error if it fails to talk with the hardware
-> when it calls dvb_usb_generic_rw(). Yet, it doesn't cleanup its own mess,
-> as it keeps the frontend attached. The right fix would be to call
-> cinergyt2_fe_release() if ret < 0.
->
-> E. g., the above code should be, instead:
->
->         if (ret < 0) {
->                 fe->ops.release(adap->fe_adap[0].fe);
->                 deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
->         }
+On Tue, May 25, 2021 at 02:40:57PM +0800, Jason Wang wrote:
+> 
+> 在 2021/5/20 下午5:06, Yongji Xie 写道:
+> > On Thu, May 20, 2021 at 2:06 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > On Mon, May 17, 2021 at 05:55:01PM +0800, Xie Yongji wrote:
+> > > > This series introduces a framework, which can be used to implement
+> > > > vDPA Devices in a userspace program. The work consist of two parts:
+> > > > control path forwarding and data path offloading.
+> > > > 
+> > > > In the control path, the VDUSE driver will make use of message
+> > > > mechnism to forward the config operation from vdpa bus driver
+> > > > to userspace. Userspace can use read()/write() to receive/reply
+> > > > those control messages.
+> > > > 
+> > > > In the data path, the core is mapping dma buffer into VDUSE
+> > > > daemon's address space, which can be implemented in different ways
+> > > > depending on the vdpa bus to which the vDPA device is attached.
+> > > > 
+> > > > In virtio-vdpa case, we implements a MMU-based on-chip IOMMU driver with
+> > > > bounce-buffering mechanism to achieve that. And in vhost-vdpa case, the dma
+> > > > buffer is reside in a userspace memory region which can be shared to the
+> > > > VDUSE userspace processs via transferring the shmfd.
+> > > > 
+> > > > The details and our user case is shown below:
+> > > > 
+> > > > ------------------------    -------------------------   ----------------------------------------------
+> > > > |            Container |    |              QEMU(VM) |   |                               VDUSE daemon |
+> > > > |       ---------      |    |  -------------------  |   | ------------------------- ---------------- |
+> > > > |       |dev/vdx|      |    |  |/dev/vhost-vdpa-x|  |   | | vDPA device emulation | | block driver | |
+> > > > ------------+-----------     -----------+------------   -------------+----------------------+---------
+> > > >              |                           |                            |                      |
+> > > >              |                           |                            |                      |
+> > > > ------------+---------------------------+----------------------------+----------------------+---------
+> > > > |    | block device |           |  vhost device |            | vduse driver |          | TCP/IP |    |
+> > > > |    -------+--------           --------+--------            -------+--------          -----+----    |
+> > > > |           |                           |                           |                       |        |
+> > > > | ----------+----------       ----------+-----------         -------+-------                |        |
+> > > > | | virtio-blk driver |       |  vhost-vdpa driver |         | vdpa device |                |        |
+> > > > | ----------+----------       ----------+-----------         -------+-------                |        |
+> > > > |           |      virtio bus           |                           |                       |        |
+> > > > |   --------+----+-----------           |                           |                       |        |
+> > > > |                |                      |                           |                       |        |
+> > > > |      ----------+----------            |                           |                       |        |
+> > > > |      | virtio-blk device |            |                           |                       |        |
+> > > > |      ----------+----------            |                           |                       |        |
+> > > > |                |                      |                           |                       |        |
+> > > > |     -----------+-----------           |                           |                       |        |
+> > > > |     |  virtio-vdpa driver |           |                           |                       |        |
+> > > > |     -----------+-----------           |                           |                       |        |
+> > > > |                |                      |                           |    vdpa bus           |        |
+> > > > |     -----------+----------------------+---------------------------+------------           |        |
+> > > > |                                                                                        ---+---     |
+> > > > -----------------------------------------------------------------------------------------| NIC |------
+> > > >                                                                                           ---+---
+> > > >                                                                                              |
+> > > >                                                                                     ---------+---------
+> > > >                                                                                     | Remote Storages |
+> > > >                                                                                     -------------------
+> > > > 
+> > > > We make use of it to implement a block device connecting to
+> > > > our distributed storage, which can be used both in containers and
+> > > > VMs. Thus, we can have an unified technology stack in this two cases.
+> > > > 
+> > > > To test it with null-blk:
+> > > > 
+> > > >    $ qemu-storage-daemon \
+> > > >        --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
+> > > >        --monitor chardev=charmonitor \
+> > > >        --blockdev driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0 \
+> > > >        --export type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
+> > > > 
+> > > > The qemu-storage-daemon can be found at https://github.com/bytedance/qemu/tree/vduse
+> > > > 
+> > > > To make the userspace VDUSE processes such as qemu-storage-daemon able to
+> > > > run unprivileged. We did some works on virtio driver to avoid trusting
+> > > > device, including:
+> > > > 
+> > > >    - validating the device status:
+> > > > 
+> > > >      * https://lore.kernel.org/lkml/20210517093428.670-1-xieyongji@bytedance.com/
+> > > > 
+> > > >    - validating the used length:
+> > > > 
+> > > >      * https://lore.kernel.org/lkml/20210517090836.533-1-xieyongji@bytedance.com/
+> > > > 
+> > > >    - validating the device config:
+> > > > 
+> > > >      * patch 4 ("virtio-blk: Add validation for block size in config space")
+> > > > 
+> > > >    - validating the device response:
+> > > > 
+> > > >      * patch 5 ("virtio_scsi: Add validation for residual bytes from response")
+> > > > 
+> > > > Since I'm not sure if I missing something during auditing, especially on some
+> > > > virtio device drivers that I'm not familiar with, now we only support emualting
+> > > > a few vDPA devices by default, including: virtio-net device, virtio-blk device,
+> > > > virtio-scsi device and virtio-fs device. This limitation can help to reduce
+> > > > security risks.
+> > > I suspect there are a lot of assumptions even with these 4.
+> > > Just what are the security assumptions and guarantees here?
+> 
+> 
+> Note that VDUSE is not the only device that may suffer from this, here're
+> two others:
+> 
+> 1) Encrypted VM
 
-You're right. This is a good idea to handle the error inside the logic
-of device driver.
+Encrypted VMs are generally understood not to be fully
+protected from attacks by a malicious hypervisor. For example
+a DoS by a hypervisor is currently trivial.
 
-I will test this proposed patch and send patch v2.
+> 2) Smart NICs
 
-BTW, Mauro, did you see another mail thread [1] I sent? I doubt there
-is an error between dvb_usb_adapter_frontend_init and
-cinergyt2_frontend_attach
+More or less the same thing.
 
-[1] https://www.spinics.net/lists/linux-media/msg193227.html
 
->
-> Thanks,
-> Mauro
+> 
+> > The attack surface from a virtio device is limited with IOMMU enabled.
+> > It should be able to avoid security risk if we can validate all data
+> > such as config space and used length from device in device driver.
+> > 
+> > > E.g. it seems pretty clear that exposing a malformed FS
+> > > to a random kernel config can cause untold mischief.
+> > > 
+> > > Things like virtnet_send_command are also an easy way for
+> > > the device to DOS the kernel.
+> 
+> 
+> I think the virtnet_send_command() needs to use interrupt instead of
+> polling.
+> 
+> Thanks
+> 
+> 
+> > > And before you try to add
+> > > an arbitrary timeout there - please don't,
+> > > the fix is moving things that must be guaranteed into kernel
+> > > and making things that are not guaranteed asynchronous.
+> > > Right now there are some things that happen with locks taken,
+> > > where if we don't wait for device we lose the ability to report failures
+> > > to userspace. E.g. all kind of netlink things are like this.
+> > > One can think of a bunch of ways to address this, this
+> > > needs to be discussed with the relevant subsystem maintainers.
+> > > 
+> > > 
+> > > If I were you I would start with one type of device, and as simple one
+> > > as possible.
+> > > 
+> > Make sense to me. The virtio-blk device might be a good start. We
+> > already have some existing interface like NBD to do similar things.
+> > 
+> > > 
+> > > > When a sysadmin trusts the userspace process enough, it can relax
+> > > > the limitation with a 'allow_unsafe_device_emulation' module parameter.
+> > > That's not a great security interface. It's a global module specific knob
+> > > that just allows any userspace to emulate anything at all.
+> > > Coming up with a reasonable interface isn't going to be easy.
+> > > For now maybe just have people patch their kernels if they want to
+> > > move fast and break things.
+> > > 
+> > OK. A reasonable interface can be added if we need it in the future.
+> > 
+> > Thanks,
+> > Yongji
+
