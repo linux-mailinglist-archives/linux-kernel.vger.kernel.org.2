@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350F438FD3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0970238FD41
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhEYI4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:56:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44732 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbhEYI4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:56:09 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1llSpi-00039G-AK; Tue, 25 May 2021 08:54:38 +0000
-Subject: Re: [PATCH][next] ttyprintk: remove redundant initialization of
- variable i
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210518182126.140978-1-colin.king@canonical.com>
- <YKeqUBZ+Zy/mvZNQ@kroah.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <73809ad0-cdb0-695e-c9aa-55b6f8f3710b@canonical.com>
-Date:   Tue, 25 May 2021 09:54:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232212AbhEYI4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:56:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:53376 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231278AbhEYI4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:56:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98DBA6D;
+        Tue, 25 May 2021 01:55:00 -0700 (PDT)
+Received: from [10.57.71.208] (unknown [10.57.71.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCAD33F73D;
+        Tue, 25 May 2021 01:54:58 -0700 (PDT)
+Subject: Re: [PATCH] coresight: tmc-etf: Fix global-out-of-bounds in
+ tmc_update_etf_buffer()
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+References: <20210505093430.18445-1-saiprakash.ranjan@codeaurora.org>
+ <8e0dbf24-af71-9bce-b615-ce7b1d12a720@arm.com>
+Message-ID: <dc18845a-73bf-9cbf-6749-6271dcaac9e8@arm.com>
+Date:   Tue, 25 May 2021 09:54:57 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <YKeqUBZ+Zy/mvZNQ@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8e0dbf24-af71-9bce-b615-ce7b1d12a720@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2021 13:40, Greg Kroah-Hartman wrote:
-> On Tue, May 18, 2021 at 07:21:26PM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The variable i is being initialized with a value that is never read,
->> it is being updated later on.  The assignment is redundant and can be
->> removed.
->>
->> Addresses-Coverity: ("Unused value")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/char/ttyprintk.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
->> index 219fa1382396..230b2c9b3e3c 100644
->> --- a/drivers/char/ttyprintk.c
->> +++ b/drivers/char/ttyprintk.c
->> @@ -52,7 +52,7 @@ static void tpk_flush(void)
->>  
->>  static int tpk_printk(const unsigned char *buf, int count)
->>  {
->> -	int i = tpk_curr;
->> +	int i;
->>  
->>  	for (i = 0; i < count; i++) {
->>  		if (tpk_curr >= TPK_STR_SIZE) {
->> -- 
->> 2.31.1
->>
-> 
-> This is not ok for what is currently in linux-next :(
+Hi Sai
 
-Hmm, it applies cleanly on today's linux-next, do you mind re-apply it?
+On 05/05/2021 10:47, Suzuki K Poulose wrote:
+> On 05/05/2021 10:34, Sai Prakash Ranjan wrote:
+>> commit 6f755e85c332 ("coresight: Add helper for inserting synchronization
+>> packets") removed trailing '\0' from barrier_pkt array and updated the
+>> call sites like etb_update_buffer() to have proper checks for barrier_pkt
+>> size before read but missed updating tmc_update_etf_buffer() which still
+>> reads barrier_pkt past the array size resulting in KASAN out-of-bounds
+>> bug. Fix this by adding a check for barrier_pkt size before accessing
+>> like it is done in etb_update_buffer().
+>>
+>>   BUG: KASAN: global-out-of-bounds in tmc_update_etf_buffer+0x4b8/0x698
+>>   Read of size 4 at addr ffffffd05b7d1030 by task perf/2629
+>>
+>>   Call trace:
+>>    dump_backtrace+0x0/0x27c
+>>    show_stack+0x20/0x2c
+>>    dump_stack+0x11c/0x188
+>>    print_address_description+0x3c/0x4a4
+>>    __kasan_report+0x140/0x164
+>>    kasan_report+0x10/0x18
+>>    __asan_report_load4_noabort+0x1c/0x24
+>>    tmc_update_etf_buffer+0x4b8/0x698
+>>    etm_event_stop+0x248/0x2d8
+>>    etm_event_del+0x20/0x2c
+>>    event_sched_out+0x214/0x6f0
+>>    group_sched_out+0xd0/0x270
+>>    ctx_sched_out+0x2ec/0x518
+>>    __perf_event_task_sched_out+0x4fc/0xe6c
+>>    __schedule+0x1094/0x16a0
+>>    preempt_schedule_irq+0x88/0x170
+>>    arm64_preempt_schedule_irq+0xf0/0x18c
+>>    el1_irq+0xe8/0x180
+>>    perf_event_exec+0x4d8/0x56c
+>>    setup_new_exec+0x204/0x400
+>>    load_elf_binary+0x72c/0x18c0
+>>    search_binary_handler+0x13c/0x420
+>>    load_script+0x500/0x6c4
+>>    search_binary_handler+0x13c/0x420
+>>    exec_binprm+0x118/0x654
+>>    __do_execve_file+0x77c/0xba4
+>>    __arm64_compat_sys_execve+0x98/0xac
+>>    el0_svc_common+0x1f8/0x5e0
+>>    el0_svc_compat_handler+0x84/0xb0
+>>    el0_svc_compat+0x10/0x50
+>>
+>>   The buggy address belongs to the variable:
+>>    barrier_pkt+0x10/0x40
+>>
+>>   Memory state around the buggy address:
+>>    ffffffd05b7d0f00: fa fa fa fa 04 fa fa fa fa fa fa fa 00 00 00 00
+>>    ffffffd05b7d0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>   >ffffffd05b7d1000: 00 00 00 00 00 00 fa fa fa fa fa fa 00 00 00 03
+>>                                        ^
+>>    ffffffd05b7d1080: fa fa fa fa 00 02 fa fa fa fa fa fa 03 fa fa fa
+>>    ffffffd05b7d1100: fa fa fa fa 00 00 00 00 05 fa fa fa fa fa fa fa
+>>   ==================================================================
+>>
+>> Fixes: 6f755e85c332 ("coresight: Add helper for inserting 
+>> synchronization packets")
 
+I have changed the commit to :
 
-> 
-> greg k-h
-> 
+Fixes: 0c3fc4d5fa26 ("coresight: Add barrier packet for synchronisation")
 
+Applied.
+
+Thanks
+Suzuki
