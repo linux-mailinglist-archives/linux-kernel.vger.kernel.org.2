@@ -2,104 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E80D38FCEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8722538FCEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhEYIfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:35:36 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47319 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229786AbhEYIfT (ORCPT
+        id S232416AbhEYIft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231424AbhEYIfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:35:19 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 08861133D;
-        Tue, 25 May 2021 04:33:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 25 May 2021 04:33:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=S1MKc2LTzqFfMkbzes6qor4rlMA
-        0FRJOF8EOUe2EQAk=; b=Nd7m+vMGwBXoe5QAu5HYu6IxXnVBTbEE+4uv06Uq/hM
-        BeETs5F7qrxEm/LoKyc3nSFfOw3V38Ad1bG97KUJFXrFKoeeIVrHHiFIDqc9HTYc
-        kSk1Fh04MDN6TpX3GkC8H1B9MeQha22lXIuXc1tHIJT6if2hJO4mM1nc7sYnURUJ
-        k1hTCemd7L1z1VHY0znscSdcZY/I3ATUDz+zkzZkoaNR4fCEKr2i+S7naRAPwJg1
-        cI7pj1GwQNyfTLceZ/Urs3FS0Z0hXnikXj5RIGike9k1qHI3nbdEcOzLZR46DtD7
-        3nckeiNWoKivRpF1Xs5mLVq4A3jkOlRmeZ0p4zZ+hgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=S1MKc2
-        LTzqFfMkbzes6qor4rlMA0FRJOF8EOUe2EQAk=; b=jSK+YWcG1vjuJHY2ewMiRj
-        eRV2eoEFALrfZo3MiAnRwUafppEjmAPvY1tTUOSMQguzTAh4cOqQjxi/iGbC/x+f
-        P9su7ZiFCvDzvIveaopKAdUrPMktK6W+6esiTv+u/CnJQ+Sani+t0WG0XFSRS9Zg
-        ttlqqpMku5QRZdJ6GVGsD+TJuMG48XYpr136bkg1lz0bjKxE/NG2GChHPBwm3w8R
-        Np5eYdx7iGj0OnK2BDJwRyLNaWze7S36XZmrMDwrpZTsGpM5C710N3d3yB9ebfjC
-        41jgiKWNzR2QA8gG3ICtzLzKMufQcb27m/QMH6l8p4TXwu6nDrAnBdzD9amOBtcw
-        ==
-X-ME-Sender: <xms:ULasYM0rmX1BNhdfP-fv9hI7eX1esrkwRJyB2ocug-EbK7U1sD-71Q>
-    <xme:ULasYHHwg4bzyXNfFCzJLigpxxyT9tOnolIrU1THk7s5u3VvqoRoe6d6st8duk7VC
-    mPB-CEvfV35rtd1cs4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ULasYE4-v234zl_lB3gj0I46g3kEVNjxs7L_D4z1fbxpCIcv2I9FhQ>
-    <xmx:ULasYF0HM-UI7vWzUwhHND1VRD3G9w530ZbiOj6xLITzc43fCm_loA>
-    <xmx:ULasYPF0VxtTRryS-2Cfk95Je9ph6Wmzi7UedsyZeUsv83vgKkBuhA>
-    <xmx:UbasYHBhuTk0XLsmuhoFFYnkiG_L1knxmmRJi_iiyNYdDDM_OJRg_A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 25 May 2021 04:33:20 -0400 (EDT)
-Date:   Tue, 25 May 2021 10:33:18 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     emma@anholt.net, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] drm/vc4: hdmi: Fix PM reference leak in
- vc4_hdmi_encoder_pre_crtc_co()
-Message-ID: <20210525083318.il7fpw77hqz4xxos@gilmour>
-References: <1621840854-105978-1-git-send-email-zou_wei@huawei.com>
+        Tue, 25 May 2021 04:35:24 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5437C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:33:39 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 124so17309484qkh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3L2sKhYgVu4JHTo+b0EBVZURcIoWhyUynzpdSViL1vg=;
+        b=TX3w0eqT+DQ95MJu6K78CoTtR67YpRyrV1CD/NWW2Ddy2rLbVKW9t/Cyvm1XvWT4pD
+         X2kdjNokTKe9Y/UwVvb78/1WsVNGVq97p3+JZm+onDx8nmlR8B3vZ8SAN3zc7deyzdW2
+         p7VffvOQSS4NqFxFc/VPgmVDXgHB2c95ebU6NJ4FenygYTeTiBIb6FGBct5S6pk2Ukg4
+         LinenpPpSnwKGNYrgnAWIJazeicbljvHVcm8mdi04SCTrfbgOTaFS8zEyadhq94ElLQq
+         boWr+AGK9MTeiCOTn8pKqtkovkHeYL8h4JUlzYkR0pjruByZTeH33MCHcqZ2DZ3ascGj
+         8saw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3L2sKhYgVu4JHTo+b0EBVZURcIoWhyUynzpdSViL1vg=;
+        b=WjX4NiiadaV3a5qGeFKMLHTMXoHnWFs733P0MWuw+HSnoqfsB0qNeMv3XqyucTn5e/
+         W4YUelfb1YDV3UYqLbNatEQen0olU1E20LC+rhgbesJcTGdU0yff+Dc40MgUpzHiH/GB
+         QnI9XOXX6ugDzFWFoaoUw4WYWmI3ETM5B5qDmJYKW0BtMQetRgkrWvNI/eK3tgGJOKGK
+         CQXc3E9EinD1RvRga7E41pbxWfWprUPGBk10X7NG19IwqKvSWzC1FN4d3clf+PDSBCdq
+         hia4OevmwHOX1b/jHtfSLITgFg5FgyfkJmOP+WDkYWhqktKej6ByQfu/oyk7Gcux15E+
+         cW0Q==
+X-Gm-Message-State: AOAM5314mtrisLbSCO7JaoH5a4zisPf5QK5zM7Yv0tJrMcspmK4jxRCd
+        uaP4F3DN0S5UWkcl4Zw4xaB3CkrtG46lRZheaaYT1A==
+X-Google-Smtp-Source: ABdhPJxtyhJHguMpWiBB6pOik3m1zktEsKcwZ/KTQ6S9blI3sSHsEsjFb6qhbtYkbLgcxYZEH8H6d1wlpITXCAKGxi0=
+X-Received: by 2002:a37:4694:: with SMTP id t142mr34598680qka.265.1621931618648;
+ Tue, 25 May 2021 01:33:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="c42up2dtt3g7m2xe"
-Content-Disposition: inline
-In-Reply-To: <1621840854-105978-1-git-send-email-zou_wei@huawei.com>
+References: <000000000000f034fc05c2da6617@google.com> <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+ <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1> <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
+ <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com> <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 25 May 2021 10:33:27 +0200
+Message-ID: <CACT4Y+bkZv7uo505EBJcE1MLFG1GprZ5npdbaUXZ+ASTJyJU8A@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Xu, Yanfei" <yanfei.xu@windriver.com>,
+        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 5:33 AM Paul E. McKenney <paulmck@kernel.org> wrote=
+:
+>
+> On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
+> >
+> >
+> > On 5/25/21 6:46 AM, Paul E. McKenney wrote:
+> > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > >
+> > > On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
+> > > > On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
+> > > > > On Fri, May 21, 2021 at 7:29 PM syzbot
+> > > > > <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+> > > > > >
+> > > > > > Hello,
+> > > > > >
+> > > > > > syzbot found the following issue on:
+> > > > > >
+> > > > > > HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF manag=
+ement API
+> > > > > > git tree:       bpf-next
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D17f=
+50d1ed00000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8ff=
+54addde0afb5d
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D7b2b1=
+3f4943374609532
+> > > > > >
+> > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > >
+> > > > > > IMPORTANT: if you fix the issue, please add the following tag t=
+o the commit:
+> > > > > > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.=
+com
+> > > > >
+> > > > > This looks rcu-related. +rcu mailing list
+> > > >
+> > > > I think I see a possible cause for this, and will say more after so=
+me
+> > > > testing and after becoming more awake Monday morning, Pacific time.
+> > >
+> > > No joy.  From what I can see, within RCU Tasks Trace, the calls to
+> > > get_task_struct() are properly protected (either by RCU or by an earl=
+ier
+> > > get_task_struct()), and the calls to put_task_struct() are balanced b=
+y
+> > > those to get_task_struct().
+> > >
+> > > I could of course have missed something, but at this point I am suspe=
+cting
+> > > an unbalanced put_task_struct() has been added elsewhere.
+> > >
+> > > As always, extra eyes on this code would be a good thing.
+> > >
+> > > If it were reproducible, I would of course suggest bisection.  :-/
+> > >
+> > >                                                          Thanx, Paul
+> > >
+> > Hi Paul,
+> >
+> > Could it be?
+> >
+> >        CPU1                                        CPU2
+> > trc_add_holdout(t, bhp)
+> > //t->usage=3D=3D2
+> >                                       release_task
+> >                                         put_task_struct_rcu_user
+> >                                           delayed_put_task_struct
+> >                                             ......
+> >                                             put_task_struct(t)
+> >                                             //t->usage=3D=3D1
+> >
+> > check_all_holdout_tasks_trace
+> >   ->trc_wait_for_one_reader
+> >     ->trc_del_holdout
+> >       ->put_task_struct(t)
+> >       //t->usage=3D=3D0 and task_struct freed
+> >   READ_ONCE(t->trc_reader_checked)
+> >   //ops=EF=BC=8C t had been freed.
+> >
+> > So, after excuting trc_wait_for_one_reader=EF=BC=88=EF=BC=89, task migh=
+t had been removed
+> > from holdout list and the corresponding task_struct was freed.
+> > And we shouldn't do READ_ONCE(t->trc_reader_checked).
+>
+> I was suspicious of that call to trc_del_holdout() from within
+> trc_wait_for_one_reader(), but the only time it executes is in the
+> context of the current running task, which means that CPU 2 had better
+> not be invoking release_task() on it just yet.
+>
+> Or am I missing your point?
+>
+> Of course, if you can reproduce it, the following patch might be
+> an interesting thing to try, my doubts notwithstanding.  But more
+> important, please check the patch to make sure that we are both
+> talking about the same call to trc_del_holdout()!
+>
+> If we are talking about the same call to trc_del_holdout(), are you
+> actually seeing that code execute except when rcu_tasks_trace_pertask()
+> calls trc_wait_for_one_reader()?
+>
+> > I investigate the trc_wait_for_one_reader=EF=BC=88=EF=BC=89 and found b=
+efore we excute
+> > trc_del_holdout, there is always set t->trc_reader_checked=3Dtrue. How =
+about
+> > we just set the checked flag and unified excute trc_del_holdout()
+> > in check_all_holdout_tasks_trace with checking the flag?
+>
+> The problem is that we cannot execute trc_del_holdout() except in
+> the context of the RCU Tasks Trace grace-period kthread.  So it is
+> necessary to manipulate ->trc_reader_checked separately from the list
+> in order to safely synchronize with IPIs and with the exit code path
+> for any reader tasks, see for example trc_read_check_handler() and
+> exit_tasks_rcu_finish_trace().
+>
+> Or are you thinking of some other approach?
 
---c42up2dtt3g7m2xe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This could be caused by a buggy extra put_pid somewhere else, right?
+If so, I suspect that's what may be happening. We've 2 very similar
+use-after-free reports on an internal kernel, but it also has a number
+of other use-after-free reports in pid-related functions
+(pid_task/pid_nr_ns/attach_pid). One of them is happening relatively
+frequently (150 crashes) and is caused by something in the tty
+subsystem. Presumably it may be causing one off use-after-free's in
+other random places of the kernel as well. Unfortunately these crashes
+don't happen on the upstream kernel (at least not yet).
+So if you don't see any obvious smoking gun in rcu, I think we can
+assume for now that it's due to tty.
 
-On Mon, May 24, 2021 at 03:20:54PM +0800, Zou Wei wrote:
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-Applied, thanks
-Maxime
 
---c42up2dtt3g7m2xe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKy2TgAKCRDj7w1vZxhR
-xaZaAQDZDCc9ASSbGCFKYex0RNg+c1/DnKu1cWu6Oi+cYt5y/gEA5/RuBztawrSQ
-5dxqSNOHRwo/PUAIcARGH7Ea4vxBFws=
-=olsI
------END PGP SIGNATURE-----
-
---c42up2dtt3g7m2xe--
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index efb8127f3a36..2a0d4bdd619a 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -987,7 +987,6 @@ static void trc_wait_for_one_reader(struct task_struc=
+t *t,
+>         // The current task had better be in a quiescent state.
+>         if (t =3D=3D current) {
+>                 t->trc_reader_checked =3D true;
+> -               trc_del_holdout(t);
+>                 WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
+>                 return;
+>         }
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/20210525033355.GN4441%40paulmck-ThinkPad-P17-Gen-1.
