@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2F5390595
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A110A3905A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhEYPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:39:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232078AbhEYPjC (ORCPT
+        id S232942AbhEYPk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230521AbhEYPk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:39:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621957052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/pTfXMHcES0HP1+v2jr/ALeYwe9IxOxXOMr/JTHDhoA=;
-        b=U5IJDkLfSGNkdFGrYd2BC0r6oVYQkq8Mc5aLqzobne3dXknx67AQapSk0tKpARq0pG+mqn
-        od/mXhQb4SFHKQ4FRGCXpyQ9RUuFsEBlcU3P9Wqea3FwqXHmpvsHeTFmHZ7PX88WuqAqAh
-        8ozO5P9CVtpC5hpHRHvg2yh5dakg2ps=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-GZtm9q1EN-ar01SsNbrjew-1; Tue, 25 May 2021 11:37:30 -0400
-X-MC-Unique: GZtm9q1EN-ar01SsNbrjew-1
-Received: by mail-wr1-f70.google.com with SMTP id n2-20020adfb7420000b029010e47b59f31so14603266wre.9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:37:30 -0700 (PDT)
+        Tue, 25 May 2021 11:40:28 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3C6C061574;
+        Tue, 25 May 2021 08:38:58 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so28974087otc.12;
+        Tue, 25 May 2021 08:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=G29C7319Dv2jp3aawArMwM12C1t7ygPQnrD+x7K3emo=;
+        b=KU7xaHHWx+wjYxjyiCHaCZEWUPHeUexy/WMEsPCmjL8AAcOY6Vq2QpeGYW0xF87Ll7
+         q261c+N8lKPgZf/XwQ7j7x3C6Qa6A12CgzAe3UzfA2ubPMbkB1zFND9rE4wuz9ScI9+J
+         agYywA53hAc2mlCHM4WT2j/Y1/8PaTyCaXJMDwnj9xHnIl/jxyOV6TuuFx1Vk6Z+b0nz
+         l/ha/d3NccEWuIY09x7gkQPjt9pmGPRYLH+KxlE2+Z6ZSQqlYUIedi/QPpWaGTKOTfqO
+         S+AvIR8SGj09nK1ODGEOX5JoJS05lrzwrYIAvbnJAF6ZkmkyKm18LulSYjCIKAWTsTT3
+         jkiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/pTfXMHcES0HP1+v2jr/ALeYwe9IxOxXOMr/JTHDhoA=;
-        b=YyMof0RYwcQ3VfSr9zzc4qr7D8ICJiuxKLN55AWvqq5YXdo5yBWKEVmVgVHnL54QK9
-         gVH8ihHuxdrCOZjdkNAOQ4pIvXLX8PHylD5bC0Dkej0bHPW5CQL41NB8ouWx9iWHbayk
-         VvS0+p8tSw4OgQOjN02sm/bmcTy6+cAb7f2enUbuKRt/4xQ7hlqSLZKQ0b0LVRipbrKN
-         7jT2+bErCcTpUJCL4XNzqyn6+g2ChWYATGNyagHmEE9Z4aRRzzNtA3r818C8pWHykVZ9
-         TSw26mpxBHz5tT92DIYEuAZYYShDMcaRz9q3RnjBG8b34nuw6RMgyHZOf+Lykb/IPtTx
-         nFjw==
-X-Gm-Message-State: AOAM530w8ZPc8Msig9qIXIvXwx4hgKw2ykib/3REiXcCKey+fkWkUtqj
-        aV2Z00mqsnRnQalzkIKDJcl7TMvVB2seKFJdBSA/+PNr/rQL3Bg8z2T9wPztQzZIed2kw/kl9p3
-        kvEWNCVgTeoj6F2CgjkPtaMEc
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr23939830wmq.38.1621957049697;
-        Tue, 25 May 2021 08:37:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+987Gi5+Ao8HMeMYgLg1iRQPtEoehGdM6F2GQdq0/O5MID6l689lcRPzuTI/mRpkYixi0xw==
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr23939807wmq.38.1621957049395;
-        Tue, 25 May 2021 08:37:29 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
-        by smtp.gmail.com with ESMTPSA id b10sm19416681wrr.27.2021.05.25.08.37.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 08:37:29 -0700 (PDT)
-To:     "Qian Cai (QUIC)" <quic_qiancai@quicinc.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Arm64 crash while reading memory sysfs
-Message-ID: <1c81f7d0-06f8-1f4e-c639-4a9878751cb4@redhat.com>
-Date:   Tue, 25 May 2021 17:37:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G29C7319Dv2jp3aawArMwM12C1t7ygPQnrD+x7K3emo=;
+        b=hYjd3Sb+3LIq1gwr6Bf0NlJoriN7Zl5tasYrPRV+9oxAkJDo86zGpyaRt1FZ/P2Xpg
+         iJjEQmpDGkL4A+1B1isI90tseKmTYJ8U13Um2fbb3vwMtZZViEz9Okwo84x0K+YAwio2
+         h2qRhAJtG0ivPq6KfEF6xrX+smmqPVVac2GIRVQj1nMqiySAR6mOCtUiHDKKsyX2XjSx
+         7ZyqWmunIf8jNzGrSYwI/FUjIj8lczsMqKPvqY5DbNTka19h8GVp/5Y/XMRAgBYleft1
+         h40wnlChD6vOIfEVLry+Cjsy+eicIqvsVwVZS7nTfJ9AbInqWOw0S2N4r04jw+Bvqg18
+         KlXw==
+X-Gm-Message-State: AOAM533wR4McNlAeS4BY9mAQ+dcMLb14qILvKVcFPKrTsP9fr/Xom9fx
+        Xw6PxluErbRfWfzICYmdUhMIxbat+NYxP8d303s=
+X-Google-Smtp-Source: ABdhPJyGNsx4a/dIqRXAcEEjQuHqAgdTAML8/MtCbrWA0+YY4Kkwm24gxdVHMVAyL+bFEaY7hRXemO0XzttpEfnPt+s=
+X-Received: by 2002:a9d:74c6:: with SMTP id a6mr24158328otl.132.1621957138307;
+ Tue, 25 May 2021 08:38:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1621853213-55876-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+ <CADnq5_N3WkoYHcn8b1-qZ23+t=E9xxV5fV_1Lwqck6x2dUPqmA@mail.gmail.com> <950d5d2a-c01f-35d4-0933-04cae2c4984d@gmail.com>
+In-Reply-To: <950d5d2a-c01f-35d4-0933-04cae2c4984d@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 25 May 2021 11:38:47 -0400
+Message-ID: <CADnq5_PgmZMTOKGSt29_MkonMaf5exgBy1VUgHyd14dKT+_13A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: remove unreachable code
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Dave Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.05.21 17:25, Qian Cai (QUIC) wrote:
-> Reverting the patchset "arm64: drop pfn_valid_within() and simplify pfn_valid()" [1] from today's linux-next fixed a crash while reading files under /sys/devices/system/memory.
-> 
-> [1] https://lore.kernel.org/kvmarm/20210511100550.28178-1-rppt@kernel.org/
-> 
-> [  247.669668][ T1443] kernel BUG at include/linux/mm.h:1383!
-> [  247.675987][ T1443] Internal error: Oops - BUG: 0 [#1] SMP
-> [  247.681472][ T1443] Modules linked in: loop processor efivarfs ip_tables x_tables ext4 mbcache jbd2 dm_mod igb i2c_algo_bit nvme mlx5_core i2c_core nvme_core firmware_class
-> [  247.696894][ T1443] CPU: 15 PID: 1443 Comm: ranbug Not tainted 5.13.0-rc3-next-20210524+ #11
-> [  247.705326][ T1443] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
-> [  247.713842][ T1443] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [  247.720536][ T1443] pc : test_pages_in_a_zone+0x23c/0x300
-> [  247.725935][ T1443] lr : test_pages_in_a_zone+0x23c/0x300
-> [  247.731327][ T1443] sp : ffff800023f8f670
-> [  247.735327][ T1443] x29: ffff800023f8f670 x28: 000000000000a000 x27: 000000000000a000
-> [  247.743156][ T1443] x26: ffffffbfffe00000 x25: ffff800011c6f738 x24: dfff800000000000
-> [  247.750984][ T1443] x23: 0000000000002000 x22: ffff009f7efa29c0 x21: 0000000000000000
-> [  247.758812][ T1443] x20: ffffffffffffffff x19: 0000000000008000 x18: ffff00084f9d3370
-> [  247.766640][ T1443] x17: 0000000000000000 x16: 0000000000000007 x15: 0000000000000078
-> [  247.774467][ T1443] x14: 0000000000000000 x13: ffff800011c6eea4 x12: ffff60136cee0574
-> [  247.782295][ T1443] x11: 1fffe0136cee0573 x10: ffff60136cee0573 x9 : dfff800000000000
-> [  247.790123][ T1443] x8 : ffff009b67702b9b x7 : 0000000000000001 x6 : ffff009b67702b98
-> [  247.797951][ T1443] x5 : 00009fec9311fa8d x4 : ffff009b67702b98 x3 : 1fffe00109f3a529
-> [  247.805778][ T1443] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000034
-> [  247.813606][ T1443] Call trace:
-> [  247.816738][ T1443]  test_pages_in_a_zone+0x23c/0x300
-> [  247.821784][ T1443]  valid_zones_show+0x1e0/0x298
-> [  247.826483][ T1443]  dev_attr_show+0x50/0xc8
-> [  247.830747][ T1443]  sysfs_kf_seq_show+0x164/0x368
-> [  247.835533][ T1443]  kernfs_seq_show+0x130/0x198
-> [  247.840143][ T1443]  seq_read_iter+0x344/0xd50
-> [  247.844581][ T1443]  kernfs_fop_read_iter+0x32c/0x4a8
-> [  247.849625][ T1443]  new_sync_read+0x2bc/0x4e8
-> [  247.854063][ T1443]  vfs_read+0x18c/0x340
-> [  247.858066][ T1443]  ksys_read+0xf8/0x1e0
-> [  247.862068][ T1443]  __arm64_sys_read+0x74/0xa8
-> [  247.866591][ T1443]  invoke_syscall.constprop.0+0xdc/0x1d8
-> [  247.872072][ T1443]  do_el0_svc+0xe4/0x298
-> [  247.876162][ T1443]  el0_svc+0x20/0x30
-> [  247.879906][ T1443]  el0_sync_handler+0xb0/0xb8
-> [  247.884429][ T1443]  el0_sync+0x178/0x180
-> [  247.888435][ T1443] Code: b0005ee1 912b8021 910b0021 97fc57ac (d4210000)
-> [  247.895217][ T1443] ---[ end trace 4ff9f5cbe7443f54 ]---
-> [  247.900522][ T1443] Kernel panic - not syncing: Oops - BUG: Fatal exception
-> [  247.907501][ T1443] SMP: stopping secondary CPUs
-> [  247.912122][ T1443] Kernel Offset: disabled
-> [  247.916296][ T1443] CPU features: 0x00000251,20000846
-> [  247.921340][ T1443] Memory Limit: none
-> [  247.925100][ T1443] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal exception ]---
+On Tue, May 25, 2021 at 11:27 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> Am 24.05.21 um 20:48 schrieb Alex Deucher:
+> > Applied.  Thanks!
+>
+> Ok, that's unfortunate.
+>
+> IIRC we added the code because of a different compiler warning.
+>
 
-That hole test_pages_in_a_zone() cruft has to go sooner or later. I have 
-getting rid of that on my list (simply storing the single zone if any 
-per memory block).
+I can revert it.
 
-We run into an uninitialized memmap, because the poison check in 
-page_zone()->page_to_nid() triggers. I assume the memmap of a memory 
-hole does not get initialized properly?
+Alex
 
--- 
-Thanks,
-
-David / dhildenb
-
+> Christian.
+>
+> >
+> > Alex
+> >
+> > On Mon, May 24, 2021 at 6:47 AM Jiapeng Chong
+> > <jiapeng.chong@linux.alibaba.com> wrote:
+> >> In the function amdgpu_uvd_cs_msg(), every branch in the switch
+> >> statement will have a return, so the code below the switch statement
+> >> will not be executed.
+> >>
+> >> Eliminate the follow smatch warning:
+> >>
+> >> drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
+> >> ignoring unreachable code.
+> >>
+> >> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> >> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> >> ---
+> >>   drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 --
+> >>   1 file changed, 2 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_uvd.c
+> >> index 82f0542..375b346 100644
+> >> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> >> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> >> @@ -842,8 +842,6 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_=
+ctx *ctx,
+> >>                  DRM_ERROR("Illegal UVD message type (%d)!\n", msg_typ=
+e);
+> >>                  return -EINVAL;
+> >>          }
+> >> -       BUG();
+> >> -       return -EINVAL;
+> >>   }
+> >>
+> >>   /**
+> >> --
+> >> 1.8.3.1
+> >>
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+>
