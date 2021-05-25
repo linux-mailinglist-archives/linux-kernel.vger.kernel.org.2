@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3FF3903F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DF53903F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhEYOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233965AbhEYOcl (ORCPT
+        id S233635AbhEYOd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:33:26 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56258 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233813AbhEYOdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:32:41 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43816C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id a4so23588025ljd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
-        b=F4A75JkMsGy+mU4xkQ+hrRir1o9AbYLExHPfcQfFnUXIO6DE/5641VeHIyAalgivCo
-         N/kqbRtpIl8KaXs/NPtXGmOEUNdo8CVx47T8HCgN+GKM0k1wSbGnmY0ybIGqTJxaxmhD
-         Oku336dpO2ktfatK/DKwpF72MdpjA+uz3NyTix8H0hCjxR2a3OHIXjMz9SZvMKgzJua6
-         t4/+hW/krEvXJkvFk+i8+iI3iXeYAnNSgdL5bbX0zDLCbpg08A7YMYpfM/RHIQ6wv+eA
-         L4ZgOJslSk1zsLpXvaxJ02QWV5j1YVGO8LXSADULytLj7TtLIVSxtXEsfJoQ0k9UlqE9
-         FemA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
-        b=m/JQcxle+NPkThChIWV832d55VzbKHtgC7BloZbXvleVWVmzZffFq8O0gRt/5P4YZR
-         9jgBQOxZrIJs3tDjNv1fx23z3Quu6835H8r0pfnU6qL6eZ/J1rR/nE2DjLuwBo8MLJ/S
-         SK1gukBW6Gm+CAw6wzSCKoTHH85cXDAplMHBNxV48Hy8m9HfxhbtVyTqxbM91cXAuhV1
-         SMSnpTbkMayUaYvkMR+3vAXngk37ufxV4uS1n5C7zBbnktOv5wXbe53sFmGiHR2tgpaI
-         GNoJ3ld5WbWlTelQ8zd3eI1JNpM7B6/CgPj+uosg2W9+rmtPj7uwpi1pXmt9N+1jbS7B
-         /Jmg==
-X-Gm-Message-State: AOAM531VdK5uctOM6z6ve0Cl8Uv/HnjEZCudICWgztmnpwW7wy74ZevS
-        YEsG3Sp8OkhATyX7wqFEAyD5gRw5MuFgyCpS2ftS8A==
-X-Google-Smtp-Source: ABdhPJzflWL8WFPLlqF2nqn88esxiz7UOtN3WY7NEPE9rRP/KyQ0T/B/OYaUBhxDA8Z6jvZO0I2929MAH7rE8RMqI2o=
-X-Received: by 2002:a2e:8557:: with SMTP id u23mr20793221ljj.221.1621953067483;
- Tue, 25 May 2021 07:31:07 -0700 (PDT)
+        Tue, 25 May 2021 10:33:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 39FAD1C0B79; Tue, 25 May 2021 16:31:54 +0200 (CEST)
+Date:   Tue, 25 May 2021 16:31:53 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/31] 4.4.270-rc1 review
+Message-ID: <20210525143153.GA9763@duo.ucw.cz>
+References: <20210524152322.919918360@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com> <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
-In-Reply-To: <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 25 May 2021 16:30:56 +0200
-Message-ID: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Disposition: inline
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
->
-> Hi,
->
-> tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
-> > Could you give more details about how cfs_rq->avg.load_avg = 4 but
-> > cfs_rq->avg.load_sum = 0 ?
 
-> >
-> > cfs_rq->avg.load_sum is decayed and can become null when crossing
-> > period which implies an update of cfs_rq->avg.load_avg.  This means
-> > that your case is generated by something outside the pelt formula ...
-> > like maybe the propagation of load in the tree. If this is the case,
-> > we should find the error and fix it
->
-> Ahh, yeah, that could probably be described better.
->
-> It is (as far as I have found out) because the pelt divider is changed,
-> and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
-> in a different value being removed than added.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-ok so IIUC, it happens during the adding/removing/propagating
-entities' load in the cfs_rq.
+Hi!
 
->
-> Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
-> recalculates the load_avg based on load_sum, and not the delta, afaik.
->
-> And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
-> how the pelt divider is changed, I assume it is hard to pinpoint where the issue
-> is. I can try to find a clear path where where we can see what is added
-> and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
-> to better be able to pinpoint what is happening.
->
-> Previously I thought this was a result of precision loss due to division and
-> multiplication during load add/remove inside fair.c, but I am not sure that
-> is the issue, or is it?
+> This is the start of the stable review cycle for the 4.4.270 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
 
-I don't think the precision looss is the problem because
-adding/removing load in fair.c could truncate load_sum but it stays
-sync with load_avg. I will have a llo to see if i can see something
-weird
+CIP testing did not find any problems here:
 
->
-> If my above line of thought makes sense, do you still view this as an error
-> outside PELT, or do you see another possible/better solution?
->
-> Will investigate further.
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
 
-Thanks
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
->
-> Thanks
-> Odin
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYK0KWQAKCRAw5/Bqldv6
+8hoKAKCmsnOPn4MDsl7iWzAnjMGmjUXy0gCePSRxMs71ajbpMSL5ja0UK4VWBFc=
+=A+we
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
