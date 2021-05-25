@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE3F38F9A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6DA38F9AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhEYEi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:38:59 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:49849 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229476AbhEYEi6 (ORCPT
+        id S230384AbhEYEj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:39:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7932 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229476AbhEYEjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:38:58 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8DF82581068;
-        Tue, 25 May 2021 00:37:29 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Tue, 25 May 2021 00:37:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=zFo1oGVlR9BWzHQX/BoXdwfOJEHWy/V
-        aAoNOqIJAtPQ=; b=futuX7gOOBwrT6oJVQPSupBN1R1Ob4fVnF9YYDRvvjsQUMP
-        Y5HHsGOGuTh0vmwxs9NtIMkwTGElxuuAWADC14Ujy2iOBxcZWQJ1UPAFNLaGJ+gZ
-        17vy4KFu1mH1znFquCKgNEu/t4OOvKgA1o2g+ULakueirIA8UN2SOxSYDWbF0KmZ
-        af2zsiYtkXjh1ruSbgtzeJdOqWhS2o2OU9Zjlx6j86EdTgGA+YeNIiFrBj0CrIqR
-        ZA3LMfoQ++KK7Yddanj9/VBrqpDFJyFqtwdf6e8oh8RJ1Lb79/puVBbrAYe2ytli
-        NnsjmmIewizUb5msxd0MxaQdC/8EShEAC5TAIvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=zFo1oG
-        VlR9BWzHQX/BoXdwfOJEHWy/VaAoNOqIJAtPQ=; b=NeMLdSOvPC0GVg8cTUC+v9
-        NN0unXHXvIcxihEhFtLGFMQqiEKpqt9PHxr2fAvDhKfkmyt/Fckars9EPIy0phOd
-        FA1DEGNzvET7uPlUxU6/4D4Q8QLpNwngQo+Ib7x+PLk/ocG1evLo8fXfQ59K4w7X
-        ImnD5tRzFSzRJGjOme7BCzMUz/fxFJnCZgwoIo73V7P1oApyjCdnQWfpJCzH25Cl
-        4Y5RxL8Gtc5fmnlrmcPw9DNogptN6F5Gdv15JQVoIbzpVVieSnjuunUcHfa+REXI
-        LJfP6p5MwLnps3LF6QG9VW6VJ06rtZvw4Nzmp73wWlYFEivdnBcC17sz7F8TzPXQ
-        ==
-X-ME-Sender: <xms:CH-sYOD_4v8QbYfZqpFzj02pmQTjMxgoUCI9-H1D39NPv3FL-OEp_Q>
-    <xme:CH-sYIhOAFAfnEUzB6_MwNLXuTItp2aKyHUO4auMoxKoclVFRBXub5hQ3MjCdBK6Q
-    VZisNYOPOImxsNUQQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdektddgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:CH-sYBn4b6NkIap0_2dg9sPDWagHjtvUVTgnpxUQwsK0yp1i7B6uzQ>
-    <xmx:CH-sYMyEgtlytQYMsItyZ4J_Lrleo2-RwgSz-EuqbrAOdJV_M4y4Gw>
-    <xmx:CH-sYDSXNXCoVsCGPhXLZh5HDIBTFkI1EwVnwhiEja_o9shd-T7N4g>
-    <xmx:CX-sYIJewHwr4gW-amogiccRpA1IQS5dfHR3zg0Gf5hUQHOU4Wn-XQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 76510A00079; Tue, 25 May 2021 00:37:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <7f673953-7a90-4143-a475-444a1096e55f@www.fastmail.com>
-In-Reply-To: <20210525042736.10379-4-steven_lee@aspeedtech.com>
-References: <20210525042736.10379-1-steven_lee@aspeedtech.com>
- <20210525042736.10379-4-steven_lee@aspeedtech.com>
-Date:   Tue, 25 May 2021 14:07:07 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "moderated list:ASPEED PINCTRL DRIVERS" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/3]_pinctrl:_pinctrl-aspeed-g6:_Add_sgpio_pinct?=
- =?UTF-8?Q?rl_settings?=
-Content-Type: text/plain
+        Tue, 25 May 2021 00:39:24 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14P4XJdQ183681;
+        Tue, 25 May 2021 00:37:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=5ZKnJJvMM/s76BCr9yEVccnrdIJeoK13qMVRszV01iY=;
+ b=s/0TV32vg0uBg3wpRccEjCoA/ulWwn6i0JTL6z/AmEcqTY9UTdKIsyQ0AAoYVEJNCahe
+ N/fiNPUUdmJ3M2tkiQxEdfk7uRDElDznP309LTlolOHHOGDEju8iCZAmuooINl7oCSfd
+ mkr1NVZuKRzv/H2OcOE8xD2AloygaCO1fwQMw4kT2n70JunTDzITTpDMLrMOwBgqc4kD
+ qJNOAAS7WyJOf5x01srmqT6vuyi0CUtcR6AU9P+Vj7X0GSY8ChstyNj2i2RolQZ/LZDi
+ deB6/sGDW0F43GyuJ4dA3mOWLk7WZ1IbWQxzMPfBtTSXb+GWk23B9BWWt/ZNtbUQ3A77 Og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38rrjna85c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 00:37:53 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14P4ZWBl191538;
+        Tue, 25 May 2021 00:37:52 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38rrjna84t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 00:37:52 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14P4X7nI010180;
+        Tue, 25 May 2021 04:37:51 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 38ps7h8kqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 04:37:50 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14P4blsJ21430548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 04:37:48 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDDC3AE051;
+        Tue, 25 May 2021 04:37:47 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 415E3AE045;
+        Tue, 25 May 2021 04:37:46 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.36.63])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 04:37:46 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     ravi.bangoria@linux.ibm.com, jolsa@redhat.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, aneesh.kumar@linux.ibm.com
+Subject: [PATCH] perf probe: Provide more detail with relocation warning
+Date:   Tue, 25 May 2021 10:07:44 +0530
+Message-Id: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: YFzV-DSvEX9H-d7HAXFQlWz1PNf3TBHx
+X-Proofpoint-GUID: uo1rjiPnU0q86i4oPPuJYtutMS4cw_qc
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_02:2021-05-24,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When run as normal user with default sysctl kernel.kptr_restrict=0
+and kernel.perf_event_paranoid=2, perf probe fails with:
 
+  $ ./perf probe move_page_tables
+  Relocated base symbol is not found!
 
-On Tue, 25 May 2021, at 13:57, Steven Lee wrote:
-> AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
-> Current pinctrl driver only define the first sgpio master and slave
-> interfaces.
-> The sencond SGPIO master and slave interfaces should be added in
+The warning message is not much informative. The reason perf fails
+is because /proc/kallsyms is restricted by perf_event_paranoid=2
+for normal user and thus perf fails to read relocated address of
+the base symbol.
 
-Typo here: 'second', 
+Tweaking kptr_restrict and perf_event_paranoid can change the
+behavior of perf probe. Also, running as root or privileged user
+works too. Add these details in the warning message.
 
-Regardless, this looks good to me.
+Plus, kmap->ref_reloc_sym might not be always set even if
+host_machine is initialized. Above is the example of the same.
+Remove that comment.
 
-Thanks Steven!
+Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ tools/perf/util/probe-event.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index a78c8d59a555..3a7649835ec9 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -108,7 +108,6 @@ void exit_probe_symbol_maps(void)
+ 
+ static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
+ {
+-	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
+ 	struct kmap *kmap;
+ 	struct map *map = machine__kernel_map(host_machine);
+ 
+@@ -819,7 +818,10 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
+ 
+ 	reloc_sym = kernel_get_ref_reloc_sym(&map);
+ 	if (!reloc_sym) {
+-		pr_warning("Relocated base symbol is not found!\n");
++		pr_warning("Relocated base symbol is not found! "
++			   "Check /proc/sys/kernel/kptr_restrict\n"
++			   "and /proc/sys/kernel/perf_event_paranoid. "
++			   "Or run as privileged perf user.\n\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3025,7 +3027,10 @@ static int find_probe_trace_events_from_map(struct perf_probe_event *pev,
+ 			(!pp->retprobe || kretprobe_offset_is_supported())) {
+ 		reloc_sym = kernel_get_ref_reloc_sym(NULL);
+ 		if (!reloc_sym) {
+-			pr_warning("Relocated base symbol is not found!\n");
++			pr_warning("Relocated base symbol is not found! "
++				   "Check /proc/sys/kernel/kptr_restrict\n"
++				   "and /proc/sys/kernel/perf_event_paranoid. "
++				   "Or run as privileged perf user.\n\n");
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+-- 
+2.31.1
+
