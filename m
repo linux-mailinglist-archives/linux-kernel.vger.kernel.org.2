@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35E8390021
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B36390041
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhEYLjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:39:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48806 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhEYLjt (ORCPT
+        id S231937AbhEYLr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:47:58 -0400
+Received: from forward100o.mail.yandex.net ([37.140.190.180]:55447 "EHLO
+        forward100o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231765AbhEYLr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:39:49 -0400
-Received: from mail-ua1-f72.google.com ([209.85.222.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llVO7-0006Vx-6F
-        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 11:38:19 +0000
-Received: by mail-ua1-f72.google.com with SMTP id o7-20020ab01e870000b029020d37e3e144so12923313uak.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 04:38:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CZwbJzMdNKQ9pWB+s9p+++BmYWbMRl5a2xW6x+5P6p4=;
-        b=CvhpCSDWSFSn2QZ9pASOZtIaFIQFfDzSM4mC5o1WpHpzTbGBqsacqPHOlObMJi/aJC
-         91uA+6UrKS1+yUBKwV0fdeteNFh6XHzGcF+znh2DsDDl/w8fwcZN91+akQCi/Xl8YWvI
-         8sF7doZK47laLp9vMiSVZQ9MwC7CjIH0Ke+mgSAlF8f2AAcEX8HtjCmSGML27LrU/Bin
-         26C0DCxQTOFGRk4OumsRsz/yBUX1+aTkMp3zBNTc+lgSbvIQE+4IVsTdHrhpNp5fG2Fg
-         51CMQF2nRHwJ6fGl9vINXTDj87T7pWngCn0gcO1KQj0DgIZ2WnWJHRCo4ZpqOdOCa+2p
-         WVjg==
-X-Gm-Message-State: AOAM531LmhtH2Qva6ZOVS5kwc3jUwIGPicvopAgiuX70s+RWTTxLugCF
-        vu5AXZA44LEImqpY5zkKG9+wdDkAF24jRCcK5ExNQtMlUj6xzpKU+SHAFweE/PplNVJHqrADjT7
-        kLv5oGjDSKR3DjTwnO4tDsIkuuLRKzoJedCHwUkP41g==
-X-Received: by 2002:a05:6102:c51:: with SMTP id y17mr25390310vss.26.1621942698293;
-        Tue, 25 May 2021 04:38:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOEzcON3XhO32bZ26xkZY6KWrQERAD0cR1oUrEsZ49BhW9FtyS4wfFrcDhfyuXV5mJmUftYQ==
-X-Received: by 2002:a05:6102:c51:: with SMTP id y17mr25390303vss.26.1621942698166;
-        Tue, 25 May 2021 04:38:18 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.1])
-        by smtp.gmail.com with ESMTPSA id y129sm1549174vkg.9.2021.05.25.04.38.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 04:38:17 -0700 (PDT)
-Subject: Re: [PATCH] NFC: st95hf: remove unnecessary assignment and label
-To:     samirweng1979 <samirweng1979@163.com>, davem@davemloft.net,
-        dinghao.liu@zju.edu.cn
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-References: <20210525063801.11840-1-samirweng1979@163.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3fe26970-91ab-d598-92ff-e13d8d707d47@canonical.com>
-Date:   Tue, 25 May 2021 07:38:12 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 07:47:57 -0400
+X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 May 2021 07:47:56 EDT
+Received: from sas1-8418212adc37.qloud-c.yandex.net (sas1-8418212adc37.qloud-c.yandex.net [IPv6:2a02:6b8:c08:1581:0:640:8418:212a])
+        by forward100o.mail.yandex.net (Yandex) with ESMTP id C923A4AC242E;
+        Tue, 25 May 2021 14:39:02 +0300 (MSK)
+Received: from sas1-37da021029ee.qloud-c.yandex.net (sas1-37da021029ee.qloud-c.yandex.net [2a02:6b8:c08:1612:0:640:37da:210])
+        by sas1-8418212adc37.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 6allm5Podn-d1Ju4LcU;
+        Tue, 25 May 2021 14:39:02 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1621942742;
+        bh=pNsRz16dxsxUb7vX/klTo6nF5ZnCKLjHiX1eYdJ+Xtg=;
+        h=In-Reply-To:Subject:To:From:References:Date:Message-ID:Cc;
+        b=PPNl21dLqMSZECQn5I/NLwuJOBTT9n/sfwFHOydRy7eyLnWI3FxyXUf+Tg7I0IhwS
+         0ajdXuUCjejNkD65/bp6avgA5byDJjilYH3FFTQgi8LqxHECZU/s6hv/uI3udRRCJA
+         gPbaCMxpo4M8V6SGgkZnT+one6TkKG/xHw43MX8Y=
+Authentication-Results: sas1-8418212adc37.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by sas1-37da021029ee.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id Cxstl27rCA-d0LWrau1;
+        Tue, 25 May 2021 14:39:00 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Date:   Tue, 25 May 2021 14:38:58 +0300
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH 0/1] ep93xx: clock: convert in-place
+Message-ID: <20210525143858.235c9318@redslave.neermore.group>
+In-Reply-To: <CACRpkdYkb+-y366esEDZBDMNQ7s6zOfHEPotNaTUi3m95QrBFw@mail.gmail.com>
+References: <20210525083340.27722-1-nikita.shubin@maquefel.me>
+        <CACRpkdYkb+-y366esEDZBDMNQ7s6zOfHEPotNaTUi3m95QrBFw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210525063801.11840-1-samirweng1979@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/2021 02:38, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
-> 
-> In function st95hf_in_send_cmd, the variable rc is assigned then goto
-> error label, which just return rc, so we use return to replace it. and
+On Tue, 25 May 2021 12:19:27 +0200
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-s/return/returns/
-s/. and/. Since/ (don't start sentences with "and", neither with
-lowercase letter).
+> move out as many drivers as possible to be modules and
+> not compiled into the static kernel. Do we have candidates
+> for that? Are people normally using modules on EP93xx?
 
-> error label only used once in the function, so we remove error label.
-
-With these fixes and subject prefix fix to "nfc" (lowercase):
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-Best regards,
-Krzysztof
+AFAIK there is nothing left to convert. Everything is already done as
+modules.
