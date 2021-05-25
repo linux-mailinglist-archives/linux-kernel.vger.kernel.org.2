@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F33138FBA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332E438FBA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhEYH2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:28:25 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:35622 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhEYH2Y (ORCPT
+        id S231627AbhEYH2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhEYH2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:28:24 -0400
-Received: by mail-ua1-f44.google.com with SMTP id n61so10191754uan.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:26:54 -0700 (PDT)
+        Tue, 25 May 2021 03:28:43 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515BBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:27:14 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id l18-20020a1c79120000b0290181c444b2d0so5648623wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3ULzEBN0Jp6XpJ/GBCDjzUsE47Bj6V3OGDqs3nkCmBQ=;
+        b=NfZNK3AP4Og/CCDj7YYSs3dxKXI9Yon/pw5TGBatv6Z3hbr71FBpaqjvfhyK00mUnl
+         UIdBQiPqdFiqwOhmVUnNfwiV1y9R0umkNt4Tq0w+gZos6CmFq5RECL9MXuLRIQ7275Qq
+         Gn822MmikBlAoDmGTjlFZkWki47X/e14d2JPNIsjYO+YmYRhHCufrKtatPJXvdkpt8nM
+         Mjj12l2nlaOhCn+tfBhEr01K9++dRz3EyUJ4WNfwiWiqeZvhnjC6drVmX9Trd7PKhdrJ
+         LpKweY3Q0tJHgXpqzwAm9sjT0HmmWfJXVQrZU+AkvDHHcMpfsBCQaPANLPWiGNGMNpMC
+         H0lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXZkjhCQ7sxUkuHaaJvM/JXZLOVoSU0Wou+b5VUjoGs=;
-        b=eSmwPT0xJPsHwzMb1IDcs7I0S8ymGB8F/bpdJyAYyYVGzNqskHA8POm/Urbiif9PqD
-         Q9+yOhJQNQjy/OKG7Gmsp48TUM2/X0Tl1Zrqngn5eFiv31Xqp+i1s6zLmQ+NPgvw8kfO
-         7fswkN2/5lBZZh2FKJLM7gd0E8AjvU8yNzfVS9hE5mDsPcS9k6NF8G7qBMVUdOXuN5ny
-         mZe0DR0CZPsnnhZySGYQQL78m0Z8Qv1z3wjl7tpcKJDKG7xEoY3++lqzT28I8zmI3ebS
-         iQkNWHmo/PJ6kA1CxirRjwlZNPcncawZ7IKygzqYvuE9GahWgVkc4sKVUCY1x2UZyetc
-         CUfw==
-X-Gm-Message-State: AOAM532qQmV3TlqLSGMqYcpqu1qTJU8spnNYhw+ifYVCLfgxjsnBtI/e
-        BV6pX0DOZic78C38FPBbIpWSXY+uy+JC389NaxahBHjhi/0=
-X-Google-Smtp-Source: ABdhPJypqab8D8E09U3fDEzhIHo58PbEOJoqq65UAWKSKeC+uoekGSEbAE0TjyUTI8g2r43fRa1xBP3CbtUVZEjJQLo=
-X-Received: by 2002:ab0:2a8b:: with SMTP id h11mr26006350uar.4.1621927614112;
- Tue, 25 May 2021 00:26:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=3ULzEBN0Jp6XpJ/GBCDjzUsE47Bj6V3OGDqs3nkCmBQ=;
+        b=IprnXwKnRhAPFb4tDf7oGLSOCtx0PrEiF1ZYq6/WD2nuLrcORbivsJbzGiGLCa0lb/
+         VQ1NKFtLQA7iiJvGO6A7cDxh7S0Qepyy6ullAATwTnlxZkQXAfkO4BwI75se2M5YDL9n
+         jd9s2I7Ac/N5PxDNhsLaA0hrbBe5CExakA/yUD5j1FntYZ/KfgDNE8PyeS6nXG4V9Icf
+         yhCo3wuS0SIlM8Avya2i1rGSrbvqL0NqSQ1cFvGPw7odF/rVYI3ZxQ+Hjz6Ewdmvw0UK
+         Juoxlbo6PCLIaSnBvIfrzBno89CbV/YE6ZQnAdPcABPrrtMuIlOWLIYz6q6FLtrTRPvv
+         kvhg==
+X-Gm-Message-State: AOAM533gU5M5UJnA2hw/HlCPRHVRFlBb6a1bJf1W2Tcp+/TbyEsWfzx/
+        fqVnq4WEHDYren7w9N7h7Bmzlyg37orewyD6
+X-Google-Smtp-Source: ABdhPJxyYxttWGaOHQK/+i3OGI3H2+FM/NOaYwrT/XMwPbrCsfvs/WLauniXQAHjriF6Y7oiTOIgDw==
+X-Received: by 2002:a1c:b457:: with SMTP id d84mr2458736wmf.58.1621927632859;
+        Tue, 25 May 2021 00:27:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:1062:9531:8150:c5f3? ([2a01:e0a:90c:e290:1062:9531:8150:c5f3])
+        by smtp.gmail.com with ESMTPSA id h14sm1932369wmb.1.2021.05.25.00.27.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 00:27:12 -0700 (PDT)
+Subject: Re: [PATCH] drm/meson: fix shutdown crash when component not probed
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stefan Agner <stefan@agner.ch>
+References: <20210430082744.3638743-1-narmstrong@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <0359d826-49d5-d724-b38e-012e3389ae43@baylibre.com>
+Date:   Tue, 25 May 2021 09:27:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
- <CAMuHMdW42UAWRPWe09=0c=pkNLwwswoQHEbSHyXEjsfF6UZJdw@mail.gmail.com>
- <YKt0v2etlFzpvE9r@kroah.com> <CAMuHMdWL=Jy-PHMU3NTuc2YT=oK7gGGrrj008_k0ATivPsPc8w@mail.gmail.com>
- <YKt9Z82KbBQZIWVl@kroah.com> <CAMuHMdXbSyresZNUqq-g4=HNFXqtj2QkPpN1s0LRjmOnNPxn8w@mail.gmail.com>
- <YKuedipmEjIW91Jr@kroah.com>
-In-Reply-To: <YKuedipmEjIW91Jr@kroah.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 25 May 2021 09:26:42 +0200
-Message-ID: <CAMuHMdUhSKFrcaiB0KHsgg1=4_RX3XjUpzMV=Y=RxErRmsn=sA@mail.gmail.com>
-Subject: Re: [PATCH] debugfs: remove return value of debugfs_create_bool()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210430082744.3638743-1-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 30/04/2021 10:27, Neil Armstrong wrote:
+> When main component is not probed, by example when the dw-hdmi module is
+> not loaded yet or in probe defer, the following crash appears on shutdown:
+> 
+> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
+> ...
+> pc : meson_drv_shutdown+0x24/0x50
+> lr : platform_drv_shutdown+0x20/0x30
+> ...
+> Call trace:
+> meson_drv_shutdown+0x24/0x50
+> platform_drv_shutdown+0x20/0x30
+> device_shutdown+0x158/0x360
+> kernel_restart_prepare+0x38/0x48
+> kernel_restart+0x18/0x68
+> __do_sys_reboot+0x224/0x250
+> __arm64_sys_reboot+0x24/0x30
+> ...
+> 
+> Simply check if the priv struct has been allocated before using it.
+> 
+> Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
+> Reported-by: Stefan Agner <stefan@agner.ch>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/gpu/drm/meson/meson_drv.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+> index 453d8b4c5763..07fcd12dca16 100644
+> --- a/drivers/gpu/drm/meson/meson_drv.c
+> +++ b/drivers/gpu/drm/meson/meson_drv.c
+> @@ -485,11 +485,12 @@ static int meson_probe_remote(struct platform_device *pdev,
+>  static void meson_drv_shutdown(struct platform_device *pdev)
+>  {
+>  	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+> -	struct drm_device *drm = priv->drm;
+>  
+> -	DRM_DEBUG_DRIVER("\n");
+> -	drm_kms_helper_poll_fini(drm);
+> -	drm_atomic_helper_shutdown(drm);
+> +	if (!priv)
+> +		return;
+> +
+> +	drm_kms_helper_poll_fini(priv->drm);
+> +	drm_atomic_helper_shutdown(priv->drm);
+>  }
+>  
+>  static int meson_drv_probe(struct platform_device *pdev)
+> 
 
-On Mon, May 24, 2021 at 2:39 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Mon, May 24, 2021 at 01:44:38PM +0200, Geert Uytterhoeven wrote:
-> > On Mon, May 24, 2021 at 12:18 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > On Mon, May 24, 2021 at 11:51:42AM +0200, Geert Uytterhoeven wrote:
-> > > > On Mon, May 24, 2021 at 11:41 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > On Mon, May 24, 2021 at 11:11:32AM +0200, Geert Uytterhoeven wrote:
-> > > > > > On Fri, May 21, 2021 at 10:28 PM Greg Kroah-Hartman
-> > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > > No one checks the return value of debugfs_create_bool(), as it's not
-> > > > > > > needed, so make the return value void, so that no one tries to do so in
-> > > > > >
-> > > > > > Please explain in the patch description why it is not needed.
-> > > > >
-> > > > > Because you just do not need it, like almost all other debugfs calls
-> > > > > now.
-> > > >
-> > > > Why do I just not need it?
-> > >
-> > > Let me flip it around, why do you need it?  There are no in-kernel users
-> > > of the return value anymore so what code requires this pointer now?
-> >
-> > There still are a few users of other members in the family, and some
-> > of them are meant to be removed without removing the full parent
-> > directory.  Having all debugfs_create_*() functions behave the same
-> > is a bonus.
->
-> I agree, and we are almost there, all that is left is:
->         debugfs_create_blob()
->         debugfs_create_file()
->         debugfs_create_file_unsafe()
-> for creating debugfs files.
->
-> There is still:
->         debugfs_create_dir()
->         debugfs_create_symlink()
->         debugfs_create_automount()
-> for non-file creations that do not return void.
->
-> The majority of the debugfs_create_* functions now do not return
-> anything.
->
-> > But if other people are fine with having to call
-> > debugfs_remove(debugfs_lookup(...)), well, let it be like that...
->
-> It saves at least a static variable, so what's not to like?  :)
+Applied to drm-misc-fixes
 
-Which is more than offset by the cost of the new debugfs_lookup() call...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Neil
