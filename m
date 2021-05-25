@@ -2,164 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EA73907DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C633907DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhEYRhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:37:13 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7366 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234125AbhEYRg4 (ORCPT
+        id S232573AbhEYRhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232849AbhEYRhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:36:56 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PHPsNo002580;
-        Tue, 25 May 2021 10:35:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=i9NJ0T1hvtwPQWFwxKb8QdYhMMg2ELfTii0+JV6AxQM=;
- b=ObpYvAoZ4dlGfU0w0dJlHLCpwdtPZYxDkVUd21IFu58fytO0UXltAkt0+b/jJEZsD+dH
- jjHChinS0sR+l6EY9hUYU5zC2V9DPT02wtxWAKyE3vfz3u7mgXif6AnQBjC7XWf5+/Pp
- R0seB0BaDwdLkVbSxmQN7jO86YHnkC4eWOs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38rpf9mvub-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 25 May 2021 10:35:15 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 10:35:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GtlaakMcZR2OyYipSw8bf+hn1Um8tMdH767I1QZ7oj5bTwIebY1tK/hgRspR9emjIM8ENsVCmEnzLteuEhVJsuE4GdMR4FmwvWQ003Jn3QtudwJgh4MhTvn65xJPlgCzJ2PO5ahRbAOxOSUmw1ZefmXUtV9d4UVnhF9ZJgr9HYYlejl6UisITUArLmckVQylNR8rvqJOVrd4VbMvi7zDlHIkhYfEtUZ5EdUzpipA+EmFo0ewNKQmtUeszp96QpyatHbD56aST8tvR3Q795pJraxk+WV+wQ0LxWj3S7CE32jfH55S9qATxLtFU2+cjX+doj0rIwM2em2eCrSUqIyuZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9NJ0T1hvtwPQWFwxKb8QdYhMMg2ELfTii0+JV6AxQM=;
- b=oJHb5+pLJcCIwA5yDDuxagvDDTA7hGkeQoZayePceNeyoMxXAiqM+XXWb8WjR/Aa1agRCB3IdrlpaK4EkAWmSOMpici6ITxsdIl27jRowV3aDXgjCiP0GCJt4SFVE9eOsBcp6uFQCENO0NmTiCHLPkROyLr+vWUS425joJYlglTk2OhSOTpiMhT4S3Ufc1uVraTXcHZ4JZr8xvFeZXBmgln7fsYHklfsrrmetg3VwPleSxIbJmd/EB3oqAr639tIgEtThSGQHOYRX/2U/VOmDlNF0wwkr99Mm1xtndEgdINxIcTk0x9bR+2Du5kcQ5B773Nok2zc86sdwmaiwtq5bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2982.namprd15.prod.outlook.com (2603:10b6:a03:f8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 25 May
- 2021 17:35:11 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4150.027; Tue, 25 May 2021
- 17:35:11 +0000
-Date:   Tue, 25 May 2021 10:35:06 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
-        "Singh, Balbir" <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [External] Re: [RFC PATCH v3 00/12] Use obj_cgroup APIs to
- charge the LRU pages
-Message-ID: <YK01SgD7sFeviDGv@carbon.dhcp.thefacebook.com>
-References: <20210421070059.69361-1-songmuchun@bytedance.com>
- <CAMZfGtUiKcM8WmP88J3K5edwLhJhsUkAUQo6rnkqx4BBOEY2SA@mail.gmail.com>
- <34366052-8A39-4E8E-A076-8B64AB4D015D@fb.com>
- <CAMZfGtXC_UG9gUD58ezL02a+Gyry_d7WfEwKup6UMQjvNi3HdQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMZfGtXC_UG9gUD58ezL02a+Gyry_d7WfEwKup6UMQjvNi3HdQ@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:5fb6]
-X-ClientProxiedBy: MWHPR17CA0095.namprd17.prod.outlook.com
- (2603:10b6:300:c2::33) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Tue, 25 May 2021 13:37:32 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9473C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:36:00 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i9so47307910lfe.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Mp7udtTenG44NH/QCDQTjrCW5TxEnGG1zm25F5s/Mkc=;
+        b=NUa6XVtpvp4ZD37FJIrtCt/4viHX5kXUAVaox/Noop5X1mKA3a0HHoGPmdpmxjTn6/
+         Xrq0KmtSCWkoPm9WQxaYx8U02WvEzKoRy7B0dRIv9qn7z0rjauojw8zcPXK55Iix21ia
+         Fc5FgUBbevhofL14IsQED284iWRdqG9sZcrW6mj9YCVL/mwcRqZ2JhcEcVHW08yP6CFd
+         hTzMLHI6QIxybi5Rt0/jIt5eX1jlg4vKjfwk6Sfj3aC3LqcbUPEwmxZqWwNLhfAjDGtt
+         KzII28vCyIxGchruBFaFVy+aTTLUYTJHRqZlqAABFG5SPoRqqYi50qXBrCdaZ7eF5pxd
+         AHJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Mp7udtTenG44NH/QCDQTjrCW5TxEnGG1zm25F5s/Mkc=;
+        b=cM4nbQuXxmF+M34OWdU8kGX0DzUaFW+8Yh5zBE8Y9W+3fzhlBiB4JJ1Km0/zO/ILb1
+         aQyyB9MGyIvc0elaN3JLTSAFGSYOSz/PlwLDOXmLsuowJtdKs91UKhpLN70rwhKBi6Z5
+         6VttA5sOh9pq8EJU8KbvJNxFui3VRk9EOCHp5Xm6vI1aAa4YWXFfBcHRQj/C7jgl3UD7
+         k2pewEQKvg6+qZRYC+u/j2zw2yVFxYjmkq05MstOmhSzTjo5Vsv4ME72llQ4oTCYx2ON
+         ydkZ25Q7m3QD1aSsnuKcRMgAL4FZmWYi7wW2zlm2Viq4/UmerBfLGOkZP8EAyccmOwb/
+         nv4Q==
+X-Gm-Message-State: AOAM531jq7vjy0PoJu+xZsv4f/bM6/C30670RSW93Oe3+oA/fwrkGN5N
+        Nk/ICds5Lsp344L6Q0A7f4UDIg==
+X-Google-Smtp-Source: ABdhPJxUZoxftFBuGOSezXPUY74cZMDR2Fz9AHFYsTJ9Ld+DD5mRvqjvVTsOjWljyr9Zto5lzE/5kA==
+X-Received: by 2002:a05:6512:31c6:: with SMTP id j6mr14801514lfe.129.1621964159064;
+        Tue, 25 May 2021 10:35:59 -0700 (PDT)
+Received: from [192.168.88.254] ([85.249.41.56])
+        by smtp.gmail.com with ESMTPSA id 6sm1794842lfz.189.2021.05.25.10.35.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 10:35:58 -0700 (PDT)
+Subject: Re: [PATCH 03/17] media: camss: csiphy-3ph: add support for SM8250
+ CSI DPHY
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Cc:     robert.foss@linaro.org, Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210511180728.23781-1-jonathan@marek.ca>
+ <20210511180728.23781-4-jonathan@marek.ca>
+ <e1188621-aa8d-d825-7454-491ffdec27c1@linaro.org>
+Message-ID: <4b50f855-e791-b445-f7b8-bc7b783bdc00@linaro.org>
+Date:   Tue, 25 May 2021 20:35:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:5fb6) by MWHPR17CA0095.namprd17.prod.outlook.com (2603:10b6:300:c2::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.24 via Frontend Transport; Tue, 25 May 2021 17:35:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e62326bb-4b5d-4cda-1388-08d91fa37280
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2982:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2982BFF9779503AC1293E0E8BE259@BYAPR15MB2982.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bLLM0FyKEy8eIwW/zWpW05ejEvHdsQ+0ObAI4q6dPeLqjnVgMxR0AplJNhmbrWqVtxfeGgiuTcrRUddQNqwyuCjeCFwBzKI55G/UIfitvdkROJrspwpbX1/HwC2HSKGHMS2O8yB402sEyXx8Hz/MX3QrzWKOFkwmCWKge7DchvDYXj+uPNvddn5HBlCyqh2q1nEfWy7seqBdsTyYaQPQ2Uuj4qcW4G4DINHMA1dP3gDZNMCnzbg2NynrcZCwrJlSq89ZHm12Aw1A+JZf++vQgdYsXrljdBRM2pO1e9gy9yqsnwoxJ51m3tTCJ0MB5x297U1BuTe2lTARehKU3KpOrudxh/jHm/I2XUKDYdOTsTPbFxhvpW+tba6zq831Gxxv3erM5/TmLw6wqVXVl5gUVui/X4Uq/kuD+d289f0MlPFmB4Ba+kTjQadUGfDMcvbvhifVNtYPsukj9dJXeI9OGOLVJGdsHoTny6dSxENEAPdmO1ZgROdpXdEDQ2JYU989ryDN+yTqgatm5Cr/Rt3XW0gAjj3zI/4nQaMvVCJ+A7KD8fqa5c4o01lF5eQ6t4EZB5c28NPlARLeH2GnIGngUdpRyKmAR9e/2tJ7tNQcoT4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(366004)(39860400002)(53546011)(86362001)(2906002)(54906003)(6506007)(83380400001)(38100700002)(7696005)(5660300002)(6666004)(4744005)(4326008)(316002)(52116002)(8676002)(66946007)(7416002)(478600001)(16526019)(66476007)(66556008)(186003)(9686003)(6916009)(55016002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U1k0bTVFVFArckZQQktCcmNEZFUzd0ZMWXk3UjliVHhBWTVnQ29wdkdOelhV?=
- =?utf-8?B?NXp6V0RUSmlrc2lsQkRZM3dIZEtWNVdUQUovd1A2RUx5UVJUa1VRRzFhblRh?=
- =?utf-8?B?OWgyRC95aytyYnIzRHd5cHVVQXRaUXFFNmFMajVRRzErdW90Rm9SQkpZdWZi?=
- =?utf-8?B?VFJCTERnMzlNa21DMzA5YmhrK0U2dDY0VWErWnJyeWRLT211UExibmRIL3NQ?=
- =?utf-8?B?TTRuT2FMT1ZYbTViR0pLdnZaVWlWYi8zUGNCODBtL2xDK1c3Q01jcmVSb1Fk?=
- =?utf-8?B?eU1tM2ZYOGQraXJ4OFZnUjVvOGdGSi94ZFFxVTdFcG1MWXFucUs2OCtBZkE0?=
- =?utf-8?B?NC9Vem5rVFZVNWFaa3RXOHlyWWgwakFzUlJMMFY5eG5QVWhZams2bm1DVWpw?=
- =?utf-8?B?K1E3Vmk5ZXUwSGZteVJxWkxsNk5FbGpzUHRIMURDZjRZODA4ekNLaElBcFVt?=
- =?utf-8?B?T09ZeTFLc1I0M3V0UkRCN2JoUGlCTVZYbjAyRHlmWmdHSEFQQllHUlM5L0ZO?=
- =?utf-8?B?TXU2aDFNQUM2K05aZTNzdHo4bnVmSWt0bG5rMXFnNnEvUVlHZStYazE2cVJ1?=
- =?utf-8?B?dkFYRnlwdUdrTjBUT3orQklBTWxlU1BIT2VWZDAwY1czeE15b1FJaWFzSG5w?=
- =?utf-8?B?SGxMTUVBdFBXQUlRNE9jZkY5a25leXpGRkFJY1FsSFE1Z2JNc0tKTitCR3ZN?=
- =?utf-8?B?TEV5Z2ZhL2t0MDZlYzJSQVhWb0hzWTVuM1hkR2l0MnhKcVZkd0hGcEJRa0E2?=
- =?utf-8?B?N2hCZ1VyUmljYTM5bnVkV20rdS9qOGgvblFYYVlxeUx5elFmZlVvTHpaSGRj?=
- =?utf-8?B?N1ZKOEp2YUhhZkFsS29MNTQ3YVdYTG9tZ2l4RzFOdnJ1cktvY2RJcEJyU0p5?=
- =?utf-8?B?Zjc2ekE4SWRSSFRQYVQ5eFUwMW5kbFFFYXpJVnN3bEY5NThYelcxaEV5QUh1?=
- =?utf-8?B?K1Z2RCtsU2RlSFJkZmtRMjJKaTlhS3BCYkF0SGlQY1lCRFpWOVd4Z2tsbHo4?=
- =?utf-8?B?VS9wYWwySEJDK2ZvYktKWk1zWGh6NTFudFRpQlRwQmExSnl3UWVUK1lmM0RU?=
- =?utf-8?B?aEZla05SWlFtWFIyQUlFNEZGMGVIeVZjQVlHd1pKV1lKa29hZVJMamNMRkxG?=
- =?utf-8?B?am5EZXlHUFVPR2VPbmFCU2FIODFQNzVvYXpTQTRQOHdERTJJS3dUbzNrSTY0?=
- =?utf-8?B?YWxRbGlicHk5Nzg0ZURpZ3dKSGZYSzBTbmxwSkJFUms2Tmkya3VBRnlRNkpC?=
- =?utf-8?B?NU1wVGZDWlF0cVJmWTdnN2dGWGs0NG5ZYklUR3hPcUxNSXkraDFpTHA2UVFk?=
- =?utf-8?B?WkJUZXFDVUNBZW01UUhORDFBdjlWWnZHdFRFMktLbWJzWEZ1c1N0MWVsSjdT?=
- =?utf-8?B?bC9kRGtBMUgyRjEyZEVGelFGMk5VNDNJeEJhaFprSGgwY3BzSjJtSU9PWGgv?=
- =?utf-8?B?QWxXeE9PM1JPOGtWSytUNVhMcGNRL2xMUjFjdEZLZ29OelAvcFNKRkNQdDJz?=
- =?utf-8?B?QWNONWxUM0tkSlpSdjhQbStBa1JtMlcxaW1sNDB0NEhiZ3FhQU1EL0JhM0p5?=
- =?utf-8?B?d29EMmVxdWVuSnNMMmtnN1Bvd1ZCd1p1Uzd1OXlkdk94SnFUZWtmaEFmK3Y2?=
- =?utf-8?B?ZWhpZk04OWdYUllZZ3BabloxZk1KT1VTOHFpR0Z6OEs5WUlXY1kzb3JvZzRz?=
- =?utf-8?B?aFhENzl3dE1EV0RpR1RFSmJuNWpKQ0FuUXA3MTlGd3J3cCt1UEpJbkFxazVl?=
- =?utf-8?B?NjAvSG00WUZQWkY5M2VnMVF1ZlZsMngvTjVaRGFRMWNBZ2VuSjd2ZnlxUnhj?=
- =?utf-8?B?enh0SjlOMWIzWDdhMno4UT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e62326bb-4b5d-4cda-1388-08d91fa37280
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 17:35:11.3680
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h8l7j89zaAOLNh4Gxc700jZCFpHtu1L0GLwCvAd3kqolSrN52CQHI0JXsigiW6HJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2982
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: HTtM5LXB6TKpODGX5AO8cvxSXXDyckNf
-X-Proofpoint-ORIG-GUID: HTtM5LXB6TKpODGX5AO8cvxSXXDyckNf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_08:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 malwarescore=0 mlxlogscore=903 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 bulkscore=0 impostorscore=0 mlxscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250107
-X-FB-Internal: deliver
+In-Reply-To: <e1188621-aa8d-d825-7454-491ffdec27c1@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:20:47AM +0800, Muchun Song wrote:
-> On Tue, May 18, 2021 at 10:17 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > Hi Muchun!
-> >
-> > It looks like the writeback problem will be solved in a different way, which will not require generalization of the obj_cgroup api to the cgroup level. It’s not fully confirmed yet though. We still might wanna do this generalization lingn-term, but as now I have no objections for continuing the work on your patchset. I’m on pto this week, but will take a deeper look at your patches early next week. Sorry for the delay.
+Hi Jonathan,
+
+Couple more minor issues.
+
+On 25.05.2021 20:19, Andrey Konovalov wrote:
+> Hi Jonathan,
 > 
-> Waiting on your review. Thanks Roman.
+> Thank you for the patchset!
+> 
+> On 11.05.2021 21:07, Jonathan Marek wrote:
+>> Add support for CSIPHY (2PH/DPHY mode) found on SM8250 hardware.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   .../qcom/camss/camss-csiphy-3ph-1-0.c         | 144 +++++++++++++++++-
+>>   1 file changed, 137 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+>> index 783b65295d20..61947576ddfb 100644
+>> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+>> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+>> @@ -62,6 +62,7 @@ struct csiphy_reg_t {
+>>       u32 csiphy_param_type;
+>>   };
+>> +/* GEN2 1.0 2PH */
+>>   static const struct
+>>   csiphy_reg_t lane_regs_sdm845[5][14] = {
+>>       {
+>> @@ -146,6 +147,121 @@ csiphy_reg_t lane_regs_sdm845[5][14] = {
+>>       },
+>>   };
+>> +/* GEN2 1.2.1 2PH */
+>> +static const struct
+>> +csiphy_reg_t lane_regs_sm8250[5][20] = {
+>> +    {
+>> +        {0x0030, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0900, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0908, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0904, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0904, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0004, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x002C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0034, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0010, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x001C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x003C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0008, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+>> +        {0x0000, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x000c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0038, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0014, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0028, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0024, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +    },
+>> +    {
+>> +        {0x0730, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C80, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C88, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C84, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C84, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0704, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x072C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0734, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0710, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x071C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x073C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0708, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+>> +        {0x0700, 0x80, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x070c, 0xA5, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0738, 0x1F, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0714, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0728, 0x04, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0724, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +    },
+>> +    {
+>> +        {0x0230, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0A00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0A08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0A04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0A04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0204, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x022C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0234, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0210, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x021C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x023C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0208, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+>> +        {0x0200, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x020c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0238, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0214, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0228, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0224, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +    },
+>> +    {
+>> +        {0x0430, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0B00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0B08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0B04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0B04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0404, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x042C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0434, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0410, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x041C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x043C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0408, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+>> +        {0x0400, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x040c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0438, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0414, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0428, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0424, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +    },
+>> +    {
+>> +        {0x0630, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0C04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0604, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x062C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0634, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0610, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x061C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x063C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0608, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
+>> +        {0x0600, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x060c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0638, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0614, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0628, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0624, 0x00, 0x00, CSIPHY_DNP_PARAMS},
+>> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
+>> +    },
+>> +};
+>> +
+>>   static void csiphy_hw_version_read(struct csiphy_device *csiphy,
+>>                      struct device *dev)
+>>   {
+>> @@ -298,13 +414,23 @@ static void csiphy_gen1_config_lanes(struct csiphy_device *csiphy,
+>>   static void csiphy_gen2_config_lanes(struct csiphy_device *csiphy,
+>>                        u8 settle_cnt)
+>>   {
+>> -    int i, l;
+>> -    u32 val;
+>> +    const struct csiphy_reg_t *r;
+>> +    int i, l, array_size;
+>> +    u32 val, lane_enable;
 
-It looks like the mm tree went ahead and I can't clearly apply the whole patchset.
-Would you mind to rebase it and resend?
+lane_enable is not used in this patch ("warning: unused variable ‘lane_enable’").
 
-Thank you!
+>> +
+>> +    switch (csiphy->camss->version) {
+
+This switch statement doesn't have the "default:" clause which leads to several
+warnings of "enumeration value ‘CAMSS_8x16’ not handled in switch" kind.
+
+Thanks,
+Andrey
+
+>> +    case CAMSS_845:
+>> +        r = &lane_regs_sdm845[0][0];
+>> +        array_size = ARRAY_SIZE(lane_regs_sdm845[0]);
+>> +        break;
+>> +    case CAMSS_8250:
+> 
+> CAMSS_8250 is only introduced in "[PATCH 16_17] media: camss: add support for SM8250 camss",
+> and this breaks bisecting.
+> 
+> Thanks,
+> Andrey
+> 
+>> +        r = &lane_regs_sm8250[0][0];
+>> +        array_size = ARRAY_SIZE(lane_regs_sm8250[0]);
+>> +        break;
+>> +    }
+>>       for (l = 0; l < 5; l++) {
+>> -        for (i = 0; i < 14; i++) {
+>> -            const struct csiphy_reg_t *r = &lane_regs_sdm845[l][i];
+>> -
+>> +        for (i = 0; i < array_size; i++, r++) {
+>>               switch (r->csiphy_param_type) {
+>>               case CSIPHY_SETTLE_CNT_LOWER_BYTE:
+>>                   val = settle_cnt & 0xff;
+>> @@ -331,7 +457,10 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>>       settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
+>> -    val = BIT(c->clk.pos);
+>> +    if (csiphy->camss->version == CAMSS_8250)
+>> +        val = BIT(7);
+>> +    else
+>> +        val = BIT(c->clk.pos);
+>>       for (i = 0; i < c->num_data; i++)
+>>           val |= BIT(c->data[i].pos * 2);
+>> @@ -349,7 +478,8 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>>       if (csiphy->camss->version == CAMSS_8x16 ||
+>>           csiphy->camss->version == CAMSS_8x96)
+>>           csiphy_gen1_config_lanes(csiphy, cfg, settle_cnt);
+>> -    else if (csiphy->camss->version == CAMSS_845)
+>> +    else if (csiphy->camss->version == CAMSS_845 ||
+>> +         csiphy->camss->version == CAMSS_8250)
+>>           csiphy_gen2_config_lanes(csiphy, settle_cnt);
+>>       /* IRQ_MASK registers - disable all interrupts */
+>>
