@@ -2,158 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D9738FDFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75ECD38FDFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbhEYJhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbhEYJhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:37:35 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3EEC061574;
-        Tue, 25 May 2021 02:36:05 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v14so19555259pgi.6;
-        Tue, 25 May 2021 02:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAQ8nIZj/L/k8q7yFsMHi5/JFrCRshtxQkR6rH9Qus8=;
-        b=ChqFXRNi+q7D4k8kudtWRdJ3FknWhQXMNd4TSvwFxws1VSzooU1XiFa/JeMpQAAHv1
-         a16a+xOGN43+kxFgAgMpd1Vj6/POxnG1x/2yu1mmSdPPx/vhyI1Z3tjiDxdmDgtxGJux
-         T2QKUczJJ61N8CDJdKfmIa1gBO1aTcbbLmIHRq7gl2fpQ3cHlaESLRfx5dXkimugZyFf
-         4BBCalA6BjJrcThTbY1kCvWQqn00gRW6EoYg1dNhtOGNOcNu0ZAQ2OrCgu9k939g1zeS
-         OjcVDYcbJrLus/HWvh+Z7U4IoFyjEbBkCGoXqk0/iuxVNWZh3aSwIpAjTVTZnz9mOkpZ
-         C+sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAQ8nIZj/L/k8q7yFsMHi5/JFrCRshtxQkR6rH9Qus8=;
-        b=RKue2UlOx4DsyrlQQlRyj9JOSRx3IUf5gEMcbA4N4k8lMjEw8va4miPxzIpwxsweYx
-         0dCXOeLr/Ui/cTEAzKshHTC6hx6sN/xZG04fZ0KrTBev3Hplifile0vatInz22hduO/s
-         uTAB/4rmJ0nS0zWV+/AUPcRTTLwjJMQ/7WIWFhOrkxJbZsvdF9PgXNABWp0A+/wNl131
-         Kxw0mXCgJ6XZpAdzm+wP87/HO1lMW94wBhoiFu+yCVwQRGqErU8IqiNBHIjciKTL1QZB
-         9EfF1ZWDGWtlG6ZMGXxGmAXBPiACp2WlkrGw6RFg8QbqpBeCmdcN4EhYMZOC8qu2TMaM
-         WqeA==
-X-Gm-Message-State: AOAM531g3V7RBMCtsYa/0ydEuOZEPjt3PVlsZWnMGehWGxL5M+3azzUP
-        miSpeuDc55PQtMGiai5W96s=
-X-Google-Smtp-Source: ABdhPJzc8T8OURsXgPzvtj8PWgeGchMRU581KFyuJBGbAVL7JXGSDI/1GyT5R5xItmfZiZw/9Q3lUA==
-X-Received: by 2002:a63:5448:: with SMTP id e8mr18113248pgm.170.1621935359828;
-        Tue, 25 May 2021 02:35:59 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id y1sm13383189pfn.13.2021.05.25.02.35.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 02:35:59 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: core: Use host instead of mq parameter from mmc_issue_type()
-Date:   Tue, 25 May 2021 17:35:10 +0800
-Message-Id: <20210525093510.1373-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S232620AbhEYJjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:39:37 -0400
+Received: from mail.synology.com ([211.23.38.101]:53532 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232563AbhEYJjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:39:32 -0400
+Subject: Re: [PATCH v2] block: fix trace completion for chained bio
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1621935449; bh=pyh7Wvy0eo8qDjfoSG3IQUSH3Z/keP/gcb0hzR7DpoU=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=MJiUB/Yf+sXio24HtfILVjS+nsMDr6KoYJgHhDXEt2cjCbQp8dm/XWLkIXxvlW5DP
+         7diC2grtpkywKzRaP6yyws3/Eu6DpakCxpPB93cGIhFtyDL+9lqIt3uoZUo2yoNYFz
+         8Yjm+lLT7504ZRpiQNSnT/lgiK5G2AAeLQMvCGKc=
+From:   Edward Hsieh <edwardh@synology.com>
+To:     NeilBrown <neilb@suse.de>, axboe@kernel.dk, neilb@suse.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        s3t@synology.com, bingjingc@synology.com, cccheng@synology.com
+References: <1614741726-28074-1-git-send-email-edwardh@synology.com>
+ <87zgyudgss.fsf@notabene.neil.brown.name>
+ <fb8620bf-f4e9-5787-ab79-6e0a5d79d26d@synology.com>
+ <10f3e198-f34c-47e9-608a-e5f84e3379a1@synology.com>
+Message-ID: <3600b6c0-f83d-f375-bebc-cd5ac811c3d5@synology.com>
+Date:   Tue, 25 May 2021 17:37:29 +0800
 MIME-Version: 1.0
+In-Reply-To: <10f3e198-f34c-47e9-608a-e5f84e3379a1@synology.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
 
-Note that the role of 'mq' parameter is just to get 'host' in
-mmc_issue_type(). And all callers to this API have already 'host'
-except mmc_blk_mq_dec_in_flight(). So, let's use existing 'host'
-directly to make code simpler. Update related code at the same time.
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/mmc/core/block.c | 6 +++---
- drivers/mmc/core/queue.c | 8 +++-----
- drivers/mmc/core/queue.h | 2 +-
- 3 files changed, 7 insertions(+), 9 deletions(-)
+On 5/10/2021 10:06 AM, Edward Hsieh wrote:
+> 
+> On 4/23/2021 4:04 PM, Edward Hsieh wrote:
+>> On 3/23/2021 5:22 AM, NeilBrown wrote:
+>>> On Wed, Mar 03 2021, edwardh wrote:
+>>>
+>>>> From: Edward Hsieh <edwardh@synology.com>
+>>>>
+>>>> For chained bio, trace_block_bio_complete in bio_endio is currently 
+>>>> called
+>>>> only by the parent bio once upon all chained bio completed.
+>>>> However, the sector and size for the parent bio are modified in 
+>>>> bio_split.
+>>>> Therefore, the size and sector of the complete events might not 
+>>>> match the
+>>>> queue events in blktrace.
+>>>>
+>>>> The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
+>>>> completion of all bios.") wants multiple complete events to correspond
+>>>> to one queue event but missed this.
+>>>>
+>>>> md/raid5 read with bio cross chunks can reproduce this issue.
+>>>>
+>>>> To fix, move trace completion into the loop for every chained bio to 
+>>>> call.
+>>>
+>>> Thanks.  I think this is correct as far as tracing goes.
+>>> However the code still looks a bit odd.
+>>>
+>>> The comment for the handling of bio_chain_endio suggests that the *only*
+>>> purpose for that is to avoid deep recursion.  That suggests it should be
+>>> at the end of the function.
+>>> As it is blk_throtl_bio_endio() and bio_unint() are only called on the
+>>> last bio in a chain.
+>>> That seems wrong.
+>>>
+>>> I'd be more comfortable if the patch moved the bio_chain_endio()
+>>> handling to the end, after all of that.
+>>> So the function would end.
+>>>
+>>> if (bio->bi_end_io == bio_chain_endio) {
+>>>     bio = __bio_chain_endio(bio);
+>>>     goto again;
+>>> } else if (bio->bi_end_io)
+>>>     bio->bi_end_io(bio);
+>>>
+>>> Jens:  can you see any reason why that functions must only be called on
+>>> the last bio in the chain?
+>>>
+>>> Thanks,
+>>> NeilBrown
+>>>
+>>
+>> Hi Neil and Jens,
+>>
+>>  From the commit message, bio_uninit is put here for bio allocated in
+>> special ways (e.g., on stack), that will not be release by bio_free. For
+>> chained bio, __bio_chain_endio invokes bio_put and release the
+>> resources, so it seems that we don't need to call bio_uninit for chained
+>> bio.
+>>
+>> The blk_throtl_bio_endio is used to update the latency for the throttle
+>> group. I think the latency should only be updated after the whole bio is
+>> finished?
+>>
+>> To make sense for the "tail call optimization" in the comment, I'll
+>> suggest to wrap the whole statement with an else. What do you think?
+>>
+>> if (bio->bi_end_io == bio_chain_endio) {
+>>      bio = __bio_chain_endio(bio);
+>>      goto again;
+>> } else {
+>>      blk_throtl_bio_endio(bio);
+>>      /* release cgroup info */
+>>      bio_uninit(bio);
+>>      if (bio->bi_end_io)
+>>          bio->bi_end_io(bio);
+>> }
+>>
+>> Thanks,
+>> Edward Hsieh
+> 
+> Hi Neil and Jens,
+> 
+> Any feedback on this one?
+> 
+> Thank you,
+> Edward Hsieh >
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 689eb9a..4b6d4b0 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1382,7 +1382,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
- 	struct mmc_request *mrq = &mqrq->brq.mrq;
- 	struct request_queue *q = req->q;
- 	struct mmc_host *host = mq->card->host;
--	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
-+	enum mmc_issue_type issue_type = mmc_issue_type(host, req);
- 	unsigned long flags;
- 	bool put_card;
- 	int err;
-@@ -1977,7 +1977,7 @@ static void mmc_blk_mq_dec_in_flight(struct mmc_queue *mq, struct request *req)
- 
- 	spin_lock_irqsave(&mq->lock, flags);
- 
--	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
-+	mq->in_flight[mmc_issue_type(mq->card->host, req)] -= 1;
- 
- 	put_card = (mmc_tot_in_flight(mq) == 0);
- 
-@@ -2209,7 +2209,7 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
- 	if (ret)
- 		return MMC_REQ_FAILED_TO_START;
- 
--	switch (mmc_issue_type(mq, req)) {
-+	switch (mmc_issue_type(host, req)) {
- 	case MMC_ISSUE_SYNC:
- 		ret = mmc_blk_wait_for_idle(mq, host);
- 		if (ret)
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index d600e0a..3478f0a 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -56,10 +56,8 @@ static enum mmc_issue_type mmc_cqe_issue_type(struct mmc_host *host,
- 	}
- }
- 
--enum mmc_issue_type mmc_issue_type(struct mmc_queue *mq, struct request *req)
-+enum mmc_issue_type mmc_issue_type(struct mmc_host *host, struct request *req)
- {
--	struct mmc_host *host = mq->card->host;
--
- 	if (host->cqe_enabled && !host->hsq_enabled)
- 		return mmc_cqe_issue_type(host, req);
- 
-@@ -97,7 +95,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
- 	struct mmc_request *mrq = &mqrq->brq.mrq;
- 	struct mmc_queue *mq = req->q->queuedata;
- 	struct mmc_host *host = mq->card->host;
--	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
-+	enum mmc_issue_type issue_type = mmc_issue_type(host, req);
- 	bool recovery_needed = false;
- 
- 	switch (issue_type) {
-@@ -259,7 +257,7 @@ static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		return BLK_STS_IOERR;
- 	}
- 
--	issue_type = mmc_issue_type(mq, req);
-+	issue_type = mmc_issue_type(host, req);
- 
- 	spin_lock_irq(&mq->lock);
- 
-diff --git a/drivers/mmc/core/queue.h b/drivers/mmc/core/queue.h
-index 3319d8a..d41bacb 100644
---- a/drivers/mmc/core/queue.h
-+++ b/drivers/mmc/core/queue.h
-@@ -104,7 +104,7 @@ extern unsigned int mmc_queue_map_sg(struct mmc_queue *,
- void mmc_cqe_check_busy(struct mmc_queue *mq);
- void mmc_cqe_recovery_notifier(struct mmc_request *mrq);
- 
--enum mmc_issue_type mmc_issue_type(struct mmc_queue *mq, struct request *req);
-+enum mmc_issue_type mmc_issue_type(struct mmc_host *host, struct request *req);
- 
- static inline int mmc_tot_in_flight(struct mmc_queue *mq)
- {
--- 
-1.9.1
+  Hi Neil and Jens,
 
+Any comments?
+
+Thank you,
+Edward Hsieh
