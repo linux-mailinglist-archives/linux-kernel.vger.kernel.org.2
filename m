@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DE5390277
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE77439027B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhEYN3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:29:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16565 "EHLO mga17.intel.com"
+        id S233481AbhEYN3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233270AbhEYN2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:28:23 -0400
-IronPort-SDR: QzqyoSPT/gjCHsSfWF6As1y1tsFbZd/Btp52hxbMZYNxJwhm1PeHYj9bxDGg9/EDvJsNsg6E+8
- +fqWDyuVt1IQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182513494"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="182513494"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:26:52 -0700
-IronPort-SDR: iQrAKuM6IvtK8zCU5skSqkL/7M3cRiBlhKq/AyzfGkERaK1Jfs1thAwd3ssE65oFcT1TXt/PYI
- iCA69gbVTOUQ==
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="443378992"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:26:50 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1llX55-00Eajh-4v; Tue, 25 May 2021 16:26:47 +0300
-Date:   Tue, 25 May 2021 16:26:47 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/1] pinctrl: tigerlake: Add Alder Lake-M ACPI ID
-Message-ID: <YKz7F0mT9evKlXY3@smile.fi.intel.com>
-References: <20210525085050.34713-1-andriy.shevchenko@linux.intel.com>
- <20210525103538.GR291593@lahna.fi.intel.com>
+        id S233472AbhEYN3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:29:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D46F6142E;
+        Tue, 25 May 2021 13:27:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621949253;
+        bh=G5T3FBq3c73v2BlrVGNRz2ClgCthrJuqOvTanh2Lelw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UC8hD31L22/MsAdLn9dCgs7knTkd0MUzxxa8aPjAfNS/wVFzBzMX8r67q55h5l91p
+         yPTdXhlhXaKy9DwniY8Bma5mOl79deB56oPaCkDjcrvuuxIx3aKMEaiGbNFU2f4h7M
+         L6wTvuMDFgHa4jvNA+f7zJ6W64SGL5DsQevDrBbtUGyiK5iHSRt5PEtZcP6VcWfFS6
+         cEk4npbjo/iw4HyDPEnifsuvQqKLXfZ/vFqPZW3dHO5icGnb3N1IMh/DjQHuhAfCE1
+         VjUF5QNaEtQUX10EJl6x7zqzwR5mg52/F1BkQhBp8pXFE/H26LjJKBDHKRUpz71NUE
+         w0J3WkuxhGsmw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1llX5m-000uZi-Dd; Tue, 25 May 2021 15:27:30 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: [PATCH 0/2] Fix some issues at scripts/sphinx-pre-install
+Date:   Tue, 25 May 2021 15:27:26 +0200
+Message-Id: <cover.1621949137.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525103538.GR291593@lahna.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:35:38PM +0300, Mika Westerberg wrote:
-> On Tue, May 25, 2021 at 11:50:50AM +0300, Andy Shevchenko wrote:
-> > Intel Alder Lake-M PCH has the same GPIO hardware than Tiger Lake-LP
-> > PCH but the ACPI ID is different. Add this new ACPI ID to the list of
-> > supported devices.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Currently, when using with --no-virtualenv, the script doesn't behave well,
+as it prints both instructions to install Sphinx via distribution's package
+manager and via pip.
 
-Pushed to my review and testing queue, thanks!
+Address it.
+
+While here, rework the logic which recommends Sphinx install, by
+splitting it into three parts and making easier to maintain it, as
+there are too much complexity there. Splitting the Sphinx part
+of the logic on 3 separate functions allow to detect if the venv/virtualenv
+python packages are needed or not, and helps to have a cleaner
+logic.
+
+Mauro Carvalho Chehab (2):
+  scripts: sphinx-pre-install: rework the sphinx install logic
+  scripts: sphinx-pre-install: fix the need of virtenv packages
+
+ scripts/sphinx-pre-install | 262 +++++++++++++++++++++++++------------
+ 1 file changed, 180 insertions(+), 82 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
 
 
