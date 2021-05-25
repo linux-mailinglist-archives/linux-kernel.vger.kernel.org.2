@@ -2,106 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA7039058B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA5C39058F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhEYPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S233644AbhEYPhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhEYPh3 (ORCPT
+        with ESMTP id S231685AbhEYPhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:37:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47471C061574;
-        Tue, 25 May 2021 08:35:59 -0700 (PDT)
-Date:   Tue, 25 May 2021 15:35:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621956957;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qxzj1Dd5TfmGzP473Z114NoxQ+f2KoEw6CfiQZ9U6UQ=;
-        b=hVgbDeCESU9LVcpnUjHn4rN0IeWw0cKakH4A+644GiXKgvkihIVUw9QUlpX6VK+8CBZQ+M
-        eMZr3C+vBa88kdcrWC9mhCSkhFeM1/bCLq2IccCbVeWLQVPFUJaJ/DXt3DPxNSKzNTzEEf
-        NUqrr5BTpcO9+4I5fJT1nxbr/IDhaIHyZW0099pBUzElJQkCSks6SzJj83nSmj6pPUAwH2
-        KmxZBX1WYaC6MPF9pv/Q3CKC0u5dVA+5pH0nrnjEDlD2TgNGmJ1A78oarTWYZqYXuv1MAJ
-        bb7lbcrjV+U767yTUoNTKSNMBUjFyyfjfA9jWKq+mZ6MJ6bhOhXHTmQtPkAZbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621956957;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qxzj1Dd5TfmGzP473Z114NoxQ+f2KoEw6CfiQZ9U6UQ=;
-        b=uU3rKlcaqseDU6wX/U+NyzwXRSZpHH7AfSRAcRtNxjUHyuEqPZaAAz/J5CGGM5rQ1KVInx
-        dQCgxkNRxvbLxRCw==
-From:   "tip-bot2 for Pavel Begunkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] futex: Deduplicate cond_resched() invocation in
- futex_wake_op()
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
+        Tue, 25 May 2021 11:37:46 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6D0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:36:16 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id b25so30740746oic.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RBWrllR3VRUzbn0TFjCHIkpDFbjuICLM+Irp8TfqZvQ=;
+        b=vfBNsgUJ3DNsQ29JC/BYOu1ThglJZt3oPlNhnLLrxLMwAD0/bMJ/ZX3jZQw8DiK2YW
+         1jdJiYpfTEIDP0XOGmVKOl3q4xqa1K4s3nOEx173WCyUnqscLbfmCv6iilfBVaDGDwk1
+         bDKTmiSF19pqwoVgyhUdlGA4lJz6C8oy8qQ1ouyMpY9FEOBAj+WDdXf/NXZbURz8jOug
+         Sm15WgSyBCdZYgZwHYYU4Cn/Ydcmg4NCNBpHklrYK+l6xaTVUMjx07c8pXPHeQoFJKVv
+         tJrsiNu5Gr83YQ/KrVm7dX1H4C11r89yS/Bp0ifkvaHgjnpSTQy31DrCaPH8EJu4upmM
+         76Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RBWrllR3VRUzbn0TFjCHIkpDFbjuICLM+Irp8TfqZvQ=;
+        b=MBmweZfB6jJKPfJ++Hy/dZ4xgGcWHWqfGijFsSrE85+l3Yrl3GHtvLKlYv28iXcdIz
+         a3k0zxYYGvx52c8flCpV2oPpfje8HrXt2PAzAaN/tPtEYl/ZxwKt/705H13jai+kdzDi
+         Rv79dJPiovw6gRlxWJ+JUvg0YVwuy/njIhQ0eCFUcDOLemEsE/jKICe+uEvkIJGmfDJw
+         p+LIKR/TiTTUQ7CYbA/hRdtMvVUua75YrBIk+YJR/WgnzOPN3klxkbse7jc5LUj4jvUZ
+         ZEWs1QcecPxX6VqgtPTGFE/4WIo+R6hZjUL5yL6vvBzwBNG+wkuhgG5CNExrY1gnyAOr
+         CloQ==
+X-Gm-Message-State: AOAM530hqY2n9PnIoQejRmeGk8nstXozz4HmSETafNgLZIynTiP7HZ6H
+        KzxSlY+i7dNfsGGIZaNbQB6TQw==
+X-Google-Smtp-Source: ABdhPJwEt/s/nXGw4osAaDad+fMzlf5d4VrTdg07Pxn/LoMX4MZI9UquiRGC764LeckgQhy1ZQ1V4Q==
+X-Received: by 2002:aca:497:: with SMTP id 145mr14980127oie.108.1621956976253;
+        Tue, 25 May 2021 08:36:16 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u14sm3293340oif.41.2021.05.25.08.36.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 08:36:15 -0700 (PDT)
+Date:   Tue, 25 May 2021 10:36:13 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C9b2588c1fd33c91fb01c4e348a3b647ab2c8baab=2E16212?=
- =?utf-8?q?58128=2Egit=2Easml=2Esilence=40gmail=2Ecom=3E?=
-References: =?utf-8?q?=3C9b2588c1fd33c91fb01c4e348a3b647ab2c8baab=2E162125?=
- =?utf-8?q?8128=2Egit=2Easml=2Esilence=40gmail=2Ecom=3E?=
+Subject: Re: [PATCH 2/4] drm: panel: sofef00: remove reset GPIO handling
+Message-ID: <YK0ZbTeH7eRP+p98@builder.lan>
+References: <20210502014146.85642-1-caleb@connolly.tech>
+ <20210502014146.85642-3-caleb@connolly.tech>
 MIME-Version: 1.0
-Message-ID: <162195695671.29796.5893139946857562110.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210502014146.85642-3-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Sat 01 May 20:42 CDT 2021, Caleb Connolly wrote:
 
-Commit-ID:     a82adc7650044b5555d65078bda07866efa4a73d
-Gitweb:        https://git.kernel.org/tip/a82adc7650044b5555d65078bda07866efa4a73d
-Author:        Pavel Begunkov <asml.silence@gmail.com>
-AuthorDate:    Mon, 17 May 2021 14:30:12 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 25 May 2021 17:30:15 +02:00
+> Resetting the panel on fajita causes it to never come back, we aren't
+> quite sure why this is so for now lets remove reset handling as it is
+> effectively broken. It is also not needed on enchilada.
+> 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  drivers/gpu/drm/panel/panel-samsung-sofef00.c | 26 +++----------------
+>  1 file changed, 4 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-sofef00.c b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
+> index 8cb1853574bb..cfc8b2a19742 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-sofef00.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
+> @@ -23,7 +23,6 @@ struct sofef00_panel {
+>  	struct drm_panel panel;
+>  	struct mipi_dsi_device *dsi;
+>  	struct regulator *supply;
+> -	struct gpio_desc *reset_gpio;
+>  	const struct drm_display_mode *mode;
+>  	bool prepared;
+>  };
+> @@ -42,16 +41,6 @@ struct sofef00_panel *to_sofef00_panel(struct drm_panel *panel)
+>  			return ret;					\
+>  	} while (0)
+>  
+> -static void sofef00_panel_reset(struct sofef00_panel *ctx)
+> -{
+> -	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> -	usleep_range(5000, 6000);
+> -	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> -	usleep_range(2000, 3000);
+> -	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> -	usleep_range(12000, 13000);
+> -}
+> -
+>  static int sofef00_panel_on(struct sofef00_panel *ctx)
+>  {
+>  	struct mipi_dsi_device *dsi = ctx->dsi;
+> @@ -132,12 +121,9 @@ static int sofef00_panel_prepare(struct drm_panel *panel)
+>  		return ret;
+>  	}
+>  
+> -	sofef00_panel_reset(ctx);
+> -
+>  	ret = sofef00_panel_on(ctx);
+>  	if (ret < 0) {
+>  		dev_err(dev, "Failed to initialize panel: %d\n", ret);
+> -		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+>  		return ret;
+>  	}
+>  
+> @@ -155,8 +141,11 @@ static int sofef00_panel_unprepare(struct drm_panel *panel)
+>  		return 0;
+>  
+>  	ret = sofef00_panel_off(ctx);
+> -	if (ret < 0)
+> +
+> +	if (ret < 0) {
+>  		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
+> +		return ret;
 
-futex: Deduplicate cond_resched() invocation in futex_wake_op()
+This early return seems unrelated to what's described in the commit
+message.
 
-After pagefaulting in futex_wake_op() both branches do cond_resched()
-before retry. Deduplicate it as compilers cannot figure it out themself.
+Also as a general comment, what do you expect the software should do if
+you return an error in the unprepare path? Can we if this happens just
+continue to display stuff on the display?
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
-Link: https://lore.kernel.org/r/9b2588c1fd33c91fb01c4e348a3b647ab2c8baab.1621258128.git.asml.silence@gmail.com
+> +	}
+>  
+>  	regulator_disable(ctx->supply);
+>  
+> @@ -276,13 +265,6 @@ static int sofef00_panel_probe(struct mipi_dsi_device *dsi)
+>  		return ret;
+>  	}
+>  
+> -	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 
----
- kernel/futex.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+If I understand your description in the cover letter this works for one
+of the devices using the panel, but not the other.
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 2f386f0..08008c2 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1728,12 +1728,9 @@ retry_private:
- 				return ret;
- 		}
- 
--		if (!(flags & FLAGS_SHARED)) {
--			cond_resched();
--			goto retry_private;
--		}
--
- 		cond_resched();
-+		if (!(flags & FLAGS_SHARED))
-+			goto retry_private;
- 		goto retry;
- 	}
- 
+So how about using devm_gpiod_get_optional() instead. That will give you
+NULL back if the property isn't defined and make all the gpiod
+operations nops.
+
+Regards,
+Bjorn
+
+> -	if (IS_ERR(ctx->reset_gpio)) {
+> -		ret = PTR_ERR(ctx->reset_gpio);
+> -		dev_warn(dev, "Failed to get reset-gpios: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+>  	ctx->dsi = dsi;
+>  	mipi_dsi_set_drvdata(dsi, ctx);
+>  
+> -- 
+> 2.30.2
+> 
+> 
