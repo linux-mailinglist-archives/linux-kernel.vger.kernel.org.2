@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A4A390611
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7472390612
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhEYQCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhEYQCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:02:21 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CC7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:00:51 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id w15so38817162ljo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AlGDwi+fKb5zDo0UgCxQb6+0ejL9MD7uZrEbLSa4Oto=;
-        b=F8IoZ31vbu3JuKyp9XnxNMl6YxtNA2oECxMIbLi9v7US/TCuDrFIPmY876ESiknlBc
-         cAKK1IAGOHcTMDm51QNr9q62Lx/yjQC4eiavpb6wfgGZnDi8R1R24k+pZ5+7OWIBjSnt
-         f9C0aKQJlR8IR67wEbnAeeJWeez+R+6+5yuntCPH5gVMbHonthRDAgW1/EI5npLjF1vh
-         hZx92RzdJKVaAhRzMmxq2psslRuA4eZJGhEzyNUOh/fFOHmlGJGhJ56xXtI4VCj4fZJv
-         giLk1Ue6Dnsmns3bHjtEQwj0Oz8LWpgllGSbx2TmVO8qpVtEearWBhhmTpzH3st0oC99
-         Pf/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AlGDwi+fKb5zDo0UgCxQb6+0ejL9MD7uZrEbLSa4Oto=;
-        b=Dam86gKqLfIsMPYG9c++J7UGYeskhOUcNy+Nc7R/fJE+9VIuzgoXZ6NiZYsvHhTOk5
-         HxvzfNfNNVnFRQ6CJwsC2qXA2xyD3d9iGVAmq76zGmxeiEBpNLs/I+cNA8LuvUky6D67
-         8dr5C+y+eAUF/e75yBuy8rfDTcXiK8j16HmI04GFEcrOTO8a2HMGjPdiN/dyoog7p/c6
-         JCi3bFB8Sdsme3KSBRtoqP9VWJXr39dzL0eCq/XKw0+CA3LYEcIrDZpMSgqvjhB2WOO4
-         WbAB/ZkO9UCvwmZ8RGOohs0iTgsZGFQPVcQ9+0YgOFnNKbYRgczC6dGU4cHpcraryVnS
-         mvtg==
-X-Gm-Message-State: AOAM533YW2WsTtigKDxWY1Vs7PvvZmNeZdPYFwqpS2Zhh3zNFLQB3cHp
-        fQdCAsvRTDH2f63eiFbazLVglXpNDHfB9KXCGz8CAA==
-X-Google-Smtp-Source: ABdhPJx9xYr2Q9z8EeDwQEaSd0fE2W8VGVS1cMT3ZD+4m9iso3u01S1B4hRaNGxuBydJN6h2WIrDsTxaLTS5pE2QPtU=
-X-Received: by 2002:a2e:b4ed:: with SMTP id s13mr21295934ljm.86.1621958449402;
- Tue, 25 May 2021 09:00:49 -0700 (PDT)
+        id S232984AbhEYQCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:02:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:31575 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232299AbhEYQCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:02:32 -0400
+IronPort-SDR: +yrcrzh+cFyncYAlLZDffjeUlI9+oYWQVkhakVe09UYI1zk5Q1wO+XJDmMsgzSIGk/uVOVRG+x
+ FIZYMQbpM72w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182551583"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="182551583"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:00:32 -0700
+IronPort-SDR: RXtY0TTwUjjVwDVzGb8+M2V2NDvtXyS/x84V7NDpW5xHxLYYtNmNvP/Zl4KRZhloqzf2fY4/iP
+ wZgG4Ai6/2nw==
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="408811337"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:00:30 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1llZTo-00EcK2-12; Tue, 25 May 2021 19:00:28 +0300
+Date:   Tue, 25 May 2021 19:00:28 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, andy@kernel.org,
+        akpm@linux-foundation.org, oskar@scara.com,
+        Daniel Latypov <dlatypov@google.com>,
+        Yiyuan Guo <yguoaz@gmail.com>
+Subject: Re: [PATCH v2 1/2] lib/math/rational.c: Fix divide by zero
+Message-ID: <YK0fHBtcQ/32QiyT@smile.fi.intel.com>
+References: <20210525144250.214670-1-tpiepho@gmail.com>
 MIME-Version: 1.0
-References: <20210524233946.20352-1-vbabka@suse.cz> <20210524233946.20352-12-vbabka@suse.cz>
-In-Reply-To: <20210524233946.20352-12-vbabka@suse.cz>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 25 May 2021 18:00:23 +0200
-Message-ID: <CAG48ez0mXxqLdSse6OpAMLNxSMc7nNor8PXk=kagPppGAXAXgA@mail.gmail.com>
-Subject: Re: [RFC 11/26] mm, slub: move disabling irqs closer to get_partial()
- in ___slab_alloc()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525144250.214670-1-tpiepho@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 1:40 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> Continue reducing the irq disabled scope. Check for per-cpu partial slabs with
-> first with irqs enabled and then recheck with irqs disabled before grabbing
-> the slab page. Mostly preparatory for the following patches.
-[...]
-> diff --git a/mm/slub.c b/mm/slub.c
-[...]
->         if (slub_percpu_partial(c)) {
-> +               local_irq_save(flags);
-> +               if (unlikely(c->page)) {
-> +                       local_irq_restore(flags);
-> +                       goto reread_page;
-> +               }
-> +               if (unlikely(!slub_percpu_partial(c))) /* stolen by IRQ? */
-> +                       goto new_objects;
+On Tue, May 25, 2021 at 07:42:49AM -0700, Trent Piepho wrote:
+> If the input is out of the range of the allowed values, either larger
+> than the largest value or closer to zero than the smallest non-zero
+> allowed value, then a division by zero would occur.
+> 
+> In the case of input too large, the division by zero will occur on the
+> first iteration.  The best result (largest allowed value) will be found
+> by always choosing the semi-convergent and excluding the denominator
+> based limit when finding it.
+> 
+> In the case of the input too small, the division by zero will occur on
+> the second iteration.  The numerator based semi-convergent should not be
+> calculated to avoid the division by zero.  But the semi-convergent vs
+> previous convergent test is still needed, which effectively chooses
+> between 0 (the previous convergent) vs the smallest allowed fraction
+> (best semi-convergent) as the result.
 
-nit: I think this comment is wrong by the end of the patch series,
-since at that point, in RT configurations, it could also be stolen by
-another task, if I understand correctly what migrate_disable() means?
+LGTM, thanks!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Similarly the comment above ___slab_alloc() still talks about
-disabling preemption for bulk allocation.
+> Fixes: 323dd2c3ed0 ("lib/math/rational.c: fix possible incorrect result from rational fractions helper")
+> Reported-by: Yiyuan Guo <yguoaz@gmail.com>
+> Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+> ---
+>  lib/math/rational.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/lib/math/rational.c b/lib/math/rational.c
+> index 9781d521963d..c0ab51d8fbb9 100644
+> --- a/lib/math/rational.c
+> +++ b/lib/math/rational.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/export.h>
+>  #include <linux/minmax.h>
+> +#include <linux/limits.h>
+>  
+>  /*
+>   * calculate best rational approximation for a given fraction
+> @@ -78,13 +79,18 @@ void rational_best_approximation(
+>  		 * found below as 't'.
+>  		 */
+>  		if ((n2 > max_numerator) || (d2 > max_denominator)) {
+> -			unsigned long t = min((max_numerator - n0) / n1,
+> -					      (max_denominator - d0) / d1);
+> +			unsigned long t = ULONG_MAX;
+>  
+> -			/* This tests if the semi-convergent is closer
+> -			 * than the previous convergent.
+> +			if (d1)
+> +				t = (max_denominator - d0) / d1;
+> +			if (n1)
+> +				t = min(t, (max_numerator - n0) / n1);
+> +
+> +			/* This tests if the semi-convergent is closer than the previous
+> +			 * convergent.  If d1 is zero there is no previous convergent as this
+> +			 * is the 1st iteration, so always choose the semi-convergent.
+>  			 */
+> -			if (2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+> +			if (!d1 || 2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+>  				n1 = n0 + t * n1;
+>  				d1 = d0 + t * d1;
+>  			}
+> -- 
+> 2.26.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
