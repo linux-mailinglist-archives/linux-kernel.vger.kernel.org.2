@@ -2,215 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC6938F76D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCDF38F770
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhEYBQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:16:38 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3933 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhEYBQh (ORCPT
+        id S229762AbhEYBRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:17:42 -0400
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:36659 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhEYBRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:16:37 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FpwzM13ZQzBw2R;
-        Tue, 25 May 2021 09:12:15 +0800 (CST)
-Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 09:15:06 +0800
-Received: from [10.136.110.154] (10.136.110.154) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 25 May 2021 09:15:05 +0800
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: support RO feature
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org>
- <b1647bd1-f719-5796-4f99-766f0bc66d49@huawei.com>
- <YKvdQbA1+kdD3jQC@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <52bf2f86-58c3-c012-9f73-d34fcd7dd3a8@huawei.com>
-Date:   Tue, 25 May 2021 09:15:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 24 May 2021 21:17:40 -0400
+Received: by mail-pl1-f178.google.com with SMTP id a7so6824972plh.3;
+        Mon, 24 May 2021 18:16:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2/peoYV4qfip+Dwi6jSaAkkCqQ4rv2ijweu+Ayxgdr4=;
+        b=YTl1Y6TQKfmmPxiKy3vkU6V2+cGpZy86YiZowbbWoHT0TkeuvpVTHQYQ+DiYNOM2TD
+         pz6zPRh7ua1g2QpH9tFsX4QneDLbfRQ68lf4IbAKSfQULrFysb8WFfZSFlnXO4y3hAFV
+         iSKtsbMuZz/ajQp8ozKCvCTdOCA4mBFSxXNcXNbc8h3k4n4vYU12WrtPKyJdtJLHybyY
+         87sH5NWDcMH/jsJJZmfDR2BgORLXj7/mUuw2s+9vAqViN+qctAPVH9lYotKDZsF2BkD0
+         z1OCYOnprm8i7ZROJcxuNb27sj4XSmtChHD1Hh1apb+NF1agbV6wzKWdOy7IkJ6qeyCC
+         G9sA==
+X-Gm-Message-State: AOAM533Rday2aY1/YraKF2dJ09EEe1w24bKWhEBwodDOnukhdrhwTMB0
+        TsTbwfoM++x5HYQu1aiddtE=
+X-Google-Smtp-Source: ABdhPJzYJitVnQtIvnlWUqvDZsOPAXFl5JCXJTdVYLBDTD3VuKj3wdspErXHeHie8oFHzeVrRl7vNg==
+X-Received: by 2002:a17:902:7c94:b029:e6:e1d7:62b7 with SMTP id y20-20020a1709027c94b02900e6e1d762b7mr28252285pll.29.1621905370455;
+        Mon, 24 May 2021 18:16:10 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id r28sm12304686pgm.53.2021.05.24.18.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 18:16:09 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 099CA4025E; Tue, 25 May 2021 01:16:08 +0000 (UTC)
+Date:   Tue, 25 May 2021 01:16:07 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
+        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
+Message-ID: <20210525011607.GG4332@42.do-not-panic.com>
+References: <20210423011108.11988-1-mcgrof@kernel.org>
+ <YKVwZVcbZBNXUpKm@google.com>
+ <20210519202023.GU4332@42.do-not-panic.com>
+ <YKgRsCzwp2O2mYcp@kroah.com>
+ <20210521201618.GX4332@42.do-not-panic.com>
+ <YKgbzO0AkYN4J7Ye@kroah.com>
+ <20210521210817.GY4332@42.do-not-panic.com>
+ <YKi3UpQm0HUxJi87@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YKvdQbA1+kdD3jQC@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-ClientProxiedBy: dggemx702-chm.china.huawei.com (10.1.199.49) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKi3UpQm0HUxJi87@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/25 1:07, Jaegeuk Kim wrote:
-> On 05/24, Chao Yu wrote:
->> On 2021/5/22 3:02, Jaegeuk Kim wrote:
->>> Given RO feature in superblock, we don't need to check provisioning/reserve
->>> spaces and SSA area.
->>
->> Cool, any solution to update files of ro f2fs image if there is such
->> scenario?
+On Sat, May 22, 2021 at 09:48:34AM +0200, Greg Kroah-Hartman wrote:
+> On Fri, May 21, 2021 at 09:08:17PM +0000, Luis Chamberlain wrote:
+> > On Fri, May 21, 2021 at 10:45:00PM +0200, Greg Kroah-Hartman wrote:
+> > > I looked at the last patch here and I really do not see the issue.
+> > > 
+> > > In order for the module to be removed, zram_exit() has to return, right?
+> > 
+> > Yes, but the race is for when a module removal is ongoing, in other
+> > words, it has not yet completed, and at the same time we race touching
+> > sysfs files.
+> > 
+> > > So how can a show/store function in zram_drv.c be called after
+> > > destroy_devices() returns?
+> > 
+> > The issue can come up if we have something poke at the sysfs files *while* a
+> > removal is happening.
 > 
-> Hmm, overlayfs?
+> And have you seen this in the real world?  I keep asking this as module
+> removal is not an automated process so what triggers this?
 
-I mean using f2fs-tools, maybe...
+No, its not seen in the real world. It was theoretical, and noted as
+possible by Minchan Kim. I reviewed it, and I agree the race is
+possible.
 
-Thanks,
+> > And so genericaly this would be:
+> > 
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 4a8bf8cda52b..7c897e3f4135 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -29,6 +29,7 @@
+> >  #include <linux/sched/mm.h>
+> >  #include <linux/sysfs.h>
+> >  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
+> > +#include <linux/blkdev.h>
+> >  
+> >  #include "base.h"
+> >  #include "power/power.h"
+> > @@ -1988,11 +1989,20 @@ static inline int device_is_not_partition(struct device *dev)
+> >  {
+> >  	return !(dev->type == &part_type);
+> >  }
+> > +static inline bool device_is_disk(struct device *dev)
+> > +{
+> > +	return (dev->type == &disk_type);
+> > +}
+> >  #else
+> >  static inline int device_is_not_partition(struct device *dev)
+> >  {
+> >  	return 1;
+> >  }
+> > +
+> > +static inline bool device_is_disk(struct device *dev)
+> > +{
+> > +	return false;
+> > +}
+> >  #endif
+> >  
+> >  static int
+> > @@ -2037,6 +2047,19 @@ const char *dev_driver_string(const struct device *dev)
+> >  }
+> >  EXPORT_SYMBOL(dev_driver_string);
+> >  
+> > +static int dev_type_get(struct device *dev)
+> > +{
+> > +	if (device_is_disk(dev))
+> > +		return !!bdgrab(dev_to_bdev(dev));
+> > +	return 1;
+> > +}
+> 
+> Why do you feel that block devices are somehow more "special" here?
 
+I am not saying they are.
+
+> They are not, either this is "broken" for everyone, or it works for
+> everyone, don't special-case one tiny class of devices for unknown
+> reasons.
+
+The reason dev_type_get() was implemented was precisely to allow for
+this to be expanded with the other types as they the *get* is specific to
+the type.
+
+> Your change causes another problem, if a sysfs file has show/store
+> happening, the reference count will always be bumped and so the module
+> would NOT be able to be freed.  That looks like a lovely DoS that any
+> user could cause, right?
+
+Yes true. I think the better way to resolve that is to introduce and use
+*try* methods, and so rmmod always trumps a new *get* for these
+operations.
+
+That would sole the possible "DOS" issue, precisely how I resolved this
+same concern for resolving the deadlock with try_module_get().
+
+> In sleeping on this 
+
+Sorry, did you mean you thought about this, or you meant sleep as in
+the sleep context?
+
+> the "correct" solution is to grab the bus lock (or
+> ktype lock) for the device during show/store so that the "delete device"
+> process can not race with it.
+
+The still presents the DOS issue, which I actually did want to avoid.
+I avoided it on the other deadlock issue, and so ideally I'd also
+want to avoid it here. But indeed, the bus route is simple and clean.
+And an alternative to the DOS issue is we just use capability checks,
+if we don't do that already.
+
+> Also let's make sure that the kref of the
+> kobject is being properly bumped during show/store as well, I don't
+> think that's happening which isn't a good thing no matter what
+> (different type of bug).
+
+Yup...
+
+> If that lock addition ends up showing up in benchmarks, then we can
+> always move it to rcu.
+
+OK.
+
+> So in conclusion, the "correct" thing here seems to be two independant
+> things:
+> 	- make sure the reference count of the kobject is properly
+> 	  incremented during show/store callbacks
+> 	- grab the kobject's type/bus/whatever lock during show/store so
+> 	  that it can not race with deleting the device.
+
+Yup. The above was a proof of concept solution using type, but indeed,
+the downside is we'd have to implement try methods when not found, and
+likely the list of types is endless.
+
+Are there places where we cannot use the bus?
+
+> No bus/type should be special cased here, block devices are not special
+> by any means.
 > 
->>
->>>
->>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>> ---
->>>    fs/f2fs/f2fs.h    |  2 ++
->>>    fs/f2fs/segment.c |  3 +++
->>>    fs/f2fs/super.c   | 35 +++++++++++++++++++++++++++++++----
->>>    3 files changed, 36 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>> index c0bead0df66a..2c6913261586 100644
->>> --- a/fs/f2fs/f2fs.h
->>> +++ b/fs/f2fs/f2fs.h
->>> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
->>>    #define F2FS_FEATURE_SB_CHKSUM		0x0800
->>>    #define F2FS_FEATURE_CASEFOLD		0x1000
->>>    #define F2FS_FEATURE_COMPRESSION	0x2000
->>> +#define F2FS_FEATURE_RO			0x4000
->>>    #define __F2FS_HAS_FEATURE(raw_super, mask)				\
->>>    	((raw_super->feature & cpu_to_le32(mask)) != 0)
->>> @@ -939,6 +940,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
->>>    #define	NR_CURSEG_DATA_TYPE	(3)
->>>    #define NR_CURSEG_NODE_TYPE	(3)
->>>    #define NR_CURSEG_INMEM_TYPE	(2)
->>> +#define NR_CURSEG_RO_TYPE	(2)
->>>    #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
->>>    #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
->>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>> index 8668df7870d0..67cec8f858a2 100644
->>> --- a/fs/f2fs/segment.c
->>> +++ b/fs/f2fs/segment.c
->>> @@ -4674,6 +4674,9 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
->>>    {
->>>    	int i;
->>> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
->>
->> Why not using F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))?
-> 
-> Oh, updated.
-> 
->>
->> Ditto for all below __F2FS_HAS_FEATURE().
->>
->> Thanks,
->>
->>> +		return 0;
->>> +
->>>    	/*
->>>    	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
->>>    	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
->>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>> index b29de80ab60e..312bfab54693 100644
->>> --- a/fs/f2fs/super.c
->>> +++ b/fs/f2fs/super.c
->>> @@ -1819,7 +1819,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>    static void default_options(struct f2fs_sb_info *sbi)
->>>    {
->>>    	/* init some FS parameters */
->>> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
->>> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
->>> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
->>> +	else
->>> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
->>> +
->>>    	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
->>>    	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
->>>    	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
->>> @@ -1994,6 +1998,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>    	err = parse_options(sb, data, true);
->>>    	if (err)
->>>    		goto restore_opts;
->>> +
->>> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
->>> +					!(*flags & SB_RDONLY))
->>> +		goto restore_opts;
->>> +
->>>    	checkpoint_changed =
->>>    			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
->>> @@ -3137,16 +3146,18 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->>>    	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
->>>    	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
->>> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
->>> +		goto no_reserved;
->>>    	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
->>>    			ovp_segments == 0 || reserved_segments == 0)) {
->>>    		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
->>>    		return 1;
->>>    	}
->>> -
->>> +no_reserved:
->>>    	user_block_count = le64_to_cpu(ckpt->user_block_count);
->>>    	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
->>>    	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
->>> -	if (!user_block_count || user_block_count >=
->>> +	if (!user_block_count || user_block_count >
->>>    			segment_count_main << log_blocks_per_seg) {
->>>    		f2fs_err(sbi, "Wrong user_block_count: %u",
->>>    			 user_block_count);
->>> @@ -3175,6 +3186,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->>>    		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
->>>    			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
->>>    			return 1;
->>> +
->>> +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
->>> +			goto check_data;
->>> +
->>>    		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
->>>    			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
->>>    				le32_to_cpu(ckpt->cur_node_segno[j])) {
->>> @@ -3185,10 +3200,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->>>    			}
->>>    		}
->>>    	}
->>> +check_data:
->>>    	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
->>>    		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
->>>    			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
->>>    			return 1;
->>> +
->>> +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
->>> +			goto skip_cross;
->>> +
->>>    		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
->>>    			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
->>>    				le32_to_cpu(ckpt->cur_data_segno[j])) {
->>> @@ -3210,7 +3230,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->>>    			}
->>>    		}
->>>    	}
->>> -
->>> +skip_cross:
->>>    	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
->>>    	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
->>> @@ -3703,6 +3723,13 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>    	if (err)
->>>    		goto free_options;
->>> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
->>> +					!f2fs_readonly(sbi->sb)) {
->>> +		f2fs_info(sbi, "Allow to mount readonly mode only");
->>> +		err = -EINVAL;
->>> +		goto free_options;
->>> +	}
->>> +
->>>    	sb->s_maxbytes = max_file_blocks(NULL) <<
->>>    				le32_to_cpu(raw_super->log_blocksize);
->>>    	sb->s_max_links = F2FS_LINK_MAX;
->>>
-> .
-> 
+> And don't mess with module reference counts, that way lies madness.  We
+> want to lock data, not code :)
+
+Live patching needs to lock code ;) and hey it works ;)
+
+Addressing the kobject refecount here should in theory address most
+deadlocks (what my third patch addresses) as well becuase, as you imply,
+our protection of the kobject should prevent removal, but that's not
+always the case. I think you're failing to consider a shared global
+driver lock, which can be used on sysfs files, which in turn have
+*nothing* kref'd. And so the module removal can still try to nuke sysfs
+files, if those sysfs files like to mess with the shared global driver
+lock.
+
+  Luis
