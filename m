@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BF5390133
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA677390135
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbhEYMqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:46:08 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:41564 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhEYMp4 (ORCPT
+        id S232819AbhEYMqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:46:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21968 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232785AbhEYMqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:45:56 -0400
-Received: by mail-lj1-f180.google.com with SMTP id p20so37938087ljj.8;
-        Tue, 25 May 2021 05:44:26 -0700 (PDT)
+        Tue, 25 May 2021 08:46:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621946674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SB3TFcBYe+oh//M+r+JgvvKsJxvRHIyMt9IEethbGxM=;
+        b=ccR6HSQ41Z+9UmTOpLmAVeI9h1EGOZtJtB5kZKOX5/Xkc6JJvnTCAR3LzezylmAIw/Ge27
+        6iS7tZAFfx6Wss+RYBcMlzBqRbqSgH5c7TBOdRrQsVcboB89zwa+bHiPzSrapCdPznPC60
+        XbqDZ5PwbbdWkeRwkD3+dL5PUP6wMJo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-vLI67VV5MZyPRfSdLessUw-1; Tue, 25 May 2021 08:44:32 -0400
+X-MC-Unique: vLI67VV5MZyPRfSdLessUw-1
+Received: by mail-ed1-f69.google.com with SMTP id y17-20020a0564023591b02903886c26ada4so17258434edc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:44:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mCi+r6IwCoXZfzb6cVEAq1MYx2HiJhihCuCmYe0D4ac=;
-        b=aAV4eH4ELLY8BWjHpKQY8tdEhmY5HBzJ6qvZDL7wmzAf2GE5OJMAGiultxPJwm+JJv
-         nfCq/V7eaj2t2HiVNS4esn88N1zUDUR/hPuz3ncEJ5y0gWLqs+gAI8zZMt3yEd7jpei4
-         IOt05axeH1YVo4zc7IbDF420Bg4LTL89xZy+u0X2Jj6HWmjwV5RHGvsl70C3ARbjDdea
-         cjCXJJF1vLEQfmi6I4TVxo44UtdvA+SLWlCE1FzeeHn2Xd3Crr4T8IsBRGl//xDfuoAP
-         rfOlctTPQLSz5/60dty4x8VgDR6fTDlZkcAgZxgphU//fKjdDhnAUtpmWa0rrjGP/RsY
-         eCEA==
-X-Gm-Message-State: AOAM530/LaJZ4ZLnZjPc4bR4DkQqHeGIB7xCmsVx8+QtYBdYVjz/NPd5
-        8bd4u6h3pw/0lvT1Sj2RLnw=
-X-Google-Smtp-Source: ABdhPJxY4QKY+vSDO7OyXM6oeVSH5x5CZZfxUhvZAFkvg/sSR1ElpLV3lryIsdXFHAAANB2P9oXV4A==
-X-Received: by 2002:a2e:9dcf:: with SMTP id x15mr20736106ljj.257.1621946665494;
-        Tue, 25 May 2021 05:44:25 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id y18sm2211720ljk.27.2021.05.25.05.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 05:44:24 -0700 (PDT)
-Date:   Tue, 25 May 2021 15:44:19 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Walle <michael@walle.cc>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: [PATCH v3 2/3] gpio: gpio-regmap: Use devm_add_action_or_reset()
-Message-ID: <9e828f2ff52c08b91b1fdab548e9253ef2fb7766.1621863253.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1621863253.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SB3TFcBYe+oh//M+r+JgvvKsJxvRHIyMt9IEethbGxM=;
+        b=pZNpEFyfPOYGJU3W1ORH1o3fsT310F0PEqJdIDLDp+ryPJcrMfFPDlmqWDDupB6HIA
+         CbmZGDzHxMZz0/zOyYRGHicPXHEnzTMHd7VmsS512nBz6gaMQymD4bwxiWaXQtfx+8jC
+         ypvURWPwJDEfSu4eMX+t20rywcGsb/LitrXan7pQ6P5Zpifz22pHAsjgtMLwU2C6GE1R
+         IJuO2/yFctQwfj2EzbCkVTXuFTV93joyvu3y0Ktx9sE78UL5HNuybZv6VVUm5ok9psDJ
+         Z6SH175RT7mOarm6VeBYZ4EuWbYa87h0dVzDGqnZq9dbETWwXhCJuKfz+DIMFgDEk/pQ
+         k/hw==
+X-Gm-Message-State: AOAM530niMbw96IbRvOOP+Ioug8zsnM1UFTr+ubdFoFN15hn2JyrIXVk
+        pb1NdAMav61riyA9YBsaeFSg16XwPYN4SQMHLPZK8gYQ1bWvdhY5jlFHWXcY3RtTM8thHzXHbFh
+        K1M2mZ0bHnwFbfA0yl/Cx2WI1CtDFQ5fjwjfD8WQPIyKcJ3zFMELrv3JyvT6qwLHscUfRGgpczY
+        Ur
+X-Received: by 2002:a05:6402:2788:: with SMTP id b8mr27872714ede.335.1621946671259;
+        Tue, 25 May 2021 05:44:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDroG1SU+C7kU4bJ4egpv1PDlQFVhmcJcYrV2lM7cK6onj4JtCKssQlefxcJjGWDv85TbZZA==
+X-Received: by 2002:a05:6402:2788:: with SMTP id b8mr27872699ede.335.1621946671113;
+        Tue, 25 May 2021 05:44:31 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id x13sm9165601ejs.93.2021.05.25.05.44.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 05:44:30 -0700 (PDT)
+Subject: Re: [PATCH 0/3] platform/surface: aggregator_registry: Support for
+ Surface Laptop 4 and cleanup
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210523134528.798887-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <899ed5ac-30bb-000c-cdd4-78a4b9625467@redhat.com>
+Date:   Tue, 25 May 2021 14:44:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-In-Reply-To: <cover.1621863253.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210523134528.798887-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 5/23/21 3:45 PM, Maximilian Luz wrote:
+> Hi,
+> 
+> this series adds support for the 13" Intel and 15" AMD versions of the
+> Surface Laptop 4 and does some small cleanup regarding duplicate node
+> groups in the registry.
+> 
+> Unfortunately I haven't heard anything of the 15" Intel version and 13"
+> AMD version yet.
+> 
+> Hans, can you apply patches 1 and 2 as fixes for v5.13? That way we'd
+> have decent support for the SL4 (at least the aforementioned versions)
+> in v5.13.
 
-Slightly simplify the devm_gpio_regmap_register() by using the
-devm_add_action_or_reset().
+Thank you for the patches, I've added these to my review-hans branch
+now. I'll also cherry-pick 1 and 2 into the fixes branch as requested,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+I plan to send out a second pdx86/fixes pull-req to Linus the week that
+5.13-rc5 is released.
 
----
-Changelog v3:
- - gpio-regmap: Use the devm_add_action_or_reset() instead of the
-   devm_add_action()
----
- drivers/gpio/gpio-regmap.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+Regards,
 
-diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-index 4f0903d1acd5..ce5bc9e0d684 100644
---- a/drivers/gpio/gpio-regmap.c
-+++ b/drivers/gpio/gpio-regmap.c
-@@ -341,9 +341,9 @@ void gpio_regmap_unregister(struct gpio_regmap *gpio)
- }
- EXPORT_SYMBOL_GPL(gpio_regmap_unregister);
-=20
--static void devm_gpio_regmap_unregister(struct device *dev, void *res)
-+static void devm_gpio_regmap_unregister(void *res)
- {
--	gpio_regmap_unregister(*(struct gpio_regmap **)res);
-+	gpio_regmap_unregister(res);
- }
-=20
- /**
-@@ -361,20 +361,17 @@ struct gpio_regmap *devm_gpio_regmap_register(struct =
-device *dev,
- 					      const struct gpio_regmap_config *config,
- 					      const struct gpio_regmap_ops *ops)
- {
--	struct gpio_regmap **ptr, *gpio;
--
--	ptr =3D devres_alloc(devm_gpio_regmap_unregister, sizeof(*ptr),
--			   GFP_KERNEL);
--	if (!ptr)
--		return ERR_PTR(-ENOMEM);
-+	struct gpio_regmap *gpio;
-+	int ret;
-=20
- 	gpio =3D gpio_regmap_register(config, ops);
--	if (!IS_ERR(gpio)) {
--		*ptr =3D gpio;
--		devres_add(dev, ptr);
--	} else {
--		devres_free(ptr);
--	}
-+
-+	if (IS_ERR(gpio))
-+		return gpio;
-+
-+	ret =3D devm_add_action_or_reset(dev, devm_gpio_regmap_unregister, gpio);
-+	if (ret)
-+		return ERR_PTR(ret);
-=20
- 	return gpio;
- }
---=20
-2.25.4
+Hans
 
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCs8SMACgkQeFA3/03a
-ocXLlwf/Y+g18mlm1g+iizU4sSFGtWw0eNqFYvmK8wnbOgD1ZhkmtGYpBIr8e/r9
-6FIdQMYGKr0CGojxVq8qZbTUbE/iMARLEv9SiGZvJh2lC8rFv4C8a1YPQ9hxwknT
-t8msNH3LbM6OqBl9KHiJtOEC3Iuz0M2e2ERAzZyLFggN/KAnRijVdwAlqb8tMERi
-h3N4sgnLDlMcwc5110LuLrnhdlo/o+jZU9tC6lW+nBIlC1CbqqPBCzqxm4ibIg1u
-QLRfF++xS0QkzmXxWlpIM2Q5F6sxdePYmrpX2Yd56Pjc8fuxzhfV0+6vGskd5iEg
-S5xPJIG3e4/9Ugz8rV67PGRVmIKePQ==
-=SYPK
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
