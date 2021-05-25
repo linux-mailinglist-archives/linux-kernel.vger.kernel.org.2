@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3E33900E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD43900EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhEYMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36522 "EHLO mail.kernel.org"
+        id S232605AbhEYM00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:26:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232305AbhEYMZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:25:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0D0361409;
-        Tue, 25 May 2021 12:23:58 +0000 (UTC)
+        id S232504AbhEYM0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:26:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B559D61409;
+        Tue, 25 May 2021 12:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621945438;
-        bh=sriZ/GA+KVZn8IQOjLCkBr9AX4FKzSKvGn0xqPQ5O9w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LO1BMNviHxXyhfwBtxtUtlrJYs/qVYeGYF+b+2mxL1byOG9xlwlcZp4E1O5bys9ZC
-         ABKLMwEM793CJe0ftkcFDV7P4y/cxpTL2v682EZ3AN2WU2/8Jc5RiCw+kr5ofeYtHw
-         XiQyyV7E/tTOeTJMynAc1qOGXSt9/lf+IMqMJeVmrtBNcG72L3M5ls+eFBI3nfoBB5
-         O+6dW6lfSJGW84YiCec+tKrNz45wQ9edvlJz+S9tzx6v+N5iILVK/6W06TydfDBt0l
-         xmeM95xWmY3INLQ63z8MQ5DGV/C+B73MLQj4h33NdAyEEsbi2BfaCWuRhM/QP7ICSp
-         I5aryZQamhgwQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1llW6G-000tUD-L1; Tue, 25 May 2021 14:23:56 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH 2/2] iio: ABI: sysfs-bus-iio: avoid a warning when doc is built
-Date:   Tue, 25 May 2021 14:23:53 +0200
-Message-Id: <dbf0d94f85217f103d77dc8389c8db272f5702d2.1621944866.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621944866.git.mchehab+huawei@kernel.org>
-References: <cover.1621944866.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+        s=k20201202; t=1621945495;
+        bh=kTICQpWTbjTcpQWhVugJHEfXiH/3wCrrriPNXPOkttw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=El4UawTPYLEjOubsZ760YYIv6i9zWEW9P015m+Qk/oKYQGYFis2uosnXZbX4cew1z
+         IO15KdNgaIh1Uj1Idle3GR6y0Ms2RLXUNKUgE3KMtVxbNf4M1uaj9Dmd5bIw3pSrBv
+         g8WDJ+pTfUaCbqH58p0elfBYECgXnlyW6xWJ1iYP28d4Vn6CfL3eDK9mwl5FnJriA+
+         CCY7KOTb56QoBqRi/iJjJXTvrBDaJdMT87rWtP6t+Ovpd6+frD5ZCgE+YcoqI2YZop
+         c004SKao/40ZNZIfO9OddIb9T3LAD9sQtaL9XUZ7MRJIOqZ40+dvdWhYUovJ8HofNE
+         lSnw9GHL6dmbw==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
+        arnd@arndb.de, hch@lst.de
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH V3 0/2] riscv: Fixup asid_allocator remaining issues
+Date:   Tue, 25 May 2021 12:24:05 +0000
+Message-Id: <1621945447-38820-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of those vars produce this warning:
-  Documentation/ABI/testing/sysfs-bus-iio:799: WARNING: Inline emphasis start-string without end-string.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Due to an asterisk, which is the markup for emphasis. One possible
-fix would be to use ``*_timeout`` to avoid it, but looking at
-the descriptions of other fields in this file, a common pattern
-is to refer to "these" when talking about the API calls that
-are described.
+The patchset fixes the remaining problems of asid_allocator.
+ - Fixup _PAGE_GLOBAL for kernel virtual address mapping
+ - Optimize tlb_flush with asid & range
 
-So, change the text in order to preserve the meaning while
-avoiding the need of using an asterisk there.
+Changes since v2:
+ - Remove PAGE_UP/DOWN usage in tlbflush.h
+ - Optimize variable name
 
-Reported-by: Jonathan Corbet <corbet@lwn.net>
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/ABI/testing/sysfs-bus-iio | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1:
+ - Drop PAGE_UP wrong fixup
+ - Rebase on clean linux-5.13-rc2
+ - Add Reviewed-by
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index 433fe0ab74be..dcc52828a204 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -801,7 +801,7 @@ Contact:	linux-iio@vger.kernel.org
- Description:
- 		When adaptive thresholds are used, the tracking signal
- 		may adjust too slowly to step changes in the raw signal.
--		*_timeout (in seconds) specifies a time for which the
-+		Thus these specifiy the time in seconds for which the
- 		difference between the slow tracking signal and the raw
- 		signal is allowed to remain out-of-range before a reset
- 		event occurs in which the tracking signal is made equal
+Guo Ren (2):
+  riscv: Fixup _PAGE_GLOBAL in _PAGE_KERNEL
+  riscv: Use use_asid_allocator flush TLB
+
+ arch/riscv/include/asm/mmu_context.h |  2 ++
+ arch/riscv/include/asm/pgtable.h     |  3 ++-
+ arch/riscv/include/asm/tlbflush.h    | 21 +++++++++++++++++++
+ arch/riscv/mm/context.c              |  2 +-
+ arch/riscv/mm/tlbflush.c             | 40 +++++++++++++++++++++++++++++++++---
+ 5 files changed, 63 insertions(+), 5 deletions(-)
+
 -- 
-2.31.1
+2.7.4
 
