@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCFF390356
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403B6390357
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhEYOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:06:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:56802 "EHLO foss.arm.com"
+        id S233565AbhEYOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:06:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:56866 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233542AbhEYOFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:05:54 -0400
+        id S233563AbhEYOGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 10:06:01 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B611A142F;
-        Tue, 25 May 2021 07:04:24 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5342413D5;
+        Tue, 25 May 2021 07:04:31 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6E2213F792;
-        Tue, 25 May 2021 07:04:20 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 086F33F73D;
+        Tue, 25 May 2021 07:04:26 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org, will@kernel.org,
         boqun.feng@gmail.com, peterz@infradead.org
@@ -33,9 +33,9 @@ Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
         shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
         tsbogend@alpha.franken.de, vgupta@synopsys.com,
         ysato@users.sourceforge.jp
-Subject: [PATCH v2 04/33] locking/atomic: microblaze: use asm-generic exclusively
-Date:   Tue, 25 May 2021 15:02:03 +0100
-Message-Id: <20210525140232.53872-5-mark.rutland@arm.com>
+Subject: [PATCH v2 05/33] locking/atomic: openrisc: avoid asm-generic/atomic.h
+Date:   Tue, 25 May 2021 15:02:04 +0100
+Message-Id: <20210525140232.53872-6-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210525140232.53872-1-mark.rutland@arm.com>
 References: <20210525140232.53872-1-mark.rutland@arm.com>
@@ -43,52 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Microblaze provides its own implementation of atomic_dec_if_positive(),
-but nothing else. For a while now, the conditional inc/dec ops have been
-optional, and the core code will provide generic implementations using
-the code templates in scripts/atomic/fallbacks/.
+OpenRISC is the only architecture which uses asm-generic/atomic.h and
+also provides its own implementation of some functions, requiring
+ifdeferry in the asm-generic header. As OpenRISC provides the vast
+majority of functions itself, it would be simpler overall if it also
+provided the few functions it cribs from asm-generic.
 
-For simplicity, and for consistency with the other conditional atomic
-ops, let's drop the microblaze implementation of
-atomic_dec_if_positive(), and use the generic implementation.
-
-With that, we can also drop the local asm/atomic.h and asm/cmpxchg.h
-headers, as asm-generic/atomic.h is mandatory-y, and we can pull in
-asm-generic/cmpxchg.h via generic-y. This matches what nios2 and nds32
-do today.
+This patch decouples OpenRISC from asm-generic/atomic.h. Subsequent
+patches will simplify the asm-generic implementation and remove the now
+unnecessary ifdeferry.
 
 There should be no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Stafford Horne <shorne@gmail.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Michal Simek <monstr@monstr.eu>
+Cc: Jonas Bonn <jonas@southpole.se>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 Cc: Will Deacon <will@kernel.org>
 ---
- arch/microblaze/include/asm/Kbuild    |  1 +
- arch/microblaze/include/asm/atomic.h  | 28 ----------------------------
- arch/microblaze/include/asm/cmpxchg.h |  9 ---------
- 3 files changed, 1 insertion(+), 37 deletions(-)
- delete mode 100644 arch/microblaze/include/asm/atomic.h
- delete mode 100644 arch/microblaze/include/asm/cmpxchg.h
+ arch/openrisc/include/asm/atomic.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
-index 29b0e557aa7c..a055f5dbe00a 100644
---- a/arch/microblaze/include/asm/Kbuild
-+++ b/arch/microblaze/include/asm/Kbuild
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table.h
-+generic-y += cmpxchg.h
- generic-y += extable.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-diff --git a/arch/microblaze/include/asm/atomic.h b/arch/microblaze/include/asm/atomic.h
-deleted file mode 100644
-index 41e9aff23a62..000000000000
-diff --git a/arch/microblaze/include/asm/cmpxchg.h b/arch/microblaze/include/asm/cmpxchg.h
-deleted file mode 100644
-index 3523b51aab36..000000000000
+diff --git a/arch/openrisc/include/asm/atomic.h b/arch/openrisc/include/asm/atomic.h
+index b589fac39b92..cb86970d3859 100644
+--- a/arch/openrisc/include/asm/atomic.h
++++ b/arch/openrisc/include/asm/atomic.h
+@@ -121,6 +121,12 @@ static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
+ }
+ #define atomic_fetch_add_unless	atomic_fetch_add_unless
+ 
+-#include <asm-generic/atomic.h>
++#define atomic_read(v)			READ_ONCE((v)->counter)
++#define atomic_set(v,i)			WRITE_ONCE((v)->counter, (i))
++
++#include <asm/cmpxchg.h>
++
++#define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
++#define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
+ 
+ #endif /* __ASM_OPENRISC_ATOMIC_H */
 -- 
 2.11.0
 
