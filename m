@@ -2,196 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5E738FD43
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA2D38FD46
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhEYI64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:58:56 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28115 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhEYI6z (ORCPT
+        id S231886AbhEYJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:01:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231184AbhEYJBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:58:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621933046; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=gufDQkZS0H4qGMiURI+0yvsJ49ZYpANcr23Ed3Ewtro=; b=TPGfptKOgiQPULsV5wgh3FENh4vd82ExFg6AvX+uhsfdwo6WqnacpxUnlVIPUom7o0ZyU+ZS
- cMped/2XqrPZXO2fCmA5dD/FX1bCrc8SrZUUPFKPzAyE7zO2SCZNJDyumhBseBCGciDlJOk4
- wcmPGlw3i5YAe2rgX3/PKEEVB3E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60acbbf25f788b52a50e3c07 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 08:57:22
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0C89C4338A; Tue, 25 May 2021 08:57:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.181.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 25 May 2021 05:01:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621933170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XXenCqETpb2RlyNBZ4FMXd5sgQb4F7cjovB7dQEodrE=;
+        b=C3loCtzZzjTY+mIUrNUL15Djszxis3uukzieLuMJMWY4YRJnnv3yhKND7flx65BWpwv5o0
+        NPCfUsMXNntHBiyua0yNtssk3Vb7WraCdvPFmx51TsUGjfKrwdAyNQ9bCX72WOoX6qooFz
+        aQATtiY8URj6r0Lx4yFVmx/NDZQqDRY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-nd6P3C9rNq-ygIYqC8kzXQ-1; Tue, 25 May 2021 04:59:28 -0400
+X-MC-Unique: nd6P3C9rNq-ygIYqC8kzXQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41CC4C433F1;
-        Tue, 25 May 2021 08:57:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 41CC4C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        glittao@gmail.com, vinmenon@codeaurora.org
-References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
- <YKys873HUNp/ZMqV@kroah.com>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <7324d56f-c5fe-05fa-55f2-7dd2dbf9bce0@codeaurora.org>
-Date:   Tue, 25 May 2021 14:27:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41F061009446;
+        Tue, 25 May 2021 08:59:27 +0000 (UTC)
+Received: from localhost (ovpn-115-80.ams2.redhat.com [10.36.115.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCD8910023AC;
+        Tue, 25 May 2021 08:59:19 +0000 (UTC)
+Date:   Tue, 25 May 2021 09:59:18 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+Message-ID: <YKy8Znh/MqHWSmON@stefanha-x1.localdomain>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
+ <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YKys873HUNp/ZMqV@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GGAVikb14LUB3vAD"
+Content-Disposition: inline
+In-Reply-To: <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--GGAVikb14LUB3vAD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/25/2021 1:23 PM, Greg KH wrote:
-> On Tue, May 25, 2021 at 01:08:05PM +0530, Faiyaz Mohammed wrote:
->> alloc_calls and free_calls implementation in sysfs have two issues,
->> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
->> to "one value per file" rule.
->>
->> To overcome this issues, move the alloc_calls and free_calls implemeation
->> to debugfs.
->>
->> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->> to be inline with what it does.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->> ---
->> changes in V7:
->>         - Drop the older alloc_calls and free_calls interface.
->> changes in v6:
->>         - https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
->>
->> changes in v5:
->>         - https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
->>
->> changes in v4:
->>         - https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
->>
->> changes in v3:
->>         - https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
->>
->> changes in v2:
->>         - https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
->>
->> changes in v1:
->>         - https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
->>
->>  include/linux/slub_def.h |   8 ++
->>  mm/slab_common.c         |   9 ++
->>  mm/slub.c                | 353 ++++++++++++++++++++++++++++++++++-------------
->>  3 files changed, 276 insertions(+), 94 deletions(-)
->>
->> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
->> index dcde82a..b413ebe 100644
->> --- a/include/linux/slub_def.h
->> +++ b/include/linux/slub_def.h
->> @@ -159,6 +159,14 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
->>  }
->>  #endif
->>  
->> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
->> +#define SLAB_SUPPORTS_DEBUGFS
->> +void debugfs_slab_release(struct kmem_cache *);
->> +#else
->> +static inline void debugfs_slab_release(struct kmem_cache *s)
->> +{
->> +}
->> +#endif
->>  void object_err(struct kmem_cache *s, struct page *page,
->>  		u8 *object, char *reason);
->>  
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index a4a5714..873dd79 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -455,6 +455,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
->>  #else
->>  		slab_kmem_cache_release(s);
->>  #endif
->> +#ifdef SLAB_SUPPORTS_DEBUGFS
->> +		debugfs_slab_release(s);
->> +#endif
-> 
-> Why do you need these #ifdef if your slub_dev.h file already provides an
-> "empty" function for this?
-> 
-We are not including slub_def.h directly. mm/slab.h includes the
-slub_def.h if CONFIG_SLUB enable,
+On Tue, May 25, 2021 at 11:21:41AM +0800, Jason Wang wrote:
+>=20
+> =E5=9C=A8 2021/5/20 =E4=B8=8B=E5=8D=8810:13, Stefan Hajnoczi =E5=86=99=E9=
+=81=93:
+> > Request completion latency can be reduced by using polling instead of
+> > irqs. Even Posted Interrupts or similar hardware support doesn't beat
+> > polling. The reason is that disabling virtqueue notifications saves
+> > critical-path CPU cycles on the host by skipping irq injection and in
+> > the guest by skipping the irq handler. So let's add blk_mq_ops->poll()
+> > support to virtio_blk.
+> >=20
+> > The approach taken by this patch differs from the NVMe driver's
+> > approach. NVMe dedicates hardware queues to polling and submits
+> > REQ_HIPRI requests only on those queues. This patch does not require
+> > exclusive polling queues for virtio_blk. Instead, it switches between
+> > irqs and polling when one or more REQ_HIPRI requests are in flight on a
+> > virtqueue.
+> >=20
+> > This is possible because toggling virtqueue notifications is cheap even
+> > while the virtqueue is running. NVMe cqs can't do this because irqs are
+> > only enabled/disabled at queue creation time.
+> >=20
+> > This toggling approach requires no configuration. There is no need to
+> > dedicate queues ahead of time or to teach users and orchestration tools
+> > how to set up polling queues.
+> >=20
+> > Possible drawbacks of this approach:
+> >=20
+> > - Hardware virtio_blk implementations may find virtqueue_disable_cb()
+> >    expensive since it requires DMA.
+>=20
+>=20
+> Note that it's probably not related to the behavior of the driver but the
+> design of the event suppression mechanism.
+>=20
+> Device can choose to ignore the suppression flag and keep sending
+> interrupts.
 
-from mm/slab.h
-#ifdef CONFIG_SLAB
-#include <linux/slab_def.h>
-#endif
+Yes, it's the design of the event suppression mechanism.
 
-#ifdef CONFIG_SLUB
-#include <linux/slub_def.h>
-#endif
+If we use dedicated polling virtqueues then the hardware doesn't need to
+check whether interrupts are enabled for each notification. However,
+there's no mechanism to tell the device that virtqueue interrupts are
+permanently disabled. This means that as of today, even dedicated
+virtqueues cannot suppress interrupts without the device checking for
+each notification.
 
-so if CONFIG_SLAB is enable then mm/slab.h includes slab_def.h, to avoid
-undefined reference error added SLAB_SUPPORTS_DEBUGFS like
-SLAB_SUPPORTS_SYSFS.
->>  	}
->>  }
->>  
->> @@ -472,6 +475,9 @@ static int shutdown_cache(struct kmem_cache *s)
->>  #ifdef SLAB_SUPPORTS_SYSFS
->>  		sysfs_slab_unlink(s);
->>  #endif
->> +#ifdef SLAB_SUPPORTS_DEBUGFS
->> +		debugfs_slab_release(s);
->> +#endif
-> 
-> Same here.
-> 
->>  		list_add_tail(&s->list, &slab_caches_to_rcu_destroy);
->>  		schedule_work(&slab_caches_to_rcu_destroy_work);
->>  	} else {
->> @@ -482,6 +488,9 @@ static int shutdown_cache(struct kmem_cache *s)
->>  #else
->>  		slab_kmem_cache_release(s);
->>  #endif
->> +#ifdef SLAB_SUPPORTS_DEBUGFS
->> +		debugfs_slab_release(s);
->> +#endif
-> 
-> And here.
-> 
-> What is wrong with your .h file that keeps the need for #ifdef in the .c
-> file?
-> 
-> I thought I've asked about this a number of times in the past, what am I
-> missing?
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> >   If such devices become popular then
+> >    the virtio_blk driver could use a similar approach to NVMe when
+> >    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+> >=20
+> > - If a blk_poll() thread is descheduled it not only hurts polling
+> >    performance but also delays completion of non-REQ_HIPRI requests on
+> >    that virtqueue since vq notifications are disabled.
+>=20
+>=20
+> Can we poll only when only high pri requests are pending?
+
+Yes, that's what this patch does.
+
+> If the backend is a remote one, I think the polling may cause more cpu
+> cycles.
+
+Right, but polling is only done when userspace sets the RWF_HIPRI
+request flag. Most applications don't support it and for those that do
+it's probably an option that the user needs to enable explicitly.
+
+Stefan
+
+> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > index fc0fb1dcd399..f0243dcd745a 100644
+> > --- a/drivers/block/virtio_blk.c
+> > +++ b/drivers/block/virtio_blk.c
+> > @@ -29,6 +29,16 @@ static struct workqueue_struct *virtblk_wq;
+> >   struct virtio_blk_vq {
+> >   	struct virtqueue *vq;
+> >   	spinlock_t lock;
+> > +
+> > +	/* Number of non-REQ_HIPRI requests in flight. Protected by lock. */
+> > +	unsigned int num_lopri;
+> > +
+> > +	/* Number of REQ_HIPRI requests in flight. Protected by lock. */
+> > +	unsigned int num_hipri;
+> > +
+> > +	/* Are vq notifications enabled? Protected by lock. */
+> > +	bool cb_enabled;
+>=20
+>=20
+> We had event_flag_shadow, is it sufficient to introduce a new helper
+> virtqueue_cb_is_enabled()?
+
+Yes, I'll try that in the next revision.
+
+> > +
+> >   	char name[VQ_NAME_LEN];
+> >   } ____cacheline_aligned_in_smp;
+> > @@ -171,33 +181,67 @@ static inline void virtblk_request_done(struct re=
+quest *req)
+> >   	blk_mq_end_request(req, virtblk_result(vbr));
+> >   }
+> > -static void virtblk_done(struct virtqueue *vq)
+> > +/* Returns true if one or more requests completed */
+> > +static bool virtblk_complete_requests(struct virtqueue *vq)
+> >   {
+> >   	struct virtio_blk *vblk =3D vq->vdev->priv;
+> >   	struct virtio_blk_vq *vbq =3D &vblk->vqs[vq->index];
+> >   	bool req_done =3D false;
+> > +	bool last_hipri_done =3D false;
+> >   	struct virtblk_req *vbr;
+> >   	unsigned long flags;
+> >   	unsigned int len;
+> >   	spin_lock_irqsave(&vbq->lock, flags);
+> > +
+> >   	do {
+> > -		virtqueue_disable_cb(vq);
+> > +		if (vbq->cb_enabled)
+> > +			virtqueue_disable_cb(vq);
+> >   		while ((vbr =3D virtqueue_get_buf(vq, &len)) !=3D NULL) {
+> >   			struct request *req =3D blk_mq_rq_from_pdu(vbr);
+> > +			if (req->cmd_flags & REQ_HIPRI) {
+> > +				if (--vbq->num_hipri =3D=3D 0)
+> > +					last_hipri_done =3D true;
+> > +			} else
+> > +				vbq->num_lopri--;
+> > +
+> >   			if (likely(!blk_should_fake_timeout(req->q)))
+> >   				blk_mq_complete_request(req);
+> >   			req_done =3D true;
+> >   		}
+> >   		if (unlikely(virtqueue_is_broken(vq)))
+> >   			break;
+> > -	} while (!virtqueue_enable_cb(vq));
+> > +
+> > +		/* Enable vq notifications if non-polled requests remain */
+> > +		if (last_hipri_done && vbq->num_lopri > 0) {
+> > +			last_hipri_done =3D false;
+> > +			vbq->cb_enabled =3D true;
+> > +		}
+> > +	} while (vbq->cb_enabled && !virtqueue_enable_cb(vq));
+> >   	/* In case queue is stopped waiting for more buffers. */
+> >   	if (req_done)
+> >   		blk_mq_start_stopped_hw_queues(vblk->disk->queue, true);
+> >   	spin_unlock_irqrestore(&vbq->lock, flags);
+> > +
+> > +	return req_done;
+> > +}
+> > +
+> > +static int virtblk_poll(struct blk_mq_hw_ctx *hctx)
+> > +{
+> > +	struct virtio_blk *vblk =3D hctx->queue->queuedata;
+> > +	struct virtqueue *vq =3D vblk->vqs[hctx->queue_num].vq;
+> > +
+> > +	if (!virtqueue_more_used(vq))
+>=20
+>=20
+> I'm not familiar with block polling but what happens if a buffer is made
+> available after virtqueue_more_used() returns false here?
+
+Can you explain the scenario, I'm not sure I understand? "buffer is made=20
+available" -> are you thinking about additional requests being submitted
+by the driver or an in-flight request being marked used by the device?
+
+Stefan
+
+--GGAVikb14LUB3vAD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCsvGYACgkQnKSrs4Gr
+c8gvIwf/dkaMys4a6Kfqzdx7Pvmvw2BGcTZFfqK5FbgvYv8M+3aGZnU2qzdXrFPt
+RKHGmU2FpekVV/t4NySPajwBsglNuNYuO+9TYjl6hkKR9SM3Z+p4mr+8xoQ8QPsg
+uW2VVWpOssrHp5/gar9+Bs8yrDYlmx27CNHJU/Qv9V3C+Ff6zdpeoiyP3N68Cf+K
+VlPpsdkA0MYJQyYuvq3tf2J7d+Y+qMWeJ+VJJ8bRp+DcMULp3HDcfzytZxvX3r4a
+ekWSM5XSvxAjqi7fWDCREy+snm0ys0svKPEABYKn+Iyz/h+cYhdF2FaksBOw/wRv
+kGgurxPcrMtSfsTEIhyqvvoTqQjJnA==
+=Wmed
+-----END PGP SIGNATURE-----
+
+--GGAVikb14LUB3vAD--
+
