@@ -2,123 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3D138F8DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA5E38F8E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhEYDeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhEYDeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:34:23 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5970C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:32:53 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so27262329oth.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Y5oK5vW+T21O5OAKzPC8r5w90JD3+B+yQGGc1yRB6w=;
-        b=bT5pDSpFo9iPBIuOv4+ktrHZ/to73R8DrxvaSL1vu9VZG57l4+Hki8/0www/Wy8uCo
-         4yc85wcpDh7u4/FXjqYkznMpdh60J/AgbuPiaiQjxoiXppGDUupddmzXldCyK/NR2fh3
-         qlf9VeNy1Cegg+b7rvokrjYlaKNnIgCEPrfkuhDKuDITxcWYiI1ilbrMx0yUb0l1gjgR
-         XrUObTvjzragPptGXntV74m5oGGQ/NYZajmLAH7hF4x6EF1jLzTf0laq2N8ila6oFDi1
-         Jtm9vu76IYDLeepOPDRrvr+1zQGpuDstM5Pxhe/LJZGxsyaDFfnyy2tPSO1vDC7kRJB7
-         UJQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Y5oK5vW+T21O5OAKzPC8r5w90JD3+B+yQGGc1yRB6w=;
-        b=tRJtwu/GS/QNig8+Qg2uowTVwInWnK5TNsxb2XeZttgu8g0/num5qybkrwpVhMnDtk
-         DFRkL0JNmliO55gW/AhI9fXBgD4gXZ4v+c6mEQgK9GXeLc7GNPclNT8L1SomvEssdQ6e
-         9Tz+xg7kfEenoK2O4CSam2u1lYx/BSP55DnKsogHlInkyeCgg16ERW8/Ou8vyK7ZHOV4
-         ZVluzOQgXXouHGwAaIfO2ZsewvRFFL4nTvQhXdugoPwwP7Z/8VVEMNXwZkyZNfSazQ4k
-         2AQF2zIlfmrymSpXfJqUW6hlI+9mb3UHVypO8cMz0POXUREPMCPSoPGCj40R47pNNw9z
-         C+Cw==
-X-Gm-Message-State: AOAM532EiRnrIz6ppnBC8/UsEv9VW8n/KltaMbwAHIyXrmnf/Id9Kqzg
-        eVO/klbSFIz77VDxfOLmZX2xmh3j3O1Y0A==
-X-Google-Smtp-Source: ABdhPJwN1NZlTvBjdJW3k+BDrCONIgMoegnREK22KoQp4Y5UADt29qHuaIc3pG4DSG+NUI1041P/QA==
-X-Received: by 2002:a9d:4b9c:: with SMTP id k28mr21671489otf.183.1621913573206;
-        Mon, 24 May 2021 20:32:53 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i18sm3216334oot.48.2021.05.24.20.32.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 20:32:52 -0700 (PDT)
-Date:   Mon, 24 May 2021 22:32:50 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Elliot Berman <eberman@codeaurora.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Trilok Soni <tsoni@codeaurora.org>, rananta@codeaurora.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 1/2] reboot: Export reboot_mode
-Message-ID: <YKxv4h8ebMQlNR37@yoga>
-References: <1573256452-14838-1-git-send-email-eberman@codeaurora.org>
- <1573256452-14838-2-git-send-email-eberman@codeaurora.org>
- <CAF2Aj3jYtL_42h_4W5zA8uz9e-QVquja70nARSRD4vbECVjxKw@mail.gmail.com>
+        id S230272AbhEYDf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhEYDfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 23:35:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 129A9613D8;
+        Tue, 25 May 2021 03:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621913636;
+        bh=jbjn/vKUEDevK4XHR8qG+RAbg5jKnkEBVFZyUjV4JgA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sBzbYmQGgUhb/ULTiPf716X/9EUYtWjtFuK/K2nPHIw9CrhvLFMRWHHoalJTpin7U
+         asRgxEOx9OZr6Q98N1IW6pjX9JXgdhLuU6paa8ZT5XOOjXFbdnbMpgDlIkJobehxIo
+         5BkfGRh4RaCX51evCYHCn3Pd6W11WaN+4MDkQuZZijBaOMBGghqRHTwxXoAbOPxHGU
+         Id32mxHzwOD0/QWTCVbwHDqMl0z3CqsEpHhVLEBIc9pnhGR4o72hTVkIc8aHtJyIgM
+         j+l5PUthQQa/GVgP2/0KBvaNZcHDysi+btc4j4Au5OuG6+oUbw631rAY2w6y4yW5k0
+         fNZ8Hi2qyduwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D34D45C039E; Mon, 24 May 2021 20:33:55 -0700 (PDT)
+Date:   Mon, 24 May 2021 20:33:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ check_all_holdout_tasks_trace
+Message-ID: <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000f034fc05c2da6617@google.com>
+ <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+ <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
+ <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAF2Aj3jYtL_42h_4W5zA8uz9e-QVquja70nARSRD4vbECVjxKw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24 May 07:09 CDT 2021, Lee Jones wrote:
+On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
+> 
+> 
+> On 5/25/21 6:46 AM, Paul E. McKenney wrote:
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
+> > > On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
+> > > > On Fri, May 21, 2021 at 7:29 PM syzbot
+> > > > <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+> > > > > 
+> > > > > Hello,
+> > > > > 
+> > > > > syzbot found the following issue on:
+> > > > > 
+> > > > > HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> > > > > git tree:       bpf-next
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+> > > > > 
+> > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > 
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+> > > > 
+> > > > This looks rcu-related. +rcu mailing list
+> > > 
+> > > I think I see a possible cause for this, and will say more after some
+> > > testing and after becoming more awake Monday morning, Pacific time.
+> > 
+> > No joy.  From what I can see, within RCU Tasks Trace, the calls to
+> > get_task_struct() are properly protected (either by RCU or by an earlier
+> > get_task_struct()), and the calls to put_task_struct() are balanced by
+> > those to get_task_struct().
+> > 
+> > I could of course have missed something, but at this point I am suspecting
+> > an unbalanced put_task_struct() has been added elsewhere.
+> > 
+> > As always, extra eyes on this code would be a good thing.
+> > 
+> > If it were reproducible, I would of course suggest bisection.  :-/
+> > 
+> >                                                          Thanx, Paul
+> > 
+> Hi Paul,
+> 
+> Could it be?
+> 
+>        CPU1                                        CPU2
+> trc_add_holdout(t, bhp)
+> //t->usage==2
+>                                       release_task
+>                                         put_task_struct_rcu_user
+>                                           delayed_put_task_struct
+>                                             ......
+>                                             put_task_struct(t)
+>                                             //t->usage==1
+> 
+> check_all_holdout_tasks_trace
+>   ->trc_wait_for_one_reader
+>     ->trc_del_holdout
+>       ->put_task_struct(t)
+>       //t->usage==0 and task_struct freed
+>   READ_ONCE(t->trc_reader_checked)
+>   //ops， t had been freed.
+> 
+> So, after excuting trc_wait_for_one_reader（）, task might had been removed
+> from holdout list and the corresponding task_struct was freed.
+> And we shouldn't do READ_ONCE(t->trc_reader_checked).
 
-> On Fri, 8 Nov 2019 at 23:41, Elliot Berman <eberman@codeaurora.org> wrote:
-> 
-> > Export reboot_mode to support kernel modules wishing to modify reboot_mode.
-> >
-> > Signed-off-by: Elliot Berman <eberman@codeaurora.org>
-> > ---
-> >  kernel/reboot.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> 
-> Reviewed by Bjorn and GregKH, but never merged.
-> 
-> I guess all the parties are still solving this downstream.
-> 
-> Andrew, is this still something you'd consider?
-> 
+I was suspicious of that call to trc_del_holdout() from within
+trc_wait_for_one_reader(), but the only time it executes is in the
+context of the current running task, which means that CPU 2 had better
+not be invoking release_task() on it just yet.
 
-Seems more reasonable that it would go together with patch 2, which
-Sebastian pointed out doesn't build.
+Or am I missing your point?
 
-Regards,
-Bjorn
+Of course, if you can reproduce it, the following patch might be
+an interesting thing to try, my doubts notwithstanding.  But more
+important, please check the patch to make sure that we are both
+talking about the same call to trc_del_holdout()!
 
-> diff --git a/kernel/reboot.c b/kernel/reboot.c
-> > index c4d472b..b1fbc22 100644
-> > --- a/kernel/reboot.c
-> > +++ b/kernel/reboot.c
-> > @@ -32,7 +32,9 @@ EXPORT_SYMBOL(cad_pid);
-> >  #define DEFAULT_REBOOT_MODE
-> >  #endif
-> >  enum reboot_mode reboot_mode DEFAULT_REBOOT_MODE;
-> > +EXPORT_SYMBOL_GPL(reboot_mode);
-> >  enum reboot_mode panic_reboot_mode = REBOOT_UNDEFINED;
-> > +EXPORT_SYMBOL_GPL(panic_reboot_mode);
-> >
-> >  /*
-> >   * This variable is used privately to keep track of whether or not
-> > --
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> >
-> >
-> 
-> -- 
-> Lee Jones [?????????]
-> Linaro Services Senior Technical Lead
-> Linaro.org ??? Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+If we are talking about the same call to trc_del_holdout(), are you
+actually seeing that code execute except when rcu_tasks_trace_pertask()
+calls trc_wait_for_one_reader()?
+
+> I investigate the trc_wait_for_one_reader（） and found before we excute
+> trc_del_holdout, there is always set t->trc_reader_checked=true. How about
+> we just set the checked flag and unified excute trc_del_holdout()
+> in check_all_holdout_tasks_trace with checking the flag?
+
+The problem is that we cannot execute trc_del_holdout() except in
+the context of the RCU Tasks Trace grace-period kthread.  So it is
+necessary to manipulate ->trc_reader_checked separately from the list
+in order to safely synchronize with IPIs and with the exit code path
+for any reader tasks, see for example trc_read_check_handler() and
+exit_tasks_rcu_finish_trace().
+
+Or are you thinking of some other approach?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index efb8127f3a36..2a0d4bdd619a 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -987,7 +987,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 	// The current task had better be in a quiescent state.
+ 	if (t == current) {
+ 		t->trc_reader_checked = true;
+-		trc_del_holdout(t);
+ 		WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
+ 		return;
+ 	}
