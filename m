@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C69390BCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A75C390BCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhEYVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:50:47 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:49946 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232114AbhEYVuq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:50:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=h1UvXr+IRNohjqK913qBRc1ANsdAb76bs7rLunSi2xs=; b=p2D+bXjs9h/DiPW3j3QeaeX6Fi
-        Eu7RY6n21Sd6xg0F1xMdF0eBRKA4iPAjQ/NqZUix/9unmc/dOQPudpdzLIr2umK8LRxyfmdL5mhdL
-        vWe0o/4zRCtE0jVh5g6WsUCa0dV/rWVl9pSlg0V4TnSR0wSBR2sFBWJlwSAOCS7r2bdk=;
-Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1llevG-005qQM-UN; Tue, 25 May 2021 21:49:11 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id C0FD7D0DECA; Tue, 25 May 2021 22:49:44 +0100 (BST)
-Date:   Tue, 25 May 2021 22:49:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH AUTOSEL 5.10 30/62] ASoC: rt5645: add error checking to
- rt5645_probe function
-Message-ID: <YK1w+H70aqLGDaDl@sirena.org.uk>
-References: <20210524144744.2497894-1-sashal@kernel.org>
- <20210524144744.2497894-30-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+9E0EyJd3tE2r8IF"
-Content-Disposition: inline
-In-Reply-To: <20210524144744.2497894-30-sashal@kernel.org>
-X-Cookie: You are always busy.
+        id S233537AbhEYVvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:51:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232114AbhEYVvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 17:51:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C07D6610CE;
+        Tue, 25 May 2021 21:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1621979388;
+        bh=zSwRPX4nYk6DG98wVlMJzLhygb/jgLIkgBgL/OHg4AI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uHTbcwtM8wlcrr0STARcdKKHXQlpJMHXsHqYXxznsKO6TtjhtC0WqmZAMprnEjXol
+         I9f92CT9wjJTYy4p6JMctWwcImwqxtf1TwGT8vZvAkkV3gqq93A9s2fSkm0lTA4skr
+         rizT7ryrHWIuSmbKbNYp8Gjhx42PGB20s1fxgUUs=
+Date:   Tue, 25 May 2021 14:49:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, andy@kernel.org, oskar@scara.com,
+        Daniel Latypov <dlatypov@google.com>
+Subject: Re: [PATCH v2 2/2] lib/math/rational: Add Kunit test cases
+Message-Id: <20210525144948.5bf487414edd6e0655902cf4@linux-foundation.org>
+In-Reply-To: <20210525144250.214670-2-tpiepho@gmail.com>
+References: <20210525144250.214670-1-tpiepho@gmail.com>
+        <20210525144250.214670-2-tpiepho@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 25 May 2021 07:42:50 -0700 Trent Piepho <tpiepho@gmail.com> wrote:
 
---+9E0EyJd3tE2r8IF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, May 24, 2021 at 10:47:11AM -0400, Sasha Levin wrote:
-> From: Phillip Potter <phil@philpotter.co.uk>
+> Adds a number of test cases that cover a range of possible code paths.
 >=20
-> [ Upstream commit 5e70b8e22b64eed13d5bbebcb5911dae65bf8c6b ]
->=20
-> Check for return value from various snd_soc_dapm_* calls, as many of
-> them can return errors and this should be handled. Also, reintroduce
-> the allocation failure check for rt5645->eq_param as well. Make all
+> --- /dev/null
+> +++ b/lib/math/rational-test.c
+> @@ -0,0 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <kunit/test.h>
+> +
+> +#include <linux/rational.h>
+> +
+> +struct rational_test_param {
+> +	unsigned long num, den;
+> +	unsigned long max_num, max_den;
+> +	unsigned long exp_num, exp_den;
+> +
+> +	const char *name;
+> +};
+> +
+> +static const struct rational_test_param test_parameters[] =3D {
+> +	{ 1230,	10,	100, 20,	100, 1,    "Exceeds bounds, semi-convergent term >=
+ =BD last term" },
+> +	{ 34567,100, 	120, 20,	120, 1,    "Exceeds bounds, semi-convergent term=
+ < =BD last term" },
 
-Now I've looked at the patch I don't think it's appropriate for
-stable, it's essentially equivalent to a patch that adds -Werror
-- the changes in it are upgrading things from error messages that
-would be generated by what are essentially static checks (even
-though we do do them at runtime they're on hard coded strings) to
-probe failures which would be a regression.  Unfortunately people
-do ignore warnings like that in shipping stuff so it's possible
-it's happening, we could do an audit to see if it is but it seems
-like more effort than it's worth.
+It seems to be asking for trouble to use these characters in kernel
+output - heaven knows what sort of weird output devices people
+are using.  So I think I'll switch to "1/2", OK?
 
-The only case I can think where it might help is if we're
-managing to OOM during probe() but that feels very unlikely to
-happen, and improved handling unlikely to make substantial
-difference compared to the risk that the routing warnings are
-triggering but being ignored so someone's sound stops working due
-to a stable update.  Otherwise it won't do much so why risk it?
+> +	{ 1, 30,	100, 10,	0, 1,	   "Closest to zero" },
+> +	{ 1, 19,	100, 10,	1, 10,     "Closest to smallest non-zero" },
+> +	{ 27,32,	16, 16,		11, 13,    "Use convergent" },
+> +	{ 1155, 7735,	255, 255,	33, 221,   "Exact answer" },
+> +	{ 87, 32,	70, 32,		68, 25,    "Semiconvergent, numerator limit" },
+> +	{ 14533, 4626,	15000, 2400,	7433, 2366, "Semiconvergent, demominator li=
+mit" },
+> +};
+> ...
+> +static struct kunit_case rational_test_cases[] =3D {
+> +       KUNIT_CASE_PARAM(rational_test, rational_gen_params),
+> +       {}
+> +};
+> +
+> +static struct kunit_suite rational_test_suite =3D {
+> +       .name =3D "rational",
+> +       .test_cases =3D rational_test_cases,
+> +};
 
---+9E0EyJd3tE2r8IF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCtcPcACgkQJNaLcl1U
-h9BhPgf/QwPQszIviJZPkEDsCrlmdi0IWBRg2sa+8dwinV4RMlV342IGAtTEZxIY
-hhdgJ0BM+pCEhXHbHn1ZprphK6eEuiescflqk4RywaFM/AakFvuJRMdoazcNXkZI
-zNdS1yuaimfHHJ4/HkD463ikeXEBehoH+Fkrp/6qM+lgo5UZwtZ/bG6EBpUmIClK
-JGI+WZkysyx+qzoVHIF5weXw+oCkvjz/Qby83mWjK7KOM4MnB0x9PtKOyRURXrZJ
-82L7/uM8heK1LujQKxr+FoVVfkdr6ymBvatZpbLYt5JlLQoT3K7PdDaPj1ULNVke
-KLM9pJwHanFu9ia/yC7okZgonz1VBg==
-=ygou
------END PGP SIGNATURE-----
-
---+9E0EyJd3tE2r8IF--
+And let's use tabs to indent here.  checkpatch detects this.
