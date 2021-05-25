@@ -2,120 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A7F390321
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1869C390328
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhEYNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:55:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233517AbhEYNy1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:54:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621950776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PW7OrrfjfM61YRapb5tPZf3kCsKbCNzZN/BPGRKNoNU=;
-        b=hhsZqvbLUmNdI9nUTEu6pqq0wvEEUdmGPqttIsrdRkyoW0hJ/GH/KRq7J9sISzJgdJ293D
-        bqazXXt/2eBPXTdrtPxNaUwtEroJF+iDaqH4Egw5aixQIyJ5OYCCK1nnJzXzMA4TkUOGie
-        rIhf5+6ycbO7gffOuxxflGUF/Phfcns=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-X-EA_lcONvuZj6b1GGgkqA-1; Tue, 25 May 2021 09:52:53 -0400
-X-MC-Unique: X-EA_lcONvuZj6b1GGgkqA-1
-Received: by mail-wm1-f69.google.com with SMTP id l185-20020a1c25c20000b029014b0624775eso5931693wml.6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 06:52:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PW7OrrfjfM61YRapb5tPZf3kCsKbCNzZN/BPGRKNoNU=;
-        b=ib7nnx5vI/KGyrPch2xRKyeHSaDqE4/HBFIoy0ERtdbkNSaVEZro0kzg/66NnIfX6e
-         IgMuvBo5mIPeeoKqVTrK7E7vVOo5GeRVnS+uqTtDItgZn5Ow/yduAHdZuGSd93XSzVSm
-         I9gqd8K5afRESkg5jJV4jq1oSvpMx25G+KV6XwyecIC5cLlpJ5h5akbfSNlQQwE9EjVU
-         bYjTUp5pKKWWdxLu3xB7qfanQ3fqTmcxa3QLBvzUGCwkd1YpoXy//krCiF+hz23dxRQ9
-         RLDsyghemTmkdCbp1K8vU6qVV48BEyf/BdjcbtLU6IBnrmDhyQfC756j9h/n4BqZ/oKc
-         QUkQ==
-X-Gm-Message-State: AOAM5310sx9dT/iIiqwtLUiaLUUWgvN8e5QEv1ovNzT75h/oEz8h8l7w
-        6Qkn90NuXvLIP0VcPTdD4RjhSv6Qr8msSWB29ZXkjKak+qBi23cIm1Pbg7B2UYYeyl4COXf+8Cq
-        IPjvRNRbVVfgnU3CLnZv89DBL
-X-Received: by 2002:a7b:cc83:: with SMTP id p3mr24768903wma.169.1621950772424;
-        Tue, 25 May 2021 06:52:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxoD0S7iFDYWpnFLr+WwG/M35YgaD7ABz77zKNWv7ODMUul6QdqZLBzVMLAVnyvv7vXt1v2ZA==
-X-Received: by 2002:a7b:cc83:: with SMTP id p3mr24768893wma.169.1621950772267;
-        Tue, 25 May 2021 06:52:52 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id z18sm16767823wro.33.2021.05.25.06.52.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 06:52:51 -0700 (PDT)
-Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20210521131910.3000689-1-javierm@redhat.com>
- <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
- <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
- <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
- <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
- <YKz2vbxYXSKQE1Ng@phenom.ffwll.local>
- <4e81ab57-a240-952a-7423-22dc830bc62f@suse.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <79f227c4-5ed6-23e8-2d74-3197871359f8@redhat.com>
-Date:   Tue, 25 May 2021 15:52:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233428AbhEYN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:56:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232370AbhEYN4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B869610CE;
+        Tue, 25 May 2021 13:54:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621950882;
+        bh=6+OOCS9/FVUngfNrY9DQFsy33J0t64Gk5QDDkvoyc/k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mukg6E0CnlUp7ZrKD84EhWpwgWdyxScssvs1Msm9G8BQ5bvuB28InjrO+YS+/s/qW
+         u2MASZVHCA/Doh6T3iVaujsek5+KQJGgz0nHe/J3pAKQdL5YgoDmyg+6UoTMWEH6yn
+         BtsWYHYoUHSB5pH3OE/UqY/g1qL7+TOwm94EUTIdsM0ukCaSfliYrUEjVf7MC1OZoS
+         bN8rvaSsFea4B+j9c+mF4s9FcRm07MQOne+zbEZ2k81qsu9/OUZ9c65mszxua4HVkG
+         Yzadj4M4MsFbEGDv4uX9PXaKFo1Q0myW1JziiVbqBntbA/kQewWoX3zrhA5rNkc2Ww
+         X4PQxIQBKL+vQ==
+Received: by mail-ot1-f51.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so28632871otc.12;
+        Tue, 25 May 2021 06:54:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530CqhjUwFVu8JNRJehrJqR4WFr/5Q/0e/xhJxX2cEE4/2CaxUB2
+        Bzjhp3uSdG6K37bP9/PbbCA5asLoiIqFvzyUkZ4=
+X-Google-Smtp-Source: ABdhPJxNQNHEVxXEnKV/+Q0uEZsr1aBEb4OZUGVwpST6TfxxtSNW2dO1sQ8H4CBWOV1b6vx9Ynlzwvg03MMcNf6Z43Q=
+X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr23409093otn.90.1621950881849;
+ Tue, 25 May 2021 06:54:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4e81ab57-a240-952a-7423-22dc830bc62f@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com> <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
+ <87eedxbtkn.fsf@stealth> <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
+ <877djnaq11.fsf@stealth>
+In-Reply-To: <877djnaq11.fsf@stealth>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 25 May 2021 15:54:30 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+Message-ID: <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        leobras.c@gmail.com, Rob Herring <robh@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 25 May 2021 at 15:42, Punit Agrawal <punitagrawal@gmail.com> wrote:
+>
+> Hi Ard,
+>
+> Ard Biesheuvel <ardb@kernel.org> writes:
+>
+> > On Sun, 23 May 2021 at 13:06, Punit Agrawal <punitagrawal@gmail.com> wrote:
+> >>
+> >> Robin Murphy <robin.murphy@arm.com> writes:
+> >>
+> >> > [ +linux-pci for visibility ]
+> >> >
+> >> > On 2021-05-18 10:09, Alexandru Elisei wrote:
+> >> >> After doing a git bisect I was able to trace the following error when booting my
+> >> >> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+> >> >> [..]
+> >> >> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
+> >> >> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
+> >> >> 0x00fa000000
+> >> >> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
+> >> >> 0x00fbe00000
+> >> >> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
+> >> >> regulator
+> >> >> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
+> >> >> regulator
+> >> >> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
+> >> >> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
+> >> >> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+> >> >> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
+> >> >> address [0xfbe00000-0xfbefffff])
+> >> >> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
+> >> >> [    0.373973] pci 0000:00:00.0: supports D1
+> >> >> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> >> >> [    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
+> >> >> reconfiguring
+> >> >> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
+> >> >> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> >> >> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
+> >> >> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
+> >> >> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
+> >> >> x4 link)
+> >> >> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
+> >> >> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+> >> >> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
+> >> >> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
+> >> >> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
+> >> >> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
+> >> >> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
+> >> >> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
+> >> >> [..]
+> >> >> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
+> >> >> resource flags for
+> >> >> 64-bit memory addresses").
+> >> >
+> >> > FWFW, my hunch is that the host bridge advertising no 32-bit memory
+> >> > resource, only only a single 64-bit non-prefetchable one (even though
+> >> > it's entirely below 4GB) might be a bit weird and tripping something
+> >> > up in the resource assignment code. It certainly seems like the thing
+> >> > most directly related to the offending commit.
+> >> >
+> >> > I'd be tempted to try fiddling with that in the DT (i.e. changing
+> >> > 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
+> >> > if it makes any difference. Note that even if it helps, though, I
+> >> > don't know whether that's the correct fix or just a bodge around a
+> >> > corner-case bug somewhere in the resource code.
+> >>
+> >> From digging into this further the failure seems to be due to a mismatch
+> >> of flags when allocating resources in pci_bus_alloc_from_region() -
+> >>
+> >>     if ((res->flags ^ r->flags) & type_mask)
+> >>             continue;
+> >>
+> >> Though I am also not sure why the failure is only being reported on
+> >> RK3399 - does a single 64-bit window have anything to do with it?
+> >>
+> >
+> > The NVMe in the example exposes a single 64-bit non-prefetchable BAR.
+> > Such BARs can not be allocated in a prefetchable host bridge window
+> > (unlike the converse, i.e., allocating a prefetchable BAR in a
+> > non-prefetchable host bridge window is fine)
+> >
+> > 64-bit non-prefetchable host bridge windows cannot be forwarded by PCI
+> > to PCI bridges, they simply lack the BAR registers to describe them.
+> > Therefore, non-prefetchable endpoint BARs (even 64-bit ones) need to
+> > be carved out of a host bridge's non-prefetchable 32-bit window if
+> > they need to pass through a bridge.
+>
+> Thank you for the explanation. I also looked at the PCI-to-PCI Bridge
+> spec to understand where some of the limitations are coming from.
+>
+> > So the error seems to be here that the host bridge's 32-bit
+> > non-prefetchable window has the 64-bit attribute set, even though it
+> > resides below 4 GB entirely. I suppose that the resource allocation
+> > could be made more forgiving (and it was in the past, before commit
+> > 9d57e61bf723 was applied). However, I would strongly recommend not
+> > deviating from common practice, and just describe the 32-bit
+> > addressable non-prefetchable resource window as such.
+>
+> IIUC, the host bridge's configuration (64-bit on non-prefetchable
+> window) is based on what the hardware advertises.
+>
 
-On 5/25/21 3:34 PM, Thomas Zimmermann wrote:
+What do you mean by 'what the hardware advertises'? The host bridge is
+apparently configured to decode a 32-bit addressable window as MMIO,
+and the question is why this window has the 64-bit attribute set in
+the DT description.
 
-[snip]
+> Can you elaborate on what you have in mind to correct the
+> non-prefetchable resource window? Are you thinking of adding a quirk
+> somewhere to address this?
+>
 
->>
->> If you guys with your distro hats on all think it doesn't matter, then
->> yeah I'm all for dropping the somewhat silly -drm or drmfb suffixes. I
->> think that was just way back so it's easier to know you've loaded the
->> right driver, back when there was both drm and native fbdev drivers
->> around. But now I think for new hw there's only drm, so should be all
->> fine.
-> 
-> Suse doesn't use fbdev, except for some outliers; most notably hypervfb 
-> and generic efifb/vesafb. Both are now being replaced with drm code. 
->  From what I've seen, it's the same for other distros. And X11 checks 
-> for the existence of device files anyway IIRC.
-Yes, I believe is the same for us.
+No. Just fix the DT.
 
-I'll post a patch to just remove the suffix then. Thanks you both
-for the feedback.
-
-> 
-> Best regards
-> Thomas
-> 
->> -Daniel
->>
-> 
-
-Best regards,
--- 
-Javier Martinez Canillas
-Software Engineer
-New Platform Technologies Enablement team
-RHEL Engineering
-
+> I am happy to put something together once I understand the preferred way
+> to go about it.
+>
+> Thanks,
+> Punit
+>
+> [...]
+>
