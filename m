@@ -2,240 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F6A39084C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0CE390853
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhEYSBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:01:15 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51416 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234253AbhEYSBH (ORCPT
+        id S231444AbhEYSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhEYSBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:01:07 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14PHxZ4F086297;
-        Tue, 25 May 2021 12:59:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621965575;
-        bh=8yL3j70w9qqYCkpQuAtJvWM+t7tZDs8FYZuNKkMB7Qo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=P93nW0Jt5fG4Jwqlb0ZXpj32T96rio/n+IpZZGC3Sl80UyyyCFcMxBA0FO95YtJDH
-         yiUCq4BjRNmKZwUULBWFxkZnkZ7xBlBrGbhZtr2QZ1lSAyFISrI0QksmtkGPXHqYDg
-         SN32sRXNhT3BhySJwLIi0I6lUfPreoNyVqKWP1aQ=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14PHxZv1072541
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 25 May 2021 12:59:35 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 25
- May 2021 12:59:35 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 25 May 2021 12:59:35 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14PHxYX8124533;
-        Tue, 25 May 2021 12:59:35 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, <devicetree@vger.kernel.org>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH v2 5/5] dt-bindings: gpio: omap: Convert to json-schema
-Date:   Tue, 25 May 2021 20:58:58 +0300
-Message-ID: <20210525175858.11611-6-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210525175858.11611-1-grygorii.strashko@ti.com>
-References: <20210525175858.11611-1-grygorii.strashko@ti.com>
+        Tue, 25 May 2021 14:01:40 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C327C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:00:10 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so13633713pjv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=auOwyDCULP+PY4y8ECX+EVzkNBpAc5UPBnuv6E+OJB8=;
+        b=amO7SnZpCJ5ZW7lnKvT3R+EZT4yHFBkd1IlXScYKMAbZeXRjuvY2EBpomnIjGqTQ3Y
+         dXYvay4xMG7UGxySNUWIgiroSxTbFQOoh570JZNI/IseO1+EMzQ6lTaN+wf8KZKztV3e
+         OAX66oohhSh3MWnXVnd5ON936EoTiWDv/BNndYUAUUBOj6QF6wrsq0UNZlr1SN60jIIx
+         Qs8cYbmbdNJ2GiqE+cBIym6aky82ofA9piXqv/14aj8i7pLLBBmsShILRbr1xyCHqkSb
+         mFrVZ7jjMcTXbr7Pehv94XQvhyD0DROF22Jz+dUH3jVh5sjbNCJ8JZSh5XbUuTWvL+oZ
+         Y70A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=auOwyDCULP+PY4y8ECX+EVzkNBpAc5UPBnuv6E+OJB8=;
+        b=k8uOhJATrTlzUslaPvXx6+c1tcf60pNLAnaPE90Wa+9q4nvhhi02ZCSVsBs/d7dm5Y
+         NB1JoBD/EbbfRzHDHJigknpWkprKxt+JKdi85eV+X3VqG142fqIRM+/3sQNhGnO0zB+o
+         6GSDXRqY5/yVdhubEfjjWoZu+BTnPw6gaL24jEUFcXdd3FWy2xN3kBqEIu31G35iy1N6
+         a50uYXBr9w/0fieZ/2TzMC+8uifgkh7dIM15RJDPCsKZvL1OzmJUEUB/uY91mvzh0cJn
+         38nyxe1brncsXGPeozFnrr5MLpDia6WCJAkUSn9GqZw8zEh30y6g2dkA99AOMzvRvZyD
+         km+w==
+X-Gm-Message-State: AOAM5327AOq0LZndtmqmEad1+pfvmr5x3obVfca58jwtfUsFCyOaDjIS
+        egc0gGlVOk6gK8FzsGwMBVYwgA==
+X-Google-Smtp-Source: ABdhPJzLAPEU2DzDtyxF030V7IRRlmZl+sENOFUdePMgciFxjMsZlLdkq93WWopHRihwNat2x1mbEg==
+X-Received: by 2002:a17:902:ea85:b029:f1:bc58:e096 with SMTP id x5-20020a170902ea85b02900f1bc58e096mr31304808plb.68.1621965609607;
+        Tue, 25 May 2021 11:00:09 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id o134sm14228626pfd.58.2021.05.25.11.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 11:00:08 -0700 (PDT)
+Date:   Tue, 25 May 2021 12:00:06 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] remoteproc: Fix various kernel-doc warnings
+Message-ID: <20210525180006.GD1113058@xps15>
+References: <20210519180304.23563-1-s-anna@ti.com>
+ <20210519180304.23563-3-s-anna@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519180304.23563-3-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the OMAP GPIO Device Tree binding documentation to json-schema.
-The GPIO hogs node names defined to end with a 'hog' suffix.
+On Wed, May 19, 2021 at 01:03:04PM -0500, Suman Anna wrote:
+> Fix all the kernel-doc warnings in various remoteproc core files.
+> Some of them just needed a formatting cleanup change, while others
+> needed the Return statement to be added, or documenting the missed
+> structure elements.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c       | 44 +++++++++++++------
+>  drivers/remoteproc/remoteproc_elf_loader.c | 12 ++++--
+>  drivers/remoteproc/remoteproc_virtio.c     |  6 ++-
+>  include/linux/remoteproc.h                 | 50 ++++++++++++----------
+>  4 files changed, 69 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 8c279039b6a3..6348aaa42bbb 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -183,12 +183,12 @@ EXPORT_SYMBOL(rproc_va_to_pa);
+>   * translations on the internal remoteproc memory regions through a platform
+>   * implementation specific da_to_va ops, if present.
+>   *
+> - * The function returns a valid kernel address on success or NULL on failure.
+> - *
+>   * Note: phys_to_virt(iommu_iova_to_phys(rproc->domain, da)) will work too,
+>   * but only on kernel direct mapped RAM memory. Instead, we're just using
+>   * here the output of the DMA API for the carveouts, which should be more
+>   * correct.
+> + *
+> + * Return: a valid kernel address on success or NULL on failure
+>   */
+>  void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *is_iomem)
+>  {
+> @@ -509,7 +509,7 @@ static int copy_dma_range_map(struct device *to, struct device *from)
+>   * use RSC_DEVMEM resource entries to map their required @da to the physical
+>   * address of their base CMA region (ouch, hacky!).
+>   *
+> - * Returns 0 on success, or an appropriate error code otherwise
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  			     int offset, int avail)
+> @@ -644,7 +644,7 @@ void rproc_vdev_release(struct kref *ref)
+>   * support dynamically allocating this address using the generic
+>   * DMA API (but currently there isn't a use case for that).
+>   *
+> - * Returns 0 on success, or an appropriate error code otherwise
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_handle_trace(struct rproc *rproc, void *ptr,
+>  			      int offset, int avail)
+> @@ -721,6 +721,8 @@ static int rproc_handle_trace(struct rproc *rproc, void *ptr,
+>   * tell us ranges of physical addresses the firmware is allowed to request,
+>   * and not allow firmwares to request access to physical addresses that
+>   * are outside those ranges.
+> + *
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_handle_devmem(struct rproc *rproc, void *ptr,
+>  			       int offset, int avail)
+> @@ -783,6 +785,8 @@ static int rproc_handle_devmem(struct rproc *rproc, void *ptr,
+>   *
+>   * This function allocate specified memory entry @mem using
+>   * dma_alloc_coherent() as default allocator
+> + *
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_alloc_carveout(struct rproc *rproc,
+>  				struct rproc_mem_entry *mem)
+> @@ -889,6 +893,8 @@ static int rproc_alloc_carveout(struct rproc *rproc,
+>   *
+>   * This function releases specified memory entry @mem allocated via
+>   * rproc_alloc_carveout() function by @rproc.
+> + *
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_release_carveout(struct rproc *rproc,
+>  				  struct rproc_mem_entry *mem)
+> @@ -918,6 +924,8 @@ static int rproc_release_carveout(struct rproc *rproc,
+>   * (e.g. CMA) more efficiently, and also minimizes the number of TLB entries
+>   * needed to map it (in case @rproc is using an IOMMU). Reducing the TLB
+>   * pressure is important; it may have a substantial impact on performance.
+> + *
+> + * Return: 0 on success, or an appropriate error code otherwise
+>   */
+>  static int rproc_handle_carveout(struct rproc *rproc,
+>  				 void *ptr, int offset, int avail)
+> @@ -1006,6 +1014,8 @@ EXPORT_SYMBOL(rproc_add_carveout);
+>   *
+>   * This function allocates a rproc_mem_entry struct and fill it with parameters
+>   * provided by client.
+> + *
+> + * Return: a valid pointer on success, or NULL on failure
+>   */
+>  __printf(8, 9)
+>  struct rproc_mem_entry *
+> @@ -1050,6 +1060,8 @@ EXPORT_SYMBOL(rproc_mem_entry_init);
+>   *
+>   * This function allocates a rproc_mem_entry struct and fill it with parameters
+>   * provided by client.
+> + *
+> + * Return: a valid pointer on success, or NULL on failure
+>   */
+>  __printf(5, 6)
+>  struct rproc_mem_entry *
+> @@ -1881,6 +1893,8 @@ static int __rproc_detach(struct rproc *rproc)
+>   * remoteproc functional again.
+>   *
+>   * This function can sleep, so it cannot be called from atomic context.
+> + *
+> + * Return: 0 on success or a negative value upon failure
+>   */
+>  int rproc_trigger_recovery(struct rproc *rproc)
+>  {
+> @@ -1965,7 +1979,7 @@ static void rproc_crash_handler_work(struct work_struct *work)
+>   * If the remote processor is already powered on, this function immediately
+>   * returns (successfully).
+>   *
+> - * Returns 0 on success, and an appropriate error value otherwise.
+> + * Return: 0 on success, and an appropriate error value otherwise
+>   */
+>  int rproc_boot(struct rproc *rproc)
+>  {
+> @@ -2100,6 +2114,8 @@ EXPORT_SYMBOL(rproc_shutdown);
+>   * no longer available.  From there it should be possible to remove the
+>   * platform driver and even power cycle the application processor (if the HW
+>   * supports it) without needing to switch off the remote processor.
+> + *
+> + * Return: 0 on success, and an appropriate error value otherwise
+>   */
+>  int rproc_detach(struct rproc *rproc)
+>  {
+> @@ -2152,7 +2168,7 @@ EXPORT_SYMBOL(rproc_detach);
+>   * This function increments the remote processor's refcount, so always
+>   * use rproc_put() to decrement it back once rproc isn't needed anymore.
+>   *
+> - * Returns the rproc handle on success, and NULL on failure.
+> + * Return: rproc handle on success, and NULL on failure
+>   */
+>  #ifdef CONFIG_OF
+>  struct rproc *rproc_get_by_phandle(phandle phandle)
+> @@ -2302,8 +2318,6 @@ static int rproc_validate(struct rproc *rproc)
+>   * This is called by the platform-specific rproc implementation, whenever
+>   * a new remote processor device is probed.
+>   *
+> - * Returns 0 on success and an appropriate error code otherwise.
+> - *
+>   * Note: this function initiates an asynchronous firmware loading
+>   * context, which will look for virtio devices supported by the rproc's
+>   * firmware.
+> @@ -2311,6 +2325,8 @@ static int rproc_validate(struct rproc *rproc)
+>   * If found, those virtio devices will be created and added, so as a result
+>   * of registering this remote processor, additional virtio drivers might be
+>   * probed.
+> + *
+> + * Return: 0 on success and an appropriate error code otherwise
+>   */
+>  int rproc_add(struct rproc *rproc)
+>  {
+> @@ -2364,7 +2380,7 @@ static void devm_rproc_remove(void *rproc)
+>   * This function performs like rproc_add() but the registered rproc device will
+>   * automatically be removed on driver detach.
+>   *
+> - * Returns: 0 on success, negative errno on failure
+> + * Return: 0 on success, negative errno on failure
+>   */
+>  int devm_rproc_add(struct device *dev, struct rproc *rproc)
+>  {
+> @@ -2472,10 +2488,10 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
+>   * implementations should then call rproc_add() to complete
+>   * the registration of the remote processor.
+>   *
+> - * On success the new rproc is returned, and on failure, NULL.
+> - *
+>   * Note: _never_ directly deallocate @rproc, even if it was not registered
+>   * yet. Instead, when you need to unroll rproc_alloc(), use rproc_free().
+> + *
+> + * Return: new rproc pointer on success, and NULL on failure
+>   */
+>  struct rproc *rproc_alloc(struct device *dev, const char *name,
+>  			  const struct rproc_ops *ops,
+> @@ -2588,7 +2604,7 @@ EXPORT_SYMBOL(rproc_put);
+>   * of the outstanding reference created by rproc_alloc. To decrement that
+>   * one last refcount, one still needs to call rproc_free().
+>   *
+> - * Returns 0 on success and -EINVAL if @rproc isn't valid.
+> + * Return: 0 on success and -EINVAL if @rproc isn't valid
+>   */
+>  int rproc_del(struct rproc *rproc)
+>  {
+> @@ -2635,7 +2651,7 @@ static void devm_rproc_free(struct device *dev, void *res)
+>   * This function performs like rproc_alloc() but the acquired rproc device will
+>   * automatically be released on driver detach.
+>   *
+> - * Returns: new rproc instance, or NULL on failure
+> + * Return: new rproc instance, or NULL on failure
+>   */
+>  struct rproc *devm_rproc_alloc(struct device *dev, const char *name,
+>  			       const struct rproc_ops *ops,
+> @@ -2687,7 +2703,7 @@ EXPORT_SYMBOL(rproc_remove_subdev);
+>   * rproc_get_by_child() - acquire rproc handle of @dev's ancestor
+>   * @dev:	child device to find ancestor of
+>   *
+> - * Returns the ancestor rproc instance, or NULL if not found.
+> + * Return: the ancestor rproc instance, or NULL if not found
+>   */
+>  struct rproc *rproc_get_by_child(struct device *dev)
+>  {
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index 11423588965a..469c52e62faf 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -31,6 +31,8 @@
+>   * @fw: the ELF firmware image
+>   *
+>   * Make sure this fw image is sane (ie a correct ELF32/ELF64 file).
+> + *
+> + * Return: 0 on success and -EINVAL upon any failure
+>   */
+>  int rproc_elf_sanity_check(struct rproc *rproc, const struct firmware *fw)
+>  {
+> @@ -117,11 +119,11 @@ EXPORT_SYMBOL(rproc_elf_sanity_check);
+>   * @rproc: the remote processor handle
+>   * @fw: the ELF firmware image
+>   *
+> - * This function returns the entry point address of the ELF
+> - * image.
+> - *
+>   * Note that the boot address is not a configurable property of all remote
+>   * processors. Some will always boot at a specific hard-coded address.
+> + *
+> + * Return: entry point address of the ELF image
+> + *
+>   */
+>  u64 rproc_elf_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
+>  {
+> @@ -152,6 +154,8 @@ EXPORT_SYMBOL(rproc_elf_get_boot_addr);
+>   * might be different: they might not have iommus, and would prefer to
+>   * directly allocate memory for every segment/resource. This is not yet
+>   * supported, though.
+> + *
+> + * Return: 0 on success and an appropriate error code otherwise
+>   */
+>  int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  {
+> @@ -362,7 +366,7 @@ EXPORT_SYMBOL(rproc_elf_load_rsc_table);
+>   * This function finds the location of the loaded resource table. Don't
+>   * call this function if the table wasn't loaded yet - it's a bug if you do.
+>   *
+> - * Returns the pointer to the resource table if it is found or NULL otherwise.
+> + * Return: pointer to the resource table if it is found or NULL otherwise.
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/gpio/gpio-omap.txt    |  45 --------
- .../bindings/gpio/ti,omap-gpio.yaml           | 108 ++++++++++++++++++
- 2 files changed, 108 insertions(+), 45 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
+Here the '.' has been kept while it was remove for all of the above.  I don't
+know that the right guidelines are for this. 
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-omap.txt b/Documentation/devicetree/bindings/gpio/gpio-omap.txt
-deleted file mode 100644
-index e57b2cb28f6c..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-omap.txt
-+++ /dev/null
-@@ -1,45 +0,0 @@
--OMAP GPIO controller bindings
--
--Required properties:
--- compatible:
--  - "ti,omap2-gpio" for OMAP2 controllers
--  - "ti,omap3-gpio" for OMAP3 controllers
--  - "ti,omap4-gpio" for OMAP4 controllers
--- reg : Physical base address of the controller and length of memory mapped
--  region.
--- gpio-controller : Marks the device node as a GPIO controller.
--- #gpio-cells : Should be two.
--  - first cell is the pin number
--  - second cell is used to specify optional parameters (unused)
--- interrupt-controller: Mark the device node as an interrupt controller.
--- #interrupt-cells : Should be 2.
--  The first cell is the GPIO number.
--  The second cell is used to specify flags:
--    bits[3:0] trigger type and level flags:
--      1 = low-to-high edge triggered.
--      2 = high-to-low edge triggered.
--      4 = active high level-sensitive.
--      8 = active low level-sensitive.
--- interrupts : The interrupt the controller is rising as output when an
--  interrupt occures
--
--OMAP specific properties:
--- ti,hwmods:		Name of the hwmod associated to the GPIO:
--			"gpio<X>", <X> being the 1-based instance number
--			from the HW spec.
--- ti,gpio-always-on: 	Indicates if a GPIO bank is always powered and
--			so will never lose its logic state.
--
--
--Example:
--
--gpio0: gpio@44e07000 {
--    compatible = "ti,omap4-gpio";
--    reg = <0x44e07000 0x1000>;
--    ti,hwmods = "gpio1";
--    gpio-controller;
--    #gpio-cells = <2>;
--    interrupt-controller;
--    #interrupt-cells = <2>;
--    interrupts = <96>;
--};
-diff --git a/Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml b/Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
-new file mode 100644
-index 000000000000..7087e4a5013f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
-@@ -0,0 +1,108 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/ti,omap-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OMAP GPIO controller bindings
-+
-+maintainers:
-+  - Grygorii Strashko <grygorii.strashko@ti.com>
-+
-+description: |
-+  The general-purpose interface combines general-purpose input/output (GPIO) banks.
-+  Each GPIO banks provides up to 32 dedicated general-purpose pins with input
-+  and output capabilities; interrupt generation in active mode and wake-up
-+  request generation in idle mode upon the detection of external events.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - ti,omap2-gpio
-+          - ti,omap3-gpio
-+          - ti,omap4-gpio
-+      - items:
-+          - const: ti,am4372-gpio
-+          - const: ti,omap4-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  gpio-ranges: true
-+
-+  gpio-line-names:
-+    minItems: 1
-+    maxItems: 32
-+
-+  ti,gpio-always-on:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Indicates if a GPIO bank is always powered and will never lose its logic state.
-+
-+  ti,hwmods:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    deprecated: true
-+    description:
-+      Name of the hwmod associated with the GPIO. Needed on some legacy OMAP
-+      SoCs which have not been converted to the ti,sysc interconnect hierarachy.
-+
-+  ti,no-reset-on-init:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    deprecated: true
-+    description:
-+      Do not reset on init. Used with ti,hwmods on some legacy OMAP SoCs which
-+      have not been converted to the ti,sysc interconnect hierarachy.
-+
-+patternProperties:
-+  "^(.+-hog(-[0-9]+)?)$":
-+    type: object
-+
-+    required:
-+      - gpio-hog
-+
-+required:
-+  - compatible
-+  - reg
-+  - gpio-controller
-+  - "#gpio-cells"
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    gpio0: gpio@0 {
-+        compatible = "ti,omap4-gpio";
-+        reg = <0x0 0x1000>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        interrupts = <96>;
-+        ti,gpio-always-on;
-+
-+        ls-buf-en-hog {
-+            gpio-hog;
-+            gpios = <10 GPIO_ACTIVE_HIGH>;
-+            output-high;
-+            line-name = "LS_BUF_EN";
-+        };
-+    };
--- 
-2.17.1
+>   * If the table wasn't loaded yet the result is unspecified.
+>   */
+>  struct resource_table *rproc_elf_find_loaded_rsc_table(struct rproc *rproc,
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index 0cc617f76068..cf4d54e98e6a 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -45,7 +45,7 @@ static bool rproc_virtio_notify(struct virtqueue *vq)
+>   * when the remote processor signals that a specific virtqueue has pending
+>   * messages available.
+>   *
+> - * Returns IRQ_NONE if no message was found in the @notifyid virtqueue,
+> + * Return: IRQ_NONE if no message was found in the @notifyid virtqueue,
+>   * and otherwise returns IRQ_HANDLED.
 
+Same
+
+>   */
+>  irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int notifyid)
+> @@ -325,7 +325,7 @@ static void rproc_virtio_dev_release(struct device *dev)
+>   * This function registers a virtio device. This vdev's partent is
+>   * the rproc device.
+>   *
+> - * Returns 0 on success or an appropriate error value otherwise.
+> + * Return: 0 on success or an appropriate error value otherwise
+>   */
+>  int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
+>  {
+> @@ -432,6 +432,8 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
+>   * @data: must be null
+>   *
+>   * This function unregisters an existing virtio device.
+> + *
+> + * Return: 0
+>   */
+>  int rproc_remove_virtio_dev(struct device *dev, void *data)
+>  {
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 8b795b544f75..42a1f30e33a7 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -243,7 +243,7 @@ struct fw_rsc_trace {
+>   * @da: device address
+>   * @align: the alignment between the consumer and producer parts of the vring
+>   * @num: num of buffers supported by this vring (must be power of two)
+> - * @notifyid is a unique rproc-wide notify index for this vring. This notify
+> + * @notifyid: a unique rproc-wide notify index for this vring. This notify
+>   * index is used when kicking a remote processor, to let it know that this
+>   * vring is triggered.
+>   * @pa: physical address
+> @@ -266,18 +266,18 @@ struct fw_rsc_vdev_vring {
+>  /**
+>   * struct fw_rsc_vdev - virtio device header
+>   * @id: virtio device id (as in virtio_ids.h)
+> - * @notifyid is a unique rproc-wide notify index for this vdev. This notify
+> + * @notifyid: a unique rproc-wide notify index for this vdev. This notify
+>   * index is used when kicking a remote processor, to let it know that the
+>   * status/features of this vdev have changes.
+> - * @dfeatures specifies the virtio device features supported by the firmware
+> - * @gfeatures is a place holder used by the host to write back the
+> + * @dfeatures: specifies the virtio device features supported by the firmware
+> + * @gfeatures: a place holder used by the host to write back the
+>   * negotiated features that are supported by both sides.
+> - * @config_len is the size of the virtio config space of this vdev. The config
+> + * @config_len: the size of the virtio config space of this vdev. The config
+>   * space lies in the resource table immediate after this vdev header.
+> - * @status is a place holder where the host will indicate its virtio progress.
+> - * @num_of_vrings indicates how many vrings are described in this vdev header
+> + * @status: a place holder where the host will indicate its virtio progress.
+> + * @num_of_vrings: indicates how many vrings are described in this vdev header
+>   * @reserved: reserved (must be zero)
+> - * @vring is an array of @num_of_vrings entries of 'struct fw_rsc_vdev_vring'.
+> + * @vring: an array of @num_of_vrings entries of 'struct fw_rsc_vdev_vring'.
+>   *
+>   * This resource is a virtio device header: it provides information about
+>   * the vdev, and is then used by the host and its peer remote processors
+> @@ -287,16 +287,17 @@ struct fw_rsc_vdev_vring {
+>   * to statically allocate a vdev upon registration of the rproc (dynamic vdev
+>   * allocation is not yet supported).
+>   *
+> - * Note: unlike virtualization systems, the term 'host' here means
+> - * the Linux side which is running remoteproc to control the remote
+> - * processors. We use the name 'gfeatures' to comply with virtio's terms,
+> - * though there isn't really any virtualized guest OS here: it's the host
+> - * which is responsible for negotiating the final features.
+> - * Yeah, it's a bit confusing.
+> - *
+> - * Note: immediately following this structure is the virtio config space for
+> - * this vdev (which is specific to the vdev; for more info, read the virtio
+> - * spec). the size of the config space is specified by @config_len.
+> + * Note:
+> + * 1. unlike virtualization systems, the term 'host' here means
+> + *    the Linux side which is running remoteproc to control the remote
+> + *    processors. We use the name 'gfeatures' to comply with virtio's terms,
+> + *    though there isn't really any virtualized guest OS here: it's the host
+> + *    which is responsible for negotiating the final features.
+> + *    Yeah, it's a bit confusing.
+> + *
+> + * 2. immediately following this structure is the virtio config space for
+> + *    this vdev (which is specific to the vdev; for more info, read the virtio
+> + *    spec). the size of the config space is specified by @config_len.
+
+s/the/The
+
+>   */
+>  struct fw_rsc_vdev {
+>  	u32 id;
+> @@ -440,7 +441,7 @@ enum rproc_state {
+>   * enum rproc_crash_type - remote processor crash types
+>   * @RPROC_MMUFAULT:	iommu fault
+>   * @RPROC_WATCHDOG:	watchdog bite
+> - * @RPROC_FATAL_ERROR	fatal error
+> + * @RPROC_FATAL_ERROR:	fatal error
+>   *
+>   * Each element of the enum is used as an array index. So that, the value of
+>   * the elements should be always something sane.
+> @@ -457,9 +458,9 @@ enum rproc_crash_type {
+>   * enum rproc_dump_mechanism - Coredump options for core
+>   * @RPROC_COREDUMP_DISABLED:	Don't perform any dump
+>   * @RPROC_COREDUMP_ENABLED:	Copy dump to separate buffer and carry on with
+> -				recovery
+> + *				recovery
+>   * @RPROC_COREDUMP_INLINE:	Read segments directly from device memory. Stall
+> -				recovery until all segments are read
+> + *				recovery until all segments are read
+>   */
+>  enum rproc_dump_mechanism {
+>  	RPROC_COREDUMP_DISABLED,
+> @@ -475,6 +476,7 @@ enum rproc_dump_mechanism {
+>   * @priv:	private data associated with the dump_segment
+>   * @dump:	custom dump function to fill device memory segment associated
+>   *		with coredump
+> + * @offset:	offset of the segment
+>   */
+>  struct rproc_dump_segment {
+>  	struct list_head node;
+> @@ -524,7 +526,9 @@ struct rproc_dump_segment {
+>   * @auto_boot: flag to indicate if remote processor should be auto-started
+>   * @dump_segments: list of segments in the firmware
+>   * @nb_vdev: number of vdev currently handled by rproc
+> - * @char_dev: character device of the rproc
+> + * @elf_class: firmware ELF class
+> + * @elf_machine: firmware ELF machine
+> + * @cdev: character device of the rproc
+>   * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+>   */
+>  struct rproc {
+> @@ -613,10 +617,10 @@ struct rproc_vring {
+>   * struct rproc_vdev - remoteproc state for a supported virtio device
+>   * @refcount: reference counter for the vdev and vring allocations
+>   * @subdev: handle for registering the vdev as a rproc subdevice
+> + * @dev: device struct used for reference count semantics
+>   * @id: virtio device id (as in virtio_ids.h)
+>   * @node: list node
+>   * @rproc: the rproc handle
+> - * @vdev: the virio device
+>   * @vring: the vrings for this vdev
+>   * @rsc_offset: offset of the vdev's resource entry
+>   * @index: vdev position versus other vdev declared in resource table
+
+With or without the above:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> -- 
+> 2.30.1
+> 
