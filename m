@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6C3390048
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EBC390049
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhEYLsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:48:41 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:43263 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhEYLsi (ORCPT
+        id S231996AbhEYLst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:48:49 -0400
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:50213 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229896AbhEYLss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:48:38 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 27D0A6001B;
-        Tue, 25 May 2021 11:47:02 +0000 (UTC)
-Date:   Tue, 25 May 2021 13:47:02 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 2/9] rtc: bd70528: Drop BD70528 support
-Message-ID: <YKzjtml4GL+dhP6j@piout.net>
-References: <cover.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
- <2beaa677bde0f9516f366b97e91419598f1dfde4.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 25 May 2021 07:48:48 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 97F821848
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:47:17 +0100 (IST)
+Received: (qmail 2807 invoked from network); 25 May 2021 11:47:17 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 11:47:17 -0000
+Date:   Tue, 25 May 2021 12:47:15 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC 04/26] mm, slub: simplify kmem_cache_cpu and tid setup
+Message-ID: <20210525114715.GN30378@techsingularity.net>
+References: <20210524233946.20352-1-vbabka@suse.cz>
+ <20210524233946.20352-5-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <2beaa677bde0f9516f366b97e91419598f1dfde4.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210524233946.20352-5-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/2021 13:14:09+0300, Matti Vaittinen wrote:
-> The only known BD70528 use-cases are such that the PMIC is controlled
-> from separate MCU which is not running Linux. I am not aware of
-> any Linux driver users. Furthermore, it seems there is no demand for
-> this IC. Let's ease the maintenance burden and drop the driver. We can
-> always add it back if there is sudden need for it.
+On Tue, May 25, 2021 at 01:39:24AM +0200, Vlastimil Babka wrote:
+> In slab_alloc_node() and do_slab_free() fastpaths we need to guarantee that
+> our kmem_cache_cpu pointer is from the same cpu as the tid value. Currently
+> that's done by reading the tid first using this_cpu_read(), then the
+> kmem_cache_cpu pointer and verifying we read the same tid using the pointer and
+> plain READ_ONCE().
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> This can be simplified to just fetching kmem_cache_cpu pointer and then reading
+> tid using the pointer. That guarantees they are from the same cpu. We don't
+> need to read the tid using this_cpu_read() because the value will be validated
+> by this_cpu_cmpxchg_double(), making sure we are on the correct cpu and the
+> freelist didn't change by anyone preempting us since reading the tid.
 > 
-> ---
-> My heart is a bit less bleeding when I see how much simpler this RTC
-> driver became..
-> Please let me know if some of you think the driver is needed.
-> ---
->  drivers/rtc/Kconfig       |   4 +-
->  drivers/rtc/rtc-bd70528.c | 316 ++------------------------------------
->  2 files changed, 13 insertions(+), 307 deletions(-)
-> 
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index d8c13fded164..398899217626 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -502,10 +502,10 @@ config RTC_DRV_M41T80_WDT
->  
->  config RTC_DRV_BD70528
->  	tristate "ROHM BD70528, BD71815 and BD71828 PMIC RTC"
-> -	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
-> +	depends on MFD_ROHM_BD71828
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-This won't apply as I applied b0ddc5b17005 ("rtc: bd70528: fix BD71815
-watchdog dependency") yesterday...
+Wow, that's a fun approach to avoiding disabling preemption but the
+validation check against preemption remains the same so;
+
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Mel Gorman
+SUSE Labs
