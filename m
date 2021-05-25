@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D84038FE40
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559ED38FE3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhEYJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:56:28 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3658 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232784AbhEYJ40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:56:26 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fq8VH0vQ5zQsgX;
-        Tue, 25 May 2021 17:51:19 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 17:54:55 +0800
-Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 10:54:52 +0100
-Date:   Tue, 25 May 2021 10:53:04 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/5] cxl/mem: Introduce cxl_decode_register_block()
-Message-ID: <20210525105304.000029b8@Huawei.com>
-In-Reply-To: <20210522001154.2680157-2-ira.weiny@intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
-        <20210522001154.2680157-2-ira.weiny@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S232790AbhEYJzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:55:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:54042 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232723AbhEYJyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:54:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D22E8D6E;
+        Tue, 25 May 2021 02:53:14 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DFDC3F719;
+        Tue, 25 May 2021 02:53:13 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry detection
+In-Reply-To: <20210524225508.GA14880@e120325.cambridge.arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com> <20210524101617.8965-3-beata.michalska@arm.com> <87fsyc6mfz.mognet@arm.com> <20210524225508.GA14880@e120325.cambridge.arm.com>
+Date:   Tue, 25 May 2021 10:53:07 +0100
+Message-ID: <87a6oj6sxo.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.147]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:11:50 -0700
-<ira.weiny@intel.com> wrote:
+On 24/05/21 23:55, Beata Michalska wrote:
+> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+>> On 24/05/21 11:16, Beata Michalska wrote:
+>> > This patch also removes the additional -dflags- parameter used when
+>>   ^^^^^^^^^^^^^^^^^^^^^^^
+>> s/^/Also remove/
+> I would kind of ... disagree.
+> All the commit msg is constructed using passive structure, the suggestion
+> would actually break that. And it does 'sound' bit imperative but I guess
+> that is subjective. I'd rather stay with impersonal structure (which is
+> applied through out the whole patchset).
 
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> Each register block located in the DVSEC needs to be decoded from 2
-> words, 'register offset high' and 'register offset low'.
-> 
-> Create a function, cxl_decode_register_block() to perform this decode
-> and return the bar, offset, and register type of the register block.
-> 
-> Then use the values decoded in cxl_mem_map_regblock() instead of passing
-> the raw registers.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Makes sense to factor this out.
+It's mainly about the 'This patch' formulation, some take exception to that :-)
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>
+>> > building sched domains as the asymmetry flags are now being set
+>> > directly in sd_init.
+>> >
+>>
+>> Few nits below, but beyond that:
+>>
+>> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+>>
+> Thanks a lot for the review and testing!
+>
+>> > +static inline int
+>> > +asym_cpu_capacity_classify(struct sched_domain *sd,
+>> > +			   const struct cpumask *cpu_map)
+>> > +{
+>> > +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+>> > +	struct asym_cap_data *entry;
+>> > +	int asym_cap_count = 0;
+>> > +
+>> > +	if (list_is_singular(&asym_cap_list))
+>> > +		goto leave;
+>> > +
+>> > +	list_for_each_entry(entry, &asym_cap_list, link) {
+>> > +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+>> > +			++asym_cap_count;
+>> > +		} else {
+>> > +			/*
+>> > +			 * CPUs with given capacity might be offline
+>> > +			 * so make sure this is not the case
+>> > +			 */
+>> > +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+>> > +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+>> > +				if (asym_cap_count > 1)
+>> > +					break;
+>> > +			}
+>>
+>> Readability nit: That could be made into an else if ().
+> It could but then this way the -comment- gets more exposed.
+> But that might be my personal perception so I can change that.
 
-> 
-> ---
-> Changes for V2:
-> 	Push this to the start of the series
-> ---
->  drivers/cxl/pci.c | 26 ++++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 8bdae74d7d78..b2f978954daa 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -922,17 +922,13 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev)
->  	return cxlm;
->  }
->  
-> -static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
-> +static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
-> +					  u8 bar, u64 offset)
->  {
->  	struct pci_dev *pdev = cxlm->pdev;
->  	struct device *dev = &pdev->dev;
-> -	u64 offset;
-> -	u8 bar;
->  	int rc;
->  
-> -	offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
-> -	bar = FIELD_GET(CXL_REGLOC_BIR_MASK, reg_lo);
-> -
->  	/* Basic sanity check that BAR is big enough */
->  	if (pci_resource_len(pdev, bar) < offset) {
->  		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> @@ -974,6 +970,14 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  	return 0;
->  }
->  
-> +static void cxl_decode_register_block(u32 reg_lo, u32 reg_hi,
-> +				      u8 *bar, u64 *offset, u8 *reg_type)
-> +{
-> +	*offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
-> +	*bar = FIELD_GET(CXL_REGLOC_BIR_MASK, reg_lo);
-> +	*reg_type = FIELD_GET(CXL_REGLOC_RBI_MASK, reg_lo);
-> +}
-> +
->  /**
->   * cxl_mem_setup_regs() - Setup necessary MMIO.
->   * @cxlm: The CXL memory device to communicate with.
-> @@ -1009,15 +1013,21 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  	for (i = 0; i < regblocks; i++, regloc += 8) {
->  		u32 reg_lo, reg_hi;
->  		u8 reg_type;
-> +		u64 offset;
-> +		u8 bar;
->  
->  		/* "register low and high" contain other bits */
->  		pci_read_config_dword(pdev, regloc, &reg_lo);
->  		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
->  
-> -		reg_type = FIELD_GET(CXL_REGLOC_RBI_MASK, reg_lo);
-> +		cxl_decode_register_block(reg_lo, reg_hi, &bar, &offset,
-> +					  &reg_type);
-> +
-> +		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
-> +			bar, offset, reg_type);
->  
->  		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
-> -			base = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
-> +			base = cxl_mem_map_regblock(cxlm, bar, offset);
->  			if (IS_ERR(base))
->  				return PTR_ERR(base);
->  			break;
+As always those are quite subjective! Methink something like this would
+still draw attention to the offline case:
 
+               /*
+                * Count how many unique capacities this domain covers. If a
+                * capacity isn't covered, we need to check if any CPU with
+                * that capacity is actually online, otherwise it can be
+                * ignored.
+                */
+                if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+                        ++asym_cap_count;
+                } else if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+                        sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+                        if (asym_cap_count > 1)
+                                break;
+                }
