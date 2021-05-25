@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD1138FC40
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0B138FB83
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhEYIKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:10:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10049 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232027AbhEYIJI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:09:08 -0400
-IronPort-SDR: 0GOsS9DYOEPEkX2KuRz7xvmklck6bdGXKCbzAvJIgUb0ijUSK8j+BdAiSBAHfm7oHNmNFTIEYs
- 9z0LsOdiSkyg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189506523"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="189506523"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:39:45 -0700
-IronPort-SDR: YmMP62HvLnsRDENhcuYbGX0IGcrKqlKQPGHYD0tYuzZh5nSZJkvW7v/E348GFtIWjn3wKW2SzO
- aGsISOFUentQ==
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="442428432"
-Received: from unknown (HELO [10.239.159.33]) ([10.239.159.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:39:41 -0700
-Subject: Re: [PATCH v1 4/5] perf mem: Support record for hybrid platform
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210520070040.710-1-yao.jin@linux.intel.com>
- <20210520070040.710-5-yao.jin@linux.intel.com> <YKvgFVVywalr+Owr@krava>
- <3d9e738d-b972-056b-d0bc-35ed1aaefbad@linux.intel.com>
-Message-ID: <aa5f0be5-c939-3c26-9d2a-3a073449bf98@linux.intel.com>
-Date:   Tue, 25 May 2021 15:39:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231502AbhEYHQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:16:43 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3939 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhEYHQj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:16:39 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fq4yn1GCTzBwM3;
+        Tue, 25 May 2021 15:12:17 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 15:15:08 +0800
+Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
+ (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 25 May
+ 2021 15:15:08 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <miklos@szeredi.hu>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] fuse: use DIV_ROUND_UP helper macro for calculations
+Date:   Tue, 25 May 2021 15:40:47 +0800
+Message-ID: <1621928447-456653-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <3d9e738d-b972-056b-d0bc-35ed1aaefbad@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+From: Wu Bo <wubo40@huawei.com>
 
->>>       rec_argv = calloc(rec_argc + 1, sizeof(char *));
->>>       if (!rec_argv)
->>>           return -1;
->>> +    /*
->>> +     * Save the allocated event name strings.
->>> +     */
->>> +    rec_tmp = calloc(rec_argc + 1, sizeof(char *));
->>> +    if (!rec_tmp) {
->>> +        free(rec_argv);
->>> +        return -1;
->>> +    }
->>
->> why not do strdup on all of them and always call free instead?
->> that would get rid of the rec_tmp and tmp_nr
->>
-> 
-> That is also one method. Let me try it.
-> 
+Replace open coded divisor calculations with the DIV_ROUND_UP kernel
+macro for better readability.
 
-If we do strdup on all of them, such as,
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+---
+ fs/fuse/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	if (e->record)
-		rec_argv[i++] = strdup("-W");
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 09ef2a4..62443eb 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -1405,7 +1405,7 @@ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
+ 		nbytes += ret;
+ 
+ 		ret += start;
+-		npages = (ret + PAGE_SIZE - 1) / PAGE_SIZE;
++		npages = DIV_ROUND_UP(ret, PAGE_SIZE);
+ 
+ 		ap->descs[ap->num_pages].offset = start;
+ 		fuse_page_descs_length_init(ap->descs, ap->num_pages, npages);
+-- 
+1.8.3.1
 
-	rec_argv[i++] = strdup("-d");
-
-	if (mem->phys_addr)
-		rec_argv[i++] = strdup("--phys-data");
-	....
-
-That looks too much strdup used here. So I choose to use a rec_tmp[] to record the allocated string 
-and free them before exit the function.
-
-Or we record the start index and end index in rec_argv[] for the allocated event string, use strdup 
-on them and call free before exit the function.
-
-What do you think?
-
-Thanks
-Jin Yao
