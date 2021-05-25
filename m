@@ -2,98 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E4F390898
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4F539089C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhEYSLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbhEYSLf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:11:35 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32710C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:10:05 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id v13-20020a17090abb8db029015f9f7d7290so2235518pjr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WoDug4+CXTtAZ7sweqscjf9FzzuoYDrpzUh3duNxd0M=;
-        b=Oi4ypauTpMTlbTHsjemSt/xTEJ/+9zAG69V7Bhfz4Ayw6ClXRcKNt44XVMLGCbhqsX
-         XbEbUlylWlOhH8C0b40HQ5uKQmrzfduQmKMgiYMHbzM504zzscb2JaCHcyTBnyU3etmn
-         iK2tkyAGMRu6Ux85N9WS/eFtPulNm/AU3nSXJb1E594u4tROoPYT1oRbC1doBf4ZsY0Z
-         Esp0o73MzIi9i5OY8+7UeNmm1mu0SrW4gyq9NOR09EUQHs/T3ZhxKLmLXCw91X/jZ/W4
-         GoDWITmSMH8TEfYoZWp6aOJ6hKSuUwJDSSRal+LvcixOXl22h4cDq9MTV1HBuyEnw10V
-         4/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WoDug4+CXTtAZ7sweqscjf9FzzuoYDrpzUh3duNxd0M=;
-        b=maVLz/yXOJv4s/ZDtS82mMOy1PKdPnAa9Rj2yKZjuitvJj6Hvo96U+N9EQ1fjd7OsM
-         uVYXntgpvluNVtcUDr6Se5wksq0LGP6d44Ixzw3J7GWazJWVfdpzU9/grLrxpGF6gRFU
-         rDlGDKYq91XxkTmC0ZjstpCqLYd7LJCvsNXo5iEsqoJWk2R9uUgY5rOIib7wKFz2uYob
-         jg3FX2CgXm/6O2G64gE7mpOGgZmNlvqCKlPhe0zS/Cgjmhs6p9D3ay7q2sPt1tu/3DMp
-         MQBL9KZJbChQQ2SlVItUKF+L3GVBTSdbM9I3SVRSINcVB0Et+2RWv0QgokDJOhATRAuL
-         r+EA==
-X-Gm-Message-State: AOAM530FAPcqR+MNoVZQI8NXmLfym43HBv983QgjJ6eKdLYUJt7MotqT
-        oM++0O6jvcZGbRRvRNbZSrEnlw==
-X-Google-Smtp-Source: ABdhPJwZUZIrJ4p4qUHQ1CeHU6I/SbwijQWPeFZemxrafZqwOWR1QtCnvwxuT4le2otbNgRg2XMojw==
-X-Received: by 2002:a17:90a:8a07:: with SMTP id w7mr31786769pjn.192.1621966204387;
-        Tue, 25 May 2021 11:10:04 -0700 (PDT)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id n30sm15154975pgd.8.2021.05.25.11.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 11:10:04 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:10:00 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YK09eG0xm9dphL/1@google.com>
-References: <20210121230336.1373726-1-satyat@google.com>
- <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+        id S230426AbhEYSNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229819AbhEYSNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 14:13:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B19F613F6;
+        Tue, 25 May 2021 18:11:47 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1llbWr-003XfO-63; Tue, 25 May 2021 19:11:45 +0100
+Date:   Tue, 25 May 2021 19:11:44 +0100
+Message-ID: <875yz6wun3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 22/22] Documentation: arm64: describe asymmetric 32-bit support
+In-Reply-To: <20210525172703.GA17250@willie-the-truck>
+References: <20210525151432.16875-1-will@kernel.org>
+        <20210525151432.16875-23-will@kernel.org>
+        <877djmwxbd.wl-maz@kernel.org>
+        <20210525172703.GA17250@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, gregkh@linuxfoundation.org, peterz@infradead.org, morten.rasmussen@arm.com, qais.yousef@arm.com, surenb@google.com, qperret@google.com, tj@kernel.org, hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org, rjw@rjwysocki.net, dietmar.eggemann@arm.com, bristot@redhat.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
-> On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
+On Tue, 25 May 2021 18:27:03 +0100,
+Will Deacon <will@kernel.org> wrote:
 > 
-> > This patch series adds support for direct I/O with fscrypt using
-> > blk-crypto.
-> >
+> On Tue, May 25, 2021 at 06:13:58PM +0100, Marc Zyngier wrote:
+> > On Tue, 25 May 2021 16:14:32 +0100,
+> > Will Deacon <will@kernel.org> wrote:
+> > > 
+> > > Document support for running 32-bit tasks on asymmetric 32-bit systems
+> > > and its impact on the user ABI when enabled.
+> > > 
+> > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > ---
+> > >  .../admin-guide/kernel-parameters.txt         |   3 +
+> > >  Documentation/arm64/asymmetric-32bit.rst      | 154 ++++++++++++++++++
+> > >  Documentation/arm64/index.rst                 |   1 +
+> > >  3 files changed, 158 insertions(+)
+> > >  create mode 100644 Documentation/arm64/asymmetric-32bit.rst
+> > >
+> > 
+> > [...]
+> > 
+> > > +KVM
+> > > +---
+> > > +
+> > > +Although KVM will not advertise 32-bit EL0 support to any vCPUs on an
+> > > +asymmetric system, a broken guest at EL1 could still attempt to execute
+> > > +32-bit code at EL0. In this case, an exit from a vCPU thread in 32-bit
+> > > +mode will return to host userspace with an ``exit_reason`` of
+> > > +``KVM_EXIT_FAIL_ENTRY``.
+> > 
+> > Nit: there is a bit more to it. The vcpu will be left in a permanent
+> > non-runnable state until KVM_ARM_VCPU_INIT is issued to reset the vcpu
+> > into a saner state.
 > 
-> Is there an update on this set please?
-> 
-> I can't seem to find any reviews or follow-up since v8 was posted back in
-> January.
-> 
-This patchset relies on the block layer fixes patchset here
-https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
-That said, I haven't been able to actively work on both the patchsets
-for a while, but I'll send out updates for both patchsets over the
-next week or so.
-> -- 
-> Lee Jones [李琼斯]
-> Linaro Services Senior Technical Lead
-> Linaro.org │ Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> Thanks, I'll add "and will remain non-runnable until re-initialised by a
+> subsequent KVM_ARM_VCPU_INIT operation".
+
+Looks good.
+
+> Can the VMM tell that it needs to do that? I wonder if we should be
+> setting 'hardware_entry_failure_reason' to distinguish this case.
+
+The VMM should be able to notice that something is amiss, as any
+subsequent KVM_RUN calls will result in -ENOEXEC being returned, and
+we document this as "the vcpu hasn't been initialized or the guest
+tried to execute instructions from device memory (arm64)".
+
+However, there is another reason to get a "FAILED_ENTRY", and that if
+we get an Illegal Exception Return exception when entering the
+guest. That one should always be a KVM bug.
+
+So yeah, maybe there is some ground to populate that structure with
+the appropriate nastygram (completely untested).
+
+	M.
+
+diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+index 24223adae150..cf50051a9412 100644
+--- a/arch/arm64/include/uapi/asm/kvm.h
++++ b/arch/arm64/include/uapi/asm/kvm.h
+@@ -402,6 +402,10 @@ struct kvm_vcpu_events {
+ #define KVM_PSCI_RET_INVAL		PSCI_RET_INVALID_PARAMS
+ #define KVM_PSCI_RET_DENIED		PSCI_RET_DENIED
+ 
++/* KVM_EXIT_FAIL_ENTRY reasons */
++#define KVM_ARM64_FAILED_ENTRY_NO_AARCH32_ALLOWED	0xBADBAD32
++#define KVM_ARM64_FAILED_ENTRY_INTERNAL_ERROR		0xE1215BAD
++
+ #endif
+ 
+ #endif /* __ARM_KVM_H__ */
+diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
+index 6f48336b1d86..e97cd4de1fa7 100644
+--- a/arch/arm64/kvm/handle_exit.c
++++ b/arch/arm64/kvm/handle_exit.c
+@@ -262,6 +262,10 @@ int handle_exit(struct kvm_vcpu *vcpu, int exception_index)
+ 		 * have been corrupted somehow.  Give up.
+ 		 */
+ 		run->exit_reason = KVM_EXIT_FAIL_ENTRY;
++		run->fail_entry.hardware_entry_failure_reason = (vcpu->arch.target == -1) ?
++			KVM_ARM64_FAILED_ENTRY_NO_AARCH32_ALLOWED :
++			KVM_ARM64_FAILED_ENTRY_INTERNAL_ERROR;
++		run->fail_entry.cpu = vcpu->cpu;
+ 		return -EINVAL;
+ 	default:
+ 		kvm_pr_unimpl("Unsupported exception type: %d",
+
+-- 
+Without deviation from the norm, progress is not possible.
