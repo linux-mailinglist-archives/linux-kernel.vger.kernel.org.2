@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FD739060C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A4A390611
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbhEYQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:00:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55802 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhEYQAi (ORCPT
+        id S232844AbhEYQCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhEYQCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:00:38 -0400
-Received: from mail-ua1-f70.google.com ([209.85.222.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llZSV-0007FW-NS
-        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 15:59:07 +0000
-Received: by mail-ua1-f70.google.com with SMTP id f15-20020a9f2bcf0000b02901f8fe91b89cso13264419uaj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:59:07 -0700 (PDT)
+        Tue, 25 May 2021 12:02:21 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CC7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:00:51 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id w15so38817162ljo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AlGDwi+fKb5zDo0UgCxQb6+0ejL9MD7uZrEbLSa4Oto=;
+        b=F8IoZ31vbu3JuKyp9XnxNMl6YxtNA2oECxMIbLi9v7US/TCuDrFIPmY876ESiknlBc
+         cAKK1IAGOHcTMDm51QNr9q62Lx/yjQC4eiavpb6wfgGZnDi8R1R24k+pZ5+7OWIBjSnt
+         f9C0aKQJlR8IR67wEbnAeeJWeez+R+6+5yuntCPH5gVMbHonthRDAgW1/EI5npLjF1vh
+         hZx92RzdJKVaAhRzMmxq2psslRuA4eZJGhEzyNUOh/fFOHmlGJGhJ56xXtI4VCj4fZJv
+         giLk1Ue6Dnsmns3bHjtEQwj0Oz8LWpgllGSbx2TmVO8qpVtEearWBhhmTpzH3st0oC99
+         Pf/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qOqY/PaRB6dSn8r0kW8K84aqr6meO0lIWYfkoynWtaE=;
-        b=SmubmuhMTx6hhkeDQlDVWxhHhalD9I+CBh2+5fl42STcIJTQRWjPwZ1zWE4BjApJej
-         2vVpXz+FyEE2K8ZtQK9OHFtMlc1JFxwVKvIKF55Xql5IO8g6aJhI5dLc/FqXjAJic3jb
-         gD3ddulCNuwEtiOd5gchsdbL9UB3hFxrs9yH+CKClLmi/IJOO9xCbL9NQv2vPF/cQgHp
-         vswDVIpwbjjHWQwwNrRlQ7uETG2AVdwO7TuHvVGk9c8b3qwP7d91PcHhkklKjpfHK9T3
-         a/aA3XJ5a+1LpA+eOiIxQ/Kl+rTEQ0aPkDbyPnbk1hylpZZ56HVJQz138+njeFqR/1Fp
-         HgKw==
-X-Gm-Message-State: AOAM531yHtgnEuqs20OHlmmNrVt6eatLcl5sm+sxxhWBs15KbHILHsPG
-        pm2sBETrC0cTLkXHaWh30SwlwlDrPQ9AmJWJ4HVo3gIYtbkOhrDdLy1SCHbRz+NEZYrcQn9Ea6h
-        CEsz67lt9PmHSxg7+UUkn92XJyC859jfub7kQ5gBIxQ==
-X-Received: by 2002:a67:ff98:: with SMTP id v24mr26470726vsq.50.1621958346453;
-        Tue, 25 May 2021 08:59:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcpLRiXf0FA0FqFZi6+bm39L/TX6DsrBBXmeURF2JB9Uix9bnsGyhRkftDM9zOVxfRQ7ziwQ==
-X-Received: by 2002:a67:ff98:: with SMTP id v24mr26470707vsq.50.1621958346299;
-        Tue, 25 May 2021 08:59:06 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id d25sm1654563vsh.5.2021.05.25.08.59.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 08:59:05 -0700 (PDT)
-Subject: Re: [PATCH v2 5/5] extcon: extcon-max8997: Simplify driver using devm
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     hanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
- <2bb395c1d6547a6597d72de21dbb9687926de713.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <208fcd8c-f84f-667a-2505-a5abff625c59@canonical.com>
-Date:   Tue, 25 May 2021 11:59:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AlGDwi+fKb5zDo0UgCxQb6+0ejL9MD7uZrEbLSa4Oto=;
+        b=Dam86gKqLfIsMPYG9c++J7UGYeskhOUcNy+Nc7R/fJE+9VIuzgoXZ6NiZYsvHhTOk5
+         HxvzfNfNNVnFRQ6CJwsC2qXA2xyD3d9iGVAmq76zGmxeiEBpNLs/I+cNA8LuvUky6D67
+         8dr5C+y+eAUF/e75yBuy8rfDTcXiK8j16HmI04GFEcrOTO8a2HMGjPdiN/dyoog7p/c6
+         JCi3bFB8Sdsme3KSBRtoqP9VWJXr39dzL0eCq/XKw0+CA3LYEcIrDZpMSgqvjhB2WOO4
+         WbAB/ZkO9UCvwmZ8RGOohs0iTgsZGFQPVcQ9+0YgOFnNKbYRgczC6dGU4cHpcraryVnS
+         mvtg==
+X-Gm-Message-State: AOAM533YW2WsTtigKDxWY1Vs7PvvZmNeZdPYFwqpS2Zhh3zNFLQB3cHp
+        fQdCAsvRTDH2f63eiFbazLVglXpNDHfB9KXCGz8CAA==
+X-Google-Smtp-Source: ABdhPJx9xYr2Q9z8EeDwQEaSd0fE2W8VGVS1cMT3ZD+4m9iso3u01S1B4hRaNGxuBydJN6h2WIrDsTxaLTS5pE2QPtU=
+X-Received: by 2002:a2e:b4ed:: with SMTP id s13mr21295934ljm.86.1621958449402;
+ Tue, 25 May 2021 09:00:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2bb395c1d6547a6597d72de21dbb9687926de713.1621340116.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210524233946.20352-1-vbabka@suse.cz> <20210524233946.20352-12-vbabka@suse.cz>
+In-Reply-To: <20210524233946.20352-12-vbabka@suse.cz>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 25 May 2021 18:00:23 +0200
+Message-ID: <CAG48ez0mXxqLdSse6OpAMLNxSMc7nNor8PXk=kagPppGAXAXgA@mail.gmail.com>
+Subject: Re: [RFC 11/26] mm, slub: move disabling irqs closer to get_partial()
+ in ___slab_alloc()
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/2021 08:33, Matti Vaittinen wrote:
-> Simplify driver by switching to use the resource managed IRQ
-> requesting and resource managed work-queue initialization.
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> Changelog:
->  v2:
->   - IRQ freeing fix splitted in own patch
-> 
-> Please note that the change is compile-tested only. All proper testing is
-> highly appreciated.
-> ---
->  drivers/extcon/extcon-max8997.c | 47 +++++++++++----------------------
->  1 file changed, 16 insertions(+), 31 deletions(-)
-> 
+On Tue, May 25, 2021 at 1:40 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> Continue reducing the irq disabled scope. Check for per-cpu partial slabs with
+> first with irqs enabled and then recheck with irqs disabled before grabbing
+> the slab page. Mostly preparatory for the following patches.
+[...]
+> diff --git a/mm/slub.c b/mm/slub.c
+[...]
+>         if (slub_percpu_partial(c)) {
+> +               local_irq_save(flags);
+> +               if (unlikely(c->page)) {
+> +                       local_irq_restore(flags);
+> +                       goto reread_page;
+> +               }
+> +               if (unlikely(!slub_percpu_partial(c))) /* stolen by IRQ? */
+> +                       goto new_objects;
 
+nit: I think this comment is wrong by the end of the patch series,
+since at that point, in RT configurations, it could also be stolen by
+another task, if I understand correctly what migrate_disable() means?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-
-Best regards,
-Krzysztof
+Similarly the comment above ___slab_alloc() still talks about
+disabling preemption for bulk allocation.
