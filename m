@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2E938FBE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20E338FC3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhEYHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:40:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231626AbhEYHkt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:40:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621928359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jeWJ7HGi3jq6uRXU1bbWV9h6gPERN4k8ZMEjEkjKNkc=;
-        b=i+PODPJNdkRbppd/fRtTT4Grvms1TDF1uNz1C9VfW6Z50w9u/5DcBo+GUhVGRltiQoNG7j
-        KRQJYiv4koxs1DE9bwswYGpDCQqD4kNt4QyXJzCjpYZ2H62hw/BDaHqX493Cypmn3sZI+q
-        FXdnfJcDQw7FX9jumZEmK1Yq8irZfOU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-S4dYbxgOOQe4yMwIJ2HYlw-1; Tue, 25 May 2021 03:39:15 -0400
-X-MC-Unique: S4dYbxgOOQe4yMwIJ2HYlw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8684F1009465;
-        Tue, 25 May 2021 07:39:14 +0000 (UTC)
-Received: from T590 (ovpn-13-203.pek2.redhat.com [10.72.13.203])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5E3A60BF1;
-        Tue, 25 May 2021 07:38:47 +0000 (UTC)
-Date:   Tue, 25 May 2021 15:38:42 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        slp@redhat.com, sgarzare@redhat.com,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
-Message-ID: <YKypgi2qcYVTgYdv@T590>
-References: <20210520141305.355961-1-stefanha@redhat.com>
- <20210520141305.355961-4-stefanha@redhat.com>
- <20210524145928.GA3873@lst.de>
- <7cc7f19b-34b3-1501-898d-3f41e047d766@redhat.com>
+        id S232225AbhEYIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:10:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10206 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231303AbhEYIJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:09:08 -0400
+IronPort-SDR: XbI7sfyIXhe/M2EiqiuDPyct2Wy8ycXiD1xpFNVRCfMRx+ieR8hgWYgDk1q0hnhAfUglxjrWXS
+ PSrO8BE6nERg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189506748"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="189506748"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:40:56 -0700
+IronPort-SDR: dzhWYPGoftcRZ2QCpNxYw6Gycu/nflkmMjp6EE0Ar1TE/P6h7ZgsyDZGkCrQMX4H5fO2xvLkFO
+ JGGe8QM2zWbw==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="476287866"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:40:52 -0700
+Subject: Re: [kbuild-all] Re: [PATCH] kvm: fix boolreturn.cocci warnings
+To:     Peter Zijlstra <peterz@infradead.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <202105251316.O1igBtAa-lkp@intel.com>
+ <20210525055940.GA7291@9b81fe870f96>
+ <YKyjCOk2UiVQCh7m@hirez.programming.kicks-ass.net>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <91885328-dc7f-3d12-3ddb-53a403bb8c60@intel.com>
+Date:   Tue, 25 May 2021 15:39:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cc7f19b-34b3-1501-898d-3f41e047d766@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YKyjCOk2UiVQCh7m@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:22:48AM +0200, Paolo Bonzini wrote:
-> On 24/05/21 16:59, Christoph Hellwig wrote:
-> > On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
-> > > Possible drawbacks of this approach:
-> > > 
-> > > - Hardware virtio_blk implementations may find virtqueue_disable_cb()
-> > >    expensive since it requires DMA. If such devices become popular then
-> > >    the virtio_blk driver could use a similar approach to NVMe when
-> > >    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
-> > > 
-> > > - If a blk_poll() thread is descheduled it not only hurts polling
-> > >    performance but also delays completion of non-REQ_HIPRI requests on
-> > >    that virtqueue since vq notifications are disabled.
-> > 
-> > Yes, I think this is a dangerous configuration.  What argument exists
-> > again just using dedicated poll queues?
-> 
-> There isn't an equivalent of the admin queue in virtio-blk, which would
-> allow the guest to configure the desired number of poll queues.  The number
-> of queues is fixed.
-
-Dedicated vqs can be used for poll only, and I understand VM needn't to know
-if the vq is polled or driven by IRQ in VM.
-
-I tried that in v5.4, but not see obvious IOPS boost, so give up.
-
-https://github.com/ming1/linux/commits/my_v5.4-virtio-irq-poll
 
 
-Thanks,
-Ming
+On 5/25/21 3:11 PM, Peter Zijlstra wrote:
+> On Tue, May 25, 2021 at 01:59:40PM +0800, kernel test robot wrote:
+>> From: kernel test robot <lkp@intel.com>
+>>
+>> arch/arm64/kvm/mmu.c:1203:9-10: WARNING: return of 0/1 in function 'kvm_age_gfn' with return type bool
+>> arch/arm64/kvm/mmu.c:1173:9-10: WARNING: return of 0/1 in function 'kvm_set_spte_gfn' with return type bool
+>> arch/arm64/kvm/mmu.c:1216:9-10: WARNING: return of 0/1 in function 'kvm_test_age_gfn' with return type bool
+>> arch/arm64/kvm/mmu.c:1159:9-10: WARNING: return of 0/1 in function 'kvm_unmap_gfn_range' with return type bool
+>>
+>>   Return statements in functions returning bool should use
+>>   true/false instead of 1/0.
+>> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> Per 2b076054e524 ("remove boolinit.cocci"), I have a very dim view of
+> this sort of thing.
 
+Hi Peterz,
+
+Sorry for the noise, we'll disable the check.
+
+>
+>> Fixes: 63b3f96e1a98 ("kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT")
+> *how* ?!?
+
+The bot is stupid, it used the commit that first found the issues,
+we'll take a look at it.
+
+Best Regards,
+Rong Chen
