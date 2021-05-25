@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D17138FD06
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9F738FD05
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhEYImZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhEYImW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:42:22 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D9EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:40:52 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so27881134otp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ET8TH4a7icyzqhz8XmbF4WtAKB0L7qzDzL0Lz6SbV0=;
-        b=PdYbSrbhEiB/6UsfOFN9mEke6zkgUYRAl7Hsx5O0I+lScAu7KVTzuNWWGeaBbJy0ID
-         r2uM+CN2FlnTLULqzDffOZJ7jsLAOXe3pIBULS4LEVQdnfbtdIK7ov+lwMUY8FfQy9gQ
-         FIuBVVdHaTKvbVBXxQ8PYD+S6zFor4KtWU08Ndusr7rcxUIhaMilbQPrFtcwcGjefkS/
-         a3Ka6yj+6896f/dQoIOdKuxrNvYAI7HtoQ3LrWllwqISOMeYtOb6tSUSaZE8zWpXMopy
-         5Rea1fKdNUNHdu0Qx2/PC6mrJr1bqbpt3czRmva8ptscX8UcyiVltHS69gVO8jzDY4+w
-         3qLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ET8TH4a7icyzqhz8XmbF4WtAKB0L7qzDzL0Lz6SbV0=;
-        b=r3FMpxvTFGNeWHzqyJDyvP5A6QedDiOVBkj0RO9LsYkbw+YsPCm09DOevhlC2RlmY4
-         wmKTFtN3rkPwo2NgHlGgKktRoVkm46xTHM5rwwzrxhzRBvt7mKlwCGZ89kXPcpk6GXLK
-         zpDrkfgDPgOoe4JyxRmDXEEgqQaZayhlAqlNoja0Xt4fhTs3wzQpO3UzqssIpuC0iBog
-         PaWuOtdoWWJnIGE8e7/W5Sm1manIbqxiuoZN12RYAdPcJTmHJMtcSWYMH4msJRJCAw4w
-         /G0s0NXNM/F7jfBk7dhjrQSNOtKyiCR+aZe9U9+gbGIQ5ZXicKk7vmyT9yyWiRKDD7+e
-         aLdA==
-X-Gm-Message-State: AOAM532pVjnJZozTLvCBAeGbqZb4PsVJjVzs77fk5tHYlAb6eaG1Zz7q
-        D3O1RWhimjQ0eYMZPq3VMIQmxFZyCngYu8iqvqs=
-X-Google-Smtp-Source: ABdhPJzlheYhN78NwTb8+1mxjOpGFYfJQS1zrtf3mbG2zBzuuzfK2O1mcYCS9AqXChGNsM5/0xFPY+md9fpUyPTbrfc=
-X-Received: by 2002:a05:6830:812:: with SMTP id r18mr11481269ots.248.1621932052205;
- Tue, 25 May 2021 01:40:52 -0700 (PDT)
+        id S231881AbhEYImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:42:05 -0400
+Received: from mail-bn7nam10on2062.outbound.protection.outlook.com ([40.107.92.62]:12512
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230108AbhEYImE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:42:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VOfzXlivrxcGNghm6sdL6tyDuFOc1TBXlRf+w0uVnHbsR5QYFed/d3UnGeI8ltyfL0mE2j1AsEmU+n6O8ea6Vu+5GFxmkfXOw5/z6H1oBzn02D4rfybDpeTH7tYz/d5Xulvp8vrlA6hcasBoQgHHOjatgDYwkyAxB01QicIvRkGtmWGmfP+OZyWDDWO32eKuC9e1IyFlBWrz2RPGopi+2VvIk1RkDflJ3XbS8jjDyeiFU8/wINqr9H88Jwa/EB7Gbkav6/2QGUMKpAedS0dJqUS3LZ8Lx5h3s2T8InevprBQAEs79HtQZkFjg3Ub5sXc0owysmRoWinkDCbxZH4W/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pyc5F7Fj8O+dV3DYFFUZN5sA8rdJ5gDq4gQrDEvmW24=;
+ b=J9O2F6zLSmuUFiuDOn55IR7z4hz43hxZqEF3t14ioJ/9v2zgdNIWh8kcACtd6AmvSNhhwaadCfkLznwwHuFhj9WL/bHzh7Yn5DkDL3wrOm4ibrvvwHLnddNYcRHfYh2LbzpKG1dhs6XhoqEzzcT/7ktuewWQ8ThAYKQG2sSu5W+T2j8IuK38nFALMb9MKaM0QrzBaGF1PYGyNVe58eIps2RTp/MUt2tjMRM/whUJZfja4mp92VWAe4fpuL1IFWyXrF6xpPmTKOnuUTa2Iqlq54RtWxVXFD7Qdnhif05bYi80FaX8z+XtVCOJ0QMqy1XZm7Ikk/iEbdMLdv5jWPHsFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pyc5F7Fj8O+dV3DYFFUZN5sA8rdJ5gDq4gQrDEvmW24=;
+ b=KBn8Qa2GPxayAC4hjSWT9X++uIKDvfQt8F69W+LWOPVdt4pqfDCmot9ba6pJ4mnEnXwmtdY6LyVvaNCd6Vo5OWeqFa28Q57kNzde7tkW30007JM4XYQY7t57p5tF2O2h4aMe/HkZakigm6qB2hcKb2UQIEgeUA/fqAHRXn3Ye43Z0fqD3aC1WiDW+TrFoO1p0oIMWE0IvtTOC9NrG6TCZbxekIIGUXQZuL9sUITZnNSpW6PiebwZQ0CMFOjk/Q9vWm/nJO8bKYfJicsVu2bWq8zFTbf5vZ1JZfNaep2v4qjUXSSlw60T5vJiTrd/sGPgKPwTQqSi92RYQgjyZfpS2A==
+Received: from BN0PR03CA0047.namprd03.prod.outlook.com (2603:10b6:408:e7::22)
+ by BYAPR12MB3272.namprd12.prod.outlook.com (2603:10b6:a03:131::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Tue, 25 May
+ 2021 08:40:31 +0000
+Received: from BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e7:cafe::81) by BN0PR03CA0047.outlook.office365.com
+ (2603:10b6:408:e7::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Tue, 25 May 2021 08:40:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT022.mail.protection.outlook.com (10.13.176.112) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Tue, 25 May 2021 08:40:31 +0000
+Received: from [10.26.49.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 08:40:28 +0000
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <03775d09-f3ff-ff7a-626a-812163d6871d@nvidia.com>
+Date:   Tue, 25 May 2021 09:40:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210517112044.233138-1-aisheng.dong@nxp.com> <20210517112044.233138-6-aisheng.dong@nxp.com>
- <69b5a56c-e9a0-01e7-5fd5-78c6e656fa68@redhat.com>
-In-Reply-To: <69b5a56c-e9a0-01e7-5fd5-78c6e656fa68@redhat.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Tue, 25 May 2021 16:39:45 +0800
-Message-ID: <CAA+hA=Rp-vGaLKO+diaGr5UqZTMEOM-ED0++NWzih8MgD3z9=A@mail.gmail.com>
-Subject: Re: [PATCH 5/5] mm/page_alloc: improve memmap_pages and dma_reserve
- dbg msg
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>, linux-mm@kvack.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210523234437.25077-5-digetx@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e11b96e5-e72b-4b3f-e340-08d91f58c197
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3272:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB32724A425C9675189C4299B0D9259@BYAPR12MB3272.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5ypb5SjwC7MznWBT7Q57ZsgjHo74/7tMKsToHeUlTbqIEbqUIDe8Mgk1+BQ5oQ9n8etoWRB34evDqi4+fuiqGMsOCfa1ev/uiWyRyILw91Jf66PLnP0SkKzeFjhoxu2i8ngBOddFOLVU3J0F0JBhlTGqR4FkUNFURkd76tWNXtoymADTX7gF40CWESlyAZf04p9j/Dw+sNhT5lIhzud/NZY5VWQ+yJTTLMqzunMkl3ybsSH8r3L1/ILL75quAxFWLc7khqH4KP3wsm5J0lsSgfhe3jgh/DfgnJ+bxdFjO0fCWotUvSN3GegI+Z9IYKFxsWQAn85/kSuXtjjfZnRvN7vkrvbCEkwkbg6vl2s1mCybsVkATGy+2UnT5QFlaJoRkU+woks2aZfp/kpWu14/1kymbzN+zjyS3QJ5CXmZvigObFvVSdSU7x2O/laCsycjXc5LygkrFwYWmXzjNhDMPyBrZxqrFE/CyVLt4fcSSOCPajpYMO3HZoDeR2tAmnTAGGnrp/FsRZeLNqDGE1sy3HJ9hYNaoqftNa4uSWG/uVAxOsWzOK9oekwd2RxyGCgFv74kwhxW0m0Ff80lj4AElCz3aS6XLfzR7GlBX5ggBNeLZ0RBqzTUwHJa0ZqdlZz77rOgBU+MIz5s0sUlXceX8K6wqhWxjRsK09PRMQMDbZ6fmgcqas2MnSiQl2gFHL2a
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(46966006)(36840700001)(36860700001)(2906002)(426003)(82310400003)(31686004)(4326008)(5660300002)(53546011)(31696002)(2616005)(7416002)(36756003)(26005)(86362001)(8676002)(70206006)(336012)(16526019)(8936002)(7636003)(356005)(70586007)(82740400003)(110136005)(186003)(478600001)(36906005)(16576012)(316002)(47076005)(54906003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 08:40:31.3436
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e11b96e5-e72b-4b3f-e340-08d91f58c197
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3272
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 4:01 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 17.05.21 13:20, Dong Aisheng wrote:
-> > Make debug message more accurately.
-> >
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> > ---
-> >   mm/page_alloc.c | 5 +++--
-> >   1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 3100fcb08500..16f494352f58 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -7263,14 +7263,15 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
-> >                                       pr_debug("  %s zone: %lu pages used for memmap\n",
-> >                                                zone_names[j], memmap_pages);
-> >                       } else
-> > -                             pr_warn("  %s zone: %lu pages exceeds freesize %lu\n",
-> > +                             pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
-> >                                       zone_names[j], memmap_pages, freesize);
-> >               }
-> >
-> >               /* Account for reserved pages */
-> >               if (j == 0 && freesize > dma_reserve) {
-> >                       freesize -= dma_reserve;
-> > -                     pr_debug("  %s zone: %lu pages reserved\n", zone_names[0], dma_reserve);
-> > +                     pr_debug("  %s zone: %lu pages reserved for dma\n",
-> > +                              zone_names[0], dma_reserve);
->
-> ... which is not really correct I think. See the comment above
-> set_dma_reserve(). It's called dma_reserve because it involves the first
-> zone -- where many unfreeable allocations like the kernel image end up.
->
-> Memory is not reserved for dma purposes ... and the zone name should be
-> sufficient.
 
-You're right. I will drop this line of change.
-Thanks
+On 24/05/2021 00:44, Dmitry Osipenko wrote:
+> Specify components string for Nexus 7 using the Intel BayTrail components
+> format. This may allow us to create a more generic UCM for RT5640 codec.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+> index a81f2ebfc00c..87e0a47040a5 100644
+> --- a/sound/soc/tegra/tegra_asoc_machine.c
+> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>  	.add_hp_jack = true,
+>  };
+>  
+> +/*
+> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+> + * Headphones: Connected to HPOL/R pins.
+> + * Headset Microphone: Unconnected.
+> + *
+> + * IF2_DAC/ADC are unpopulated.
+> + */
+> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+> +	.mclk_rate = tegra_machine_mclk_rate_256,
+> +	.card = &snd_soc_tegra_rt5640,
+> +	.add_common_dapm_widgets = true,
+> +	.add_common_controls = true,
+> +	.add_common_snd_ops = true,
+> +	.add_hp_jack = true,
+> +};
+> +
+>  /* RT5632 machine */
+>  
+>  SND_SOC_DAILINK_DEFS(rt5632_hifi,
+> @@ -712,6 +730,7 @@ static const struct of_device_id tegra_machine_of_match[] = {
+>  	{ .compatible = "nvidia,tegra-audio-wm8753", .data = &tegra_wm8753_data },
+>  	{ .compatible = "nvidia,tegra-audio-rt5677", .data = &tegra_rt5677_data },
+>  	{ .compatible = "nvidia,tegra-audio-rt5640", .data = &tegra_rt5640_data },
+> +	{ .compatible = "nvidia,tegra-audio-rt5640-grouper", .data = &tegra_rt5640_grouper_data },
 
-Regards
-Aisheng
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
->
+Is there any harm always populating the components data for rt5640? I
+did not see any existing UCM support for Tegra+rt5640 platforms in ALSA.
+
+Jon
+
+-- 
+nvpublic
