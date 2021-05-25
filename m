@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC02390A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F47390A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhEYUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhEYUQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:16:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 794A4611C2;
-        Tue, 25 May 2021 20:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621973683;
-        bh=4eLLwykJYynzNm459FPtdgPrTAnn33wst0rMYCkOU6s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HTWN/rIH0T/pNnwNyFsmSHoaGAH/eZSEHCY9TvoNATshqQLMhl0teiRI0WWBpwZqo
-         /bmKOorVeE+rogPlzyTi3mzuo1i6tZoD3VOhBOyQ2J5k7/TnqAzex1xGRoLZIrlEDQ
-         uvMBuOn0uxShN4BuhRj2xehSEwzm7+9vVc4B6GUk0i4/E6dy5/u7wH86Py7rjVabY9
-         mQbeF//j/sHo/wNPcxsvChia0YhPvYUTTY0B4lToMNvXal5v8IrhCaisqCjZU/oGWc
-         MFF2zsQSHIQMAOSiSYXJCyp58er5N+OV9f7l6h4Q6i7heSLHa97+XlKvfUAy1phPdK
-         XlyyWGG/xw6Xw==
-Date:   Tue, 25 May 2021 15:14:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Koba Ko <koba.ko@canonical.com>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
- npss.
-Message-ID: <20210525201442.GA1223038@bjorn-Precision-5520>
+        id S232995AbhEYUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:16:56 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:40461 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhEYUQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:16:55 -0400
+Received: by mail-pf1-f176.google.com with SMTP id x188so24478939pfd.7;
+        Tue, 25 May 2021 13:15:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xjyrkNstyxFQKqfWq5lLR6k4iAnQVrfBsjAIBO8yIB4=;
+        b=h9YHkV6kGGk1GaqC+Cxy1CSAdAvBrTGG9j51ppv2LFv+FZY/4MZbKru37XhLseBSbU
+         qvy5H/GZ05pknq/GQRPVhVRxClRJo0u4gMFt/fWTGAwcQMMROHj/qRUnTnC7Zu5oba4/
+         dDJ+ZsECfPkYU03nnBpPMahdiNjVLHdLLf1Y8oRR8T3VaUJD9S5rgbZ4h929uj1Eq1dM
+         ti1FWis1gA0kYIg2kzE3KzL2Xc22xi2obexlUZZO/yokSIJfmzrf/cE+5cvU3zz2vnNv
+         x0MNd7o2MOCIF6Mr0Iy7ad1FKDHkLa+g5lKC3QOEqGtkhX7xP2C7Hc2Rq0yfbpEsH2O7
+         vaxg==
+X-Gm-Message-State: AOAM531sNSlhUDQFL+AjSr1w/PhIK1apRnxEkav1tGv60ohwh+Y2syst
+        6KwmpwjNqhYqMqObChbMOccV5UD5cQw=
+X-Google-Smtp-Source: ABdhPJyelylIzUHjSXaLGdhQplZRKDRMl5sCwADV8hpM5I8BV+pXeZNAAJrgE4AkDRStnCQSqmRABA==
+X-Received: by 2002:a63:7c57:: with SMTP id l23mr20576646pgn.429.1621973724162;
+        Tue, 25 May 2021 13:15:24 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id z22sm14862499pfa.157.2021.05.25.13.15.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 13:15:23 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Let UPIU completion trace print RSP
+ UPIU
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210523211409.210304-1-huobean@gmail.com>
+ <20210523211409.210304-2-huobean@gmail.com>
+ <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
+ <f285211d2b8ef2c9c3c01974c91b7b7439b0fd0b.camel@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <c1ea61e7-d269-28da-a2f9-8b59abe787c8@acm.org>
+Date:   Tue, 25 May 2021 13:15:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525074426.GA14916@lst.de>
+In-Reply-To: <f285211d2b8ef2c9c3c01974c91b7b7439b0fd0b.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:44:26AM +0200, Christoph Hellwig wrote:
-> On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
-
-> > @@ -2958,6 +2959,15 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> >  
-> >  	dev_info(dev->ctrl.device, "pci function %s\n", dev_name(&pdev->dev));
-> >  
-> > +	if (pm_suspend_via_firmware() || !dev->ctrl.npss ||
-> > +	    !pcie_aspm_enabled(pdev) ||
-> > +	    dev->nr_host_mem_descs ||
-> > +	    (dev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND)) {
+On 5/25/21 12:28 PM, Bean Huo wrote:
+> If this is problem, I can change the code, let them more readable.
 > 
-> Before we start open coding this in even more places we really want a
-> little helper function for these checks, which should be accomodated with
-> the comment near the existing copy of the checks.
-> 
-> > +		pdev->d3cold_allowed = false;
-> > +		pci_d3cold_disable(pdev);
-> > +		pm_runtime_resume(&pdev->dev);
-> 
-> Why do we need to both set d3cold_allowed and call pci_d3cold_disable?
+> how do you think?
 
-Ugh, this looks pretty hard to maintain.
+A long explanation was needed to show that the patch is correct. I think
+this shows that the code is confusing :-) Hence please use the struct
+utp_upiu_rsp type when interpreting a pointer as a response.
 
-I don't see why setting d3cold_allowed=false is useful.
+Thanks,
 
-pci_d3cold_disable() already sets dev->no_d3cold=true, and the only place
-we look at d3cold_allowed is pci_dev_check_d3cold():
-
-  if (dev->no_d3cold || !dev->d3cold_allowed || ...)
-
-so we won't even look at d3cold_allowed when no_d3cold is set.
-
-I don't know why we need both no_d3cold and d3cold_allowed in the
-first place.  448bd857d48e ("PCI/PM: add PCIe runtime D3cold support")
-added them, but without explanation for that.
+Bart.
