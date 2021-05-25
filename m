@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2671B390514
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB04239051F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhEYPTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:19:54 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:34608 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhEYPS7 (ORCPT
+        id S231164AbhEYPVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:21:20 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:13992 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhEYPU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:18:59 -0400
-Received: by mail-lf1-f51.google.com with SMTP id f30so9640099lfj.1;
-        Tue, 25 May 2021 08:17:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8E0fK30YxyVuaWMTGyqCwE5nIsqZO3mhIIR2qTIDgSs=;
-        b=YcolOxdqv8j6yLcGhNloVQVogddLjW92yEkVdFVHqMxcm23+FqmIY/kgFwW4q7p00d
-         8BUssnXOPZNDHCpL9Laix8c2yI+rZvpF6nu/wJoWxJfA7t4TNGmNTPejw5t0z1iOB9r0
-         DAS+UnaeVwwsfXZ4knaqAJ5rnYmMEcNlZEQ7qce/JIRZ/mqubqTUHH3l58fbfS/VHZ6k
-         PYQdNhxupeED+dgMsRiiijyeT2yGBGVtHH/GaflWMyGFlE3Z4GkfF9FergMKel9K9FCs
-         8vjUx45z0nCRx5ImrvJMvFmiAFClxcXYsE2efcFUsDh9rEYDI1pL9NjrjPi1nxWB5PqF
-         BcvQ==
-X-Gm-Message-State: AOAM530xuu2qohus+i2+ENITDbEBLnFCCX/1eqdYAEhMldSmBSxn2sNI
-        ARc9ZOUrfMFCiqpN0GxHZrQ=
-X-Google-Smtp-Source: ABdhPJwsKBoQWP01j+NQfRLiIo4iQfCTmn+GQRNhffehlX6xOjpL9PbfKJbYkPNl71sI88LfCps+QA==
-X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr14052925lfu.96.1621955847781;
-        Tue, 25 May 2021 08:17:27 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c9sm2103699ljb.22.2021.05.25.08.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 08:17:27 -0700 (PDT)
-Date:   Tue, 25 May 2021 17:17:25 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 2/7] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210525151725.GA80163@rocinante.localdomain>
-References: <20210519235426.99728-1-ameynarkhede03@gmail.com>
- <20210519235426.99728-3-ameynarkhede03@gmail.com>
- <20210520150526.GB641812@rocinante.localdomain>
- <20210524144814.rqgvbaawdxbdwio4@archlinux>
+        Tue, 25 May 2021 11:20:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1621955968; x=1653491968;
+  h=to:cc:references:subject:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=CSuS1/6afomgRdSmx4v4U5egysYnZihhAd5HpYugzR4=;
+  b=Jb4pgDYPfDT/AHs/rFeM0O8U4KhSebAbrlcVhkGfoe149qiS2ub04KJr
+   JcgooiES6xkakjTYTRDn+99UuSzXT5kYUU7WvShPKHlSgxl1N5tTSkC46
+   al8J3t0KehJID8vpxDEwAx1SqgTGzJAMZ/qJ930tuxklOMX82GTTspoBZ
+   A=;
+X-IronPort-AV: E=Sophos;i="5.82,328,1613433600"; 
+   d="scan'208";a="127569130"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 25 May 2021 15:19:21 +0000
+Received: from EX13D31EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id D372CA190A;
+        Tue, 25 May 2021 15:19:19 +0000 (UTC)
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D31EUB004.ant.amazon.com (10.43.166.164) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 25 May 2021 15:19:17 +0000
+Received: from u8803c614af8f5a.ant.amazon.com (172.31.190.190) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.18 via Frontend Transport; Tue, 25 May 2021 15:19:07 +0000
+To:     <sj38.park@gmail.com>
+CC:     <Jonathan.Cameron@Huawei.com>, <acme@kernel.org>,
+        <akpm@linux-foundation.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendanhiggins@google.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <greg@kroah.com>, <gthelen@google.com>,
+        <guoju.fgj@alibaba-inc.com>, <linux-damon@amazon.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <mgorman@suse.de>, <minchan@kernel.org>,
+        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <rppt@kernel.org>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sjpark@amazon.de>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <zgf574564920@gmail.com>
+References: <20210520075629.4332-6-sj38.park@gmail.com>
+Subject: Re: [PATCH v29 05/13] mm/damon: Implement primitives for the virtual
+ memory address spaces
+From:   <sieberf@amazon.com>
+Message-ID: <3da2bb79-4448-4857-a9d1-698a360c51a2@amazon.com>
+Date:   Tue, 25 May 2021 17:19:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210524144814.rqgvbaawdxbdwio4@archlinux>
+In-Reply-To: <20210520075629.4332-6-sj38.park@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amey,
+Hi SeongJae,
 
-Sorry for late reply!
+Some questions for this patch:
 
-[...]
-> > Similarly to my suggestion in the first patch in the series, perhaps
-> > using a boolean here would be an option.
-> >
-> > Having said that, the following existing functions aren't doing it, so
-> > for the sake of keeping things consistent it might not be the best
-> > option, as per:
-> >
-> >  static int pci_af_flr(struct pci_dev *dev, int probe)
-> >  int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-> >
-> > Krzysztof
->
-> All the functions which implement different types of resets including
-> quirks have ...reset(struct pci_dev *dev, int probe) signature.
-> Should I modify all of them?
+Why do we split the regions in 3 areas (heap, stack, mmaped)? I 
+understand we don't want to model the whole virtual address space, but 
+why don't we just use whatever is modeled by the VMAs to define the 
+regions boundaries?
 
-Might not be worth it to change anything then, especially if the other
-functions there already use an integer argument to enable or disable the
-problem or something else.  At least no in this series.
+I am not quite understanding why we both set the page idle and young (in 
+damon_ptep_mkold). For WSS computation on our end we have used 
+pte_clear_young_notify. Why do we touch the page idle flag at all? What 
+flags do the reclaim logic use to track access?
 
-	Krzysztof
+Kind regards,
+
+Fernand
+
