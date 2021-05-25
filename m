@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46712390BC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B69B390BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbhEYVqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:46:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33798 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhEYVqP (ORCPT
+        id S233497AbhEYVsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhEYVsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:46:15 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E49AC20B7178;
-        Tue, 25 May 2021 14:44:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E49AC20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621979085;
-        bh=xNF+N2LJWV8nwWOJm1bYsEtpnJX3GGsqwoncmJEKa0E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Uqo5qnXPyulwX2at001SEAKO9KxFLXfTtq/SlfdCOzqZfnYtByBcJ/yxxwyX488hi
-         Nz6n8J9n/Km5blOVu+oseJsqCdWr4NgVOuHCWF1DPe3aKVSSubajbvqX0HAAtCwuMx
-         NaSlCpCrZf6Cs4Ble18bydy9gxnNG5q4IaWzHckM=
-Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-2-madvenka@linux.microsoft.com>
- <20210521161117.GB5825@sirena.org.uk>
- <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
- <20210521174242.GD5825@sirena.org.uk>
- <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
- <20210521175318.GF5825@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <7f9366bd-1973-bc07-5314-45792f256dc1@linux.microsoft.com>
-Date:   Tue, 25 May 2021 16:44:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 17:48:06 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3419C061574;
+        Tue, 25 May 2021 14:46:34 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id c196so23505096oib.9;
+        Tue, 25 May 2021 14:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WrsMci1wux9x4oI1lZdnvMAiZAs7nx/+sDW4BJc2oWA=;
+        b=Si4cDta1BaFLKWOnZTfednW3oPeIYwPrAYErfx/uBNx8GOYakG4Rdi62QgD2+KXZD6
+         WTmG0nmBb3Ali1rDDWc4iuNpvDoUJR4K+P11tAEG3GYah+CmkTQ+ssA1L3Bk7EAvb/ba
+         UnK9IGRnhRLL1xXh8R4+N7CxFLYD79BDD5zlNJZJtov6JoJXfxJoQDSCYSG2iyCDJty8
+         kQF0v5CE4Aj+S5vYZs0X1KnHyfoLq6tWQpzRFcQpI83hJTq53MyddUxpDprQke1jhet1
+         +yIOElA0LcutYsh7XSW5Oe8R4Jlm7Pf0ibc8wP6+OYNPkehesVaURecbs3nlBViVRBwt
+         DeUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WrsMci1wux9x4oI1lZdnvMAiZAs7nx/+sDW4BJc2oWA=;
+        b=UblDXCvPKo83cLxn+o7fOTKuh4oZWIHSA4dR1Ncq/GKpzyWj4o+3CTepM7OADiS4go
+         MuBa0Lsr6KAnLwCcMp2tnwXkRRWqpMlUoL7XRFjICPKhVkprXXV7Tn24LuMccZ2HnHMO
+         lwIOd1WGei9lxEy8RWAW/iu29GcvoL+j0oOsl6pE/2dSp4m8LtND5KKsG9aDeTvPnGq7
+         NHyxIyiNxZCNF/tOpe6bfo/o8Qes7lZd1s9BpkDcx5VJs8zVcP12IzYz+jpiCemSbdO4
+         y2lIADORs8XvsagfZFP67krcOC2hQKBvb99b61IoqZyRfZf3okRO3x9lwvEqABTh2Q1Q
+         CoNA==
+X-Gm-Message-State: AOAM531h3PRh84BOkKu2LgCiHNkgcfNZ3uoNn2H86qetOzltOb1vBpxU
+        CA00NAQPhg5afq/PCRSsdCGf8usNbTZ/z9L20g==
+X-Google-Smtp-Source: ABdhPJwzgwxYjBhqS5YwSnAJ/sHKdFDNptG9yHFTv/SWSJot2ik/Yal85ta+ttp0YNkw5zt5zoGuFDr207NC7mEm2o4=
+X-Received: by 2002:aca:1015:: with SMTP id 21mr15505843oiq.92.1621979194196;
+ Tue, 25 May 2021 14:46:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210521175318.GF5825@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210524185054.65642-1-george.mccollister@gmail.com> <20210524212938.jaepbj5qdl3esd4i@skbuf>
+In-Reply-To: <20210524212938.jaepbj5qdl3esd4i@skbuf>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Tue, 25 May 2021 16:46:21 -0500
+Message-ID: <CAFSKS=Mdvsqo0KUqTMdRgJMQ1SSa45wYJ_YM=rqnFEFJBoxZHw@mail.gmail.com>
+Subject: Re: [PATCH net] net: hsr: fix mac_len checks
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Marco Wenzel <marco.wenzel@a-eberle.de>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 24, 2021 at 4:29 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+[snip]
+> > +     ret = hsr->proto_ops->fill_frame_info(proto, skb, frame);
+>
+> Nitpick: hsr uses "res", not "ret".
+>
 
+Oops. I'll try to pay more attention to what is used in the existing
+code next time.
 
-On 5/21/21 12:53 PM, Mark Brown wrote:
-> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
->> On 5/21/21 12:42 PM, Mark Brown wrote:
-> 
->>> Like I say we may come up with some use for the flag in error cases in
->>> future so I'm not opposed to keeping the accounting there.
-> 
->> So, should I leave it the way it is now? Or should I not set reliable = false
->> for errors? Which one do you prefer?
-> 
->> Josh,
-> 
->> Are you OK with not flagging reliable = false for errors in unwind_frame()?
-> 
-> I think it's fine to leave it as it is.
-> 
+[snip]
+>
+> I admit that I went through both patches and I still don't understand
+> what is the code path that the original commit 2e9f60932a2c ("net: hsr:
+> check skb can contain struct hsr_ethhdr in fill_frame_info") is
+> protecting against. I ran the C reproducer linked by syzbot too and I
+> did not reproduce it (I did not compile with the linked clang though).
 
-OK. I will address the comments so far and send out v5.
+I think it's complaining if you access more than mac_len bytes from
+the pointer returned by skb_mac_header() but I'm not familiar with
+this bot.
 
-Thanks.
+Thanks for testing the patch.
 
-Madhavan
+-George
