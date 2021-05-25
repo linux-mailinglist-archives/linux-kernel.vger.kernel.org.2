@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9AC38F941
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724FD38F949
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhEYER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:17:28 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50891 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhEYER1 (ORCPT
+        id S230222AbhEYEUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhEYEUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:17:27 -0400
-X-UUID: 7a2a5cf4466748ffb3bda70ffd5b3780-20210525
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/xiWf/FwDwfPCNEmpkZcRjDImK9Xd2GJHsb9gmpPJA8=;
-        b=YwTcHZ84cDmXTChP/S6Ta9D4HgMHgQa2RB38ycRSN9RROZ4cA2oGxZw1CkDtSlbroW1HA573RuagL0XFZzTsxrmFl89YATPJS80x313wlp5RG4m2tHnaiYM6gW05/zowHDqzRMjN90SzK8lGi7B2g4etvZydkHK9DrTkg2jExzk=;
-X-UUID: 7a2a5cf4466748ffb3bda70ffd5b3780-20210525
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 97996577; Tue, 25 May 2021 12:15:55 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 12:15:53 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 12:15:52 +0800
-Message-ID: <1621916153.7096.0.camel@mtkswgap22>
-Subject: Re: [PATCH v1 1/3] scsi: ufs: Remove a redundant command completion
- logic in error handler
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 25 May 2021 12:15:53 +0800
-In-Reply-To: <1621845419-14194-2-git-send-email-cang@codeaurora.org>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
-         <1621845419-14194-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 25 May 2021 00:20:14 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBB2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 21:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=0EGd2U/04FlaESkoL8bnAvy5F/5fb4NYWjnc+HfDQxA=; b=kQPCx4iFbYAwd+aFzAg8p/Lh2y
+        p9sHL81BwagkAQWru7RiUv6HB0aYvzfPn0sTB45xxuewNlqxPA5YJidUeZqpiWJAO8zKR+qh8NhiK
+        Md3Qd5FU0YYAZSRGsBkhH80P8MWaL11j0aTXWY6Ct+VUGD+2FZOIotNVnqAeQK6WiPb3OXE532lG/
+        Jeq2nmds0gMWXMxi7UiFI2HnvUPP77Pzk77dfG8Y4jWpGj26ohx74IhQk70YmQtYXcFad5Fj37j9o
+        vJR+055eCfaz6c+Ux3AFUThfZNk8nV9aiKlItB92EI0Oco9an2D9ZaGkKq04/KKcdSijrpWxwgBm6
+        gIbQqy5Q==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llOWT-003IKs-Qh; Tue, 25 May 2021 04:18:29 +0000
+Subject: Re: [PATCH] LOCKDEP: use depends on LOCKDEP_SUPPORT instead of $ARCH
+ list
+To:     Waiman Long <llong@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+References: <20210517034430.9569-1-rdunlap@infradead.org>
+ <YKIXBpxyvhzdb1uv@gmail.com>
+ <1284b997-b9da-769f-2d36-4d4232c7df88@redhat.com>
+ <bfb11ab2-d606-b96e-1979-3bcc3c3adc96@infradead.org>
+ <8a4ee5be-ad5c-ca06-dd1a-aa13ccc94906@redhat.com>
+ <c8698ce3-4995-efd6-9d1d-095dcac70dc2@infradead.org>
+ <09243238-94ba-caca-441e-3fdac0154822@infradead.org>
+ <3a0fb04c-c640-25db-7e7a-fbdd3b4defb5@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0213cd4e-e832-f768-106a-345e77ce2665@infradead.org>
+Date:   Mon, 24 May 2021 21:18:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <3a0fb04c-c640-25db-7e7a-fbdd3b4defb5@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTI0IGF0IDAxOjM2IC0wNzAwLCBDYW4gR3VvIHdyb3RlOg0KPiB1ZnNo
-Y2RfaG9zdF9yZXNldF9hbmRfcmVzdG9yZSgpIGFueXdheXMgY29tcGxldGVzIGFsbCBwZW5kaW5n
-IHJlcXVlc3RzDQo+IGJlZm9yZSBzdGFydHMgcmUtcHJvYmluZywgc28gdGhlcmUgaXMgbm8gbmVl
-ZCB0byBjb21wbGV0ZSB0aGUgY29tbWFuZCBvbg0KPiB0aGUgaGlnaGVzdCBiaXQgaW4gdHJfZG9v
-cmJlbGwgaW4gYWR2YW5jZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29k
-ZWF1cm9yYS5vcmc+DQo+IC0tLQ0KPiAgZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyB8IDEzIC0t
-LS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91
-ZnNoY2QuYw0KPiBpbmRleCBkNTQzODY0Li5jNGIzN2QyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4g
-QEAgLTYxMjMsMTkgKzYxMjMsNiBAQCBzdGF0aWMgdm9pZCB1ZnNoY2RfZXJyX2hhbmRsZXIoc3Ry
-dWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiAgZG9fcmVzZXQ6DQo+ICAJLyogRmF0YWwgZXJyb3Jz
-IG5lZWQgcmVzZXQgKi8NCj4gIAlpZiAobmVlZHNfcmVzZXQpIHsNCj4gLQkJdW5zaWduZWQgbG9u
-ZyBtYXhfZG9vcmJlbGxzID0gKDFVTCA8PCBoYmEtPm51dHJzKSAtIDE7DQo+IC0NCj4gLQkJLyoN
-Cj4gLQkJICogdWZzaGNkX3Jlc2V0X2FuZF9yZXN0b3JlKCkgZG9lcyB0aGUgbGluayByZWluaXRp
-YWxpemF0aW9uDQo+IC0JCSAqIHdoaWNoIHdpbGwgbmVlZCBhdGxlYXN0IG9uZSBlbXB0eSBkb29y
-YmVsbCBzbG90IHRvIHNlbmQgdGhlDQo+IC0JCSAqIGRldmljZSBtYW5hZ2VtZW50IGNvbW1hbmRz
-IChOT1AgYW5kIHF1ZXJ5IGNvbW1hbmRzKS4NCj4gLQkJICogSWYgdGhlcmUgaXMgbm8gc2xvdCBl
-bXB0eSBhdCB0aGlzIG1vbWVudCB0aGVuIGZyZWUgdXAgbGFzdA0KPiAtCQkgKiBzbG90IGZvcmNl
-ZnVsbHkuDQo+IC0JCSAqLw0KPiAtCQlpZiAoaGJhLT5vdXRzdGFuZGluZ19yZXFzID09IG1heF9k
-b29yYmVsbHMpDQo+IC0JCQlfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoaGJhLA0KPiAtCQkJ
-CQkJICAgICgxVUwgPDwgKGhiYS0+bnV0cnMgLSAxKSkpOw0KPiAtDQo+ICAJCWhiYS0+Zm9yY2Vf
-cmVzZXQgPSBmYWxzZTsNCj4gIAkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZShoYmEtPmhvc3QtPmhv
-c3RfbG9jaywgZmxhZ3MpOw0KPiAgCQllcnIgPSB1ZnNoY2RfcmVzZXRfYW5kX3Jlc3RvcmUoaGJh
-KTsNCg0KUmV2aWV3ZWQtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+
-DQoNCg0K
+On 5/24/21 5:05 PM, Waiman Long wrote:
+> On 5/24/21 5:41 PM, Randy Dunlap wrote:
+>> On 5/24/21 2:31 PM, Randy Dunlap wrote:
+>>> On 5/24/21 2:04 PM, Waiman Long wrote:
+>>>
+>>>> Is it possible to just get rid of the 2nd depends-on statement?
+>>>>
+>>>> The 2nd depends-on line was introduced by commit 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTER"):
+>>> and I should have looked at that history too. Thanks.
+>>>
+>>> Yes, I agree, we can just delete that line...
+>>>
+>>> I'll send a v2 and copy the author of commit 7d37cb2c912d as well.
+>> Hm, as I review that commit, I have to wonder if the previous 'select'
+>> was correct (if we disregard the Kconfig warning).  If so, then
+>> FRAME_POINTER is still wanted/needed for some arch-es.
+>>
+>> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+>> index 2779c29d9981..417c3d3e521b 100644
+>> --- a/lib/Kconfig.debug
+>> +++ b/lib/Kconfig.debug
+>> @@ -1363,7 +1363,7 @@ config LOCKDEP
+>>          bool
+>>          depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+>>          select STACKTRACE
+>> -       select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !X86 <<<<<<<<<<<
+>>
+> AFAICS, enabling FRAME_POINTER is a debugging aid as it enable more precise stacktrace. However, not all archs want to enable FRAME_POINTER because of LOCKDEP. Now you are just letting users decide if they want FRAME_POINTER or not. Maybe you can modify the help text to mention that.
+
+LOCKDEP doesn't have any user help text.
+
+For FRAME_POINTER, when ARCH_WANT_FRAME_POINTERS + a few other conditions
+is met, it seems that the FRAME_POINTER help text is good enough IMO.
+
+	help
+	  If you say Y here the resulting kernel image will be slightly
+	  larger and slower, but it gives very useful debugging information
+	  in case of kernel bugs. (precise oopses/stacktraces/warnings)
+
+-- 
+~Randy
 
