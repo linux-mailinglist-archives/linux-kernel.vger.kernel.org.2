@@ -2,129 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CFA39055A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AF539055C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhEYP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
+        id S232310AbhEYP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhEYP1L (ORCPT
+        with ESMTP id S231260AbhEYP1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:27:11 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82C8C061574;
-        Tue, 25 May 2021 08:25:40 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so13376591pjb.2;
-        Tue, 25 May 2021 08:25:40 -0700 (PDT)
+        Tue, 25 May 2021 11:27:14 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63D3C061756;
+        Tue, 25 May 2021 08:25:43 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 29so11913922pgu.11;
+        Tue, 25 May 2021 08:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jL+DBxWN5edIJOrVtHSuYvmFZqk3JNDdtDmQJkkStO8=;
-        b=ADsWXFPQuNNtwHEJoJyXj5LyZS40qB6RUp/8KdRTz+SQQiOqa8lPfdkQHPDPKrCTkC
-         57WkUmg43+E1w/Tv4GssLcUeeQ3ruJGpOVJIzWiVkVd+vOJFeCdy+S76xch1GFZGW1Vk
-         HZnJvLO+oME00P5s5Ljv09YiSEXvjrcjGTTQv+80Cpn2zh9zZCIpTLdVPdWfy14un5zK
-         6qrdGICT2DDsaTi+9xvggt6WpE8VwTWY9y389K6wcE2VjFJQ2nAw+om9OChuhy1NIkQ1
-         4ETtFDx7gN8gP4PNo49FXBG5sEs6QVNWagv1L8oI/nJhoDVDkGuNOwg6nO039jt/ne0S
-         mANA==
+        bh=7s/DRCuiVE2NCE6TZGnaI6FsGmYiMHrl3j/NuLD4A3w=;
+        b=BD7fbb13Q1YIw/FxPOiIQmMqfP4qbH2j2DC9zZR2GH3qpK9iRoZOORhmd5cK3Z1JBl
+         3soLUus5h4S9Ic2w2+a+e+YYy3vN+aS4ebWMt9duja209vs6ewxH+6J5N7k9tZq+EzdL
+         /KxZz3FvMuLudJZMbsc+L9WOA27A8xMo/MSeHOKjh/ZVbH+oH92ki+rLNMg2MsSbA+u3
+         Ze1HRuPGvzYEExOTMoU8xkv7Z9JIMC9Xjb5LgXanMN7A0EfDq2wX8AOkav6WAu6oakxB
+         o8RTzqTj1LHCygSLUhuQ+WsP1Uw/GkjEf3DdRQxQYJJKa9YV7X8P3eCpl2eFDD/HBnq2
+         RruA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jL+DBxWN5edIJOrVtHSuYvmFZqk3JNDdtDmQJkkStO8=;
-        b=RU45qL25OovZxqNVSNfsDa8A3ejA6148TAHSTyWfnj5LqChKqXzySvBeIk05s9KBor
-         SQKf3P+dzei8K2Uzq9zn/mw/Prt1+8MSu3Nqp1ewY3fdORPM4wghwTFn2ikjLhwxNBXH
-         09Ju5aDXsGkHk2EMLTD4yLJzQsFoyRAeB/mlTPJFtWQ7/XDnP2UxRkgZtXd9KAAVreao
-         7CKAz5+8z/8qLk2Iplo2BRzUI9P++8jl7XEB24yqy4oJcwE4ePvZR1/LleWt4gd5hTcL
-         /trYRZHOqPTEeoyS7po4sypILVEgZoGn/s10MqDTiniiTvzijQW56PtiCVhvrTmiWjkl
-         VEDw==
-X-Gm-Message-State: AOAM533JPEDQ+/xwjqrLPa4B+PuTS3774T/XybHdUnnsGZxLfPycYvgc
-        zZdzusp4TXy10OcbF2Jvqsw=
-X-Google-Smtp-Source: ABdhPJys9nI4J83yBrIv1q0rF+gkI0iY2Ixso6WRntsxUf21NpnE4gjcHDdIeLCDFoCqGYe/yhkc0Q==
-X-Received: by 2002:a17:90a:9486:: with SMTP id s6mr5455853pjo.192.1621956340125;
-        Tue, 25 May 2021 08:25:40 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id w15sm2311678pjy.1.2021.05.25.08.25.37
+        bh=7s/DRCuiVE2NCE6TZGnaI6FsGmYiMHrl3j/NuLD4A3w=;
+        b=iYFPwOyJQxmMdU5Yo5UOJZK+oJGNkYNu8g33yxdndlSt0uCcCNMNZnVLOcqU2Gnssc
+         zSYTtz3hszBCUfK9Fni6XC+3F96JaxC3NPf28m15vfUBf44sgWA2GDhd4h53KC+4NZ+B
+         is241wvDj9hUTLkmGrPL6qmOyUN0UswjKKubSNCFLbpvyM3XH9ZVPeJzrkaGoLxYvKfg
+         T9oTUy+4IePkA4l+7qEt1CGYqRjr1+I21xIF1J+zOLeYJNB9R+G5fFQksBzjuS4fpkEp
+         1aL1VCE/QoSQC7x2SqZOQviOjhIjrjolREYPJcvD0sKtTpTEJgr09eQR8evgMmFbNmoz
+         ZbXA==
+X-Gm-Message-State: AOAM5338cEcrTX2h0qbM6qzhcZ1KF3pBfcNF3/jtOWpmuw5cCixRo95W
+        LJy/zmXWOXAR3cyOps8O1/0=
+X-Google-Smtp-Source: ABdhPJy9//JkIzsLKxyP85ttFbYKeDK9ncWcBGA7fNuw+JDoqQA4o4vOONzqmcSmcS5N349hVkCjng==
+X-Received: by 2002:aa7:8703:0:b029:2da:b87f:7d38 with SMTP id b3-20020aa787030000b02902dab87f7d38mr31336530pfo.20.1621956343379;
+        Tue, 25 May 2021 08:25:43 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id ie5sm2333077pjb.14.2021.05.25.08.25.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 08:25:39 -0700 (PDT)
-Subject: Re: [PATCH v2 12/12] ARM: dts: bcm2711: Tune DMA parameters for HDMI
- audio
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dom Cobley <popcornmix@gmail.com>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-13-maxime@cerno.tech>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fa063d1b-c23c-c29c-f9b4-c77be4626fd5@gmail.com>
-Date:   Tue, 25 May 2021 08:25:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Tue, 25 May 2021 08:25:42 -0700 (PDT)
+Subject: [PATCH v4] docs: Activate exCJK only in CJK chapters
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Wu X.C." <bobwxc@email.cn>, Akira Yokosawa <akiyks@gmail.com>
+References: <2061da0a-6ab1-35f3-99c1-dbc415444f37@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <83208ddc-5de9-b283-3fd6-92c635348ca0@gmail.com>
+Date:   Wed, 26 May 2021 00:25:39 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210525132354.297468-13-maxime@cerno.tech>
+In-Reply-To: <2061da0a-6ab1-35f3-99c1-dbc415444f37@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Activating xeCJK in English and Italian-translation documents
+results in sub-optimal typesetting with wide-looking apostrophes
+and quotation marks.
+
+The xeCJK package provides macros for enabling and disabling its
+effect in the middle of a document, namely \makexeCJKactive and
+\makexeCJKinactive.
+
+So the goal of this change is to activate xeCJK in the relevant
+chapters in translations.
+
+To do this:
+
+    o Define custom macros in the preamble depending on the
+      availability of the "Noto Sans CJK" font so that those
+      macros can be used regardless of the use of xeCJK package.
+
+    o Patch \sphinxtableofcontents so that xeCJK is inactivated
+      after table of contents.
+
+    o Embed those custom macros in each language's index.rst file
+      as a ".. raw:: latex" construct.
+
+Note: A CJK chapter needs \kerneldocCJKon in front of its chapter
+heading, while a non-CJK chapter should have \kerneldocCJKoff
+below its chapter heading.
+
+This is to make sure the CJK font is available to CJK chapter's
+heading and ending page's footer.
+
+Tested against Sphinx versions 2.4.4 and 4.0.2.
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Tested-by: Wu XiangCheng <bobwxc@email.cn>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/lkml/2061da0a-6ab1-35f3-99c1-dbc415444f37@g=
+mail.com
+---
+v3 -> v4: (Change log update)
+
+    o Added Reviewed-by from Mauro
+    o Added note on Sphinx versions (2.4.4 and 4.0.2) tested against
+
+v2 -> v3:
+
+    o Fixed trailing white space
+    o Added Tested-By from Wu XiangCheng
+--
+ Documentation/conf.py                      | 13 +++++++++++++
+ Documentation/translations/index.rst       |  4 ++++
+ Documentation/translations/it_IT/index.rst |  4 ++++
+ Documentation/translations/ja_JP/index.rst |  5 +++--
+ Documentation/translations/ko_KR/index.rst |  5 +++--
+ Documentation/translations/zh_CN/index.rst |  1 +
+ 6 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 879e86dbea66..25aa00c707b0 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -371,6 +371,19 @@ if cjk_cmd.find("Noto Sans CJK SC") >=3D 0:
+ 	% This is needed for translations
+         \\usepackage{xeCJK}
+         \\setCJKmainfont{Noto Sans CJK SC}
++	% Define custom macros to on/off CJK
++	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
++	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
++	% To customize \sphinxtableofcontents
++	\\usepackage{etoolbox}
++	% Inactivate CJK after tableofcontents
++	\\apptocmd{\\sphinxtableofcontents}{\\kerneldocCJKoff}{}{}
++     '''
++else:
++    latex_elements['preamble']  +=3D '''
++	% Custom macros to on/off CJK (Dummy)
++	\\newcommand{\\kerneldocCJKon}{}
++	\\newcommand{\\kerneldocCJKoff}{}
+      '''
+=20
+ # Fix reference escape troubles with Sphinx 1.4.x
+diff --git a/Documentation/translations/index.rst b/Documentation/transla=
+tions/index.rst
+index e446e5ed00a6..556b050884fc 100644
+--- a/Documentation/translations/index.rst
++++ b/Documentation/translations/index.rst
+@@ -18,6 +18,10 @@ Translations
+ Disclaimer
+ ----------
+=20
++.. raw:: latex
++
++	\kerneldocCJKoff
++
+ Translation's purpose is to ease reading and understanding in languages =
+other
+ than English. Its aim is to help people who do not understand English or=
+ have
+ doubts about its interpretation. Additionally, some people prefer to rea=
+d
+diff --git a/Documentation/translations/it_IT/index.rst b/Documentation/t=
+ranslations/it_IT/index.rst
+index bb8fa7346939..e80a3097aa57 100644
+--- a/Documentation/translations/it_IT/index.rst
++++ b/Documentation/translations/it_IT/index.rst
+@@ -4,6 +4,10 @@
+ Traduzione italiana
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=20
++.. raw:: latex
++
++	\kerneldocCJKoff
++
+ :manutentore: Federico Vaga <federico.vaga@vaga.pv.it>
+=20
+ .. _it_disclaimer:
+diff --git a/Documentation/translations/ja_JP/index.rst b/Documentation/t=
+ranslations/ja_JP/index.rst
+index 2f91b895e3c2..f94ba62d41c3 100644
+--- a/Documentation/translations/ja_JP/index.rst
++++ b/Documentation/translations/ja_JP/index.rst
+@@ -1,7 +1,8 @@
+ .. raw:: latex
+=20
+-        \renewcommand\thesection*
+-        \renewcommand\thesubsection*
++	\renewcommand\thesection*
++	\renewcommand\thesubsection*
++	\kerneldocCJKon
+=20
+ Japanese translations
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+diff --git a/Documentation/translations/ko_KR/index.rst b/Documentation/t=
+ranslations/ko_KR/index.rst
+index b9e27d20b039..6ae258118bdf 100644
+--- a/Documentation/translations/ko_KR/index.rst
++++ b/Documentation/translations/ko_KR/index.rst
+@@ -1,7 +1,8 @@
+ .. raw:: latex
+=20
+-        \renewcommand\thesection*
+-        \renewcommand\thesubsection*
++	\renewcommand\thesection*
++	\renewcommand\thesubsection*
++	\kerneldocCJKon
+=20
+ =ED=95=9C=EA=B5=AD=EC=96=B4 =EB=B2=88=EC=97=AD
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/t=
+ranslations/zh_CN/index.rst
+index a736057da41f..1f953d3439a5 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -4,6 +4,7 @@
+=20
+ 	\renewcommand\thesection*
+ 	\renewcommand\thesubsection*
++	\kerneldocCJKon
+=20
+ .. _linux_doc_zh:
+=20
+--=20
+2.17.1
 
 
-On 5/25/2021 6:23 AM, Maxime Ripard wrote:
-> From: Dom Cobley <popcornmix@gmail.com>
-> 
-> Enable NO_WAIT_RESP, DMA_WIDE_SOURCE, DMA_WIDE_DEST, and bump the DMA
-> panic and AXI priorities to avoid any DMA transfer error with HBR audio
-> (8 channel, 192Hz).
-> 
-> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  arch/arm/boot/dts/bcm2711.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-> index 720beec54d61..9d1dde973680 100644
-> --- a/arch/arm/boot/dts/bcm2711.dtsi
-> +++ b/arch/arm/boot/dts/bcm2711.dtsi
-> @@ -344,7 +344,7 @@ hdmi0: hdmi@7ef00700 {
->  			interrupt-names = "cec-tx", "cec-rx", "cec-low",
->  					  "wakeup", "hpd-connected", "hpd-removed";
->  			ddc = <&ddc0>;
-> -			dmas = <&dma 10>;
-> +			dmas = <&dma (10 | (1 << 27) | (1 << 24)| (15 << 20) | (10 << 16))>;
 
-This uses DT as a configuration language rather than a description here,
-but this is most certainly an established practice that the bcm283-dma.c
-supports, with no validation of the various arguments.. great.
-
-Is there at least an option to move the meaning of this bitfields into
-include/dt-bindings/dma/bcm2835-dma.h or something like that?
--- 
-Florian
