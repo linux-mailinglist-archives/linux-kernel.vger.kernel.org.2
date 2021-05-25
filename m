@@ -2,153 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1125C3909FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FBD3909FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhEYTyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:54:35 -0400
-Received: from mail-mw2nam12on2064.outbound.protection.outlook.com ([40.107.244.64]:9952
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232849AbhEYTyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:54:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AfZjo6lD8cvWwxfP2chaopOw41rQUFF2Sha01+QlAaZQzCBUGrNMaVXt5Nd7ML5uAA0GWvuNynnpljYzBlxri62JcEePOg4jBdXx65CuLHi6BbMZb6z8Ees3qoV4ezSRuFt+Oit1LR0J1uJT/Z3dqs9HZaPjvo6S8u3AflR9i8LQgU/XNGXtumqkGL7s7/e9my3sDcgDFZqAgW7VLe23IqiCZlBXiZS8yPR1iO1qMhC3HhTNggCMZuKHIhKnbR4u5EElJBHYt10rNx5PfpbsCEuGGpjrcPA1e3TSn6hV9jMk+HmFHyJgMIAXadRRqN4F5NkiwFSKekFAUgInW9Ku4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ez518mnFOeVKnb237EN1Z0Us45eGb+SvnOrdSmi2FQ=;
- b=jUM8bxFbwaZ1ZaQvPFp7HYKkHhdHruvqaGusjYaiZ6qLhGC4Z1mNCMAEkN1uI5xpmgusI15pbe7pImLKzuxBiwUkQuA0K1fEVgQHalKb8E+MhCLjMHVJlkIVD3qGKhUAWdQX111aUbDfb8gkU8ezscLD/vpR+r9SJ3UWLHTsMrXVdDaAK9wQWLWa/5T75U7E+5O2z/TfDIAL6ITGYc+UGUnkkWsBOn+xgQzmybyVDykJlZFYqnslJTaJOwzG/hSeJ07C1T1+Lv8o/GPkQ5tU4DKHY/0yDvCOaUOawIx6e3ssl7FlnDIxelJ+Wu8X8tzPzR0qlztjmocn4srPNbiDRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ez518mnFOeVKnb237EN1Z0Us45eGb+SvnOrdSmi2FQ=;
- b=AXt88h7yrqnTV6zQ6EzJrOpllPEsiyz/yMhcG0r/BS+BuZq3zmUMROTPI7bVZXPOv7LpYZ/UE7hgfDqQsEmZofIMOr2avqStIlgc+lFM8nk/y3FUE9a0mMS/pWrfSrDgdSmhVhvBNikp3n0nZHAOMKyy06wxrS7OOIRLIzJJ7HJ6mAcG0b8+ABSSIHkIMd+bdkzTG1gns7vFJhRz9um0FV8xcMSxy/fv2LaF+6F68N8VMwAu1P9mlpl2xFq21CmXP/+BHpOOqhxH2zruZ4XX/JN0gY/ArcPfc032eBlTAjm3mhSZa9THx61MxKdwR83DeTT3yMhgT+y10qQe7oELvw==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 25 May
- 2021 19:52:59 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
- 19:52:59 +0000
-Date:   Tue, 25 May 2021 16:52:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Kirti Wankhede <kwankhede@nvidia.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210525195257.GG1002214@nvidia.com>
-References: <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
- <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko>
- <20210524233744.GT1002214@nvidia.com>
- <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR18CA0054.namprd18.prod.outlook.com
- (2603:10b6:610:55::34) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232942AbhEYTyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232867AbhEYTym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 15:54:42 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB90C061574;
+        Tue, 25 May 2021 12:53:11 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id w127so27575868oig.12;
+        Tue, 25 May 2021 12:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lPGzsw8i+tt3r1NmDCIr0CvauycTrn2jzT4uTRv31Uc=;
+        b=YS31K2DsMAzEiA71fiN6JWcSpetBF9DUVaQofVpuH9chWhS04FL922ysARot2HdbV8
+         4XmsOdSW6rcRoukjXFotvEYCmjoDJ3RH0v3WtEBX17yoD8e0J1yPq8tQ2UAAjc8IyKeD
+         RvHdpmBDddagSU+HKinp6rgQV/n/Cp4l/hNPvtlOShlkrt+z6vhtWZXNdBPZ6Q73bMR0
+         iwMe689XO05Lk+A+udyCUUuCDalGjiOtJWz3H1qYgaBZh19fzcphcluw4zujVvs5/wXX
+         nIRy+Bg/W6zu1eTxtkyJbWF+mMNs5XTPrZinUrEXWWCyPQuR1SAm3YGyIezRlITrTMAC
+         RoeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lPGzsw8i+tt3r1NmDCIr0CvauycTrn2jzT4uTRv31Uc=;
+        b=IzLMT2AorIy23c1dxRjvMRiLQSL3oNOkuzA/XHYrInEtfZzm4ZR5WPHlE7+XEAoVBJ
+         qDkdl1q67rt6usHSldlS/GVn23J6CwkNdBMaxMxDSVP/Fn0QYLjge6o4epsrqER0vnmk
+         SVmuVaTKzvIsstGiagHb0hYiDBBJtxgEOqLRTOAG/zTZBFjnsYUy1iaBWCtnpnNpOUcy
+         8E2plkQarFX5SpKpAz0XEJJYFMK5f4hInK8J2HHp6GaUgox/3dJyyJKN/7jkqVb92b12
+         dKgRJ9KxM419nJSbUhsX3/Qdf+XL9oKKrrmbFBhgAEXfNptH+pLA5lpve/YfTy1dBWHF
+         dupw==
+X-Gm-Message-State: AOAM5302qz2437hfXDGitvBPJlyFc1PdAfKxA7LHTJmTiY70n6oPe779
+        4OKIQX8om5N3mF5dCm3YrVVjUTmWXB4=
+X-Google-Smtp-Source: ABdhPJypPgZr2QWA/k4Y1CuWJ4cvcqib3Uj7Cbas7CRI9ZZgeOcGHM1HAVY3LHP4wDYzjeGfz5vH8g==
+X-Received: by 2002:aca:aacd:: with SMTP id t196mr15082338oie.43.1621972388794;
+        Tue, 25 May 2021 12:53:08 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x9sm3652020oto.79.2021.05.25.12.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 12:53:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 2/3] watchdog: Add Mstar MSC313e WDT driver
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210525184449.57703-1-romain.perier@gmail.com>
+ <20210525184449.57703-3-romain.perier@gmail.com>
+ <dfb1173d-7564-9386-10bf-5151ef284635@infradead.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <155f6b43-3f18-1c19-2dd2-4c9dc38ccfac@roeck-us.net>
+Date:   Tue, 25 May 2021 12:53:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR18CA0054.namprd18.prod.outlook.com (2603:10b6:610:55::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 25 May 2021 19:52:58 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lld6n-00EZJr-Le; Tue, 25 May 2021 16:52:57 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9be89c40-09f1-47ae-0493-08d91fb6b288
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55217D30978B485A1881154BC2259@BL0PR12MB5521.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gcYzBgMBwmCyA9GAJfKAP6vgvuhyI0224iru0w8FGsS8OI/Z7nyLGsBBOc0Nx+T0SIAJMeIl6BYZ+RiynL0kI8aEkXdnlDx5gPJw359b0z5Mo5VA0V7+/LbX1j+vVwYJKAWvuL3FkGESRNHQFu1DmOtgJJh2gOLit3QSGlFsN0LKvsHKSmeCF+xKwb5nn6Y38ehz47bMGDlD2Ijop3kJT1vkHnRJDF5IkMGUB1fq9njhq1LFDR5WC2QtWXmTYujBvOHv7G9VHBzseDBENiheqMRWlEaZDj+DA/e9E7qQIDTM0aLY7VFp/EpslX28TZLQdGaHDdcJ50Yl9mr/X8EgpiacXBOMnMPgaSMSdlovEe9OldNLScoFJ34yYecIj5nvr8R8xuaS+/da1CmgtAJxbw1G8DasvUUNw5KccGitCnOFl1K5nhEGcq5Om/p4uDG5MvwE3N0z8hcHTtrjrabWqRHbKTTJ0kZWIQeys7m1uzmZfpmUVzJdKUK+x6cdGJqN85TAmvTix+JnlJc0CnLn1wZPygxqzlM5egLSDMP9b6mFqs3qhNU6DDVm9HIZnMKX4Wd5wNGoHNQvHYD/Zw8Lk3wmhI530mmmaKOECH8e8Oo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(66476007)(4744005)(66556008)(6636002)(9786002)(9746002)(1076003)(478600001)(66946007)(186003)(7416002)(5660300002)(38100700002)(33656002)(8936002)(426003)(316002)(2616005)(54906003)(37006003)(26005)(8676002)(4326008)(83380400001)(36756003)(2906002)(86362001)(6862004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PqpTzPeLrGqySkDwibZPooui5XgVefXqhYxRW/8nRuJlQ3Upzq2Jsriqnkqw?=
- =?us-ascii?Q?WN0b3SdvH5+nuHEvgY+rxMGmJqbPwoF14r0uIqT9dX3ptBIr30r0C2AVl94+?=
- =?us-ascii?Q?iC3yBxCb0CK+NLnCK7jd25IKqGCLnZlJa0W3vJiGJqEJiebK9RUoDwxZJWny?=
- =?us-ascii?Q?zXlsdFni86/fXu3vxVhFwfBYoOB5obpNfqYO9LMtJpx6CEo8j8pR6Tbgw+r2?=
- =?us-ascii?Q?UPH4iZScA6atRadR/wOA+YKnHu++5IZM+138X51c5kHilzIZVqVGPEb4qNjK?=
- =?us-ascii?Q?V1PQCc9pHBpVRCxz0uGQSfcwQjceJGe20oqMnThjRq0bcqgd7WNYqJTp08sa?=
- =?us-ascii?Q?Abf4nK7Txh/s2m/38Lo+DUUTPf7xx6d005Y1dZ6L8pSGVIBzyCfU0jMPVxYW?=
- =?us-ascii?Q?JVUv42Rjj5GAHHlK0EjhI2v2aqYqiRSb78XUlf7mTVMbAW1fUswhUTgrHAYg?=
- =?us-ascii?Q?3GLY4hbLeKu6ry+lJblYr+0pBPFirqib3ddyjJz1+GR+aCfos7YqtZ5Ao7oa?=
- =?us-ascii?Q?0pPF4Mdq+MfwPF3cPW2XRFfDoyE/MbbZDeWRxL+LyBZKYx1bPoUxxc9MzJfw?=
- =?us-ascii?Q?/kuPJvkmNVMT0q4Tmcb6AmrctHZS2sVZO9hBx3cXiFWpPZNYkXKBTGpsrf+R?=
- =?us-ascii?Q?wJuJXWXFAyeYD6CuF4pq7J1UyE+bSlWnsfC7k5X1ZcRcdVd08VZFyjI/Bo26?=
- =?us-ascii?Q?UwoIJxm3HYs670hPMd0tJE7kML9fgb/bH7tFeSRCeySskBuGlgUvRtNfQdir?=
- =?us-ascii?Q?Jp0bzs24gbi+BLB6+05SChflnzV764twda4I1YTSd/lkZNj0lOKr7K6HHFnF?=
- =?us-ascii?Q?S325POT7jQoPTcxfYFYLX0sJ/qFMZTiSkBlgOMBQ8+55y5p+LOUTOAqf0gyx?=
- =?us-ascii?Q?K7K7WUKNENIWSqN/97OFkUiXN9bNXUoF7QlK4vqCYCRVLSbT3Om564/dyOOM?=
- =?us-ascii?Q?i9ZFB/ObGli/mnZ9HH628gQGh76Wf443D9BEuoE0QuDC4GWvyjSMI8+yu1vQ?=
- =?us-ascii?Q?1vnHhPYNXD0ICmqDX7Dae6W39oCFC1ZAYMtBL3TIb0/ixl7EWG/vccrYiEGG?=
- =?us-ascii?Q?PtOLSK3qNgnniZRqKlpqO1itkgmuVRajtKZhkB7cVtRnTU/eonb2Cue6/U93?=
- =?us-ascii?Q?QgC5fqlFolVbOeBmGaN8ItAYKm8w/RBQqN+udN42qANtZs3bejiUv/NoGnDW?=
- =?us-ascii?Q?CXnseXISrZ3FjLmhHgjzALVeby/QzQBifprHMBaH0dqcMrH5pI2xaJ9VglS4?=
- =?us-ascii?Q?YBhe+W/+biDCfZmirppGeJgWk0ohqZyCYOswmyeSX4Kf/PbEMv+s3z5AHoCm?=
- =?us-ascii?Q?KfVBYqaQDL3M7RjvO5kJKWii?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9be89c40-09f1-47ae-0493-08d91fb6b288
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 19:52:59.2191
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EAhbALj8xkmFekZCDd7M6Onp9mi8lu5Oq2VumOFiEeu7Z7vRtCkL27KqWCJd4gPU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
+In-Reply-To: <dfb1173d-7564-9386-10bf-5151ef284635@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
+On 5/25/21 11:49 AM, Randy Dunlap wrote:
+> Hi,
+> 
+> On 5/25/21 11:44 AM, Romain Perier wrote:
+>> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+>> index 355100dad60a..f53634ea0de6 100644
+>> --- a/drivers/watchdog/Kconfig
+>> +++ b/drivers/watchdog/Kconfig
+>> @@ -980,6 +980,19 @@ config VISCONTI_WATCHDOG
+>>   	  Say Y here to include support for the watchdog timer in Toshiba
+>>   	  Visconti SoCs.
+>>   
+>> +config MSC313E_WATCHDOG
+>> +	tristate "MStar MSC313e watchdog"
+>> +	depends on ARCH_MSTARV7 || COMPILE_TEST
+>> +	depends on OF
+>> +	select WATCHDOG_CORE
+>> +	help
+>> +	  Say Y here to include support for the Watchdog timer embedded
+>> +	  into MStar MSC313e chips. This will reboot your system when the
+>> +	  timeout is reached.
+>> +
+>> +	  To compile this driver as a module, choose M here: the
+>> +	  module will be called msc313e_wdt.
+> 
+> AFAIK, you don't need the "depends on OF" line since
+> the of*.h headers provide stubs for the cases of CONFIG_OF
+> and/or CONFIG_OF_ADDRESS not set/enabled.
+> 
 
-> 2. iommu backed mdev devices for SRIOV where mdev device is created per
-> VF (mdev device == VF device) then that mdev device has same iommu
-> protection scope as VF associated to it. 
+I don't actually see any devicetree API calls in the driver.
 
-This doesn't require, and certainly shouldn't create, a fake group.
+Guenter
 
-Only the VF's real IOMMU group should be used to model an iommu domain
-linked to a VF. Injecting fake groups that are proxies for real groups
-only opens the possibility of security problems like David is
-concerned with.
+> Not having that line would also make COMPILE_TEST more effective.
+> 
+> Can Rob or anyone else comment on this?
+> 
+> thanks.
+> 
 
-Max's series approaches this properly by fully linking the struct
-pci_device of the VF throughout the entire VFIO scheme, including the
-group and container, while still allowing override of various VFIO
-operations.
-
-Jason
