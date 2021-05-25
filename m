@@ -2,88 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403B6390357
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4C5390345
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbhEYOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:06:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:56866 "EHLO foss.arm.com"
+        id S233465AbhEYODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:03:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233563AbhEYOGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:06:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5342413D5;
-        Tue, 25 May 2021 07:04:31 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 086F33F73D;
-        Tue, 25 May 2021 07:04:26 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org
-Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, gerg@linux-m68k.org, green.hu@gmail.com,
-        guoren@kernel.org, ink@jurassic.park.msu.ru,
-        James.Bottomley@HansenPartnership.com, jcmvbkbc@gmail.com,
-        jonas@southpole.se, ley.foon.tan@intel.com, linux@armlinux.org.uk,
-        mark.rutland@arm.com, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-Subject: [PATCH v2 05/33] locking/atomic: openrisc: avoid asm-generic/atomic.h
+        id S233273AbhEYODh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 10:03:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DCB26141B;
+        Tue, 25 May 2021 14:02:06 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marco Elver <elver@google.com>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH v2] arm64: mm: don't use CON and BLK mapping if KFENCE is enabled
 Date:   Tue, 25 May 2021 15:02:04 +0100
-Message-Id: <20210525140232.53872-6-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210525140232.53872-1-mark.rutland@arm.com>
-References: <20210525140232.53872-1-mark.rutland@arm.com>
+Message-Id: <162195131724.26304.9816849348015861632.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210525104551.2ec37f77@xhacker.debian>
+References: <20210525104551.2ec37f77@xhacker.debian>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OpenRISC is the only architecture which uses asm-generic/atomic.h and
-also provides its own implementation of some functions, requiring
-ifdeferry in the asm-generic header. As OpenRISC provides the vast
-majority of functions itself, it would be simpler overall if it also
-provided the few functions it cribs from asm-generic.
+On Tue, 25 May 2021 10:45:51 +0800, Jisheng Zhang wrote:
+> When we added KFENCE support for arm64, we intended that it would
+> force the entire linear map to be mapped at page granularity, but we
+> only enforced this in arch_add_memory() and not in map_mem(), so
+> memory mapped at boot time can be mapped at a larger granularity.
+> 
+> When booting a kernel with KFENCE=y and RODATA_FULL=n, this results in
+> the following WARNING at boot:
+> 
+> [...]
 
-This patch decouples OpenRISC from asm-generic/atomic.h. Subsequent
-patches will simplify the asm-generic implementation and remove the now
-unnecessary ifdeferry.
+Applied to arm64 (for-next/fixes), thanks!
 
-There should be no functional change as a result of this patch.
+[1/1] arm64: mm: don't use CON and BLK mapping if KFENCE is enabled
+      https://git.kernel.org/arm64/c/e69012400b0c
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Acked-by: Stafford Horne <shorne@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Will Deacon <will@kernel.org>
----
- arch/openrisc/include/asm/atomic.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/openrisc/include/asm/atomic.h b/arch/openrisc/include/asm/atomic.h
-index b589fac39b92..cb86970d3859 100644
---- a/arch/openrisc/include/asm/atomic.h
-+++ b/arch/openrisc/include/asm/atomic.h
-@@ -121,6 +121,12 @@ static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
- }
- #define atomic_fetch_add_unless	atomic_fetch_add_unless
- 
--#include <asm-generic/atomic.h>
-+#define atomic_read(v)			READ_ONCE((v)->counter)
-+#define atomic_set(v,i)			WRITE_ONCE((v)->counter, (i))
-+
-+#include <asm/cmpxchg.h>
-+
-+#define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
-+#define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
- 
- #endif /* __ASM_OPENRISC_ATOMIC_H */
 -- 
-2.11.0
+Catalin
 
