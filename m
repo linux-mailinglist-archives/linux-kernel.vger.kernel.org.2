@@ -2,156 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869EF38FDE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA6A38FDE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhEYJcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:32:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:53812 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232603AbhEYJcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:32:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C6B76D;
-        Tue, 25 May 2021 02:30:49 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 935FE3F73D;
-        Tue, 25 May 2021 02:30:47 -0700 (PDT)
-Date:   Tue, 25 May 2021 10:30:39 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210525093039.GA31871@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <cdb4e3a4-569f-1dc2-be22-c0128250996a@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cdb4e3a4-569f-1dc2-be22-c0128250996a@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S232583AbhEYJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231921AbhEYJdw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:33:52 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9E2C061574;
+        Tue, 25 May 2021 02:32:21 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id j12so22269448pgh.7;
+        Tue, 25 May 2021 02:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2Lb5zYLwrFrCEh5qo7xkBR6QBgvdORkPSIIhuNkZrZ4=;
+        b=F4PcLZ1pnlMHAyIQZ2uEZ99XklRGiCEGtqIFXFGYATSxJirWmTDiejCdV2WjuoWDWI
+         qTR9k1hkqOUp5KNnHKUfD314ZxxIglof5ZqmClKEW07dmO4hH2TJ0q9Xua9lMWEm2P6F
+         zcEOrNyuEwvyKLunb8uPpGSA0oyFLJKLWF/LsZ0hz8wFc+xnylkIMHRzWBisCH56OnqQ
+         7ZATHXgiUf0FHmBneHtb2GRP2j+gHgcdxDrVoMt4HGZoXlAM1Xl9RdhW9F5pUbbVfgRE
+         6rHq8qXQnh8thx676vNeMmJiBsuwGWwJhC+3p3cm2sh+2z00nyJRN71MLCgVPjFprJN+
+         Uj7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2Lb5zYLwrFrCEh5qo7xkBR6QBgvdORkPSIIhuNkZrZ4=;
+        b=PDDDvDJcDK3tIhJphIht0UC1l/GJj9q9s7QegQi7rAZKm5+1w8ECPnvTRz3M6h/5AM
+         2Z/FDMzzFrRmdEe6YUp4oufejfaMXX+/r3amBWlQW5Q8mrf8gL5oRzwp7A4xfhgkqSOV
+         3NArZp0OeJO46ZyFerRZVZjOf4lxi5x4q2gK8djzj7hq++P2VIJDZUGA+xjGRPjCOCK5
+         vp5XWl+vO8Quyd1wmAvFt8M64sfjYclK636l0Pe70Oz3qZYx3AjXI7TCIYWDm56BaOEl
+         ebBKbNTPNndB1J7nbrMPWQR1P3kJIVaVMNwF+Bya+nVgq30ujhUNazwO8sPVT+45RNaG
+         GFTQ==
+X-Gm-Message-State: AOAM532WroNALAV1Q3Pk++QhrggrJkn7e3cCTNr+JpYFVDMBSkTmI/b6
+        FZ1swRd+vDDWDVA4FimEOC4=
+X-Google-Smtp-Source: ABdhPJwfvmT54j/T7oPQ3pny1gsG+uS07A8OjjRm2ztNz0tjF1g4gdFeomMEQiIrKN+df4fcXyZY1A==
+X-Received: by 2002:a63:f50:: with SMTP id 16mr10130737pgp.373.1621935140754;
+        Tue, 25 May 2021 02:32:20 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id p36sm13895550pgm.74.2021.05.25.02.32.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 25 May 2021 02:32:20 -0700 (PDT)
+From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, corbet@lwn.net
+Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Haocheng Xie <xiehaocheng.cn@gmail.com>
+Subject: [PATCH] docs: Fix a typo in Documentation/RCU/stallwarn.rst
+Date:   Tue, 25 May 2021 17:31:52 +0800
+Message-Id: <20210525093152.26627-1-xiehaocheng.cn@gmail.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:25:36AM +0200, Dietmar Eggemann wrote:
-> On 24/05/2021 12:16, Beata Michalska wrote:
-> 
-> [...]
-> 
-> > Rework the way the capacity asymmetry levels are being detected,
-> > allowing to point to the lowest topology level (for a given CPU), where
-> > full set of available CPU capacities is visible to all CPUs within given
-> > domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
-> > the domains. This will have an impact on EAS wake-up placement in a way
-> > that it might see different rage of CPUs to be considered, depending on
-> 
-> s/rage/range ;-)
-Right ..... :)
-> 
-> [...]
-> 
-> > @@ -1266,6 +1266,112 @@ static void init_sched_groups_capacity(int cpu, struct sched_domain *sd)
-> >  	update_group_capacity(sd, cpu);
-> >  }
-> >  
-> > +/**
-> > + * Asymmetric CPU capacity bits
-> > + */
-> > +struct asym_cap_data {
-> > +	struct list_head link;
-> > +	unsigned long    capacity;
-> > +	struct cpumask   *cpu_mask;
-> 
-> Not sure if this has been discussed already but shouldn't the flexible
-> array members` approach known from struct sched_group, struct
-> sched_domain or struct em_perf_domain be used here?
-> IIRC the last time this has been discussed in this thread:
-> https://lkml.kernel.org/r/20200910054203.525420-2-aubrey.li@intel.com
-> 
-If I got right the discussion you have pointed to, it was about using
-cpumask_var_t which is not the case here. I do not mind moving the code
-to use the array but I am not sure if this changes much. Looking at the
-code changes to support that (to_cpumask namely) it was introduced for
-cases where cpumask_var_t was not appropriate, which again isn't the case
-here.
+Add the missing ')' in the documentation.
 
+Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
 ---
-BR
-B.
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 0de6eef91bc8..03e492e91bd7 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1271,8 +1271,8 @@ static void init_sched_groups_capacity(int cpu,
-> struct sched_domain *sd)
->   */
->  struct asym_cap_data {
->         struct list_head link;
-> -       unsigned long    capacity;
-> -       struct cpumask   *cpu_mask;
-> +       unsigned long capacity;
-> +       unsigned long cpumask[];
->  };
-> 
->  /*
-> @@ -1299,14 +1299,14 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
->                 goto leave;
-> 
->         list_for_each_entry(entry, &asym_cap_list, link) {
-> -               if (cpumask_intersects(sched_domain_span(sd),
-> entry->cpu_mask)) {
-> +               if (cpumask_intersects(sched_domain_span(sd),
-> to_cpumask(entry->cpumask))) {
->                         ++asym_cap_count;
->                 } else {
->                         /*
->                          * CPUs with given capacity might be offline
->                          * so make sure this is not the case
->                          */
-> -                       if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> +                       if
-> (cpumask_intersects(to_cpumask(entry->cpumask), cpu_map)) {
->                                 sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
->                                 if (asym_cap_count > 1)
->                                         break;
-> @@ -1332,7 +1332,6 @@ asym_cpu_capacity_get_data(unsigned long capacity)
->         if (WARN_ONCE(!entry, "Failed to allocate memory for asymmetry
-> data\n"))
->                 goto done;
->         entry->capacity = capacity;
-> -       entry->cpu_mask = (struct cpumask *)((char *)entry +
-> sizeof(*entry));
->         list_add(&entry->link, &asym_cap_list);
->  done:
->         return entry;
-> @@ -1349,7 +1348,7 @@ static void asym_cpu_capacity_scan(void)
->         int cpu;
-> 
->         list_for_each_entry(entry, &asym_cap_list, link)
-> -               cpumask_clear(entry->cpu_mask);
-> +               cpumask_clear(to_cpumask(entry->cpumask));
-> 
->         entry = list_first_entry_or_null(&asym_cap_list,
->                                          struct asym_cap_data, link);
-> @@ -1361,11 +1360,11 @@ static void asym_cpu_capacity_scan(void)
->                 if (!entry || capacity != entry->capacity)
->                         entry = asym_cpu_capacity_get_data(capacity);
->                 if (entry)
-> -                       __cpumask_set_cpu(cpu, entry->cpu_mask);
-> +                       __cpumask_set_cpu(cpu, to_cpumask(entry->cpumask));
->         }
-> 
->         list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
-> -               if (cpumask_empty(entry->cpu_mask)) {
-> +               if (cpumask_empty(to_cpumask(entry->cpumask))) {
->                         list_del(&entry->link);
->                         kfree(entry);
->                 }
-> 
-> [...]
+ Documentation/RCU/stallwarn.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index 7148e9b..a9381e43 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -224,7 +224,7 @@ is the number that had executed since boot at the time that this CPU
+ last noted the beginning of a grace period, which might be the current
+ (stalled) grace period, or it might be some earlier grace period (for
+ example, if the CPU might have been in dyntick-idle mode for an extended
+-time period.  The number after the "/" is the number that have executed
++time period).  The number after the "/" is the number that have executed
+ since boot until the current time.  If this latter number stays constant
+ across repeated stall-warning messages, it is possible that RCU's softirq
+ handlers are no longer able to execute on this CPU.  This can happen if
+-- 
+2.9.5
+
