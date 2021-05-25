@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6DE38F8F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1286538F8F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhEYDpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhEYDpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:45:16 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5BAC061574;
-        Mon, 24 May 2021 20:43:46 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id p20so36315346ljj.8;
-        Mon, 24 May 2021 20:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDF6mBMgNJLUIrRtn1QdpOxFrtc+wC5o+OnjVFJaNNk=;
-        b=Bgyg3SufXoRKshaUkZgPFsX+GP+0f8Lok/5IYi98BOdCvCIIu1A3RR1yWrGeBHsEdu
-         MXxxFSsQ42UWUUsKEVd2JehHqdkHJIG1FT5hbQdF/ZzoVLz1JQPPo/3VE0qaCd7/VKrj
-         6Y4UGGJ+pRDPORu1qATrXn6+T+kYbzeoJi05R6mxV+lq2kF2SHEpqDWvA7YmLDSOqsNu
-         SpwCvzVLjo8o0i0aGi2v1d4j245DX7aRevsWcvLkXBfaIfPskTnw4O7060TnLGm8HPar
-         kLwjZ0h2+Mc0bXiYhSWn4DmyIFGF0mmAlNF6znSDqSJkA/7waZGmr6AcqavdYwIRtSM4
-         2f4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDF6mBMgNJLUIrRtn1QdpOxFrtc+wC5o+OnjVFJaNNk=;
-        b=IUBH+IdzM/7f0gX7K/NWAS1pxfgcvrxSBJtavten04o/BXOEB8Mb5PY+d5KCeG8Z1M
-         7tekd+wxN/vpJeajBcZjJdLoonxN5mMiyHaa0ceI6KD6Uts4cbOmBblErcJVzeYDyKtH
-         vU80fQoR73JKF+iFL9LJ1rvshiXI+CpXzNEOjTfUNDlPKLNXbpp2y03zPTwDvYaspJbV
-         8YE7VbCYenZ3mVyKF/9B+uSt/qVawlLKUvSSr6MXaA4OU9d03tQZU0ijZOGjZ5sb8qaZ
-         arcF8krQjyVrHacpcZG9uuh35/uHFw6uFXaIONFLBRIP1krXdJGc2ODBoIN2CpzmwL5r
-         NscA==
-X-Gm-Message-State: AOAM533ZBE0QEndmpLiwkMG1c18K+X3PnKi6Ni9twFt29mTKhn8ZDZA1
-        eyqdfVvha5rLPMeFQtjW6ziv/wUac3ydSSPOjiQ=
-X-Google-Smtp-Source: ABdhPJx73FLXjgNeG1gmGuwVqMUcPxH61t13GnpkEha9rszuiJdELc042dY1kjnaPHP0FYjl6KLgs/8Ogq4Zm8kd1Kc=
-X-Received: by 2002:a2e:240e:: with SMTP id k14mr19355228ljk.423.1621914223981;
- Mon, 24 May 2021 20:43:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210522113155.244796-1-dong.menglong@zte.com.cn>
- <20210522113155.244796-2-dong.menglong@zte.com.cn> <YKxMjPOrHfb1uaA+@localhost>
-In-Reply-To: <YKxMjPOrHfb1uaA+@localhost>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 25 May 2021 11:43:31 +0800
-Message-ID: <CADxym3asj97wATjGthOyMzosg=dHY-bfk5pqLPYLSCa2Sub73Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] init/main.c: introduce function ramdisk_exec_exist()
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
-        ojeda@kernel.org, jeyu@kernel.org, joe@perches.com,
-        Menglong Dong <dong.menglong@zte.com.cn>, masahiroy@kernel.org,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
-        song@kernel.org, NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
-        wangkefeng.wang@huawei.com, arnd@arndb.de,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
-        pmladek@suse.com, ebiederm@xmission.com, jojing64@gmail.com,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230377AbhEYDqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:46:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230048AbhEYDq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 23:46:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D53E9613D8;
+        Tue, 25 May 2021 03:44:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621914299;
+        bh=mphs2ytqcaHWAzF+Z5cAO+igIUR6zVq+Gj6ZgDHXbyk=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=FMVQiLP89zhd7WorJ7dURG4wUklGOjVyxBQ3q5XAv6wcavwjImwOTbcv5CSVUsSBE
+         DY/xuHgVe/5yNp2w4aKLQa43agS3G6nvkRhbykojEthvZhUBCNZCn3wyKNY+TdmL7h
+         EWVY0CbR5dDc3xrtknVpD8ciJWOalxuve+mX6aYKylGKyHMQQYxDRglyK+/+Rol4B8
+         Kjt2/yu1oVcKg+5O8TU0zvlRyCqig9+Cuj40LdAu9WQmN1pwphgh/47SeaIT2M6Ucx
+         uTnbWjf+fEuanLxS4vULhZq7bQ5Hc0LLoRBA7dp32RRsDdkmfBxdLrZpUm+0POgrPJ
+         M6kdenIq2cJTA==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E1BAA27C0054;
+        Mon, 24 May 2021 23:44:57 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Mon, 24 May 2021 23:44:57 -0400
+X-ME-Sender: <xms:uXKsYOB1FycFuGVqETdcmmkl9yZwiRmcLG-hKS1Uc5aPbuyx67A9vA>
+    <xme:uXKsYIiMWuvaE9NomRslsGDIlPFtLszqucybvac9BcUIUVT4CaUl73vQ5nIAVSS5Q
+    pbLjtkPDs6iHqfe-9E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdektddgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:uXKsYBlekASv_91zq6PL0Mg8TtGbXcfF-y4wF45EarL44SBqf5MEBw>
+    <xmx:uXKsYMzy8Vfnz2BC30lqAnS4xbTwKoP96su4D7a-Thpb3wVOHQ1TfQ>
+    <xmx:uXKsYDRte8qx8uWj9HAHr3OCGfPIzkftAsK0CSC4w4NTUKTtbId_bw>
+    <xmx:uXKsYOH-ZoTpKcKe3zpBsxMd68VFHrayU1PtU9mYWygL-w4X99vO_CQSC0f0kaZvjK6c1Q>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E882951C0060; Mon, 24 May 2021 23:44:56 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <861e2ac3-b56b-4879-9a78-e20bac4906f1@www.fastmail.com>
+In-Reply-To: <CAJvTdKkTSv7zc2eT1Ni6+k=V_faCCWmMo5oNunQQt-P7FkON-Q@mail.gmail.com>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-22-chang.seok.bae@intel.com>
+ <8c8d91ae-5a3b-9523-725d-134840102df7@kernel.org>
+ <CAJvTdKnU6g2H-R67G8LCs4cs0_NqnOzoKbC3J+iNGayFE5RGMQ@mail.gmail.com>
+ <5a645958-10ab-46e7-9650-e5746a8d2276@www.fastmail.com>
+ <CAJvTdKkTSv7zc2eT1Ni6+k=V_faCCWmMo5oNunQQt-P7FkON-Q@mail.gmail.com>
+Date:   Mon, 24 May 2021 20:44:36 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Len Brown" <lenb@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Borislav Petkov" <bp@suse.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 21/28] x86/fpu/amx: Initialize child's AMX state
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:02 AM Josh Triplett <josh@joshtriplett.org> wrote:
->
-......
->
-> As far as I can tell, this will break if the user wants to use
-> ".mybinary" or ".mydir/mybinary" as the name of their init program.
->
-> For that matter, it would break "...prog" or "...somedir/prog", which
-> would be strange but not something the kernel should prevent.
->
 
-Wow, seems I didn't give enough thought to it.
 
-> I don't think this code should be attempting to recreate
-> relative-to-absolute filename resolution.
+On Mon, May 24, 2021, at 11:21 AM, Len Brown wrote:
+> On Mon, May 24, 2021 at 2:14 PM Andy Lutomirski <luto@kernel.org> wrot=
+e:
+>=20
+> > What does VOLATILE mean in this context?
+>=20
+> Volatile means caller-saved.
 
-Trust me, I don't want to do it either. However, I need to check if
-ramdisk_execute_command exist before chroot while the cpio is unpacked
-to '/root'.
+Just like every other extended math register except some XMMs on Windows=
+. (Thanks you so, so much, Microsoft, for screwing this up, and thank yo=
+u Intel for indulging Microsoft.)
 
-Maybe I can check it after chroot, but I need to chroot back if it not
-exist. Can I chroot back in a nice way?
+>=20
+> Volatile registers can not be used for globals, static, or for
+> parameter passing.
+>=20
+> ie. By the time the callee is running, they must be assumed to be inva=
+lid.
 
-I tried to move the mount on '/root' to '/' before I do this check in
-absolute path, but seems '/' is special, the lookup of '/init' never
-follow the mount on '/' and it can't be found. However, if I lookup
-'/../init', it can be found!
+Callees can=E2=80=99t assume anything about any of the registers unless =
+explicitly specified. TILE is no different from RBP or XMM in this regar=
+d.
 
-Is there any one have a good idea? Or I have to dig into the code
-of 'kern_path()' and figure out the reason.
+>=20
+> This means that any routine, including the target of a system call,
+> such as fork/clone, can't assume that any data exists in these
+> registers.
+>=20
 
-Thanks!
-Menglong Dong
+If we actually believe this, then we should clear xmm, ymm, zmm, etc on =
+every system call.  Barring that, let=E2=80=99s come up with reasonable =
+semantics, document it, and implement it.
