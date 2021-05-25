@@ -2,95 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7114390515
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08DD390519
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhEYPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:20:03 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:25083 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbhEYPTA (ORCPT
+        id S234267AbhEYPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232885AbhEYPTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:19:00 -0400
+        Tue, 25 May 2021 11:19:23 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0CEC061354;
+        Tue, 25 May 2021 08:17:28 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id v22so30627102oic.2;
+        Tue, 25 May 2021 08:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1621955850; x=1653491850;
-  h=to:cc:references:subject:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=yTek0pizCvLcTlNuueaRKn+sp3Yn2EKx4lOHoX8AyXg=;
-  b=jHiYF7Mt1ezN+EezA3s2X3DKHCnpoo4QxFxlHXSk4ZyEr46Uskaf1NNC
-   iIUy8xnGUo/IyOqpDdW378nxXCTyojFIUJ5EdvPnzTJjgDD2wiDtBcZhU
-   /vp/IDQn37lJQOiAl497vEbRKkfEYQDaEEj9//fwMdn7F63tGcpeCq25O
-   g=;
-X-IronPort-AV: E=Sophos;i="5.82,328,1613433600"; 
-   d="scan'208";a="934958672"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 25 May 2021 15:17:23 +0000
-Received: from EX13D31EUA003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 5731EA1C5D;
-        Tue, 25 May 2021 15:17:21 +0000 (UTC)
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D31EUA003.ant.amazon.com (10.43.165.95) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 25 May 2021 15:17:19 +0000
-Received: from u8803c614af8f5a.ant.amazon.com (172.31.190.190) by
- mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18 via Frontend Transport; Tue, 25 May 2021 15:17:07 +0000
-To:     <sj38.park@gmail.com>
-CC:     <Jonathan.Cameron@Huawei.com>, <acme@kernel.org>,
-        <akpm@linux-foundation.org>, <alexander.shishkin@linux.intel.com>,
-        <amit@kernel.org>, <benh@kernel.crashing.org>,
-        <brendanhiggins@google.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <greg@kroah.com>, <gthelen@google.com>,
-        <guoju.fgj@alibaba-inc.com>, <linux-damon@amazon.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sjpark@amazon.de>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <zgf574564920@gmail.com>
-References: <20210520075629.4332-4-sj38.park@gmail.com>
-Subject: Re: [PATCH v29 03/13] mm/damon: Adaptively adjust regions
-From:   <sieberf@amazon.com>
-Message-ID: <1b30265d-7440-1c94-f625-0087215433ee@amazon.com>
-Date:   Tue, 25 May 2021 17:17:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CbYbEQtGlD84EODNZdKsXfFlWgmm2XeE09xpe/o0hk8=;
+        b=YKceKAf5IOkI8WPqiq+8cvKV8CrlaKXN5hkYJFg8IyjoG+xoid/qHuBziKHezN7QDH
+         WaQyk/CUTTUzZ5JKJTrE4nBEZv19mmjbkJmWJvQSadv+g+qg1gehZYl4nYmh82/M0dlS
+         d8AjKqbgXKdGCtnsRJzbZ44fAEimGeooIzm+Pc5i/Eh133d2QG2BcwasdQ7aKi8piYxE
+         CdY9C57Hln6QP3nnX/FLumvjdYN3ugVv6V+Rbr9EwP+geVGW1YKaYj1a6VwT3DxRx+2X
+         8zIx9iB34cDO7ZYLASGihMLyAeUAMksdB5wmJwohLBXINLsisp0h4PD/uRAaT2Nj6Kjw
+         9eTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CbYbEQtGlD84EODNZdKsXfFlWgmm2XeE09xpe/o0hk8=;
+        b=I6HbBmmkixjWhDtb11tHvHtG1mkFoxLj1lcDGTa/sIB/rz0vv665+R6F67VRN8WC34
+         xZlS+lefVNt3t1tnrKB/JJVvrGDf0O9DE8YjfWnArbAH1wvzqfFkCgUG+Zrs2eNAyhG/
+         CIw2g7/F0vUvKeblY8624xdF+KxAyhw6TFz4lnydm+exBb+zq9Mzmsv+YQqq4n+fWMA9
+         dAuamqRwxEU8roFLTXYtyMeDYHc8PZXTLliO/iMvG7KJb9QrONhuWBbQi0uELOt5Gqgf
+         567qRs0lvlwcyRSIChGnl6aRUeKQVwgvZCOOcMppUyws4RFfDAcsnZGnXNvDjmByZfcY
+         9WlQ==
+X-Gm-Message-State: AOAM532/3hTEiUrIJ7uyCgZdJYr7pBq66i5fPTatWn4qbdbvQcknZWXG
+        9aUsz2twQHVQMR8fGEeLbNu184wrOlw+CbEeUDc=
+X-Google-Smtp-Source: ABdhPJxoPpWBhbgamtW7bCNvhDENQMPFELUvEdXA4vCD7K0lhP24RUKLVN7oaGrDYHC2TxdczIKOh7QYusMliK3IfTA=
+X-Received: by 2002:aca:2102:: with SMTP id 2mr3196288oiz.70.1621955847593;
+ Tue, 25 May 2021 08:17:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210520075629.4332-4-sj38.park@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210525102941.3958649-1-apusaka@google.com> <CAO1O6sehBfi+Tn6EEC8XgoORrD=JF9zO9tDCbJBgL=JpaBdL2w@mail.gmail.com>
+ <CAJQfnxG1Q=6n4H_kTbFA-=b0Rbs6v7WE8mKKonqvw-nXhLnLMA@mail.gmail.com>
+In-Reply-To: <CAJQfnxG1Q=6n4H_kTbFA-=b0Rbs6v7WE8mKKonqvw-nXhLnLMA@mail.gmail.com>
+From:   Emil Lenngren <emil.lenngren@gmail.com>
+Date:   Tue, 25 May 2021 17:17:17 +0200
+Message-ID: <CAO1O6sdcWY8xt4LHWjSfuunJ3G68rgZ0_hN13iJoA3AA6tksJg@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Bluetooth: use inclusive language
+To:     Archie Pusaka <apusaka@google.com>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        =?UTF-8?B?T2xlIEJqw7hybiBNaWR0YsO4?= <omidtbo@cisco.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi SeongJae,
+Hi Archie,
 
-The code looks good. Some questions for this patch:
+Den tis 25 maj 2021 kl 16:34 skrev Archie Pusaka <apusaka@google.com>:
+>
+> Hi Emil,
+>
+> On Tue, 25 May 2021 at 20:19, Emil Lenngren <emil.lenngren@gmail.com> wrote:
+> >
+> > Hi Archie,
+> >
+> > Den tis 25 maj 2021 kl 12:46 skrev Archie Pusaka <apusaka@google.com>:
+> > >
+> > > From: Archie Pusaka <apusaka@chromium.org>
+> > >
+> > > Hi linux-bluetooth maintainers,
+> > >
+> > > This series contains inclusive language patches, to promote usage of
+> > > central, peripheral, reject list, and accept list. I tried to divide
+> > > the change to several smaller patches to ease downstreamers to make
+> > > gradual change.
+> > >
+> > > There are still three occurences in debugfs (patch 09/12) in which the
+> > > original less inclusive terms is still left as-is since it is a
+> > > file name, and I afraid replacing them will cause instability to
+> > > other systems depending on that file name.
+> > >
+> > >
+> > > Archie Pusaka (12):
+> > >   Bluetooth: use inclusive language in HCI role
+> > >   Bluetooth: use inclusive language in hci_core.h
+> > >   Bluetooth: use inclusive language to describe CPB
+> > >   Bluetooth: use inclusive language in HCI LE features
+> > >   Bluetooth: use inclusive language in L2CAP
+> > >   Bluetooth: use inclusive language in RFCOMM
+> > >   Bluetooth: use inclusive language when tracking connections
+> > >   Bluetooth: use inclusive language in SMP
+> > >   Bluetooth: use inclusive language in debugfs
+> > >   Bluetooth: use inclusive language when filtering devices out
+> > >   Bluetooth: use inclusive language when filtering devices in
+> > >   Bluetooth: use inclusive language in comments
+> > >
+> > >  include/net/bluetooth/hci.h      |  98 +++++++++++++-------------
+> > >  include/net/bluetooth/hci_core.h |  22 +++---
+> > >  include/net/bluetooth/l2cap.h    |   2 +-
+> > >  include/net/bluetooth/mgmt.h     |   2 +-
+> > >  include/net/bluetooth/rfcomm.h   |   2 +-
+> > >  net/bluetooth/amp.c              |   2 +-
+> > >  net/bluetooth/hci_conn.c         |  32 ++++-----
+> > >  net/bluetooth/hci_core.c         |  46 ++++++-------
+> > >  net/bluetooth/hci_debugfs.c      |  20 +++---
+> > >  net/bluetooth/hci_event.c        | 114 +++++++++++++++----------------
+> > >  net/bluetooth/hci_request.c      | 106 ++++++++++++++--------------
+> > >  net/bluetooth/hci_sock.c         |  12 ++--
+> > >  net/bluetooth/hidp/core.c        |   2 +-
+> > >  net/bluetooth/l2cap_core.c       |  16 ++---
+> > >  net/bluetooth/l2cap_sock.c       |   4 +-
+> > >  net/bluetooth/mgmt.c             |  36 +++++-----
+> > >  net/bluetooth/rfcomm/sock.c      |   4 +-
+> > >  net/bluetooth/smp.c              |  86 +++++++++++------------
+> > >  net/bluetooth/smp.h              |   6 +-
+> > >  19 files changed, 309 insertions(+), 303 deletions(-)
+> > >
+> > > --
+> > > 2.31.1.818.g46aad6cb9e-goog
+> > >
+> >
+> > Interesting move and good initiative!
+> >
+> > In my opinion however, shouldn't we wait until Bluetooth SIG changes
+> > the naming in the specification itself first (or rather push them to
+> > make the changes in the first place)? If they are about to change
+> > names, it would be good to make sure we end up with the same word
+> > choices so that we don't call one thing "le peripheral initiated
+> > feature exchange" while the standard calls it "le follower initiated
+> > feature exchange" or similar. Using different terminology than what's
+> > specified by the standard could easily end up in confusion I guess,
+> > and even more if different stacks invented their own alternative
+> > terminology.
+>
+> So far the Bluetooth SIG has only published an "Appropriate Language
+> Mapping Table" (https://specificationrefs.bluetooth.com/language-mapping/Appropriate_Language_Mapping_Table.pdf).
+> It doesn't look like it's finalized, but it's enough to get started.
+> Hopefully someone in the community can help to push the changes to the
+> spec?
+>
+> > In any case, I'm for example not sure if central/peripheral are the
+> > best words to use, since those are tied to a specific higher level
+> > profile (Generic Access Profile) and those words are not mentioned at
+> > all in the spec outside that context. The SMP chapter for example uses
+> > the terminology "initiator" and "responder", so maybe those are better
+> > word choices, at least in SMP.
+>
+> Thanks, you are correct about that. I didn't read the spec thoroughly
+> and just did a simple replacement. I shall incorporate your suggestion
+> if this set of patches is greenlighted.
+>
 
-The region merge threshold is computed on the access diff. Should the 
-diff threshold be exponential as diffs in low number of access are 
-likely to be more important? I.e if the threshold is 5, a region A with 
-0 accesses will be merged with a region B with 4 accesses (diff=4), but 
-a region C with 50 access won't be merged with a region D with 60 
-accesses (diff=10), however it seems to me that keeping a good 
-granularity between A and B is more important than between C and D for 
-FPR. What do you think?
+Yeah that document really seems to be "in progress". As you can see,
+they have replaced Srand (slave random, used in SMP) by LP_RAND_R
+(legacy pairing, responder random number) so it seems they thought in
+the same way as I did, at least for SMP. And indeed, as in your patch
+they seem to prefer "central" and "peripheral", even outside GAP.
 
-When the number of regions is less than half max region, region split 
-kicks in and doubles the number of region. This means that the number of 
-region will grow close to max region, then slowly decay as region 
-merges, until it reaches half max regions, then double again. This seems 
-to create a non-uniform region number distribution over time, with large 
-cycles. Also we do a lot of work when we double and no work otherwise. 
-Not sure what's the impact on measurement quality but intuitively seems 
-like keeping the number of regions constant over time would yield more 
-consistent metrics? How about we rather always split regions at each 
-iteration, and for each region we give a split probability?
+So my guess is that we could rename at least the terms that are in
+that list right now, but probably wait with terms not yet present in
+the list. Or patch everything at once when Bluetooth SIG has finished
+the naming. (Note that I'm not a maintainer so someone else will need
+to decide)
 
-Kind regards,
-
---Fernand
-
+/Emil
