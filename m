@@ -2,179 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB41C390C77
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66A3390C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhEYWyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 18:54:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47625 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230519AbhEYWy3 (ORCPT
+        id S232191AbhEYWy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 18:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhEYWy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 18:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621983178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SBoHc3TMtFMMXyl4OvwN2G9ZYTn+3x2tRvNpJ1JHSJM=;
-        b=UlJW6Sb9QNkeNpXYKehd0mbsylm2Zak31zHX6VaU22y2n0cVITp5rn9sJ7wfwrDEoyyH1O
-        dovAHmdGpkVESjME514gFxIAieT8Afm9A9SgjuPXbrhK9CNK0Bc4RbWRdhxjCeFZ6bBwCD
-        jQmIbHdreLowKSNNfp1qVzkSs5TGqIo=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-AMNrQ451OMW1_NanTfkURw-1; Tue, 25 May 2021 18:52:57 -0400
-X-MC-Unique: AMNrQ451OMW1_NanTfkURw-1
-Received: by mail-ot1-f71.google.com with SMTP id f7-20020a9d5e870000b02902f479dba730so22681139otl.21
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:52:57 -0700 (PDT)
+        Tue, 25 May 2021 18:54:56 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E69C061574;
+        Tue, 25 May 2021 15:53:24 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so7488962wmq.2;
+        Tue, 25 May 2021 15:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=reDM3jFc19oKCFJlz500fPCv9/GS7ihZ1/NylsFXAi8=;
+        b=raQd9OTH9uCIvVlLRCoa5+T4rvcKEsectlqRKDUA/KMhSkZEEp2mX5+83qTKq46eUM
+         uIwB+2XdUVPQ0gMseEIUgUpnZE9f1wg9GYGNbYQTSWE6/nv6CQT65096mWPCF65oYVxn
+         9L8O9Oc5Mb7n/Ia38As1ZkwDaVJqfTThDiHKQzCItVXEdqg7LtmjixaXuMMgCK6Ig3Ff
+         4QZ32erEQ0H555qyt2xKLH3yjXzXCnWnmnrTvb1Ceseqs9y2pMeuLc5ztkxTB2gQjEYG
+         eyRqx9IbkOwTi8xUeqvLkHfqIyc0oKg2PAGK1gZfwHTUl5uhWFLnwRr5ZMvZujTPDdJl
+         2k+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SBoHc3TMtFMMXyl4OvwN2G9ZYTn+3x2tRvNpJ1JHSJM=;
-        b=I+2Oc7rRvQoWSwFhSzRsAQuCnzohuS2BSU3xlwGtYE1XcCbyiwKItQsjSnaYwsWv1i
-         2WIjZggzTQ+Tvvi68jdQKoNUYNE9CrASLwPn7EcstMxqzpJlJpVGiB5G4VdhhvzvQ0CO
-         QeESZ0JB8YXP1htXk3THwnBwJnFoVACgzEhFp/w3aF9lSbAzyHmLV6zuQeHElsRH/9Vv
-         GA/yf5+oB6JQGq7mlb25aoPNNMKMDx+9PZ3DI2aMAyhxZc2/yw8noGStAR03DXiC1KBJ
-         fCkLlYpQgYRZeJtxW0Eg5lrlXL+J0mT086GHfZ7+dfYp6ps6B9rZL0cvLfIx9Ja/x5zq
-         0VhA==
-X-Gm-Message-State: AOAM532AbPw7/ilBeogb7VPrGo5XAjmjI8JIwTJ+5XjS4xbvWqTJYplk
-        K44EGGCFf27BAtkJSCV5/70esoicnWLIpvZR4gBppkF1T4xhCW5xhKykr7atVGSEowD4t0b+Ll9
-        BJdj40b8I5AAX4C+bI/ni6PmA
-X-Received: by 2002:a9d:6457:: with SMTP id m23mr5140otl.11.1621983176608;
-        Tue, 25 May 2021 15:52:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRjs1O3WclZbbD9WDAdj+hJXQH5q9/JRXCUepCdSgt9KXIP4TuN1LyaOo7T20Cp8BhXQC/OQ==
-X-Received: by 2002:a9d:6457:: with SMTP id m23mr5122otl.11.1621983176368;
-        Tue, 25 May 2021 15:52:56 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id r7sm3833207oom.46.2021.05.25.15.52.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:52:55 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:52:52 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Kirti Wankhede <kwankhede@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Li Zefan <lizefan@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210525165252.6959d9da.alex.williamson@redhat.com>
-In-Reply-To: <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
-References: <20210422233950.GD1370958@nvidia.com>
-        <YIecXkaEGNgICePO@yekko.fritz.box>
-        <20210427171212.GD1370958@nvidia.com>
-        <YIizNdbA0+LYwQbI@yekko.fritz.box>
-        <20210428145622.GU1370958@nvidia.com>
-        <YIoiJRY3FM7xH2bH@yekko>
-        <20210503161518.GM1370958@nvidia.com>
-        <YJy9o8uEZs42/qDM@yekko>
-        <20210513135938.GG1002214@nvidia.com>
-        <YKtbWo7PwIlXjFIV@yekko>
-        <20210524233744.GT1002214@nvidia.com>
-        <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=reDM3jFc19oKCFJlz500fPCv9/GS7ihZ1/NylsFXAi8=;
+        b=roXn1kG2o3Qq057WHXBKjeJ0xmeQw7rZTj4FbQC8ao/lV3TLpU8XJ6dOqUd1sOr+v5
+         DUlUii2Hy3otg1NtvH5aqTGlaLG+6MlnsA5wCviqz++TH0iz8nX1KwGIk15VgTQfam/i
+         2Wc5uQB4BhCS4rQsGzy1wtINvrEgiqVy8817Vy9uhhAETI8+3cQyqOwLDUhgPMXbcHuA
+         Ubh5v0uQILnOVKuJSs2GtVankQuVo69TnLW5wjDVgr6WhBj7Wmesr+8FkiDvCdQgjwD+
+         WQBPQVymPUtFcpLGRkrtS6WNoCyn/d3GPrJyujceCE7hisU5sy5+b5z0wARlaEHgdWy1
+         XH4g==
+X-Gm-Message-State: AOAM531JWxuKWKNIQo3gF9VVBte/G641Khg4B49SZTSSIksxRY+UwjQ1
+        yWaTm7Gg9KfdW1TwrZfo9dPGvDntAXs=
+X-Google-Smtp-Source: ABdhPJw546gEmZ1nK6tk1g/lyiMMiRk3FHagS3+zvR+uDwiNQ85UPv2DV/NENvTbCsLZ9hgKYh/Pjg==
+X-Received: by 2002:a1c:6a0f:: with SMTP id f15mr23961465wmc.29.1621983203295;
+        Tue, 25 May 2021 15:53:23 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.117])
+        by smtp.gmail.com with ESMTPSA id r7sm11905348wmq.18.2021.05.25.15.53.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 15:53:22 -0700 (PDT)
+Subject: Re: [PATCH v4 7/8] platform/x86: Add intel_skl_int3472 driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+References: <20210520140928.3252671-1-djrscally@gmail.com>
+ <20210520140928.3252671-8-djrscally@gmail.com>
+ <YKeuQM/O9+jDZFpb@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <6294177b-d6e1-8bbd-d313-5cce1c498604@gmail.com>
+Date:   Tue, 25 May 2021 23:53:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YKeuQM/O9+jDZFpb@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 00:56:30 +0530
-Kirti Wankhede <kwankhede@nvidia.com> wrote:
+Hi Andy - thanks for comments
 
-> On 5/25/2021 5:07 AM, Jason Gunthorpe wrote:
-> > On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
-> >   
-> >>>> I don't really see a semantic distinction between "always one-device
-> >>>> groups" and "groups don't matter".  Really the only way you can afford
-> >>>> to not care about groups is if they're singletons.  
-> >>>
-> >>> The kernel driver under the mdev may not be in an "always one-device"
-> >>> group.  
-> >>
-> >> I don't really understand what you mean by that.  
-> > 
-> > I mean the group of the mdev's actual DMA device may have multiple
-> > things in it.
-> >     
-> >>> It is a kernel driver so the only thing we know and care about is that
-> >>> all devices in the HW group are bound to kernel drivers.
-> >>>
-> >>> The vfio device that spawns from this kernel driver is really a
-> >>> "groups don't matter" vfio device because at the IOMMU layer it should
-> >>> be riding on the physical group of the kernel driver.  At the VFIO
-> >>> layer we no longer care about the group abstraction because the system
-> >>> guarentees isolation in some other way.  
-> >>
-> >> Uh.. I don't really know how mdevs are isolated from each other.  I
-> >> thought it was because the physical device providing the mdevs
-> >> effectively had an internal IOMMU (or at least DMA permissioning) to
-> >> isolate the mdevs, even though the physical device may not be fully
-> >> isolated.
-> >>
-> >> In that case the virtual mdev is effectively in a singleton group,
-> >> which is different from the group of its parent device.  
-> >   
-> 
-> That's correct.
-> 
-> > That is one way to view it, but it means creating a whole group
-> > infrastructure and abusing the IOMMU stack just to create this
-> > nonsense fiction.  
-> 
-> I really didn't get how this abuse the IOMMU stack.
-> mdev can be used in 3 different ways:
-> 1. non-iommu backed mdev devices where mdev vendor driver takes care to
-> DMA map (iommu_map) and isolation is through device hardware internal
-> MMU. Here vfio_iommu_type1 module provides a way to validate and pin
-> pages required by mdev device for DMA mapping. Then IOMMU mapping is
-> done by mdev vendor driver which is owner driver of physical device.
-> 
-> 2. iommu backed mdev devices for SRIOV where mdev device is created per
-> VF (mdev device == VF device) then that mdev device has same iommu
-> protection scope as VF associated to it. Here mdev device is virtual
-> device which uses features of mdev and represents underlying VF device,
-> same as vfio-pci but with additional mdev features.
+On 21/05/2021 13:57, Andy Shevchenko wrote:
 
-What features would those be?  There are no mdev specific parts of the
-vfio uAPI.
+>> +/*
+>> + * The regulators have to have .ops to be valid, but the only ops we actually
+>> + * support are .enable and .disable which are handled via .ena_gpiod. Pass an
+>> + * empty struct to clear the check without lying about capabilities.
+>> + */
+>> +static const struct regulator_ops int3472_gpio_regulator_ops;
+> Hmm... Can you use 'reg-fixed-voltage' platform device instead?
+>
+> One example, although gone from upstream, but available in the tree, I can
+> point to is this:
+>
+>   git log -p -- arch/x86/platform/intel-mid/device_libs/platform_bcm43xx.c
+>
+> It uses constant structures, but I think you may dynamically generate the
+> necessary ones.
+>
 
-The mdev device is a virtual device, by why it it virtual in this case?
-Aren't we effectively assigning the VF itself (mdev device == VF device)
-with a bunch of extra support code to fill in the gaps of the VF
-implementing the complete device model in hardware?
+I can experiment with this, though one thing is we have no actual idea
+what voltages these are supplying...it doesn't look like that matters
+from drivers/regulator/fixed.c, but I'd have to try it to be sure.
 
-We're effectively creating this virtual device, creating a fake IOMMU
-group, and trying to create this association of this virtual device to
-the real VF in order to shoehorn it into the mdev model.  What do we
-get from that model other than lifecycle management (ie. type selection)
-and re-use of a bunch of code from the driver supporting the 1) model
-above?
+> +
+> +static int skl_int3472_clk_enable(struct clk_hw *hw)
+> +{
+> +	/*
+> +	 * We're just turning a GPIO on to enable the clock, which operation
+> +	 * has the potential to sleep. Given .enable() cannot sleep, but
+> +	 * .prepare() can, we toggle the GPIO in .prepare() instead. Thus,
+> +	 * nothing to do here.
+> +	 */
+> It's a nice comment, but you are using non-sleeping GPIO value setters. Perhaps
+> you need to replace them with gpiod_set_value_cansleep()?
 
-This specific model seems better served by a device specific peer
-driver to vfio-pci (ie. a "vfio-pci variant").  You effectively already
-have the code for this driver, it's just in the format of an mdev
-driver rather than a vfio "bus driver".  The work Jason references
-relative to Max aims to make these kinds of drivers easier to implement
-through re-use of vfio-pci code.
 
-There are certainly other solutions we could come up with for selecting
-a specific device type for a vfio-pci variant driver to implement other
-than pretending this model actually belongs in mdev, right?  Thanks,
+That would make sense!
 
-Alex
 
+>> +static unsigned int skl_int3472_get_clk_frequency(struct int3472_discrete_device *int3472)
+>> +{
+>> +	union acpi_object *obj;
+>> +	unsigned int freq;
+>> +
+>> +	obj = skl_int3472_get_acpi_buffer(int3472->sensor, "SSDB");
+>> +	if (IS_ERR(obj))
+>> +		return 0; /* report rate as 0 on error */
+>> +
+>> +	if (obj->buffer.length < CIO2_SENSOR_SSDB_MCLKSPEED_OFFSET + sizeof(u32)) {
+>> +		dev_err(int3472->dev, "The buffer is too small\n");
+>> +		goto out_free_buff;
+> First of all, freq will be uninitialized here.
+>
+> I'm wondering if you can simple drop the goto and replace it with direct steps, i.e.
+> 	kfree(obj);
+> 	return 0;
+
+
+Sure, I have no real preference; I'll do that instead.
+
+
+>> +static const struct int3472_sensor_config *
+>> +skl_int3472_get_sensor_module_config(struct int3472_discrete_device *int3472)
+>> +{
+>> +	const struct int3472_sensor_config *ret;
+>> +	union acpi_object *obj;
+>> +	unsigned int i;
+>> +
+>> +	obj = acpi_evaluate_dsm_typed(int3472->sensor->handle,
+>> +				      &cio2_sensor_module_guid, 0x00,
+>> +				      0x01, NULL, ACPI_TYPE_STRING);
+>> +
+>> +	if (!obj) {
+>> +		dev_err(int3472->dev,
+>> +			"Failed to get sensor module string from _DSM\n");
+>> +		return ERR_PTR(-ENODEV);
+>> +	}
+>> +
+>> +	if (obj->string.type != ACPI_TYPE_STRING) {
+>> +		dev_err(int3472->dev,
+>> +			"Sensor _DSM returned a non-string value\n");
+>> +		ret = ERR_PTR(-EINVAL);
+>> +		goto out_free_obj;
+>> +	}
+>> +	ret = ERR_PTR(-EINVAL);
+>> +	for (i = 0; i < ARRAY_SIZE(int3472_sensor_configs); i++) {
+>> +		if (!strcmp(int3472_sensor_configs[i].sensor_module_name,
+>> +			    obj->string.pointer)) {
+>> +			ret = &int3472_sensor_configs[i];
+>> +			break;
+>> +		}
+>> +	}
+> Can be refactored like this:
+>
+> 	for (i = 0; i < ARRAY_SIZE(int3472_sensor_configs); i++) {
+> 		if (!strcmp(int3472_sensor_configs[i].sensor_module_name,
+> 			    obj->string.pointer))
+> 			break;
+> 	}
+>
+> 	ACPI_FREE(obj);
+>
+> 	if (i >= ARRAY_SIZE(int3472_sensor_configs))
+> 		return ERR_PTR(-EINVAL);
+>
+> 	return &int3472_sensor_configs[i];
+
+
+Yeah ok, I like this better than the ret = ERR_PTR(-EINVAL) before the
+loop; thank you.
+
+
+>> + * Return:
+>> + * * 0		- When all resources found are handled properly.
+> Positive number ... ?
+>> +	if (!acpi_gpio_get_io_resource(ares, &agpio))
+>> +		return 1; /* Deliberately positive so parsing continues */
+> Move it to description above?
+
+
+oops, yes, I'll add those to the comment.
+
+
+>> +	if (int3472->clock.ena_gpio) {
+>> +		ret = skl_int3472_register_clock(int3472);
+>> +		if (ret)
+>> +			goto out_free_res_list;
+>> +	} else {
+> Hmm... Have I got it correctly that we can't have ena_gpio && led_gpio together?
+
+
+No, just that we can only have led_gpio if we also have ena_gpio (at
+least that's the intention...)
+
+
+>> +	if (ret)
+>> +		ret = devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_NONE,
+> This I don't like. Since we get a returned variable with different meaning, can
+> we use a specific variable name for it? On top of that, I would rather see
+> something like this:
+>
+> 	whatever = skl_...(...);
+> 	switch (whatever) {
+> 	case WHATEVER_ONE_CASE:
+> 		if (cldb.control_logic_type != 2) {
+> 			dev_err(&client->dev, "Unsupported control logic type %u\n",
+> 				cldb.control_logic_type);
+> 			return -EINVAL;
+> 		}
+> 		cells_data = tps68470_win;
+> 		cells_size = ARRAY_SIZE(tps68470_win);
+> 		break;
+> 	case WHATEVER_ANOTHER_CASE:
+> 		...
+> 		break;
+> 	default:
+> 		...Oops...
+> 		break; // or return -ERRNO
+> 	}
+>
+> 	return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_NONE,
+> 				    cells_data, cells_size, NULL, 0, NULL);
+>
+Yeah I guess that's a bit obscure at first glance; alright, I'll follow
+this to make it clearer what's happening there.
