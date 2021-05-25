@@ -2,266 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C948390223
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2039F39021D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhEYNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:25:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61209 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233262AbhEYNZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:25:13 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PD3pwa103863;
-        Tue, 25 May 2021 09:23:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=NPF7aTXPE9bcG5lWI1oZ+w6TfPK6ulLeAZpLoD+tcHk=;
- b=Q4LInF3BTf8YUvPd+tcxSHiggSb3NSd15ZhGmXhO1Ser/ZhQxYDO9JD1/5PSmctIHYUg
- HhuyqzUb5KGHHTrN0R1aTwWx/gwKA4hvHQaXYDDXfzKg9JNEiB0pF6PGd/Z21GqzrfAa
- /v//4nJVPMIcyzYhWq0praxoLtLKLFP3J9V6YF6IvcW/6W724lXCTZ/UsA/JzTfVUM0/
- it2G+cPfy+blSLY6VDvPp4Qo9dOm+qX+jcFkxHSopuz7vGKbYBeTWxxcNgv10j322GI8
- M687PHEQsxulR9fdJbD9V9huPEhFYKr8rm35k3pCcwygzTzxiZg5TGEHKu+3ROvtCd+f jg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1adsubu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 09:23:30 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PDEoQB026323;
-        Tue, 25 May 2021 13:23:28 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 38s1ukg09a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 13:23:28 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PDNPYd31457720
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 13:23:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 097CAAE045;
-        Tue, 25 May 2021 13:23:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24190AE04D;
-        Tue, 25 May 2021 13:23:21 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.34.186])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 13:23:20 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [RFC v2 4/4] powerpc/papr_scm: Add cpu hotplug support for nvdimm pmu device
-Date:   Tue, 25 May 2021 18:52:16 +0530
-Message-Id: <20210525132216.1239259-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210525132216.1239259-1-kjain@linux.ibm.com>
-References: <20210525132216.1239259-1-kjain@linux.ibm.com>
+        id S233225AbhEYNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:25:05 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57899 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233023AbhEYNY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:24:58 -0400
+IronPort-SDR: KyxXagf5sTeS+MX4h+ls8cBYRtl53p3od18fdgs7V1EejEn2AT7py64xWJsnrfM1Hmb1nsepXA
+ N0rHN2zGJdDQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="201942109"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="201942109"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:23:26 -0700
+IronPort-SDR: oeufRP7gtJ1+DYjg5AFGnve3V4dolGGFIaySYlFLNCkZn2t4AWg7hr5tbmWVPEjXUVej15+Gcf
+ Zm2ikRffmC0Q==
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="546598434"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 06:23:21 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1llX1i-00Eahp-FH; Tue, 25 May 2021 16:23:18 +0300
+Date:   Tue, 25 May 2021 16:23:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v4 0/8] Introduce intel_skl_int3472 module
+Message-ID: <YKz6Ro+J1DduULz4@smile.fi.intel.com>
+References: <20210520140928.3252671-1-djrscally@gmail.com>
+ <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
+ <dbc269f9-c76f-04f9-0900-22171c3ef3a3@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bj8Ty1h5GxdZAWDxFUbRNuFnWdmaRvLO
-X-Proofpoint-GUID: bj8Ty1h5GxdZAWDxFUbRNuFnWdmaRvLO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbc269f9-c76f-04f9-0900-22171c3ef3a3@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch here adds cpu hotplug functions to nvdimm pmu.
-It adds cpumask to designate a cpu to make HCALL to
-collect the counter data for the nvdimm device and
-update ABI documentation accordingly.
+On Tue, May 25, 2021 at 03:12:45PM +0200, Hans de Goede wrote:
+> On 5/25/21 3:10 PM, Hans de Goede wrote:
+> > On 5/20/21 4:09 PM, Daniel Scally wrote:
+> >> Apologies for the long delay since the last version of this series; the time I
+> >> had free to work on it became somewhat restrained.
+> > 
+> > No worries, thank you for all the work you are putting into this.
+> > 
+> > I have not taken a close look at the code yet, but I see that Andy has and
+> > the amount of remarks which he has on patch 7/8 which is the big one seems
+> > to be limited, so I believe that we are getting close to this being ready
+> > for merging.
+> > 
+> > This touches a lot of subsystems, so we need to come up with a plan to
+> > merge this. Here is my proposal for how to do this:
+> > 
+> > 1/8   ACPI: scan: Extend acpi_walk_dep_device_list()
+> > 2/8   ACPI: scan: Add function to fetch dependent of acpi device
+> > 3/8   i2c: core: Add a format macro for I2C device names
+> > 4/8   gpiolib: acpi: Export acpi_get_gpiod()
+> > 5/8   clkdev: Make clkdev_drop() null aware
+> > 6/8   gpiolib: acpi: Add acpi_gpio_get_io_resource()
+> > 7/8   platform/x86: Add intel_skl_int3472 driver
+> > 8/8   mfd: tps68470: Remove tps68470 MFD driver
+> > 
+> > Rafael already indicated that he wants to merge 1/8 (and presumably also 2/8)
+> > through his tree and that he will provide an immutable branch with those
+> > for merging into the pdx86 tree.
+> 
+> p.s.
+> 
+> Daniel it would be good if you can at least send a v5 of patch 2/8 with
+> the suggested renames, then Rafael can merge 1/8 + 2/8 and we are down to 6
+> patches (4 if we also merge the i2c + clk patches independently).
 
-Result in power9 lpar system:
-command:# cat /sys/devices/nmem0/cpumask
-0
+I would also prefer GPIO ACPI patches to be grouped together, so I can simply
+take them in a row.
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-papr-pmem |  6 ++
- arch/powerpc/platforms/pseries/papr_scm.c     | 61 +++++++++++++++++++
- include/linux/nd.h                            | 17 ++++--
- 3 files changed, 79 insertions(+), 5 deletions(-)
+> > 4/8 and 6/8 are both gpiolib-acpi patches and seem to be ready for merging
+> > now, perhaps the gpiolib-acpi maintainers can already merge these and also
+> > provide an immutable branch ?  Andy/Mika ?
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 38c4daf65af2..986df1691914 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -76,6 +76,12 @@ Description:	(RO) Attribute group to describe the magic bits
- 		For example::
- 		    noopstat = "event=0x1"
- 
-+What:		/sys/devices/nmemX/cpumask
-+Date:		May 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to make
-+                HCALLs to retrieve nvdimm pmu event counter data.
-+
- What:		/sys/devices/nmemX/events
- Date:		May 2021
- Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index f2d57da98ff4..76121d876b7f 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -339,6 +339,28 @@ static ssize_t drc_pmem_query_stats(struct papr_scm_priv *p,
- 	return 0;
- }
- 
-+static ssize_t cpumask_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
-+{
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+	struct nvdimm_pmu *nd_pmu;
-+
-+	nd_pmu = container_of(pmu, struct nvdimm_pmu, pmu);
-+
-+	return cpumap_print_to_pagebuf(true, buf, cpumask_of(nd_pmu->cpu));
-+}
-+
-+static DEVICE_ATTR_RO(cpumask);
-+
-+static struct attribute *nvdimm_cpumask_attrs[] = {
-+	&dev_attr_cpumask.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group nvdimm_pmu_cpumask_group = {
-+	.attrs = nvdimm_cpumask_attrs,
-+};
-+
- PMU_FORMAT_ATTR(event, "config:0-4");
- 
- static struct attribute *nvdimm_pmu_format_attr[] = {
-@@ -459,6 +481,24 @@ static void papr_scm_pmu_del(struct perf_event *event, int flags)
- 	papr_scm_pmu_read(event);
- }
- 
-+static int nvdimm_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct nvdimm_pmu *nd_pmu;
-+	int target;
-+
-+	nd_pmu = hlist_entry_safe(node, struct nvdimm_pmu, node);
-+
-+	if (cpu != nd_pmu->cpu)
-+		return 0;
-+
-+	target = cpumask_last(cpu_active_mask);
-+	if (target < 0 || target >= nr_cpu_ids)
-+		return -1;
-+
-+	nd_pmu->cpu = target;
-+	return 0;
-+}
-+
- static ssize_t device_show_string(struct device *dev, struct device_attribute *attr,
- 				  char *buf)
- {
-@@ -603,6 +643,7 @@ static int papr_scm_pmu_check_events(struct papr_scm_priv *p, struct nvdimm_pmu
- 	/* Fill attribute groups for the nvdimm pmu device */
- 	nd_pmu->attr_groups[NVDIMM_PMU_FORMAT_ATTR] = &nvdimm_pmu_format_group;
- 	nd_pmu->attr_groups[NVDIMM_PMU_EVENT_ATTR] = nvdimm_pmu_events_group;
-+	nd_pmu->attr_groups[NVDIMM_PMU_CPUMASK_ATTR] = &nvdimm_pmu_cpumask_group;
- 	nd_pmu->attr_groups[NVDIMM_PMU_NULL_ATTR] = NULL;
- 
- 	kfree(single_stats);
-@@ -652,6 +693,20 @@ static void papr_scm_pmu_register(struct papr_scm_priv *p)
- 	nd_pmu->read = papr_scm_pmu_read;
- 	nd_pmu->add = papr_scm_pmu_add;
- 	nd_pmu->del = papr_scm_pmu_del;
-+	nd_pmu->cpu = raw_smp_processor_id();
-+
-+	rc = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
-+				     "perf/nvdimm:online",
-+			      NULL, nvdimm_pmu_offline_cpu);
-+	if (rc < 0)
-+		goto pmu_cpuhp_setup_err;
-+
-+	nd_pmu->cpuhp_state = rc;
-+
-+	/* Register the pmu instance for cpu hotplug */
-+	rc = cpuhp_state_add_instance_nocalls(nd_pmu->cpuhp_state, &nd_pmu->node);
-+	if (rc)
-+		goto cpuhp_instance_err;
- 
- 	rc = register_nvdimm_pmu(nd_pmu, p->pdev);
- 	if (rc)
-@@ -665,6 +720,10 @@ static void papr_scm_pmu_register(struct papr_scm_priv *p)
- 	return;
- 
- pmu_register_err:
-+	cpuhp_state_remove_instance_nocalls(nd_pmu->cpuhp_state, &nd_pmu->node);
-+cpuhp_instance_err:
-+	cpuhp_remove_multi_state(nd_pmu->cpuhp_state);
-+pmu_cpuhp_setup_err:
- 	nvdimm_pmu_mem_free(nd_pmu);
- 	kfree(p->nvdimm_events_map);
- pmu_check_events_err:
-@@ -675,6 +734,8 @@ static void papr_scm_pmu_register(struct papr_scm_priv *p)
- 
- static void nvdimm_pmu_uinit(struct nvdimm_pmu *nd_pmu)
- {
-+	cpuhp_state_remove_instance_nocalls(nd_pmu->cpuhp_state, &nd_pmu->node);
-+	cpuhp_remove_multi_state(nd_pmu->cpuhp_state);
- 	unregister_nvdimm_pmu(&nd_pmu->pmu);
- 	nvdimm_pmu_mem_free(nd_pmu);
- 	kfree(nd_pmu);
-diff --git a/include/linux/nd.h b/include/linux/nd.h
-index a0e0619256be..177795413ab3 100644
---- a/include/linux/nd.h
-+++ b/include/linux/nd.h
-@@ -28,7 +28,8 @@ enum nvdimm_claim_class {
- /* Event attribute array index */
- #define NVDIMM_PMU_FORMAT_ATTR		0
- #define NVDIMM_PMU_EVENT_ATTR		1
--#define NVDIMM_PMU_NULL_ATTR		2
-+#define NVDIMM_PMU_CPUMASK_ATTR		2
-+#define NVDIMM_PMU_NULL_ATTR		3
- 
- /**
-  * struct nvdimm_pmu - data structure for nvdimm perf driver
-@@ -37,7 +38,10 @@ enum nvdimm_claim_class {
-  * @pmu: pmu data structure for nvdimm performance stats.
-  * @dev: nvdimm device pointer.
-  * @functions(event_init/add/del/read): platform specific pmu functions.
-- * @attr_groups: data structure for events and formats.
-+ * @attr_groups: data structure for events, formats and cpumask
-+ * @cpu: designated cpu for counter access.
-+ * @node: node for cpu hotplug notifier link.
-+ * @cpuhp_state: state for cpu hotplug notification.
-  */
- struct nvdimm_pmu {
- 	const char *name;
-@@ -49,10 +53,13 @@ struct nvdimm_pmu {
- 	void (*read)(struct perf_event *event);
- 	/*
- 	 * Attribute groups for the nvdimm pmu. Index 0 used for
--	 * format attribute, index 1 used for event attribute and
--	 * index 2 kept as NULL.
-+	 * format attribute, index 1 used for event attribute,
-+	 * index 2 used for cpusmask attribute and index 3 kept as NULL.
- 	 */
--	const struct attribute_group *attr_groups[3];
-+	const struct attribute_group *attr_groups[4];
-+	int cpu;
-+	struct hlist_node node;
-+	enum cpuhp_state cpuhp_state;
- };
- 
- int register_nvdimm_pmu(struct nvdimm_pmu *nvdimm, struct platform_device *pdev);
+Fine with me. Just need Mika's Ack / Rb tag.
+
+> > 3/8 and 5/8 seem to be nice cleanups, but not really necessary. IMHO it
+> > would be best to park these cleanups for later and for 3/8 add the following
+> > where necessary for now:
+> > 
+> > /* FIXME drop this once the I2C_DEV_NAME_FORMAT macro has been added to include/linux/i2c.h */
+> > #ifndef I2C_DEV_NAME_FORMAT
+> > #define I2C_DEV_NAME_FORMAT		"i2c-%s"
+> > #endif
+> > 
+> > This is not the prettiest but it reduces all the subsys cross-deps and things
+> > like this have been done before for similar reasons.
+> > 
+> > Likewise it would be good if you can add if (foo) as condition before any
+> > clkdev_drop(foo) calls in this patch-set and then merge
+> > 5/8 "clkdev: Make clkdev_drop() null aware" independently of this and then
+> > once both are in Linux tree follow-up with a cleanup patch dropping the if (foo)
+> > guards.
+> > 
+> > So this would leave as deps for 7/8 just the 2 ACPI and 2 gpiolib-acpi patches
+> > which I can hopefully pull-in via immutable branches and then we are good.
+> > 
+> > AFAICT patch 8/8 can be merged independently once 7/8 hits for-next (IOW once
+> > we are sure the next kernel will have 7/8).
+> > 
+> > Or alternatively one of the involved subsys maintainers just merges the entire
+> > set (once it is ready) and then provides an immutable branch with the entire set
+> > on top of 5.13-rc1 (or 5.14-rc1). But that requires acks from all the other
+> > subsys maintainers. Note I'm fine with either approach.
+
+> >> v1 for this series was originally 14-18 of this series:
+> >> https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
+> >>
+> >> v2 was here:
+> >> https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
+> >>
+> >> v3 was here:
+> >> https://lore.kernel.org/lkml/20210222130735.1313443-1-djrscally@gmail.com/
+> >>
+> >> Series level changelog:
+> >>
+> >> 	- Added patch 5/8 to make clkdev_drop() NULL aware to simplify error
+> >> 	handling.
+> >> 	- Added patch 6/8 to add acpi_gpio_get_io_resource().
+> >>
+> >> This has been tested on a number of devices, but currently **not** on a device
+> >> designed for ChromeOS, which we ideally need to do to ensure no regression
+> >> caused by replacing the tps68470 MFD driver. Unfortunately, I don't have a
+> >> device to test it on myself.
+> >>
+> >> =========== Original Cover Letter ===========
+> >>
+> >> At the moment in the kernel the ACPI _HID INT3472 is taken by the tps68470
+> >> MFD driver, but that driver can only handle some of the cases of that _HID
+> >> that we see. There are at least these three possibilities:
+> >>
+> >> 1. INT3472 devices that provide GPIOs through the usual framework and run
+> >>    power and clocks through an operation region; this is the situation that
+> >>    the current module handles and is seen on ChromeOS devices
+> >> 2. INT3472 devices that provide GPIOs, plus clocks and regulators that are
+> >>    meant to be driven through the usual frameworks, usually seen on devices
+> >>    designed to run Windows
+> >> 3. INT3472 devices that don't actually represent a physical tps68470, but
+> >>    are being used as a convenient way of grouping a bunch of system GPIO
+> >>    lines that are intended to enable power and clocks for sensors which
+> >>    are called out as dependent on them. Also seen on devices designed to
+> >>    run Windows.
+> >>
+> >> This series introduces a new module which registers:
+> >>
+> >> 1. An i2c driver that determines which scenario (#1 or #2) applies to the
+> >>    machine and registers platform devices to be bound to GPIO, OpRegion,
+> >>    clock and regulator drivers as appropriate.
+> >> 2. A platform driver that binds to the dummy INT3472 devices described in
+> >>    #3
+> >>
+> >> The platform driver for the dummy device registers the GPIO lines that
+> >> enable the clocks and regulators to the sensors via those frameworks so
+> >> that sensor drivers can consume them in the usual fashion. The existing
+> >> GPIO and OpRegion tps68470 drivers will work with the i2c driver that's
+> >> registered. Clock and regulator drivers are available but have not so far been
+> >> tested, so aren't part of this series.
+> >>
+> >> The existing mfd/tps68470.c driver being thus superseded, it is removed.
+> >>
+> >> Thanks
+> >> Dan
+> >>
+> >> Daniel Scally (8):
+> >>   ACPI: scan: Extend acpi_walk_dep_device_list()
+> >>   ACPI: scan: Add function to fetch dependent of acpi device
+> >>   i2c: core: Add a format macro for I2C device names
+> >>   gpiolib: acpi: Export acpi_get_gpiod()
+> >>   clkdev: Make clkdev_drop() null aware
+> >>   gpiolib: acpi: Add acpi_gpio_get_io_resource()
+> >>   platform/x86: Add intel_skl_int3472 driver
+> >>   mfd: tps68470: Remove tps68470 MFD driver
+> >>
+> >>  MAINTAINERS                                   |   5 +
+> >>  drivers/acpi/ec.c                             |   2 +-
+> >>  drivers/acpi/pmic/Kconfig                     |   2 +-
+> >>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
+> >>  drivers/acpi/scan.c                           | 107 ++++-
+> >>  drivers/clk/clkdev.c                          |   3 +
+> >>  drivers/gpio/Kconfig                          |   2 +-
+> >>  drivers/gpio/gpiolib-acpi.c                   |  61 ++-
+> >>  drivers/i2c/i2c-core-acpi.c                   |   8 +-
+> >>  drivers/i2c/i2c-core-base.c                   |   4 +-
+> >>  drivers/mfd/Kconfig                           |  18 -
+> >>  drivers/mfd/Makefile                          |   1 -
+> >>  drivers/mfd/tps68470.c                        |  97 -----
+> >>  drivers/platform/surface/aggregator/core.c    |   6 +-
+> >>  drivers/platform/surface/surface3_power.c     |  22 +-
+> >>  .../platform/surface/surface_acpi_notify.c    |   7 +-
+> >>  drivers/platform/x86/Kconfig                  |   2 +
+> >>  drivers/platform/x86/Makefile                 |   1 +
+> >>  drivers/platform/x86/intel-int3472/Kconfig    |  31 ++
+> >>  drivers/platform/x86/intel-int3472/Makefile   |   5 +
+> >>  .../intel_skl_int3472_clk_and_regulator.c     | 195 +++++++++
+> >>  .../intel-int3472/intel_skl_int3472_common.c  | 106 +++++
+> >>  .../intel-int3472/intel_skl_int3472_common.h  | 113 +++++
+> >>  .../intel_skl_int3472_discrete.c              | 409 ++++++++++++++++++
+> >>  .../intel_skl_int3472_tps68470.c              | 109 +++++
+> >>  include/acpi/acpi_bus.h                       |   8 +
+> >>  include/linux/acpi.h                          |  11 +-
+> >>  include/linux/gpio/consumer.h                 |   2 +
+> >>  include/linux/i2c.h                           |   3 +
+> >>  29 files changed, 1175 insertions(+), 167 deletions(-)
+> >>  delete mode 100644 drivers/mfd/tps68470.c
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+> >>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
+> >>
+> 
+
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
