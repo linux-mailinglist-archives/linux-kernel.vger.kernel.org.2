@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244EA38F7DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3762738F7EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhEYCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 22:06:02 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:46763 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhEYCGB (ORCPT
+        id S230081AbhEYCK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 22:10:29 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:20394 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhEYCK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 22:06:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621908273; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KBM7kBuRBC+qyoViVJY/iIDapiWA7HFCDog78oJunKs=;
- b=vqrfy6pvJ7opIjA4q17wC0v1r6fZLPewj8XMXMQX4oOhY6fYaF29F+QGyt1i5l92mk7dvAJm
- MqR/Rbr5Sh8LtcSKmsOAUZFJoV3Qe71gEqvvPvT5167jL6cars9eEeM3/jVbyaQRYpswaBWs
- 5s7zlQEYqTBe4vzB8M370vzPCY0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60ac5b285f788b52a56016bf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 02:04:24
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 54854C4360C; Tue, 25 May 2021 02:04:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E04CC4338A;
-        Tue, 25 May 2021 02:04:23 +0000 (UTC)
+        Mon, 24 May 2021 22:10:28 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14P1tNUP007863;
+        Tue, 25 May 2021 09:55:23 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 10:08:20 +0800
+Date:   Tue, 25 May 2021 10:08:18 +0800
+From:   Jamin Lin <jamin_lin@aspeedtech.com>
+To:     Zev Weiss <zweiss@equinix.com>
+CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Andrew Jeffery" <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        Steven Lee <steven_lee@aspeedtech.com>,
+        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Message-ID: <20210525020817.GB2489@aspeedtech.com>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+ <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+ <YKVg2Kfbex3DYbNI@packtop>
+ <20210524020846.GB2591@aspeedtech.com>
+ <YKwXnPH0XyYLRtfa@packtop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 25 May 2021 10:04:23 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/6] scsi: ufs: Let host_sem cover the entire system
- suspend/resume
-In-Reply-To: <19b44731-1a4f-c88c-58fd-05eca5df2c2e@acm.org>
-References: <1621846046-22204-1-git-send-email-cang@codeaurora.org>
- <1621846046-22204-6-git-send-email-cang@codeaurora.org>
- <19b44731-1a4f-c88c-58fd-05eca5df2c2e@acm.org>
-Message-ID: <423285a089b7dc3fcfcb169e0a553e8a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YKwXnPH0XyYLRtfa@packtop>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14P1tNUP007863
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
-
-On 2021-05-25 00:56, Bart Van Assche wrote:
-> On 5/24/21 1:47 AM, Can Guo wrote:
->> UFS error handling now is doing more than just re-probing, but also 
->> sending
->> scsi cmds, e.g., for clearing UACs, and recovering runtime PM error, 
->> which
->> may change runtime status of scsi devices. To protect system 
->> suspend/resume
->> from being disturbed by error handling, move the host_sem from wl pm 
->> ops
->> to ufshcd_suspend_prepare() and ufshcd_resume_complete().
+The 05/24/2021 21:16, Zev Weiss wrote:
+> On Sun, May 23, 2021 at 09:08:47PM CDT, Jamin Lin wrote:
+> >The 05/19/2021 19:02, Zev Weiss wrote:
+> >> On Wed, May 19, 2021 at 03:04:27AM CDT, Jamin Lin wrote:
+> >> >The register definition between AST2600 A2 and A3 is different.
+> >> >This patch avoid new registers definition of AST2600 to use
+> >> >this driver. We will submit the path for the new registers
+> >> >definition of AST2600.
+> >> >
+> >> >Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+> >> >---
+> >> > drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
+> >> > 1 file changed, 22 insertions(+)
+> >> >
+> >> >diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> >> >index 724bf30600d6..007309077d9f 100644
+> >> >--- a/drivers/i2c/busses/i2c-aspeed.c
+> >> >+++ b/drivers/i2c/busses/i2c-aspeed.c
+> >> >@@ -19,14 +19,20 @@
+> >> > #include <linux/irqchip/chained_irq.h>
+> >> > #include <linux/irqdomain.h>
+> >> > #include <linux/kernel.h>
+> >> >+#include <linux/mfd/syscon.h>
+> >> > #include <linux/module.h>
+> >> > #include <linux/of_address.h>
+> >> > #include <linux/of_irq.h>
+> >> > #include <linux/of_platform.h>
+> >> > #include <linux/platform_device.h>
+> >> >+#include <linux/regmap.h>
+> >> > #include <linux/reset.h>
+> >> > #include <linux/slab.h>
+> >> >
+> >> >+/* I2C Global Registers */
+> >> >+/* 0x0c : I2CG Global Control Register (AST2500)  */
+> >> >+#define ASPEED_I2CG_GLOBAL_CTRL_REG			0x0c
+> >> >+
+> >> > /* I2C Register */
+> >> > #define ASPEED_I2C_FUN_CTRL_REG				0x00
+> >> > #define ASPEED_I2C_AC_TIMING_REG1			0x04
+> >> >@@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
+> >> > 	struct resource *res;
+> >> > 	int irq, ret;
+> >> >
+> >> >+	if (of_device_is_compatible(pdev->dev.of_node,
+> >> >+				    "aspeed,ast2600-i2c-bus")) {
+> >> >+		u32 global_ctrl;
+> >> >+		struct regmap *gr_regmap;
+> >> >+
+> >> >+		gr_regmap = syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c-global");
+> >> >+
+> >> >+		if (IS_ERR(gr_regmap)) {
+> >> >+			ret = PTR_ERR(gr_regmap);
+> >> >+		} else {
+> >> >+			regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
+> >> >+			if (global_ctrl & BIT(2))
+> >> >+				return -EIO;
+> >>
+> >> A macro definition might be a bit nicer than a raw BIT(2) here I'd
+> >> think.
+> >Will modify
+> >>
+> >> Also, it seems a bit unfortunate to just bail on the device entirely if
+> >> we find this bit set (seems like a good way for a bootloader to
+> >> inadvertently DoS the kernel), though I guess poking global syscon bits
+> >> in the bus probe function might not be ideal.  Could/should we consider
+> >> some module-level init code to ensure that bit is cleared?
+> >>
+> >>
+> >We use syscon API to get the global register of i2c not the specific i2c
+> >bus.
+> >Can you describe it more detail?
 > 
-> Other SCSI LLDs can perform error handling while system suspend/resume
-> is in progress. Why can't the UFS driver do this?
-
-I don't know about other SCSI LLDs, but UFS error handling is basically
-doing a re-probe/re-initialization to UFS device. Having UFS error 
-handling
-running in parallel with system suspend/resume, neither of them will end
-up well.
-
-I didn't design all this, it is just happening, I am trying to fix it 
-and
-semaphore works well for me. I am really glad to see someone cares about
-error handling and fix it with better ideas (maybe using WQ_FREEZABLE) 
-later.
-
+> Sure -- I just meant that if for whatever reason the kernel is booting
+> on a system that's had that syscon bit set to enable the new register
+> access mode (e.g. by a newer bootloader or something), it seems like
+> we'd just give up entirely on enabling any i2c busses, when as far as I
+> know there shouldn't be anything stopping us from resetting the bit back
+> to be in the state this driver needs it to be in (old register mode) and
+> then continuing along normally.
 > 
-> Additionally, please document what the purpose of host_sem is before
-> making any changes to how host_sem is used. The only documentation I
-> have found of host_sem is the following: "* @host_sem: semaphore used 
-> to
-> serialize concurrent contexts". To me that text is less than useful
-> since semaphores are almost always used to serialize concurrent code.
 > 
+> Zev
 
-Sure, host_sem is actually preventing cocurrency happens among any of
-contexts, such as sysfs access, shutdown, error handling, system
-suspend/resume and async probe, I will update its message in next 
-version.
-
-Thanks,
-
-Can Guo.
-
-> Thanks,
-> 
-> Bart.
+Thanks for your suggestion. I will submit the new i2c driver for
+AST2600.
+Jamin
