@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD9A3908E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2BC3908EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhEYSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S232030AbhEYS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbhEYSZK (ORCPT
+        with ESMTP id S230029AbhEYS1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:25:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FEDC061574;
-        Tue, 25 May 2021 11:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=e8cg3Go9ay1cnhar2MvjsyBw3YlqRz8E+iR405x9Dgc=; b=iR0QuNCD0eCZ6ocNgJeH+SVNyS
-        Bp/Ri0i3JAgiNELCn1Tq6llAqYlRdajPZibujK+z3FAnMKTrFOi+9pQVqGRNQTuUQs/gOk3lX/afn
-        GE7OriQo5qB2j47h9ny1Cbq11PJGhFWCISWyUHgXxhZlgDAhLbMmUPdBKPmTf/N23n7hJi4fp64Vm
-        hQ+PomSxEpeW+6yPPaHZuGYc4So2U+AHzYZVdqtqpqwWK/cOuoD7gWVo5SlgoC9Qtr2e+m/xteusO
-        u+h8ASL4hBkvz/maQGT4DMBO3DhxXdvJhobEQg6iBPgF01MVyXo/hfujID/JSa8kISY3MGmqBXfai
-        qph2i9yA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llbiI-007FDg-Qc; Tue, 25 May 2021 18:23:34 +0000
-Subject: Re: linux-next: Tree for May 25 (cpufreq/intel_pstate.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Dirk Brandewie <dirk.j.brandewie@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-References: <20210525163932.785c1a2a@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4c20c8b0-145e-bfbf-003c-28c8eeac72dc@infradead.org>
-Date:   Tue, 25 May 2021 11:23:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 25 May 2021 14:27:04 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F6FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:25:32 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id l16so11508870ybf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wmXyVt2O2sGPnr4vp3ZrMLgj9f8S3qWYOqMb7Ajrf5g=;
+        b=iwPy5Y2KNaEF7h8ZCXprzNri3iwBIRhJjp2Nelx7OzcAhJQCkYWQJh6kLRjC7SdK3R
+         2ztJH7bAxZtxKyQJgwu1CmzEOcozMh69pCPjbfbGkkOHvIbmf4tYIb12k+U6KhmL9xLk
+         5P9NJpfZrW7ZXfS5OKnxp7oVepedpGsUQe6g3yrxsGAi6BEmjqcTxlp+jmEdBjr4+eIk
+         ae3ImH11jjlKpxuOKgfezJD9buxht0Yo2Ccpt6hbdI6+eGrXg1Odwueh+NgiU7dMIaO/
+         nA2p1osnCZifxK8JZ3+m6giblaOhkNWw9/+cO+i+xrlAWonQLpEjd5ItA2gXy5JEvOkT
+         7DRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wmXyVt2O2sGPnr4vp3ZrMLgj9f8S3qWYOqMb7Ajrf5g=;
+        b=eWOfnz8ILml9zqphYbuzzxDy7w0nhhf9vS4yjU4lRVeZIPRpzJ13nB94/C/EitBqYR
+         JkvjkqOqEDWumOh89eMZN8ppJFIY6mQhQR+v9nililMLsDDItSH25hD1MAJ+ENCixrhi
+         vTQMpUfbLcyIUII8R6rk93loOdfBdfrwANw0AYUu/VnO1pn13eII4B2Ho0QOl0lVmG5E
+         WeYDZTvuRs3il8u0XFqpXazkFasl+fJzFYYhmYy6WlTDMBhpAZ3C6re6wdwuugFsqPbZ
+         q3xcR27rMoz6w0PovWMe0rrt0o6ObQlFZxuG0RLXjURMUMKeoemsxnSJIfktZcIaJmBr
+         z8uw==
+X-Gm-Message-State: AOAM53379MkygOkWzqpOgS0Dkv99b7qzUy5NBUQtRHd6/QI5v/TZ7xPK
+        MMaCBkFPGMWOuP9WcJtZwx9Urde3hsj38t1cWfw=
+X-Google-Smtp-Source: ABdhPJwvsXZnaYk2cToMg0J/nyev3MCpnf4xG2OXuWd5AyCrKH1t/2KqHHpPFuOM4rq9X3RF5GFB8RDPm0iOW1lhG0M=
+X-Received: by 2002:a25:880f:: with SMTP id c15mr42780691ybl.247.1621967131383;
+ Tue, 25 May 2021 11:25:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525163932.785c1a2a@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210525175819.699786-1-elver@google.com>
+In-Reply-To: <20210525175819.699786-1-elver@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 25 May 2021 20:25:20 +0200
+Message-ID: <CANiq72krX9PU14wFsQyW_CJEjTS-TT8wyhBVZZbC132Gz5XO-Q@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 11:39 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20210524:
-> 
+On Tue, May 25, 2021 at 7:59 PM Marco Elver <elver@google.com> wrote:
+>
+> +#if defined(CONFIG_KCOV) && CONFIG_CLANG_VERSION >= 130000
 
-on x86_64:
-# CONFIG_ACPI is not set
+Is there any reason why Clang does not implement
+`__has_attribute(__no_sanitize_coverage__)` like GCC? That way we can
+merge both (perhaps even in `compiler_attributes.h`).
 
-../drivers/cpufreq/intel_pstate.c:495:59: warning: ‘struct cppc_perf_caps’ declared inside parameter list will not be visible outside of this definition or declaration
- static bool intel_pstate_cppc_perf_valid(u32 perf, struct cppc_perf_caps *caps)
-                                                           ^~~~~~~~~~~~~~
-../drivers/cpufreq/intel_pstate.c: In function ‘intel_pstate_cppc_perf_valid’:
-../drivers/cpufreq/intel_pstate.c:497:29: error: dereferencing pointer to incomplete type ‘struct cppc_perf_caps’
-  return perf && perf <= caps->highest_perf && perf >= caps->lowest_perf;
-                             ^~
-../drivers/cpufreq/intel_pstate.c: At top level:
-../drivers/cpufreq/intel_pstate.c:501:13: warning: ‘struct cppc_perf_caps’ declared inside parameter list will not be visible outside of this definition or declaration
-      struct cppc_perf_caps *caps)
-             ^~~~~~~~~~~~~~
-../drivers/cpufreq/intel_pstate.c: In function ‘intel_pstate_cppc_perf_caps’:
-../drivers/cpufreq/intel_pstate.c:503:6: error: implicit declaration of function ‘cppc_get_perf_caps’; did you mean ‘get_ibs_caps’? [-Werror=implicit-function-declaration]
-  if (cppc_get_perf_caps(cpu->cpu, caps))
-      ^~~~~~~~~~~~~~~~~~
-      get_ibs_caps
-../drivers/cpufreq/intel_pstate.c:506:13: error: dereferencing pointer to incomplete type ‘struct cppc_perf_caps’
-  return caps->highest_perf && caps->lowest_perf <= caps->highest_perf;
-             ^~
-../drivers/cpufreq/intel_pstate.c: In function ‘intel_pstate_hybrid_hwp_calibrate’:
-../drivers/cpufreq/intel_pstate.c:533:24: error: storage size of ‘caps’ isn’t known
-  struct cppc_perf_caps caps;
-                        ^~~~
-../drivers/cpufreq/intel_pstate.c:533:24: warning: unused variable ‘caps’ [-Wunused-variable]
-
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-
+Cheers,
+Miguel
