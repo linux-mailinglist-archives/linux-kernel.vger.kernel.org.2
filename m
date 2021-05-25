@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E94638FBAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ECE38FBB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhEYHaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbhEYHat (ORCPT
+        id S231686AbhEYHc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:32:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:8271 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231462AbhEYHc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:30:49 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD995C061574;
-        Tue, 25 May 2021 00:29:20 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id h20so13996978qko.11;
-        Tue, 25 May 2021 00:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4BA6UqvX9jBO1xKa7XUgf1vBNEjKeOfkciRH4B0dC6U=;
-        b=COoIlADa7tLJQD4D95gezEkwp+5F4j8gn7yVIWYsnmw45zVtD4vK9Ao1/x7B0sAMxB
-         pRDMzB8VXzkHizzKtXatIBESytLxPsicU5ezsNYTxaV/ROtdyK/865mXzdXQx8Cfq65X
-         1Tbod/AnylIzvh6WfM1u2KOVASHRYHds+ine4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4BA6UqvX9jBO1xKa7XUgf1vBNEjKeOfkciRH4B0dC6U=;
-        b=BEpHv2zqwQyuSwq4HHgun2Qgk4UidTAa3xwb8JGneia4v/fUky8xlNNLuRItX+7RXU
-         rprnk4YekafIRSeTVrznDgrllwbzR2OJsh8rsJcHvMfsFD1EzR+NdEXt+zMGf7n1M1c9
-         bAjjl1aLV7ld4RHVmZOc67PHGN9sPt376rrDUCRSg7l8oPcCLAq1IZdNXxbxF1Et7w+8
-         dejG633hZ6t2qMdTUIf7JgOiFtD3O4DDkE59KcmuCwS1eytYzzSARcbAbkjUarzjYOp5
-         +tBmKvkVDg3D9F6MAWE6AhNHUUvFas2oN58AQya7xD0lnzYi3SGl4jVEpLxEvr/AKtzO
-         Tvxw==
-X-Gm-Message-State: AOAM531OBcUmHMLLcvPXh7t6cwXREWxkujqUDvhERaUnMAwLZ+bd1/pk
-        nm7XyuoYNxPGSU5jOLvstZl2yFzlZu/EzQrg00s=
-X-Google-Smtp-Source: ABdhPJxKzrDa3VSpt0hXXJcRKDzsseymcQy9t4uFIRJUAQJ3ZUN47DWvKG2QIYS04WN6l520oVab/lNi/ety+HreRjs=
-X-Received: by 2002:a37:6442:: with SMTP id y63mr5995781qkb.273.1621927759742;
- Tue, 25 May 2021 00:29:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210525055308.31069-1-steven_lee@aspeedtech.com> <20210525055308.31069-3-steven_lee@aspeedtech.com>
-In-Reply-To: <20210525055308.31069-3-steven_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 25 May 2021 07:29:07 +0000
-Message-ID: <CACPK8XcgqmYWw3uL=3zckweepnM0vMucuPU1THPCNowjCkka5w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] ARM: dts: aspeed-g6: Add pinctrl settings
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 25 May 2021 03:32:56 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 25 May 2021 00:31:27 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 May 2021 00:31:25 -0700
+X-QCInternal: smtphost
+Received: from rajeevny-linux.qualcomm.com ([10.204.66.121])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 25 May 2021 13:00:35 +0530
+Received: by rajeevny-linux.qualcomm.com (Postfix, from userid 2363605)
+        id B3B6121440; Tue, 25 May 2021 13:00:34 +0530 (IST)
+From:   Rajeev Nandan <rajeevny@codeaurora.org>
+To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        sam@ravnborg.org, robdclark@gmail.com, dianders@chromium.org,
+        lyude@redhat.com, jani.nikula@intel.com, robh@kernel.org,
+        laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
+        daniel.thompson@linaro.org, hoegsberg@chromium.org,
+        abhinavk@codeaurora.org, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, mkrishn@codeaurora.org
+Subject: [v4 0/4] drm: Support basic DPCD backlight in panel-simple and add a new panel ATNA33XC20
+Date:   Tue, 25 May 2021 13:00:27 +0530
+Message-Id: <1621927831-29471-1-git-send-email-rajeevny@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 05:53, Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
-> Currently, only SGPIO master 1 and SGPIO slve 1 in the pinctrl dtsi.
-> SGPIO master 2 and slave 2 should be added in pinctrl dtsi as well.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+This series adds the support for the eDP panel that needs the backlight
+controlling over the DP AUX channel using DPCD registers of the panel
+as per the VESA's standard.
 
-Acked-by: Joel Stanley <joel@jms.id.au>
+This series also adds support for the Samsung eDP AMOLED panel that
+needs DP AUX to control the backlight, and introduces new delays in the
+@panel_desc.delay to support this panel.
 
-Linus, feel free to take this entire series through your tree.
+This patch series depends on the following two series:
+- Doug's series [1], exposed the DP AUX channel to the panel-simple.
+- Lyude's series [2], introduced new drm helper functions for DPCD
+  backlight.
 
-> ---
->  arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> index 7028e21bdd98..7e90d713f5e5 100644
-> --- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> @@ -862,11 +862,21 @@
->                 groups = "SGPM1";
->         };
->
-> +       pinctrl_sgpm2_default: sgpm2_default {
-> +               function = "SGPM2";
-> +               groups = "SGPM2";
-> +       };
-> +
->         pinctrl_sgps1_default: sgps1_default {
->                 function = "SGPS1";
->                 groups = "SGPS1";
->         };
->
-> +       pinctrl_sgps2_default: sgps2_default {
-> +               function = "SGPS2";
-> +               groups = "SGPS2";
-> +       };
-> +
->         pinctrl_sioonctrl_default: sioonctrl_default {
->                 function = "SIOONCTRL";
->                 groups = "SIOONCTRL";
-> --
-> 2.17.1
->
+This series is the logical successor to the series [3].
+
+Changes in v1:
+- Created dpcd backlight helper with very basic functionality, added
+  backlight registration in the ti-sn65dsi86 bridge driver.
+
+Changes in v2:
+- Created a new DisplayPort aux backlight driver and moved the code from
+  drm_dp_aux_backlight.c (v1) to the new driver.
+
+Changes in v3:
+- Fixed module compilation (kernel test bot).
+
+Changes in v4:
+- Added basic DPCD backlight support in panel-simple.
+- Added support for a new Samsung panel ATNA33XC20 that needs DPCD
+  backlight controlling and has a requirement of delays between enable
+  GPIO and regulator.
+
+[1] https://lore.kernel.org/dri-devel/20210525000159.3384921-1-dianders@chromium.org/
+[2] https://lore.kernel.org/dri-devel/20210514181504.565252-1-lyude@redhat.com/
+[3] https://lore.kernel.org/dri-devel/1619416756-3533-1-git-send-email-rajeevny@codeaurora.org/
+
+Rajeev Nandan (4):
+  drm/panel-simple: Add basic DPCD backlight support
+  drm/panel-simple: Support for delays between GPIO & regulator
+  dt-bindings: display: simple: Add Samsung ATNA33XC20
+  drm/panel-simple: Add Samsung ATNA33XC20
+
+ .../bindings/display/panel/panel-simple.yaml       |   2 +
+ drivers/gpu/drm/panel/panel-simple.c               | 156 ++++++++++++++++++++-
+ 2 files changed, 155 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
+
