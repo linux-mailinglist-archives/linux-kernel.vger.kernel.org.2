@@ -2,97 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C71038F9B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A1438F9DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhEYE6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhEYE6r (ORCPT
+        id S230483AbhEYFVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:21:06 -0400
+Received: from gproxy5-pub.mail.unifiedlayer.com ([67.222.38.55]:33688 "EHLO
+        gproxy5-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230218AbhEYFVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:58:47 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B723EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 21:57:16 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 27so20461421pgy.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 21:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MVbtYXsbtb58fofYDvlHmSwMl/WUynL1P4kD0egGRoM=;
-        b=nKCDRI62VfmTotncwa/GaUORw6rjovSULKpffiFrjTnlKGB/C57pD/jMMe5zo8t/z4
-         2eZ+s10/ZwA5RPhO3lr0ZKYpT6Icj/KUxd3FsVXVJAOMI1rZU7C1j5OiCrsj9PhZSb3t
-         w26prgQiUq4gITsi0EZcZZ6F9MOd2Xky9gh/OiA6HvDIM55smxkWQdfVKr4D5zuJgamj
-         /uSAcfdcmMEgCIIYx8zhQALcOJE061nN7nZzKkiqQwrXcIKtMvymhOjosPPd5iwVDBU2
-         v8ulII1NReNpIlO/oryuk/hipC/ar5Y2mHIZOAbpzIZmfsU9RvP2hCofePttFkr/QUHN
-         EIew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MVbtYXsbtb58fofYDvlHmSwMl/WUynL1P4kD0egGRoM=;
-        b=K7hzqHFR9eIAunQpKOcIRTKSC7VYdvncBSBpux+dS//E/l2xi38TKwuNhVBqVFzmGj
-         2fz8TjrnKsMLAHoupAYzcmbfOYbzMrsfGP72BUjU9bqMmO5UtLdDJHxTxD4YVQ3mDDnG
-         LQ/pczZ4Y0ykGBOQ42YnOUQ6Cc464YPUHolQdR1zcVwzpChXQlNyg9xBcBEXwSG5nw51
-         vYxyXLi2DlkGtVEyGnIwddWnD5lz6XcL1fFTa7RvturiaUdR9EkB8qAe7QNNX6irIeFC
-         cC5g7/IJJl8+MCBRyIcqpQh6dxdHfrk4neY4alAdlcs0bFMaGjDl6+dKuhNYhjJxBHyk
-         3tOw==
-X-Gm-Message-State: AOAM5301UBp3s4Anhzym24Nl/10JAEaM0eMGZ5Gnfw4FgR56VyxE9d1s
-        9rh36tcPBqpRWH7b55Imj6NX
-X-Google-Smtp-Source: ABdhPJxDZ3WIYe92xcVocAerwlrWbOHR2d30JW2mnnK5/jrV73Ufd1cSZ7XvpDO67SWGO3flN85Khw==
-X-Received: by 2002:aa7:874a:0:b029:2e7:8407:f8f3 with SMTP id g10-20020aa7874a0000b02902e78407f8f3mr14060907pfo.53.1621918636166;
-        Mon, 24 May 2021 21:57:16 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id d22sm12467546pgb.15.2021.05.24.21.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 21:57:15 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     amit@kernel.org, mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] virtio_console: Assure used length from device is limited
-Date:   Tue, 25 May 2021 12:53:04 +0800
-Message-Id: <20210525045304.1085-1-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 25 May 2021 01:21:05 -0400
+X-Greylist: delayed 1355 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 May 2021 01:21:05 EDT
+Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
+        by gproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id 5F94F8026EB2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 04:56:59 +0000 (UTC)
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTP
+        id lP7glvxRByyhqlP7ilhVVt; Tue, 25 May 2021 04:56:59 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=GcvSISbL c=1 sm=1 tr=0 ts=60ac839b
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=5FLXtPjwQuUA:10:nop_rcvd_month_year
+ a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=vU9dKmh3AAAA:8
+ a=ih8mQXEslZcGCoKzrYEA:9 a=rsP06fVo5MYu2ilr0aT5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=VdnD4uDwX5Sv4iXNgJb4bVnQULj/RgmEk/ImrVSPxlQ=; b=hEO0OT+UG62j3hIcRkr0d19jZP
+        fbn1+stLFrqVVaWFV+nSkquMWYSe1/dQJ0zPozmgtMhrgX854WYiWDermeCz5DqpqenVYyc/theYX
+        N/lggt9Frp2XsSKprXgUmyaWHD+57gL2cAGBij/bK+hsr8kpJHmmSRvdGX3orpbn1WGSHdFBorUuL
+        HKue5YsD4UTJ1T29Y3uoOnysmsRuzLcf0jS3SMdverN3v1VZKWOLBOeYm5a6sJMw3it0rOqloiqpt
+        4nj0izUUXmoclHmpQSM3/Y50NAW47xgqTK9fX5WCswhNd6Ghi1r0YzilH2mV+ljxfaCwK0OcOOVJ/
+        AoZb++Eg==;
+Received: from [117.202.187.62] (port=38780 helo=localhost.localdomain)
+        by md-in-79.webhostbox.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <navin@linumiz.com>)
+        id 1llP7g-000nRs-66; Tue, 25 May 2021 04:56:56 +0000
+From:   Navin Sankar Velliangiri <navin@linumiz.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vilhelm.gray@gmail.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com,
+        Navin Sankar Velliangiri <navin@linumiz.com>
+Subject: [PATCH] gpio: 104-idio-16: Fix coding style issues
+Date:   Tue, 25 May 2021 10:27:17 +0530
+Message-Id: <20210525045717.20652-1-navin@linumiz.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 117.202.187.62
+X-Source-L: No
+X-Exim-ID: 1llP7g-000nRs-66
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (localhost.localdomain) [117.202.187.62]:38780
+X-Source-Auth: linumcmc
+X-Email-Count: 4
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buf->len might come from an untrusted device. This
-ensures the value would not exceed the size of the buffer
-to avoid data corruption or loss.
+Fixed multiple bare uses of 'unsigned' without int.
+Reported by checkpatch.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
 ---
- drivers/char/virtio_console.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-104-idio-16.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 1c40ca6d76ba..598863e6daf8 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -475,7 +475,7 @@ static struct port_buffer *get_inbuf(struct port *port)
+diff --git a/drivers/gpio/gpio-104-idio-16.c b/drivers/gpio/gpio-104-idio-16.c
+index 50ad0280fd78..55b40299ebfa 100644
+--- a/drivers/gpio/gpio-104-idio-16.c
++++ b/drivers/gpio/gpio-104-idio-16.c
+@@ -44,11 +44,12 @@ struct idio_16_gpio {
+ 	struct gpio_chip chip;
+ 	raw_spinlock_t lock;
+ 	unsigned long irq_mask;
+-	unsigned base;
+-	unsigned out_state;
++	unsigned int base;
++	unsigned int out_state;
+ };
  
- 	buf = virtqueue_get_buf(port->in_vq, &len);
- 	if (buf) {
--		buf->len = len;
-+		buf->len = min(len, buf->size);
- 		buf->offset = 0;
- 		port->stats.bytes_received += len;
+-static int idio_16_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
++static int idio_16_gpio_get_direction(struct gpio_chip *chip,
++				      unsigned int offset)
+ {
+ 	if (offset > 15)
+ 		return GPIO_LINE_DIRECTION_IN;
+@@ -56,22 +57,23 @@ static int idio_16_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+ 	return GPIO_LINE_DIRECTION_OUT;
+ }
+ 
+-static int idio_16_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
++static int idio_16_gpio_direction_input(struct gpio_chip *chip,
++					unsigned int offset)
+ {
+ 	return 0;
+ }
+ 
+ static int idio_16_gpio_direction_output(struct gpio_chip *chip,
+-	unsigned offset, int value)
++	unsigned int offset, int value)
+ {
+ 	chip->set(chip, offset, value);
+ 	return 0;
+ }
+ 
+-static int idio_16_gpio_get(struct gpio_chip *chip, unsigned offset)
++static int idio_16_gpio_get(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct idio_16_gpio *const idio16gpio = gpiochip_get_data(chip);
+-	const unsigned mask = BIT(offset-16);
++	const unsigned int mask = BIT(offset-16);
+ 
+ 	if (offset < 16)
+ 		return -EINVAL;
+@@ -96,10 +98,11 @@ static int idio_16_gpio_get_multiple(struct gpio_chip *chip,
+ 	return 0;
+ }
+ 
+-static void idio_16_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
++static void idio_16_gpio_set(struct gpio_chip *chip, unsigned int offset,
++			     int value)
+ {
+ 	struct idio_16_gpio *const idio16gpio = gpiochip_get_data(chip);
+-	const unsigned mask = BIT(offset);
++	const unsigned int mask = BIT(offset);
+ 	unsigned long flags;
+ 
+ 	if (offset > 15)
+@@ -180,7 +183,7 @@ static void idio_16_irq_unmask(struct irq_data *data)
  	}
-@@ -1709,7 +1709,7 @@ static void control_work_handler(struct work_struct *work)
- 	while ((buf = virtqueue_get_buf(vq, &len))) {
- 		spin_unlock(&portdev->c_ivq_lock);
+ }
  
--		buf->len = len;
-+		buf->len = min(len, buf->size);
- 		buf->offset = 0;
- 
- 		handle_control_message(vq->vdev, portdev, buf);
+-static int idio_16_irq_set_type(struct irq_data *data, unsigned flow_type)
++static int idio_16_irq_set_type(struct irq_data *data, unsigned int flow_type)
+ {
+ 	/* The only valid irq types are none and both-edges */
+ 	if (flow_type != IRQ_TYPE_NONE &&
 -- 
-2.11.0
+2.31.1
 
