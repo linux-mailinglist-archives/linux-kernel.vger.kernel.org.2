@@ -2,204 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20679390479
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6F639047C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhEYPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhEYPDU (ORCPT
+        id S231822AbhEYPER convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 May 2021 11:04:17 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:41318 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230290AbhEYPEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:03:20 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3FEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:01:49 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id i7so29996784ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ejdQ+/X8ls0MZMwwzEkM8mDBazIQOo8TlCXU8rFok+g=;
-        b=rGWL7ApXB1MQnwJFWaNNJkTTK0kcwaeV2N3ka/WaaAq/vJu8IRNwoNZw5iGYXN8yLr
-         VhofZ22mcoRU0QzLOuH62T0aVj5f/YOFo7AUPQLEFpquSUtDU1G1icAXuQq7wfxZCk+L
-         h6vDlrvagB9egNkZwIHmjwuf/Y0g71i91vbehunAu505TYupPRaqAPRFk5r+GaB9FrFx
-         Wr5kwncHp1db3OfPlrOrxVqtS9KSXtltOKZ4NRT/x/i5INYnnilt24aJuH70JjuR/k75
-         hZmRf+1Oi3EhpRBb0bwQPxO5RWaCgmx9RSQ329oU8IjmTnYg95ur1RV/LOQVhO4fh/M/
-         xLTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ejdQ+/X8ls0MZMwwzEkM8mDBazIQOo8TlCXU8rFok+g=;
-        b=ajJbo2u9PU5GCfWJhpOjvNYgymwTXmobQxlCrNHY9TigfVA9G/ajUX9bgLLmU50qAG
-         SQy3oSw9gx10PfLqxa3Vpw2Pifo8TDX++TwIhw/MPTsu1rRZinNBPDgCXLhyWV+FaJnl
-         j/VuX/y2ZuyMVm49zzAyp6aAdM1j7Az7anQZlf1ge0PuCrSadTF9BKtH44CiAeEaFL4L
-         AI5MH72so0WtFyr5oXK3fGR2LbhiV2008cUupwuUGIabcGIr/jqycRSsQggWS4x0FeoB
-         cqiYYx8x/Kzy3HRuowxEx8EvFV9xXN8APd9ooU1eQIt0RyMMtQ0qSpPyGTJUbsnhbNVf
-         w8rA==
-X-Gm-Message-State: AOAM533nWsPPB6s5ldak1ViL1wieX80jfjZ2h9Nv+1tCV5w33XqPbkWt
-        JZn8XqQiLw7ooVIAl9x0i7W3jsi3i9UytcmSddw5dg==
-X-Google-Smtp-Source: ABdhPJxGmy+HEiU0o8Dvu66PZodZAr6CMWGAE5HJxH3NjdGAm3srPxRF7imY56ydJfJswpdvy0n2liLW4qycg+ndks8=
-X-Received: by 2002:a17:907:7355:: with SMTP id dq21mr29001007ejc.503.1621954908207;
- Tue, 25 May 2021 08:01:48 -0700 (PDT)
+        Tue, 25 May 2021 11:04:14 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-7C9pcnqfPDeWOuR97G3bxA-1; Tue, 25 May 2021 11:02:38 -0400
+X-MC-Unique: 7C9pcnqfPDeWOuR97G3bxA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37E97192CC41;
+        Tue, 25 May 2021 15:02:37 +0000 (UTC)
+Received: from bahia.lan (ovpn-113-46.ams2.redhat.com [10.36.113.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 449495D75A;
+        Tue, 25 May 2021 15:02:31 +0000 (UTC)
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Vivek Goyal <vgoyal@redhat.com>, virtio-fs@redhat.com,
+        Greg Kurz <groug@kaod.org>
+Subject: [PATCH 0/4] fuse: Some fixes for submounts
+Date:   Tue, 25 May 2021 17:02:26 +0200
+Message-Id: <20210525150230.157586-1-groug@kaod.org>
 MIME-Version: 1.0
-References: <20210524152322.919918360@linuxfoundation.org>
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 25 May 2021 20:31:36 +0530
-Message-ID: <CA+G9fYuw9wcLt+1VqHLxfUSCEGDj2hiJ-Zu-KoBMiq79K-eDhg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/31] 4.4.270-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 21:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.270 release.
-> There are 31 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.270-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+While working on adding syncfs() support in FUSE, I've hit some severe
+bugs with submounts (a crash and an infinite loop). The fix for the
+crash is straightforward (patch 1), but the fix for the infinite loop
+is more invasive : as suggested by Miklos, a simple bug fix is applied
+first (patch 2) and the final fix (patch 3) is applied on top.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Greg Kurz (4):
+  fuse: Fix crash in fuse_dentry_automount() error path
+  fuse: Fix infinite loop in sget_fc()
+  fuse: Call vfs_get_tree() for submounts
+  fuse: Make fuse_fill_super_submount() static
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+ fs/fuse/dir.c       | 46 ++++++++++---------------------------------
+ fs/fuse/fuse_i.h    |  9 +++------
+ fs/fuse/inode.c     | 48 +++++++++++++++++++++++++++++++++++++++++++--
+ fs/fuse/virtio_fs.c |  3 +++
+ 4 files changed, 62 insertions(+), 44 deletions(-)
 
-## Build
-* kernel: 4.4.270-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: c86cdd4a598cef76d2ae9bff5bdcf6adcb605df5
-* git describe: v4.4.269-32-gc86cdd4a598c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-69-32-gc86cdd4a598c
+-- 
+2.31.1
 
-## No regressions (compared to v4.4.268-187-g9d2abc11d0b5)
 
-## No fixes (compared to v4.4.268-187-g9d2abc11d0b5)
-
-## Test result summary
- total: 40552, pass: 32443, fail: 719, skip: 6652, xfail: 738,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
