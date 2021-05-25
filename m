@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391D238F9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999C938F9CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhEYFKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        id S230456AbhEYFL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhEYFKL (ORCPT
+        with ESMTP id S230398AbhEYFLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:10:11 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CBBC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:08:41 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id k14so41785844eji.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:08:41 -0700 (PDT)
+        Tue, 25 May 2021 01:11:24 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAE6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:09:55 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id e11so36426095ljn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PsgdBBVw2A+NbDcJdCN642vC7Yq/ZcBHRQhxnHO/dtM=;
-        b=uwVlvNr+1QmUX1D9u3UJxq6sQbrzK10U5N1K62NWGPpmtL6jKXtEN54niNiEspZJBv
-         cRLCQRGsNI94JsItN3tKJ5W+cDcgQNAEy2FZ/NRgima/wDEGHEgHPEkWvabmDEd3ZrQK
-         YY7NJo2L5REGVFcW+zXSu3fWbr9rHBKvvGOvtbQ3eWHfQSGqslMHCifK8/dWY5SpNuPM
-         M0Lqxgh7L/xBVvvuTyC9+IbKcRChMxLDsn2SN7dKiyj40qEZ4G7VfCpdb2hw+PdAwn91
-         Mke+dLWA/dvFgWNMHpYn0dbMxHpe0gCQzQx/u2gZSCDm9cBXRk1Hhvb2ud8UNjuYdOAh
-         9K9Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=UOMx5+28RlRg9sdHtPpeFxBXs7+mTy/X9upWhP7PZp8=;
+        b=vgMr6dB++UKouqjyL9Wwrs+iuqJuxj9qT0IYEQe2jCCp9iZOhh6EUNd4QEpVc4OyuX
+         8bWNc4f9MDmo4vVBtga2WmTWDwHsJGHtjKFVx/kplQT2Ehpc09U2yLZTBp2l3KinA5HZ
+         gM6t6aMFWdohhaTbHo+GBNOTWuh8IjGUHh/E6nJjd7w5uSV/YD1hPJUODM32dODYjQKB
+         xPmL9Orq1xjWDwx8oDDq9L8TDava4RN4Y4rTyAZ8Y9iJzft1AKMI75UQVJAsOkY5/tlM
+         +zNAEqhtvFhfAiQEvNZG05jOj3hByl7mhYCb8VHYesLrggj3gR7Zm1GOirVapjBO2vMO
+         JEAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PsgdBBVw2A+NbDcJdCN642vC7Yq/ZcBHRQhxnHO/dtM=;
-        b=mG3TIwfmgaMJ5ycA2hVNlVrawXZaXQwlJtAU0u3uuL3KzRsmEL+FdAzPmoMz9CH7W+
-         rFZRhMr55SdpclCUALspe95PEPsDOO0Jn4kYCjJ9OuuMxOgFJNDkOeRhQEtYCHdKyWUf
-         mXV5ZIY4cXFTwv1PFg+e/wQO6cCLM+jJtZ12YXwIfnS2/trDgREoPw4XFYJltvOehCwX
-         kXJ/Ec4xErGKC9FHMVaqdV4yDla2v7kaliWlNJqfhNokWvYXCgUIp3fN7HVV76yoOa3c
-         nTZqnsOswXtFc5vwPsEPsozRBFxHyg+2BEKmVe/fFP3cHbK+BGs3CAEGEGg4K2biWRDj
-         85eA==
-X-Gm-Message-State: AOAM533UiqY3YE/wmmaT0WSxwjTDtyTvyYe/nOoqEtH8/7RK00wM9rfJ
-        8nhh4I2NteNnfrCVMrtvd3f0Pcw09V3+wBd1FWET
-X-Google-Smtp-Source: ABdhPJxs5I3rJV2qxB2VX2e2J7Skie8nzyHZIGcIp5PfqE3CVEi7Py1Q1rj5/UivHgHWePx1+81zM9QGpYRaGw+PWdc=
-X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr26746054ejb.174.1621919319919;
- Mon, 24 May 2021 22:08:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=UOMx5+28RlRg9sdHtPpeFxBXs7+mTy/X9upWhP7PZp8=;
+        b=d2zf7qrU70kgR02BWWEPCjipbE9LR/ymyqRcFMEL1Ns0631ETtSdGfiBHE44vAUSGN
+         QsYecFoB7CoWMcf/QvU7uoq5OgFhmOuNUqw9WLn+Qn979WxVpQOBQzaagdU9Dj4JXe2f
+         56rtcTILRCzLF4gBb+KHt+J7qsHfhG2+GN1JesDshu8qE28Gwv2eK/p5KCR4Fzdq/xaG
+         U6Qo/eQkb528uT3VawBoNCFN7s6jEuX7vLIHFWWYD4YGOFDbjREFvoBqTn0a/E1XpfI+
+         jfwjBmd5geJm3KsL2k6+x1boRCQMQqAagskVr3+jymExqG/LFqpjk4hC0gAg9PAdy8mY
+         8KsA==
+X-Gm-Message-State: AOAM530nYq3FRAQJXO9YqojHtGZGDojEjhaxIfrLR0i1MM+EEMyI+QQu
+        gHQyu2U1Z6qZF8EN5UPNp+PLmlV7e4RgigvJ47M=
+X-Google-Smtp-Source: ABdhPJxhoSl5ZBaB7NwXKQghdf7yt0VZUFkm0yQhdwHTEPfmj++JctAWCKmPchTOaKC2W6twkKb3CQp97q62HFy+53o=
+X-Received: by 2002:a2e:7115:: with SMTP id m21mr20195187ljc.33.1621919393465;
+ Mon, 24 May 2021 22:09:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517090836.533-1-xieyongji@bytedance.com> <20210517090836.533-18-xieyongji@bytedance.com>
- <20210517193641-mutt-send-email-mst@kernel.org> <3cda643a-1363-65bf-be84-f6dea6714477@redhat.com>
-In-Reply-To: <3cda643a-1363-65bf-be84-f6dea6714477@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 25 May 2021 13:08:29 +0800
-Message-ID: <CACycT3vzpYRpFsBxCo+huG+wGE5TtD_N3A7wZf-yc_+cCfjzyw@mail.gmail.com>
-Subject: Re: Re: [RFC PATCH 17/17] virtio_ring: Add validation for used length
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>, amit@kernel.org,
-        arei.gonglei@huawei.com, airlied@linux.ie, kraxel@redhat.com,
-        dan.j.williams@intel.com,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ohad Ben Cohen <ohad@wizery.com>, bjorn.andersson@linaro.org,
-        David Hildenbrand <david@redhat.com>, vgoyal@redhat.com,
-        miklos@szeredi.hu, Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Reply-To: hon.barr.desmond.williams.chambers@gmail.com
+Sender: willgod492@gmail.com
+Received: by 2002:a05:6512:1192:0:0:0:0 with HTTP; Mon, 24 May 2021 22:09:52
+ -0700 (PDT)
+From:   Hon Barrister Desmond williams 
+        <hon.barr.desmond.william2021@gmail.com>
+Date:   Tue, 25 May 2021 06:09:52 +0100
+X-Google-Sender-Auth: 8EntixG0ZSG6MPmhfDuqNSOYeXU
+Message-ID: <CABB9BwAJj4J4cpQG6p-P=d9wpuknO5_Rohae7knUB_8E9-bhYA@mail.gmail.com>
+Subject: Re:Hon.Barr.Desmond Williams. Esq, urgent reply.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:31 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/5/18 =E4=B8=8A=E5=8D=887:39, Michael S. Tsirkin =E5=86=99=
-=E9=81=93:
-> > On Mon, May 17, 2021 at 05:08:36PM +0800, Xie Yongji wrote:
-> >> This adds validation for used length (might come
-> >> from an untrusted device) when it will be used by
-> >> virtio device driver.
-> >>
-> >> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> >> ---
-> >>   drivers/virtio/virtio_ring.c | 22 +++++++++++++++++++---
-> >>   1 file changed, 19 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring=
-.c
-> >> index d999a1d6d271..7d4845d06f21 100644
-> >> --- a/drivers/virtio/virtio_ring.c
-> >> +++ b/drivers/virtio/virtio_ring.c
-> >> @@ -68,11 +68,13 @@
-> >>   struct vring_desc_state_split {
-> >>      void *data;                     /* Data for callback. */
-> >>      struct vring_desc *indir_desc;  /* Indirect descriptor, if any. *=
-/
-> >> +    u32 in_len;                     /* Total length of writable buffe=
-r */
-> >>   };
-> >>
-> >>   struct vring_desc_state_packed {
-> >>      void *data;                     /* Data for callback. */
-> >>      struct vring_packed_desc *indir_desc; /* Indirect descriptor, if =
-any. */
-> >> +    u32 in_len;                     /* Total length of writable buffe=
-r */
-> >>      u16 num;                        /* Descriptor list length. */
-> >>      u16 last;                       /* The last desc state in a list.=
- */
-> >>   };
-> >
-> > Hmm for packed it's aligned to 64 bit anyway, so we are not making it
-> > any worse. But for split this pushes struct size up by 1/3 increasing
-> > cache pressure.
->
->
-> We can eliminate this by validating through virtio device driver instead
-> of virtio core.
->
-> E.g for virtio-net we know the rx buffer size so there's no need to
-> store in twice in the core.
->
+Dear ,
 
-I see. I have sent the new fix just now.
+Greetings!
 
-Thanks,
-Yongji
+Compliment of the day, do accept my apologies if my mail does not meet
+your personal ethics, in due respect I want to introduce myself and
+this business opportunity to you. My name is Hon Barrister Desmond
+Williams Esq. Of Williams Chambers & Associate, a personal attorney to
+my late client. I wish to know if we can work together.
+
+I would like you to stand as the next of kin to my late client who has
+an account valued 4.5million United States dollars, with a deposit
+bank. She died without any registered next of kin and the funds now
+have an open beneficiary mandate.
+
+The board of directors of her Bank adopted a resolution and I was
+mandated to provide her next of kin as her personal attorney for the
+payment of this money or else the fund will be diverted to the
+government treasury=E2=80=99s account as an abandoned property.
+
+Fortunately, it=E2=80=99s very easy for me to back you up with certify
+attestation certification on your name to make you become her official
+next of kin. Your seriousness will permit me to send you more details
+on how you will execute this fund into your bank account, kindly
+indicate your interest immediately.
+
+I will give you more details once you reply back with the information
+as stated below:
+
+1. Full name........
+2. Address......
+3. Country.......
+4. Gender/age......
+5. Mobile n=C2=B0......
+6. Occupation.....
+7. E-mail address....
+
+I look urgently to get your response as soon as possible.
+
+Yours sincerely,
+Barr Desmond Williams. Esq.
