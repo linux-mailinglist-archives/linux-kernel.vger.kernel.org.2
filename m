@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87E0390694
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D82390697
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhEYQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:25:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32998 "EHLO mail.kernel.org"
+        id S233361AbhEYQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:26:12 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:40856 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232200AbhEYQZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:25:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69ABA6140F;
-        Tue, 25 May 2021 16:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621959844;
-        bh=PTtPFfWu71FFFV88kyJhBICf7yjLVTdmBVvyC8I70Wg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e5/HEqIV6+eUNRUh9RkYb3DbINQiJP1rHcSKxcPJiRislHlIaFNz2ZzJ9HRTGymgD
-         3kkb4pbozmXnOo/VDeq/N54KZtC6pLZksf+rv3XxHt4gUpme7mjfEBWRo2N9femp2b
-         oKbYnyn9hO8VMx6WDnxcnAHCBcc2dvaYLBL9bYQM=
-Date:   Tue, 25 May 2021 18:24:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: hikey9xx: Remove defined but unused macros
-Message-ID: <YK0komOt7j8R9045@kroah.com>
-References: <20210523172709.19181-1-fmdefrancesco@gmail.com>
+        id S232200AbhEYQ0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:26:11 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id AB630A0042;
+        Tue, 25 May 2021 18:24:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz AB630A0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1621959879; bh=5vd1CosdGZ1x0kCQ03wCTU9ikNz4E8e+MwaijpSD2AU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=U+4Cziiuz2bRm/D2OIanNWyLaonXS/fppqUXq/nDrPNOJy+PZh76rC/R5gxCZ6Qam
+         cgc3U5f8cLGD+9p4nkvPlVp0lOHsA6wkNQDNmv7M2AN21eMz/x449mQOO/rRoPf4mJ
+         ySKj4Db3H8iQM1q8nvXWqvB0czYnpIkrUlIBKI5w=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Tue, 25 May 2021 18:24:28 +0200 (CEST)
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+ <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
+ <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
+Date:   Tue, 25 May 2021 18:24:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523172709.19181-1-fmdefrancesco@gmail.com>
+In-Reply-To: <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 07:27:09PM +0200, Fabio M. De Francesco wrote:
-> Removed defined but unused macros. Issue detected by GCC running with
-> -Wunused-macro warning option set.
+On 24. 05. 21 16:00, Dmitry Osipenko wrote:
+> 24.05.2021 13:54, Jaroslav Kysela пишет:
+>> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
+>>> Specify components string for Nexus 7 using the Intel BayTrail components
+>>> format. This may allow us to create a more generic UCM for RT5640 codec.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>>>  1 file changed, 19 insertions(+)
+>>>
+>>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+>>> index a81f2ebfc00c..87e0a47040a5 100644
+>>> --- a/sound/soc/tegra/tegra_asoc_machine.c
+>>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+>>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>>>  	.add_hp_jack = true,
+>>>  };
+>>>  
+>>> +/*
+>>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+>>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+>>> + * Headphones: Connected to HPOL/R pins.
+>>> + * Headset Microphone: Unconnected.
+>>> + *
+>>> + * IF2_DAC/ADC are unpopulated.
+>>> + */
+>>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+>>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+>>
+>> Perhaps, it may be better to handle this string via the DT config (create new
+>> function like snd_soc_of_parse_card_name()).
+>>
+>> The "codec:rt5640" should be set in the driver (it's fixed), but the
+>> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->  drivers/staging/hikey9xx/hisi-spmi-controller.c | 9 ---------
->  1 file changed, 9 deletions(-)
+> Not sure that this is possible. The DT is an ABI, while components
+> string has no specification. Any changes to the components string will
+> require DT update.
 > 
-> diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> index 0d42bc65f39b..b64594e2a84b 100644
-> --- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> +++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> @@ -21,16 +21,10 @@
->  #define SPMI_APB_SPMI_CMD_BASE_ADDR			0x0100
->  
->  #define SPMI_APB_SPMI_WDATA0_BASE_ADDR			0x0104
-> -#define SPMI_APB_SPMI_WDATA1_BASE_ADDR			0x0108
-> -#define SPMI_APB_SPMI_WDATA2_BASE_ADDR			0x010c
-> -#define SPMI_APB_SPMI_WDATA3_BASE_ADDR			0x0110
->  
->  #define SPMI_APB_SPMI_STATUS_BASE_ADDR			0x0200
->  
->  #define SPMI_APB_SPMI_RDATA0_BASE_ADDR			0x0204
-> -#define SPMI_APB_SPMI_RDATA1_BASE_ADDR			0x0208
-> -#define SPMI_APB_SPMI_RDATA2_BASE_ADDR			0x020c
-> -#define SPMI_APB_SPMI_RDATA3_BASE_ADDR			0x0210
->  
->  #define SPMI_PER_DATAREG_BYTE				4
->  /*
-> @@ -64,9 +58,6 @@ enum spmi_controller_cmd_op_code {
->  #define SPMI_APB_TRANS_DONE			BIT(0)
->  #define SPMI_APB_TRANS_FAIL			BIT(2)
->  
-> -/* Command register fields */
-> -#define SPMI_CONTROLLER_CMD_MAX_BYTE_COUNT	16
-> -
->  /* Maximum number of support PMIC peripherals */
->  #define SPMI_CONTROLLER_TIMEOUT_US		1000
->  #define SPMI_CONTROLLER_MAX_TRANS_BYTES		16
-> -- 
-> 2.31.1
-> 
-> 
+> I think it's much more feasible to have a database of components within
+> kernel driver, like Intel sound driver does it for ACPI devices.
 
-Leaving macros that are not used are fine to keep around, it documents
-the hardware.
+There is no other possibility for ACPI. And while the components string is
+part of the ALSA ABI, it should not be changed in an incompatible way. Only
+new information should be added. The DT solution seems more flexible to me.
+For example the stereo/mono speaker or the AIF number can be set without the
+driver modification for rt5640.
 
-That's a pretty foolish gcc warning :(
+					Jaroslav
 
 
-thanks,
-
-greg k-h
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
