@@ -2,170 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5C438F8F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6DE38F8F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhEYDox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:44:53 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:37241 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230048AbhEYDov (ORCPT
+        id S230367AbhEYDpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhEYDpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:44:51 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D975C581067;
-        Mon, 24 May 2021 23:43:21 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Mon, 24 May 2021 23:43:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=4OSDcQRIgeJvUR6YkXF9RW8Fj9oUfyB
-        5OADbIA+ihAs=; b=EgHAIM2ewDKVBJ1eZkfW9zSEpyuTMtlv8fDo57x8cdsgwlO
-        3QwFCvRGdsWx45rM3kJjoJdeqp2uP14BVWP9GrZBrcwKye8i7e2JpYNG0ApbcxJh
-        Nu+2G6CuOIQ3OrApoe7gtYfXNOj/Hb5Cjw4Du+euTKL5TPfY4q3sQPMnoRck+seE
-        m07DXGjW5OWZ1uqrAq0VInQhjrHTkqUKSY+M9QY5cpTrkIY/vR7j3LBntkNz/8bb
-        JqNX1EWlVvtl0uqQAEpIf+kkABfmbFxeBmplGA+oc+tXSiKBqdb93JbQuP9PKjku
-        qVi+Wz+RgbOgIDkunqszy/fQpONSsS+RdNb+BgQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=4OSDcQ
-        RIgeJvUR6YkXF9RW8Fj9oUfyB5OADbIA+ihAs=; b=umrZGZO7KBuJyKjhTIF2op
-        nql+kYOKgBkvUA1Wnd3MY1AjmWieu7KaenpItIRFu2UF5QfpD1SJsV2rJgbE1jUH
-        1aWqsNc9Ucy9oV0rhp71OwqeJTX9jOHI3QAxaIRwa35oLpAvbsgasTUGUjpWMw6y
-        zntj7UcmrXDq9BV6O3NEFTZpAHZj0Y8NWwJ0e1eTc0AZfocu2I4iT/EE4PJYAaek
-        1KEGCC2YdVdJGoSqkC6HGUjikWDCtcoHS+d1arrRubRrTfu34t/XjeTbyIqRR96L
-        /IRdUvL8iMcgAOwBs48+2UgCN7zzT/ZxzkjwOyPB6ZkX4WYVxdkmegOH8puYMjiQ
-        ==
-X-ME-Sender: <xms:WHKsYA9qwyxDlhhBiQboRhkSagcYygupj_dw4icwuoKz6cmzEuPJ9A>
-    <xme:WHKsYIu-R7Du1sRdwvvwpWbFCQYWv5L7q4bVqTzxs8TlXKUswy4nussTQPzH0p-G-
-    zcNOctDUznRg5Omfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdektddgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:WHKsYGBbQa0-aYPcgH6s7QhYQA0bm0yWDmtow98-VmSoShrBgaJKOw>
-    <xmx:WHKsYAeUTz4Q-ida5gyHzH6ZFcJ6QarFnWfFoFrz-IsSCPmn-DyhnQ>
-    <xmx:WHKsYFMVmMta0paUoPgozmWpDRVTL-5p9sEdEwCKPesGWYX4B3C4-g>
-    <xmx:WXKsYGGiyjuPSUEGhi0sE3yNiPYkYEcDm54VBMz3_4ij6sMO9LB2HA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2CE55A00079; Mon, 24 May 2021 23:43:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <b38cf7e0-6cce-4cb3-8bb7-d711b1fe6eb2@www.fastmail.com>
-In-Reply-To: <20210525030254.GA23525@aspeedtech.com>
-References: <20210524111338.16049-1-steven_lee@aspeedtech.com>
- <20210524111338.16049-4-steven_lee@aspeedtech.com>
- <43b00f2e-4381-4899-b561-da9a24347f8b@www.fastmail.com>
- <20210525030254.GA23525@aspeedtech.com>
-Date:   Tue, 25 May 2021 13:12:59 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>
-Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "moderated list:ASPEED PINCTRL DRIVERS" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v1_3/3]_pinctrl:_pinctrl-aspeed-g6:_Add_sgpio_pinct?=
- =?UTF-8?Q?rl_settings?=
-Content-Type: text/plain
+        Mon, 24 May 2021 23:45:16 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5BAC061574;
+        Mon, 24 May 2021 20:43:46 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id p20so36315346ljj.8;
+        Mon, 24 May 2021 20:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iDF6mBMgNJLUIrRtn1QdpOxFrtc+wC5o+OnjVFJaNNk=;
+        b=Bgyg3SufXoRKshaUkZgPFsX+GP+0f8Lok/5IYi98BOdCvCIIu1A3RR1yWrGeBHsEdu
+         MXxxFSsQ42UWUUsKEVd2JehHqdkHJIG1FT5hbQdF/ZzoVLz1JQPPo/3VE0qaCd7/VKrj
+         6Y4UGGJ+pRDPORu1qATrXn6+T+kYbzeoJi05R6mxV+lq2kF2SHEpqDWvA7YmLDSOqsNu
+         SpwCvzVLjo8o0i0aGi2v1d4j245DX7aRevsWcvLkXBfaIfPskTnw4O7060TnLGm8HPar
+         kLwjZ0h2+Mc0bXiYhSWn4DmyIFGF0mmAlNF6znSDqSJkA/7waZGmr6AcqavdYwIRtSM4
+         2f4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iDF6mBMgNJLUIrRtn1QdpOxFrtc+wC5o+OnjVFJaNNk=;
+        b=IUBH+IdzM/7f0gX7K/NWAS1pxfgcvrxSBJtavten04o/BXOEB8Mb5PY+d5KCeG8Z1M
+         7tekd+wxN/vpJeajBcZjJdLoonxN5mMiyHaa0ceI6KD6Uts4cbOmBblErcJVzeYDyKtH
+         vU80fQoR73JKF+iFL9LJ1rvshiXI+CpXzNEOjTfUNDlPKLNXbpp2y03zPTwDvYaspJbV
+         8YE7VbCYenZ3mVyKF/9B+uSt/qVawlLKUvSSr6MXaA4OU9d03tQZU0ijZOGjZ5sb8qaZ
+         arcF8krQjyVrHacpcZG9uuh35/uHFw6uFXaIONFLBRIP1krXdJGc2ODBoIN2CpzmwL5r
+         NscA==
+X-Gm-Message-State: AOAM533ZBE0QEndmpLiwkMG1c18K+X3PnKi6Ni9twFt29mTKhn8ZDZA1
+        eyqdfVvha5rLPMeFQtjW6ziv/wUac3ydSSPOjiQ=
+X-Google-Smtp-Source: ABdhPJx73FLXjgNeG1gmGuwVqMUcPxH61t13GnpkEha9rszuiJdELc042dY1kjnaPHP0FYjl6KLgs/8Ogq4Zm8kd1Kc=
+X-Received: by 2002:a2e:240e:: with SMTP id k14mr19355228ljk.423.1621914223981;
+ Mon, 24 May 2021 20:43:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210522113155.244796-1-dong.menglong@zte.com.cn>
+ <20210522113155.244796-2-dong.menglong@zte.com.cn> <YKxMjPOrHfb1uaA+@localhost>
+In-Reply-To: <YKxMjPOrHfb1uaA+@localhost>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Tue, 25 May 2021 11:43:31 +0800
+Message-ID: <CADxym3asj97wATjGthOyMzosg=dHY-bfk5pqLPYLSCa2Sub73Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] init/main.c: introduce function ramdisk_exec_exist()
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, joe@perches.com,
+        Menglong Dong <dong.menglong@zte.com.cn>, masahiroy@kernel.org,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
+        song@kernel.org, NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
+        wangkefeng.wang@huawei.com, arnd@arndb.de,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
+        pmladek@suse.com, ebiederm@xmission.com, jojing64@gmail.com,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 9:02 AM Josh Triplett <josh@joshtriplett.org> wrote:
+>
+......
+>
+> As far as I can tell, this will break if the user wants to use
+> ".mybinary" or ".mydir/mybinary" as the name of their init program.
+>
+> For that matter, it would break "...prog" or "...somedir/prog", which
+> would be strange but not something the kernel should prevent.
+>
 
+Wow, seems I didn't give enough thought to it.
 
-On Tue, 25 May 2021, at 12:32, Steven Lee wrote:
-> The 05/25/2021 08:54, Andrew Jeffery wrote:
-> > Hi Steven,
-> > 
-> > On Mon, 24 May 2021, at 20:43, Steven Lee wrote:
-> > > AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
-> > > Current pinctrl driver only define the first sgpio master and slave
-> > > interfaces.
-> > > The sencond SGPIO master and slave interfaces should be added in
-> > > pinctrl driver as well.
-> > > 
-> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > > ---
-> > >  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 24 ++++++++++++++++++----
-> > >  drivers/pinctrl/aspeed/pinmux-aspeed.h     |  9 ++++++++
-> > >  2 files changed, 29 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c 
-> > > b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> > > index 5c1a109842a7..d0e9ab9d1a9c 100644
-> > > --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> > > +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> > > @@ -46,8 +46,10 @@
-> > >  #define SCU620		0x620 /* Disable GPIO Internal Pull-Down #4 */
-> > >  #define SCU634		0x634 /* Disable GPIO Internal Pull-Down #5 */
-> > >  #define SCU638		0x638 /* Disable GPIO Internal Pull-Down #6 */
-> > > +#define SCU690		0x690 /* Multi-function Pin Control #24 */
-> > >  #define SCU694		0x694 /* Multi-function Pin Control #25 */
-> > >  #define SCU69C		0x69C /* Multi-function Pin Control #27 */
-> > > +#define SCU6D0		0x6D0 /* Multi-function Pin Control #29 */
-> > >  #define SCUC20		0xC20 /* PCIE configuration Setting Control */
-> > >  
-> > >  #define ASPEED_G6_NR_PINS 256
-> > > @@ -81,13 +83,17 @@ FUNC_GROUP_DECL(I2C12, L26, K24);
-> > >  #define K26 4
-> > >  SIG_EXPR_LIST_DECL_SESG(K26, MACLINK1, MACLINK1, SIG_DESC_SET(SCU410, 4));
-> > >  SIG_EXPR_LIST_DECL_SESG(K26, SCL13, I2C13, SIG_DESC_SET(SCU4B0, 4));
-> > > -PIN_DECL_2(K26, GPIOA4, MACLINK1, SCL13);
-> > > +SIG_EXPR_LIST_DECL_SESG(K26, SGPS2CK, SGPS2, SIG_DESC_SET(SCU690, 4));
-> > > +SIG_EXPR_LIST_DECL_SESG(K26, SGPM2CLK, SGPM2, SIG_DESC_SET(SCU6D0, 4));
-> > > +PIN_DECL_4(K26, GPIOA4, SGPM2CLK, SGPS2CK, MACLINK1, SCL13);
-> > 
-> > Is this the right priority order? Looking at the Multi-Function Pin 
-> > Mapping and Control table, function 1 is MACLINK1,
-> > function 2 is SCL13, function 3 is SGPS2CK, and I assume function 4 
-> > would be SGPM2CLK, except it's not documented in the table in v9 of the 
-> > datasheet (I hope it will be documented?).
-> > 
-> > If function 1 is the highest priority (which is what all the Aspeed 
-> > pinctrl drivers assume), then this should be:
-> > 
-> > PIN_DECL_4(K26, GPIOA4, MACLINK1, SCL13, SGPS2CK, SGPM2CLK);
-> > 
-> > Anyway, one of several things could be at fault here:
-> > 
-> > 1. I've made a wrong assumption about the priority order in how I've 
-> > implemented pinctrl support for Aspeed SoCs
-> > 
-> > 2. The Multi-Function Pin Mapping and Control table is out of date and 
-> > needs to be fixed (which it already does as it doesn't list SGPM2CLK).
-> > 
-> > 3. The patch needs to align with the assumptions of the Aspeed pinctrl 
-> > support.
-> > 
-> > I don't think it's 1 as I haven't heard of any issues where we are 
-> > getting incorrect behaviour because of pinmux. I don't think it's 2 as 
-> > this patch makes a non-linear change to the ordering. So my hunch is
-> > the issue is 3, that the patch is putting the signals in the wrong order.
-> > In this case, you want the PIN_DECL_4(...) I outlined above.
-> > 
-> 
-> Yes, you are right. Per discussion with the designer, the priority order is
-> MACLINK1 > SCL13 > SGPS2CK > SGPM2CLK
-> 
-> We will add the information in the v10 datasheet.
+> I don't think this code should be attempting to recreate
+> relative-to-absolute filename resolution.
 
-Great. Thanks Steven.
+Trust me, I don't want to do it either. However, I need to check if
+ramdisk_execute_command exist before chroot while the cpio is unpacked
+to '/root'.
 
-Andrew
+Maybe I can check it after chroot, but I need to chroot back if it not
+exist. Can I chroot back in a nice way?
+
+I tried to move the mount on '/root' to '/' before I do this check in
+absolute path, but seems '/' is special, the lookup of '/init' never
+follow the mount on '/' and it can't be found. However, if I lookup
+'/../init', it can be found!
+
+Is there any one have a good idea? Or I have to dig into the code
+of 'kern_path()' and figure out the reason.
+
+Thanks!
+Menglong Dong
