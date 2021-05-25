@@ -2,290 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C633907DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454FE3907E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhEYRhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbhEYRhc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:37:32 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9473C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:36:00 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i9so47307910lfe.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Mp7udtTenG44NH/QCDQTjrCW5TxEnGG1zm25F5s/Mkc=;
-        b=NUa6XVtpvp4ZD37FJIrtCt/4viHX5kXUAVaox/Noop5X1mKA3a0HHoGPmdpmxjTn6/
-         Xrq0KmtSCWkoPm9WQxaYx8U02WvEzKoRy7B0dRIv9qn7z0rjauojw8zcPXK55Iix21ia
-         Fc5FgUBbevhofL14IsQED284iWRdqG9sZcrW6mj9YCVL/mwcRqZ2JhcEcVHW08yP6CFd
-         hTzMLHI6QIxybi5Rt0/jIt5eX1jlg4vKjfwk6Sfj3aC3LqcbUPEwmxZqWwNLhfAjDGtt
-         KzII28vCyIxGchruBFaFVy+aTTLUYTJHRqZlqAABFG5SPoRqqYi50qXBrCdaZ7eF5pxd
-         AHJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mp7udtTenG44NH/QCDQTjrCW5TxEnGG1zm25F5s/Mkc=;
-        b=cM4nbQuXxmF+M34OWdU8kGX0DzUaFW+8Yh5zBE8Y9W+3fzhlBiB4JJ1Km0/zO/ILb1
-         aQyyB9MGyIvc0elaN3JLTSAFGSYOSz/PlwLDOXmLsuowJtdKs91UKhpLN70rwhKBi6Z5
-         6VttA5sOh9pq8EJU8KbvJNxFui3VRk9EOCHp5Xm6vI1aAa4YWXFfBcHRQj/C7jgl3UD7
-         k2pewEQKvg6+qZRYC+u/j2zw2yVFxYjmkq05MstOmhSzTjo5Vsv4ME72llQ4oTCYx2ON
-         ydkZ25Q7m3QD1aSsnuKcRMgAL4FZmWYi7wW2zlm2Viq4/UmerBfLGOkZP8EAyccmOwb/
-         nv4Q==
-X-Gm-Message-State: AOAM531jq7vjy0PoJu+xZsv4f/bM6/C30670RSW93Oe3+oA/fwrkGN5N
-        Nk/ICds5Lsp344L6Q0A7f4UDIg==
-X-Google-Smtp-Source: ABdhPJxUZoxftFBuGOSezXPUY74cZMDR2Fz9AHFYsTJ9Ld+DD5mRvqjvVTsOjWljyr9Zto5lzE/5kA==
-X-Received: by 2002:a05:6512:31c6:: with SMTP id j6mr14801514lfe.129.1621964159064;
-        Tue, 25 May 2021 10:35:59 -0700 (PDT)
-Received: from [192.168.88.254] ([85.249.41.56])
-        by smtp.gmail.com with ESMTPSA id 6sm1794842lfz.189.2021.05.25.10.35.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 10:35:58 -0700 (PDT)
-Subject: Re: [PATCH 03/17] media: camss: csiphy-3ph: add support for SM8250
- CSI DPHY
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     robert.foss@linaro.org, Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210511180728.23781-1-jonathan@marek.ca>
- <20210511180728.23781-4-jonathan@marek.ca>
- <e1188621-aa8d-d825-7454-491ffdec27c1@linaro.org>
-Message-ID: <4b50f855-e791-b445-f7b8-bc7b783bdc00@linaro.org>
-Date:   Tue, 25 May 2021 20:35:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <e1188621-aa8d-d825-7454-491ffdec27c1@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231772AbhEYRiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:38:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234125AbhEYRhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 13:37:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D808E61157;
+        Tue, 25 May 2021 17:36:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621964182;
+        bh=LskCapKtyB8RvSvFDfob6jRHdNLRDzxTgT9OF4bwRiI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Ny9MBHfnFRBWDZ5MaAeHH23HUW1HtoA9ZG0uLesxIxrOzDxzq5Gadxv2HQz/Yhqh0
+         pusvJG8wsNSJq0TglpUrg1uQbQmSGfZ4dnLomTqhchJRsIYOQF7LMUGyvDx71bWGa5
+         PETGfYUjgVBZiAog9xmPRfGhn/0IDwEYA4LEisITlNPo9vN/0Mp/RI/nqE/Ejxzkcm
+         oCK0BqSAQr6i5ety5eL3kWRNgq7DGhnSgtra3Sch8HOHDbBeAc31ruhd1S+rOyx9/N
+         cX/pi3MeCA4BSGwcfwDcjuUA+DiO9bvQkVYAqCGHHYtkzymrl8QwzqKS7x/rDi+whW
+         vGZhk8ikkDIww==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8A19608B8;
+        Tue, 25 May 2021 17:36:22 +0000 (UTC)
+Subject: Re: [GIT PULL] netfs: Fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <4007708.1621947662@warthog.procyon.org.uk>
+References: <4007708.1621947662@warthog.procyon.org.uk>
+X-PR-Tracked-List-Id: <ceph-devel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <4007708.1621947662@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/netfs-lib-fixes-20200525
+X-PR-Tracked-Commit-Id: b71c791254ff5e78a124c8949585dccd9e225e06
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ad9f25d338605d26acedcaf3ba5fab5ca26f1c10
+Message-Id: <162196418275.15660.9511112826045891745.pr-tracker-bot@kernel.org>
+Date:   Tue, 25 May 2021 17:36:22 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
+        geert@linux-m68k.org, willy@infradead.org,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, linux-cifs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+The pull request you sent on Tue, 25 May 2021 14:01:02 +0100:
 
-Couple more minor issues.
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/netfs-lib-fixes-20200525
 
-On 25.05.2021 20:19, Andrey Konovalov wrote:
-> Hi Jonathan,
-> 
-> Thank you for the patchset!
-> 
-> On 11.05.2021 21:07, Jonathan Marek wrote:
->> Add support for CSIPHY (2PH/DPHY mode) found on SM8250 hardware.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   .../qcom/camss/camss-csiphy-3ph-1-0.c         | 144 +++++++++++++++++-
->>   1 file changed, 137 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> index 783b65295d20..61947576ddfb 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> @@ -62,6 +62,7 @@ struct csiphy_reg_t {
->>       u32 csiphy_param_type;
->>   };
->> +/* GEN2 1.0 2PH */
->>   static const struct
->>   csiphy_reg_t lane_regs_sdm845[5][14] = {
->>       {
->> @@ -146,6 +147,121 @@ csiphy_reg_t lane_regs_sdm845[5][14] = {
->>       },
->>   };
->> +/* GEN2 1.2.1 2PH */
->> +static const struct
->> +csiphy_reg_t lane_regs_sm8250[5][20] = {
->> +    {
->> +        {0x0030, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0900, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0908, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0904, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0904, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0004, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x002C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0034, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0010, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x001C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x003C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0008, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
->> +        {0x0000, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x000c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0038, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0014, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0028, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0024, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +    },
->> +    {
->> +        {0x0730, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C80, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C88, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C84, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C84, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0704, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x072C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0734, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0710, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x071C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x073C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0708, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
->> +        {0x0700, 0x80, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x070c, 0xA5, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0738, 0x1F, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0714, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0728, 0x04, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0724, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +    },
->> +    {
->> +        {0x0230, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0A00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0A08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0A04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0A04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0204, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x022C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0234, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0210, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x021C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x023C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0208, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
->> +        {0x0200, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x020c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0238, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0214, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0228, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0224, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +    },
->> +    {
->> +        {0x0430, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0B00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0B08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0B04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0B04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0404, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x042C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0434, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0410, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x041C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x043C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0408, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
->> +        {0x0400, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x040c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0438, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0414, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0428, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0424, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +    },
->> +    {
->> +        {0x0630, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C00, 0x05, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C08, 0x10, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C04, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0C04, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0604, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x062C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0634, 0x07, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0610, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x061C, 0x08, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x063C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0608, 0x10, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
->> +        {0x0600, 0x8D, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x060c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0638, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0614, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0628, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0624, 0x00, 0x00, CSIPHY_DNP_PARAMS},
->> +        {0x0800, 0x02, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +        {0x0884, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
->> +    },
->> +};
->> +
->>   static void csiphy_hw_version_read(struct csiphy_device *csiphy,
->>                      struct device *dev)
->>   {
->> @@ -298,13 +414,23 @@ static void csiphy_gen1_config_lanes(struct csiphy_device *csiphy,
->>   static void csiphy_gen2_config_lanes(struct csiphy_device *csiphy,
->>                        u8 settle_cnt)
->>   {
->> -    int i, l;
->> -    u32 val;
->> +    const struct csiphy_reg_t *r;
->> +    int i, l, array_size;
->> +    u32 val, lane_enable;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ad9f25d338605d26acedcaf3ba5fab5ca26f1c10
 
-lane_enable is not used in this patch ("warning: unused variable ‘lane_enable’").
+Thank you!
 
->> +
->> +    switch (csiphy->camss->version) {
-
-This switch statement doesn't have the "default:" clause which leads to several
-warnings of "enumeration value ‘CAMSS_8x16’ not handled in switch" kind.
-
-Thanks,
-Andrey
-
->> +    case CAMSS_845:
->> +        r = &lane_regs_sdm845[0][0];
->> +        array_size = ARRAY_SIZE(lane_regs_sdm845[0]);
->> +        break;
->> +    case CAMSS_8250:
-> 
-> CAMSS_8250 is only introduced in "[PATCH 16_17] media: camss: add support for SM8250 camss",
-> and this breaks bisecting.
-> 
-> Thanks,
-> Andrey
-> 
->> +        r = &lane_regs_sm8250[0][0];
->> +        array_size = ARRAY_SIZE(lane_regs_sm8250[0]);
->> +        break;
->> +    }
->>       for (l = 0; l < 5; l++) {
->> -        for (i = 0; i < 14; i++) {
->> -            const struct csiphy_reg_t *r = &lane_regs_sdm845[l][i];
->> -
->> +        for (i = 0; i < array_size; i++, r++) {
->>               switch (r->csiphy_param_type) {
->>               case CSIPHY_SETTLE_CNT_LOWER_BYTE:
->>                   val = settle_cnt & 0xff;
->> @@ -331,7 +457,10 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->>       settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
->> -    val = BIT(c->clk.pos);
->> +    if (csiphy->camss->version == CAMSS_8250)
->> +        val = BIT(7);
->> +    else
->> +        val = BIT(c->clk.pos);
->>       for (i = 0; i < c->num_data; i++)
->>           val |= BIT(c->data[i].pos * 2);
->> @@ -349,7 +478,8 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->>       if (csiphy->camss->version == CAMSS_8x16 ||
->>           csiphy->camss->version == CAMSS_8x96)
->>           csiphy_gen1_config_lanes(csiphy, cfg, settle_cnt);
->> -    else if (csiphy->camss->version == CAMSS_845)
->> +    else if (csiphy->camss->version == CAMSS_845 ||
->> +         csiphy->camss->version == CAMSS_8250)
->>           csiphy_gen2_config_lanes(csiphy, settle_cnt);
->>       /* IRQ_MASK registers - disable all interrupts */
->>
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
