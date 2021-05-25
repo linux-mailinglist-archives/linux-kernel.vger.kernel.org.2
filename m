@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B00B390AA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A749390AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhEYUqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhEYUqU (ORCPT
+        id S233362AbhEYUsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:48:37 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44036 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhEYUsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:46:20 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581BCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:44:50 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e10so27788741ilu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dx8YUAQzEnba5PQjYOv49O+Z4yv1QCI8CcdX+kElxFE=;
-        b=ds+BZ8WNemLxCRt3hQjDdq00sXt+FZBkfFjPJymgA8OxfQGvoYltlsJs2OuLw9T8CH
-         +h96s3THTlhOj6n2IpEF6PFazNr9/Q3OApCcYNX27r9840LIf70pWlZd2RcyB8q0gSr7
-         jAZXKrlwZLfd7lQWgROH4hKw/K1/64E1E61AA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dx8YUAQzEnba5PQjYOv49O+Z4yv1QCI8CcdX+kElxFE=;
-        b=QDMmJBX5K/0gJnVhJcZoyC3KWU1JuOcXswF1jweGuzD2qoghPTTVSn8NgIZyR2Lral
-         DpphsyenGPjZITnIg/OMCw2iaqVlvNKmUCxqjACR/kIJc8f5DrPJ1FA+2zGXjijCQy7h
-         J5ESg39/ukqgGjnX70n+ME8E8DinJ+oRD2lpJ+vww04hNU24YD66EAIXy8QL63Y1qBo6
-         0BvbMUFys1h6rF+ZrdDC/UarzAV2CYjThgwnTkz9ORbvDjozEhLtq58W7iBBuBLY2V6G
-         myKWGnw+oUKfmbJ8D+PMi12S9MnO8pFEx2Q2GeHQEKvmSCCc9rUFBHABsZGOpfpxW9zY
-         B8ow==
-X-Gm-Message-State: AOAM532ynjo+fHp5UDdePfqs5YI5VkfdpHdTkXm4An9HXl2q98A8YT0W
-        GzAZzQ0sVx3NfUw3XMsuxIVyuc0Zeus0MCJ37ixuFbWwLRY=
-X-Google-Smtp-Source: ABdhPJwOVPdbQ5AimxrE2Fag8ZO6aMG1+Yk/QbKoodRm5vnbn68V97yu0dpyxidaRAv8jDcSxoHgtZrAZroAYA1M9R0=
-X-Received: by 2002:a92:db07:: with SMTP id b7mr21621412iln.282.1621975489294;
- Tue, 25 May 2021 13:44:49 -0700 (PDT)
+        Tue, 25 May 2021 16:48:35 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6F3AA1C0B79; Tue, 25 May 2021 22:47:04 +0200 (CEST)
+Date:   Tue, 25 May 2021 22:47:04 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Subject: Re: [PATCH 4.4 28/31] video: hgafb: fix potential NULL pointer
+ dereference
+Message-ID: <20210525204704.GA12631@duo.ucw.cz>
+References: <20210524152322.919918360@linuxfoundation.org>
+ <20210524152323.833888129@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
- <CACaBj2Y5YsrbFCw1m9U=8S8uJFiPo_c4riitDE5z-re65a-x9g@mail.gmail.com>
-In-Reply-To: <CACaBj2Y5YsrbFCw1m9U=8S8uJFiPo_c4riitDE5z-re65a-x9g@mail.gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Tue, 25 May 2021 13:44:13 -0700
-Message-ID: <CAMp4zn-CFaPpVd3zcANfmUQXaLCUPnuT2SrC_Kw5RrF4_Ubuhw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
- for new semantics
-To:     Rodrigo Campos <rodrigo@kinvolk.io>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
+In-Reply-To: <20210524152323.833888129@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:04 AM Rodrigo Campos <rodrigo@kinvolk.io> wrote:
->
-> On Mon, May 17, 2021 at 9:39 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> >
-> > This refactors the user notification code to have a do / while loop around
-> > the completion condition. This has a small change in semantic, in that
-> > previously we ignored addfd calls upon wakeup if the notification had been
-> > responded to, but instead with the new change we check for an outstanding
-> > addfd calls prior to returning to userspace.
->
-> I understand why this was a readability improvement on the old
-> patchset (that included the wait_killable semantics), as it completely
-> changed the loop. But now we only have the atomic addfd+send reply
-> that does minimal changes to this part (add a param to a function).
->
-> Is it worth changing the semantics?
->
-I think that as we add more complexity around different things that
-can cause the notification to change (status), that this is better,
-but I understand wanting to hold off.
 
-> > Rodrigo Campos also identified a bug that can result in addfd causing
-> > an early return, when the supervisor didn't actually handle the
-> > syscall [1].
-> >
-> > [1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
->
-> I was about to resend this, but I'd like to know what others think.
->
-> I'm okay with applying any patches to solve the issue (mine linked
-> there or this one), slightly in favor of mine as the diff is way
-> simpler to backport (applies to 5.9+ kernels) and I don't see a reason
-> to change semantics. But no strong opinion.
->
-> Opinions?
->
->
-> Best,
-> Rodrigo
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>=20
+> commit dc13cac4862cc68ec74348a80b6942532b7735fa upstream.
+>=20
+> The return of ioremap if not checked, and can lead to a NULL to be
+> assigned to hga_vram. Potentially leading to a NULL pointer
+> dereference.
+>=20
+> The fix adds code to deal with this case in the error label and
+> changes how the hgafb_probe handles the return of hga_card_detect.
+
+This will break hgafb completely, right? And crash system without hga
+card as a bonus.
+
+> +++ b/drivers/video/fbdev/hgafb.c
+> @@ -285,6 +285,8 @@ static int hga_card_detect(void)
+>  	hga_vram_len  =3D 0x08000;
+> =20
+>  	hga_vram =3D ioremap(0xb0000, hga_vram_len);
+> +	if (!hga_vram)
+> +		return -ENOMEM;
+> =20
+>  	if (request_region(0x3b0, 12, "hgafb"))
+>  		release_io_ports =3D 1;
+> @@ -344,13 +346,18 @@ static int hga_card_detect(void)
+>  			hga_type_name =3D "Hercules";
+>  			break;
+>  	}
+> -	return 1;
+> +	return 0;
+
+Ok, so calling convention is now "0 means detected".
+
+
+> @@ -548,13 +555,11 @@ static struct fb_ops hgafb_ops =3D {
+>  static int hgafb_probe(struct platform_device *pdev)
+>  {
+>  	struct fb_info *info;
+> +	int ret;
+=2E..
+> +	ret =3D hga_card_detect();
+> +	if (!ret)
+> +		return ret;
+> =20
+>  	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
+>  		hga_type_name, hga_vram_len/1024);
+>=20
+
+If the card is detected, 0 is returned, !0 is true, and we abort
+detection....
+
+								Pavel
+							=09
+Signed-off-by: Pavel Machek <pavel@denx.de>
+
+diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
+index c35f217db53f..d6a95ea49c64 100644
+--- a/drivers/video/fbdev/hgafb.c
++++ b/drivers/video/fbdev/hgafb.c
+@@ -282,7 +282,7 @@ static int hga_card_detect(void)
+ 	void __iomem *p, *q;
+ 	unsigned short p_save, q_save;
+=20
+-	hga_vram_len  =3D 0x08000;
++	hga_vram_len =3D 0x08000;
+=20
+ 	hga_vram =3D ioremap(0xb0000, hga_vram_len);
+ 	if (!hga_vram)
+@@ -558,7 +558,7 @@ static int hgafb_probe(struct platform_device *pdev)
+ 	int ret;
+=20
+ 	ret =3D hga_card_detect();
+-	if (!ret)
++	if (ret)
+ 		return ret;
+=20
+ 	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYK1iSAAKCRAw5/Bqldv6
+8nLrAJ4wD/bAdGIucmpOt+V2+FL+SG/U9wCgsLb9HTpU2gUIz00oalDNs2LGGvc=
+=YHM2
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
