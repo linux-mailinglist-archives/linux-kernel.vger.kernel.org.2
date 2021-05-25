@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DAF3907A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1BC3907AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhEYR2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        id S232187AbhEYRay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhEYR2m (ORCPT
+        with ESMTP id S230141AbhEYRav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:28:42 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3403C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:27:12 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c1b000aca3c1b1089f8dd.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1b00:aca:3c1b:1089:f8dd])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 13E171EC0249;
-        Tue, 25 May 2021 19:27:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621963631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6ADo+SJAFDYoZ/cFSnzSHZKB9hTw+MZcTWevSiWUSgc=;
-        b=pL8P7QCZ9HNe+NWlAqQR386tRlbmLdOcUoWgO4zbA4srQfTe8qvBUrl4yDj9kM4M5PVeVo
-        2emcZ2PzH1gctKxcwZMIFMPURMzrKgJlP0t72ZXd3Orn8/xpStZBYkK/fu5s1O+/nAHDGv
-        OoII/7s68zOa5YBR4CKlD7XG8za8T0k=
-Date:   Tue, 25 May 2021 19:27:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Brown <lenb@kernel.org>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 15/28] x86/arch_prctl: Create
- ARCH_GET_XSTATE/ARCH_PUT_XSTATE
-Message-ID: <YK0zaVVf6bx8F/H0@zn.tnic>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-16-chang.seok.bae@intel.com>
- <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
+        Tue, 25 May 2021 13:30:51 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5761DC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:29:20 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q15so23288299pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c1te1fmETHKIo/3PXTYiGotWvN1fuCwdsljvLwzWe+U=;
+        b=mJmGP2FKoCUVm6+tCyuoComU94tA6XL0a4R+34I0aN641K+/qGPNewC70RrBwNYeLS
+         fzv5aUMrbTS+o+sTSkPJ+mePf1s3kP9cIS9JcAgZIdfDCH1BDFhtpwVNMMRanzz8zQq0
+         BbSdOT7QAE5ZkobtNdILsQe1pVvb6KR9fEOYFeT649qVlSJa0F0ZWXgOkE0IZi5qgpY9
+         1PNRPwGlZa1b0nSIYqvGjO9xR/+eZP30wZ4wodXz2Nli7p7CcNTWakLxdari5xT7rctB
+         e4dSh+BLHefbAGtvH59WKXDneoOTgh0pBNm9Y0QBlXFQrlbqaU1fUN999MT6TP/6dAyi
+         XBOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c1te1fmETHKIo/3PXTYiGotWvN1fuCwdsljvLwzWe+U=;
+        b=KxoDopa+xN9fAhua7pS1AKkKrx18DKnzb1SKyzSebCbSXELIWdKYaIH5IOna9n9RDf
+         +6V7K5DdP6tyya0IqAudX00ZTuCrACNCqEpsJNvVQkifu3l3vt0RpSkwAKXxyD0uQNTV
+         7XTKhatb6AqmfaeQriXFVsw1nuaXBdPeqs+TyNeUMo3bTdxuVnkoSwAmsSBGo5D5UA02
+         hgo5eZTORaVOxkw7wgQ1YVJ+c2f/SuuTk1zz1cL29h5sTdAGN1B1d9w/FO9r0xVauogI
+         nGPsuWWN5OMy7qJmiitFX47et6Pcen12IIBq/Bu04zqXtEfoMwD2Sj97ZhkMDIj5moAe
+         Q+Qg==
+X-Gm-Message-State: AOAM530+7ed2jrbwf/Uq7p0vkQRZ7CHRKekzevtncqiFDLT7QbuvIDlQ
+        rZAHpEqC6lxSubkTxTxRdRLhQw==
+X-Google-Smtp-Source: ABdhPJzTx6EvBIS+w3v6j8IhihjLGhwWbR+/AvLMKzy9ad3ht9mD5pnphdwupzdU8DBi2XWRaTYd+w==
+X-Received: by 2002:a63:3c0e:: with SMTP id j14mr20301393pga.427.1621963759884;
+        Tue, 25 May 2021 10:29:19 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id ge5sm2681961pjb.45.2021.05.25.10.29.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 10:29:18 -0700 (PDT)
+Date:   Tue, 25 May 2021 11:29:17 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v4 1/4] rpmsg: char: Remove useless include
+Message-ID: <20210525172917.GA1113058@xps15>
+References: <20210517171531.21205-1-arnaud.pouliquen@foss.st.com>
+ <20210517171531.21205-2-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
+In-Reply-To: <20210517171531.21205-2-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 07:10:57PM -0400, Len Brown wrote:
-> 1. CPUID has AMX
-> 2. XCR0 has AMX
-> 3. Linux permission has been requested and granted to this process
+On Mon, May 17, 2021 at 07:15:28PM +0200, Arnaud Pouliquen wrote:
+> No facility requests the include of rpmsg_internal.h header file.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 2bebc9b2d163..b5907b80727c 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -22,8 +22,6 @@
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/rpmsg.h>
+>  
+> -#include "rpmsg_internal.h"
+> -
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
 
-Actually, you want *only* 3 as 1 is a bad idea - we're in this mess
-because userspace does feature detection on its own even when kernel
-support is needed.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-When Linux grants the permission, 1 and 2 should be implicitly given.
-
-> The dis-advantage of on-demand is that there is no buffer release mechanism --
-> the buffer lives as long as the task lives.  Though, per previous conversation,
-> a future kernel could easily implement a buffer re-claim mechanism
-> behind the scenes
-> since the kernel is empowered to re-arm XFD for whatever reason it wants...
-
-Why is buffer release even needed? 1) sounds like a simple and clean thing to
-do.
-
-> 2. Synchronous allocation.  Any task in the process that has AMX permission can
-> make a 2nd system call to request that the kernel synchronously allocate the
-> 8KB buffer for that task. *
-
-That doesn't sound as clean. More like unneeded work on the side of
-userspace programmer which she/he can save her-/himself from.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>  
+>  static dev_t rpmsg_major;
+> -- 
+> 2.17.1
+> 
