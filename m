@@ -2,150 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51938FE42
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A47A38FE45
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhEYJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbhEYJ5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:57:08 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C049C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:55:38 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id lg14so46320555ejb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/f4f0aZeBzeXlWyKfJdQ1/8QAd+9GfrpiTcDBRRwltI=;
-        b=SU2hSmsRmylGpFNYI0BcOgB9PyqmDrVC5VDUt2NFrsoKW1c7DhbIq09SdAdQA8gTMc
-         SfzORijh8wbt8IUOyiMDKvEZRRcjm06GhhjV1Mg75BYEQYag3FG71i/iV+NE2aidHqCO
-         XcINDVoKexgJbqhtw8MHwytUJc/g1UhkXV+pA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/f4f0aZeBzeXlWyKfJdQ1/8QAd+9GfrpiTcDBRRwltI=;
-        b=NRlHNhUEZcy4evAnktbQLVpULWtSTqZO1/tim2uEJCLV1Ldrhehdd5Ulqrn8wbNXL6
-         cwwAT1BXGd7rI+JXZ1L7acu0emO547F9m3MJnPNYuEs1uJkJyDGZzio7Up3FzzD1frt5
-         1L/vkGdpcbyJzsPNE2iWX2r857KRi6n8WzAxkstXh3JuhzOK2wjRPNZR0YILD4tDaRaP
-         L958OGq/MDGatJlRAPyzKv3ll92/zQ22B3le8sa/AoDrxeostI35l0yi+O2oO8WVrpwn
-         F1G5deAk1FmdNABi1ugpJG7pOaYhddZSR8wyqfg4fzudtHybft54coxslaOA0nlHMKXq
-         Ezug==
-X-Gm-Message-State: AOAM531VuOQpvJUouF8YyTqRMjJUWMJuiOd3yM68qtLDMvX7A2HUdNdf
-        CSxWwZKvNlmuaGJTBBA7ESpxVQ==
-X-Google-Smtp-Source: ABdhPJxVa0MvHCvfDBB/Htx8BdGMf0iWX5rMdlAc6qB0/TuX3OEi4wBu9sCsXxx94amSH5FCsuS/lA==
-X-Received: by 2002:a17:906:fccc:: with SMTP id qx12mr27810844ejb.21.1621936537051;
-        Tue, 25 May 2021 02:55:37 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.74.47])
-        by smtp.gmail.com with ESMTPSA id g4sm10751126edw.8.2021.05.25.02.55.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 02:55:36 -0700 (PDT)
-Subject: Re: [PATCH 1/2] lib: test_scanf: Fix incorrect use of type_min() with
- unsigned types
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, w@1wt.eu, lkml@sdf.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-References: <20210524155941.16376-1-rf@opensource.cirrus.com>
- <20210524155941.16376-2-rf@opensource.cirrus.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <a3396d45-4720-ee30-6493-b19f90c74e54@rasmusvillemoes.dk>
-Date:   Tue, 25 May 2021 11:55:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232855AbhEYJ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:57:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50752 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232805AbhEYJ5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:57:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621936547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qt7xSUNOmHAQi4P06mTZcqw+fj0oxkeRlZUfC9qB+no=;
+        b=CWxK040fDU6xWiJFGjqBnSfLokQxf0NAodqQwYFO98AYBY+y7HOgzvwJpZdOG830Jp3/YM
+        /O5AtRUDHEjsrZFBLTJfzilo/NCxFWr7khzgjEkomXaI0KZttD+0rNSO11nlOwKfPP3Dy1
+        ZCgvtP9lLzMN/p7piMTQIv5x53cTzSA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2769AE1F;
+        Tue, 25 May 2021 09:55:47 +0000 (UTC)
+Message-ID: <4086b017d678f2edaea3a87b8eae18a85cc8e89d.camel@suse.com>
+Subject: Re: Re: [PATCH] HID: usbhid: enable remote wakeup for mouse
+From:   Oliver Neukum <oneukum@suse.com>
+To:     =?UTF-8?Q?=E9=A9=AC=E5=BC=BA?= <maqianga@uniontech.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     jikos <jikos@kernel.org>,
+        "benjamin.tissoires" <benjamin.tissoires@redhat.com>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 25 May 2021 11:55:46 +0200
+In-Reply-To: <1209199573.51584.1621492845444.JavaMail.xmail@bj-wm-cp-1>
+References: <20210517060145.32359-1-maqianga@uniontech.com>
+         <1327a9251c74587670970baa0f662cd61006f576.camel@suse.com>
+        , <20210517133247.GB1083813@rowland.harvard.edu>
+         <1209199573.51584.1621492845444.JavaMail.xmail@bj-wm-cp-1>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20210524155941.16376-2-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/2021 17.59, Richard Fitzgerald wrote:
-> sparse was producing warnings of the form:
+Am Donnerstag, den 20.05.2021, 14:40 +0800 schrieb 马强:
+> This is caused by external reasons, as the kernel cannot sense 
+> whether it is accidentally triggered or actively triggered. 
+> If this kind of unintentional situation is avoided, 
+> the keyboard should also be disabled wakeup by default. 
+> Otherwise, the normally used computer may be awakened 
+> by someone else accidentally pressing the keyboard on standby.
 > 
->  sparse: cast truncates bits from constant value (ffff0001 becomes 1)
-> 
-> The problem was that value_representable_in_type() compared unsigned types
-> against type_min(). But type_min() is only valid for signed types because
-> it is calculating the value -type_max() - 1. 
 
-... and casts that to (T), so it does produce 0 as it should. E.g. for
-T==unsigned char, we get
+The kernel has to manage keyboards. There just is no genuine
+keyboard device user space could open, nor could we do sysrq
+or sak if we left the keyboard fully to user space.
 
-#define type_min(T) ((T)((T)-type_max(T)-(T)1))
-(T)((T)-255 - (T)1)
-(T)(-256)
+Hence keyboards are a special case unfortunately. We will
+have to live with two classes of wakeup, keyboards and power
+buttons on the one hand, versus everything else.
 
-which is 0 of type unsigned char.
-
-The minimum value of an
-> unsigned is obviously 0, so only type_max() need be tested.
-
-That part is true.
-
-But type_min and type_max have been carefully created to produce values
-of the appropriate type that actually represent the minimum/maximum
-representable in that type, without invoking UB. If this program doesn't
-produce the expected results for you, I'd be very interested in knowing
-your compiler version:
-
-#include <stdio.h>
-
-#define is_signed_type(type)       (((type)(-1)) < (type)1)
-#define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 -
-is_signed_type(type)))
-#define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
-#define type_min(T) ((T)((T)-type_max(T)-(T)1))
-
-int main(int argc, char *argv[])
-{
-#define p(T, PT, fmt) do {					\
-		PT vmin = type_min(T);				\
-		PT vmax = type_max(T);				\
-		printf("min(%s) = "fmt", max(%s) = "fmt"\n",#T, vmin, #T, vmax); \
-	} while (0)
-
-	p(_Bool, int, "%d");
-	p(unsigned char, int, "%d");
-	p(signed char, int, "%d");
-	p(unsigned int, unsigned int, "%u");
-	p(unsigned long long, unsigned long long, "%llu");
-	p(signed long long, signed long long, "%lld");
-	
-	return 0;
-}
+	Regards
+		Oliver
 
 
-
->  lib/test_scanf.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/lib/test_scanf.c b/lib/test_scanf.c
-> index 8d577aec6c28..48ff5747a4da 100644
-> --- a/lib/test_scanf.c
-> +++ b/lib/test_scanf.c
-> @@ -187,8 +187,8 @@ static const unsigned long long numbers[] __initconst = {
->  #define value_representable_in_type(T, val)					 \
->  (is_signed_type(T)								 \
->  	? ((long long)(val) >= type_min(T)) && ((long long)(val) <= type_max(T)) \
-> -	: ((unsigned long long)(val) >= type_min(T)) &&				 \
-> -	  ((unsigned long long)(val) <= type_max(T)))
-> +	: ((unsigned long long)(val) <= type_max(T)))
-
-
-With or without this, these tests are tautological when T is "long long"
-or "unsigned long long". I don't know if that is intended. But it won't,
-say, exclude ~0ULL if that is in the numbers[] array from being treated
-as fitting in a "long long".
-
-Rasmus
