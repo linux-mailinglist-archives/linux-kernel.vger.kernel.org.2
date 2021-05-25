@@ -2,304 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EC639026D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB30239025F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhEYN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:28:49 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58967 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233497AbhEYN1X (ORCPT
+        id S233517AbhEYN1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:27:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62186 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233369AbhEYN0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:27:23 -0400
-X-UUID: cd903b54de564572b8830493c8cecb92-20210525
-X-UUID: cd903b54de564572b8830493c8cecb92-20210525
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 819302822; Tue, 25 May 2021 21:25:48 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 25 May 2021 21:25:46 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 21:25:46 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        "chun-jie . chen" <chun-jie.chen@mediatek.com>
-Subject: [v3 1/2] arm64: dts: mediatek: Add mt8192 clock controllers
-Date:   Tue, 25 May 2021 21:24:58 +0800
-Message-ID: <20210525132459.8741-2-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210525132459.8741-1-chun-jie.chen@mediatek.com>
-References: <20210525132459.8741-1-chun-jie.chen@mediatek.com>
+        Tue, 25 May 2021 09:26:34 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PD3k5k103406;
+        Tue, 25 May 2021 09:25:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject :
+ from : to : cc : references : message-id : date : mime-version :
+ in-reply-to : content-type : content-transfer-encoding; s=pp1;
+ bh=Z/f4fUIjz0PIIVzSsMU8XWaPBNMkBh5Im2Zs7tFsMa4=;
+ b=aDNHgaQgBUzZNwHAXaUF4rQowyn6W7578U6sfbWRIQ/IAxG+mThSjFiJLSimOvPByNDQ
+ O2RZFYrUwSYlnffZ5sPdNfNDvOB1FGKiM1U8xSZMQJsvsu7is/32x1k6judFd1JMJLiw
+ lEWkzmO/DPIHIPdaguTnn2NYWhG65w31E8BzHk2tT7YgNWUORHFV1OYp7NRQt4/N2CDx
+ s0fBvNr2idx+BC89/G1jZtlTea9Yvu2czzzRhdnwwXOdpJDzuL3m8AjK96bBWCCfemKT
+ A9fzlJTk1xqd9mB7eL97SOMcPwh81JCQtCjcTsnT0nO06K/sypEg8txAEVLC5652khh7 Ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1adsvwt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:25:03 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PD6fpP124940;
+        Tue, 25 May 2021 09:25:03 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1adsvwh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:25:03 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PDDfAa025159;
+        Tue, 25 May 2021 13:25:02 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma02wdc.us.ibm.com with ESMTP id 38s1n3g7te-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 13:25:02 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PDP1jg11928034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:25:01 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 166BB78060;
+        Tue, 25 May 2021 13:25:01 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D8C217805F;
+        Tue, 25 May 2021 13:24:59 +0000 (GMT)
+Received: from [9.85.129.37] (unknown [9.85.129.37])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 13:24:59 +0000 (GMT)
+Reply-To: jjherne@linux.ibm.com
+Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+From:   "Jason J. Herne" <jjherne@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-3-akrowiak@linux.ibm.com>
+ <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+Organization: IBM
+Message-ID: <20df4cd0-7859-4727-42bd-9ef419455039@linux.ibm.com>
+Date:   Tue, 25 May 2021 09:24:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jGAtmfNck1hlLQSIgAFph7VO04yMQZ0S
+X-Proofpoint-GUID: KXlv49PJCyVIRvKk7lCVdDgIzcV7VaFw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add clock controller nodes for SoC mt8192
+On 5/24/21 10:37 AM, Jason J. Herne wrote:
+> On 5/21/21 3:36 PM, Tony Krowiak wrote:
+>> The function pointer to the handler that processes interception of the
+>> PQAP instruction is contained in the mdev. If the mdev is removed and
+>> its storage de-allocated during the processing of the PQAP instruction,
+>> the function pointer could get wiped out before the function is called
+>> because there is currently nothing that controls access to it.
+>>
+>> This patch introduces two new functions:
+>> * The kvm_arch_crypto_register_hook() function registers a function pointer
+>>    for processing intercepted crypto instructions.
+>> * The kvm_arch_crypto_register_hook() function un-registers a function
+>>    pointer that was previously registered.
+> 
+> Typo: You meant kvm_arch_crypto_UNregister_hook() in the second bullet.
+> 
+> 
+> Just one overall observation on this one. The whole hook system seems kind of 
+> over-engineered if this is our only use for it. It looks like a kvm_s390_crypto_hook is 
+> meant to link a specific module with a function pointer. Do we really need this concept?
+> 
+> I think a simpler design could be to just place a mutex and a function pointer in the 
+> kvm_s390_crypto struct. Then you can grab the mutex in vfio_ap_ops.c when 
+> registering/unregistering. You would also grab the mutex in priv.c when calling the 
+> function pointer. What I am suggesting is essentially the exact same scheme you have 
+> implemented here, but simpler and with less infrastructure.
+> 
+> With that said, I'll point out that I am relative new to this code (and this patch series) 
+> so maybe I've missed something and the extra complexity is needed for some reason. But if 
+> it is not, I'm all in favor of keeping things simple.
+> 
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-Signed-off-by: chun-jie.chen <chun-jie.chen@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 163 +++++++++++++++++++++++
- 1 file changed, 163 insertions(+)
+After thinking about this problem a bit more, I'm wondering if we can remove the lock 
+entirely. How about we store a function pointer in kvm_s390_crypto? Initially that 
+function pointer will point to a stub function that handles the error case, exactly like 
+it is done in priv.c:handle_pqap() today when the function pointer would be NULL. When the 
+ap module loads, we can simply change the function pointer to point to 
+vfio_ap_ops:handle_pqap(). When we unload the module we change the function pointer back 
+to the stub.  The updates should be atomic operations so no lock needed, right?
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 9757138a8bbd..ffd0fe331bdc 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -5,6 +5,7 @@
-  */
- 
- /dts-v1/;
-+#include <dt-bindings/clock/mt8192-clk.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
-@@ -257,6 +258,24 @@
- 			};
- 		};
- 
-+		topckgen: syscon@10000000 {
-+			compatible = "mediatek,mt8192-topckgen", "syscon";
-+			reg = <0 0x10000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		infracfg: syscon@10001000 {
-+			compatible = "mediatek,mt8192-infracfg", "syscon";
-+			reg = <0 0x10001000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		pericfg: syscon@10003000 {
-+			compatible = "mediatek,mt8192-pericfg", "syscon";
-+			reg = <0 0x10003000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		pio: pinctrl@10005000 {
- 			compatible = "mediatek,mt8192-pinctrl";
- 			reg = <0 0x10005000 0 0x1000>,
-@@ -282,6 +301,12 @@
- 			#interrupt-cells = <2>;
- 		};
- 
-+		apmixedsys: syscon@1000c000 {
-+			compatible = "mediatek,mt8192-apmixedsys", "syscon";
-+			reg = <0 0x1000c000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		systimer: timer@10017000 {
- 			compatible = "mediatek,mt8192-timer",
- 				     "mediatek,mt6765-timer";
-@@ -291,6 +316,12 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		scp_adsp: syscon@10720000 {
-+			compatible = "mediatek,mt8192-scp_adsp", "syscon";
-+			reg = <0 0x10720000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		uart0: serial@11002000 {
- 			compatible = "mediatek,mt8192-uart",
- 				     "mediatek,mt6577-uart";
-@@ -311,6 +342,12 @@
- 			status = "disabled";
- 		};
- 
-+		imp_iic_wrap_c: syscon@11007000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_c", "syscon";
-+			reg = <0 0x11007000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		spi0: spi@1100a000 {
- 			compatible = "mediatek,mt8192-spi",
- 				     "mediatek,mt6765-spi";
-@@ -436,6 +473,12 @@
- 			status = "disable";
- 		};
- 
-+		audsys: syscon@11210000 {
-+			compatible = "mediatek,mt8192-audsys", "syscon";
-+			reg = <0 0x11210000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		i2c3: i2c3@11cb0000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11cb0000 0 0x1000>,
-@@ -449,6 +492,12 @@
- 			status = "disabled";
- 		};
- 
-+		imp_iic_wrap_e: syscon@11cb1000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_e", "syscon";
-+			reg = <0 0x11cb1000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		i2c7: i2c7@11d00000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11d00000 0 0x1000>,
-@@ -488,6 +537,12 @@
- 			status = "disabled";
- 		};
- 
-+		imp_iic_wrap_s: syscon@11d03000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_s", "syscon";
-+			reg = <0 0x11d03000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		i2c1: i2c1@11d20000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11d20000 0 0x1000>,
-@@ -527,6 +582,12 @@
- 			status = "disabled";
- 		};
- 
-+		imp_iic_wrap_ws: syscon@11d23000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_ws", "syscon";
-+			reg = <0 0x11d23000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		i2c5: i2c5@11e00000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11e00000 0 0x1000>,
-@@ -540,6 +601,12 @@
- 			status = "disabled";
- 		};
- 
-+		imp_iic_wrap_w: syscon@11e01000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_w", "syscon";
-+			reg = <0 0x11e01000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		i2c0: i2c0@11f00000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11f00000 0 0x1000>,
-@@ -565,5 +632,101 @@
- 			#size-cells = <0>;
- 			status = "disabled";
- 		};
-+
-+		imp_iic_wrap_n: syscon@11f02000 {
-+			compatible = "mediatek,mt8192-imp_iic_wrap_n", "syscon";
-+			reg = <0 0x11f02000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		msdc_top: syscon@11f10000 {
-+			compatible = "mediatek,mt8192-msdc_top", "syscon";
-+			reg = <0 0x11f10000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		msdc: syscon@11f60000 {
-+			compatible = "mediatek,mt8192-msdc", "syscon";
-+			reg = <0 0x11f60000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		mfgcfg: syscon@13fbf000 {
-+			compatible = "mediatek,mt8192-mfgcfg", "syscon";
-+			reg = <0 0x13fbf000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		mmsys: syscon@14000000 {
-+			compatible = "mediatek,mt8192-mmsys", "syscon";
-+			reg = <0 0x14000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys: syscon@15020000 {
-+			compatible = "mediatek,mt8192-imgsys", "syscon";
-+			reg = <0 0x15020000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys2: syscon@15820000 {
-+			compatible = "mediatek,mt8192-imgsys2", "syscon";
-+			reg = <0 0x15820000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys_soc: syscon@1600f000 {
-+			compatible = "mediatek,mt8192-vdecsys_soc", "syscon";
-+			reg = <0 0x1600f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys: syscon@1602f000 {
-+			compatible = "mediatek,mt8192-vdecsys", "syscon";
-+			reg = <0 0x1602f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vencsys: syscon@17000000 {
-+			compatible = "mediatek,mt8192-vencsys", "syscon";
-+			reg = <0 0x17000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys: syscon@1a000000 {
-+			compatible = "mediatek,mt8192-camsys", "syscon";
-+			reg = <0 0x1a000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawa: syscon@1a04f000 {
-+			compatible = "mediatek,mt8192-camsys_rawa", "syscon";
-+			reg = <0 0x1a04f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawb: syscon@1a06f000 {
-+			compatible = "mediatek,mt8192-camsys_rawb", "syscon";
-+			reg = <0 0x1a06f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawc: syscon@1a08f000 {
-+			compatible = "mediatek,mt8192-camsys_rawc", "syscon";
-+			reg = <0 0x1a08f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		ipesys: syscon@1b000000 {
-+			compatible = "mediatek,mt8192-ipesys", "syscon";
-+			reg = <0 0x1b000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		mdpsys: syscon@1f000000 {
-+			compatible = "mediatek,mt8192-mdpsys", "syscon";
-+			reg = <0 0x1f000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
- 	};
- };
 -- 
-2.18.0
-
+-- Jason J. Herne (jjherne@linux.ibm.com)
