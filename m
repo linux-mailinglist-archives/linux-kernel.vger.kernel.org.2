@@ -2,106 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DD439014B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D19F390144
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhEYMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:49:02 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:37950 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231907AbhEYMs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:48:58 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PCdZng092275;
-        Tue, 25 May 2021 12:47:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=0fsajLiKq3dAG0qs/eZDP0WUC0DG6tj2wIx7UTbk6ug=;
- b=luEooYaQm2gZWD1cQgsISLJxeae76NyOxubEbc/uR1pKnWq3Q9ZbMGNxE2vmZhUzQ/77
- edoHDh/U3461ghgsGLjklW+CgP4kjNC1aH/JSo/ii++DVQIgm/sKhDptBwC0doIyNu7P
- Ts4WmqOF084yy/RoJwRUm/0Qdw+HK5gj9DeJjdhz1PFxZKdZyL8u7291+vSwjbb0KMOD
- Lnx6+8wCaIP2fACBtlZ7O/znA0JShXsuWK4fZF0ichWqy/AVfoxXzZx4OebAMT1BT2c+
- IBwHooHzEtI7R9dBYRfbxOOMfh4qHLEoEJuaX4418+h4VIogdP6aaiI2boO4HofU1MUV RQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 38q3q8wcxd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 12:47:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PCerbe064934;
-        Tue, 25 May 2021 12:47:18 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38reh9snkq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 12:47:18 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14PClHLx110318;
-        Tue, 25 May 2021 12:47:17 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38reh9snjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 12:47:17 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14PClAbP000784;
-        Tue, 25 May 2021 12:47:10 GMT
-Received: from mwanda (/10.175.166.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 25 May 2021 12:47:10 +0000
-Date:   Tue, 25 May 2021 15:46:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ramesh Errabolu <Ramesh.Errabolu@amd.com>,
-        Oak Zeng <Oak.Zeng@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/2] drm/amdgpu: add missing unreserve on error
-Message-ID: <YKzxvyKEl/gNPg/r@mwanda>
+        id S232766AbhEYMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:48:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231907AbhEYMsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:48:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621946831; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ow7nAyPcGdke18qJEo6av0sYcdwU6XcTU/DgEkAn7yM=;
+        b=FxL6ZlDtF8Wy2BqyYb/3eJSiSp6XCFeSeDaVDIVooNyPTiOzyDH4+pa/YteL8e1dl/y1vR
+        kA7Ml6AJ5FUJi1O38ppB+jzJgRKzq64rKlaaBEiZOCkb/MIntldHQDji6r5jskgrbya4fN
+        o/UHqWJgwQ5QofOl5M/nXlaD3fo4SMc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621946831;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ow7nAyPcGdke18qJEo6av0sYcdwU6XcTU/DgEkAn7yM=;
+        b=qebmyN+O+iU2R107ggiYlMVKFtXlAATSYJ60aSRZl5H8i0OUyxfI37srJ1LjZXQ3pfIi8g
+        Vy4Cp9Ldag/KVIAw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4FB68AB71;
+        Tue, 25 May 2021 12:47:11 +0000 (UTC)
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+References: <20210524233946.20352-1-vbabka@suse.cz>
+ <20210524233946.20352-10-vbabka@suse.cz>
+ <20210525123536.GR30378@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC 09/26] mm, slub: move disabling/enabling irqs to
+ ___slab_alloc()
+Message-ID: <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
+Date:   Tue, 25 May 2021 14:47:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: mpE-O_OflR3KcX0cJ71_sicTnI4ZeKql
-X-Proofpoint-ORIG-GUID: mpE-O_OflR3KcX0cJ71_sicTnI4ZeKql
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9994 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105250078
+In-Reply-To: <20210525123536.GR30378@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amdgpu_bo_unreserve() has to be done on the error path as well.
+On 5/25/21 2:35 PM, Mel Gorman wrote:
+> On Tue, May 25, 2021 at 01:39:29AM +0200, Vlastimil Babka wrote:
+>> Currently __slab_alloc() disables irqs around the whole ___slab_alloc().  This
+>> includes cases where this is not needed, such as when the allocation ends up in
+>> the page allocator and has to awkwardly enable irqs back based on gfp flags.
+>> Also the whole kmem_cache_alloc_bulk() is executed with irqs disabled even when
+>> it hits the __slab_alloc() slow path, and long periods with disabled interrupts
+>> are undesirable.
+>> 
+>> As a first step towards reducing irq disabled periods, move irq handling into
+>> ___slab_alloc(). Callers will instead prevent the s->cpu_slab percpu pointer
+>> from becoming invalid via migrate_disable(). This does not protect against
+>> access preemption, which is still done by disabled irq for most of
+>> ___slab_alloc(). As the small immediate benefit, slab_out_of_memory() call from
+>> ___slab_alloc() is now done with irqs enabled.
+>> 
+>> kmem_cache_alloc_bulk() disables irqs for its fastpath and then re-enables them
+>> before calling ___slab_alloc(), which then disables them at its discretion. The
+>> whole kmem_cache_alloc_bulk() operation also disables cpu migration.
+>> 
+>> When  ___slab_alloc() calls new_slab() to allocate a new page, re-enable
+>> preemption, because new_slab() will re-enable interrupts in contexts that allow
+>> blocking.
+>> 
+>> The patch itself will thus increase overhead a bit due to disabled migration
+>> and increased disabling/enabling irqs in kmem_cache_alloc_bulk(), but that will
+>> be gradually improved in the following patches.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Why did you use migrate_disable instead of preempt_disable? There is a
+> fairly large comment in include/linux/preempt.h on why migrate_disable
+> is undesirable so new users are likely to be put under the microscope
+> once Thomas or Peter notice it.
 
-Fixes: b4f0f97b8f5f ("drm/amdgpu: Move kfd_mem_attach outside reservation")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I understood it as while undesirable, there's nothing better for now.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index 928e8d57cd08..68109908a869 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -624,11 +624,10 @@ kfd_mem_attach_userptr(struct amdgpu_device *adev, struct kgd_mem *mem,
- 				       0, ttm_bo_type_sg,
- 				       mem->bo->tbo.base.resv,
- 				       &gobj);
-+	amdgpu_bo_unreserve(mem->bo);
- 	if (ret)
- 		return ret;
- 
--	amdgpu_bo_unreserve(mem->bo);
--
- 	*bo = gem_to_amdgpu_bo(gobj);
- 	(*bo)->parent = amdgpu_bo_ref(mem->bo);
- 
--- 
-2.30.2
+> I think you are using it so that an allocation request can be preempted by
+> a higher priority task but given that the code was disabling interrupts,
+> there was already some preemption latency.
+
+Yes, and the disabled interrupts will get progressively "smaller" in the series.
+
+> However, migrate_disable
+> is more expensive than preempt_disable (function call versus a simple
+> increment).
+
+That's true, I think perhaps it could be reimplemented so that on !PREEMPT_RT
+and with no lockdep/preempt/whatnot debugging it could just translate to an
+inline migrate_disable?
+
+> On that basis, I'd recommend starting with preempt_disable
+> and only using migrate_disable if necessary.
+
+That's certainly possible and you're right it would be a less disruptive step.
+My thinking was that on !PREEMPT_RT it's actually just preempt_disable (however
+with the call overhead currently), but PREEMPT_RT would welcome the lack of
+preempt disable. I'd be interested to hear RT guys opinion here.
+
+> Bonus points for adding a comment where ___slab_alloc disables IRQs to
+> clarify what is protected -- I assume it's protecting kmem_cache_cpu
+> from being modified from interrupt context. If so, it's potentially a
+> local_lock candidate.
+
+Yeah that gets cleared up later :)
 
