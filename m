@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E830F3903D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C90E3903DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhEYOZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbhEYOZ1 (ORCPT
+        id S233830AbhEYO06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:26:58 -0400
+Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:46427 "EHLO
+        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233600AbhEYO04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:25:27 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E982C061574;
-        Tue, 25 May 2021 07:23:56 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id i17so32450772wrq.11;
-        Tue, 25 May 2021 07:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mMD3aBz1XBrdSSYRDQ8cv9/kH29vxyyFxSZhjfDe08o=;
-        b=j8nHKhaWjunkQipvPCu5ScBVlKgzDNWoBMlfM2snfa7Bi6VOz+qHhwM2NIGbUoYj3R
-         +vpZANKqj7qBeJcSr4LU6e0oXR3XY8qg+mmejDGgGqGEdkASu8C9IvM9a/NaFhBHuLAc
-         oCKHmPV9+QlBFcpWN5xiv6GMg8XkKYoacpXI+MTswk+X8ErRPgc8GmTPQtKeu4fflVv0
-         dJA84QKzamsfQSEIX+AQkJate8QdyuF1vHzFoH2zHyexigFGdoXylSUD+n6sfP5fKgpI
-         ydhqc3d4ZogWIMIF52SfYTE3D/tnp/X4ZeEobSHmyQOkAeNazi9YjStUuzmvDbnbPy/E
-         XZLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mMD3aBz1XBrdSSYRDQ8cv9/kH29vxyyFxSZhjfDe08o=;
-        b=MJsSlctmfiWGIjOqNGIagF4a8WQs6auFwITSRMe8qM4nAd9ee0Jdqcdi0bQEWTCZ7p
-         OKGB0hs/1RsZVs0qSd3Zm+0jTwxluNdUeIJQqYbJzMGKRXCQnJzGq8/0KVb0R0J3CNru
-         NNRuY8/rxvqTDwxvu3G/WgVhMYAn2DiQ+Hj+NBgK+qRZQ0G7Vj5T3H1UxhkpKYXUEjJk
-         E1WGR3vV2tm5d6R7S+mnkGmbHWJ9JDpUzVDiRAcxP7oPAQSyvp2a+sky4srWysZKErE3
-         asZ04+ZVQ78iE7NzXkWapsQzIQpKgkJZcNUIw5oePFA6nhaTNpRqMmiGoxfajpFGFSsm
-         ur9g==
-X-Gm-Message-State: AOAM530ibp3jV7Id7zzSSwmE93IC9n985e9oUn7mWDeTyNPWDUiv9J0r
-        PfKbgEWsbhtgRfa8KNFaY00=
-X-Google-Smtp-Source: ABdhPJxcHdHDTY5dk8H1CjZokM3rCNW5KdZ8j6IOL33TVn3Wwfk+l0M0pCnURbFHBVJWZraWPD53fw==
-X-Received: by 2002:adf:f7cf:: with SMTP id a15mr27106454wrq.184.1621952635243;
-        Tue, 25 May 2021 07:23:55 -0700 (PDT)
-Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
-        by smtp.gmail.com with ESMTPSA id m10sm16344243wrr.2.2021.05.25.07.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 07:23:54 -0700 (PDT)
-Date:   Tue, 25 May 2021 15:23:53 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/71] 5.4.122-rc1 review
-Message-ID: <YK0IedU+PZAe/jDp@debian>
-References: <20210524152326.447759938@linuxfoundation.org>
+        Tue, 25 May 2021 10:26:56 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id 44FD0FAC79
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:25:26 +0100 (IST)
+Received: (qmail 29112 invoked from network); 25 May 2021 14:25:26 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 14:25:26 -0000
+Date:   Tue, 25 May 2021 15:25:24 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/14] Clean W=1 build warnings for mm/
+Message-ID: <20210525142524.GU30378@techsingularity.net>
+References: <20210520084809.8576-1-mgorman@techsingularity.net>
+ <aad3f04f-850a-b134-d0a7-b24af9721ddb@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <aad3f04f-850a-b134-d0a7-b24af9721ddb@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, May 24, 2021 at 05:25:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.122 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, May 25, 2021 at 01:48:26PM +0200, Vlastimil Babka wrote:
+> On 5/20/21 10:47 AM, Mel Gorman wrote:
+> > This is a janitorial only. During development of a tool to catch build
+> > warnings early to avoid tripping the Intel lkp-robot, I noticed that mm/
+> > is not clean for W=1. This is generally harmless but there is no harm in
+> > cleaning it up. It disrupts git blame a little but on relatively obvious
+> > lines that are unlikely to be git blame targets.
+> > 
+> >  include/asm-generic/early_ioremap.h | 9 +++++++++
+> >  include/linux/mmzone.h              | 5 ++++-
+> >  include/linux/swap.h                | 6 +++++-
+> >  mm/internal.h                       | 3 +--
+> >  mm/mapping_dirty_helpers.c          | 2 +-
+> >  mm/memcontrol.c                     | 2 +-
+> >  mm/memory_hotplug.c                 | 6 +++---
+> >  mm/mmap_lock.c                      | 2 ++
+> >  mm/page_alloc.c                     | 2 +-
+> >  mm/vmalloc.c                        | 3 +++
+> >  mm/vmscan.c                         | 2 +-
+> >  mm/z3fold.c                         | 2 ++
+> >  mm/zbud.c                           | 2 ++
+> >  13 files changed, 35 insertions(+), 11 deletions(-)
 > 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
+> Thanks, looks good.
+> 
+> patch 3/14 subject looks like it should read just "mm/page_alloc: Make
+> should_fail_alloc_page a static function"
+> 
 
-Build test:
-mips (gcc version 11.1.1 20210523): 65 configs -> no failure
-arm (gcc version 11.1.1 20210523): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210523): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Yes it should. Andrew, do you mind fixing it directly instead of
+resending the entire series?
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
 
+Thanks!
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+-- 
+Mel Gorman
+SUSE Labs
