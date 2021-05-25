@@ -2,451 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C6338FE3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774D138FE37
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhEYJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:56:02 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3943 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbhEYJzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:55:40 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fq8VC4lNbzBwVY;
-        Tue, 25 May 2021 17:51:15 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 17:54:06 +0800
-Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 10:54:03 +0100
-Date:   Tue, 25 May 2021 10:52:14 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] cxl/mem: Map registers based on capabilities
-Message-ID: <20210525105214.00005e54@Huawei.com>
-In-Reply-To: <20210522001154.2680157-4-ira.weiny@intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
-        <20210522001154.2680157-4-ira.weiny@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S232735AbhEYJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:53:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:54022 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232677AbhEYJxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:53:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BAD3D6E;
+        Tue, 25 May 2021 02:52:23 -0700 (PDT)
+Received: from [10.163.79.210] (unknown [10.163.79.210])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0EAAF3F719;
+        Tue, 25 May 2021 02:52:19 -0700 (PDT)
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, david@redhat.com, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <10e5eecf-3ef5-f691-f38a-7ca305b707c1@arm.com> <YKtNH09vbtWeZ830@kernel.org>
+ <ba369b7c-81b4-d823-3c4c-df1e4fd6e9a2@arm.com> <YKyaBi9zoTsCNrgd@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <dfa5fc60-eddc-1359-7a5f-a5c3a1d8a25b@arm.com>
+Date:   Tue, 25 May 2021 15:22:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <YKyaBi9zoTsCNrgd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.147]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:11:52 -0700
-<ira.weiny@intel.com> wrote:
 
-> From: Ira Weiny <ira.weiny@intel.com>
+
+On 5/25/21 12:02 PM, Mike Rapoport wrote:
+> On Tue, May 25, 2021 at 11:30:15AM +0530, Anshuman Khandual wrote:
+>>
+>> On 5/24/21 12:22 PM, Mike Rapoport wrote:
+>>> Hello Anshuman,
+>>>
+>>> On Mon, May 24, 2021 at 10:28:32AM +0530, Anshuman Khandual wrote:
+>>>>
+>>>> On 4/22/21 1:20 PM, Anshuman Khandual wrote:
+>>>>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+>>>>> memory sections might have contained memmap holes after freeing parts of it
+>>>>> during boot, which should be skipped while validating a pfn for struct page
+>>>>> backing. This scenario on certain platforms where memmap is not continuous,
+>>>>> could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+>>>>> Then the generic pfn_valid() can be improved to accommodate such platforms.
+>>>>> This reduces overall code footprint and also improves maintainability.
+>>>>>
+>>>>> free_unused_memmap() and pfn_to_online_page() have been updated to include
+>>>>> such cases. This also exports memblock_is_memory() for all drivers that use
+>>>>> pfn_valid() but lack required visibility. After the new config is in place,
+>>>>> drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+>>>>>
+>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>>> Cc: Will Deacon <will@kernel.org>
+>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>> Cc: Mike Rapoport <rppt@kernel.org>
+>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Cc: linux-mm@kvack.org
+>>>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>> ---
+>>>>> This patch applies on the latest mainline kernel after Mike's series
+>>>>> regarding arm64 based pfn_valid().
+>>>>>
+>>>>> https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+>>>>>
+>>>>> Changes in RFC V2:
+>>>>>
+>>>>> - Dropped support for arm (32 bit)
+>>>>> - Replaced memblock_is_map_memory() check with memblock_is_memory()
+>>>>> - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+>>>>> - Updated pfn_to_online_page() per David
+>>>>> - Updated free_unused_memmap() to preserve existing semantics per Mike
+>>>>> - Exported memblock_is_memory() instead of memblock_is_map_memory()
+>>>>>
+>>>>> Changes in RFC V1:
+>>>>>
+>>>>> - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+>>>>>
+>>>>>  arch/arm64/Kconfig            |  2 +-
+>>>>>  arch/arm64/include/asm/page.h |  1 -
+>>>>>  arch/arm64/mm/init.c          | 41 -----------------------------------
+>>>>>  include/linux/mmzone.h        | 18 ++++++++++++++-
+>>>>>  mm/Kconfig                    |  9 ++++++++
+>>>>>  mm/memblock.c                 |  8 +++++--
+>>>>>  mm/memory_hotplug.c           |  5 +++++
+>>>>>  7 files changed, 38 insertions(+), 46 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>>>> index b4a9b493ce72..4cdc3570ffa9 100644
+>>>>> --- a/arch/arm64/Kconfig
+>>>>> +++ b/arch/arm64/Kconfig
+>>>>> @@ -144,7 +144,6 @@ config ARM64
+>>>>>  	select HAVE_ARCH_KGDB
+>>>>>  	select HAVE_ARCH_MMAP_RND_BITS
+>>>>>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+>>>>> -	select HAVE_ARCH_PFN_VALID
+>>>>>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>>>>>  	select HAVE_ARCH_SECCOMP_FILTER
+>>>>>  	select HAVE_ARCH_STACKLEAK
+>>>>> @@ -167,6 +166,7 @@ config ARM64
+>>>>>  		if $(cc-option,-fpatchable-function-entry=2)
+>>>>>  	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+>>>>>  		if DYNAMIC_FTRACE_WITH_REGS
+>>>>> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+>>>>>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>>>>>  	select HAVE_FAST_GUP
+>>>>>  	select HAVE_FTRACE_MCOUNT_RECORD
+>>>>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+>>>>> index 75ddfe671393..fcbef3eec4b2 100644
+>>>>> --- a/arch/arm64/include/asm/page.h
+>>>>> +++ b/arch/arm64/include/asm/page.h
+>>>>> @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+>>>>>  
+>>>>>  typedef struct page *pgtable_t;
+>>>>>  
+>>>>> -int pfn_valid(unsigned long pfn);
+>>>>>  int pfn_is_map_memory(unsigned long pfn);
+>>>>>  
+>>>>>  #include <asm/memory.h>
+>>>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>>>>> index f431b38d0837..5731a11550d8 100644
+>>>>> --- a/arch/arm64/mm/init.c
+>>>>> +++ b/arch/arm64/mm/init.c
+>>>>> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>>>>>  	free_area_init(max_zone_pfns);
+>>>>>  }
+>>>>>  
+>>>>> -int pfn_valid(unsigned long pfn)
+>>>>> -{
+>>>>> -	phys_addr_t addr = PFN_PHYS(pfn);
+>>>>> -
+>>>>> -	/*
+>>>>> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>>>>> -	 * pfn. Else it might lead to false positives when
+>>>>> -	 * some of the upper bits are set, but the lower bits
+>>>>> -	 * match a valid pfn.
+>>>>> -	 */
+>>>>> -	if (PHYS_PFN(addr) != pfn)
+>>>>> -		return 0;
+>>>>> -
+>>>>> -#ifdef CONFIG_SPARSEMEM
+>>>>> -{
+>>>>> -	struct mem_section *ms;
+>>>>> -
+>>>>> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>>>> -		return 0;
+>>>>> -
+>>>>> -	ms = __pfn_to_section(pfn);
+>>>>> -	if (!valid_section(ms))
+>>>>> -		return 0;
+>>>>> -
+>>>>> -	/*
+>>>>> -	 * ZONE_DEVICE memory does not have the memblock entries.
+>>>>> -	 * memblock_is_memory() check for ZONE_DEVICE based
+>>>>> -	 * addresses will always fail. Even the normal hotplugged
+>>>>> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+>>>>> -	 * memblock entries. Skip memblock search for all non early
+>>>>> -	 * memory sections covering all of hotplug memory including
+>>>>> -	 * both normal and ZONE_DEVICE based.
+>>>>> -	 */
+>>>>> -	if (!early_section(ms))
+>>>>> -		return pfn_section_valid(ms, pfn);
+>>>>> -}
+>>>>> -#endif
+>>>>> -	return memblock_is_memory(addr);
+>>>>> -}
+>>>>> -EXPORT_SYMBOL(pfn_valid);
+>>>>> -
+>>>>>  int pfn_is_map_memory(unsigned long pfn)
+>>>>>  {
+>>>>>  	phys_addr_t addr = PFN_PHYS(pfn);
+>>>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>>>>> index 961f0eeefb62..18bf71665211 100644
+>>>>> --- a/include/linux/mmzone.h
+>>>>> +++ b/include/linux/mmzone.h
+>>>>> @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>>>>>   *
+>>>>>   * Return: 1 for PFNs that have memory map entries and 0 otherwise
+>>>>>   */
+>>>>> +bool memblock_is_memory(phys_addr_t addr);
+>>>>> +
+>>>>>  static inline int pfn_valid(unsigned long pfn)
+>>>>>  {
+>>>>> +	phys_addr_t addr = PFN_PHYS(pfn);
+>>>>>  	struct mem_section *ms;
+>>>>>  
+>>>>> +	/*
+>>>>> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>>>>> +	 * pfn. Else it might lead to false positives when
+>>>>> +	 * some of the upper bits are set, but the lower bits
+>>>>> +	 * match a valid pfn.
+>>>>> +	 */
+>>>>> +	if (PHYS_PFN(addr) != pfn)
+>>>>> +		return 0;
+>>>>> +
+>>>>>  	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>>>>  		return 0;
+>>>>>  	ms = __nr_to_section(pfn_to_section_nr(pfn));
+>>>>> @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+>>>>>  	 * Traditionally early sections always returned pfn_valid() for
+>>>>>  	 * the entire section-sized span.
+>>>>>  	 */
+>>>>> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+>>>>> +	if (early_section(ms))
+>>>>> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+>>>>> +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+>>>>> +
+>>>>> +	return pfn_section_valid(ms, pfn);
+>>>>>  }
+>>>>>  #endif
+>>>>
+>>>> Hello David/Mike,
+>>>>
+>>>> Now that pfn_is_map_memory() usage has been decoupled from pfn_valid() and
+>>>> SPARSEMEM_VMEMMAP is only available memory model on arm64, wondering if we
+>>>> still need this HAVE_EARLY_SECTION_MEMMAP_HOLES proposal ? Please do kindly
+>>>> suggest. Thank you.
+>>>
+>>> Even now arm64 still frees parts of the memory map and pfn_valid() should
+>>> be able to tell if a part of a section is freed or not.
+>>>
+>>> For instance for the following memory configuration
+>>>     
+>>>         |<----section---->|<----hole---->|<----section---->|
+>>>         +--------+--------+--------------+--------+--------+
+>>>         | bank 0 | unused |              | bank 1 | unused |
+>>>         +--------+--------+--------------+--------+--------+
+>>>
+>>> the memory map corresponding to the "unused" areas is freed, but the generic
+>>> pfn_valid() will still return 1 there.
+>>
+>> But is not free_unused_memmap() return early when CONFIG_SPARSEMEM_VMEMMAP
+>> is enabled, which is the only option now on arm64. Then how can memmap have
+>> holes (from unused areas) anymore ? Am I missing something here.
+>  
+> Ah, you are right, I missed this detail myself :)
 > 
-> The information required to map registers based on capabilities is
-> contained within the bars themselves.  This means the bar must be mapped
-> to read the information needed and then unmapped to map the individual
-> parts of the BAR based on capabilities.
-> 
-> Change cxl_setup_device_regs() to return a new cxl_register_map, change
-> the name to cxl_probe_device_regs().  Allocate and place
-> cxl_register_maps on a list while processing all of the specified
-> register blocks.
-> 
-> After probing all the register blocks go back and map smaller registers
-> blocks based on their capabilities and dispose of the cxl_register_maps.
-> 
-> NOTE: pci_iomap() is not managed automatically via pcim_enable_device()
-> so be careful to call pci_iounmap() correctly.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-A couple of really minor queries inline, but otherwise looks good to me.
+> With CONFIG_SPARSEMEM_VMEMMAP as the only memory model for arm64, we can
+> simply rid of arm64::pfn_valid() without any changes to the generic
+> version.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Though just moved the pfn bits sanity check into generic pfn_valid().
+I hope this looks okay.
 
-> 
-> ---
-> Changes for v2:
-> 	Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git/commit/?h=pending
-> 	Squash in length read from previous patch which was dropped
-> 	because it was not needed in a separate patch.
-> 	Adjust to changes from previous patches
-> ---
->  drivers/cxl/core.c |  73 +++++++++++++++++++++++------
->  drivers/cxl/cxl.h  |  33 ++++++++++++--
->  drivers/cxl/pci.c  | 111 ++++++++++++++++++++++++++++++++++++---------
->  3 files changed, 177 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> index 38979c97158d..add66a6ec875 100644
-> --- a/drivers/cxl/core.c
-> +++ b/drivers/cxl/core.c
-> @@ -3,6 +3,7 @@
->  #include <linux/io-64-nonatomic-lo-hi.h>
->  #include <linux/device.h>
->  #include <linux/module.h>
-> +#include <linux/pci.h>
->  #include "cxl.h"
->  
->  /**
-> @@ -12,19 +13,13 @@
->   * point for cross-device interleave coordination through cxl ports.
->   */
->  
-> -/**
-> - * cxl_setup_device_regs() - Detect CXL Device register blocks
-> - * @dev: Host device of the @base mapping
-> - * @base: Mapping of CXL 2.0 8.2.8 CXL Device Register Interface
-> - * @regs: Base pointers for device register blocks (see CXL_DEVICE_REGS())
-> - */
+From 7a63f460bcb6ae171c2081bfad81edd9e8f3b7a0 Mon Sep 17 00:00:00 2001
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Date: Tue, 25 May 2021 10:27:09 +0100
+Subject: [PATCH] arm64/mm: Drop HAVE_ARCH_PFN_VALID
 
-Nice to keep docs given this is an exported function.
+CONFIG_SPARSEMEM_VMEMMAP is now the only available memory model on arm64
+platforms and free_unused_memmap() would just return without creating any
+holes in the memmap mapping. There is no need for any special handling in
+pfn_valid() and HAVE_ARCH_PFN_VALID can just be dropped. This also moves
+the pfn upper bits sanity check into generic pfn_valid().
 
-> -void cxl_setup_device_regs(struct device *dev, void __iomem *base,
-> -			   struct cxl_device_regs *regs)
-> +void cxl_probe_device_regs(struct device *dev, void __iomem *base,
-> +			   struct cxl_device_reg_map *map)
->  {
->  	int cap, cap_count;
->  	u64 cap_array;
->  
-> -	*regs = (struct cxl_device_regs) { 0 };
-> +	*map = (struct cxl_device_reg_map){ 0 };
->  
->  	cap_array = readq(base + CXLDEV_CAP_ARRAY_OFFSET);
->  	if (FIELD_GET(CXLDEV_CAP_ARRAY_ID_MASK, cap_array) !=
-> @@ -35,29 +30,38 @@ void cxl_setup_device_regs(struct device *dev, void __iomem *base,
->  
->  	for (cap = 1; cap <= cap_count; cap++) {
->  		void __iomem *register_block;
-> -		u32 offset;
-> +		u32 offset, length;
->  		u16 cap_id;
->  
->  		cap_id = FIELD_GET(CXLDEV_CAP_HDR_CAP_ID_MASK,
->  				   readl(base + cap * 0x10));
->  		offset = readl(base + cap * 0x10 + 0x4);
-> +		length = readl(base + cap * 0x10 + 0x8);
-> +
->  		register_block = base + offset;
->  
->  		switch (cap_id) {
->  		case CXLDEV_CAP_CAP_ID_DEVICE_STATUS:
->  			dev_dbg(dev, "found Status capability (0x%x)\n", offset);
-> -			regs->status = register_block;
-> +
-> +			map->status.valid = true;
-> +			map->status.offset = offset;
-> +			map->status.size = length;
->  			break;
->  		case CXLDEV_CAP_CAP_ID_PRIMARY_MAILBOX:
->  			dev_dbg(dev, "found Mailbox capability (0x%x)\n", offset);
-> -			regs->mbox = register_block;
-> +			map->mbox.valid = true;
-> +			map->mbox.offset = offset;
-> +			map->mbox.size = length;
->  			break;
->  		case CXLDEV_CAP_CAP_ID_SECONDARY_MAILBOX:
->  			dev_dbg(dev, "found Secondary Mailbox capability (0x%x)\n", offset);
->  			break;
->  		case CXLDEV_CAP_CAP_ID_MEMDEV:
->  			dev_dbg(dev, "found Memory Device capability (0x%x)\n", offset);
-> -			regs->memdev = register_block;
-> +			map->memdev.valid = true;
-> +			map->memdev.offset = offset;
-> +			map->memdev.size = length;
->  			break;
->  		default:
->  			if (cap_id >= 0x8000)
-> @@ -68,7 +72,48 @@ void cxl_setup_device_regs(struct device *dev, void __iomem *base,
->  		}
->  	}
->  }
-> -EXPORT_SYMBOL_GPL(cxl_setup_device_regs);
-> +EXPORT_SYMBOL_GPL(cxl_probe_device_regs);
-> +
-> +int cxl_map_device_regs(struct pci_dev *pdev,
-> +			struct cxl_device_regs *regs,
-> +			struct cxl_register_map *map)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	resource_size_t phys_addr;
-> +
-> +	phys_addr = pci_resource_start(pdev, map->barno);
-> +	phys_addr += map->block_offset;
-> +
-> +	if (map->device_map.status.valid) {
-> +		resource_size_t addr;
-> +		resource_size_t length;
-> +
-> +		addr = phys_addr + map->device_map.status.offset;
-> +		length = map->device_map.status.size;
-> +		regs->status = devm_ioremap(dev, addr, length);
-> +	}
-> +
-> +	if (map->device_map.mbox.valid) {
-> +		resource_size_t addr;
-> +		resource_size_t length;
-> +
-> +		addr = phys_addr + map->device_map.mbox.offset;
-> +		length = map->device_map.mbox.size;
-> +		regs->mbox = devm_ioremap(dev, addr, length);
-> +	}
-> +
-> +	if (map->device_map.memdev.valid) {
-> +		resource_size_t addr;
-> +		resource_size_t length;
-> +
-> +		addr = phys_addr + map->device_map.memdev.offset;
-> +		length = map->device_map.memdev.size;
-> +		regs->memdev = devm_ioremap(dev, addr, length);
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cxl_map_device_regs);
->  
->  struct bus_type cxl_bus_type = {
->  	.name = "cxl",
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index d49e0cb679fa..ae4b4c96c6b5 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -53,9 +53,7 @@ struct cxl_device_regs {
->  /*
->   * Note, the anonymous union organization allows for per
->   * register-block-type helper routines, without requiring block-type
-> - * agnostic code to include the prefix. I.e.
-> - * cxl_setup_device_regs(&cxlm->regs.dev) vs readl(cxlm->regs.mbox).
-> - * The specificity reads naturally from left-to-right.
-> + * agnostic code to include the prefix.
->   */
->  struct cxl_regs {
->  	union {
-> @@ -66,8 +64,33 @@ struct cxl_regs {
->  	};
->  };
->  
-> -void cxl_setup_device_regs(struct device *dev, void __iomem *base,
-> -			   struct cxl_device_regs *regs);
-> +struct cxl_reg_map {
-> +	bool valid;
-> +	unsigned long offset;
-> +	unsigned long size;
-> +};
-> +
-> +struct cxl_device_reg_map {
-> +	struct cxl_reg_map status;
-> +	struct cxl_reg_map mbox;
-> +	struct cxl_reg_map memdev;
-> +};
-> +
-> +struct cxl_register_map {
-> +	struct list_head list;
-> +	u64 block_offset;
-> +	u8 reg_type;
-> +	u8 barno;
-> +	union {
-> +		struct cxl_device_reg_map device_map;
-> +	};
-> +};
-> +
-> +void cxl_probe_device_regs(struct device *dev, void __iomem *base,
-> +			   struct cxl_device_reg_map *map);
-> +int cxl_map_device_regs(struct pci_dev *pdev,
-> +			struct cxl_device_regs *regs,
-> +			struct cxl_register_map *map);
->  
->  extern struct bus_type cxl_bus_type;
->  #endif /* __CXL_H__ */
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 33fc6e1634e3..3ffd5fad74b4 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -6,6 +6,7 @@
->  #include <linux/module.h>
->  #include <linux/sizes.h>
->  #include <linux/mutex.h>
-> +#include <linux/list.h>
->  #include <linux/cdev.h>
->  #include <linux/idr.h>
->  #include <linux/pci.h>
-> @@ -936,7 +937,7 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
->  		return IOMEM_ERR_PTR(-ENXIO);
->  	}
->  
-> -	addr = pcim_iomap(pdev, bar, 0);
-> +	addr = pci_iomap(pdev, bar, 0);
->  	if (!addr) {
->  		dev_err(dev, "failed to map registers\n");
->  		return addr;
-> @@ -945,7 +946,12 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
->  	dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
->  		bar, offset);
->  
-> -	return pcim_iomap_table(pdev)[bar] + offset;
-> +	return addr;
-> +}
-> +
-> +static void cxl_mem_unmap_regblock(struct cxl_mem *cxlm, void __iomem *base)
-> +{
-> +	pci_iounmap(cxlm->pdev, base);
->  }
->  
->  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> @@ -971,6 +977,52 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  	return 0;
->  }
->  
-> +static int cxl_probe_regs(struct cxl_mem *cxlm, void __iomem *base,
-> +			  struct cxl_register_map *map)
-> +{
-> +	struct pci_dev *pdev = cxlm->pdev;
-> +	struct device *dev = &pdev->dev;
-> +	struct cxl_device_reg_map *dev_map;
-> +
-> +	switch (map->reg_type) {
-> +	case CXL_REGLOC_RBI_MEMDEV:
-> +		dev_map = &map->device_map;
-> +		cxl_probe_device_regs(dev, base, dev_map);
-> +		if (!dev_map->status.valid || !dev_map->mbox.valid ||
-> +		    !dev_map->memdev.valid) {
-> +			dev_err(dev, "registers not found: %s%s%s\n",
-> +				!dev_map->status.valid ? "status " : "",
-> +				!dev_map->mbox.valid ? "status " : "",
-> +				!dev_map->memdev.valid ? "status " : "");
-> +			return -ENXIO;
-> +		}
-> +
-> +		dev_dbg(dev, "Probing device registers...\n");
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int cxl_map_regs(struct cxl_mem *cxlm, struct cxl_register_map *map)
-> +{
-> +	struct pci_dev *pdev = cxlm->pdev;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	switch (map->reg_type) {
-> +	case CXL_REGLOC_RBI_MEMDEV:
-> +		cxl_map_device_regs(pdev, &cxlm->regs.device_regs, map);
-> +		dev_dbg(dev, "Probing device registers...\n");
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static void cxl_decode_register_block(u32 reg_lo, u32 reg_hi,
->  				      u8 *bar, u64 *offset, u8 *reg_type)
->  {
-> @@ -991,12 +1043,14 @@ static void cxl_decode_register_block(u32 reg_lo, u32 reg_hi,
->   */
->  static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  {
-> -	struct cxl_regs *regs = &cxlm->regs;
->  	struct pci_dev *pdev = cxlm->pdev;
->  	struct device *dev = &pdev->dev;
->  	u32 regloc_size, regblocks;
->  	void __iomem *base;
->  	int regloc, i;
-> +	struct cxl_register_map *map, *n;
-> +	LIST_HEAD(register_maps);
-> +	int ret = 0;
->  
->  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_OFFSET);
->  	if (!regloc) {
-> @@ -1020,7 +1074,14 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  		u64 offset;
->  		u8 bar;
->  
-> -		/* "register low and high" contain other bits */
-> +		map = kzalloc(sizeof(*map), GFP_KERNEL);
-> +		if (!map) {
-> +			ret = -ENOMEM;
-> +			goto free_maps;
-> +		}
-> +
-> +		list_add(&map->list, &register_maps);
-> +
->  		pci_read_config_dword(pdev, regloc, &reg_lo);
->  		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
->  
-> @@ -1030,30 +1091,38 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
->  			bar, offset, reg_type);
->  
-> -		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
-> -			base = cxl_mem_map_regblock(cxlm, bar, offset);
-> -			if (!base)
-> -				return -ENOMEM;
-> -			break;
-> +		base = cxl_mem_map_regblock(cxlm, bar, offset);
-> +		if (!base) {
-> +			ret = -ENOMEM;
-> +			goto free_maps;
->  		}
-> -	}
->  
-> -	if (i == regblocks) {
-> -		dev_err(dev, "Missing register locator for device registers\n");
-> -		return -ENXIO;
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/arm64/Kconfig            |  1 -
+ arch/arm64/include/asm/page.h |  1 -
+ arch/arm64/mm/init.c          | 37 -----------------------------------
+ include/linux/mmzone.h        |  9 +++++++++
+ 4 files changed, 9 insertions(+), 39 deletions(-)
 
-Do we have or need an equivalent of this check somewhere else?
-
-> +		map->barno = bar;
-> +		map->block_offset = offset;
-> +		map->reg_type = reg_type;
-> +
-> +		ret = cxl_probe_regs(cxlm, base + offset, map);
-> +
-> +		/* Always unmap the regblock regardless of probe success */
-> +		cxl_mem_unmap_regblock(cxlm, base);
-> +
-> +		if (ret)
-> +			goto free_maps;
->  	}
->  
-> -	cxl_setup_device_regs(dev, base, &regs->device_regs);
-> +	list_for_each_entry(map, &register_maps, list) {
-> +		ret = cxl_map_regs(cxlm, map);
-> +		if (ret)
-> +			goto free_maps;
-> +	}
->  
-> -	if (!regs->status || !regs->mbox || !regs->memdev) {
-> -		dev_err(dev, "registers not found: %s%s%s\n",
-> -			!regs->status ? "status " : "",
-> -			!regs->mbox ? "mbox " : "",
-> -			!regs->memdev ? "memdev" : "");
-> -		return -ENXIO;
-> +free_maps:
-> +	list_for_each_entry_safe(map, n, &register_maps, list) {
-> +		list_del(&map->list);
-> +		kfree(map);
->  	}
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static struct cxl_memdev *to_cxl_memdev(struct device *dev)
-
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index d7dc8698cf8e..7904728befcc 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -154,7 +154,6 @@ config ARM64
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+-	select HAVE_ARCH_PFN_VALID
+ 	select HAVE_ARCH_PREL32_RELOCATIONS
+ 	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+index 75ddfe671393..fcbef3eec4b2 100644
+--- a/arch/arm64/include/asm/page.h
++++ b/arch/arm64/include/asm/page.h
+@@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+ 
+ typedef struct page *pgtable_t;
+ 
+-int pfn_valid(unsigned long pfn);
+ int pfn_is_map_memory(unsigned long pfn);
+ 
+ #include <asm/memory.h>
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 725aa84f2faa..49019ea0c8a8 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -219,43 +219,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+ 	free_area_init(max_zone_pfns);
+ }
+ 
+-int pfn_valid(unsigned long pfn)
+-{
+-	phys_addr_t addr = PFN_PHYS(pfn);
+-	struct mem_section *ms;
+-
+-	/*
+-	 * Ensure the upper PAGE_SHIFT bits are clear in the
+-	 * pfn. Else it might lead to false positives when
+-	 * some of the upper bits are set, but the lower bits
+-	 * match a valid pfn.
+-	 */
+-	if (PHYS_PFN(addr) != pfn)
+-		return 0;
+-
+-	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+-		return 0;
+-
+-	ms = __pfn_to_section(pfn);
+-	if (!valid_section(ms))
+-		return 0;
+-
+-	/*
+-	 * ZONE_DEVICE memory does not have the memblock entries.
+-	 * memblock_is_map_memory() check for ZONE_DEVICE based
+-	 * addresses will always fail. Even the normal hotplugged
+-	 * memory will never have MEMBLOCK_NOMAP flag set in their
+-	 * memblock entries. Skip memblock search for all non early
+-	 * memory sections covering all of hotplug memory including
+-	 * both normal and ZONE_DEVICE based.
+-	 */
+-	if (!early_section(ms))
+-		return pfn_section_valid(ms, pfn);
+-
+-	return memblock_is_memory(addr);
+-}
+-EXPORT_SYMBOL(pfn_valid);
+-
+ int pfn_is_map_memory(unsigned long pfn)
+ {
+ 	phys_addr_t addr = PFN_PHYS(pfn);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index a9b263d4cf9d..d0c4fc506fa3 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1443,6 +1443,15 @@ static inline int pfn_valid(unsigned long pfn)
+ {
+ 	struct mem_section *ms;
+ 
++	/*
++	 * Ensure the upper PAGE_SHIFT bits are clear in the
++	 * pfn. Else it might lead to false positives when
++	 * some of the upper bits are set, but the lower bits
++	 * match a valid pfn.
++	 */
++	if (PHYS_PFN(PFN_PHYS(pfn)) != pfn)
++		return 0;
++
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __nr_to_section(pfn_to_section_nr(pfn));
+-- 
+2.20.1
