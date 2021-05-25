@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AEE38F6CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52CE38F6D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhEYAI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhEYAIZ (ORCPT
+        id S229917AbhEYAIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:08:54 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:33538 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229540AbhEYAIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:08:25 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA50C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:06:55 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id j10so43103129lfb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kMpOljGnfPeM78kPggxibkmCL00Y57PzO5ZmaEV0BXY=;
-        b=MewdMHu8pSiz9xtZOKCGO2UN+t5TiiRcBHH1a51nLZOQ930DNpl6gJPaV2XGMGRFVM
-         e/50I9+o6cNImkcNqVmAHX1IG1yNlF+DM2eszkohBGYtUWYHCehhn6ipxRJhfR/9wxcu
-         yp+JYSiP05pJjGHOkI4oqCGDNxIX+rKjQWIB2oIlP8QoqW7i9RYKKn76Ir0HgL2Vkyol
-         qZ8LWSZkflFyvnqM1aEJNpem1C1r3uEIL83lAtsZ+Qs1MafIqT6TVc99DPwYyg6+YxgP
-         n9xGP/9mCT8suXOUCn2J9jmJLenG4SLFB9g1rhAIWDXz8kpASz65DzXqXMLjzllemIH9
-         menQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kMpOljGnfPeM78kPggxibkmCL00Y57PzO5ZmaEV0BXY=;
-        b=D4Df+1BaPDzG3cO6nfssDDKTIMenftZhgO7t3ogzoLTOErUjzYkFjffrBl5qX9IebX
-         omXlaAqYdM5gVT1ei+jO7bKNPo3GGW5lndNCWVDS34el8P61TKFl2rWUYRAxePtCYqAo
-         DOv+O1qmRmyr/OPFST8ScVTiL7FgyH74Zd8gCmZMtWe4Fuo6Zs22/6+EmuwYfcxHFoAL
-         5ZHPCUiWuQQbMav5YHwdPJyPVQXhUBtYDURXfISvpVoXOYwP0arSN9G/Lt+JEFZvGX8V
-         VWJbVkHmOPjU52joIm9ysCMVZ0+o0eMSNNlmQuC3Y3FMAqxFfWYhS7UH2iWPqdoX6e8J
-         IpoQ==
-X-Gm-Message-State: AOAM530K28he9yshJ7Bvv+0LTzTlBHyzPID9nvYGs7Aqa3MD5XykBHnk
-        qz1J4fuCLb2vbNl4R/AktHr6Pb9vHRTCbmeGSfp3rA==
-X-Google-Smtp-Source: ABdhPJx94W96U3rvN6Jk3W8XwfHaYZxs8wqy2iOgobL2N4vLXoIZf9tS5BonEJmR9TdQKSwTD05BGaGxDwMtobVK2RA=
-X-Received: by 2002:a05:6512:1185:: with SMTP id g5mr12286057lfr.586.1621901213604;
- Mon, 24 May 2021 17:06:53 -0700 (PDT)
+        Mon, 24 May 2021 20:08:52 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 5A1E9100E7B44;
+        Tue, 25 May 2021 00:07:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 62630D1514;
+        Tue, 25 May 2021 00:07:18 +0000 (UTC)
+Message-ID: <9f21272719a3983bda647147e8460615159875b1.camel@perches.com>
+Subject: Re: [PATCH] ASoC: meson: use dev_err_probe
+From:   Joe Perches <joe@perches.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Date:   Mon, 24 May 2021 17:07:17 -0700
+In-Reply-To: <20210524165136.400702-1-jbrunet@baylibre.com>
+References: <20210524165136.400702-1-jbrunet@baylibre.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20210510063602.505829-1-jay.xu@rock-chips.com> <20210510063602.505829-4-jay.xu@rock-chips.com>
-In-Reply-To: <20210510063602.505829-4-jay.xu@rock-chips.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 25 May 2021 02:06:43 +0200
-Message-ID: <CACRpkdaZ=3AsT9NiOKrwEDWXReDX0w_PsdgwC6fqSb4Yecry-g@mail.gmail.com>
-Subject: Re: [PATCH 3/7] gpio: separate gpio driver from pinctrl-rockchip driver
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: k7h5guxk81qrouyfdntbrc3x63gk54mj
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 62630D1514
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19pOUzXC5Hogvmi/j0xkmzd9aHSBMxFLPU=
+X-HE-Tag: 1621901238-781495
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 8:36 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
+On Mon, 2021-05-24 at 18:51 +0200, Jerome Brunet wrote:
+> Use dev_err_probe() helper function to handle probe deferral.
+> It removes the open coded test for -EPROBE_DEFER but more importantly, it
+> sets the deferral reason in debugfs which is great for debugging.
 
-> Separate the gpio driver from the pinctrl driver.
->
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+trivia:
 
-Overall this is very good and should be applied.
+It seems that the use of %ld, PTR_ERR(<foo>) isn't particularly
+useful now as dev_err_probe already uses %pe to emit descriptive
+error messages.
 
-> +#include "../pinctrl/core.h"
-> +#include "../pinctrl/pinctrl-rockchip.h"
 
-Please explain in a comment exactly why you need to include
-these files. I think it should be the goal to get rid of this dependency.
+> diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+[]
+> @@ -352,17 +352,16 @@ int axg_fifo_probe(struct platform_device *pdev)
+>  
+> 
+>  	fifo->pclk = devm_clk_get(dev, NULL);
+>  	if (IS_ERR(fifo->pclk)) {
+> -		if (PTR_ERR(fifo->pclk) != -EPROBE_DEFER)
+> -			dev_err(dev, "failed to get pclk: %ld\n",
+> -				PTR_ERR(fifo->pclk));
+> +		dev_err_probe(dev, PTR_ERR(fifo->pclk),
+> +			      "failed to get pclk: %ld\n", PTR_ERR(fifo->pclk));
 
-It seems that the driver can be further simplified using GPIO_GENERIC
-but we can deal with this later, once it is separate.
+here.
 
-> +static int rockchip_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
-> +                                 unsigned long config)
-> +{
-> +       enum pin_config_param param = pinconf_to_config_param(config);
-> +
-> +       switch (param) {
-> +       case PIN_CONFIG_INPUT_DEBOUNCE:
-> +               rockchip_gpio_set_debounce(gc, offset, true);
-(...)
-> +       .set_config = rockchip_gpio_set_config,
+>  		return PTR_ERR(fifo->pclk);
+>  	}
+>  
+> 
+>  	fifo->arb = devm_reset_control_get_exclusive(dev, NULL);
+>  	if (IS_ERR(fifo->arb)) {
+> -		if (PTR_ERR(fifo->arb) != -EPROBE_DEFER)
+> -			dev_err(dev, "failed to get arb reset: %ld\n",
+> -				PTR_ERR(fifo->arb));
+> +		dev_err_probe(dev, PTR_ERR(fifo->arb),
+> +			      "failed to get arb reset: %ld\n",
+> +			      PTR_ERR(fifo->arb));
 
-Can't you just use gpiochip_generic_config() and rely on the pinctrl
-back-end to deal with this?
+etc...
 
-> +       .to_irq = rockchip_gpio_to_irq,
 
-Normally this should not be needed with GPIOLIB_IRQCHIP but
-since you are refactoring an existing driver it is acceptable to
-keep for now.
-
-Yours,
-Linus Walleij
