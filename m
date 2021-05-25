@@ -2,105 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C0938FA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D3F38FA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhEYGMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:12:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45389 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229967AbhEYGMJ (ORCPT
+        id S231132AbhEYGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhEYGNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:12:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621923040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7+ve4EsgwRWH3fX93e3xnVlqn74wnn5/jWlsUyNe/eQ=;
-        b=cRtSRfi0XRwKhcfzh0l1FN0B6ddzQxuy6uBnGCXlBjW1TqpGYZXzVmWcwSvhycmpM4ctUd
-        ac32W+/UMhsxTTUXav9UHu0DthuQzrXyhJJL1/6uqWCQWXs7f2Iq/nDG4BZ94Kid62iuXt
-        FAYTfp28c88fD78OLAhD8G5Rvr1waGY=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-iAMK3NelOzSGunaxHQ2Tmg-1; Tue, 25 May 2021 02:10:38 -0400
-X-MC-Unique: iAMK3NelOzSGunaxHQ2Tmg-1
-Received: by mail-pg1-f197.google.com with SMTP id q64-20020a632a430000b0290209af2eea25so20324659pgq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:10:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=7+ve4EsgwRWH3fX93e3xnVlqn74wnn5/jWlsUyNe/eQ=;
-        b=PbhylmMdWTii83bBGiOMdzp+JaYlcCMivp6CysKRlMQYbs1g2JhXKSxhPajD2pRCs7
-         VAd7DnqBVI4bxeb/STCeLxwEHuFUlGiyJ+Qx6g/UBnlVGhjVPpxoPZufLwnuH1dRjZen
-         czDqDqLqUCOP+rJXhWhyrFE+jS7WpBWz584Ws/RVfA7Zs/+mu6tX5zG9AGsJwWOjZzWF
-         mieHCs96e53Vox81O4QKVTliX0ppJvoaL5m/2jW5swYynOVch+rjzr1rATF46SbmS8D9
-         3FFyYYKpZ7oXWl/w+qUbmndj36vsswAagK6jHzQ8qBs4xzUQskZ6Scz9rVNjKt+trv0h
-         pFZQ==
-X-Gm-Message-State: AOAM530Qn/4m4NiqgO/MQhkk+QarNDNGckptKUwpbyM2U9sxHAwFiX91
-        vb8cCZbjM1LBbg9DKB7KkZBZS9v1u8gwpzoVsJmkvOWHuVLjg8hLmdsipXMVh5amZuXB4NQgdyH
-        jVjf+/kBz+rXgWbjcniw1feVubUyVQvRGomcwG6yI5j2IJm/D7fQkHynje3KdMB8ATg1/jXbThc
-        Ek
-X-Received: by 2002:a62:e21a:0:b029:2de:4440:3a with SMTP id a26-20020a62e21a0000b02902de4440003amr28091160pfi.23.1621923037312;
-        Mon, 24 May 2021 23:10:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcul8Osk5YUUxMqw8lYyZbg9J74NcgDmptA1ycXjYhsCuAI8yoBr2KodL1zkGCBnHfRNoPlg==
-X-Received: by 2002:a62:e21a:0:b029:2de:4440:3a with SMTP id a26-20020a62e21a0000b02902de4440003amr28091140pfi.23.1621923036908;
-        Mon, 24 May 2021 23:10:36 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y66sm12812325pgb.14.2021.05.24.23.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 23:10:36 -0700 (PDT)
-Subject: Re: [PATCH] virtio_net: Fix error handling in virtnet_restore()
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210517084516.332-1-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <782e9d35-99be-b77e-73f7-3291e03d6fe6@redhat.com>
-Date:   Tue, 25 May 2021 14:10:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 25 May 2021 02:13:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0038C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:11:41 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1llQHu-0003jC-9d; Tue, 25 May 2021 08:11:34 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1llQHr-0001vZ-U0; Tue, 25 May 2021 08:11:31 +0200
+Date:   Tue, 25 May 2021 08:11:31 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel@pengutronix.de
+Subject: Re: [PATCH v3 2/2] clocksource: Add support for Xilinx AXI Timer
+Message-ID: <20210525061131.omrbcdewf4z75ib7@pengutronix.de>
+References: <20210511191239.774570-1-sean.anderson@seco.com>
+ <20210511191239.774570-2-sean.anderson@seco.com>
+ <d4bb7b5d-9f38-cf60-fb0b-18f8e0ca2b1e@xilinx.com>
+ <5f960034-174d-0ed8-9f52-3d5fde90e16a@seco.com>
+ <9f227f96-a310-0fbd-fd34-91eb386306b9@xilinx.com>
+ <7a06cf46-0f85-1edb-ca08-abd7b2543ad9@seco.com>
+ <41542760-3967-4f9a-0f0c-1206e03ff494@xilinx.com>
+ <d206a399-454e-d9c5-e2d3-337d098ed7aa@seco.com>
+ <2296d4e5-717a-0470-d487-e0924cf6c076@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <20210517084516.332-1-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wn37yka2xnftryhr"
+Content-Disposition: inline
+In-Reply-To: <2296d4e5-717a-0470-d487-e0924cf6c076@xilinx.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2021/5/17 ÏÂÎç4:45, Xie Yongji Ð´µÀ:
-> Do some cleanups in virtnet_restore() when virtnet_cpu_notif_add() failed.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+--wn37yka2xnftryhr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hello Sean, hello Michal,
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+On Mon, May 24, 2021 at 09:00:51AM +0200, Michal Simek wrote:
+> On 5/20/21 10:13 PM, Sean Anderson wrote:
+> > On 5/19/21 3:24 AM, Michal Simek wrote:
+> >> On 5/18/21 12:15 AM, Sean Anderson wrote:
+> >>> This could be deprecated, but cannot be removed since existing device
+> >>> trees (e.g. qemu) have neither clocks nor clock-frequency properties.
+> >>
+> >> Rob: Do we have any obligation to keep properties for other projects?
 
+If a binding is in the wild and used to be documented, it has to stay.
 
-> ---
->   drivers/net/virtio_net.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 7be93ca01650..5ca7d6780add 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -3250,8 +3250,11 @@ static __maybe_unused int virtnet_restore(struct virtio_device *vdev)
->   	virtnet_set_queues(vi, vi->curr_queue_pairs);
->   
->   	err = virtnet_cpu_notif_add(vi);
-> -	if (err)
-> +	if (err) {
-> +		virtnet_freeze_down(vdev);
-> +		remove_vq_common(vi);
->   		return err;
-> +	}
->   
->   	return 0;
->   }
+> >>>> 4. Make driver as module
+> >>>> 5. Do whatever changes you want before adding pwm support
+> >>>> 6. Extend DT binding doc for PWM support
+> >>>> 7. Add PWM support
+> >>>
+> >>> Frankly, I am inclined to just leave the microblaze timer as-is. The =
+PWM
+> >>> driver is completely independent. I have already put too much effort =
+into
+> >>> this driver, and I don't have the energy to continue working on the
+> >>> microblaze timer.
+> >>
+> >> I understand. I am actually using axi timer as pwm driver in one of my
+> >> project but never had time to upstream it because of couple of steps a=
+bove.
+> >> We need to do it right based on steps listed above. If this is too much
+> >> work it will have to wait. I will NACK all attempts to add separate
+> >> driver for IP which we already support in the tree.
+> >=20
+> > 1. Many timers have separate clocksource and PWM drivers. E.g. samsung,
+> > =A0=A0 renesas TPU, etc. It is completely reasonable to keep separate
+> > =A0=A0 drivers for these purposes. There is no Linux requirement that e=
+ach
+> > =A0=A0 device have only one driver, especially if it has multiple funct=
+ions
+> > =A0=A0 or ways to be configured.
+>=20
+> It doesn't mean that it was done properly and correctly. Code
+> duplication is bad all the time.
 
+IMHO it's not so much about code duplication. Yes, code duplication is
+bad and should be prevented if possible. But it's more important to not
+introduce surprises. So I think it should be obvious from reading the
+device tree source which timer is used to provide the PWM. I don't care
+much if this is from an extra property (like xilinx,provide-pwm),
+overriding the compatible or some other explicit mechanism. IIUC in this
+suggested patch the selection is implicit and so this isn't so nice.
+
+> > 2. If you want to do work on a driver, I'm all for it. However, if you
+> > =A0=A0 have not yet submitted that work to the list, you should not gate
+> > =A0=A0 other work behind it. Saying that X feature must be gated behind=
+ Y
+> > =A0=A0 *even if X works completely independently of Y* is just stifling
+> > =A0=A0 development.
+>=20
+> I gave you guidance how I think this should be done. I am not gating you
+> from this work. Your patch is not working on Microblaze arch which is
+> what I maintain. And I don't want to go the route that we will have two
+> drivers for the same IP without integration. We were there in past and
+> it is just pain.
+> I am expecting that PWM guys will guide how this should be done
+> properly. I haven't heard any guidance on this yet.
+> Thierry/Uwe: Any comment?
+
+Not sure I can and want to provide guidance here. This is not Perl, but
+still TIMTOWTDI. If it was me who cared here, I'd look into the
+auxiliary bus (Documentation/driver-api/auxiliary_bus.rst) to check if
+it can help to solve this problem.
+=20
+> > 3. There is a clear desire for a PWM driver for this device. You, I, and
+> > =A0=A0 Alvaro have all written separate drivers for this device because=
+ we
+> > =A0=A0 want to use it as a PWM. By preventing merging this driver, you =
+are
+> > =A0=A0 encouraging duplicate effort by the next person who wants to use=
+ this
+> > =A0=A0 device as a PWM, and sees that there is no driver in the tree.
+>=20
+> We should do it cleanly that it will be easy to maintain which is not by
+> creating two separate drivers or by switching to completely new driver.
+
++1
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--wn37yka2xnftryhr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCslRAACgkQwfwUeK3K
+7Ak7YQf/TpIJXkF7drwqBVWLD73Z149/8vSGvkDfPtqJrQq3/B+cxJ2dd9+ehIPH
+3HmLTLu2Uv/BUylaRgFZj8FH0vszNMgRyskYTdbyGgrXti63GhAJDad1C/o8xOax
+92rsl/YE6PqHz6htoyjjq3XxPjKZyeuWtYAQop+IsKYy06p+H0N3d5A+Rdx/YVwC
+IWYfKTrFejAIHADFJuWSesyr8AVjiz5hGq6l8BUd7vkpZ8QS3G3KV0j4aYhgPTpe
+Bai+4VHoArdJYF/jBIcBzT5Oxa8W8xtie1Nu5O5E3XTj6gXuzpxPxCwudML62K85
+dBVqeYouJgmtxoicWFMRXQ0dFmWWMQ==
+=DZ2s
+-----END PGP SIGNATURE-----
+
+--wn37yka2xnftryhr--
