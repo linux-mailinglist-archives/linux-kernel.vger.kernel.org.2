@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF9E38FDB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2864A38FDB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232547AbhEYJXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:23:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49444 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232540AbhEYJXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:23:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621934525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Km8x1iNswod8J6jOTrElieNcifEjpJYKCuh1lkUjw+o=;
-        b=ZLXa504a9dSoewPkKfWKSHxAqmjJteVrgKhTg1ndw0+uVFvcBZnHbBjw1bIbMU1wI0u6g2
-        EMm1UDPOqJ3oaMtzIhBe+CjS2Cc4z99ERx0R9uRjLj2YxLyOapEdtU1i92aelYjm5ZGqtS
-        OnipQBA0QSc1TyZWg3W+eNgdgGYI6s4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621934525;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Km8x1iNswod8J6jOTrElieNcifEjpJYKCuh1lkUjw+o=;
-        b=uwA/U6nKtl7G+RUfLAiGm0vFcYM3yFhmHr61p//rliSrss6FEcMUmotkxS2O6/SlY2GGXB
-        haHasfSO6UAB3TBQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A255AEAB;
-        Tue, 25 May 2021 09:22:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 144021F2C98; Tue, 25 May 2021 11:22:05 +0200 (CEST)
-Date:   Tue, 25 May 2021 11:22:05 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
-Message-ID: <20210525092205.GA4112@quack2.suse.cz>
-References: <20210227120804.GB22871@xsang-OptiPlex-9020>
- <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
- <20210520095119.GA18952@quack2.suse.cz>
- <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
- <20210521092730.GE18952@quack2.suse.cz>
- <YKfi6Pv+qwduKxuT@mit.edu>
+        id S232548AbhEYJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232541AbhEYJXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:23:53 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475F3C061574;
+        Tue, 25 May 2021 02:22:19 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id r11so35242358edt.13;
+        Tue, 25 May 2021 02:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i4WpDFzjrpXp5hP9+v4938PGOuID77BZ1+yoSzNr4bw=;
+        b=aZgrutsc1m9tSr4hBJxEgoXTPkpi+M04jPX97JYoXk0DECbfii3wJvYf/10Qf2eBuK
+         k1wIdc84jsy0PLkiG1QLRUm7WRkFkJNUOJ7kxOcpcWplwI6clR/o52Jnzt2Hnv7CI+iL
+         YApQWP86Q2iCfglmBKUZBEbLewHv3AAGVa+n/bp+Pqyn3BH+WA31yoIyV4/vtwP6K0i5
+         foZx3ib56Gh6Y61t5cGVd3eei85F68GsG+jdSKqqinNG1KZerpnlOTFEjtCm+DBfBel9
+         ke/0+B5oGRNdxlXy+M47uvRh7X/hBT1TobVh7NSwTZF+8y/P6kFDrCX7KTd9kIxL5o7A
+         SGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i4WpDFzjrpXp5hP9+v4938PGOuID77BZ1+yoSzNr4bw=;
+        b=N211E6foPuhhfY3C2eN3VoCOjWx0iVrK08swMVIz5bN3BuZaqMDA23bfueXnv1rbdU
+         XpiMlQROeqxtgtn3eqoHnO4+1pjCjyERSi7XMbbcEOXzNGuq6ZMeJTlzT/j0aMUJvytI
+         pXNvPvyPFh0BAl7mmo0a0OxlEWx6DncDlEK0zKhDH1z4p4vCCXCsDM5Ao94eCFKWCN5v
+         eT3+Rnf3UoqsmnKzUBgKKNvbWRRg3Jk6zI4ldQLWwr6gmekSreJjnSeAgVdzqMCVAkPg
+         8gapWlRNEiDyFymLIXyN272PZpZ6Z0Itw/NSnMtrJqgvF9FAZH1sjM5e1DF38yTiGP6Z
+         Z+Mw==
+X-Gm-Message-State: AOAM533CQQnsa3KLX1H7nefXnTFCP2GREVdTc1q5UbMM6BTzfaJpaIUS
+        mXwsZG6IteOWdwy0dnVHKWb7E2yFZoahw1DSqiI=
+X-Google-Smtp-Source: ABdhPJxSspRrEdzmSkEjEkJp7+mPyCDdSHTlgwh1A+zFibAdE7o8FKoR4TgcbystH6uJzQMBL8BnZShsXhII1ig9tY8=
+X-Received: by 2002:a50:ccdc:: with SMTP id b28mr30538106edj.92.1621934537751;
+ Tue, 25 May 2021 02:22:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKfi6Pv+qwduKxuT@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
+ <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+ <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+ <1762403920.6716767.1621029029246@webmail.123-reg.co.uk> <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
+ <486335206.6969995.1621485014357@webmail.123-reg.co.uk> <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
+ <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com> <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
+ <877196209.4648525.1621840046695@webmail.123-reg.co.uk>
+In-Reply-To: <877196209.4648525.1621840046695@webmail.123-reg.co.uk>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Tue, 25 May 2021 14:52:06 +0530
+Message-ID: <CAOuPNLgrwnqv_=Ux5SeY3XTDG2b0=ntRbciWVshhaVwJYFEZ3g@mail.gmail.com>
+Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
+ flashing rootfs volume
+To:     Phillip Lougher <phillip@squashfs.org.uk>
+Cc:     Sean Nyekjaer <sean@geanix.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21-05-21 12:42:16, Theodore Y. Ts'o wrote:
-> On Fri, May 21, 2021 at 11:27:30AM +0200, Jan Kara wrote:
-> > 
-> > OK, thanks for testing. So the orphan code is indeed the likely cause of
-> > this regression but I probably did not guess correctly what is the
-> > contention point there. Then I guess I need to reproduce and do more
-> > digging why the contention happens...
-> 
-> Hmm... what if we only recalculate the superblock checksum when we do
-> a commit, via the callback function from the jbd2 layer to file
-> system?
+On Mon, 24 May 2021 at 12:37, Phillip Lougher <phillip@squashfs.org.uk> wrote:
+>
+> > No, this is still experimental.
+> > Currently we are only able to write to ubi volumes but after that
+> > device is not booting (with rootfs volume update).
+> > However, with "userdata" it is working fine.
+> >
+> > I have few more questions to clarify.
+> >
+> > a) Is there a way in kernel to do the ubi volume update while the
+> > device is running ?
+> >     I tried "ubiupdatevol" but it does not seem to work.
+> >     I guess it is only to update the empty volume ?
+> >     Or, maybe I don't know how to use it to update the live "rootfs" volume
+> >
+> > b) How to verify the volume checksum as soon as we finish writing the
+> > content, since the device is not booting ?
+> >      Is there a way to verify the rootfs checksum at the bootloader or
+> > kernel level before mounting ?
+> >
+> > c) We are configuring the ubi volumes in this way. Is it fine ?
+> > [rootfs_volume]
+> > mode=ubi
+> > image=.<path>/system.squash
+> > vol_id=0
+> > vol_type=dynamic
+> > vol_name=rootfs
+> > vol_size=62980096  ==> 60.0625 MiB
+> >
+> > Few more info:
+> > ----------------------
+> > Our actual squashfs image size:
+> > $ ls -l ./system.squash
+> > rw-rr- 1 pintu users 49639424 ../system.squash
+> >
+> > after earse_volume: page-size: 4096, block-size-bytes: 262144,
+> > vtbl-count: 2, used-blk: 38, leb-size: 253952, leb-blk-size: 62
+> > Thus:
+> > 49639424 / 253952 = 195.46 blocks
+> >
+> > This then round-off to 196 blocks which does not match exactly.
+> > Is there any issue with this ?
+> >
+> > If you have any suggestions to debug further please help us...
+> >
+> >
+> > Thanks,
+> > Pintu
+>
+> Three perhaps obvious questions here:
+>
+> 1. As an experimental system, are you using a vanilla (unmodified)
+>    Linux kernel, or have you made modifications.  If so, how is it
+>    modified?
+>
+> 2. What is the difference between "rootfs" and "userdata"?
+>    Have you written exactly the same Squashfs image to "rootfs"
+>    and "userdata", and has it worked with "userdata" and not
+>    worked with "rootfs".
+>
+>    So far it is unclear whether "userdata" has worked because
+>    you've written different images/data to it.
+>
+>    In other words tell us exactly what you're writing to "userdata"
+>    and what you're writing to "rootfs".  The difference or non-difference
+>    may be significant.
+>
+> 3. The rounding up to a whole 196 blocks should not be a problem.
+>    The problem is, obviously, if it is rounding down to 195 blocks,
+>    where the tail end of the Squashfs image will be lost.
+>
+>    Remember this is exactly what the Squashfs error is saying, the image
+>    has been truncated.
+>
+>    You could try adding a lot of padding to the end of the Squashfs image
+>    (Squashfs won't care), so it is more than the effective block size,
+>    and then writing that, to prevent any rounding down or truncation.
+>
 
-I actually have to check whether the regression is there because of the
-additional locking of the buffer_head (because that's the only thing that
-was added to that code in fact, adding some atomic instructions, bouncing
-another cacheline) or because of the checksum computation that moved from
-ext4_handle_dirty_super() closer to actual superblock update under those
-locks.
+Just wanted to share the Good news that the ubi volume flashing is
+working now :)
+First I have created a small read-only volume (instead of rootfs) and
+tried to write to it and then compared the checksum.
+Initially when I checked, the checksum was not matching and when I
+compared the 2 images I found there were around 8192 blocks containing
+FF data at the end of each erase block.
+After the fix, this time the checksum matches exactly.
 
-If the problem is indeed just the checksum computation under all those
-locks, we can move that to transaction commit time (using the t_frozen
-trigger - ocfs2 uses that for all metadata checksumming). But then we have
-to be very careful with unjournaled sb updates that can be running in
-parallel with the journaled ones because once you drop buffer lock, sb can
-get clobbered and checksum invalidated. Also there's the question what to
-do with nojournal mode - probably we would have to keep separate set of
-places recomputing checksums just for nojournal mode which is quite error
-prone but if it's just for sb, I guess it's manageable.
+/data/pintu # md5sum test-vol-orig.img
+6a8a185ec65fcb212b6b5f72f0b0d206  test-vol-orig.img
 
-								Honza
+/data/pintu # md5sum test-vol-after.img
+6a8a185ec65fcb212b6b5f72f0b0d206  test-vol-after.img
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Once this is working, I tried with rootfs volume, and this time the
+device is booting fine :)
+
+The fix is related to the data-len and data-offset calculation in our
+volume write code.
+[...]
+size += data_offset;
+[...]
+ubi_block_write(....)
+buf_size -= (size - data_offset);
+offset += (size - data_offset);
+[...]
+In the previous case, we were not adding and subtracting the data_offset.
+
+The Kernel command line we are using is this:
+[    0.000000] Kernel command line: ro rootwait
+console=ttyMSM0,115200,n8 [..skip..] rootfstype=squashfs
+root=/dev/mtdblock34 ubi.mtd=30,0,30 [...skip..]
+
+Hope, this parameters are fine (no change here).
+
+Thank you Phillip and Sean for your help.
+Phillip I think this checksum trick really helped me in figuring out
+the root cause :)
+
+Glad to work with you...
+
+Thanks,
+Pintu
