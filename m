@@ -2,253 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8D538FB29
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B05638FB30
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhEYGuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:50:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230366AbhEYGuJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:50:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621925320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ul3miHPA+1C0mVf5IsSNMuGBmo+BqIM3N/sQ86Z+ItM=;
-        b=MH3+bMFzvyVKEJIrrqwy0liIA1OeDGOZ6p13LDotaHU67k49XxGwAjuwCzjIGkUvyB/NqF
-        ByHhfqR9PmhqpTyqSx83ll59tRKRxLkCqlF7y8WyeuG7wmK2dqMyX7uHQIQpTrJug5eEND
-        SXnCFoewWC3IN+RwURN9QB6O6rDaxS4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-YHBpRg-vNFydQKGJWhCeEw-1; Tue, 25 May 2021 02:48:38 -0400
-X-MC-Unique: YHBpRg-vNFydQKGJWhCeEw-1
-Received: by mail-wr1-f70.google.com with SMTP id 22-20020adf82960000b02901115ae2f734so14142649wrc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:48:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ul3miHPA+1C0mVf5IsSNMuGBmo+BqIM3N/sQ86Z+ItM=;
-        b=Yzt3560EEtjgfSKXGGZMF88+IrZUi7L4CbHtYOzkOu85OX073R6bYJyWg752meTkO/
-         Cg29Yx9uA6HvyZ7KDYm3zqKd9ENXoylHUj56H2rwU4SqMawBu3z8ywpnpK6D1vgrcgHW
-         a2mEOIrBz0L38JA820+9hFDAkP2n3kI8Pe5FojDhUTR1weB/gmzTcFAKC9osj2fTaJ5v
-         yjaBh9NN3DSBzZbIW9i88+fd0FlFYw3RVIPxhPOIRNqh5jli7EC8y/31Yz7Q0RSUQhJj
-         Pki3KoCp5F8bUgzp/U8l7U8pjjPNRhB2BfzXUM61d2IghTlHudpA2zJD4Xxf7oDAecmy
-         g2Lg==
-X-Gm-Message-State: AOAM5339ZwfNMG1s2LpJZm3x6ECNwDGPNlQHj/0rJenZiKbnf6LfXLsC
-        ztq48MEF/Gxh1NUCiK9Ja6LI5hm+CLk5U4SiY79zpIFPC44OaY0OdCouvitG17ep177yvSep7gw
-        qAdPvn3n4Kje0JOXmrP5xtrvu
-X-Received: by 2002:a5d:58d0:: with SMTP id o16mr25535513wrf.420.1621925317003;
-        Mon, 24 May 2021 23:48:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHrJfvA/haiL2kDkU2Sc824s/VhxDUz9WKfrjZUVALV+rMusOmrmXdB7xQ8MMFAx4z9xMC5w==
-X-Received: by 2002:a5d:58d0:: with SMTP id o16mr25535496wrf.420.1621925316796;
-        Mon, 24 May 2021 23:48:36 -0700 (PDT)
-Received: from redhat.com ([2a10:8006:fcda:0:90d:c7e7:9e26:b297])
-        by smtp.gmail.com with ESMTPSA id g78sm1839253wme.27.2021.05.24.23.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 23:48:34 -0700 (PDT)
-Date:   Tue, 25 May 2021 02:48:30 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Yongji Xie <xieyongji@bytedance.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 00/12] Introduce VDUSE - vDPA Device in Userspace
-Message-ID: <20210525024500-mutt-send-email-mst@kernel.org>
-References: <20210517095513.850-1-xieyongji@bytedance.com>
- <20210520014349-mutt-send-email-mst@kernel.org>
- <CACycT3tKY2V=dmOJjeiZxkqA3cH8_KF93NNbRnNU04e5Job2cw@mail.gmail.com>
- <2a79fa0f-352d-b8e9-f60a-181960d054ec@redhat.com>
+        id S231377AbhEYGxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:53:24 -0400
+Received: from mail-bn8nam08on2068.outbound.protection.outlook.com ([40.107.100.68]:5048
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231245AbhEYGxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 02:53:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IZuUpVggsngLWuGD52kzKpUhlxplIislCFXi6Tz/et5wjtXKrMJLzljHTjzzEFj01AESqGKVVnn2PkKFBIozhy/DeXprY48Zu3eclMhz8eePqI1bzHdwbHCqhmsu+IogujNlXUil12ZIV02Qj6FHGjlBEQI9v/BTx44IvWb/iNNmDKrwCDiOjZyfkBJ3UTDU3vnlSHTbzCcJcYB4rAKNFPzlR+hVZE3aPvaokctTAiDbAceyGU/nloWnyiixwOldXt08Hhb6WklzTzGMrF+z/T4L+bIE+kiZuunBC1HSEIUCZqNREMM9oUlbo+hU4He4kuzkRGHgtaHYC42dYTWQvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WT6M7+N6mnLJMHSN2I+XVCbkDnoTHX7UpBKSzSvjm5s=;
+ b=Eyg9daPdJuudU7Y2Bv96+mN3X9DqGj/ou68G59XpWgDEdfAH0pQBw8Z/burmG1+yBJGrKlyNZfmOXyas/Fh77DK2S/PGxh4SGDTsxcWnTJBtMgmzUT7es6NAHRolqF4LjLhQ2UXX9MKZwr4oJj5a3eT5sIyghUS3K5nMAnZCpu4Ivns+yDt19kFTDbJwVLoiUWYrw2yoQiGfl8ddX+juuES+/+h7lUs57mIjg9frd5F8UTvduzWURQUaexaoYRYLl8nbmHaQQpPE8dcOs6ywnzgAlBeWUoG6ep9X9KFAWb5CEoWo2gIf2KNyFy3+XWN7Jff1X96WHOu3cgyV7yrAMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WT6M7+N6mnLJMHSN2I+XVCbkDnoTHX7UpBKSzSvjm5s=;
+ b=eVOmF0qvggqw5KXNEP0g3/9GqLwD9qThQI90IojWyV4OL/ru32cJTeIrD2iuveC3RpNP5AyL7UJs5y8YO8KeRsNK41+7oBj8V3mQnzpB5MbKfPyfo27I/658/6Aiuy/zVp6W+znQRGufgzsJcyAF8nBxHpcfHjCHJJVOEUkCkOiXNR+7/8KxT32UbBVAP5xV9eNRQ/Z3xJZf+FZWzVd0OHR4m0etWPFa2CmCv7Xco47cdg9UrV+aNvipuJKdAQy6t342O9Yf272LIsIdeL4yp9qYGAlsRQLBC3+4IFL4BkZwCQrliLsh09X7Z9XNkT6RvXigNQRv9Y/ByNTtt3sftA==
+Received: from DM5PR21CA0041.namprd21.prod.outlook.com (2603:10b6:3:ed::27) by
+ BY5PR12MB3812.namprd12.prod.outlook.com (2603:10b6:a03:1a7::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Tue, 25 May
+ 2021 06:51:50 +0000
+Received: from DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:ed:cafe::ec) by DM5PR21CA0041.outlook.office365.com
+ (2603:10b6:3:ed::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.2 via Frontend
+ Transport; Tue, 25 May 2021 06:51:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT019.mail.protection.outlook.com (10.13.172.172) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Tue, 25 May 2021 06:51:50 +0000
+Received: from [10.26.49.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 06:51:47 +0000
+Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210520175054.28308-1-digetx@gmail.com>
+ <20210520175054.28308-3-digetx@gmail.com>
+ <32171079-ed4e-1147-2272-5f11bc480c6a@nvidia.com>
+ <91e53907-d87d-aeeb-4644-3926d4311daa@gmail.com>
+ <6bc26992-e136-ef6a-a956-382b5cae5db7@nvidia.com>
+ <f9631faa-5fc8-ecdd-709b-93b58e45a1ac@gmail.com>
+ <cf2ee04e-d4cf-14ba-92d0-aa113eb7b8c8@nvidia.com>
+ <f27b931f-3f92-32cb-cdf0-d9ae001565fc@gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <4cb563a0-8fdb-2425-57fe-633b7be51e01@nvidia.com>
+Date:   Tue, 25 May 2021 07:51:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2a79fa0f-352d-b8e9-f60a-181960d054ec@redhat.com>
+In-Reply-To: <f27b931f-3f92-32cb-cdf0-d9ae001565fc@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bf160901-3610-476a-311e-08d91f4992e4
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3812:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB3812EA05A9AF16483967A3ADD9259@BY5PR12MB3812.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OQo2qG9dqmpYSCyhEMMVn+NyYvGcRQZVZBfA8ZvMZcqZGn9C/G5v0puaIn8pUz70wMAde8gTDbHBiipDTAj4fFTq4SfboT5gWCXTBWWra7c80uKEQ9lpnMOZDRzVc3qPNokw8C25kfqy70k39yk7YMaJa++mU4BE4mJ4G5HTSlePq8mlrmYsuQatnlEvFFu/4otFtxKnx8PofdW9ec4W60ECggOJzEzyVrrxJ+JNsTNeEL42kwbrX9Ypjek1v2kmQsLE582u7VkvP+p++3ONNVAIMJw85RFAd7qb9ERmUgC4wLdz8wBcx9uAHRt+tJC4S7QdPECRZL9+UavOFOGf0LVdW3jsj/0LTxQqeNkA6xAfxWr6H/ryWyK4GtBuI8nOtbBN6i1t5LtMmudlQUNdSVIig+e22nqJCfdW+3AgPz5WsBu/o9jZ6Sv1+b9k7MZiAXFtdIkrd1NJ6wZfdjVOQmD7WT2SVJenZdtv642xO8E30zhaIaMNMyLQqHHZHD0m/5met80RmUi6zEYPpXDCBCrtQCwacm26qwnLyQcEsG71/mvBhOfimtP9XuoglwOgwl+VvXQ8aSWDede0CSwnJkGzUDdS3RtJoi5igGn+GCcQ6/XGFz7HCfDnM/2bBT5WafDiou8iR0UW1lct62ls2Jt9gWmNQCfcxQ6LCVgR2nTqBxWj1aWo5qqXCo5fhRPb
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(46966006)(36840700001)(2906002)(5660300002)(70206006)(478600001)(31696002)(2616005)(7416002)(86362001)(426003)(36906005)(316002)(16576012)(54906003)(82310400003)(26005)(36756003)(70586007)(36860700001)(31686004)(83380400001)(47076005)(82740400003)(53546011)(8936002)(356005)(16526019)(4326008)(110136005)(186003)(8676002)(7636003)(336012)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 06:51:50.6128
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf160901-3610-476a-311e-08d91f4992e4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3812
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 02:40:57PM +0800, Jason Wang wrote:
-> 
-> 在 2021/5/20 下午5:06, Yongji Xie 写道:
-> > On Thu, May 20, 2021 at 2:06 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > On Mon, May 17, 2021 at 05:55:01PM +0800, Xie Yongji wrote:
-> > > > This series introduces a framework, which can be used to implement
-> > > > vDPA Devices in a userspace program. The work consist of two parts:
-> > > > control path forwarding and data path offloading.
-> > > > 
-> > > > In the control path, the VDUSE driver will make use of message
-> > > > mechnism to forward the config operation from vdpa bus driver
-> > > > to userspace. Userspace can use read()/write() to receive/reply
-> > > > those control messages.
-> > > > 
-> > > > In the data path, the core is mapping dma buffer into VDUSE
-> > > > daemon's address space, which can be implemented in different ways
-> > > > depending on the vdpa bus to which the vDPA device is attached.
-> > > > 
-> > > > In virtio-vdpa case, we implements a MMU-based on-chip IOMMU driver with
-> > > > bounce-buffering mechanism to achieve that. And in vhost-vdpa case, the dma
-> > > > buffer is reside in a userspace memory region which can be shared to the
-> > > > VDUSE userspace processs via transferring the shmfd.
-> > > > 
-> > > > The details and our user case is shown below:
-> > > > 
-> > > > ------------------------    -------------------------   ----------------------------------------------
-> > > > |            Container |    |              QEMU(VM) |   |                               VDUSE daemon |
-> > > > |       ---------      |    |  -------------------  |   | ------------------------- ---------------- |
-> > > > |       |dev/vdx|      |    |  |/dev/vhost-vdpa-x|  |   | | vDPA device emulation | | block driver | |
-> > > > ------------+-----------     -----------+------------   -------------+----------------------+---------
-> > > >              |                           |                            |                      |
-> > > >              |                           |                            |                      |
-> > > > ------------+---------------------------+----------------------------+----------------------+---------
-> > > > |    | block device |           |  vhost device |            | vduse driver |          | TCP/IP |    |
-> > > > |    -------+--------           --------+--------            -------+--------          -----+----    |
-> > > > |           |                           |                           |                       |        |
-> > > > | ----------+----------       ----------+-----------         -------+-------                |        |
-> > > > | | virtio-blk driver |       |  vhost-vdpa driver |         | vdpa device |                |        |
-> > > > | ----------+----------       ----------+-----------         -------+-------                |        |
-> > > > |           |      virtio bus           |                           |                       |        |
-> > > > |   --------+----+-----------           |                           |                       |        |
-> > > > |                |                      |                           |                       |        |
-> > > > |      ----------+----------            |                           |                       |        |
-> > > > |      | virtio-blk device |            |                           |                       |        |
-> > > > |      ----------+----------            |                           |                       |        |
-> > > > |                |                      |                           |                       |        |
-> > > > |     -----------+-----------           |                           |                       |        |
-> > > > |     |  virtio-vdpa driver |           |                           |                       |        |
-> > > > |     -----------+-----------           |                           |                       |        |
-> > > > |                |                      |                           |    vdpa bus           |        |
-> > > > |     -----------+----------------------+---------------------------+------------           |        |
-> > > > |                                                                                        ---+---     |
-> > > > -----------------------------------------------------------------------------------------| NIC |------
-> > > >                                                                                           ---+---
-> > > >                                                                                              |
-> > > >                                                                                     ---------+---------
-> > > >                                                                                     | Remote Storages |
-> > > >                                                                                     -------------------
-> > > > 
-> > > > We make use of it to implement a block device connecting to
-> > > > our distributed storage, which can be used both in containers and
-> > > > VMs. Thus, we can have an unified technology stack in this two cases.
-> > > > 
-> > > > To test it with null-blk:
-> > > > 
-> > > >    $ qemu-storage-daemon \
-> > > >        --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
-> > > >        --monitor chardev=charmonitor \
-> > > >        --blockdev driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0 \
-> > > >        --export type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
-> > > > 
-> > > > The qemu-storage-daemon can be found at https://github.com/bytedance/qemu/tree/vduse
-> > > > 
-> > > > To make the userspace VDUSE processes such as qemu-storage-daemon able to
-> > > > run unprivileged. We did some works on virtio driver to avoid trusting
-> > > > device, including:
-> > > > 
-> > > >    - validating the device status:
-> > > > 
-> > > >      * https://lore.kernel.org/lkml/20210517093428.670-1-xieyongji@bytedance.com/
-> > > > 
-> > > >    - validating the used length:
-> > > > 
-> > > >      * https://lore.kernel.org/lkml/20210517090836.533-1-xieyongji@bytedance.com/
-> > > > 
-> > > >    - validating the device config:
-> > > > 
-> > > >      * patch 4 ("virtio-blk: Add validation for block size in config space")
-> > > > 
-> > > >    - validating the device response:
-> > > > 
-> > > >      * patch 5 ("virtio_scsi: Add validation for residual bytes from response")
-> > > > 
-> > > > Since I'm not sure if I missing something during auditing, especially on some
-> > > > virtio device drivers that I'm not familiar with, now we only support emualting
-> > > > a few vDPA devices by default, including: virtio-net device, virtio-blk device,
-> > > > virtio-scsi device and virtio-fs device. This limitation can help to reduce
-> > > > security risks.
-> > > I suspect there are a lot of assumptions even with these 4.
-> > > Just what are the security assumptions and guarantees here?
-> 
-> 
-> Note that VDUSE is not the only device that may suffer from this, here're
-> two others:
-> 
-> 1) Encrypted VM
 
-Encrypted VMs are generally understood not to be fully
-protected from attacks by a malicious hypervisor. For example
-a DoS by a hypervisor is currently trivial.
+On 24/05/2021 22:02, Dmitry Osipenko wrote:
 
-> 2) Smart NICs
+...
 
-More or less the same thing.
+>>> The 128*srate gives MCLK >6MHZ for 64/88/96, 256*srate gives MCLK >6MHZ
+>>> for rates below 64kHZ. Looks like the goal is to get MCLK >6MHZ.
+>>
+>> The wm8903 supports 8kHz sample rates and 256*8000 is less than 6MHz.
+>> Yes the FIXME loop corrects this, but you could also extend the case
+>> statement to multiply by 512 for 8kHz.
+> 
+> But what benefits this extension will bring to us if the end result is
+> the same?
 
+For the wm8903, nothing, but that is not the concern really.
 
+>>>  The WM8903 datasheet says:
+>>>
+>>> "The  following  operating  frequency  limits  must  be  observed  when
+>>>  configuring  CLK_SYS.  Failure  to  observe   these   limits   will
+>>> result   in   degraded  noise   performance   and/or   incorrect
+>>> ADC/DAC  functionality.
+>>>
+>>> If DAC_OSR = 0 then CLK_SYS  3MHz
+>>> If DAC_OSR = 1 then CLK_SYS  6MHz"
+>>>
+>>> Where DAC_OSR is DAC Oversampling Control
+>>> 0 = Low power (normal oversample)
+>>> 1 = High performance (double rate)
+>>>
+>>> I see that DAC_OSR=0 by default, it can be switched to 1 by userspace
+>>> ALSA control.
+>>>
+>>
+>> Yes that is all fine, but again this is specific to the wm8903.
 > 
-> > The attack surface from a virtio device is limited with IOMMU enabled.
-> > It should be able to avoid security risk if we can validate all data
-> > such as config space and used length from device in device driver.
-> > 
-> > > E.g. it seems pretty clear that exposing a malformed FS
-> > > to a random kernel config can cause untold mischief.
-> > > 
-> > > Things like virtnet_send_command are also an easy way for
-> > > the device to DOS the kernel.
-> 
-> 
-> I think the virtnet_send_command() needs to use interrupt instead of
-> polling.
-> 
-> Thanks
-> 
-> 
-> > > And before you try to add
-> > > an arbitrary timeout there - please don't,
-> > > the fix is moving things that must be guaranteed into kernel
-> > > and making things that are not guaranteed asynchronous.
-> > > Right now there are some things that happen with locks taken,
-> > > where if we don't wait for device we lose the ability to report failures
-> > > to userspace. E.g. all kind of netlink things are like this.
-> > > One can think of a bunch of ways to address this, this
-> > > needs to be discussed with the relevant subsystem maintainers.
-> > > 
-> > > 
-> > > If I were you I would start with one type of device, and as simple one
-> > > as possible.
-> > > 
-> > Make sense to me. The virtio-blk device might be a good start. We
-> > already have some existing interface like NBD to do similar things.
-> > 
-> > > 
-> > > > When a sysadmin trusts the userspace process enough, it can relax
-> > > > the limitation with a 'allow_unsafe_device_emulation' module parameter.
-> > > That's not a great security interface. It's a global module specific knob
-> > > that just allows any userspace to emulate anything at all.
-> > > Coming up with a reasonable interface isn't going to be easy.
-> > > For now maybe just have people patch their kernels if they want to
-> > > move fast and break things.
-> > > 
-> > OK. A reasonable interface can be added if we need it in the future.
-> > 
-> > Thanks,
-> > Yongji
+> Alright, I'll move it to the WM8903 driver in v4. It won't be a problem
+> to make that function shared once will be actually needed.
 
+Thanks, but it should only be shared if other codecs actually have this
+same requirement. From what you have said about the rt5631 it is not
+clear that it actually is the same or not.
+
+Jon
+
+-- 
+nvpublic
