@@ -2,239 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB8438FAF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6633438FAF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhEYGdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhEYGdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:33:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68A6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:32:22 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id gb17so27457094ejc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:32:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1Npec4j21TKcPJnHz/t9cKkJ+ksFmk6C4YwBaFuicIo=;
-        b=YAD0Y2U2SNdW6AmTzETze1shnoNYUN9OFgFgNfjCFstBiArSx7KspTTu1pIW2CqZ68
-         jnKnXKl2Vx7XfBiVk2mMUxFDx2SOSj1xWnzTrBPBa/5F+vmiCm9ZSrc1jaiTcKNqn1iU
-         SMLhCHZc+TRj8djWGezYBEgM2w2wSYq4qj/ymfLFkyjKY3O5ZOmP1eACbOND7kY7h8vw
-         FCm5wDknp2snGrBtUHB5rSvrtSIr1H/ZOValfctrnCxlkDDkpDB+NKhrsS3bll1ChpIq
-         9Jyapk+WKaLEg8bOW6r0ZN4Q3gYKsOunKYUSulj97sve1DEMv+yQgR6SnyL9Gi/W2Yi5
-         pz7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1Npec4j21TKcPJnHz/t9cKkJ+ksFmk6C4YwBaFuicIo=;
-        b=pS1MIWN3sQKDkwsVySWV5FgKgJOSPdJxuPX8PbAtorjpPCyinAPlNOLRd/Gklh5xV8
-         ELHJchYpPE+CID4WDRDh5+/mIgyx7JTOhKDvwxCXOs/eNyCpjYkie/hVVeWWngmqTJIF
-         aFze8vyjUyBXKdA3Ogiz4N72+rtkx+hTdMJOfLOGOfEQ2/XBXTlpoVgTRfUniqv60Dm6
-         3hIO6Tuf8Rl/tV9ryiwJCQvxYSobPYPhVUoR/QYXrDddwafbfpw7Ltf8ljb/kMeDdG6Q
-         IOZnwvI0b430vmpYNwzC8dXG05YrFmLf3D/M4QaXOblPNycvLcY/coBPUFEDtwPDxIzw
-         lUuQ==
-X-Gm-Message-State: AOAM533J5Wo08iw0TXqzn5QHMR3KAnwvjZuROtxumu+fKWoojI4fshtn
-        ebqpNtD4Y3DXim7P6aV9ASEnHCXQ9bDDei95WBi6jA==
-X-Google-Smtp-Source: ABdhPJytCqlexeIP8Ii4HDaw0F8r74XDTUDMJ0xaWE6dZbP0B8Ce8JwIv2b6n6GJrW1VC4Khsp3Tvb+IvBw97sgXsCA=
-X-Received: by 2002:a17:906:4e59:: with SMTP id g25mr27101842ejw.133.1621924341397;
- Mon, 24 May 2021 23:32:21 -0700 (PDT)
+        id S231295AbhEYGeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhEYGeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 02:34:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37FFE613F9;
+        Tue, 25 May 2021 06:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621924366;
+        bh=dVExLfnCVZqYe3eNwRemhJxcDdfYE0+QFcsnG1//2B8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GFYBistckZa7zViRbOEXz8IkGPMdIazRbUeMSmiOPU0xiT2mDuitA3cu8Px5vobQH
+         WX2iJUFxtfXMjFAymbNA9UlWo7oRQ7RjRJXAd6rL3FKUxZPSgURBt8+UXsxp5RYIu9
+         6zru2Uwt+boviO2KCjPj7AVW+kR/YPAEpYuvPSOCIvBGD0nqRTW0uDaxyW6szER4LI
+         eJ4FPNVv/V9SjwqFGKntGHpP7CQRm41F0k+F970PxPXrukh7CJniSVKqTMkDDBKLWE
+         Bi8qkrCHIyBJ/FQMBAoBK8H1RcfGvLDysXz0p8DBWbaM2xuxC76rsgesaT3iySzHo2
+         zqHoDEsLGYqUw==
+Date:   Tue, 25 May 2021 09:32:38 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, david@redhat.com, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+Message-ID: <YKyaBi9zoTsCNrgd@kernel.org>
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <10e5eecf-3ef5-f691-f38a-7ca305b707c1@arm.com>
+ <YKtNH09vbtWeZ830@kernel.org>
+ <ba369b7c-81b4-d823-3c4c-df1e4fd6e9a2@arm.com>
 MIME-Version: 1.0
-References: <20210524152334.857620285@linuxfoundation.org>
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 25 May 2021 12:02:09 +0530
-Message-ID: <CA+G9fYvOABhF_WjGp1NEeWTqBx=0YxNWydr_g6uQGhN5AOHE8A@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/127] 5.12.7-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba369b7c-81b4-d823-3c4c-df1e4fd6e9a2@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 at 21:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.7 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.12.7-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, May 25, 2021 at 11:30:15AM +0530, Anshuman Khandual wrote:
+> 
+> On 5/24/21 12:22 PM, Mike Rapoport wrote:
+> > Hello Anshuman,
+> > 
+> > On Mon, May 24, 2021 at 10:28:32AM +0530, Anshuman Khandual wrote:
+> >>
+> >> On 4/22/21 1:20 PM, Anshuman Khandual wrote:
+> >>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+> >>> memory sections might have contained memmap holes after freeing parts of it
+> >>> during boot, which should be skipped while validating a pfn for struct page
+> >>> backing. This scenario on certain platforms where memmap is not continuous,
+> >>> could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+> >>> Then the generic pfn_valid() can be improved to accommodate such platforms.
+> >>> This reduces overall code footprint and also improves maintainability.
+> >>>
+> >>> free_unused_memmap() and pfn_to_online_page() have been updated to include
+> >>> such cases. This also exports memblock_is_memory() for all drivers that use
+> >>> pfn_valid() but lack required visibility. After the new config is in place,
+> >>> drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+> >>>
+> >>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >>> Cc: Will Deacon <will@kernel.org>
+> >>> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >>> Cc: Mike Rapoport <rppt@kernel.org>
+> >>> Cc: David Hildenbrand <david@redhat.com>
+> >>> Cc: linux-arm-kernel@lists.infradead.org
+> >>> Cc: linux-kernel@vger.kernel.org
+> >>> Cc: linux-mm@kvack.org
+> >>> Suggested-by: David Hildenbrand <david@redhat.com>
+> >>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >>> ---
+> >>> This patch applies on the latest mainline kernel after Mike's series
+> >>> regarding arm64 based pfn_valid().
+> >>>
+> >>> https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+> >>>
+> >>> Changes in RFC V2:
+> >>>
+> >>> - Dropped support for arm (32 bit)
+> >>> - Replaced memblock_is_map_memory() check with memblock_is_memory()
+> >>> - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+> >>> - Updated pfn_to_online_page() per David
+> >>> - Updated free_unused_memmap() to preserve existing semantics per Mike
+> >>> - Exported memblock_is_memory() instead of memblock_is_map_memory()
+> >>>
+> >>> Changes in RFC V1:
+> >>>
+> >>> - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+> >>>
+> >>>  arch/arm64/Kconfig            |  2 +-
+> >>>  arch/arm64/include/asm/page.h |  1 -
+> >>>  arch/arm64/mm/init.c          | 41 -----------------------------------
+> >>>  include/linux/mmzone.h        | 18 ++++++++++++++-
+> >>>  mm/Kconfig                    |  9 ++++++++
+> >>>  mm/memblock.c                 |  8 +++++--
+> >>>  mm/memory_hotplug.c           |  5 +++++
+> >>>  7 files changed, 38 insertions(+), 46 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> >>> index b4a9b493ce72..4cdc3570ffa9 100644
+> >>> --- a/arch/arm64/Kconfig
+> >>> +++ b/arch/arm64/Kconfig
+> >>> @@ -144,7 +144,6 @@ config ARM64
+> >>>  	select HAVE_ARCH_KGDB
+> >>>  	select HAVE_ARCH_MMAP_RND_BITS
+> >>>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+> >>> -	select HAVE_ARCH_PFN_VALID
+> >>>  	select HAVE_ARCH_PREL32_RELOCATIONS
+> >>>  	select HAVE_ARCH_SECCOMP_FILTER
+> >>>  	select HAVE_ARCH_STACKLEAK
+> >>> @@ -167,6 +166,7 @@ config ARM64
+> >>>  		if $(cc-option,-fpatchable-function-entry=2)
+> >>>  	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+> >>>  		if DYNAMIC_FTRACE_WITH_REGS
+> >>> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+> >>>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+> >>>  	select HAVE_FAST_GUP
+> >>>  	select HAVE_FTRACE_MCOUNT_RECORD
+> >>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+> >>> index 75ddfe671393..fcbef3eec4b2 100644
+> >>> --- a/arch/arm64/include/asm/page.h
+> >>> +++ b/arch/arm64/include/asm/page.h
+> >>> @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+> >>>  
+> >>>  typedef struct page *pgtable_t;
+> >>>  
+> >>> -int pfn_valid(unsigned long pfn);
+> >>>  int pfn_is_map_memory(unsigned long pfn);
+> >>>  
+> >>>  #include <asm/memory.h>
+> >>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> >>> index f431b38d0837..5731a11550d8 100644
+> >>> --- a/arch/arm64/mm/init.c
+> >>> +++ b/arch/arm64/mm/init.c
+> >>> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+> >>>  	free_area_init(max_zone_pfns);
+> >>>  }
+> >>>  
+> >>> -int pfn_valid(unsigned long pfn)
+> >>> -{
+> >>> -	phys_addr_t addr = PFN_PHYS(pfn);
+> >>> -
+> >>> -	/*
+> >>> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> >>> -	 * pfn. Else it might lead to false positives when
+> >>> -	 * some of the upper bits are set, but the lower bits
+> >>> -	 * match a valid pfn.
+> >>> -	 */
+> >>> -	if (PHYS_PFN(addr) != pfn)
+> >>> -		return 0;
+> >>> -
+> >>> -#ifdef CONFIG_SPARSEMEM
+> >>> -{
+> >>> -	struct mem_section *ms;
+> >>> -
+> >>> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+> >>> -		return 0;
+> >>> -
+> >>> -	ms = __pfn_to_section(pfn);
+> >>> -	if (!valid_section(ms))
+> >>> -		return 0;
+> >>> -
+> >>> -	/*
+> >>> -	 * ZONE_DEVICE memory does not have the memblock entries.
+> >>> -	 * memblock_is_memory() check for ZONE_DEVICE based
+> >>> -	 * addresses will always fail. Even the normal hotplugged
+> >>> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+> >>> -	 * memblock entries. Skip memblock search for all non early
+> >>> -	 * memory sections covering all of hotplug memory including
+> >>> -	 * both normal and ZONE_DEVICE based.
+> >>> -	 */
+> >>> -	if (!early_section(ms))
+> >>> -		return pfn_section_valid(ms, pfn);
+> >>> -}
+> >>> -#endif
+> >>> -	return memblock_is_memory(addr);
+> >>> -}
+> >>> -EXPORT_SYMBOL(pfn_valid);
+> >>> -
+> >>>  int pfn_is_map_memory(unsigned long pfn)
+> >>>  {
+> >>>  	phys_addr_t addr = PFN_PHYS(pfn);
+> >>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> >>> index 961f0eeefb62..18bf71665211 100644
+> >>> --- a/include/linux/mmzone.h
+> >>> +++ b/include/linux/mmzone.h
+> >>> @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+> >>>   *
+> >>>   * Return: 1 for PFNs that have memory map entries and 0 otherwise
+> >>>   */
+> >>> +bool memblock_is_memory(phys_addr_t addr);
+> >>> +
+> >>>  static inline int pfn_valid(unsigned long pfn)
+> >>>  {
+> >>> +	phys_addr_t addr = PFN_PHYS(pfn);
+> >>>  	struct mem_section *ms;
+> >>>  
+> >>> +	/*
+> >>> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> >>> +	 * pfn. Else it might lead to false positives when
+> >>> +	 * some of the upper bits are set, but the lower bits
+> >>> +	 * match a valid pfn.
+> >>> +	 */
+> >>> +	if (PHYS_PFN(addr) != pfn)
+> >>> +		return 0;
+> >>> +
+> >>>  	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+> >>>  		return 0;
+> >>>  	ms = __nr_to_section(pfn_to_section_nr(pfn));
+> >>> @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+> >>>  	 * Traditionally early sections always returned pfn_valid() for
+> >>>  	 * the entire section-sized span.
+> >>>  	 */
+> >>> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+> >>> +	if (early_section(ms))
+> >>> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+> >>> +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+> >>> +
+> >>> +	return pfn_section_valid(ms, pfn);
+> >>>  }
+> >>>  #endif
+> >>
+> >> Hello David/Mike,
+> >>
+> >> Now that pfn_is_map_memory() usage has been decoupled from pfn_valid() and
+> >> SPARSEMEM_VMEMMAP is only available memory model on arm64, wondering if we
+> >> still need this HAVE_EARLY_SECTION_MEMMAP_HOLES proposal ? Please do kindly
+> >> suggest. Thank you.
+> > 
+> > Even now arm64 still frees parts of the memory map and pfn_valid() should
+> > be able to tell if a part of a section is freed or not.
+> > 
+> > For instance for the following memory configuration
+> >     
+> >         |<----section---->|<----hole---->|<----section---->|
+> >         +--------+--------+--------------+--------+--------+
+> >         | bank 0 | unused |              | bank 1 | unused |
+> >         +--------+--------+--------------+--------+--------+
+> > 
+> > the memory map corresponding to the "unused" areas is freed, but the generic
+> > pfn_valid() will still return 1 there.
+> 
+> But is not free_unused_memmap() return early when CONFIG_SPARSEMEM_VMEMMAP
+> is enabled, which is the only option now on arm64. Then how can memmap have
+> holes (from unused areas) anymore ? Am I missing something here.
+ 
+Ah, you are right, I missed this detail myself :)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+With CONFIG_SPARSEMEM_VMEMMAP as the only memory model for arm64, we can
+simply rid of arm64::pfn_valid() without any changes to the generic
+version.
+ 
+> > So we either should stop freeing unused memory map on arm64, or keep
+> > arm64::pfn_valid() or implement something along the lines of this patch.
+> > 
+> > I personally don't think that the memory savings from freeing the unused
+> > memory map worth the pain of maintenance and bugs happening here and there.
+> > 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.12.7-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.12.y
-* git commit: 63b7a7baa77d39a089c1c64e5b046712ef598dc0
-* git describe: v5.12.6-128-g63b7a7baa77d
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
-.6-128-g63b7a7baa77d
-
-## No regressions (compared to v5.12.5-44-gee71fa12d93b)
-
-## No fixes (compared to v5.12.5-44-gee71fa12d93b)
-
-
-## Test result summary
- total: 80158, pass: 66564, fail: 1593, skip: 11381, xfail: 620,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsysca[
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Sincerely yours,
+Mike.
