@@ -2,206 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CBB390628
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101EA39062F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhEYQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:06:51 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58280 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230422AbhEYQGl (ORCPT
+        id S234328AbhEYQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233469AbhEYQHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:06:41 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PG0s89019506;
-        Tue, 25 May 2021 09:04:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=DGHll5mQSSb6B5JJsJVJhXgotbT3M2ufRWY0rxNnHhg=;
- b=RflbZgIlvP4V1iEoPSJU1mXXoZ+68/HBqNGeZAMHQ0X35CbIGSglNbTePNIwmqdnYHek
- ti1vSYMllgp0V40oVUwYfOnflEGkxHkn/eBDFycldOCKxrj0zmncZWn4a8kV2M6+hXd1
- wBi2IBb0+FlCjJkq4hBrLfmVquXyROb3T3MUyiSj7nKLptJjLeZemjLSiEjfS+TTA9bA
- s/XnnwjXUdX+T0V3rXPLYmswJ22mquB6Fe5EjVjquiGk53QSddo5wU4bJZ6jZO6vz5ql
- OkOCz9vY/efVReLrcauQ2aTtcenY/xMrmPPZ4sZPwRJ/jlZKavrbs1F/+iIeeOSHrfYR Fg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 38s0fes35u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 09:04:52 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 09:04:51 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 09:04:51 -0700
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 6EFC43F703F;
-        Tue, 25 May 2021 09:04:48 -0700 (PDT)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH net] net: mvpp2: add buffer header handling in RX
-Date:   Tue, 25 May 2021 19:04:41 +0300
-Message-ID: <1621958681-7890-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 25 May 2021 12:07:37 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CB8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:06:04 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q15so23095689pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LgVOVY2ibuyGuU/9wT6gXOqlRQyyb5+usGB0r4sYDWo=;
+        b=RrfJyelQGFQ10gxDLNjm7SXx+DIwmxk6NevLQkNWMmrut40zA/RdZf1xzB54H3BJHE
+         a5D4wR4VEGUIskrKVZnNE2MEhXYj9e4f21/b6gRkrt5iZH5pL+LSSQeLtMZO7XmuoRDN
+         +ckoRMemeP1aW8Ui5BNNxJEbtU+E9t1llc67qUjWPQPoEOjbkcxxfu37ofHkYE4NDmMF
+         7JKkDcHcM0f12uyw353MJuc1hT0HjBkVKCM5Hojk/VcAMjo14S83lopi0DLq512ou6e2
+         320XDjwIb0y+zwKIrHVYwnAla8iSi5IMOOk6Se8HvqUIQN8IzxMZ2tmZuZr2tkQ5f5lA
+         DK2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LgVOVY2ibuyGuU/9wT6gXOqlRQyyb5+usGB0r4sYDWo=;
+        b=Mjmtro9oQ35eHWI6sR0/yQ1M+rZz7enwbM8cVPEzqoBKdQWpUgXe16N+yMe6T17fhs
+         Gqy8TjCpqNmR0mcqmzJCNrte23jxMQIXhPhjznmzxn6YvgFaPLpMgNeDFN5eRpj4zpzP
+         g5BaYHlpFvF5SbuA0WbltfRW2z9H79m/zwFNK1XcZ93BSzaOoq9DNyu37ZDEPBZ8JwLX
+         E25oWwcYPtV5Z/q7My9LfLFvsZJ4ZcokhHJ9mmprVdgS77GZLMkLwSXMJvXCqR+h01nt
+         EfTsLmlHHC/zKbXJJULhjSbt05DiUJyvAd0ecVGXmc4MSqkPnE2MabjpDhxPI3BcRwT1
+         xz/g==
+X-Gm-Message-State: AOAM531FxTJ00xZley2urr1Ny1+izCKHYB0FfvGMamemGVABWmaf/rXD
+        WLJg8B9AJ1l3GInXYDwyEAomBA==
+X-Google-Smtp-Source: ABdhPJxPfpL1r4PSy4t6tPOfWDdctGgiCOwK/xTk1FvajZnTSCfgq3VdUH4BkHF6Zh2BZ4YSVR23dw==
+X-Received: by 2002:aa7:8b44:0:b029:2dd:4cfc:7666 with SMTP id i4-20020aa78b440000b02902dd4cfc7666mr31201526pfd.73.1621958764164;
+        Tue, 25 May 2021 09:06:04 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h9sm12938162pja.42.2021.05.25.09.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 09:06:03 -0700 (PDT)
+Date:   Tue, 25 May 2021 16:05:59 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ilias Stamatis <ilstam@amazon.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, mlevitsk@redhat.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
+Subject: Re: [PATCH v3 10/12] KVM: VMX: Set the TSC offset and multiplier on
+ nested entry and exit
+Message-ID: <YK0gZ7ugquQxm2ce@google.com>
+References: <20210521102449.21505-1-ilstam@amazon.com>
+ <20210521102449.21505-11-ilstam@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: JIcBrC6vp_bn4iblFcFW9D8DKK2LokXu
-X-Proofpoint-GUID: JIcBrC6vp_bn4iblFcFW9D8DKK2LokXu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521102449.21505-11-ilstam@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+"KVM: nVMX:" for the scope.
 
-If Link Partner sends frames larger than RX buffer size, MAC mark it
-as oversize but still would pass it to the Packet Processor.
-In this scenario, Packet Processor scatter frame between multiple buffers,
-but only a single buffer would be returned to the Buffer Manager pool and
-it would not refill the poll.
+The shortlog is also a bit confusing.  I usually think of "set == write", i.e.
+I expected VMWRITEs in the diff.  The nested_vmx_vmexit() case in particular is
+gnarly because the actual VMWRITEs aren't captured in the diff's context.
 
-Patch add handling of oversize error with buffer header handling, so all
-buffers would be returned to the Buffer Manager pool.
+What about combining this with the next patch that exposes the feature to L1?
+E.g. "KVM: nVMX: Enable nested TSC scaling" or so.
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Reported-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 22 ++++++++
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 54 ++++++++++++++++----
- 2 files changed, 67 insertions(+), 9 deletions(-)
+That would avoid bikeshedding the meaning of "set", fix the goof in the next patch's
+shortlog (KVM exposes the feature to L1, not L2), and eliminate an unnecessary
+patch for bisection purposes.  Bisecting to a patch that exposes the feature but
+doesn't introduce any actual functionality isn't all that helpful, e.g. if there
+is a bug in _this_ patch then bisection will arguably point at the wrong patch.
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 8edba5e..4a61c90 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -993,6 +993,14 @@ enum mvpp22_ptp_packet_format {
- 
- #define MVPP2_DESC_DMA_MASK	DMA_BIT_MASK(40)
- 
-+/* Buffer header info bits */
-+#define MVPP2_B_HDR_INFO_MC_ID_MASK	0xfff
-+#define MVPP2_B_HDR_INFO_MC_ID(info)	((info) & MVPP2_B_HDR_INFO_MC_ID_MASK)
-+#define MVPP2_B_HDR_INFO_LAST_OFFS	12
-+#define MVPP2_B_HDR_INFO_LAST_MASK	BIT(12)
-+#define MVPP2_B_HDR_INFO_IS_LAST(info) \
-+	   (((info) & MVPP2_B_HDR_INFO_LAST_MASK) >> MVPP2_B_HDR_INFO_LAST_OFFS)
-+
- struct mvpp2_tai;
- 
- /* Definitions */
-@@ -1002,6 +1010,20 @@ struct mvpp2_rss_table {
- 	u32 indir[MVPP22_RSS_TABLE_ENTRIES];
- };
- 
-+struct mvpp2_buff_hdr {
-+	__le32 next_phys_addr;
-+	__le32 next_dma_addr;
-+	__le16 byte_count;
-+	__le16 info;
-+	__le16 reserved1;	/* bm_qset (for future use, BM) */
-+	u8 next_phys_addr_high;
-+	u8 next_dma_addr_high;
-+	__le16 reserved2;
-+	__le16 reserved3;
-+	__le16 reserved4;
-+	__le16 reserved5;
-+};
-+
- /* Shared Packet Processor resources */
- struct mvpp2 {
- 	/* Shared registers' base addresses */
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index d415447..f774dcf 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -3840,6 +3840,35 @@ static void mvpp2_xdp_finish_tx(struct mvpp2_port *port, u16 txq_id, int nxmit,
- 	return ret;
- }
- 
-+static void mvpp2_buff_hdr_pool_put(struct mvpp2_port *port, struct mvpp2_rx_desc *rx_desc,
-+				    int pool, u32 rx_status)
-+{
-+	phys_addr_t phys_addr, phys_addr_next;
-+	dma_addr_t dma_addr, dma_addr_next;
-+	struct mvpp2_buff_hdr *buff_hdr;
-+
-+	phys_addr = mvpp2_rxdesc_dma_addr_get(port, rx_desc);
-+	dma_addr = mvpp2_rxdesc_cookie_get(port, rx_desc);
-+
-+	do {
-+		buff_hdr = (struct mvpp2_buff_hdr *)phys_to_virt(phys_addr);
-+
-+		phys_addr_next = le32_to_cpu(buff_hdr->next_phys_addr);
-+		dma_addr_next = le32_to_cpu(buff_hdr->next_dma_addr);
-+
-+		if (port->priv->hw_version >= MVPP22) {
-+			phys_addr_next |= ((u64)buff_hdr->next_phys_addr_high << 32);
-+			dma_addr_next |= ((u64)buff_hdr->next_dma_addr_high << 32);
-+		}
-+
-+		mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
-+
-+		phys_addr = phys_addr_next;
-+		dma_addr = dma_addr_next;
-+
-+	} while (!MVPP2_B_HDR_INFO_IS_LAST(le16_to_cpu(buff_hdr->info)));
-+}
-+
- /* Main rx processing */
- static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		    int rx_todo, struct mvpp2_rx_queue *rxq)
-@@ -3886,14 +3915,6 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 			MVPP2_RXD_BM_POOL_ID_OFFS;
- 		bm_pool = &port->priv->bm_pools[pool];
- 
--		/* In case of an error, release the requested buffer pointer
--		 * to the Buffer Manager. This request process is controlled
--		 * by the hardware, and the information about the buffer is
--		 * comprised by the RX descriptor.
--		 */
--		if (rx_status & MVPP2_RXD_ERR_SUMMARY)
--			goto err_drop_frame;
--
- 		if (port->priv->percpu_pools) {
- 			pp = port->priv->page_pool[pool];
- 			dma_dir = page_pool_get_dma_dir(pp);
-@@ -3905,6 +3926,18 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 					rx_bytes + MVPP2_MH_SIZE,
- 					dma_dir);
- 
-+		/* Buffer header not supported */
-+		if (rx_status & MVPP2_RXD_BUF_HDR)
-+			goto err_drop_frame;
-+
-+		/* In case of an error, release the requested buffer pointer
-+		 * to the Buffer Manager. This request process is controlled
-+		 * by the hardware, and the information about the buffer is
-+		 * comprised by the RX descriptor.
-+		 */
-+		if (rx_status & MVPP2_RXD_ERR_SUMMARY)
-+			goto err_drop_frame;
-+
- 		/* Prefetch header */
- 		prefetch(data);
- 
-@@ -3986,7 +4019,10 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		dev->stats.rx_errors++;
- 		mvpp2_rx_error(port, rx_desc);
- 		/* Return the buffer to the pool */
--		mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
-+		if (rx_status & MVPP2_RXD_BUF_HDR)
-+			mvpp2_buff_hdr_pool_put(port, rx_desc, pool, rx_status);
-+		else
-+			mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
- 	}
- 
- 	rcu_read_unlock();
--- 
-1.9.1
-
+On Fri, May 21, 2021, Ilias Stamatis wrote:
+> Calculate the nested TSC offset and multiplier on entering L2 using the
+> corresponding functions. Restore the L1 values on L2's exit.
+> 
+> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 239154d3e4e7..f75c4174cbcf 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2532,6 +2532,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>  		vmcs_write64(GUEST_IA32_PAT, vmx->vcpu.arch.pat);
+>  	}
+>  
+> +	vcpu->arch.tsc_offset = kvm_calc_nested_tsc_offset(
+> +			vcpu->arch.l1_tsc_offset,
+> +			vmx_get_l2_tsc_offset(vcpu),
+> +			vmx_get_l2_tsc_multiplier(vcpu));
+> +
+> +	vcpu->arch.tsc_scaling_ratio = kvm_calc_nested_tsc_multiplier(
+> +			vcpu->arch.l1_tsc_scaling_ratio,
+> +			vmx_get_l2_tsc_multiplier(vcpu));
+> +
+>  	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
+>  	if (kvm_has_tsc_control)
+>  		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
+> @@ -3353,8 +3362,6 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>  	}
+>  
+>  	enter_guest_mode(vcpu);
+> -	if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING)
+> -		vcpu->arch.tsc_offset += vmcs12->tsc_offset;
+>  
+>  	if (prepare_vmcs02(vcpu, vmcs12, &entry_failure_code)) {
+>  		exit_reason.basic = EXIT_REASON_INVALID_STATE;
+> @@ -4462,8 +4469,11 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+>  	if (nested_cpu_has_preemption_timer(vmcs12))
+>  		hrtimer_cancel(&to_vmx(vcpu)->nested.preemption_timer);
+>  
+> -	if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING)
+> -		vcpu->arch.tsc_offset -= vmcs12->tsc_offset;
+> +	if (nested_cpu_has(vmcs12, CPU_BASED_USE_TSC_OFFSETTING)) {
+> +		vcpu->arch.tsc_offset = vcpu->arch.l1_tsc_offset;
+> +		if (nested_cpu_has2(vmcs12, SECONDARY_EXEC_TSC_SCALING))
+> +			vcpu->arch.tsc_scaling_ratio = vcpu->arch.l1_tsc_scaling_ratio;
+> +	}
+>  
+>  	if (likely(!vmx->fail)) {
+>  		sync_vmcs02_to_vmcs12(vcpu, vmcs12);
+> -- 
+> 2.17.1
+> 
