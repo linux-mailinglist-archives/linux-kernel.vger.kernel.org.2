@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C90E3903DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC5E3903E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhEYO06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:26:58 -0400
-Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:46427 "EHLO
-        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233600AbhEYO04 (ORCPT
+        id S233870AbhEYO2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233406AbhEYO2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:26:56 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id 44FD0FAC79
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:25:26 +0100 (IST)
-Received: (qmail 29112 invoked from network); 25 May 2021 14:25:26 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 14:25:26 -0000
-Date:   Tue, 25 May 2021 15:25:24 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/14] Clean W=1 build warnings for mm/
-Message-ID: <20210525142524.GU30378@techsingularity.net>
-References: <20210520084809.8576-1-mgorman@techsingularity.net>
- <aad3f04f-850a-b134-d0a7-b24af9721ddb@suse.cz>
+        Tue, 25 May 2021 10:28:01 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E915C061574;
+        Tue, 25 May 2021 07:26:30 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id t206so16883239wmf.0;
+        Tue, 25 May 2021 07:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=epLKaHTVL/G/oEp3w4hmWyDYOH6fS3V0skMQYYC57zM=;
+        b=ZJm7QiJucxLkaU0MkFh4syoJHoJa88wWLqVHEpxyninukg4EzZ0yqd4kl3Y18hs1Kd
+         GhsMVBmcU5YDf0wr55e6gsPJl6GXpll5/3U+RlxGXmbRc8t3ssCwBDyu9RVa5xSJStnd
+         x5dyrUgFL7GGBMq4GmztB/GhQoslqML1iZu0TBBXmnKlOUf8tMx2sUYNonuNd8XKCtym
+         7cAaTQ+mPVnygAAMliH0suBxnsCzbQ9DwyHaMJ4R56741eP90yulLpWKdr6HQluPwljB
+         jIgb7rIttKkL98RqjOOZuF7DPJRyVNh5nye3W0BZyS2IIa0MH1Cxxxj09zNoE1eXrAQW
+         q0Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=epLKaHTVL/G/oEp3w4hmWyDYOH6fS3V0skMQYYC57zM=;
+        b=l2wUGw0x0T78DZ4EJWsqCjyB90tUsikQUW9hiLYWWOEvnVaKMH3PuzFsjfsAGnGHzN
+         nWVJFR/H6OpcbC+gSER63CpGAbW1nnGRiNccPVJ7c2cklFbRY7HQNId3kg5DbuFSTmYo
+         gpKJvvqDKP4ZFxixCsO9ye46qvX9Tj6oCRo/dFxt6aZJo+OHUc9RZZlYEYSCY/XI76sK
+         f0QhcWOjKndwc9xzQgJ5NQcWI0q44AhLyeLxhDl2rcRFzGPdmSsw311MRp/+114Zvy3j
+         XnhxA0ktyxOGIyjwkI1izOitaX7RCVq855iENga4XWwtVmV46fiWHRMzU5BnPIK2O+hH
+         LRag==
+X-Gm-Message-State: AOAM530XSVy7mbpwYgbf5C51/8jJ7HRC4KiicDm0ED55KSEb1sb0ju6m
+        MeXSEVny2bM8SZwAFSPK2Ds=
+X-Google-Smtp-Source: ABdhPJwknDwwydxk1KPREsDqwORF0i/m1F9UfMpuntaHYHLLs8a1GXlULUysA7WbZyNa1sH+wtvR0A==
+X-Received: by 2002:a7b:cb93:: with SMTP id m19mr4104135wmi.162.1621952788843;
+        Tue, 25 May 2021 07:26:28 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id a16sm15777472wrw.62.2021.05.25.07.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 07:26:28 -0700 (PDT)
+Date:   Tue, 25 May 2021 15:26:26 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
+Message-ID: <YK0JEhMq8rkv+LDG@debian>
+References: <20210524152332.844251980@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aad3f04f-850a-b134-d0a7-b24af9721ddb@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:48:26PM +0200, Vlastimil Babka wrote:
-> On 5/20/21 10:47 AM, Mel Gorman wrote:
-> > This is a janitorial only. During development of a tool to catch build
-> > warnings early to avoid tripping the Intel lkp-robot, I noticed that mm/
-> > is not clean for W=1. This is generally harmless but there is no harm in
-> > cleaning it up. It disrupts git blame a little but on relatively obvious
-> > lines that are unlikely to be git blame targets.
-> > 
-> >  include/asm-generic/early_ioremap.h | 9 +++++++++
-> >  include/linux/mmzone.h              | 5 ++++-
-> >  include/linux/swap.h                | 6 +++++-
-> >  mm/internal.h                       | 3 +--
-> >  mm/mapping_dirty_helpers.c          | 2 +-
-> >  mm/memcontrol.c                     | 2 +-
-> >  mm/memory_hotplug.c                 | 6 +++---
-> >  mm/mmap_lock.c                      | 2 ++
-> >  mm/page_alloc.c                     | 2 +-
-> >  mm/vmalloc.c                        | 3 +++
-> >  mm/vmscan.c                         | 2 +-
-> >  mm/z3fold.c                         | 2 ++
-> >  mm/zbud.c                           | 2 ++
-> >  13 files changed, 35 insertions(+), 11 deletions(-)
-> 
-> Thanks, looks good.
-> 
-> patch 3/14 subject looks like it should read just "mm/page_alloc: Make
-> should_fail_alloc_page a static function"
-> 
+Hi Greg,
 
-Yes it should. Andrew, do you mind fixing it directly instead of
-resending the entire series?
-
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Mon, May 24, 2021 at 05:24:55PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.40 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
 
-Thanks!
+Build test:
+mips (gcc version 11.1.1 20210523): 63 configs -> no failure
+arm (gcc version 11.1.1 20210523): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210523): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
--- 
-Mel Gorman
-SUSE Labs
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+arm64: Booted on rpi4b(4GB). No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
