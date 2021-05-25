@@ -2,182 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDC8390CA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BC6390CAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhEYXDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhEYXDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:03:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A217961284;
-        Tue, 25 May 2021 23:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621983734;
-        bh=XWQ4QbZ7knDZ4l/rQ3FBmjdjFtATkZb/gO19aGuRZyo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=abSDXGtKRnADXc7Beo8LuS7RCy66yWKLG4p5KUQSopJm3jKk669zkjJ61yJDsxiY9
-         Zbr2FFe3tfQw4FCnhUPac5D/8nF6+mWsK86t5E8TrVyKD3oL+rzXkp4t8Dw6W3z1dv
-         P3/4AKQhHxFJRa7Nb2jnW4yt5FFn6D3T8e/Ph+z5UvEyW8TIbLplQZyKAQORIrrnfK
-         hn44wUVHUpDGE4UqvyEs/Eep42pxDHHUd0DFb85Sem8cBkf1NnPGj1efrQTZ3DOdOg
-         EaC81G82Apae2x3Msy1Du8pEGBKaxSAIteR/jmkv4gc/DBO6fQ7IVrPQwQgy6mRVOm
-         2Y4yxbyq6pQiA==
-Date:   Tue, 25 May 2021 18:03:10 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] iavf: Replace one-element array in struct
- virtchnl_vf_resource
-Message-ID: <20210525230310.GA175595@embeddedor>
+        id S232109AbhEYXE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhEYXE5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:04:57 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D54C061574;
+        Tue, 25 May 2021 16:03:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso14411752wmm.3;
+        Tue, 25 May 2021 16:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=4EHmYkGshIC3oll6QN+CKRJkNhLPbP3P/9v9afF8x4A=;
+        b=Ci3AD0CWjfzF7rZgPEbDvs1YbkQ45yIUGn4YZErB3sstloTsd4ygxR+f6pvNRhtKex
+         BN+p5mg4PxrR3SNOvHUHtLDPnH1bcfvxtnnda/TRbykUEoqoF6igXvOU8sgBGGRGT7y7
+         VVzKiFcelsXTYzcKPv1TO1zAFbLStb/W5jmpwoumzxlCeUSxHJJZcAHgh6FCSAynFdBo
+         80smj1sJoJLWKCg+DgsW+gju1QdI0phCgNgq6VWucqZKqpp5+JUtgxOlhrraqQmjczE9
+         /hW+M/TvW/8dLEbaMPTx2HXsn57geMk8dACo53u1jtc5fKN+bLkaTDZwG+MqlI6zOVUk
+         N4WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4EHmYkGshIC3oll6QN+CKRJkNhLPbP3P/9v9afF8x4A=;
+        b=gJVHi9xlZSeQnUvVguLQBQDWrtfwuDGLAmOUkdJstdzA1WZJmXpwlg3KHbu/jWKagQ
+         wSTtBEM580SMhBOmd38gNVDmXU6FOrJv/pmJIfMuBqREQXeNxewG+J5mqPK1yrSBaquL
+         fIvNemwnCHYE0OLtwL1NJSzPO3E7sSTn3zc04iJXt0kGJv4MyvTUr31owCNXZfxciX2r
+         BVvHe8hjo69SxTbPla35TPjxTddoD8Q6gBFOoGxyA4cQEbWVQipNF2wMAJHQYplYw/lL
+         F7l3TnECurmwZekLhZ2hITE50dF12pSc+BbAf+W9NHZxa2/KnkFj0Sc7g3gA2gh0Mnmy
+         ZoCw==
+X-Gm-Message-State: AOAM533VKGLG76sHfE2WVJ50buhccS5oYn3iYyBL0w9rPq25vZYrPXxs
+        uv9GgH0sz5oaNRBm1w+4GG4=
+X-Google-Smtp-Source: ABdhPJx51rBU/rVj68kvEO6PrNXeyN6VkTRmnWmI/0fJneiHByBt+MxfL1RT/Bf31Mt5NVigNKjyEQ==
+X-Received: by 2002:a7b:c20b:: with SMTP id x11mr26634411wmi.150.1621983804609;
+        Tue, 25 May 2021 16:03:24 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.117])
+        by smtp.gmail.com with ESMTPSA id s15sm21429865wrt.54.2021.05.25.16.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 16:03:24 -0700 (PDT)
+Subject: Re: [PATCH v4 0/8] Introduce intel_skl_int3472 module
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org
+Cc:     Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+References: <20210520140928.3252671-1-djrscally@gmail.com>
+ <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <f4664310-0975-335d-8dc3-95726f53ab67@gmail.com>
+Date:   Wed, 26 May 2021 00:03:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having a
-dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+Hi Hans
 
-Refactor the code according to the use of a flexible-array member in struct
-virtchnl_vf_resource instead of one-element array, and use the struct_size()
-helper.
+On 25/05/2021 14:10, Hans de Goede wrote:
+> Hi Daniel,
+>
+> On 5/20/21 4:09 PM, Daniel Scally wrote:
+>> Hello all
+>>
+>> Apologies for the long delay since the last version of this series; the time I
+>> had free to work on it became somewhat restrained.
+> No worries, thank you for all the work you are putting into this.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
 
-Link: https://github.com/KSPP/linux/issues/79
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 5 ++---
- drivers/net/ethernet/intel/iavf/iavf.h             | 5 ++---
- drivers/net/ethernet/intel/iavf/iavf_virtchnl.c    | 9 ++++-----
- drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c   | 4 ++--
- include/linux/avf/virtchnl.h                       | 4 ++--
- 5 files changed, 12 insertions(+), 15 deletions(-)
+My pleasure
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index eff0a30790dd..c0afac8cf33b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -1978,7 +1978,6 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
- 	struct i40e_pf *pf = vf->pf;
- 	i40e_status aq_ret = 0;
- 	struct i40e_vsi *vsi;
--	int num_vsis = 1;
- 	size_t len = 0;
- 	int ret;
- 
-@@ -1987,7 +1986,7 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
- 		goto err;
- 	}
- 
--	len = struct_size(vfres, vsi_res, num_vsis);
-+	len = struct_size(vfres, vsi_res, 1);
- 	vfres = kzalloc(len, GFP_KERNEL);
- 	if (!vfres) {
- 		aq_ret = I40E_ERR_NO_MEMORY;
-@@ -2061,7 +2060,7 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
- 	if (vf->driver_caps & VIRTCHNL_VF_OFFLOAD_ADQ)
- 		vfres->vf_cap_flags |= VIRTCHNL_VF_OFFLOAD_ADQ;
- 
--	vfres->num_vsis = num_vsis;
-+	vfres->num_vsis = 1;
- 	vfres->num_queue_pairs = vf->num_queue_pairs;
- 	vfres->max_vectors = pf->hw.func_caps.num_msix_vectors_vf;
- 	vfres->rss_key_size = I40E_HKEY_ARRAY_SIZE;
-diff --git a/drivers/net/ethernet/intel/iavf/iavf.h b/drivers/net/ethernet/intel/iavf/iavf.h
-index e8bd04100ecd..2c212727c50d 100644
---- a/drivers/net/ethernet/intel/iavf/iavf.h
-+++ b/drivers/net/ethernet/intel/iavf/iavf.h
-@@ -89,9 +89,8 @@ struct iavf_vsi {
- #define IAVF_HLUT_ARRAY_SIZE ((IAVF_VFQF_HLUT_MAX_INDEX + 1) * 4)
- #define IAVF_MBPS_DIVISOR	125000 /* divisor to convert to Mbps */
- 
--#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE (sizeof(struct virtchnl_vf_resource) + \
--					(IAVF_MAX_VF_VSI * \
--					 sizeof(struct virtchnl_vsi_resource)))
-+#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE (struct_size((struct virtchnl_vf_resource *)0, \
-+					vsi_res, IAVF_MAX_VF_VSI))
- 
- /* MAX_MSIX_Q_VECTORS of these are allocated,
-  * but we only use one per queue-specific vector.
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-index 0eab3c43bdc5..b2392af4e048 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-@@ -198,8 +198,8 @@ int iavf_get_vf_config(struct iavf_adapter *adapter)
- 	enum iavf_status err;
- 	u16 len;
- 
--	len =  sizeof(struct virtchnl_vf_resource) +
--		IAVF_MAX_VF_VSI * sizeof(struct virtchnl_vsi_resource);
-+	len = struct_size((struct virtchnl_vf_resource *)0, vsi_res,
-+			  IAVF_MAX_VF_VSI);
- 	event.buf_len = len;
- 	event.msg_buf = kzalloc(event.buf_len, GFP_KERNEL);
- 	if (!event.msg_buf) {
-@@ -1662,9 +1662,8 @@ void iavf_virtchnl_completion(struct iavf_adapter *adapter,
- 		}
- 		break;
- 	case VIRTCHNL_OP_GET_VF_RESOURCES: {
--		u16 len = sizeof(struct virtchnl_vf_resource) +
--			  IAVF_MAX_VF_VSI *
--			  sizeof(struct virtchnl_vsi_resource);
-+		u16 len = struct_size((struct virtchnl_vf_resource *)0,
-+				      vsi_res, IAVF_MAX_VF_VSI);
- 		memcpy(adapter->vf_res, msg, min(msglen, len));
- 		iavf_validate_num_queues(adapter);
- 		iavf_vf_parse_hw_config(&adapter->hw, adapter->vf_res);
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-index a1d22d2aa0bd..5f1e0b45b8f5 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
-@@ -2295,7 +2295,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 	struct virtchnl_vf_resource *vfres = NULL;
- 	struct ice_pf *pf = vf->pf;
- 	struct ice_vsi *vsi;
--	int len = 0;
-+	size_t len = 0;
- 	int ret;
- 
- 	if (ice_check_vf_init(pf, vf)) {
-@@ -2303,7 +2303,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 		goto err;
- 	}
- 
--	len = sizeof(struct virtchnl_vf_resource);
-+	len = struct_size(vfres, vsi_res, 1);
- 
- 	vfres = kzalloc(len, GFP_KERNEL);
- 	if (!vfres) {
-diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
-index 565deea6ffe8..85a687bc6096 100644
---- a/include/linux/avf/virtchnl.h
-+++ b/include/linux/avf/virtchnl.h
-@@ -273,10 +273,10 @@ struct virtchnl_vf_resource {
- 	u32 rss_key_size;
- 	u32 rss_lut_size;
- 
--	struct virtchnl_vsi_resource vsi_res[1];
-+	struct virtchnl_vsi_resource vsi_res[];
- };
- 
--VIRTCHNL_CHECK_STRUCT_LEN(36, virtchnl_vf_resource);
-+VIRTCHNL_CHECK_STRUCT_LEN(20, virtchnl_vf_resource);
- 
- /* VIRTCHNL_OP_CONFIG_TX_QUEUE
-  * VF sends this message to set up parameters for one TX queue.
--- 
-2.27.0
+> I have not taken a close look at the code yet, but I see that Andy has and
+> the amount of remarks which he has on patch 7/8 which is the big one seems
+> to be limited, so I believe that we are getting close to this being ready
+> for merging.
+>
+> This touches a lot of subsystems, so we need to come up with a plan to
+> merge this. Here is my proposal for how to do this:
+>
+> 1/8   ACPI: scan: Extend acpi_walk_dep_device_list()
+> 2/8   ACPI: scan: Add function to fetch dependent of acpi device
+> 3/8   i2c: core: Add a format macro for I2C device names
+> 4/8   gpiolib: acpi: Export acpi_get_gpiod()
+> 5/8   clkdev: Make clkdev_drop() null aware
+> 6/8   gpiolib: acpi: Add acpi_gpio_get_io_resource()
+> 7/8   platform/x86: Add intel_skl_int3472 driver
+> 8/8   mfd: tps68470: Remove tps68470 MFD driver
+>
+> Rafael already indicated that he wants to merge 1/8 (and presumably also 2/8)
+> through his tree and that he will provide an immutable branch with those
+> for merging into the pdx86 tree.
+
+
+I'll send a v5 with the renames asap, might try and do the other changes
+and send the whole series, depends how much time I get to work on it
+over the next few days...
+
+> 4/8 and 6/8 are both gpiolib-acpi patches and seem to be ready for merging
+> now, perhaps the gpiolib-acpi maintainers can already merge these and also
+> provide an immutable branch ?  Andy/Mika ?
+
+
+So, Andy, you'd prefer I re-order these so they're consecutive...did I
+understand that right?
+
+> 3/8 and 5/8 seem to be nice cleanups, but not really necessary. IMHO it
+> would be best to park these cleanups for later and for 3/8 add the following
+> where necessary for now:
+>
+> /* FIXME drop this once the I2C_DEV_NAME_FORMAT macro has been added to include/linux/i2c.h */
+> #ifndef I2C_DEV_NAME_FORMAT
+> #define I2C_DEV_NAME_FORMAT		"i2c-%s"
+> #endif
+>
+> This is not the prettiest but it reduces all the subsys cross-deps and things
+> like this have been done before for similar reasons.
+>
+> Likewise it would be good if you can add if (foo) as condition before any
+> clkdev_drop(foo) calls in this patch-set and then merge
+> 5/8 "clkdev: Make clkdev_drop() null aware" independently of this and then
+> once both are in Linux tree follow-up with a cleanup patch dropping the if (foo)
+> guards.
+
+
+This is fine by me if people are happy for it to go in like that; I'll
+just fix it up later.
+
+> So this would leave as deps for 7/8 just the 2 ACPI and 2 gpiolib-acpi patches
+> which I can hopefully pull-in via immutable branches and then we are good.
+>
+> AFAICT patch 8/8 can be merged independently once 7/8 hits for-next (IOW once
+> we are sure the next kernel will have 7/8).
+>
+>
+>
+> Or alternatively one of the involved subsys maintainers just merges the entire
+> set (once it is ready) and then provides an immutable branch with the entire set
+> on top of 5.13-rc1 (or 5.14-rc1). But that requires acks from all the other
+> subsys maintainers. Note I'm fine with either approach.
 
