@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109B13901D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DF53901CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhEYNNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:13:54 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:25080 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233057AbhEYNN0 (ORCPT
+        id S233114AbhEYNNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233061AbhEYNN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 09:13:26 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 25 May 2021 06:11:41 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 May 2021 06:11:39 -0700
-X-QCInternal: smtphost
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 25 May 2021 18:40:58 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id 262F6334E; Tue, 25 May 2021 18:40:57 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, skananth@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH V11 2/2] i2c: i2c-qcom-geni: Suspend and resume the bus during SYSTEM_SLEEP_PM ops
-Date:   Tue, 25 May 2021 18:40:51 +0530
-Message-Id: <20210525131051.31250-3-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210525131051.31250-1-rojay@codeaurora.org>
-References: <20210525131051.31250-1-rojay@codeaurora.org>
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA38C061574;
+        Tue, 25 May 2021 06:11:40 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id w1so31623870ybt.1;
+        Tue, 25 May 2021 06:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/PFVsPOHgJ97hXva08hCaidxRFtp/e8m6uT8+4/8nNg=;
+        b=aXaYgSQIxTxzG86HRp5BgVVNaw3FvnwJE2m6gsrCgp4a+WBt5KZqi99KCQWocFkFU6
+         jqGbcBua/YXSRFDDT0GzPEuQExPBOLOKSu3qfOEi0gyUZmsIwBn71PrVyP6fZdRGk51Z
+         B47T0eL8XM9P2F0i6IlQwzoy7L1KxlnT75rmGVu48B83udu4Sqq0G6pJm/H/IdSOZDXK
+         qOHUR/OBnYsncq04s35YDlh6Da+Rpf6Xt4nvk+pyreWTOz35qXKmKtpzoxl9KmJhsiTX
+         0NKjTnRUaAJGSZI87T6jg7Hpz/Mdki3KGvY/udODyfxaZCeHy1eprqBYvm6/sWXwDRXw
+         15Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/PFVsPOHgJ97hXva08hCaidxRFtp/e8m6uT8+4/8nNg=;
+        b=X11geWEhYnZ0PtpjOuOd3I+wCErXaw2BmkV/YrDmMS64ACmctJy7dRrk0kgL07+VEs
+         ZXQ/dZmLbn1glDECKemGj/PPfNYXp76VpTyz9kjhHSjFPsTkdWqOqQ/Me2jecKrLIDMH
+         9tqiTacySxAgGH+pgfHGn7jXrH82hhxw/7pCSXw+02oDZfChepMp77VjUMau99eBqJgq
+         Gb5PPohK/z/w9/2SZsEMmGeFC9QFDEUosJoQPHHzrMdjZ2DXzcdv0BnP1Gg1lY8ASZtD
+         rV679jSNnVu5yYoYT6fjQ1sJTmzT14+cWEApZ3L+wUnPKkHiB2ciBu0EHId+SQMn0NQE
+         y+dQ==
+X-Gm-Message-State: AOAM530rB6aczhpx/OWfnupRUvmiqHRxBvXEGDbItvHIp+SwRf5L+XQ+
+        0L61p7iDP8jSHB9V6sZJPsJyWbhuNPg9JgLh4m4=
+X-Google-Smtp-Source: ABdhPJw7HXw8uszzkufyper3JITEPX4kBnV5R8/N5Dq9faUqPeNiyqcrmQ/UUVOQiDb7LTwmxJtncyCnhGCW7Ju90Ys=
+X-Received: by 2002:a25:4d56:: with SMTP id a83mr38354334ybb.437.1621948299686;
+ Tue, 25 May 2021 06:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210525122615.3972574-1-pgwipeout@gmail.com> <20210525122615.3972574-2-pgwipeout@gmail.com>
+ <YKz1R2+ivmRsjAoL@lunn.ch>
+In-Reply-To: <YKz1R2+ivmRsjAoL@lunn.ch>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 25 May 2021 09:11:28 -0400
+Message-ID: <CAMdYzYqHYu_aMw+EjeFP70HnbzJfC6md1fMT-yx0cs3MEF12ug@mail.gmail.com>
+Subject: Re: [PATCH 1/2] net: phy: fix yt8511 clang uninitialized variable warning
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark bus as suspended during system suspend to block the future
-transfers. Implement geni_i2c_resume_noirq() to resume the bus.
+On Tue, May 25, 2021 at 9:02 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Tue, May 25, 2021 at 08:26:14AM -0400, Peter Geis wrote:
+> > clang doesn't preinitialize variables. If phy_select_page failed and
+> > returned an error, phy_restore_page would be called with `ret` being
+> > uninitialized.
+> > Even though phy_restore_page won't use `ret` in this scenario,
+> > initialize `ret` to silence the warning.
+> >
+> > Fixes: b1b41c047f73 ("net: phy: add driver for Motorcomm yt8511 phy")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> > ---
+> >  drivers/net/phy/motorcomm.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/phy/motorcomm.c b/drivers/net/phy/motorcomm.c
+> > index 796b68f4b499..5795f446c528 100644
+> > --- a/drivers/net/phy/motorcomm.c
+> > +++ b/drivers/net/phy/motorcomm.c
+> > @@ -51,7 +51,7 @@ static int yt8511_write_page(struct phy_device *phydev, int page)
+> >  static int yt8511_config_init(struct phy_device *phydev)
+> >  {
+> >       unsigned int ge, fe;
+> > -     int ret, oldpage;
+> > +     int oldpage, ret = 0;
+>
+> Please keep to reverse Christmas tree.
 
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
----
-Changes in V11:
- - This is newly added patch in this V11 series.
+Ah, I missed that.
+Do you want a v2 or will it be fixed on application?
 
- drivers/i2c/busses/i2c-qcom-geni.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> With that fixed:
+>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>
+>     Andrew
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index c3ae66ba6345..671f4a52275e 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -698,6 +698,8 @@ static int __maybe_unused geni_i2c_suspend_noirq(struct device *dev)
- {
- 	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
- 
-+	i2c_mark_adapter_suspended(&gi2c->adap);
-+
- 	if (!gi2c->suspended) {
- 		geni_i2c_runtime_suspend(dev);
- 		pm_runtime_disable(dev);
-@@ -707,8 +709,16 @@ static int __maybe_unused geni_i2c_suspend_noirq(struct device *dev)
- 	return 0;
- }
- 
-+static int __maybe_unused geni_i2c_resume_noirq(struct device *dev)
-+{
-+	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
-+
-+	i2c_mark_adapter_resumed(&gi2c->adap);
-+	return 0;
-+}
-+
- static const struct dev_pm_ops geni_i2c_pm_ops = {
--	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(geni_i2c_suspend_noirq, NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(geni_i2c_suspend_noirq, geni_i2c_resume_noirq)
- 	SET_RUNTIME_PM_OPS(geni_i2c_runtime_suspend, geni_i2c_runtime_resume,
- 									NULL)
- };
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Thanks!
+Peter
