@@ -2,139 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64C638F7AB
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBBF38F7AA
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhEYBrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhEYBrG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:47:06 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB745C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:45:37 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id p39so5996315pfw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iXZ0+9ETp1B7CFCQZVO5oz6Pwzaz12W4xSxYSe2CX2g=;
-        b=BPR/REaLxN75GNL8EQhOAMzv/t8gccNmT+pYCgFcPaf5KjWb5ZUOVbjew74hYw6YTh
-         BYyM12Fct5J41cn/B2jYtn9R05rx7Pfq759bKPcCBnSZWuVbFLoViSWBgjclkWhkgzIi
-         Di8feHkoaMsCwJ1cjfp2SWWYv7+Ll+NpNdPCCMqwv/4XbJry1z+pXLRdUnhM5spJR0st
-         W31jvj5eSPCHpUsH2MAlILJGggzKWZwV13Dj0LJkEqpxo0fA5JK4a3baB92I06vXoJX4
-         ots175BWdkSpPNJl/6DVjgPvbbUi3kAB0dkMtPnpQU/DOkCgux/vVGjqB2a0uL6a02vy
-         H+EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXZ0+9ETp1B7CFCQZVO5oz6Pwzaz12W4xSxYSe2CX2g=;
-        b=R9UhIY+oLCHgpM9mwYzkBT10nqFUcdlSRbakA7ulUPJV/PFoOivBMYMWDZSoBPrtrW
-         D/tsiD6yb0NrkxDlGpX19PaAg/rrgkVlQ7DvWoRlDa8BtRBI3wXN8ot501NPUXp0KfRW
-         7/FHKQQRnXJhkNJSDLIw57CZn/EOVUkF+2w/hfowssQgaonb14oKikQ2jyyYoPf2Pb/x
-         TU1euJWSSA0IcP5/5e5k1RUMGC4svWFDCs46OH8ypX0INM86BeM9ncVftRtKXN9wgp1E
-         mJ3okLYxRDbtD5jNxTLsBO5g+m52PV49AKMHpnkrF9kDoRJjJCDKEl81Oa0leJgIA7rA
-         5qRw==
-X-Gm-Message-State: AOAM532Px28VSGsyPLjF14nT8rJSTNAYneat0uud79+76HHDEKoXFRbG
-        DCj5O150OcVoObULG2E3IcsplQx6qq2IMlHYFpFc6Q==
-X-Google-Smtp-Source: ABdhPJww/1ehWtjUv80BtzPOj1+7/CHScFxdIXI8PDYm4TxspBkbgveSZtyI8r+QjI/wKADJhCou5lvhdBrF4BeQCzc=
-X-Received: by 2002:a63:4b43:: with SMTP id k3mr16442804pgl.450.1621907137243;
- Mon, 24 May 2021 18:45:37 -0700 (PDT)
+        id S229805AbhEYBrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhEYBrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 21:47:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB97761413;
+        Tue, 25 May 2021 01:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621907132;
+        bh=NVINGy+Eh8+O+89h6RM7sF0TFc1m8Z1SDSLnGdApiu0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pZM68KFymcaFKuH2bCauQQZCBOyuGqyvh2G0XdkSP0gorGORfpu+7DxlvidOsnlSv
+         8KAw9GEROTvRodyAMcha32L150o/2QUjFO/AKTD60P8+grG1pdPbsvHqxZXhav4RYy
+         Y7zEf/AfAG8plL2EYjlsqzt35IUIxbYLgYkF8t0CU2arIBGQOigMzVB3l1OoNlP9lY
+         1HN2L9AGlElE1G8/LeocU/i8b9NlUv6kJWylYzKeWO8vz3FtGKztkRwiCedCRB84Jl
+         GWFrdG0LQd4bXAMQwSCzoS0FW+8ez267lvioXvZCuJaqv67znjsGzI48BUxe5I1aMF
+         VO6NGiRBJRTjg==
+Date:   Mon, 24 May 2021 18:45:31 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: support RO feature
+Message-ID: <YKxWu9G3GfRO+fGX@google.com>
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org>
+ <b1647bd1-f719-5796-4f99-766f0bc66d49@huawei.com>
+ <YKvdQbA1+kdD3jQC@google.com>
+ <52bf2f86-58c3-c012-9f73-d34fcd7dd3a8@huawei.com>
 MIME-Version: 1.0
-References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
- <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
- <b420a7af-5202-fee9-9e0b-39680d0cc9c8@linux.intel.com> <CAPcyv4gNz9gKsHVcindp3OsHz4hMRWPZgsNu1A5xrDQg7tYqNA@mail.gmail.com>
- <cea7c704-5f1c-3f84-e47b-c62da18e358e@linux.intel.com>
-In-Reply-To: <cea7c704-5f1c-3f84-e47b-c62da18e358e@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 24 May 2021 18:45:30 -0700
-Message-ID: <CAPcyv4h4=eNZFS7d13WvzpWzTkHAMF7Mxo0frqf2gdmaFN3++Q@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX guest
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52bf2f86-58c3-c012-9f73-d34fcd7dd3a8@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 6:02 PM Andi Kleen <ak@linux.intel.com> wrote:
->
->
-> > That makes KVM also broken for the cases where wbinvd is needed,
->
->
-> Or maybe your analysis is wrong?
+On 05/25, Chao Yu wrote:
+> On 2021/5/25 1:07, Jaegeuk Kim wrote:
+> > On 05/24, Chao Yu wrote:
+> > > On 2021/5/22 3:02, Jaegeuk Kim wrote:
+> > > > Given RO feature in superblock, we don't need to check provisioning/reserve
+> > > > spaces and SSA area.
+> > > 
+> > > Cool, any solution to update files of ro f2fs image if there is such
+> > > scenario?
+> > 
+> > Hmm, overlayfs?
+> 
+> I mean using f2fs-tools, maybe...
 
-I'm well aware of the fact that wbinvd is problematic for hypervisors
-and is an attack vector for a guest to DOS the host.
+sload.f2fs supports it with this patch?
 
->
->
-> > but
-> > it does not make the description of this patch correct.
->
-> If KVM was broken I'm sure we would hear about it.
+https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git/commit/?h=dev&id=9069b6b6f17faa66c8546567882b2e66bc78b8eb
 
-KVM does not try to support the cases where wbinvd being unavailable
-would break the system. That is not the claim being made in this
-patch.
-
-> The ACPI cases are for S3, which is not supported in guests, or for the
-> old style manual IO port C6, which isn't supported either.
-
-> The persistent memory cases would require working DMA mappings,
-
-No, that analysis is wrong.The wbinvd audit would have found that
-persistent memory secure-erase and unlock, which has nothing to do
-with DMA, needs wbinvd to ensure that the CPU has not retained a copy
-of the PMEM contents from before the unlock happened and it needs to
-make sure that any data that was meant to be destroyed by an erasure
-is not retained in cache.
-
-> which we
-> currently don't support. If DMA mappings were added we would need to
-> para virtualized WBINVD, like the comments say.
->
-> AFAIK all the rest is for some caching attribute change, which is not
-> possible in KVM (because it uses EPT.IgnorePAT=1) nor in TDX (which does
-> the same). Some are for MTRR which is completely disabled if you're
-> running under EPT.
-
-It's fine to not support the above cases, I am asking for the
-explanation to demonstrate the known risks and the known mitigations.
-IgnorePAT is not the mitigation, the mitigation is an audit to
-describe why the known users are unlikely to be triggered. Even better
-would be an addition patch that does something like:
-
-iff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
-index 4b80150e4afa..a6b13a1ae319 100644
---- a/drivers/nvdimm/security.c
-+++ b/drivers/nvdimm/security.c
-@@ -170,6 +170,9 @@ static int __nvdimm_security_unlock(struct nvdimm *nvdimm)
-        const void *data;
-        int rc;
-
-+       if (is_protected_guest())
-+               return -ENXIO;
-+
-        /* The bus lock should be held at the top level of the call stack */
-        lockdep_assert_held(&nvdimm_bus->reconfig_mutex);
-
-...to explicitly error out a wbinvd use case before data is altered
-and wbinvd is needed.
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > > 
+> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > ---
+> > > >    fs/f2fs/f2fs.h    |  2 ++
+> > > >    fs/f2fs/segment.c |  3 +++
+> > > >    fs/f2fs/super.c   | 35 +++++++++++++++++++++++++++++++----
+> > > >    3 files changed, 36 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > index c0bead0df66a..2c6913261586 100644
+> > > > --- a/fs/f2fs/f2fs.h
+> > > > +++ b/fs/f2fs/f2fs.h
+> > > > @@ -168,6 +168,7 @@ struct f2fs_mount_info {
+> > > >    #define F2FS_FEATURE_SB_CHKSUM		0x0800
+> > > >    #define F2FS_FEATURE_CASEFOLD		0x1000
+> > > >    #define F2FS_FEATURE_COMPRESSION	0x2000
+> > > > +#define F2FS_FEATURE_RO			0x4000
+> > > >    #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+> > > >    	((raw_super->feature & cpu_to_le32(mask)) != 0)
+> > > > @@ -939,6 +940,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+> > > >    #define	NR_CURSEG_DATA_TYPE	(3)
+> > > >    #define NR_CURSEG_NODE_TYPE	(3)
+> > > >    #define NR_CURSEG_INMEM_TYPE	(2)
+> > > > +#define NR_CURSEG_RO_TYPE	(2)
+> > > >    #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+> > > >    #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+> > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > index 8668df7870d0..67cec8f858a2 100644
+> > > > --- a/fs/f2fs/segment.c
+> > > > +++ b/fs/f2fs/segment.c
+> > > > @@ -4674,6 +4674,9 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+> > > >    {
+> > > >    	int i;
+> > > > +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> > > 
+> > > Why not using F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))?
+> > 
+> > Oh, updated.
+> > 
+> > > 
+> > > Ditto for all below __F2FS_HAS_FEATURE().
+> > > 
+> > > Thanks,
+> > > 
+> > > > +		return 0;
+> > > > +
+> > > >    	/*
+> > > >    	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
+> > > >    	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
+> > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > index b29de80ab60e..312bfab54693 100644
+> > > > --- a/fs/f2fs/super.c
+> > > > +++ b/fs/f2fs/super.c
+> > > > @@ -1819,7 +1819,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+> > > >    static void default_options(struct f2fs_sb_info *sbi)
+> > > >    {
+> > > >    	/* init some FS parameters */
+> > > > -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> > > > +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> > > > +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
+> > > > +	else
+> > > > +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> > > > +
+> > > >    	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+> > > >    	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+> > > >    	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+> > > > @@ -1994,6 +1998,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+> > > >    	err = parse_options(sb, data, true);
+> > > >    	if (err)
+> > > >    		goto restore_opts;
+> > > > +
+> > > > +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
+> > > > +					!(*flags & SB_RDONLY))
+> > > > +		goto restore_opts;
+> > > > +
+> > > >    	checkpoint_changed =
+> > > >    			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
+> > > > @@ -3137,16 +3146,18 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+> > > >    	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+> > > >    	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+> > > > +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> > > > +		goto no_reserved;
+> > > >    	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+> > > >    			ovp_segments == 0 || reserved_segments == 0)) {
+> > > >    		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+> > > >    		return 1;
+> > > >    	}
+> > > > -
+> > > > +no_reserved:
+> > > >    	user_block_count = le64_to_cpu(ckpt->user_block_count);
+> > > >    	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+> > > >    	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+> > > > -	if (!user_block_count || user_block_count >=
+> > > > +	if (!user_block_count || user_block_count >
+> > > >    			segment_count_main << log_blocks_per_seg) {
+> > > >    		f2fs_err(sbi, "Wrong user_block_count: %u",
+> > > >    			 user_block_count);
+> > > > @@ -3175,6 +3186,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+> > > >    		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+> > > >    			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+> > > >    			return 1;
+> > > > +
+> > > > +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> > > > +			goto check_data;
+> > > > +
+> > > >    		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+> > > >    			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+> > > >    				le32_to_cpu(ckpt->cur_node_segno[j])) {
+> > > > @@ -3185,10 +3200,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+> > > >    			}
+> > > >    		}
+> > > >    	}
+> > > > +check_data:
+> > > >    	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+> > > >    		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+> > > >    			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+> > > >    			return 1;
+> > > > +
+> > > > +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> > > > +			goto skip_cross;
+> > > > +
+> > > >    		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+> > > >    			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+> > > >    				le32_to_cpu(ckpt->cur_data_segno[j])) {
+> > > > @@ -3210,7 +3230,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+> > > >    			}
+> > > >    		}
+> > > >    	}
+> > > > -
+> > > > +skip_cross:
+> > > >    	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+> > > >    	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+> > > > @@ -3703,6 +3723,13 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+> > > >    	if (err)
+> > > >    		goto free_options;
+> > > > +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
+> > > > +					!f2fs_readonly(sbi->sb)) {
+> > > > +		f2fs_info(sbi, "Allow to mount readonly mode only");
+> > > > +		err = -EINVAL;
+> > > > +		goto free_options;
+> > > > +	}
+> > > > +
+> > > >    	sb->s_maxbytes = max_file_blocks(NULL) <<
+> > > >    				le32_to_cpu(raw_super->log_blocksize);
+> > > >    	sb->s_max_links = F2FS_LINK_MAX;
+> > > > 
+> > .
+> > 
