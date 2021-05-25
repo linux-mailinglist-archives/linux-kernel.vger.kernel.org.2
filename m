@@ -2,120 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C44390D07
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75EB390D10
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhEYXrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        id S232083AbhEYXvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbhEYXrN (ORCPT
+        with ESMTP id S231947AbhEYXvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:47:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD41C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:45:41 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id q3so18543070lfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:45:41 -0700 (PDT)
+        Tue, 25 May 2021 19:51:35 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D3CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:50:03 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id e11so40369786ljn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:50:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3bWAgXGiiTzRVKYdfnPTxYrHckcttw3uRegUUnWbckY=;
-        b=hhrAWAHsfs4V6Q1rRk+5RzotFe5WWhSfBpNqaVfrq48cm1yZ4mCi/3DHK5lHSGhFsd
-         SmJ1xpnVoC7GwKmpH3GoRruIKeU8Ih6iy6Ws79VyE23+Fo9+g4JbUuKztOnJQ/A75X32
-         F6tDH6wZDjxQVpUNs2UF0fySZ6sghA7NntIauYgD3MF2VdG4v6OLxVduYDUv5zVgV76d
-         JmwjeX0l2NgUtx/F5ZxGtsUf5xupPKtD5PS/OAlZL4HfxZcTuGUESs0ONaygDVe19cwv
-         FQzPzjRzsZB6Fnrt5Ecm93WJVhOzxD/x/n3M9I7hGisNhSKHzTk/Tm0AJmUjDadrhVhA
-         Z3jw==
+        bh=jd6yU+uVBE0BgP5Ser6EKR7HR6AXECsyVtKpnfIn/ck=;
+        b=LadW7WpDNanNx9z0d3aXjXKPaRU032oaYUYvNeNnJPUjUxErlcYcCyfaby+XAZioxk
+         o561gN6m5AR2KyAyjPcEJpzDyRL5gGz3Nkvk8XwZkk3j3HiOZ3I35rTtXyxHcg69Ae/6
+         cQJSmZdyk4PvRy9SWWf07b36BjJqGH6wRfJ54o28XWGxFDabW9M4pDnIlfoUjK01j+ik
+         NWZfIr8hWO7MdcsD0YIEXjvwkUdBJIQBA2roVUT29xjhlyPDc1TmrVYmJ4P+kOkAoJd8
+         +nc4BcLzFfM8DxuNZ1Y+TfPyHmozwuDwBv75V81XRIEO6Ti2rwyrWbv+5LucXLy7jobb
+         QvDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3bWAgXGiiTzRVKYdfnPTxYrHckcttw3uRegUUnWbckY=;
-        b=Kth1GcSqyNTOgAO3sbgph0vUJ8h/WLi6a0gWyVlwU62FLXdI+BfscQ4kFYkgIlU/ch
-         6k7ooQzr2clgB1OZ3hyM+XavQPS5g+t8vdMV0BSCAmzh6dyEyW4yk79fSyd1b/CheR8j
-         1ihrDV1vIdOf76LrymyHjsZ5+tmDgHrWBty5QgH0h/RaqeD/mt/5pCXG8taFa692sQ9x
-         vibB1PmTKysptrnyEyPZp0pOB7Qq8CFCFAC8ohkEKuSCTrVDpibGyUHWcl7IJ/UqaPo2
-         MIN9j4G7iu9Ydcp9knAvGWO+8A3PXv6cTpvytsSfp6B1R4WfhwlC3Ua8pjcmpywHLArs
-         riWg==
-X-Gm-Message-State: AOAM531WmswJnp16mXrVLSqIDmrNTgOuGpMf76KeajqCmk0bL8v1XA/E
-        8cUIU8sl1jJaVUPbg9PFl1wC6hLzej9ELxVRzcth8A==
-X-Google-Smtp-Source: ABdhPJy9hB4q6/cvtU+d+uGxv+1Wbe3+B9NkI4vv8arO0VwtZXiweVdebha1FQ1CcW8CnxfqxV9Z3KwiBdSb7es7wjA=
-X-Received: by 2002:a05:6512:3da3:: with SMTP id k35mr69007lfv.347.1621986339891;
- Tue, 25 May 2021 16:45:39 -0700 (PDT)
+        bh=jd6yU+uVBE0BgP5Ser6EKR7HR6AXECsyVtKpnfIn/ck=;
+        b=MOQgq+KM5xN1+eFkY791T47UgZRgkH6UiKpFtU4LFdqOnmIEjjH7p8tEY+Zr1bwfSn
+         EdMz1qwuZ9kAu5f9d5suiwJRS6VG/SZERi+MOgp1O0G18ou8nTPEUllLDBj9hFXvT4wo
+         ODiO7ZRV+lownVRjBLUXwIVPSTyp7abestsHx48aVdahOG6JGiiemDNz+IRIdUS9fLBH
+         j17lvvStHv/vREmbXKAnJWm3rryBNiAPhHQMwMAWthkBIa79bPrJm+W6wxt41cPlIGvE
+         1fTBWiwEfNZaQKIuKV08kEwkbS6a0hT1kdCfJ41v20OooZBz6rN7uQ9cRwamqiv9JvWv
+         6low==
+X-Gm-Message-State: AOAM5324yIZqnVX8uNHTxWM8vswIggQVDOIOoTtrXlS9BpTiVG6fZAVv
+        d4wxz9Z9r5CGjOi8HDSc0qfdZwGdCvGMWZ4n/eViCg==
+X-Google-Smtp-Source: ABdhPJyaTXlZBFxVUurIVjKMYK0Uq2M5OfrGelRo4TMjy8eESCLuZ6iZGcCc+JaRQsxkQsrGShc7UhmAA3VJgirZgV0=
+X-Received: by 2002:a2e:b4e9:: with SMTP id s9mr72951ljm.383.1621986601800;
+ Tue, 25 May 2021 16:50:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210524132725.12697-1-apopple@nvidia.com> <20210524132725.12697-4-apopple@nvidia.com>
- <20210525183710.fa2m2sbfixnhz7g5@revolver>
-In-Reply-To: <20210525183710.fa2m2sbfixnhz7g5@revolver>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 25 May 2021 16:45:28 -0700
-Message-ID: <CALvZod5T1yjOk48Q_efppvP6iQWnSUwdOQL=G9TadrB6nS-s4Q@mail.gmail.com>
-Subject: Re: [PATCH v9 03/10] mm/rmap: Split try_to_munlock from try_to_unmap
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "bskeggs@redhat.com" <bskeggs@redhat.com>,
-        "rcampbell@nvidia.com" <rcampbell@nvidia.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-        "bsingharora@gmail.com" <bsingharora@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "jglisse@redhat.com" <jglisse@redhat.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "hughd@google.com" <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>
+References: <20210519200339.829146-1-axelrasmussen@google.com> <20210519200339.829146-9-axelrasmussen@google.com>
+In-Reply-To: <20210519200339.829146-9-axelrasmussen@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Tue, 25 May 2021 16:49:35 -0700
+Message-ID: <CALzav=eGi2_TBx=LDYpg6hRi8JabGPsHLC8M5-Vzf8DJHomSVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/10] KVM: selftests: create alias mappings when using
+ shared memory
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Gardon <bgardon@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        kvm list <kvm@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:40 AM Liam Howlett <liam.howlett@oracle.com> wrote:
+On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
 >
-[...]
-> >
-> > +/*
-> > + * Walks the vma's mapping a page and mlocks the page if any locked vma's are
-> > + * found. Once one is found the page is locked and the scan can be terminated.
-> > + */
+> When a memory region is added with a src_type specifying that it should
+> use some kind of shared memory, also create an alias mapping to the same
+> underlying physical pages.
 >
-> Can you please add that this requires the mmap_sem() lock to the
-> comments?
+> And, add an API so tests can get access to these alias addresses.
+> Basically, for a guest physical address, let us look up the analogous
+> host *alias* address.
 >
+> In a future commit, we'll modify the demand paging test to take
+> advantage of this to exercise UFFD minor faults. The idea is, we
+> pre-fault the underlying pages *via the alias*. When the *guest*
+> faults, it gets a "minor" fault (PTEs don't exist yet, but a page is
+> already in the page cache). Then, the userfaultfd theads can handle the
+> fault: they could potentially modify the underlying memory *via the
+> alias* if they wanted to, and then they install the PTEs and let the
+> guest carry on via a UFFDIO_CONTINUE ioctl.
+>
+> Reviewed-by: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 51 +++++++++++++++++++
+>  .../selftests/kvm/lib/kvm_util_internal.h     |  2 +
+>  3 files changed, 54 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index a8f022794ce3..0624f25a6803 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -146,6 +146,7 @@ void virt_map(struct kvm_vm *vm, uint64_t vaddr, uint64_t paddr,
+>  void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa);
+>  void *addr_gva2hva(struct kvm_vm *vm, vm_vaddr_t gva);
+>  vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva);
+> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa);
+>
+>  /*
+>   * Address Guest Virtual to Guest Physical
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index e4a8d0c43c5e..0b88d1bbc1e0 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -811,6 +811,19 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>
+>         /* Add to linked-list of memory regions. */
+>         list_add(&region->list, &vm->userspace_mem_regions);
+> +
+> +       /* If shared memory, create an alias. */
+> +       if (region->fd >= 0) {
+> +               region->mmap_alias = mmap(NULL, region->mmap_size,
+> +                                         PROT_READ | PROT_WRITE,
+> +                                         vm_mem_backing_src_alias(src_type)->flag,
+> +                                         region->fd, 0);
+> +               TEST_ASSERT(region->mmap_alias != MAP_FAILED,
+> +                           "mmap of alias failed, errno: %i", errno);
+> +
+> +               /* Align host alias address */
+> +               region->host_alias = align(region->mmap_alias, alignment);
+> +       }
+>  }
+>
+>  /*
+> @@ -1239,6 +1252,44 @@ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+>         return -1;
+>  }
+>
+> +/*
+> + * Address VM physical to Host Virtual *alias*.
+> + *
+> + * Input Args:
+> + *   vm - Virtual Machine
+> + *   gpa - VM physical address
+> + *
+> + * Output Args: None
+> + *
+> + * Return:
+> + *   Equivalent address within the host virtual *alias* area, or NULL
+> + *   (without failing the test) if the guest memory is not shared (so
+> + *   no alias exists).
+> + *
+> + * When vm_create() and related functions are called with a shared memory
+> + * src_type, we also create a writable, shared alias mapping of the
+> + * underlying guest memory. This allows the host to manipulate guest memory
+> + * without mapping that memory in the guest's address space. And, for
+> + * userfaultfd-based demand paging, we can do so without triggering userfaults.
+> + */
+> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa)
+> +{
+> +       struct userspace_mem_region *region;
+> +
+> +       list_for_each_entry(region, &vm->userspace_mem_regions, list) {
 
-Why does this require mmap_sem() lock? Also mmap_sem() lock of which mm_struct?
+This patch fails to compile on top of with db0670ce3361 ("KVM:
+selftests: Keep track of memslots more efficiently").
 
-> > +static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
-> > +                              unsigned long address, void *unused)
-> > +{
-> > +     struct page_vma_mapped_walk pvmw = {
-> > +             .page = page,
-> > +             .vma = vma,
-> > +             .address = address,
-> > +     };
-> > +
-> > +     /* An un-locked vma doesn't have any pages to lock, continue the scan */
-> > +     if (!(vma->vm_flags & VM_LOCKED))
-> > +             return true;
-> > +
-> > +     while (page_vma_mapped_walk(&pvmw)) {
-> > +             /* PTE-mapped THP are never mlocked */
-> > +             if (!PageTransCompound(page))
-> > +                     mlock_vma_page(page);
-> > +             page_vma_mapped_walk_done(&pvmw);
-> > +
-> > +             /*
-> > +              * no need to continue scanning other vma's if the page has
-> > +              * been locked.
-> > +              */
-> > +             return false;
-> > +     }
-> > +
-> > +     return true;
-> > +}
+This can be reproduced by checking out kvm/master and running `make -C
+tools/testing/selftests/kvm`.
+
+The following diff fixes the compilation error but I did not have time
+to test it yet:
+
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c
+b/tools/testing/selftests/kvm/lib/kvm_util.c
+index c98db1846e1b..28e528c19d28 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1374,19 +1374,17 @@ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+ void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa)
+ {
+        struct userspace_mem_region *region;
++       uintptr_t offset;
+
+-       list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+-               if (!region->host_alias)
+-                       continue;
++       region = userspace_mem_region_find(vm, gpa, gpa);
++       if (!region)
++               return NULL;
+
+-               if ((gpa >= region->region.guest_phys_addr)
+-                       && (gpa <= (region->region.guest_phys_addr
+-                               + region->region.memory_size - 1)))
+-                       return (void *) ((uintptr_t) region->host_alias
+-                               + (gpa - region->region.guest_phys_addr));
+-       }
++       if (!region->host_alias)
++               return NULL;
+
+-       return NULL;
++       offset = gpa - region->region.guest_phys_addr;
++       return (void *) ((uintptr_t) region->host_alias + offset);
+ }
+
+ /*
+
+
+
+> +               if (!region->host_alias)
+> +                       continue;
+> +
+> +               if ((gpa >= region->region.guest_phys_addr)
+> +                       && (gpa <= (region->region.guest_phys_addr
+> +                               + region->region.memory_size - 1)))
+> +                       return (void *) ((uintptr_t) region->host_alias
+> +                               + (gpa - region->region.guest_phys_addr));
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+>  /*
+>   * VM Create IRQ Chip
+>   *
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> index 91ce1b5d480b..a25af33d4a9c 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> @@ -16,7 +16,9 @@ struct userspace_mem_region {
+>         int fd;
+>         off_t offset;
+>         void *host_mem;
+> +       void *host_alias;
+>         void *mmap_start;
+> +       void *mmap_alias;
+>         size_t mmap_size;
+>         struct list_head list;
+>  };
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
