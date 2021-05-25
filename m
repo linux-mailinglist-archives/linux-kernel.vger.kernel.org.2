@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A448D38FC7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DE838FC4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhEYISE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:18:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56944 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhEYISB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:18:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621930591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cBTpb8oJt9glxSCHDQUwIyXY+s7ZBCa51c0d2hwY7nc=;
-        b=EczqhsS4/Xi3ikRA8F8oPMZV5MYYAX6lPTn7KdzPl6WKUo7l+wWnC/B0mSH22rgXmtA055
-        kbLbdsKFvk65GV0LQe4n+vLdoQpePZu/j3Z4wWLqjiznCeXoRbgJ2pokf81wy9ezABhoY8
-        FBdCmL9X+POMWP7GrVxBuomgcWzVcoQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621930591;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cBTpb8oJt9glxSCHDQUwIyXY+s7ZBCa51c0d2hwY7nc=;
-        b=5LG/R/yAUM5v9t0s1VF4gwLYCBRdG0N9ggk+VBmXNocCPcVfvBwWckPOqjt4TIl5jBI+pv
-        nAJF0QhPxrXz9NCQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C9ACAE1F;
-        Tue, 25 May 2021 08:16:31 +0000 (UTC)
-Date:   Tue, 25 May 2021 10:16:26 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 4/6] mm: introduce
- page_offline_(begin|end|freeze|thaw) to synchronize setting PageOffline()
-Message-ID: <20210525081626.GB3300@linux>
-References: <20210514172247.176750-1-david@redhat.com>
- <20210514172247.176750-5-david@redhat.com>
+        id S231477AbhEYILv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:11:51 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3657 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232119AbhEYIJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:09:41 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fq67600zYzQsR8;
+        Tue, 25 May 2021 16:04:33 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 16:08:02 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 25 May
+ 2021 16:08:01 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] drm/nouveau: Remove set but not used variable 'width'
+Date:   Tue, 25 May 2021 16:17:33 +0800
+Message-ID: <20210525081733.571257-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514172247.176750-5-david@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:22:45PM +0200, David Hildenbrand wrote:
-> A driver might set a page logically offline -- PageOffline() -- and
-> turn the page inaccessible in the hypervisor; after that, access to page
-> content can be fatal. One example is virtio-mem; while unplugged memory
-> -- marked as PageOffline() can currently be read in the hypervisor, this
-> will no longer be the case in the future; for example, when having
-> a virtio-mem device backed by huge pages in the hypervisor.
-> 
-> Some special PFN walkers -- i.e., /proc/kcore -- read content of random
-> pages after checking PageOffline(); however, these PFN walkers can race
-> with drivers that set PageOffline().
-> 
-> Let's introduce page_offline_(begin|end|freeze|thaw) for
-> synchronizing.
-> 
-> page_offline_freeze()/page_offline_thaw() allows for a subsystem to
-> synchronize with such drivers, achieving that a page cannot be set
-> PageOffline() while frozen.
-> 
-> page_offline_begin()/page_offline_end() is used by drivers that care about
-> such races when setting a page PageOffline().
-> 
-> For simplicity, use a rwsem for now; neither drivers nor users are
-> performance sensitive.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+drivers/gpu/drm/nouveau/nouveau_display.c: In function 'nouveau_framebuffer_new':
+drivers/gpu/drm/nouveau/nouveau_display.c:309:15: warning:
+ variable ‘width’ set but not used [-Wunused-but-set-variable]
 
+It never used since introduction.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_display.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/nouveau/nouveau_display.c
+index 929de41c281f..2b460835a438 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_display.c
++++ b/drivers/gpu/drm/nouveau/nouveau_display.c
+@@ -306,7 +306,7 @@ nouveau_framebuffer_new(struct drm_device *dev,
+ 	struct nouveau_bo *nvbo = nouveau_gem_object(gem);
+ 	struct drm_framebuffer *fb;
+ 	const struct drm_format_info *info;
+-	unsigned int width, height, i;
++	unsigned int height, i;
+ 	uint32_t tile_mode;
+ 	uint8_t kind;
+ 	int ret;
+@@ -343,9 +343,6 @@ nouveau_framebuffer_new(struct drm_device *dev,
+ 	info = drm_get_format_info(dev, mode_cmd);
+ 
+ 	for (i = 0; i < info->num_planes; i++) {
+-		width = drm_format_info_plane_width(info,
+-						    mode_cmd->width,
+-						    i);
+ 		height = drm_format_info_plane_height(info,
+ 						      mode_cmd->height,
+ 						      i);
 -- 
-Oscar Salvador
-SUSE L3
+2.25.4
+
