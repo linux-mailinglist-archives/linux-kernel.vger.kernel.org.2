@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE4238F6C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FD438F6C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhEYAF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhEYAEo (ORCPT
+        id S229652AbhEYAH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:07:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229539AbhEYAH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:04:44 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4144FC061359
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:02:56 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id q15so21297711pgg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3qFLOaUCi0WYGUyCmLqrEif6mRJ8u8fFU7Zgh2OGms8=;
-        b=mG7J209zaQCJJxhHTB1kgkaUN3lotKNwZl1qpb1B/7puBZWLYE/M/Qfnt2cDUWNCig
-         nQOFY4Tftu9/1Xin+yQPRW+462ofrPtvfh28OYEXR3PCHAZc0rU+82eOZNUDK/1bTBdB
-         MCazDzs5CjxFNsJfJlRr+KIhYqs55qaaH5NAY=
+        Mon, 24 May 2021 20:07:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621901157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B/RCpsvhdAmo8XkdMfl////N8HN4L7zQ9oYjhXGDEJI=;
+        b=C1Q+YcftN5xMx0cd1FvYuoWJxWy6QlNT5Z2Oh6C90pB4Oi1J+FnKILfIEM/p/lJt9AX7+3
+        683kHu5J7RyMcauAkcjxYAgcX0jzizqk90ty7oEQm2qvZM8pfvLzBR3cO5AqdLlvYiWELq
+        9LwyUsDIPRVSc7KEkhyWMWM9HzMvTe8=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-rhIqCuvrONee_uA5plPzKw-1; Mon, 24 May 2021 20:05:53 -0400
+X-MC-Unique: rhIqCuvrONee_uA5plPzKw-1
+Received: by mail-qv1-f69.google.com with SMTP id x2-20020a0cda020000b02901edb4c412fdso28834479qvj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:05:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3qFLOaUCi0WYGUyCmLqrEif6mRJ8u8fFU7Zgh2OGms8=;
-        b=Mn4oowh/7IWn3Z6Lmgbe5rY2oWizeU5w3M8Jd3gVDZ7ZTryEtFcYrSgjy5XTr+7i8N
-         w4D8CHMWavpo5BZ1ScOVZbNEmsuKYrGFv521YrcYefThL1DhraOwbkt4F+Vn/xI67MUb
-         kgwgzc9OxhJdtbUMi0YvEuRd7O9V5NgXZhm0sdpflR6vHU7+dn0b96OaUXLi6mg14Xhx
-         Qtqdg2VZT1CrS0SOmm2wZZLxQsze7V3I9MkSN/q5pDTc+dZ4SLA40oFQOBkG3VfKigN9
-         zDQ2JbZUoiyk+wKMf7eINX92RyQh+4kDGP1dB9InqM/C75AWjaWj+mGDREyw5hXioLXY
-         oifg==
-X-Gm-Message-State: AOAM532v5grDVxJHH+FkO5K7mH0gf8p/11Kk28txc8yWbPurQv6OzoZ2
-        7K9K7hmpiu6wm+ZVHTEi/6LqYA==
-X-Google-Smtp-Source: ABdhPJx5C+8zTuLTjxVJMS4EPDr7rRNr7Ky/FS6RudZXZZvp+t4FXELkMogHFv7NbjC/xJ97iP4p3w==
-X-Received: by 2002:a63:6f4e:: with SMTP id k75mr16304849pgc.434.1621900975692;
-        Mon, 24 May 2021 17:02:55 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:26d1:4df0:7cdf:ce13])
-        by smtp.gmail.com with ESMTPSA id f18sm10696741pjh.55.2021.05.24.17.02.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 17:02:55 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thierry Reding <treding@nvidia.com>,
-        dri-devel@lists.freedesktop.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 11/11] arm64: dts: qcom: sc7180-trogdor: Move panel under the bridge chip
-Date:   Mon, 24 May 2021 17:01:59 -0700
-Message-Id: <20210524165920.v8.11.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210525000159.3384921-1-dianders@chromium.org>
-References: <20210525000159.3384921-1-dianders@chromium.org>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=B/RCpsvhdAmo8XkdMfl////N8HN4L7zQ9oYjhXGDEJI=;
+        b=J2nUR01XVltXZ07awlmwXoszl24yVAwNMZAKy3mn31/90hE47ThBHWgNe4ysio3WHA
+         Cb0O4zKboOSrH3cTDeLPm2QtI8icNzwi+ciX+Q6sZ6BgaWCdD6SkgjM/xHRBZ1S9ZB/S
+         HNSW9NuLPEgDOP7fQz6Yyo6u5yJksSp+f4zQLSKZ0iiZykQGRrIGOgEowOC8JUuGI/Mk
+         fbCzKFazj3avRWsUiTCgY6E2rlbU43Bw8/oJhAfvB81YfdthXUVKB2MQb1eBFqhvVphN
+         R1+Cfi6wBRATdnX+EaLWQQVJXFYzEQTFw4MAq9thCcNS7iSLu2RrSB4/QnFwORFnzOJ/
+         TmBg==
+X-Gm-Message-State: AOAM5322MsRrGZS15msAU63eXos6Cx0Uoj3WGcl7YTpIv/WZ2sizfYeA
+        mxeZYU/cRrBRmSZ/3DoKdsRTY8cGq8YJTYZQ1GfIw9TGfRmelQJ8ANx1p8NAcWG1iQZGwepDNCp
+        kvUHm0ql7eGpb7My+7gFrUhn1
+X-Received: by 2002:aed:2081:: with SMTP id 1mr29723295qtb.24.1621901152979;
+        Mon, 24 May 2021 17:05:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdUpLzIITFhbxIU4Fu2+b4um4Nuas4Se66mdWSq5b1sCmRY5O2h3KIeO57Y1YgD3sUwjpg8Q==
+X-Received: by 2002:aed:2081:: with SMTP id 1mr29723270qtb.24.1621901152735;
+        Mon, 24 May 2021 17:05:52 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id 7sm11856944qkd.20.2021.05.24.17.05.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 17:05:52 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] LOCKDEP: use depends on LOCKDEP_SUPPORT instead of $ARCH
+ list
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Waiman Long <llong@redhat.com>, Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+References: <20210517034430.9569-1-rdunlap@infradead.org>
+ <YKIXBpxyvhzdb1uv@gmail.com>
+ <1284b997-b9da-769f-2d36-4d4232c7df88@redhat.com>
+ <bfb11ab2-d606-b96e-1979-3bcc3c3adc96@infradead.org>
+ <8a4ee5be-ad5c-ca06-dd1a-aa13ccc94906@redhat.com>
+ <c8698ce3-4995-efd6-9d1d-095dcac70dc2@infradead.org>
+ <09243238-94ba-caca-441e-3fdac0154822@infradead.org>
+Message-ID: <3a0fb04c-c640-25db-7e7a-fbdd3b4defb5@redhat.com>
+Date:   Mon, 24 May 2021 20:05:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <09243238-94ba-caca-441e-3fdac0154822@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Putting the panel under the bridge chip (under the aux-bus node)
-allows the panel driver to get access to the DP AUX bus, enabling all
-sorts of fabulous new features.
+On 5/24/21 5:41 PM, Randy Dunlap wrote:
+> On 5/24/21 2:31 PM, Randy Dunlap wrote:
+>> On 5/24/21 2:04 PM, Waiman Long wrote:
+>>
+>>> Is it possible to just get rid of the 2nd depends-on statement?
+>>>
+>>> The 2nd depends-on line was introduced by commit 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTER"):
+>> and I should have looked at that history too. Thanks.
+>>
+>> Yes, I agree, we can just delete that line...
+>>
+>> I'll send a v2 and copy the author of commit 7d37cb2c912d as well.
+> Hm, as I review that commit, I have to wonder if the previous 'select'
+> was correct (if we disregard the Kconfig warning).  If so, then
+> FRAME_POINTER is still wanted/needed for some arch-es.
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2779c29d9981..417c3d3e521b 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1363,7 +1363,7 @@ config LOCKDEP
+>          bool
+>          depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+>          select STACKTRACE
+> -       select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !X86 <<<<<<<<<<<
+>
+AFAICS, enabling FRAME_POINTER is a debugging aid as it enable more 
+precise stacktrace. However, not all archs want to enable FRAME_POINTER 
+because of LOCKDEP. Now you are just letting users decide if they want 
+FRAME_POINTER or not. Maybe you can modify the help text to mention that.
 
-While we're at this, get rid of a level of hierarchy for the panel
-node. It doesn't need "ports / port" and can just have a "port" child.
-
-For Linux, this patch has a hard requirement on the patches adding DP
-AUX bus support to the ti-sn65dsi86 bridge chip driver. See the patch
-("drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus").
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
----
-
-(no changes since v7)
-
-Changes in v7:
-- Panel now under bridge chip instead of getting a link to ddc-i2c
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 30 ++++++++++----------
- 1 file changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..c76afd857b54 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -260,21 +260,6 @@ max98357a: audio-codec-0 {
- 		#sound-dai-cells = <0>;
- 	};
- 
--	panel: panel {
--		/* Compatible will be filled in per-board */
--		power-supply = <&pp3300_dx_edp>;
--		backlight = <&backlight>;
--		hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
--
--		ports {
--			port {
--				panel_in_edp: endpoint {
--					remote-endpoint = <&sn65dsi86_out>;
--				};
--			};
--		};
--	};
--
- 	pwmleds {
- 		compatible = "pwm-leds";
- 		keyboard_backlight: keyboard-backlight {
-@@ -674,6 +659,21 @@ sn65dsi86_out: endpoint {
- 				};
- 			};
- 		};
-+
-+		aux-bus {
-+			panel: panel {
-+				/* Compatible will be filled in per-board */
-+				power-supply = <&pp3300_dx_edp>;
-+				backlight = <&backlight>;
-+				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
-+
-+				port {
-+					panel_in_edp: endpoint {
-+						remote-endpoint = <&sn65dsi86_out>;
-+					};
-+				};
-+			};
-+		};
- 	};
- };
- 
--- 
-2.31.1.818.g46aad6cb9e-goog
+Cheers,
+Longman
 
