@@ -2,332 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1564238FA00
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36DA38FA02
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhEYFlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhEYFlA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:41:00 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DD3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:39:30 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x7so11127049wrt.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 22:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XQiX/rQDAoKlbFuUGF3PSR+oQN5hRwJFo9Bkf8URLIk=;
-        b=swljZTkozfJKaBoih9exTUXxqih582ijHRewXuKt1qmE88o78KJZkY/zGuFg1US/Nh
-         2MDTrSf79z5K9N2imkJbnhVC9R8ecG6t/8fh6rMeLKQPBjL9xtgE/BDfsywU2AIvfOn2
-         Gmk1ifact4m3P0F1HVhGvqwDgAPBgFNC1W5moBzZEDfd3encZX5qXuyYQtRjvcZaVCV+
-         CnHxE4banq8ZoelswFk9YQDt6IcEJrYqO51A8x6iY///aJ4+9MGEGpBZWRRsrHz+koGX
-         fS7OzkNLHe3hvMgUn68DQ+dfdPTzfSZQe/eJ2pLVJqvI7aGuR46dXp0njZkZ+pAC/S91
-         cDKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XQiX/rQDAoKlbFuUGF3PSR+oQN5hRwJFo9Bkf8URLIk=;
-        b=KXkZaahq/oxFbrXrHeC6iCg/Le12Bij91ai+dcPzzQGbaOdZszkkb2O4ftdb0agFaC
-         bLObvU71vRfy7bhkicAYD2ww+iu98MST21m322B4JWqkRAaBK4QZ0wfJ2YOGp4cDiQvg
-         rV8TLTFG8fgeGdO1gusYf48qMDk8KRzADydNJ3/l0btCAhG7VS96PuGIQTqyIRxijvCc
-         B9FooAwEb+YiofXjYIyo7xAjW2UNsptPgbhLcgZ+SQXgvhsNebq/9G4fGN6xYHNSSMPl
-         ti1NffJGXrnqRlHUCkUuDFZSKFyT8xlUH8B1iu+c8Ff+/3FbxnLm7j13xVYuI5crhOq9
-         5m6Q==
-X-Gm-Message-State: AOAM530Gb8uoq49CI5FpF6EmoBaq55hjLIwwF5imUVeWxBvROg654fc3
-        9QgOuv/Jvnk1R9jd4Nc/ie+0RjA3VoNtiJiFUOF2Ww==
-X-Google-Smtp-Source: ABdhPJyBgMoZRcFrFb6b8bdZS6V3TxmteE0u5AEexQOZc501tkOujoVNGZfR3Vqd+MuBm9VOvVL5cVaBBDZE1wmDGLw=
-X-Received: by 2002:adf:e38c:: with SMTP id e12mr24819885wrm.128.1621921168743;
- Mon, 24 May 2021 22:39:28 -0700 (PDT)
+        id S230505AbhEYFlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:41:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:48048 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhEYFl3 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 01:41:29 -0400
+IronPort-SDR: PjzDN90RX/has5WXYi2NrRtiPs2TDyOTgu4HpRWAmft4lkUoKP2h1EbMiyIGMPcxKfzkHi/k2a
+ BhC89Dzofb6g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="202126755"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="202126755"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 22:40:00 -0700
+IronPort-SDR: Ev44/IgM1T+58J6F+93wdRRKbmcyaOlwChtxRlPWYkqpvUUaBE3GPkylGrGyvbcZXHXLYBh4nn
+ lE4G+yLJRPdQ==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="442388439"
+Received: from unknown (HELO [10.239.159.33]) ([10.239.159.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 22:39:57 -0700
+Subject: Re: [PATCH v1 2/5] perf tools: Support pmu name in
+ perf_mem_events__name
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210520070040.710-1-yao.jin@linux.intel.com>
+ <20210520070040.710-3-yao.jin@linux.intel.com> <YKvgQiJrrn/1Rh23@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <ffa9f2aa-8bd3-3604-8bd4-13bfce94bfa9@linux.intel.com>
+Date:   Tue, 25 May 2021 13:39:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210517130823.796963-1-anup.patel@wdc.com> <20210517130823.796963-6-anup.patel@wdc.com>
- <CAPDyKFpxx-jBbL4o_iJCcivFL2ei5a7PcWVfUaBmLu-q89Mkjg@mail.gmail.com>
-In-Reply-To: <CAPDyKFpxx-jBbL4o_iJCcivFL2ei5a7PcWVfUaBmLu-q89Mkjg@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 25 May 2021 11:09:17 +0530
-Message-ID: <CAAhSdy1quHePY_HM875LHQgXGKrjm24SzeD5yFJUnqunpcHd8g@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 5/8] cpuidle: Factor-out power domain related code
- from PSCI domain driver
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKvgQiJrrn/1Rh23@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 11:31 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Mon, 17 May 2021 at 15:10, Anup Patel <anup.patel@wdc.com> wrote:
-> >
-> > The generic power domain related code in PSCI domain driver is largely
-> > independent of PSCI and can be shared with RISC-V SBI domain driver
-> > hence we factor-out this code into dt_idle_genpd.c and dt_idle_genpd.h.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
->
-> This is clearly a big step in the right direction. Just a couple minor
-> things, see more below.
->
-> Note that, I have a couple of patches in the pipe for the
-> cpuidle-psci-domain driver (not ready to be posted). I need a couple
-> of more days to confirm this restructuring still makes sense beyond
-> these potential new changes. I will let you know as soon as I can with
-> the outcome.
+Hi Jiri,
 
-Sure, I will wait for more comments from you. I was thinking of sending
-next revision of patches sometime next week with the renaming of
-function names which you suggested.
+On 5/25/2021 1:20 AM, Jiri Olsa wrote:
+> On Thu, May 20, 2021 at 03:00:37PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>> --- a/tools/perf/arch/x86/util/mem-events.c
+>> +++ b/tools/perf/arch/x86/util/mem-events.c
+>> @@ -4,10 +4,10 @@
+>>   #include "mem-events.h"
+>>   
+>>   static char mem_loads_name[100];
+>> -static bool mem_loads_name__init;
+>> +static char mem_stores_name[100];
+>>   
+>>   #define MEM_LOADS_AUX		0x8203
+>> -#define MEM_LOADS_AUX_NAME	"{cpu/mem-loads-aux/,cpu/mem-loads,ldlat=%u/pp}:S"
+>> +#define MEM_LOADS_AUX_NAME     "{%s/mem-loads-aux/,%s/mem-loads,ldlat=%u/}:P"
+>>   
+>>   bool is_mem_loads_aux_event(struct evsel *leader)
+>>   {
+>> @@ -22,28 +22,34 @@ bool is_mem_loads_aux_event(struct evsel *leader)
+>>   	return leader->core.attr.config == MEM_LOADS_AUX;
+>>   }
+>>   
+>> -char *perf_mem_events__name(int i)
+>> +char *perf_mem_events__name(int i, char *pmu_name)
+>>   {
+>>   	struct perf_mem_event *e = perf_mem_events__ptr(i);
+>>   
+>>   	if (!e)
+>>   		return NULL;
+>>   
+>> -	if (i == PERF_MEM_EVENTS__LOAD) {
+>> -		if (mem_loads_name__init)
+>> -			return mem_loads_name;
+>> -
+>> -		mem_loads_name__init = true;
+>> +	if (!pmu_name)
+>> +		pmu_name = (char *)"cpu";
+>>   
+>> -		if (pmu_have_event("cpu", "mem-loads-aux")) {
+>> +	if (i == PERF_MEM_EVENTS__LOAD) {
+>> +		if (pmu_have_event(pmu_name, "mem-loads-aux")) {
+>>   			scnprintf(mem_loads_name, sizeof(mem_loads_name),
+>> -				  MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
+>> +				  MEM_LOADS_AUX_NAME, pmu_name, pmu_name,
+>> +				  perf_mem_events__loads_ldlat);
+>>   		} else {
+>>   			scnprintf(mem_loads_name, sizeof(mem_loads_name),
+>> -				  e->name, perf_mem_events__loads_ldlat);
+>> +				  e->name, pmu_name,
+>> +				  perf_mem_events__loads_ldlat);
+>>   		}
+>>   		return mem_loads_name;
+>>   	}
+>>   
+>> +	if (i == PERF_MEM_EVENTS__STORE) {
+>> +		scnprintf(mem_stores_name, sizeof(mem_stores_name),
+>> +			  e->name, pmu_name);
+>> +		return mem_stores_name;
+>> +	}
+> 
+> so the patch also adds mem_stores_name and removes mem_loads_name__init,
+> that should be explained or more likely in separated patches
+> 
+> jirka
+> 
 
->
-> [...]
->
-> > diff --git a/drivers/cpuidle/dt_idle_genpd.c b/drivers/cpuidle/dt_idle_genpd.c
->
-> I think it would be a good idea to add a new section for this to the
-> MAINTAINERS file. Perhaps a "DT IDLE DOMAIN" section? Or perhaps you
-> have another idea?
->
-> In any case, I am happy to continue with maintenance of this code,
-> even in the new restructured form.
+I will not remove mem_loads_name__init in order to keep the original behavior for non-hybrid platform.
 
-Yes, a separate "DT IDLE DOMAIN" section in MAINTAINERS file
-sounds good to me.
+I can move the mem_store to a separate patch.
 
-Anyway the dt_idle_genpd is factored-out code from cpuidle-psci-domain.c
-so I suggest you to maintain dt_idle_genpd as well.
-
-Do you want me to add a "DT IDLE DOMAIN" section in the
-MAINTAINERS file as part of this patch ??
-
->
-> > new file mode 100644
-> > index 000000000000..5a901773db60
-> > --- /dev/null
-> > +++ b/drivers/cpuidle/dt_idle_genpd.c
-> > @@ -0,0 +1,182 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * PM domains for CPUs via genpd.
-> > + *
-> > + * Copyright (C) 2019 Linaro Ltd.
-> > + * Author: Ulf Hansson <ulf.hansson@linaro.org>
-> > + *
-> > + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> > + */
-> > +
-> > +#define pr_fmt(fmt) "dt-idle-genpd: " fmt
-> > +
-> > +#include <linux/cpu.h>
-> > +#include <linux/device.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/pm_domain.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/string.h>
-> > +
-> > +#include "dt_idle_genpd.h"
-> > +
-> > +static int dt_pd_parse_state_nodes(
-> > +                       int (*parse_state)(struct device_node *, u32 *),
-> > +                       struct genpd_power_state *states, int state_count)
-> > +{
-> > +       int i, ret;
-> > +       u32 state, *state_buf;
-> > +
-> > +       for (i = 0; i < state_count; i++) {
-> > +               ret = parse_state(to_of_node(states[i].fwnode), &state);
-> > +               if (ret)
-> > +                       goto free_state;
-> > +
-> > +               state_buf = kmalloc(sizeof(u32), GFP_KERNEL);
-> > +               if (!state_buf) {
-> > +                       ret = -ENOMEM;
-> > +                       goto free_state;
-> > +               }
-> > +               *state_buf = state;
-> > +               states[i].data = state_buf;
-> > +       }
-> > +
-> > +       return 0;
-> > +
-> > +free_state:
-> > +       i--;
-> > +       for (; i >= 0; i--)
-> > +               kfree(states[i].data);
-> > +       return ret;
-> > +}
-> > +
-> > +static int dt_pd_parse_states(struct device_node *np,
-> > +                       int (*parse_state)(struct device_node *, u32 *),
-> > +                       struct genpd_power_state **states,
-> > +                       int *state_count)
-> > +{
-> > +       int ret;
-> > +
-> > +       /* Parse the domain idle states. */
-> > +       ret = of_genpd_parse_idle_states(np, states, state_count);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Fill out the dt specifics for each found state. */
-> > +       ret = dt_pd_parse_state_nodes(parse_state, *states, *state_count);
-> > +       if (ret)
-> > +               kfree(*states);
-> > +
-> > +       return ret;
-> > +}
-> > +
-> > +static void dt_pd_free_states(struct genpd_power_state *states,
-> > +                             unsigned int state_count)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < state_count; i++)
-> > +               kfree(states[i].data);
-> > +       kfree(states);
-> > +}
-> > +
-> > +void dt_pd_free(struct generic_pm_domain *pd)
-> > +{
-> > +       dt_pd_free_states(pd->states, pd->state_count);
-> > +       kfree(pd->name);
-> > +       kfree(pd);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dt_pd_free);
-> > +
-> > +struct generic_pm_domain *dt_pd_alloc(struct device_node *np,
-> > +                       int (*parse_state)(struct device_node *, u32 *))
-> > +{
-> > +       struct generic_pm_domain *pd;
-> > +       struct genpd_power_state *states = NULL;
-> > +       int ret, state_count = 0;
-> > +
-> > +       pd = kzalloc(sizeof(*pd), GFP_KERNEL);
-> > +       if (!pd)
-> > +               goto out;
-> > +
-> > +       pd->name = kasprintf(GFP_KERNEL, "%pOF", np);
-> > +       if (!pd->name)
-> > +               goto free_pd;
-> > +
-> > +       /*
-> > +        * Parse the domain idle states and let genpd manage the state selection
-> > +        * for those being compatible with "domain-idle-state".
-> > +        */
-> > +       ret = dt_pd_parse_states(np, parse_state, &states, &state_count);
-> > +       if (ret)
-> > +               goto free_name;
-> > +
-> > +       pd->free_states = dt_pd_free_states;
-> > +       pd->name = kbasename(pd->name);
-> > +       pd->states = states;
-> > +       pd->state_count = state_count;
-> > +
-> > +       pr_debug("alloc PM domain %s\n", pd->name);
-> > +       return pd;
-> > +
-> > +free_name:
-> > +       kfree(pd->name);
-> > +free_pd:
-> > +       kfree(pd);
-> > +out:
-> > +       pr_err("failed to alloc PM domain %pOF\n", np);
-> > +       return NULL;
-> > +}
-> > +EXPORT_SYMBOL_GPL(dt_pd_alloc);
-> > +
-> > +int dt_pd_init_topology(struct device_node *np)
-> > +{
-> > +       struct device_node *node;
-> > +       struct of_phandle_args child, parent;
-> > +       int ret;
-> > +
-> > +       for_each_child_of_node(np, node) {
-> > +               if (of_parse_phandle_with_args(node, "power-domains",
-> > +                                       "#power-domain-cells", 0, &parent))
-> > +                       continue;
-> > +
-> > +               child.np = node;
-> > +               child.args_count = 0;
-> > +               ret = of_genpd_add_subdomain(&parent, &child);
-> > +               of_node_put(parent.np);
-> > +               if (ret) {
-> > +                       of_node_put(node);
-> > +                       return ret;
-> > +               }
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(dt_pd_init_topology);
->
-> May I suggest that we stick to dt_idle_* as the prefix for all of the
-> exported functions in this file. Static functions can just skip the
-> prefix altogether.
-
-Sure, I will update the function names like you suggested in next
-patch revision.
-
->
-> > +
-> > +struct device *dt_idle_genpd_attach_cpu(int cpu, const char *name)
-> > +{
-> > +       struct device *dev;
-> > +
-> > +       dev = dev_pm_domain_attach_by_name(get_cpu_device(cpu), name);
-> > +       if (IS_ERR_OR_NULL(dev))
-> > +               return dev;
-> > +
-> > +       pm_runtime_irq_safe(dev);
-> > +       if (cpu_online(cpu))
-> > +               pm_runtime_get_sync(dev);
-> > +
-> > +       dev_pm_syscore_device(dev, true);
-> > +
-> > +       return dev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(dt_idle_genpd_attach_cpu);
-> > +
-> > +void dt_idle_genpd_detach_cpu(struct device *dev)
-> > +{
-> > +       if (IS_ERR_OR_NULL(dev))
-> > +               return;
-> > +
-> > +       dev_pm_domain_detach(dev, false);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dt_idle_genpd_detach_cpu);
->
-> Again, a minor comment on the naming of the functions. How about
-> skipping "genpd" in the prefix, thus just dt_idle_attach|detach_cpu()?
-
-Sure, I will update.
-
->
-> [...]
->
-> Kind regards
-> Uffe
-
-Regards,
-Anup
+Thanks
+Jin Yao
