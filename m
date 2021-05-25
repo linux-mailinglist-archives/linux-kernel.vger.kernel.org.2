@@ -2,115 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3863909F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1125C3909FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhEYTx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbhEYTx4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:53:56 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93E7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:52:26 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id r4so32152007iol.6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pHX3VOrd9+dhkWdPAt0bdVC0sXVQ4HZoZn4NeyyTwiE=;
-        b=VKnKMVjPweEwI1CTNqvFI9XC6XjICrCQjczeIABomg1t9UTgdLMtWJ0bVsWlKiSe10
-         NnJF2BjXB3N/xdY9qt5TpsuYKeuaxdar3HA2lolOe9RrK8RwZUOwQF187tnGysEn87Bk
-         uOaVmfU+i/Z8ISPDU28bvG0ZstO4ucvl2f9bgGzKWcnHqKeyjoksmtl+08q5qJCeTfbY
-         s5zjFOuyqc486+ZN1iHrSUqG4LrtSiJ7FK7ZAfqU5Hk9Q9FKZ1WfnNuY6MFUrcaiF9Hg
-         sEFC/gDGr3YkngB/Q0i94jfKufU56b0tS3ZGSpatLNlooXePd0J7LQ9jq7+Viw12cJeD
-         fRhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pHX3VOrd9+dhkWdPAt0bdVC0sXVQ4HZoZn4NeyyTwiE=;
-        b=DQC4sEdsAAU6QsfvyDUOYg+BO0s4AvwPRpR3telm366pms5oSUbEaNFDMS0E+7MP3W
-         wfArPI/0GI/6HCs/LJo8ZwKIGD50Ff8xQnui9WbgduTEXKQ7CuVrJDh+Htz5HOV9NxQD
-         KzXnmg6eBY+Nog8kTuiSd9XGgXESy1o4QiTkSR5RQGvn2fxooMPJZCDGNHRT5K5dhYO5
-         SrUOvLXSLjae4xSuOEzrt1zsQGN1P0hLUNqS1VMw22hgQjInkxHc72Y+9/EM2HM0rwLU
-         aaEpZfah/R/2y+ngkxAlTmofR/l1Ze9CLUvNJZDOFyybBTuaDfP0E/J0OZ9JLi9KAe4h
-         KYGg==
-X-Gm-Message-State: AOAM531aPV61XEpeQ8QOTzJYjjOwKQc3dlFj67ZCmG3/GeAm9SclrhGL
-        zfIwBoEFvypS9prgEf+WgvgMHgAWyL5M2Pd0
-X-Google-Smtp-Source: ABdhPJwx/krpoRf5ZTMSJI88z158XVykWbB9MhVJXnvHlV6tBYk3SR1wSR7D/FEuv6ya1xgA4YA6Ng==
-X-Received: by 2002:a5d:8d87:: with SMTP id b7mr19325568ioj.46.1621972345794;
-        Tue, 25 May 2021 12:52:25 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id j15sm13453063ilc.53.2021.05.25.12.52.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 12:52:25 -0700 (PDT)
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
- <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de>
- <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
- <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
- <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
- <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
- <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
- <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
- <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
- <4390e9fb839ebc0581083fc4fa7a82606432c0c0.camel@trillion01.com>
- <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5026f7eb-9cf3-065d-009d-fe0fd3e94c2b@kernel.dk>
-Date:   Tue, 25 May 2021 13:52:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232916AbhEYTyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:54:35 -0400
+Received: from mail-mw2nam12on2064.outbound.protection.outlook.com ([40.107.244.64]:9952
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232849AbhEYTyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 15:54:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AfZjo6lD8cvWwxfP2chaopOw41rQUFF2Sha01+QlAaZQzCBUGrNMaVXt5Nd7ML5uAA0GWvuNynnpljYzBlxri62JcEePOg4jBdXx65CuLHi6BbMZb6z8Ees3qoV4ezSRuFt+Oit1LR0J1uJT/Z3dqs9HZaPjvo6S8u3AflR9i8LQgU/XNGXtumqkGL7s7/e9my3sDcgDFZqAgW7VLe23IqiCZlBXiZS8yPR1iO1qMhC3HhTNggCMZuKHIhKnbR4u5EElJBHYt10rNx5PfpbsCEuGGpjrcPA1e3TSn6hV9jMk+HmFHyJgMIAXadRRqN4F5NkiwFSKekFAUgInW9Ku4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ez518mnFOeVKnb237EN1Z0Us45eGb+SvnOrdSmi2FQ=;
+ b=jUM8bxFbwaZ1ZaQvPFp7HYKkHhdHruvqaGusjYaiZ6qLhGC4Z1mNCMAEkN1uI5xpmgusI15pbe7pImLKzuxBiwUkQuA0K1fEVgQHalKb8E+MhCLjMHVJlkIVD3qGKhUAWdQX111aUbDfb8gkU8ezscLD/vpR+r9SJ3UWLHTsMrXVdDaAK9wQWLWa/5T75U7E+5O2z/TfDIAL6ITGYc+UGUnkkWsBOn+xgQzmybyVDykJlZFYqnslJTaJOwzG/hSeJ07C1T1+Lv8o/GPkQ5tU4DKHY/0yDvCOaUOawIx6e3ssl7FlnDIxelJ+Wu8X8tzPzR0qlztjmocn4srPNbiDRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ez518mnFOeVKnb237EN1Z0Us45eGb+SvnOrdSmi2FQ=;
+ b=AXt88h7yrqnTV6zQ6EzJrOpllPEsiyz/yMhcG0r/BS+BuZq3zmUMROTPI7bVZXPOv7LpYZ/UE7hgfDqQsEmZofIMOr2avqStIlgc+lFM8nk/y3FUE9a0mMS/pWrfSrDgdSmhVhvBNikp3n0nZHAOMKyy06wxrS7OOIRLIzJJ7HJ6mAcG0b8+ABSSIHkIMd+bdkzTG1gns7vFJhRz9um0FV8xcMSxy/fv2LaF+6F68N8VMwAu1P9mlpl2xFq21CmXP/+BHpOOqhxH2zruZ4XX/JN0gY/ArcPfc032eBlTAjm3mhSZa9THx61MxKdwR83DeTT3yMhgT+y10qQe7oELvw==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 25 May
+ 2021 19:52:59 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 19:52:59 +0000
+Date:   Tue, 25 May 2021 16:52:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Kirti Wankhede <kwankhede@nvidia.com>
+Cc:     David Gibson <david@gibson.dropbear.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210525195257.GG1002214@nvidia.com>
+References: <20210427171212.GD1370958@nvidia.com>
+ <YIizNdbA0+LYwQbI@yekko.fritz.box>
+ <20210428145622.GU1370958@nvidia.com>
+ <YIoiJRY3FM7xH2bH@yekko>
+ <20210503161518.GM1370958@nvidia.com>
+ <YJy9o8uEZs42/qDM@yekko>
+ <20210513135938.GG1002214@nvidia.com>
+ <YKtbWo7PwIlXjFIV@yekko>
+ <20210524233744.GT1002214@nvidia.com>
+ <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH2PR18CA0054.namprd18.prod.outlook.com
+ (2603:10b6:610:55::34) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR18CA0054.namprd18.prod.outlook.com (2603:10b6:610:55::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 25 May 2021 19:52:58 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lld6n-00EZJr-Le; Tue, 25 May 2021 16:52:57 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9be89c40-09f1-47ae-0493-08d91fb6b288
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB55217D30978B485A1881154BC2259@BL0PR12MB5521.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gcYzBgMBwmCyA9GAJfKAP6vgvuhyI0224iru0w8FGsS8OI/Z7nyLGsBBOc0Nx+T0SIAJMeIl6BYZ+RiynL0kI8aEkXdnlDx5gPJw359b0z5Mo5VA0V7+/LbX1j+vVwYJKAWvuL3FkGESRNHQFu1DmOtgJJh2gOLit3QSGlFsN0LKvsHKSmeCF+xKwb5nn6Y38ehz47bMGDlD2Ijop3kJT1vkHnRJDF5IkMGUB1fq9njhq1LFDR5WC2QtWXmTYujBvOHv7G9VHBzseDBENiheqMRWlEaZDj+DA/e9E7qQIDTM0aLY7VFp/EpslX28TZLQdGaHDdcJ50Yl9mr/X8EgpiacXBOMnMPgaSMSdlovEe9OldNLScoFJ34yYecIj5nvr8R8xuaS+/da1CmgtAJxbw1G8DasvUUNw5KccGitCnOFl1K5nhEGcq5Om/p4uDG5MvwE3N0z8hcHTtrjrabWqRHbKTTJ0kZWIQeys7m1uzmZfpmUVzJdKUK+x6cdGJqN85TAmvTix+JnlJc0CnLn1wZPygxqzlM5egLSDMP9b6mFqs3qhNU6DDVm9HIZnMKX4Wd5wNGoHNQvHYD/Zw8Lk3wmhI530mmmaKOECH8e8Oo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(66476007)(4744005)(66556008)(6636002)(9786002)(9746002)(1076003)(478600001)(66946007)(186003)(7416002)(5660300002)(38100700002)(33656002)(8936002)(426003)(316002)(2616005)(54906003)(37006003)(26005)(8676002)(4326008)(83380400001)(36756003)(2906002)(86362001)(6862004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PqpTzPeLrGqySkDwibZPooui5XgVefXqhYxRW/8nRuJlQ3Upzq2Jsriqnkqw?=
+ =?us-ascii?Q?WN0b3SdvH5+nuHEvgY+rxMGmJqbPwoF14r0uIqT9dX3ptBIr30r0C2AVl94+?=
+ =?us-ascii?Q?iC3yBxCb0CK+NLnCK7jd25IKqGCLnZlJa0W3vJiGJqEJiebK9RUoDwxZJWny?=
+ =?us-ascii?Q?zXlsdFni86/fXu3vxVhFwfBYoOB5obpNfqYO9LMtJpx6CEo8j8pR6Tbgw+r2?=
+ =?us-ascii?Q?UPH4iZScA6atRadR/wOA+YKnHu++5IZM+138X51c5kHilzIZVqVGPEb4qNjK?=
+ =?us-ascii?Q?V1PQCc9pHBpVRCxz0uGQSfcwQjceJGe20oqMnThjRq0bcqgd7WNYqJTp08sa?=
+ =?us-ascii?Q?Abf4nK7Txh/s2m/38Lo+DUUTPf7xx6d005Y1dZ6L8pSGVIBzyCfU0jMPVxYW?=
+ =?us-ascii?Q?JVUv42Rjj5GAHHlK0EjhI2v2aqYqiRSb78XUlf7mTVMbAW1fUswhUTgrHAYg?=
+ =?us-ascii?Q?3GLY4hbLeKu6ry+lJblYr+0pBPFirqib3ddyjJz1+GR+aCfos7YqtZ5Ao7oa?=
+ =?us-ascii?Q?0pPF4Mdq+MfwPF3cPW2XRFfDoyE/MbbZDeWRxL+LyBZKYx1bPoUxxc9MzJfw?=
+ =?us-ascii?Q?/kuPJvkmNVMT0q4Tmcb6AmrctHZS2sVZO9hBx3cXiFWpPZNYkXKBTGpsrf+R?=
+ =?us-ascii?Q?wJuJXWXFAyeYD6CuF4pq7J1UyE+bSlWnsfC7k5X1ZcRcdVd08VZFyjI/Bo26?=
+ =?us-ascii?Q?UwoIJxm3HYs670hPMd0tJE7kML9fgb/bH7tFeSRCeySskBuGlgUvRtNfQdir?=
+ =?us-ascii?Q?Jp0bzs24gbi+BLB6+05SChflnzV764twda4I1YTSd/lkZNj0lOKr7K6HHFnF?=
+ =?us-ascii?Q?S325POT7jQoPTcxfYFYLX0sJ/qFMZTiSkBlgOMBQ8+55y5p+LOUTOAqf0gyx?=
+ =?us-ascii?Q?K7K7WUKNENIWSqN/97OFkUiXN9bNXUoF7QlK4vqCYCRVLSbT3Om564/dyOOM?=
+ =?us-ascii?Q?i9ZFB/ObGli/mnZ9HH628gQGh76Wf443D9BEuoE0QuDC4GWvyjSMI8+yu1vQ?=
+ =?us-ascii?Q?1vnHhPYNXD0ICmqDX7Dae6W39oCFC1ZAYMtBL3TIb0/ixl7EWG/vccrYiEGG?=
+ =?us-ascii?Q?PtOLSK3qNgnniZRqKlpqO1itkgmuVRajtKZhkB7cVtRnTU/eonb2Cue6/U93?=
+ =?us-ascii?Q?QgC5fqlFolVbOeBmGaN8ItAYKm8w/RBQqN+udN42qANtZs3bejiUv/NoGnDW?=
+ =?us-ascii?Q?CXnseXISrZ3FjLmhHgjzALVeby/QzQBifprHMBaH0dqcMrH5pI2xaJ9VglS4?=
+ =?us-ascii?Q?YBhe+W/+biDCfZmirppGeJgWk0ohqZyCYOswmyeSX4Kf/PbEMv+s3z5AHoCm?=
+ =?us-ascii?Q?KfVBYqaQDL3M7RjvO5kJKWii?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9be89c40-09f1-47ae-0493-08d91fb6b288
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 19:52:59.2191
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EAhbALj8xkmFekZCDd7M6Onp9mi8lu5Oq2VumOFiEeu7Z7vRtCkL27KqWCJd4gPU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 1:39 PM, Olivier Langlois wrote:
-> On Fri, 2021-05-21 at 03:31 -0400, Olivier Langlois wrote:
->>
->> However, I can reproduce it at will with my real program. So as Linus
->> has suggested, I'll investigate by searching where the PF_IO_WORKER is
->> used.
->>
->> I'll keep the list updated if I discover something.
->>
-> I think that I am about to stumble into the key to unravel the mystery
-> of my core dump generation issue. I am going ask you a quick question
-> and it is very likely to trigger an ahah moment...
-> 
-> To what value is the task_struct mm field is set to for the io-wkr
-> threads?
-> 
-> If I look in the create_io_thread() function, I can see that CLONE_VM
-> isn't set...
+On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
 
-It definitely should be, what kernel are you looking at? If CLONE_VM
-wasn't set, we'd have various issues with requests accessing user mm.
+> 2. iommu backed mdev devices for SRIOV where mdev device is created per
+> VF (mdev device == VF device) then that mdev device has same iommu
+> protection scope as VF associated to it. 
 
--- 
-Jens Axboe
+This doesn't require, and certainly shouldn't create, a fake group.
 
+Only the VF's real IOMMU group should be used to model an iommu domain
+linked to a VF. Injecting fake groups that are proxies for real groups
+only opens the possibility of security problems like David is
+concerned with.
+
+Max's series approaches this properly by fully linking the struct
+pci_device of the VF throughout the entire VFIO scheme, including the
+group and container, while still allowing override of various VFIO
+operations.
+
+Jason
