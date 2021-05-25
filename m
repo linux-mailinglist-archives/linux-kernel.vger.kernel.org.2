@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFC0390CDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C924F390CDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhEYXS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
+        id S231182AbhEYXRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhEYXS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:18:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F9A861042;
-        Tue, 25 May 2021 23:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1621984616;
-        bh=1L+wt9+EMclSFh/NImV8VXARHos+R8K+93TCAp42yGw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XAsPL0sTczCZgtSYc1suxOXPRTi+wtwTzolMB7oyFsPRG3TE2eUow3D+VjQSWwdqO
-         jrD2xkHhN9GJhAUaoRlNsZAi9H7oRwWTM0lIvBAEQKR+TYhJNQzWCryVRYgD1UN18x
-         ClFCYF+jOvH++Nq09N50WoXd2zK41Riuz3kK4ukc=
-Date:   Tue, 25 May 2021 16:16:55 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Yejune Deng <yejune.deng@gmail.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yejune Deng <yejunedeng@gmail.com>
-Subject: Re: [PATCH 2/2] mm: slub: use DEFINE_RAW_SPINLOCK init
- object_map_lock
-Message-Id: <20210525161655.bd9f91e9c29758142eb955e2@linux-foundation.org>
-In-Reply-To: <427f87d6-b506-a225-1887-cf8c13d99634@suse.cz>
-References: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
-        <1621938235-11947-2-git-send-email-yejunedeng@gmail.com>
-        <427f87d6-b506-a225-1887-cf8c13d99634@suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230145AbhEYXRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:17:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 798A96128B;
+        Tue, 25 May 2021 23:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621984562;
+        bh=udTOOSMfJAcXktS3DMEoxFOhpDun8Q7Rx/ntvDo0avw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gQeIbFm1KUwviw4anAa3NkYIGfFPZoIuWRxKQnf1yu7UXL9a8lsoYnNcQEfO7ufyD
+         l1/3NW7dycXQvXZf3zNV+HbYVyuCifzV6wpfJydb4JwZh4i9K8CIdpE4w5sbkwQgtD
+         6yvziORankOno1bXr3dybdZ9vPQ88Yq4mCEzCZvmIstBBI3yEMm1t8yPbpm+sdLcbN
+         bD1e5robcYs74VpV2cS9XBZTJ6Xkj6A4y/nzqlAwCpCX7ExapWQBuaw4IpAtPcENBF
+         pwmUmxzlEb2KFKwjJRdqcbt6F+TZ2sMfSZCjQtwOdFy2KIj4L24L2xVgeb5YmGEGKw
+         Ueaaumt97s7PA==
+Date:   Tue, 25 May 2021 18:16:58 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] virtchnl: Replace one-element array in struct
+ virtchnl_vsi_queue_config_info
+Message-ID: <20210525231658.GA176466@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 12:46:35 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+There is a regular need in the kernel to provide a way to declare having a
+dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-> On 5/25/21 12:23 PM, Yejune Deng wrote:
-> > Use DEFINE_RAW_SPINLOCK instead of DEFINE_SPINLOCK object_map_lock
-> > that won't be preempted on mainline and PREEMPT_RT kernels.
-> > 
-> > Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
-> 
-> RT tree also has such patch, with IMHO more thorough description:
+Refactor the code according to the use of a flexible-array member in struct
+virtchnl_vsi_queue_config_info instead of one-element array, and use the
+flex_array_size() helper.
 
-Yes please, a more thorough decription is needed.  The description
-provided with this patch could be applied to every spinlock in the
-kernel!
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ include/linux/avf/virtchnl.h | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index b554913804bd..ed9c4998f8ac 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -338,10 +338,10 @@ struct virtchnl_vsi_queue_config_info {
+ 	u16 vsi_id;
+ 	u16 num_queue_pairs;
+ 	u32 pad;
+-	struct virtchnl_queue_pair_info qpair[1];
++	struct virtchnl_queue_pair_info qpair[];
+ };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(72, virtchnl_vsi_queue_config_info);
++VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vsi_queue_config_info);
+ 
+ /* VIRTCHNL_OP_REQUEST_QUEUES
+  * VF sends this message to request the PF to allocate additional queues to
+@@ -997,9 +997,8 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 		if (msglen >= valid_len) {
+ 			struct virtchnl_vsi_queue_config_info *vqc =
+ 			    (struct virtchnl_vsi_queue_config_info *)msg;
+-			valid_len += (vqc->num_queue_pairs *
+-				      sizeof(struct
+-					     virtchnl_queue_pair_info));
++			valid_len += flex_array_size(vqc, qpair,
++						     vqc->num_queue_pairs);
+ 			if (vqc->num_queue_pairs == 0)
+ 				err_msg_format = true;
+ 		}
+-- 
+2.27.0
 
