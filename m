@@ -2,61 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F56C38FF88
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2759038FDCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhEYKwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:52:09 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41108 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231364AbhEYKwF (ORCPT
+        id S232550AbhEYJ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:29:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4001 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232487AbhEYJ3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:52:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ua4PLBH_1621939834;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua4PLBH_1621939834)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 May 2021 18:50:35 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     kishon@ti.com
-Cc:     vkoul@kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] phy: ti: Fix an error code in wiz_probe()
-Date:   Tue, 25 May 2021 18:50:32 +0800
-Message-Id: <1621939832-65535-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 25 May 2021 05:29:20 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fq7wT0gkXzmbRj;
+        Tue, 25 May 2021 17:25:29 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 17:27:49 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 25 May
+ 2021 17:27:48 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <jeyu@kernel.org>
+CC:     <sfr@canb.auug.org.au>, <swboyd@chromium.org>,
+        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        Bixuan Cui <cuibixuan@huawei.com>
+Subject: [PATCH -next v2] module: fix build error when CONFIG_SYSFS is disabled
+Date:   Tue, 25 May 2021 18:50:49 +0800
+Message-ID: <20210525105049.34804-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the code execute this if statement, the value of ret is 0. 
-However, we can see from the dev_err() log that the value of 
-ret should be -EINVAL.
+Fix build error when disable CONFIG_SYSFS:
+kernel/module.c:2805:8: error: implicit declaration of function ‘sect_empty’; did you mean ‘desc_empty’? [-Werror=implicit-function-declaration]
+ 2805 |   if (!sect_empty(sechdr) && sechdr->sh_type == SHT_NOTE &&
 
-Clean up smatch warning:
-
-drivers/phy/ti/phy-j721e-wiz.c:1216 wiz_probe() warn: missing error code
-'ret'
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit c9f9eba06629 ("phy: ti: j721e-wiz: Manage
-typec-gpio-dir")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Fixes: 9ee6682aa528 ("module: add printk formats to add module build ID to stacktraces")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes from v2:
+Put the sect_empty() definition outside of #ifdef CONFIG_SYSFS.
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 9eb6d37..126f5b8 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -1212,6 +1212,7 @@ static int wiz_probe(struct platform_device *pdev)
+ kernel/module.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/module.c b/kernel/module.c
+index decf4601e943..0543b44db81d 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1462,6 +1462,13 @@ resolve_symbol_wait(struct module *mod,
+ 	return ksym;
+ }
  
- 		if (wiz->typec_dir_delay < WIZ_TYPEC_DIR_DEBOUNCE_MIN ||
- 		    wiz->typec_dir_delay > WIZ_TYPEC_DIR_DEBOUNCE_MAX) {
-+			ret = -EINVAL;
- 			dev_err(dev, "Invalid typec-dir-debounce property\n");
- 			goto err_addr_to_resource;
- 		}
++#ifdef CONFIG_KALLSYMS
++static inline bool sect_empty(const Elf_Shdr *sect)
++{
++	return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
++}
++#endif
++
+ /*
+  * /sys/module/foo/sections stuff
+  * J. Corbet <corbet@lwn.net>
+@@ -1469,11 +1476,6 @@ resolve_symbol_wait(struct module *mod,
+ #ifdef CONFIG_SYSFS
+ 
+ #ifdef CONFIG_KALLSYMS
+-static inline bool sect_empty(const Elf_Shdr *sect)
+-{
+-	return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size == 0;
+-}
+-
+ struct module_sect_attr {
+ 	struct bin_attribute battr;
+ 	unsigned long address;
 -- 
-1.8.3.1
+2.17.1
 
