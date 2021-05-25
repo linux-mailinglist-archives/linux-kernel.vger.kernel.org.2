@@ -2,142 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE846390858
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EF0390859
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhEYSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:01:54 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:35758 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbhEYSBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:01:47 -0400
-Received: from [IPv6:2a02:a03f:eafb:ee01:e40f:a8f4:56e2:dda8] (unknown [IPv6:2a02:a03f:eafb:ee01:e40f:a8f4:56e2:dda8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 74262203868;
-        Tue, 25 May 2021 20:00:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1621965615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S233083AbhEYSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:02:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41204 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234353AbhEYSBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 14:01:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621965625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Hwbi2H2jt0YSq+/cauVswFTBMGr5BwFzNAwNO9ocxKU=;
-        b=oZqqU1fE67o8c4m9TX7dE1WHCeymUDm8ZSxngGb3ZnbcVTRcwB8JZmpcV+QfudafMap7CE
-        LgM1pjz8X6/MiCYxt5+4a/NnnxfqNoh6gZoi2BFwDdTbdp5P+I7Ce5092MymLf6BdbHwOP
-        wpF9TqfKq4S6CG2DLljSeE5yBNx7kArCCFI5cAsN0+oPqVeJEox9ULCqons0zivBmviGFo
-        RH93V6WAiaaBL4H751Qudbz4yUU3IMu8C4BBYCq8hpzXY+LyvixuvSP7VO//EKCRKkW1Rb
-        KjYSMB9YfaflEyvp+Vtk2O7MJulArOAxgUxWOMcSu7iptcNRR2HIFY0Flzd22w==
-Message-ID: <74c3ffeced38a3cde8437a60989bac3a99387ecf.camel@svanheule.net>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bh=NgBPhouft99Ui43ozzCY0B6U/k51FIAlxJ2/MpfUsP4=;
+        b=ElpQxK+HH3ANT/imMyY3cj4d5xakfztZG4n+dqNqmjsFClVF6axympo2AiEc/xd0V1vwz7
+        VRTiR0H50GVzoX0V/p7gl80l9KvdWsTmLl0c3tRmQofkZxdjqo/+wsDA4nOKuSC9NkUgkC
+        MCpwf2cX4XRYvldW+NOjZ9pNPb7U40o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621965625;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NgBPhouft99Ui43ozzCY0B6U/k51FIAlxJ2/MpfUsP4=;
+        b=7feiVxBJkKJ6PgvqiOrw4iFzGCPObeRBqzD4gwdf/Ia3sPpNrkWQI8YUubMUtHUlCC8+cH
+        p/ewdh9WjO7LGADQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EF264AF59;
+        Tue, 25 May 2021 18:00:24 +0000 (UTC)
+Date:   Tue, 25 May 2021 20:00:22 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     "Qian Cai (QUIC)" <quic_qiancai@quicinc.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Tue, 25 May 2021 20:00:13 +0200
-In-Reply-To: <CAHp75VfCBtcQX4rvmQnRMquM0k7ZBqOgZN15Z7TFNSO60SB9TA@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
-         <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
-         <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
-         <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
-         <8f96b24d782e5bdeabf5370ccf3475794d0c2818.camel@svanheule.net>
-         <CAHp75VfzEwVGR7ttdcKzirPDN8oUFw1uTDXPFE=P=9+S3CAFYQ@mail.gmail.com>
-         <CAHp75VfCBtcQX4rvmQnRMquM0k7ZBqOgZN15Z7TFNSO60SB9TA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+Subject: Re: Arm64 crash while online/offline memory sections
+Message-ID: <YK07NhNOnKNB02RY@localhost.localdomain>
+References: <DM5PR0201MB35576EF9B568FEE05FE58CF08E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
+ <b34499c5-a330-1bfc-d564-8ebffb3236cd@redhat.com>
+ <DM5PR0201MB35576CEF62C53EF393E3D9768E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM5PR0201MB35576CEF62C53EF393E3D9768E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-25 at 20:11 +0300, Andy Shevchenko wrote:
-> On Mon, May 24, 2021 at 7:30 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, May 24, 2021 at 6:03 PM Sander Vanheule <sander@svanheule.net>
-> > wrote:
-> > > On Mon, 2021-05-24 at 15:54 +0300, Andy Shevchenko wrote:
+On Tue, May 25, 2021 at 05:57:34PM +0000, Qian Cai (QUIC) wrote:
+> > Do we know which patch in particular is problematic?
 > 
-> ...
+> Okay, the winner is "mm,memory_hotplug: Allocate memmap from the added memory range".
 > 
-> > > Sadly, I don't. Most of the info we have comes from code archives of
-> > > switch
-> > > vendors (Zyxel, Cisco etc). Boards need to be reverse engineered, and the
-> > > few
-> > > leaked datasheets that can be found on the internet aren't exactly thick
-> > > in
-> > > information.
-> > > 
-> > > The RTL8231 datasheet is actually quite useful, but makes no mention of
-> > > the
-> > > output value isse. Since this isn't an official resource, I don't think it
-> > > would
-> > > be appropriate to link it via a Datasheet: tag.
-> > > https://github.com/libc0607/Realtek_switch_hacking/blob/files/RTL8231_Datasheet_
-> > > 1.2.pdf
-> > > 
-> > > Looking at the datasheet again, I came up with a... terrible hack to work
-> > > around
-> > > the output value issue.
-> > > 
-> > > The chip also has GPIO_INVERT registers that I hadn't used until now,
-> > > because
-> > > the logical inversion is handled in the kernel. However, these inversion
-> > > registers only apply to the output values. So, I could implement glitch-
-> > > free
-> > > output behaviour in the following way:
-> > >  * After chip reset, and before enabling the output driver (MFD
-> > > initialisation):
-> > >     - Mux all pins as GPIO
-> > >     - Change all pins to outputs,
-> > 
-> > No. no, no. This is much worse than the glitches. You never know what
-> > the hardware is connected there and it's potential breakage (on hw
-> > level) possible.
-> > 
-> > >  so the data registers (0x1c-0x1e) become writable
-> > >     - Write value 0 to all pins
-> > >     - Change all pins to GPI to change them into high-Z
-> > >  * In the pinctrl/gpio driver:
-> > >     - Use data registers as input-only
-> > >     - Use inversion register to determine output value (can be written any
-> > > time)
-> > > 
-> > > The above gives glitch-free outputs, but the values that are read back
-> > > (when
-> > > configured as output), come from the data registers. They should now be
-> > > coming
-> > > from the inversion (reg_set_base) registers, but the code prefers to use
-> > > the
-> > > data registers (reg_dat_base).
-> > 
-> > Lemme read the datasheet and see if I find any clue for the hw behaviour.
-> 
-> Thank you for your patience!
-> 
-> Have you explored the possibility of using En_Sync_GPIO?
+> https://lore.kernel.org/linux-mm/20210421102701.25051-5-osalvador@suse.de/
 
-I haven't (output latching doesn't really appear to be a thing in the gpio
-framework?), but I did notice that the main SoC's RTL8231 integration uses it.
+Ok, which means that is irrelevant to having it enabled, as the latter
+patch of that series actualy enables it for arm64.
+Can you work out where exactly the crash happens?
 
-Let me play around with it to see if it also latches the pin direction, or if
-that's always an immediate change.
+I will have a look into it tomorrow.
 
+Thanks for reporting.
 
-Best,
-Sander
-
+-- 
+Oscar Salvador
+SUSE L3
