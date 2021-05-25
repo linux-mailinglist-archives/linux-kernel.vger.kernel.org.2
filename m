@@ -2,162 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D070838FAC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FAA38FACA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhEYGUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:20:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40144 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhEYGUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:20:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621923554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rP1fweoyRJtr6Mi6XlE6lVpYI+0VMhwzNpbtJBa3S1E=;
-        b=CI25JyNrQixwpKwXEYmEusbXSjmDWoFQmGMCBgFNsRzBlhsb/MfQAksDfr5+2miJa/8V/N
-        VKk1G9iz8anJpitdL3KL2RaoupF/EXs7rcFFIfR6r2DIXadG+GU8pzLA39uf6qcB+wb7Yl
-        NepbRBXYTR8XrS5xfmBag/D6P1JkTVk=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-UAF6zNzQM-yujyYhMhoJ4w-1; Tue, 25 May 2021 02:19:13 -0400
-X-MC-Unique: UAF6zNzQM-yujyYhMhoJ4w-1
-Received: by mail-pg1-f199.google.com with SMTP id q64-20020a632a430000b0290209af2eea25so20336564pgq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:19:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rP1fweoyRJtr6Mi6XlE6lVpYI+0VMhwzNpbtJBa3S1E=;
-        b=FhqyVZ7XgYHujx8ixOU3MjXqLhUjUjshtnTrkgGB4hcKQjoPDjX6Gu4BHS4M0Vh/6O
-         Bc6qgCrnxSN+DuKw+o5Q5dQWzWujvJInIX0a5uP9CjY8RmVE4XcnxTkne4JCX1RlQa5/
-         DpHFC3ZD/Dlyqna7ijvRuWd905NiHRMaP3bhdF/axz7Yd3vOSPqdS/QGN75MP2mGcIK9
-         oPPJKm4R1S5JN7idI50xli2sNGYmNdXfl3gaQEJI05YoIKdJSmZlf7yTrUNX5aO/botb
-         1TgMXI5R7gFmTFB0D8EYMsj8k1kpYhdo+eIDN4KdINmbZJFrkg74Yt7FJoRQUFDVNmEr
-         LghA==
-X-Gm-Message-State: AOAM532cMt+a/1YZBkAK4aG3uUOU3ywhwHbqWMwkdm9/ozQOa98VcMJL
-        wgAiWtpoldyKV57igHHM4hhHhv3Y0z/ZS0h3kK56dG6nV7OSBBB6o8O0/lsSwymbfsEHkcE0ZrX
-        1mXLbcw+XTMbY+mgjqi2IABo90ypDzWKaE+qdyIhjKmQeB4FCS0ShiVqvHovgocP63rIzwky+R7
-        D4
-X-Received: by 2002:a17:90a:3988:: with SMTP id z8mr29530512pjb.175.1621923551593;
-        Mon, 24 May 2021 23:19:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHuSGZNZRBpr7BFjN2z2DGgUtoW4OBh5VlH3j5+cXLDOpjFD+S6KAYt8UK28l5a4+wF9lImw==
-X-Received: by 2002:a17:90a:3988:: with SMTP id z8mr29530464pjb.175.1621923551060;
-        Mon, 24 May 2021 23:19:11 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id r13sm12449973pfl.191.2021.05.24.23.19.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 23:19:10 -0700 (PDT)
-Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
- <20210518055336-mutt-send-email-mst@kernel.org>
- <4aaf5125-ce75-c72a-4b4a-11c91cb85a72@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <72f284c6-b2f5-a395-a68f-afe801eb81be@redhat.com>
-Date:   Tue, 25 May 2021 14:19:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        id S231164AbhEYGVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhEYGVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 02:21:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1528A61409;
+        Tue, 25 May 2021 06:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621923602;
+        bh=pZte7A544Ja11bu7ye2ggOgy7fArcTgJxzGJ9g9SEVg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lyJ04Pn6UHaCJrEUyspICy1pehxxALfea5ZjtOv6nxSRzsVpAG3PZn3RhQf0ekqRr
+         yZiR3ppqqspa9e9AAHwwKCUKaX13pjHoFIcoVns3KmvcUJoMdZ1HXpjm22xo8hyLSu
+         N7zbeEhSTA0IrdmayDBZmJUNL2Eh3+l2H2jrbil9d3TU4pC+Dyewv/s5ImslqxstKG
+         RC8WondfAY7hrCmowjpImaJerRhOaQqUOOcGSDkKLheD0E1Fjdy+sEu8SIIT4l7J6D
+         GLvZG9CSDl4t0y9/XYHPf0GY83YFHhzpdJx1jZjONwS9g3gzVpAYjelN8R2gBV+Erc
+         AIRnw+zT29jGg==
+Date:   Tue, 25 May 2021 08:19:58 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
+Subject: Re: [PATCH] media: dvd_usb: memory leak in cinergyt2_fe_attach
+Message-ID: <20210525081958.22f1e2b6@coco.lan>
+In-Reply-To: <20210525053359.1147899-1-mudongliangabcd@gmail.com>
+References: <20210525053359.1147899-1-mudongliangabcd@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <4aaf5125-ce75-c72a-4b4a-11c91cb85a72@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Tue, 25 May 2021 13:33:59 +0800
+Dongliang Mu <mudongliangabcd@gmail.com> escreveu:
 
-在 2021/5/19 下午10:18, Xianting Tian 写道:
-> thanks, I submit the patch as commented by Andrew 
-> https://lkml.org/lkml/2021/5/18/256
->
-> Actually, if xmit_skb() returns error, below code will give a warning 
-> with error code.
->
->     /* Try to transmit */
->     err = xmit_skb(sq, skb);
->
->     /* This should not happen! */
->     if (unlikely(err)) {
->         dev->stats.tx_fifo_errors++;
->         if (net_ratelimit())
->             dev_warn(&dev->dev,
->                  "Unexpected TXQ (%d) queue failure: %d\n",
->                  qnum, err);
->         dev->stats.tx_dropped++;
->         dev_kfree_skb_any(skb);
->         return NETDEV_TX_OK;
->     }
->
->
->
->
->
-> 在 2021/5/18 下午5:54, Michael S. Tsirkin 写道:
->> typo in subject
->>
->> On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
->>> When met error, we output a print to avoid a BUG().
+> When cinergyt2_frontend_attach returns a negative value, the allocation
+> is already successful, but in the error handling, there is no any clean
+> corresponding operation, which leads to memory leak.
+> 
+> Fix it by freeing struct cinergyt2_fe_state when the return value is
+> nonzero.
+> 
+> backtrace:
+>   [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
+>   [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
+>   [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
+>   [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
+>   [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
+>   [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+>   [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+>   [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+> 
+> Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  drivers/media/usb/dvb-usb/dvb-usb-dvb.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
+> index 0a7f8ba90992..f9f004fb0a92 100644
+> --- a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
+> +++ b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
+> @@ -288,7 +288,7 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
+>  		}
+>  
+>  		ret = adap->props.fe[i].frontend_attach(adap);
+> -		if (ret || adap->fe_adap[i].fe == NULL) {
+> +		if (adap->fe_adap[i].fe == NULL) {
+>  			/* only print error when there is no FE at all */
+>  			if (i == 0)
+>  				err("no frontend was attached by '%s'",
+> @@ -297,6 +297,12 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
+>  			return 0;
+>  		}
+>  
+> +		if (ret) {
+> +			struct dvb_frontend *fe = adap->fe_adap[i].fe;
+> +
+> +			fe->ops.release(fe);
+> +			return 0;
+> +		}
+> +
 
+Touching dvb-usb core doesn't seem the right fix here, as it will
+affect all other drivers that depend on it.
 
-So you don't explain why you need to remove BUG(). I think it deserve a 
-BUG().
+Basically, when a driver returns an error, it has to cleanup
+whatever it did, as the core has no way to know where the
+error happened inside the driver logic.
 
+The problem seems to be at cinergyt2_frontend_attach() instead:
 
->>>
->>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
->>> ---
->>>   drivers/net/virtio_net.c | 5 ++---
->>>   1 file changed, 2 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>> index c921ebf3ae82..a66174d13e81 100644
->>> --- a/drivers/net/virtio_net.c
->>> +++ b/drivers/net/virtio_net.c
->>> @@ -1647,9 +1647,8 @@ static int xmit_skb(struct send_queue *sq, struct
->>> sk_buff *skb)
->>>           hdr = skb_vnet_hdr(skb);
->>>
->>>       if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
->>> -                    virtio_is_little_endian(vi->vdev), false,
->>> -                    0))
->>> -        BUG();
->>> +                virtio_is_little_endian(vi->vdev), false, 0))
->>> +        return -EPROTO;
->>>
->>
->> why EPROTO? can you add some comments to explain what is going on pls?
->>
->> is this related to a malicious hypervisor thing?
+	adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
 
+        mutex_lock(&d->data_mutex);
+        st->data[0] = CINERGYT2_EP1_GET_FIRMWARE_VERSION;
 
-I think not if I was not wrong.
+        ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
+        if (ret < 0) {
+                deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
+        }
+        mutex_unlock(&d->data_mutex);
 
-Each sources (either userspace or device), the skb should be built 
-through virtio_net_hdr_to_skb() which means the validation has already 
-been done.
+        /* Copy this pointer as we are gonna need it in the release phase */
+        cinergyt2_usb_device = adap->dev;
 
-If we it fails here, it's a real bug.
+        return ret;
 
-Thanks
+See, this driver returns an error if it fails to talk with the hardware
+when it calls dvb_usb_generic_rw(). Yet, it doesn't cleanup its own mess,
+as it keeps the frontend attached. The right fix would be to call 
+cinergyt2_fe_release() if ret < 0.
 
+E. g., the above code should be, instead:
 
->>
->> don't we want at least a WARN_ON? Or _ONCE?
->>
->>>       if (vi->mergeable_rx_bufs)
->>>           hdr->num_buffers = 0;
->>> -- 
->>> 2.17.1
->
+	if (ret < 0) {
+		fe->ops.release(adap->fe_adap[0].fe);
+                deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
+        }
 
+Thanks,
+Mauro
