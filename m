@@ -2,103 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ACA38FB94
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2835138FB97
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhEYHYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:24:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33490 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229963AbhEYHYX (ORCPT
+        id S231556AbhEYHYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhEYHYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:24:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621927374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+A+HfSpXZqAH5SCxE7ycsL7iyfz3fycevoSOlmzgN8=;
-        b=hPIlwJnriI/zg+v9A0OywrYi2fTIyrS1r/0LoSdtabPnIjRIOLorK1RhGUIJOhw9ttQW0Q
-        gWRklfXTN/mNO4aJT11whoguIWvZqsMwn7ZwohcAw8uE6s9Vfl1EQ/Wld6Z2DX9iv9/9zY
-        RWvqvhPBZUAEVVp2wixIKXeMw+NydQg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-AuD0aaVHNCuC-VgHv9ittA-1; Tue, 25 May 2021 03:22:51 -0400
-X-MC-Unique: AuD0aaVHNCuC-VgHv9ittA-1
-Received: by mail-ed1-f69.google.com with SMTP id i3-20020aa7dd030000b029038ce772ffe4so16986435edv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:22:50 -0700 (PDT)
+        Tue, 25 May 2021 03:24:32 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0161C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:23:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id f18so15519666ejq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DYAqWMiDQ+kkpM7W29zoxxV/g8Y8WskJxooftmjhlkE=;
+        b=X/tnYpuGB+YoS8SOtfnSm4tkpmls5tFMBzJ38OSAhw7DLDApqhUkmhGnTzoTyaCS0G
+         zt6XOsFzvtdfMRPpv8aOEZRYSKV+x2XOtfTjqt25mBmXKkFNf2Hf1CYY3bEOQfbPQPv+
+         uvIQuSXgqhoIWmJwVRIlsXbdnU80ERVs5d0gasnSA6ExRK5pIWDuUIriole+mbqOPJpS
+         xfIEi16mn8VMCzWLD8v13FjzUcnpRmRWozGbCtsLbpSLObB+kw1Vp4TscN/AP2GiipQi
+         dbqBlJ7w/qzYbGhLFxFvdUEYJjrMBev5nr9SEywRrmFX2FSo1uG8UUy77e4xChEfY8mg
+         DsvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h+A+HfSpXZqAH5SCxE7ycsL7iyfz3fycevoSOlmzgN8=;
-        b=fZSHLP5Pq/JrO4dygrSrXaamorVUHe8M5H6NWqtDb7nlQQemR8opQI5DwjzmMBEWOl
-         ChOzJ4N5h5Dks6swYnDFlFfXV3iSCkxDR0PeENOlQxnPVb0z9RodO/CaM5Y6MRdr+UqZ
-         /S4QIhrIlVnSgLANKGVDR5/hy91JJFkhQHsd68Ad98hhUtO+XB7awncmrxCe6JpzOwJf
-         YcXTaRCnnmmdtkVBOj/eDTNPGZiCMnCNb13XbxYDuIjCdnsoer6APeYZwKbF7p7jaPeJ
-         +CUDsmExeh+BE6J2oex/EtoBKpzUpZHWOMXRgWPRaf9+eqnK0CMDZ+ygMQ9V/J0ojr+9
-         TjFQ==
-X-Gm-Message-State: AOAM533MQKynUl+9IebrXPCVk+1M3wJtTwHAxcSYcIGRQ+r5PY7X6aQd
-        GDgqphjeb2EWGVc+AkDaGFjw5s6FHB4GZt3h6PveapzGUdQKZ3sEoeUOMevUFQM3WKk1vAL/yjS
-        BmWPJPcWS33dCyTTzJS1i4zZK
-X-Received: by 2002:a50:8fe6:: with SMTP id y93mr29866813edy.224.1621927369844;
-        Tue, 25 May 2021 00:22:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwS0no7nsHNRCqlg+nhqUCjlv+Qptu6bm1cQU9E9Jv2TBtMJhNOQr2oL6OuXDEhh8h9h/8pgA==
-X-Received: by 2002:a50:8fe6:: with SMTP id y93mr29866806edy.224.1621927369711;
-        Tue, 25 May 2021 00:22:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g10sm8661205ejd.109.2021.05.25.00.22.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 00:22:49 -0700 (PDT)
-To:     Christoph Hellwig <hch@lst.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        slp@redhat.com, sgarzare@redhat.com,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210520141305.355961-1-stefanha@redhat.com>
- <20210520141305.355961-4-stefanha@redhat.com> <20210524145928.GA3873@lst.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
-Message-ID: <7cc7f19b-34b3-1501-898d-3f41e047d766@redhat.com>
-Date:   Tue, 25 May 2021 09:22:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DYAqWMiDQ+kkpM7W29zoxxV/g8Y8WskJxooftmjhlkE=;
+        b=m/7u9zFEYDZ5y5ZTZIcHlVJGRfbPrNJtWcU0OsmtB+bolCHBZHn/NCnzkUJxMGH8Uk
+         zU+7bw/yxRtwwBLzEYUFi1qrJ6H8IXgvaplDnVxXpCAuEq8hpHa9UVonh6JHFlHZuISb
+         KFt2Zfi8y2SPAGupbydM7brMCLA4qilKz0VLuql34Djioeo7s5bab9SntHZa5aN02GnS
+         PmAlh5qZh2t4JvsaIktQpxngH1RyR74X+Ny0afMhIrw3/j/9Ocw6Ux6yp02oorBfjydU
+         wTpX/HhhPsLlw3K1eC952FwzpoQqy75xXn1f00KhEY/KmSj56MaZClLqmcD2YyQC1rJL
+         Dysw==
+X-Gm-Message-State: AOAM532zzyZLfIAbkhviyfiyLS3tP7WiGcVPh3dVwhTDjYFOLDiBYfLK
+        Bt12Hf6FVLgyYSXK8LkoC6W/tdfmsbnyHTlljxDlLg==
+X-Google-Smtp-Source: ABdhPJxVlgCSmxuPtZLhIAVNtY/aiz9Am4euSwyH2MPGQyzAqH9zsKjTDy3BD4R0dMSJT077x5uGFrQi1h8iz5fHIV0=
+X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr28263620ejb.287.1621927381215;
+ Tue, 25 May 2021 00:23:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524145928.GA3873@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 25 May 2021 12:52:49 +0530
+Message-ID: <CA+G9fYtPfHxeNAO9gdu57phnZp5=6oXKUAcGJZX0tQ6vQbe-Nw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/21 16:59, Christoph Hellwig wrote:
-> On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
->> Possible drawbacks of this approach:
->>
->> - Hardware virtio_blk implementations may find virtqueue_disable_cb()
->>    expensive since it requires DMA. If such devices become popular then
->>    the virtio_blk driver could use a similar approach to NVMe when
->>    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
->>
->> - If a blk_poll() thread is descheduled it not only hurts polling
->>    performance but also delays completion of non-REQ_HIPRI requests on
->>    that virtqueue since vq notifications are disabled.
-> 
-> Yes, I think this is a dangerous configuration.  What argument exists
-> again just using dedicated poll queues?
+On Mon, 24 May 2021 at 21:09, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.40 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.40-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-There isn't an equivalent of the admin queue in virtio-blk, which would 
-allow the guest to configure the desired number of poll queues.  The 
-number of queues is fixed.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Could the blk_poll() thread use preempt notifiers to enable/disable 
-callbacks, for example using two new .poll_start and .end_poll callbacks 
-to struct blk_mq_ops?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Paolo
+## Build
+* kernel: 5.10.40-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: d8d2794a2bd357476a82c4d315ba323557fd5c80
+* git describe: v5.10.39-105-gd8d2794a2bd3
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.39-105-gd8d2794a2bd3
 
+## No regressions (compared to v5.10.39-105-gd60ecece01f3)
+
+## No fixes (compared to v5.10.39-105-gd60ecece01f3)
+
+## Test result summary
+ total: 82881, pass: 68064, fail: 2523, skip: 11584, xfail: 710,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
