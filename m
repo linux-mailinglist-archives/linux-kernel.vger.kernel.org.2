@@ -2,118 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED2238FE4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF0138FE59
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhEYKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbhEYKAZ (ORCPT
+        id S232871AbhEYKDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:03:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6705 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhEYKC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:00:25 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFD1C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:58:56 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id r5so45145909lfr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
-        b=DWqjd2ZKj4VEhFiAqyMPJlky9QQ+735WWEjgMnIsSYMqSpSjQkNUbljyLplf0Od0++
-         AcFT7Wo+/xrlCoOjIpU4QFDDsG5S1mGxrZDAHommxfpUHh8DJ/TAdiEiOLvXSXHZhq0T
-         9ebM5TkLnRx5Q8XHH73oSzJD7pANRwp0lRmbAoZkAC8J74Zs+a4SsR0l21gK8XmDyGh3
-         9aj1WThK7gWR9z7zgseDW46BDdp4/W+CFfeMILarc2aDIwm1U1lN8X0y3gZhuEV4LnwT
-         EXZFzHfumREOHr42Ls1/R0I8LrZTrDvKEiP30kBUCl8UOwxVF2N+dhp1FdPCckhKA5Zx
-         u6Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
-        b=nkebLtW446Fik4gBJOW6dEiORgk1LJaosO3KCC20jN5DjgcdohEeZoTLt1ImQNmu/4
-         mYKFJaQzdFaTiECphj7PFeTi15UGvrhigna3IKb2IZ+auOl9nowMNALTF28poBdTQ0Ty
-         m/sM8WNmFlASRbQTjLJBLNkMWtE5/fjzvu1e/2AW3Ncnn9wGxb/N7p3ZhZomTaSeJPNC
-         u2vkJSi9bdoJt2mFJ3oSTYX59cSt/QWN3qZtKiCafBTsk20cyXv+NxERyhOWgzq4Coby
-         3n4I4GxEUGY/edyju/9hXkvjMkBsmDeUneEZlSiPY4fIq+I5KnrJPjw8ANozhhqfZVGm
-         9RZA==
-X-Gm-Message-State: AOAM532a/IKgaeodtJ5HF1RorOFJWDhJDgaJvcCw1M5FRbLVfi78rl+N
-        9MZd7Yhg5XKNY7zzW3Q02pojSgQu82XvuBdKlz07JQ==
-X-Google-Smtp-Source: ABdhPJymEHH3L6C2Dr9IFjs4dvQW51E+pLbDYgD29AlubRHXAG2hE6qTDbkp8Lkz7Md6B6iTjqHJcKnLiiwsXO3MSnY=
-X-Received: by 2002:a05:6512:2205:: with SMTP id h5mr13907940lfu.233.1621936734446;
- Tue, 25 May 2021 02:58:54 -0700 (PDT)
+        Tue, 25 May 2021 06:02:59 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fq8dr0VKkzlYSQ;
+        Tue, 25 May 2021 17:57:52 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 18:01:27 +0800
+Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
+ 2021 11:01:25 +0100
+Date:   Tue, 25 May 2021 10:59:37 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     <ira.weiny@intel.com>
+CC:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] cxl/mem: Reserve individual register block
+ regions
+Message-ID: <20210525105937.00000696@Huawei.com>
+In-Reply-To: <20210522001154.2680157-5-ira.weiny@intel.com>
+References: <20210522001154.2680157-1-ira.weiny@intel.com>
+        <20210522001154.2680157-5-ira.weiny@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
-In-Reply-To: <20210518125202.78658-2-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 25 May 2021 11:58:43 +0200
-Message-ID: <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.147]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 at 14:54, Odin Ugedal <odin@uged.al> wrote:
->
-> Make sure cfs_rq does not contribute to task group load avg when
-> checking if it is decayed. Due to how the pelt tracking works,
-> the divider can result in a situation where:
->
-> cfs_rq->avg.load_sum = 0
-> cfs_rq->avg.load_avg = 4
+On Fri, 21 May 2021 17:11:53 -0700
+<ira.weiny@intel.com> wrote:
 
-Could you give more details about how cfs_rq->avg.load_avg = 4 but
-cfs_rq->avg.load_sum = 0 ?
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Now that individual register blocks are mapped; those blocks regions
+> should be reserved individually.
+> 
+> Remove general pci device management and create managed region
+> reservations based on the individual register blocks.
 
-cfs_rq->avg.load_sum is decayed and can become null when crossing
-period which implies an update of cfs_rq->avg.load_avg.  This means
-that your case is generated by something outside the pelt formula ...
-like maybe the propagation of load in the tree. If this is the case,
-we should find the error and fix it
+Would be good to include a bit more of the 'reason why' in the actual
+patch descriptions.  Afterall, who ever goes looking for the cover letter
+after patches are applied ;)
 
-> cfs_rq->avg.tg_load_avg_contrib = 4
->
-> If pelt tracking in this case does not cross a period, there is no
-> "change" in load_sum, and therefore load_avg is not recalculated, and
-> keeps its value.
->
-> If this cfs_rq is then removed from the leaf list, it results in a
-> situation where the load is never removed from the tg. If that happen,
-> the fiarness is permanently skewed.
->
-> Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-> Signed-off-by: Odin Ugedal <odin@uged.al>
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> 
 > ---
->  kernel/sched/fair.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3248e24a90b0..ceda53c2a87a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8004,6 +8004,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->         if (cfs_rq->avg.runnable_sum)
->                 return false;
->
-> +       if (cfs_rq->tg_load_avg_contrib)
-> +               return false;
-> +
->         return true;
+> Changes for V2:
+> 	New patch
+> ---
+>  drivers/cxl/core.c | 36 ++++++++++++++++++++++++++++++++----
+>  drivers/cxl/pci.c  |  6 ++----
+>  2 files changed, 34 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+> index add66a6ec875..ae38f17be1e7 100644
+> --- a/drivers/cxl/core.c
+> +++ b/drivers/cxl/core.c
+> @@ -74,11 +74,33 @@ void cxl_probe_device_regs(struct device *dev, void __iomem *base,
 >  }
->
-> --
-> 2.31.1
->
+>  EXPORT_SYMBOL_GPL(cxl_probe_device_regs);
+>  
+> +static void __iomem *cxl_ioremap_block(struct pci_dev *pdev,
+> +				       resource_size_t addr,
+> +				       resource_size_t length)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem *ret_val;
+> +	struct resource *res;
+> +
+> +	res = devm_request_mem_region(dev, addr, length, pci_name(pdev));
+> +	if (!res) {
+> +		dev_err(dev, "Failed to request region %#llx-%#llx\n",
+> +			addr, addr+length);
+> +		return NULL;
+> +	}
+> +
+> +	ret_val = devm_ioremap(dev, addr, length);
+> +	if (!ret_val)
+> +		dev_err(dev, "Failed to map region %#llx-%#llx\n",
+> +			addr, addr+length);
+> +
+> +	return ret_val;
+> +}
+> +
+>  int cxl_map_device_regs(struct pci_dev *pdev,
+>  			struct cxl_device_regs *regs,
+>  			struct cxl_register_map *map)
+>  {
+> -	struct device *dev = &pdev->dev;
+>  	resource_size_t phys_addr;
+>  
+>  	phys_addr = pci_resource_start(pdev, map->barno);
+> @@ -90,7 +112,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+>  
+>  		addr = phys_addr + map->device_map.status.offset;
+>  		length = map->device_map.status.size;
+> -		regs->status = devm_ioremap(dev, addr, length);
+> +		regs->status = cxl_ioremap_block(pdev, addr, length);
+> +		if (!regs->status)
+> +			return -ENOMEM;
+>  	}
+>  
+>  	if (map->device_map.mbox.valid) {
+> @@ -99,7 +123,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+>  
+>  		addr = phys_addr + map->device_map.mbox.offset;
+>  		length = map->device_map.mbox.size;
+> -		regs->mbox = devm_ioremap(dev, addr, length);
+> +		regs->mbox = cxl_ioremap_block(pdev, addr, length);
+> +		if (!regs->mbox)
+> +			return -ENOMEM;
+>  	}
+>  
+>  	if (map->device_map.memdev.valid) {
+> @@ -108,7 +134,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+>  
+>  		addr = phys_addr + map->device_map.memdev.offset;
+>  		length = map->device_map.memdev.size;
+> -		regs->memdev = devm_ioremap(dev, addr, length);
+> +		regs->memdev = cxl_ioremap_block(pdev, addr, length);
+> +		if (!regs->memdev)
+> +			return -ENOMEM;
+>  	}
+>  
+>  	return 0;
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 3ffd5fad74b4..776cb8e28c2d 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -1110,6 +1110,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  			goto free_maps;
+>  	}
+>  
+> +	pci_release_mem_regions(pdev);
+> +
+>  	list_for_each_entry(map, &register_maps, list) {
+>  		ret = cxl_map_regs(cxlm, map);
+>  		if (ret)
+> @@ -1547,10 +1549,6 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	struct cxl_mem *cxlm;
+>  	int rc;
+>  
+> -	rc = pcim_enable_device(pdev);
+> -	if (rc)
+> -		return rc;
+> -
+>  	cxlm = cxl_mem_create(pdev);
+>  	if (IS_ERR(cxlm))
+>  		return PTR_ERR(cxlm);
+
