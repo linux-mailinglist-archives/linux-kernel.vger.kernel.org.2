@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB54D38F9B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C71038F9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhEYEtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhEYEtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:49:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B65C613BF;
-        Tue, 25 May 2021 04:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621918097;
-        bh=QUu5tfKQVM3Gw3sTzewlGAGgi5EaPocb4PRcBWNXEaA=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=YH3atK/LXf/NOA5WEyNXtN7KtGkdkN1fesS2mF5gh0Z8F/nd6yFarWDrwlY/GxXfT
-         PVmVZoLBEJqDCXtbsyYGJaVBCbsvW8SPPoNgofqevehJolP60+vWkXj8FEuujgyosM
-         ZBapf7DJp+tNDFSxymfp85wNNGreaach9sRRmaj7sNDMdI3HzgEksOdR5XItV67S/f
-         IC89s0V5m5jT9328/E4AdLwIKyahUasU7BXKN1vUKe2foQZX5D9PUyNA2pLx7xx/Lh
-         6Q3ExSGlSy1xdz+BVzbKY+dopP2esePUQLM0Fhib1UtfuDKkFr4idEQ8UhIrFhSK07
-         OZsgIOcKoP9HQ==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 4120827C0054;
-        Tue, 25 May 2021 00:48:15 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Tue, 25 May 2021 00:48:15 -0400
-X-ME-Sender: <xms:j4GsYF_4TJFtDSxRJTWNO7aq5v54qSEWnhaW3oItrNCcpR369Srq4Q>
-    <xme:j4GsYJs2daboDA50GN0rQRpB9q2lB79XeDzfY75xybcP6ZwLpAP7z2ieeTHbNNvG-
-    WWByjIdZxfjfHcnlBw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdektddgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
-    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:j4GsYDDaO-frouqpiQRku1E-WzaRBYcyNwM7DgCKuGH_OALYLg30pg>
-    <xmx:j4GsYJdypkN7aXrgIr56UONhvOM_USpS5Cm-hyXwDSBh8TJ3_iyz9w>
-    <xmx:j4GsYKM4SirqeoT7kQx3LxZkJj8TFK8VeeYGx8bHo1Zh3MAiKDlZ_A>
-    <xmx:j4GsYLiuVUNCpb-gC6Um14SnfNfYON01-ga63TGnNwNjx90i5xEEwnFnDHhrogIS9vjICA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1360A51C005F; Tue, 25 May 2021 00:48:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <c6b08bd7-816f-4683-9f68-716634d1529e@www.fastmail.com>
-In-Reply-To: <CAJvTdK=ZRFxh1=e0q7JbtNDfQWrS1d3TzrMHGiTg2Eaq1LsRSw@mail.gmail.com>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-25-chang.seok.bae@intel.com>
- <de9f67eb-2be7-8950-749e-cc8eef5cc142@kernel.org>
- <CAJvTdK=ZRFxh1=e0q7JbtNDfQWrS1d3TzrMHGiTg2Eaq1LsRSw@mail.gmail.com>
-Date:   Mon, 24 May 2021 21:47:53 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Len Brown" <lenb@kernel.org>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Borislav Petkov" <bp@suse.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re:_[PATCH_v5_24/28]_x86/fpu/xstate:_Use_per-task_xstate_mask_?=
- =?UTF-8?Q?for_saving_xstate_in_signal_frame?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S230379AbhEYE6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhEYE6r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 00:58:47 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B723EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 21:57:16 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 27so20461421pgy.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 21:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVbtYXsbtb58fofYDvlHmSwMl/WUynL1P4kD0egGRoM=;
+        b=nKCDRI62VfmTotncwa/GaUORw6rjovSULKpffiFrjTnlKGB/C57pD/jMMe5zo8t/z4
+         2eZ+s10/ZwA5RPhO3lr0ZKYpT6Icj/KUxd3FsVXVJAOMI1rZU7C1j5OiCrsj9PhZSb3t
+         w26prgQiUq4gITsi0EZcZZ6F9MOd2Xky9gh/OiA6HvDIM55smxkWQdfVKr4D5zuJgamj
+         /uSAcfdcmMEgCIIYx8zhQALcOJE061nN7nZzKkiqQwrXcIKtMvymhOjosPPd5iwVDBU2
+         v8ulII1NReNpIlO/oryuk/hipC/ar5Y2mHIZOAbpzIZmfsU9RvP2hCofePttFkr/QUHN
+         EIew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVbtYXsbtb58fofYDvlHmSwMl/WUynL1P4kD0egGRoM=;
+        b=K7hzqHFR9eIAunQpKOcIRTKSC7VYdvncBSBpux+dS//E/l2xi38TKwuNhVBqVFzmGj
+         2fz8TjrnKsMLAHoupAYzcmbfOYbzMrsfGP72BUjU9bqMmO5UtLdDJHxTxD4YVQ3mDDnG
+         LQ/pczZ4Y0ykGBOQ42YnOUQ6Cc464YPUHolQdR1zcVwzpChXQlNyg9xBcBEXwSG5nw51
+         vYxyXLi2DlkGtVEyGnIwddWnD5lz6XcL1fFTa7RvturiaUdR9EkB8qAe7QNNX6irIeFC
+         cC5g7/IJJl8+MCBRyIcqpQh6dxdHfrk4neY4alAdlcs0bFMaGjDl6+dKuhNYhjJxBHyk
+         3tOw==
+X-Gm-Message-State: AOAM5301UBp3s4Anhzym24Nl/10JAEaM0eMGZ5Gnfw4FgR56VyxE9d1s
+        9rh36tcPBqpRWH7b55Imj6NX
+X-Google-Smtp-Source: ABdhPJxDZ3WIYe92xcVocAerwlrWbOHR2d30JW2mnnK5/jrV73Ufd1cSZ7XvpDO67SWGO3flN85Khw==
+X-Received: by 2002:aa7:874a:0:b029:2e7:8407:f8f3 with SMTP id g10-20020aa7874a0000b02902e78407f8f3mr14060907pfo.53.1621918636166;
+        Mon, 24 May 2021 21:57:16 -0700 (PDT)
+Received: from localhost ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id d22sm12467546pgb.15.2021.05.24.21.57.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 21:57:15 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     amit@kernel.org, mst@redhat.com, jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] virtio_console: Assure used length from device is limited
+Date:   Tue, 25 May 2021 12:53:04 +0800
+Message-Id: <20210525045304.1085-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The buf->len might come from an untrusted device. This
+ensures the value would not exceed the size of the buffer
+to avoid data corruption or loss.
 
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+---
+ drivers/char/virtio_console.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Mon, May 24, 2021, at 11:06 AM, Len Brown wrote:
-> On Sun, May 23, 2021 at 11:15 PM Andy Lutomirski <luto@kernel.org> wro=
-te:
-> >
-> > If I'm reading this right, it means that tasks that have ever used A=
-MX
-> > get one format and tasks that haven't get another one.
->=20
-> No.  The format of the XSTATE on the signal stack is uncompressed XSAV=
-E
-> format for both AMX and non-AMX tasks, both before and after this patc=
-h.
-> That is because XSAVE gets the format from XCR0.  It gets the fields
-> to write from the run-time parameter.
->=20
-> So the change here allows a non-AMX task to skip writing data (zeros)
-> to the AMX region of its XSTATE buffer.
-
-I misread the patch. I still think this patch is useless.
-
->=20
-> The subsequent patch adds the further optimization of (manually) check=
-ing
-> for INIT state for an AMX-task and also skip writing data (zeros) in t=
-hat case.
->=20
-> We should have done this optimization for AVX-512, but instead we
-> guaranteed writing zeros, which I think is a waste of both transfer ti=
-me
-> and cache footprint.
-
-If no one depends on it, it=E2=80=99s not ABI.
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 1c40ca6d76ba..598863e6daf8 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -475,7 +475,7 @@ static struct port_buffer *get_inbuf(struct port *port)
+ 
+ 	buf = virtqueue_get_buf(port->in_vq, &len);
+ 	if (buf) {
+-		buf->len = len;
++		buf->len = min(len, buf->size);
+ 		buf->offset = 0;
+ 		port->stats.bytes_received += len;
+ 	}
+@@ -1709,7 +1709,7 @@ static void control_work_handler(struct work_struct *work)
+ 	while ((buf = virtqueue_get_buf(vq, &len))) {
+ 		spin_unlock(&portdev->c_ivq_lock);
+ 
+-		buf->len = len;
++		buf->len = min(len, buf->size);
+ 		buf->offset = 0;
+ 
+ 		handle_control_message(vq->vdev, portdev, buf);
+-- 
+2.11.0
 
