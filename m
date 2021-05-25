@@ -2,111 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D90538FBC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D39D38FBD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhEYHdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:33:03 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:8271 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhEYHc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:32:59 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 25 May 2021 00:31:31 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 May 2021 00:31:29 -0700
-X-QCInternal: smtphost
-Received: from rajeevny-linux.qualcomm.com ([10.204.66.121])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 25 May 2021 13:00:40 +0530
-Received: by rajeevny-linux.qualcomm.com (Postfix, from userid 2363605)
-        id 3AC7621440; Tue, 25 May 2021 13:00:39 +0530 (IST)
-From:   Rajeev Nandan <rajeevny@codeaurora.org>
-To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        sam@ravnborg.org, robdclark@gmail.com, dianders@chromium.org,
-        lyude@redhat.com, jani.nikula@intel.com, robh@kernel.org,
-        laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        daniel.thompson@linaro.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, mkrishn@codeaurora.org
-Subject: [v4 4/4] drm/panel-simple: Add Samsung ATNA33XC20
-Date:   Tue, 25 May 2021 13:00:31 +0530
-Message-Id: <1621927831-29471-5-git-send-email-rajeevny@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621927831-29471-1-git-send-email-rajeevny@codeaurora.org>
-References: <1621927831-29471-1-git-send-email-rajeevny@codeaurora.org>
+        id S231834AbhEYHfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:35:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231680AbhEYHfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:35:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621928030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OSIQxcQ4DxKPYddBBvfmnpx/Es7DwLuq2BPnu3Gg/E4=;
+        b=aA36FE8uDZUvxjkIJCgoBtp/2Rq8PJ/rjdTGFMew++lhXR6kZQ41tjO5UHEglTE/U2KvAx
+        mc9MbSVYDpqS4KxwpfEQ45nG0Z9xZvlX4jnVWKl5+c3owB1SjomrT7YRG6OUigEIGrsDUz
+        tLkgjHUccaEqUEiep1shXr0hcpWbXfQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621928030;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OSIQxcQ4DxKPYddBBvfmnpx/Es7DwLuq2BPnu3Gg/E4=;
+        b=8jPAbDdnUDDLPYpCppRPVdHiPW2IvRUQQeIOZdhSLZfuPoDEwMqWewg2RmNXnYR9WpaeUB
+        OFwRukKjis56UqBQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 55427AE92;
+        Tue, 25 May 2021 07:33:50 +0000 (UTC)
+Date:   Tue, 25 May 2021 09:33:49 +0200
+Message-ID: <s5hbl8ze082.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, nsaenz@kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org, Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH 01/11] snd: iec958: split status creation and fill
+In-Reply-To: <20210507140334.204865-2-maxime@cerno.tech>
+References: <20210507140334.204865-1-maxime@cerno.tech>
+        <20210507140334.204865-2-maxime@cerno.tech>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Samsung 13.3" FHD eDP AMOLED panel.
+On Fri, 07 May 2021 16:03:24 +0200,
+Maxime Ripard wrote:
+> 
+> In some situations, like a codec probe, we need to provide an IEC status
+> default but don't have access to the sampling rate and width yet since
+> no stream has been configured yet.
+> 
+> Each and every driver has its own default, whereas the core iec958 code
+> also has some buried in the snd_pcm_create_iec958_consumer functions.
+> 
+> Let's split these functions in two to provide a default that doesn't
+> rely on the sampling rate and width, and another function to fill them
+> when available.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
----
+The changes look almost good, but please use EXPORT_SYMBOL_GPL() for
+newly introduced symbols.  Also, it'd be worth to mention that some
+bits update are done only for the default values; if a rate value has
+been already set, it won't be overridden by this *_fill_*() call,
+that's the intentional behavior, right?
 
-Changes in v4:
-- New
+Last but not least, the subject prefix should be "ALSA:" in general :)
 
- drivers/gpu/drm/panel/panel-simple.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index caed71b..21af794 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3644,6 +3644,37 @@ static const struct panel_desc rocktech_rk101ii01d_ct = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct drm_display_mode samsung_atna33xc20_mode = {
-+	.clock = 138770,
-+	.hdisplay = 1920,
-+	.hsync_start = 1920 + 48,
-+	.hsync_end = 1920 + 48 + 32,
-+	.htotal = 1920 + 48 + 32 + 80,
-+	.vdisplay = 1080,
-+	.vsync_start = 1080 + 8,
-+	.vsync_end = 1080 + 8 + 8,
-+	.vtotal = 1080 + 8 + 8 + 16,
-+	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc samsung_atna33xc20 = {
-+	.modes = &samsung_atna33xc20_mode,
-+	.num_modes = 1,
-+	.bpc = 10,
-+	.size = {
-+		.width = 294,
-+		.height = 165,
-+	},
-+	.delay = {
-+		.disable_to_power_off = 150,
-+		.power_to_enable = 150,
-+		.hpd_absent_delay = 200,
-+		.unprepare = 500,
-+	},
-+	.connector_type = DRM_MODE_CONNECTOR_eDP,
-+	.uses_dpcd_backlight = true,
-+};
-+
- static const struct drm_display_mode samsung_lsn122dl01_c01_mode = {
- 	.clock = 271560,
- 	.hdisplay = 2560,
-@@ -4645,6 +4676,9 @@ static const struct of_device_id platform_of_match[] = {
- 		.compatible = "rocktech,rk101ii01d-ct",
- 		.data = &rocktech_rk101ii01d_ct,
- 	}, {
-+		.compatible = "samsung,atna33xc20",
-+		.data = &samsung_atna33xc20,
-+	}, {
- 		.compatible = "samsung,lsn122dl01-c01",
- 		.data = &samsung_lsn122dl01_c01,
- 	}, {
--- 
-2.7.4
+thanks,
 
+Takashi
+
+> ---
+>  include/sound/pcm_iec958.h |   8 +++
+>  sound/core/pcm_iec958.c    | 131 +++++++++++++++++++++++++------------
+>  2 files changed, 96 insertions(+), 43 deletions(-)
+> 
+> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+> index 0939aa45e2fe..64e84441cde1 100644
+> --- a/include/sound/pcm_iec958.h
+> +++ b/include/sound/pcm_iec958.h
+> @@ -4,6 +4,14 @@
+>  
+>  #include <linux/types.h>
+>  
+> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len);
+> +
+> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				 size_t len);
+> +
+> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+> +					   u8 *cs, size_t len);
+> +
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	size_t len);
+>  
+> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+> index f9a211cc1f2c..a60908efe159 100644
+> --- a/sound/core/pcm_iec958.c
+> +++ b/sound/core/pcm_iec958.c
+> @@ -9,41 +9,68 @@
+>  #include <sound/pcm_params.h>
+>  #include <sound/pcm_iec958.h>
+>  
+> -static int create_iec958_consumer(uint rate, uint sample_width,
+> -				  u8 *cs, size_t len)
+> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len)
+>  {
+> -	unsigned int fs, ws;
+> -
+>  	if (len < 4)
+>  		return -EINVAL;
+>  
+> -	switch (rate) {
+> -	case 32000:
+> -		fs = IEC958_AES3_CON_FS_32000;
+> -		break;
+> -	case 44100:
+> -		fs = IEC958_AES3_CON_FS_44100;
+> -		break;
+> -	case 48000:
+> -		fs = IEC958_AES3_CON_FS_48000;
+> -		break;
+> -	case 88200:
+> -		fs = IEC958_AES3_CON_FS_88200;
+> -		break;
+> -	case 96000:
+> -		fs = IEC958_AES3_CON_FS_96000;
+> -		break;
+> -	case 176400:
+> -		fs = IEC958_AES3_CON_FS_176400;
+> -		break;
+> -	case 192000:
+> -		fs = IEC958_AES3_CON_FS_192000;
+> -		break;
+> -	default:
+> +	memset(cs, 0, len);
+> +
+> +	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
+> +	cs[1] = IEC958_AES1_CON_GENERAL;
+> +	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
+> +	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | IEC958_AES3_CON_FS_NOTID;
+> +
+> +	if (len > 4)
+> +		cs[4] = IEC958_AES4_CON_WORDLEN_NOTID;
+> +
+> +	return len;
+> +}
+> +EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_default);
+> +
+> +static int fill_iec958_consumer(uint rate, uint sample_width,
+> +				u8 *cs, size_t len)
+> +{
+> +	if (len < 4)
+>  		return -EINVAL;
+> +
+> +	if ((cs[3] & IEC958_AES3_CON_FS) == IEC958_AES3_CON_FS_NOTID) {
+> +		unsigned int fs;
+> +
+> +		switch (rate) {
+> +			case 32000:
+> +				fs = IEC958_AES3_CON_FS_32000;
+> +				break;
+> +			case 44100:
+> +				fs = IEC958_AES3_CON_FS_44100;
+> +				break;
+> +			case 48000:
+> +				fs = IEC958_AES3_CON_FS_48000;
+> +				break;
+> +			case 88200:
+> +				fs = IEC958_AES3_CON_FS_88200;
+> +				break;
+> +			case 96000:
+> +				fs = IEC958_AES3_CON_FS_96000;
+> +				break;
+> +			case 176400:
+> +				fs = IEC958_AES3_CON_FS_176400;
+> +				break;
+> +			case 192000:
+> +				fs = IEC958_AES3_CON_FS_192000;
+> +				break;
+> +			default:
+> +				return -EINVAL;
+> +		}
+> +
+> +		cs[3] &= ~IEC958_AES3_CON_FS;
+> +		cs[3] |= fs;
+>  	}
+>  
+> -	if (len > 4) {
+> +	if (len > 4 &&
+> +	    (cs[4] & IEC958_AES4_CON_WORDLEN) == IEC958_AES4_CON_WORDLEN_NOTID) {
+> +		unsigned int ws;
+> +
+>  		switch (sample_width) {
+>  		case 16:
+>  			ws = IEC958_AES4_CON_WORDLEN_20_16;
+> @@ -64,21 +91,30 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+>  		default:
+>  			return -EINVAL;
+>  		}
+> +
+> +		cs[4] &= ~IEC958_AES4_CON_WORDLEN;
+> +		cs[4] |= ws;
+>  	}
+>  
+> -	memset(cs, 0, len);
+> -
+> -	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
+> -	cs[1] = IEC958_AES1_CON_GENERAL;
+> -	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
+> -	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
+> -
+> -	if (len > 4)
+> -		cs[4] = ws;
+> -
+>  	return len;
+>  }
+>  
+> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+> +					   u8 *cs, size_t len)
+> +{
+> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
+> +}
+> +EXPORT_SYMBOL(snd_pcm_fill_iec958_consumer_hw_params);
+> +
+> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime,
+> +				 u8 *cs, size_t len)
+> +{
+> +	return fill_iec958_consumer(runtime->rate,
+> +				    snd_pcm_format_width(runtime->format),
+> +				    cs, len);
+> +}
+> +EXPORT_SYMBOL(snd_pcm_fill_iec958_consumer);
+> +
+>  /**
+>   * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+>   * @runtime: pcm runtime structure with ->rate filled in
+> @@ -95,9 +131,13 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	size_t len)
+>  {
+> -	return create_iec958_consumer(runtime->rate,
+> -				      snd_pcm_format_width(runtime->format),
+> -				      cs, len);
+> +	int ret;
+> +
+> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return snd_pcm_fill_iec958_consumer(runtime, cs, len);
+>  }
+>  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+>  
+> @@ -117,7 +157,12 @@ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+>  int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+>  					     u8 *cs, size_t len)
+>  {
+> -	return create_iec958_consumer(params_rate(params), params_width(params),
+> -				      cs, len);
+> +	int ret;
+> +
+> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
+>  }
+>  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
+> -- 
+> 2.31.1
+> 
