@@ -2,143 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315D638F88D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F7038F892
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 05:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhEYDNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 23:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhEYDNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 23:13:40 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9822C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:12:10 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id v22so29008682oic.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 20:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LzZi3Q25vKg3XhS1Ic0lRTfT6eSF+5WUdcs1/J6hy2Y=;
-        b=KiZ7geh13gcARZT8mSzJFcrIk05fkvTTjIk8CLSHiGYBxiybxhUD1F0ZuRHi56V9S0
-         UMUccQgfUbA4cGGs5yqNLckMrl5KIDcdm7bjjFr0HI7/YCX5wkf7vRb4nWhpo7ccywpH
-         tOWVylQII31yvzek/fzTMlJPc/mBectQvhwumZg/NXiEG30Qb1ks2ngB1BLw8KBPUofY
-         lDHlfDQd/aDqCzf+RI/gsRXwwrkKk+kS4kEE5RlmBvSoeazJ4Tt/adeEo8sLE0dkIjr7
-         P7posTi86TqIcQcUctDyQiJAZdvqW2CM/pt085lwuuwFlQS8FOC2YtNMajwX6JfvupYi
-         UUeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LzZi3Q25vKg3XhS1Ic0lRTfT6eSF+5WUdcs1/J6hy2Y=;
-        b=Cp1iXHqXXNe1+61VS+mdAR4vWmCbB38jaebwImZBT7Qe+MgdTqUk93jm2DiCL9pedW
-         lt3bdE5B0eba7Yy9fsh/3AQbQWySKcOIv7sfkAjPY6ViKLZZScUJ7sdMvjl6TXJ3+T5m
-         6BMpx266XSRW+1atg63lwYWCIMj5/owtoBfdYdVcojD37focmISZZtTe+q0y5/N0gA/L
-         wkIGw2jDzVdKXqrgIMsMAVKy3/irgiSoIfwLx+3w3HS6WJIdf9OSqW49YdJFkoxaBquN
-         T0FE9FKc0AzDTK+GPNZVSYsVsmjwLADnGvi00p/xRU3ysVMfp0+hbohYLIqAGSCB1NLS
-         w0ZA==
-X-Gm-Message-State: AOAM531U7j8gdQpEhOsXE7jPkRv/oeMVMzRaIFB2FodIE8ZFFCEv5W5s
-        DU7YUm+m0gFhmCOpEUDzFMrzLA==
-X-Google-Smtp-Source: ABdhPJwfVJOo2UBAigec/ToH+3zn+ksCtwT3t0kun5HoEK1TJkhAS70gURQ1MwmEquyuXN0SmW90vQ==
-X-Received: by 2002:a05:6808:997:: with SMTP id a23mr1397330oic.129.1621912330250;
-        Mon, 24 May 2021 20:12:10 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a6sm1130940oon.20.2021.05.24.20.12.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 20:12:09 -0700 (PDT)
-Date:   Mon, 24 May 2021 22:12:07 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] clk: qcom: Add SM6125 (TRINKET) GCC driver
-Message-ID: <YKxrB3xIIqtxXPzf@yoga>
-References: <20210523211016.726736-1-martin.botka@somainline.org>
- <20210523211016.726736-2-martin.botka@somainline.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523211016.726736-2-martin.botka@somainline.org>
+        id S230195AbhEYDOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 23:14:50 -0400
+Received: from m12-16.163.com ([220.181.12.16]:42644 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhEYDOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 23:14:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=O4aWaenFwErQ5NgDAP
+        P33jwWpuJnsnsLDR5iqBxt9s4=; b=Hn1Pkl1zZ+qNEf3B8V7CPbULllVRhjguqK
+        78LUee5tBX3Af3TQt8RaFHC/GVgf0gCswIKg5Q2Ns+MyZGZhjd2jabMJVHgJ+GOg
+        p4nAGptH3m5D1CmgIyYiAgfNS6EnoyeEjU6nrTEccOMtDAD76ywLiq8AnjP4+kBi
+        NNmCKobTc=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowACXnRk5a6xgb+iitA--.6330S2;
+        Tue, 25 May 2021 11:12:58 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] nfc: st-nci: remove unnecessary labels
+Date:   Tue, 25 May 2021 11:12:54 +0800
+Message-Id: <20210525031254.12196-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EMCowACXnRk5a6xgb+iitA--.6330S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJFW5CFWxWF1UJw43Xr4xJFb_yoW5Aryrpa
+        yYgFW8CF18KFyxXa4UJan7ZF1fC3yxKFZ3GF97u34Ivr4YyrnFvF4kAF10vF4ayFWkG3W7
+        ta1jyF42gan3JF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jma09UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHRqdsVSIq3yNjQAAsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 23 May 16:10 CDT 2021, Martin Botka wrote:
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-> From: Konrad Dybcio <konrad.dybcio@somainline.org>
-> 
-> Add the clocks supported in global clock controller, which clock the
-> peripherals like BLSPs, SDCC, USB, MDSS etc. Register all the clocks
-> to the clock framework for the clients to be able to request for them.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+In some functions, use goto exit statement, which just return r.
+and exit label only used once in each funciton, so we use return
+to replace goto statement and remove exit label.
 
-This looks quite good to me, just two small things below.
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/st-nci/vendor_cmds.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-> diff --git a/drivers/clk/qcom/gcc-sm6125.c b/drivers/clk/qcom/gcc-sm6125.c
-[..]
-> +static struct clk_alpha_pll gpll0_out_early = {
-> +	.offset = 0x0,
-> +	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-> +	.clkr = {
-> +		.enable_reg = 0x79000,
-> +		.enable_mask = BIT(0),
-> +		.hw.init = &(struct clk_init_data){
-> +			.name = "gpll0_out_early",
-> +			.parent_data = &(const struct clk_parent_data){
-> +				.fw_name = "bi_tcxo",
-> +				.name = "bi_tcxo",
+diff --git a/drivers/nfc/st-nci/vendor_cmds.c b/drivers/nfc/st-nci/vendor_cmds.c
+index c6a9d30..94b6000 100644
+--- a/drivers/nfc/st-nci/vendor_cmds.c
++++ b/drivers/nfc/st-nci/vendor_cmds.c
+@@ -98,7 +98,7 @@ static int st_nci_hci_dm_get_info(struct nfc_dev *dev, void *data,
+ 	r = nci_hci_send_cmd(ndev, ST_NCI_DEVICE_MGNT_GATE, ST_NCI_HCI_DM_GETINFO,
+ 			     data, data_len, &skb);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	msg = nfc_vendor_cmd_alloc_reply_skb(dev, ST_NCI_VENDOR_OUI,
+ 					     HCI_DM_GET_INFO, skb->len);
+@@ -117,7 +117,6 @@ static int st_nci_hci_dm_get_info(struct nfc_dev *dev, void *data,
+ 
+ free_skb:
+ 	kfree_skb(skb);
+-exit:
+ 	return r;
+ }
+ 
+@@ -131,7 +130,7 @@ static int st_nci_hci_dm_get_data(struct nfc_dev *dev, void *data,
+ 	r = nci_hci_send_cmd(ndev, ST_NCI_DEVICE_MGNT_GATE, ST_NCI_HCI_DM_GETDATA,
+ 			     data, data_len, &skb);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	msg = nfc_vendor_cmd_alloc_reply_skb(dev, ST_NCI_VENDOR_OUI,
+ 					     HCI_DM_GET_DATA, skb->len);
+@@ -150,7 +149,6 @@ static int st_nci_hci_dm_get_data(struct nfc_dev *dev, void *data,
+ 
+ free_skb:
+ 	kfree_skb(skb);
+-exit:
+ 	return r;
+ }
+ 
+@@ -216,7 +214,7 @@ static int st_nci_hci_get_param(struct nfc_dev *dev, void *data,
+ 
+ 	r = nci_hci_get_param(ndev, param->gate, param->data, &skb);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	msg = nfc_vendor_cmd_alloc_reply_skb(dev, ST_NCI_VENDOR_OUI,
+ 					     HCI_GET_PARAM, skb->len);
+@@ -235,7 +233,6 @@ static int st_nci_hci_get_param(struct nfc_dev *dev, void *data,
+ 
+ free_skb:
+ 	kfree_skb(skb);
+-exit:
+ 	return r;
+ }
+ 
+@@ -262,7 +259,7 @@ static int st_nci_hci_dm_vdc_measurement_value(struct nfc_dev *dev, void *data,
+ 			     ST_NCI_HCI_DM_VDC_MEASUREMENT_VALUE,
+ 			     data, data_len, &skb);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	msg = nfc_vendor_cmd_alloc_reply_skb(dev, ST_NCI_VENDOR_OUI,
+ 				HCI_DM_VDC_MEASUREMENT_VALUE, skb->len);
+@@ -281,7 +278,6 @@ static int st_nci_hci_dm_vdc_measurement_value(struct nfc_dev *dev, void *data,
+ 
+ free_skb:
+ 	kfree_skb(skb);
+-exit:
+ 	return r;
+ }
+ 
+@@ -299,7 +295,7 @@ static int st_nci_hci_dm_vdc_value_comparison(struct nfc_dev *dev, void *data,
+ 			     ST_NCI_HCI_DM_VDC_VALUE_COMPARISON,
+ 			     data, data_len, &skb);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	msg = nfc_vendor_cmd_alloc_reply_skb(dev, ST_NCI_VENDOR_OUI,
+ 					HCI_DM_VDC_VALUE_COMPARISON, skb->len);
+@@ -318,7 +314,6 @@ static int st_nci_hci_dm_vdc_value_comparison(struct nfc_dev *dev, void *data,
+ 
+ free_skb:
+ 	kfree_skb(skb);
+-exit:
+ 	return r;
+ }
+ 
+-- 
+1.9.1
 
-For new drivers we don't need to rely on global name lookup, so just
-keep fw_name for the external clocks.
 
-> +			},
-> +			.num_parents = 1,
-> +			.ops = &clk_alpha_pll_ops,
-> +		},
-> +	},
-> +};
-> +
-> +static struct clk_fixed_factor gpll0_out_aux2 = {
-> +	.mult = 1,
-> +	.div = 2,
-> +	.hw.init = &(struct clk_init_data){
-> +		.name = "gpll0_out_aux2",
-> +		.parent_data = &(const struct clk_parent_data){
-> +			.hw = &gpll0_out_early.clkr.hw,
-> +		},
-> +		.num_parents = 1,
-> +		.ops = &clk_fixed_factor_ops,
-> +	},
-> +};
-> +
-> +static struct clk_fixed_factor gpll0_out_main = {
-> +	.mult = 1,
-> +	.div = 2,
-> +	.hw.init = &(struct clk_init_data){
-> +		.name = "gpll0_out_main",
-> +		.parent_data = &(const struct clk_parent_data){
-
-Please use parent_hws instead when referencing a single hw in the same
-driver.
-
-> +			.hw = &gpll0_out_early.clkr.hw,
-> +		},
-> +		.num_parents = 1,
-> +		.ops = &clk_fixed_factor_ops,
-> +	},
-> +};
-> +
-
-Regards,
-Bjorn
