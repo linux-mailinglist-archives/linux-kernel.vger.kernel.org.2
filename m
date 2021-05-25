@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23D738FCF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9269B38FCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhEYIhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:37:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48880 "EHLO mx2.suse.de"
+        id S231371AbhEYIhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:37:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49506 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231690AbhEYIgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:36:14 -0400
+        id S232477AbhEYIhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:37:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621931684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621931714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bjnsL2peeOiwWaK94JCXPWqqFm70yQEu/wWcJgX6mj8=;
-        b=Y7rk0GEZ2G5BRETie8/EcGewGFpOb/F+H5mMaKQIz01KT1HN37phtRqsK5uKgMqra2IBtc
-        c7RUPp8fYAzoG/lcS4F+KVbnNYp50GLWBtd6+1XHQ66//RWJ+IbkA7I8N2M78qdbMN14yg
-        5onv36M08g1DIF7KwxmO4au0Xiqa2UE=
+        bh=/8Tj70cnh3z488JIeA9Dqfr+VizsEJXzWnqypGpv3Kg=;
+        b=rIxtavIsMX8VaZtrpgtmz+W9NJE1HyUiTsp/kfxLCuVznHH8PYBZ/32Ecm2zT4W7cJP2Vh
+        9Yqgii8ks9JIuVX6klmZgAc2VGPN6UvNRpekNmIlkpDi6l/qT623ZiwkIC0SUTZ0jpd28j
+        hsmm05h/Yuv9e79CH7icWt8v3dtSuhI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621931714;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/8Tj70cnh3z488JIeA9Dqfr+VizsEJXzWnqypGpv3Kg=;
+        b=1TEssWfK11ZnzAISIyhB1tJfLxPJ3IwYrn6gQsEq3aT+izjyOjVV2rDV7k4IxBbLkQdRXo
+        w9ZOjPGvUBHLz1DQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3CF9DAE1F;
-        Tue, 25 May 2021 08:34:44 +0000 (UTC)
-Date:   Tue, 25 May 2021 10:34:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: fix kernel-doc
-Message-ID: <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
-References: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com>
+        by mx2.suse.de (Postfix) with ESMTP id 63C34AEA8;
+        Tue, 25 May 2021 08:35:14 +0000 (UTC)
+Date:   Tue, 25 May 2021 10:35:14 +0200
+Message-ID: <s5hzgwjcit9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        Dom Cobley <dom@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/11] drm/vc4: hdmi: Enable Channel Mapping, IEC958, HBR Passthrough using hdmi-codec
+In-Reply-To: <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
+References: <20210507140334.204865-1-maxime@cerno.tech>
+        <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24-05-21 18:24:22, Yang Li wrote:
-> Fix function name in mm/memcontrol.c kernel-doc comment
-> to remove a warning.
+On Mon, 24 May 2021 15:39:04 +0200,
+Maxime Ripard wrote:
 > 
-> mm/memcontrol.c:6546: warning: expecting prototype for
-> mem_cgroup_protected(). Prototype was for
-> mem_cgroup_calculate_protection() instead.
+> Hi,
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, May 07, 2021 at 04:03:23PM +0200, Maxime Ripard wrote:
+> > Hi,
+> > 
+> > hdmi-codec allows to have a lot of HDMI-audio related infrastructure in place,
+> > it's missing a few controls to be able to provide HBR passthrough. This series
+> > adds more infrastructure for the drivers, and leverages it in the vc4 HDMI
+> > controller driver.
+> > 
+> > One thing that felt a bit weird is that even though
+> > https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html#iec958-s-pdif
+> > mentions that the iec958 mask control should be a mixer control and the
+> > default control should be a PCM one, it feels a bit weird to have two different
+> > control type for two controls so similar, and other drivers are pretty
+> > inconsistent with this. Should we update the documentation?
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 64ada9e..030c1dc 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6456,7 +6456,7 @@ static unsigned long effective_protection(unsigned long usage,
->  }
->  
->  /**
-> - * mem_cgroup_protected - check if memory consumption is in the normal range
-> + * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
->   * @root: the top ancestor of the sub-tree being checked
->   * @memcg: the memory cgroup to check
->   *
-> -- 
-> 1.8.3.1
+> Any comments on this series?
 
--- 
-Michal Hocko
-SUSE Labs
+A patch for updating the documentation is welcome.
+Currently, as de facto standard, we allow both MIXER and PCM ifaces
+for all IEC958-related controls, and it's unlikely that we would
+change that in future.
+
+
+thanks,
+
+Takashi
