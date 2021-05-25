@@ -2,242 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2130E390500
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7114390515
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhEYPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbhEYPRl (ORCPT
+        id S234245AbhEYPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:20:03 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:25083 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhEYPTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:17:41 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D7AC06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:16:09 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id q15so22980094pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:16:09 -0700 (PDT)
+        Tue, 25 May 2021 11:19:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GlZpEK9HpCLX1XVPm0LSC4rLTUHCcfxj2n178z32Y0M=;
-        b=mxAE3NfwZ9iFCmSb9LqnY+Hg5FJVex131Y+wRoKqcZ124YRsHEGuBnE8sdHNiyy7WV
-         RCukxHD8R0fk6D7vDs2qzGyaMIZFu/trrMVFay62WXEQVmGfRxqOXj1DkxdLfHMRlWk2
-         K0CtqExsQoXwFGn4yjtDPrT1LV9xrQnKlwtY6qpwW4eG3uv9gKKB8T5HMEwdkPl6CPsc
-         mHPFvlpbM/ZQQdMkiyCUGasOa3+xLJfY8cMugA3TsoYP3NcuvtYhDW0SJ2+dH8vz0AW5
-         8NK9w16HQYOxwV6POF8rOGgWbWRoeeTYAWG01UiKPZI6rADtMrh4g565+oVNWGVtZmXg
-         y10g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=GlZpEK9HpCLX1XVPm0LSC4rLTUHCcfxj2n178z32Y0M=;
-        b=ud78lm3YxLYRB+jM+WLIzAE3U7dw51LtL2a+XxNJp2LNXC+5bMNcgd8cr5uFU7Z5hi
-         FHSqSItenhaQWxTOqJL6A+Uibyt91GNKimujq80xc0gjjZ8s9Fdq+GC4cTsI0lY23bMt
-         XBvGMqDq19QWIRHTGD+zN1/XYDo4tognqUhqxdYHkTUxNIDhztKNUCooxT4+3w6gnO2q
-         lExmHHdMEL5mFaRxZBuPiqAjsM8rOCaspP729QkKor1b+c4sNLJiBQs+Me4RPtsiCICW
-         58Mnkn+/ZeGPc2qM50aA1UU1XAfs9JCY1u7Qh/J8ztgrduIu+q5lXnA1I8Wwq9M8k5B8
-         GKvg==
-X-Gm-Message-State: AOAM533DP5yxZfAppN5fvqj28LiklOztouB8Fns7TCnCSpKi5JnUeaPd
-        Rcz3J+sZJ6zDXOkgqHIBGgyBrexUF2I=
-X-Google-Smtp-Source: ABdhPJz6slXGUUqNbPIe/QZEs+FilVAqqJJX0wFIgd8URduuQQBJKbAB2wMgf+BOJLU40MDsVaNPbw==
-X-Received: by 2002:a05:6a00:134b:b029:2bf:2c30:ebbd with SMTP id k11-20020a056a00134bb02902bf2c30ebbdmr30723883pfu.74.1621955768488;
-        Tue, 25 May 2021 08:16:08 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:37cd:d6b4:7992:c290])
-        by smtp.gmail.com with ESMTPSA id s6sm2286711pjr.29.2021.05.25.08.16.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 08:16:06 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 25 May 2021 08:16:03 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Dias <joaodias@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com, Minchan Kim <minchan.kim@gmail.com>
-Subject: Re: [mm]  8cc621d2f4:  fio.write_iops -21.8% regression
-Message-ID: <YK0Us01mBTRWOQIw@google.com>
-References: <20210520083144.GD14190@xsang-OptiPlex-9020>
- <YKasEeXCr9R5yzCr@google.com>
- <45f761de51d514f77cc48214846c5f8f@codeaurora.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1621955850; x=1653491850;
+  h=to:cc:references:subject:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=yTek0pizCvLcTlNuueaRKn+sp3Yn2EKx4lOHoX8AyXg=;
+  b=jHiYF7Mt1ezN+EezA3s2X3DKHCnpoo4QxFxlHXSk4ZyEr46Uskaf1NNC
+   iIUy8xnGUo/IyOqpDdW378nxXCTyojFIUJ5EdvPnzTJjgDD2wiDtBcZhU
+   /vp/IDQn37lJQOiAl497vEbRKkfEYQDaEEj9//fwMdn7F63tGcpeCq25O
+   g=;
+X-IronPort-AV: E=Sophos;i="5.82,328,1613433600"; 
+   d="scan'208";a="934958672"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 25 May 2021 15:17:23 +0000
+Received: from EX13D31EUA003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 5731EA1C5D;
+        Tue, 25 May 2021 15:17:21 +0000 (UTC)
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D31EUA003.ant.amazon.com (10.43.165.95) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 25 May 2021 15:17:19 +0000
+Received: from u8803c614af8f5a.ant.amazon.com (172.31.190.190) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.18 via Frontend Transport; Tue, 25 May 2021 15:17:07 +0000
+To:     <sj38.park@gmail.com>
+CC:     <Jonathan.Cameron@Huawei.com>, <acme@kernel.org>,
+        <akpm@linux-foundation.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendanhiggins@google.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <greg@kroah.com>, <gthelen@google.com>,
+        <guoju.fgj@alibaba-inc.com>, <linux-damon@amazon.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <mgorman@suse.de>, <minchan@kernel.org>,
+        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <rppt@kernel.org>, <shakeelb@google.com>, <shuah@kernel.org>,
+        <sjpark@amazon.de>, <snu@amazon.de>, <vbabka@suse.cz>,
+        <vdavydov.dev@gmail.com>, <zgf574564920@gmail.com>
+References: <20210520075629.4332-4-sj38.park@gmail.com>
+Subject: Re: [PATCH v29 03/13] mm/damon: Adaptively adjust regions
+From:   <sieberf@amazon.com>
+Message-ID: <1b30265d-7440-1c94-f625-0087215433ee@amazon.com>
+Date:   Tue, 25 May 2021 17:17:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45f761de51d514f77cc48214846c5f8f@codeaurora.org>
+In-Reply-To: <20210520075629.4332-4-sj38.park@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 10:37:49AM -0700, Chris Goldsworthy wrote:
-> Hi Minchan,
-> 
-> This looks good to me, I just have some minor feedback.
-> 
-> Thanks,
+Hi SeongJae,
 
-Hi Chris,
+The code looks good. Some questions for this patch:
 
-Thanks for the review. Please see below.
+The region merge threshold is computed on the access diff. Should the 
+diff threshold be exponential as diffs in low number of access are 
+likely to be more important? I.e if the threshold is 5, a region A with 
+0 accesses will be merged with a region B with 4 accesses (diff=4), but 
+a region C with 50 access won't be merged with a region D with 60 
+accesses (diff=10), however it seems to me that keeping a good 
+granularity between A and B is more important than between C and D for 
+FPR. What do you think?
 
-> 
-> Chris.
-> 
-> On 2021-05-20 11:36, Minchan Kim wrote:
-> > On Thu, May 20, 2021 at 04:31:44PM +0800, kernel test robot wrote:
-> > > 
-> > > 
-> > > Greeting,
-> > > 
-> > > FYI, we noticed a -21.8% regression of fio.write_iops due to commit:
-> > > 
-> > > 
-> > > commit: 8cc621d2f45ddd3dc664024a647ee7adf48d79a5 ("mm: fs:
-> > > invalidate BH LRU during page migration")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > 
-> > > 
-> > > in testcase: fio-basic
-> > > on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU
-> > > @ 2.10GHz with 256G memory
-> > > with following parameters:
-> > > 
-> > > 	disk: 2pmem
-> > > 	fs: ext4
-> > > 	runtime: 200s
-> > > 	nr_task: 50%
-> > > 	time_based: tb
-> > > 	rw: randwrite
-> > > 	bs: 4k
-> > > 	ioengine: libaio
-> > > 	test_size: 200G
-> > > 	cpufreq_governor: performance
-> > > 	ucode: 0x5003006
-> > > 
-> > > test-description: Fio is a tool that will spawn a number of threads
-> > > or processes doing a particular type of I/O action as specified by
-> > > the user.
-> > > test-url: https://github.com/axboe/fio
-> > > 
-> > > 
-> > > 
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > 
-> > > 
-> > > Details are as below:
-> > > -------------------------------------------------------------------------------------------------->
-> > > 
-> > > 
-> > > To reproduce:
-> > > 
-> > >         git clone https://github.com/intel/lkp-tests.git
-> > >         cd lkp-tests
-> > >         bin/lkp install                job.yaml  # job file is
-> > > attached in this email
-> > >         bin/lkp split-job --compatible job.yaml  # generate the yaml
-> > > file for lkp run
-> > >         bin/lkp run                    generated-yaml-file
-> > 
-> > Hi,
-> > 
-> > I tried to insall the lkp-test in my machine by following above guide
-> > but failed
-> > due to package problems(I guess it's my problem since I use something
-> > particular
-> > environement). However, I guess it comes from increased miss ratio of
-> > bh_lrus
-> > since the patch caused more frequent invalidation of the bh_lrus calls
-> > compared
-> > to old. For example, lru_add_drain could be called from several hot
-> > places(e.g.,
-> > unmap and pagevec_release from several path) and it could keeps
-> > invalidating
-> > bh_lrus.
-> > 
-> > IMO, we should move the overhead from such hot path to cold one. How
-> > about this?
-> > 
-> > From ebf4ede1cf32fb14d85f0015a3693cb8e1b8dbfe Mon Sep 17 00:00:00 2001
-> > From: Minchan Kim <minchan@kernel.org>
-> > Date: Thu, 20 May 2021 11:17:56 -0700
-> > Subject: [PATCH] invalidate bh_lrus only at lru_add_drain_all
-> > 
-> > Not-Yet-Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> >  mm/swap.c | 15 +++++++++++++--
-> >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/swap.c b/mm/swap.c
-> > index dfb48cf9c2c9..d6168449e28c 100644
-> > --- a/mm/swap.c
-> > +++ b/mm/swap.c
-> > @@ -642,7 +642,6 @@ void lru_add_drain_cpu(int cpu)
-> >  		pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
-> > 
-> >  	activate_page_drain(cpu);
-> > -	invalidate_bh_lrus_cpu(cpu);
-> >  }
-> > 
-> >  /**
-> > @@ -725,6 +724,17 @@ void lru_add_drain(void)
-> >  	local_unlock(&lru_pvecs.lock);
-> >  }
-> > 
-> > +void lru_and_bh_lrus_drain(void)
-> > +{
-> > +	int cpu;
-> > +
-> > +	local_lock(&lru_pvecs.lock);
-> > +	cpu = smp_processor_id();
-> > +	lru_add_drain_cpu(cpu);
-> > +	local_unlock(&lru_pvecs.lock);
-> > +	invalidate_bh_lrus_cpu(cpu);
-> > +}
-> > +
-> 
-> Nit: drop int cpu?
+When the number of regions is less than half max region, region split 
+kicks in and doubles the number of region. This means that the number of 
+region will grow close to max region, then slowly decay as region 
+merges, until it reaches half max regions, then double again. This seems 
+to create a non-uniform region number distribution over time, with large 
+cycles. Also we do a lot of work when we double and no work otherwise. 
+Not sure what's the impact on measurement quality but intuitively seems 
+like keeping the number of regions constant over time would yield more 
+consistent metrics? How about we rather always split regions at each 
+iteration, and for each region we give a split probability?
 
-Do you mean to suggest using smp_processor_id at both places
-instead of local varaible? Since the invalidate_bh_lrus_cpu
-is called out of the lru_pvecs.lock, I wanted to express
-the draining happens at the same CPU via storing the CPU.
+Kind regards,
 
-> 
-> >  void lru_add_drain_cpu_zone(struct zone *zone)
-> >  {
-> >  	local_lock(&lru_pvecs.lock);
-> > @@ -739,7 +749,7 @@ static DEFINE_PER_CPU(struct work_struct,
-> > lru_add_drain_work);
-> > 
-> >  static void lru_add_drain_per_cpu(struct work_struct *dummy)
-> >  {
-> > -	lru_add_drain();
-> > +	lru_and_bh_lrus_drain();
-> >  }
-> > 
-> >  /*
-> > @@ -881,6 +891,7 @@ void lru_cache_disable(void)
-> >  	__lru_add_drain_all(true);
-> >  #else
-> >  	lru_add_drain();
-> > +	invalidate_bh_lrus_cpu(smp_processor_id());
-> >  #endif
-> >  }
-> 
-> Can't we replace the call to lru_add_drain() and
-> invalidate_bh_lrus_cpu(smp_processor_id()) with a single call to
-> lru_and_bh_lrus_drain()?
+--Fernand
 
-Good idea.
-
-Thanks!
