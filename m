@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838F23909CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B263909C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhEYTpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232696AbhEYTpK (ORCPT
+        id S230104AbhEYTlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:41:32 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:38844 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhEYTlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:45:10 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63E9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:43:38 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id e2so33396835ljk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s2HJsHtlpgip3mlRgyFOxcbNBFloH0gFAyE8clEbkrA=;
-        b=YhgGx22YycvtdJruYObHjTbeSrdR+Uxb2QevpVpGBGpoXxKPl1RRT6RHl6IW6KA3or
-         dHcgbhvqgJjTUbkj8JNCEuElmrnz2fNB5Ev4ZF06RV0wAUplHNw9KAy8mWREeK3wK8ak
-         uZJQOf6o/npkSSujyAGjSom8KoZOhsQMlpwpdYosqyWl6YE6ebugrFnQKpnbfoOkkM26
-         WQxY3WGI5dDgBPJJ577mzD805qGX0Bm7byVwWJiTl6kw0aOn59xpq+Us7wHxRmR13y1s
-         9xpB6BE5N6zXiWBDVMefvgw8njbKSvR9FcEx4HBTms9g/s38OKZTmRPNHnJcZ/7h6OI8
-         G46w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s2HJsHtlpgip3mlRgyFOxcbNBFloH0gFAyE8clEbkrA=;
-        b=CSJbP7Q2eEiOvnHU/i6CLRsyG54Kg/EP7NRTY/VlHL+KXrAOEhqk6IDBo1gBAULliT
-         SFT8+qPYXhiRWWpbWWA/Vuz4me/tSDRvlqEkCAFIkDun2cIgWjbX49jXS6AjELz7mCNV
-         06WdmrB9mN+SHLhEJdkSfj2x5W05P+UWz6g3z7KauBAy5apq1HG7WD6uyLfRIsftLq5D
-         N6KDUXxWBJcDsGRjQ3p0J5HJamdlEUZ1eaBpW+aYx/xCqxaeWMOrbLhtOZr1lHYzq+af
-         QwnUfChFuJcBalVTI351Gw/2YOUbGcd+oikKTHwlruNQTGWAExc0CueF9ZIUw/eE37mq
-         Y7jg==
-X-Gm-Message-State: AOAM5315llb99hPfEDoKXa6uawFmwOsmlj5YqL1Tg6IX9PyQSlroQc+D
-        Ml3gjIKpDNoxaFGYlDr2IJ9ibYxqs/ZPlXTPuWI=
-X-Google-Smtp-Source: ABdhPJyXTH+4RElt2vc239Z86YYEBuAltn/0gTZ6HVtghsk+pNw0Ryy6SsrshJrkinaj0rSI6yxD4g==
-X-Received: by 2002:a05:651c:621:: with SMTP id k33mr21521707lje.484.1621971816268;
-        Tue, 25 May 2021 12:43:36 -0700 (PDT)
-Received: from [192.168.1.49] ([109.197.205.52])
-        by smtp.gmail.com with ESMTPSA id c14sm1817315lfb.129.2021.05.25.12.43.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 12:43:35 -0700 (PDT)
-Subject: Re: [RFC][PATCH 0/1] ep93xx: clock: convert in-place
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210525083340.27722-1-nikita.shubin@maquefel.me>
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Message-ID: <b05ef6b2-9161-50a0-1c93-71bf8ec7fdb1@gmail.com>
-Date:   Tue, 25 May 2021 21:39:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 25 May 2021 15:41:31 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:52976 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1llcuF-0005XG-9z; Tue, 25 May 2021 15:39:59 -0400
+Message-ID: <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stefan Metzmacher <metze@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Date:   Tue, 25 May 2021 15:39:57 -0400
+In-Reply-To: <4390e9fb839ebc0581083fc4fa7a82606432c0c0.camel@trillion01.com>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
+         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+         <8735v3jujv.ffs@nanos.tec.linutronix.de>
+         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
+         <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+         <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
+         <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
+         <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
+         <4390e9fb839ebc0581083fc4fa7a82606432c0c0.camel@trillion01.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
-In-Reply-To: <20210525083340.27722-1-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita!
-
-On 25/05/2021 10:33, Nikita Shubin wrote:
-> Alexander please look at provided patch, the size goes from
+On Fri, 2021-05-21 at 03:31 -0400, Olivier Langlois wrote:
 > 
-> ```
->    text    data     bss     dec     hex filename
-> 4491689  920748   92840 5505277  5400fd vmlinux
-> ```
+> However, I can reproduce it at will with my real program. So as Linus
+> has suggested, I'll investigate by searching where the PF_IO_WORKER is
+> used.
 > 
-> to with patch applied:
+> I'll keep the list updated if I discover something.
 > 
-> ```
->    text    data     bss     dec     hex filename
-> 4534485  927424   90304 5552213  54b855 vmlinux
-> ```
-> 
-> If this is not acceptable to you, than it's perfectly fine, i'll 
-> finish (actually only gpio left to rework to DT) and stash my rework 
-> somewhere and can send link or patches to all interested.
+I think that I am about to stumble into the key to unravel the mystery
+of my core dump generation issue. I am going ask you a quick question
+and it is very likely to trigger an ahah moment...
 
-I don't think that 50k is a serios issue even for this HW.
-And Arnd is right, we still have some potential hidden within
-missing CONFIG_LD_DEAD_CODE_DATA_ELIMINATION support.
+To what value is the task_struct mm field is set to for the io-wkr
+threads?
 
-> But still if you have possibility to test clocks for video and I2S
-> it would be nice.
+If I look in the create_io_thread() function, I can see that CLONE_VM
+isn't set...
 
-I don't have video, but I2S and ADC, and earliest in 2 weeks.
+There are still some fuzzy areas in my io_uring inner design
+understanding but I would think that the io-wrk threads must use the
+user process mm at some point in order to be able to fill in the user
+provided buffers...
 
-Thank you for looking into this!
---
-Alexander.
+This notion appears to be central when creating a coredump...
+Only tasks having the same mm than the one receiving the SIGSEGV will
+be zapped...
+
+in zap_threads():
+		for_each_thread(g, p) {
+			if (unlikely(!p->mm))
+				continue;
+			if (unlikely(p->mm == mm)) {
+				lock_task_sighand(p, &flags);
+				nr += zap_process(p, exit_code,
+							SIGNAL_GROUP_E
+XIT);
+				unlock_task_sighand(p, &flags);
+			}
+			break;
+		}
+
+
