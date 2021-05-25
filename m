@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768ED390016
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8687C39001D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbhEYLgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:36:40 -0400
-Received: from mail-mw2nam12on2072.outbound.protection.outlook.com ([40.107.244.72]:46945
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231127AbhEYLgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:36:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y95F0yQ5Y9TyAOrBcWXeSgmMnFbZX7zDr85jrEoHjtfKLFGwd0/BnkR8kerg/PuRK3sq+065OgzBoRMcKgtqAlsbqq9UZO2BAZixRP3mVhQStsK9ZvimORC7pPyEMDA8p4tvH3EYpzqXJq2lM5p3YXLqZfHiIcnGZjFOt0QWdAZ49BR2D1CxlyClRePP2RTHAFMYYa2CeAzzH0iRm9Mul9R1COibfZMPbEVvpviWCtRmGAe0mJRA28soOlCmzNiUpvwjnVGlLlwy9l4ad/t++a4I7FFXV3O+AeAGIY9EEf/X65gXFgxcFV1mDmfUk8WZKJSm5rU19qcPcQddzMvfYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=53HOcoM9yELm70S0YqVL63A/msRDL34nENAb/kHNg/Q=;
- b=Z3wfvPUXkEWP0r7p54Swo1Aq7Eavyj4nYdOic5vf9wWNBuQeOX0hYv8ZIa4XI8heSPj3gGDaX2M9KwZRzuZd+OgEc+8zpS02uW3l9+PsRtHyuHXHhtFjGbyYEDeIoFzpajCWfF/jpskHCBisKrZsDJ3sWRSmOeWPB8Ld5Z808EMW8uuHxEZc/bzrsO4u4IdOI1fCacXYkugsPBvcxvbP29krMKKFwkZlGqgSn86CtwytbFFkhdGs2tUh12ZE41CfSCquxRbHZNrtJ5k3VUZShZhL0Phz5cwV+mnHg0MZl2M+2Ai4HcSjok3Kn2CmMmFcAI5A26mykV4FW51KMBZr4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=53HOcoM9yELm70S0YqVL63A/msRDL34nENAb/kHNg/Q=;
- b=oIR9aRu+9yoWmxoinqd9j9in3gLoL4X1ZCfVLXLkJmTFjhJWhdlgsT63JZYwMR5BYGZFFO6WALmV+KdWT+qttCLBYvkb9lXqMhDsZGbbOSc6D7G0JECC3mT1e9lJrhXa9vskie5OHGVQSFOZs9XfDXqxh87Vh2AlmEXYXSLcdUs0jsy0Bxj9jfiXUbl2eq+mD3jEmCBt1ArcYSnJi3slbNLihM2tovG+XXolJo5SddhPRuM66Le9g8xyelD8c/gYiSNk8RhMnmDHxPhPgFbsSkGwgIQxlkiFKIi7z1k5lvGrKt4aKgYhh8Xkd8nKb/4Uk6CBJkgroa40iU7Lz0QwAQ==
-Received: from BN6PR2001CA0008.namprd20.prod.outlook.com
- (2603:10b6:404:b4::18) by MN2PR12MB4437.namprd12.prod.outlook.com
- (2603:10b6:208:26f::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Tue, 25 May
- 2021 11:35:05 +0000
-Received: from BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:b4:cafe::d6) by BN6PR2001CA0008.outlook.office365.com
- (2603:10b6:404:b4::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Tue, 25 May 2021 11:35:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT036.mail.protection.outlook.com (10.13.177.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Tue, 25 May 2021 11:35:05 +0000
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 11:35:03 +0000
-Date:   Tue, 25 May 2021 13:36:30 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lee Jones <lee.jones@linaro.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v2 3/3] Revert "usb: common: usb-conn-gpio: Make VBUS
- supply optional"
-Message-ID: <YKzhPnMU3PXx+tXK@orome.fritz.box>
-References: <1621406386-18838-1-git-send-email-chunfeng.yun@mediatek.com>
- <1621406386-18838-3-git-send-email-chunfeng.yun@mediatek.com>
- <YKezl0nlWFQhLyf/@orome.fritz.box>
- <1621835511.26501.14.camel@mhfsdcap03>
+        id S231712AbhEYLij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:38:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231441AbhEYLig (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 07:38:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621942626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1tBEB3SzpdexLywxXZPiYr8gSbU1T57J4sUwzcuUpvk=;
+        b=h/+goRkPyfMw1GdERlfKHwnCMqSGEI8p3PUNkAOJ8Tnk9qetDVYR5ZjoavvwfYegpy4n5D
+        npi5BisdleEIfJ+xC8vUFIqIW9TaqNZZztm43TndHfyA7mBpmIDbyv7NVIhTSmQ++WQJia
+        xfEUq73nLEl0ysVz8r3g3kFuqoiwNHo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-w5k79UYvNQW8hjSJ6tT_1w-1; Tue, 25 May 2021 07:37:04 -0400
+X-MC-Unique: w5k79UYvNQW8hjSJ6tT_1w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61044800D62;
+        Tue, 25 May 2021 11:37:03 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9BDE070136;
+        Tue, 25 May 2021 11:36:59 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 14PBaxIG013626;
+        Tue, 25 May 2021 07:36:59 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 14PBav2Z013621;
+        Tue, 25 May 2021 07:36:58 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 25 May 2021 07:36:57 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Michael Tokarev <mjt@tls.msk.ru>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Zdenek Kabelac <zkabelac@redhat.com>
+Subject: Patch regression - Re: [PATCH 5.10 070/104] dm snapshot: fix a crash
+ when an origin has no snapshots
+In-Reply-To: <20210524152335.174655194@linuxfoundation.org>
+Message-ID: <alpine.LRH.2.02.2105250734180.13437@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20210524152332.844251980@linuxfoundation.org> <20210524152335.174655194@linuxfoundation.org>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6moWkyVZP6DJIGB7"
-Content-Disposition: inline
-In-Reply-To: <1621835511.26501.14.camel@mhfsdcap03>
-X-NVConfidentiality: public
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eda579cf-97a0-47e7-7aeb-08d91f7124a4
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4437:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4437681DB128DF1350C41334CF259@MN2PR12MB4437.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LYKDasZ1JmfOzmdqeGTgeiR9NwbgDnSpZOBmB//uuDGFkOcE1Uha/5JqYj7uAtuviy2znvpX3aTN9FhCRDM8XJMxtOdHXko8jHYy3jK9vCIGVg0bR3HSSeVfl8UbBcatazp5jevby6hcFJtVr2GsPHz/pGkBYg8/PNuNUZEnFDUDUKmwXP/nn6fVSS4O0uXOTc9WlCuqpCCEeEfQjZYcacfSS9q1fnh/6edpr7Rzy5gtX7KgxPiN2yzIGeWKkQrIwmrPUWM1J9Zl11/T/vRb4wDF5GLeL/+Z8pfWr5oU+4+gJJyZafBCVig5OLl+GXOLwDO+Y2hH1alhOjwalkz/SywlBtoXT8ta0T9pYZDKO77fpFDHOHvbhTM4hH2+sWfBnsdqFUXZ+IPtaqWb6F+Qqd7AqNfuSxv0mNikWywRb29YRzz464QL3QZ8LCQXNz4k6NdfMsU3uIGH7ZeGvT8KS/KraDTOyoJpODTdw8UneVqqP1Szc4uXB7BqohDUvGVbP01rdHBNtdWI9mPnUR2NllVLxQvV9kRYGXT9xyQf4ONEEzq8zoqCU1lVqjghL0KBXHycoJp95Xnkam9LfpB697NSuIDCWvNSqcrUovXyNIAm+2B3E9PG9nP5Hp7f/eB02+LYNA+928GvLvc82Zv9pehKpEziUPHH7YhIIAVnZyM3U97WE2Ww8CiF/39FXXSkMvZhfFcit9JRrql+E819dw==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(46966006)(36840700001)(86362001)(2906002)(478600001)(6666004)(5660300002)(4326008)(70586007)(70206006)(186003)(36860700001)(16526019)(8676002)(9686003)(54906003)(8936002)(7636003)(6916009)(83380400001)(82310400003)(7416002)(36906005)(44144004)(21480400003)(316002)(82740400003)(47076005)(26005)(426003)(336012)(356005)(2700100001)(67856001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 11:35:05.4481
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: eda579cf-97a0-47e7-7aeb-08d91f7124a4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4437
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---6moWkyVZP6DJIGB7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Greg
 
-On Mon, May 24, 2021 at 01:51:51PM +0800, Chunfeng Yun wrote:
-> On Fri, 2021-05-21 at 15:20 +0200, Thierry Reding wrote:
-> > On Wed, May 19, 2021 at 02:39:46PM +0800, Chunfeng Yun wrote:
-> > > Vbus is already an optional supply, if the vbus-supply is not
-> > > provided in DTS, will use a dummy regulator,
-> >=20
-> > That statement is not entirely correct. The dummy regulator is
-> > substituted only if the supply is in fact not optional. The idea behind
-> > that is to allow DTS files that don't specify all required regulators to
-> > get away with it, based on the assumption that the supply is one of
-> > those always-on supplies that are often not described in DTS.
-> Yes, you are right.
-> But from the point of result, it indeed can help to handle the absent
-> regulator.
-> >=20
-> > > the warning log is as below:
-> > > "supply vbus not found, using dummy regulator"
-> >=20
-> > And the reason why we get that warning is to point out that the DTS has
-> > a bug and that it should be fixed (by adding a proper regulator to take
-> > the place of the dummy).
-> >=20
-> > > This reverts commit 4ddf1ac79e5f082451cd549283d2eb7559ab6ca9.
-> >=20
-> > But if you read the description of that commit, the purpose of that
-> > patch was in fact to make the supply completely optional in the case
-> > where we already have the VBUS supply specified for the USB port that
-> > the connector is parented to.
-> Could you please give an example you mentioned?
+I'd like to ask you to drop this patch from all stable branches.
 
-You can find examples of this in these:
+It causes regression with snapshot merging and the regression is much 
+worse than the bug that it fixes.
 
-	arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-	arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-	arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
+Mikulas
 
-> It seems prefer to provide vbus supply in connector instead of port
-> according to dt-binding
 
-My recollection is that the above (or at least some of them) predate USB
-connectors.
 
-It's possible that we could convert the above to have the VBUS supply
-listed in the connector instead of the port. However, since we have to
-preserve backwards compatibility with older device trees, we can't
-revert the commit anyway.
+On Mon, 24 May 2021, Greg Kroah-Hartman wrote:
 
-Thierry
+> From: Mikulas Patocka <mpatocka@redhat.com>
+> 
+> commit 7ee06ddc4038f936b0d4459d37a7d4d844fb03db upstream.
+> 
+> If an origin target has no snapshots, o->split_boundary is set to 0.
+> This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
+> 
+> Fix this by initializing chunk_size, and in turn split_boundary, to
+> rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
+> into "unsigned" type.
+> 
+> Reported-by: Michael Tokarev <mjt@tls.msk.ru>
+> Tested-by: Michael Tokarev <mjt@tls.msk.ru>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/md/dm-snap.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> --- a/drivers/md/dm-snap.c
+> +++ b/drivers/md/dm-snap.c
+> @@ -854,12 +854,11 @@ static int dm_add_exception(void *contex
+>  static uint32_t __minimum_chunk_size(struct origin *o)
+>  {
+>  	struct dm_snapshot *snap;
+> -	unsigned chunk_size = 0;
+> +	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
+>  
+>  	if (o)
+>  		list_for_each_entry(snap, &o->snapshots, list)
+> -			chunk_size = min_not_zero(chunk_size,
+> -						  snap->store->chunk_size);
+> +			chunk_size = min(chunk_size, snap->store->chunk_size);
+>  
+>  	return (uint32_t) chunk_size;
+>  }
+> 
+> 
 
---6moWkyVZP6DJIGB7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCs4TsACgkQ3SOs138+
-s6EOrA/9E77ghrgkWT2zfVOb/ncuXBSAQeTwDMEllA25DFvOL7IDy+1m9ayU1WNW
-2UIY9b2lAmvXnwuCq6e17RpNT6Kstpc7KLtIUzkO7Bhx0XhS0rM2J8Lmb3ibpwT9
-JV5nb96d8B67fecVCLoxIMSPaYmLw3aZzYKcrg3F7aJBSbzmkP04zusdpBV80nSK
-yfQ8stt3DFI1Q+Hv8W6/v3gtM/lgLve7OUlxpX+IltUqP78k7PPdLi4Tz5vjsbm+
-71KmpzyAnDMtSM4GEWG3U6zKaD4YxpdCeYwP9N8oXEfDZBPrEiLohxGuaeqJK023
-d56NO62yJuKyD0YDOOyKyxFcZOfK0HBIO2M7YGNU0jR//JSw8RzHF8NwewPGpFTo
-Ss3pP4fqLFu0FbFZAzqp1sZPgxBJ8kaJ8XobwO1d+eRSFaS8jlLcRkL4uTI58wEN
-d5HtBzVh0s/qfTHRHbQDGYbs2whnHfAJHGwqDso1hNklYD3CnDbIsIMJD9l1emCU
-uFcJYBPEgjNRwyBC8rTCNWDl4d2TO2GxIsKhd2j37ONyPIc/DmzgxS+ehFelMgig
-l2mvqQk3c7dwUl7Aaxf55sxWGQZ/00KDDnNd4+ov735wFEVoGJFltqcNlfee7vge
-bPENAJtpaX8Am+gdpCxhdbFviVGnevJKiEg0n/mKHm7BDkQ/knU=
-=VjGV
------END PGP SIGNATURE-----
-
---6moWkyVZP6DJIGB7--
