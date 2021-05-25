@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000D3905AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF5D3905B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEYPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:42:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229704AbhEYPmF (ORCPT
+        id S233644AbhEYPmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhEYPmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621957235;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SYdCAhRdnwXkmqxWxUZgNfbsA4SMUJILVv4b2pn+/Es=;
-        b=NEIGORZqgRIYnyjQhkO1V210id8vwZk5wHXHAadsJSsh2q0s7Ujk8Xx2tOxppioGe2Bo9T
-        nU+ocLx0pH0JvbCAI57UpDClmGa2DgImPvPyNlY0YmA+hjDnnzqgDsvcg5OUs2dbPlApJb
-        ZOvzrcyNeBZySaYsFKhNoU0cyYXzal8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-AnxD9QXUMpadOqZlvtPl7g-1; Tue, 25 May 2021 11:40:31 -0400
-X-MC-Unique: AnxD9QXUMpadOqZlvtPl7g-1
-Received: by mail-wm1-f72.google.com with SMTP id h9-20020a1cb7090000b029016d3f0b6ce4so4645040wmf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:40:30 -0700 (PDT)
+        Tue, 25 May 2021 11:42:23 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CB4C061574;
+        Tue, 25 May 2021 08:40:51 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id v8so41776626lft.8;
+        Tue, 25 May 2021 08:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IFrntmU7PddzAkDzge96jDF8ouDIB5cnkfcWeXlAZik=;
+        b=K2h+JZ6tueBFtMBPM5XxRFuUDrQNTec6uhRy/PaD/OY3S1U41weJT0i4140LWU4UEn
+         VDmaJf+wGs/eEaqkP5IO7WoEJXl4NujIRKImmo9DacvCQwxCYBVMMmH11Ctr1KBjJfpV
+         cRdbthGrtTEKt/JDatjDpKFZcTaer2cfixBrpMAexU4h48+DalqGUkR30/fE9HUMz9xF
+         LXjh8xzJCtrQx0KPjEd5DqzjQX7E/iSVi3wSxwDDqrUinxLaA9t7LuJ08kCcKLsT71qV
+         syODkVSAsyNolmv+uHxOzNhtIsxcd749ddNC2Qdoza1P+qNfwWDmiOOMYPiTgCabQzaB
+         nhnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SYdCAhRdnwXkmqxWxUZgNfbsA4SMUJILVv4b2pn+/Es=;
-        b=FXFaqcvvpe0Woh1+LtFoVu+TvOM/+5a2sKl2712IJceCx3X2MX0zP48dQ0dsBSulrQ
-         Pjz+ePyzHvFqQNhdhAs9EO7wwPVglU/8JrFBtnuJLfdGVjZy+856Uik++bfH96NmzV3t
-         z95dzWCljVobSXRfw3JEhRztFi9UsliVHb01FHj1L/GT+OhLYZo4QyY0theT/3pSzYq8
-         UEbeSwfMnAepgkdxHOUKq041Kq2QiuIkcBNvBbhAV1ALUjVAzA1Q113imVvy2lWnpqfw
-         v8SOg5rwP2hoQHZv0DVbMDQL+T2zwrBAiYZSEBE4136ssheAdOtb3uIdWqcPOdGSSNQL
-         b6bQ==
-X-Gm-Message-State: AOAM533Ds/4nY6OJwGsszEULVwLUhwWji00vBhZgO3bVZMkaeo70voyr
-        05r9Hd7U9MK03oCJK59El96edLl0g2mhg8G/HwTGhtKLcVMmylEAt+W4EOarH3ybgfrD8B9DlIL
-        C+ZNbd6aWIzx/jkkMYBRPmXtJaO0X9f63sN6QLYNnsQREJSAXcT8U91eKDmLjPgqLG6dba8E2
-X-Received: by 2002:a1c:67c1:: with SMTP id b184mr4425185wmc.33.1621957229987;
-        Tue, 25 May 2021 08:40:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgA6I4UKYmaq2QfqxI0w7/EGBR072QtppwfyKItJHrUwFPAGPC9fwG3B6eKAW9a9bNGu8vJQ==
-X-Received: by 2002:a1c:67c1:: with SMTP id b184mr4425151wmc.33.1621957229725;
-        Tue, 25 May 2021 08:40:29 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
-        by smtp.gmail.com with ESMTPSA id b7sm16111484wri.83.2021.05.25.08.40.29
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IFrntmU7PddzAkDzge96jDF8ouDIB5cnkfcWeXlAZik=;
+        b=VHd3/oMJzRkBKjuwkKBtpUf1891/dLl5zJzwwbUcCfro0+JkPoYKIGNY211R3bA35p
+         4sVX/3JnV/j+ARvd6eeWrfSwLiKbvCffn9cmC/06M53pqnXEX6WW+kpbhCHTCZnDpWTs
+         LZ9Jq9DJfkGejj0bHX2xX+SVBRZmY+P/3akeD23KIoe9E/2LV89DC95GmokMZXkG44Zt
+         rFE7Bs+jiGJVyjZNFbjWGav55J2lwOL8wgFWPwz8uY5/JoTobsToPsM52HKgYprFsh5Z
+         tSSTZNiIU/YE3jxLP4hXY0e88nDUoB26026jy6pZYG3oQLEzfUiTEM0IEbOvkdOaEwdj
+         cpaQ==
+X-Gm-Message-State: AOAM532+G3zMV6qjk4mXEEuvVczwvMilxHNgm/i36ntQ2F6rEgW0yH4v
+        oFs6oNdWqgoN2yfP7wgPZyDKIdM6cKE=
+X-Google-Smtp-Source: ABdhPJycwwa0af6h45l1eZwV4E8v2zg65tkgOnJuFEGrufqa2gh1wXA3dsK+vfv4FkUdj3VPMwyomg==
+X-Received: by 2002:a05:6512:10c4:: with SMTP id k4mr13095593lfg.124.1621957250144;
+        Tue, 25 May 2021 08:40:50 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-180-236.dynamic.spd-mgts.ru. [46.138.180.236])
+        by smtp.googlemail.com with ESMTPSA id p14sm2126434ljc.58.2021.05.25.08.40.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 08:40:29 -0700 (PDT)
-Subject: Re: Arm64 crash while online/offline memory sections
-To:     "Qian Cai (QUIC)" <quic_qiancai@quicinc.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <DM5PR0201MB35576EF9B568FEE05FE58CF08E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <b34499c5-a330-1bfc-d564-8ebffb3236cd@redhat.com>
-Date:   Tue, 25 May 2021 17:40:28 +0200
+        Tue, 25 May 2021 08:40:49 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+ <03775d09-f3ff-ff7a-626a-812163d6871d@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <d8ee8f62-6046-f7d8-5a27-0626f2eaeb80@gmail.com>
+Date:   Tue, 25 May 2021 18:40:48 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <DM5PR0201MB35576EF9B568FEE05FE58CF08E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <03775d09-f3ff-ff7a-626a-812163d6871d@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.05.21 17:36, Qian Cai (QUIC) wrote:
-> Reverting the patchset "Allocate memmap from hotadded memory (per device)" [1] from today's linux-next fixed a crash while online/offline memory sections.
+25.05.2021 11:40, Jon Hunter пишет:
+> 
+> On 24/05/2021 00:44, Dmitry Osipenko wrote:
+>> Specify components string for Nexus 7 using the Intel BayTrail components
+>> format. This may allow us to create a more generic UCM for RT5640 codec.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>>  1 file changed, 19 insertions(+)
+>>
+>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+>> index a81f2ebfc00c..87e0a47040a5 100644
+>> --- a/sound/soc/tegra/tegra_asoc_machine.c
+>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>>  	.add_hp_jack = true,
+>>  };
+>>  
+>> +/*
+>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+>> + * Headphones: Connected to HPOL/R pins.
+>> + * Headset Microphone: Unconnected.
+>> + *
+>> + * IF2_DAC/ADC are unpopulated.
+>> + */
+>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+>> +	.mclk_rate = tegra_machine_mclk_rate_256,
+>> +	.card = &snd_soc_tegra_rt5640,
+>> +	.add_common_dapm_widgets = true,
+>> +	.add_common_controls = true,
+>> +	.add_common_snd_ops = true,
+>> +	.add_hp_jack = true,
+>> +};
+>> +
+>>  /* RT5632 machine */
+>>  
+>>  SND_SOC_DAILINK_DEFS(rt5632_hifi,
+>> @@ -712,6 +730,7 @@ static const struct of_device_id tegra_machine_of_match[] = {
+>>  	{ .compatible = "nvidia,tegra-audio-wm8753", .data = &tegra_wm8753_data },
+>>  	{ .compatible = "nvidia,tegra-audio-rt5677", .data = &tegra_rt5677_data },
+>>  	{ .compatible = "nvidia,tegra-audio-rt5640", .data = &tegra_rt5640_data },
+>> +	{ .compatible = "nvidia,tegra-audio-rt5640-grouper", .data = &tegra_rt5640_grouper_data },
+> 
+> 
+> Is there any harm always populating the components data for rt5640? I
+> did not see any existing UCM support for Tegra+rt5640 platforms in ALSA.
 
-Do we know which patch in particular is problematic?
+The previous patch sets components for each card, including RT5640. This
+patch sets individual components configuration that is unique to the
+Nexus 7, it overrides the default components string of the card that was
+set by the previous patch. Other devices may have a different h/w
+configuration.
 
-
--- 
-Thanks,
-
-David / dhildenb
-
+The universal UCM needs to know the full h/w configuration, otherwise it
+doesn't know how to set up mixers and switches properly. The exact
+bytcr-rt5640 UCM works on Tegra if couple switches that unique to
+BayTrail are made conditional in the UCM.
