@@ -2,144 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB603902D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A7F390321
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhEYNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:52:38 -0400
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:56205 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233339AbhEYNwd (ORCPT
+        id S233405AbhEYNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:55:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233517AbhEYNy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:52:33 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id CBFF11B0E
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 14:51:02 +0100 (IST)
-Received: (qmail 3215 invoked from network); 25 May 2021 13:51:02 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 13:51:02 -0000
-Date:   Tue, 25 May 2021 14:51:01 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Michal Such?nek <msuchanek@suse.de>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>
-Subject: Re: BPF: failed module verification on linux-next
-Message-ID: <20210525135101.GT30378@techsingularity.net>
-References: <20210519141936.GV8544@kitsune.suse.cz>
- <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
- <CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com>
+        Tue, 25 May 2021 09:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621950776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PW7OrrfjfM61YRapb5tPZf3kCsKbCNzZN/BPGRKNoNU=;
+        b=hhsZqvbLUmNdI9nUTEu6pqq0wvEEUdmGPqttIsrdRkyoW0hJ/GH/KRq7J9sISzJgdJ293D
+        bqazXXt/2eBPXTdrtPxNaUwtEroJF+iDaqH4Egw5aixQIyJ5OYCCK1nnJzXzMA4TkUOGie
+        rIhf5+6ycbO7gffOuxxflGUF/Phfcns=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-X-EA_lcONvuZj6b1GGgkqA-1; Tue, 25 May 2021 09:52:53 -0400
+X-MC-Unique: X-EA_lcONvuZj6b1GGgkqA-1
+Received: by mail-wm1-f69.google.com with SMTP id l185-20020a1c25c20000b029014b0624775eso5931693wml.6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 06:52:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PW7OrrfjfM61YRapb5tPZf3kCsKbCNzZN/BPGRKNoNU=;
+        b=ib7nnx5vI/KGyrPch2xRKyeHSaDqE4/HBFIoy0ERtdbkNSaVEZro0kzg/66NnIfX6e
+         IgMuvBo5mIPeeoKqVTrK7E7vVOo5GeRVnS+uqTtDItgZn5Ow/yduAHdZuGSd93XSzVSm
+         I9gqd8K5afRESkg5jJV4jq1oSvpMx25G+KV6XwyecIC5cLlpJ5h5akbfSNlQQwE9EjVU
+         bYjTUp5pKKWWdxLu3xB7qfanQ3fqTmcxa3QLBvzUGCwkd1YpoXy//krCiF+hz23dxRQ9
+         RLDsyghemTmkdCbp1K8vU6qVV48BEyf/BdjcbtLU6IBnrmDhyQfC756j9h/n4BqZ/oKc
+         QUkQ==
+X-Gm-Message-State: AOAM5310sx9dT/iIiqwtLUiaLUUWgvN8e5QEv1ovNzT75h/oEz8h8l7w
+        6Qkn90NuXvLIP0VcPTdD4RjhSv6Qr8msSWB29ZXkjKak+qBi23cIm1Pbg7B2UYYeyl4COXf+8Cq
+        IPjvRNRbVVfgnU3CLnZv89DBL
+X-Received: by 2002:a7b:cc83:: with SMTP id p3mr24768903wma.169.1621950772424;
+        Tue, 25 May 2021 06:52:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxoD0S7iFDYWpnFLr+WwG/M35YgaD7ABz77zKNWv7ODMUul6QdqZLBzVMLAVnyvv7vXt1v2ZA==
+X-Received: by 2002:a7b:cc83:: with SMTP id p3mr24768893wma.169.1621950772267;
+        Tue, 25 May 2021 06:52:52 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id z18sm16767823wro.33.2021.05.25.06.52.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 06:52:51 -0700 (PDT)
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20210521131910.3000689-1-javierm@redhat.com>
+ <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+ <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
+ <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
+ <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
+ <YKz2vbxYXSKQE1Ng@phenom.ffwll.local>
+ <4e81ab57-a240-952a-7423-22dc830bc62f@suse.de>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <79f227c4-5ed6-23e8-2d74-3197871359f8@redhat.com>
+Date:   Tue, 25 May 2021 15:52:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4e81ab57-a240-952a-7423-22dc830bc62f@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 03:58:29PM -0700, Andrii Nakryiko wrote:
-> > It took me a while to reliably bisect this, but it clearly points to
-> > this commit:
-> >
-> > e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
-> >
-> > One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
-> > lists and zone stats -fix"), works just fine.
-> >
-> > I'll have to spend more time debugging what exactly is happening, but
-> > the immediate problem is two different definitions of numa_node
-> > per-cpu variable. They both are at the same offset within
-> > .data..percpu ELF section, they both have the same name, but one of
-> > them is marked as static and another as global. And one is int
-> > variable, while another is struct pagesets. I'll look some more
-> > tomorrow, but adding Jiri and Arnaldo for visibility.
-> >
-> > [110907] DATASEC '.data..percpu' size=178904 vlen=303
-> > ...
-> >         type_id=27753 offset=163976 size=4 (VAR 'numa_node')
-> >         type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-> >
-> > [27753] VAR 'numa_node' type_id=27556, linkage=static
-> > [27754] VAR 'numa_node' type_id=20, linkage=global
-> >
-> > [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> >
-> > [27556] STRUCT 'pagesets' size=0 vlen=1
-> >         'lock' type_id=507 bits_offset=0
-> >
-> > [506] STRUCT '(anon)' size=0 vlen=0
-> > [507] TYPEDEF 'local_lock_t' type_id=506
-> >
-> > So also something weird about those zero-sized struct pagesets and
-> > local_lock_t inside it.
+Hello,
+
+On 5/25/21 3:34 PM, Thomas Zimmermann wrote:
+
+[snip]
+
+>>
+>> If you guys with your distro hats on all think it doesn't matter, then
+>> yeah I'm all for dropping the somewhat silly -drm or drmfb suffixes. I
+>> think that was just way back so it's easier to know you've loaded the
+>> right driver, back when there was both drm and native fbdev drivers
+>> around. But now I think for new hw there's only drm, so should be all
+>> fine.
 > 
-> Ok, so nothing weird about them. local_lock_t is designed to be
-> zero-sized unless CONFIG_DEBUG_LOCK_ALLOC is defined.
+> Suse doesn't use fbdev, except for some outliers; most notably hypervfb 
+> and generic efifb/vesafb. Both are now being replaced with drm code. 
+>  From what I've seen, it's the same for other distros. And X11 checks 
+> for the existence of device files anyway IIRC.
+Yes, I believe is the same for us.
+
+I'll post a patch to just remove the suffix then. Thanks you both
+for the feedback.
+
 > 
-> But such zero-sized per-CPU variables are confusing pahole during BTF
-> generation, as now two different variables "occupy" the same address.
+> Best regards
+> Thomas
 > 
-> Given this seems to be the first zero-sized per-CPU variable, I wonder
-> if it would be ok to make sure it's never zero-sized, while pahole
-> gets fixed and it's latest version gets widely packaged and
-> distributed.
-> 
-> Mel, what do you think about something like below? Or maybe you can
-> advise some better solution?
+>> -Daniel
+>>
 > 
 
-Ouch, something like that may never go away. How about just this?
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 58426acf5983..dce2df33d823 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -338,6 +338,9 @@ config DEBUG_INFO_BTF
- config PAHOLE_HAS_SPLIT_BTF
- 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
- 
-+config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
-+	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
-+
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
- 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1599985e0ee1..cb1f84848c99 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -124,6 +124,17 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
- 
- struct pagesets {
- 	local_lock_t lock;
-+#if defined(CONFIG_DEBUG_INFO_BTF) &&			\
-+    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
-+    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
-+	/*
-+	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
-+	 * variables and produces invalid BTF. Ensure that
-+	 * sizeof(struct pagesets) != 0 for older versions of pahole.
-+	 */
-+	char __pahole_hack;
-+	#warning "pahole too old to support zero-sized struct pagesets"
-+#endif
- };
- static DEFINE_PER_CPU(struct pagesets, pagesets) = {
- 	.lock = INIT_LOCAL_LOCK(lock),
-diff --git a/scripts/rust-version.sh b/scripts/rust-version.sh
-old mode 100644
-new mode 100755
+Best regards,
 -- 
-Mel Gorman
-SUSE Labs
+Javier Martinez Canillas
+Software Engineer
+New Platform Technologies Enablement team
+RHEL Engineering
+
