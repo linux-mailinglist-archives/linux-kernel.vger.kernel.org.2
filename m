@@ -2,70 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAC1390C94
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F9A390C88
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhEYXB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:01:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33030 "EHLO mail.kernel.org"
+        id S231947AbhEYXBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:01:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231975AbhEYXBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 433696140E;
-        Tue, 25 May 2021 23:00:11 +0000 (UTC)
+        id S230097AbhEYXBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BD1613D5;
+        Tue, 25 May 2021 22:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621983611;
-        bh=t8mI7nd3/c+LUAn/kNBwCn2TZ1j6oqv0FLryb5/BiiI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MtKaU5tn+1QF+sbd9NQJtQgdKesz/+HBYxUoJRppHXzGyQY2vQqIqDWcyHw+U/SXM
-         FzRPKZ9OR+a8RgrleKbETUSV1OzF6qVfDT5U1Umkch6inmPta8uVbXQmAIXhCuQQrM
-         nzyP0ATP0QvnRzqfuZCz8CV1K25rY0/8oGyjInegO0I/U0GKBHaFCe4loyY7SCfDxQ
-         clwmxNj+Ic9vXiC6dhPA6smuuM088Ds5dT5zQR48E/T5qkUnX/1JTjlKDrwZ1TUIe2
-         P46K/QKaYQAl098tq4uuMTm27z7w2ZIYA+HZ1+1gpLJ9tG5nz+Ehjp4zpSaG0zC3Wo
-         lLendjCqtXZuQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 32D5560A56;
-        Tue, 25 May 2021 23:00:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1621983581;
+        bh=gTZAgrzB4+T/6N1sAeSXHaiO0/ElpJNF7LZZgYhlfYQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PipcE7xDG+yf/31f2wV1b8p7s8c0CmOAE+z4YUwdAaSwQ5QJp5XOhxU3s18vGKm0b
+         bheC0DmbiAyIshUQbGdb00isAsklfM7saJNNl+LqnF6TAtQPrRG4O7qPeU5gkqTO7o
+         u9lsT3FlXOK1DrVC7takFogdo6P/s9DSWGxy1wyMdhceKXJWJsk7/lx5rMVyiLLjII
+         bDPtNjvD+i3BxO4Reu5+FqHeF0KfYKFjz/qcmiNLKe6tsy1GF98LJ35s9fxdxSCKfd
+         dr0C+86CkWhy2E+gA9aDXW/6WM2JkpwGrhfsQ0PiyWgZm+zd2P8sjx8PRJ8uszXIo0
+         y9/M/ZOqbF7zA==
+Date:   Tue, 25 May 2021 18:00:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] i40e: Replace one-element array with flexible-array
+ member
+Message-ID: <20210525230038.GA175516@embeddedor>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bnx2x: Fix missing error code in bnx2x_iov_init_one()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162198361120.32227.5676133295102110757.git-patchwork-notify@kernel.org>
-Date:   Tue, 25 May 2021 23:00:11 +0000
-References: <1621940412-73333-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1621940412-73333-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     aelior@marvell.com, skalluru@marvell.com,
-        GR-everest-linux-l2@marvell.com, davem@davemloft.ne,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+There is a regular need in the kernel to provide a way to declare having a
+dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Refactor the code according to the use of a flexible-array member in struct
+i40e_qvlist_info instead of one-element array, and use the struct_size()
+helper.
 
-On Tue, 25 May 2021 19:00:12 +0800 you wrote:
-> Eliminate the follow smatch warning:
-> 
-> drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
-> bnx2x_iov_init_one() warn: missing error code 'err'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> 
-> [...]
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
 
-Here is the summary with links:
-  - bnx2x: Fix missing error code in bnx2x_iov_init_one()
-    https://git.kernel.org/netdev/net/c/65161c35554f
+Link: https://github.com/KSPP/linux/issues/79
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/hw/i40iw/i40iw_main.c      | 5 ++---
+ drivers/net/ethernet/intel/i40e/i40e_client.c | 2 +-
+ include/linux/net/intel/i40e_client.h         | 2 +-
+ 3 files changed, 4 insertions(+), 5 deletions(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index b496f30ce066..364f69cd620f 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -1423,7 +1423,7 @@ static enum i40iw_status_code i40iw_save_msix_info(struct i40iw_device *iwdev,
+ 	struct i40e_qv_info *iw_qvinfo;
+ 	u32 ceq_idx;
+ 	u32 i;
+-	u32 size;
++	size_t size;
+ 
+ 	if (!ldev->msix_count) {
+ 		i40iw_pr_err("No MSI-X vectors\n");
+@@ -1433,8 +1433,7 @@ static enum i40iw_status_code i40iw_save_msix_info(struct i40iw_device *iwdev,
+ 	iwdev->msix_count = ldev->msix_count;
+ 
+ 	size = sizeof(struct i40iw_msix_vector) * iwdev->msix_count;
+-	size += sizeof(struct i40e_qvlist_info);
+-	size +=  sizeof(struct i40e_qv_info) * iwdev->msix_count - 1;
++	size += struct_size(iw_qvlist, qv_info, iwdev->msix_count);
+ 	iwdev->iw_msixtbl = kzalloc(size, GFP_KERNEL);
+ 
+ 	if (!iwdev->iw_msixtbl)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
+index 32f3facbed1a..63eab14a26df 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_client.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
+@@ -579,7 +579,7 @@ static int i40e_client_setup_qvlist(struct i40e_info *ldev,
+ 	u32 v_idx, i, reg_idx, reg;
+ 
+ 	ldev->qvlist_info = kzalloc(struct_size(ldev->qvlist_info, qv_info,
+-				    qvlist_info->num_vectors - 1), GFP_KERNEL);
++				    qvlist_info->num_vectors), GFP_KERNEL);
+ 	if (!ldev->qvlist_info)
+ 		return -ENOMEM;
+ 	ldev->qvlist_info->num_vectors = qvlist_info->num_vectors;
+diff --git a/include/linux/net/intel/i40e_client.h b/include/linux/net/intel/i40e_client.h
+index f41387a8969f..fd7bc860a241 100644
+--- a/include/linux/net/intel/i40e_client.h
++++ b/include/linux/net/intel/i40e_client.h
+@@ -48,7 +48,7 @@ struct i40e_qv_info {
+ 
+ struct i40e_qvlist_info {
+ 	u32 num_vectors;
+-	struct i40e_qv_info qv_info[1];
++	struct i40e_qv_info qv_info[];
+ };
+ 
+ 
+-- 
+2.27.0
 
