@@ -2,153 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916AB3900BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F36E3900C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhEYMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhEYMUh (ORCPT
+        id S232441AbhEYMUr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 May 2021 08:20:47 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:40724 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232353AbhEYMUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:20:37 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0AFC061574;
-        Tue, 25 May 2021 05:19:07 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id t24so14556898oiw.3;
-        Tue, 25 May 2021 05:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nm+AdfT9IYuKsrC6g6vqUig9hFvRALl9l3gzJP0yMlY=;
-        b=bOTlH8hqbacNJ7IMlUeGf0H9+wwno/9OLdByeSjGCh9DG7hGHeKFqlnFM0iKMWrqAS
-         dSrCnjdrp07Esm9PB11mVsn0ZK2ae8t4jFYxQco3t83/H2diYyWH9iCL4fZzEZ3T8Hta
-         1yAXjyB+cXqB8jlkD7720vFkB/Blh6sbRgaQzOXZTjJZsr7E3GP8B1BWnAczgeS1A9pt
-         +8tk3rfzKrYAt/4BAle3FIOElJiPnpdqESvE0lF9EOUvqyKRANSMTaOHVyz/SdqStRy8
-         rzaV+pDBbK8DFUMXt1I+osIjZNmsKZMAQsb9WTIj1udNkTKpD023VnMh0y7jkyZwU03W
-         iQHQ==
+        Tue, 25 May 2021 08:20:43 -0400
+Received: by mail-ua1-f49.google.com with SMTP id z14so9355346uan.7;
+        Tue, 25 May 2021 05:19:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nm+AdfT9IYuKsrC6g6vqUig9hFvRALl9l3gzJP0yMlY=;
-        b=k3msxSRT6vtYg4GWGyfPp1jdec0P1kZPw5/jsxovDOn6cNsmkYIFFFI2neoevOzchL
-         tjQWfKeKp4V5iPw9ZoekBwpW+bwcv0Nwg2PYiW+/sF2IPkyb1C7NrFtg6daqnXa7NcaR
-         GO0arGMEp0IM/8bA/QnmELW6R6g0NElI53+i1wb9/Oc3SAtOL7MH9vj8+IyzA3b9J3UM
-         aNplteQal2PHba2RgDmHkXufN99PwSeVzMCdLZR6ujhCMCJ5KC8BTvFKzqfejQ3aWGSi
-         PaCzvy7xsNjGZ3ASrCarq9rS83E/NYyeN41+ih8wO64rIur2p9X0w8WqV/oGDmd+x3g9
-         cxCQ==
-X-Gm-Message-State: AOAM530fwkS+vZrZ5YlV853to05IH5gspdFdMpFSyrojnv3YqU5z1Uoh
-        qEnUBlF2NtNrH+YeJEmTmFmr/BkLSCu/l/+OSfc=
-X-Google-Smtp-Source: ABdhPJyY1OlBEAOIhc/5AL6f78KpvpFfq+jvXpWVsGXBhIFX7XNpYWSe62Zq/K9ZhkftjYrVVgumnJOuVqHciSFod9s=
-X-Received: by 2002:aca:2102:: with SMTP id 2mr2597739oiz.70.1621945146618;
- Tue, 25 May 2021 05:19:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cflgo9YlhNLzTQ60SgvCsB3WgfxJaPc1W7VnDb/cs9M=;
+        b=LDk/dTZGFfFBOnhqhUeE1Acr5XkNSQiOzlbd3BJXY5NoxQjeSKX4TyTu3OoyfW3Clb
+         uMPAjdpHhyTyh3WQ2MCfbRc2OaM2iG7SKEKq/jerR+dvlTV+OvlC67t1ueASuBL2ykpq
+         yev3FIscQGvsPjUyQ+w9gTUaZexfOxvWIH9sRjSkaiDye5Mc67jq3fcrUcpLDHT/A5nJ
+         67gbVxeJLThC6Q4JCFyZFMrdrLZvwNwyzPW6EwRnz0sQI+pScRowe+n9vf4HB4cwFIZg
+         ojEsh6WGTSilIoTQSQpEGPq9FGizYbUDKxI709yHPZrXm34xYfO8oi4P17wcjYzmwoyR
+         r5dw==
+X-Gm-Message-State: AOAM530yV8THWdZ2DFohZoCl9EldqBaVql7pwh27bjpzsAFxvKRDjh4s
+        Q7w373gDXbBOzENlfVvpEdNfjzUGLsTor55nMsI=
+X-Google-Smtp-Source: ABdhPJxb73scnc9iMaNZBOCcPhRZmkJ74QOEAKvaJx8dDb4KvKhoSSYw8rxoeu5H1uuhrw83tIPuW9y+8LIMsJgzL6Y=
+X-Received: by 2002:a05:6122:3c:: with SMTP id q28mr484453vkd.5.1621945152471;
+ Tue, 25 May 2021 05:19:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525102941.3958649-1-apusaka@google.com>
-In-Reply-To: <20210525102941.3958649-1-apusaka@google.com>
-From:   Emil Lenngren <emil.lenngren@gmail.com>
-Date:   Tue, 25 May 2021 14:18:56 +0200
-Message-ID: <CAO1O6sehBfi+Tn6EEC8XgoORrD=JF9zO9tDCbJBgL=JpaBdL2w@mail.gmail.com>
-Subject: Re: [PATCH 00/12] Bluetooth: use inclusive language
-To:     Archie Pusaka <apusaka@google.com>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        =?UTF-8?B?T2xlIEJqw7hybiBNaWR0YsO4?= <omidtbo@cisco.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
+References: <20210523232556.15017-1-digetx@gmail.com> <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+ <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com> <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
+In-Reply-To: <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 May 2021 14:19:01 +0200
+Message-ID: <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
+Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Burton <paul.burton@mips.com>,
+        John Crispin <john@phrozen.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+Hi Krzysztof,
 
-Den tis 25 maj 2021 kl 12:46 skrev Archie Pusaka <apusaka@google.com>:
+On Tue, May 25, 2021 at 2:04 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 24/05/2021 08:39, Dmitry Osipenko wrote:
+> > 24.05.2021 11:54, Geert Uytterhoeven пишет:
+> >> On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>> There are couple older platforms that can't be compile-tested because they
+> >>> partially implement CLK API. It causes build failure of kernel drivers due
+> >>> to the missing symbols of the unimplemented part of CLK API.
+> >>>
+> >>> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
+> >>>                      MIPS Ralink.
+> >>>
+> >>> Disable compile-testing for HAVE_LEGACY_CLK=y.
+> >>>
+> >>> Reported-by: kernel test robot <lkp@intel.com>
+> >>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>
+> >> Thanks for your patch!
+> >>
+> >>> --- a/init/Kconfig
+> >>> +++ b/init/Kconfig
+> >>> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
+> >>>
+> >>>  config COMPILE_TEST
+> >>>         bool "Compile also drivers which will not load"
+> >>> -       depends on HAS_IOMEM
+> >>> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+> >>
+> >> That sounds a bit drastic to me.  Usually we just try to implement the
+> >> missing functionality, or provide stubs.
+> >> Which functions are missing?
+> >
+> > Everything that belongs to CONFIG_COMMON_CLK needs stubs.
+> >
+> > That is everything under CONFIG_HAVE_CLK [1], excluding functions
+> > belonging to clk-devres.o and clk-bulk.o [2]. The HAVE_LEGACY_CLK
+> > selects HAVE_CLK, but the COMMON_CLK is under HAVE_CLK too.
+> >
+> > [1]
+> > https://elixir.bootlin.com/linux/v5.13-rc3/source/include/linux/clk.h#L786
+> > [2]
+> > https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/clk/Makefile#L3
+> >
+> > This problem is repeated over and over again for the past years. Some
+> > maintainers are adding "depends on COMMON_CLK" for COMPILE_TEST of each
+> > driver, but this doesn't solve the root of the problem, and thus, it's
+> > constantly reoccurring.
+> >
+> > Recently Krzysztof Kozlowski added couple more clk stubs for MIPS, but
+> > still lots of stubs are missing. Some platforms don't have any stubs at
+> > all and apparently nobody cares to fix them.
+> >
+> > There 3 possible solutions:
+> >
+> > 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
+> > 2. Build stubs universally, maybe using weak functions.
 >
-> From: Archie Pusaka <apusaka@chromium.org>
->
-> Hi linux-bluetooth maintainers,
->
-> This series contains inclusive language patches, to promote usage of
-> central, peripheral, reject list, and accept list. I tried to divide
-> the change to several smaller patches to ease downstreamers to make
-> gradual change.
->
-> There are still three occurences in debugfs (patch 09/12) in which the
-> original less inclusive terms is still left as-is since it is a
-> file name, and I afraid replacing them will cause instability to
-> other systems depending on that file name.
->
->
-> Archie Pusaka (12):
->   Bluetooth: use inclusive language in HCI role
->   Bluetooth: use inclusive language in hci_core.h
->   Bluetooth: use inclusive language to describe CPB
->   Bluetooth: use inclusive language in HCI LE features
->   Bluetooth: use inclusive language in L2CAP
->   Bluetooth: use inclusive language in RFCOMM
->   Bluetooth: use inclusive language when tracking connections
->   Bluetooth: use inclusive language in SMP
->   Bluetooth: use inclusive language in debugfs
->   Bluetooth: use inclusive language when filtering devices out
->   Bluetooth: use inclusive language when filtering devices in
->   Bluetooth: use inclusive language in comments
->
->  include/net/bluetooth/hci.h      |  98 +++++++++++++-------------
->  include/net/bluetooth/hci_core.h |  22 +++---
->  include/net/bluetooth/l2cap.h    |   2 +-
->  include/net/bluetooth/mgmt.h     |   2 +-
->  include/net/bluetooth/rfcomm.h   |   2 +-
->  net/bluetooth/amp.c              |   2 +-
->  net/bluetooth/hci_conn.c         |  32 ++++-----
->  net/bluetooth/hci_core.c         |  46 ++++++-------
->  net/bluetooth/hci_debugfs.c      |  20 +++---
->  net/bluetooth/hci_event.c        | 114 +++++++++++++++----------------
->  net/bluetooth/hci_request.c      | 106 ++++++++++++++--------------
->  net/bluetooth/hci_sock.c         |  12 ++--
->  net/bluetooth/hidp/core.c        |   2 +-
->  net/bluetooth/l2cap_core.c       |  16 ++---
->  net/bluetooth/l2cap_sock.c       |   4 +-
->  net/bluetooth/mgmt.c             |  36 +++++-----
->  net/bluetooth/rfcomm/sock.c      |   4 +-
->  net/bluetooth/smp.c              |  86 +++++++++++------------
->  net/bluetooth/smp.h              |   6 +-
->  19 files changed, 309 insertions(+), 303 deletions(-)
->
-> --
-> 2.31.1.818.g46aad6cb9e-goog
->
+> I vote for this one - global stubs.
 
-Interesting move and good initiative!
+Yep.
 
-In my opinion however, shouldn't we wait until Bluetooth SIG changes
-the naming in the specification itself first (or rather push them to
-make the changes in the first place)? If they are about to change
-names, it would be good to make sure we end up with the same word
-choices so that we don't call one thing "le peripheral initiated
-feature exchange" while the standard calls it "le follower initiated
-feature exchange" or similar. Using different terminology than what's
-specified by the standard could easily end up in confusion I guess,
-and even more if different stacks invented their own alternative
-terminology.
+> Or for a new one:
+> 4. Disable COMPILE_TEST for specific platforms (mentioned in commit
+> msg). Eventually could be like:
+> config RALINK
+>         depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
 
-In any case, I'm for example not sure if central/peripheral are the
-best words to use, since those are tied to a specific higher level
-profile (Generic Access Profile) and those words are not mentioned at
-all in the spec outside that context. The SMP chapter for example uses
-the terminology "initiator" and "responder", so maybe those are better
-word choices, at least in SMP.
+That's a neat idea!
 
-/Emil
+Of course there's a fifth option:
+
+5. Convert legacy platforms to COMMON_CLK.
+
+Which is already happening for ARM EP93XX.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
