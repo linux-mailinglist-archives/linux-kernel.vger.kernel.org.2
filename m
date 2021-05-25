@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE123907C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC143907C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhEYRfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:35:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:33086 "EHLO foss.arm.com"
+        id S234221AbhEYRfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:35:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:33096 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234006AbhEYRe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234020AbhEYRe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 13:34:56 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56BFB168F;
-        Tue, 25 May 2021 10:33:25 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BA9B169C;
+        Tue, 25 May 2021 10:33:26 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 467B43F792;
-        Tue, 25 May 2021 10:33:24 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F9343F792;
+        Tue, 25 May 2021 10:33:25 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: [RFC PATCH v2 08/10] irqchip/gic-v3-its: Use irq_chip_ack_parent()
-Date:   Tue, 25 May 2021 18:32:53 +0100
-Message-Id: <20210525173255.620606-9-valentin.schneider@arm.com>
+Subject: [RFC PATCH v2 09/10] irqchip/gic: Convert to handle_strict_flow_irq()
+Date:   Tue, 25 May 2021 18:32:54 +0100
+Message-Id: <20210525173255.620606-10-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210525173255.620606-1-valentin.schneider@arm.com>
 References: <20210525173255.620606-1-valentin.schneider@arm.com>
@@ -35,51 +35,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subsequent patches will make the GIC irqchips use a flow handler that
-issues an ->irq_ack(). irqchips of child domains need to handle this.
+Now that the proper infrastructure is in place, convert the irq-gic chip to
+use handle_strict_flow_irq() along with IRQCHIP_AUTOMASKS_FLOW.
 
-Note: I'm very much not fond of this; this is treacherous and explodes if
-any parent chip doesn't have an ->ack() callback. It turns out okay with
-EOImode=0 because handle_fasteoi_irq() doesn't issue any ->ack(), but that
-is very fragile at best.
+For EOImode=1, the Priority Drop is moved from gic_handle_irq() into
+chip->irq_ack(). This effectively pushes the EOI write down into
+->handle_irq(), but doesn't change its ordering wrt the irqaction
+handling.
 
-An alternative would be to
-o make irq_chip_ack_parent() check the callback against NULL
-o make irq_chip_ack_parent() the default chip->irq_ack() via
-  MSI_FLAG_USE_DEF_CHIP_OPS.
+The EOImode=1 irqchip also gains IRQCHIP_EOI_THREADED, which allows the
+->irq_eoi() call to be deferred to the tail of ONESHOT IRQ threads. This
+means a threaded ONESHOT IRQ can now be handled entirely without a single
+chip->irq_mask() call.
 
-XXX: what about pMSI and fMSI ?
+EOImode=0 handling remains unchanged.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- drivers/irqchip/irq-gic-v3-its-pci-msi.c | 1 +
- drivers/irqchip/irq-gic-v3-its.c         | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/irqchip/irq-gic.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its-pci-msi.c b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-index ad2810c017ed..5bc2787ee86a 100644
---- a/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-@@ -27,6 +27,7 @@ static struct irq_chip its_msi_irq_chip = {
- 	.name			= "ITS-MSI",
- 	.irq_unmask		= its_unmask_msi_irq,
- 	.irq_mask		= its_mask_msi_irq,
-+	.irq_ack		= irq_chip_ack_parent,
- 	.irq_eoi		= irq_chip_eoi_parent,
- 	.irq_write_msi_msg	= pci_msi_domain_write_msg,
- };
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 2e6923c2c8a8..ce39d52409e9 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -1976,6 +1976,7 @@ static struct irq_chip its_irq_chip = {
- 	.name			= "ITS",
- 	.irq_mask		= its_mask_irq,
- 	.irq_unmask		= its_unmask_irq,
-+	.irq_ack		= irq_chip_ack_parent,
- 	.irq_eoi		= irq_chip_eoi_parent,
- 	.irq_set_affinity	= its_set_affinity,
- 	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index b1d9c22caf2e..4919478c3e41 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -344,8 +344,6 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+ 		if (unlikely(irqnr >= 1020))
+ 			break;
+ 
+-		if (static_branch_likely(&supports_deactivate_key))
+-			writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+ 		isb();
+ 
+ 		/*
+@@ -1012,7 +1010,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		break;
+ 	default:
+ 		irq_domain_set_info(d, irq, hw, &gic->chip, d->host_data,
+-				    handle_fasteoi_irq, NULL, NULL);
++				    static_branch_likely(&supports_deactivate_key) ?
++				    handle_strict_flow_irq : handle_fasteoi_irq,
++				    NULL, NULL);
+ 		irq_set_probe(irq);
+ 		irqd_set_single_target(irqd);
+ 		break;
+@@ -1116,8 +1116,16 @@ static void gic_init_chip(struct gic_chip_data *gic, struct device *dev,
+ 
+ 	if (use_eoimode1) {
+ 		gic->chip.irq_mask = gic_eoimode1_mask_irq;
++		gic->chip.irq_ack = gic_eoi_irq;
+ 		gic->chip.irq_eoi = gic_eoimode1_eoi_irq;
+ 		gic->chip.irq_set_vcpu_affinity = gic_irq_set_vcpu_affinity;
++
++		/*
++		 * eoimode0 shouldn't expose FLOW_MASK because the priority
++		 * drop is undissociable from the deactivation, and we do need
++		 * the priority drop to happen within the flow handler.
++		 */
++		gic->chip.flags |= IRQCHIP_AUTOMASKS_FLOW | IRQCHIP_EOI_THREADED;
+ 	}
+ 
+ 	if (gic == &gic_data[0]) {
 -- 
 2.25.1
 
