@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C75E390B09
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FF9390B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhEYVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S232596AbhEYVLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhEYVKk (ORCPT
+        with ESMTP id S232141AbhEYVLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:10:40 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B20C061574;
-        Tue, 25 May 2021 14:09:10 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id w15so40003871ljo.10;
-        Tue, 25 May 2021 14:09:10 -0700 (PDT)
+        Tue, 25 May 2021 17:11:06 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2C8C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 14:09:35 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w12so30140806edx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 14:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
-        b=EDoW110KV9wcfQ30kqQ1ZybqTTE/mSj56bdcleLHZ9K1K65hsPrg9IrsZJ6lqu84SD
-         RuaswPbLyuqVCWQ0oyQgm36Uwfqs9e5USUOw4l22hAuVIBSi0CxekIhx1On8J1Hu+9gv
-         ZF/G3WukVhsQGoQEbSwWKl3XJU0aQWLmoFLDB9+NMilvdBo/Qey7m+ScBsh60Vs9X/G7
-         tfb5FLBY2sQ88qOQom7PT3Kg3cN7B+TXWhT2uw9rcBT1brIlb6UFMfndAakABXqJf3k7
-         tLK3gwnMhy1IclNyskN3N65WqXKwIJcrHn7YXSf4BCWEbttcrpt+SDK+SbYFSu7o0Doj
-         XGvA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GQempG3zPiZex9R3bfuXqpxoSATyeQ/cMhmIoIe744M=;
+        b=EWFbONyxubWRiMtMDL8SRi/Gh6mggh42+mF4QvgnPSB8pxQV0ttRkmqRJsDhoebS8w
+         fRDbcTl1uDQ46t69W+kQ40sffxU5OAvvuh2NdS8zwYMF1qoPrEvD+HtM1LOb4bQi0MRJ
+         u0NPvNggdKJur61MhrH1ZEcjMkSO39HRIjBGS5zVvIDwBbENze/gJJD22x4OQXS5aBwB
+         f6ClUjKEko1PWMCpZqrBMy1gQ7AS81K4YWhtMXRwsO9QoBpgyBS+AaWzH88IVlkpPWd5
+         lYgcTCYLU5es5zPfYbrBOxSsekj+88IIT4X4aY0qsVEmOBynUsLMAAxRsXYYJb9L4FdU
+         RKcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
-        b=toDXCmVLCfYk9AdEmsKlXDqeeZb5kfh4DqNEwEmPQkHGD1yAWkzlC582QE9AbRv16X
-         zEHWQ/Rrc6D72XLy6hZNr1reoVtW7G/1oFBhjFKMfhOfZUuVfBxHnd6TrbOXMdclaj0a
-         PuXiBh/fvVFzYpHE/59mOVKImETvOX26P8wIKq82k47C9RHjYG5N7aL+F5TTlAhMV8HE
-         mZvwhlebqqYu/nGLH0XHi35ogTPjagBwurPOLovHHkEg3HBwaFeg19DMPqd3ot+7UjNd
-         5MSx7KJfMxgBpwhQUn8ahr1vKmNtAEs0DHYj/YRuPAD0rrSjAV7KRCpT1nf8+c6VPuts
-         znxg==
-X-Gm-Message-State: AOAM532IrwAN4KHl+oL+M3cDuWP0lSBxNXp+lfG33u0MK7hsyNuBy4ME
-        TCYWJWVzUSPKHjNSPeFAfQ2kA/SCmlU=
-X-Google-Smtp-Source: ABdhPJw6PtppkMwP73a5yk5EfcfAd6aWAG1Me5VORks/eZaK+4hqHBA3sKD4WyW5pJwPIO0LUKzKEA==
-X-Received: by 2002:a2e:5045:: with SMTP id v5mr22264105ljd.270.1621976948326;
-        Tue, 25 May 2021 14:09:08 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-180-236.dynamic.spd-mgts.ru. [46.138.180.236])
-        by smtp.googlemail.com with ESMTPSA id w3sm2207406lji.25.2021.05.25.14.09.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 14:09:07 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
-To:     Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210523234437.25077-1-digetx@gmail.com>
- <20210523234437.25077-5-digetx@gmail.com>
- <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
- <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
- <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea7730f6-9ca0-ae06-b610-703f9715ffa2@gmail.com>
-Date:   Wed, 26 May 2021 00:09:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GQempG3zPiZex9R3bfuXqpxoSATyeQ/cMhmIoIe744M=;
+        b=oVodDSPQmaDMyfocD3VAqziG9NX/6BzxNgDUhDlL5l5HT3zzDnOFsY+VB4RIsfIasx
+         Qh3yPbPCMU7bR0spJP9nKWZGwTrjv1IVdQIwEWe13ZyMO2FdTtKXnY1Hvyq6nLOwCP/Z
+         HpV2hHAw5F23wEzLayV5Nmz9GWQ2S5pkVKM5H8xgoJOdgxmOevCafOTI2gU3D8eM2FN2
+         sFpnMM+CYfovm93xmxocF+0SbgL9P3X6WQFaxJMOsBTSsbqADesI4u7e6PbqribMHcYC
+         s6ukRvzY91161KYL91u1FxEj30mxINg8YWgirNU1qCFjRlTvtoqDsj3j67d4oLjPF35D
+         Kt9A==
+X-Gm-Message-State: AOAM533G6DcsNiULGVwyk5RfpYPtbg9hM6pdTMgvs7YHzpzqprSnGt14
+        nsZWCA/yTEvK/yLwFI0AG6NXcNQuhsCz4JDkQ4c=
+X-Google-Smtp-Source: ABdhPJzV6T+hPhI4jleZ+CayZklDrliGuQhooo0PIuu1NKhgKeVBMFzUcRfRmBaqnhbMXH6zpmQopb/3DuQWBMfW/EM=
+X-Received: by 2002:aa7:cc10:: with SMTP id q16mr34758122edt.53.1621976973943;
+ Tue, 25 May 2021 14:09:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210525144250.214670-1-tpiepho@gmail.com> <20210525144250.214670-2-tpiepho@gmail.com>
+ <CAGS_qxqSo=s5=geB56QGKtgsHwjYfULYJfuaCTcghY3+c9yVBA@mail.gmail.com>
+In-Reply-To: <CAGS_qxqSo=s5=geB56QGKtgsHwjYfULYJfuaCTcghY3+c9yVBA@mail.gmail.com>
+From:   Trent Piepho <tpiepho@gmail.com>
+Date:   Tue, 25 May 2021 14:09:23 -0700
+Message-ID: <CA+7tXijdGYdEBT6PB7hWk0Ups3Y97iWPx=AWWsb0z=OPqVzA1g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] lib/math/rational: Add Kunit test cases
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Oskar Schirmer <oskar@scara.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.05.2021 19:24, Jaroslav Kysela пишет:
-> On 24. 05. 21 16:00, Dmitry Osipenko wrote:
->> 24.05.2021 13:54, Jaroslav Kysela пишет:
->>> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
->>>> Specify components string for Nexus 7 using the Intel BayTrail components
->>>> format. This may allow us to create a more generic UCM for RT5640 codec.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
->>>>  1 file changed, 19 insertions(+)
->>>>
->>>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
->>>> index a81f2ebfc00c..87e0a47040a5 100644
->>>> --- a/sound/soc/tegra/tegra_asoc_machine.c
->>>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
->>>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
->>>>  	.add_hp_jack = true,
->>>>  };
->>>>  
->>>> +/*
->>>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
->>>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
->>>> + * Headphones: Connected to HPOL/R pins.
->>>> + * Headset Microphone: Unconnected.
->>>> + *
->>>> + * IF2_DAC/ADC are unpopulated.
->>>> + */
->>>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
->>>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
->>>
->>> Perhaps, it may be better to handle this string via the DT config (create new
->>> function like snd_soc_of_parse_card_name()).
->>>
->>> The "codec:rt5640" should be set in the driver (it's fixed), but the
->>> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
->>
->> Not sure that this is possible. The DT is an ABI, while components
->> string has no specification. Any changes to the components string will
->> require DT update.
->>
->> I think it's much more feasible to have a database of components within
->> kernel driver, like Intel sound driver does it for ACPI devices.
-> 
-> There is no other possibility for ACPI. And while the components string is
-> part of the ALSA ABI, it should not be changed in an incompatible way. Only
-> new information should be added. The DT solution seems more flexible to me.
-> For example the stereo/mono speaker or the AIF number can be set without the
-> driver modification for rt5640.
+On Tue, May 25, 2021 at 10:34 AM Daniel Latypov <dlatypov@google.com> wrote:
+> On Tue, May 25, 2021 at 7:43 AM Trent Piepho <tpiepho@gmail.com> wrote:
+> > Adds a number of test cases that cover a range of possible code paths.
+> >
+> > Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+>
+> Reviewed-by: Daniel Latypov <dlatypov@google.com>
+>
+> Looks really good to me, just two nits.
+>
+> Tangent:
+> I didn't check to see that this covers all the interesting cases, but
+> it seems like it does.
+> If you want, you can try generating a code coverage report to double check.
+> Instructions for doing so can be found in
+> https://lore.kernel.org/linux-kselftest/20210414222256.1280532-1-dlatypov@google.com/
+> I would have done that and included the #s in this email, but my
+> workplace decided to subtly break my workstation in some way and I
+> haven't gotten around to root causing...
 
-Everything that goes into device-tree needs a firm specification. We
-can't add it into device-tree since there is no specification for the
-components string other than something that Intel driver made up for its
-own needs. So either we could add the components string to the kernel
-driver right now or not add it.
+I installed a gcc 6.4 toolchain and changed the uml_abort() call to
+exit(), coverage was generated, but still truncated and incorrectly
+near 0%.  So what I did was crash after running all the test cases I
+cared about by dividing by zero and then coverage data was produced
+correctly.  It's 100% by lines.  But I think both possibilities when
+the largest semiconvergent is exactly half the previous convergent
+aren't tested.
 
-I think the best option would be to drop this patch for now.
+> >  lib/math/rational-test.c | 56 ++++++++++++++++++++++++++++++++++++++++
+>
+> Ah, sorry, I forgot to mention this in the previous email.
+> If you look at kunit/style.rst docs, you'll see the documentation now
+> states a preference for the name of this file to be one of
+> {rational_test.c, rational_kunit.c}
+
+Before I chose a name, I checked every file with kunit tests cases,
+and *-test was the most common naming pattern, including the sample
+case.  I would be nice if changing the docs to say something is a
+standard also updated the code to make that reality.
