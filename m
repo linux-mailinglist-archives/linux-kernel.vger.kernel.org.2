@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A94E38FBB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350F438FD3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhEYHcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:32:31 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3656 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhEYHca (ORCPT
+        id S231986AbhEYI4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:56:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44732 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhEYI4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:32:30 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fq5JC3gvdzQsMC;
-        Tue, 25 May 2021 15:27:23 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 15:30:59 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 15:30:59 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <jeyu@kernel.org>
-CC:     <sfr@canb.auug.org.au>, <swboyd@chromium.org>,
-        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>
-Subject: [PATCH -next] module: fix build error when CONFIG_SYSFS is disabled
-Date:   Tue, 25 May 2021 16:54:00 +0800
-Message-ID: <20210525085400.15854-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 25 May 2021 04:56:09 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1llSpi-00039G-AK; Tue, 25 May 2021 08:54:38 +0000
+Subject: Re: [PATCH][next] ttyprintk: remove redundant initialization of
+ variable i
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210518182126.140978-1-colin.king@canonical.com>
+ <YKeqUBZ+Zy/mvZNQ@kroah.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <73809ad0-cdb0-695e-c9aa-55b6f8f3710b@canonical.com>
+Date:   Tue, 25 May 2021 09:54:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="y"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YKeqUBZ+Zy/mvZNQ@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build error when disable CONFIG_SYSFS:
-kernel/module.c:2805:8: error: implicit declaration of function ‘sect_empty’; did you mean ‘desc_empty’? [-Werror=implicit-function-declaration]
- 2805 |   if (!sect_empty(sechdr) && sechdr->sh_type == SHT_NOTE &&
+On 21/05/2021 13:40, Greg Kroah-Hartman wrote:
+> On Tue, May 18, 2021 at 07:21:26PM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable i is being initialized with a value that is never read,
+>> it is being updated later on.  The assignment is redundant and can be
+>> removed.
+>>
+>> Addresses-Coverity: ("Unused value")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/char/ttyprintk.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+>> index 219fa1382396..230b2c9b3e3c 100644
+>> --- a/drivers/char/ttyprintk.c
+>> +++ b/drivers/char/ttyprintk.c
+>> @@ -52,7 +52,7 @@ static void tpk_flush(void)
+>>  
+>>  static int tpk_printk(const unsigned char *buf, int count)
+>>  {
+>> -	int i = tpk_curr;
+>> +	int i;
+>>  
+>>  	for (i = 0; i < count; i++) {
+>>  		if (tpk_curr >= TPK_STR_SIZE) {
+>> -- 
+>> 2.31.1
+>>
+> 
+> This is not ok for what is currently in linux-next :(
 
-Fixes: 9ee6682aa528 ("module: add printk formats to add module build ID to stacktraces")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- kernel/module.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hmm, it applies cleanly on today's linux-next, do you mind re-apply it?
 
-diff --git a/kernel/module.c b/kernel/module.c
-index decf4601e943..7287ecc76714 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2794,7 +2794,8 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
- }
- #endif /* CONFIG_KALLSYMS */
- 
--#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
-+#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && \
-+	IS_ENABLED(CONFIG_SYSFS)
- static void init_build_id(struct module *mod, const struct load_info *info)
- {
- 	const Elf_Shdr *sechdr;
--- 
-2.17.1
+
+> 
+> greg k-h
+> 
 
