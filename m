@@ -2,271 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9139A38FE36
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C6338FE3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhEYJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:52:57 -0400
-Received: from mga18.intel.com ([134.134.136.126]:18661 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232807AbhEYJwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:52:40 -0400
-IronPort-SDR: jSEkNKTp+OIrWBZo92AgDgOH0wH4Wv8Zb0T6Mu2dyHyikT7gkiJUvQWZCQ4ndaCuopH2VwsIZF
- k8PCf914oEGQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189531617"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="189531617"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 02:51:08 -0700
-IronPort-SDR: 54aRHRYWHN9zaEwf0W4gA8wO02TibKdpdOW9HkrM3eU/xnERraDD0Ti7A9Md3tNPFb7Uu+k84M
- PkJFgTJWMJEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="479224589"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 25 May 2021 02:51:06 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] perf scripts python: intel-pt-events.py: Add branches to script
-Date:   Tue, 25 May 2021 12:51:12 +0300
-Message-Id: <20210525095112.1399-11-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210525095112.1399-1-adrian.hunter@intel.com>
-References: <20210525095112.1399-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S232791AbhEYJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:56:02 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3943 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232763AbhEYJzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:55:40 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fq8VC4lNbzBwVY;
+        Tue, 25 May 2021 17:51:15 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 17:54:06 +0800
+Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
+ 2021 10:54:03 +0100
+Date:   Tue, 25 May 2021 10:52:14 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     <ira.weiny@intel.com>
+CC:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] cxl/mem: Map registers based on capabilities
+Message-ID: <20210525105214.00005e54@Huawei.com>
+In-Reply-To: <20210522001154.2680157-4-ira.weiny@intel.com>
+References: <20210522001154.2680157-1-ira.weiny@intel.com>
+        <20210522001154.2680157-4-ira.weiny@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.147]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As an example, add branch information to intel-pt-events.py script.
-This shows how a simple python script can be used to customize
-perf script output for Intel PT branch traces or power event traces.
+On Fri, 21 May 2021 17:11:52 -0700
+<ira.weiny@intel.com> wrote:
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- .../scripts/python/bin/intel-pt-events-record |   4 +-
- .../scripts/python/bin/intel-pt-events-report |   4 +-
- tools/perf/scripts/python/intel-pt-events.py  | 143 ++++++++++++++----
- 3 files changed, 116 insertions(+), 35 deletions(-)
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> The information required to map registers based on capabilities is
+> contained within the bars themselves.  This means the bar must be mapped
+> to read the information needed and then unmapped to map the individual
+> parts of the BAR based on capabilities.
+> 
+> Change cxl_setup_device_regs() to return a new cxl_register_map, change
+> the name to cxl_probe_device_regs().  Allocate and place
+> cxl_register_maps on a list while processing all of the specified
+> register blocks.
+> 
+> After probing all the register blocks go back and map smaller registers
+> blocks based on their capabilities and dispose of the cxl_register_maps.
+> 
+> NOTE: pci_iomap() is not managed automatically via pcim_enable_device()
+> so be careful to call pci_iounmap() correctly.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+A couple of really minor queries inline, but otherwise looks good to me.
 
-diff --git a/tools/perf/scripts/python/bin/intel-pt-events-record b/tools/perf/scripts/python/bin/intel-pt-events-record
-index 10fe2b6977d4..6b9877cfe23e 100644
---- a/tools/perf/scripts/python/bin/intel-pt-events-record
-+++ b/tools/perf/scripts/python/bin/intel-pt-events-record
-@@ -1,8 +1,8 @@
- #!/bin/bash
- 
- #
--# print Intel PT Power Events and PTWRITE. The intel_pt PMU event needs
--# to be specified with appropriate config terms.
-+# print Intel PT Events including Power Events and PTWRITE. The intel_pt PMU
-+# event needs to be specified with appropriate config terms.
- #
- if ! echo "$@" | grep -q intel_pt ; then
- 	echo "Options must include the Intel PT event e.g. -e intel_pt/pwr_evt,ptw/"
-diff --git a/tools/perf/scripts/python/bin/intel-pt-events-report b/tools/perf/scripts/python/bin/intel-pt-events-report
-index 9a9c92fcd026..beeac3fde9db 100644
---- a/tools/perf/scripts/python/bin/intel-pt-events-report
-+++ b/tools/perf/scripts/python/bin/intel-pt-events-report
-@@ -1,3 +1,3 @@
- #!/bin/bash
--# description: print Intel PT Power Events and PTWRITE
--perf script $@ -s "$PERF_EXEC_PATH"/scripts/python/intel-pt-events.py
-\ No newline at end of file
-+# description: print Intel PT Events including Power Events and PTWRITE
-+perf script $@ -s "$PERF_EXEC_PATH"/scripts/python/intel-pt-events.py
-diff --git a/tools/perf/scripts/python/intel-pt-events.py b/tools/perf/scripts/python/intel-pt-events.py
-index a73847c8f548..fcfae1de731b 100644
---- a/tools/perf/scripts/python/intel-pt-events.py
-+++ b/tools/perf/scripts/python/intel-pt-events.py
-@@ -1,5 +1,6 @@
--# intel-pt-events.py: Print Intel PT Power Events and PTWRITE
--# Copyright (c) 2017, Intel Corporation.
-+# SPDX-License-Identifier: GPL-2.0
-+# intel-pt-events.py: Print Intel PT Events including Power Events and PTWRITE
-+# Copyright (c) 2017-2021, Intel Corporation.
- #
- # This program is free software; you can redistribute it and/or modify it
- # under the terms and conditions of the GNU General Public License,
-@@ -23,8 +24,36 @@ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
- #from perf_trace_context import *
- #from Core import *
- 
-+try:
-+	broken_pipe_exception = BrokenPipeError
-+except:
-+	broken_pipe_exception = IOError
-+
-+glb_switch_str = None
-+glb_switch_printed = True
-+
-+def get_optional_null(perf_dict, field):
-+	if field in perf_dict:
-+		return perf_dict[field]
-+	return ""
-+
-+def get_optional_zero(perf_dict, field):
-+	if field in perf_dict:
-+		return perf_dict[field]
-+	return 0
-+
-+def get_optional(perf_dict, field):
-+	if field in perf_dict:
-+		return perf_dict[field]
-+	return "[unknown]"
-+
-+def get_offset(perf_dict, field):
-+	if field in perf_dict:
-+		return "+%#x" % perf_dict[field]
-+	return ""
-+
- def trace_begin():
--	print("Intel PT Power Events and PTWRITE")
-+	print("Intel PT Branch Trace, Power Events and PTWRITE")
- 
- def trace_end():
- 	print("End")
-@@ -77,58 +106,110 @@ def print_pwrx(raw_buf):
- 	print("deepest cstate: %u last cstate: %u wake reason: %#x" %
- 		(deepest_cstate, last_cstate, wake_reason), end=' ')
- 
-+def print_psb(raw_buf):
-+	data = struct.unpack_from("<IQ", raw_buf)
-+	offset = data[1]
-+	print("offset: %#x" % (offset), end=' ')
-+
- def print_common_start(comm, sample, name):
- 	ts = sample["time"]
- 	cpu = sample["cpu"]
- 	pid = sample["pid"]
- 	tid = sample["tid"]
--	print("%16s %5u/%-5u [%03u] %9u.%09u %7s:" %
--		(comm, pid, tid, cpu, ts / 1000000000, ts %1000000000, name),
-+	flags_disp = get_optional_null(sample, "flags_disp")
-+	# Unused fields:
-+	# period      = sample["period"]
-+	# phys_addr   = sample["phys_addr"]
-+	# weight      = sample["weight"]
-+	# transaction = sample["transaction"]
-+	# cpumode     = get_optional_zero(sample, "cpumode")
-+	print("%16s %5u/%-5u [%03u] %9u.%09u  %7s  %19s" %
-+		(comm, pid, tid, cpu, ts / 1000000000, ts %1000000000, name, flags_disp),
- 		end=' ')
- 
--def print_common_ip(sample, symbol, dso):
--	ip = sample["ip"]
--	print("%16x %s (%s)" % (ip, symbol, dso))
-+def print_common_ip(param_dict, sample, symbol, dso):
-+	ip   = sample["ip"]
-+	offs = get_offset(param_dict, "symoff")
-+	print("%16x %s%s (%s)" % (ip, symbol, offs, dso), end=' ')
-+	if "addr_correlates_sym" in sample:
-+		addr   = sample["addr"]
-+		dso    = get_optional(sample, "addr_dso")
-+		symbol = get_optional(sample, "addr_symbol")
-+		offs   = get_offset(sample, "addr_symoff")
-+		print("=> %x %s%s (%s)" % (addr, symbol, offs, dso))
-+	else:
-+		print()
- 
--def process_event(param_dict):
-+def do_process_event(param_dict):
-+	global glb_switch_printed
-+	if not glb_switch_printed:
-+		print(glb_switch_str)
-+		glb_switch_printed = True
- 	event_attr = param_dict["attr"]
--	sample	 = param_dict["sample"]
--	raw_buf	= param_dict["raw_buf"]
-+	sample	   = param_dict["sample"]
-+	raw_buf	   = param_dict["raw_buf"]
- 	comm	   = param_dict["comm"]
- 	name	   = param_dict["ev_name"]
-+	# Unused fields:
-+	# callchain  = param_dict["callchain"]
-+	# brstack    = param_dict["brstack"]
-+	# brstacksym = param_dict["brstacksym"]
- 
- 	# Symbol and dso info are not always resolved
--	if "dso" in param_dict:
--		dso = param_dict["dso"]
--	else:
--		dso = "[unknown]"
-+	dso    = get_optional(param_dict, "dso")
-+	symbol = get_optional(param_dict, "symbol")
- 
--	if "symbol" in param_dict:
--		symbol = param_dict["symbol"]
--	else:
--		symbol = "[unknown]"
-+	print_common_start(comm, sample, name)
- 
- 	if name == "ptwrite":
--		print_common_start(comm, sample, name)
- 		print_ptwrite(raw_buf)
--		print_common_ip(sample, symbol, dso)
- 	elif name == "cbr":
--		print_common_start(comm, sample, name)
- 		print_cbr(raw_buf)
--		print_common_ip(sample, symbol, dso)
- 	elif name == "mwait":
--		print_common_start(comm, sample, name)
- 		print_mwait(raw_buf)
--		print_common_ip(sample, symbol, dso)
- 	elif name == "pwre":
--		print_common_start(comm, sample, name)
- 		print_pwre(raw_buf)
--		print_common_ip(sample, symbol, dso)
- 	elif name == "exstop":
--		print_common_start(comm, sample, name)
- 		print_exstop(raw_buf)
--		print_common_ip(sample, symbol, dso)
- 	elif name == "pwrx":
--		print_common_start(comm, sample, name)
- 		print_pwrx(raw_buf)
--		print_common_ip(sample, symbol, dso)
-+	elif name == "psb":
-+		print_psb(raw_buf)
-+
-+	print_common_ip(param_dict, sample, symbol, dso)
-+
-+def process_event(param_dict):
-+	try:
-+		do_process_event(param_dict)
-+	except broken_pipe_exception:
-+		# Stop python printing broken pipe errors and traceback
-+		sys.stdout = open(os.devnull, 'w')
-+		sys.exit(1)
-+
-+def auxtrace_error(typ, code, cpu, pid, tid, ip, ts, msg, cpumode, *x):
-+	try:
-+		print("%16s %5u/%-5u [%03u] %9u.%09u  error type %u code %u: %s ip 0x%16x" %
-+			("Trace error", pid, tid, cpu, ts / 1000000000, ts %1000000000, typ, code, msg, ip))
-+	except broken_pipe_exception:
-+		# Stop python printing broken pipe errors and traceback
-+		sys.stdout = open(os.devnull, 'w')
-+		sys.exit(1)
-+
-+def context_switch(ts, cpu, pid, tid, np_pid, np_tid, machine_pid, out, out_preempt, *x):
-+	global glb_switch_printed
-+	global glb_switch_str
-+	if out:
-+		out_str = "Switch out "
-+	else:
-+		out_str = "Switch In  "
-+	if out_preempt:
-+		preempt_str = "preempt"
-+	else:
-+		preempt_str = ""
-+	if machine_pid == -1:
-+		machine_str = ""
-+	else:
-+		machine_str = "machine PID %d" % machine_pid
-+	glb_switch_str = "%16s %5d/%-5d [%03u] %9u.%09u %5d/%-5d %s %s" % \
-+		(out_str, pid, tid, cpu, ts / 1000000000, ts %1000000000, np_pid, np_tid, machine_str, preempt_str)
-+	glb_switch_printed = False
--- 
-2.17.1
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> 
+> ---
+> Changes for v2:
+> 	Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git/commit/?h=pending
+> 	Squash in length read from previous patch which was dropped
+> 	because it was not needed in a separate patch.
+> 	Adjust to changes from previous patches
+> ---
+>  drivers/cxl/core.c |  73 +++++++++++++++++++++++------
+>  drivers/cxl/cxl.h  |  33 ++++++++++++--
+>  drivers/cxl/pci.c  | 111 ++++++++++++++++++++++++++++++++++++---------
+>  3 files changed, 177 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+> index 38979c97158d..add66a6ec875 100644
+> --- a/drivers/cxl/core.c
+> +++ b/drivers/cxl/core.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/io-64-nonatomic-lo-hi.h>
+>  #include <linux/device.h>
+>  #include <linux/module.h>
+> +#include <linux/pci.h>
+>  #include "cxl.h"
+>  
+>  /**
+> @@ -12,19 +13,13 @@
+>   * point for cross-device interleave coordination through cxl ports.
+>   */
+>  
+> -/**
+> - * cxl_setup_device_regs() - Detect CXL Device register blocks
+> - * @dev: Host device of the @base mapping
+> - * @base: Mapping of CXL 2.0 8.2.8 CXL Device Register Interface
+> - * @regs: Base pointers for device register blocks (see CXL_DEVICE_REGS())
+> - */
+
+Nice to keep docs given this is an exported function.
+
+> -void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+> -			   struct cxl_device_regs *regs)
+> +void cxl_probe_device_regs(struct device *dev, void __iomem *base,
+> +			   struct cxl_device_reg_map *map)
+>  {
+>  	int cap, cap_count;
+>  	u64 cap_array;
+>  
+> -	*regs = (struct cxl_device_regs) { 0 };
+> +	*map = (struct cxl_device_reg_map){ 0 };
+>  
+>  	cap_array = readq(base + CXLDEV_CAP_ARRAY_OFFSET);
+>  	if (FIELD_GET(CXLDEV_CAP_ARRAY_ID_MASK, cap_array) !=
+> @@ -35,29 +30,38 @@ void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+>  
+>  	for (cap = 1; cap <= cap_count; cap++) {
+>  		void __iomem *register_block;
+> -		u32 offset;
+> +		u32 offset, length;
+>  		u16 cap_id;
+>  
+>  		cap_id = FIELD_GET(CXLDEV_CAP_HDR_CAP_ID_MASK,
+>  				   readl(base + cap * 0x10));
+>  		offset = readl(base + cap * 0x10 + 0x4);
+> +		length = readl(base + cap * 0x10 + 0x8);
+> +
+>  		register_block = base + offset;
+>  
+>  		switch (cap_id) {
+>  		case CXLDEV_CAP_CAP_ID_DEVICE_STATUS:
+>  			dev_dbg(dev, "found Status capability (0x%x)\n", offset);
+> -			regs->status = register_block;
+> +
+> +			map->status.valid = true;
+> +			map->status.offset = offset;
+> +			map->status.size = length;
+>  			break;
+>  		case CXLDEV_CAP_CAP_ID_PRIMARY_MAILBOX:
+>  			dev_dbg(dev, "found Mailbox capability (0x%x)\n", offset);
+> -			regs->mbox = register_block;
+> +			map->mbox.valid = true;
+> +			map->mbox.offset = offset;
+> +			map->mbox.size = length;
+>  			break;
+>  		case CXLDEV_CAP_CAP_ID_SECONDARY_MAILBOX:
+>  			dev_dbg(dev, "found Secondary Mailbox capability (0x%x)\n", offset);
+>  			break;
+>  		case CXLDEV_CAP_CAP_ID_MEMDEV:
+>  			dev_dbg(dev, "found Memory Device capability (0x%x)\n", offset);
+> -			regs->memdev = register_block;
+> +			map->memdev.valid = true;
+> +			map->memdev.offset = offset;
+> +			map->memdev.size = length;
+>  			break;
+>  		default:
+>  			if (cap_id >= 0x8000)
+> @@ -68,7 +72,48 @@ void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+>  		}
+>  	}
+>  }
+> -EXPORT_SYMBOL_GPL(cxl_setup_device_regs);
+> +EXPORT_SYMBOL_GPL(cxl_probe_device_regs);
+> +
+> +int cxl_map_device_regs(struct pci_dev *pdev,
+> +			struct cxl_device_regs *regs,
+> +			struct cxl_register_map *map)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	resource_size_t phys_addr;
+> +
+> +	phys_addr = pci_resource_start(pdev, map->barno);
+> +	phys_addr += map->block_offset;
+> +
+> +	if (map->device_map.status.valid) {
+> +		resource_size_t addr;
+> +		resource_size_t length;
+> +
+> +		addr = phys_addr + map->device_map.status.offset;
+> +		length = map->device_map.status.size;
+> +		regs->status = devm_ioremap(dev, addr, length);
+> +	}
+> +
+> +	if (map->device_map.mbox.valid) {
+> +		resource_size_t addr;
+> +		resource_size_t length;
+> +
+> +		addr = phys_addr + map->device_map.mbox.offset;
+> +		length = map->device_map.mbox.size;
+> +		regs->mbox = devm_ioremap(dev, addr, length);
+> +	}
+> +
+> +	if (map->device_map.memdev.valid) {
+> +		resource_size_t addr;
+> +		resource_size_t length;
+> +
+> +		addr = phys_addr + map->device_map.memdev.offset;
+> +		length = map->device_map.memdev.size;
+> +		regs->memdev = devm_ioremap(dev, addr, length);
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(cxl_map_device_regs);
+>  
+>  struct bus_type cxl_bus_type = {
+>  	.name = "cxl",
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index d49e0cb679fa..ae4b4c96c6b5 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -53,9 +53,7 @@ struct cxl_device_regs {
+>  /*
+>   * Note, the anonymous union organization allows for per
+>   * register-block-type helper routines, without requiring block-type
+> - * agnostic code to include the prefix. I.e.
+> - * cxl_setup_device_regs(&cxlm->regs.dev) vs readl(cxlm->regs.mbox).
+> - * The specificity reads naturally from left-to-right.
+> + * agnostic code to include the prefix.
+>   */
+>  struct cxl_regs {
+>  	union {
+> @@ -66,8 +64,33 @@ struct cxl_regs {
+>  	};
+>  };
+>  
+> -void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+> -			   struct cxl_device_regs *regs);
+> +struct cxl_reg_map {
+> +	bool valid;
+> +	unsigned long offset;
+> +	unsigned long size;
+> +};
+> +
+> +struct cxl_device_reg_map {
+> +	struct cxl_reg_map status;
+> +	struct cxl_reg_map mbox;
+> +	struct cxl_reg_map memdev;
+> +};
+> +
+> +struct cxl_register_map {
+> +	struct list_head list;
+> +	u64 block_offset;
+> +	u8 reg_type;
+> +	u8 barno;
+> +	union {
+> +		struct cxl_device_reg_map device_map;
+> +	};
+> +};
+> +
+> +void cxl_probe_device_regs(struct device *dev, void __iomem *base,
+> +			   struct cxl_device_reg_map *map);
+> +int cxl_map_device_regs(struct pci_dev *pdev,
+> +			struct cxl_device_regs *regs,
+> +			struct cxl_register_map *map);
+>  
+>  extern struct bus_type cxl_bus_type;
+>  #endif /* __CXL_H__ */
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 33fc6e1634e3..3ffd5fad74b4 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/module.h>
+>  #include <linux/sizes.h>
+>  #include <linux/mutex.h>
+> +#include <linux/list.h>
+>  #include <linux/cdev.h>
+>  #include <linux/idr.h>
+>  #include <linux/pci.h>
+> @@ -936,7 +937,7 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
+>  		return IOMEM_ERR_PTR(-ENXIO);
+>  	}
+>  
+> -	addr = pcim_iomap(pdev, bar, 0);
+> +	addr = pci_iomap(pdev, bar, 0);
+>  	if (!addr) {
+>  		dev_err(dev, "failed to map registers\n");
+>  		return addr;
+> @@ -945,7 +946,12 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
+>  	dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
+>  		bar, offset);
+>  
+> -	return pcim_iomap_table(pdev)[bar] + offset;
+> +	return addr;
+> +}
+> +
+> +static void cxl_mem_unmap_regblock(struct cxl_mem *cxlm, void __iomem *base)
+> +{
+> +	pci_iounmap(cxlm->pdev, base);
+>  }
+>  
+>  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> @@ -971,6 +977,52 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  	return 0;
+>  }
+>  
+> +static int cxl_probe_regs(struct cxl_mem *cxlm, void __iomem *base,
+> +			  struct cxl_register_map *map)
+> +{
+> +	struct pci_dev *pdev = cxlm->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	struct cxl_device_reg_map *dev_map;
+> +
+> +	switch (map->reg_type) {
+> +	case CXL_REGLOC_RBI_MEMDEV:
+> +		dev_map = &map->device_map;
+> +		cxl_probe_device_regs(dev, base, dev_map);
+> +		if (!dev_map->status.valid || !dev_map->mbox.valid ||
+> +		    !dev_map->memdev.valid) {
+> +			dev_err(dev, "registers not found: %s%s%s\n",
+> +				!dev_map->status.valid ? "status " : "",
+> +				!dev_map->mbox.valid ? "status " : "",
+> +				!dev_map->memdev.valid ? "status " : "");
+> +			return -ENXIO;
+> +		}
+> +
+> +		dev_dbg(dev, "Probing device registers...\n");
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cxl_map_regs(struct cxl_mem *cxlm, struct cxl_register_map *map)
+> +{
+> +	struct pci_dev *pdev = cxlm->pdev;
+> +	struct device *dev = &pdev->dev;
+> +
+> +	switch (map->reg_type) {
+> +	case CXL_REGLOC_RBI_MEMDEV:
+> +		cxl_map_device_regs(pdev, &cxlm->regs.device_regs, map);
+> +		dev_dbg(dev, "Probing device registers...\n");
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static void cxl_decode_register_block(u32 reg_lo, u32 reg_hi,
+>  				      u8 *bar, u64 *offset, u8 *reg_type)
+>  {
+> @@ -991,12 +1043,14 @@ static void cxl_decode_register_block(u32 reg_lo, u32 reg_hi,
+>   */
+>  static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  {
+> -	struct cxl_regs *regs = &cxlm->regs;
+>  	struct pci_dev *pdev = cxlm->pdev;
+>  	struct device *dev = &pdev->dev;
+>  	u32 regloc_size, regblocks;
+>  	void __iomem *base;
+>  	int regloc, i;
+> +	struct cxl_register_map *map, *n;
+> +	LIST_HEAD(register_maps);
+> +	int ret = 0;
+>  
+>  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_OFFSET);
+>  	if (!regloc) {
+> @@ -1020,7 +1074,14 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  		u64 offset;
+>  		u8 bar;
+>  
+> -		/* "register low and high" contain other bits */
+> +		map = kzalloc(sizeof(*map), GFP_KERNEL);
+> +		if (!map) {
+> +			ret = -ENOMEM;
+> +			goto free_maps;
+> +		}
+> +
+> +		list_add(&map->list, &register_maps);
+> +
+>  		pci_read_config_dword(pdev, regloc, &reg_lo);
+>  		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
+>  
+> @@ -1030,30 +1091,38 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+>  		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
+>  			bar, offset, reg_type);
+>  
+> -		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
+> -			base = cxl_mem_map_regblock(cxlm, bar, offset);
+> -			if (!base)
+> -				return -ENOMEM;
+> -			break;
+> +		base = cxl_mem_map_regblock(cxlm, bar, offset);
+> +		if (!base) {
+> +			ret = -ENOMEM;
+> +			goto free_maps;
+>  		}
+> -	}
+>  
+> -	if (i == regblocks) {
+> -		dev_err(dev, "Missing register locator for device registers\n");
+> -		return -ENXIO;
+
+Do we have or need an equivalent of this check somewhere else?
+
+> +		map->barno = bar;
+> +		map->block_offset = offset;
+> +		map->reg_type = reg_type;
+> +
+> +		ret = cxl_probe_regs(cxlm, base + offset, map);
+> +
+> +		/* Always unmap the regblock regardless of probe success */
+> +		cxl_mem_unmap_regblock(cxlm, base);
+> +
+> +		if (ret)
+> +			goto free_maps;
+>  	}
+>  
+> -	cxl_setup_device_regs(dev, base, &regs->device_regs);
+> +	list_for_each_entry(map, &register_maps, list) {
+> +		ret = cxl_map_regs(cxlm, map);
+> +		if (ret)
+> +			goto free_maps;
+> +	}
+>  
+> -	if (!regs->status || !regs->mbox || !regs->memdev) {
+> -		dev_err(dev, "registers not found: %s%s%s\n",
+> -			!regs->status ? "status " : "",
+> -			!regs->mbox ? "mbox " : "",
+> -			!regs->memdev ? "memdev" : "");
+> -		return -ENXIO;
+> +free_maps:
+> +	list_for_each_entry_safe(map, n, &register_maps, list) {
+> +		list_del(&map->list);
+> +		kfree(map);
+>  	}
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static struct cxl_memdev *to_cxl_memdev(struct device *dev)
 
