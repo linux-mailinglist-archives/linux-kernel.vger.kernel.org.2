@@ -2,189 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AED3901F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C433B3901F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhEYNSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:18:08 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44074 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233023AbhEYNSG (ORCPT
+        id S233167AbhEYNSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:18:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61722 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233039AbhEYNSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 09:18:06 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PDCCJ5012400;
-        Tue, 25 May 2021 13:16:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=XJAuq/OZuDtD7zY176Gtakirbi9h8vTGRw3NrLyKKAc=;
- b=K78kHnO/E4S4o6cHA3DKnCtEv5GaE38L6k6FpHFVykUE50aBZDvSl1VWe8qLxPAYIIeJ
- tMkAKsGzJZWQe9zVlhdOUacKrrF4AjuEerlcFopQSODvNZ7iWOmaLIGSV+bzp0+gDI1I
- eVd4rR65oQyRXQLPen7aJVKVOCFdBy/sc5U8e8OuHpgA0tN71tCzMiMRsl4WkzyoILxh
- QZN3lo5nZx7wql0YgT/Ig+lxVzvdd5JfZxTYVPZlP4AO0fJqtPUNZq3OtUlR4NtcwOq+
- n/i1n207AFSdegJdbU2m6JajeKdzDL+RXBl9iRE+cmlRuZ72WnHjRnlqr6QIIW5Q39F2 QQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38qxvxrpdj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 13:16:30 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14PDGUI0165794;
-        Tue, 25 May 2021 13:16:30 GMT
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PD2iP8014881;
+        Tue, 25 May 2021 09:16:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/qcBuWJwmYiC16r8ziTKCHCve1Yk+AgfGfU6xdbXpvs=;
+ b=tqXsqtnXg7jHfgWnZsnhWytihZnMcENvB/Pm+3uWQkNVm+YSTiB3/u7rD/12VGwUQ+Lp
+ 7ocZSkrwpvxzpmOGo7SGY4tXVi0StspQ+bQ147c/VRhVcR6bkPfb89+BXO7+VIKN4E39
+ AgXjKGrlNVZzVOBc+4OtVWt/GNTgM7i9dH1og+I4UiVJNS1XnxlLYmlQjaZZZtC3Vnak
+ KDj0EjjBg+3eTh6BpRGeU3g1tZN9Nb8D6eAMg0ZJ6QFuOCg+dlbyG3hzruesraUKV5Xk
+ RFY0RM9uK6SOxzgwdaw7FUNK4qAWgXzd+8UYeKSFcVc9sFFKpWX3BlDOJaz3KsLSs3Y4 7A== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38reh9uyvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 13:16:30 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14PDGTm5165686;
-        Tue, 25 May 2021 13:16:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 38reh9uytq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 13:16:29 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14PDGM4n007740;
-        Tue, 25 May 2021 13:16:23 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 25 May 2021 06:16:22 -0700
-Date:   Tue, 25 May 2021 16:16:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
-Subject: drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk' not
- released on lines: 341,354,361.
-Message-ID: <202105252102.h5r94CF9-lkp@intel.com>
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1g69633-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:16:34 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PD2sRN016756;
+        Tue, 25 May 2021 09:16:34 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1g6962m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:16:34 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PDF1kO009146;
+        Tue, 25 May 2021 13:16:33 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 38s1m208bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 13:16:33 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PDGVGC27918608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:16:32 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEC5313606E;
+        Tue, 25 May 2021 13:16:31 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF75F136053;
+        Tue, 25 May 2021 13:16:30 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 13:16:30 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+To:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-3-akrowiak@linux.ibm.com>
+ <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
+Date:   Tue, 25 May 2021 09:16:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 0-G2PBt5MgWOzirwLbYOKmZuqkxkd_tb
-X-Proofpoint-ORIG-GUID: 0-G2PBt5MgWOzirwLbYOKmZuqkxkd_tb
+In-Reply-To: <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 1LsBpQtMWwXf_3q_6G8F4ikH0DPQJZPk
+X-Proofpoint-ORIG-GUID: hpRYyVtOsdTXCrFB4M7UiD-1mZbdeWei
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 mlxlogscore=999
+ adultscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
 
-First bad commit (maybe != root cause):
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a050a6d2b7e80ca52b2f4141eaf3420d201b72b3
-commit: 0020868f2a7037e87d6b3b196526de2fb885830d rtc: mxc{,_v2}: enable COMPILE_TEST
-config: microblaze-randconfig-m031-20210525 (attached as .config)
-compiler: microblaze-linux-gcc (GCC) 9.3.0
+On 5/24/21 10:37 AM, Jason J. Herne wrote:
+> On 5/21/21 3:36 PM, Tony Krowiak wrote:
+>> The function pointer to the handler that processes interception of the
+>> PQAP instruction is contained in the mdev. If the mdev is removed and
+>> its storage de-allocated during the processing of the PQAP instruction,
+>> the function pointer could get wiped out before the function is called
+>> because there is currently nothing that controls access to it.
+>>
+>> This patch introduces two new functions:
+>> * The kvm_arch_crypto_register_hook() function registers a function 
+>> pointer
+>>    for processing intercepted crypto instructions.
+>> * The kvm_arch_crypto_register_hook() function un-registers a function
+>>    pointer that was previously registered.
+>
+> Typo: You meant kvm_arch_crypto_UNregister_hook() in the second bullet.
+>
+>
+> Just one overall observation on this one. The whole hook system seems 
+> kind of over-engineered if this is our only use for it. It looks like 
+> a kvm_s390_crypto_hook is meant to link a specific module with a 
+> function pointer. Do we really need this concept?
+>
+> I think a simpler design could be to just place a mutex and a function 
+> pointer in the kvm_s390_crypto struct. Then you can grab the mutex in 
+> vfio_ap_ops.c when registering/unregistering. You would also grab the 
+> mutex in priv.c when calling the function pointer. What I am 
+> suggesting is essentially the exact same scheme you have implemented 
+> here, but simpler and with less infrastructure.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+That would be great, however; when I implemented something similar, it 
+resulted in a
+lockdep splat between the lock used to protect the hook and the 
+matrix_dev->lock used to
+protect updates to matrix_mdev (including the freeing thereof). After 
+pulling what little hair
+I have left out, this seemed like a reasonable solution, over-engineered 
+though it may be.
+If somebody has a simpler solution, I'm all ears.
 
-smatch warnings:
-drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk' not released on lines: 341,354,361.
-
-vim +361 drivers/rtc/rtc-mxc_v2.c
-
-83c880f79e88cc Patrick Bruenn      2017-12-18  279  static int mxc_rtc_probe(struct platform_device *pdev)
-83c880f79e88cc Patrick Bruenn      2017-12-18  280  {
-83c880f79e88cc Patrick Bruenn      2017-12-18  281  	struct mxc_rtc_data *pdata;
-83c880f79e88cc Patrick Bruenn      2017-12-18  282  	void __iomem *ioaddr;
-83c880f79e88cc Patrick Bruenn      2017-12-18  283  	int ret = 0;
-83c880f79e88cc Patrick Bruenn      2017-12-18  284  
-83c880f79e88cc Patrick Bruenn      2017-12-18  285  	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-83c880f79e88cc Patrick Bruenn      2017-12-18  286  	if (!pdata)
-83c880f79e88cc Patrick Bruenn      2017-12-18  287  		return -ENOMEM;
-83c880f79e88cc Patrick Bruenn      2017-12-18  288  
-874532cdeefefa Anson Huang         2019-07-17  289  	pdata->ioaddr = devm_platform_ioremap_resource(pdev, 0);
-83c880f79e88cc Patrick Bruenn      2017-12-18  290  	if (IS_ERR(pdata->ioaddr))
-83c880f79e88cc Patrick Bruenn      2017-12-18  291  		return PTR_ERR(pdata->ioaddr);
-83c880f79e88cc Patrick Bruenn      2017-12-18  292  
-83c880f79e88cc Patrick Bruenn      2017-12-18  293  	ioaddr = pdata->ioaddr;
-83c880f79e88cc Patrick Bruenn      2017-12-18  294  
-83c880f79e88cc Patrick Bruenn      2017-12-18  295  	pdata->clk = devm_clk_get(&pdev->dev, NULL);
-83c880f79e88cc Patrick Bruenn      2017-12-18  296  	if (IS_ERR(pdata->clk)) {
-83c880f79e88cc Patrick Bruenn      2017-12-18  297  		dev_err(&pdev->dev, "unable to get rtc clock!\n");
-83c880f79e88cc Patrick Bruenn      2017-12-18  298  		return PTR_ERR(pdata->clk);
-83c880f79e88cc Patrick Bruenn      2017-12-18  299  	}
-83c880f79e88cc Patrick Bruenn      2017-12-18  300  
-83c880f79e88cc Patrick Bruenn      2017-12-18  301  	spin_lock_init(&pdata->lock);
-83c880f79e88cc Patrick Bruenn      2017-12-18  302  	pdata->irq = platform_get_irq(pdev, 0);
-83c880f79e88cc Patrick Bruenn      2017-12-18  303  	if (pdata->irq < 0)
-83c880f79e88cc Patrick Bruenn      2017-12-18  304  		return pdata->irq;
-83c880f79e88cc Patrick Bruenn      2017-12-18  305  
-83c880f79e88cc Patrick Bruenn      2017-12-18  306  	device_init_wakeup(&pdev->dev, 1);
-fbc5ee9a6955e6 Anson Huang         2019-04-11  307  	ret = dev_pm_set_wake_irq(&pdev->dev, pdata->irq);
-fbc5ee9a6955e6 Anson Huang         2019-04-11  308  	if (ret)
-fbc5ee9a6955e6 Anson Huang         2019-04-11  309  		dev_err(&pdev->dev, "failed to enable irq wake\n");
-83c880f79e88cc Patrick Bruenn      2017-12-18  310  
-83c880f79e88cc Patrick Bruenn      2017-12-18  311  	ret = clk_prepare_enable(pdata->clk);
-83c880f79e88cc Patrick Bruenn      2017-12-18  312  	if (ret)
-83c880f79e88cc Patrick Bruenn      2017-12-18  313  		return ret;
-83c880f79e88cc Patrick Bruenn      2017-12-18  314  	/* initialize glitch detect */
-83c880f79e88cc Patrick Bruenn      2017-12-18  315  	writel(SRTC_LPPDR_INIT, ioaddr + SRTC_LPPDR);
-83c880f79e88cc Patrick Bruenn      2017-12-18  316  
-83c880f79e88cc Patrick Bruenn      2017-12-18  317  	/* clear lp interrupt status */
-83c880f79e88cc Patrick Bruenn      2017-12-18  318  	writel(0xFFFFFFFF, ioaddr + SRTC_LPSR);
-83c880f79e88cc Patrick Bruenn      2017-12-18  319  
-83c880f79e88cc Patrick Bruenn      2017-12-18  320  	/* move out of init state */
-83c880f79e88cc Patrick Bruenn      2017-12-18  321  	writel((SRTC_LPCR_IE | SRTC_LPCR_NSA), ioaddr + SRTC_LPCR);
-83c880f79e88cc Patrick Bruenn      2017-12-18  322  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_IES);
-83c880f79e88cc Patrick Bruenn      2017-12-18  323  	if (ret) {
-83c880f79e88cc Patrick Bruenn      2017-12-18  324  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_IES\n");
-83c880f79e88cc Patrick Bruenn      2017-12-18  325  		clk_disable_unprepare(pdata->clk);
-83c880f79e88cc Patrick Bruenn      2017-12-18  326  		return ret;
-83c880f79e88cc Patrick Bruenn      2017-12-18  327  	}
-83c880f79e88cc Patrick Bruenn      2017-12-18  328  
-83c880f79e88cc Patrick Bruenn      2017-12-18  329  	/* move out of non-valid state */
-83c880f79e88cc Patrick Bruenn      2017-12-18  330  	writel((SRTC_LPCR_IE | SRTC_LPCR_NVE | SRTC_LPCR_NSA |
-83c880f79e88cc Patrick Bruenn      2017-12-18  331  		SRTC_LPCR_EN_LP), ioaddr + SRTC_LPCR);
-83c880f79e88cc Patrick Bruenn      2017-12-18  332  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_NVES);
-83c880f79e88cc Patrick Bruenn      2017-12-18  333  	if (ret) {
-83c880f79e88cc Patrick Bruenn      2017-12-18  334  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_NVES\n");
-83c880f79e88cc Patrick Bruenn      2017-12-18  335  		clk_disable_unprepare(pdata->clk);
-                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-83c880f79e88cc Patrick Bruenn      2017-12-18  336  		return ret;
-83c880f79e88cc Patrick Bruenn      2017-12-18  337  	}
-83c880f79e88cc Patrick Bruenn      2017-12-18  338  
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  339  	pdata->rtc = devm_rtc_allocate_device(&pdev->dev);
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  340  	if (IS_ERR(pdata->rtc))
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  341  		return PTR_ERR(pdata->rtc);
-
-clk_disable_unprepare(pdata->clk);
-
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  342  
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  343  	pdata->rtc->ops = &mxc_rtc_ops;
-95fbfa14b431d4 Alexandre Belloni   2018-05-19  344  	pdata->rtc->range_max = U32_MAX;
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  345  
-83c880f79e88cc Patrick Bruenn      2017-12-18  346  	clk_disable(pdata->clk);
-83c880f79e88cc Patrick Bruenn      2017-12-18  347  	platform_set_drvdata(pdev, pdata);
-83c880f79e88cc Patrick Bruenn      2017-12-18  348  	ret =
-83c880f79e88cc Patrick Bruenn      2017-12-18  349  	    devm_request_irq(&pdev->dev, pdata->irq, mxc_rtc_interrupt, 0,
-83c880f79e88cc Patrick Bruenn      2017-12-18  350  			     pdev->name, &pdev->dev);
-83c880f79e88cc Patrick Bruenn      2017-12-18  351  	if (ret < 0) {
-83c880f79e88cc Patrick Bruenn      2017-12-18  352  		dev_err(&pdev->dev, "interrupt not available.\n");
-83c880f79e88cc Patrick Bruenn      2017-12-18  353  		clk_unprepare(pdata->clk);
-
-Should these be clk_disable_unprepare()?  I don't know.  Please tell
-me the rules on this if the warning is wrong.  I also haven't looked up
-exactly why this warning is displayed, I would have expected
-clk_unprepare() to silence it.
-
-83c880f79e88cc Patrick Bruenn      2017-12-18  354  		return ret;
-83c880f79e88cc Patrick Bruenn      2017-12-18  355  	}
-83c880f79e88cc Patrick Bruenn      2017-12-18  356  
-fdcfd854333be5 Bartosz Golaszewski 2020-11-09  357  	ret = devm_rtc_register_device(pdata->rtc);
-5490a1e018a4b4 Alexandre Belloni   2018-05-19  358  	if (ret < 0)
-83c880f79e88cc Patrick Bruenn      2017-12-18  359  		clk_unprepare(pdata->clk);
-
-Same.
-
-83c880f79e88cc Patrick Bruenn      2017-12-18  360  
-5490a1e018a4b4 Alexandre Belloni   2018-05-19 @361  	return ret;
-83c880f79e88cc Patrick Bruenn      2017-12-18  362  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> With that said, I'll point out that I am relative new to this code 
+> (and this patch series) so maybe I've missed something and the extra 
+> complexity is needed for some reason. But if it is not, I'm all in 
+> favor of keeping things simple.
+>
 
