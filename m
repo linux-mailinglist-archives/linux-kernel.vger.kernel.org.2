@@ -2,202 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6779639044E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F207390453
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbhEYOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232939AbhEYOwq (ORCPT
+        id S234192AbhEYOyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:54:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50818 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232939AbhEYOx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:52:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77D4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:51:16 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621954275;
+        Tue, 25 May 2021 10:53:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621954346;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fjNOQsEO/65TuQVk1yhlMEaznOxjKZEYZBAvSQqrnFE=;
-        b=KVW5DVG1GMWQxv0MC5hWSpTXwkr1BA3UnekJC16U3wWoGVYCZP7XHhfuH8fUbHKjvZzOq9
-        4LhSb/+hor4PwZfDVeJQ1CrpVLwzuYbLPv9CzrdgTqzvlu5F6nMBLG4NrrlaBSZs5V9w2O
-        xaAjqJlBAzGRjS6VNKXCEV1o9zJ75wrKr0rSLhL/PqfZ5wIbbDC0i0r5Iss5Dary3w8tT7
-        SPICk/1qC++YDQu0heYsB0YAKOnENbAok/OIkp/T9rvaQvzHhj/wjf4XNSp45ylBVIW9WP
-        Je+YbbxjBGcAn7QgGLWLW6J2xfmkGZbHod9mA5EhcI8jCd6Lb1sY77rrfsLNnA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621954275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fjNOQsEO/65TuQVk1yhlMEaznOxjKZEYZBAvSQqrnFE=;
-        b=xDwyt7i7YV8HzWitOdb/40vYYf40SVzO4lmVxSsd4X6M9z5JpLnxpnKGOmgmHDmWHCgOZb
-        LPAr4VddjVTQ/jAA==
-To:     imran.f.khan@oracle.com
-Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, bp@alien8.de
-Subject: Re: [RFC PATCH] x86/apic: Fix BUG due to multiple allocation of legacy vectors.
-In-Reply-To: <8e1b9002-aa2c-5314-54f6-d5156703e25d@oracle.com>
-References: <20210519233928.2157496-1-imran.f.khan@oracle.com> <8735uhddjw.ffs@nanos.tec.linutronix.de> <8e1b9002-aa2c-5314-54f6-d5156703e25d@oracle.com>
-Date:   Tue, 25 May 2021 16:51:14 +0200
-Message-ID: <871r9uamu5.ffs@nanos.tec.linutronix.de>
+        bh=qSC9QpCDqCazF2mZq6d/82qLDoFltpJkJoLoXKJjvvg=;
+        b=Ae/cDFzEdr4Mcv501zWIjTQa9VHrixNO8oXY31ht6RDbmrY1I3KyBOcIp8HLI1kpUHQzzT
+        68losLhh71RyECvM2pMtY3sl9FDICW46pIP1yPoYMt9VEqoSy4aVWLce4fspgeHbllZLnW
+        fh7sdYs91uJRsa0xHhyBzrKl1aiUUEM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-6QIRE0wzMW2imS9j1gb0TQ-1; Tue, 25 May 2021 10:52:24 -0400
+X-MC-Unique: 6QIRE0wzMW2imS9j1gb0TQ-1
+Received: by mail-ed1-f72.google.com with SMTP id n6-20020a0564020606b029038cdc241890so17442234edv.20
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:52:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qSC9QpCDqCazF2mZq6d/82qLDoFltpJkJoLoXKJjvvg=;
+        b=U1QS5UZW2rmvvZQIO0faJRGZyCY361Vbsm20AY0cl10nni9MbYfB8f5JcD1Xdkp1BB
+         YAPZm5FztYlxu5fulA/asawg76g2yneXB5dFiLquNKAWaS9sgLtSJcPlmo+tmy1lOcQ9
+         fExG0dPn4MXstJ5a+MLnP9HINjAI1QxQa5d2lBBwkleQWqbLF3qiSgXTCa0jLvZCjxLY
+         UKbmIiHUnz3UkXfgoSlL/118vEVU+ASJEqxOZnDvMokWc8MwGNcQFlKL6+4iEcgzQRyv
+         rQsRrl0jxg3Ay0p/ukrJhkFL0t1kCaDmvlvhUJ205ZnsjOcBkuQCvb9AgH0BcUSPA5Xw
+         ZxvA==
+X-Gm-Message-State: AOAM531hiIpWE8QhbKodG4Vp+t4Divyg9+5od/s7fMbZUsmby62lIqp7
+        JEegCdxEEZrf2/JqbH4Zj5Qm6QA1gmOWROBK8g+t9XyJbsGUzKwHIAByaKkLNUd0eDUnDqO7yT/
+        DPXsQunBxGUd1yP+LM/IYNR8N
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr32220068eds.270.1621954343100;
+        Tue, 25 May 2021 07:52:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDlSSMgDZFTIhLb5CNVeQ1FOGcYDV/D4Z+HKGAvXmcW1X5RbFzEx/ev3BuN5v5ARSJGUCLSQ==
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr32220039eds.270.1621954342913;
+        Tue, 25 May 2021 07:52:22 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id h9sm10912173edt.18.2021.05.25.07.52.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 07:52:22 -0700 (PDT)
+Date:   Tue, 25 May 2021 16:52:20 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [PATCH v10 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
+Message-ID: <20210525145220.amzme5mqqv4npirt@steredhat>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210521075520.ghg75wpzz42zorxg@steredhat>
+ <108b0bba-5909-cdde-97ee-321b3f5351ca@kaspersky.com>
+ <b8dd3b55-0e2c-935a-d9bb-b13b7adc4458@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <b8dd3b55-0e2c-935a-d9bb-b13b7adc4458@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Imran,
-
-On Mon, May 24 2021 at 13:29, imran f. khan wrote:
-> On 20/5/21 6:17 pm, Thomas Gleixner wrote:
-> But I tested ML v5.13-rc2 on qemu based x86_64 setup (4 CPUs) and
-> observed some difference in system vector assignments depending
-> on whether kernel is booted with or without noapic option.
-
-Of course there is a difference.
-
-> Even my current setup that was crashing with in-house 5.4 and 5.8 
-> kernels, boots fine if I boot it with noapic option removed from kernel 
-> boot parameters.
-
-May I ask the obvious question why the changelog of your patch did not
-mention that this happens only with 'noapic' on the kernel command line?
-
-> If kernel is booted with option noapic, the io_apic_irqs
-> bitmap is not set by setup_IO_APIC and this happens because 
-> skip_ioapic_setup is found as set in this case. But in absence
-> of noapic kernel parameters, io_apic_irqs bitmap gets set by
-> setup_IO_APIC.
-
-Yes
-
-> Now in case of booting with noapic option, the check "test_bit(isairq, 
-> &io_apic_irqs))" in __setup_vector_irq will fail for system vectors
-> and __setup_vector_irq will end up returning corresponding irq descriptor.
-> This irq descriptor gets assigned in per cpu vector_irq corresponding
-> to secondary CPUs.
+On Tue, May 25, 2021 at 11:22:09AM +0300, Arseny Krasnov wrote:
 >
-> But the corresponding bitmap in irq_matrix still remains unset,
-> because invocation of lapic_assign_system_vectors via native_init_IRQ 
-> happens only for boot CPU.
+>On 23.05.2021 15:14, Arseny Krasnov wrote:
+>> On 21.05.2021 10:55, Stefano Garzarella wrote:
+>>> Hi Arseny,
+>>>
+>>> On Thu, May 20, 2021 at 10:13:53PM +0300, Arseny Krasnov wrote:
+>>>> 	This patchset implements support of SOCK_SEQPACKET for virtio
+>>>> transport.
+>>> I'll carefully review and test this series next Monday, in the mean time
+>>> I think we should have at least an agreement about the changes that
+>>> regards virtio-spec before merge this series, to avoid any compatibility
+>>> issues.
+>>>
+>>> Do you plan to send a new version of the specification changes?
+>>>
+>>> Thanks,
+>>> Stefano
+>> Hello, sorry for long answer. I'm on vacation now, but i plan to send
+>>
+>> it in next several days, because with current implementation it is short
+>>
+>>
+>> Thank You
+>
+>Hello, here is spec patch:
+>
+>https://lists.oasis-open.org/archives/virtio-comment/202105/msg00017.html
+>
+>Let's discuss it
 
-Which is sufficient because system vectors are assigned system wide.
+Yep, sure.
 
-> As a result of this if any of these vectors get allocated for secondary 
-> CPUs kernel will hit the BUG condition given in apic_update_vector.
+About this series I think is better to split in two series since it 
+became very long. Patchwork [1] also complains here [2].
 
-Correct. So you almost decoded the underlying problem.
+You can send a first series with patches from 1 to 7. These patches are 
+reviewed by me and can go regardless of the discussion of the VIRTIO 
+specifications.
+Maybe you can also add the patch with the test to this first series.
 
-In absence of IOAPIC all legacy interrupts are routed through the
-PIC. The PIC does not support interrupt affinities and the interrupt can
-end up on any online CPU. That's why we need to treat the PIC interrupts
-special.
+Please specify in the cover letter that the implementation for virtio 
+devices is under development and will be sent later.
 
-The problem is that lapic_assign_legacy_vector() is _NOT_ invoked for
-any interrupt except PIC_CASCADE_IRQ if the IOAPIC is disabled.
 
-So with your patch you work around that, but that falls flat on it's
-nose when the IO/APIC is enabled and one of the legacy interrupts is in
-PIC mode, e.g. IRQ0. If that happens then bit 0 is not set in
-io_apic_irqs _AND_ the interrupt is correctly marked as system vector
-already. So marking it again via irq_matrix_assign() will explode
-in the matrix allocator.
+When it will be merged in the net-next tree, you can post the second 
+part with the rest of the series that implements SEQPACKET for virtio 
+devices, possibly after we received an agreement for the specifications.
 
-So the right thing to do is to ensure that the legacy interrupts are
-marked as system vectors in case that the IO/APIC is disabled via
-config, kernel command line or lack of enumeration. See below.
+Please use the "net-next" tag and take a look at 
+Documentation/networking/netdev-FAQ.rst about netdev development.
+
+
+Anyway, in the next days (hopefully tomorrow) I'll review the rest of 
+the series related to virtio devices and spec.
 
 Thanks,
+Stefano
 
-        tglx
----
-Subject: x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Tue, 25 May 2021 13:08:41 +0200
+[1] 
+https://patchwork.kernel.org/project/netdevbpf/list/?series=486011&state=*
 
-PIC interrupts do not support affinity setting and they can end up on any
-online CPU. Therefore it's required to mark the associated vectors as
-system wide reserved. Otherwise the corresponding irq descriptors are
-copied to the secondary CPUs but the vectors are not marked as assigned or
-reserved. This works correctly for the IO/APIC case.
+[2] 
+https://patchwork.kernel.org/project/netdevbpf/patch/20210520191449.1270723-1-arseny.krasnov@kaspersky.com/
 
-When the IO/APIC is disabled via config, kernel command line or lack of
-enumeration then all legacy interrupts are routed through the PIC, but
-nothing marks them as system wide reserved vectors.
-
-As a consequence a subsequent allocation on a secondary CPU can result in
-allocating one on these vectors, which triggers the BUG() in
-apic_update_vector() because the interrupt descriptor slot is not empty.
-
-Imran tried to work around that by marking those interrupts as allocated
-when a CPU comes online. But that's wrong in case that the IO/APIC is
-available and one of the legacy interrupts, e.g. IRQ0, has been switched to
-PIC mode because then marking them as allocated will fail as they are
-already marked as system vectors.
-
-Stay consistent and update the legacy vectors after attempting IO/APIC
-initialization and mark them as system vectors in case that no IO/APIC is
-available.
-
-Reported-by: Imran Khan <imran.f.khan@oracle.com>
-Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- arch/x86/include/asm/apic.h   |    1 +
- arch/x86/kernel/apic/apic.c   |    1 +
- arch/x86/kernel/apic/vector.c |   20 ++++++++++++++++++++
- 3 files changed, 22 insertions(+)
-
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -174,6 +174,7 @@ static inline int apic_is_clustered_box(
- extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
- extern void lapic_assign_system_vectors(void);
- extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
-+extern void lapic_update_legacy_vectors(void);
- extern void lapic_online(void);
- extern void lapic_offline(void);
- extern bool apic_needs_pit(void);
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2604,6 +2604,7 @@ static void __init apic_bsp_setup(bool u
- 	end_local_APIC_setup();
- 	irq_remap_enable_fault_handling();
- 	setup_IO_APIC();
-+	lapic_update_legacy_vectors();
- }
- 
- #ifdef CONFIG_UP_LATE_INIT
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -738,6 +738,26 @@ void lapic_assign_legacy_vector(unsigned
- 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
- }
- 
-+void __init lapic_update_legacy_vectors(void)
-+{
-+	unsigned int i;
-+
-+	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
-+		return;
-+
-+	/*
-+	 * If the IO/APIC is disabled via config, kernel command line or
-+	 * lack of enumeration then all legacy interrupts are routed
-+	 * through the PIC. Make sure that they are marked as legacy
-+	 * vectors. PIC_CASCADE_IRQ has already been marked in
-+	 * lapic_assign_system_vectors().
-+	 */
-+	for (i = 0; i < nr_legacy_irqs(); i++) {
-+		if (i != PIC_CASCADE_IR)
-+			lapic_assign_legacy_vector(i, true);
-+	}
-+}
-+
- void __init lapic_assign_system_vectors(void)
- {
- 	unsigned int i, vector = 0;
