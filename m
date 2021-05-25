@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C36338F939
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722B738F93D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhEYELj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:11:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhEYELi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:11:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8638060FDA;
-        Tue, 25 May 2021 04:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621915809;
-        bh=F1vsYbd/GlvINyjwQQmr6wnTcRu7kV0sEFCqs1mHRmI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jMvxF+OfdXRZC4tIjdTKj1219nBM+LkpYFZ2p8j6X2iI/KHfJBcW4kwHtl1AxUdNu
-         CEaJjcv0N7hJVb/MljzzNh9zYx/71/J2yc/vFtMWmQw5RsaRNJPvtH0GfUwZMQpD2N
-         8SzSWIIzOQXkLcx5YjvRuOfcVs5L7nQm5PUxWcY6KflrfgLuFFTwKhI6rvD27gXoEx
-         OVEkD/Yg6f8+50xKhfZvofRiPKtOfyqb7LSP3PqGiPiHgBowpkZT4Ric0YJr2NP20Q
-         QCUWElFEIhNxmXIyMl1/zc1a8uX88GaLPN+GZLNWM2LWMivJr0KC8YEMisvrdkTUBX
-         K2G75QeRg/J8A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 781FF60967;
-        Tue, 25 May 2021 04:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230029AbhEYERH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhEYERF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 00:17:05 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAEFC061574;
+        Mon, 24 May 2021 21:15:34 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id q67so5534219pfb.4;
+        Mon, 24 May 2021 21:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H6oJyMA8AzxwUZbSo7O7qwM/HYWVVzy5GdBiLkC+T08=;
+        b=FiXY3/aKOI42WcOPvbNAT1NDNEosxfTHIuXNXZxh01Jbj1Sg8MQl8l8CTKplBpjIq6
+         SQI5x98mF/ZwzaWR9ll4OHJTpVIVuYDoaZhv22Uj1H9+Sp1dckAJgbf3bKTVNz7NWhxG
+         vc3B6SVVfOMosPGgTLhx/Wi8lh1F1PUEklyxIqzSgCDTx8liM3a2XX9VbXPtcucpQDEe
+         3kfPAHVqGcP2ZeCf11bjcXAMDC5ijOQ2Lsbd8Nf+cXFEz/AgJS3w/qXFaoV5NeSi0ntc
+         mc365Cu48KqQ6oxiE4vZwg7CGbgARWiiPJsa7Q1xfGO0a1a6i3tis6T2xm34t4AzjI+c
+         wUBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H6oJyMA8AzxwUZbSo7O7qwM/HYWVVzy5GdBiLkC+T08=;
+        b=AhkrYTa8KfCZDgpDt0vDdVcOWPtuk/KZXzy4FKCX+CRN92Npym6ZWSFbNCZTEqQvud
+         bj9CvNPuM0XQNaq+boc4toInV51bzGAYLQewqgc2O8M1QgWYv2Ss1iSdB1PaWYie9S7z
+         crPA2GtsTngMoAwq1oslDHm6lc+B6+onlVHS6xdGTHwWxoBx7a5V0xypuFieP4U2qGcJ
+         3UETIWHDXnKPyc8hLf1o7m0MzSTIoUEqZs+rTaLAkQJWgXoyG8mKy/6ixggUmNPfXhLb
+         NwA23gtg6Wz/ZKZz28j59gy9Q+ThmrqD4Znoaiib7F3BOSnk0mGk+y6YjsIpCISEkGTi
+         CuYg==
+X-Gm-Message-State: AOAM532jqb5NAvxutBAvlP1YWWgQyQrDP8mo0afhzMLi2f2o57do7PZp
+        XnbsJNomBIAmnSRD55zz1z4=
+X-Google-Smtp-Source: ABdhPJy0D6Lr/q2ywMQRMgD4mIoRmZI2IcQayqyeeg2DvNiFaFkW7TSPxoS9bgHjV63zwkkHoiLfgw==
+X-Received: by 2002:a05:6a00:2394:b029:2e0:a27:ba26 with SMTP id f20-20020a056a002394b02902e00a27ba26mr28133449pfc.63.1621916133986;
+        Mon, 24 May 2021 21:15:33 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:870d:a395:9098:674])
+        by smtp.gmail.com with ESMTPSA id c15sm8437763pgt.68.2021.05.24.21.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 21:15:32 -0700 (PDT)
+Date:   Mon, 24 May 2021 21:15:29 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     colin.king@canonical.com, dan.carpenter@oracle.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: Re: [PATCH] drivers: input: misc: ims-pcu.c: Fix usage of spaces
+Message-ID: <YKx54ddWeILZ70O+@google.com>
+References: <20210428091050.ryr7kxlxre7uhye4@kewl-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] samples: bpf: ix kernel-doc syntax in file header
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162191580948.24013.704618312560321536.git-patchwork-notify@kernel.org>
-Date:   Tue, 25 May 2021 04:10:09 +0000
-References: <20210523151408.22280-1-yashsri421@gmail.com>
-In-Reply-To: <20210523151408.22280-1-yashsri421@gmail.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     kafai@fb.com, lukas.bulwahn@gmail.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428091050.ryr7kxlxre7uhye4@kewl-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Sun, 23 May 2021 20:44:08 +0530 you wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> The header for samples/bpf/ibumad_kern.c follows this syntax, but
-> the content inside does not comply with kernel-doc.
+On Wed, Apr 28, 2021 at 02:40:50PM +0530, Shubhankar Kuranagatti wrote:
+> Unnecessary spaces have been replaced with tab space
+> This is done to maintain code uniformity.
 > 
-> This line was probably not meant for kernel-doc parsing, but is parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warnings from kernel-doc:
-> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->  * ibumad BPF sample kernel side
-> 
-> [...]
+> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
 
-Here is the summary with links:
-  - [v2] samples: bpf: ix kernel-doc syntax in file header
-    https://git.kernel.org/bpf/bpf-next/c/4ce7d68beb9e
+Applied, thank you.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Dmitry
