@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B13390CC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6179B390CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhEYXLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhEYXLN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:11:13 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F18C061574;
-        Tue, 25 May 2021 16:09:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g7so26042789edm.4;
-        Tue, 25 May 2021 16:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X1MvS/6mSvBdfpSbPfN/7JJWpwiBa9tcmoBU0a7X3Cs=;
-        b=JbhzrHYWbaZWQbBevPTwVRlDDqmSjaoc6umPdR/hxegRe9Wus8j9yoSRWUje/zaqLq
-         3umESW2EMLgRPhGH7uyEKu2uAog1EajMO+ic8Zg1ZsQ1eTm7ufI+810GUOC4FiDMzwDf
-         /dtNNsK8zDDjTHEqOJQrtVH0lq/PSXzRu7cTi16xjya4EGHj1zXxjooZzwYE/nYGSI97
-         KDXn+XksNlQMSB9ppfUuCHnNQPjpX/TI/hrvwh0BalEqePmhY69Y4nMqktargP1hzacm
-         rwrlv74ASPp1xk1f9gIz3V9/+keZs1a7QuRpmrMG/1uwuFdwH8TGo4RyrMkHPkNHU5wa
-         Eq/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X1MvS/6mSvBdfpSbPfN/7JJWpwiBa9tcmoBU0a7X3Cs=;
-        b=Aqq60taKiGVNGydMZslolL6QU6+k5FV3hMSUERclHOvvdLzWpKh/uEOW0vCo3bt1me
-         L1emFAucBJAb8bH542O9o32c1A45TRZZDAWlOu5Ya7GBhFl29EEb9ScdSjYR00/Ng9fZ
-         IQRGrSKwBqBt1lccOfnUgZ+21ja8tLNy9G4S8qBlMEkS+IbtmAN+2Nky3Mk1gwgOUREa
-         aK9ofmh9at2i11T0vtWVcmGf1L/h7TvFrxnT+r5wDFZiPRlh/BBrc61mBn8DJBVsyvKU
-         D4WHeIq3jm5sTVUiY5Gi61IjHhw6cClwv9R90mLhQSRY76XfGyBoDI2m3/rwwDBs2Pt0
-         mIpg==
-X-Gm-Message-State: AOAM5315eMEWxCHv56Q67OXD2ajLSzj4fEoMcp4jysVDnTBP7cQ6WUHK
-        V9l5mQ9wtL6PKKkeAJY+sjnUVYygRoBnoA==
-X-Google-Smtp-Source: ABdhPJwnbSMs/DuokhZnqXONkMqw5YfOqzsLuKAGmGEdRxIfWoTRgG7a7HUlXByMrbcZgyAQkbWcCg==
-X-Received: by 2002:a05:6402:2706:: with SMTP id y6mr6247878edd.355.1621984179869;
-        Tue, 25 May 2021 16:09:39 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id zg18sm9503105ejb.41.2021.05.25.16.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 16:09:39 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v2] mtd: parsers: qcom: Fix leaking of partition name
-Date:   Wed, 26 May 2021 01:09:31 +0200
-Message-Id: <20210525230931.30013-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S231442AbhEYXLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229610AbhEYXLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:11:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D31260698;
+        Tue, 25 May 2021 23:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621984185;
+        bh=1IkQtMPV3pvDAz3GCbMK1VEmISi6kSMEwWFVrA8jUo0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RB5aUqSs5y5a0IPYATmM/7VYF11+WRr09WqC3gEYEA2Q4zJMK8R+YWGQA/PPfP7RB
+         BSJoBgpus6zhTXr3FmYv/nKIH6vUISzRTYbKkAoSIB2m0VVxBi56dZjLJKXJToHg3O
+         EKRL90ryK6eCVEyGBBRWK/iPZ2sXjmYsY+dzMfLXnQZ3eLqLHCwZH1c02tadRCALZB
+         Oq39UvA77qtT48sggJE3dtXCeHmrPyVBeF0/qLTB6FIabYbB+8XdaXPuG1nEQBLnWZ
+         J4TAiAbbA74rCsBZ3WcQS7eO/Qe2cVxvxI88gUJezW3qQoiCpf/O/PYq97VS7Ns+Tm
+         DMS1we9IflxIA==
+Date:   Tue, 25 May 2021 18:10:41 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] iavf: Replace one-element array in struct
+ virtchnl_tc_info
+Message-ID: <20210525231041.GA175914@embeddedor>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cleanup function as the name variable for the partition name was
-allocaed but never freed after the use as the add mtd function
-duplicate the name and free the pparts struct as the partition name is
-assumed to be static.
-The leak was found using kmemleak.
+There is a regular need in the kernel to provide a way to declare having a
+dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Refactor the code according to the use of a flexible-array member in struct
+virtchnl_tc_info instead of one-element array, and use the flex_array_size()
+helper.
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/mtd/parsers/qcomsmempart.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/intel/iavf/iavf_virtchnl.c | 2 +-
+ include/linux/avf/virtchnl.h                    | 7 +++----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-index d9083308f6ba..06a818cd2433 100644
---- a/drivers/mtd/parsers/qcomsmempart.c
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -159,6 +159,15 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	return ret;
- }
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+index 123a737f6955..cf2ac577a96f 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
+@@ -1021,7 +1021,7 @@ void iavf_enable_channels(struct iavf_adapter *adapter)
+ 		return;
+ 	}
  
-+static void parse_qcomsmem_cleanup(const struct mtd_partition *pparts,
-+				   int nr_parts)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_parts; i++)
-+		kfree(pparts[i].name);
-+}
-+
- static const struct of_device_id qcomsmem_of_match_table[] = {
- 	{ .compatible = "qcom,smem-part" },
- 	{},
-@@ -167,6 +176,7 @@ MODULE_DEVICE_TABLE(of, qcomsmem_of_match_table);
- 
- static struct mtd_part_parser mtd_parser_qcomsmem = {
- 	.parse_fn = parse_qcomsmem_part,
-+	.cleanup = parse_qcomsmem_cleanup,
- 	.name = "qcomsmem",
- 	.of_match_table = qcomsmem_of_match_table,
+-	len = struct_size(vti, list, adapter->num_tc - 1);
++	len = struct_size(vti, list, adapter->num_tc);
+ 	vti = kzalloc(len, GFP_KERNEL);
+ 	if (!vti)
+ 		return;
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index cda0c98ca978..b554913804bd 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -529,10 +529,10 @@ VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_channel_info);
+ struct virtchnl_tc_info {
+ 	u32	num_tc;
+ 	u32	pad;
+-	struct	virtchnl_channel_info list[1];
++	struct	virtchnl_channel_info list[];
  };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(24, virtchnl_tc_info);
++VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_tc_info);
+ 
+ /* VIRTCHNL_ADD_CLOUD_FILTER
+  * VIRTCHNL_DEL_CLOUD_FILTER
+@@ -1106,8 +1106,7 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 		if (msglen >= valid_len) {
+ 			struct virtchnl_tc_info *vti =
+ 				(struct virtchnl_tc_info *)msg;
+-			valid_len += (vti->num_tc - 1) *
+-				     sizeof(struct virtchnl_channel_info);
++			valid_len += flex_array_size(vti, list, vti->num_tc);
+ 			if (vti->num_tc == 0)
+ 				err_msg_format = true;
+ 		}
 -- 
-2.31.1
+2.27.0
 
