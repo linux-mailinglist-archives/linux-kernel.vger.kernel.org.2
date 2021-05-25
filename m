@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBC638F6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9610738F6F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhEYA2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        id S229929AbhEYA25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYA2n (ORCPT
+        with ESMTP id S229539AbhEYA24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:28:43 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6FAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:27:13 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f30so6170897lfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggN1ZyfpjeoPcK+b5TpMOSXo8A025wCmUM01aYg2EFg=;
-        b=yOT2sHQJz8nvp4O5Q4NWuzU2gw8PBgy3p+S3aN5f0xs7BIpw9pWlTB5YBfiIhph5Gq
-         3e33psxLGjctQdgqQbZapy3ir0V8qNI8Hjjc0YzhqWOMydI9tBoaYv+LsXyzCHmMJG7y
-         3bzpcXma78Www3l4uL1lNF6jOMiRuS4OwYSzkY117QzTmLdGPIVMsQWdHnww5QxrwNxN
-         Ulxqccg8A1YclQdQqkSYCME5+iV+SosXJAtPDM+vJqs2lj8beVe96oGlR0SY2QoklGvy
-         CNIeUM5pZJodgZSHoa+B+0UDGT/lp6TjDK1VsxnDxZeBma79xT4cd3vOuzmRsk1H4iI5
-         sOqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggN1ZyfpjeoPcK+b5TpMOSXo8A025wCmUM01aYg2EFg=;
-        b=rqkd0MCHPEHIR24xm7EhDXXQ98nOBVd7OlOsi2f7Lyj4+ZSc3Zcb+1w+6jZyYWcZSV
-         p08u4BztMPIxjnjHSABMjQzUAVbD1tHWjplyBVLnQxD2EBtUWpzUiIoWAOLWbHbpek7M
-         8jbveD8EFRykbwhjToIv/gOstVYKKtTdtSJcMSf3hw1CVYOuvoTiOqgKwV/aQUn5QwbY
-         MhE5S0X+8Qo28p6NF+uruk2cMxfW1D/UOzjZGEMRKU4yvQEQwbO8MjfleWE/73Y2hHlt
-         5AyeewgKoOiCgra9ehPvJWAupZPClfqrhRpmG6OA8hUfdg1JTbvxhmW4KETcDwFp+D0Z
-         Xowg==
-X-Gm-Message-State: AOAM533yPQbIlsna42sNyJmaHhOzfxIIdhwtcVrwdq9VNptnOIWfqTAG
-        KOmtE0gz0a/EzZTQ3qNOeX8P29LD17uC33oQxCc6Lw==
-X-Google-Smtp-Source: ABdhPJyTefEIZ5y+qK7V+5Tec9ATzRvj6RgLSmVl0ftrBQcwXR6JAiYbyr8zFfudSZ+XDMF1phSLLmlUZr5h2L0Zwic=
-X-Received: by 2002:ac2:5145:: with SMTP id q5mr12322949lfd.529.1621902431406;
- Mon, 24 May 2021 17:27:11 -0700 (PDT)
+        Mon, 24 May 2021 20:28:56 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D6FC061574;
+        Mon, 24 May 2021 17:27:27 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fpvzc6ClBz9sSn;
+        Tue, 25 May 2021 10:27:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621902445;
+        bh=uY1tMlJDraie7CtVEoPLKUE0zodkOSlHe/tyaZb/89E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a73lRudqDUPoHOxD4sZB+RvLENAbSGY1a7iWlXpOgtMO5byGjyZ8fjdin4csMemeJ
+         FVtnEfnvY31wDDKRTFBW7tsg6cklXWx1EX+WMgXcgVvb9AEnD4Et8b0YOirwGCTHUW
+         ll3B7rpfsGXV/Y8ZRp6kc/nWiBOo+PQxuj0Dc6op2V9Qjq5EYUVpmSLY9aFQEK6tav
+         8+Y+Z0Ci+EMwNzFKHkwhCyqJIXau84EhlDUQxjusSTCsMQL6nDguLRh4yvCJY2ha80
+         QvvxRSdRLXKX24jvn4bt1rNcVeBpe63FQDB2J3U6DlEXvIddA8UP8Wi4gEVA4ffDeP
+         qTQnB05FkP6jg==
+Date:   Tue, 25 May 2021 10:27:24 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the drm-msm tree
+Message-ID: <20210525102724.6037e7bd@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com> <20210518155013.45622-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210518155013.45622-2-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 25 May 2021 02:27:00 +0200
-Message-ID: <CACRpkdZad8huHXpNrJ4eeMpxnEkPBpQy1paOM8OmG5TQ0q3Tww@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] gpiolib: Introduce gpiod_request_user() helper
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/iCWy5p1XHKbwihCFSchm0Z8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 5:50 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+--Sig_/iCWy5p1XHKbwihCFSchm0Z8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The gpiod_request_user() is a special helper to avoid propagating stuff
-> to user space that should not be propagated, e.g. internal error codes.
->
-> For now, hide EPROBE_DEFER with ENODEV.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi all,
 
-This looks like a good solution.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+In commit
 
-Yours,
-Linus Walleij
+  8dbde399044b ("drm/msm/dp: handle irq_hpd with sink_count =3D 0 correctly=
+")
+
+Fixes tag
+
+  Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and=
+ pm_resume")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: ea9f337ce81e ("drm/msm/dp: reset dp controller only at boot up and p=
+m_resume")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/iCWy5p1XHKbwihCFSchm0Z8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCsRGwACgkQAVBC80lX
+0GyPnwgAgObDcg8b09wPwJDysoHzpYmFFPLqdk3DtH9mjaZyFa6n5n4UKRqV/kf8
+vDw8mXyXb3abpGGQsVyqmEfJhq4uD/Be9SUv5LzHYVntyJzd9c75V5mKeyVkbvBW
+2uz7RgT/UO04te3ViVklotgZnnXv1Zg9qIU4Op2rGEtQNzXq2iFhfY6qjtquCTJv
+g+rbvv+buAQHykb+EOf9t/B/bRdcQNIhiOUU5aeUVWU1hpGzut2uK6K2i1ISGbq2
+DVie5DYKMJI6Wkbcwjdf4ZRCpjpSPpG1wDpBvzflWFay3U6t3QgPA/3f9hqGRncH
+/gSxQ9IudPA8p/K+gw3iaR5EV9JVuQ==
+=6D45
+-----END PGP SIGNATURE-----
+
+--Sig_/iCWy5p1XHKbwihCFSchm0Z8--
