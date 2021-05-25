@@ -2,234 +2,516 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB663907D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960683907D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhEYRgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:36:38 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:45372 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhEYRgM (ORCPT
+        id S232516AbhEYRgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234209AbhEYRgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:36:12 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PHXkqu070896;
-        Tue, 25 May 2021 17:34:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=eG7i3oRXqP9XaoyA3Ix+GtzbTmeKesRboEXOw7U1PiA=;
- b=sfyU6i7MnxGQxWDHuBR7h1P/AT/APDWNZOr5aqZ3dbId2U0r0kWwt9ovXrjj5Mb98HwE
- D9Rf80Ya5o7qRnaT9bjTMnDRwRRYUY5KG8XDqqh+ve9wShrVAsfxcdiDAMx0aFQ/0HxS
- YkhPHFaCwFlTudJxqgtMRWBTmKa0jsg/8RTSKy5x8YdEVSCNTMuO4RMTrtxUAiK45cC2
- rtD0D5AIe51q/+A2E0D1kdZwqhhS5R5HzTHlTVW27OReiquW7zbk5Xq0CCXNfj7aiRc0
- pzkWMGtKSy1sVDlpsXkOFpQrfwqJNMggicEe5cIIwTVzZPqd28zv9Ic8x+bpijj9HRAk pQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 38q3q8x9p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 17:34:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PHQspM079118;
-        Tue, 25 May 2021 17:34:32 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
-        by aserp3020.oracle.com with ESMTP id 38reham8jf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 17:34:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ipLM0fXd7WeIj9LrwXVIX/1TqcgHLcen7TH7qB7qcSYL8bAXrk12sIKJB5Av6sdImyiQYkKdbYqyDM16XjAfVYXzE+qiNz5QT1cbbfy1f5RJ8enCP8RSDmc3JdhPpm+XWjjxvWew/cyW8Tc6/i7QYpZoRm3st/dbpyxKMj+SzOcgv4UHmToQuAv1G2QF5if+76+22p50+eEIos0TTSHpJ4jGyvYxYc9ZYPDQCSS1UyTSYRSEvgiaso2RwJvSZ79HqQ3VpoT7xxbLBbdJ2cus+F5FyMMxBICEqPtz9uhvLRGIlOsGNNJjr0zrTStahoiWwAKj7z3l09HsS3W14r6AVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eG7i3oRXqP9XaoyA3Ix+GtzbTmeKesRboEXOw7U1PiA=;
- b=JiTOvki3aCN8X8um6cBj5sMjhsTYIJI1AWoKFJZdHYcSE7weSh67OFKD22HJCVhiYABCxv9WQJwDATJgvpqmIM+/hGEQJhoTMveJyNSoYm8LQg39oV3Uujm82M+33uDf4b0x/0u4ELnZbYyNXibIjn6vE8MwDW2Wx/T3uEB4IwpzPtD8C8mAQrgMWHt+OhBc1i8pQfzuL6cufHHW7GJiUJh2B7xVvuvvi9ibrL0mVFlKWBAR7+EGY3l4COtvtL2xdG5xtBYFj4iQ2/zSBCXZWU2CmP38ndouGYMUxCGKzxr4BOmYERh/Kp+s/6X12w2FnYoiL9rGUdBt/3C0kFYKtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 25 May 2021 13:36:11 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A3EC061342;
+        Tue, 25 May 2021 10:34:38 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id f9so44164797ybo.6;
+        Tue, 25 May 2021 10:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eG7i3oRXqP9XaoyA3Ix+GtzbTmeKesRboEXOw7U1PiA=;
- b=Z1Fzwk9C0yGcInqX7Is3cpd1ur7+1xLVRsa58lXtOT6N9IhgBLaTmB/pqMPAbzhzXQa8HkFzsKw68JWmUQf1KIHeUy7V7xf2C/sah25jisdETNtZleJMFPeo019MAqkNNAxTZeAbFLXufCAoANU1EM7YYk2lmY4s4wJB+XFhE6U=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by SJ0PR10MB4685.namprd10.prod.outlook.com (2603:10b6:a03:2df::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 25 May
- 2021 17:34:28 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::18a:7c1f:bf20:ba6c]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::18a:7c1f:bf20:ba6c%3]) with mapi id 15.20.4129.036; Tue, 25 May 2021
- 17:34:28 +0000
-Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
- handler
-To:     Hannes Reinecke <hare@suse.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        pbonzini@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, joe.jin@oracle.com,
-        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
-References: <20210523063843.1177-1-dongli.zhang@oracle.com>
- <ac161748-15d2-2962-402e-23abca469623@suse.de>
- <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
- <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
- <YK0qKMF0I8Wm1euN@stefanha-x1.localdomain>
- <1184a5ac-bbb4-a89d-b5e2-ee0bf58cd1b8@suse.de>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <9bc96bd0-5a0a-da4c-25f3-c540163318f8@oracle.com>
-Date:   Tue, 25 May 2021 10:34:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <1184a5ac-bbb4-a89d-b5e2-ee0bf58cd1b8@suse.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2601:646:c303:6700:7972:164b:11be:8bb8]
-X-ClientProxiedBy: SA0PR11CA0180.namprd11.prod.outlook.com
- (2603:10b6:806:1bb::35) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=06IA1eNpcSLnfjmH8uISU7mktvW4RRyzaTbHrryY0Bg=;
+        b=UyLOvAhzcBVrOXZ6N46upbtVKmrIg7dKGmWteRjQwESJiJFxXgYfMP5x5EGAm5H9Y4
+         dRXoPZKkjx8QLOa5nRN0Qxn5DOXqyxuilPXMi4Po1tx7BW3iMCrkITJaJ2X3LWLlzPAT
+         rrTId+aTVFZhOZilT1wMo/yd78xrwXnQk4AbZqe15CbH8iKAeFlpTeZxkmt4BqzWdRAU
+         J7TmAGm1XrS8e1LDv3Omn6c84IuVTO+ZiSFugX5wz+MrGvIPcYiuFd2cOEKUAKFlJeh3
+         9zrkhHTq+xMlu4e7KWyRwkAAy4hqPMce5elktR2ItbkEE7GbLY47qOE90EjQqCNIBaO6
+         vtiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=06IA1eNpcSLnfjmH8uISU7mktvW4RRyzaTbHrryY0Bg=;
+        b=oafIkSYQaGbkMSTKyrX779vs9/xWFPJwie+DdE4jxXtApnrYLq2+xCcXEUQ09zwOpz
+         blW/rtdWnhJxJlxpRl/2wyuuAIp6eg56x5ie9HZbd2Np/5KzyRO/EGqvWPcZuOoGhxp3
+         JnI4OmtMRafAy/AWZrRrtsDzhWnpLBoUrqbF/dWv0yfBCAHNSQYqNPqFHxE1L72x2ykb
+         62sW20VrDeg60pN2snCt5+B/xOEqL65q4EiBxWDZ5BX7nztIzoOXOImADoIiCD0IEg7B
+         8VXH8VPdyosOLsOcW25w+VKFWUiZIkK+AVkNl5c3j+/lqsMP0WOUbbq0v70ztRL3HCvF
+         1gkw==
+X-Gm-Message-State: AOAM531h0nSc9LZ8zs05wUiicv7Sll4Z2v6qPiGwc5/lwVvmDi4n7zF6
+        0R//PlQ/KDmluu9AyedsVJCqRc1ReMhTNPeE5v5+aMOqFeyTNA==
+X-Google-Smtp-Source: ABdhPJwlcGpj+T3QTXT17HE8BVIlUCKVv+0gPDNrhP0U3vjXyvo/Tdg6Szx/eaUBNB+S11QVqEXZoTjdUwDEqMjfETU=
+X-Received: by 2002:a25:9982:: with SMTP id p2mr45548228ybo.174.1621964077250;
+ Tue, 25 May 2021 10:34:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2601:646:c303:6700:7972:164b:11be:8bb8] (2601:646:c303:6700:7972:164b:11be:8bb8) by SA0PR11CA0180.namprd11.prod.outlook.com (2603:10b6:806:1bb::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26 via Frontend Transport; Tue, 25 May 2021 17:34:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e8234430-8a5d-4f43-3365-08d91fa35921
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4685:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4685E1274B4EA565219ACEBAF0259@SJ0PR10MB4685.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vjd2tXrqNq2hB9mWlm5wtzl5/fuVkCmcARanjv3QSIix1TeiFJpxjig5trRdzWp8tce5N5OE+obYcxoX0h9BP5zz8WN6IeL7xnJTp8jeiIunSBNmel0Q4GYb87zG2NyJSQ8kE5Je1XT1ZIkv5lFIDuSRwCT3Kem9IxX5/91M7OqgZVla+7an8fc7TayEn5IrdaugmCq4Q6x6hFQQ5wIHTAIputcJra5yxTiwoRuuEeW66/YzmnSevmSOO4wGTb2lHwL7IO1u+ZsPjUI1FL77/qACViYzjIYcWCFa3dKMZ9oG+7k0drEAoGZcAFCaxypOvuQsb+zMwB5RzRrb171odOOMbTM+MrhACVnrRiEZr01iw97Vk2tpLLEXQaMlSbojGdip3nzkuvOrxx4zLqQK8IJup6Vm/uKkTwdJts//B53kgVU0E848Ys1+mVwHgYMJHX6Md6SZn0KvpGUVBplD0SzxntmpzMGeepw3OVTjldGm5OgY8SjAHsqaMnP2MJNqhst/bXN9bFVAol1FGLTsjr0UQYY7/zPtsG2MTkjA+HbYoUuzopbX0JvY7BcI+JeyLV9KYakC1oh+dvCCeMIipX4tAq1S/Pb8LtwE1+IPq/5jrGDbqFQoq+i12EThEx8BlH+VLFtImCxNsOfloCX2euZJ/jC6Z77bngfEhx7OAH1uZJMJ5AAZtEuvb98iBzij
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(366004)(39860400002)(376002)(66556008)(316002)(66476007)(6666004)(8676002)(83380400001)(8936002)(38100700002)(7416002)(31696002)(31686004)(36756003)(6486002)(86362001)(66946007)(2906002)(478600001)(53546011)(107886003)(44832011)(4326008)(5660300002)(110136005)(2616005)(16526019)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?Xr42yOjLakIMDVJCtkMciLJfLdaY91a8Syn7xPEFsHnelnK7TRK1WWgq?=
- =?Windows-1252?Q?1R7H6lTtj8ViuhjOeM7TUN0NvGZw4Ljhjgo7h9IiGwqUktrGa4JY7d7k?=
- =?Windows-1252?Q?1mQgyW4XwQbqVrGJrUz5KWdl+sdnhO97O8TtqD2xdOx/XwuU//VWapGe?=
- =?Windows-1252?Q?RP4tjksItZa6aVE9AJJank2y2JRfLhRBVM81wm4jHxGvxIXN3ZtaXWN2?=
- =?Windows-1252?Q?MA3tjoFuGV1u0kDLZqE4lvxvp7Ql37tBNHq7ZSZ+iORAQvai+PM1zdgh?=
- =?Windows-1252?Q?t27Hpz87/RwUSL7Qjd/OYONRwxz1dxleDM0kVJ6nI8m+c7KKt+OKOsoM?=
- =?Windows-1252?Q?z/LD1vIBCPHYhjRRymNTYf2jHOVmBgnRcQgoqI7tgF071B30mixoHV5h?=
- =?Windows-1252?Q?pMtOibkIbuz/fzC0NNuMyCCZExI1UnjDqD/eypH2CdIXMrVti+uoZesJ?=
- =?Windows-1252?Q?9drYSCno7cKV8n37L9wEywk1jGp3/a9nM/NMBBWrn5YyhLyC77W0xQQ4?=
- =?Windows-1252?Q?da12K6031oy2UNxnhJlXsEz62Rltny46UCA6Z2DZRjnp2+1mZZQfTiNb?=
- =?Windows-1252?Q?qIsH0JIZNDYVtLiAjUV9rj2GJ/hAdSWJ9mG4/ohtN4uVSRZTLkkRo0lQ?=
- =?Windows-1252?Q?WBb7tBJZOqVrcrfp9HdbiFpajOq/dIKiPVbncJ81odWN9imNT8rpuW+5?=
- =?Windows-1252?Q?hvFdL3/9e4QrAcIUCDgksrlpfl8t7hCtCfkUG+l6/j9h4tn8mk/sTpSh?=
- =?Windows-1252?Q?q8XqUVBgW2xEIv6mT7sAF3m5MWA3ZeYfNGeTT8ulnIKCBZ2pcj4sCznJ?=
- =?Windows-1252?Q?seHbmSPp4/NymwVuv8ItvG7IUnShP1PwpkfEZSN1lm87Etw4dbwN73eU?=
- =?Windows-1252?Q?QZQkCMv1dbzy4bvpQCikAQYaYJXOEjc4FXOK4MjWQCTkpVd0nEMrGW7p?=
- =?Windows-1252?Q?m0DWFrFD7zXCyb7nJTvyCkKjsIRan6zk+cY+tPnPoP8k56sel/Yg7Nob?=
- =?Windows-1252?Q?clbR48+fZz1a+3E/etIuz/eGMlyFm+++sg05CGW//rzxBa2s1fxUI0lr?=
- =?Windows-1252?Q?yU4Uk2LuIxpkl7UVWoaK+gtKqdFCHy7J18XpV2ArgDfVb5Q6HuTrwFaH?=
- =?Windows-1252?Q?mBXH7BdjTPfHZeitOMXaTedGXTZrVH5nH9SLKP/SSYizR/f+WfcVh5hW?=
- =?Windows-1252?Q?CzOhoYZpYyJ9Tbvr5xB17cm2lX0nrUe9VlIxAVID8bve8+h81wD9Ey3u?=
- =?Windows-1252?Q?yp1hWo5J0o8CRDn2oJ05mkZ2uMoZ3bIsPOZGTH18jrYUkS81RyFZbMX8?=
- =?Windows-1252?Q?8EybMZ6Q8nhpojwzxJItlT8TwwsHW0lShiirPQg2b5fbI4Zbbqj+6fnQ?=
- =?Windows-1252?Q?L5zxB6a98jD2UCwv15IVY/2aPSL4GXrdHXYUxLBVtAzpahVpHnKbtnLu?=
- =?Windows-1252?Q?gYHOsxDXFJGTvNl7HUpWVdbHOjBA0YfFLdwDgyd1dp5uYIgIjhj8wqrB?=
- =?Windows-1252?Q?RdJAPLs3?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8234430-8a5d-4f43-3365-08d91fa35921
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 17:34:28.7242
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +g6H4HQOfwYQJPXhoJERFw4G/NsHQdh8mt0CrIO79bRWqnTVRxFlCg1gQa9UXMs8uciyLnr4AjGq0qn9LjENbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4685
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9995 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105250107
-X-Proofpoint-GUID: bwLbBbKme1Jaff0Z_5kBes8OpPTf03sQ
-X-Proofpoint-ORIG-GUID: bwLbBbKme1Jaff0Z_5kBes8OpPTf03sQ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9995 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105250108
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com> <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
+ <87eedxbtkn.fsf@stealth> <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
+ <877djnaq11.fsf@stealth> <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+ <CAMdYzYo-vdJvT_MPNTYvdveG3W8na7qMVEZFL4AjyQWqcLZi=Q@mail.gmail.com>
+ <CAMj1kXEBePfKDOc6eo9yjZPnVeFimX-zxR+R3As+2pP9XnZkuQ@mail.gmail.com>
+ <CAMdYzYrH_M92Pc6AqTgagtATr1TPq7Pdm57hadZeAmMBF2f0nA@mail.gmail.com>
+ <CAMj1kXHsGgFedbhW2CiS5gveK3=ZxhXQ5siDeHJyttkOVKBQrQ@mail.gmail.com>
+ <CAMdYzYruNYtJ8hwKPBUHPed1-=tV=CWDd_oSQtRmr4BJHp=YxA@mail.gmail.com> <92c5785a-18f6-182a-b51b-9dfc373a5c01@arm.com>
+In-Reply-To: <92c5785a-18f6-182a-b51b-9dfc373a5c01@arm.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 25 May 2021 13:34:26 -0400
+Message-ID: <CAMdYzYosbM8tKTzD5boSRokw6LwsAr_VUSodMANh1HtAuhh_=A@mail.gmail.com>
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Rob Herring <robh@kernel.org>, PCI <linux-pci@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 1:25 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-05-25 18:01, Peter Geis wrote:
+> > On Tue, May 25, 2021 at 12:44 PM Ard Biesheuvel <ardb@kernel.org> wrote=
+:
+> >>
+> >> On Tue, 25 May 2021 at 18:23, Peter Geis <pgwipeout@gmail.com> wrote:
+> >>>
+> >>> On Tue, May 25, 2021 at 11:55 AM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+> >>>>
+> >>>> On Tue, 25 May 2021 at 17:34, Peter Geis <pgwipeout@gmail.com> wrote=
+:
+> >>>>>
+> >>>>> On Tue, May 25, 2021 at 9:57 AM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
+> >>>>>>
+> >>>>>> On Tue, 25 May 2021 at 15:42, Punit Agrawal <punitagrawal@gmail.co=
+m> wrote:
+> >>>>>>>
+> >>>>>>> Hi Ard,
+> >>>>>>>
+> >>>>>>> Ard Biesheuvel <ardb@kernel.org> writes:
+> >>>>>>>
+> >>>>>>>> On Sun, 23 May 2021 at 13:06, Punit Agrawal <punitagrawal@gmail.=
+com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> Robin Murphy <robin.murphy@arm.com> writes:
+> >>>>>>>>>
+> >>>>>>>>>> [ +linux-pci for visibility ]
+> >>>>>>>>>>
+> >>>>>>>>>> On 2021-05-18 10:09, Alexandru Elisei wrote:
+> >>>>>>>>>>> After doing a git bisect I was able to trace the following er=
+ror when booting my
+> >>>>>>>>>>> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+> >>>>>>>>>>> [..]
+> >>>>>>>>>>> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie=
+@f8000000 ranges:
+> >>>>>>>>>>> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa00=
+0000..0x00fbdfffff ->
+> >>>>>>>>>>> 0x00fa000000
+> >>>>>>>>>>> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe0=
+0000..0x00fbefffff ->
+> >>>>>>>>>>> 0x00fbe00000
+> >>>>>>>>>>> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 n=
+ot found, using dummy
+> >>>>>>>>>>> regulator
+> >>>>>>>>>>> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 n=
+ot found, using dummy
+> >>>>>>>>>>> regulator
+> >>>>>>>>>>> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge t=
+o bus 0000:00
+> >>>>>>>>>>> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
+> >>>>>>>>>>> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa00=
+0000-0xfbdfffff 64bit]
+> >>>>>>>>>>> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000=
+-0xfffff] (bus
+> >>>>>>>>>>> address [0xfbe00000-0xfbefffff])
+> >>>>>>>>>>> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x=
+060400
+> >>>>>>>>>>> [    0.373973] pci 0000:00:00.0: supports D1
+> >>>>>>>>>>> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3=
+hot
+> >>>>>>>>>>> [    0.378518] pci 0000:00:00.0: bridge configuration invalid=
+ ([bus 00-00]),
+> >>>>>>>>>>> reconfiguring
+> >>>>>>>>>>> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x=
+010802
+> >>>>>>>>>>> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x=
+00003fff 64bit]
+> >>>>>>>>>>> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 =
+(was 128, max 256)
+> >>>>>>>>>>> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe ba=
+ndwidth, limited by
+> >>>>>>>>>>> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s=
+ with 8.0 GT/s PCIe
+> >>>>>>>>>>> x4 link)
+> >>>>>>>>>>> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is =
+updated to 01
+> >>>>>>>>>>> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem si=
+ze 0x00100000]
+> >>>>>>>>>>> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [me=
+m size 0x00100000]
+> >>>>>>>>>>> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem siz=
+e 0x00004000 64bit]
+> >>>>>>>>>>> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem=
+ size 0x00004000 64bit]
+> >>>>>>>>>>> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
+> >>>>>>>>>>> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ=
+ 78
+> >>>>>>>>>>> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 7=
+8
+> >>>>>>>>>>> [..]
+> >>>>>>>>>>> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
+> >>>>>>>>>>> resource flags for
+> >>>>>>>>>>> 64-bit memory addresses").
+> >>>>>>>>>>
+> >>>>>>>>>> FWFW, my hunch is that the host bridge advertising no 32-bit m=
+emory
+> >>>>>>>>>> resource, only only a single 64-bit non-prefetchable one (even=
+ though
+> >>>>>>>>>> it's entirely below 4GB) might be a bit weird and tripping som=
+ething
+> >>>>>>>>>> up in the resource assignment code. It certainly seems like th=
+e thing
+> >>>>>>>>>> most directly related to the offending commit.
+> >>>>>>>>>>
+> >>>>>>>>>> I'd be tempted to try fiddling with that in the DT (i.e. chang=
+ing
+> >>>>>>>>>> 0x83000000 to 0x82000000 in the PCIe node's "ranges" property)=
+ to see
+> >>>>>>>>>> if it makes any difference. Note that even if it helps, though=
+, I
+> >>>>>>>>>> don't know whether that's the correct fix or just a bodge arou=
+nd a
+> >>>>>>>>>> corner-case bug somewhere in the resource code.
+> >>>>>>>>>
+> >>>>>>>>>  From digging into this further the failure seems to be due to =
+a mismatch
+> >>>>>>>>> of flags when allocating resources in pci_bus_alloc_from_region=
+() -
+> >>>>>>>>>
+> >>>>>>>>>      if ((res->flags ^ r->flags) & type_mask)
+> >>>>>>>>>              continue;
+> >>>>>>>>>
+> >>>>>>>>> Though I am also not sure why the failure is only being reporte=
+d on
+> >>>>>>>>> RK3399 - does a single 64-bit window have anything to do with i=
+t?
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> The NVMe in the example exposes a single 64-bit non-prefetchable=
+ BAR.
+> >>>>>>>> Such BARs can not be allocated in a prefetchable host bridge win=
+dow
+> >>>>>>>> (unlike the converse, i.e., allocating a prefetchable BAR in a
+> >>>>>>>> non-prefetchable host bridge window is fine)
+> >>>>>>>>
+> >>>>>>>> 64-bit non-prefetchable host bridge windows cannot be forwarded =
+by PCI
+> >>>>>>>> to PCI bridges, they simply lack the BAR registers to describe t=
+hem.
+> >>>>>>>> Therefore, non-prefetchable endpoint BARs (even 64-bit ones) nee=
+d to
+> >>>>>>>> be carved out of a host bridge's non-prefetchable 32-bit window =
+if
+> >>>>>>>> they need to pass through a bridge.
+> >>>>>>>
+> >>>>>>> Thank you for the explanation. I also looked at the PCI-to-PCI Br=
+idge
+> >>>>>>> spec to understand where some of the limitations are coming from.
+> >>>>>>>
+> >>>>>>>> So the error seems to be here that the host bridge's 32-bit
+> >>>>>>>> non-prefetchable window has the 64-bit attribute set, even thoug=
+h it
+> >>>>>>>> resides below 4 GB entirely. I suppose that the resource allocat=
+ion
+> >>>>>>>> could be made more forgiving (and it was in the past, before com=
+mit
+> >>>>>>>> 9d57e61bf723 was applied). However, I would strongly recommend n=
+ot
+> >>>>>>>> deviating from common practice, and just describe the 32-bit
+> >>>>>>>> addressable non-prefetchable resource window as such.
+> >>>>>>>
+> >>>>>>> IIUC, the host bridge's configuration (64-bit on non-prefetchable
+> >>>>>>> window) is based on what the hardware advertises.
+> >>>>>>>
+> >>>>>>
+> >>>>>> What do you mean by 'what the hardware advertises'? The host bridg=
+e is
+> >>>>>> apparently configured to decode a 32-bit addressable window as MMI=
+O,
+> >>>>>> and the question is why this window has the 64-bit attribute set i=
+n
+> >>>>>> the DT description.
+> >>>>>>
+> >>>>>>> Can you elaborate on what you have in mind to correct the
+> >>>>>>> non-prefetchable resource window? Are you thinking of adding a qu=
+irk
+> >>>>>>> somewhere to address this?
+> >>>>>>>
+> >>>>>>
+> >>>>>> No. Just fix the DT.
+> >>>>>
+> >>>>> Good Morning,
+> >>>>>
+> >>>>> I believe Robin is correct that there is more to this.
+> >>>>> While attempting to work out why dGPUs won't work with the rk356x
+> >>>>> series PCIe controllers, Christian K=C3=B6nig from the amd-gpu driv=
+er
+> >>>>> mailing list noticed the gpu was incorrectly allocated a 64bit
+> >>>>> non-prefetchable BAR which should instead be a 32 non-prefetchable
+> >>>>> BAR.
+> >>>>>
+> >>>>
+> >>>> This is due to the translation. For some reason, lspci translates th=
+e
+> >>>> BAR values to CPU addresses, but the PCI side addresses are within
+> >>>> 32-bits.
+> >>>
+> >>> The kernel log reports the same thing:
+> >>> [    6.662141] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x0fffffff
+> >>> 64bit pref]
+> >>> [    6.662963] pci 0000:01:00.0: reg 0x18: [mem 0x00000000-0x0001ffff=
+ 64bit]
+> >>>
+> >>> You are saying this is a display only issue?
+> >>>
+> >>
+> >> Yes. What do the 'root bus resource' log lines say for these regions?
+> >> Those should give you both the CPU address as well as the bus address.
+> >
+> > [    6.673497] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff]
+> > (bus address [0x3f700000-0x3f7fffff])
+> > [    6.674642] pci_bus 0000:00: root bus resource [mem
+> > 0x300000000-0x33f6fffff] (bus address [0x00000000-0x3f6fffff])
+>
+> Assuming RK356x has a similar memory map to other Rockchip SoCs, I
+> suspect you may have a larger issue with your mem space window shadowing
+> a significant chunk of your RAM.
+>
+> Robin.
 
+Delightfully they seem to have learned a thing or two.
+The 1GB window resides outside the system ram space.
+Though the mmio devices do still take up the tail end of the 4G space
+at 0xf0000000 - 0xffffffff.
+The system ram covers up to 0x2 0x00000000, the rk356x supports 8G of
+ram (I know, on a 32 bit bus, I've raged about it already).
+Then the PCIe controllers start at 0x3 0x00000000.
+This makes it seem the controllers have dedicated on chip ram which
+doesn't have direct access to system ram, though I don't know the
+implications of this (if I'm even interpreting it correctly).
 
-On 5/25/21 10:24 AM, Hannes Reinecke wrote:
-> On 5/25/21 6:47 PM, Stefan Hajnoczi wrote:
->> On Mon, May 24, 2021 at 11:33:33PM -0700, Dongli Zhang wrote:
->>> On 5/24/21 6:24 AM, Stefan Hajnoczi wrote:
->>>> On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
->>>>> On 5/23/21 8:38 AM, Dongli Zhang wrote:
->>>>>> This RFC is to trigger the discussion about to poll and kick the
->>>>>> virtqueue on purpose in virtio-scsi timeout handler.
->>>>>>
->>>>>> The virtio-scsi relies on the virtio vring shared between VM and host.
->>>>>> The VM side produces requests to vring and kicks the virtqueue, while the
->>>>>> host side produces responses to vring and interrupts the VM side.
->>>>>>
->>>>>> By default the virtio-scsi handler depends on the host timeout handler
->>>>>> by BLK_EH_RESET_TIMER to give host a chance to perform EH.
->>>>>>
->>>>>> However, this is not helpful for the case that the responses are available
->>>>>> on vring but the notification from host to VM is lost.
->>>>>>
->>>>> How can this happen?
->>>>> If responses are lost the communication between VM and host is broken, and
->>>>> we should rather reset the virtio rings themselves.
->>>>
->>>> I agree. In principle it's fine to poll the virtqueue at any time, but I
->>>> don't understand the failure scenario here. It's not clear to me why the
->>>> device-to-driver vq notification could be lost.
->>>>
->>>
->>> One example is the CPU hotplug issue before the commit bf0beec0607d ("blk-mq:
->>> drain I/O when all CPUs in a hctx are offline") was available. The issue is
->>> equivalent to loss of interrupt. Without the CPU hotplug fix, while NVMe driver
->>> relies on the timeout handler to complete inflight IO requests, the PV
->>> virtio-scsi may hang permanently.
->>>
->>> In addition, as the virtio/vhost/QEMU are complex software, we are not able to
->>> guarantee there is no further lost of interrupt/kick issue in the future. It is
->>> really painful if we encounter such issue in production environment.
->>
->> Any number of hardware or software bugs might exist that we don't know
->> about, yet we don't pre-emptively add workarounds for them because where
->> do you draw the line?
->>
->> I checked other SCSI/block drivers and found it's rare to poll in the
->> timeout function so there does not seem to be a consensus that it's
->> useful to do this.
->>
-> Not only this; it's downright dangerous attempting to do that in SCSI.
-> In SCSI we don't have fixed lifetime guarantees that NVMe has, so there will be
-> a race condition between timeout and command completion.
-
-Thank you very much for the explanation. Yes, we cannot do that due to the race.
-
-Dongli Zhang
-
-
-> Plus there is no interface in SCSI allowing to 'poll' for completions in a
-> meaningful manner.
-> 
->> That said, it's technically fine to do it, the virtqueue APIs are there
->> and can be used like this. So if you and others think this is necessary,
->> then it's a pretty small change and I'm not against merging a patch like
->> this.
->>
-> I would rather _not_ put more functionality into the virtio_scsi timeout
-> handler; this only serves to assume that the timeout handler has some
-> functionality in virtio.
-> Which it patently hasn't, as the prime reason for a timeout handler is to
-> _abort_ a command, which we can't on virtio.
-> Well, we can on virtio, but qemu as the main user will re-route the I/O from
-> virtio into doing async-I/O, and there is no way how we can abort outstanding
-> asynchronous I/O.
-> Or any other ioctl, for that matter.
-> 
-> Cheers,
-> 
-> Hannes
+>
+> >
+> > I tweaked the original Rockchip values to place the non-prefetchable
+> > memory first with the configuration and io later in this boot.
+> >
+> >>
+> >>
+> >>>>
+> >>>> Are you sure the amdgpu driver can even deal with non-1:1 host bridg=
+es?
+> >>>
+> >>> I cannot answer this as I'm not an amdgpu dev.
+> >>>
+> >>>>
+> >>>>> The ranges currently set are:
+> >>>>> ranges =3D <0x81000000 0x0 0x00800000 0x3 0x00800000 0x0 0x00100000
+> >>>>> 0x82000000 0x0 0x00900000 0x3 0x00900000 0x0 0x3f700000>;
+> >>>>>
+> >>>>
+> >>>> So you have two ranges here.
+> >>>
+> >>> The IO and PCI memory ranges.
+> >>>
+> >>> There is a third range, the configuration range, which is defined in
+> >>> the reg block:
+> >>> <0x3 0x00000000 0x0 0x800000>
+> >>> All three are shared in the same 1GB window on the rk356x.
+> >>>
+> >>
+> >> But the reg block is not a resource window, it is a configuration
+> >> range to program the host bridge.
+> >>
+> >>> https://elixir.bootlin.com/linux/v5.13-rc3/source/Documentation/devic=
+etree/bindings/pci/designware-pcie.txt#L12
+> >>>
+> >>>>
+> >>>>> but the final allocation was:
+> >>>>>
+> >>>>> lspci -v
+> >>>>> 00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd Device 356=
+6
+> >>>>> (rev 01) (prog-if 00 [Normal decode])
+> >>>>>          Flags: bus master, fast devsel, latency 0, IRQ 96
+> >>>>>          Bus: primary=3D00, secondary=3D01, subordinate=3Dff, sec-l=
+atency=3D0
+> >>>>>          I/O behind bridge: 00001000-00001fff [size=3D4K]
+> >>>>>          Memory behind bridge: 00900000-009fffff [size=3D1M]
+> >>>>>          Prefetchable memory behind bridge:
+> >>>>> 0000000010000000-000000001fffffff [size=3D256M]
+> >>>>
+> >>>> But the host bridge/root port decodes two disjoint regions??
+> >>>>
+> >>>>>          Expansion ROM at 300a00000 [virtual] [disabled] [size=3D64=
+K]
+> >>>>>          Capabilities: [40] Power Management version 3
+> >>>>>          Capabilities: [50] MSI: Enable+ Count=3D1/32 Maskable- 64b=
+it+
+> >>>>>          Capabilities: [70] Express Root Port (Slot-), MSI 00
+> >>>>>          Capabilities: [b0] MSI-X: Enable- Count=3D1 Masked-
+> >>>>>          Capabilities: [100] Advanced Error Reporting
+> >>>>>          Capabilities: [148] Secondary PCI Express
+> >>>>>          Capabilities: [160] L1 PM Substates
+> >>>>>          Capabilities: [170] Vendor Specific Information: ID=3D0002=
+ Rev=3D4
+> >>>>> Len=3D100 <?>
+> >>>>>          Kernel driver in use: pcieport
+> >>>>>
+> >>>>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> >>>>> [AMD/ATI] Turks PRO [Radeon HD 7570] (prog-if 00 [VGA controller])
+> >>>>>          Subsystem: Dell Turks PRO [Radeon HD 7570]
+> >>>>>          Flags: bus master, fast devsel, latency 0, IRQ 95
+> >>>>>          Memory at 310000000 (64-bit, prefetchable) [size=3D256M]
+> >>>>>          Memory at 300900000 (64-bit, non-prefetchable) [size=3D128=
+K]
+> >>>>>          I/O ports at 1000 [size=3D256]
+> >>>>>          Expansion ROM at 300920000 [disabled] [size=3D128K]
+> >>>>>          Capabilities: [50] Power Management version 3
+> >>>>>          Capabilities: [58] Express Legacy Endpoint, MSI 00
+> >>>>>          Capabilities: [a0] MSI: Enable- Count=3D1/1 Maskable- 64bi=
+t+
+> >>>>>          Capabilities: [100] Vendor Specific Information: ID=3D0001=
+ Rev=3D1
+> >>>>> Len=3D010 <?>
+> >>>>>          Capabilities: [150] Advanced Error Reporting
+> >>>>>          Kernel driver in use: radeon
+> >>>>>
+> >>>>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Turks
+> >>>>> HDMI Audio [Radeon HD 6500/6600 / 6700M Series]
+> >>>>>          Subsystem: Dell Turks HDMI Audio [Radeon HD 6500/6600 / 67=
+00M Series]
+> >>>>>          Flags: bus master, fast devsel, latency 0, IRQ 98
+> >>>>>          Memory at 300940000 (64-bit, non-prefetchable) [size=3D16K=
+]
+> >>>>>          Capabilities: [50] Power Management version 3
+> >>>>>          Capabilities: [58] Express Legacy Endpoint, MSI 00
+> >>>>>          Capabilities: [a0] MSI: Enable+ Count=3D1/1 Maskable- 64bi=
+t+
+> >>>>>          Capabilities: [100] Vendor Specific Information: ID=3D0001=
+ Rev=3D1
+> >>>>> Len=3D010 <?>
+> >>>>>          Capabilities: [150] Advanced Error Reporting
+> >>>>>          Kernel driver in use: snd_hda_intel
+> >>>>>
+> >>>>> This will obviously clobber registers during writes.
+> >>>>
+> >>>> I don't follow. Which writes will clobber which registers, and how i=
+s
+> >>>> it obvious?
+> >>>
+> >>> Writing a 64 bit word into a 32 bit register will either clobber the
+> >>> next higher 32 bit register.
+> >>> Quoting Christian:
+> >>> "When you program a 32bit BAR as 64bit you overwrite the register beh=
+ind
+> >>> the BAR address with the upper 32bits of the 64bit address value.
+> >>> So even if the allocation fits into 32bits, the extra register write
+> >>> will certainly put your device into a banana state."
+> >>>
+> >>> https://lists.freedesktop.org/archives/amd-gfx/2021-May/064232.html
+> >>>
+> >>
+> >> I seriously doubt that this is what is going on here.
+> >>
+> >> lspci -x will give you the bare BAR values - I suspect that those are
+> >> probably fine.
+> >
+> > lspci -x
+> > 00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd Device 3566 (r=
+ev 01)
+> > 00: 87 1d 66 35 07 05 10 40 01 00 04 06 00 00 01 00
+> > 10: 00 00 00 00 00 00 00 00 00 01 ff 00 10 10 00 20
+> > 20: 00 10 00 10 01 00 f1 0f 00 00 00 00 00 00 00 00
+> > 30: 00 00 00 00 40 00 00 00 00 00 00 00 5f 01 02 00
+> >
+> > 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+> > [AMD/ATI] Turks PRO [Radeon HD 7570]
+> > 00: 02 10 5d 67 07 00 10 20 00 00 00 03 00 00 80 00
+> > 10: 0c 00 00 00 00 00 00 00 04 00 00 10 00 00 00 00
+> > 20: 01 10 70 3f 00 00 00 00 00 00 00 00 28 10 20 2b
+> > 30: 00 00 02 10 50 00 00 00 00 00 00 00 5f 01 00 00
+> >
+> > 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Turks
+> > HDMI Audio [Radeon HD 6500/6600 / 6700M Series]
+> > 00: 02 10 90 aa 06 00 10 20 00 00 03 04 00 00 80 00
+> > 10: 04 00 04 10 00 00 00 00 00 00 00 00 00 00 00 00
+> > 20: 00 00 00 00 00 00 00 00 00 00 00 00 28 10 90 aa
+> > 30: 00 00 00 00 50 00 00 00 00 00 00 00 ff 02 00 00
+> >
+> >>
+> >>
+> >>>>
+> >>>>> Also, if <0x82000000> (32 bit) is changed to <0x83000000> (64 bit),
+> >>>>> most of the allocations for the dGPU fail due to no valid regions
+> >>>>> available.
+> >>>>>
+> >>>>
+> >>>> But wasn't the original problem that the resource window was 64-bit =
+to
+> >>>> begin with? Are you sure we are talking about the same problem here?
+> >>>
+> >>> The rk3399 in the original report has a 32MB memory window in the
+> >>> upper end of the 4GB range.
+> >>> The rk356x has a similar layout, or it can use a 1GB window available
+> >>> at <0x3 0x00000000>.
+> >>> Rockchip's default windows are defined as 64bit.
+> >>>
+> >>> The rk3399 doesn't have enough space to reasonably define two windows=
+,
+> >>> one 32bit, one 64bit, to work around an allocation bug.
+> >>> These are the defined regions in the rk3399:
+> >>> ranges =3D <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
+> >>> <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
+> >>>
+> >>
+> >> All you really need is a 32-bit non-prefetchable resource window: any
+> >> BAR can be allocated from that. A 64-bit BAR can carry a 32-bit number
+> >> (just add zeroes at the top), and a prefetchable BAR can happily live
+> >> in a non-prefetchable window, with a theoretical performance impact if
+> >> the OS actually does use different memory attributes for the
+> >> prefetchable window (but I don't think Linux ever handles it this way)
+> >
+> > So is the IO range necessary as well or will it be automatically
+> > allocated as well?
+> >
+> >>
+> >>
+> >>>
+> >>>>
+> >>>>
+> >>>>>>
+> >>>>>>> I am happy to put something together once I understand the prefer=
+red way
+> >>>>>>> to go about it.
+> >>>>>>>
+> >>>>>>> Thanks,
+> >>>>>>> Punit
+> >>>>>>>
+> >>>>>>> [...]
+> >>>>>>>
+> >>>>>>
+> >>>>>> _______________________________________________
+> >>>>>> Linux-rockchip mailing list
+> >>>>>> Linux-rockchip@lists.infradead.org
+> >>>>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
