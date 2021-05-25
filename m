@@ -2,95 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC533390297
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2DE39029A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhEYNft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:35:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:56204 "EHLO foss.arm.com"
+        id S233339AbhEYNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:36:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56228 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233299AbhEYNfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:35:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AFC01042;
-        Tue, 25 May 2021 06:34:18 -0700 (PDT)
-Received: from [10.57.2.8] (unknown [10.57.2.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CBEC3F719;
-        Tue, 25 May 2021 06:34:15 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-To:     Quentin Perret <qperret@google.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, dietmar.eggemann@arm.com
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
- <YKzETaPD/Flnz+dz@google.com>
- <20210525094601.GB369979@e124901.cambridge.arm.com>
- <f8a2bbde-47c4-bd7d-96fa-228c9d9e2779@arm.com> <YKz2bz6EiLwISOVV@google.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d21e69fd-9da5-3e5d-662c-c753b581cab0@arm.com>
-Date:   Tue, 25 May 2021 14:34:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233314AbhEYNgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:36:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=QVfCIaJRZFdqpoQnaoHLSToEK5uzlriQqJf3wkiuazc=; b=5R9PKruX3AeXuSgBIK5hbOv6m+
+        y83vfrQcHBqM9gxRwfUDfCXViccGgbQaYYxnThE+jTEmg0PlZq+RSHuEI2x1i+IwQon8hHTiQHXWm
+        ZFhV7NXIVHludp9V4D2izp33zklOGKmv09hgudoXqb31Pm64byQOP+2ULCxi4kU57xfQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1llXCc-006B0y-8r; Tue, 25 May 2021 15:34:34 +0200
+Date:   Tue, 25 May 2021 15:34:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
+Message-ID: <YKz86iMwoP3VT4uh@lunn.ch>
+References: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YKz2bz6EiLwISOVV@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525055803.22116-1-vee.khee.wong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+On Tue, May 25, 2021 at 01:58:03PM +0800, Wong Vee Khee wrote:
+> Synopsys MAC controller is capable of pairing with external PHY devices
+> that accessible via Clause-22 and Clause-45.
+> 
+> There is a problem when it is paired with Marvell 88E2110 which returns
+> PHY ID of 0 using get_phy_c22_id(). We can add this check in that
+> function, but this will break swphy, as swphy_reg_reg() return 0. [1]
 
-On 5/25/21 2:06 PM, Quentin Perret wrote:
-> Hi Lukasz,
-> 
-> On Tuesday 25 May 2021 at 12:03:14 (+0100), Lukasz Luba wrote:
->> That's a few more instructions to parse the 'flags' filed. I'm not sure
->> if that brings speed improvements vs. if we not parse and have bool
->> filed with a simple looping. The out-of-order core might even suffer
->> from this parsing and loop index manipulations...
-> 
-> I'm not sure what you mean about parsing here? I'm basically suggesting
-> to do something along the lines of:
+Is it possible to identify it is a Marvell PHY? Do any of the other
+C22 registers return anything unique? I'm wondering if adding
+.match_phy_device to genphy would work to identify it is a Marvell PHY
+and not bind to it. Or we can turn it around, make the
+.match_phy_device specifically look for the fixed-link device by
+putting a magic number in one of the vendor registers.
 
-I thought Vincent was going to re-use the 'flags' for it and keep it for
-other purpose as well - which would require to parse/map-to-feature.
-That's why I commented the patch earlier, pointing out that we shouldn't
-prepare the code for future unknown EM_PERF_STATE_*. We can always
-modify it when we need to add another feature later.
-
-> 
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index daaeccfb9d6e..f02de32d2325 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -128,13 +128,11 @@ struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
-> 
->          for (i = 0; i < pd->nr_perf_states; i++) {
->                  ps = &pd->table[i];
-> -               if (ps->flags & EM_PERF_STATE_INEFFICIENT)
-> -                       continue;
->                  if (ps->frequency >= freq)
->                          break;
->          }
-> 
-> -       return ps;
-> +       return &pd->table[ps->next_efficient_idx];
->   }
-> 
-> What would be wrong with that?
-
-Until we measure it, I don't know TBH. It looks OK for the first glance.
-I like it also because it's self-contained, doesn't require parsing,
-doesn't bring any 'generic' variable.
-
-Regards,
-Lukasz
-
-> 
-> Thanks,
-> Quentin
-> 
+    Andrew
