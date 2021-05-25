@@ -2,156 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E7639008C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3F8390094
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhEYMFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:05:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49356 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhEYMFe (ORCPT
+        id S232222AbhEYMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232212AbhEYMIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:05:34 -0400
-Received: from mail-ua1-f72.google.com ([209.85.222.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llVn1-00085e-45
-        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 12:04:03 +0000
-Received: by mail-ua1-f72.google.com with SMTP id d30-20020ab007de0000b029020e2f98646dso12956048uaf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:04:03 -0700 (PDT)
+        Tue, 25 May 2021 08:08:19 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5E4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:06:47 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id b9so11723350ejc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z/HRJ7jt3I9xiHLTnaJ728pjDecVq61Fe3GesJ/a/Ik=;
+        b=paUTTbxqqbx4WtSK/evYiZQ4F+VGcBkSPkm8wuqbf1gdiBpyWywTssrVLLzvJiietU
+         nPWQS1bvJ9r44071kgWmY8yExcWWWTCLVEQ7xoWuxA9Um5S8WkdNAKk+3+u/a2j0rvid
+         D+askmUpe2QBVxW+umjoTHR8Hmch+4I2SaSw8F/GPUmjQjQ87wcdlD4+FS3wx25xyynI
+         xkRyF5VDlLayMkbFDuN/EweRMcDFI4qhas5UeBF7j/irw85rFZVzLtg0HQrARX0xOmA6
+         2sJfPKZ5co5oFIaDA2kVlAvn3yTt3CbRBgCbytLQSz3YIWJbPXxvI1pqTbimc3NaRjJP
+         3Y7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ov2aOGWwe13sRFaggK9ebqlQkrTYdvNCRKExlndHI9g=;
-        b=Jz/Wr6TssriJvZNRsTrZ2PrG7loAHcJqWcOV2PVrVz3VFKyg9WAcxMhgXedfvl0LDt
-         AfHkHpL9PduRGKBeH/a8BSXJM2tWSJwEjke0VCb7olHmaWSoZUPkRZQKicbgEP2whIyA
-         tF4rI6KUM7zD1NQiW5apVLDw3Qccz8XVp3diu2X5KCGTGeSOwC9Z/KUF3tP16hRLQkfk
-         hhgwh8+zITeB9p9TPC4K/R6MVpK2U/fbq/PxRSRqcP2weL3RaL/iaXRvqE8LJpDORMS0
-         sk5ATjvTnvlv0pKCh6mqAlopiM/o6DJIJ/iS2E6Q3KIwmC7UFpj5ByBODS0dTk/7tpto
-         XSag==
-X-Gm-Message-State: AOAM532oU4Y0fJsvt0Zy5+9p9uszu1ZtvD22EHFz8+mgL8Ppv3a6KJYF
-        fdeWlmWA4AhUciaEDdDp0aEcuzTK1JLlDUTiMtog1O9H6qthg733Kf3xdJzCb7Ku5kaVGo/6G7z
-        42M+qFAR/Nf/wqYCTmWBtituS77iLt3/qMDGfaL+RIQ==
-X-Received: by 2002:a05:6122:a16:: with SMTP id 22mr24550335vkn.18.1621944242241;
-        Tue, 25 May 2021 05:04:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/dj3Oduy8Xo23it+mIa7HBuI+j2VM7Wl2RfwLkeKdxRH0+SiUcz9Gmlw4vhVOBjjBWTrS3w==
-X-Received: by 2002:a05:6122:a16:: with SMTP id 22mr24550298vkn.18.1621944241996;
-        Tue, 25 May 2021 05:04:01 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.1])
-        by smtp.gmail.com with ESMTPSA id b81sm1247160vke.8.2021.05.25.05.03.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 05:04:01 -0700 (PDT)
-Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
- enabled
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Burton <paul.burton@mips.com>,
-        John Crispin <john@phrozen.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>
-References: <20210523232556.15017-1-digetx@gmail.com>
- <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
- <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
-Date:   Tue, 25 May 2021 08:03:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z/HRJ7jt3I9xiHLTnaJ728pjDecVq61Fe3GesJ/a/Ik=;
+        b=oV9ShSY01scQjZMXX7HjKj4sDtgozC0/AIJPOj5i0MCya4v1OxZgNZjaQsZvsHqkMq
+         bfrXzvye/iVg6Mt3Us9HRM3rcLCp5GmEs1Ye2pRuivn5/xFvREIW9ZDFxn7PtJsiNoG1
+         pPRejSpt9gvlCfSxv5zJjt+v6Y/G/cPTyjea4kjA3kV+baunrNnORdptSw+93hIU5KRz
+         8biArVZ62FeM1DzI+RJIr2Ool81m3u0uljH3/P5gGTpzJk8SqhQxezeS4PvHiljAwnLY
+         jZsBUgnJ8ZGQeegbdLqlKyJFKQTVyuyyPeVEkIjTDrPRdqmKbJGyEnKLBmI63lTf3bGr
+         HdoA==
+X-Gm-Message-State: AOAM5306w/mYZ/EXU1fKuxvF/N9aUsGvy8sQFNq5PqfbLOwsuOF1smHo
+        O61EMimwH0sc9TMAcdzwtgNjTIp0wcYNv/QRBjtOfQ==
+X-Google-Smtp-Source: ABdhPJxZFTcldhsoOv++7TFkwI7zjXf+hsB8glOEmAbdynSi6//CXZvrGlOb2bXh+chUsB8vJu1ZQYVlHhgrKkmMzeo=
+X-Received: by 2002:a17:906:c211:: with SMTP id d17mr28508067ejz.247.1621944405961;
+ Tue, 25 May 2021 05:06:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 25 May 2021 17:36:34 +0530
+Message-ID: <CA+G9fYtKx1=v39cbjicd3+-_652CY09kniqxpf8T3d3xL_d4sA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/37] 4.14.234-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/2021 08:39, Dmitry Osipenko wrote:
-> 24.05.2021 11:54, Geert Uytterhoeven пишет:
->> Hi Dmitry,
->>
->> On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>> There are couple older platforms that can't be compile-tested because they
->>> partially implement CLK API. It causes build failure of kernel drivers due
->>> to the missing symbols of the unimplemented part of CLK API.
->>>
->>> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
->>>                      MIPS Ralink.
->>>
->>> Disable compile-testing for HAVE_LEGACY_CLK=y.
->>>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>
->> Thanks for your patch!
->>
->>> --- a/init/Kconfig
->>> +++ b/init/Kconfig
->>> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
->>>
->>>  config COMPILE_TEST
->>>         bool "Compile also drivers which will not load"
->>> -       depends on HAS_IOMEM
->>> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
->>
->> That sounds a bit drastic to me.  Usually we just try to implement the
->> missing functionality, or provide stubs.
->> Which functions are missing?
-> 
-> Everything that belongs to CONFIG_COMMON_CLK needs stubs.
-> 
-> That is everything under CONFIG_HAVE_CLK [1], excluding functions
-> belonging to clk-devres.o and clk-bulk.o [2]. The HAVE_LEGACY_CLK
-> selects HAVE_CLK, but the COMMON_CLK is under HAVE_CLK too.
-> 
-> [1]
-> https://elixir.bootlin.com/linux/v5.13-rc3/source/include/linux/clk.h#L786
-> [2]
-> https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/clk/Makefile#L3
-> 
-> This problem is repeated over and over again for the past years. Some
-> maintainers are adding "depends on COMMON_CLK" for COMPILE_TEST of each
-> driver, but this doesn't solve the root of the problem, and thus, it's
-> constantly reoccurring.
-> 
-> Recently Krzysztof Kozlowski added couple more clk stubs for MIPS, but
-> still lots of stubs are missing. Some platforms don't have any stubs at
-> all and apparently nobody cares to fix them.
-> 
-> There 3 possible solutions:
-> 
-> 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
-> 2. Build stubs universally, maybe using weak functions.
+On Mon, 24 May 2021 at 21:05, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.234 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.234-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I vote for this one - global stubs.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Or for a new one:
-4. Disable COMPILE_TEST for specific platforms (mentioned in commit
-msg). Eventually could be like:
-config RALINK
-	depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Why? Because it is expected that a driver requiring/using missing clock
-stubs won't run on such legacy platform. Currently it cannot run because
-simply missing stubs will break build. Option (2) would make them
-compileable but not runnable, which is fine. However having a build time
-failure is better, so maybe let's just isolate platforms which are very
-poor in compile testing and don't enable them for most of the configs.
+## Build
+* kernel: 4.14.234-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: 535f9ea88cc881bdcb3db703d1a9f589effffdcf
+* git describe: v4.14.233-38-g535f9ea88cc8
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.233-38-g535f9ea88cc8
 
+## No regressions (compared to v4.14.232-324-g7c5a6946da44)
 
-Best regards,
-Krzysztof
+## No fixes (compared to v4.14.232-324-g7c5a6946da44)
+
+## Test result summary
+ total: 61870, pass: 49760, fail: 1509, skip: 9727, xfail: 874,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
