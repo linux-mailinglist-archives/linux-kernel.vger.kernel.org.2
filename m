@@ -2,68 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EBC390049
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6894D39004A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhEYLst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:48:49 -0400
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:50213 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229896AbhEYLss (ORCPT
+        id S232001AbhEYLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:49:27 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:64873 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229896AbhEYLt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:48:48 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 97F821848
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 12:47:17 +0100 (IST)
-Received: (qmail 2807 invoked from network); 25 May 2021 11:47:17 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 11:47:17 -0000
-Date:   Tue, 25 May 2021 12:47:15 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC 04/26] mm, slub: simplify kmem_cache_cpu and tid setup
-Message-ID: <20210525114715.GN30378@techsingularity.net>
-References: <20210524233946.20352-1-vbabka@suse.cz>
- <20210524233946.20352-5-vbabka@suse.cz>
+        Tue, 25 May 2021 07:49:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621943276; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cwlGGBa1zEHucF6VP8Uur73PV/ShkGQin2rJxDn38o0=;
+ b=l04SyH6NIFlWTGfhpZBSub2nTyKzHdmCOvyqdS/fkYTinuBizWpPJkUDu0emq5XIXS+W/n0z
+ hd2oENMh+lEo4rj2AoGoxV+31YW2Z9hGTLfuG2KBZfOqfbQDybHvIUWwRQKZHjq5bSmf/dLQ
+ gcLIdAQJBdcajAbuW4oHiWJHYT4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60ace3e8c229adfeff00de7f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 11:47:52
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46949C43460; Tue, 25 May 2021 11:47:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 451E6C433D3;
+        Tue, 25 May 2021 11:47:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210524233946.20352-5-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 25 May 2021 17:17:51 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] coresight: tmc-etf: Fix global-out-of-bounds in
+ tmc_update_etf_buffer()
+In-Reply-To: <dc18845a-73bf-9cbf-6749-6271dcaac9e8@arm.com>
+References: <20210505093430.18445-1-saiprakash.ranjan@codeaurora.org>
+ <8e0dbf24-af71-9bce-b615-ce7b1d12a720@arm.com>
+ <dc18845a-73bf-9cbf-6749-6271dcaac9e8@arm.com>
+Message-ID: <ee7abbb2cfebf982addec0a4a18d9512@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:39:24AM +0200, Vlastimil Babka wrote:
-> In slab_alloc_node() and do_slab_free() fastpaths we need to guarantee that
-> our kmem_cache_cpu pointer is from the same cpu as the tid value. Currently
-> that's done by reading the tid first using this_cpu_read(), then the
-> kmem_cache_cpu pointer and verifying we read the same tid using the pointer and
-> plain READ_ONCE().
+On 2021-05-25 14:24, Suzuki K Poulose wrote:
+> Hi Sai
 > 
-> This can be simplified to just fetching kmem_cache_cpu pointer and then reading
-> tid using the pointer. That guarantees they are from the same cpu. We don't
-> need to read the tid using this_cpu_read() because the value will be validated
-> by this_cpu_cmpxchg_double(), making sure we are on the correct cpu and the
-> freelist didn't change by anyone preempting us since reading the tid.
+> On 05/05/2021 10:47, Suzuki K Poulose wrote:
+>> On 05/05/2021 10:34, Sai Prakash Ranjan wrote:
+>>> commit 6f755e85c332 ("coresight: Add helper for inserting 
+>>> synchronization
+>>> packets") removed trailing '\0' from barrier_pkt array and updated 
+>>> the
+>>> call sites like etb_update_buffer() to have proper checks for 
+>>> barrier_pkt
+>>> size before read but missed updating tmc_update_etf_buffer() which 
+>>> still
+>>> reads barrier_pkt past the array size resulting in KASAN 
+>>> out-of-bounds
+>>> bug. Fix this by adding a check for barrier_pkt size before accessing
+>>> like it is done in etb_update_buffer().
+>>> 
+>>>   BUG: KASAN: global-out-of-bounds in 
+>>> tmc_update_etf_buffer+0x4b8/0x698
+>>>   Read of size 4 at addr ffffffd05b7d1030 by task perf/2629
+>>> 
+>>>   Call trace:
+>>>    dump_backtrace+0x0/0x27c
+>>>    show_stack+0x20/0x2c
+>>>    dump_stack+0x11c/0x188
+>>>    print_address_description+0x3c/0x4a4
+>>>    __kasan_report+0x140/0x164
+>>>    kasan_report+0x10/0x18
+>>>    __asan_report_load4_noabort+0x1c/0x24
+>>>    tmc_update_etf_buffer+0x4b8/0x698
+>>>    etm_event_stop+0x248/0x2d8
+>>>    etm_event_del+0x20/0x2c
+>>>    event_sched_out+0x214/0x6f0
+>>>    group_sched_out+0xd0/0x270
+>>>    ctx_sched_out+0x2ec/0x518
+>>>    __perf_event_task_sched_out+0x4fc/0xe6c
+>>>    __schedule+0x1094/0x16a0
+>>>    preempt_schedule_irq+0x88/0x170
+>>>    arm64_preempt_schedule_irq+0xf0/0x18c
+>>>    el1_irq+0xe8/0x180
+>>>    perf_event_exec+0x4d8/0x56c
+>>>    setup_new_exec+0x204/0x400
+>>>    load_elf_binary+0x72c/0x18c0
+>>>    search_binary_handler+0x13c/0x420
+>>>    load_script+0x500/0x6c4
+>>>    search_binary_handler+0x13c/0x420
+>>>    exec_binprm+0x118/0x654
+>>>    __do_execve_file+0x77c/0xba4
+>>>    __arm64_compat_sys_execve+0x98/0xac
+>>>    el0_svc_common+0x1f8/0x5e0
+>>>    el0_svc_compat_handler+0x84/0xb0
+>>>    el0_svc_compat+0x10/0x50
+>>> 
+>>>   The buggy address belongs to the variable:
+>>>    barrier_pkt+0x10/0x40
+>>> 
+>>>   Memory state around the buggy address:
+>>>    ffffffd05b7d0f00: fa fa fa fa 04 fa fa fa fa fa fa fa 00 00 00 00
+>>>    ffffffd05b7d0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>>   >ffffffd05b7d1000: 00 00 00 00 00 00 fa fa fa fa fa fa 00 00 00 03
+>>>                                        ^
+>>>    ffffffd05b7d1080: fa fa fa fa 00 02 fa fa fa fa fa fa 03 fa fa fa
+>>>    ffffffd05b7d1100: fa fa fa fa 00 00 00 00 05 fa fa fa fa fa fa fa
+>>>   ==================================================================
+>>> 
+>>> Fixes: 6f755e85c332 ("coresight: Add helper for inserting 
+>>> synchronization packets")
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> I have changed the commit to :
+> 
+> Fixes: 0c3fc4d5fa26 ("coresight: Add barrier packet for 
+> synchronisation")
+> 
+> Applied.
+> 
 
-Wow, that's a fun approach to avoiding disabling preemption but the
-validation check against preemption remains the same so;
+Sure, thanks Suzuki.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Regards,
+Sai
 
 -- 
-Mel Gorman
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
