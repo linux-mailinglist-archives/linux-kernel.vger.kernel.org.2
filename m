@@ -2,86 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F77390B72
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07C4390B74
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhEYV2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhEYV2p (ORCPT
+        id S233272AbhEYV3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:29:14 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46483 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhEYV3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:28:45 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358A3C061574;
-        Tue, 25 May 2021 14:27:15 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id z3so31645585oib.5;
-        Tue, 25 May 2021 14:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aRHZONKde4r8Wdfy+wGNtIGSNvdJ9+mf9WOYH/E0mZk=;
-        b=ca/k2bY2zA2TDYmgS4bFwdkRDxEsuvHeDeE37VILdzOSxVGcQ9R/Jm7UmmO5vP2InV
-         M43UbX3D4Ip2rOhaK7axjxOiQfbSIBNNSvUm3ftnrPMyWn0Vms+Y5hTYitbfvgx+NwnK
-         Zd3C8JD4JbQnvLQ6vWsuyGBUL22egm2RmJVjvjiH7z6JM2nVNaJ/iNsg0NGkvQFcYJle
-         D09+qwzRbgaPR43ORtPn6h6l9JnZDnp2ku0sbPYvQ3IHJT/9MV23RydAHE0G8epPWgWN
-         OOwEmryh4k8dg1Z2d66BmnpprWjv5O+W404Ar2MnghP0cE1DiZ9k9lnHx6hamQRZIhxX
-         jgpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aRHZONKde4r8Wdfy+wGNtIGSNvdJ9+mf9WOYH/E0mZk=;
-        b=GjEj+2GWTPVOHDj9WdY2HgSkymnEN+2rHMsJ5RX9Lf6+iYHJiG1m+ezdCo8CgYbEcV
-         c/sBRAqVMC916PMixlv7BmCPvBLTgyixm0W/jcA37Biuaf0btN6EK6QcjxB2/ySTeKQg
-         HH8K74CCYiiWhGUUhz/WTKuc530PgPSJjCGSdzU/BfLDxDRgIQFnrQ5KIZSynPHrYdSW
-         yoy5xWnGhf5soIerRp6/1kj31n1GAHYJkddJ91vCo9yvAWeY8M+rfmgPEorKs7r8t9zj
-         KTbdp6QJTL95OqFQIY+xQF+eGfnxCDRPLvgNhYHBdl9TwW52qMoJXGVBXL5LthDsFBIV
-         lu4g==
-X-Gm-Message-State: AOAM533R/WTMu4xQ3FVhKEMmydL3HmNCdbXiKGK8jQ8vnwMm+nglojOQ
-        NnELEISYSamLrpbHKefSCXM=
-X-Google-Smtp-Source: ABdhPJxNDQYMOLJ2Gk+4AUKhyQG8W3xqqNx6+HOUU9zVBZXpzxwkHlNxjEOQ+fjbXMBap5zOlKTYgA==
-X-Received: by 2002:aca:f5c5:: with SMTP id t188mr15458202oih.25.1621978034630;
-        Tue, 25 May 2021 14:27:14 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z9sm4061386oti.37.2021.05.25.14.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 14:27:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 25 May 2021 14:27:13 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/127] 5.12.7-rc1 review
-Message-ID: <20210525212713.GG921026@roeck-us.net>
-References: <20210524152334.857620285@linuxfoundation.org>
+        Tue, 25 May 2021 17:29:13 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 7FA91FF802;
+        Tue, 25 May 2021 21:27:40 +0000 (UTC)
+Date:   Tue, 25 May 2021 23:27:40 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Roger Quadros <rogerq@ti.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: rtc: nxp,pcf8563: Convert to DT schema
+Message-ID: <YK1rzHSXC7rNpCpC@piout.net>
+References: <20210518232858.1535403-1-robh@kernel.org>
+ <20210518232858.1535403-3-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210518232858.1535403-3-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 05:25:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.7 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hello,
+
+On 18/05/2021 18:28:54-0500, Rob Herring wrote:
+> Convert the Philips PCF8563/Epson RTC8564 binding to DT schema format.
 > 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
+> Add 'interrupts' as this device has an interrupt which was not
+> documented, but in use.
 > 
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 462 fail: 0
+It also supports start-year from rtc.yaml.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/rtc/nxp,pcf8563.yaml  | 50 +++++++++++++++++++
+>  .../devicetree/bindings/rtc/pcf8563.txt       | 29 -----------
+>  2 files changed, 50 insertions(+), 29 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+> new file mode 100644
+> index 000000000000..15e67be0ef95
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Philips PCF8563/Epson RTC8564 Real Time Clock
+> +
+> +maintainers:
+> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - epson,rtc8564
+> +      - microcrystal,rv8564
+> +      - nxp,pcf8563
+> +      - nxp,pca8565
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#clock-cells":
+> +    const: 0
+> +
+> +  clock-output-names:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        rtc@51 {
+> +            compatible = "nxp,pcf8563";
+> +            reg = <0x51>;
+> +            #clock-cells = <0>;
+> +        };
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/rtc/pcf8563.txt b/Documentation/devicetree/bindings/rtc/pcf8563.txt
+> deleted file mode 100644
+> index 0a900f7c8977..000000000000
+> --- a/Documentation/devicetree/bindings/rtc/pcf8563.txt
+> +++ /dev/null
+> @@ -1,29 +0,0 @@
+> -* Philips PCF8563/Epson RTC8564 Real Time Clock
+> -
+> -Philips PCF8563/Epson RTC8564 Real Time Clock
+> -
+> -Required properties:
+> -- compatible: Should contain "nxp,pcf8563",
+> -	"epson,rtc8564" or
+> -	"microcrystal,rv8564" or
+> -	"nxp,pca8565"
+> -- reg: I2C address for chip.
+> -
+> -Optional property:
+> -- #clock-cells: Should be 0.
+> -- clock-output-names:
+> -  overwrite the default clock name "pcf8563-clkout"
+> -
+> -Example:
+> -
+> -pcf8563: pcf8563@51 {
+> -	compatible = "nxp,pcf8563";
+> -	reg = <0x51>;
+> -	#clock-cells = <0>;
+> -};
+> -
+> -device {
+> -...
+> -	clocks = <&pcf8563>;
+> -...
+> -};
+> -- 
+> 2.27.0
+> 
 
-Guenter
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
