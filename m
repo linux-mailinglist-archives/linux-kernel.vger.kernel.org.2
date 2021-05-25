@@ -2,130 +2,661 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D4C38FF73
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FE438FF74
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhEYKns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:43:48 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:2953 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhEYKne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:43:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1621939325; x=1653475325;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=tUT6RGQzMtfL1WXUZu6ijJGzZF98Qy6ogSzIyCGVpp4=;
-  b=DH+ykjKngD9ATbH5Jo/MJLCYoiKgF0ZiULhJ9ZmLiztALAhcZNoWFYJO
-   L9WUU6roochqAosGVSCnnM0mWcjm4hGLgNRRy8iPE5QqHcaE1mabOzSDL
-   /RJ26fTN2MCswCiT2fMUWaYdu5Ds6EIxHr/ffA/l8/7Rikq6m2JKVgOZL
-   E=;
-X-IronPort-AV: E=Sophos;i="5.82,328,1613433600"; 
-   d="scan'208";a="114447996"
-Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Thread-Topic: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 25 May 2021 10:41:52 +0000
-Received: from EX13MTAUEE001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 295DE100C54;
-        Tue, 25 May 2021 10:41:47 +0000 (UTC)
-Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
- EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 25 May 2021 10:41:46 +0000
-Received: from EX13D18EUA001.ant.amazon.com (10.43.165.58) by
- EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 25 May 2021 10:41:46 +0000
-Received: from EX13D18EUA001.ant.amazon.com ([10.43.165.58]) by
- EX13D18EUA001.ant.amazon.com ([10.43.165.58]) with mapi id 15.00.1497.018;
- Tue, 25 May 2021 10:41:46 +0000
-From:   "Stamatis, Ilias" <ilstam@amazon.com>
-To:     "seanjc@google.com" <seanjc@google.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Thread-Index: AQHXTivfZrJO8fNe80G3shVQMiBIQary7y4AgAAOQgCAAQnvgA==
-Date:   Tue, 25 May 2021 10:41:45 +0000
-Message-ID: <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
-         <20210521102449.21505-10-ilstam@amazon.com>
-         <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
-         <YKv0KA+wJNCbfc/M@google.com>
-In-Reply-To: <YKv0KA+wJNCbfc/M@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.165.65]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <ABB45646647AB54CB670EC0547BEB513@amazon.com>
-Content-Transfer-Encoding: base64
+        id S230239AbhEYKof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:44:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52906 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230367AbhEYKod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 06:44:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621939383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qontMAEoykbo5zzobHwy2uFHR+oz+1a9WbiM9laP8lk=;
+        b=GCZqHA1wC0B8cH5hGLuH+z4k9xZztAit3R5qgrYhHB1DWLVSMduriKo8wuLVIbqQxhxP05
+        OOw9ffjR1l6DzhREayKGW4etdioEwcnR7+2PvtPEoSYAmZUdp1KiVvccY2z9mZQyjwa3fh
+        8n1SOzJyxooPUYXIKBz/oYI8WSicwv4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621939383;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qontMAEoykbo5zzobHwy2uFHR+oz+1a9WbiM9laP8lk=;
+        b=EWaEy0kjIXFp4m01CHgQ3JiHnAUDVEyqzhWa0q2Mgw9udISFpew9Y8BYcfdDC/S63AfjdG
+        YYrXhvBHlbUhVlBg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CF358AEA3;
+        Tue, 25 May 2021 10:43:02 +0000 (UTC)
+Subject: Re: [PATCH 1/2] mm: slab/slub: use raw_spinlock_t to define list_lock
+To:     Yejune Deng <yejune.deng@gmail.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yejune Deng <yejunedeng@gmail.com>
+References: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <af94a886-ceda-f701-742a-68c98b04c672@suse.cz>
+Date:   Tue, 25 May 2021 12:43:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTI0IGF0IDE4OjQ0ICswMDAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOg0KPiBPbiBNb24sIE1heSAyNCwgMjAyMSwgTWF4aW0gTGV2aXRza3kgd3JvdGU6DQo+ID4g
-T24gRnJpLCAyMDIxLTA1LTIxIGF0IDExOjI0ICswMTAwLCBJbGlhcyBTdGFtYXRpcyB3cm90ZToN
-Cj4gPiA+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rdm0vdm14L3ZteC5jIGIvYXJjaC94ODYva3Zt
-L3ZteC92bXguYw0KPiA+ID4gaW5kZXggNGI3MDQzMWMyZWRkLi43YzUyYzY5N2NmZTMgMTAwNjQ0
-DQo+ID4gPiAtLS0gYS9hcmNoL3g4Ni9rdm0vdm14L3ZteC5jDQo+ID4gPiArKysgYi9hcmNoL3g4
-Ni9rdm0vdm14L3ZteC5jDQo+ID4gPiBAQCAtMTM5Miw5ICsxMzkyLDggQEAgdm9pZCB2bXhfdmNw
-dV9sb2FkX3ZtY3Moc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBpbnQgY3B1LA0KPiA+ID4gICAgIH0N
-Cj4gPiA+IA0KPiA+ID4gICAgIC8qIFNldHVwIFRTQyBtdWx0aXBsaWVyICovDQo+ID4gPiAtICAg
-aWYgKGt2bV9oYXNfdHNjX2NvbnRyb2wgJiYNCj4gPiA+IC0gICAgICAgdm14LT5jdXJyZW50X3Rz
-Y19yYXRpbyAhPSB2Y3B1LT5hcmNoLnRzY19zY2FsaW5nX3JhdGlvKQ0KPiA+ID4gLSAgICAgICAg
-ICAgZGVjYWNoZV90c2NfbXVsdGlwbGllcih2bXgpOw0KPiA+ID4gKyAgIGlmIChrdm1faGFzX3Rz
-Y19jb250cm9sKQ0KPiA+ID4gKyAgICAgICAgICAgdm1jc193cml0ZTY0KFRTQ19NVUxUSVBMSUVS
-LCB2Y3B1LT5hcmNoLnRzY19zY2FsaW5nX3JhdGlvKTsNCj4gPiANCj4gPiBUaGlzIG1pZ2h0IGhh
-dmUgYW4gb3ZlcmhlYWQgb2Ygd3JpdGluZyB0aGUgVFNDIHNjYWxpbmcgcmF0aW8gZXZlbiBpZg0K
-PiA+IGl0IGlzIHVuY2hhbmdlZC4gSSBoYXZlbid0IG1lYXN1cmVkIGhvdyBleHBlbnNpdmUgdm1y
-ZWFkL3Ztd3JpdGVzIGFyZSBidXQNCj4gPiBhdCBsZWFzdCB3aGVuIG5lc3RlZCwgdGhlIHZtcmVh
-ZHMvdm13cml0ZXMgY2FuIGJlIHZlcnkgZXhwZW5zaXZlIChpZiB0aGV5DQo+ID4gY2F1c2UgYSB2
-bWV4aXQpLg0KPiA+IA0KPiA+IFRoaXMgaXMgd2h5IEkgdGhpbmsgdGhlICd2bXgtPmN1cnJlbnRf
-dHNjX3JhdGlvJyBleGlzdHMgLSB0byBoYXZlDQo+ID4gYSBjYWNoZWQgdmFsdWUgb2YgVFNDIHNj
-YWxlIHJhdGlvIHRvIGF2b2lkIGVpdGhlciAndm1yZWFkJ2luZw0KPiA+IG9yICd2bXdyaXRlJ2lu
-ZyBpdCB3aXRob3V0IGEgbmVlZC4NCg0KUmlnaHQuIEkgdGhvdWdodCB0aGUgb3ZlcmhlYWQgbWln
-aHQgbm90IGJlIHRoYXQgc2lnbmlmaWNhbnQgc2luY2Ugd2UncmUgZG9pbmcNCmxvdHMgb2Ygdm13
-cml0ZXMgb24gdm1lbnRyeS92bWV4aXQgYW55d2F5LCBidXQgeWVhaCwgd2h5IGludHJvZHVjZSBh
-bnkga2luZCBvZg0KZXh0cmEgb3ZlcmhlYWQgYW55d2F5Lg0KDQpJJ20gZmluZSB3aXRoIHRoaXMg
-cGFydGljdWxhciBwYXRjaCBnZXR0aW5nIGRyb3BwZWQuIEl0J3Mgbm90IGRpcmVjdGx5IHJlbGF0
-ZWQgDQp0byB0aGUgc2VyaWVzIGFueXdheS4NCg0KPiANCj4gWWVzLCBidXQgaXRzIGV4aXN0ZW5j
-ZSBpcyBhIGNvbXBsZXRlIGhhY2suICB2bXgtPmN1cnJlbnRfdHNjX3JhdGlvIGhhcyB0aGUgc2Ft
-ZQ0KPiBzY29wZSBhcyB2Y3B1LT5hcmNoLnRzY19zY2FsaW5nX3JhdGlvLCBpLmUuIHZteCA9PSB2
-Y3B1ID09IHZjcHUtPmFyY2guICBVbmxpa2UNCj4gcGVyLVZNQ1MgdHJhY2tpbmcsIGl0IHNob3Vs
-ZCBub3QgYmUgdXNlZnVsLCBrZXl3b3JkICJzaG91bGQiLg0KPiANCj4gV2hhdCBJIG1lYW50IGJ5
-IG15IGVhcmxpZXIgY29tbWVudDoNCj4gDQo+ICAgSXRzIHVzZSBpbiB2bXhfdmNwdV9sb2FkX3Zt
-Y3MoKSBpcyBiYXNpY2FsbHkgIndyaXRlIHRoZSBWTUNTIGlmIHdlIGZvcmdvdCB0bw0KPiAgIGVh
-cmxpZXIiLCB3aGljaCBpcyBhbGwga2luZHMgb2Ygd3JvbmcuDQo+IA0KPiBpcyB0aGF0IHZteF92
-Y3B1X2xvYWRfdm1jcygpIHNob3VsZCBuZXZlciB3cml0ZSB2bWNzLlRTQ19NVUxUSVBMSUVSLiAg
-VGhlIGNvcnJlY3QNCj4gYmVoYXZpb3IgaXMgdG8gc2V0IHRoZSBmaWVsZCBhdCBWTUNTIGluaXRp
-YWxpemF0aW9uLCBhbmQgdGhlbiBpbW1lZGlhdGVseSBzZXQgaXQNCj4gd2hlbmV2ZXIgdGhlIHJh
-dGlvIGlzIGNoYW5nZWQsIGUuZy4gb24gbmVzdGVkIHRyYW5zaXRpb24sIGZyb20gdXNlcnNwYWNl
-LCBldGMuLi4NCj4gSW4gb3RoZXIgd29yZHMsIG15IHVuY2xlYXIgZmVlZGJhY2sgd2FzIHRvIG1h
-a2UgaXQgb2Jzb2xldGUgKGFuZCBkcm9wIGl0KSBieQ0KPiBmaXhpbmcgdGhlIHVuZGVybHlpbmcg
-bWVzcywgbm90IHRvIGp1c3QgZHJvcCB0aGUgb3B0aW1pemF0aW9uIGhhY2suDQoNCkkgdW5kZXJz
-dG9vZCB0aGlzIGFuZCByZXBsaWVkIGVhcmxpZXIuIFRoZSByaWdodCBwbGFjZSBmb3IgdGhlIGh3
-IG11bHRpcGxpZXINCmZpZWxkIHRvIGJlIHVwZGF0ZWQgaXMgaW5zaWRlIHNldF90c2Nfa2h6KCkg
-aW4gY29tbW9uIGNvZGUgd2hlbiB0aGUgcmF0aW8NCmNoYW5nZXMuIEhvd2V2ZXIsIHRoaXMgcmVx
-dWlyZXMgYWRkaW5nIGFub3RoZXIgdmVuZG9yIGNhbGxiYWNrIGV0Yy4gQXMgYWxsDQp0aGlzIGlz
-IGZ1cnRoZXIgcmVmYWN0b3JpbmcgSSBiZWxpZXZlIGl0J3MgYmV0dGVyIHRvIGxlYXZlIHRoaXMg
-c2VyaWVzIGFzIGlzIC0NCmllIG9ubHkgdG91Y2hpbmcgY29kZSB0aGF0IGlzIGRpcmVjdGx5IHJl
-bGF0ZWQgdG8gbmVzdGVkIFRTQyBzY2FsaW5nIGFuZCBub3QNCnRyeSB0byBkbyBldmVyeXRoaW5n
-IGFzIHBhcnQgb2YgdGhlIHNhbWUgc2VyaWVzLiBUaGlzIG1ha2VzIHRlc3RpbmcgZWFzaWVyDQp0
-b28uIFdlIGNhbiBzdGlsbCBpbXBsZW1lbnQgdGhlc2UgY2hhbmdlcyBsYXRlci4NCg0KVGhhbmtz
-LA0KSWxpYXMNCg0K
+On 5/25/21 12:23 PM, Yejune Deng wrote:
+> Use raw_spinlock_t instead of spinlock_t to define list_lock
+> that won't be preempted on mainline and PREEMPT_RT kernels.
+> 
+> Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
+
+Yeah, RT tree already has such patch, but with more thorough changelog:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/0001-mm-sl-au-b-Change-list_lock-to-raw_spinlock_t.patch?h=linux-5.12.y-rt-patches
+
+But I think the SLAB part is unnecessary, as there's also a patch
+restricting RT to SLUB only.
+And for SLUB I just posted a series towards making the conversion to
+raw_spinlock_t unnecessary:
+
+https://lore.kernel.org/linux-mm/20210524233946.20352-1-vbabka@suse.cz/
+
+> ---
+>  mm/slab.c | 90 +++++++++++++++++++++++++++++++--------------------------------
+>  mm/slab.h |  2 +-
+>  mm/slub.c | 50 +++++++++++++++++------------------
+>  3 files changed, 71 insertions(+), 71 deletions(-)
+> 
+> diff --git a/mm/slab.c b/mm/slab.c
+> index d0f7256..ae54677 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -234,7 +234,7 @@ static void kmem_cache_node_init(struct kmem_cache_node *parent)
+>  	parent->shared = NULL;
+>  	parent->alien = NULL;
+>  	parent->colour_next = 0;
+> -	spin_lock_init(&parent->list_lock);
+> +	raw_spin_lock_init(&parent->list_lock);
+>  	parent->free_objects = 0;
+>  	parent->free_touched = 0;
+>  }
+> @@ -559,9 +559,9 @@ static noinline void cache_free_pfmemalloc(struct kmem_cache *cachep,
+>  	page_node = page_to_nid(page);
+>  	n = get_node(cachep, page_node);
+>  
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	free_block(cachep, &objp, 1, page_node, &list);
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  
+>  	slabs_destroy(cachep, &list);
+>  }
+> @@ -699,7 +699,7 @@ static void __drain_alien_cache(struct kmem_cache *cachep,
+>  	struct kmem_cache_node *n = get_node(cachep, node);
+>  
+>  	if (ac->avail) {
+> -		spin_lock(&n->list_lock);
+> +		raw_spin_lock(&n->list_lock);
+>  		/*
+>  		 * Stuff objects into the remote nodes shared array first.
+>  		 * That way we could avoid the overhead of putting the objects
+> @@ -710,7 +710,7 @@ static void __drain_alien_cache(struct kmem_cache *cachep,
+>  
+>  		free_block(cachep, ac->entry, ac->avail, node, list);
+>  		ac->avail = 0;
+> -		spin_unlock(&n->list_lock);
+> +		raw_spin_unlock(&n->list_lock);
+>  	}
+>  }
+>  
+> @@ -783,9 +783,9 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+>  		slabs_destroy(cachep, &list);
+>  	} else {
+>  		n = get_node(cachep, page_node);
+> -		spin_lock(&n->list_lock);
+> +		raw_spin_lock(&n->list_lock);
+>  		free_block(cachep, &objp, 1, page_node, &list);
+> -		spin_unlock(&n->list_lock);
+> +		raw_spin_unlock(&n->list_lock);
+>  		slabs_destroy(cachep, &list);
+>  	}
+>  	return 1;
+> @@ -826,10 +826,10 @@ static int init_cache_node(struct kmem_cache *cachep, int node, gfp_t gfp)
+>  	 */
+>  	n = get_node(cachep, node);
+>  	if (n) {
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  		n->free_limit = (1 + nr_cpus_node(node)) * cachep->batchcount +
+>  				cachep->num;
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  
+>  		return 0;
+>  	}
+> @@ -908,7 +908,7 @@ static int setup_kmem_cache_node(struct kmem_cache *cachep,
+>  		goto fail;
+>  
+>  	n = get_node(cachep, node);
+> -	spin_lock_irq(&n->list_lock);
+> +	raw_spin_lock_irq(&n->list_lock);
+>  	if (n->shared && force_change) {
+>  		free_block(cachep, n->shared->entry,
+>  				n->shared->avail, node, &list);
+> @@ -926,7 +926,7 @@ static int setup_kmem_cache_node(struct kmem_cache *cachep,
+>  		new_alien = NULL;
+>  	}
+>  
+> -	spin_unlock_irq(&n->list_lock);
+> +	raw_spin_unlock_irq(&n->list_lock);
+>  	slabs_destroy(cachep, &list);
+>  
+>  	/*
+> @@ -965,7 +965,7 @@ static void cpuup_canceled(long cpu)
+>  		if (!n)
+>  			continue;
+>  
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  
+>  		/* Free limit for this kmem_cache_node */
+>  		n->free_limit -= cachep->batchcount;
+> @@ -976,7 +976,7 @@ static void cpuup_canceled(long cpu)
+>  		nc->avail = 0;
+>  
+>  		if (!cpumask_empty(mask)) {
+> -			spin_unlock_irq(&n->list_lock);
+> +			raw_spin_unlock_irq(&n->list_lock);
+>  			goto free_slab;
+>  		}
+>  
+> @@ -990,7 +990,7 @@ static void cpuup_canceled(long cpu)
+>  		alien = n->alien;
+>  		n->alien = NULL;
+>  
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  
+>  		kfree(shared);
+>  		if (alien) {
+> @@ -1174,7 +1174,7 @@ static void __init init_list(struct kmem_cache *cachep, struct kmem_cache_node *
+>  	/*
+>  	 * Do not assume that spinlocks can be initialized via memcpy:
+>  	 */
+> -	spin_lock_init(&ptr->list_lock);
+> +	raw_spin_lock_init(&ptr->list_lock);
+>  
+>  	MAKE_ALL_LISTS(cachep, ptr, nodeid);
+>  	cachep->node[nodeid] = ptr;
+> @@ -1345,11 +1345,11 @@ slab_out_of_memory(struct kmem_cache *cachep, gfp_t gfpflags, int nodeid)
+>  	for_each_kmem_cache_node(cachep, node, n) {
+>  		unsigned long total_slabs, free_slabs, free_objs;
+>  
+> -		spin_lock_irqsave(&n->list_lock, flags);
+> +		raw_spin_lock_irqsave(&n->list_lock, flags);
+>  		total_slabs = n->total_slabs;
+>  		free_slabs = n->free_slabs;
+>  		free_objs = n->free_objects;
+> -		spin_unlock_irqrestore(&n->list_lock, flags);
+> +		raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  
+>  		pr_warn("  node %d: slabs: %ld/%ld, objs: %ld/%ld\n",
+>  			node, total_slabs - free_slabs, total_slabs,
+> @@ -2107,7 +2107,7 @@ static void check_spinlock_acquired(struct kmem_cache *cachep)
+>  {
+>  #ifdef CONFIG_SMP
+>  	check_irq_off();
+> -	assert_spin_locked(&get_node(cachep, numa_mem_id())->list_lock);
+> +	assert_raw_spin_locked(&get_node(cachep, numa_mem_id())->list_lock);
+>  #endif
+>  }
+>  
+> @@ -2115,7 +2115,7 @@ static void check_spinlock_acquired_node(struct kmem_cache *cachep, int node)
+>  {
+>  #ifdef CONFIG_SMP
+>  	check_irq_off();
+> -	assert_spin_locked(&get_node(cachep, node)->list_lock);
+> +	assert_raw_spin_locked(&get_node(cachep, node)->list_lock);
+>  #endif
+>  }
+>  
+> @@ -2155,9 +2155,9 @@ static void do_drain(void *arg)
+>  	check_irq_off();
+>  	ac = cpu_cache_get(cachep);
+>  	n = get_node(cachep, node);
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	free_block(cachep, ac->entry, ac->avail, node, &list);
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	ac->avail = 0;
+>  	slabs_destroy(cachep, &list);
+>  }
+> @@ -2175,9 +2175,9 @@ static void drain_cpu_caches(struct kmem_cache *cachep)
+>  			drain_alien_cache(cachep, n->alien);
+>  
+>  	for_each_kmem_cache_node(cachep, node, n) {
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  		drain_array_locked(cachep, n->shared, node, true, &list);
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  
+>  		slabs_destroy(cachep, &list);
+>  	}
+> @@ -2199,10 +2199,10 @@ static int drain_freelist(struct kmem_cache *cache,
+>  	nr_freed = 0;
+>  	while (nr_freed < tofree && !list_empty(&n->slabs_free)) {
+>  
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  		p = n->slabs_free.prev;
+>  		if (p == &n->slabs_free) {
+> -			spin_unlock_irq(&n->list_lock);
+> +			raw_spin_unlock_irq(&n->list_lock);
+>  			goto out;
+>  		}
+>  
+> @@ -2215,7 +2215,7 @@ static int drain_freelist(struct kmem_cache *cache,
+>  		 * to the cache.
+>  		 */
+>  		n->free_objects -= cache->num;
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  		slab_destroy(cache, page);
+>  		nr_freed++;
+>  	}
+> @@ -2651,7 +2651,7 @@ static void cache_grow_end(struct kmem_cache *cachep, struct page *page)
+>  	INIT_LIST_HEAD(&page->slab_list);
+>  	n = get_node(cachep, page_to_nid(page));
+>  
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	n->total_slabs++;
+>  	if (!page->active) {
+>  		list_add_tail(&page->slab_list, &n->slabs_free);
+> @@ -2661,7 +2661,7 @@ static void cache_grow_end(struct kmem_cache *cachep, struct page *page)
+>  
+>  	STATS_INC_GROWN(cachep);
+>  	n->free_objects += cachep->num - page->active;
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  
+>  	fixup_objfreelist_debug(cachep, &list);
+>  }
+> @@ -2827,7 +2827,7 @@ static struct page *get_first_slab(struct kmem_cache_node *n, bool pfmemalloc)
+>  {
+>  	struct page *page;
+>  
+> -	assert_spin_locked(&n->list_lock);
+> +	assert_raw_spin_locked(&n->list_lock);
+>  	page = list_first_entry_or_null(&n->slabs_partial, struct page,
+>  					slab_list);
+>  	if (!page) {
+> @@ -2854,10 +2854,10 @@ static noinline void *cache_alloc_pfmemalloc(struct kmem_cache *cachep,
+>  	if (!gfp_pfmemalloc_allowed(flags))
+>  		return NULL;
+>  
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	page = get_first_slab(n, true);
+>  	if (!page) {
+> -		spin_unlock(&n->list_lock);
+> +		raw_spin_unlock(&n->list_lock);
+>  		return NULL;
+>  	}
+>  
+> @@ -2866,7 +2866,7 @@ static noinline void *cache_alloc_pfmemalloc(struct kmem_cache *cachep,
+>  
+>  	fixup_slab_list(cachep, n, page, &list);
+>  
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	fixup_objfreelist_debug(cachep, &list);
+>  
+>  	return obj;
+> @@ -2925,7 +2925,7 @@ static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
+>  	if (!n->free_objects && (!shared || !shared->avail))
+>  		goto direct_grow;
+>  
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	shared = READ_ONCE(n->shared);
+>  
+>  	/* See if we can refill from the shared array */
+> @@ -2949,7 +2949,7 @@ static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
+>  must_grow:
+>  	n->free_objects -= ac->avail;
+>  alloc_done:
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	fixup_objfreelist_debug(cachep, &list);
+>  
+>  direct_grow:
+> @@ -3174,7 +3174,7 @@ static void *____cache_alloc_node(struct kmem_cache *cachep, gfp_t flags,
+>  	BUG_ON(!n);
+>  
+>  	check_irq_off();
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	page = get_first_slab(n, false);
+>  	if (!page)
+>  		goto must_grow;
+> @@ -3192,12 +3192,12 @@ static void *____cache_alloc_node(struct kmem_cache *cachep, gfp_t flags,
+>  
+>  	fixup_slab_list(cachep, n, page, &list);
+>  
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	fixup_objfreelist_debug(cachep, &list);
+>  	return obj;
+>  
+>  must_grow:
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	page = cache_grow_begin(cachep, gfp_exact_node(flags), nodeid);
+>  	if (page) {
+>  		/* This slab isn't counted yet so don't update free_objects */
+> @@ -3383,7 +3383,7 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
+>  
+>  	check_irq_off();
+>  	n = get_node(cachep, node);
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	if (n->shared) {
+>  		struct array_cache *shared_array = n->shared;
+>  		int max = shared_array->limit - shared_array->avail;
+> @@ -3412,7 +3412,7 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
+>  		STATS_SET_FREEABLE(cachep, i);
+>  	}
+>  #endif
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	ac->avail -= batchcount;
+>  	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
+>  	slabs_destroy(cachep, &list);
+> @@ -3877,9 +3877,9 @@ static int do_tune_cpucache(struct kmem_cache *cachep, int limit,
+>  
+>  		node = cpu_to_mem(cpu);
+>  		n = get_node(cachep, node);
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  		free_block(cachep, ac->entry, ac->avail, node, &list);
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  		slabs_destroy(cachep, &list);
+>  	}
+>  	free_percpu(prev);
+> @@ -3974,9 +3974,9 @@ static void drain_array(struct kmem_cache *cachep, struct kmem_cache_node *n,
+>  		return;
+>  	}
+>  
+> -	spin_lock_irq(&n->list_lock);
+> +	raw_spin_lock_irq(&n->list_lock);
+>  	drain_array_locked(cachep, ac, node, false, &list);
+> -	spin_unlock_irq(&n->list_lock);
+> +	raw_spin_unlock_irq(&n->list_lock);
+>  
+>  	slabs_destroy(cachep, &list);
+>  }
+> @@ -4060,7 +4060,7 @@ void get_slabinfo(struct kmem_cache *cachep, struct slabinfo *sinfo)
+>  
+>  	for_each_kmem_cache_node(cachep, node, n) {
+>  		check_irq_on();
+> -		spin_lock_irq(&n->list_lock);
+> +		raw_spin_lock_irq(&n->list_lock);
+>  
+>  		total_slabs += n->total_slabs;
+>  		free_slabs += n->free_slabs;
+> @@ -4069,7 +4069,7 @@ void get_slabinfo(struct kmem_cache *cachep, struct slabinfo *sinfo)
+>  		if (n->shared)
+>  			shared_avail += n->shared->avail;
+>  
+> -		spin_unlock_irq(&n->list_lock);
+> +		raw_spin_unlock_irq(&n->list_lock);
+>  	}
+>  	num_objs = total_slabs * cachep->num;
+>  	active_slabs = total_slabs - free_slabs;
+> diff --git a/mm/slab.h b/mm/slab.h
+> index b4cdf86..ecb6e89 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -524,7 +524,7 @@ static inline void slab_post_alloc_hook(struct kmem_cache *s,
+>   * The slab lists for all objects.
+>   */
+>  struct kmem_cache_node {
+> -	spinlock_t list_lock;
+> +	raw_spinlock_t list_lock;
+>  
+>  #ifdef CONFIG_SLAB
+>  	struct list_head slabs_partial;	/* partial list first, better asm code */
+> diff --git a/mm/slub.c b/mm/slub.c
+> index ee51857..c2f63c3 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1269,7 +1269,7 @@ static noinline int free_debug_processing(
+>  	unsigned long flags;
+>  	int ret = 0;
+>  
+> -	spin_lock_irqsave(&n->list_lock, flags);
+> +	raw_spin_lock_irqsave(&n->list_lock, flags);
+>  	slab_lock(page);
+>  
+>  	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
+> @@ -1304,7 +1304,7 @@ static noinline int free_debug_processing(
+>  			 bulk_cnt, cnt);
+>  
+>  	slab_unlock(page);
+> -	spin_unlock_irqrestore(&n->list_lock, flags);
+> +	raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	if (!ret)
+>  		slab_fix(s, "Object at 0x%px not freed", object);
+>  	return ret;
+> @@ -2033,7 +2033,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
+>  	if (!n || !n->nr_partial)
+>  		return NULL;
+>  
+> -	spin_lock(&n->list_lock);
+> +	raw_spin_lock(&n->list_lock);
+>  	list_for_each_entry_safe(page, page2, &n->partial, slab_list) {
+>  		void *t;
+>  
+> @@ -2058,7 +2058,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
+>  			break;
+>  
+>  	}
+> -	spin_unlock(&n->list_lock);
+> +	raw_spin_unlock(&n->list_lock);
+>  	return object;
+>  }
+>  
+> @@ -2301,7 +2301,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>  			 * that acquire_slab() will see a slab page that
+>  			 * is frozen
+>  			 */
+> -			spin_lock(&n->list_lock);
+> +			raw_spin_lock(&n->list_lock);
+>  		}
+>  	} else {
+>  		m = M_FULL;
+> @@ -2312,7 +2312,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>  			 * slabs from diagnostic functions will not see
+>  			 * any frozen slabs.
+>  			 */
+> -			spin_lock(&n->list_lock);
+> +			raw_spin_lock(&n->list_lock);
+>  		}
+>  	}
+>  
+> @@ -2336,7 +2336,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>  		goto redo;
+>  
+>  	if (lock)
+> -		spin_unlock(&n->list_lock);
+> +		raw_spin_unlock(&n->list_lock);
+>  
+>  	if (m == M_PARTIAL)
+>  		stat(s, tail);
+> @@ -2375,10 +2375,10 @@ static void unfreeze_partials(struct kmem_cache *s,
+>  		n2 = get_node(s, page_to_nid(page));
+>  		if (n != n2) {
+>  			if (n)
+> -				spin_unlock(&n->list_lock);
+> +				raw_spin_unlock(&n->list_lock);
+>  
+>  			n = n2;
+> -			spin_lock(&n->list_lock);
+> +			raw_spin_lock(&n->list_lock);
+>  		}
+>  
+>  		do {
+> @@ -2407,7 +2407,7 @@ static void unfreeze_partials(struct kmem_cache *s,
+>  	}
+>  
+>  	if (n)
+> -		spin_unlock(&n->list_lock);
+> +		raw_spin_unlock(&n->list_lock);
+>  
+>  	while (discard_page) {
+>  		page = discard_page;
+> @@ -2574,10 +2574,10 @@ static unsigned long count_partial(struct kmem_cache_node *n,
+>  	unsigned long x = 0;
+>  	struct page *page;
+>  
+> -	spin_lock_irqsave(&n->list_lock, flags);
+> +	raw_spin_lock_irqsave(&n->list_lock, flags);
+>  	list_for_each_entry(page, &n->partial, slab_list)
+>  		x += get_count(page);
+> -	spin_unlock_irqrestore(&n->list_lock, flags);
+> +	raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	return x;
+>  }
+>  #endif /* CONFIG_SLUB_DEBUG || CONFIG_SYSFS */
+> @@ -3045,7 +3045,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
+>  
+>  	do {
+>  		if (unlikely(n)) {
+> -			spin_unlock_irqrestore(&n->list_lock, flags);
+> +			raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  			n = NULL;
+>  		}
+>  		prior = page->freelist;
+> @@ -3077,7 +3077,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
+>  				 * Otherwise the list_lock will synchronize with
+>  				 * other processors updating the list of slabs.
+>  				 */
+> -				spin_lock_irqsave(&n->list_lock, flags);
+> +				raw_spin_lock_irqsave(&n->list_lock, flags);
+>  
+>  			}
+>  		}
+> @@ -3119,7 +3119,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
+>  		add_partial(n, page, DEACTIVATE_TO_TAIL);
+>  		stat(s, FREE_ADD_PARTIAL);
+>  	}
+> -	spin_unlock_irqrestore(&n->list_lock, flags);
+> +	raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	return;
+>  
+>  slab_empty:
+> @@ -3134,7 +3134,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
+>  		remove_full(s, n, page);
+>  	}
+>  
+> -	spin_unlock_irqrestore(&n->list_lock, flags);
+> +	raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	stat(s, FREE_SLAB);
+>  	discard_slab(s, page);
+>  }
+> @@ -3562,7 +3562,7 @@ static void
+>  init_kmem_cache_node(struct kmem_cache_node *n)
+>  {
+>  	n->nr_partial = 0;
+> -	spin_lock_init(&n->list_lock);
+> +	raw_spin_lock_init(&n->list_lock);
+>  	INIT_LIST_HEAD(&n->partial);
+>  #ifdef CONFIG_SLUB_DEBUG
+>  	atomic_long_set(&n->nr_slabs, 0);
+> @@ -3962,7 +3962,7 @@ static void free_partial(struct kmem_cache *s, struct kmem_cache_node *n)
+>  	struct page *page, *h;
+>  
+>  	BUG_ON(irqs_disabled());
+> -	spin_lock_irq(&n->list_lock);
+> +	raw_spin_lock_irq(&n->list_lock);
+>  	list_for_each_entry_safe(page, h, &n->partial, slab_list) {
+>  		if (!page->inuse) {
+>  			remove_partial(n, page);
+> @@ -3972,7 +3972,7 @@ static void free_partial(struct kmem_cache *s, struct kmem_cache_node *n)
+>  			  "Objects remaining in %s on __kmem_cache_shutdown()");
+>  		}
+>  	}
+> -	spin_unlock_irq(&n->list_lock);
+> +	raw_spin_unlock_irq(&n->list_lock);
+>  
+>  	list_for_each_entry_safe(page, h, &discard, slab_list)
+>  		discard_slab(s, page);
+> @@ -4305,7 +4305,7 @@ int __kmem_cache_shrink(struct kmem_cache *s)
+>  		for (i = 0; i < SHRINK_PROMOTE_MAX; i++)
+>  			INIT_LIST_HEAD(promote + i);
+>  
+> -		spin_lock_irqsave(&n->list_lock, flags);
+> +		raw_spin_lock_irqsave(&n->list_lock, flags);
+>  
+>  		/*
+>  		 * Build lists of slabs to discard or promote.
+> @@ -4336,7 +4336,7 @@ int __kmem_cache_shrink(struct kmem_cache *s)
+>  		for (i = SHRINK_PROMOTE_MAX - 1; i >= 0; i--)
+>  			list_splice(promote + i, &n->partial);
+>  
+> -		spin_unlock_irqrestore(&n->list_lock, flags);
+> +		raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  
+>  		/* Release empty slabs */
+>  		list_for_each_entry_safe(page, t, &discard, slab_list)
+> @@ -4706,7 +4706,7 @@ static int validate_slab_node(struct kmem_cache *s,
+>  	struct page *page;
+>  	unsigned long flags;
+>  
+> -	spin_lock_irqsave(&n->list_lock, flags);
+> +	raw_spin_lock_irqsave(&n->list_lock, flags);
+>  
+>  	list_for_each_entry(page, &n->partial, slab_list) {
+>  		validate_slab(s, page);
+> @@ -4732,7 +4732,7 @@ static int validate_slab_node(struct kmem_cache *s,
+>  	}
+>  
+>  out:
+> -	spin_unlock_irqrestore(&n->list_lock, flags);
+> +	raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	return count;
+>  }
+>  
+> @@ -4913,12 +4913,12 @@ static int list_locations(struct kmem_cache *s, char *buf,
+>  		if (!atomic_long_read(&n->nr_slabs))
+>  			continue;
+>  
+> -		spin_lock_irqsave(&n->list_lock, flags);
+> +		raw_spin_lock_irqsave(&n->list_lock, flags);
+>  		list_for_each_entry(page, &n->partial, slab_list)
+>  			process_slab(&t, s, page, alloc);
+>  		list_for_each_entry(page, &n->full, slab_list)
+>  			process_slab(&t, s, page, alloc);
+> -		spin_unlock_irqrestore(&n->list_lock, flags);
+> +		raw_spin_unlock_irqrestore(&n->list_lock, flags);
+>  	}
+>  
+>  	for (i = 0; i < t.count; i++) {
+> 
+
