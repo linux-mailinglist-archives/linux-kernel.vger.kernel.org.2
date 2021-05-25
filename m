@@ -2,654 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF5238FEFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC4338FEFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhEYKZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
+        id S231470AbhEYKZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhEYKZm (ORCPT
+        with ESMTP id S231459AbhEYKZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:25:42 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9CDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:24:11 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so3647345pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:24:11 -0700 (PDT)
+        Tue, 25 May 2021 06:25:46 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53367C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:24:17 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id s4so14565740plg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:24:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FXh36Cip3wXntRnX9vFasLGalIqZfU0QRUgLKOajb/U=;
-        b=L5ScNgnAfkk+TuD9eh0jl+LdjFMwyDxlHu4LHXwqwhEVIdCWylf4sXL/7Nqo9ZXTDJ
-         A0/fZYfFqXlJrLqBZTXHXGYFSHDFcUlZ/oBY6zFrV7O8M0job6vo7piNz/Wh1eXrge0C
-         X75abMW/ZGwAhvquWgku4YdFiJo7Uay7j50WtymKMBnTmZpJsrhGNs5pFo5996frhG47
-         oawd/uEZilJxkBFOnPEceDvMskxQdsZ1oYA7mMPCNmGuuReu3mEP/vCuXLX6Gn+qW1YG
-         IzPqFSOHz0Ii9sXuCuXhQIaSGckiHutpEkLhl4rIIVqI75iSVciqNNX9OqpmQV8RO61C
-         Rpgg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=cLiMXok1HQJuL5Rj9yY5lszCyh+gFs0zLJeC+o5z94c=;
+        b=Bz/nbq1oGbrrm56CB2fKjHBESrj31Ydsy8kYssPxnd2xlnyPBFUjqX2y+LTxZ7PIy0
+         CGD4x4VnX8nEIFkdchkIVMwA8L7MPOUal2+95/85OEhUORReDUcoC5KnflVcvAWEQOh1
+         ecgmGIn4sqKtzH9/kGCwhAQQMBwTBSXwGxZqOPI/D5ULYR24NH7odd5panmBf70BITxz
+         NEE/3mSPUMgjnNGRSiG2JhhhMJ3ERwuLi/9tFgeg9EzgUuNZJZua4/WbQ6MuITqKED6X
+         DrB5QgR+f6L6SQU+0fzqbcRTz4k7SC8eg4KWGE5RiaVPFETbVhGB1QD+jLqwzdyFgefq
+         FLJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FXh36Cip3wXntRnX9vFasLGalIqZfU0QRUgLKOajb/U=;
-        b=iis4IHdtK+NJUzcUqJgsSeGH4KZ3YiHmtgI2YJoYBSOFlx4N/KPJspk8he69TzWA8t
-         1np5bw6aQWn7yVrgQBuWDaSXCWMm0diq4eMhjRoQ5gaTqaaAUKocGQeK4hZJX1qtBvHT
-         tEghSGcPm/H0v2CKrk+qZYYrMeDT8HGp+BXXfZ9gEO/0BCx41Ihmf7mynrF+xKkbSAI7
-         JqDcigTn24UtgoPRIdah4H4zDbw+aAWA+qK88hlUCNwk+QNF3cCkC5imtC3sdZWKw+Bc
-         sDDcDrDyQUjD6crlfyYrpeCGIEavKifEdSrU8fe8doBuZG6s+i26YVaM1nzJKF1olSr2
-         //FQ==
-X-Gm-Message-State: AOAM533mM27JOSgP3Alw2p447ZOtqIdt+pB78LJcOqIOvyoo5oZ9w7f0
-        LqCmtyupdfeQuewUwRCp1wc=
-X-Google-Smtp-Source: ABdhPJzWO8VWs9gXJ/D7CBN3OrFO/WOlESrAzumaZf3sXYrnRA5gDSA3Hi34pHuuGQQSKfxNcJvjeQ==
-X-Received: by 2002:a17:90b:1185:: with SMTP id gk5mr29155439pjb.168.1621938250879;
-        Tue, 25 May 2021 03:24:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=cLiMXok1HQJuL5Rj9yY5lszCyh+gFs0zLJeC+o5z94c=;
+        b=CfW7nRw2anEfbygH/RSNut6co6mB26bB0EgoiPZLG/3Ly14WXI173Z0becZY2KTywq
+         ZrMNPtZaMQOqb2tNSnfWsbuft6W4O9M/CP5JWBY98uGivtjubxBu5KvwMpgI9B2M3jyE
+         BuYDFHsKAnToX4a3qZJyx+2sLt7Rg+TDA37JA1V6xdvPOP4LOYdwWfUz5yxBVgL+0can
+         lgkE6PKJIls2jjPml1r1fJ47Fyrsh6JnTt41OR2xOVLB1F8vOjFUARTpB4AQnvT8hHWZ
+         50Hlsj46jhERsgcu9o2fayq3Ze1nSQWRXFa6le6Y4ILCW///edEiHi8o+K8xhaQBjPk4
+         rq6w==
+X-Gm-Message-State: AOAM531KyCS97Cmpdh6vzNDG9xh79VEB7wWOOjJtZUSSLD7e1QcK4ERD
+        dBUuKBB5OoMnUHjUA4okhJM=
+X-Google-Smtp-Source: ABdhPJzOZGCs1ZL8oOqgsUOzWd1lleLZnaW16A6bNlsH1nuPaSnQ7ZNdEQWKMV8FvjR1cce1QrCQVg==
+X-Received: by 2002:a17:90b:33c6:: with SMTP id lk6mr29636485pjb.57.1621938256939;
+        Tue, 25 May 2021 03:24:16 -0700 (PDT)
 Received: from sz-dl-056.autox.sz ([45.67.53.159])
-        by smtp.gmail.com with ESMTPSA id x187sm7821229pfc.104.2021.05.25.03.24.06
+        by smtp.gmail.com with ESMTPSA id x187sm7821229pfc.104.2021.05.25.03.24.13
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 May 2021 03:24:10 -0700 (PDT)
+        Tue, 25 May 2021 03:24:16 -0700 (PDT)
 From:   Yejune Deng <yejune.deng@gmail.com>
 X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
 To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Yejune Deng <yejunedeng@gmail.com>
-Subject: [PATCH 1/2] mm: slab/slub: use raw_spinlock_t to define list_lock
-Date:   Tue, 25 May 2021 18:23:54 +0800
-Message-Id: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
+Subject: [PATCH 2/2] mm: slub: use DEFINE_RAW_SPINLOCK init object_map_lock
+Date:   Tue, 25 May 2021 18:23:55 +0800
+Message-Id: <1621938235-11947-2-git-send-email-yejunedeng@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
+References: <1621938235-11947-1-git-send-email-yejunedeng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use raw_spinlock_t instead of spinlock_t to define list_lock
+Use DEFINE_RAW_SPINLOCK instead of DEFINE_SPINLOCK object_map_lock
 that won't be preempted on mainline and PREEMPT_RT kernels.
 
 Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
 ---
- mm/slab.c | 90 +++++++++++++++++++++++++++++++--------------------------------
- mm/slab.h |  2 +-
- mm/slub.c | 50 +++++++++++++++++------------------
- 3 files changed, 71 insertions(+), 71 deletions(-)
+ mm/slub.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/slab.c b/mm/slab.c
-index d0f7256..ae54677 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -234,7 +234,7 @@ static void kmem_cache_node_init(struct kmem_cache_node *parent)
- 	parent->shared = NULL;
- 	parent->alien = NULL;
- 	parent->colour_next = 0;
--	spin_lock_init(&parent->list_lock);
-+	raw_spin_lock_init(&parent->list_lock);
- 	parent->free_objects = 0;
- 	parent->free_touched = 0;
- }
-@@ -559,9 +559,9 @@ static noinline void cache_free_pfmemalloc(struct kmem_cache *cachep,
- 	page_node = page_to_nid(page);
- 	n = get_node(cachep, page_node);
- 
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	free_block(cachep, &objp, 1, page_node, &list);
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 
- 	slabs_destroy(cachep, &list);
- }
-@@ -699,7 +699,7 @@ static void __drain_alien_cache(struct kmem_cache *cachep,
- 	struct kmem_cache_node *n = get_node(cachep, node);
- 
- 	if (ac->avail) {
--		spin_lock(&n->list_lock);
-+		raw_spin_lock(&n->list_lock);
- 		/*
- 		 * Stuff objects into the remote nodes shared array first.
- 		 * That way we could avoid the overhead of putting the objects
-@@ -710,7 +710,7 @@ static void __drain_alien_cache(struct kmem_cache *cachep,
- 
- 		free_block(cachep, ac->entry, ac->avail, node, list);
- 		ac->avail = 0;
--		spin_unlock(&n->list_lock);
-+		raw_spin_unlock(&n->list_lock);
- 	}
- }
- 
-@@ -783,9 +783,9 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 		slabs_destroy(cachep, &list);
- 	} else {
- 		n = get_node(cachep, page_node);
--		spin_lock(&n->list_lock);
-+		raw_spin_lock(&n->list_lock);
- 		free_block(cachep, &objp, 1, page_node, &list);
--		spin_unlock(&n->list_lock);
-+		raw_spin_unlock(&n->list_lock);
- 		slabs_destroy(cachep, &list);
- 	}
- 	return 1;
-@@ -826,10 +826,10 @@ static int init_cache_node(struct kmem_cache *cachep, int node, gfp_t gfp)
- 	 */
- 	n = get_node(cachep, node);
- 	if (n) {
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 		n->free_limit = (1 + nr_cpus_node(node)) * cachep->batchcount +
- 				cachep->num;
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 
- 		return 0;
- 	}
-@@ -908,7 +908,7 @@ static int setup_kmem_cache_node(struct kmem_cache *cachep,
- 		goto fail;
- 
- 	n = get_node(cachep, node);
--	spin_lock_irq(&n->list_lock);
-+	raw_spin_lock_irq(&n->list_lock);
- 	if (n->shared && force_change) {
- 		free_block(cachep, n->shared->entry,
- 				n->shared->avail, node, &list);
-@@ -926,7 +926,7 @@ static int setup_kmem_cache_node(struct kmem_cache *cachep,
- 		new_alien = NULL;
- 	}
- 
--	spin_unlock_irq(&n->list_lock);
-+	raw_spin_unlock_irq(&n->list_lock);
- 	slabs_destroy(cachep, &list);
- 
- 	/*
-@@ -965,7 +965,7 @@ static void cpuup_canceled(long cpu)
- 		if (!n)
- 			continue;
- 
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 
- 		/* Free limit for this kmem_cache_node */
- 		n->free_limit -= cachep->batchcount;
-@@ -976,7 +976,7 @@ static void cpuup_canceled(long cpu)
- 		nc->avail = 0;
- 
- 		if (!cpumask_empty(mask)) {
--			spin_unlock_irq(&n->list_lock);
-+			raw_spin_unlock_irq(&n->list_lock);
- 			goto free_slab;
- 		}
- 
-@@ -990,7 +990,7 @@ static void cpuup_canceled(long cpu)
- 		alien = n->alien;
- 		n->alien = NULL;
- 
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 
- 		kfree(shared);
- 		if (alien) {
-@@ -1174,7 +1174,7 @@ static void __init init_list(struct kmem_cache *cachep, struct kmem_cache_node *
- 	/*
- 	 * Do not assume that spinlocks can be initialized via memcpy:
- 	 */
--	spin_lock_init(&ptr->list_lock);
-+	raw_spin_lock_init(&ptr->list_lock);
- 
- 	MAKE_ALL_LISTS(cachep, ptr, nodeid);
- 	cachep->node[nodeid] = ptr;
-@@ -1345,11 +1345,11 @@ slab_out_of_memory(struct kmem_cache *cachep, gfp_t gfpflags, int nodeid)
- 	for_each_kmem_cache_node(cachep, node, n) {
- 		unsigned long total_slabs, free_slabs, free_objs;
- 
--		spin_lock_irqsave(&n->list_lock, flags);
-+		raw_spin_lock_irqsave(&n->list_lock, flags);
- 		total_slabs = n->total_slabs;
- 		free_slabs = n->free_slabs;
- 		free_objs = n->free_objects;
--		spin_unlock_irqrestore(&n->list_lock, flags);
-+		raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 
- 		pr_warn("  node %d: slabs: %ld/%ld, objs: %ld/%ld\n",
- 			node, total_slabs - free_slabs, total_slabs,
-@@ -2107,7 +2107,7 @@ static void check_spinlock_acquired(struct kmem_cache *cachep)
- {
- #ifdef CONFIG_SMP
- 	check_irq_off();
--	assert_spin_locked(&get_node(cachep, numa_mem_id())->list_lock);
-+	assert_raw_spin_locked(&get_node(cachep, numa_mem_id())->list_lock);
- #endif
- }
- 
-@@ -2115,7 +2115,7 @@ static void check_spinlock_acquired_node(struct kmem_cache *cachep, int node)
- {
- #ifdef CONFIG_SMP
- 	check_irq_off();
--	assert_spin_locked(&get_node(cachep, node)->list_lock);
-+	assert_raw_spin_locked(&get_node(cachep, node)->list_lock);
- #endif
- }
- 
-@@ -2155,9 +2155,9 @@ static void do_drain(void *arg)
- 	check_irq_off();
- 	ac = cpu_cache_get(cachep);
- 	n = get_node(cachep, node);
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	free_block(cachep, ac->entry, ac->avail, node, &list);
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	ac->avail = 0;
- 	slabs_destroy(cachep, &list);
- }
-@@ -2175,9 +2175,9 @@ static void drain_cpu_caches(struct kmem_cache *cachep)
- 			drain_alien_cache(cachep, n->alien);
- 
- 	for_each_kmem_cache_node(cachep, node, n) {
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 		drain_array_locked(cachep, n->shared, node, true, &list);
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 
- 		slabs_destroy(cachep, &list);
- 	}
-@@ -2199,10 +2199,10 @@ static int drain_freelist(struct kmem_cache *cache,
- 	nr_freed = 0;
- 	while (nr_freed < tofree && !list_empty(&n->slabs_free)) {
- 
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 		p = n->slabs_free.prev;
- 		if (p == &n->slabs_free) {
--			spin_unlock_irq(&n->list_lock);
-+			raw_spin_unlock_irq(&n->list_lock);
- 			goto out;
- 		}
- 
-@@ -2215,7 +2215,7 @@ static int drain_freelist(struct kmem_cache *cache,
- 		 * to the cache.
- 		 */
- 		n->free_objects -= cache->num;
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 		slab_destroy(cache, page);
- 		nr_freed++;
- 	}
-@@ -2651,7 +2651,7 @@ static void cache_grow_end(struct kmem_cache *cachep, struct page *page)
- 	INIT_LIST_HEAD(&page->slab_list);
- 	n = get_node(cachep, page_to_nid(page));
- 
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	n->total_slabs++;
- 	if (!page->active) {
- 		list_add_tail(&page->slab_list, &n->slabs_free);
-@@ -2661,7 +2661,7 @@ static void cache_grow_end(struct kmem_cache *cachep, struct page *page)
- 
- 	STATS_INC_GROWN(cachep);
- 	n->free_objects += cachep->num - page->active;
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 
- 	fixup_objfreelist_debug(cachep, &list);
- }
-@@ -2827,7 +2827,7 @@ static struct page *get_first_slab(struct kmem_cache_node *n, bool pfmemalloc)
- {
- 	struct page *page;
- 
--	assert_spin_locked(&n->list_lock);
-+	assert_raw_spin_locked(&n->list_lock);
- 	page = list_first_entry_or_null(&n->slabs_partial, struct page,
- 					slab_list);
- 	if (!page) {
-@@ -2854,10 +2854,10 @@ static noinline void *cache_alloc_pfmemalloc(struct kmem_cache *cachep,
- 	if (!gfp_pfmemalloc_allowed(flags))
- 		return NULL;
- 
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	page = get_first_slab(n, true);
- 	if (!page) {
--		spin_unlock(&n->list_lock);
-+		raw_spin_unlock(&n->list_lock);
- 		return NULL;
- 	}
- 
-@@ -2866,7 +2866,7 @@ static noinline void *cache_alloc_pfmemalloc(struct kmem_cache *cachep,
- 
- 	fixup_slab_list(cachep, n, page, &list);
- 
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	fixup_objfreelist_debug(cachep, &list);
- 
- 	return obj;
-@@ -2925,7 +2925,7 @@ static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
- 	if (!n->free_objects && (!shared || !shared->avail))
- 		goto direct_grow;
- 
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	shared = READ_ONCE(n->shared);
- 
- 	/* See if we can refill from the shared array */
-@@ -2949,7 +2949,7 @@ static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
- must_grow:
- 	n->free_objects -= ac->avail;
- alloc_done:
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	fixup_objfreelist_debug(cachep, &list);
- 
- direct_grow:
-@@ -3174,7 +3174,7 @@ static void *____cache_alloc_node(struct kmem_cache *cachep, gfp_t flags,
- 	BUG_ON(!n);
- 
- 	check_irq_off();
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	page = get_first_slab(n, false);
- 	if (!page)
- 		goto must_grow;
-@@ -3192,12 +3192,12 @@ static void *____cache_alloc_node(struct kmem_cache *cachep, gfp_t flags,
- 
- 	fixup_slab_list(cachep, n, page, &list);
- 
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	fixup_objfreelist_debug(cachep, &list);
- 	return obj;
- 
- must_grow:
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	page = cache_grow_begin(cachep, gfp_exact_node(flags), nodeid);
- 	if (page) {
- 		/* This slab isn't counted yet so don't update free_objects */
-@@ -3383,7 +3383,7 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
- 
- 	check_irq_off();
- 	n = get_node(cachep, node);
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	if (n->shared) {
- 		struct array_cache *shared_array = n->shared;
- 		int max = shared_array->limit - shared_array->avail;
-@@ -3412,7 +3412,7 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
- 		STATS_SET_FREEABLE(cachep, i);
- 	}
- #endif
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	ac->avail -= batchcount;
- 	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
- 	slabs_destroy(cachep, &list);
-@@ -3877,9 +3877,9 @@ static int do_tune_cpucache(struct kmem_cache *cachep, int limit,
- 
- 		node = cpu_to_mem(cpu);
- 		n = get_node(cachep, node);
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 		free_block(cachep, ac->entry, ac->avail, node, &list);
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 		slabs_destroy(cachep, &list);
- 	}
- 	free_percpu(prev);
-@@ -3974,9 +3974,9 @@ static void drain_array(struct kmem_cache *cachep, struct kmem_cache_node *n,
- 		return;
- 	}
- 
--	spin_lock_irq(&n->list_lock);
-+	raw_spin_lock_irq(&n->list_lock);
- 	drain_array_locked(cachep, ac, node, false, &list);
--	spin_unlock_irq(&n->list_lock);
-+	raw_spin_unlock_irq(&n->list_lock);
- 
- 	slabs_destroy(cachep, &list);
- }
-@@ -4060,7 +4060,7 @@ void get_slabinfo(struct kmem_cache *cachep, struct slabinfo *sinfo)
- 
- 	for_each_kmem_cache_node(cachep, node, n) {
- 		check_irq_on();
--		spin_lock_irq(&n->list_lock);
-+		raw_spin_lock_irq(&n->list_lock);
- 
- 		total_slabs += n->total_slabs;
- 		free_slabs += n->free_slabs;
-@@ -4069,7 +4069,7 @@ void get_slabinfo(struct kmem_cache *cachep, struct slabinfo *sinfo)
- 		if (n->shared)
- 			shared_avail += n->shared->avail;
- 
--		spin_unlock_irq(&n->list_lock);
-+		raw_spin_unlock_irq(&n->list_lock);
- 	}
- 	num_objs = total_slabs * cachep->num;
- 	active_slabs = total_slabs - free_slabs;
-diff --git a/mm/slab.h b/mm/slab.h
-index b4cdf86..ecb6e89 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -524,7 +524,7 @@ static inline void slab_post_alloc_hook(struct kmem_cache *s,
-  * The slab lists for all objects.
-  */
- struct kmem_cache_node {
--	spinlock_t list_lock;
-+	raw_spinlock_t list_lock;
- 
- #ifdef CONFIG_SLAB
- 	struct list_head slabs_partial;	/* partial list first, better asm code */
 diff --git a/mm/slub.c b/mm/slub.c
-index ee51857..c2f63c3 100644
+index c2f63c3..995f3d0 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -1269,7 +1269,7 @@ static noinline int free_debug_processing(
- 	unsigned long flags;
- 	int ret = 0;
+@@ -445,7 +445,7 @@ static inline bool cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
  
--	spin_lock_irqsave(&n->list_lock, flags);
-+	raw_spin_lock_irqsave(&n->list_lock, flags);
- 	slab_lock(page);
- 
- 	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
-@@ -1304,7 +1304,7 @@ static noinline int free_debug_processing(
- 			 bulk_cnt, cnt);
- 
- 	slab_unlock(page);
--	spin_unlock_irqrestore(&n->list_lock, flags);
-+	raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	if (!ret)
- 		slab_fix(s, "Object at 0x%px not freed", object);
- 	return ret;
-@@ -2033,7 +2033,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 	if (!n || !n->nr_partial)
- 		return NULL;
- 
--	spin_lock(&n->list_lock);
-+	raw_spin_lock(&n->list_lock);
- 	list_for_each_entry_safe(page, page2, &n->partial, slab_list) {
- 		void *t;
- 
-@@ -2058,7 +2058,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 			break;
- 
- 	}
--	spin_unlock(&n->list_lock);
-+	raw_spin_unlock(&n->list_lock);
- 	return object;
- }
- 
-@@ -2301,7 +2301,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 			 * that acquire_slab() will see a slab page that
- 			 * is frozen
- 			 */
--			spin_lock(&n->list_lock);
-+			raw_spin_lock(&n->list_lock);
- 		}
- 	} else {
- 		m = M_FULL;
-@@ -2312,7 +2312,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 			 * slabs from diagnostic functions will not see
- 			 * any frozen slabs.
- 			 */
--			spin_lock(&n->list_lock);
-+			raw_spin_lock(&n->list_lock);
- 		}
- 	}
- 
-@@ -2336,7 +2336,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 		goto redo;
- 
- 	if (lock)
--		spin_unlock(&n->list_lock);
-+		raw_spin_unlock(&n->list_lock);
- 
- 	if (m == M_PARTIAL)
- 		stat(s, tail);
-@@ -2375,10 +2375,10 @@ static void unfreeze_partials(struct kmem_cache *s,
- 		n2 = get_node(s, page_to_nid(page));
- 		if (n != n2) {
- 			if (n)
--				spin_unlock(&n->list_lock);
-+				raw_spin_unlock(&n->list_lock);
- 
- 			n = n2;
--			spin_lock(&n->list_lock);
-+			raw_spin_lock(&n->list_lock);
- 		}
- 
- 		do {
-@@ -2407,7 +2407,7 @@ static void unfreeze_partials(struct kmem_cache *s,
- 	}
- 
- 	if (n)
--		spin_unlock(&n->list_lock);
-+		raw_spin_unlock(&n->list_lock);
- 
- 	while (discard_page) {
- 		page = discard_page;
-@@ -2574,10 +2574,10 @@ static unsigned long count_partial(struct kmem_cache_node *n,
- 	unsigned long x = 0;
- 	struct page *page;
- 
--	spin_lock_irqsave(&n->list_lock, flags);
-+	raw_spin_lock_irqsave(&n->list_lock, flags);
- 	list_for_each_entry(page, &n->partial, slab_list)
- 		x += get_count(page);
--	spin_unlock_irqrestore(&n->list_lock, flags);
-+	raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	return x;
- }
- #endif /* CONFIG_SLUB_DEBUG || CONFIG_SYSFS */
-@@ -3045,7 +3045,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 
- 	do {
- 		if (unlikely(n)) {
--			spin_unlock_irqrestore(&n->list_lock, flags);
-+			raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 			n = NULL;
- 		}
- 		prior = page->freelist;
-@@ -3077,7 +3077,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 				 * Otherwise the list_lock will synchronize with
- 				 * other processors updating the list of slabs.
- 				 */
--				spin_lock_irqsave(&n->list_lock, flags);
-+				raw_spin_lock_irqsave(&n->list_lock, flags);
- 
- 			}
- 		}
-@@ -3119,7 +3119,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 		add_partial(n, page, DEACTIVATE_TO_TAIL);
- 		stat(s, FREE_ADD_PARTIAL);
- 	}
--	spin_unlock_irqrestore(&n->list_lock, flags);
-+	raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	return;
- 
- slab_empty:
-@@ -3134,7 +3134,7 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
- 		remove_full(s, n, page);
- 	}
- 
--	spin_unlock_irqrestore(&n->list_lock, flags);
-+	raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	stat(s, FREE_SLAB);
- 	discard_slab(s, page);
- }
-@@ -3562,7 +3562,7 @@ static void
- init_kmem_cache_node(struct kmem_cache_node *n)
- {
- 	n->nr_partial = 0;
--	spin_lock_init(&n->list_lock);
-+	raw_spin_lock_init(&n->list_lock);
- 	INIT_LIST_HEAD(&n->partial);
  #ifdef CONFIG_SLUB_DEBUG
- 	atomic_long_set(&n->nr_slabs, 0);
-@@ -3962,7 +3962,7 @@ static void free_partial(struct kmem_cache *s, struct kmem_cache_node *n)
- 	struct page *page, *h;
+ static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
+-static DEFINE_SPINLOCK(object_map_lock);
++static DEFINE_RAW_SPINLOCK(object_map_lock);
  
- 	BUG_ON(irqs_disabled());
--	spin_lock_irq(&n->list_lock);
-+	raw_spin_lock_irq(&n->list_lock);
- 	list_for_each_entry_safe(page, h, &n->partial, slab_list) {
- 		if (!page->inuse) {
- 			remove_partial(n, page);
-@@ -3972,7 +3972,7 @@ static void free_partial(struct kmem_cache *s, struct kmem_cache_node *n)
- 			  "Objects remaining in %s on __kmem_cache_shutdown()");
- 		}
- 	}
--	spin_unlock_irq(&n->list_lock);
-+	raw_spin_unlock_irq(&n->list_lock);
+ #if IS_ENABLED(CONFIG_KUNIT)
+ static bool slab_add_kunit_errors(void)
+@@ -481,7 +481,7 @@ static unsigned long *get_map(struct kmem_cache *s, struct page *page)
  
- 	list_for_each_entry_safe(page, h, &discard, slab_list)
- 		discard_slab(s, page);
-@@ -4305,7 +4305,7 @@ int __kmem_cache_shrink(struct kmem_cache *s)
- 		for (i = 0; i < SHRINK_PROMOTE_MAX; i++)
- 			INIT_LIST_HEAD(promote + i);
+ 	VM_BUG_ON(!irqs_disabled());
  
--		spin_lock_irqsave(&n->list_lock, flags);
-+		raw_spin_lock_irqsave(&n->list_lock, flags);
+-	spin_lock(&object_map_lock);
++	raw_spin_lock(&object_map_lock);
  
- 		/*
- 		 * Build lists of slabs to discard or promote.
-@@ -4336,7 +4336,7 @@ int __kmem_cache_shrink(struct kmem_cache *s)
- 		for (i = SHRINK_PROMOTE_MAX - 1; i >= 0; i--)
- 			list_splice(promote + i, &n->partial);
+ 	bitmap_zero(object_map, page->objects);
  
--		spin_unlock_irqrestore(&n->list_lock, flags);
-+		raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 
- 		/* Release empty slabs */
- 		list_for_each_entry_safe(page, t, &discard, slab_list)
-@@ -4706,7 +4706,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 	struct page *page;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&n->list_lock, flags);
-+	raw_spin_lock_irqsave(&n->list_lock, flags);
- 
- 	list_for_each_entry(page, &n->partial, slab_list) {
- 		validate_slab(s, page);
-@@ -4732,7 +4732,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 	}
- 
- out:
--	spin_unlock_irqrestore(&n->list_lock, flags);
-+	raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	return count;
+@@ -494,7 +494,7 @@ static unsigned long *get_map(struct kmem_cache *s, struct page *page)
+ static void put_map(unsigned long *map) __releases(&object_map_lock)
+ {
+ 	VM_BUG_ON(map != object_map);
+-	spin_unlock(&object_map_lock);
++	raw_spin_unlock(&object_map_lock);
  }
  
-@@ -4913,12 +4913,12 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 		if (!atomic_long_read(&n->nr_slabs))
- 			continue;
- 
--		spin_lock_irqsave(&n->list_lock, flags);
-+		raw_spin_lock_irqsave(&n->list_lock, flags);
- 		list_for_each_entry(page, &n->partial, slab_list)
- 			process_slab(&t, s, page, alloc);
- 		list_for_each_entry(page, &n->full, slab_list)
- 			process_slab(&t, s, page, alloc);
--		spin_unlock_irqrestore(&n->list_lock, flags);
-+		raw_spin_unlock_irqrestore(&n->list_lock, flags);
- 	}
- 
- 	for (i = 0; i < t.count; i++) {
+ static inline unsigned int size_from_object(struct kmem_cache *s)
 -- 
 2.7.4
 
