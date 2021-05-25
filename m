@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8D7390214
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BD1390217
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhEYNXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:23:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20256 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233070AbhEYNXi (ORCPT
+        id S233210AbhEYNYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:24:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63842 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233173AbhEYNYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:23:38 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PD2xQ8193391;
-        Tue, 25 May 2021 09:22:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=K5Eg/Y8WBtC6LNWqswlZBHi6Sv18XbNTuKVd4d1ufVE=;
- b=nlEerzB41DQsQFLsy+dgHKVeu7+QdwPlUUWAy1oSgToJOV2nGDtJUTTWpXX2rBlGTo55
- p1WNGovxXPYR3uqxkZXdnTroMK6pKdV9A11zqI8TiEG729Gk/TDf/Cp85HlpOBjutsRX
- lUBdZQZyiqX8p0Phxo4OhdK9ZKb224NwC9n7tlRybamhqx+TEj/yKxKr+liBV4HTGMp1
- Jc/lYhp8gpkKbtPSG1W9bW/fPvt+f8wNFaoOyfbZEN0S6bJtdGpZHSmU75hvnNV7DLsl
- W+1MaED9afY/yvmpoBgZHjQ/z47+cgcqEzTdJylrNkH1Kv2NVf6yFlo9JDmIJ7HN7iFV tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38s1rt0nf1-1
+        Tue, 25 May 2021 09:24:23 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PDEq7b102974;
+        Tue, 25 May 2021 09:22:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=DdnPmdS+XvZUlVj35Urit2LTe3WzUvh8ODyNSBZEU9U=;
+ b=OR4P3ot9CMCop3HEJTLpFsJNXQhpdGfi25sMMXBNPu1LHdwoCNblc0ZppQ9pzOqrhbGS
+ KY6GlpRzX5s+4/gDJlag+11Z0s1D4nCYj71NF4lmin59qET3TfCONhhV7SBU3hru67hc
+ 5VehxneS4a2yf1TAs2CgVDtELLIg7xuUtb6K51Y5I5bUbVQ4FcIF7jWPSAQSBiDouiWe
+ 1L3/+abcXV3Ru6yUMPYUiS4JU3K0xYPPs0f57TljSoqrWsiG/bi06XyJvcptAo75tbo3
+ RSLX8fKyfM/r8PMeiIOy162fzMXaNBv3bU0OxAYqKWVgy0UGArVDza43hMhDRCGjFBSc SQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38s1xtr8q8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 09:22:06 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PD6cop015392;
-        Tue, 25 May 2021 09:22:05 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38s1rt0nem-1
+        Tue, 25 May 2021 09:22:35 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PDFn3t002907;
+        Tue, 25 May 2021 13:22:33 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 38s1hq80ew-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 09:22:05 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PDE3FL007881;
-        Tue, 25 May 2021 13:22:05 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma05wdc.us.ibm.com with ESMTP id 38s1ghgam7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 13:22:05 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PDM4iw27001150
+        Tue, 25 May 2021 13:22:33 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PDMUlQ26804536
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 13:22:04 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E4530136055;
-        Tue, 25 May 2021 13:22:03 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93BBD136076;
-        Tue, 25 May 2021 13:22:02 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 13:22:02 +0000 (GMT)
-Subject: Re: [PATCH v4 1/2] s390/vfio-ap: fix memory leak in mdev remove
- callback
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-2-akrowiak@linux.ibm.com>
- <20210525150337.021aabd8.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <876faab1-e401-8009-e855-a2c7aad340c9@linux.ibm.com>
-Date:   Tue, 25 May 2021 09:22:02 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 13:22:30 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6252EAE051;
+        Tue, 25 May 2021 13:22:30 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 68A91AE045;
+        Tue, 25 May 2021 13:22:26 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.34.186])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 13:22:26 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
+        kjain@linux.ibm.com, rnsastry@linux.ibm.com
+Subject: [RFC v2 0/4] Add perf interface to expose nvdimm
+Date:   Tue, 25 May 2021 18:52:12 +0530
+Message-Id: <20210525132216.1239259-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <20210525150337.021aabd8.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: tMOTg1NPDSwmlw7C25_l0OCdbto6kgN1
-X-Proofpoint-GUID: t2d2WYG6zld_Ktlo_D26qe1wX4F3tTc6
+X-Proofpoint-GUID: j9dp8IQQwLXqo_NxCeVNqxLvLVkLeD90
+X-Proofpoint-ORIG-GUID: j9dp8IQQwLXqo_NxCeVNqxLvLVkLeD90
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- suspectscore=0 spamscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250081
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105250081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch adds performance stats reporting support for nvdimm.
+Added interface includes support for pmu register/unregister
+functions. A structure is added called nvdimm_pmu to be used for
+adding arch/platform specific data such as supported events and pmu
+event functions like event_init/add/read/del.
+User could use the standard perf tool to access perf
+events exposed via pmu.
 
+Patchset includes implementation to expose IBM pseries platform nmem*
+device performance stats using this interface.
 
-On 5/25/21 9:03 AM, Halil Pasic wrote:
-> On Fri, 21 May 2021 15:36:47 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> The mdev remove callback for the vfio_ap device driver bails out with
->> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
->> to prevent the mdev from being removed while in use; however, returning a
->> non-zero rc does not prevent removal. This could result in a memory leak
->> of the resources allocated when the mdev was created. In addition, the
->> KVM guest will still have access to the AP devices assigned to the mdev
->> even though the mdev no longer exists.
->>
->> To prevent this scenario, cleanup will be done - including unplugging the
->> AP adapters, domains and control domains - regardless of whether the mdev
->> is in use by a KVM guest or not.
->>
->> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> AFAIU we all agree that, after patch there is a possibility for an use
-> after free error.
+Result from power9 pseries lpar with 2 nvdimm device:
+command:# perf list nmem
+  nmem0/cchrhcnt/                                    [Kernel PMU event]
+  nmem0/cchwhcnt/                                    [Kernel PMU event]
+  nmem0/critrscu/                                    [Kernel PMU event]
+  nmem0/ctlresct/                                    [Kernel PMU event]
+  nmem0/ctlrestm/                                    [Kernel PMU event]
+  nmem0/fastwcnt/                                    [Kernel PMU event]
+  nmem0/hostlcnt/                                    [Kernel PMU event]
+  nmem0/hostldur/                                    [Kernel PMU event]
+  nmem0/hostscnt/                                    [Kernel PMU event]
+  nmem0/hostsdur/                                    [Kernel PMU event]
+  nmem0/medrcnt/                                     [Kernel PMU event]
+  nmem0/medrdur/                                     [Kernel PMU event]
+  nmem0/medwcnt/                                     [Kernel PMU event]
+  nmem0/medwdur/                                     [Kernel PMU event]
+  nmem0/memlife/                                     [Kernel PMU event]
+  nmem0/noopstat/                                    [Kernel PMU event]
+  nmem0/ponsecs/                                     [Kernel PMU event]
+  nmem1/cchrhcnt/                                    [Kernel PMU event]
+  nmem1/cchwhcnt/                                    [Kernel PMU event]
+  nmem1/critrscu/                                    [Kernel PMU event]
+  ...
+  nmem1/noopstat/                                    [Kernel PMU event]
+  nmem1/ponsecs/                                     [Kernel PMU event]
 
-I am assuming here that you meant to say that after applying
-patch 1/2, there is a possibility for a use after free error.
+Patch1:
+        Introduces the nvdimm_pmu structure, common function for pmu
+        register along with callback routine check.
+Pacth2
+        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
+        and event functions and then registers the pmu by adding
+        callbacks to register_nvdimm_pmu.
+Patch3:
+        Sysfs documentation patch
+Patch4:
+        Adds cpuhotplug support.
 
-> I'm a little confused by the fact that we want this
-> one for stable, but the patch that fixes the use after free as no
-> Cc stable (it can't have a proper fixes tag, because this one is not yet
-> merged). Actually I'm not a big fan of splitting up patches to the
-> extent that when not all patches of the series are applied we get bugous
-> behavior (e.g. patch n breaks something that is live at patch n level,
-> but it is supposed to be OK, because patch n+m is going to fix it (where
-> n,m \in \Z^{+}).
->
-> Do we want to squash these? Is the use after free possible prior to this
-> patch?
+Changelog
+---
+v1 -> v2
+- Removed intermediate functions nvdimm_pmu_read/nvdimm_pmu_add/
+  nvdimm_pmu_del/nvdimm_pmu_event_init and directly assigned
+  platfrom specific routines. Also add check for any NULL functions.
+  Suggested by: Peter Zijlstra
 
-I am fine with squashing these if that is the consensus here. Prior
-to this patch, the remove callback function returned -EBUSY
-if a guest is still using the matrix_mdev (i.e., matrix_mdev->kvm
-not NULL), so the matrix_mdev was not freed and hence the
-memory leak for this this patch was designed to fix.
+- Add macros for event attribute array index which can be used to
+  assign dynamically allocated attr_groups.
 
->
-> Regards,
-> Halil
+- New function 'nvdimm_pmu_mem_free' is added to free dynamic
+  memory allocated for attr_groups in papr_scm.c
+
+- PMU register call moved from papr_scm_nvdimm_init() to papr_scm_probe()
+
+- Move addition of cpu/node/cpuhp_state attributes in struct nvdimm_pmu
+  to patch 4 where cpu hotplug code added
+
+- Removed device attribute from the attribute list of
+  add/del/read/event_init functions in nvdimm_pmu structure
+  as we need to assign them directly to pmu structure.
+
+- Some optimizations/fixes from previous RFC code
+
+Kajol Jain (4):
+  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+  powerpc/papr_scm: Add perf interface support
+  powerpc/papr_scm: Document papr_scm sysfs event format entries
+  powerpc/papr_scm: Add cpu hotplug support for nvdimm pmu device
+
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
+ arch/powerpc/include/asm/device.h             |   5 +
+ arch/powerpc/platforms/pseries/papr_scm.c     | 419 ++++++++++++++++++
+ drivers/nvdimm/Makefile                       |   1 +
+ drivers/nvdimm/nd_perf.c                      |  58 +++
+ include/linux/nd.h                            |  42 ++
+ 6 files changed, 556 insertions(+)
+ create mode 100644 drivers/nvdimm/nd_perf.c
+
+-- 
+2.27.0
 
