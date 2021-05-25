@@ -2,119 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E9E3906BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C60F3906C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhEYQgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhEYQgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:36:09 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FACFC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:34:39 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so12319371pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dXoi1LYFfpdbKWHNrkGgXE8yw6j2AtvMSaL5M8EYa9I=;
-        b=ODZN+ptaC53QKg9tJEuMjkU3m5Yx14qJPW5cYXiVRcY8+hX/rwhVtCsH+c63nNBFS9
-         AtZ/xK5eopky4Yx7CM092gDOdFWH7gCsKLsYCj29/GTXKzklI5saaEXu5PxdW/UrkIU/
-         UfhIlam+PSaIBYZrmTQYnV55nlmHUpwMSsTmI3okckkiL+tzVbqlWsuT/08RJ7cYAFN9
-         rkxm0UDy/Ie/Flsm+v76JpOA8Oh+ozNH3dhH3hiSluAbK+riAo2EQX0EICSoZTLPF9iQ
-         wxsFhNsIKFmctQn7DdM9DyqUizZiMV2pYq1EIP0TcztGQlQLXBWD22F7pdybFjh10o7q
-         9j6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dXoi1LYFfpdbKWHNrkGgXE8yw6j2AtvMSaL5M8EYa9I=;
-        b=DDWR6XubHNOakhK8BtGF8qfI3+UYiQ5904SCWaXrqpSQdJqhrsgqv+NSM7RoU1O04k
-         VcDB0WjNslJQNSnSQxSXVt+uhh2MomFj5SjlmXK11TpDMIhjcDr2eidibR1SGQ0hZjnV
-         fTMAllJI+2CHcQFoJh2J/WtCMFsvN3mHhk6csJERW1AX7ZeQSE4TLfMvfqTqfMUjFk92
-         fFRWZ+sd8LmH9bgXHc8nDGzWdwVAWTZsThSQki5MBWiQA2c9YEv1GjMA8OksO74TTHnv
-         hKxLkKdO2Y3Xb8vEmDlI+pPTmUhVjrmntbRQK7nBpW55lh3OD1lVrR0NBE9ssM6fUJGn
-         YJNA==
-X-Gm-Message-State: AOAM533z+l+Ubc09kFPz80ajq5mnIS7qMwkPy3ASlL3IhBPMlbDVEdir
-        aPXRDzSorK38bUY5iDXtFqmo+w==
-X-Google-Smtp-Source: ABdhPJzEA1uqEwImTdL1LFcJBjNgn+HaTWAVrJOuGRaq71ZArHvalHJi9+QWbOpqw8wQJU6ukS046w==
-X-Received: by 2002:a17:90a:7a89:: with SMTP id q9mr5628234pjf.0.1621960478568;
-        Tue, 25 May 2021 09:34:38 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s184sm14527003pgc.29.2021.05.25.09.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 09:34:37 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:34:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Stamatis, Ilias" <ilstam@amazon.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Message-ID: <YK0nGozm4PRPv6D7@google.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
- <20210521102449.21505-10-ilstam@amazon.com>
- <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
- <YKv0KA+wJNCbfc/M@google.com>
- <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
- <YK0emU2NjWZWBovh@google.com>
- <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
+        id S233361AbhEYQjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:39:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43154 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232803AbhEYQjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:39:08 -0400
+IronPort-SDR: 7XvTiMokPdGo4LCYVooDE5+VxCqFtzKpdAdpWToDnUp2a8Mz3/UFDJBAE3qwwy8dMHaIuF2gKB
+ tm3njwEcY0PQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="189360028"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="189360028"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:37:35 -0700
+IronPort-SDR: eDYEv6J9mE48IvFZZmQYVJZZg1dkizKn7462J1jAilYLdjkiuNLklBUak49FYkqeZK5tLtFBHT
+ 5KWc6U1bg8Qg==
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="546698766"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:37:33 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 75B3E20337;
+        Tue, 25 May 2021 19:37:30 +0300 (EEST)
+Date:   Tue, 25 May 2021 19:37:30 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: atomisp: Use sysfs_emit() instead of sprintf()
+ where appropriate
+Message-ID: <20210525163730.GJ3@paasikivi.fi.intel.com>
+References: <20210513034650.252993-1-phind.uet@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
+In-Reply-To: <20210513034650.252993-1-phind.uet@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021, Paolo Bonzini wrote:
-> On 25/05/21 17:58, Sean Christopherson wrote:
-> > > The right place for the hw multiplier
-> > > field to be updated is inside set_tsc_khz() in common code when the ratio
-> > > changes.
+On Thu, May 13, 2021 at 11:46:50AM +0800, Nguyen Dinh Phi wrote:
+> sysfs_emit() is preferred over raw sprintf() for sysfs attributes since it
+> knows about the sysfs buffer specifics and has some built-in sanity checks.
 > 
-> Sort of, the problem is that you have two VMCS's to update.  If properly
-> fixed, the cache is useful to fix the issue with KVM_SET_TSC_KHZ needing to
-> update both of them.  For that to work, you'd have to move the cache to
-> struct loaded_vmcs.
+> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-vmcs01 and vmcs02 will get updated at enter/exit, if there's no caching then
-it all Just Works.
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-> So you can:
-> 
-> 1) move the cached tsc_ratio to struct loaded_vmcs
-> 
-> 2) add a function in common code (update_tsc_parameters or something like
-> that) to update both the offset and the ratio depending on is_guest_mode()
-> 
-> 3) call that function from nested vmentry/vmexit
-> 
-> And at that point the cache will do its job and figure out whether a vmwrite
-> is needed, on both vmentry and vmexit.
-> 
-> I actually like the idea of storing the expected value in kvm_vcpu and the
-> current value in loaded_vmcs.  We might use it for other things such as
-> reload_vmcs01_apic_access_page perhaps.
-
-I'm not necessarily opposed to aggressively shadowing the VMCS, but if we go
-that route then it should be a standalone series that implements a framework
-that can be easily extended to arbitrary fields.  Adding fields to loaded_vmcs
-one at a time will be tedious and error prone.  E.g. what makes TSC_MULTIPLIER
-more special than TSC_OFFSET, GUEST_IA32_PAT, GUEST_IA32_DEBUGCTL, GUEST_BNDCFGS,
-and other number of fields that are likely to persist for a given vmcs02?
-
-The current caching logic is just plain ugly and should not exist.
+-- 
+Sakari Ailus
