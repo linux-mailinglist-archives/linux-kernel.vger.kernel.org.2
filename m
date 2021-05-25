@@ -2,148 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F207390453
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F7D390466
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbhEYOyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:54:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50818 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232939AbhEYOx4 (ORCPT
+        id S233009AbhEYPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:01:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39910 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231182AbhEYPBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:53:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621954346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qSC9QpCDqCazF2mZq6d/82qLDoFltpJkJoLoXKJjvvg=;
-        b=Ae/cDFzEdr4Mcv501zWIjTQa9VHrixNO8oXY31ht6RDbmrY1I3KyBOcIp8HLI1kpUHQzzT
-        68losLhh71RyECvM2pMtY3sl9FDICW46pIP1yPoYMt9VEqoSy4aVWLce4fspgeHbllZLnW
-        fh7sdYs91uJRsa0xHhyBzrKl1aiUUEM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-6QIRE0wzMW2imS9j1gb0TQ-1; Tue, 25 May 2021 10:52:24 -0400
-X-MC-Unique: 6QIRE0wzMW2imS9j1gb0TQ-1
-Received: by mail-ed1-f72.google.com with SMTP id n6-20020a0564020606b029038cdc241890so17442234edv.20
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:52:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qSC9QpCDqCazF2mZq6d/82qLDoFltpJkJoLoXKJjvvg=;
-        b=U1QS5UZW2rmvvZQIO0faJRGZyCY361Vbsm20AY0cl10nni9MbYfB8f5JcD1Xdkp1BB
-         YAPZm5FztYlxu5fulA/asawg76g2yneXB5dFiLquNKAWaS9sgLtSJcPlmo+tmy1lOcQ9
-         fExG0dPn4MXstJ5a+MLnP9HINjAI1QxQa5d2lBBwkleQWqbLF3qiSgXTCa0jLvZCjxLY
-         UKbmIiHUnz3UkXfgoSlL/118vEVU+ASJEqxOZnDvMokWc8MwGNcQFlKL6+4iEcgzQRyv
-         rQsRrl0jxg3Ay0p/ukrJhkFL0t1kCaDmvlvhUJ205ZnsjOcBkuQCvb9AgH0BcUSPA5Xw
-         ZxvA==
-X-Gm-Message-State: AOAM531hiIpWE8QhbKodG4Vp+t4Divyg9+5od/s7fMbZUsmby62lIqp7
-        JEegCdxEEZrf2/JqbH4Zj5Qm6QA1gmOWROBK8g+t9XyJbsGUzKwHIAByaKkLNUd0eDUnDqO7yT/
-        DPXsQunBxGUd1yP+LM/IYNR8N
-X-Received: by 2002:aa7:d843:: with SMTP id f3mr32220068eds.270.1621954343100;
-        Tue, 25 May 2021 07:52:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDlSSMgDZFTIhLb5CNVeQ1FOGcYDV/D4Z+HKGAvXmcW1X5RbFzEx/ev3BuN5v5ARSJGUCLSQ==
-X-Received: by 2002:aa7:d843:: with SMTP id f3mr32220039eds.270.1621954342913;
-        Tue, 25 May 2021 07:52:22 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id h9sm10912173edt.18.2021.05.25.07.52.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 07:52:22 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:52:20 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [PATCH v10 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
-Message-ID: <20210525145220.amzme5mqqv4npirt@steredhat>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210521075520.ghg75wpzz42zorxg@steredhat>
- <108b0bba-5909-cdde-97ee-321b3f5351ca@kaspersky.com>
- <b8dd3b55-0e2c-935a-d9bb-b13b7adc4458@kaspersky.com>
+        Tue, 25 May 2021 11:01:14 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PExFOU107432;
+        Tue, 25 May 2021 10:59:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ilqadP6miyG2ucaJRNhnH2nqbLOFKkZD7gQ8vrkxgcQ=;
+ b=MZC9s1Pp4IsgjiDys5ewtgn+hG0oMLpezxWhIamRNIhIMiVzvLPCerGXbcbIcwu7qV2i
+ wzkzHQms/4PfDtAtvwXxM/6Z8KRHYfDKv4NnUS/kSKD88RCDevsENj4TgPyfKWh/+2Cs
+ I4Uok5RkqHlyAfeSu/Ekdl11VmycM6Q21ZvQ4g3t7plYAYkIOhlZQfNubgtaSS9VZmSb
+ NaZhc4V3jv6z7wTfstC0b1HUMT58HzYUN880C9l2rfBUzDS9et68dbkupK2ty94EIweX
+ WqC81V3Tb1nE5Veh8bSx/0gF6oOPYrETdDLOLNakBxuC00WbNqFS+ZDKXH+yPOmTxAEl Xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s38r0nav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 10:59:42 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PExehG111005;
+        Tue, 25 May 2021 10:59:40 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s38r0mxr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 10:59:39 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PErumP024386;
+        Tue, 25 May 2021 14:59:29 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma05wdc.us.ibm.com with ESMTP id 38s1ghh104-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 14:59:28 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PExRhj31916494
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 14:59:27 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9012213604F;
+        Tue, 25 May 2021 14:59:27 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6347A13605D;
+        Tue, 25 May 2021 14:59:26 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 14:59:26 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-3-akrowiak@linux.ibm.com>
+ <20210523225746.GF1002214@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <ac5cfe4a-a61b-2226-58aa-a5ea761180be@linux.ibm.com>
+Date:   Tue, 25 May 2021 10:59:25 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <b8dd3b55-0e2c-935a-d9bb-b13b7adc4458@kaspersky.com>
+In-Reply-To: <20210523225746.GF1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TaWADBqqPkb5YFjg1MtBJSc2-BGjm6FM
+X-Proofpoint-GUID: KRxNCKyuKPDOFaxatL_YT-HVr9VjXiTI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ spamscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:22:09AM +0300, Arseny Krasnov wrote:
+
+
+On 5/23/21 6:57 PM, Jason Gunthorpe wrote:
+> On Fri, May 21, 2021 at 03:36:48PM -0400, Tony Krowiak wrote:
+>> +static struct kvm_s390_crypto_hook
+>> +*kvm_arch_crypto_find_hook(enum kvm_s390_crypto_hook_type type)
+>> +{
+>> +	struct kvm_s390_crypto_hook *crypto_hook;
+>> +
+>> +	list_for_each_entry(crypto_hook, &crypto_hooks, node) {
+>> +		if (crypto_hook->type == type)
+>> +			return crypto_hook;
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +int kvm_arch_crypto_register_hook(struct kvm_s390_crypto_hook *hook)
+>> +{
+>> +	struct kvm_s390_crypto_hook *crypto_hook;
+>> +
+>> +	mutex_lock(&crypto_hooks_lock);
+>> +	crypto_hook = kvm_arch_crypto_find_hook(hook->type);
+>> +	if (crypto_hook) {
+>> +		if (crypto_hook->owner != hook->owner)
+>> +			return -EACCES;
+>> +		list_replace(&crypto_hook->node, &hook->node);
+> This is all dead code right? This is only called from a module init
+> function so it can't be called twice.
+
+That is true only if you are considering the current case.
+Is it guaranteed that only the vfio_ap module
+will call this function and is there a guarantee that it will
+always and only be called from the vfio_ap module init
+function? For example, suppose a hook is added to
+intercept the AP NQAP or DQAP instruction? We don't
+know how or when those handlers will be registered
+or unregistered. We don't even know if the handlers
+will be part of the vfio_ap module or not.
+
+> Just always fail if the hook is
+> already used and delete the owner stuff.
+
+I suppose that is reasonable and simpler.
+
 >
->On 23.05.2021 15:14, Arseny Krasnov wrote:
->> On 21.05.2021 10:55, Stefano Garzarella wrote:
->>> Hi Arseny,
->>>
->>> On Thu, May 20, 2021 at 10:13:53PM +0300, Arseny Krasnov wrote:
->>>> 	This patchset implements support of SOCK_SEQPACKET for virtio
->>>> transport.
->>> I'll carefully review and test this series next Monday, in the mean time
->>> I think we should have at least an agreement about the changes that
->>> regards virtio-spec before merge this series, to avoid any compatibility
->>> issues.
->>>
->>> Do you plan to send a new version of the specification changes?
->>>
->>> Thanks,
->>> Stefano
->> Hello, sorry for long answer. I'm on vacation now, but i plan to send
->>
->> it in next several days, because with current implementation it is short
->>
->>
->> Thank You
+> But this is alot of complicated and unused code to solve a lock
+> ordering problem..
+
+If you have a better solution, I'm all ears. I've been down this
+road a couple of times now and solving lock ordering for
+multiple asynchronous processes is not trivial. This seems like
+a reasonable solution and provides for flexibility for including
+additional hooks to handle interception of other AP instructions.
+
 >
->Hello, here is spec patch:
->
->https://lists.oasis-open.org/archives/virtio-comment/202105/msg00017.html
->
->Let's discuss it
-
-Yep, sure.
-
-About this series I think is better to split in two series since it 
-became very long. Patchwork [1] also complains here [2].
-
-You can send a first series with patches from 1 to 7. These patches are 
-reviewed by me and can go regardless of the discussion of the VIRTIO 
-specifications.
-Maybe you can also add the patch with the test to this first series.
-
-Please specify in the cover letter that the implementation for virtio 
-devices is under development and will be sent later.
-
-
-When it will be merged in the net-next tree, you can post the second 
-part with the rest of the series that implements SEQPACKET for virtio 
-devices, possibly after we received an agreement for the specifications.
-
-Please use the "net-next" tag and take a look at 
-Documentation/networking/netdev-FAQ.rst about netdev development.
-
-
-Anyway, in the next days (hopefully tomorrow) I'll review the rest of 
-the series related to virtio devices and spec.
-
-Thanks,
-Stefano
-
-[1] 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=486011&state=*
-
-[2] 
-https://patchwork.kernel.org/project/netdevbpf/patch/20210520191449.1270723-1-arseny.krasnov@kaspersky.com/
+> Jason
 
