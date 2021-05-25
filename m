@@ -2,207 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81B93906DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D3A3906DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhEYQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
+        id S233548AbhEYQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbhEYQr7 (ORCPT
+        with ESMTP id S232023AbhEYQsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:47:59 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99D6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id kr9so9120033pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:29 -0700 (PDT)
+        Tue, 25 May 2021 12:48:06 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800DBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:36 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id f22so22263284pgb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:46:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=UWSNucc0Fbg/N0O9e1BPa19xkxMtY5iUg9LrIIpQVIA=;
-        b=c5iI4WiLJ8Mlx3ULjcLWiCuzFw/rE6hM7shCRXtzj2IV/H8cAkI2Za9qDIpCM/mUiM
-         lFHkYiElwLNPl7pP+eIW5HezoTYqKMhppH11KXXckDW5B932JEwIMZq9tti9vxn1wSJR
-         nJ1RqjH6nH02meL3oOGi4zKnuqw/mmzkXlgkuBiOcZovYKvrguUc8I467368w5ylcPKl
-         wwgd51M5P6HKouG/8eR12NB72Bj62RB5ZcQznI7P7y3GXFRGkK/YA9ZGFLaFXqAtFsEg
-         5IgDZrm59TsRgpO3RauO0qS/HdJ6CecwzUbGSxK/rmXu3t1hCfIEgmIrJbnuGhb7UlXd
-         uesA==
+        bh=xwS5IVdCekJk7kv3FtNxGVNuofglwTIwxkn43HaNTJo=;
+        b=LkOcj4gtSJPG6QLSDZLLxKY0eFWqg75E5lt7Vq6by8faYpV4d+j1pbincVWsRHY6cR
+         gehPrbn8jhvFppDxsZ3sUCPBNj+hlo56GFqvOLg3VWW3LtU9Xp5qX8CCW/4zZwfQ2awY
+         Pgd4SE2ggCQEo9OKVolYfCWIBVOqpjCpgvY5S9G90MfYVrZ8jnDbOKyRQNlMA3Lxreqs
+         djtJpam7l9btEoGR6Pd0kZlk3uC9t5y/+i9BxICFj84qhjhmTDim4ZkzBnOB9tnAp5Lu
+         x2LunG+TtD/xW1Z+NWOLEV7pqUMKMXt1+2VMRngnppROoZRhOwCstn8YDpEi8QjkAOS1
+         jkFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UWSNucc0Fbg/N0O9e1BPa19xkxMtY5iUg9LrIIpQVIA=;
-        b=nfhicGoV/+vA9fn4qhOJdMHLsdDXDHsx9VM8R4hOJrMaFPCfdQMQi0H2+697v8WQDD
-         b7VTo9FZD6uU7vtUMOb3JX4nh0VW/U56PusDLJP5YCKnOIHVc28ns47hi4qiuCB6Ugyt
-         C/WY1ZoxRm699Py6jCupUByAjjlbdaJ8mPLA3zOt+qg8y/M5veihkdOH7lwF7RAxLUXO
-         MWN6n0iHcSug1+VbZb8VfgSWBQX4OPEK0d0bq12iUa48fNdlqyAcjat28hOCION3mzO1
-         MHWI+7IOHDQksR71qTMAMSUYY5DcmvJHOLX2Xqn/rfRXvcG17liwu2K7i0epgvELVbD6
-         ubxw==
-X-Gm-Message-State: AOAM532rztWqdhi5Ra6ysbg5EyjRMZc5hbbxof4+FOaVmX2mwc/ve/rC
-        B4dvmQDxgmpUSesrzT1yRZQ=
-X-Google-Smtp-Source: ABdhPJxZc8AKB2etBkZad8HKPJGcA+XjdJ+8sO4LFdVu4/W+wPCqR9730FlRPiHfYWk/gOfNUOVuGA==
-X-Received: by 2002:a17:903:22d1:b029:f2:67be:82fb with SMTP id y17-20020a17090322d1b02900f267be82fbmr31194844plg.15.1621961189340;
-        Tue, 25 May 2021 09:46:29 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:37cd:d6b4:7992:c290])
-        by smtp.gmail.com with ESMTPSA id bo10sm2595311pjb.36.2021.05.25.09.46.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xwS5IVdCekJk7kv3FtNxGVNuofglwTIwxkn43HaNTJo=;
+        b=ou9taipcKwMidBW9pIvi/J0swwCSU8qm2fGm2JHt3dO++mF4deR/kH/V/2SVkTfWWZ
+         PF0N7dWSVjG7IpBIXOeK7CQMS3OgQFyaMiUHIayo7dmF4wPHUWD6wYVRZohLTIxKSHId
+         Vq3oW/7Iko1bwiB+JbOVT+DdaG4A20NDl1BRG9x1JfTDz9v+70UYp0FuV1wkyF2bw8hP
+         +FMDR1Fj+pTJVGG2tgzsfxfp29/wuY/g645gm1gVPU64on/z+5OIWKdhu/HLd6u2ojch
+         APTYHrFDQ2qkomhkpSLKIPpaE4XmyxSoAkvdZUcNyWdaydq+kRSugsuOdEHlT2NrU+vM
+         812g==
+X-Gm-Message-State: AOAM531mvpks5tXWSngHDiUZ5P8kGp6gdMHSS0ij671ZYH9tyAaT7eEK
+        1zXxzZpM58Nc8aECIALUVtgyxw==
+X-Google-Smtp-Source: ABdhPJwzX5Z1/XMITezELAhA4gfUFx10BkBRwzCVyyn+CkMr7oR5/cLRKHNBzud+DuLNirYdfDXmxw==
+X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id p30-20020a056a000a1eb02902e289d85c87mr29438912pfh.73.1621961195812;
+        Tue, 25 May 2021 09:46:35 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 10sm15223768pgl.39.2021.05.25.09.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 09:46:28 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 25 May 2021 09:46:25 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     hughd@google.com, ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        naoya.horiguchi@nec.com, wangyugui@e16-tech.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v3 PATCH 1/2] mm: rmap: make try_to_unmap() void function
-Message-ID: <YK0p4fSXk1vhsmKt@google.com>
-References: <20210525162145.3510-1-shy828301@gmail.com>
+        Tue, 25 May 2021 09:46:35 -0700 (PDT)
+Date:   Tue, 25 May 2021 16:46:31 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [kbuild-all] Re: [PATCH] kvm: fix boolreturn.cocci warnings
+Message-ID: <YK0p53dAhark4xuy@google.com>
+References: <202105251316.O1igBtAa-lkp@intel.com>
+ <20210525055940.GA7291@9b81fe870f96>
+ <YKyjCOk2UiVQCh7m@hirez.programming.kicks-ass.net>
+ <91885328-dc7f-3d12-3ddb-53a403bb8c60@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525162145.3510-1-shy828301@gmail.com>
+In-Reply-To: <91885328-dc7f-3d12-3ddb-53a403bb8c60@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:21:44AM -0700, Yang Shi wrote:
-> Currently try_to_unmap() return bool value by checking page_mapcount(),
-> however this may return false positive since page_mapcount() doesn't
-> check all subpages of compound page.  The total_mapcount() could be used
-> instead, but its cost is higher since it traverses all subpages.
+On Tue, May 25, 2021, Rong Chen wrote:
 > 
-> Actually the most callers of try_to_unmap() don't care about the
-> return value at all.  So just need check if page is still mapped by
-> page_mapped() when necessary.  And page_mapped() does bail out early
-> when it finds mapped subpage.
 > 
-> Suggested-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  include/linux/rmap.h |  2 +-
->  mm/huge_memory.c     |  4 +---
->  mm/memory-failure.c  | 13 ++++++-------
->  mm/rmap.c            |  6 +-----
->  mm/vmscan.c          |  3 ++-
->  5 files changed, 11 insertions(+), 17 deletions(-)
+> On 5/25/21 3:11 PM, Peter Zijlstra wrote:
+> > On Tue, May 25, 2021 at 01:59:40PM +0800, kernel test robot wrote:
+> > > From: kernel test robot <lkp@intel.com>
+> > > 
+> > > arch/arm64/kvm/mmu.c:1203:9-10: WARNING: return of 0/1 in function 'kvm_age_gfn' with return type bool
+> > > arch/arm64/kvm/mmu.c:1173:9-10: WARNING: return of 0/1 in function 'kvm_set_spte_gfn' with return type bool
+> > > arch/arm64/kvm/mmu.c:1216:9-10: WARNING: return of 0/1 in function 'kvm_test_age_gfn' with return type bool
+> > > arch/arm64/kvm/mmu.c:1159:9-10: WARNING: return of 0/1 in function 'kvm_unmap_gfn_range' with return type bool
+> > > 
+> > >   Return statements in functions returning bool should use
+> > >   true/false instead of 1/0.
+> > > Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> > Per 2b076054e524 ("remove boolinit.cocci"), I have a very dim view of
+> > this sort of thing.
 > 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index def5c62c93b3..116cb193110a 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -194,7 +194,7 @@ static inline void page_dup_rmap(struct page *page, bool compound)
->  int page_referenced(struct page *, int is_locked,
->  			struct mem_cgroup *memcg, unsigned long *vm_flags);
->  
-> -bool try_to_unmap(struct page *, enum ttu_flags flags);
-> +void try_to_unmap(struct page *, enum ttu_flags flags);
->  
->  /* Avoid racy checks */
->  #define PVMW_SYNC		(1 << 0)
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 19195fca1aee..80fe642d742d 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2336,15 +2336,13 @@ static void unmap_page(struct page *page)
->  {
->  	enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
->  		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
-> -	bool unmap_success;
->  
->  	VM_BUG_ON_PAGE(!PageHead(page), page);
->  
->  	if (PageAnon(page))
->  		ttu_flags |= TTU_SPLIT_FREEZE;
->  
-> -	unmap_success = try_to_unmap(page, ttu_flags);
-> -	VM_BUG_ON_PAGE(!unmap_success, page);
-> +	try_to_unmap(page, ttu_flags);
->  }
->  
->  static void remap_page(struct page *page, unsigned int nr)
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 9dcc9bcea731..6dd53ff34825 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1126,7 +1126,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
->  		collect_procs(hpage, &tokill, flags & MF_ACTION_REQUIRED);
->  
->  	if (!PageHuge(hpage)) {
-> -		unmap_success = try_to_unmap(hpage, ttu);
-> +		try_to_unmap(hpage, ttu);
->  	} else {
->  		if (!PageAnon(hpage)) {
->  			/*
-> @@ -1138,17 +1138,16 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
->  			 */
->  			mapping = hugetlb_page_mapping_lock_write(hpage);
->  			if (mapping) {
-> -				unmap_success = try_to_unmap(hpage,
-> -						     ttu|TTU_RMAP_LOCKED);
-> +				try_to_unmap(hpage, ttu|TTU_RMAP_LOCKED);
->  				i_mmap_unlock_write(mapping);
-> -			} else {
-> +			} else
->  				pr_info("Memory failure: %#lx: could not lock mapping for mapped huge page\n", pfn);
-> -				unmap_success = false;
-> -			}
->  		} else {
-> -			unmap_success = try_to_unmap(hpage, ttu);
-> +			try_to_unmap(hpage, ttu);
->  		}
->  	}
-> +
-> +	unmap_success = !page_mapped(hpage);
->  	if (!unmap_success)
->  		pr_err("Memory failure: %#lx: failed to unmap page (mapcount=%d)\n",
->  		       pfn, page_mapcount(hpage));
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index a35cbbbded0d..728de421e43a 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1748,10 +1748,8 @@ static int page_not_mapped(struct page *page)
->   *
->   * Tries to remove all the page table entries which are mapping this
->   * page, used in the pageout path.  Caller must hold the page lock.
-> - *
-> - * If unmap is successful, return true. Otherwise, false.
->   */
-> -bool try_to_unmap(struct page *page, enum ttu_flags flags)
-> +void try_to_unmap(struct page *page, enum ttu_flags flags)
->  {
->  	struct rmap_walk_control rwc = {
->  		.rmap_one = try_to_unmap_one,
-> @@ -1776,8 +1774,6 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
->  		rmap_walk_locked(page, &rwc);
->  	else
->  		rmap_walk(page, &rwc);
-> -
-> -	return !page_mapcount(page) ? true : false;
+> Hi Peterz,
+> 
+> Sorry for the noise, we'll disable the check.
+> 
+> > 
+> > > Fixes: 63b3f96e1a98 ("kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT")
+> > *how* ?!?
+> 
+> The bot is stupid
 
-Couldn't we use page_mapped instead of page_mapcount here?
-With boolean return of try sematic looks reasonable to me
-rather than void.
+LOL.  FWIW, it's not _that_ stupid, or maybe it's the broken clock adage...  The
+proper fix is sitting in the KVM tree, it should soon make its way to Linus.
 
->  }
->  
->  /**
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f96d62159720..fa5052ace415 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1499,7 +1499,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->  			if (unlikely(PageTransHuge(page)))
->  				flags |= TTU_SPLIT_HUGE_PMD;
->  
-> -			if (!try_to_unmap(page, flags)) {
-> +			try_to_unmap(page, flags);
-> +			if (page_mapped(page)) {
->  				stat->nr_unmap_fail += nr_pages;
->  				if (!was_swapbacked && PageSwapBacked(page))
->  					stat->nr_lazyfree_fail += nr_pages;
-> -- 
-> 2.26.2
-> 
-> 
+  fcb8283920b1 ("KVM: arm64: Fix boolreturn.cocci warnings")
