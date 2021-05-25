@@ -2,161 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07C4390B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE87390B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhEYV3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:29:14 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46483 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhEYV3N (ORCPT
+        id S233009AbhEYVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhEYVbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:29:13 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 7FA91FF802;
-        Tue, 25 May 2021 21:27:40 +0000 (UTC)
-Date:   Tue, 25 May 2021 23:27:40 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Roger Quadros <rogerq@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: rtc: nxp,pcf8563: Convert to DT schema
-Message-ID: <YK1rzHSXC7rNpCpC@piout.net>
-References: <20210518232858.1535403-1-robh@kernel.org>
- <20210518232858.1535403-3-robh@kernel.org>
+        Tue, 25 May 2021 17:31:12 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065FCC061756;
+        Tue, 25 May 2021 14:29:40 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id q1so5801255lfo.3;
+        Tue, 25 May 2021 14:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yn3fl1fZB0VOpwc1b4wth7TBINMg9VY7zs7B0HHCpNE=;
+        b=Jr5XAZqP7SiSwza7IIsoYX/ZNbF3/7pLq+iT9XGpywM350Tooz+97LFyTDYZyrVxeW
+         1jouhV3u7LOyQxPDg/C3ufISP5D350ZyxfTOdmR+1FCrq+s4QhJs0to/xosjEiOCGHXP
+         tq4Ffi3dktnrbiA3M8DmJxdnQjigeZpYhDotuJLK0a6CiMF7jwhJy55icNy4sqraUxeX
+         K73kL+XWPWn4++6qjdsflr0pmcu8obWS8TEK2QaJYElV/vyj+buNgD3YSkrB7FiG0NL7
+         g7BOpaZ+Yo63i+6VeA6qMNRnLRQpXS6YA6xc8pbf8yR3sE33sqOViQoyUXdZHC3zeu0t
+         9eGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yn3fl1fZB0VOpwc1b4wth7TBINMg9VY7zs7B0HHCpNE=;
+        b=sMpcXCrUcB7skBm71oeYfsqKKD8V5pluRBqlzdgNGyODgEj/so15p62rmhEjGBvEER
+         sNSvJjizqXbgwTSTsBtb550rhJdF3l3rncCjjVt3kqzfWZWqRaeIfFCgGOdMLdtCYo9e
+         rIsz9x1XnuHMfOKjcmYz3P4OoHAIH+onOpc5LBf2g4yg2jmuL751GJY1w6+IiMSwU3lC
+         n/oHs6zhotVyP6T/LjoUozl49TyASoVXO9F10Rj9m63krQzz9niswMwjwwXouEStzHDq
+         Vl7+0QlQT2IM3UTUcsgwWdVg18dieN4/H6BiZJgsKBPL/tK8aSrsWn878LkBcU1aNSkx
+         QKOQ==
+X-Gm-Message-State: AOAM532JOaUwJ2eiEoiShRoKq67tvyeYZl760WTYafw5Iko7pUpSlNmd
+        lSfcA/HB004J/drc4vQ/TaH829wo8xc=
+X-Google-Smtp-Source: ABdhPJyz9+7HTvrltQyjbzWHNILgCza4grBtexvZEuKDFSl3fCl0S1elsmUVsZdsNhR9dOu/iicCOQ==
+X-Received: by 2002:ac2:5f48:: with SMTP id 8mr14819793lfz.340.1621978179080;
+        Tue, 25 May 2021 14:29:39 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-180-236.dynamic.spd-mgts.ru. [46.138.180.236])
+        by smtp.googlemail.com with ESMTPSA id x12sm2221450ljc.70.2021.05.25.14.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 14:29:38 -0700 (PDT)
+Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
+ enabled
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Burton <paul.burton@mips.com>,
+        John Crispin <john@phrozen.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>
+References: <20210523232556.15017-1-digetx@gmail.com>
+ <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+ <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
+ <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
+ <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
+Date:   Wed, 26 May 2021 00:29:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518232858.1535403-3-robh@kernel.org>
+In-Reply-To: <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 18/05/2021 18:28:54-0500, Rob Herring wrote:
-> Convert the Philips PCF8563/Epson RTC8564 binding to DT schema format.
+25.05.2021 15:19, Geert Uytterhoeven пишет:
+...
+>>> There 3 possible solutions:
+>>>
+>>> 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
+>>> 2. Build stubs universally, maybe using weak functions.
+>>
+>> I vote for this one - global stubs.
 > 
-> Add 'interrupts' as this device has an interrupt which was not
-> documented, but in use.
+> Yep.
 > 
-
-It also supports start-year from rtc.yaml.
-
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/rtc/nxp,pcf8563.yaml  | 50 +++++++++++++++++++
->  .../devicetree/bindings/rtc/pcf8563.txt       | 29 -----------
->  2 files changed, 50 insertions(+), 29 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
->  delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
+>> Or for a new one:
+>> 4. Disable COMPILE_TEST for specific platforms (mentioned in commit
+>> msg). Eventually could be like:
+>> config RALINK
+>>         depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
 > 
-> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> new file mode 100644
-> index 000000000000..15e67be0ef95
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Philips PCF8563/Epson RTC8564 Real Time Clock
-> +
-> +maintainers:
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - epson,rtc8564
-> +      - microcrystal,rv8564
-> +      - nxp,pcf8563
-> +      - nxp,pca8565
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#clock-cells":
-> +    const: 0
-> +
-> +  clock-output-names:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        rtc@51 {
-> +            compatible = "nxp,pcf8563";
-> +            reg = <0x51>;
-> +            #clock-cells = <0>;
-> +        };
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/rtc/pcf8563.txt b/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> deleted file mode 100644
-> index 0a900f7c8977..000000000000
-> --- a/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> +++ /dev/null
-> @@ -1,29 +0,0 @@
-> -* Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Required properties:
-> -- compatible: Should contain "nxp,pcf8563",
-> -	"epson,rtc8564" or
-> -	"microcrystal,rv8564" or
-> -	"nxp,pca8565"
-> -- reg: I2C address for chip.
-> -
-> -Optional property:
-> -- #clock-cells: Should be 0.
-> -- clock-output-names:
-> -  overwrite the default clock name "pcf8563-clkout"
-> -
-> -Example:
-> -
-> -pcf8563: pcf8563@51 {
-> -	compatible = "nxp,pcf8563";
-> -	reg = <0x51>;
-> -	#clock-cells = <0>;
-> -};
-> -
-> -device {
-> -...
-> -	clocks = <&pcf8563>;
-> -...
-> -};
-> -- 
-> 2.27.0
+> That's a neat idea!
 > 
+> Of course there's a fifth option:
+> 
+> 5. Convert legacy platforms to COMMON_CLK.
+> 
+> Which is already happening for ARM EP93XX.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I'll try to take a closer look at alternative options, thank you for
+yours input.
