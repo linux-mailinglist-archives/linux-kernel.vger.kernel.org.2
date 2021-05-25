@@ -2,212 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0905D39065C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AED390666
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhEYQPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbhEYQPu (ORCPT
+        id S233316AbhEYQRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:17:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46563 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233278AbhEYQRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:15:50 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA82DC061574;
-        Tue, 25 May 2021 09:14:19 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 5514B1F41539
-Subject: Re: [PATCH v10 0/9] Add HANTRO G2/HEVC decoder support for IMX8MQ
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com
-References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
- <57dd758d-07b6-abbe-ab0d-2cc165b650db@xs4all.nl>
- <7ce18309-fcb2-b7cd-0b22-5a8efb237f6a@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <c4546e0e-730c-3c73-be98-bc5041da352f@collabora.com>
-Date:   Tue, 25 May 2021 18:14:14 +0200
+        Tue, 25 May 2021 12:17:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621959362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MWKQ2FRMeKpEI6HlpFxdCErCeQjuf2CVv/zTj1uud2U=;
+        b=EvsFY6In6o0WBxbfLtfT4ka4o+Nss/AbgXmoHs4E/2dxQJ8cPARIac2UxOrlvf9ZACme79
+        O4MsWjWUMkvznkXFGBJCAwNq7kb3VMdSmm3bZZPVvHf79yZfEbZP4XM2MoXjNx0TdEu7aj
+        3Q7W4/7zlYINkbOZjOjcMVYw8mOKPqs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-nxLO7va6NMu_VMedZRpnDw-1; Tue, 25 May 2021 12:15:59 -0400
+X-MC-Unique: nxLO7va6NMu_VMedZRpnDw-1
+Received: by mail-ej1-f69.google.com with SMTP id dt6-20020a170906b786b02903dc2a6918d6so4055427ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:15:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MWKQ2FRMeKpEI6HlpFxdCErCeQjuf2CVv/zTj1uud2U=;
+        b=XnB6hU9N2lK4P1W+dudLqnUKBPy7kQu2bjX5Ej4sFk0rGEEB87j24ikZOn1o9177ae
+         9QlH/zwzoZGKRgq5vXsgdHcyjYZd9mtRhhl2ynIcet/9OETRPZvS0SN5R6tbfIM5sjJO
+         W9Jh5WZUTaZE3m57qH3QfAVPWTlVfuxRkEHeREbUHmFoxm9qKISoy5Esg6IJcaFj+hzp
+         tNpoN9sAykAf0SNOwzCUDVEmtA4J/Tcbo5VZIDtLVmhSuLfNQDl4h1Ey+q8YnWe8ocEm
+         WGRUVGV7TfAKCoqfzuH7xH37sRWhbe0SQf3YniE0TpL3AqKqaK4XfbxDrxaf1duyrO9I
+         OVXA==
+X-Gm-Message-State: AOAM532yGhODitrcArnhIIMw7WGOHcYtshgSOOjwww4y95E0CWJqbqxm
+        WPj3/xSxx7XJEiixKqDi1lYiRN79DzXHMtV4k/2/eiG347DnzqhKDziwzWUENKlYSEJLy3EOIrQ
+        ZVb/NK5L7cvGlaZWK/sU692WV
+X-Received: by 2002:a17:906:3644:: with SMTP id r4mr29254821ejb.140.1621959358263;
+        Tue, 25 May 2021 09:15:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2Pf5t+DkvwwiPx0XllA23W7L/9RiYDfji124wzQSvXBcL3fzCNNBoTyrr73mQ0LIqxj2Slw==
+X-Received: by 2002:a17:906:3644:: with SMTP id r4mr29254792ejb.140.1621959358110;
+        Tue, 25 May 2021 09:15:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gt37sm1929280ejc.68.2021.05.25.09.15.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 09:15:57 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>,
+        "Stamatis, Ilias" <ilstam@amazon.com>
+Cc:     "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+References: <20210521102449.21505-1-ilstam@amazon.com>
+ <20210521102449.21505-10-ilstam@amazon.com>
+ <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
+ <YKv0KA+wJNCbfc/M@google.com>
+ <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
+ <YK0emU2NjWZWBovh@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
+ decache_tsc_multiplier()
+Message-ID: <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
+Date:   Tue, 25 May 2021 18:15:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <7ce18309-fcb2-b7cd-0b22-5a8efb237f6a@xs4all.nl>
+In-Reply-To: <YK0emU2NjWZWBovh@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/05/21 17:58, Sean Christopherson wrote:
+>> The right place for the hw multiplier
+>> field to be updated is inside set_tsc_khz() in common code when the ratio
+>> changes.
 
-Le 25/05/2021 à 17:39, Hans Verkuil a écrit :
-> On 05/05/2021 16:42, Hans Verkuil wrote:
->> Hi Benjamin,
->>
->> On 20/04/2021 14:10, Benjamin Gaignard wrote:
->>> The IMX8MQ got two VPUs but until now only G1 has been enabled.
->>> This series aim to add the second VPU (aka G2) and provide basic
->>> HEVC decoding support.
->>>
->>> To be able to decode HEVC it is needed to add/update some of the
->>> structures in the uapi. In addition of them one HANTRO dedicated
->>> control is required to inform the driver of the number of bits to skip
->>> at the beginning of the slice header.
->>> The hardware require to allocate few auxiliary buffers to store the
->>> references frame or tile size data.
->> This series clashes with this patch:
->>
->> https://patchwork.linuxtv.org/project/linux-media/patch/20210427071554.2222625-1-jernej.skrabec@siol.net/
->>
->> and this patch series:
->>
->> https://patchwork.linuxtv.org/project/linux-media/cover/20210401144336.2495479-1-emil.l.velikov@gmail.com/
->>
->> For both PRs are pending.
->>
->> It's probably better to wait until this is merged before rebasing this series.
-> These two have been merged today.
->
-> You find them in the master branch of https://git.linuxtv.org/media_stage.git/
->
-> In a few days they should be merged as well into our main media tree master, but
-> if you don't want to wait for that you can base your work on top of the media_stage
-> git repo, that should be perfectly fine.
-I have rebased my work on top of media_stage and send v11.
-Thanks a lot.
+Sort of, the problem is that you have two VMCS's to update.  If properly 
+fixed, the cache is useful to fix the issue with KVM_SET_TSC_KHZ needing 
+to update both of them.  For that to work, you'd have to move the cache 
+to struct loaded_vmcs.
 
-Benjamin
+So you can:
 
->
-> Regards,
->
-> 	Hans
->
->> And if drivers are going to be moved out of staging, leaving only HEVC support
->> in staging, then I'd wait until that is done as well.
->>
->> Regards,
->>
->> 	Hans
->>
->>> The driver has been tested with fluster test suite stream.
->>> For example with this command: ./fluster.py run -ts JCT-VC-HEVC_V1 -d GStreamer-H.265-V4L2SL-Gst1.0
->>>
->>> version 10:
->>>   - Shorter version of the previous series without ctrl block patches
->>>     and no DT modifications.
->>>     The scope of this series is limited to HEVC support.
->>>
->>> version 9:
->>>   - Corrections in commits messages.
->>>   - Define the dedicated control in hevc-controls.h
->>>   - Add note in documentation.
->>>   - Change max value of the dedicated control.
->>>   - Rebased on media_tree/master branch.
->>>
->>> version 8:
->>>   - Add reviewed-by and ack-by tags
->>>   - Fix the warnings reported by kernel test robot
->>>   - Only patch 9 (adding dedicated control), patch 11 (HEVC support) and
->>>     patch 13 (DT changes) are still missing of review/ack tag.
->>>
->>> version 7:
->>>   - Remove 'q' from syscon phandle name to make usable for iMX8MM too.
->>>     Update the bindings documentation.
->>>   - Add review/ack tags.
->>>   - Rebase on top of media_tree/master
->>>   - Be more accurate when computing the size of the memory needed motion
->>>     vectors.
->>>   - Explain why the all clocks need to set in the both DT node.
->>>
->>> version 6:
->>>   - fix the errors reported by kernel test robot
->>>
->>> version 5:
->>>   - use syscon instead of VPU reset driver.
->>>   - Do not break kernel/DT backward compatibility.
->>>   - Add documentation for dedicated Hantro control.
->>>   - Fix the remarks done by Ezequeil (typo, comments, unused function)
->>>   - Run v4l2-compliance without errors (see below).
->>>   - Do not add field to distinguish version, check postproc reg instead
->>>
->>> version 4:
->>> - Split the changes in hevc controls in 2 commits to make them easier to
->>>    review.
->>> - Change hantro_codec_ops run() prototype to return errors
->>> - Hantro v4l2 dedicated control is now only an integer
->>> - rebase on top of VPU reset changes posted here:
->>>    https://www.spinics.net/lists/arm-kernel/msg878440.html
->>> - Various fix from previous remarks
->>> - Limit the modifications in API to what the driver needs
->>>
->>> version 3:
->>> - Fix typo in Hantro v4l2 dedicated control
->>> - Add documentation for the new structures and fields
->>> - Rebased on top of media_tree for-linus-5.12-rc1 tag
->>>
->>> version 2:
->>> - remove all change related to scaling
->>> - squash commits to a coherent split
->>> - be more verbose about the added fields
->>> - fix the comments done by Ezequiel about dma_alloc_coherent usage
->>> - fix Dan's comments about control copy, reverse the test logic
->>> in tile_buffer_reallocate, rework some goto and return cases.
->>> - be more verbose about why I change the bindings
->>> - remove all sign-off expect mime since it is confusing
->>> - remove useless clocks in VPUs nodes
->>>
->>> Benjamin Gaignard (9):
->>>    media: hevc: Add fields and flags for hevc PPS
->>>    media: hevc: Add decode params control
->>>    media: hantro: change hantro_codec_ops run prototype to return errors
->>>    media: hantro: Define HEVC codec profiles and supported features
->>>    media: hantro: Only use postproc when post processed formats are
->>>      defined
->>>    media: uapi: Add a control for HANTRO driver
->>>    media: hantro: handle V4L2_PIX_FMT_HEVC_SLICE control
->>>    media: hantro: Introduce G2/HEVC decoder
->>>    media: hantro: IMX8M: add variant for G2/HEVC codec
->>>
->>>   .../userspace-api/media/drivers/hantro.rst    |  19 +
->>>   .../userspace-api/media/drivers/index.rst     |   1 +
->>>   .../media/v4l/ext-ctrls-codec.rst             | 108 +++-
->>>   .../media/v4l/vidioc-queryctrl.rst            |   6 +
->>>   drivers/media/v4l2-core/v4l2-ctrls.c          |  28 +-
->>>   drivers/staging/media/hantro/Makefile         |   2 +
->>>   drivers/staging/media/hantro/hantro.h         |  13 +-
->>>   drivers/staging/media/hantro/hantro_drv.c     |  99 ++-
->>>   .../staging/media/hantro/hantro_g1_h264_dec.c |  10 +-
->>>   .../media/hantro/hantro_g1_mpeg2_dec.c        |   4 +-
->>>   .../staging/media/hantro/hantro_g1_vp8_dec.c  |   6 +-
->>>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 587 ++++++++++++++++++
->>>   drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
->>>   .../staging/media/hantro/hantro_h1_jpeg_enc.c |   4 +-
->>>   drivers/staging/media/hantro/hantro_hevc.c    | 327 ++++++++++
->>>   drivers/staging/media/hantro/hantro_hw.h      |  69 +-
->>>   .../staging/media/hantro/hantro_postproc.c    |  14 +
->>>   drivers/staging/media/hantro/hantro_v4l2.c    |   5 +-
->>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |  74 ++-
->>>   .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   4 +-
->>>   .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   4 +-
->>>   .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |   6 +-
->>>   drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
->>>   drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
->>>   .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
->>>   .../staging/media/sunxi/cedrus/cedrus_h265.c  |  12 +-
->>>   include/media/hevc-ctrls.h                    |  46 +-
->>>   27 files changed, 1586 insertions(+), 69 deletions(-)
->>>   create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
->>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
->>>   create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
->>>
->
+1) move the cached tsc_ratio to struct loaded_vmcs
+
+2) add a function in common code (update_tsc_parameters or something 
+like that) to update both the offset and the ratio depending on 
+is_guest_mode()
+
+3) call that function from nested vmentry/vmexit
+
+And at that point the cache will do its job and figure out whether a 
+vmwrite is needed, on both vmentry and vmexit.
+
+I actually like the idea of storing the expected value in kvm_vcpu and 
+the current value in loaded_vmcs.  We might use it for other things such 
+as reload_vmcs01_apic_access_page perhaps.
+
+Paolo
+
+>> However, this requires adding another vendor callback etc. As all
+>> this is further refactoring I believe it's better to leave this series as is -
+>> ie only touching code that is directly related to nested TSC scaling and not
+>> try to do everything as part of the same series.
+> But it directly impacts your code, e.g. the nested enter/exit flows would need
+> to dance around the decache silliness.  And I believe it even more directly
+> impacts this series: kvm_set_tsc_khz() fails to handle the case where userspace
+> invokes KVM_SET_TSC_KHZ while L2 is active.
+> 
+
