@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F89038FF3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07A138FF45
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhEYKdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S232421AbhEYKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhEYKca (ORCPT
+        with ESMTP id S232181AbhEYKcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:32:30 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258B5C061373
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:27 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e125-20020a25d3830000b029051975a6c1e9so20442984ybf.7
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:27 -0700 (PDT)
+        Tue, 25 May 2021 06:32:47 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8474C061376
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:30 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id g21-20020ac870d50000b0290230013e97e6so5207873qtp.21
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=UE+HjfxcPfNKpn+LLD6KzEjtEN8+VZDaYe+49pvXWPU=;
-        b=QMhzADDD4vjHpgsAMk+pmQTaEaoyxrtF2UEO7FPsS6CnyI/EzysxrHEiVbLuFFC3z7
-         KQbcdgDJBgI9BLyMV1tWqaZUi2yOU8KdE2d+j7BGdyoqOAudIt+UmRfS1OoBC8nvvl1W
-         LK2+Q2etUTP4qt5mCoQOnlaYOTxgOrVtvjg4iFl4/NdBvW1XGzr6f00sJvgbxXVFKbAw
-         Dt3rLVgFTf3hZRApDPA5eQD5OvWQcUEyjPmukOZX51geK+0zkCVevBv50rZf69Nr51NV
-         gAWHfcT7aam2W02g8y+JdzddcXTnKZ5ITv8EvsVmHAF7Hlgie5yrh+Uo/W5J5dr+8eF3
-         Odxw==
+        bh=q1TI3JS8LiK7Q2wz43m+DheiZ9D7HZBK4O3jJENpSdg=;
+        b=qk3q+CXBfWFKr/wy9MOiwyjXboL4xukemFTRhjFLXiylmW2bqoJRhEKEpH79YObVgk
+         rPx6YvD26PHQY5XJKo2q3vdGu8aKkoC6JwFjuLbXfguzEYUiFvVw06pBcfza/hhMkWOe
+         QCG2HphpiAUdCKTB17A7hocO0pp7xN8vdEkxvU8JLzGdCnsA9dqB4tq9T7vzjHtmCvkQ
+         mFjKXvEIw9+5rhTE6B7E/LQCzI/BAKXstZzEwHrn/GVJzz5LVkcuT+GKIdVI20akxE9l
+         nMNbDZHZe5vXkr/qr06zIjYbMMDvzTe94xyDdluQCtPLIzQeOO7RoZJDqMczG/QIpKtm
+         ML0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UE+HjfxcPfNKpn+LLD6KzEjtEN8+VZDaYe+49pvXWPU=;
-        b=AChGk6W5M37mzle7aLDh9yt30ZG4XxMRmXNI+WVoMeYPBpvuUmbiGmI/Ib7NHxn252
-         oQIIT16e5I+qNUS/A2VG5M2NxuSSWFWbRELbS7XYQVJ8XWSWH82UE+1uGSiLTuCwQU90
-         WdkiZKSftOBTpoW2V/0eI0HePB/ydlCNvgyaQ04KxwmlfVOu5BuqSvRIxChii5O9ITM8
-         CyYqr9RcmpPhFT3XiKUiCEwJQssORYP2UKLExSLsKx7KWasqM2Q6L691RBMwatoo+83L
-         HiaCyQIl52WX9jx2hhJP3MDfRDKERkpsnk920yV7MlujJli5cLo0cM4t7t7kwmvJ6Wj8
-         ax7Q==
-X-Gm-Message-State: AOAM531gnD5T8JFiYjo1dyQzwdP1GwDhnO2lwIjeM9jeyIW+JFI0GnPJ
-        v5JB/33EvN0mB/87kT6kFnVlxkWC+fl1
-X-Google-Smtp-Source: ABdhPJygxgBulrT00wOguSwfF/d8ZvHmkECBGZgdlJ0iVF9sNRdImdzL5wI/h5tiQ8cKGAKTOYAtYLKSe/7p
+        bh=q1TI3JS8LiK7Q2wz43m+DheiZ9D7HZBK4O3jJENpSdg=;
+        b=TlaFhoBsR1t9wjjvBjrkm9WD8Q89ZvSE5flys1Or1VZtglDbLX1HHpOZK3ZDlW9fQ5
+         rxDI7IirqltWxrEQl0sBD5BIdj0urTua2Zopz3nBmSRNrSO1Hc/1VS4i7TFj6vpGygK+
+         Pgg9n8LhHWhThqpk4O6MIDIwu+B5mXlA/u2sC1M1DX48m88vov8k7ZkOnMyy9Q3k8sKS
+         Ntgy9oKhQ2XMkgRAdeBiMVFjbZfy5gLzEiC1afwPrHNL1Tr41EwncuYBGZzzDtlc52qt
+         GP0ej1rlCzqgwnfBvohHOYD9Xj/BSrsoJBXAtseSXKmaK+yNGhVimmfZA5XzQchZH+oc
+         0ZTA==
+X-Gm-Message-State: AOAM533kh06JmeXwMxyG7ax5HssuCV19eSZMkN80eePazMTKr4dNX2KF
+        +8yqokQdaPAaAC+6+D1LeMhmc5wrFyhh
+X-Google-Smtp-Source: ABdhPJw24HDxRIA8SyHsbhM9r3oodY7md0cTkrehRUhXc3tS2AS5gaOyl8NBMQlhXJJrmnJq4o6E44agUz6K
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:8806:6b98:8ae6:8824])
- (user=apusaka job=sendgmr) by 2002:a25:6f85:: with SMTP id
- k127mr42739944ybc.270.1621938626302; Tue, 25 May 2021 03:30:26 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:29:38 +0800
+ (user=apusaka job=sendgmr) by 2002:a05:6214:76b:: with SMTP id
+ f11mr36537191qvz.8.1621938629944; Tue, 25 May 2021 03:30:29 -0700 (PDT)
+Date:   Tue, 25 May 2021 18:29:39 +0800
 In-Reply-To: <20210525102941.3958649-1-apusaka@google.com>
-Message-Id: <20210525182900.9.I3e7a04aaf5320cdfcf3457536e7d4f33eb6d26fa@changeid>
+Message-Id: <20210525182900.10.I014436e29e9c804a3f7583db6264214cad746a7d@changeid>
 Mime-Version: 1.0
 References: <20210525102941.3958649-1-apusaka@google.com>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH 09/12] Bluetooth: use inclusive language in debugfs
+Subject: [PATCH 10/12] Bluetooth: use inclusive language when filtering
+ devices out
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -70,74 +71,199 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Archie Pusaka <apusaka@chromium.org>
 
-Use "accept list" and "reject list".
+Use "reject list".
 
 Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
 
- net/bluetooth/hci_debugfs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/net/bluetooth/hci_core.h |  2 +-
+ net/bluetooth/hci_core.c         |  4 ++--
+ net/bluetooth/hci_debugfs.c      |  2 +-
+ net/bluetooth/hci_event.c        |  6 +++---
+ net/bluetooth/hci_sock.c         | 12 ++++++------
+ net/bluetooth/l2cap_core.c       |  4 ++--
+ net/bluetooth/mgmt.c             |  4 ++--
+ 7 files changed, 17 insertions(+), 17 deletions(-)
 
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index cfe2ada49ca2..9c8cdc4fe3c5 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -522,7 +522,7 @@ struct hci_dev {
+ 	struct hci_conn_hash	conn_hash;
+ 
+ 	struct list_head	mgmt_pending;
+-	struct list_head	blacklist;
++	struct list_head	reject_list;
+ 	struct list_head	whitelist;
+ 	struct list_head	uuids;
+ 	struct list_head	link_keys;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index b9ebad0f8fb9..932df458bc80 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3822,7 +3822,7 @@ struct hci_dev *hci_alloc_dev(void)
+ 	mutex_init(&hdev->req_lock);
+ 
+ 	INIT_LIST_HEAD(&hdev->mgmt_pending);
+-	INIT_LIST_HEAD(&hdev->blacklist);
++	INIT_LIST_HEAD(&hdev->reject_list);
+ 	INIT_LIST_HEAD(&hdev->whitelist);
+ 	INIT_LIST_HEAD(&hdev->uuids);
+ 	INIT_LIST_HEAD(&hdev->link_keys);
+@@ -4042,7 +4042,7 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	destroy_workqueue(hdev->req_workqueue);
+ 
+ 	hci_dev_lock(hdev);
+-	hci_bdaddr_list_clear(&hdev->blacklist);
++	hci_bdaddr_list_clear(&hdev->reject_list);
+ 	hci_bdaddr_list_clear(&hdev->whitelist);
+ 	hci_uuids_clear(hdev);
+ 	hci_link_keys_clear(hdev);
 diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 47f4f21fbc1a..3352e831af3d 100644
+index 3352e831af3d..f5c423f44076 100644
 --- a/net/bluetooth/hci_debugfs.c
 +++ b/net/bluetooth/hci_debugfs.c
-@@ -138,7 +138,7 @@ static int device_list_show(struct seq_file *f, void *ptr)
- 
- DEFINE_SHOW_ATTRIBUTE(device_list);
- 
--static int blacklist_show(struct seq_file *f, void *p)
-+static int reject_list_show(struct seq_file *f, void *p)
- {
- 	struct hci_dev *hdev = f->private;
+@@ -144,7 +144,7 @@ static int reject_list_show(struct seq_file *f, void *p)
  	struct bdaddr_list *b;
-@@ -151,7 +151,7 @@ static int blacklist_show(struct seq_file *f, void *p)
+ 
+ 	hci_dev_lock(hdev);
+-	list_for_each_entry(b, &hdev->blacklist, list)
++	list_for_each_entry(b, &hdev->reject_list, list)
+ 		seq_printf(f, "%pMR (type %u)\n", &b->bdaddr, b->bdaddr_type);
+ 	hci_dev_unlock(hdev);
+ 
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index c5871c2a16ba..c41fef24166f 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2745,7 +2745,7 @@ static void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 		return;
+ 	}
+ 
+-	if (hci_bdaddr_list_lookup(&hdev->blacklist, &ev->bdaddr,
++	if (hci_bdaddr_list_lookup(&hdev->reject_list, &ev->bdaddr,
+ 				   BDADDR_BREDR)) {
+ 		hci_reject_conn(hdev, &ev->bdaddr);
+ 		return;
+@@ -5224,7 +5224,7 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
+ 		addr_type = BDADDR_LE_RANDOM;
+ 
+ 	/* Drop the connection if the device is blocked */
+-	if (hci_bdaddr_list_lookup(&hdev->blacklist, &conn->dst, addr_type)) {
++	if (hci_bdaddr_list_lookup(&hdev->reject_list, &conn->dst, addr_type)) {
+ 		hci_conn_drop(conn);
+ 		goto unlock;
+ 	}
+@@ -5380,7 +5380,7 @@ static struct hci_conn *check_pending_le_conn(struct hci_dev *hdev,
+ 		return NULL;
+ 
+ 	/* Ignore if the device is blocked */
+-	if (hci_bdaddr_list_lookup(&hdev->blacklist, addr, addr_type))
++	if (hci_bdaddr_list_lookup(&hdev->reject_list, addr, addr_type))
+ 		return NULL;
+ 
+ 	/* Most controller will fail if we try to create new connections
+diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
+index 251b9128f530..26d794b164f1 100644
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -892,7 +892,7 @@ static int hci_sock_release(struct socket *sock)
  	return 0;
  }
  
--DEFINE_SHOW_ATTRIBUTE(blacklist);
-+DEFINE_SHOW_ATTRIBUTE(reject_list);
- 
- static int blocked_keys_show(struct seq_file *f, void *p)
+-static int hci_sock_blacklist_add(struct hci_dev *hdev, void __user *arg)
++static int hci_sock_reject_list_add(struct hci_dev *hdev, void __user *arg)
  {
-@@ -323,7 +323,7 @@ void hci_debugfs_create_common(struct hci_dev *hdev)
- 	debugfs_create_file("device_list", 0444, hdev->debugfs, hdev,
- 			    &device_list_fops);
- 	debugfs_create_file("blacklist", 0444, hdev->debugfs, hdev,
--			    &blacklist_fops);
-+			    &reject_list_fops);
- 	debugfs_create_file("blocked_keys", 0444, hdev->debugfs, hdev,
- 			    &blocked_keys_fops);
- 	debugfs_create_file("uuids", 0444, hdev->debugfs, hdev, &uuids_fops);
-@@ -778,7 +778,7 @@ static const struct file_operations force_static_address_fops = {
- 	.llseek		= default_llseek,
- };
+ 	bdaddr_t bdaddr;
+ 	int err;
+@@ -902,14 +902,14 @@ static int hci_sock_blacklist_add(struct hci_dev *hdev, void __user *arg)
  
--static int white_list_show(struct seq_file *f, void *ptr)
-+static int accept_list_show(struct seq_file *f, void *ptr)
- {
- 	struct hci_dev *hdev = f->private;
- 	struct bdaddr_list *b;
-@@ -791,7 +791,7 @@ static int white_list_show(struct seq_file *f, void *ptr)
- 	return 0;
+ 	hci_dev_lock(hdev);
+ 
+-	err = hci_bdaddr_list_add(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
++	err = hci_bdaddr_list_add(&hdev->reject_list, &bdaddr, BDADDR_BREDR);
+ 
+ 	hci_dev_unlock(hdev);
+ 
+ 	return err;
  }
  
--DEFINE_SHOW_ATTRIBUTE(white_list);
-+DEFINE_SHOW_ATTRIBUTE(accept_list);
- 
- static int resolv_list_show(struct seq_file *f, void *ptr)
+-static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
++static int hci_sock_reject_list_del(struct hci_dev *hdev, void __user *arg)
  {
-@@ -1197,7 +1197,7 @@ void hci_debugfs_create_le(struct hci_dev *hdev)
- 	debugfs_create_u8("white_list_size", 0444, hdev->debugfs,
- 			  &hdev->le_white_list_size);
- 	debugfs_create_file("white_list", 0444, hdev->debugfs, hdev,
--			    &white_list_fops);
-+			    &accept_list_fops);
- 	debugfs_create_u8("resolv_list_size", 0444, hdev->debugfs,
- 			  &hdev->le_resolv_list_size);
- 	debugfs_create_file("resolv_list", 0444, hdev->debugfs, hdev,
+ 	bdaddr_t bdaddr;
+ 	int err;
+@@ -919,7 +919,7 @@ static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
+ 
+ 	hci_dev_lock(hdev);
+ 
+-	err = hci_bdaddr_list_del(&hdev->blacklist, &bdaddr, BDADDR_BREDR);
++	err = hci_bdaddr_list_del(&hdev->reject_list, &bdaddr, BDADDR_BREDR);
+ 
+ 	hci_dev_unlock(hdev);
+ 
+@@ -959,12 +959,12 @@ static int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd,
+ 	case HCIBLOCKADDR:
+ 		if (!capable(CAP_NET_ADMIN))
+ 			return -EPERM;
+-		return hci_sock_blacklist_add(hdev, (void __user *)arg);
++		return hci_sock_reject_list_add(hdev, (void __user *)arg);
+ 
+ 	case HCIUNBLOCKADDR:
+ 		if (!capable(CAP_NET_ADMIN))
+ 			return -EPERM;
+-		return hci_sock_blacklist_del(hdev, (void __user *)arg);
++		return hci_sock_reject_list_del(hdev, (void __user *)arg);
+ 	}
+ 
+ 	return -ENOIOCTLCMD;
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index c10a45368ec2..6b0f8f7867bc 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -7662,7 +7662,7 @@ static void l2cap_recv_frame(struct l2cap_conn *conn, struct sk_buff *skb)
+ 	 * at least ensure that we ignore incoming data from them.
+ 	 */
+ 	if (hcon->type == LE_LINK &&
+-	    hci_bdaddr_list_lookup(&hcon->hdev->blacklist, &hcon->dst,
++	    hci_bdaddr_list_lookup(&hcon->hdev->reject_list, &hcon->dst,
+ 				   bdaddr_dst_type(hcon))) {
+ 		kfree_skb(skb);
+ 		return;
+@@ -8119,7 +8119,7 @@ static void l2cap_connect_cfm(struct hci_conn *hcon, u8 status)
+ 	dst_type = bdaddr_dst_type(hcon);
+ 
+ 	/* If device is blocked, do not create channels for it */
+-	if (hci_bdaddr_list_lookup(&hdev->blacklist, &hcon->dst, dst_type))
++	if (hci_bdaddr_list_lookup(&hdev->reject_list, &hcon->dst, dst_type))
+ 		return;
+ 
+ 	/* Find fixed channels and notify them of the new connection. We
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 0f550740e1f4..b15af55c00d6 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -5207,7 +5207,7 @@ static int block_device(struct sock *sk, struct hci_dev *hdev, void *data,
+ 
+ 	hci_dev_lock(hdev);
+ 
+-	err = hci_bdaddr_list_add(&hdev->blacklist, &cp->addr.bdaddr,
++	err = hci_bdaddr_list_add(&hdev->reject_list, &cp->addr.bdaddr,
+ 				  cp->addr.type);
+ 	if (err < 0) {
+ 		status = MGMT_STATUS_FAILED;
+@@ -5243,7 +5243,7 @@ static int unblock_device(struct sock *sk, struct hci_dev *hdev, void *data,
+ 
+ 	hci_dev_lock(hdev);
+ 
+-	err = hci_bdaddr_list_del(&hdev->blacklist, &cp->addr.bdaddr,
++	err = hci_bdaddr_list_del(&hdev->reject_list, &cp->addr.bdaddr,
+ 				  cp->addr.type);
+ 	if (err < 0) {
+ 		status = MGMT_STATUS_INVALID_PARAMS;
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
