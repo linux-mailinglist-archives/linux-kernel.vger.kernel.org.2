@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586E038FF8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80BD38FF90
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhEYKyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:54:23 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:54024 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229541AbhEYKyU (ORCPT
+        id S230306AbhEYKzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229922AbhEYKzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:54:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ua4WxO9_1621939968;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua4WxO9_1621939968)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 May 2021 18:52:49 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     yisen.zhuang@huawei.com
-Cc:     salil.mehta@huawei.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] net: hns: Fix kernel-doc
-Date:   Tue, 25 May 2021 18:52:47 +0800
-Message-Id: <1621939967-67560-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 25 May 2021 06:55:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC53AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:54:08 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621940046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/RGtg85sxQU7HugL/NB5xiG2Ekdrx8Z1JtQYBNfkUE=;
+        b=rP9s4nJ0IM/3ETu7fxGBKwMyTii0zhMC0fSJtk4LCQm0le1i65LTjo9/kuagVgyKbwW2qB
+        Os88+bcKpi4r8DDNsgYGI1FfJNzt2I0+11M/bQl1YY11aGuvqQUyJYInVNU8VopTD4Vao+
+        CrNorGI7fYyRx9Mr2WzUgiRoZbp9gAYqwOU/l520ALK5iuph3lUUSfaZ4QX5LLujWj9eRC
+        77o+vJQfpRHgKnHvReKyxdU8rqdGrMfaC4SSnWl2KjEwAo41rU15OeD39pGEW/qMrmkL6K
+        tHtgt+AzUamKvCPVjj83MboHBZrujgPkEuPXkdPwDDzGjOWM2rVqzdAMnacSXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621940046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/RGtg85sxQU7HugL/NB5xiG2Ekdrx8Z1JtQYBNfkUE=;
+        b=v0vbvLPEYF1pAoLZ4/3UvEhh7hntlT7RlbmL/EOf5MrYYko9ADnm/oD6MwItD0y8PwwFi+
+        mHD5nhAGtxB2kSCw==
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: x86: unistd_64.h: warning: missing whitespace after the macro name
+In-Reply-To: <CA+G9fYvFXTHPKwasdVidF7qEHdqwRht8Xg6qm6CCLL0HGaU1ew@mail.gmail.com>
+References: <CA+G9fYvFXTHPKwasdVidF7qEHdqwRht8Xg6qm6CCLL0HGaU1ew@mail.gmail.com>
+Date:   Tue, 25 May 2021 12:54:05 +0200
+Message-ID: <874ker9j8y.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in hns_ethtool.c kernel-doc comment
-to remove these warnings found by clang_w1.
+On Mon, May 24 2021 at 17:16, Naresh Kamboju wrote:
 
-drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:202: warning: expecting
-prototype for hns_nic_set_link_settings(). Prototype was for
-hns_nic_set_link_ksettings() instead.
-drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:837: warning: expecting
-prototype for get_ethtool_stats(). Prototype was for
-hns_get_ethtool_stats() instead.
-drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:894: warning:
-expecting prototype for get_strings(). Prototype was for
-hns_get_strings() instead.
+> While building Linux next-20210524 tag with gcc 7.x the following warnings and
+> errors were noticed.
+>
+> build log:
+> ------------
+>   HOSTLD  scripts/mod/modpost
+>   CC      kernel/bounds.s
+>   CALL    /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/scripts/atomic/check-atomics.sh
+>   UPD     include/generated/bounds.h
+>   UPD     include/generated/timeconst.h
+>   CC      arch/x86/kernel/asm-offsets.s
+> In file included from
+> /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/include/asm/unistd.h:20:0,
+>                  from
+> /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/include/asm/seccomp.h:5,
+>                  from
+> /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/include/linux/seccomp.h:21,
+>                  from
+> /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/include/linux/sched.h:21,
+>                  from
+> /srv/oe/build/tmp-lkft-glibc/work-shared/intel-corei7-64/kernel-source/arch/x86/kernel/asm-offsets.c:10:
+> ./arch/x86/include/generated/uapi/asm/unistd_64.h:4:14: warning:
+> missing whitespace after the macro name
+>  #define __NR_/usrread 0
+>               ^
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit 262b38cdb3e4 ("net: ethernet: hisilicon: hns: use phydev
-from struct net_device")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Where is that "/usr" coming from? 
 
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-index da48c05..7e62dcf 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-@@ -192,7 +192,7 @@ static int hns_nic_get_link_ksettings(struct net_device *net_dev,
- }
- 
- /**
-- *hns_nic_set_link_settings - implement ethtool set link ksettings
-+ *hns_nic_set_link_ksettings - implement ethtool set link ksettings
-  *@net_dev: net_device
-  *@cmd: ethtool_link_ksettings
-  *retuen 0 - success , negative --fail
-@@ -827,7 +827,7 @@ static int hns_set_coalesce(struct net_device *net_dev,
- }
- 
- /**
-- * get_ethtool_stats - get detail statistics.
-+ * hns_get_ethtool_stats - get detail statistics.
-  * @netdev: net device
-  * @stats: statistics info.
-  * @data: statistics data.
-@@ -885,7 +885,7 @@ static void hns_get_ethtool_stats(struct net_device *netdev,
- }
- 
- /**
-- * get_strings: Return a set of strings that describe the requested objects
-+ * hns_get_strings: Return a set of strings that describe the requested objects
-  * @netdev: net device
-  * @stringset: string set ID.
-  * @data: objects data.
--- 
-1.8.3.1
-
+Looking at the generator script this looks like a stale $prefix
+parameter...
