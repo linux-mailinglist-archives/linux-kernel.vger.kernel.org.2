@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7713339040D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43846390413
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhEYOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S234087AbhEYOh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234070AbhEYOgf (ORCPT
+        with ESMTP id S233956AbhEYOgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:36:35 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AC4C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:04 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id f9so43338691ybo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:04 -0700 (PDT)
+        Tue, 25 May 2021 10:36:46 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4CDC06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:13 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id l16so10472858ybf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ukaK5XhZy2D/ZioTjRK5YPe6DCYHdOPpOGaEW9dEUZ4=;
-        b=JH2fHeK4pOIzBfAPJ+ejA4h7tU9NvCfs+WsJ5pMklwU7umE7Kyq6hjjpiQrth8Y/O6
-         TVat1jFIS90S57SXbaYPu8y/Ue5bEmCj7QZYAOgVxRSCosNkkk1C6D7r6Ndm+w1+68gi
-         ICN5pMFME+Uph8+zOU0m3winfvayDtFHY8gbFkJzv3ztRWL9OBXDD8MvD8hwiaBZNw52
-         CdadXy430upUpScXFiDcRk9xqDfp3KjF1iR+G7iL+bSVBHtVgFCd2NA7NjRzEKXbiNHV
-         2iDhYZjmRoCbpG9dpTiGJfZxeRGwD3eVu7JEOnNNMNBleRZYh6Ywi6LXEUL+Ioa1R4RZ
-         m0cg==
+        bh=EKpszL06+Fe1VQHUv5K9+04VIt7PKB0gA4dvg5DCAlc=;
+        b=xJdcqMq0/NFMi4kL48AZ7dAZUv2qzbj/ChubnvtE7DS74wqJTijKI0B4QBPF5sHZes
+         FAf26AEOYSpduNrWWN3tG74d4MxDE9seCXmTeu3XdM7JMIvLvbfr/JQkLsA+M3T1BYJk
+         yml5QCBsMyZVzq97jqBfSZrs6bPB2L5aLIis9NdqVDcut2w4HpXUZoOCCwfR0nyICuvA
+         YJ/8vDofq3rsyIh7VeTyLjpSuBakCPVMFgAEFEdtfWYYnBxBzJ8BawDBnenOo/pOhdQL
+         0L3n/i40T11ZnUdvlqYT/WptOgd7IEnz61Ohfo2UVg5qJV04e6LlLoLv0if4Lgb7QIop
+         wo/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ukaK5XhZy2D/ZioTjRK5YPe6DCYHdOPpOGaEW9dEUZ4=;
-        b=nCb61Ivqjcvs639N8SeonfpDBU6ZzTEU31grcFc027Mm2xq9Rmmto2ugzygyoe2kBi
-         zI/WkYR2OMFQx8qBXwXPCLQ81toAb1hDq8g7ZQq7mrYVYlM8XsW6nQqmVReunZGiCi84
-         ccIZ4mI65Q9MfapTneJcZ6nbl3YZPNRPgn3iKbgaU8eycbdRaZfDhyD/L9LnD7wLP1kl
-         uv4597rLzHJqIXaI+cCcn1dGFxbuG8scxHc31oXIxDWTKzb/UwHPnu95ppWtMMuIErf/
-         S7Vf6VhVXHtPzLFLVxxd5GOJTt71sxSNrcmXr+KfQZiF7mbWQFtu/UHeOjKJ8aPhLPnt
-         Akfw==
-X-Gm-Message-State: AOAM533fkGvzuGqr3WgCamdQgwye+mB8s9dI6ZOm/nKOHtvEmb5Nn3eM
-        6J//z/7VTo6E8Sr8+EyU3RQjkEW/BRob5CR1Yn4LmA==
-X-Google-Smtp-Source: ABdhPJwBdA0oL97r/dwogyfVStu7efF6kKKAAw0HZ430evVWnLfQulJFW6pFs65Fu2mz413oD6sPCCLwYfsaT8nUoo4=
-X-Received: by 2002:a25:9d86:: with SMTP id v6mr41613992ybp.366.1621953303520;
- Tue, 25 May 2021 07:35:03 -0700 (PDT)
+        bh=EKpszL06+Fe1VQHUv5K9+04VIt7PKB0gA4dvg5DCAlc=;
+        b=e7qCqhTzlZkHEIXnSs1I5PFsHQAgCmOzZ+NBhwMER+JQrRVpJUCiugovxSOn/HvBVH
+         ZVzFM4wdZjnULEkKMsV2JTL5mfRUy31G4lmHJgW8q7sPH6GA3RxKi1+5/V7C3b9dytdU
+         4LZaTGoP3hOl66PWQC75TIzyxnBs/YtutaojlMA4RCxpAAziFVOSIbBzermlBdy8ywUJ
+         KyrtqGtxletuDS+A1DJeB7klhn3owEb7UdQLG1riDXprofohx2A2cnM0pfw2uWm/cf64
+         ycrbD6M1wUCOuXUbc5rAf2EUJDTJxpDJhyxqFPypCENdnKN7/RVb6Ld1755RhuUv71y9
+         hi9A==
+X-Gm-Message-State: AOAM533SiExILWkVmnYfP9wYXU/aCVX+j/Wr1J9+aRWUx68cHHRYH16O
+        WdFo0wqazOjgKBmNfT6uXwkXbvl/8+yKUqachs1j6D46kT0wtVhy
+X-Google-Smtp-Source: ABdhPJyIk5t5cTB8CuOl6e3qcK32/SFw8tO8XGSCLzr/hZ/cwJO5+/3lNheLsf7MxRzgLnTHTxwxzpaPIBcpzg4XpJo=
+X-Received: by 2002:a25:1b0b:: with SMTP id b11mr837606ybb.302.1621953313239;
+ Tue, 25 May 2021 07:35:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517113707.238011-1-aardelean@deviqon.com>
-In-Reply-To: <20210517113707.238011-1-aardelean@deviqon.com>
+References: <20210517113540.237495-1-aardelean@deviqon.com> <20210517113540.237495-3-aardelean@deviqon.com>
+In-Reply-To: <20210517113540.237495-3-aardelean@deviqon.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 25 May 2021 16:34:52 +0200
-Message-ID: <CAMpxmJUafFpcFeVH6ScOMeoRFyY67aJMNk8Yxrnb1XdAucE-gw@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-ath79: remove platform_set_drvdata() + cleanup probe
+Date:   Tue, 25 May 2021 16:35:02 +0200
+Message-ID: <CAMpxmJVRFHhh5xmbVZw=c=beq8gWjZu0=OABVwxxyerfq6Dpdg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-wm8994: remove platform_set_drvdata() +
+ cleanup probe
 To:     Alexandru Ardelean <aardelean@deviqon.com>
 Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alban Bedel <albeu@free.fr>
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:37 PM Alexandru Ardelean
+On Mon, May 17, 2021 at 1:36 PM Alexandru Ardelean
 <aardelean@deviqon.com> wrote:
 >
 > The platform_set_drvdata() call is only useful if we need to retrieve back
@@ -74,36 +74,40 @@ On Mon, May 17, 2021 at 1:37 PM Alexandru Ardelean
 >
 > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  drivers/gpio/gpio-ath79.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  drivers/gpio/gpio-wm8994.c | 13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
 >
-> diff --git a/drivers/gpio/gpio-ath79.c b/drivers/gpio/gpio-ath79.c
-> index 678ddd375891..9b780dc5d390 100644
-> --- a/drivers/gpio/gpio-ath79.c
-> +++ b/drivers/gpio/gpio-ath79.c
-> @@ -234,7 +234,6 @@ static int ath79_gpio_probe(struct platform_device *pdev)
->         ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
->         if (!ctrl)
->                 return -ENOMEM;
-> -       platform_set_drvdata(pdev, ctrl);
+> diff --git a/drivers/gpio/gpio-wm8994.c b/drivers/gpio/gpio-wm8994.c
+> index 9af89cf7f6bc..f4a474cef32d 100644
+> --- a/drivers/gpio/gpio-wm8994.c
+> +++ b/drivers/gpio/gpio-wm8994.c
+> @@ -263,7 +263,6 @@ static int wm8994_gpio_probe(struct platform_device *pdev)
+>         struct wm8994 *wm8994 = dev_get_drvdata(pdev->dev.parent);
+>         struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
+>         struct wm8994_gpio *wm8994_gpio;
+> -       int ret;
 >
->         if (np) {
->                 err = of_property_read_u32(np, "ngpios", &ath79_gpio_count);
-> @@ -290,13 +289,7 @@ static int ath79_gpio_probe(struct platform_device *pdev)
->                 girq->handler = handle_simple_irq;
->         }
+>         wm8994_gpio = devm_kzalloc(&pdev->dev, sizeof(*wm8994_gpio),
+>                                    GFP_KERNEL);
+> @@ -279,17 +278,7 @@ static int wm8994_gpio_probe(struct platform_device *pdev)
+>         else
+>                 wm8994_gpio->gpio_chip.base = -1;
 >
-> -       err = devm_gpiochip_add_data(dev, &ctrl->gc, ctrl);
-> -       if (err) {
-> -               dev_err(dev,
-> -                       "cannot add AR71xx GPIO chip, error=%d", err);
-> -               return err;
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &wm8994_gpio->gpio_chip,
+> -                                    wm8994_gpio);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Could not register gpiochip, %d\n",
+> -                       ret);
+> -               return ret;
 > -       }
-> -       return 0;
-> +       return devm_gpiochip_add_data(dev, &ctrl->gc, ctrl);
+> -
+> -       platform_set_drvdata(pdev, wm8994_gpio);
+> -
+> -       return ret;
+> +       return devm_gpiochip_add_data(&pdev->dev, &wm8994_gpio->gpio_chip, wm8994_gpio);
 >  }
 >
->  static struct platform_driver ath79_gpio_driver = {
+>  static struct platform_driver wm8994_gpio_driver = {
 > --
 > 2.31.1
 >
