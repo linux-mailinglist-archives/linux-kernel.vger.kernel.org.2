@@ -2,412 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D6E3909F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BF63909F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhEYTx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
+        id S232901AbhEYTyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhEYTxZ (ORCPT
+        with ESMTP id S232849AbhEYTx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:53:25 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D802FC061574;
-        Tue, 25 May 2021 12:51:54 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i4so44758752ybe.2;
-        Tue, 25 May 2021 12:51:54 -0700 (PDT)
+        Tue, 25 May 2021 15:53:57 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4133FC061574;
+        Tue, 25 May 2021 12:52:27 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id v22so31427013oic.2;
+        Tue, 25 May 2021 12:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IL7VnAHWE3jkfOsDzXv+I8OPY1y4k5AXa0yizexFeu4=;
-        b=k5fxuveqLUAP9Ck0q0ex3UoF7svI3RODeQUEc8bkTUhW2kgcbgqlJpl3t/zTwDF29k
-         59jH7smuwXO2B4Ix0q1uyWSqg4IHvh6BaCazfHJzxEM6m8/O4e5e3dg+7alb6S2dskZ5
-         Qj70k7vzMaKfHaF+uzR9Kn2BwuKXS60XbTuZkxOgCo1lx/p3OMAWPN1PlEU1Ki/YgDoZ
-         jQi56QtxFVhUEgmt/8dVMaiowHn1f3stCXPAwr5feiu/jmmvHn1m6Elu84JdOIGlmOTh
-         B7wkwOSJgfLvTsKXxu42VBJKGy8u1qEy1zsNWxEwkERLcmxH5CDe8zU47RfrsPHSWkr4
-         QnVA==
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XnGwFVYKuTF3E6gS1UhFzJdmr63qnPmbYt1Cj2BqCJ4=;
+        b=coLzNzxzJumVExKt53aKijv6sLzjvB5lhh5BpP7SPGsjKr8SvzFdj1HuUQ2e7fenFz
+         apNq6oua0Fsl11AZFGjHO7Zp2bNymOAFnJjjqIlPuFHHju5JFc7/4DB4sfGBtdw2lAsv
+         6IgUaddQQqc2Sq5Ql0yYzkTnARrz68M7ICXzPKeD5oJ72al2qcoIhGVUv/91AdO1Z+V/
+         7vDP4QlOAijSf6WF4DvzVa73AS/pQHw6ea8RUrddl48RT96o8X6tc32dh8aZtc/4E9T1
+         Dsuz/4bTqoOFA5G3M/mV8Vls99VjGfrvF/eV/+fPpVj9Ln7kTT2iRqazGMw+hCvBb2Da
+         MNpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IL7VnAHWE3jkfOsDzXv+I8OPY1y4k5AXa0yizexFeu4=;
-        b=XHqJWGnO/jME13DeITYXe0WkWdOcvgbsCz6ZJef4badSELXXSEFr5ZD7s7I6SZUnX8
-         gaWW8F/zo1WnrNpJCFz31fhh0DqKt7aQLORnSmgtPDl+J1g10VjBvjcNmmcpOby9oz25
-         K/wAvqi2iQMBU/EkEmIqzamcFhEZXSfAZ0uTyeu69umiRJg9NSkCQq9Au7nHzDjjl9Gr
-         r7sX+afKnJ9GiImw9xVKpwC+6LHesiAyo4hwO1LC4ldcxWnS38jpeJ1WR2jjk2KyavIW
-         2hVM/RgyHVNfRjEGabrSS61klnoPJpriSnQyWGy2k2RtU2RODW3GctU+tRq+U4g8kADD
-         mkFA==
-X-Gm-Message-State: AOAM532VM72ZVHMdNr1GP0dv/oMgEpMe9G8Xwi6gaKmI/JR+CfQpNWeh
-        JorF9FfTdc2yIavYVWJ37p+5j2aQo21qiWU/bMc=
-X-Google-Smtp-Source: ABdhPJwGHRC0W1yoVdB7uvQ8gM+zwIy06MYADjB27jzZ9QdXFqS4CRR/xVUc6yawjrJmW/pK8PE+cS+dsTBDyC076Ew=
-X-Received: by 2002:a25:7246:: with SMTP id n67mr44804599ybc.510.1621972314042;
- Tue, 25 May 2021 12:51:54 -0700 (PDT)
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XnGwFVYKuTF3E6gS1UhFzJdmr63qnPmbYt1Cj2BqCJ4=;
+        b=WLqGWshWlKTWZcAFJDPMv3atlBCW43N7DdO9kljSvqECaWEbNWpXEE77sLcu0eVFlY
+         bE4ziH9dYbuTYCtHq6OyiUokR2Ac/aLzxd1HPXekl/Jf8uu/ZeSCywEA3VuQNwjhIliD
+         Fl56i2CFaxQqqVoWYDa4YbyzsenD2vOQsq/ITqqot5U4D/e5ppO7WsYxv3VbFmApJeUB
+         QJclcDaM2I032/IKXkv2fx3d8OeECqaGBYQsebUxY0RJO0pCQnJhbuoGIlqnpJrgOKB/
+         z6jQMDXpJkuqFALSB3WoadzG6+XWtdtuF4tc516NdgmML/rJOpIz6hpsfAq/YgALqIxz
+         AAtg==
+X-Gm-Message-State: AOAM530goj7y8pCotcQpJToE++ZNIplrs3YeJ/WoYSrwR4FiIioHJZmP
+        /t6wSiT4t9UtdAUhWK1CUlm78kFCC1I=
+X-Google-Smtp-Source: ABdhPJyDnB5L7DGNR11O2VJhqwjsGbMueyJ0rdE6WjOIENSUJX74OSoIW7L9ovgjXIEh38SM58hBTg==
+X-Received: by 2002:a54:458b:: with SMTP id z11mr14662440oib.177.1621972346269;
+        Tue, 25 May 2021 12:52:26 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i4sm2956760oih.13.2021.05.25.12.52.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 12:52:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Romain Perier <romain.perier@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210525184449.57703-1-romain.perier@gmail.com>
+ <20210525184449.57703-3-romain.perier@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 2/3] watchdog: Add Mstar MSC313e WDT driver
+Message-ID: <5ce3b5a5-1500-0d95-623e-299e7b1eb43b@roeck-us.net>
+Date:   Tue, 25 May 2021 12:52:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210525113732.2648158-1-revest@chromium.org>
-In-Reply-To: <20210525113732.2648158-1-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 25 May 2021 12:51:43 -0700
-Message-ID: <CAEf4BzYPbKYB4ky-A9x85OiMTrexV7oRkZ1rzNUErqz9nWNfLQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210525184449.57703-3-romain.perier@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 4:38 AM Florent Revest <revest@chromium.org> wrote:
->
-> These macros are convenient wrappers around the bpf_seq_printf and
-> bpf_snprintf helpers. They are currently provided by bpf_tracing.h which
-> targets low level tracing primitives. bpf_helpers.h is a better fit.
->
-> The __bpf_narg and __bpf_apply are needed in both files and provided
-> twice.
->
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Florent Revest <revest@chromium.org>
+On 5/25/21 11:44 AM, Romain Perier wrote:
+> From: Daniel Palmer <daniel@0x0f.com>
+> 
+> It adds a driver for the IP block handling the watchdog timer found for
+> Mstar MSC313e SoCs and newer.
+> 
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Co-developed-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
 > ---
->  kernel/bpf/preload/iterators/iterators.bpf.c  |  1 -
->  tools/lib/bpf/bpf_helpers.h                   | 58 +++++++++++++++++++
->  tools/lib/bpf/bpf_tracing.h                   | 52 -----------------
->  .../bpf/progs/bpf_iter_bpf_hash_map.c         |  1 -
->  .../selftests/bpf/progs/bpf_iter_bpf_map.c    |  1 -
->  .../selftests/bpf/progs/bpf_iter_ipv6_route.c |  1 -
->  .../selftests/bpf/progs/bpf_iter_netlink.c    |  1 -
->  .../selftests/bpf/progs/bpf_iter_task.c       |  1 -
->  .../selftests/bpf/progs/bpf_iter_task_btf.c   |  1 -
->  .../selftests/bpf/progs/bpf_iter_task_file.c  |  1 -
->  .../selftests/bpf/progs/bpf_iter_task_stack.c |  1 -
->  .../selftests/bpf/progs/bpf_iter_task_vma.c   |  1 -
->  .../selftests/bpf/progs/bpf_iter_tcp4.c       |  1 -
->  .../selftests/bpf/progs/bpf_iter_tcp6.c       |  1 -
->  .../selftests/bpf/progs/bpf_iter_udp4.c       |  1 -
->  .../selftests/bpf/progs/bpf_iter_udp6.c       |  1 -
->  .../selftests/bpf/progs/test_snprintf.c       |  1 -
->  17 files changed, 58 insertions(+), 67 deletions(-)
->
-> diff --git a/kernel/bpf/preload/iterators/iterators.bpf.c b/kernel/bpf/preload/iterators/iterators.bpf.c
-> index 52aa7b38e8b8..03af863314ea 100644
-> --- a/kernel/bpf/preload/iterators/iterators.bpf.c
-> +++ b/kernel/bpf/preload/iterators/iterators.bpf.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include <linux/bpf.h>
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_core_read.h>
->
->  #pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 9720dc0b4605..eade4f335ad1 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -158,4 +158,62 @@ enum libbpf_tristate {
->  #define __kconfig __attribute__((section(".kconfig")))
->  #define __ksym __attribute__((section(".ksyms")))
->
-> +#define ___bpf_concat(a, b) a ## b
-> +#define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
-> +#define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
-> +#define ___bpf_narg(...) \
-> +       ___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-
-wouldn't this conflict if both bpf_tracing.h and bpf_helpers.h are
-included in the same file? We can probably guard this block with
-custom #ifdef both in bpf_helpers.h and bpf_tracing.h to avoid
-dependency on order of includes?
-
+>   MAINTAINERS                    |   1 +
+>   drivers/watchdog/Kconfig       |  13 +++
+>   drivers/watchdog/Makefile      |   1 +
+>   drivers/watchdog/msc313e_wdt.c | 173 +++++++++++++++++++++++++++++++++
+>   4 files changed, 188 insertions(+)
+>   create mode 100644 drivers/watchdog/msc313e_wdt.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a0f37adb9e64..fcc10c57298c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2177,6 +2177,7 @@ F:	arch/arm/mach-mstar/
+>   F:	drivers/clk/mstar/
+>   F:	drivers/gpio/gpio-msc313.c
+>   F:	drivers/pinctrl/pinctrl-msc313.c
+> +F:	drivers/watchdog/msc313e_wdt.c
+>   F:	include/dt-bindings/clock/mstar-*
+>   F:	include/dt-bindings/gpio/msc313-gpio.h
+>   F:	include/soc/mstar/
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 355100dad60a..f53634ea0de6 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -980,6 +980,19 @@ config VISCONTI_WATCHDOG
+>   	  Say Y here to include support for the watchdog timer in Toshiba
+>   	  Visconti SoCs.
+>   
+> +config MSC313E_WATCHDOG
+> +	tristate "MStar MSC313e watchdog"
+> +	depends on ARCH_MSTARV7 || COMPILE_TEST
+> +	depends on OF
+> +	select WATCHDOG_CORE
+> +	help
+> +	  Say Y here to include support for the Watchdog timer embedded
+> +	  into MStar MSC313e chips. This will reboot your system when the
+> +	  timeout is reached.
 > +
-> +#define ___bpf_fill0(arr, p, x) do {} while (0)
-> +#define ___bpf_fill1(arr, p, x) arr[p] = x
-> +#define ___bpf_fill2(arr, p, x, args...) arr[p] = x; ___bpf_fill1(arr, p + 1, args)
-> +#define ___bpf_fill3(arr, p, x, args...) arr[p] = x; ___bpf_fill2(arr, p + 1, args)
-> +#define ___bpf_fill4(arr, p, x, args...) arr[p] = x; ___bpf_fill3(arr, p + 1, args)
-> +#define ___bpf_fill5(arr, p, x, args...) arr[p] = x; ___bpf_fill4(arr, p + 1, args)
-> +#define ___bpf_fill6(arr, p, x, args...) arr[p] = x; ___bpf_fill5(arr, p + 1, args)
-> +#define ___bpf_fill7(arr, p, x, args...) arr[p] = x; ___bpf_fill6(arr, p + 1, args)
-> +#define ___bpf_fill8(arr, p, x, args...) arr[p] = x; ___bpf_fill7(arr, p + 1, args)
-> +#define ___bpf_fill9(arr, p, x, args...) arr[p] = x; ___bpf_fill8(arr, p + 1, args)
-> +#define ___bpf_fill10(arr, p, x, args...) arr[p] = x; ___bpf_fill9(arr, p + 1, args)
-> +#define ___bpf_fill11(arr, p, x, args...) arr[p] = x; ___bpf_fill10(arr, p + 1, args)
-> +#define ___bpf_fill12(arr, p, x, args...) arr[p] = x; ___bpf_fill11(arr, p + 1, args)
-> +#define ___bpf_fill(arr, args...) \
-> +       ___bpf_apply(___bpf_fill, ___bpf_narg(args))(arr, 0, args)
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called msc313e_wdt.
 > +
+>   # X86 (i386 + ia64 + x86_64) Architecture
+>   
+>   config ACQUIRE_WDT
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index a7eade8b4d45..7fa392ae3000 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -92,6 +92,7 @@ obj-$(CONFIG_SPRD_WATCHDOG) += sprd_wdt.o
+>   obj-$(CONFIG_PM8916_WATCHDOG) += pm8916_wdt.o
+>   obj-$(CONFIG_ARM_SMC_WATCHDOG) += arm_smc_wdt.o
+>   obj-$(CONFIG_VISCONTI_WATCHDOG) += visconti_wdt.o
+> +obj-$(CONFIG_MSC313E_WATCHDOG) += msc313e_wdt.o
+>   
+>   # X86 (i386 + ia64 + x86_64) Architecture
+>   obj-$(CONFIG_ACQUIRE_WDT) += acquirewdt.o
+> diff --git a/drivers/watchdog/msc313e_wdt.c b/drivers/watchdog/msc313e_wdt.c
+> new file mode 100644
+> index 000000000000..434259256967
+> --- /dev/null
+> +++ b/drivers/watchdog/msc313e_wdt.c
+> @@ -0,0 +1,173 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
-> + * in a structure.
+> + * MStar WDT driver
+> + *
+> + * Copyright (C) 2019 - 2021 Daniel Palmer
+> + * Copyright (C) 2021 Romain Perier
+> + *
 > + */
-> +#define BPF_SEQ_PRINTF(seq, fmt, args...)                      \
-> +({                                                             \
-> +       static const char ___fmt[] = fmt;                       \
-> +       unsigned long long ___param[___bpf_narg(args)];         \
-> +                                                               \
-> +       _Pragma("GCC diagnostic push")                          \
-> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       ___bpf_fill(___param, args);                            \
-> +       _Pragma("GCC diagnostic pop")                           \
-> +                                                               \
-> +       bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
-> +                      ___param, sizeof(___param));             \
-> +})
 > +
-> +/*
-> + * BPF_SNPRINTF wraps the bpf_snprintf helper with variadic arguments instead of
-> + * an array of u64.
-> + */
-> +#define BPF_SNPRINTF(out, out_size, fmt, args...)              \
-> +({                                                             \
-> +       static const char ___fmt[] = fmt;                       \
-> +       unsigned long long ___param[___bpf_narg(args)];         \
-> +                                                               \
-> +       _Pragma("GCC diagnostic push")                          \
-> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       ___bpf_fill(___param, args);                            \
-> +       _Pragma("GCC diagnostic pop")                           \
-> +                                                               \
-> +       bpf_snprintf(out, out_size, ___fmt,                     \
-> +                    ___param, sizeof(___param));               \
-> +})
+> +#include <linux/platform_device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/module.h>
+> +#include <linux/watchdog.h>
+> +#include <linux/io.h>
+> +#include <linux/clk.h>
+> +#include <linux/interrupt.h>
+
+Alphabetic order, please. Also, pelase drop unneeded include files.
+The driver doesn't support interrupts, so any interrupt related
+include file is unnecessary. I also don't see any devicetree specific
+code except for of_device_id, and that is declared in mod_devicetable.h,
+not in an of_xxx.h include file.
+
 > +
->  #endif
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 8c954ebc0c7c..2189f6bf6d2d 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -413,56 +413,4 @@ typeof(name(0)) name(struct pt_regs *ctx)                              \
->  }                                                                          \
->  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
->
-> -#define ___bpf_fill0(arr, p, x) do {} while (0)
-> -#define ___bpf_fill1(arr, p, x) arr[p] = x
-> -#define ___bpf_fill2(arr, p, x, args...) arr[p] = x; ___bpf_fill1(arr, p + 1, args)
-> -#define ___bpf_fill3(arr, p, x, args...) arr[p] = x; ___bpf_fill2(arr, p + 1, args)
-> -#define ___bpf_fill4(arr, p, x, args...) arr[p] = x; ___bpf_fill3(arr, p + 1, args)
-> -#define ___bpf_fill5(arr, p, x, args...) arr[p] = x; ___bpf_fill4(arr, p + 1, args)
-> -#define ___bpf_fill6(arr, p, x, args...) arr[p] = x; ___bpf_fill5(arr, p + 1, args)
-> -#define ___bpf_fill7(arr, p, x, args...) arr[p] = x; ___bpf_fill6(arr, p + 1, args)
-> -#define ___bpf_fill8(arr, p, x, args...) arr[p] = x; ___bpf_fill7(arr, p + 1, args)
-> -#define ___bpf_fill9(arr, p, x, args...) arr[p] = x; ___bpf_fill8(arr, p + 1, args)
-> -#define ___bpf_fill10(arr, p, x, args...) arr[p] = x; ___bpf_fill9(arr, p + 1, args)
-> -#define ___bpf_fill11(arr, p, x, args...) arr[p] = x; ___bpf_fill10(arr, p + 1, args)
-> -#define ___bpf_fill12(arr, p, x, args...) arr[p] = x; ___bpf_fill11(arr, p + 1, args)
-> -#define ___bpf_fill(arr, args...) \
-> -       ___bpf_apply(___bpf_fill, ___bpf_narg(args))(arr, 0, args)
-> -
-> -/*
-> - * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
-> - * in a structure.
-> - */
-> -#define BPF_SEQ_PRINTF(seq, fmt, args...)                      \
-> -({                                                             \
-> -       static const char ___fmt[] = fmt;                       \
-> -       unsigned long long ___param[___bpf_narg(args)];         \
-> -                                                               \
-> -       _Pragma("GCC diagnostic push")                          \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> -       ___bpf_fill(___param, args);                            \
-> -       _Pragma("GCC diagnostic pop")                           \
-> -                                                               \
-> -       bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
-> -                      ___param, sizeof(___param));             \
-> -})
-> -
-> -/*
-> - * BPF_SNPRINTF wraps the bpf_snprintf helper with variadic arguments instead of
-> - * an array of u64.
-> - */
-> -#define BPF_SNPRINTF(out, out_size, fmt, args...)              \
-> -({                                                             \
-> -       static const char ___fmt[] = fmt;                       \
-> -       unsigned long long ___param[___bpf_narg(args)];         \
-> -                                                               \
-> -       _Pragma("GCC diagnostic push")                          \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> -       ___bpf_fill(___param, args);                            \
-> -       _Pragma("GCC diagnostic pop")                           \
-> -                                                               \
-> -       bpf_snprintf(out, out_size, ___fmt,                     \
-> -                    ___param, sizeof(___param));               \
-> -})
-> -
->  #endif
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-> index 6dfce3fd68bc..0aa3cd34cbe3 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-> index b83b5d2e17dc..6c39e86b666f 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-> index d58d9f1642b5..784a610ce039 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-> index 95989f4c99b5..a28e51e2dcee 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-> index b7f32c160f4e..c86b93f33b32 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-> index a1ddc36f13ec..bca8b889cb10 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020, Oracle and/or its affiliates. */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_core_read.h>
->
->  #include <errno.h>
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-> index b2f7c7c5f952..6e7b400888fe 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> index 43c36f5f7649..f2b8167b72a8 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-> index 11d1aa37cf11..4ea6a37d1345 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-> @@ -2,7 +2,6 @@
->  /* Copyright (c) 2020 Facebook */
->  #include "bpf_iter.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  char _license[] SEC("license") = "GPL";
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-> index 54380c5e1069..2e4775c35414 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_endian.h>
->
->  char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-> index b4fbddfa4e10..943f7bba180e 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_endian.h>
->
->  char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-> index f258583afbbd..cf0c485b1ed7 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_endian.h>
->
->  char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c b/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-> index 65f93bb03f0f..5031e21c433f 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-> @@ -3,7 +3,6 @@
->  #include "bpf_iter.h"
->  #include "bpf_tracing_net.h"
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include <bpf/bpf_endian.h>
->
->  char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> index e35129bea0a0..e2ad26150f9b 100644
-> --- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> @@ -3,7 +3,6 @@
->
->  #include <linux/bpf.h>
->  #include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->
->  __u32 pid = 0;
->
-> --
-> 2.31.1.818.g46aad6cb9e-goog
->
+> +#define REG_WDT_CLR			0x0
+> +#define REG_WDT_MAX_PRD_L		0x10
+> +#define REG_WDT_MAX_PRD_H		0x14
+> +
+> +#define MSC313E_WDT_DEFAULT_TIMEOUT	30
+> +/* Supports 1 - 350 sec */
+
+Doesn't that depend on the clock freqneucy ?
+More on that see below.
+
+> +#define MSC313E_WDT_MIN_TIMEOUT		1
+> +#define MSC313E_WDT_MAX_TIMEOUT		350
+> +
+> +static unsigned int timeout;
+> +
+> +module_param(timeout, int, 0);
+> +MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds");
+> +
+> +struct msc313e_wdt_priv {
+> +	void __iomem *base;
+> +	struct device *dev;
+
+I don't immediately see where 'dev' is used.
+
+> +	struct watchdog_device wdev;
+> +	struct clk *clk;
+> +};
+> +
+> +static int msc313e_wdt_start(struct watchdog_device *wdev)
+> +{
+> +	struct msc313e_wdt_priv *priv = watchdog_get_drvdata(wdev);
+> +	u32 timeout;
+> +	int err;
+> +
+> +	err = clk_prepare_enable(priv->clk);
+> +	if (err) {
+> +		dev_err(priv->dev, "failed to enable clock\n");
+
+Ah, here. I am not sure if I like that error message - it is going to be
+persistent and may create a lot of noise if it is ever seen, and pretty much
+useless otherwise. Either case, if you insist on the message, I'd suggest
+to use wdev->parent.
+
+> +		return err;
+> +	}
+> +	timeout = wdev->timeout * clk_get_rate(priv->clk);
+
+How is it guaranteed that this won't overflow ? The maximum timeout is not
+tied to the clock frequency. This will overflow if the clock frequency is
+above 0xffffffff / 350 = 12271335 Hz and the timeout is sufficiently large.
+
+> +	writew(timeout & 0xffff, priv->base + REG_WDT_MAX_PRD_L);
+> +	writew((timeout >> 16) & 0xffff, priv->base + REG_WDT_MAX_PRD_H);
+> +	writew(1, priv->base + REG_WDT_CLR);
+> +	return 0;
+> +}
+> +
+> +static int msc313e_wdt_ping(struct watchdog_device *wdev)
+> +{
+> +	struct msc313e_wdt_priv *priv = watchdog_get_drvdata(wdev);
+> +
+> +	writew(1, priv->base + REG_WDT_CLR);
+> +	return 0;
+> +}
+> +
+> +static int msc313e_wdt_stop(struct watchdog_device *wdev)
+> +{
+> +	struct msc313e_wdt_priv *priv = watchdog_get_drvdata(wdev);
+> +
+> +	writew(0, priv->base + REG_WDT_MAX_PRD_L);
+> +	writew(0, priv->base + REG_WDT_MAX_PRD_H);
+> +	writew(0, priv->base + REG_WDT_CLR);
+> +	clk_disable_unprepare(priv->clk);
+> +	return 0;
+> +}
+> +
+> +static int msc313e_wdt_settimeout(struct watchdog_device *wdev, unsigned int new_time)
+> +{
+> +	wdev->timeout = new_time;
+> +
+> +	return msc313e_wdt_start(wdev);
+> +}
+> +
+> +static const struct watchdog_info msc313e_wdt_ident = {
+> +	.identity = "MSC313e watchdog",
+> +	.options = WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT,
+> +};
+> +
+> +static const struct watchdog_ops msc313e_wdt_ops = {
+> +	.owner = THIS_MODULE,
+> +	.start = msc313e_wdt_start,
+> +	.stop = msc313e_wdt_stop,
+> +	.ping = msc313e_wdt_ping,
+> +	.set_timeout = msc313e_wdt_settimeout,
+> +};
+> +
+> +static const struct of_device_id msc313e_wdt_of_match[] = {
+> +	{ .compatible = "mstar,msc313e-wdt", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, msc313e_wdt_of_match);
+> +
+> +static int msc313e_wdt_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct msc313e_wdt_priv *priv;
+> +
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(priv->base))
+> +		return PTR_ERR(priv->base);
+> +
+> +	priv->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(priv->clk)) {
+> +		dev_err(dev, "No input clock\n");
+> +		return PTR_ERR(priv->clk);
+> +	}
+> +
+> +	priv->dev = dev;
+> +	priv->wdev.info = &msc313e_wdt_ident,
+> +	priv->wdev.ops = &msc313e_wdt_ops,
+> +	priv->wdev.parent = dev;
+> +	priv->wdev.min_timeout = MSC313E_WDT_MIN_TIMEOUT;
+> +	priv->wdev.max_timeout = MSC313E_WDT_MAX_TIMEOUT;
+> +	priv->wdev.timeout = MSC313E_WDT_DEFAULT_TIMEOUT;
+> +
+> +	watchdog_set_drvdata(&priv->wdev, priv);
+> +
+> +	watchdog_init_timeout(&priv->wdev, timeout, dev);
+> +	watchdog_stop_on_reboot(&priv->wdev);
+> +	watchdog_stop_on_unregister(&priv->wdev);
+> +
+> +	return devm_watchdog_register_device(dev, &priv->wdev);
+> +}
+> +
+> +static int __maybe_unused msc313e_wdt_suspend(struct device *dev)
+> +{
+> +	struct msc313e_wdt_priv *priv = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&priv->wdev))
+> +		msc313e_wdt_stop(&priv->wdev);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused msc313e_wdt_resume(struct device *dev)
+> +{
+> +	struct msc313e_wdt_priv *priv = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&priv->wdev))
+> +		msc313e_wdt_start(&priv->wdev);
+> +
+> +	return 0;
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(msc313e_wdt_pm_ops, msc313e_wdt_suspend, msc313e_wdt_resume);
+> +
+> +static struct platform_driver msc313e_wdt_driver = {
+> +	.driver = {
+> +		.name = "msc313e-wdt",
+> +		.of_match_table = msc313e_wdt_of_match,
+> +		.pm = &msc313e_wdt_pm_ops,
+> +	},
+> +	.probe = msc313e_wdt_probe,
+> +};
+> +module_platform_driver(msc313e_wdt_driver);
+> +
+> +MODULE_AUTHOR("Daniel Palmer <daniel@thingy.jp>");
+> +MODULE_DESCRIPTION("Watchdog driver for MStar MSC313e");
+> +MODULE_LICENSE("GPL v2");
+> 
+
