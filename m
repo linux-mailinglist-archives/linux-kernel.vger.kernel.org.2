@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E2B390CD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FD9390CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhEYXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:14:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
+        id S231164AbhEYXQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhEYXOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:14:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 028576128B;
-        Tue, 25 May 2021 23:12:54 +0000 (UTC)
+        id S229610AbhEYXQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:16:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 143226128B;
+        Tue, 25 May 2021 23:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621984375;
-        bh=p5zs9AFpKvm2gJ3wOHz8HK6dqERf9W6OPzdt/UtnSZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eFkhYnypq9J5CIvc9qM9+goufTIQs8wZOya5HVGKzlep5Hh88uulPCiLVs1XuEy//
-         f2ZcODbhONRp3FMmL5uSLpMRRTXX9E0ESxLzvS9IIMCOcYBKBugD8Qtq/bJlBeoa6n
-         xyiWaN8nzv2rkllsMJhZZ0KQ5qBvRdjrobtH/HifDm17H4Y9VK8SaHCjxQeImSOuG/
-         EQ5z7v22TgggLa27t2AuQR9eaIT5jS7DrqDuq4k+U2tw47e6spQGwS6p1k1h4H2W0d
-         /k53pWsda612hxG8K2zf4GOfKjsn6EexHSe+G53YIqAT6lnViDYbdI7ROviRzT4YNj
-         TXyfJqDOJ9nAg==
-Date:   Tue, 25 May 2021 16:12:54 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v3 3/3] fsdax: Output address in dax_iomap_pfn() and
- rename it
-Message-ID: <20210525231254.GD202078@locust>
-References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
- <20210422134501.1596266-4-ruansy.fnst@fujitsu.com>
+        s=k20201202; t=1621984485;
+        bh=/EdwyLQ+0LUXTaPyhPRLe2zoHvEb5leoOHuBg++UM1o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XOokvxXL/+Si6if87jIxVJLjCObnqn3ReG/G14b29kGq1OSabBmWJpLVkevuEKedY
+         PTOw75MfoetLGNDb/bhJgoMKVy0ULwN+XQypsauhnOZ+N5pt1azVEXWUv8HIW3L76c
+         +zAb2cmcdgxqmtz48WEdOGTQ8yr0lnwT3Z1zG3vYQfC+xrzWUoQFu25ys9F48uL7ZW
+         f3+WPqWcR8p8DU3EenOKYkqFhc5K5RCBjMXHUPjlrEBn+k8L5vJ4hvsqTu4hBhkbrg
+         UnZxl0PRVBxiAQSXjvfOS9IEfjwA2BtvloDdJGqvwCHfZp6vIIgz0Rrtad2llGe0Lu
+         cL41sXnxe0xIQ==
+Date:   Tue, 25 May 2021 18:15:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] virtchnl: Replace one-element array in struct
+ virtchnl_irq_map_info
+Message-ID: <20210525231542.GA176299@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210422134501.1596266-4-ruansy.fnst@fujitsu.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:45:01PM +0800, Shiyang Ruan wrote:
-> Add address output in dax_iomap_pfn() in order to perform a memcpy() in
-> CoW case.  Since this function both output address and pfn, rename it to
-> dax_iomap_direct_access().
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+There is a regular need in the kernel to provide a way to declare having a
+dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Looks pretty simple to me,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Refactor the code according to the use of a flexible-array member in struct
+virtchnl_irq_map_info instead of one-element array, and use the
+flex_array_size() helper.
 
---D
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
 
-> ---
->  fs/dax.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index f99e33de2036..48a97905c0c3 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -998,8 +998,8 @@ static sector_t dax_iomap_sector(struct iomap *iomap, loff_t pos)
->  	return (iomap->addr + (pos & PAGE_MASK) - iomap->offset) >> 9;
->  }
->  
-> -static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
-> -			 pfn_t *pfnp)
-> +static int dax_iomap_direct_access(struct iomap *iomap, loff_t pos, size_t size,
-> +		void **kaddr, pfn_t *pfnp)
->  {
->  	const sector_t sector = dax_iomap_sector(iomap, pos);
->  	pgoff_t pgoff;
-> @@ -1011,11 +1011,13 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
->  		return rc;
->  	id = dax_read_lock();
->  	length = dax_direct_access(iomap->dax_dev, pgoff, PHYS_PFN(size),
-> -				   NULL, pfnp);
-> +				   kaddr, pfnp);
->  	if (length < 0) {
->  		rc = length;
->  		goto out;
->  	}
-> +	if (!pfnp)
-> +		goto out_check_addr;
->  	rc = -EINVAL;
->  	if (PFN_PHYS(length) < size)
->  		goto out;
-> @@ -1025,6 +1027,12 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
->  	if (length > 1 && !pfn_t_devmap(*pfnp))
->  		goto out;
->  	rc = 0;
-> +
-> +out_check_addr:
-> +	if (!kaddr)
-> +		goto out;
-> +	if (!*kaddr)
-> +		rc = -EFAULT;
->  out:
->  	dax_read_unlock(id);
->  	return rc;
-> @@ -1389,7 +1397,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  		return pmd ? VM_FAULT_FALLBACK : VM_FAULT_SIGBUS;
->  	}
->  
-> -	err = dax_iomap_pfn(iomap, pos, size, &pfn);
-> +	err = dax_iomap_direct_access(iomap, pos, size, NULL, &pfn);
->  	if (err)
->  		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
->  
-> -- 
-> 2.31.1
-> 
-> 
-> 
+Link: https://github.com/KSPP/linux/issues/79
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ include/linux/avf/virtchnl.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index ed9c4998f8ac..7ded2b454122 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -378,10 +378,10 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_vector_map);
+ 
+ struct virtchnl_irq_map_info {
+ 	u16 num_vectors;
+-	struct virtchnl_vector_map vecmap[1];
++	struct virtchnl_vector_map vecmap[];
+ };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(14, virtchnl_irq_map_info);
++VIRTCHNL_CHECK_STRUCT_LEN(2, virtchnl_irq_map_info);
+ 
+ /* VIRTCHNL_OP_ENABLE_QUEUES
+  * VIRTCHNL_OP_DISABLE_QUEUES
+@@ -1008,8 +1008,8 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 		if (msglen >= valid_len) {
+ 			struct virtchnl_irq_map_info *vimi =
+ 			    (struct virtchnl_irq_map_info *)msg;
+-			valid_len += (vimi->num_vectors *
+-				      sizeof(struct virtchnl_vector_map));
++			valid_len += flex_array_size(vimi, vecmap,
++						     vimi->num_vectors);
+ 			if (vimi->num_vectors == 0)
+ 				err_msg_format = true;
+ 		}
+-- 
+2.27.0
+
