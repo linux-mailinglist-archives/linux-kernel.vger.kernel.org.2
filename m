@@ -2,111 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D82390697
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7E43906AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhEYQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:26:12 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:40856 "EHLO mail1.perex.cz"
+        id S233061AbhEYQbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:31:07 -0400
+Received: from namei.org ([65.99.196.166]:49298 "EHLO mail.namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232200AbhEYQ0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:26:11 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id AB630A0042;
-        Tue, 25 May 2021 18:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz AB630A0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1621959879; bh=5vd1CosdGZ1x0kCQ03wCTU9ikNz4E8e+MwaijpSD2AU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=U+4Cziiuz2bRm/D2OIanNWyLaonXS/fppqUXq/nDrPNOJy+PZh76rC/R5gxCZ6Qam
-         cgc3U5f8cLGD+9p4nkvPlVp0lOHsA6wkNQDNmv7M2AN21eMz/x449mQOO/rRoPf4mJ
-         ySKj4Db3H8iQM1q8nvXWqvB0czYnpIkrUlIBKI5w=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue, 25 May 2021 18:24:28 +0200 (CEST)
-Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210523234437.25077-1-digetx@gmail.com>
- <20210523234437.25077-5-digetx@gmail.com>
- <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
- <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
-Date:   Tue, 25 May 2021 18:24:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233485AbhEYQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:31:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.namei.org (Postfix) with ESMTPS id 9AC61DCF;
+        Tue, 25 May 2021 16:24:35 +0000 (UTC)
+Date:   Wed, 26 May 2021 02:24:35 +1000 (AEST)
+From:   James Morris <jmorris@namei.org>
+To:     linux-security-module@vger.kernel.org
+cc:     linux-kernel@vger.kernel.org, lwn@lwn.net,
+        fedora-selinux-list@redhat.com, linux-crypto@vger.kernel.org,
+        kernel-hardening@lists.openwall.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        Audit-ML <linux-audit@redhat.com>, gentoo-hardened@gentoo.org,
+        keyrings@linux-nfs.org, tpmdd-devel@lists.sourceforge.net,
+        Linux Security Summit Program Committee 
+        <lss-pc@lists.linuxfoundation.org>
+Subject: Re: [ANNOUNCE][CFP] Linux Security Summit 2021
+In-Reply-To: <c244f77-56a1-c089-521d-2e670488c10@namei.org>
+Message-ID: <5b3a0bf-226d-6ee-d0b-d6673eff32b2@namei.org>
+References: <c244f77-56a1-c089-521d-2e670488c10@namei.org>
 MIME-Version: 1.0
-In-Reply-To: <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24. 05. 21 16:00, Dmitry Osipenko wrote:
-> 24.05.2021 13:54, Jaroslav Kysela пишет:
->> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
->>> Specify components string for Nexus 7 using the Intel BayTrail components
->>> format. This may allow us to create a more generic UCM for RT5640 codec.
->>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
->>>  1 file changed, 19 insertions(+)
->>>
->>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
->>> index a81f2ebfc00c..87e0a47040a5 100644
->>> --- a/sound/soc/tegra/tegra_asoc_machine.c
->>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
->>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
->>>  	.add_hp_jack = true,
->>>  };
->>>  
->>> +/*
->>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
->>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
->>> + * Headphones: Connected to HPOL/R pins.
->>> + * Headset Microphone: Unconnected.
->>> + *
->>> + * IF2_DAC/ADC are unpopulated.
->>> + */
->>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
->>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
->>
->> Perhaps, it may be better to handle this string via the DT config (create new
->> function like snd_soc_of_parse_card_name()).
->>
->> The "codec:rt5640" should be set in the driver (it's fixed), but the
->> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
+Note that the venue of LSS 2021 has now changed to Seattle, USA.
+
+See https://events.linuxfoundation.org/linux-security-summit-north-america/
+
+The new event dates are 29 September to 01 October.
+
+The CFP closes on June 27th.
+
+
+
+
+
+On Tue, 9 Feb 2021, James Morris wrote:
+
+> ==============================================================================
+>                    ANNOUNCEMENT AND CALL FOR PARTICIPATION
 > 
-> Not sure that this is possible. The DT is an ABI, while components
-> string has no specification. Any changes to the components string will
-> require DT update.
+>                          LINUX SECURITY SUMMIT 2021
+>                              
+>                               27-29 September
+>                               Dublin, Ireland
+> ==============================================================================
 > 
-> I think it's much more feasible to have a database of components within
-> kernel driver, like Intel sound driver does it for ACPI devices.
-
-There is no other possibility for ACPI. And while the components string is
-part of the ALSA ABI, it should not be changed in an incompatible way. Only
-new information should be added. The DT solution seems more flexible to me.
-For example the stereo/mono speaker or the AIF number can be set without the
-driver modification for rt5640.
-
-					Jaroslav
-
+> DESCRIPTION
+>  
+> Linux Security Summit (LSS) is a technical forum for collaboration between
+> Linux developers, researchers, and end-users.  Its primary aim is to foster
+> community efforts in analyzing and solving Linux security challenges.
+> 
+>  The program committee currently seeks proposals for:
+>  
+>    * Refereed Presentations:
+>      45 minutes in length.
+>  
+>    * Panel Discussion Topics:
+>      45 minutes in length.
+>  
+>    * Short Topics:
+>      30 minutes in total, including at least 10 minutes discussion.
+>  
+>    * Tutorials
+>      90 minutes in length.
+>  
+> Tutorial sessions should be focused on advanced Linux security defense
+> topics within areas such as the kernel, compiler, and security-related
+> libraries.  Priority will be given to tutorials created for this conference,
+> and those where the presenter a leading subject matter expert on the topic.
+>  
+> Topic areas include, but are not limited to:
+>  
+>    * Kernel self-protection
+>    * Access control
+>    * Cryptography and key management
+>    * Integrity policy and enforcement
+>    * Hardware Security
+>    * IoT and embedded security
+>    * Virtualization and containers
+>    * System-specific system hardening
+>    * Case studies
+>    * Security tools
+>    * Security UX
+>    * Emerging technologies, threats & techniques
+> 
+>   Proposals should be submitted via:
+>     https://events.linuxfoundation.org/linux-security-summit-europe/program/cfp/
+> 
+> 
+> ** Note that for 2021, the North American and European events are combined into
+> a single event planned for Dublin, Ireland. **
+>  
+> 
+> DATES
+>  
+>   * CFP close:            June 27
+>   * CFP notifications:    July 20
+>   * Schedule announced:   July 22
+>   * Event:                September 27-29
+> 
+> WHO SHOULD ATTEND
+>  
+> We're seeking a diverse range of attendees and welcome participation by
+> people involved in Linux security development, operations, and research.
+>  
+> LSS is a unique global event that provides the opportunity to present and
+> discuss your work or research with key Linux security community members and
+> maintainers.  It's also useful for those who wish to keep up with the latest
+> in Linux security development and to provide input to the development
+> process.
+> 
+> WEB SITE
+> 
+>     https://events.linuxfoundation.org/linux-security-summit-europe/
+> 
+> TWITTER
+> 
+>   For event updates and announcements, follow:
+> 
+>     https://twitter.com/LinuxSecSummit
+>   
+>     #linuxsecuritysummit
+> 
+> PROGRAM COMMITTEE
+> 
+>   The program committee for LSS 2021 is:
+> 
+>     * James Morris, Microsoft
+>     * Serge Hallyn, Cisco
+>     * Paul Moore, Cisco
+>     * Stephen Smalley, NSA
+>     * Elena Reshetova, Intel
+>     * John Johansen, Canonical
+>     * Kees Cook, Google
+>     * Casey Schaufler, Intel
+>     * Mimi Zohar, IBM
+>     * David A. Wheeler, Institute for Defense Analyses
+> 
+>   The program committee may be contacted as a group via email:
+>     lss-pc () lists.linuxfoundation.org
+> 
+> 
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+James Morris
+<jmorris@namei.org>
+
