@@ -2,45 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0461238FE57
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D026238FE58
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhEYKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        id S232859AbhEYKCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbhEYKBp (ORCPT
+        with ESMTP id S232667AbhEYKCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:01:45 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:00:15 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:dd7b:70b:3b48:c76f] (port=61324)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        Tue, 25 May 2021 06:02:21 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DB7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:00:51 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <Ywe_C@purplenoise.eu>)
-        id 1llTrA-0003yo-Or
-        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 12:00:12 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@purplenoise.eu>
-Subject: Fair Pay: C% CPU
-Message-ID: <949c80c5-f8bc-554f-0365-04025b579637@purplenoise.eu>
-Date:   Tue, 25 May 2021 12:00:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        (envelope-from <ukl@pengutronix.de>)
+        id 1llTrm-0007ud-Eh; Tue, 25 May 2021 12:00:50 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1llTrm-0007Eb-1N; Tue, 25 May 2021 12:00:50 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org
+Subject: [PATCH] driver core: auxiliary bus: Fix typo in the docs
+Date:   Tue, 25 May 2021 12:00:42 +0200
+Message-Id: <20210525100042.951717-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Earlier talked about a fitting cpu type. This is now called C% CPU, 
-where some deeper level functions could be accelerated on CPU,for 
-optimal scheduling and bus speed.
+My editor's spell checker noticed that one while I read through the
+document.
 
-See also my channel Ic, where we makes jokes on the Hashgod.
-https://www.youtube.com/channel/UCkrhLWMvTc09IxFG9lt9mHg
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ Documentation/driver-api/auxiliary_bus.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Serenity,
-Ywe Cærlyn
+diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
+index fff96c7ba7a8..ef902daf0d68 100644
+--- a/Documentation/driver-api/auxiliary_bus.rst
++++ b/Documentation/driver-api/auxiliary_bus.rst
+@@ -11,7 +11,7 @@ too complex for a single device to be managed by a monolithic driver
+ (e.g. Sound Open Firmware), multiple devices might implement a common
+ intersection of functionality (e.g. NICs + RDMA), or a driver may want to
+ export an interface for another subsystem to drive (e.g. SIOV Physical Function
+-export Virtual Function management).  A split of the functinoality into child-
++export Virtual Function management).  A split of the functionality into child-
+ devices representing sub-domains of functionality makes it possible to
+ compartmentalize, layer, and distribute domain-specific concerns via a Linux
+ device-driver model.
+-- 
+2.30.2
+
