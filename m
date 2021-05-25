@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EF0390859
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A3639085E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhEYSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:02:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41204 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234353AbhEYSBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:01:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621965625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NgBPhouft99Ui43ozzCY0B6U/k51FIAlxJ2/MpfUsP4=;
-        b=ElpQxK+HH3ANT/imMyY3cj4d5xakfztZG4n+dqNqmjsFClVF6axympo2AiEc/xd0V1vwz7
-        VRTiR0H50GVzoX0V/p7gl80l9KvdWsTmLl0c3tRmQofkZxdjqo/+wsDA4nOKuSC9NkUgkC
-        MCpwf2cX4XRYvldW+NOjZ9pNPb7U40o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621965625;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NgBPhouft99Ui43ozzCY0B6U/k51FIAlxJ2/MpfUsP4=;
-        b=7feiVxBJkKJ6PgvqiOrw4iFzGCPObeRBqzD4gwdf/Ia3sPpNrkWQI8YUubMUtHUlCC8+cH
-        p/ewdh9WjO7LGADQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF264AF59;
-        Tue, 25 May 2021 18:00:24 +0000 (UTC)
-Date:   Tue, 25 May 2021 20:00:22 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     "Qian Cai (QUIC)" <quic_qiancai@quicinc.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Arm64 crash while online/offline memory sections
-Message-ID: <YK07NhNOnKNB02RY@localhost.localdomain>
-References: <DM5PR0201MB35576EF9B568FEE05FE58CF08E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
- <b34499c5-a330-1bfc-d564-8ebffb3236cd@redhat.com>
- <DM5PR0201MB35576CEF62C53EF393E3D9768E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
+        id S231710AbhEYSCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhEYSCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 14:02:49 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DC7C061574;
+        Tue, 25 May 2021 11:01:18 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id e22so7627297pgv.10;
+        Tue, 25 May 2021 11:01:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TeZYAdDGyeDzBK7Uuv/anEpUix43foa4wq1t/9j/4P4=;
+        b=tc9XCw/ZfgHw6v7ftwy7iXxVMRvj7anVsw36rlhGgg5C0rN840cbzeo3fmshnMKYoy
+         g2vr4Du4LPEYINszDH0vePK7wD6kJe4s4AqQ5rMIXo767wMZjPuYW3Aot9jH93I7YYW7
+         d9YDXqXSexoLZXf2EXgVt6ifojwzrE58f2tpGdS4jvxDo3MUnH6yc/ImJAsthF+kYTJb
+         oemW7v1fmh/m41kn1V0xgy2kNx1yDW9mj10FtqJknVjQTy7oO0LguJ88zMG5d+2Izf/2
+         1kkUkn+9Rwvxxa/vXC5B5KGZjm1LjfPXR1qLkTOTNzLZ1zsdWRf2bo5xHbIQb26OBufU
+         sGUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TeZYAdDGyeDzBK7Uuv/anEpUix43foa4wq1t/9j/4P4=;
+        b=ROxmWVUYB43GQ4tVL/PzwYrBS0rErvQiNhVW+StEHO/rtyTG9zO15fVkLBDa8erAto
+         T6fmC0O7QYF/RuLI6Rj4ea0h1B0W+McKsV4crFM/rjwFGgsSF1RoYGvJGtSvCM42jg5w
+         w6+xpwZOjnr7xWaVpQJAEXFsN1nyM2+fRRhFnRKjWbV89VzSC7mItenJRGPahCeJ9oyt
+         8Tbhljp/oqiz7ZaEPgcKtBlssqajCoePygA4+APlY3jwAIE1t/V00GXyhZn8w3N+TAbd
+         4yS6kxmQu+PPWsgL8vrH4rH3kwFqhem7OGDyyX23jVDM71sc0AXrHiAfYTP6yDFhJfiT
+         ZxQQ==
+X-Gm-Message-State: AOAM530OD7VzompfnfbWEsuenDFsQmXpiqCguPA35T/URCAUpdEInIa6
+        Ie4luN9Z/LTpPpfJYYhA/rA=
+X-Google-Smtp-Source: ABdhPJyFDBlGvpriCvPY+gmay8POd1PRwgmeT0FvVlnp26Q3E3JF651h8GFqBFVkgjJEXrTdsnFBWg==
+X-Received: by 2002:aa7:84d9:0:b029:2e4:e5d3:7eae with SMTP id x25-20020aa784d90000b02902e4e5d37eaemr23223138pfn.29.1621965677643;
+        Tue, 25 May 2021 11:01:17 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q24sm14692569pgk.32.2021.05.25.11.01.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 11:01:17 -0700 (PDT)
+Subject: Re: [PATCH v1 0/4] PCI: brcmstb: Add panic handler and shutdown func
+To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        nsaenz@kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>
+References: <20210427175140.17800-1-jim2101024@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <447c8997-c197-faa9-a3c2-0f89cd64b5e8@gmail.com>
+Date:   Tue, 25 May 2021 11:01:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR0201MB35576CEF62C53EF393E3D9768E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
+In-Reply-To: <20210427175140.17800-1-jim2101024@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 05:57:34PM +0000, Qian Cai (QUIC) wrote:
-> > Do we know which patch in particular is problematic?
+On 4/27/21 10:51 AM, Jim Quinlan wrote:
+> v1 -- These commits were part of a previous pullreq but have
+>       been split off because they are unrelated to said pullreq's
+>       other more complex commits.
 > 
-> Okay, the winner is "mm,memory_hotplug: Allocate memmap from the added memory range".
-> 
-> https://lore.kernel.org/linux-mm/20210421102701.25051-5-osalvador@suse.de/
+> Jim Quinlan (4):
+>   PCI: brcmstb: Check return value of clk_prepare_enable()
+>   PCI: brcmstb: Give 7216 SOCs their own config type
+>   PCI: brcmstb: Add panic/die handler to RC driver
+>   PCI: brcmstb: add shutdown call to driver
 
-Ok, which means that is irrelevant to having it enabled, as the latter
-patch of that series actualy enables it for arm64.
-Can you work out where exactly the crash happens?
+Bjorn, Lorenzon, are you satisfied with these commits, any chance to get
+get them reviewed and queued up?
 
-I will have a look into it tomorrow.
-
-Thanks for reporting.
-
+Thanks!
 -- 
-Oscar Salvador
-SUSE L3
+Florian
