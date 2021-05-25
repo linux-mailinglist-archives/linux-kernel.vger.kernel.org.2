@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68313390B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D35390B63
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhEYV0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:26:46 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:33102 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbhEYV0n (ORCPT
+        id S232764AbhEYV1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230465AbhEYV1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:26:43 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lleY0-00HLfp-3h; Tue, 25 May 2021 15:25:08 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lleXz-0003h6-73; Tue, 25 May 2021 15:25:07 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jann Horn <jannh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        John Johansen <john.johansen@canonical.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-References: <20210525193735.2716374-1-keescook@chromium.org>
-        <CAG48ez2PdgpUj3GYRLDJ9MS1uKMZ4SU77i__vhXvmbzqudzuzA@mail.gmail.com>
-Date:   Tue, 25 May 2021 16:24:52 -0500
-In-Reply-To: <CAG48ez2PdgpUj3GYRLDJ9MS1uKMZ4SU77i__vhXvmbzqudzuzA@mail.gmail.com>
-        (Jann Horn's message of "Tue, 25 May 2021 22:49:29 +0200")
-Message-ID: <m1r1humrq3.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 25 May 2021 17:27:17 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157BAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 14:25:46 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t193so23788682pgb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 14:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=Fefthy5JQqZHYTq7v2oUt3hji9z3zt+V5ofBzQOWrw4=;
+        b=n3vs82zyECucBBHyKuNMlzNdoXpxXquPqWgJp1qWSjQ/CqahdL6vw0Ek8FUIi83UfO
+         N4hrJwf+ktr8qCwwo3gPllkGCVYRMbsM7yIHeJdWcAYgo8f+7jfEITEqfHvDxaIjHVfb
+         OzhFO4Y2xZFlylmQ6D7mENhM5/dU3mzb4kwe0Q+rSsc4c93pd5ocvVV0gVWS3sLZCtLi
+         EVbHQ6F+YH5K02BP3bGGtr7Erv/xSBCD3W/FfmZXj1IB20nZ9oIPuz/4VYZRONMba1+Z
+         Pix7o3MGUtj1IUEoixfFHIZyX51psb4f5mLWFUXkKkc06j9UzMM0vjV5877/Yeov7TQF
+         LtFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=Fefthy5JQqZHYTq7v2oUt3hji9z3zt+V5ofBzQOWrw4=;
+        b=fjMSJux9OuY1pgAhpJ44bFl1sK8Tj9RIg23Hfyct8vQpaK1YzfLSP3GzSMMRpa0ZhW
+         q3eK4P6+8lB+z+8UvaJFqHDG778JgZ8s2PZlsc1M5J21ts1fbhh9Pc7Qa5v/w91r5dt9
+         ZidL9dcqSRNipl1Ag/027GYTHkXBTNcdpOQNjWrhp/R2vI42PyPuem7b/ohIvhJ4XfpO
+         ZCnmojfthb0Jk46NwXSLrmmNw9+h2dAPOnZwriu/SuB5dAPoXGhrYEXmYdjTbMAag9bI
+         HJNC1JQCn/MgpSLBuGwivo4oPIMPRsaCxBsunx+PilNTK2sdqN8PphCeVTUnbdDD1V6D
+         18GA==
+X-Gm-Message-State: AOAM532L1eXQOZM4YHodrVC/HfPyrGEi1z6Xi20f28uGMF1aE4tFapyJ
+        k4dy0+SbC7mFFGVHmOfNqaR/tw==
+X-Google-Smtp-Source: ABdhPJzlckM4rlSuGkP+0z1qVGbIRH87k/2O1Ri4PVXeACqZmcr3GD8Fpq2C72qT31FMxd9XeIcfPQ==
+X-Received: by 2002:aa7:8a08:0:b029:2e0:299a:dfb3 with SMTP id m8-20020aa78a080000b02902e0299adfb3mr32509721pfa.28.1621977945349;
+        Tue, 25 May 2021 14:25:45 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
+        by smtp.gmail.com with ESMTPSA id f80sm13989754pfa.160.2021.05.25.14.25.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 14:25:43 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Odin Ugedal <odin@ugedal.com>,
+        pauld@redhead.com, Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
+References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
+        <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
+        <YKe89Uda+uJdx4X0@hirez.programming.kicks-ass.net>
+        <C759D4F2-FA5F-4EB2-8441-C9ECD79AFD55@linux.alibaba.com>
+        <YKzVu2cOYRN9TZD3@hirez.programming.kicks-ass.net>
+Date:   Tue, 25 May 2021 14:25:33 -0700
+In-Reply-To: <YKzVu2cOYRN9TZD3@hirez.programming.kicks-ass.net> (Peter
+        Zijlstra's message of "Tue, 25 May 2021 12:47:23 +0200")
+Message-ID: <xm26pmxe4ib6.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-XM-SPF: eid=1lleXz-0003h6-73;;;mid=<m1r1humrq3.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18b6GauH7woP0dutn2xuSoDIfadYjyx/GI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jann Horn <jannh@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 444 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 15 (3.4%), b_tie_ro: 13 (2.9%), parse: 0.99
-        (0.2%), extract_message_metadata: 14 (3.0%), get_uri_detail_list: 1.98
-        (0.4%), tests_pri_-1000: 5 (1.1%), tests_pri_-950: 1.36 (0.3%),
-        tests_pri_-900: 1.16 (0.3%), tests_pri_-90: 56 (12.5%), check_bayes:
-        53 (12.0%), b_tokenize: 7 (1.6%), b_tok_get_all: 9 (2.0%),
-        b_comp_prob: 3.2 (0.7%), b_tok_touch_all: 29 (6.6%), b_finish: 1.48
-        (0.3%), tests_pri_0: 338 (76.1%), check_dkim_signature: 0.49 (0.1%),
-        check_dkim_adsp: 3.3 (0.7%), poll_dns_idle: 0.18 (0.0%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 8 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] proc: Check /proc/$pid/attr/ writes against file opener
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jann Horn <jannh@google.com> writes:
+Peter Zijlstra <peterz@infradead.org> writes:
 
-> On Tue, May 25, 2021 at 9:37 PM Kees Cook <keescook@chromium.org> wrote:
->> Fix another "confused deputy" weakness[1]. Writes to /proc/$pid/attr/
->> files need to check the opener credentials, since these fds do not
->> transition state across execve(). Without this, it is possible to
->> trick another process (which may have different credentials) to write
->> to its own /proc/$pid/attr/ files, leading to unexpected and possibly
->> exploitable behaviors.
->>
->> [1] https://www.kernel.org/doc/html/latest/security/credentials.html?highlight=confused#open-file-credentials
->>
->> Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->>  fs/proc/base.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/fs/proc/base.c b/fs/proc/base.c
->> index 3851bfcdba56..58bbf334265b 100644
->> --- a/fs/proc/base.c
->> +++ b/fs/proc/base.c
->> @@ -2703,6 +2703,10 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
->>         void *page;
->>         int rv;
->>
->> +       /* A task may only write when it was the opener. */
->> +       if (file->f_cred != current_real_cred())
->> +               return -EPERM;
+> On Mon, May 24, 2021 at 08:42:03PM +0800, changhuaixin wrote:
 >
-> With this, if a task forks, the child will then still be able to open
-> its parent's /proc/$pid/attr/current and trick the parent into writing
-> to that, right? Is that acceptable? If not, the ->open handler should
-> probably also check for "current->thread_pid == proc_pid(inode)", or
-> something like that?
+>> >> static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+>> >> @@ -4651,6 +4666,9 @@ static int __assign_cfs_rq_runtime(struct cfs_bandwidth *cfs_b,
+>> >> 	if (cfs_b->quota == RUNTIME_INF)
+>> >> 		amount = min_amount;
+>> >> 	else {
+>> >> +		if (!cfs_b->period_active)
+>> >> +			__refill_cfs_bandwidth_runtime(cfs_b);
+>> > 
+>> > Why this call?
+>> 
+>> As the cfs bandwidth timer stops on idle with runtime unfilled, refill runtime when it restarts to make
+>> use of the underrun when period timer stops. Another way to do this might be:
+>> 
+>>         throttled = !list_empty(&cfs_b->throttled_cfs_rq);
+>>         cfs_b->nr_periods += overrun;
+>> 
+>> +       __refill_cfs_bandwidth_runtime(cfs_b);
+>> +
+>>         /*
+>>          * idle depends on !throttled (for the case of a large deficit), and if
+>>          * we're going inactive then everything else can be deferred
+>>          */
+>>         if (cfs_b->idle && !throttled)
+>>                 goto out_deactivate;
+>> 
+>> -       __refill_cfs_bandwidth_runtime(cfs_b);
+>> -
+>>         if (!throttled) {
+>> 
+>
+> Ben, do you have a preference?
 
-Currently exec always allocates a new cred.  So you can only ``trick''
-another process that was forked from you.  I don't think it counts as
-tricking or any kind of danger if you are simply confusing yourself.
 
-Eric
-
+I think I prefer the latter, possibly with a
+/* Refill extra burst quota even if cfs_b->idle */
