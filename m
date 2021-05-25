@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5765390778
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA12390776
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhEYR0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhEYRZy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233807AbhEYRZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:25:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45274 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229845AbhEYRZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 13:25:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EF2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=o5bFZZx4+5hZCEtN64VRrO77CmVLQFfTKZ1IOxkh7y4=; b=EQu9zvAjEeMWS3RIcy4/8iIvIc
-        rM3SCfgb5Cboq+HFpszga4LKRa3UNIRGi27YMHHvxFJeomRiT2HPi+WEr9NILr4j/FFGY5Z6a33iU
-        tZ5apUog7W+F+OzOcSl9hDVz4KUvrJwKOwD/EnCYBSS9ssCJ2+FihV3B5aRI6/u8oHX4Y9Z6W49V4
-        wAlGc3LOOce9N0EVwSKzk3RuZnNOZ5FhEgYErurzUssV+xFOlJbH0TIK3CPYvDC6GGRk6ChBVaUMP
-        /Ft07qk+DhIvRfJP3xiK0abmxuGEvqjZVhjkIgfkyfJK6IW0rlR+KLf4gCEjFQ2wPjuOJWWjsHl72
-        w5zdfJ3g==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llamt-006q9u-3w; Tue, 25 May 2021 17:24:15 +0000
-Subject: Re: [PATCH] sched: Add CONFIG_SCHED_CORE help text
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        Ingo Molnar <mingo@kernel.org>, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, Valentin Schneider <valentin.schneider@arm.com>
-References: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils>
- <YKyhtwhEgvtUDOyl@hirez.programming.kicks-ass.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ded8f400-a0ee-db97-098d-8fa0c2fdfd18@infradead.org>
-Date:   Tue, 25 May 2021 10:24:13 -0700
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621963462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/8jZJtlCctlz4NX7pE+UiAv7dDWXJgGKttx44dP5P1I=;
+        b=ibvfbXRHCkAns9UDhXGZ5oxkv/wnoGPdUrZmYoyqkOnDHKJjxtsmP6Eg/zxpjLuveqoZbv
+        5h0zK9xCZ7UxOnTM247pXnIPuMS7/LRQsdPCrf6jFQhcBJY1J8lfIDLkMveB9dCrdgKm7n
+        WUeTTqXNyCmBujAuDjqlNuLRY5i+vAk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621963462;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/8jZJtlCctlz4NX7pE+UiAv7dDWXJgGKttx44dP5P1I=;
+        b=ykSpQFyTV26JJMAK4L/6sslYrzqbNv08eKFk3eQqZDSF66FgOvODqVfZPLoP16UoRy2RZz
+        p5351AZNqoolDtBw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4845AF33;
+        Tue, 25 May 2021 17:24:22 +0000 (UTC)
+Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
+ handler
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        pbonzini@redhat.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, joe.jin@oracle.com,
+        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
+References: <20210523063843.1177-1-dongli.zhang@oracle.com>
+ <ac161748-15d2-2962-402e-23abca469623@suse.de>
+ <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
+ <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
+ <YK0qKMF0I8Wm1euN@stefanha-x1.localdomain>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <1184a5ac-bbb4-a89d-b5e2-ee0bf58cd1b8@suse.de>
+Date:   Tue, 25 May 2021 19:24:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <YKyhtwhEgvtUDOyl@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YK0qKMF0I8Wm1euN@stefanha-x1.localdomain>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 12:05 AM, Peter Zijlstra wrote:
-> Subject: sched: Add CONFIG_SCHED_CORE help text
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Tue May 25 08:53:28 CEST 2021
+On 5/25/21 6:47 PM, Stefan Hajnoczi wrote:
+> On Mon, May 24, 2021 at 11:33:33PM -0700, Dongli Zhang wrote:
+>> On 5/24/21 6:24 AM, Stefan Hajnoczi wrote:
+>>> On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
+>>>> On 5/23/21 8:38 AM, Dongli Zhang wrote:
+>>>>> This RFC is to trigger the discussion about to poll and kick the
+>>>>> virtqueue on purpose in virtio-scsi timeout handler.
+>>>>>
+>>>>> The virtio-scsi relies on the virtio vring shared between VM and host.
+>>>>> The VM side produces requests to vring and kicks the virtqueue, while the
+>>>>> host side produces responses to vring and interrupts the VM side.
+>>>>>
+>>>>> By default the virtio-scsi handler depends on the host timeout handler
+>>>>> by BLK_EH_RESET_TIMER to give host a chance to perform EH.
+>>>>>
+>>>>> However, this is not helpful for the case that the responses are available
+>>>>> on vring but the notification from host to VM is lost.
+>>>>>
+>>>> How can this happen?
+>>>> If responses are lost the communication between VM and host is broken, and
+>>>> we should rather reset the virtio rings themselves.
+>>>
+>>> I agree. In principle it's fine to poll the virtqueue at any time, but I
+>>> don't understand the failure scenario here. It's not clear to me why the
+>>> device-to-driver vq notification could be lost.
+>>>
+>>
+>> One example is the CPU hotplug issue before the commit bf0beec0607d ("blk-mq:
+>> drain I/O when all CPUs in a hctx are offline") was available. The issue is
+>> equivalent to loss of interrupt. Without the CPU hotplug fix, while NVMe driver
+>> relies on the timeout handler to complete inflight IO requests, the PV
+>> virtio-scsi may hang permanently.
+>>
+>> In addition, as the virtio/vhost/QEMU are complex software, we are not able to
+>> guarantee there is no further lost of interrupt/kick issue in the future. It is
+>> really painful if we encounter such issue in production environment.
 > 
-> Hugh noted that the SCHED_CORE Kconfig option could do with a help
-> text.
+> Any number of hardware or software bugs might exist that we don't know
+> about, yet we don't pre-emptively add workarounds for them because where
+> do you draw the line?
 > 
-> Requested-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  kernel/Kconfig.preempt |   14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> I checked other SCSI/block drivers and found it's rare to poll in the
+> timeout function so there does not seem to be a consensus that it's
+> useful to do this.
 > 
-> --- a/kernel/Kconfig.preempt
-> +++ b/kernel/Kconfig.preempt
-> @@ -104,4 +104,18 @@ config SCHED_CORE
->  	bool "Core Scheduling for SMT"
->  	default y
->  	depends on SCHED_SMT
-> +	help
-> +	  This option permits Core Scheduling, a means of coordinated task
-> +	  selection across SMT siblings. When enabled -- see
-> +	  prctl(PR_SCHED_CORE) -- task selection ensures that all SMT siblings
-> +	  will execute a task from the same 'core group', forcing idle when no
-> +	  matching task is found.
-> +
-> +	  Use of this feature includes:
-> +	   - mitigation of some (not all) SMT side channels;
-> +	   - limiting SMT interference to improve determinism and/or performance.
-> +
-> +	  SCHED_CORE is default enabled when SCHED_SMT is enabled -- when
-> +	  unused there should be no impact on performance.
-> +
->  
+Not only this; it's downright dangerous attempting to do that in SCSI.
+In SCSI we don't have fixed lifetime guarantees that NVMe has, so there 
+will be a race condition between timeout and command completion.
+Plus there is no interface in SCSI allowing to 'poll' for completions in 
+a meaningful manner.
+
+> That said, it's technically fine to do it, the virtqueue APIs are there
+> and can be used like this. So if you and others think this is necessary,
+> then it's a pretty small change and I'm not against merging a patch like
+> this.
 > 
+I would rather _not_ put more functionality into the virtio_scsi timeout 
+handler; this only serves to assume that the timeout handler has some 
+functionality in virtio.
+Which it patently hasn't, as the prime reason for a timeout handler is 
+to _abort_ a command, which we can't on virtio.
+Well, we can on virtio, but qemu as the main user will re-route the I/O 
+from virtio into doing async-I/O, and there is no way how we can abort 
+outstanding asynchronous I/O.
+Or any other ioctl, for that matter.
 
+Cheers,
 
+Hannes
 -- 
-~Randy
-
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
