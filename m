@@ -2,110 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2941338FDD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8FB38FDD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhEYJbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:31:02 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:60417 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhEYJas (ORCPT
+        id S232613AbhEYJax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232580AbhEYJas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 25 May 2021 05:30:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1621934959; x=1653470959;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=PNtSVoFGvQfnAIpiiUi+iXcvVNJqpwQgjDgGgtw17jA=;
-  b=nxfTFbSpGpasvZ5edpqn25hZemTEVjIeKP0se91AcyLxpXNxdyoNqCSh
-   YMoTuK8aMemnUq5zdo4jvwERus7rtGYOKY1LjIAiC7OpzrzDKMZP4hT+e
-   Zv/YEoT2fdDz+gCmaT8xUdd0T45d2jDIwNIDo825xgmsaFij9KeyjQPV2
-   OGMODWjVeHnQWXyPy8YzGqFljxqaJpX8hsYvEhrjAuYihEnePjg7QN7mK
-   xgPP//OOOw1qiV6bxTI0pkVw/ipdJaaSeGAsuJsFhBcHv7IOmqYYXKE1K
-   aPKrKr6378D8Gp1V3uF1cM2ArXvpu7k93e/y8QDxzcBbe1fmVaNN9PWkr
-   g==;
-IronPort-SDR: oVFErXGWnMpgDMPxjuargxQbDAEdCErqM7QMOzVj2hFdWabAee0XBW4ltcKoUhBJC3cGmXnhRI
- 6pDuIxd6W+3v2kfcjmkJ7Eta8ka63okHwmDsu4zK0sgaZS8UXka8tQzSHM8aBEmhE1C2A8JNmb
- WxGRLO0T+7n2/m4NPHdcC4E6ESVcKwphaoOATPDaD5oKZXJ6Dh/i5uzkcBxxmyoamfDziNF7xx
- sTXEd0u81tEMT7L/VjHcLLnez6S8rRciHZULmgbASWFrIXmOiW5U7LRwB7qGzMTKBja9f2rD+z
- XB4=
-X-IronPort-AV: E=Sophos;i="5.82,328,1613458800"; 
-   d="scan'208";a="129362978"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2021 02:29:18 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 02:29:18 -0700
-Received: from [10.12.74.7] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 25 May 2021 02:29:16 -0700
-Subject: Re: [PATCH] drm/atmel-hlcdc: Allow async page flips
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Dan Sneddon - C50748 <Dan.Sneddon@microchip.com>
-CC:     Ludovic Desroches - M43218 <Ludovic.Desroches@microchip.com>,
-        "Boris Brezillon" <bbrezillon@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210330151721.6616-1-dan.sneddon@microchip.com>
- <20210409105816.cfffdr3edzi4yntm@sekiro>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <088b0446-85c2-2d87-0439-a0cc14772c6a@microchip.com>
-Date:   Tue, 25 May 2021 11:29:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DFCC061574;
+        Tue, 25 May 2021 02:29:18 -0700 (PDT)
+Date:   Tue, 25 May 2021 09:29:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621934956;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H+1167+yV7PYchUIxIpvCLfF5JWRF7Pj6K7YzqQ8eOo=;
+        b=vUC1ou2Zx/3q43XMnFJIoBDw4VziBHrV06FygnLUusKSJddb1j6+heJ+anmchuRXMWtKyY
+        oT+9T8XBMyEwg6J37HSucvuGc5RQkqwOyS5OCSKRKLdjB7eof/FV9NZpXme2KC7m0Imo37
+        syem6qbRAMdH9qsYpVqvUdYqqRUOKoml5Pro65ybrkrCNwV0jM9WON6ZwZBqE6YxRVZsI9
+        bFkavUXEaZgK3bxFzl9REpwfLMjeesngkvpHhLxNlu3Lq1tBSpOxiG26Srnnloz8hGPOqk
+        jZUvD2h3jT7jShoCO6L3TOwkS0xsS847F8Y3BXuDE3FtPhaOuGn8Cyy8mBHKcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621934956;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H+1167+yV7PYchUIxIpvCLfF5JWRF7Pj6K7YzqQ8eOo=;
+        b=x7YIzulZ0oU5dfywHXpN3ld+rWjVBD+TGj2swKOjQeCM1O5uhbNOjbg3Rn6uYNdPbxu6KH
+        ShK7wAXRgO8hiuBA==
+From:   "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/irq] x86/kexec: Set_[gi]dt() -> native_[gi]dt_invalidate()
+ in machine_kexec_*.c
+Cc:     "H. Peter Anvin (Intel)" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210519212154.511983-7-hpa@zytor.com>
+References: <20210519212154.511983-7-hpa@zytor.com>
 MIME-Version: 1.0
-In-Reply-To: <20210409105816.cfffdr3edzi4yntm@sekiro>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Message-ID: <162193495525.29796.7060476140067087676.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2021 at 12:58, Ludovic Desroches - M43218 wrote:
-> On Tue, Mar 30, 2021 at 08:17:20AM -0700, Dan Sneddon wrote:
->> The driver is capable of doing async page flips so we need to tell the
->> core to allow them.
->>
->> Signed-off-by: Dan Sneddon <dan.sneddon@microchip.com>
-> Tested-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+The following commit has been merged into the x86/irq branch of tip:
 
-Sam,
+Commit-ID:     056c52f5e824c050c58fd27ea6d717cba32239c2
+Gitweb:        https://git.kernel.org/tip/056c52f5e824c050c58fd27ea6d717cba32239c2
+Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
+AuthorDate:    Wed, 19 May 2021 14:21:52 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 21 May 2021 12:36:45 +02:00
 
-Do you need more from us or can you queue this patch (aka "ping")?
+x86/kexec: Set_[gi]dt() -> native_[gi]dt_invalidate() in machine_kexec_*.c
 
-Best regards,
-   Nicolas
+These files contain private set_gdt() functions which are only used to
+invalid the gdt; machine_kexec_64.c also contains a set_idt()
+function to invalidate the idt.
 
->> ---
->>
->>   drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
->> index 871293d1aeeb..f6c3d8809fd8 100644
->> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
->> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
->> @@ -686,6 +686,7 @@ static int atmel_hlcdc_dc_modeset_init(struct drm_device *dev)
->>   	dev->mode_config.max_width = dc->desc->max_width;
->>   	dev->mode_config.max_height = dc->desc->max_height;
->>   	dev->mode_config.funcs = &mode_config_funcs;
->> +	dev->mode_config.async_page_flip = true;
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.17.1
->>
+phys_to_virt(0) *really* doesn't make any sense for creating an
+invalid GDT. A NULL pointer (virtual 0) makes a lot more sense;
+although neither will allow any actual memory reference, a NULL
+pointer stands out more.
 
+Replace these calls with native_[gi]dt_invalidate().
 
--- 
-Nicolas Ferre
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210519212154.511983-7-hpa@zytor.com
+
+---
+ arch/x86/kernel/machine_kexec_32.c | 15 +------------
+ arch/x86/kernel/machine_kexec_64.c | 33 +----------------------------
+ 2 files changed, 4 insertions(+), 44 deletions(-)
+
+diff --git a/arch/x86/kernel/machine_kexec_32.c b/arch/x86/kernel/machine_kexec_32.c
+index 1e34fee..1b373d7 100644
+--- a/arch/x86/kernel/machine_kexec_32.c
++++ b/arch/x86/kernel/machine_kexec_32.c
+@@ -23,17 +23,6 @@
+ #include <asm/set_memory.h>
+ #include <asm/debugreg.h>
+ 
+-static void set_gdt(void *newgdt, __u16 limit)
+-{
+-	struct desc_ptr curgdt;
+-
+-	/* ia32 supports unaligned loads & stores */
+-	curgdt.size    = limit;
+-	curgdt.address = (unsigned long)newgdt;
+-
+-	load_gdt(&curgdt);
+-}
+-
+ static void load_segments(void)
+ {
+ #define __STR(X) #X
+@@ -232,8 +221,8 @@ void machine_kexec(struct kimage *image)
+ 	 * The gdt & idt are now invalid.
+ 	 * If you want to load them you must set up your own idt & gdt.
+ 	 */
+-	idt_invalidate();
+-	set_gdt(phys_to_virt(0), 0);
++	native_idt_invalidate();
++	native_gdt_invalidate();
+ 
+ 	/* now call it */
+ 	image->start = relocate_kernel_ptr((unsigned long)image->head,
+diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
+index c078b0d..131f30f 100644
+--- a/arch/x86/kernel/machine_kexec_64.c
++++ b/arch/x86/kernel/machine_kexec_64.c
+@@ -256,35 +256,6 @@ static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
+ 	return init_transition_pgtable(image, level4p);
+ }
+ 
+-static void set_idt(void *newidt, u16 limit)
+-{
+-	struct desc_ptr curidt;
+-
+-	/* x86-64 supports unaligned loads & stores */
+-	curidt.size    = limit;
+-	curidt.address = (unsigned long)newidt;
+-
+-	__asm__ __volatile__ (
+-		"lidtq %0\n"
+-		: : "m" (curidt)
+-		);
+-};
+-
+-
+-static void set_gdt(void *newgdt, u16 limit)
+-{
+-	struct desc_ptr curgdt;
+-
+-	/* x86-64 supports unaligned loads & stores */
+-	curgdt.size    = limit;
+-	curgdt.address = (unsigned long)newgdt;
+-
+-	__asm__ __volatile__ (
+-		"lgdtq %0\n"
+-		: : "m" (curgdt)
+-		);
+-};
+-
+ static void load_segments(void)
+ {
+ 	__asm__ __volatile__ (
+@@ -379,8 +350,8 @@ void machine_kexec(struct kimage *image)
+ 	 * The gdt & idt are now invalid.
+ 	 * If you want to load them you must set up your own idt & gdt.
+ 	 */
+-	set_gdt(phys_to_virt(0), 0);
+-	set_idt(phys_to_virt(0), 0);
++	native_idt_invalidate();
++	native_gdt_invalidate();
+ 
+ 	/* now call it */
+ 	image->start = relocate_kernel((unsigned long)image->head,
