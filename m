@@ -2,121 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB05638FF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8087638FF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhEYKb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:31:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:54418 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231730AbhEYKbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:31:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFDCDD6E;
-        Tue, 25 May 2021 03:29:55 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 556313F719;
-        Tue, 25 May 2021 03:29:54 -0700 (PDT)
-Date:   Tue, 25 May 2021 11:29:46 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210525102945.GA24210@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
- <87a6oj6sxo.mognet@arm.com>
+        id S231840AbhEYKcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231889AbhEYKbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 06:31:35 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B4BC061344
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:05 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id k14so43067956eji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OhjoyM/l8POvYFU9+0cpieRBGW2V3/WOA/e6FC0yJtI=;
+        b=TIuZl6T5seXcW//VFSzZGPltSXvjEIcARu3XLIARtYVm9bJ1pjxzG1Kvd03P/od97h
+         tQPcOxPSr16OvxgSZopAJy/1ocngI0mssOcNwCweXxbFwAiFwVc3ubs+K+EsicxmtEdE
+         QfTyK0+QixbC9tW4H04np4XzDDkJkegHNZpyM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OhjoyM/l8POvYFU9+0cpieRBGW2V3/WOA/e6FC0yJtI=;
+        b=ZG+SVmhuv16JGljb97pl8hcWu511g3ZJnTzk0N8g/h2AtGhfSdvGJmvU5Ur+GGrc32
+         +AERltSJb/6nUavBvVs2NXbhf+hoCgKKThDwW0GKNgaNLW3JrNQlocgWtrjck5GNwKQL
+         jtdFBayACZgeLGhBQjPRZmvR4HuTzkx5WKTYYjecYVCdy3gpV9k1OH69cjwXEFxHA+Q2
+         KU7GRtVeAeYWEKb9PJiuMK2mMWkCPE7o344PYgmjJMbJW/extn+cclMGfiWZl4LvDg9S
+         4W0ltAnMxogBqs7ck49Ekp4vzLyzvLL+3SGwXf1RQxbnPyaXfNVYzby7DguBmHF8nPrP
+         6V/w==
+X-Gm-Message-State: AOAM532jWEemhta166/fmqHJzE+zygthwTIXldhsuGcN2o5irgbUZBc9
+        ETo9GRF3KHz/wE+gOhO9MDV9Xg==
+X-Google-Smtp-Source: ABdhPJwonXu0+/ENSOsdsxzHoGsFEd8apOO5yrUj7TMJSFuBjz29/U1eF/GLpkB+bo3IzlQTDCWyqw==
+X-Received: by 2002:a17:906:c218:: with SMTP id d24mr27292775ejz.363.1621938604443;
+        Tue, 25 May 2021 03:30:04 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.74.47])
+        by smtp.gmail.com with ESMTPSA id p10sm455647ejc.14.2021.05.25.03.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 03:30:03 -0700 (PDT)
+Subject: Re: [PATCH 1/2] lib: test_scanf: Fix incorrect use of type_min() with
+ unsigned types
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, w@1wt.eu, lkml@sdf.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+References: <20210524155941.16376-1-rf@opensource.cirrus.com>
+ <20210524155941.16376-2-rf@opensource.cirrus.com>
+ <a3396d45-4720-ee30-6493-b19f90c74e54@rasmusvillemoes.dk>
+ <0650840d-1b7d-3bc0-c04f-3a22ddc1ced1@opensource.cirrus.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <ce344f9a-b184-3bc5-2873-b741047d292d@rasmusvillemoes.dk>
+Date:   Tue, 25 May 2021 12:30:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6oj6sxo.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0650840d-1b7d-3bc0-c04f-3a22ddc1ced1@opensource.cirrus.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
-> On 24/05/21 23:55, Beata Michalska wrote:
-> > On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> >> On 24/05/21 11:16, Beata Michalska wrote:
-> >> > This patch also removes the additional -dflags- parameter used when
-> >>   ^^^^^^^^^^^^^^^^^^^^^^^
-> >> s/^/Also remove/
-> > I would kind of ... disagree.
-> > All the commit msg is constructed using passive structure, the suggestion
-> > would actually break that. And it does 'sound' bit imperative but I guess
-> > that is subjective. I'd rather stay with impersonal structure (which is
-> > applied through out the whole patchset).
+On 25/05/2021 12.10, Richard Fitzgerald wrote:
+> On 25/05/2021 10:55, Rasmus Villemoes wrote:
+>> On 24/05/2021 17.59, Richard Fitzgerald wrote:
+>>> sparse was producing warnings of the form:
+>>>
+>>>   sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+>>>
+>>> The problem was that value_representable_in_type() compared unsigned
+>>> types
+>>> against type_min(). But type_min() is only valid for signed types
+>>> because
+>>> it is calculating the value -type_max() - 1.
 > 
-> It's mainly about the 'This patch' formulation, some take exception to that :-)
->
-Will rephrase
-> >>
-> >> > building sched domains as the asymmetry flags are now being set
-> >> > directly in sd_init.
-> >> >
-> >>
-> >> Few nits below, but beyond that:
-> >>
-> >> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-> >> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> >>
-> > Thanks a lot for the review and testing!
-> >
-> >> > +static inline int
-> >> > +asym_cpu_capacity_classify(struct sched_domain *sd,
-> >> > +			   const struct cpumask *cpu_map)
-> >> > +{
-> >> > +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> >> > +	struct asym_cap_data *entry;
-> >> > +	int asym_cap_count = 0;
-> >> > +
-> >> > +	if (list_is_singular(&asym_cap_list))
-> >> > +		goto leave;
-> >> > +
-> >> > +	list_for_each_entry(entry, &asym_cap_list, link) {
-> >> > +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> >> > +			++asym_cap_count;
-> >> > +		} else {
-> >> > +			/*
-> >> > +			 * CPUs with given capacity might be offline
-> >> > +			 * so make sure this is not the case
-> >> > +			 */
-> >> > +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> >> > +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
-> >> > +				if (asym_cap_count > 1)
-> >> > +					break;
-> >> > +			}
-> >>
-> >> Readability nit: That could be made into an else if ().
-> > It could but then this way the -comment- gets more exposed.
-> > But that might be my personal perception so I can change that.
-> 
-> As always those are quite subjective! Methink something like this would
-> still draw attention to the offline case:
-> 
->                /*
->                 * Count how many unique capacities this domain covers. If a
->                 * capacity isn't covered, we need to check if any CPU with
->                 * that capacity is actually online, otherwise it can be
->                 * ignored.
->                 */
->                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
->                         ++asym_cap_count;
->                 } else if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
->                         sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
->                         if (asym_cap_count > 1)
->                                 break;
->                 }
-Noted.
-Will wait for some more comments before sending out 'polished' version.
+> Ok, I see I was wrong about that. It does in fact work safely. Do you
+> want me to update the commit message to remove this?
 
----
-BR
-B.
+Well, it was the "is only valid for signed types" I reacted to, so yes,
+please reword.
+
+>> ... and casts that to (T), so it does produce 0 as it should. E.g. for
+>> T==unsigned char, we get
+>>
+>> #define type_min(T) ((T)((T)-type_max(T)-(T)1))
+>> (T)((T)-255 - (T)1)
+>> (T)(-256)
+>>
+> 
+> sparse warns about those truncating casts.
+
+That's sad. As the comments and commit log indicate, I was very careful
+to avoid gcc complaining, even with various -Wfoo that are not normally
+enabled in a kernel build. I think sparse is wrong here. Cc += Luc.
+
+
+
+>>> diff --git a/lib/test_scanf.c b/lib/test_scanf.c
+>>> index 8d577aec6c28..48ff5747a4da 100644
+>>> --- a/lib/test_scanf.c
+>>> +++ b/lib/test_scanf.c
+>>> @@ -187,8 +187,8 @@ static const unsigned long long numbers[]
+>>> __initconst = {
+>>>   #define value_representable_in_type(T, val)                     \
+>>>   (is_signed_type(T)                                 \
+>>>       ? ((long long)(val) >= type_min(T)) && ((long long)(val) <=
+>>> type_max(T)) \
+>>> -    : ((unsigned long long)(val) >= type_min(T)) &&                 \
+>>> -      ((unsigned long long)(val) <= type_max(T)))
+>>> +    : ((unsigned long long)(val) <= type_max(T)))
+>>
+>>
+>> With or without this, these tests are tautological when T is "long long"
+>> or "unsigned long long". I don't know if that is intended. But it won't,
+>> say, exclude ~0ULL if that is in the numbers[] array from being treated
+>> as fitting in a "long long".
+> 
+> I don't entirely understand your comment. But the point of the test is
+> to exclude values that can't be represented by a type shorter than
+> long long or unsigned long long.
+
+Right. But ~0ULL aka 0xffffffffffffffffULL is in that numbers[] array,
+and that value cannot be represented in a "long long". Yet the test
+still proceeds to do a test with it, AFAICT first sprinting it with
+"%lld", then reading it back with "%lld". The first will produce -1,
+which of course does fit, and the test case passes. I was just wondering
+if this is really intended.
+
+Rasmus
