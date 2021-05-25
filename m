@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567A7390171
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CDD39017B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhEYNA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232720AbhEYNAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:00:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAB5F61420;
-        Tue, 25 May 2021 12:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621947536;
-        bh=IHLsay1yxDKFQojporc5Q7IlfrGGC3BXPTISSrdD2Wk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OWnr0fvvRu9qKRAmuHHruCmKWTH0QP0sCdMH45NwJpF51LgGDyK9Q22Zogoo3WvLc
-         uwZjgwyFl/tbneWvz3wWg9lSk6tdU359E2zi4e0cJ/VWAbKRUI3T2TyD4y2Hb0Xu0U
-         gantkPFGcOFAq/Z7EqxskvzKGEqpLoTDLeKzvhW0ASSHWYX5JlHLvWf5cavtmojyJL
-         fCf9M2wtJcBLx5GYv6tROSRpHqekhn9B/TpTctw/IuV25e/MDLvM4Ry0itqgn81dHt
-         3ihC7CqQsP/YtYEIkcY4xEWAhjLQLL9DTe3yVntc6TdVZ39Gn2Io0Xkq/PdbCYimmb
-         d+jdKVGDhgV/w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5F8344011C; Tue, 25 May 2021 09:58:53 -0300 (-03)
-Date:   Tue, 25 May 2021 09:58:53 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] perf scripting python: Improve general scripting
- for Intel PT
-Message-ID: <YKz0jWpWHmNSr+bS@kernel.org>
-References: <20210525095112.1399-1-adrian.hunter@intel.com>
+        id S232981AbhEYNCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232720AbhEYNCB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:02:01 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3506C061574;
+        Tue, 25 May 2021 06:00:27 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id r1so7825172pgk.8;
+        Tue, 25 May 2021 06:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yvBY3kzaXW/pomhMTbrI9u3YqExiwHEKyhJg+OVmgg4=;
+        b=Zfdvo9oKuESll8d9CiLcmhqF5KPhtrgDedQEMYiD4KJxoBADOeH9cxU9OENDpSP1o3
+         BSpTScAqkSwcAlvpA9zHYqOzle8OP0VTmen2YB+vgwTl6OfmDSxBMtAL8E3vm7HSqcKm
+         XrQI8wz7e6iTad6F8mXuncoWPmt0z/MfN9dQOnSmzvr/8kDpNzHiNELenfOhImhJ8y+H
+         5P6KCWUIQ7ggXlLQ5dXRo2eZ2fR1vxQblAvc9LVy+zKnIWWby19GbWoccQhDegHDKOFE
+         JoVGiy706RYHXgVghfwYkIWgb3Mi4byz0ZEt50Y3Czf9Bl1PC2IwKYRNiob0LIYvYVA1
+         VoBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yvBY3kzaXW/pomhMTbrI9u3YqExiwHEKyhJg+OVmgg4=;
+        b=eIpdlM1sMDK/bMq9B6yT+E4ahwlkxCybMAefUUa3L2CCmYgnzmc5X2vwwA7vaRNdOY
+         jGAK6LM9vD5ThSR1/HGZtBEgOlAjw4fA62GR0lETu/kEreWLrDFY5G01We30KNyahFMo
+         0bog9NeKC8p6NPKc9f+iGnzBSz5L4bP6dxWL72LeznY7uTJSMFuy1IlosRzULZSTRuyL
+         Uq1XJIQAflYzdUHL6tw9Aihhl23wpPPcViqtGjlFmfQwKR35XyTK/+EHgsra8ohyFVtR
+         8yZ0S8VudTQEBuvhhPvUgMGZ4xjZRrGFMUP1oF/KDwQg+UlFYgtrHbgbWGrh2bWGohb4
+         Dd7A==
+X-Gm-Message-State: AOAM533Nf5Yw8XKcrEb6tiInPS2l3XPo25zpQGLA3PxIyHQLZxAP3eG5
+        TQEDXgwN9Cyw9SVGDXXnNDU=
+X-Google-Smtp-Source: ABdhPJx9gb8y70S1Mi9oL3RZuLF/ZulxiHumxSc0FdoFHO/Co5n/+IwDqfU0B3T9+32h8In0MkI92A==
+X-Received: by 2002:a63:f557:: with SMTP id e23mr8724111pgk.55.1621947627439;
+        Tue, 25 May 2021 06:00:27 -0700 (PDT)
+Received: from lambert.lan ([171.223.192.10])
+        by smtp.gmail.com with ESMTPSA id p17sm2168850pjg.54.2021.05.25.06.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 06:00:26 -0700 (PDT)
+From:   Lambert Wang <lambert.q.wang@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lambert Wang <lambert.q.wang@gmail.com>
+Subject: [PATCH] pci: add pci_dev_is_alive API
+Date:   Tue, 25 May 2021 20:59:25 +0800
+Message-Id: <20210525125925.112306-1-lambert.q.wang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525095112.1399-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 25, 2021 at 12:51:02PM +0300, Adrian Hunter escreveu:
-> Hi
-> 
-> These patches make it easier to customize scripting for Intel PT traces.
-> 
-> The first patch is a dependent fix.
-> 
-> Subsequent patches add more information to python scripting.
-> 
-> The final patch adds a branch trace to the intel-pt-events.py script
-> which previously supported only power events and ptwrite.
+Device drivers use this API to proactively check if the device
+is alive or not. It is helpful for some PCI devices to detect
+surprise removal and do recovery when Hotplug function is disabled.
 
-Thanks, applied.
+Note: Device in power states larger than D0 is also treated not alive
+by this function.
 
-- Arnaldo
+Signed-off-by: Lambert Wang <lambert.q.wang@gmail.com>
+---
+ drivers/pci/pci.c   | 23 +++++++++++++++++++++++
+ include/linux/pci.h |  1 +
+ 2 files changed, 24 insertions(+)
 
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index b717680377a9..8a7c039b1cd5 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4659,6 +4659,29 @@ int pcie_flr(struct pci_dev *dev)
+ }
+ EXPORT_SYMBOL_GPL(pcie_flr);
  
-> 
-> Adrian Hunter (10):
->       perf scripting python: Fix tuple_set_u64()
->       perf scripting python: Factor out set_sym_in_dict()
->       perf scripting python: Add 'addr_location' for 'addr'
->       perf script: Factor out perf_sample__sprintf_flags()
->       perf scripting python: Add sample flags
->       perf scripting python: Add IPC
->       perf scripting python: Add cpumode
->       perf scripting python: Add context switch
->       perf scripting python: Add auxtrace error
->       perf scripts python: intel-pt-events.py: Add branches to script
-> 
->  tools/perf/builtin-script.c                        |  56 +++-
->  .../perf/scripts/python/bin/intel-pt-events-record |   4 +-
->  .../perf/scripts/python/bin/intel-pt-events-report |   4 +-
->  tools/perf/scripts/python/intel-pt-events.py       | 143 +++++++--
->  tools/perf/util/db-export.c                        |  12 +-
->  tools/perf/util/db-export.h                        |   2 +-
->  .../perf/util/scripting-engines/trace-event-perl.c |   3 +-
->  .../util/scripting-engines/trace-event-python.c    | 321 +++++++++++++++------
->  tools/perf/util/trace-event-scripting.c            |   3 +-
->  tools/perf/util/trace-event.h                      |   8 +-
->  10 files changed, 415 insertions(+), 141 deletions(-)
-> 
-> 
-> Regards
-> Adrian
-
++/**
++ * pci_dev_is_alive - check the pci device is alive or not
++ * @pdev: the PCI device
++ *
++ * Device drivers use this API to proactively check if the device
++ * is alive or not. It is helpful for some PCI devices to detect
++ * surprise removal and do recovery when Hotplug function is disabled.
++ *
++ * Note: Device in power state larger than D0 is also treated not alive
++ * by this function.
++ *
++ * Returns true if the device is alive.
++ */
++bool pci_dev_is_alive(struct pci_dev *pdev)
++{
++	u16 vendor;
++
++	pci_read_config_word(pdev, PCI_VENDOR_ID, &vendor);
++
++	return vendor == pdev->vendor;
++}
++EXPORT_SYMBOL(pci_dev_is_alive);
++
+ static int pci_af_flr(struct pci_dev *dev, int probe)
+ {
+ 	int pos;
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index c20211e59a57..2a3ba06a7347 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1227,6 +1227,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+ void pcie_print_link_status(struct pci_dev *dev);
+ bool pcie_has_flr(struct pci_dev *dev);
+ int pcie_flr(struct pci_dev *dev);
++bool pci_dev_is_alive(struct pci_dev *pdev);
+ int __pci_reset_function_locked(struct pci_dev *dev);
+ int pci_reset_function(struct pci_dev *dev);
+ int pci_reset_function_locked(struct pci_dev *dev);
 -- 
+2.30.2
 
-- Arnaldo
