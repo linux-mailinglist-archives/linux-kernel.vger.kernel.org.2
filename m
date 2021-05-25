@@ -2,138 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B881390803
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9389F390806
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhEYRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
+        id S232666AbhEYRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhEYRn7 (ORCPT
+        with ESMTP id S230465AbhEYRo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:43:59 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0B1C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:42:28 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso12980910pjq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:42:28 -0700 (PDT)
+        Tue, 25 May 2021 13:44:28 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22302C061574;
+        Tue, 25 May 2021 10:42:58 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id g38so44152124ybi.12;
+        Tue, 25 May 2021 10:42:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1LMzOQ6+6ac4DFrNM4H4DzBnGvXNX1b50v8NC4P1lBs=;
-        b=BE/GG9Z/NXu7m9YM5e6u1l7oetX08lvY69gn3S4WObyiIprElhwMJFxRb/3w0rS0WP
-         ILi/Q17Zws9RuwTT7b3Z0Pye+MhCu+QGrJKLlET2u9W0dHp4Fl4UgJFZ/nfsDdJe7CGm
-         uL/MdbkeZpsHmyfXOAjFMK4Q5ci07WgjKGGXk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9x7B+vgGXU7k9ni1QP6w21nHktNbN3Pdx+py8RJnfEA=;
+        b=nEW4I/C1CNLiEAKX0WvFcyaPgOBGEDKCRSd8ZeQtwgtXFKgCUmnr0UZ+MzHgkRP5jn
+         ZtRHDw2t+HM0pTO4X6FzPEH7Vf8bmOXLRnDsA8pdlJqcSIkL0cQmkWqoc1VIlBc3qj6R
+         sCBX1TJgL0topJp+eI+oAiN27I5AHW/wE4rxzOthaj5r0Mp/WwpG+UIoSvVUX87H0N9B
+         yZ57lIRoXTJ0awLUYpvJB1tpHy7jJInGPKrDLcj1VWwH96nihTHXkxl3RgYYMm1QlKp7
+         YlhlwTGMWrxtbhn6Ro9K36TByLa+hdujeF2ss0ncRzk907dd1Uy8K9z1NSVtdF9lvbSQ
+         FXfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1LMzOQ6+6ac4DFrNM4H4DzBnGvXNX1b50v8NC4P1lBs=;
-        b=FCNOhLFTdYCkVpOiegAmxfRTPYOBXdyzV4YrSaHE7YzEN14zsmNF69N6+9StwIY/L+
-         Rcp77IOzCLLALDASMHRlXIa1Rk4P6MUIfRx8gOXL/wD78hRH9nSkZyvGxoy3p9O3ea0B
-         LQ/o/IGxWgVHk9pxwmn2lhn0klk5SxJnvzt22WBNSnpy3YdN3mTb0mV2G0w91Ssa4ASe
-         YrrQUH1CrXXCrhu6Z0K6CjMjE+krtfW9msw5lFC60pfgvz2Xy69A2Q76KB2ImwDYhQqh
-         eQATJwoIxGAnSyCyjgKXnpfH/kYg701dtJ4CC/9KFzAXUMo/8t5+yD/jg8sSA9B3c9WJ
-         uuAw==
-X-Gm-Message-State: AOAM533gAs0qSAcOezOtVBWBG58T8XTAmlxVxl9cCA5AiE+1OyUsQERQ
-        ICjgYJXrQuoN361291mxEfwpdQ==
-X-Google-Smtp-Source: ABdhPJyA1ui0ylTVhiYxdLOqLS28ZsWlyNXkebBUTtc2C+tO7Ah8y7HTYwy8rOi4Wsvea8p/lSZoGw==
-X-Received: by 2002:a17:903:22cd:b029:f4:d923:89a9 with SMTP id y13-20020a17090322cdb02900f4d92389a9mr31750260plg.52.1621964548172;
-        Tue, 25 May 2021 10:42:28 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:ab0:bbc9:a71:2916])
-        by smtp.gmail.com with UTF8SMTPSA id s6sm2488105pjr.29.2021.05.25.10.42.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 10:42:27 -0700 (PDT)
-Date:   Tue, 25 May 2021 10:42:25 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v10 0/5] USB: misc: Add onboard_usb_hub driver
-Message-ID: <YK03AVRfbRJUGd0X@google.com>
-References: <20210511225223.550762-1-mka@chromium.org>
- <YKen70owPqdjy5+a@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9x7B+vgGXU7k9ni1QP6w21nHktNbN3Pdx+py8RJnfEA=;
+        b=KwbhuT+3deTUrzu5UJmSWtS7KLcLEQ2fmAd3Ke4Crhr+fUXs2oii6RfZfulj4eLout
+         x+deulrqB6B8h0FQgjMGMrf8aHzQ5gwvOHxDjJnAw8ViSOUqbtDwzlaAJoP20CDMH0n4
+         oR3MppMFlajESiudVtH4EKp6S/hzqD4VFegb9eI1NrPikOlhiP7OmRDF+sCgi6dBVfBU
+         RVmbdLrvAWlxY9bT12gNda15PpUGE+OCV8Pb/tXdM9eLmhW7gWfubSvgvkKnkWb69dtY
+         BXbuXkol+XRqg2QRgEHTeUlfAi8iVmAr/du5E79ME5erJEDRsV4iyHfOAyDGsawG8pDx
+         qfQw==
+X-Gm-Message-State: AOAM533o34wpbAK0QwaOxjSQuArqO53WUfcUIGjaybPts52oGodMYzZf
+        KGij/b8je5TXtC7douC4ZzajuXihKcbPscDeWcmeEkoCSvdc1EpQ
+X-Google-Smtp-Source: ABdhPJwryfbJiVyR7MbuJzP8cGWFJgxXf2XaN81gHB+4hh+dA4OvdoIRxmQWAeIgnDta9Ki8GuZwGwPhspxmhJ4msh8=
+X-Received: by 2002:a5b:303:: with SMTP id j3mr41458979ybp.433.1621964577316;
+ Tue, 25 May 2021 10:42:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YKen70owPqdjy5+a@kroah.com>
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com> <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
+ <87eedxbtkn.fsf@stealth> <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
+ <877djnaq11.fsf@stealth> <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+ <CANAwSgQEti7=dsYbqYMxrcP9KPFc-s0e4xHPPwOC=gP+scpP3w@mail.gmail.com> <4292e929-779f-9c83-f75c-7d8121a1c6c8@arm.com>
+In-Reply-To: <4292e929-779f-9c83-f75c-7d8121a1c6c8@arm.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 25 May 2021 13:42:46 -0400
+Message-ID: <CAMdYzYqBw0pFBNX2Y2t8ifN3KCCkhkpGXUHRsrg9unVYFG2cvQ@mail.gmail.com>
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Rob Herring <robh@kernel.org>, PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 02:30:39PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, May 11, 2021 at 03:52:18PM -0700, Matthias Kaehlcke wrote:
-> > This series adds:
-> > - the onboard_usb_hub_driver
-> > - glue in the xhci-plat driver to create the onboard_usb_hub
-> >   platform device if needed
-> > - a device tree binding for the Realtek RTS5411 USB hub controller
-> > - device tree changes that add RTS5411 entries for the QCA SC7180
-> >   based boards trogdor and lazor
-> > - a couple of stubs for platform device functions to avoid
-> >   unresolved symbols with certain kernel configs
-> > 
-> > The main issue the driver addresses is that a USB hub needs to be
-> > powered before it can be discovered. For discrete onboard hubs (an
-> > example for such a hub is the Realtek RTS5411) this is often solved
-> > by supplying the hub with an 'always-on' regulator, which is kind
-> > of a hack. Some onboard hubs may require further initialization
-> > steps, like changing the state of a GPIO or enabling a clock, which
-> > requires even more hacks. This driver creates a platform device
-> > representing the hub which performs the necessary initialization.
-> > Currently it only supports switching on a single regulator, support
-> > for multiple regulators or other actions can be added as needed.
-> > Different initialization sequences can be supported based on the
-> > compatible string.
-> > 
-> > Besides performing the initialization the driver can be configured
-> > to power the hub off during system suspend. This can help to extend
-> > battery life on battery powered devices which have no requirements
-> > to keep the hub powered during suspend. The driver can also be
-> > configured to leave the hub powered when a wakeup capable USB device
-> > is connected when suspending, and power it off otherwise.
-> 
-> I get a build error when I apply this series to my tree:
-> 
-> drivers/usb/misc/onboard_usb_hub.c:273:6: error: redefinition of ‘of_is_onboard_usb_hub’
->   273 | bool of_is_onboard_usb_hub(const struct device_node *np)
->       |      ^~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/usb/misc/onboard_usb_hub.c:21:
-> ./include/linux/usb/onboard_hub.h:9:20: note: previous definition of ‘of_is_onboard_usb_hub’ with type ‘bool(const struct device_node *)’ {aka ‘_Bool(const struct device_node *)’}
->     9 | static inline bool of_is_onboard_usb_hub(const struct device_node *np)
->       |                    ^~~~~~~~~~~~~~~~~~~~~
-> 
-> Any thoughts?
+On Tue, May 25, 2021 at 1:18 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-05-25 17:59, Anand Moon wrote:
+> > Hi Ard,
+> >
+> > On Tue, 25 May 2021 at 19:27, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>
+> >> On Tue, 25 May 2021 at 15:42, Punit Agrawal <punitagrawal@gmail.com> wrote:
+> >>>
+> >>> Hi Ard,
+> >>>
+> >>> Ard Biesheuvel <ardb@kernel.org> writes:
+> >>>
+> >>>> On Sun, 23 May 2021 at 13:06, Punit Agrawal <punitagrawal@gmail.com> wrote:
+> >>>>>
+> >>>>> Robin Murphy <robin.murphy@arm.com> writes:
+> >>>>>
+> >>>>>> [ +linux-pci for visibility ]
+> >>>>>>
+> >>>>>> On 2021-05-18 10:09, Alexandru Elisei wrote:
+> >>>>>>> After doing a git bisect I was able to trace the following error when booting my
+> >>>>>>> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+> >>>>>>> [..]
+> >>>>>>> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
+> >>>>>>> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
+> >>>>>>> 0x00fa000000
+> >>>>>>> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
+> >>>>>>> 0x00fbe00000
+> >>>>>>> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
+> >>>>>>> regulator
+> >>>>>>> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
+> >>>>>>> regulator
+> >>>>>>> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
+> >>>>>>> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
+> >>>>>>> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+> >>>>>>> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
+> >>>>>>> address [0xfbe00000-0xfbefffff])
+> >>>>>>> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
+> >>>>>>> [    0.373973] pci 0000:00:00.0: supports D1
+> >>>>>>> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> >>>>>>> [    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
+> >>>>>>> reconfiguring
+> >>>>>>> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
+> >>>>>>> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> >>>>>>> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
+> >>>>>>> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
+> >>>>>>> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
+> >>>>>>> x4 link)
+> >>>>>>> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
+> >>>>>>> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+> >>>>>>> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
+> >>>>>>> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
+> >>>>>>> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
+> >>>>>>> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
+> >>>>>>> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
+> >>>>>>> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
+> >>>>>>> [..]
+> >>>>>>> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
+> >>>>>>> resource flags for
+> >>>>>>> 64-bit memory addresses").
+> >>>>>>
+> >>>>>> FWFW, my hunch is that the host bridge advertising no 32-bit memory
+> >>>>>> resource, only only a single 64-bit non-prefetchable one (even though
+> >>>>>> it's entirely below 4GB) might be a bit weird and tripping something
+> >>>>>> up in the resource assignment code. It certainly seems like the thing
+> >>>>>> most directly related to the offending commit.
+> >>>>>>
+> >>>>>> I'd be tempted to try fiddling with that in the DT (i.e. changing
+> >>>>>> 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
+> >>>>>> if it makes any difference. Note that even if it helps, though, I
+> >>>>>> don't know whether that's the correct fix or just a bodge around a
+> >>>>>> corner-case bug somewhere in the resource code.
+> >>>>>
+> >>>>>  From digging into this further the failure seems to be due to a mismatch
+> >>>>> of flags when allocating resources in pci_bus_alloc_from_region() -
+> >>>>>
+> >>>>>      if ((res->flags ^ r->flags) & type_mask)
+> >>>>>              continue;
+> >>>>>
+> >>>>> Though I am also not sure why the failure is only being reported on
+> >>>>> RK3399 - does a single 64-bit window have anything to do with it?
+> >>>>>
+> >>>>
+> >>>> The NVMe in the example exposes a single 64-bit non-prefetchable BAR.
+> >>>> Such BARs can not be allocated in a prefetchable host bridge window
+> >>>> (unlike the converse, i.e., allocating a prefetchable BAR in a
+> >>>> non-prefetchable host bridge window is fine)
+> >>>>
+> >>>> 64-bit non-prefetchable host bridge windows cannot be forwarded by PCI
+> >>>> to PCI bridges, they simply lack the BAR registers to describe them.
+> >>>> Therefore, non-prefetchable endpoint BARs (even 64-bit ones) need to
+> >>>> be carved out of a host bridge's non-prefetchable 32-bit window if
+> >>>> they need to pass through a bridge.
+> >>>
+> >>> Thank you for the explanation. I also looked at the PCI-to-PCI Bridge
+> >>> spec to understand where some of the limitations are coming from.
+> >>>
+> >>>> So the error seems to be here that the host bridge's 32-bit
+> >>>> non-prefetchable window has the 64-bit attribute set, even though it
+> >>>> resides below 4 GB entirely. I suppose that the resource allocation
+> >>>> could be made more forgiving (and it was in the past, before commit
+> >>>> 9d57e61bf723 was applied). However, I would strongly recommend not
+> >>>> deviating from common practice, and just describe the 32-bit
+> >>>> addressable non-prefetchable resource window as such.
+> >>>
+> >>> IIUC, the host bridge's configuration (64-bit on non-prefetchable
+> >>> window) is based on what the hardware advertises.
+> >>>
+> >>
+> >> What do you mean by 'what the hardware advertises'? The host bridge is
+> >> apparently configured to decode a 32-bit addressable window as MMIO,
+> >> and the question is why this window has the 64-bit attribute set in
+> >> the DT description.
+> >>
+> >>> Can you elaborate on what you have in mind to correct the
+> >>> non-prefetchable resource window? Are you thinking of adding a quirk
+> >>> somewhere to address this?
+> >>>
+> >>
+> >> No. Just fix the DT.
+> >
+> > Yes DTS changes are needed as well as some more core driver changes.
+> >
+> > As per the Rk3399 TRM (Rockchip RK3399 TRM V1.3 Part2.pdf)
+> > [0] https://rockchip.fr/Rockchip%20RK3399%20TRM%20V1.3%20Part2.pdf
+> >
+> > I had made the following dts changes relates to ranges as per PCI below.
+> >
+> > *17.6.1 Internal Register Address Mapping
+> >     Table 17-23 Global Address Map for Core Local Management*
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > index 634a91af8e83..796b44e07be1 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> > @@ -199,7 +199,7 @@ xin24m: xin24m {
+> >
+> >          pcie0: pcie@f8000000 {
+> >                  compatible = "rockchip,rk3399-pcie";
+> > -               reg = <0x0 0xf8000000 0x0 0x2000000>,
+> > +               reg = <0x0 0xf8000000 0x0 0x6000000>,
+> >                        <0x0 0xfd000000 0x0 0x1000000>;
+> >                  reg-names = "axi-base", "apb-base";
+> >                  device_type = "pci";
+> > @@ -227,8 +227,8 @@ pcie0: pcie@f8000000 {
+> >                         <&pcie_phy 2>, <&pcie_phy 3>;
+> >                  phy-names = "pcie-phy-0", "pcie-phy-1",
+> >                              "pcie-phy-2", "pcie-phy-3";
+> > -               ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0
+> > 0x1e00000>,
+> > -                        <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0
+> > 0x100000>;
+> > +               ranges = <0x83000000 0x0 0xfd800000 0x0 0xfd810000 0x0
+> > 0x100000>,
+> > +                        <0x81000000 0x0 0xfd800000 0x0 0xfda00000 0x0
+> > 0x100000>;
+> >                  resets = <&cru SRST_PCIE_CORE>, <&cru SRST_PCIE_MGMT>,
+> >                           <&cru SRST_PCIE_MGMT_STICKY>, <&cru SRST_PCIE_PIPE>,
+> >                           <&cru SRST_PCIE_PM>, <&cru SRST_P_PCIE>,
+> > @@ -2040,6 +2040,21 @@ pcfg_pull_up_2ma: pcfg-pull-up-2ma {
+> >                          drive-strength = <2>;
+> >
+> > Also, the BAR configuration is missing some tuning bits missing,
+> > *   17.6.7.1.45 Root Complex BAR Configuration Register.*
+> >
+> > Earlier I had to face this issue on my Rk3399 board (Odroid n1), but I
+> > could not resolve the issue.
+> >
+> > [1] https://patchwork.kernel.org/project/linux-rockchip/patch/1590023130-137406-1-git-send-email-shawn.lin@rock-chips.com/
+> >
+> > How can I debug the PCIe handshake messages to explore further?
+> >
+> > [alarm@alarm ~]$ dmesg | grep pci
+> > [    1.399919] ehci-pci: EHCI PCI platform driver
+> > [    1.538434] ohci-pci: OHCI PCI platform driver
+> > [    7.112556] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
+> > [    7.120583] rockchip-pcie f8000000.pcie: Parsing ranges property...
+> > [    7.134628] rockchip-pcie f8000000.pcie:      MEM
+> > 0x00fd810000..0x00fd90ffff -> 0x00fd800000
+> > [    7.144148] rockchip-pcie f8000000.pcie:       IO
+> > 0x00fda00000..0x00fdafffff -> 0x00fd800000
+> > [    7.165435] rockchip-pcie f8000000.pcie: can't request region for
+> > resource [mem 0xf8000000-0xfdffffff]
+> > [    7.182904] rockchip-pcie: probe of f8000000.pcie failed with error -16
+>
+> Sorry, you've changed your DT for unknown reasons to put the memory and
+> I/O windows at the same bus address, and now you want help debugging why
+> trying to put two things at the same address gives -EBUSY?
+>
+> :/
+>
+> Is it Friday already?
 
-That function keeps haunting me in different ways ...
+I wish, I don't know where they pulled those values from but they
+could never work.
 
-I suspect this was a build with CONFIG_COMPILE_TEST=y. The driver is
-compiled for such a config and has the actual implementation, however
-the header defines the static inline unless CONFIG_USB_ONBOARD_HUB=y/m.
+Anand Moon:
+The apb registers are fine, please don't try to increase them.
+By doing so you have now reserved that memory space to the driver and
+it cannot be assigned to the bridge.
 
-I realized earlier that the driver doesn't really need to include the
-header, and planned to remove it in the next version, which might be
-the most practical solution.
+The rk3399 has a single 32MB memory space and 32 1MB memory spaces.
+Only the single large coherent memory space is supported, since using
+the other 32 spaces would involve a complicated memory dance that the
+driver doesn't support.
+
+The recommendation was changing the PCIe memory space from 64-bit to
+32-bit, by changing 0x83000000 to 0x82000000.
+
+>
+> Robin.
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
