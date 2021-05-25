@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432203909D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07C83909D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhEYTpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:45:40 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:50265 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbhEYTpi (ORCPT
+        id S232743AbhEYTqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:46:46 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:50640 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230240AbhEYTqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:45:38 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d64 with ME
-        id 97k62500B21Fzsu037k7nD; Tue, 25 May 2021 21:44:07 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 25 May 2021 21:44:07 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        lee.jones@linaro.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2] tty: serial: 8250: serial_cs: Fix a memory leak in error handling path
-Date:   Tue, 25 May 2021 21:44:04 +0200
-Message-Id: <dc25f96b7faebf42e60fe8d02963c941cf4d8124.1621971720.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Tue, 25 May 2021 15:46:44 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:52978 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1llczI-0005mz-RT; Tue, 25 May 2021 15:45:12 -0400
+Message-ID: <b4a669191a5a5d1bc9e900991a1b34c9d245e36f.camel@trillion01.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stefan Metzmacher <metze@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Date:   Tue, 25 May 2021 15:45:11 -0400
+In-Reply-To: <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
+         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+         <8735v3jujv.ffs@nanos.tec.linutronix.de>
+         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
+         <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+         <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
+         <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
+         <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
+         <4390e9fb839ebc0581083fc4fa7a82606432c0c0.camel@trillion01.com>
+         <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the probe function, if the final 'serial_config()' fails, 'info' is
-leaking.
+On Tue, 2021-05-25 at 15:39 -0400, Olivier Langlois wrote:
+> This notion appears to be central when creating a coredump...
+> Only tasks having the same mm than the one receiving the SIGSEGV will
+> be zapped...
+> 
+> in zap_threads():
+>                 for_each_thread(g, p) {
+>                         if (unlikely(!p->mm))
+>                                 continue;
+>                         if (unlikely(p->mm == mm)) {
+>                                 lock_task_sighand(p, &flags);
+>                                 nr += zap_process(p, exit_code,
+>                                                         SIGNAL_GROUP_
+> E
+> XIT);
+>                                 unlock_task_sighand(p, &flags);
+>                         }
+>                         break;
+>                 }
 
-Add a resource handling path to free this memory.
+without fully understanding what I am doing... I am tempted to tweak
+the condition
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v2: Use an error handling path instead of introducing some managed
-    resources
+(unlikely(p->mm == mm))
 
-I've not been able to find a Fixes tag. All I know is that it is old!
----
- drivers/tty/serial/8250/serial_cs.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+for
 
-diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8250/serial_cs.c
-index 63ea9c4da3d5..3708114343b0 100644
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -306,6 +306,7 @@ static int serial_resume(struct pcmcia_device *link)
- static int serial_probe(struct pcmcia_device *link)
- {
- 	struct serial_info *info;
-+	int ret;
- 
- 	dev_dbg(&link->dev, "serial_attach()\n");
- 
-@@ -320,7 +321,15 @@ static int serial_probe(struct pcmcia_device *link)
- 	if (do_sound)
- 		link->config_flags |= CONF_ENABLE_SPKR;
- 
--	return serial_config(link);
-+	ret = serial_config(link);
-+	if (ret)
-+		goto free_info;
-+
-+	return 0;
-+
-+free_info:
-+	kfree(info);
-+	return ret;
- }
- 
- static void serial_detach(struct pcmcia_device *link)
--- 
-2.30.2
+(unlikely(p->mm == mm || p->flags & PF_IO_WORKER))
+
+and see if it would resolve my coredump problem...
+
 
