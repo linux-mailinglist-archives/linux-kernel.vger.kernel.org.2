@@ -2,67 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026238FE58
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2D338FE53
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhEYKCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhEYKCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:02:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DB7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:00:51 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1llTrm-0007ud-Eh; Tue, 25 May 2021 12:00:50 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1llTrm-0007Eb-1N; Tue, 25 May 2021 12:00:50 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] driver core: auxiliary bus: Fix typo in the docs
-Date:   Tue, 25 May 2021 12:00:42 +0200
-Message-Id: <20210525100042.951717-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        id S232836AbhEYKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:01:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:54106 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232682AbhEYKBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 06:01:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23DBCD6E;
+        Tue, 25 May 2021 02:59:46 -0700 (PDT)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D43763F719;
+        Tue, 25 May 2021 02:59:43 -0700 (PDT)
+Date:   Tue, 25 May 2021 11:00:47 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        lukasz.luba@arm.com, dietmar.eggemann@arm.com
+Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
+Message-ID: <20210525100047.GB385567@e124901.cambridge.arm.com>
+References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+ <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
+ <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
+ <20210525092137.GA369979@e124901.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525092137.GA369979@e124901.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My editor's spell checker noticed that one while I read through the
-document.
+On Tue, May 25, 2021 at 10:21:37AM +0100, Vincent Donnefort wrote:
+> On Tue, May 25, 2021 at 10:48:23AM +0200, Peter Zijlstra wrote:
+> > On Fri, May 21, 2021 at 05:54:24PM +0100, Vincent Donnefort wrote:
+> > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > > index 4f09afd..5a91a2b 100644
+> > > --- a/kernel/sched/cpufreq_schedutil.c
+> > > +++ b/kernel/sched/cpufreq_schedutil.c
+> > > @@ -10,6 +10,7 @@
+> > >  
+> > >  #include "sched.h"
+> > >  
+> > > +#include <linux/energy_model.h>
+> > >  #include <linux/sched/cpufreq.h>
+> > >  #include <trace/events/power.h>
+> > >  
+> > > @@ -153,6 +154,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> > >  
+> > >  	freq = map_util_freq(util, freq, max);
+> > >  
+> > > +	/* Avoid inefficient performance states */
+> > > +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
+> > > +
+> > >  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> > >  		return sg_policy->next_freq;
+> > >  
+> > 
+> > This seems somewhat unfortunate, it adds a loop over the OPPs only to
+> > then call into cpufreq to do the exact same thing again :/
+> 
+> Indeed, but it would be complicated to avoid the double loop:
+> 
+> It is possible to register OPPs (and by extension perf_states) for a
+> frequency for which, the cpufreq table entry is marked with
+> CPUFREQ_ENTRY_INVALID. It would probably be an issue that would have to be
+> fixed in the driver, but it is currently allowed.
+> 
+> More importantly, while resolving the frequency, we also cache the index in
+> cached_resolved_idx. Some drivers, such as qcom-cpufreq-hw rely on this
+> value for their fastswitch support.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- Documentation/driver-api/auxiliary_bus.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Unless we are ok bringing the cpufreq idx into the Energy Model. But I
+originally dismissed this idea. I didn't want to bring a such dependency between
+the two frameworks, especially as the EM can also work with Devfreq. But maybe
+it's worth it in the end. Any thoughts?
 
-diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
-index fff96c7ba7a8..ef902daf0d68 100644
---- a/Documentation/driver-api/auxiliary_bus.rst
-+++ b/Documentation/driver-api/auxiliary_bus.rst
-@@ -11,7 +11,7 @@ too complex for a single device to be managed by a monolithic driver
- (e.g. Sound Open Firmware), multiple devices might implement a common
- intersection of functionality (e.g. NICs + RDMA), or a driver may want to
- export an interface for another subsystem to drive (e.g. SIOV Physical Function
--export Virtual Function management).  A split of the functinoality into child-
-+export Virtual Function management).  A split of the functionality into child-
- devices representing sub-domains of functionality makes it possible to
- compartmentalize, layer, and distribute domain-specific concerns via a Linux
- device-driver model.
--- 
-2.30.2
-
+> 
+> Notice though, we would iterate over the EM only in the case where the
+> performance state has found inefficiencies.
+> 
