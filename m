@@ -2,138 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614E338FD2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387AF38FD33
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhEYIx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S232167AbhEYIyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhEYIx0 (ORCPT
+        with ESMTP id S230471AbhEYIyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:53:26 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C663C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:51:57 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id z3so29583836oib.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:51:57 -0700 (PDT)
+        Tue, 25 May 2021 04:54:06 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E00C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:52:35 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so27905706otp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:52:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ToFLxqOf83HeFVD2xsbBx9SMeRlXjpSYMbMVCYxyS/Q=;
-        b=QEJnHdSK0xfzOCCWTk8svsTkGjqYPrBMkTCQDLtL+AnA6ZhDiO3B266diZ/SZGNjRz
-         45hnmWSkJF4oVGdxhhAdn1VJ16OM2z/quxKoRFzBMLeycOQjjxalbUxeRDT12Wxi/lI6
-         qLdTg4KY/pfvGFFmzA6syNOFB534frebeFZPeQbNGpvUimgmdX4KHuT+KNeFJuDPTql9
-         vZS4KLLUdg/GrsMi8xmdny+ATt+usvZ3m5PMiDL5f7YeOLlN8t8Sd2214buXT0pXtXiu
-         kn3anWfcT7VU6Fe7nTxNHuc5fIX/OkFQg3K3kx6xAJpv0nOoTZiD66KrNflPlAV2ii/i
-         SEvw==
+         :cc:content-transfer-encoding;
+        bh=S983RmEN+zCzGygvTomJowV0VqiLAFWLutr88hzTzxw=;
+        b=DbQN+qgl1anJcSKUR0sYPQRpRiflWrFMnrR7kkeYJy0FQ5VD0ZE57trudkUUgESzSf
+         ytqU5GoQ/xzctSsN4DItUI57KUC5v7TwHPali4oP10CnFzx+z3kWE2ynujI3t557WNhW
+         8O5z8wKHIEpUUACm3x+3ToIuvY0pfSQFe4s/vgD4mXA+OUbuSLj89jzZTSB6a+jClPsE
+         /2AHzsU05IImCxEYHZN8NWOtHc1e9U7aOekTUS6djnDJ8dSQWidxLq+R+E/flRMvz4bg
+         y8eztIXisoRD9hfuhcwfqPk9eSLS/RvJ396xIg6zyPkrYFwNuemzZ36XMkEVjZ6Td94v
+         fQeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ToFLxqOf83HeFVD2xsbBx9SMeRlXjpSYMbMVCYxyS/Q=;
-        b=hoNA46xT0WSpSCCnMjPtmuvHgeObhXG/xnseTXzKprzHDGuHkQLdm0yO2c/6ChQkc/
-         /xO0odCCymU77AEuZjHv8zBNhnxyT7a/TqZlcs+m3AA9MeFDx3kUvYvxY/lTpmEPdRBm
-         j+yZTXdECic+VV7qziAP3xJypB44zBCpEB6LP4/fkq8vw/JWhjTILPeyxTHTGAU23oZX
-         uCgUFjY3aEBrjdyDKeyw1qRrpWTKzUUaarTiosdmm/dfqzPmuclitGpvYrUKEF6/PMhr
-         bK4s1jayggxkrtYKWk17D/speEcZyZLHpXXUMD6Ou/AQSksay31j67pW8A+dG4uJnsnI
-         hYCA==
-X-Gm-Message-State: AOAM530Qok2RpI+d8EpzwTIXlMd8hlO/Vs2BfWAJVR07pdPEhyLmJZP9
-        m3zZKoWGEZpRTyvkunRnBsqm3CTx4cFbfE3ZEuLOBA==
-X-Google-Smtp-Source: ABdhPJyU5SdzuOkMfcrRpbbKu1s22AvryE6xYuX6N6cgM+bBADYrQYatw5XNbJ5C74lFSLX+tIPYLcsw0C7c68vwHCk=
-X-Received: by 2002:a05:6808:144f:: with SMTP id x15mr13374298oiv.172.1621932716817;
- Tue, 25 May 2021 01:51:56 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S983RmEN+zCzGygvTomJowV0VqiLAFWLutr88hzTzxw=;
+        b=cPs7xqCYnDz8x8HLWrv3JrM1oUXhxPLpuYldMpE1nLYK5I1DMGA8VyfC2jVYfy2IVj
+         JyBj0h/lj2Jy1id86PasHlqjPo/brzQqubeClxCqICLDLD7Y8VmNUPgHfhiqeLVmZosn
+         r/vSoqNf/w9hmzVt6T0TAGrjcyFJhSiI6PCJ/2EPcT53MWR/I/9RCEby0BaNX/tXMIWD
+         Fbm3BC/M8lsCjiX+vr4G5tZ5PykjDaZQ0424Fc5YhfI74sRTravAESAOyybpIj+J91E0
+         Y/NiP2B0xg8aj0VsRgmuc7u8NKMryOQboZ1YF0z/3PH4kpGANnHsH1ftsaLXFU9j8wmg
+         MiPA==
+X-Gm-Message-State: AOAM531ybAQsoI8Emxdt4hpqi8a+xmZRZ09mpv7TN4X9pqtDrlLZk80W
+        qaTnFbs2arhGSxcY2p3YdYStea9b+QVIxZ2QCYfo/Q==
+X-Google-Smtp-Source: ABdhPJxI8s2jTZ5Bz7kX5AUrHHR69TdApWCOpzJQDD2JTfJhGMoCahNrKr3EGl7b+eYguFtbLZxwQg9nWVtbAy5BeZQ=
+X-Received: by 2002:a05:6830:349b:: with SMTP id c27mr23119899otu.251.1621932754928;
+ Tue, 25 May 2021 01:52:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525104551.2ec37f77@xhacker.debian>
-In-Reply-To: <20210525104551.2ec37f77@xhacker.debian>
+References: <mhng-f2825fd1-15e0-403d-b972-d327494525e6@palmerdabbelt-glaptop> <0b584a85-79e2-fcdd-2adf-5b63f56cc591@huawei.com>
+In-Reply-To: <0b584a85-79e2-fcdd-2adf-5b63f56cc591@huawei.com>
 From:   Marco Elver <elver@google.com>
-Date:   Tue, 25 May 2021 10:51:45 +0200
-Message-ID: <CANpmjNOsEdTNsS0he-9AGCYrhX7RvgaB0p841CMyFW-puC6odg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: mm: don't use CON and BLK mapping if KFENCE is enabled
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+Date:   Tue, 25 May 2021 10:52:23 +0200
+Message-ID: <CANpmjNPuhUVMdVYNMaQc1NARzp2w+A8A6F16L=WmzWpJOWz_sg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2] riscv: Enable KFENCE for riscv64
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Alexander Potapenko <glider@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-riscv@lists.infradead.org,
         LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 04:46, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
-> When we added KFENCE support for arm64, we intended that it would
-> force the entire linear map to be mapped at page granularity, but we
-> only enforced this in arch_add_memory() and not in map_mem(), so
-> memory mapped at boot time can be mapped at a larger granularity.
->
-> When booting a kernel with KFENCE=y and RODATA_FULL=n, this results in
-> the following WARNING at boot:
->
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] WARNING: CPU: 0 PID: 0 at mm/memory.c:2462 apply_to_pmd_range+0xec/0x190
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc1+ #10
-> [    0.000000] Hardware name: linux,dummy-virt (DT)
-> [    0.000000] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO BTYPE=--)
-> [    0.000000] pc : apply_to_pmd_range+0xec/0x190
-> [    0.000000] lr : __apply_to_page_range+0x94/0x170
-> [    0.000000] sp : ffffffc010573e20
-> [    0.000000] x29: ffffffc010573e20 x28: ffffff801f400000 x27: ffffff801f401000
-> [    0.000000] x26: 0000000000000001 x25: ffffff801f400fff x24: ffffffc010573f28
-> [    0.000000] x23: ffffffc01002b710 x22: ffffffc0105fa450 x21: ffffffc010573ee4
-> [    0.000000] x20: ffffff801fffb7d0 x19: ffffff801f401000 x18: 00000000fffffffe
-> [    0.000000] x17: 000000000000003f x16: 000000000000000a x15: ffffffc01060b940
-> [    0.000000] x14: 0000000000000000 x13: 0098968000000000 x12: 0000000098968000
-> [    0.000000] x11: 0000000000000000 x10: 0000000098968000 x9 : 0000000000000001
-> [    0.000000] x8 : 0000000000000000 x7 : ffffffc010573ee4 x6 : 0000000000000001
-> [    0.000000] x5 : ffffffc010573f28 x4 : ffffffc01002b710 x3 : 0000000040000000
-> [    0.000000] x2 : ffffff801f5fffff x1 : 0000000000000001 x0 : 007800005f400705
-> [    0.000000] Call trace:
-> [    0.000000]  apply_to_pmd_range+0xec/0x190
-> [    0.000000]  __apply_to_page_range+0x94/0x170
-> [    0.000000]  apply_to_page_range+0x10/0x20
-> [    0.000000]  __change_memory_common+0x50/0xdc
-> [    0.000000]  set_memory_valid+0x30/0x40
-> [    0.000000]  kfence_init_pool+0x9c/0x16c
-> [    0.000000]  kfence_init+0x20/0x98
-> [    0.000000]  start_kernel+0x284/0x3f8
->
-> Fixes: 840b23986344 ("arm64, kfence: enable KFENCE for ARM64")
-> Cc: <stable@vger.kernel.org> # 5.12.x
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> Acked-by: Marco Elver <elver@google.com>
+On Mon, 24 May 2021 at 03:56, Liu Shixin <liushixin2@huawei.com> wrote:
+> On 2021/5/23 10:38, Palmer Dabbelt wrote:
+> > On Fri, 14 May 2021 08:20:10 PDT (-0700), elver@google.com wrote:
+> >> On Fri, 14 May 2021 at 05:11, Liu Shixin <liushixin2@huawei.com> wrote=
+:
+> >>> Add architecture specific implementation details for KFENCE and enabl=
+e
+> >>> KFENCE for the riscv64 architecture. In particular, this implements t=
+he
+> >>> required interface in <asm/kfence.h>.
+> >>>
+> >>> KFENCE requires that attributes for pages from its memory pool can
+> >>> individually be set. Therefore, force the kfence pool to be mapped at
+> >>> page granularity.
+> >>>
+> >>> I tested this patch using the testcases in kfence_test.c and all pass=
+ed.
+> >>>
+> >>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> >>
+> >> Acked-by: Marco Elver <elver@google.com>
+> >>
+> >>
+> >>> ---
+> >>> v1->v2: Change kmalloc() to pte_alloc_one_kernel() for allocating pte=
+.
+> >>>
+> >>>  arch/riscv/Kconfig              |  1 +
+> >>>  arch/riscv/include/asm/kfence.h | 51 +++++++++++++++++++++++++++++++=
+++
+> >>>  arch/riscv/mm/fault.c           | 11 ++++++-
+> >>>  3 files changed, 62 insertions(+), 1 deletion(-)
+> >>>  create mode 100644 arch/riscv/include/asm/kfence.h
+> >>>
+> >>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> >>> index c426e7d20907..000d8aba1030 100644
+> >>> --- a/arch/riscv/Kconfig
+> >>> +++ b/arch/riscv/Kconfig
+> >>> @@ -64,6 +64,7 @@ config RISCV
+> >>>         select HAVE_ARCH_JUMP_LABEL_RELATIVE
+> >>>         select HAVE_ARCH_KASAN if MMU && 64BIT
+> >>>         select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+> >>> +       select HAVE_ARCH_KFENCE if MMU && 64BIT
+> >>>         select HAVE_ARCH_KGDB
+> >>>         select HAVE_ARCH_KGDB_QXFER_PKT
+> >>>         select HAVE_ARCH_MMAP_RND_BITS if MMU
+> >>> diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm=
+/kfence.h
+> >>> new file mode 100644
+> >>> index 000000000000..c25d67e0b8ba
+> >>> --- /dev/null
+> >>> +++ b/arch/riscv/include/asm/kfence.h
+> >>> @@ -0,0 +1,51 @@
+> >>> +/* SPDX-License-Identifier: GPL-2.0 */
+> >>> +
+> >>> +#ifndef _ASM_RISCV_KFENCE_H
+> >>> +#define _ASM_RISCV_KFENCE_H
+> >>> +
+> >>> +#include <linux/kfence.h>
+> >>> +#include <linux/pfn.h>
+> >>> +#include <asm-generic/pgalloc.h>
+> >>> +#include <asm/pgtable.h>
+> >>> +
+> >>> +static inline bool arch_kfence_init_pool(void)
+> >>> +{
+> >>> +       int i;
+> >>> +       unsigned long addr;
+> >>> +       pte_t *pte;
+> >>> +       pmd_t *pmd;
+> >>> +
+> >>> +       for (addr =3D (unsigned long)__kfence_pool; is_kfence_address=
+((void *)addr);
+> >>> +            addr +=3D PAGE_SIZE) {
+> >>> +               pte =3D virt_to_kpte(addr);
+> >>> +               pmd =3D pmd_off_k(addr);
+> >>> +
+> >>> +               if (!pmd_leaf(*pmd) && pte_present(*pte))
+> >>> +                       continue;
+> >>> +
+> >>> +               pte =3D pte_alloc_one_kernel(&init_mm);
+> >>> +               for (i =3D 0; i < PTRS_PER_PTE; i++)
+> >>> +                       set_pte(pte + i, pfn_pte(PFN_DOWN(__pa((addr =
+& PMD_MASK) + i * PAGE_SIZE)), PAGE_KERNEL));
+> >>> +
+> >>> +               set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(pte)), PAGE_TABLE)=
+);
+> >>> +               flush_tlb_kernel_range(addr, addr + PMD_SIZE);
+> >>> +       }
+> >>> +
+> >>> +       return true;
+> >>> +}
+> >
+> > I'm not fundamentally opposed to this, but the arm64 approach where pag=
+es are split at runtime when they have mis-matched permissions seems cleane=
+r to me.  I'm not sure why x86 is doing it during init, though, as IIUC set=
+_memory_4k() will work for both.
+> >
+> > Upgrading our __set_memory() with the ability to split pages (like arm6=
+4 has) seems generally useful, and would let us trivially implement the dyn=
+amic version of this.  We'll probably end up with the ability to split page=
+s anyway, so that would be the least code in the long run.
+> >
+> > If there's some reason to prefer statically allocating the pages I'm fi=
+ne with this, though.
+> >
+> As I understand=EF=BC=8Cthe arm64 approach does not implement dynamic spl=
+itting.
+> If kfence is enabled in arch arm64, the linear map need to be forcibly ma=
+pped
+> at page granularity. But x86 does not have such constraints as it only sp=
+lit pages
+> in the kfence pool, so I think the x86 approach is better as it has less =
+influence
+> on the whole.
 
-Tested-by: Marco Elver <elver@google.com>
+Correct.
 
-Thank you.
+I think either riscv gains set_memory_4k(), like x86, or we go with
+the approach in this patch. Unless you see this is trivially
+implementable, I wouldn't want to block this patch. It's better to
+have something working, and then incrementally improve later if riscv
+ever gets set_memory_4k().
 
-> ---
-> Since v1:
->  - improve commit msg as Mark suggested
->  - add "Cc: stable@vger.kernel.org"
->  - collect Mark and Marco's Acks
->
->  arch/arm64/mm/mmu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 6dd9369e3ea0..89b66ef43a0f 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -515,7 +515,8 @@ static void __init map_mem(pgd_t *pgdp)
->          */
->         BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
->
-> -       if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
-> +       if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
-> +           IS_ENABLED(CONFIG_KFENCE))
->                 flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
->
->         /*
-> --
-> 2.31.0
->
+Thanks,
+-- Marco
