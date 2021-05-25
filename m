@@ -2,219 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB45390196
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD52A390199
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhEYNEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhEYNEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB966141B;
-        Tue, 25 May 2021 13:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621947790;
-        bh=UrmzCXjfowF24X6pKcxHGP2wfTgDsyTHtSUq4o3y8bg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KccXBsp4mcTgbfYqGaGIDXpLP28CpOUV0FvmaBRMTMipFJRfgV5nVS//ndozTZ+jn
-         jPyTNIx22izK5KxZSoFHXyhHHI0gf5kkeGqGI63yBsHzSf0cv5qyLwxxcFq/dgNUAA
-         32SCvBIFfs+xwv8x2WRIcowmRu4gE2WqrbG9HiZGIuGW3a6JX4zQsqYs5BEQUyn+1q
-         XmiwLgAJI5CwFbTKlUz3QrqK92fZwziB4NRSREZQ+bNSU/9WO6aw/pg24PamPsCshR
-         M0Py8tTzuw4YGwOM3WCRXWxrA6mmoablJj2DPLBWmLPqUaKoi1fKsC8SyfyS5CaqfN
-         pRCz4T1BpmGBw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EAB5C4011C; Tue, 25 May 2021 10:03:06 -0300 (-03)
-Date:   Tue, 25 May 2021 10:03:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] perf scripting python: Add auxtrace error
-Message-ID: <YKz1inwKEPLvx9fr@kernel.org>
-References: <20210525095112.1399-1-adrian.hunter@intel.com>
- <20210525095112.1399-10-adrian.hunter@intel.com>
+        id S232969AbhEYNFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:05:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58235 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232862AbhEYNFS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 09:05:18 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PD2hET014840;
+        Tue, 25 May 2021 09:03:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TC0d2aXtZ9kOoBZa5c0YpJpsWVUyUFpCZuecZaZrDl8=;
+ b=AXsIA/3RZ5O+k0Gj5ik/E84vZOyh6McWua3cNPy7nPXXHUaFKeHFxReUZXCoBrvVDzFq
+ HJx9vc7kWhiXjwmU3OlR1lNmWWVcvPJEF1wBXLbntBD1ZmD3Nr6LPO1Z98AJOyeU2Muf
+ zJ6TYtsWzmHkAF02d9OMFRRzBUegBKH+IbcIBvhxg9FlRVWWDHmUBAlUnnic6SfYPXwa
+ Ev+4hcnnGidu6I8Unm1zFs/SNt2QQGwcU9jxEbvEPeJt534HPJtlMVFI1c3XcYnI/WeY
+ hsMll9uV9JK6zM/y4ZSNe1rC6XtqsNwws1Cly7wE9tty0+0bjTyGpmSrZhqxPIz6PBJ2 1Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1g68qdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:03:46 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PD2nOu015774;
+        Tue, 25 May 2021 09:03:46 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38s1g68qcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 09:03:46 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PD2xXJ015238;
+        Tue, 25 May 2021 13:03:44 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 38s1rv801a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 13:03:44 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PD3CLK30474674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 13:03:12 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B9DAAE04D;
+        Tue, 25 May 2021 13:03:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76996AE045;
+        Tue, 25 May 2021 13:03:40 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.33.143])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 25 May 2021 13:03:40 +0000 (GMT)
+Date:   Tue, 25 May 2021 15:03:37 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH v4 1/2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+Message-ID: <20210525150337.021aabd8.pasic@linux.ibm.com>
+In-Reply-To: <20210521193648.940864-2-akrowiak@linux.ibm.com>
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+        <20210521193648.940864-2-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210525095112.1399-10-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ayilL24a_T5e9lLRfW6oebhybfsTkuj6
+X-Proofpoint-ORIG-GUID: Jvuzbuj2Sx4nOdw6LW5EnpgKIHIkDBQx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_06:2021-05-25,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 mlxlogscore=999
+ adultscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 25, 2021 at 12:51:11PM +0300, Adrian Hunter escreveu:
-> Add auxtrace_error to general python scripting.
+On Fri, 21 May 2021 15:36:47 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> The mdev remove callback for the vfio_ap device driver bails out with
+> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+> to prevent the mdev from being removed while in use; however, returning a
+> non-zero rc does not prevent removal. This could result in a memory leak
+> of the resources allocated when the mdev was created. In addition, the
+> KVM guest will still have access to the AP devices assigned to the mdev
+> even though the mdev no longer exists.
 > 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/builtin-script.c                   | 13 ++++++
->  .../scripting-engines/trace-event-python.c    | 42 +++++++++++++++++++
->  tools/perf/util/trace-event.h                 |  2 +
->  3 files changed, 57 insertions(+)
+> To prevent this scenario, cleanup will be done - including unplugging the
+> AP adapters, domains and control domains - regardless of whether the mdev
+> is in use by a KVM guest or not.
 > 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 69bce65ea430..7a7a19f52db5 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -2432,6 +2432,17 @@ static int process_switch_event(struct perf_tool *tool,
->  			   sample->tid);
->  }
->  
-> +static int process_auxtrace_error(struct perf_session *session,
-> +				  union perf_event *event)
-> +{
-> +	if (scripting_ops && scripting_ops->process_auxtrace_error) {
-> +		scripting_ops->process_auxtrace_error(session, event);
-> +		return 0;
-> +	}
-> +
-> +	return perf_event__process_auxtrace_error(session, event);
-> +}
-> +
+> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-Those definitions in auxtrace.h:
+AFAIU we all agree that, after patch there is a possibility for an use
+after free error. I'm a little confused by the fact that we want this
+one for stable, but the patch that fixes the use after free as no
+Cc stable (it can't have a proper fixes tag, because this one is not yet
+merged). Actually I'm not a big fan of splitting up patches to the
+extent that when not all patches of the series are applied we get bugous
+behavior (e.g. patch n breaks something that is live at patch n level,
+but it is supposed to be OK, because patch n+m is going to fix it (where
+n,m \in \Z^{+}).
 
-e31f0d017ea19fce9 (Adrian Hunter  2015-04-30 17:37:27 +0300 706) #define perf_event__process_auxtrace_info            0
-e31f0d017ea19fce9 (Adrian Hunter  2015-04-30 17:37:27 +0300 707) #define perf_event__process_auxtrace                 0
-e31f0d017ea19fce9 (Adrian Hunter  2015-04-30 17:37:27 +0300 708) #define perf_event__process_auxtrace_error           0
+Do we want to squash these? Is the use after free possible prior to this
+patch? 
 
-came back to haunt us :-)
-
-I'll try making them the usual inlines, etc
-
-- Arnaldo
-
-
-              make_minimal_O: cd . && make NO_LIBPERL=1 NO_LIBPYTHON=1 NO_NEWT=1 NO_GTK2=1 NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1 NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1 NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1 NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1 NO_LIBZSTD=1 NO_LIBCAP=1 NO_SYSCALL_TABLE=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.rGrdpQlTCr DESTDIR=/tmp/tmp.png5u8ITR9
-cd . && make NO_LIBPERL=1 NO_LIBPYTHON=1 NO_NEWT=1 NO_GTK2=1 NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1 NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1 NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1 NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1 NO_LIBZSTD=1 NO_LIBCAP=1 NO_SYSCALL_TABLE=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.rGrdpQlTCr DESTDIR=/tmp/tmp.png5u8ITR9
-  BUILD:   Doing 'make -j24' parallel build
-<SNIP>
-  CC      /tmp/tmp.rGrdpQlTCr/builtin-daemon.o
-In file included from util/events_stats.h:8,
-                 from util/evlist.h:12,
-                 from builtin-script.c:18:
-builtin-script.c: In function ‘process_auxtrace_error’:
-util/auxtrace.h:708:57: error: called object is not a function or function pointer
-  708 | #define perf_event__process_auxtrace_error              0
-      |                                                         ^
-builtin-script.c:2443:16: note: in expansion of macro ‘perf_event__process_auxtrace_error’
- 2443 |         return perf_event__process_auxtrace_error(session, event);
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  MKDIR   /tmp/tmp.rGrdpQlTCr/tests/
-  MKDIR   /tmp/tmp.rGrdpQlTCr/bench/
-  CC      /tmp/tmp.rGrdpQlTCr/tests/builtin-test.o
-  CC      /tmp/tmp.rGrdpQlTCr/bench/sched-messaging.o
-builtin-script.c:2444:1: error: control reaches end of non-void function [-Werror=return-type]
- 2444 | }
-      | ^
-cc1: all warnings being treated as errors
-make[5]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/tmp.rGrdpQlTCr/builtin-script.o] Error 1
-make[5]: *** Waiting for unfinished jobs....
-  MKDIR   /tmp/tmp.rGrdpQlTCr/tests/
-  CC      /tmp/tmp.rGrdpQlTCr/tests/parse-events.o
-  MKDIR   /tmp/tmp.rGrdpQlTCr/bench/
-  CC      /tmp/tmp.rGrdpQlTCr/bench/sched-pipe.o
-
-
-
->  static int
->  process_lost_event(struct perf_tool *tool,
->  		   union perf_event *event,
-> @@ -2571,6 +2582,8 @@ static int __cmd_script(struct perf_script *script)
->  	}
->  	if (script->show_switch_events || (scripting_ops && scripting_ops->process_switch))
->  		script->tool.context_switch = process_switch_event;
-> +	if (scripting_ops && scripting_ops->process_auxtrace_error)
-> +		script->tool.auxtrace_error = process_auxtrace_error;
->  	if (script->show_namespace_events)
->  		script->tool.namespaces = process_namespaces_event;
->  	if (script->show_cgroup_events)
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index c422901d5344..ffc5f4cffdba 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -1014,6 +1014,11 @@ static int tuple_set_u64(PyObject *t, unsigned int pos, u64 val)
->  #endif
->  }
->  
-> +static int tuple_set_u32(PyObject *t, unsigned int pos, u32 val)
-> +{
-> +	return PyTuple_SetItem(t, pos, PyLong_FromUnsignedLong(val));
-> +}
-> +
->  static int tuple_set_s32(PyObject *t, unsigned int pos, s32 val)
->  {
->  	return PyTuple_SetItem(t, pos, _PyLong_FromLong(val));
-> @@ -1461,6 +1466,42 @@ static void python_process_switch(union perf_event *event,
->  		python_do_process_switch(event, sample, machine);
->  }
->  
-> +static void python_process_auxtrace_error(struct perf_session *session __maybe_unused,
-> +					  union perf_event *event)
-> +{
-> +	struct perf_record_auxtrace_error *e = &event->auxtrace_error;
-> +	u8 cpumode = e->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
-> +	const char *handler_name = "auxtrace_error";
-> +	unsigned long long tm = e->time;
-> +	const char *msg = e->msg;
-> +	PyObject *handler, *t;
-> +
-> +	handler = get_handler(handler_name);
-> +	if (!handler)
-> +		return;
-> +
-> +	if (!e->fmt) {
-> +		tm = 0;
-> +		msg = (const char *)&e->time;
-> +	}
-> +
-> +	t = tuple_new(9);
-> +
-> +	tuple_set_u32(t, 0, e->type);
-> +	tuple_set_u32(t, 1, e->code);
-> +	tuple_set_s32(t, 2, e->cpu);
-> +	tuple_set_s32(t, 3, e->pid);
-> +	tuple_set_s32(t, 4, e->tid);
-> +	tuple_set_u64(t, 5, e->ip);
-> +	tuple_set_u64(t, 6, tm);
-> +	tuple_set_string(t, 7, msg);
-> +	tuple_set_u32(t, 8, cpumode);
-> +
-> +	call_object(handler, t, handler_name);
-> +
-> +	Py_DECREF(t);
-> +}
-> +
->  static void get_handler_name(char *str, size_t size,
->  			     struct evsel *evsel)
->  {
-> @@ -1999,6 +2040,7 @@ struct scripting_ops python_scripting_ops = {
->  	.stop_script		= python_stop_script,
->  	.process_event		= python_process_event,
->  	.process_switch		= python_process_switch,
-> +	.process_auxtrace_error	= python_process_auxtrace_error,
->  	.process_stat		= python_process_stat,
->  	.process_stat_interval	= python_process_stat_interval,
->  	.generate_script	= python_generate_script,
-> diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-> index 7276674e2971..35c354a15c3a 100644
-> --- a/tools/perf/util/trace-event.h
-> +++ b/tools/perf/util/trace-event.h
-> @@ -83,6 +83,8 @@ struct scripting_ops {
->  	void (*process_switch)(union perf_event *event,
->  			       struct perf_sample *sample,
->  			       struct machine *machine);
-> +	void (*process_auxtrace_error)(struct perf_session *session,
-> +				       union perf_event *event);
->  	void (*process_stat)(struct perf_stat_config *config,
->  			     struct evsel *evsel, u64 tstamp);
->  	void (*process_stat_interval)(u64 tstamp);
-> -- 
-> 2.17.1
-> 
-
--- 
-
-- Arnaldo
+Regards,
+Halil
