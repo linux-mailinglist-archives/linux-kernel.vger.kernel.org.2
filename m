@@ -2,306 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FAC390CF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D912390CF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhEYXbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhEYXbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:31:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DF9D613C5;
-        Tue, 25 May 2021 23:29:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621985388;
-        bh=AJ+FqQjD2tfizRfYl3YcUjYoTFd7vYQranc9ATQtPko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E3sxlTwGEaNgLugGNfFB4yLMkaP0igoa+rQCQhR/cwj6nhyR2AsfPVGHNafOibgPZ
-         +/fa93Px8rOvbB4GxCa4vr9Bq48aLfie9SVnYOofWyWlMr5hCooIA2GNPKWmBzmNkM
-         LQh34wNxbSKbLKpXhNBa4L9lc2ocCUljoODxRUX816i48FVYpf4tCnj4991lAvUWWN
-         IZ8BYTBNBBbGKu+ic0Gxr7IV3HEUkHWZvEeDPURyGc9gTPI/XAxWH/zoRcgApXNdgK
-         J+U55mGvivTg3EhS+U7ojz1X5esgMB6AsFkYWOCuPr5NE+FqwaqprV2hpsRHrIlQ6c
-         svvYgo/or1FNw==
-Date:   Tue, 25 May 2021 16:29:47 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
-        hch@lst.de, rgoldwyn@suse.de, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH v6 5/7] fsdax: Dedup file range to use a compare function
-Message-ID: <20210525232947.GE202144@locust>
-References: <20210519060045.1051226-1-ruansy.fnst@fujitsu.com>
- <20210519060045.1051226-6-ruansy.fnst@fujitsu.com>
+        id S231448AbhEYXdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:33:22 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:34374 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhEYXdV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 19:33:21 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PNOguC084767;
+        Tue, 25 May 2021 23:31:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=9YhdL/k2pa6x8WHpZUlXfQ+hZShDsdX9onfMwZ34WFw=;
+ b=axBQZJfib9AcHx4ZnHa9RuaSJvjEoUMfCymM0Tcn8/e0UBjiJDtuDZYTf6JVFl2UH0ye
+ 7naAot3vpsBxj6NKxy5bJUPkOyX9+94fg8WTrDicn2wzMzwntPuO0r0ReHYt1QUo/ph7
+ o3jlhfr3gUcrEe7i5XMwY1MtvEs+AUhIij2onsLWHPGoDEEeOAnjhfYh/qNqbZZukRrw
+ 9yj/yuJ0XsioCjNNTYJf8A5XYr9BA4KCq3uPQLUIBCreIWNX6LWpI9XFjcHZPhUzxR9v
+ q1pLdSwihDBUg4alK51izlpTSxbmLBum7rtwIsPW9hWPKGDZrYK4lF1YHVbLncohbakC ug== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 38pqfcfhrv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 23:31:46 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14PNQ58l086196;
+        Tue, 25 May 2021 23:31:46 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by aserp3030.oracle.com with ESMTP id 38pr0c7d22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 23:31:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZVFyu9DRXK85NijGg41BAimwWG+9s0ek5vRyJbCSc40iWtuc/3Hrlte1Q1UaBy0R/9uBUVkQdZRLdibu8mHZpA5ZYJWi8OMQqHWpj3N04UWFiOWfUqFsZDQpl0VN0MlWIYxGOXN/d+rMUn2OeweaPely4PYZNfoQfLrF8wzaMOav/3/7Y2vxb7Vs6lBJR1dNLVU56NhyBueOMZeXksKILLwCZqNRqWJUMNxg68Gf6dH0sWYz8QEAya0TYUx1sMH8eNffN5CN3z/bXeO9s06qNPDlzphae1IXO2QdyMC3fYljtt72+Hy2NNLrmWiJ5kzHV3P3bakUzKM3VbJNGlDp2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9YhdL/k2pa6x8WHpZUlXfQ+hZShDsdX9onfMwZ34WFw=;
+ b=SE65pN5E9wgabHkJILt+HtLKfaA+w/cuY7D3O8NiDw6Ya+XtUROU+/Z2BzcQVDbE0FWdUN/KEA4ncMZX/4xIYzUUGz/tDq2AYksp8FRofOiudEPbVzHy+g/sqEdYdHxwDVUDL0O5SVAWJRSEV9x/oXHn/UaM/7PNzvHqcbfFAGS54pHgQ0z8VoUlP1ssm6NdkroKuKCRQrq9PC1zHcz95N2bxTyzMPjCYxR7HnqO5d4yJ79NRKDvw6Gn4bCjostwg2WrM58+oBROs1dFsfZDbuNYFq7xFvN5w/zzR+8+oJkNagcGyfd7Igm7cFqujAQIAx76WUO+uEBlkvxZiXhVwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9YhdL/k2pa6x8WHpZUlXfQ+hZShDsdX9onfMwZ34WFw=;
+ b=aXenvG34OrW/hiAZI1eX6KKWPTYVrsV7xYSgn+RPeWNWiqa7UlV4MMMVW46BnO585b+NN5JTlWksV1PfYpzKK7FdwGWKc57q3RgO3TQpstuzvqeZCTzqD4G6JVkgrJDd2RcaxrvOEdCsrH8/SbFcmhHoMzDpWtdFCsq46dFsMpo=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB2664.namprd10.prod.outlook.com (2603:10b6:a02:b7::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Tue, 25 May
+ 2021 23:31:44 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90%9]) with mapi id 15.20.4150.027; Tue, 25 May 2021
+ 23:31:44 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Mina Almasry <almasrymina@google.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH 0/2] Track reserve map changes to restore on error
+Date:   Tue, 25 May 2021 16:31:32 -0700
+Message-Id: <20210525233134.246444-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <78359cf0-6e28-2aaa-d17e-6519b117b3db@oracle.com>
+References: <78359cf0-6e28-2aaa-d17e-6519b117b3db@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR13CA0021.namprd13.prod.outlook.com
+ (2603:10b6:300:16::31) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519060045.1051226-6-ruansy.fnst@fujitsu.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR13CA0021.namprd13.prod.outlook.com (2603:10b6:300:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend Transport; Tue, 25 May 2021 23:31:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c878083b-69e4-4de8-3635-08d91fd54192
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2664:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2664F54189DCE54F3B80B855E2259@BYAPR10MB2664.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: toIJMw7uBtKPZH8XSUAP/rHq90wX2Ppvl59MmXuat04ta0uzP890nfVnkkIACX1xeubhf6ZYqBwTEYJa+ja5nXj9mfv8oyFbjqD6BDr7xa4bLtyqyB39iOMUbcHUicOpON2T6hqSXH2yDJJjLcFTavlV0N5zcYvkCmAPiDc0fTIvA3yz1nbg21Xxx+gS4d8UOh9ymarDk3AL1543RnnM2RNmW5hKu0dVnO4v1OVvkVP/Cf1IDaBFG2HIMq7wl1MDA26Aq0VXLrdNZvFFH9jogmELyyLuR9VEIMMy/rZCEboV84LZpEwTfZhRvDyJcG1Tt20pMYYRCxRYdUcLA3Fb/LO9C+qx+kOt+g/nbAcadcItXa5Mdieztg5dISjmeYt4MkK8s1yUiKV/+LDn4FfAla1zKS7wfqn8hNPeQKN983PlXDMGgxC8pNYiq7qZyycJNbRC22a7pY+M2q7RgDADk6hsNooYlZjuoRuZo9t6FDQL/qd7cZer3zW6zOweKoJZWllKlkNJrYUKmN71KDRKgtfr1vbUuHZd6SX1wraQVyN2Aj9Hc3bkJCRGqBix0t1wrTNkzN8ofjdTJzej2nZiM7xj9VRCjxmIyTRVNpwEzyVm7edBGUccVM7z9SACY2M1E9buNj/up1W5JxxywuSozA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(376002)(39860400002)(396003)(26005)(8936002)(6486002)(6666004)(956004)(16526019)(5660300002)(107886003)(66946007)(66556008)(1076003)(7696005)(52116002)(186003)(4744005)(44832011)(4326008)(2616005)(66476007)(316002)(478600001)(36756003)(2906002)(86362001)(38350700002)(8676002)(110136005)(54906003)(83380400001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?W2Q23CSLNBQ7DTSupDSljZ/PytaSUOVZyhH1CZU8ioKqTJTDQnzgroeyYVxR?=
+ =?us-ascii?Q?qqrQudrMIbQefvgrynr5IobtVWVqOH4W2+WFiSHl7BDs++nPhZDSDeQ9UIy9?=
+ =?us-ascii?Q?edlCBHmPsukfCftTwSYo/rVgEytQYHx+v5rQNgh8m+6xIbmhZVSShok9LkQQ?=
+ =?us-ascii?Q?qZnfKpoVinVrS+d2SRtm9vreuVsx+ty2D2cmguKOb7eJCvcI2aCl8Ak0Tu53?=
+ =?us-ascii?Q?6bq47/ZJQYODKs3OKa1Jr2jjPE1qqH2M1zHX5X8Uh2MwBPWuRt52PlTlKVjN?=
+ =?us-ascii?Q?xnSA+YdfhxQxxV4MxNmBEnGJ4OWuAyNK7eS/Ma7+tsPT8LzfIaVJuNKHDcIx?=
+ =?us-ascii?Q?8gHfAYcEOIBhavPMznmiMZBZ98KF93zrrTQ8+c5CVqEULYbLtJCRYLAcds3G?=
+ =?us-ascii?Q?GBK+xvdIjatBFJ1ZZ0IUR7iyGv4GRSVPMjdpdhGxCZJyo+dYtgKc5/FyJHM1?=
+ =?us-ascii?Q?P5qBUyfo0CuABJCKekT+CY2gody0dbVuJZkKlo6LhLuQr13kKM3xBEvOSZDK?=
+ =?us-ascii?Q?W4nIhXiUwGc8qMKSfLazrXvAVgscfw6nvsc4l/akSuDIK07qQ9p0AgYB3JW1?=
+ =?us-ascii?Q?3G8hG/TWAH8zJNoOQKo3WGq0uMGllHMcBQHNkLYFul9d3YooMhHb36/gleam?=
+ =?us-ascii?Q?UFVn8plT8pzYam8xwEn9SyYJu88XjgDJ9af4a05DGyZeh3gWRGIs9q5JIfza?=
+ =?us-ascii?Q?uyeYL7VBqJPZEPpKSRRsOrSCqaQ81bQLu1rC4HkHsaW2/zQi+T4da/zMDN2G?=
+ =?us-ascii?Q?ptqvmtwCB4Uddha/XhdaEoywYkSlg9/VU/LZUjKYWf7vvp09v7hM7024HNK0?=
+ =?us-ascii?Q?IfTMBq3vDvX1095wtzBDmsn4w4kJA23FVl3sChtHdQ7s41sHydPfgVcUuJhH?=
+ =?us-ascii?Q?ma//9xhALV+6zQe3HrHgjxPbuwJUgsLwqvWzpWcpaZjdQLMisAwnaGtA0DR/?=
+ =?us-ascii?Q?GNwWqela+3v3FNE6n2dp69ZTT3/RPuI1knbRUwXs6xO9gboiXEi80yiNLK9h?=
+ =?us-ascii?Q?mtHP4kyN6Nl+FwiuRTCYamZgJEBwjP8isW+ZLJMPYq/+F64Ol78HiWK1i+31?=
+ =?us-ascii?Q?bwDeKsmAfRmq9GbPOjIuBVLU6AnRWA8yyMV73pGuK81g+exQCKAAUXKcMEJL?=
+ =?us-ascii?Q?Fsjkaovp484welYVSE8GUFtM2z9+mSk0nk5RLdj0TbSa0CYdToIY3zIFP9rS?=
+ =?us-ascii?Q?1Sx0xzyjKy42jQpcZL31VO7w4uG3OtSoy1LICHk75fb+zkrv8ySPgEVJyHpz?=
+ =?us-ascii?Q?h1FBN2n3hHSUbnd5AmHHcJRnN8Jmz7p0w6u2HjlVCsfAl7IJA32AXJ80/ceX?=
+ =?us-ascii?Q?Ruafz0c1X8Tmlo9Nn+2/EgMl?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c878083b-69e4-4de8-3635-08d91fd54192
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 23:31:44.2304
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FghDGk8cPRuD1O2jqb42mC/WBvEhjw+08j2leP88Mni0JKDikN2ewXk2r9e2i+kcyOZiwkkfLZADsKC5aCKJsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2664
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9995 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105250144
+X-Proofpoint-ORIG-GUID: -3LmhE-vADd5TzG6ucuY_H1MLywHMwjp
+X-Proofpoint-GUID: -3LmhE-vADd5TzG6ucuY_H1MLywHMwjp
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9995 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 clxscore=1015 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105250144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:00:43PM +0800, Shiyang Ruan wrote:
-> With dax we cannot deal with readpage() etc. So, we create a dax
-> comparison funciton which is similar with
+Here is a modification to the reservation tracking for fixup on errors.
+It is a more general change, but should work for the hugetlb_mcopy_pte_atomic
+case as well.
 
-s/funciton/function/
+Perhaps use this as a prerequisite for your fix(es)?  Pretty sure this
+will eliminate the need for the call to hugetlb_unreserve_pages.
 
-> vfs_dedupe_file_range_compare().
-> And introduce dax_remap_file_range_prep() for filesystem use.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/dax.c             | 66 ++++++++++++++++++++++++++++++++++++++++++++
->  fs/remap_range.c     | 36 ++++++++++++++++++------
->  fs/xfs/xfs_reflink.c |  8 ++++--
->  include/linux/dax.h  |  8 ++++++
->  include/linux/fs.h   | 12 +++++---
->  5 files changed, 116 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index baee584cb8ae..93f16210847b 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1864,3 +1864,69 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
->  	return dax_insert_pfn_mkwrite(vmf, pfn, order);
->  }
->  EXPORT_SYMBOL_GPL(dax_finish_sync_fault);
-> +
-> +static loff_t dax_range_compare_actor(struct inode *ino1, loff_t pos1,
-> +		struct inode *ino2, loff_t pos2, loff_t len, void *data,
-> +		struct iomap *smap, struct iomap *dmap)
-> +{
-> +	void *saddr, *daddr;
-> +	bool *same = data;
-> +	int ret;
-> +
-> +	if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE) {
-> +		*same = true;
-> +		return len;
-> +	}
-> +
-> +	if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
-> +		*same = false;
-> +		return 0;
-> +	}
-> +
-> +	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
-> +				      &saddr, NULL);
-> +	if (ret < 0)
-> +		return -EIO;
-> +
-> +	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
-> +				      &daddr, NULL);
-> +	if (ret < 0)
-> +		return -EIO;
-> +
-> +	*same = !memcmp(saddr, daddr, len);
-> +	return len;
-> +}
-> +
-> +int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +		struct inode *dest, loff_t destoff, loff_t len, bool *is_same,
-> +		const struct iomap_ops *ops)
-> +{
-> +	int id, ret = 0;
-> +
-> +	id = dax_read_lock();
-> +	while (len) {
-> +		ret = iomap_apply2(src, srcoff, dest, destoff, len, 0, ops,
-> +				   is_same, dax_range_compare_actor);
-> +		if (ret < 0 || !*is_same)
-> +			goto out;
-> +
-> +		len -= ret;
-> +		srcoff += ret;
-> +		destoff += ret;
-> +	}
-> +	ret = 0;
-> +out:
-> +	dax_read_unlock(id);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_dedupe_file_range_compare);
-> +
-> +int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +			      struct file *file_out, loff_t pos_out,
-> +			      loff_t *len, unsigned int remap_flags,
-> +			      const struct iomap_ops *ops)
-> +{
-> +	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +					       pos_out, len, remap_flags, ops);
-> +}
-> +EXPORT_SYMBOL(dax_remap_file_range_prep);
-> diff --git a/fs/remap_range.c b/fs/remap_range.c
-> index e4a5fdd7ad7b..4cfc1553f3bf 100644
-> --- a/fs/remap_range.c
-> +++ b/fs/remap_range.c
-> @@ -14,6 +14,7 @@
->  #include <linux/compat.h>
->  #include <linux/mount.h>
->  #include <linux/fs.h>
-> +#include <linux/dax.h>
->  #include "internal.h"
->  
->  #include <linux/uaccess.h>
-> @@ -199,9 +200,9 @@ static void vfs_unlock_two_pages(struct page *page1, struct page *page2)
->   * Compare extents of two files to see if they are the same.
->   * Caller must have locked both inodes to prevent write races.
->   */
-> -static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> -					 struct inode *dest, loff_t destoff,
-> -					 loff_t len, bool *is_same)
-> +int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +				  struct inode *dest, loff_t destoff,
-> +				  loff_t len, bool *is_same)
->  {
->  	loff_t src_poff;
->  	loff_t dest_poff;
-> @@ -280,6 +281,7 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
->  out_error:
->  	return error;
->  }
-> +EXPORT_SYMBOL(vfs_dedupe_file_range_compare);
->  
->  /*
->   * Check that the two inodes are eligible for cloning, the ranges make
-> @@ -289,9 +291,11 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
->   * If there's an error, then the usual negative error code is returned.
->   * Otherwise returns 0 with *len set to the request length.
->   */
-> -int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> -				  struct file *file_out, loff_t pos_out,
-> -				  loff_t *len, unsigned int remap_flags)
-> +int
-> +__generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				struct file *file_out, loff_t pos_out,
-> +				loff_t *len, unsigned int remap_flags,
-> +				const struct iomap_ops *dax_read_ops)
->  {
->  	struct inode *inode_in = file_inode(file_in);
->  	struct inode *inode_out = file_inode(file_out);
-> @@ -351,8 +355,15 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->  	if (remap_flags & REMAP_FILE_DEDUP) {
->  		bool		is_same = false;
->  
-> -		ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
-> -				inode_out, pos_out, *len, &is_same);
-> +		if (!IS_DAX(inode_in))
-> +			ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
-> +					inode_out, pos_out, *len, &is_same);
-> +		else if (dax_read_ops)
-> +			ret = dax_dedupe_file_range_compare(inode_in, pos_in,
-> +					inode_out, pos_out, *len, &is_same,
-> +					dax_read_ops);
-> +		else
-> +			return -EINVAL;
->  		if (ret)
->  			return ret;
->  		if (!is_same)
-> @@ -370,6 +381,15 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->  
->  	return ret;
->  }
-> +EXPORT_SYMBOL(__generic_remap_file_range_prep);
-> +
-> +int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				  struct file *file_out, loff_t pos_out,
-> +				  loff_t *len, unsigned int remap_flags)
-> +{
-> +	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +					       pos_out, len, remap_flags, NULL);
-> +}
->  EXPORT_SYMBOL(generic_remap_file_range_prep);
->  
->  loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 060695d6d56a..d25434f93235 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1329,8 +1329,12 @@ xfs_reflink_remap_prep(
->  	if (IS_DAX(inode_in) || IS_DAX(inode_out))
->  		goto out_unlock;
->  
-> -	ret = generic_remap_file_range_prep(file_in, pos_in, file_out, pos_out,
-> -			len, remap_flags);
-> +	if (!IS_DAX(inode_in))
-> +		ret = generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +				pos_out, len, remap_flags);
-> +	else
-> +		ret = dax_remap_file_range_prep(file_in, pos_in, file_out,
-> +				pos_out, len, remap_flags, &xfs_read_iomap_ops);
->  	if (ret || *len == 0)
->  		goto out_unlock;
->  
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 3275e01ed33d..106d1f033a78 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -239,6 +239,14 @@ int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
->  				      pgoff_t index);
->  s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
->  		struct iomap *srcmap);
-> +int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +				  struct inode *dest, loff_t destoff,
-> +				  loff_t len, bool *is_same,
-> +				  const struct iomap_ops *ops);
-> +int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +			      struct file *file_out, loff_t pos_out,
-> +			      loff_t *len, unsigned int remap_flags,
-> +			      const struct iomap_ops *ops);
+Mike Kravetz (2):
+  hugetlb: rename HPageRestoreReserve flag to HPageRestoreRsvCnt
+  hugetlb: add new hugetlb specific flag HPG_restore_rsv_map
 
-I totally thought that not having explicit static inline stubs of these
-functions would break the build when CONFIG_FS_DAX=n, but then I
-realized that when fsdax is disabled, S_DAX is zero, so this works
-because dead code elimination in the compiler means that the object
-files never receive deferred references to the dax functions, which
-means that linking actually succeeds.
+ fs/hugetlbfs/inode.c    |   3 +-
+ include/linux/hugetlb.h |  17 +++++--
+ mm/hugetlb.c            | 108 ++++++++++++++++++++++++++++------------
+ mm/userfaultfd.c        |  14 +++---
+ 4 files changed, 99 insertions(+), 43 deletions(-)
 
-So:
+-- 
+2.31.1
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
->  static inline bool dax_mapping(struct address_space *mapping)
->  {
->  	return mapping->host && IS_DAX(mapping->host);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index c3c88fdb9b2a..deed4371f34f 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -71,6 +71,7 @@ struct fsverity_operations;
->  struct fs_context;
->  struct fs_parameter_spec;
->  struct fileattr;
-> +struct iomap_ops;
->  
->  extern void __init inode_init(void);
->  extern void __init inode_init_early(void);
-> @@ -2126,10 +2127,13 @@ extern ssize_t vfs_copy_file_range(struct file *, loff_t , struct file *,
->  extern ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
->  				       struct file *file_out, loff_t pos_out,
->  				       size_t len, unsigned int flags);
-> -extern int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> -					 struct file *file_out, loff_t pos_out,
-> -					 loff_t *count,
-> -					 unsigned int remap_flags);
-> +int __generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				    struct file *file_out, loff_t pos_out,
-> +				    loff_t *len, unsigned int remap_flags,
-> +				    const struct iomap_ops *dax_read_ops);
-> +int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				  struct file *file_out, loff_t pos_out,
-> +				  loff_t *count, unsigned int remap_flags);
->  extern loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
->  				  struct file *file_out, loff_t pos_out,
->  				  loff_t len, unsigned int remap_flags);
-> -- 
-> 2.31.1
-> 
-> 
-> 
