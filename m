@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C5C390CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987C8390CFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhEYXgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
+        id S231881AbhEYXhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 19:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbhEYXgj (ORCPT
+        with ESMTP id S231348AbhEYXhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:36:39 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B63AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:35:08 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id t193so24023542pgb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:35:08 -0700 (PDT)
+        Tue, 25 May 2021 19:37:24 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB79AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:35:52 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id f22so23080636pgb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Lxgxwvu6bAHcpIBi46sfdxXVLtVYTXMU6wXoIYMfsmo=;
-        b=iMwF9Z55RdUMMmhqCYSVovxPUEagkTngm9ru8FdnFSF1csZzncsPoRuohZDl1LHKQe
-         gya8NK5DEDRymB4uhEF/dm4tnjRJWoQD0yb9m+EHSejMhMxBJL+15CD1Cp8th4pCcYA9
-         mCFldpKyYixTuCUtxP5zVbMtvfYY4YCWpKtnfGyADb3GCJ9+Q7osXRt2JHEh1dCSVucX
-         qUn0qIoZLH0o1+YwWWcJVaoqIX5cY3snS09BFtVwvw+wgGdqfYuJWeNP6FLpaNANdwFE
-         rRKJsdDN+hcAA+hOTmD6bIJ0yYIDI2ABRPhBr7As9OlMzfqq44KJX3dpUKd45+4dJHRk
-         RLMA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zb2QwH1UtOiW+tjgJrhn0irzzM0kjvk4s0F4xwZQFkE=;
+        b=W0JZ/N1ecsDMGGmmGGwdRIFblPGNDEEw5HFhd1nEqebSuO7j3rvlmXHtj8TZqigAAl
+         TYxQVWTX260YNA+ctc9z1v1cXRQPwcIpBpD1cIrwbL1nzgV4tsu+bHyZ29+D9pmEzlEW
+         tE9vzarGXHoHoDRfG+Z7ldBhx50oV9GUaJ7NU5dGl41I/0aay9ADvc0digSpwDJ5z4xP
+         Gx/2cSP9LdWrYhjYyeodXYbdRftTGBCkwuJVWglcSduo5i3wisgz0k21kI4CItblm4WW
+         PfWWFUqUPMqG+9PgDCtGn4R8/Z+E1QnQ1B90ncKw0N67Yh2MFBkw/JI1NHGJ9OJyisXh
+         DT8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lxgxwvu6bAHcpIBi46sfdxXVLtVYTXMU6wXoIYMfsmo=;
-        b=hCA936+HEx7s6aSZKDXi0l7N8gr0M66S5riYvkwNAI7nWzZnqDnzgm/hk4/3QGz/oj
-         FtM5yDWfEqAZoBUJYKyOLIBV+zdQ4gvUdkpDwJFU4m36tehKPFUWwcamk32UE3XY/sJa
-         AQnxXgML1sgP0e3h5HROGsinL1uTsbm2gj5wBsI86PWsj8/z9RhO6aVkPWWNrL380ZsO
-         0HyTbAIr3xmth3E2zcOHykiyPGihgN1u/EnTYQhjgGXV4pv9ZKQ27ARlxGs96e/RLarB
-         IKEqHB32tmjm3QYEx+Kb1djagVhp7cyhFr7V+wx6GJ4nSc+/mV5fY7HKkzUcZyKNIpfW
-         PJaw==
-X-Gm-Message-State: AOAM533Uv/povszeUBC3fkdKZ6oGHUbqZuSFAvP0Bv3NGk/nb05ikdqV
-        gE2bidj0/8/zjC8rQnz+CWw/Fg==
-X-Google-Smtp-Source: ABdhPJzr+PEXMYZXU15SCAQLmYVDEP5e9yb/rTnDUO8P6McASC9IHAFm7vIdGRzrt9cwZYZ4huukeQ==
-X-Received: by 2002:a62:f24b:0:b029:2dc:9098:c14c with SMTP id y11-20020a62f24b0000b02902dc9098c14cmr32335885pfl.19.1621985707873;
-        Tue, 25 May 2021 16:35:07 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id l7sm2864094pjh.8.2021.05.25.16.35.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zb2QwH1UtOiW+tjgJrhn0irzzM0kjvk4s0F4xwZQFkE=;
+        b=KszxIz7DHMcVr7op2GIG6yFyvZqLtFNg1CpkJG6l7dAf9GtGJNyMYq37OuAxUFDZz7
+         SLkeOv0IgIkoqBXgem1grcpUZ3WXxVmNkMxexeRRhLCvyLlRrKPSxENmHxd4ShHEMysD
+         gAyH+QQs7G8TwtN7VkbgAJ7W9Mifej5HGuacHGv7/o8c+niII/uzuFUErYR9MI9GVgbN
+         Wnh18kCq4TmyeKm5WGY9E+R2LJ90gPHf4qGsxz5XQwkz4win5Pv65wG1B1rcgqXixq9X
+         jIcZDIcA+1o8I5SB7UMrOf4bQKQYHDgu6pusfZMWWP65wbpgG69Ne+6Wv4SkcJaigzyb
+         1ESw==
+X-Gm-Message-State: AOAM533t/x3po/HLR+eqSDm4drpTAXUymWSwSjpQp0P99jJVpaH+KwLw
+        /k6fFVoFeR/x1+kc/7AKQyNHd7WEjn16pQ==
+X-Google-Smtp-Source: ABdhPJy67ARkM3789H42nGqNSmgm5hp++o4wQCsDXjTFYz5yJOhVo8damlKSN3YiUnj6k4tlujEOAQ==
+X-Received: by 2002:a63:3342:: with SMTP id z63mr21708771pgz.187.1621985751910;
+        Tue, 25 May 2021 16:35:51 -0700 (PDT)
+Received: from zen.local (97-113-152-155.tukw.qwest.net. [97.113.152.155])
+        by smtp.gmail.com with ESMTPSA id p17sm2971438pjg.54.2021.05.25.16.35.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 16:35:07 -0700 (PDT)
-Date:   Tue, 25 May 2021 23:35:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Stamatis, Ilias" <ilstam@amazon.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Message-ID: <YK2Jp2tZzIkik142@google.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
- <20210521102449.21505-10-ilstam@amazon.com>
- <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
- <YKv0KA+wJNCbfc/M@google.com>
- <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
- <YK0emU2NjWZWBovh@google.com>
- <6d18b842e1ab946da2e0ebfae79fc51c3193802a.camel@amazon.com>
+        Tue, 25 May 2021 16:35:51 -0700 (PDT)
+From:   Trent Piepho <tpiepho@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     andy@kernel.org, akpm@linux-foundation.org, oskar@scara.com,
+        Daniel Latypov <dlatypov@google.com>,
+        Trent Piepho <tpiepho@gmail.com>, Yiyuan Guo <yguoaz@gmail.com>
+Subject: [PATCH v3 1/2] lib/math/rational.c: Fix divide by zero
+Date:   Tue, 25 May 2021 16:35:18 -0700
+Message-Id: <20210525233519.343068-1-tpiepho@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d18b842e1ab946da2e0ebfae79fc51c3193802a.camel@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021, Stamatis, Ilias wrote:
-> Hmm, this patch actually still removes the caching and introduces a small
-> performance overhead. For example if neither L1 nor L2 are scaled it will
-> still do a vmwrite for every L2 entry/write.
+If the input is out of the range of the allowed values, either larger
+than the largest value or closer to zero than the smallest non-zero
+allowed value, then a division by zero would occur.
 
-True, but there is an ocean of difference between the relative performance of
-vmx_vcpu_load_vmcs() and a nested transition.  vmx_vcpu_load_vmcs() is also
-called much more frequently.
+In the case of input too large, the division by zero will occur on the
+first iteration.  The best result (largest allowed value) will be found
+by always choosing the semi-convergent and excluding the denominator
+based limit when finding it.
 
-> So do we want to get rid of decache_tsc_multiplier() but keep 
-> vmx->current_tsc_ratio and do the check inside write_tsc_multiplier()? Or 
-> alternatively delete vmx->current_tsc_ratio too and have 
-> write_tsc_multiplier() receive 2 parameters, one of the old multiplier and 
-> one of the new?
+In the case of the input too small, the division by zero will occur on
+the second iteration.  The numerator based semi-convergent should not be
+calculated to avoid the division by zero.  But the semi-convergent vs
+previous convergent test is still needed, which effectively chooses
+between 0 (the previous convergent) vs the smallest allowed fraction
+(best semi-convergent) as the result.
 
-My vote is to kill it, eat the barely-noticeable perf hit on nVMX, and tackle
-the aggressive VMCS shadowing in a separate series.
+Fixes: 323dd2c3ed0 ("lib/math/rational.c: fix possible incorrect result from rational fractions helper")
+Reported-by: Yiyuan Guo <yguoaz@gmail.com>
+Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+---
+ lib/math/rational.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/lib/math/rational.c b/lib/math/rational.c
+index 9781d521963d..c0ab51d8fbb9 100644
+--- a/lib/math/rational.c
++++ b/lib/math/rational.c
+@@ -12,6 +12,7 @@
+ #include <linux/compiler.h>
+ #include <linux/export.h>
+ #include <linux/minmax.h>
++#include <linux/limits.h>
+ 
+ /*
+  * calculate best rational approximation for a given fraction
+@@ -78,13 +79,18 @@ void rational_best_approximation(
+ 		 * found below as 't'.
+ 		 */
+ 		if ((n2 > max_numerator) || (d2 > max_denominator)) {
+-			unsigned long t = min((max_numerator - n0) / n1,
+-					      (max_denominator - d0) / d1);
++			unsigned long t = ULONG_MAX;
+ 
+-			/* This tests if the semi-convergent is closer
+-			 * than the previous convergent.
++			if (d1)
++				t = (max_denominator - d0) / d1;
++			if (n1)
++				t = min(t, (max_numerator - n0) / n1);
++
++			/* This tests if the semi-convergent is closer than the previous
++			 * convergent.  If d1 is zero there is no previous convergent as this
++			 * is the 1st iteration, so always choose the semi-convergent.
+ 			 */
+-			if (2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
++			if (!d1 || 2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+ 				n1 = n0 + t * n1;
+ 				d1 = d0 + t * d1;
+ 			}
+-- 
+2.26.2
+
