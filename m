@@ -2,202 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE51938F852
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8A138F84C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhEYCtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 22:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230282AbhEYCsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 22:48:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8B17613B6;
-        Tue, 25 May 2021 02:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621910846;
-        bh=G0DLGokLK/mGUXDs2QLc6PfTjpzoIAZVAK4gEAIlKEY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3EHYmuGDNTXTFlZA3cB4CTQZZ0D1mKbPF2sfq0fP3TSFIFGEtd0uMIX1xd6AivLW
-         gRfmGH/4Irmox5lOj2ZjIQ8FUFbO72gU1+zfmRySWX/P1bsF61NLThGSsbO4s52JTl
-         sZn/lmvlM6ItakqK3himjAdzVQIppr0smX6AzjqLk6ZxkSy6yRlMTyKI5H82k2m70a
-         k8P9/VGA8p7HkKcXrWGA3EanTT2TjMtrafWoNQ7glS8UcIdBM9yKpHY1isc3k2dbIx
-         z7lKgRtVoI+aYPnhSYF1SDhQaHhbmI71GrY4OxG7CVyTPzb/KhzrlaZSwUibrbHP2X
-         BViXx5Yshh4bA==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
-        arnd@arndb.de
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V2 2/2] riscv: Use use_asid_allocator flush TLB
-Date:   Tue, 25 May 2021 02:46:27 +0000
-Message-Id: <1621910787-34598-3-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621910787-34598-1-git-send-email-guoren@kernel.org>
-References: <1621910787-34598-1-git-send-email-guoren@kernel.org>
+        id S230239AbhEYCsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 22:48:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3991 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhEYCsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 22:48:20 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fpz1n0snxzmVFM;
+        Tue, 25 May 2021 10:44:29 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 10:46:49 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 10:46:48 +0800
+Subject: Re: [PATCH -next] ACPI: LPSS: Replaced simple_strtol() with kstrtol()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20210524120832.1580247-1-liushixin2@huawei.com>
+ <CAJZ5v0gZYupB2w4oU1QGvE5aohcyPXk=BJVRvSrApGzp=sXkMQ@mail.gmail.com>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <a62a08be-33e2-d22b-c790-3765c87a2309@huawei.com>
+Date:   Tue, 25 May 2021 10:46:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0gZYupB2w4oU1QGvE5aohcyPXk=BJVRvSrApGzp=sXkMQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-Use static_branch_unlikely(&use_asid_allocator) to keep the origin
-tlb flush style, so it's no effect on the existing machine. Here
-are the optimized functions:
- - flush_tlb_mm
- - flush_tlb_page
- - flush_tlb_range
 
-All above are based on the below new implement functions:
- - __sbi_tlb_flush_range_asid
- - local_flush_tlb_range_asid
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Reviewed-by: Anup Patel <anup.patel@wdc.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/include/asm/mmu_context.h |  2 ++
- arch/riscv/include/asm/tlbflush.h    | 22 ++++++++++++++++++++
- arch/riscv/mm/context.c              |  2 +-
- arch/riscv/mm/tlbflush.c             | 40 +++++++++++++++++++++++++++++++++---
- 4 files changed, 62 insertions(+), 4 deletions(-)
-
-diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-index b065941..7030837 100644
---- a/arch/riscv/include/asm/mmu_context.h
-+++ b/arch/riscv/include/asm/mmu_context.h
-@@ -33,6 +33,8 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
-+DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
-+
- #include <asm-generic/mmu_context.h>
- 
- #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index c84218a..9390319 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -8,6 +8,7 @@
- #define _ASM_RISCV_TLBFLUSH_H
- 
- #include <linux/mm_types.h>
-+#include <asm/page.h>
- #include <asm/smp.h>
- #include <asm/errata_list.h>
- 
-@@ -22,9 +23,30 @@ static inline void local_flush_tlb_page(unsigned long addr)
- {
- 	ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
- }
-+
-+static inline void local_flush_tlb_range_asid(unsigned long start, unsigned long size,
-+					      unsigned long asid)
-+{
-+	unsigned long page_add = PAGE_DOWN(start);
-+	unsigned long page_end = PAGE_UP(start + size);
-+
-+	if (size == -1) {
-+		__asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
-+		return;
-+	}
-+
-+	while(page_add < page_end) {
-+		__asm__ __volatile__ ("sfence.vma %0, %1"
-+				:
-+				: "r" (page_add), "r" (asid)
-+				: "memory");
-+		page_add += PAGE_SIZE;
-+	}
-+}
- #else /* CONFIG_MMU */
- #define local_flush_tlb_all()			do { } while (0)
- #define local_flush_tlb_page(addr)		do { } while (0)
-+#define local_flush_tlb_range_asid(addr)	do { } while (0)
- #endif /* CONFIG_MMU */
- 
- #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 68aa312..45c1b04 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -18,7 +18,7 @@
- 
- #ifdef CONFIG_MMU
- 
--static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
-+DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- 
- static unsigned long asid_bits;
- static unsigned long num_asids;
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 720b443..69588dc 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -4,6 +4,7 @@
- #include <linux/smp.h>
- #include <linux/sched.h>
- #include <asm/sbi.h>
-+#include <asm/mmu_context.h>
- 
- void flush_tlb_all(void)
- {
-@@ -39,18 +40,51 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
- 	put_cpu();
- }
- 
-+static void __sbi_tlb_flush_range_asid(struct cpumask *cmask, unsigned long start,
-+				       unsigned long size, unsigned long asid)
-+{
-+	struct cpumask hmask;
-+	unsigned int cpuid;
-+
-+	if (cpumask_empty(cmask))
-+		return;
-+
-+	cpuid = get_cpu();
-+
-+	if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
-+		local_flush_tlb_range_asid(start, size, asid);
-+	} else {
-+		riscv_cpuid_to_hartid_mask(cmask, &hmask);
-+		sbi_remote_sfence_vma_asid(cpumask_bits(&hmask), start, size, asid);
-+	}
-+
-+	put_cpu();
-+}
-+
- void flush_tlb_mm(struct mm_struct *mm)
- {
--	__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(mm), 0, -1,
-+					   atomic_long_read(&mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
- }
- 
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
- {
--	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE,
-+					   atomic_long_read(&vma->vm_mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
- }
- 
- void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 		     unsigned long end)
- {
--	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), start, end - start,
-+					   atomic_long_read(&vma->vm_mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
- }
--- 
-2.7.4
+On 2021/5/24 22:33, Rafael J. Wysocki wrote:
+> On Mon, May 24, 2021 at 1:35 PM Liu Shixin <liushixin2@huawei.com> wrote:
+>> The simple_strtol() function is deprecated in some situation since
+>> it does not check for the range overflow. Use kstrtol() instead.
+>>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> ---
+>>  drivers/acpi/acpi_lpss.c | 13 ++++++-------
+>>  1 file changed, 6 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+>> index ca742f16a507..1b46e00cad3a 100644
+>> --- a/drivers/acpi/acpi_lpss.c
+>> +++ b/drivers/acpi/acpi_lpss.c
+>> @@ -186,13 +186,12 @@ static void byt_i2c_setup(struct lpss_private_data *pdata)
+>>         long uid = 0;
+>>
+>>         /* Expected to always be true, but better safe then sorry */
+>> -       if (uid_str)
+>> -               uid = simple_strtol(uid_str, NULL, 10);
+>> -
+>> -       /* Detect I2C bus shared with PUNIT and ignore its d3 status */
+>> -       status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
+>> -       if (ACPI_SUCCESS(status) && shared_host && uid)
+>> -               pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
+>> +       if (uid_str && !kstrtol(uid_str, 10, &uid)) {
+>> +               /* Detect I2C bus shared with PUNIT and ignore its d3 status */
+>> +               status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
+>> +               if (ACPI_SUCCESS(status) && shared_host && uid)
+>> +                       pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
+>> +       }
+> This is not a simple replacement.
+>
+> Why are you making the other changes?
+The variables status and shared_host are valid only when the uid is not zero(default to zero).
+If uid_str is NULL or kstrtol() failed or uid is assigned to zero, we can skip these operations.
+>>         lpss_deassert_reset(pdata);
+>>
+>> --
+> .
+>
 
