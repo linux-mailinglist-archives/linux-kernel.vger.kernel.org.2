@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156D038F7BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B795038F7C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhEYByo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        id S230006AbhEYB5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhEYByn (ORCPT
+        with ESMTP id S229550AbhEYB5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:54:43 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537A0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:53:13 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id t193so21478760pgb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bM8JU76A0U5AEEg6fA9aBsbHBZR/+f5poGHys2W1glk=;
-        b=SRPHgxiE0+aC7S9pApVDTr+tciXkKkc4jma71lNFhpqhNt9GsI1yuAI3eqlKQ0SE4d
-         aZ1bYo/JIlASAp0tU5/q+XQLvi+pGDwbVxBoecXz7DLJPJMEezEWX6pObu1J4cFSYbEs
-         96hZ2z3UvPPgVJ9iN1gLWVgcYAp5EntfxB0GzNbhbMmWTBtcqrWCDlYc6vvqneadIvQ+
-         DumVEAKqYBKhPlWPHmF0DsKOjR4NvoH6pWdIKEEuUv0gZNYBKLRrNjKX5CCrl0WdSm3Q
-         LAOMI7gUYfCbrHoPzzeF5Zdyp2d3hTboaOsEllbrV069kB7TKfFw6iuQZ36Da9uaIdig
-         GtPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bM8JU76A0U5AEEg6fA9aBsbHBZR/+f5poGHys2W1glk=;
-        b=P7MvDgf/dZMbHOW6p31HaBsKlPjy1XmFZpdQqFWHMwJ+qU5O+6eenXmPtFdRzQHIW3
-         K7/gqwZaA8iHRhFaCDdI0XWRCSzgrh/3TNGvipgqVaDnuDJrxesJDoKDUK0Q/H8eQS2q
-         XfTU5kUQ1u5C5lETvEn2jCbrpQOF6+N0U9r+4T5R//+RtId3iK8cNoFVeoNki5A8WXK7
-         vkR3AMKN09nOfyilDpEhUyTb2M28GiRIibMZD8Xl/dY4CINSbUGh8hleB+z+KYGepRBP
-         H3NNE4UkOXQPT2nzQ8WjGPsuDtKAokzeP1SfEhD/gFkb0SZE3en3RDsfC3fGeg/FvVQj
-         eRtg==
-X-Gm-Message-State: AOAM532dncdo/ApNyca0MljgAIqsXy0H4230533y+Vo7pBZ6czmXjL0W
-        Uff9IF9vJobsBREdAHJXet0=
-X-Google-Smtp-Source: ABdhPJx6YCigKOkylDhhOtH0iblNTgHl9m9S0MDnvOBCGy4UM8rpII6OKVpMeY7vbgeKuTNxVtJIiw==
-X-Received: by 2002:a05:6a00:13a5:b029:2db:85e0:8264 with SMTP id t37-20020a056a0013a5b02902db85e08264mr28518118pfg.10.1621907592732;
-        Mon, 24 May 2021 18:53:12 -0700 (PDT)
-Received: from ?IPv6:2600:1700:dfe0:49f0:10de:e230:3da4:cfce? ([2600:1700:dfe0:49f0:10de:e230:3da4:cfce])
-        by smtp.gmail.com with ESMTPSA id y1sm12265580pfn.13.2021.05.24.18.53.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 18:53:12 -0700 (PDT)
-Subject: Re: [PATCH 2/4] firmware: arm_scmi: Add support for type handling in
- common functions
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210524231503.34924-1-cristian.marussi@arm.com>
- <20210524231503.34924-3-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <27ef39f9-1774-970b-66b4-66c15d02620e@gmail.com>
-Date:   Mon, 24 May 2021 18:53:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Mon, 24 May 2021 21:57:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267B8C061574;
+        Mon, 24 May 2021 18:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=JIPErQUyisH0HpDDiUm0SZk1nmoFpmh5vdb6lgAqhWE=; b=asNHHyg9DLfTbvsXWy7tB1ux3v
+        muiW/yT1sugvu23RBd/SUM7ciu+WzfsBFeLxrC1Bqb4AIbzm1wQF37zXHoOJ80XziZqYdwkrZh1FM
+        X0E+7P0cVBWLHQjstXfvQSQbxOjGDWBg1MMNbV/rLSw3RyrBWAWTdn/HQPCdnn9PRW0Yp/YX1F6RJ
+        99dtyjFJJg3tNuLEqSh8ybkKhv0BGl4FZP66XFvEy+mU/fOF96FofzAD7+K+8NyQcJYdwVrufZ5R9
+        0o1GpmDWdFu47uS/YP9dzkiQteptrzaIRQoq5XnkYZ+1cADxVlTjCVU2Ak0YdS+nmDD0X1uTimvCp
+        xOV5Z0DA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llMIj-002pHi-KS; Tue, 25 May 2021 01:56:09 +0000
+Subject: Re: [PATCH v2] OF: of_address: clean up OF stub & extern functions
+To:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210524190919.2616-1-rdunlap@infradead.org>
+ <202105250652.aSwyXJ3a-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e16ec6e1-9699-9146-8516-7b792d0b959d@infradead.org>
+Date:   Mon, 24 May 2021 18:56:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210524231503.34924-3-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <202105250652.aSwyXJ3a-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/24/2021 4:15 PM, Cristian Marussi wrote:
-> Add SCMI type handling to pack/unpack_scmi_header common helper functions.
+On 5/24/21 4:02 PM, kernel test robot wrote:
+> Hi Randy,
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on robh/for-next]
+> [also build test ERROR on linux/master linus/master v5.13-rc3 next-20210524]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Randy-Dunlap/OF-of_address-clean-up-OF-stub-extern-functions/20210525-031115
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> config: s390-randconfig-r001-20210524 (attached as .config)
+> compiler: s390-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/8a9c54f1437e3af04c6de3b9606b46437ea69a12
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Randy-Dunlap/OF-of_address-clean-up-OF-stub-extern-functions/20210525-031115
+>         git checkout 8a9c54f1437e3af04c6de3b9606b46437ea69a12
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Yes, this patch wasn't expected to fix all of these arch/s390/ build errors.
+
+Before this patch: (9 undefined symbols)
+
+ERROR: modpost: "devm_ioremap_resource" [drivers/crypto/ccree/ccree.ko] undefined!
+ERROR: modpost: "debugfs_create_regset32" [drivers/crypto/ccree/ccree.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/media/rc/ir-hix5hd2.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/pcmcia/pcmcia.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/pcmcia/pcmcia.ko] undefined!
+ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma_mgmt.ko] undefined!
+ERROR: modpost: "of_address_to_resource" [drivers/dma/qcom/hdma_mgmt.ko] undefined!
+
+This patch only affected the last symbol above. And it covers of_iomap()
+in my build testing as well.
+
+After this patch: (8 undefined symbols)
+
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> ERROR: modpost: "devm_ioremap_resource" [drivers/crypto/ccree/ccree.ko] undefined!
+> ERROR: modpost: "debugfs_create_regset32" [drivers/crypto/ccree/ccree.ko] undefined!
+> ERROR: modpost: "devm_ioremap_resource" [drivers/media/rc/ir-hix5hd2.ko] undefined!
+> ERROR: modpost: "ioremap" [drivers/pcmcia/pcmcia.ko] undefined!
+> ERROR: modpost: "iounmap" [drivers/pcmcia/pcmcia.ko] undefined!
+>>> ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
+> ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+> ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma_mgmt.ko] undefined!
+
+
+I think that all of these arch/s390/ builds undefined symbols when CONFIG_HAS_IOMEM
+is not set are low priority (or no priority) for most people.
+
 -- 
-Florian
+~Randy
+
