@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8CB39041A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E63390415
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhEYOh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbhEYOhT (ORCPT
+        id S234073AbhEYOhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:37:38 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:49404 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234047AbhEYOhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:37:19 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC47C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:48 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id y2so43290333ybq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IXGxhNG8A8CmQe46YV5h/+klPXxUN6g33jr751FeTiA=;
-        b=jmoBS/7kBDXT9IiemYvkDqOy0ZgH32tzlgl/i3TuYjIajb1hZcuucJhhMoyhSiM2cQ
-         MWAAKbryD8B+pVKbe6c4aAAeZBCoAmTEuN0TH8JDJXW6cqVgJfZbtW+Slqh+5sDes71H
-         saJp/uVoaQobcRYKaESCJwggy6I9LiQ2DnEZwPYlGDLlgBlMGP+AaEvkYxs5PHYSejN4
-         ArVDvkbJOASU9EISRhLOXGcoBvKkLVkMM8Rk9+GEvyrCQpf/qx1eL97xa5QuIFQfoPuf
-         w5P1QYh/PZjJBl7sX6ytSe9hk4zlwjlvU11CpPYhFI5tVwqOuGfpyU+DfSRwrBV5iYwr
-         e6lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IXGxhNG8A8CmQe46YV5h/+klPXxUN6g33jr751FeTiA=;
-        b=jJPV/6/UlRgrrkNvB7/qodkviOW+5xHmlUJjvJOEjP0I8Atxj9CsAxyIfWN711hGu3
-         2nJc7u1cFLEhYofE7O2Whd+2TkwmM0EE886sXA0mxSHm2LIsUa2W6i+J82wpZYjT0NnO
-         zFXzqIeqla1hRWlJZnQk9gM6SfRzTPGt6xyfx+KlE/LhASBjAEwq3mavKC9XT5Jg84nd
-         pqK9GlonwEa/MpGpxKfNSCmQCaQFe4zsH4PZUtRqxitMngqRHj5Tb+f1HxeB8e8CZ3ir
-         etg99BSWs82QZrGw/CB/gAAUHCBT/FwD1rqj4CYM8cmaE9bEZKVmbL+VEs8DhY3/w34h
-         Cvpw==
-X-Gm-Message-State: AOAM531Zz/bg+Tl+IUy/vuTlaoNE2CunczbwX9cJfuf4p2PrnY2I+zFO
-        g4hY1mTA2VBJWQhuee+COCAfbchKFoyautXwuuoWeQ==
-X-Google-Smtp-Source: ABdhPJz+Sk3zuoazdMq/qqEdZ49zB09cpUzYzS6EuyApwCwJBYgIdS7J08MKNR0mTqzbmPXCaS0EiShS4JGbEh5siEo=
-X-Received: by 2002:a25:9d86:: with SMTP id v6mr41619044ybp.366.1621953347985;
- Tue, 25 May 2021 07:35:47 -0700 (PDT)
+        Tue, 25 May 2021 10:37:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ki/UxVATrYCQetouX/QmwaQIst2UWIZZsnwpm15gHok=; b=oo9ObZfUthqW/IFjCDipZkNAxn
+        y4Z1mRP6aPZgLGBUSXINQjADeUh0E0t2FsWhntgy2pQG7LLdpCwryPpuayZsTmEuFfqSCeSzgYIL+
+        2SmyUja9Kj9v1V+JNCPRS1N9l3KTu9QbjFb+h+eLr89sE0qwjocN4TMXqVTowhaapaYI=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1llY9O-005lfK-EW; Tue, 25 May 2021 14:35:18 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 333F8D00B19; Tue, 25 May 2021 15:35:51 +0100 (BST)
+Date:   Tue, 25 May 2021 15:35:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ralf Schlatterbeck <rsc@runtux.com>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mirko Vogt <mirko-dev|linux@nanl.de>
+Subject: Re: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
+Message-ID: <YK0LR3077RUsSYti@sirena.org.uk>
+References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
+ <20210521173011.1c602682@slackpad.fritz.box>
+ <20210521201913.2gapcmrzynxekro7@runtux.com>
 MIME-Version: 1.0
-References: <20210516074311.7485-1-aardelean@deviqon.com>
-In-Reply-To: <20210516074311.7485-1-aardelean@deviqon.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 25 May 2021 16:35:37 +0200
-Message-ID: <CAMpxmJXDAmX=Rp26A-N6SRx4WXjaf+v+XfKvZjWLSaY=WHAqzQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-spear-spics: remove platform_set_drvdata() +
- cleanup probe
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eQZK+OgGNZ+kM+zd"
+Content-Disposition: inline
+In-Reply-To: <20210521201913.2gapcmrzynxekro7@runtux.com>
+X-Cookie: The wages of sin are unreported.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 9:43 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> The platform_set_drvdata() call is only useful if we need to retrieve back
-> the private information.
-> Since the driver doesn't do that, it's not useful to have it.
->
-> If this is removed, we can also just do a direct return on
-> devm_gpiochip_add_data(). We don't need to print that this call failed as
-> there are other ways to log/see this during probe.
->
-> This change isn't removing the 'DT probe failed' message, as some may find
-> it useful as a reason for the failed probe. But that can be part of another
-> change if needed.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/gpio/gpio-spear-spics.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-spear-spics.c b/drivers/gpio/gpio-spear-spics.c
-> index 6eca531b7d96..49aac2bb8d2c 100644
-> --- a/drivers/gpio/gpio-spear-spics.c
-> +++ b/drivers/gpio/gpio-spear-spics.c
-> @@ -122,7 +122,6 @@ static int spics_gpio_probe(struct platform_device *pdev)
->  {
->         struct device_node *np = pdev->dev.of_node;
->         struct spear_spics *spics;
-> -       int ret;
->
->         spics = devm_kzalloc(&pdev->dev, sizeof(*spics), GFP_KERNEL);
->         if (!spics)
-> @@ -148,8 +147,6 @@ static int spics_gpio_probe(struct platform_device *pdev)
->                                 &spics->cs_enable_shift))
->                 goto err_dt_data;
->
-> -       platform_set_drvdata(pdev, spics);
-> -
->         spics->chip.ngpio = NUM_OF_GPIO;
->         spics->chip.base = -1;
->         spics->chip.request = spics_request;
-> @@ -163,14 +160,7 @@ static int spics_gpio_probe(struct platform_device *pdev)
->         spics->chip.owner = THIS_MODULE;
->         spics->last_off = -1;
->
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &spics->chip, spics);
-> -       if (ret) {
-> -               dev_err(&pdev->dev, "unable to add gpio chip\n");
-> -               return ret;
-> -       }
-> -
-> -       dev_info(&pdev->dev, "spear spics registered\n");
-> -       return 0;
-> +       return devm_gpiochip_add_data(&pdev->dev, &spics->chip, spics);
->
->  err_dt_data:
->         dev_err(&pdev->dev, "DT probe failed\n");
-> --
-> 2.31.1
->
 
-Applied, thanks!
+--eQZK+OgGNZ+kM+zd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bart
+On Fri, May 21, 2021 at 10:19:13PM +0200, Ralf Schlatterbeck wrote:
+> From: Mirko Vogt <mirko-dev|linux@nanl.de>
+>=20
+> The current sun6i SPI implementation initializes the transfer too early,
+> resulting in SCK going high before the transfer. When using an additional
+> (gpio) chipselect with sun6i, the chipselect is asserted at a time when
+> clock is high, making the SPI transfer fail.
+
+Please don't send new patches in reply to old threads, this makes
+it hard to follow what is going on and creates confusion as to
+what the current version of things is and means things can easily
+get missed if the earlier thread gets discarded - this goes along
+with the thing Andre mentioned about flagging the version of the
+patch in the subject line.
+
+--eQZK+OgGNZ+kM+zd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCtC0YACgkQJNaLcl1U
+h9AY5QgAgcWYI2VA7WPTIjHk9SuXExgIBAH1SNcW2KwVRbBcesxqHH3Dzlfg9vqc
+C6luchIJ7CILJTdw5h1F4j3UhDtGEnQAyq5eecZ0la/eS5POfkWdObtdnWgW8qVj
+9nddoYKV/goXt9jc4VqtOZSKdl9/yY3aK44xFvLZ3k2HJUSCBsr7aGuONUGVjX6Z
+uOYROLl4x6wKUugWfrLANl1PRZBf8fSUOa426DdpWpw+FkLWnaJLAKqQQT2YJPfQ
+vNBe4PjQ9Czqr/8R+FFBAgF005PHX6l/ek2A8lWZ/YuSZGM94qoPIHF5OYLpwSQZ
+x/6RCx9aCRKKd4rU1g9Mlobv8p4Zdg==
+=ZFjA
+-----END PGP SIGNATURE-----
+
+--eQZK+OgGNZ+kM+zd--
