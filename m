@@ -2,144 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CCE39049E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DEB3904A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhEYPKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:10:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11672 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229685AbhEYPJ7 (ORCPT
+        id S230222AbhEYPKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhEYPKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:09:59 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PF4LSY013672;
-        Tue, 25 May 2021 11:08:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qRLgRSBBx/nSGA2WNSV/2YEj8rZP4C8EO+a+X5TvN9s=;
- b=cmKWne6cKQR3346roL5fqGZ3c+rVgaRanUI4MWXMauWCnG2J4hhSukIUUwOsTVe5/+Fc
- qd0ef53PDjdiybN9m/fj8M7N4nl+cKqIQPOkGKuPiAJKYD/WTMSZlPk2s5AFIUXYgmEO
- P8SfJpAiqct6XoHRu5+OQAxElDegnICVjx46Tmw8gs2gwesRP6sgSQEqzj5l7mxSisZo
- V86uKEfuKntnBizk3v7DISXFs4CUDRayY3jFaWSY0QT9uR3xPxRg3dywYMISw+eOQ6jg
- awypFLHFg4EPP/agrCFtc/AezBHhPKUfpPdG6lfHQQ0FNSMn6YRo7lP7rRV+Orm/hk9e 1Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s3ja88xy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 11:08:27 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PF4TPh014519;
-        Tue, 25 May 2021 11:08:27 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38s3ja88wn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 11:08:26 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14PF49x7027031;
-        Tue, 25 May 2021 15:08:25 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 38s1qd0yw2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 15:08:25 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PF8Oov27984154
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 15:08:24 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8916613604F;
-        Tue, 25 May 2021 15:08:24 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 623EF13605D;
-        Tue, 25 May 2021 15:08:23 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 15:08:23 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-3-akrowiak@linux.ibm.com>
- <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
- <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
- <20210525131912.GW1002214@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <6542986f-b20e-3f41-b96c-70f0ce42af2d@linux.ibm.com>
-Date:   Tue, 25 May 2021 11:08:22 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 11:10:49 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB90C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:09:18 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id o8so38654594ljp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VXhstycvJ/ZxY8r6rEvIPljRylC1sPEk0zKGubyDqnc=;
+        b=BkHE3p4fPN34oOAaNSE02dOwEecfhj/NQtDloDqQc+xn+yc/uj4k7T1GAhnkoP7XK5
+         PAirC+CqUOlNV4agBX4g9/Ge6HdzmhIku6IGO1lZlAQ4HoUyPFHWGpKqSpYR4oCZ17/x
+         OL4NFaTV9ufHRrTmyXNPQy0SobLF2Ah9Y/tHmZgKuKoywMAr/qH4eq4OhSBPU+fW+iew
+         lDytQ6AVAFVeL5MfFadlSqcfKptxdCKCSmg60GJGHFKBdWVJjN6us/ZAJ3izcjLvMERO
+         yT9gaICJf2Nc/0SKF4R1mlJwpRq4RbvU1REAIzGEeLOMIo34QkHzOBHiHCvo0l+vpuOR
+         E/dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VXhstycvJ/ZxY8r6rEvIPljRylC1sPEk0zKGubyDqnc=;
+        b=sOLuBCAzn66U6dCqzziVD6MNMCjEVe6sNYUyLxwmk7aw7TWnFJZlMfM/W8xZRT1jFW
+         jHfcKAMGJ3vleoq54Haws/ZdNpDkcZXjhbQ4+qH8jnoZV+N+HydEV8tN/5YfC11V+y+q
+         9Ky768MmjSSseIsd7G/FasfplugHVeTlmpm9jLJAnDedJvS9Hbp0YrJNkqpr1/xHw6/7
+         ZH09JHabl20qxlUhe/1CjJ1kl0FrWXbZpqGoEs/hu68OpTh+kxz8DTRhaJMJJmK8+qxR
+         OZoVmRlr7Llo5n6nesHEc6JucM0TbUEyDdlzIFZNfVxtuEe5iBi+KNHArFX/qPaEW/eI
+         eNsw==
+X-Gm-Message-State: AOAM531PfWOQolEFkl7J/7lgGeHLGWyQOL471yEZ6UIbFg7QPYUoCt8/
+        c/YbKWITM5/5WqrKIkSihuZIU7ulxj8gR/jojkQafAho3FM=
+X-Google-Smtp-Source: ABdhPJxLgO3lpcEhQzJRZHtjBBS37mdWQMb5YUpDCqSSE+VsKji9pL95xpoUjuJXjYq+UoY6D/AWgxbpMKAO5jVryg0=
+X-Received: by 2002:a2e:90c7:: with SMTP id o7mr21231147ljg.368.1621955356716;
+ Tue, 25 May 2021 08:09:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525131912.GW1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: RzmDespSX7uDTLuxpy86PIMrhSf-_JWy
-X-Proofpoint-GUID: cpYkhIxpjJys3-oaXi3DyEEXFQtvxcAv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_07:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250092
+References: <20210512210316.1982416-1-luzmaximilian@gmail.com>
+ <CACRpkdZpm4w6Ym2p9xTsYpkU7CR531aLUUxXj54tssoqd6c9=Q@mail.gmail.com> <YKYnYCaoUDwjS1gL@smile.fi.intel.com>
+In-Reply-To: <YKYnYCaoUDwjS1gL@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 25 May 2021 17:09:05 +0200
+Message-ID: <CACRpkdYHxKbAwFTD=g_xWxq2wnRFC2V7NBrODVn-QDVUREfyhA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl/amd: Add device HID for new AMD GPIO controller
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Sachi King <nakato@nakato.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/25/21 9:19 AM, Jason Gunthorpe wrote:
-> On Tue, May 25, 2021 at 09:16:30AM -0400, Tony Krowiak wrote:
->>
->> On 5/24/21 10:37 AM, Jason J. Herne wrote:
->>> On 5/21/21 3:36 PM, Tony Krowiak wrote:
->>>> The function pointer to the handler that processes interception of the
->>>> PQAP instruction is contained in the mdev. If the mdev is removed and
->>>> its storage de-allocated during the processing of the PQAP instruction,
->>>> the function pointer could get wiped out before the function is called
->>>> because there is currently nothing that controls access to it.
->>>>
->>>> This patch introduces two new functions:
->>>> * The kvm_arch_crypto_register_hook() function registers a function
->>>> pointer
->>>>     for processing intercepted crypto instructions.
->>>> * The kvm_arch_crypto_register_hook() function un-registers a function
->>>>     pointer that was previously registered.
->>> Typo: You meant kvm_arch_crypto_UNregister_hook() in the second bullet.
->>>
->>>
->>> Just one overall observation on this one. The whole hook system seems
->>> kind of over-engineered if this is our only use for it. It looks like a
->>> kvm_s390_crypto_hook is meant to link a specific module with a function
->>> pointer. Do we really need this concept?
->>>
->>> I think a simpler design could be to just place a mutex and a function
->>> pointer in the kvm_s390_crypto struct. Then you can grab the mutex in
->>> vfio_ap_ops.c when registering/unregistering. You would also grab the
->>> mutex in priv.c when calling the function pointer. What I am suggesting
->>> is essentially the exact same scheme you have implemented here, but
->>> simpler and with less infrastructure.
->> That would be great, however; when I implemented something similar, it
->> resulted in a
->> lockdep splat between the lock used to protect the hook and the
->> matrix_dev->lock used to
->> protect updates to matrix_mdev (including the freeing thereof). After
->> pulling what little hair
->> I have left out, this seemed like a reasonable solution, over-engineered
->> though it may be.
->> If somebody has a simpler solution, I'm all ears.
-> Why can't you put the locks in the right order? It looked trivial, I'm confused.
-
-Because the handle_pqap() function in priv.c does not have access to the
-matrix_dev lock.
-
+On Thu, May 20, 2021 at 11:09 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Thu, May 20, 2021 at 01:50:50AM +0200, Linus Walleij wrote:
+> > On Wed, May 12, 2021 at 11:03 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+> >
+> > > Add device HID AMDI0031 to the AMD GPIO controller driver match table.
+> > > This controller can be found on Microsoft Surface Laptop 4 devices and
+> > > seems similar enough that we can just copy the existing AMDI0030 entry.
+> > >
+> > > Cc: <stable@vger.kernel.org> # 5.10+
+> >
+> > Why? It's hardly a regression?
 >
-> Jason
+> IIRC the stable policy allows to backport new IDs.
 
+You're right.
+
+> > > Tested-by: Sachi King <nakato@nakato.io>
+> > > Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> >
+> > I've applied the patch for next without the stable tag for now.
+>
+> It can be pulled to stable afterwards anyway :-)
+
+Nah I'll tag it back on. But it goes upstream with the rest of
+patches for v5.14 in the merge window because it is not
+urgent.
+
+Yours,
+Linus Walleij
