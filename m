@@ -2,139 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101EA39062F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197D7390634
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhEYQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbhEYQHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:07:37 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CB8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:06:04 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id q15so23095689pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LgVOVY2ibuyGuU/9wT6gXOqlRQyyb5+usGB0r4sYDWo=;
-        b=RrfJyelQGFQ10gxDLNjm7SXx+DIwmxk6NevLQkNWMmrut40zA/RdZf1xzB54H3BJHE
-         a5D4wR4VEGUIskrKVZnNE2MEhXYj9e4f21/b6gRkrt5iZH5pL+LSSQeLtMZO7XmuoRDN
-         +ckoRMemeP1aW8Ui5BNNxJEbtU+E9t1llc67qUjWPQPoEOjbkcxxfu37ofHkYE4NDmMF
-         7JKkDcHcM0f12uyw353MJuc1hT0HjBkVKCM5Hojk/VcAMjo14S83lopi0DLq512ou6e2
-         320XDjwIb0y+zwKIrHVYwnAla8iSi5IMOOk6Se8HvqUIQN8IzxMZ2tmZuZr2tkQ5f5lA
-         DK2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LgVOVY2ibuyGuU/9wT6gXOqlRQyyb5+usGB0r4sYDWo=;
-        b=Mjmtro9oQ35eHWI6sR0/yQ1M+rZz7enwbM8cVPEzqoBKdQWpUgXe16N+yMe6T17fhs
-         Gqy8TjCpqNmR0mcqmzJCNrte23jxMQIXhPhjznmzxn6YvgFaPLpMgNeDFN5eRpj4zpzP
-         g5BaYHlpFvF5SbuA0WbltfRW2z9H79m/zwFNK1XcZ93BSzaOoq9DNyu37ZDEPBZ8JwLX
-         E25oWwcYPtV5Z/q7My9LfLFvsZJ4ZcokhHJ9mmprVdgS77GZLMkLwSXMJvXCqR+h01nt
-         EfTsLmlHHC/zKbXJJULhjSbt05DiUJyvAd0ecVGXmc4MSqkPnE2MabjpDhxPI3BcRwT1
-         xz/g==
-X-Gm-Message-State: AOAM531FxTJ00xZley2urr1Ny1+izCKHYB0FfvGMamemGVABWmaf/rXD
-        WLJg8B9AJ1l3GInXYDwyEAomBA==
-X-Google-Smtp-Source: ABdhPJxPfpL1r4PSy4t6tPOfWDdctGgiCOwK/xTk1FvajZnTSCfgq3VdUH4BkHF6Zh2BZ4YSVR23dw==
-X-Received: by 2002:aa7:8b44:0:b029:2dd:4cfc:7666 with SMTP id i4-20020aa78b440000b02902dd4cfc7666mr31201526pfd.73.1621958764164;
-        Tue, 25 May 2021 09:06:04 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h9sm12938162pja.42.2021.05.25.09.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 09:06:03 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:05:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ilias Stamatis <ilstam@amazon.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, mlevitsk@redhat.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        zamsden@gmail.com, mtosatti@redhat.com, dwmw@amazon.co.uk
-Subject: Re: [PATCH v3 10/12] KVM: VMX: Set the TSC offset and multiplier on
- nested entry and exit
-Message-ID: <YK0gZ7ugquQxm2ce@google.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
- <20210521102449.21505-11-ilstam@amazon.com>
+        id S234342AbhEYQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:09:20 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:56637 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231810AbhEYQJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:09:19 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id CEA41240026
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 18:07:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1621958867; bh=xt/SopiWlESxzNwmc3NPZy2Luzt/f001p+eAUG5rr1o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y31x9xhfN0sByjHP/00JXAVZaR7cJ6bnNPAvuTQhZMkYSFCLRMyKIWZ8v526ml7Sy
+         thD+/pZdqjA3JBEY+mqoTGeA7LtOftwtykJQAnYH6SOSdbwvvFyg4vV4+PfjvtwE0N
+         +Fll5chsETJ5zl/qQQ76n0m/EKycg9VTLnmS0WNm63Zum1rOp9Wixbjl38zpJCaLe/
+         i+PbYYKJ8QmGWH9VMbqicDSd58bK5jhxKMpu19e5YASM+bSolVpO6Z4cW4oLWh6hDD
+         uysoo2n1knq8qMYo0W19J0Nl0C2iPlhSrwyMVB0ueZFJWLqPDRakVmflAfQmnuqifs
+         CKrLNfA4LX2xA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FqJrd28pDz6tmQ;
+        Tue, 25 May 2021 18:07:45 +0200 (CEST)
+Date:   Tue, 25 May 2021 16:07:44 +0000
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v7 0/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <20210525180744.24187bb1@monster.powergraphx.local>
+In-Reply-To: <95e93676-cfcf-1aed-1741-d69b72286033@sholland.org>
+References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+        <95e93676-cfcf-1aed-1741-d69b72286033@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521102449.21505-11-ilstam@amazon.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"KVM: nVMX:" for the scope.
+On Mon, 15 Mar 2021 23:33:31 -0500
+Samuel Holland <samuel@sholland.org> wrote:
 
-The shortlog is also a bit confusing.  I usually think of "set == write", i.e.
-I expected VMWRITEs in the diff.  The nested_vmx_vmexit() case in particular is
-gnarly because the actual VMWRITEs aren't captured in the diff's context.
-
-What about combining this with the next patch that exposes the feature to L1?
-E.g. "KVM: nVMX: Enable nested TSC scaling" or so.
-
-That would avoid bikeshedding the meaning of "set", fix the goof in the next patch's
-shortlog (KVM exposes the feature to L1, not L2), and eliminate an unnecessary
-patch for bisection purposes.  Bisecting to a patch that exposes the feature but
-doesn't introduce any actual functionality isn't all that helpful, e.g. if there
-is a bug in _this_ patch then bisection will arguably point at the wrong patch.
-
-On Fri, May 21, 2021, Ilias Stamatis wrote:
-> Calculate the nested TSC offset and multiplier on entering L2 using the
-> corresponding functions. Restore the L1 values on L2's exit.
+> On 3/14/21 4:30 AM, Wilken Gottwalt wrote:
+> > Wilken Gottwalt (2):
+> >   dt-bindings: hwlock: add sun6i_hwspinlock
+> >   hwspinlock: add sun6i hardware spinlock support
+> > 
+> >  .../allwinner,sun6i-a31-hwspinlock.yaml       |  45 ++++
+> >  MAINTAINERS                                   |   6 +
+> >  drivers/hwspinlock/Kconfig                    |   9 +
+> >  drivers/hwspinlock/Makefile                   |   1 +
+> >  drivers/hwspinlock/sun6i_hwspinlock.c         | 210 ++++++++++++++++++
+> >  5 files changed, 271 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+> >  create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
+> > 
 > 
-> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 239154d3e4e7..f75c4174cbcf 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2532,6 +2532,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->  		vmcs_write64(GUEST_IA32_PAT, vmx->vcpu.arch.pat);
->  	}
->  
-> +	vcpu->arch.tsc_offset = kvm_calc_nested_tsc_offset(
-> +			vcpu->arch.l1_tsc_offset,
-> +			vmx_get_l2_tsc_offset(vcpu),
-> +			vmx_get_l2_tsc_multiplier(vcpu));
-> +
-> +	vcpu->arch.tsc_scaling_ratio = kvm_calc_nested_tsc_multiplier(
-> +			vcpu->arch.l1_tsc_scaling_ratio,
-> +			vmx_get_l2_tsc_multiplier(vcpu));
-> +
->  	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
->  	if (kvm_has_tsc_control)
->  		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
-> @@ -3353,8 +3362,6 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  	}
->  
->  	enter_guest_mode(vcpu);
-> -	if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING)
-> -		vcpu->arch.tsc_offset += vmcs12->tsc_offset;
->  
->  	if (prepare_vmcs02(vcpu, vmcs12, &entry_failure_code)) {
->  		exit_reason.basic = EXIT_REASON_INVALID_STATE;
-> @@ -4462,8 +4469,11 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
->  	if (nested_cpu_has_preemption_timer(vmcs12))
->  		hrtimer_cancel(&to_vmx(vcpu)->nested.preemption_timer);
->  
-> -	if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING)
-> -		vcpu->arch.tsc_offset -= vmcs12->tsc_offset;
-> +	if (nested_cpu_has(vmcs12, CPU_BASED_USE_TSC_OFFSETTING)) {
-> +		vcpu->arch.tsc_offset = vcpu->arch.l1_tsc_offset;
-> +		if (nested_cpu_has2(vmcs12, SECONDARY_EXEC_TSC_SCALING))
-> +			vcpu->arch.tsc_scaling_ratio = vcpu->arch.l1_tsc_scaling_ratio;
-> +	}
->  
->  	if (likely(!vmx->fail)) {
->  		sync_vmcs02_to_vmcs12(vcpu, vmcs12);
-> -- 
-> 2.17.1
-> 
+> Thanks for the very thorough testing!
+
+So when will this end up in mainstream? Or do I have to somehing to get this
+triggered? This is not my first driver and back then it was included into
+mainline without anything special on my side. I'm a bit confused. Did I miss
+something?
+
+greetings,
+Will
+
+> For both patches:
+> Reviewed-by: Samuel Holland <samuel@sholland.org>
+
