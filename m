@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F59D39093A
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433C1390941
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhEYSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhEYSv3 (ORCPT
+        id S232083AbhEYSxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:53:37 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:30349 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230388AbhEYSxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:51:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A8BC061574;
-        Tue, 25 May 2021 11:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=NQ4epcrwJLnOn+Z5Q+JRgBByAlxt8NqaS+qzYMfwous=; b=0+HeAohaTk3nEUm+5ikX4z2xXZ
-        pa6BBSNrXg/D5oWNrR7H0eNcBmJ15laH9jpkcRa/eSa/hVmR6+ScJJX4188g5DyY+GGkfUPRskWSg
-        Z//pXv63+3UihPJKDOC+rMdn1JC89WXVoWeTeSButOCPLLxto6v34QdPCB5J8/emxxucbXr7tqOz2
-        swx6abJ1xdthzoXwZHXDQIXN5xEyJ4uBag220nRUYG1BmGaBM9TQY4KeG2MwmcqjGVljjaBCX5UjF
-        pbNasIRHzeoMOyuBo3/W5Yr+rWX2Rzr74Onqg8cBrgrCbAJCrzmTxeAt0+pcedO8+Mbpm9+/HGMFr
-        IH4H8ybA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llc7m-007QcW-VP; Tue, 25 May 2021 18:49:55 +0000
-Subject: Re: [PATCH 2/3] watchdog: Add Mstar MSC313e WDT driver
-To:     Romain Perier <romain.perier@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210525184449.57703-1-romain.perier@gmail.com>
- <20210525184449.57703-3-romain.perier@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dfb1173d-7564-9386-10bf-5151ef284635@infradead.org>
-Date:   Tue, 25 May 2021 11:49:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 25 May 2021 14:53:34 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d64 with ME
+        id 96rz2500221Fzsu036rzjK; Tue, 25 May 2021 20:52:01 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 25 May 2021 20:52:01 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        akpm@linux-foundation.org, stefani@seibold.net
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] tty: nozomi: Fix the error handling path of 'nozomi_card_init()'
+Date:   Tue, 25 May 2021 20:51:57 +0200
+Message-Id: <e28c2e92c7475da25b03d022ea2d6dcf1ba807a2.1621968629.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210525184449.57703-3-romain.perier@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The error handling path is broken and we may un-register things that have
+never been registered.
 
-On 5/25/21 11:44 AM, Romain Perier wrote:
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 355100dad60a..f53634ea0de6 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -980,6 +980,19 @@ config VISCONTI_WATCHDOG
->  	  Say Y here to include support for the watchdog timer in Toshiba
->  	  Visconti SoCs.
->  
-> +config MSC313E_WATCHDOG
-> +	tristate "MStar MSC313e watchdog"
-> +	depends on ARCH_MSTARV7 || COMPILE_TEST
-> +	depends on OF
-> +	select WATCHDOG_CORE
-> +	help
-> +	  Say Y here to include support for the Watchdog timer embedded
-> +	  into MStar MSC313e chips. This will reboot your system when the
-> +	  timeout is reached.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called msc313e_wdt.
+Update the loops index accordingly.
 
-AFAIK, you don't need the "depends on OF" line since
-the of*.h headers provide stubs for the cases of CONFIG_OF
-and/or CONFIG_OF_ADDRESS not set/enabled.
+Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+PORT_MDM is 0, so it does not really matter, but I wonder why one of the
+for loop starts at PORT_MDM, while the other one explicitly starts at 0.
 
-Not having that line would also make COMPILE_TEST more effective.
+We have the same in the remove function, where 0 is used in both cases.
+---
+ drivers/tty/nozomi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Can Rob or anyone else comment on this?
-
-thanks.
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index b85d4beabc1f..0c80f25c8c3d 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1378,7 +1378,7 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 			NOZOMI_NAME, dc);
+ 	if (unlikely(ret)) {
+ 		dev_err(&pdev->dev, "can't request irq %d\n", pdev->irq);
+-		goto err_free_kfifo;
++		goto err_free_all_kfifo;
+ 	}
+ 
+ 	DBG1("base_addr: %p", dc->base_addr);
+@@ -1416,13 +1416,15 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 	return 0;
+ 
+ err_free_tty:
+-	for (i = 0; i < MAX_PORT; ++i) {
++	for (i--; i >= 0; i--) {
+ 		tty_unregister_device(ntty_driver, dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
+ 	}
+ 	free_irq(pdev->irq, dc);
++err_free_all_kfifo:
++	i = MAX_PORT;
+ err_free_kfifo:
+-	for (i = 0; i < MAX_PORT; i++)
++	for (i--; i >= PORT_MDM; i--)
+ 		kfifo_free(&dc->port[i].fifo_ul);
+ err_free_sbuf:
+ 	kfree(dc->send_buf);
 -- 
-~Randy
+2.30.2
 
