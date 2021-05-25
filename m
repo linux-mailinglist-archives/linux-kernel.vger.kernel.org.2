@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F4C38FF82
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FAC38FF87
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhEYKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
+        id S231286AbhEYKwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhEYKtU (ORCPT
+        with ESMTP id S230071AbhEYKwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:49:20 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBED2C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:47:50 -0700 (PDT)
+        Tue, 25 May 2021 06:52:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A7EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kIlqXG4mzpF8kuUvhtnEEvK4Ewcs8NIwl3xb4LOQl/8=; b=EGdqySZJVv63v+zSdlDGsWVXtd
-        DFWrJNTl1FEo9YrOiO+HGX90X5nWvoe8PMhgAClHFoZKGUsI4H0qwTf8d3n6hMVRutRgztmX/fuKg
-        lxrjAocet7/4KPqBq33GS0fBItr8ysvhvpA4ZFPoyp067wHGvo1Np5Dybgbd0qdTxTE3Ag8mkCtLh
-        dAxHDmDLC0FGzEEbLxuZCkpVaJiQErZlKv95ZuVXO7ybWfidhG9zqQT0fCysyNceNoMQc9gSMRz4T
-        LWhtq4x45FfFUWlcd/71wWFrFmqRFVgk1nIz8n1N97C0HksTeRIBnUD5CfDflb4gRZlgRbcnLKa8D
-        mYBkOsUw==;
+        bh=3yMiZmZluSw2WQWEbx30T7K0/rHONFze8eFE1k40vy4=; b=E5LM8zdkpvRG+vzhWbwzKvL2xr
+        Q4YEZv51a8jsqziNUf0r4aqdeeuJVCmD6jjI9O6/wMkfjIcTTghCobk/xCjoe0nJRlvql8d486WZh
+        5RtjsloQyUlEnnJIKQuKMKmK37ICV7Q05Hhe2v8qZpt7WpiKzbGCGBljNzQGza/6qfmfGNx4Z6tOr
+        MLpALDCrhGtbMkaievgExnkr9UaWKmG3LWHh7ovUkM26sVY7aB/FIRrMb3Z1yTJXXhfSc4KD2qAW2
+        4SRWugxaf5hRdam3LHTZrE5B4z4pR8Za0+kRdC2lsRoXN4n+sMyyJ2AagXPD3EPEB+4hGCIJH8apn
+        flrf4mwg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llUaj-0002Hn-4L; Tue, 25 May 2021 10:47:24 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llUch-003PQr-4v; Tue, 25 May 2021 10:49:31 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E5D53001E4;
-        Tue, 25 May 2021 12:47:23 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 34AAC3001E4;
+        Tue, 25 May 2021 12:49:15 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6B15220299B4D; Tue, 25 May 2021 12:47:23 +0200 (CEST)
-Date:   Tue, 25 May 2021 12:47:23 +0200
+        id 1AA5720299B51; Tue, 25 May 2021 12:49:15 +0200 (CEST)
+Date:   Tue, 25 May 2021 12:49:15 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     changhuaixin <changhuaixin@linux.alibaba.com>
 Cc:     Benjamin Segall <bsegall@google.com>,
@@ -53,7 +53,7 @@ Cc:     Benjamin Segall <bsegall@google.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         xiyou.wangcong@gmail.com
 Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
-Message-ID: <YKzVu2cOYRN9TZD3@hirez.programming.kicks-ass.net>
+Message-ID: <YKzWKxD+G4wTd2hf@hirez.programming.kicks-ass.net>
 References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
  <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
  <YKe89Uda+uJdx4X0@hirez.programming.kicks-ass.net>
@@ -68,34 +68,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, May 24, 2021 at 08:42:03PM +0800, changhuaixin wrote:
 
-> >> static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-> >> @@ -4651,6 +4666,9 @@ static int __assign_cfs_rq_runtime(struct cfs_bandwidth *cfs_b,
-> >> 	if (cfs_b->quota == RUNTIME_INF)
-> >> 		amount = min_amount;
-> >> 	else {
-> >> +		if (!cfs_b->period_active)
-> >> +			__refill_cfs_bandwidth_runtime(cfs_b);
+> >> --- a/kernel/sysctl.c
+> >> +++ b/kernel/sysctl.c
+> >> @@ -1816,6 +1816,15 @@ static struct ctl_table kern_table[] = {
+> >> 		.proc_handler	= proc_dointvec_minmax,
+> >> 		.extra1		= SYSCTL_ONE,
+> >> 	},
+> >> +	{
+> >> +		.procname	= "sched_cfs_bw_burst_enabled",
+> >> +		.data		= &sysctl_sched_cfs_bw_burst_enabled,
+> >> +		.maxlen		= sizeof(unsigned int),
+> >> +		.mode		= 0644,
+> >> +		.proc_handler	= proc_dointvec_minmax,
+> >> +		.extra1		= SYSCTL_ZERO,
+> >> +		.extra2		= SYSCTL_ONE,
+> >> +	},
+> >> #endif
+> >> #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+> >> 	{
 > > 
-> > Why this call?
+> > What's the purpose of this new sysctl? By default it is disabled because
+> > burst==0, only if you set burst to some !0 value does this actually do
+> > anything.
 > 
-> As the cfs bandwidth timer stops on idle with runtime unfilled, refill runtime when it restarts to make
-> use of the underrun when period timer stops. Another way to do this might be:
-> 
->         throttled = !list_empty(&cfs_b->throttled_cfs_rq);
->         cfs_b->nr_periods += overrun;
-> 
-> +       __refill_cfs_bandwidth_runtime(cfs_b);
-> +
->         /*
->          * idle depends on !throttled (for the case of a large deficit), and if
->          * we're going inactive then everything else can be deferred
->          */
->         if (cfs_b->idle && !throttled)
->                 goto out_deactivate;
-> 
-> -       __refill_cfs_bandwidth_runtime(cfs_b);
-> -
->         if (!throttled) {
-> 
+> Originally, this is designed to turn burst feature off when the system becomes unstable.
+> Guess we can remove this as you have questioned it.
 
-Ben, do you have a preference?
+Is stability a concern? This is CFS after all, if we overload, we simply
+share time as per usual.
+
+If there is a real use-case for a global knob to limit/disable this I
+don't object too much, but then please explicitly mention it.
