@@ -2,180 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB47A38FA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD9238FAB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhEYGNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 02:13:18 -0400
-Received: from muru.com ([72.249.23.125]:60040 "EHLO muru.com"
+        id S231134AbhEYGQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:16:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50529 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230406AbhEYGNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 02:13:16 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 09706807E;
-        Tue, 25 May 2021 06:11:50 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCHv3] bus: ti-sysc: Fix am335x resume hang for usb otg module
-Date:   Tue, 25 May 2021 09:11:42 +0300
-Message-Id: <20210525061142.28794-1-tony@atomide.com>
-X-Mailer: git-send-email 2.31.1
+        id S230406AbhEYGQM (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 02:16:12 -0400
+IronPort-SDR: M6Tk4/WKSmnTQo4LoJk7NFSGd7/PPo8LTiKSuW4c3Fo5JeH8FcsoQZV9qWEY+dI8+d2iZAia/Z
+ +RGOVk0Ysazw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="202133065"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="202133065"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 23:14:43 -0700
+IronPort-SDR: Jb2Rfz8dz7Lrc03U3/Nkc2hc6nnOgdfDIibgbuY6HLKv6nHmSHFLFv+E2ojbgBXPrOSMu010m2
+ +xetwpdAlmtw==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="442400634"
+Received: from unknown (HELO [10.239.159.33]) ([10.239.159.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 23:14:40 -0700
+Subject: Re: [PATCH v1 3/5] perf tools: Check if mem_events is supported for
+ hybrid
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210520070040.710-1-yao.jin@linux.intel.com>
+ <20210520070040.710-4-yao.jin@linux.intel.com> <YKvgHfNdi7U/sEVg@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <406a0ae9-4742-448c-e4f2-6f7c5b74ace9@linux.intel.com>
+Date:   Tue, 25 May 2021 14:14:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKvgHfNdi7U/sEVg@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On am335x, suspend and resume only works once, and the system hangs if
-suspend is attempted again. However, turns out suspend and resume works
-fine multiple times if the USB OTG driver for musb controller is loaded.
+Hi Jiri,
 
-The issue is caused my the interconnect target module losing context
-during suspend, and it needs a restore on resume to be reconfigure again
-as debugged earlier by Dave Gerlach <d-gerlach@ti.com>.
+On 5/25/2021 1:19 AM, Jiri Olsa wrote:
+> On Thu, May 20, 2021 at 03:00:38PM +0800, Jin Yao wrote:
+>> Check if the mem_events ('mem-loads' and 'mem-stores') exist
+>> in the sysfs path.
+>>
+>> For Alderlake, the hybrid cpu pmu are "cpu_core" and "cpu_atom".
+>> Check the existing of following paths:
+>> /sys/devices/cpu_atom/events/mem-loads
+>> /sys/devices/cpu_atom/events/mem-stores
+>> /sys/devices/cpu_core/events/mem-loads
+>> /sys/devices/cpu_core/events/mem-stores
+>>
+>> If the patch exists, the mem_event is supported.
+>>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/util/mem-events.c | 43 +++++++++++++++++++++++++++++-------
+>>   1 file changed, 35 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+>> index c736eaded06c..e8f6e745eaf0 100644
+>> --- a/tools/perf/util/mem-events.c
+>> +++ b/tools/perf/util/mem-events.c
+>> @@ -12,14 +12,16 @@
+>>   #include "mem-events.h"
+>>   #include "debug.h"
+>>   #include "symbol.h"
+>> +#include "pmu.h"
+>> +#include "pmu-hybrid.h"
+>>   
+>>   unsigned int perf_mem_events__loads_ldlat = 30;
+>>   
+>>   #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>>   
+>>   static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+>> -	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
+>> -	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
+>> +	E("ldlat-loads",	"%s/mem-loads,ldlat=%u/P",	"%s/events/mem-loads"),
+>> +	E("ldlat-stores",	"%s/mem-stores/P",		"%s/events/mem-stores"),
+>>   	E(NULL,			NULL,				NULL),
+> 
+> so this was generic place, now it's x86 specific, I wonder we should
+> move it under arch/x86 to avoid confusion
+> 
 
-There are also other modules that need a restore on resume, like gpmc as
-noted by Dave. So let's add a common way to restore an interconnect
-target module based on a quirk flag. For now, let's enable the quirk for
-am335x otg only to fix the suspend and resume issue.
+Yes, I will move x86 specific perf_mem_events[] to arch/x86/util/mem-events.c.
 
-As gpmc is not causing hangs based on tests with BeagleBone, let's patch
-gpmc separately. For gpmc, we also need a hardware reset done before
-restore according to Dave.
+>>   };
+>>   #undef E
+>> @@ -100,6 +102,18 @@ int perf_mem_events__parse(const char *str)
+>>   	return -1;
+>>   }
+>>   
+>> +static bool perf_mem_events__supported(const char *mnt, char *sysfs_name)
+>> +{
+>> +	char path[PATH_MAX];
+>> +	struct stat st;
+>> +
+>> +	scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
+>> +	if (!stat(path, &st))
+>> +		return true;
+>> +
+>> +	return false;
+> 
+> could be just 'return !stat(path, &st);' right?
+> 
 
-To reinit the modules, we decouple system suspend from PM runtime. We
-replace calls to pm_runtime_force_suspend() and pm_runtime_force_resume()
-with direct calls to internal functions and rely on the driver internal
-state. There no point trying to handle complex system suspend and resume
-quirks via PM runtime.
+Right :)
 
-This is issue should have already been noticed with commit 1819ef2e2d12
-("bus: ti-sysc: Use swsup quirks also for am335x musb") when quirk
-handling was added for am335x otg for swsup. But the issue went unnoticed
-as having musb driver loaded hides the issue, and suspend and resume works
-once without the driver loaded.
+>> +}
+>> +
+>>   int perf_mem_events__init(void)
+>>   {
+>>   	const char *mnt = sysfs__mount();
+>> @@ -110,9 +124,10 @@ int perf_mem_events__init(void)
+>>   		return -ENOENT;
+>>   
+>>   	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+>> -		char path[PATH_MAX];
+>>   		struct perf_mem_event *e = perf_mem_events__ptr(j);
+>> -		struct stat st;
+>> +		struct perf_pmu *pmu;
+>> +		char sysfs_name[100];
+>> +		int unsupported = 0;
+>>   
+>>   		/*
+>>   		 * If the event entry isn't valid, skip initialization
+>> @@ -121,11 +136,23 @@ int perf_mem_events__init(void)
+>>   		if (!e->tag)
+>>   			continue;
+>>   
+>> -		scnprintf(path, PATH_MAX, "%s/devices/%s",
+>> -			  mnt, e->sysfs_name);
+>> +		if (!perf_pmu__has_hybrid()) {
+>> +			scnprintf(sysfs_name, sizeof(sysfs_name),
+>> +				  e->sysfs_name, "cpu");
+>> +			e->supported = perf_mem_events__supported(mnt, sysfs_name);
+>> +		} else {
+>> +			perf_pmu__for_each_hybrid_pmu(pmu) {
+>> +				scnprintf(sysfs_name, sizeof(sysfs_name),
+>> +					  e->sysfs_name, pmu->name);
+>> +				if (!perf_mem_events__supported(mnt, sysfs_name))
+>> +					unsupported++;
+>> +			}
+>> +
+>> +			e->supported = (unsupported == 0) ? true : false;
+> 
+> could you just do in the above loop:
+> 			e->supported |= perf_mem_events__supported(mnt, sysfs_name);
+> 
 
-Fixes: 1819ef2e2d12 ("bus: ti-sysc: Use swsup quirks also for am335x musb")
-Suggested-by: Dave Gerlach <d-gerlach@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
+That's OK, thanks!
 
-Changes since v2:
-- Initialize error to 0 as noted by kernel test robot <lkp@intel.com>
+Thanks
+Jin Yao
 
-Changes since v1:
-- Add separate sysc_reinit_module() so also cpu_pm can eventually use it
-
----
- drivers/bus/ti-sysc.c                 | 53 +++++++++++++++++++++++++--
- include/linux/platform_data/ti-sysc.h |  1 +
- 2 files changed, 51 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1334,6 +1334,34 @@ static int __maybe_unused sysc_runtime_resume(struct device *dev)
- 	return error;
- }
- 
-+static int sysc_reinit_module(struct sysc *ddata, bool leave_enabled)
-+{
-+	struct device *dev = ddata->dev;
-+	int error;
-+
-+	/* Disable target module if it is enabled */
-+	if (ddata->enabled) {
-+		error = sysc_runtime_suspend(dev);
-+		if (error)
-+			dev_warn(dev, "reinit suspend failed: %i\n", error);
-+	}
-+
-+	/* Enable target module */
-+	error = sysc_runtime_resume(dev);
-+	if (error)
-+		dev_warn(dev, "reinit resume failed: %i\n", error);
-+
-+	if (leave_enabled)
-+		return error;
-+
-+	/* Disable target module if no leave_enabled was set */
-+	error = sysc_runtime_suspend(dev);
-+	if (error)
-+		dev_warn(dev, "reinit suspend failed: %i\n", error);
-+
-+	return error;
-+}
-+
- static int __maybe_unused sysc_noirq_suspend(struct device *dev)
- {
- 	struct sysc *ddata;
-@@ -1344,12 +1372,18 @@ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
- 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
- 		return 0;
- 
--	return pm_runtime_force_suspend(dev);
-+	if (!ddata->enabled)
-+		return 0;
-+
-+	ddata->needs_resume = 1;
-+
-+	return sysc_runtime_suspend(dev);
- }
- 
- static int __maybe_unused sysc_noirq_resume(struct device *dev)
- {
- 	struct sysc *ddata;
-+	int error = 0;
- 
- 	ddata = dev_get_drvdata(dev);
- 
-@@ -1357,7 +1391,19 @@ static int __maybe_unused sysc_noirq_resume(struct device *dev)
- 	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
- 		return 0;
- 
--	return pm_runtime_force_resume(dev);
-+	if (ddata->cfg.quirks & SYSC_QUIRK_REINIT_ON_RESUME) {
-+		error = sysc_reinit_module(ddata, ddata->needs_resume);
-+		if (error)
-+			dev_warn(dev, "noirq_resume failed: %i\n", error);
-+	} else if (ddata->needs_resume) {
-+		error = sysc_runtime_resume(dev);
-+		if (error)
-+			dev_warn(dev, "noirq_resume failed: %i\n", error);
-+	}
-+
-+	ddata->needs_resume = 0;
-+
-+	return error;
- }
- 
- static const struct dev_pm_ops sysc_pm_ops = {
-@@ -1468,7 +1514,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("usb_otg_hs", 0, 0x400, 0x404, 0x408, 0x00000050,
- 		   0xffffffff, SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
- 	SYSC_QUIRK("usb_otg_hs", 0, 0, 0x10, -ENODEV, 0x4ea2080d, 0xffffffff,
--		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY |
-+		   SYSC_QUIRK_REINIT_ON_RESUME),
- 	SYSC_QUIRK("wdt", 0, 0, 0x10, 0x14, 0x502a0500, 0xfffff0f0,
- 		   SYSC_MODULE_QUIRK_WDT),
- 	/* PRUSS on am3, am4 and am5 */
-diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
---- a/include/linux/platform_data/ti-sysc.h
-+++ b/include/linux/platform_data/ti-sysc.h
-@@ -50,6 +50,7 @@ struct sysc_regbits {
- 	s8 emufree_shift;
- };
- 
-+#define SYSC_QUIRK_REINIT_ON_RESUME	BIT(27)
- #define SYSC_QUIRK_GPMC_DEBUG		BIT(26)
- #define SYSC_MODULE_QUIRK_ENA_RESETDONE	BIT(25)
- #define SYSC_MODULE_QUIRK_PRUSS		BIT(24)
--- 
-2.31.1
+> jirka
+> 
+>> +		}
+>>   
+>> -		if (!stat(path, &st))
+>> -			e->supported = found = true;
+>> +		if (e->supported)
+>> +			found = true;
+>>   	}
+>>   
+>>   	return found ? 0 : -ENOENT;
+>> -- 
+>> 2.17.1
+>>
+> 
