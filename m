@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B04E3904A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1FC3904C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhEYPLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:11:43 -0400
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:55170 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229898AbhEYPLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:11:41 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 25778CCB19
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:10:10 +0100 (IST)
-Received: (qmail 23622 invoked from network); 25 May 2021 15:10:09 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 15:10:09 -0000
-Date:   Tue, 25 May 2021 16:10:08 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC 09/26] mm, slub: move disabling/enabling irqs to
- ___slab_alloc()
-Message-ID: <20210525151008.GV30378@techsingularity.net>
-References: <20210524233946.20352-1-vbabka@suse.cz>
- <20210524233946.20352-10-vbabka@suse.cz>
- <20210525123536.GR30378@techsingularity.net>
- <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+        id S231530AbhEYPMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:12:51 -0400
+Received: from mail-bn8nam12on2044.outbound.protection.outlook.com ([40.107.237.44]:26880
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229898AbhEYPMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 11:12:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lqRpoy+iAXJQ5oMzswwv1MLNYrktNvLGLW3B/pzL8QTp4OkXxWNPCRd/OSRWe/fKmzk/sGCMq9FqqC9ZTglY5xHk+LbrocSj8VYDnPopsVaUcToIWsHU2I4eNJmVq02wxAMgg+FoNXDClcsL9ijcSbQbhRXJMWPpKM3BNbVZzI7W6W7NwBSbIGdTc7TGgHThExvfijRbYPXdySfv9aZDTjWBtn+OYRz95sLCpeLCjX+VRekBRgeYZqMd0p0jOpPp+l0d1/Vv/K6yS3ii9t2rn6tUxO7Bp+OFgiK5GZl5zNruM0zAUVyJ7xXmkCY2uJjeJk72wuVXFNysEFHHL80cEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M3fDXP2unGF5S1kJyoL8C7MJhWoJsCqJ/3WpuFST8Eg=;
+ b=Ii2wW6vz+f6On/DzAgOI3MG8owvx6FPFenPkn7lpRUlbzJqncqiMG1Nft5WigLATxn7HJumu3yztkdkwGXnJss4vbiubEHHm+dK61027ekQssI7uhfFztXzkxmt66VPikL+VWKDmf/YnxK40RTm5PsX0fxS3TmRVvMwqRZ9jMrIFtECbSHG/9qaLXzwe1ow0wCu8aEof4bPYgJWqbB6uO+Djq3onBX2d+zrC6fYm8Qv3szTgGdZV8fiZxKlLCHCzWeKGV/j/8AigpDovupdUmMPhtCr4ESCZkzTE+ziHZqYGhOQ8lzzEgLpoQDlTQQ4xsDVmOJBWm1/WPIUpE+kGKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M3fDXP2unGF5S1kJyoL8C7MJhWoJsCqJ/3WpuFST8Eg=;
+ b=Ba7msVAv/9AhTzNqW1LsAVh1bf6997iPd7mZMPk0GCLcBPelsUxUN8yzBA5Aq6wAwsOkacZvYKjV5Ta9NYlda3d0iz5M4XFc0+uONFiojgBc2up1+D9wjMspPYLq8oZ8PsQ31YGWEb6CDiMjtuVJMGQX54hPw/E07ohjuw14F5ptdgvw97GLFm4oJ6/AWr1ZVqTX1Lol95syq1UjJnvhsZCUuklFHVAl5f8d1dRcCUNlk/feyI2/fsD7/BHa+V9x0/mQ8tPCU7yRBkUjgmm6TD86ot9A9Pry4WZK7JOAPLe3rL+RIAgVRDEKG4XOT8IzmGXVx5s1TOrAXINcojcRXQ==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5111.namprd12.prod.outlook.com (2603:10b6:208:31b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Tue, 25 May
+ 2021 15:11:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 15:11:19 +0000
+Date:   Tue, 25 May 2021 12:11:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210525151117.GB1002214@nvidia.com>
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-3-akrowiak@linux.ibm.com>
+ <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+ <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
+ <20210525131912.GW1002214@nvidia.com>
+ <6542986f-b20e-3f41-b96c-70f0ce42af2d@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6542986f-b20e-3f41-b96c-70f0ce42af2d@linux.ibm.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YTXPR0101CA0027.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::40) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0027.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Tue, 25 May 2021 15:11:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llYiD-00EPDU-VH; Tue, 25 May 2021 12:11:17 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5d91a269-64dd-4bfe-b181-08d91f8f59a0
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5111:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5111F883913EE1CD79498512C2259@BL1PR12MB5111.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YqHIjm1ByvFqwnUX2ERv0Njb9hocthJQraMrNYw5rzn04wd5kkqT5/f75xCzBxBmWyz95aNLp53V/TdHw35QHyJgcxgC+corCwANwGr7zkdeDpAaoboNDYYpI3wffbDPucy11jzXYOBs2/1swJhQUNg5XCSGS80auuybGL76vcZ4d+hZpRumkeb2W7vgHYcin/Ekc4nbLCavMNUEb4R+WxTk7Kn0Q7QHZTVRwfciicc3sOuvkGO6NqWNSJUN9oWoHGErPJyJUsq8ah23KEjR+/jYC3HjCam1hqBcxHMSS+4e13EqbYBnml1rbRGbRGIg3prnDzHVDOpOu+b89MZdUpeAsUsPbckbsp5VIGTYWYIgS4niInhYTOVloYzeQdHqJQYvYr5adfrob4kQpizlNlLkqMZ0Kb0Wr0r84CQZkEJIuI6H3ivRmtkv9FuKfWtlCoY6RF2SyhY0ofJC7gQM5ivHmdBDMyJOZfJmTBa/5Emgaj0U1XYASxR2D3JQQvgGtxDhSN3fo0SgfoDaNTg7YBIzviDrzPR1zNeED0kx0YjQJiUYURSmwOKv/uqjhj9jVWM26tTz5VvL2Zg4M9f17BmQyou4s/HQdpmcgVxVvE4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(4326008)(33656002)(478600001)(86362001)(2906002)(7416002)(316002)(66476007)(5660300002)(9746002)(186003)(66556008)(66946007)(6916009)(83380400001)(38100700002)(2616005)(9786002)(426003)(8676002)(1076003)(36756003)(26005)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2OIzPyT8u9LuwYWoqeRsV8K3R2qyMsy3nVBYOW21L0IN8Qtk1LnN3EDMFVJc?=
+ =?us-ascii?Q?voQQ9qdKdD20nf/nmRizbdlgmarZhhutYF9NTVJQPKFFnwsTz6JEbwtWmQC1?=
+ =?us-ascii?Q?bS5dRX0yi29FE7Ok4QX7TtYGBD4ewvwBfpf7+ZdXEpbWRKNw+RScurITT6b8?=
+ =?us-ascii?Q?2G/fgXj/V4s8MqeB4GlSs77v667u+UyAyFERqnS7XORFxdk/h1rWlrQaTZUS?=
+ =?us-ascii?Q?q/0tXTkxwhg7AZ5zeF1Eku4cTrck23eATlEV9gDE0+eXfjHMvPZpZVD8t9/u?=
+ =?us-ascii?Q?qA8Q1JCWtvwOKfPlvKlRym9jGzEW6v/Xq83BMxJHdslojnGlXokhybfuKCMe?=
+ =?us-ascii?Q?ytqItfrzzbGBLuA//tqYzvZl3JQhnPBsRFn1oP6ppIJcA5rufaavq4d1WbV6?=
+ =?us-ascii?Q?ri4eUmCn86iAeWywrJ9nlZolpVXDwNo1+yHFGnD74WDCZKxwErYpWDTB/Dmu?=
+ =?us-ascii?Q?HJiR3AU4iSX329tfEKXVFq/pxX7uiCDviOmaRRwBh2gj2J4LOxntkAIsGLCJ?=
+ =?us-ascii?Q?34UqO+ezNjSHBE2025tJRgRtRvuydp/xZDIQSduqjZmersI7L0kvEi02z/RT?=
+ =?us-ascii?Q?RVZlh5PfHqsu2C1O7mipQlwANaXMRG8LLqwWnEfVAJ3fOfHQ6qcQxXTiKetK?=
+ =?us-ascii?Q?hZ9DvwrEUmQzyUyynDDaqaQ1sS8nYxklXGcCHK2LJqrLyVE3NjWcZlxOWPvf?=
+ =?us-ascii?Q?dZACpI7icuVeUzthJphs1SonylpGaA+p/GWhJS+CdxSDxJYdUVlbI2Ko9zQp?=
+ =?us-ascii?Q?NHOdJpZE05eyM5IBfJhYvNLZgj+Fprjeh/+FVDtYhPIgShV9SE+eaVU016aq?=
+ =?us-ascii?Q?cPRS7CUw7p9FCECx9mtQ9kdJFuVm1tC65xWHCRwQXWvSTnq4g2DD+qLgbJa9?=
+ =?us-ascii?Q?bsrwWNjmedjV96W8a5Z9GcZ9q8BDsCLE2npp7INEyGAY7/pXPdMbEALM4IR5?=
+ =?us-ascii?Q?2cSdshSqqWbqBslBrn9aFtJ6JgMwI7uFqS7s6X21nyUkN0VIzElx6F1k9Eit?=
+ =?us-ascii?Q?/lat1m5H2YZ8Ea/NI+Ex93ojSwgrn518cuWmjLRNHGs+Pz8BtfuILu3usu4O?=
+ =?us-ascii?Q?5TnGROvwyAR+tznSnr3zEWT245tRdlk6rY8SDUI3yt+PJKbTgEwcyssn3ObJ?=
+ =?us-ascii?Q?Q+gnKi76m7wywszQMjhFhqP2KATtFJIXhlwFvnLVYDwt4LhOmfm+6wL/BCGZ?=
+ =?us-ascii?Q?MzUjt8GFGYDgCXYxEwlKmczaXMabshIjopgHz9jIjom+Sa/0P27jqieVUg4+?=
+ =?us-ascii?Q?Q78qSMg2RMJxGHws2wyn6cw/CGVM4jkWngZFiqHRNvJYoP5wg8t9phHYtvqe?=
+ =?us-ascii?Q?mpJQHfrBKGvN1euNxMxyS1ns?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d91a269-64dd-4bfe-b181-08d91f8f59a0
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 15:11:19.5885
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bwAMsVBOl1RsABrWREtnuIj5jgCEZEA3jdnb4UuKkQWnxy9soCHmC2cpjhByuN5h
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 02:47:10PM +0200, Vlastimil Babka wrote:
-> On 5/25/21 2:35 PM, Mel Gorman wrote:
-> > On Tue, May 25, 2021 at 01:39:29AM +0200, Vlastimil Babka wrote:
-> >> Currently __slab_alloc() disables irqs around the whole ___slab_alloc().  This
-> >> includes cases where this is not needed, such as when the allocation ends up in
-> >> the page allocator and has to awkwardly enable irqs back based on gfp flags.
-> >> Also the whole kmem_cache_alloc_bulk() is executed with irqs disabled even when
-> >> it hits the __slab_alloc() slow path, and long periods with disabled interrupts
-> >> are undesirable.
-> >> 
-> >> As a first step towards reducing irq disabled periods, move irq handling into
-> >> ___slab_alloc(). Callers will instead prevent the s->cpu_slab percpu pointer
-> >> from becoming invalid via migrate_disable(). This does not protect against
-> >> access preemption, which is still done by disabled irq for most of
-> >> ___slab_alloc(). As the small immediate benefit, slab_out_of_memory() call from
-> >> ___slab_alloc() is now done with irqs enabled.
-> >> 
-> >> kmem_cache_alloc_bulk() disables irqs for its fastpath and then re-enables them
-> >> before calling ___slab_alloc(), which then disables them at its discretion. The
-> >> whole kmem_cache_alloc_bulk() operation also disables cpu migration.
-> >> 
-> >> When  ___slab_alloc() calls new_slab() to allocate a new page, re-enable
-> >> preemption, because new_slab() will re-enable interrupts in contexts that allow
-> >> blocking.
-> >> 
-> >> The patch itself will thus increase overhead a bit due to disabled migration
-> >> and increased disabling/enabling irqs in kmem_cache_alloc_bulk(), but that will
-> >> be gradually improved in the following patches.
-> >> 
-> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > 
-> > Why did you use migrate_disable instead of preempt_disable? There is a
-> > fairly large comment in include/linux/preempt.h on why migrate_disable
-> > is undesirable so new users are likely to be put under the microscope
-> > once Thomas or Peter notice it.
-> 
-> I understood it as while undesirable, there's nothing better for now.
-> 
+On Tue, May 25, 2021 at 11:08:22AM -0400, Tony Krowiak wrote:
 
-I think the "better" option is to reduce preempt_disable sections as
-much as possible but you probably have limited options there. It might
-be easier to justify if the sections you were protecting need to go to
-sleep like what mm/highmem.c needs but that does not appear to be the case.
+> > Why can't you put the locks in the right order? It looked trivial, I'm confused.
+> 
+> Because the handle_pqap() function in priv.c does not have access to the
+> matrix_dev lock.
 
-> > I think you are using it so that an allocation request can be preempted by
-> > a higher priority task but given that the code was disabling interrupts,
-> > there was already some preemption latency.
-> 
-> Yes, and the disabled interrupts will get progressively "smaller" in the series.
-> 
-> > However, migrate_disable
-> > is more expensive than preempt_disable (function call versus a simple
-> > increment).
-> 
-> That's true, I think perhaps it could be reimplemented so that on !PREEMPT_RT
-> and with no lockdep/preempt/whatnot debugging it could just translate to an
-> inline migrate_disable?
-> 
+Based on the sketch  made the handle_pqap() should only handle the
+arch.crypto.rwsem.
 
-It might be a bit too large for that.
+When it calls the hook it gets the matrix dev
 
-> > On that basis, I'd recommend starting with preempt_disable
-> > and only using migrate_disable if necessary.
-> 
-> That's certainly possible and you're right it would be a less disruptive step.
-> My thinking was that on !PREEMPT_RT it's actually just preempt_disable (however
-> with the call overhead currently), but PREEMPT_RT would welcome the lack of
-> preempt disable. I'd be interested to hear RT guys opinion here.
-> 
+This sets the lock order as always: rwsem then matrix_dev
 
-It does more than preempt_disable even on !PREEMPT_RT. It's only on !SMP
-that it becomes inline. While it might allow a higher priority task to
-preempt, PREEMPT_RT is also not the common case and I think it's better
-to use the lighter-weight option for the majority of configurations.
+Of the other two places:
 
-> > Bonus points for adding a comment where ___slab_alloc disables IRQs to
-> > clarify what is protected -- I assume it's protecting kmem_cache_cpu
-> > from being modified from interrupt context. If so, it's potentially a
-> > local_lock candidate.
-> 
-> Yeah that gets cleared up later :)
-> 
+@@ -352,8 +352,7 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
++       down_write(&&vcpu->kvm->arch.crypto.rwsem);
+        mutex_lock(&matrix_dev->lock);
 
-I saw that after glancing through the rest of the series. While I didn't
-spot anything major, I'd also like to hear from Peter or Thomas on whether
-migrate_disable or preempt_disable would be preferred for mm/slub.c. The
-preempt-rt tree does not help answer the question given that the slub
-changes there are mostly about deferring some work until IRQs are enabled.
+Obviously correct
 
--- 
-Mel Gorman
-SUSE Labs
+@@ -1202,7 +1203,9 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+                mutex_lock(&matrix_dev->lock);
+                vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
++               down_write(&matrix_mdev->kvm->arch.crypto.rwsem);
+                matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
++               up_write(&matrix_mdev->kvm->arch.crypto.rwsem);
+
+This is inverted
+
+Just move the down_write up two lines
+
+What is missing?
+
+Jason
