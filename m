@@ -2,86 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE7E390067
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD10390062
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhEYL5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:57:46 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:39237 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbhEYL5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:57:41 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 14PBsOwI021380;
-        Tue, 25 May 2021 20:54:24 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 14PBsOwI021380
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621943665;
-        bh=V+gm1MoogimFfSAAfmNf6D6xHKs8r0D00kjReKhDXG0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=n4rH5ypkPPhMhcKjpZWiQX9AIkW6jt8yzL8niiag9si0G+5hkR+AYYohZWW+53djx
-         UYoPuWi39ddfUECJWpRiKOH3UJJhCh+gATpKWIuQUMGgzpbA7S0huyEECx6ID1bu80
-         3ItLw3kTIHCaif0tU/y2w3UYv2dJzlFa9RdABZn7nteF3KIg5GVnEfhG3Vl+DKCpq+
-         GAVGSHHU4bchRl47Kx3WuOWzEuc8mNQiZjiRIu/3Mv44HBpPCYgEW+QqGO5daur8Kn
-         M1q0UNuVzEwN+VriHeJzn/36F06iY16szRRrPJhmD0dDcJnwW18qCPvbntpBc9F/F+
-         RglaiAbIYSgTg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/syscalls: clear 'offset' and 'prefix' in case they are set in env
-Date:   Tue, 25 May 2021 20:54:20 +0900
-Message-Id: <20210525115420.679416-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S232053AbhEYL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231770AbhEYL4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 07:56:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A6161260;
+        Tue, 25 May 2021 11:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621943691;
+        bh=1kgF2uL/dHB1asBQritC0d5do+lurkO6lWXKq9gtfUM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJzjHB8TIqkgfCTfTdMiZjuiXGAmdlkcnGkp2bWnR4Hk8KOqV1628owxWzdXndAFU
+         ut9NAwMZXmOT91idh2nhzHn2C7wrMXyy/IypBFASyRKToi3ANd9XtUIDi2xtJ8wmlf
+         qlQ9FLGe976K2gPVc1CgcNL0iFTiV/7W+MpTKfVw=
+Date:   Tue, 25 May 2021 13:54:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        glittao@gmail.com, vinmenon@codeaurora.org
+Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+Message-ID: <YKzlia5b/vaDaul9@kroah.com>
+References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+ <YKys873HUNp/ZMqV@kroah.com>
+ <7324d56f-c5fe-05fa-55f2-7dd2dbf9bce0@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7324d56f-c5fe-05fa-55f2-7dd2dbf9bce0@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the environment variable 'prefix' is set on the build host,
-it is wrongly used as syscall macro prefixes.
+On Tue, May 25, 2021 at 02:27:15PM +0530, Faiyaz Mohammed wrote:
+> 
+> 
+> On 5/25/2021 1:23 PM, Greg KH wrote:
+> > On Tue, May 25, 2021 at 01:08:05PM +0530, Faiyaz Mohammed wrote:
+> >> alloc_calls and free_calls implementation in sysfs have two issues,
+> >> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+> >> to "one value per file" rule.
+> >>
+> >> To overcome this issues, move the alloc_calls and free_calls implemeation
+> >> to debugfs.
+> >>
+> >> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> >> to be inline with what it does.
+> >>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> >> ---
+> >> changes in V7:
+> >>         - Drop the older alloc_calls and free_calls interface.
+> >> changes in v6:
+> >>         - https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+> >>
+> >> changes in v5:
+> >>         - https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
+> >>
+> >> changes in v4:
+> >>         - https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
+> >>
+> >> changes in v3:
+> >>         - https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
+> >>
+> >> changes in v2:
+> >>         - https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
+> >>
+> >> changes in v1:
+> >>         - https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
+> >>
+> >>  include/linux/slub_def.h |   8 ++
+> >>  mm/slab_common.c         |   9 ++
+> >>  mm/slub.c                | 353 ++++++++++++++++++++++++++++++++++-------------
+> >>  3 files changed, 276 insertions(+), 94 deletions(-)
+> >>
+> >> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+> >> index dcde82a..b413ebe 100644
+> >> --- a/include/linux/slub_def.h
+> >> +++ b/include/linux/slub_def.h
+> >> @@ -159,6 +159,14 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+> >>  }
+> >>  #endif
+> >>  
+> >> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+> >> +#define SLAB_SUPPORTS_DEBUGFS
+> >> +void debugfs_slab_release(struct kmem_cache *);
+> >> +#else
+> >> +static inline void debugfs_slab_release(struct kmem_cache *s)
+> >> +{
+> >> +}
+> >> +#endif
+> >>  void object_err(struct kmem_cache *s, struct page *page,
+> >>  		u8 *object, char *reason);
+> >>  
+> >> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> >> index a4a5714..873dd79 100644
+> >> --- a/mm/slab_common.c
+> >> +++ b/mm/slab_common.c
+> >> @@ -455,6 +455,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
+> >>  #else
+> >>  		slab_kmem_cache_release(s);
+> >>  #endif
+> >> +#ifdef SLAB_SUPPORTS_DEBUGFS
+> >> +		debugfs_slab_release(s);
+> >> +#endif
+> > 
+> > Why do you need these #ifdef if your slub_dev.h file already provides an
+> > "empty" function for this?
+> > 
+> We are not including slub_def.h directly. mm/slab.h includes the
+> slub_def.h if CONFIG_SLUB enable,
+> 
+> from mm/slab.h
+> #ifdef CONFIG_SLAB
+> #include <linux/slab_def.h>
+> #endif
+> 
+> #ifdef CONFIG_SLUB
+> #include <linux/slub_def.h>
+> #endif
+> 
+> so if CONFIG_SLAB is enable then mm/slab.h includes slab_def.h, to avoid
+> undefined reference error added SLAB_SUPPORTS_DEBUGFS like
+> SLAB_SUPPORTS_SYSFS.
 
-  $ export prefix=/usr
-  $ make -s defconfig all
-  In file included from ./arch/x86/include/asm/unistd.h:20,
-                   from <stdin>:2:
-  ./arch/x86/include/generated/uapi/asm/unistd_64.h:4:9: warning: missing whitespace after the macro name
-      4 | #define __NR_/usrread 0
-        |         ^~~~~
+Ick, ok, messy code, I'll stop complaining now if this really is the
+only way to do it (still feels wrong to me...)
 
-arch/x86/entry/syscalls/Makefile should clear 'offset' and 'prefix'.
-
-Link: https://lore.kernel.org/lkml/CA+G9fYvFXTHPKwasdVidF7qEHdqwRht8Xg6qm6CCLL0HGaU1ew@mail.gmail.com/
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 3cba325b358f ("x86/syscalls: Switch to generic syscallhdr.sh")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/x86/entry/syscalls/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
-index 8eb014bca8c9..5b3efed0e4e8 100644
---- a/arch/x86/entry/syscalls/Makefile
-+++ b/arch/x86/entry/syscalls/Makefile
-@@ -11,6 +11,8 @@ syscall64 := $(src)/syscall_64.tbl
- 
- syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
-+offset :=
-+prefix :=
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --abis $(abis) --emit-nr \
--- 
-2.27.0
-
+greg k-h
