@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97693390149
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366BB390152
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhEYMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:49:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232680AbhEYMsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:48:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621946842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YXmsHziycKqj5sjG90gli5vNMCQewicI2zvKUV1QGAk=;
-        b=I0XYjdiBL2a/iLGOHwXQNobh+nKCLh+auWlPMN8c4YUoUaTLItP7K7BqI7PBPOK5GXagxX
-        dVVkzuehOPzMU1q8789dHD2HJzy6jMFCYj+ecFz/paQP98sVPzKZ7ilEBl9xAzZ+/F3oo5
-        dm6kHyjuETyBjg43Uc1fH94/ppZzMp4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-SO5tl9TpNvmx3t9BmEArIg-1; Tue, 25 May 2021 08:47:18 -0400
-X-MC-Unique: SO5tl9TpNvmx3t9BmEArIg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05644107ACC7;
-        Tue, 25 May 2021 12:47:18 +0000 (UTC)
-Received: from host1.jankratochvil.net (unknown [10.40.193.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E12DE690FA;
-        Tue, 25 May 2021 12:47:16 +0000 (UTC)
-Date:   Tue, 25 May 2021 14:47:14 +0200
-From:   Jan Kratochvil <jan.kratochvil@redhat.com>
-To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: LTS perf unwind fix
-Message-ID: <YKzx0jEp7PXbaewj@host1.jankratochvil.net>
-References: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S232880AbhEYMud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232696AbhEYMuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:50:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE1561408;
+        Tue, 25 May 2021 12:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621946942;
+        bh=QUX2Qjh+C64K99gtIEF4QokUV1P6ESzhW/K6CgCKWgU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lwipGqaDxwbE+FjAtHCj9PXtXpW60qzRkwm640+P2cXI8ABoMkmq1fQDDqyEX3fXQ
+         Vqo/qduvklMDAVSednKu0iy88p2qYY13Kur5uQ46CHtCFUpNV4TRcdtwv8pSRioVzE
+         DU7e3vHriz5JLHJKJ8tSB/9+OrgZgeiJ2nActX19k9LRuRLqEtqgB15Ba2m31pvyO1
+         AvS+WEB0xnUdlPa8UwdGRlFoVBASZpHO4iXOwwcLGe+Et5wcHEcAGRLUoyFpCwSo3i
+         y3LUw3E8bmcq1PhO5mxi7yWwjHX4oGsJzyzZiwoswaeQirTLbet/9bHcIqAtz96PMn
+         /7+LcMmcbDI5A==
+Date:   Tue, 25 May 2021 21:48:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     acme@kernel.org, jolsa@redhat.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
+Message-Id: <20210525214858.33a66846ac09e499c3268a63@kernel.org>
+In-Reply-To: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 14:41:15 +0200, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
-> Can you please cherry-pick this to LTS:
+On Tue, 25 May 2021 10:07:44 +0530
+Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+
+> When run as normal user with default sysctl kernel.kptr_restrict=0
+> and kernel.perf_event_paranoid=2, perf probe fails with:
 > 
-> commit bf53fc6b5f415cddc7118091cb8fd6a211b2320d
-> Author: Jan Kratochvil <jan.kratochvil@redhat.com>
-> Date:   Fri Dec 4 09:17:02 2020 -0300
+>   $ ./perf probe move_page_tables
+>   Relocated base symbol is not found!
 > 
->     perf unwind: Fix separate debug info files when using elfutils' libdw's unwinder
+> The warning message is not much informative. The reason perf fails
+> is because /proc/kallsyms is restricted by perf_event_paranoid=2
+> for normal user and thus perf fails to read relocated address of
+> the base symbol.
+> 
+> Tweaking kptr_restrict and perf_event_paranoid can change the
+> behavior of perf probe. Also, running as root or privileged user
+> works too. Add these details in the warning message.
+> 
+> Plus, kmap->ref_reloc_sym might not be always set even if
+> host_machine is initialized. Above is the example of the same.
+> Remove that comment.
 
-It needs to be cherry-picked together with this commit as my commit did cause
-a regression:
+Yes, those are restricted in some cases. Anyway without priviledged
+(super) user, perf probe can not set the probe in ftrace.
 
-commit 4e1481445407b86a483616c4542ffdc810efb680
-Author: Dave Rigby <d.rigby@me.com>
-Date:   Thu Feb 18 16:56:54 2021 +0000
+Hmm, I think it should check the effective user-id at first. If it
+is not super user and the action will access tracefs and kallsyms,
+it should warn at that point. 
 
-    perf unwind: Set userdata for all __report_module() paths
+Thank you,
+
+> 
+> Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>  tools/perf/util/probe-event.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> index a78c8d59a555..3a7649835ec9 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -108,7 +108,6 @@ void exit_probe_symbol_maps(void)
+>  
+>  static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
+>  {
+> -	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
+>  	struct kmap *kmap;
+>  	struct map *map = machine__kernel_map(host_machine);
+>  
+> @@ -819,7 +818,10 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
+>  
+>  	reloc_sym = kernel_get_ref_reloc_sym(&map);
+>  	if (!reloc_sym) {
+> -		pr_warning("Relocated base symbol is not found!\n");
+> +		pr_warning("Relocated base symbol is not found! "
+> +			   "Check /proc/sys/kernel/kptr_restrict\n"
+> +			   "and /proc/sys/kernel/perf_event_paranoid. "
+> +			   "Or run as privileged perf user.\n\n");
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -3025,7 +3027,10 @@ static int find_probe_trace_events_from_map(struct perf_probe_event *pev,
+>  			(!pp->retprobe || kretprobe_offset_is_supported())) {
+>  		reloc_sym = kernel_get_ref_reloc_sym(NULL);
+>  		if (!reloc_sym) {
+> -			pr_warning("Relocated base symbol is not found!\n");
+> +			pr_warning("Relocated base symbol is not found! "
+> +				   "Check /proc/sys/kernel/kptr_restrict\n"
+> +				   "and /proc/sys/kernel/perf_event_paranoid. "
+> +				   "Or run as privileged perf user.\n\n");
+>  			ret = -EINVAL;
+>  			goto out;
+>  		}
+> -- 
+> 2.31.1
+> 
 
 
-Jan Kratochvil
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
