@@ -2,315 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C1E390601
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E991A390606
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhEYP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhEYP7w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:59:52 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9749C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:58:22 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id 69so16579377plc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GrNYyp8yFCM3OjtEgwsRlPYZghJBZxh+aIazEW9zPPY=;
-        b=klmzJr10Hwz5hESiRxrs9bZ1OQdihS5xP7/1ioX/BAEl9X+FVsytvGtpEQeT/LFhib
-         1Hw1QsKmh359WG2XCkq2Jx7wI1a/v4IW1Evv80o5coZNSG+x8BKn4BSTgYgFgb7i1bDu
-         S8IM4beVYZBZUiI0SQZetFVL85X80t/HBxEguuLG4DDRMbhZKJ+gGRr/jx5oscaKy1Tg
-         w7sQb3jKYO0ctxlGLms6S8w8lZr46IomCP+dmOEI/oc1ilfdP0xECj5O1CoKW/K11fYO
-         smhwW7vIH8aQUUmcXk/ai2wyYi1spgw5u5k369EskIXHhV92VSB70DvpoLvsh/4eSEtv
-         ybnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GrNYyp8yFCM3OjtEgwsRlPYZghJBZxh+aIazEW9zPPY=;
-        b=MN5BHtE1Jnjj6s1wwiTc56oWAX8jE0Ol9T4DIK420iiKjqSUv9BN7U5tafk8clpmtV
-         QhYr1123Dh00HBDRI18nxBme3JYbwAAb5VhJkR+20srUjDFcmrFSh6h9gh1PAK23sc7t
-         VL0+eT+DnZ9++IU0qnXZVmmpY1R/9AtbfNeuHqYn++CLz7MU5jvfW5id0FNjA6d2uit2
-         L3zTPWOSUeLekTqfI4AWuFK002r37NnUUX/zZgG4QW+QSjFCfKMo9T5+DF+3mK4UQ2GX
-         4wYLQiBunmXMWZ5ap8vksyt7v7Ew3cHS4agpiAzRYyKx0fwI2cuQndf8rH88cZ6lg9kv
-         qe0g==
-X-Gm-Message-State: AOAM532tHilEyBAlljqB9G5dlr26Jt/lZaVL3zAby3rVcjGT1ZUEBJ2s
-        5X9qX3oOvuYx1qeNZTVW2KOrRw==
-X-Google-Smtp-Source: ABdhPJxiTE1MXZy29GZ6ygzEV+/Xn203KaZ2CJKzl3TAXPY1HaIedzMdVsdUpKrSioL1WSB6gvqKsg==
-X-Received: by 2002:a17:90a:ab90:: with SMTP id n16mr5389652pjq.223.1621958302021;
-        Tue, 25 May 2021 08:58:22 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x22sm2340419pjp.42.2021.05.25.08.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 08:58:21 -0700 (PDT)
-Date:   Tue, 25 May 2021 15:58:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Stamatis, Ilias" <ilstam@amazon.com>
-Cc:     "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Message-ID: <YK0emU2NjWZWBovh@google.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
- <20210521102449.21505-10-ilstam@amazon.com>
- <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
- <YKv0KA+wJNCbfc/M@google.com>
- <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
+        id S233872AbhEYQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:00:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41500 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232858AbhEYQAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:00:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621958310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9otuVabrfXBAVNjVXfRZ1fRmNMAazHRuzbK2fmvWM3U=;
+        b=XQr4aTRedS/QDUdlUqzwT6BMcSV46qP6QyfpZo7IunRcLwL7kV/Zo5CZ51LgTXQb1uBFmK
+        p2/VFwsAxaLHP2A6Rlm2sJsCoWeE8PfMznbK6Kct7K2rvhdIzlSS9uB7UcbbWOnvNM4V3H
+        GSG4vLE+18pIhdoa44Bv1wEgBcFXtDM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621958310;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9otuVabrfXBAVNjVXfRZ1fRmNMAazHRuzbK2fmvWM3U=;
+        b=Rvk7eQvmQiSQ7i/FUG5qH1eVgSbyV1QTWCBCE5w+9tOOf18sNl1CqhffYm0y5TC3YXKwzP
+        VRM8MmDLJ7fzxlCQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DAFECAB71;
+        Tue, 25 May 2021 15:58:29 +0000 (UTC)
+Date:   Tue, 25 May 2021 17:58:29 +0200
+Message-ID: <s5ho8cybyai.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 01/12] ALSA: doc: Clarify IEC958 controls iface
+In-Reply-To: <20210525132354.297468-2-maxime@cerno.tech>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+        <20210525132354.297468-2-maxime@cerno.tech>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021, Stamatis, Ilias wrote:
-> On Mon, 2021-05-24 at 18:44 +0000, Sean Christopherson wrote:
-> > Yes, but its existence is a complete hack.  vmx->current_tsc_ratio has the same
-> > scope as vcpu->arch.tsc_scaling_ratio, i.e. vmx == vcpu == vcpu->arch.  Unlike
-> > per-VMCS tracking, it should not be useful, keyword "should".
-> > 
-> > What I meant by my earlier comment:
-> > 
-> >   Its use in vmx_vcpu_load_vmcs() is basically "write the VMCS if we forgot to
-> >   earlier", which is all kinds of wrong.
-> > 
-> > is that vmx_vcpu_load_vmcs() should never write vmcs.TSC_MULTIPLIER.  The correct
-> > behavior is to set the field at VMCS initialization, and then immediately set it
-> > whenever the ratio is changed, e.g. on nested transition, from userspace, etc...
-> > In other words, my unclear feedback was to make it obsolete (and drop it) by
-> > fixing the underlying mess, not to just drop the optimization hack.
+On Tue, 25 May 2021 15:23:43 +0200,
+Maxime Ripard wrote:
 > 
-> I understood this and replied earlier. The right place for the hw multiplier
-> field to be updated is inside set_tsc_khz() in common code when the ratio
-> changes. However, this requires adding another vendor callback etc. As all
-> this is further refactoring I believe it's better to leave this series as is -
-> ie only touching code that is directly related to nested TSC scaling and not
-> try to do everything as part of the same series.
+> The doc currently mentions that the IEC958 Playback Default should be
+> exposed on the PCM iface, and the Playback Mask on the mixer iface.
+> 
+> It's a bit confusing to advise to have two related controls on two
+> separate ifaces, and it looks like the drivers that currently expose
+> those controls use any combination of the mixer and PCM ifaces.
+> 
+> Let's try to clarify the situation a bit, and encourage to at least have
+> the controls on the same iface.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-But it directly impacts your code, e.g. the nested enter/exit flows would need
-to dance around the decache silliness.  And I believe it even more directly
-impacts this series: kvm_set_tsc_khz() fails to handle the case where userspace
-invokes KVM_SET_TSC_KHZ while L2 is active.
-
-> This makes testing easier too.
-
-Hmm, sort of.  Yes, the fewer patches/modifications in a series definitely makes
-the series itself easier to test.  But stepping back and looking at the total
-cost of testing, I would argue that punting related changes to a later time
-increases the overall cost.  E.g. if someone else picks up the clean up work,
-then they have to redo most, if not all, of the testing that you are already
-doing, including getting access to the proper hardware, understanding what tests
-to prioritize, etc...  Whereas adding one more patch to your series is an
-incremental cost since you already have the hardware setup, know which tests to
-run, etc...
-
-> We can still implement these changes later.
-
-We can, but we shouldn't.  Simply dropping vmx->current_tsc_ratio is not an
-option; it knowingly introduces a (minor) performance regression, for no reason
-other than wanting to avoid code churn.  Piling more stuff on top of the flawed
-decache logic is impolite, as it adds more work for the person that ends up
-doing the cleanup.  I would 100% agree if this were a significant cleanup and/or
-completely unrelated, but IMO that's not the case.
-
-Compile tested only...
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index 029c9615378f..34ad7a17458a 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -90,6 +90,7 @@ KVM_X86_OP_NULL(has_wbinvd_exit)
- KVM_X86_OP(get_l2_tsc_offset)
- KVM_X86_OP(get_l2_tsc_multiplier)
- KVM_X86_OP(write_tsc_offset)
-+KVM_X86_OP(write_tsc_multiplier)
- KVM_X86_OP(get_exit_info)
- KVM_X86_OP(check_intercept)
- KVM_X86_OP(handle_exit_irqoff)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index f099277b993d..a334ce7741ab 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1308,6 +1308,7 @@ struct kvm_x86_ops {
-        u64 (*get_l2_tsc_offset)(struct kvm_vcpu *vcpu);
-        u64 (*get_l2_tsc_multiplier)(struct kvm_vcpu *vcpu);
-        void (*write_tsc_offset)(struct kvm_vcpu *vcpu, u64 offset);
-+       void (*write_tsc_multiplier)(struct kvm_vcpu *vcpu, u64 multiplier);
+thanks,
 
-        /*
-         * Retrieve somewhat arbitrary exit information.  Intended to be used
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index b18f60463073..914afcceb46d 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1103,6 +1103,14 @@ static void svm_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
-        vmcb_mark_dirty(svm->vmcb, VMCB_INTERCEPTS);
- }
+Takashi
 
-+static void svm_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 l1_multiplier)
-+{
-+       /*
-+        * Handled when loading guest state since the ratio is programmed via
-+        * MSR_AMD64_TSC_RATIO, not a field in the VMCB.
-+        */
-+}
-+
- /* Evaluate instruction intercepts that depend on guest CPUID features. */
- static void svm_recalc_instruction_intercepts(struct kvm_vcpu *vcpu,
-                                              struct vcpu_svm *svm)
-@@ -4528,6 +4536,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
-        .get_l2_tsc_offset = svm_get_l2_tsc_offset,
-        .get_l2_tsc_multiplier = svm_get_l2_tsc_multiplier,
-        .write_tsc_offset = svm_write_tsc_offset,
-+       .write_tsc_multiplier = svm_write_tsc_multiplier,
 
-        .load_mmu_pgd = svm_load_mmu_pgd,
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 6058a65a6ede..712190493926 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2535,7 +2535,7 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-        vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
-
-        if (kvm_has_tsc_control)
--               decache_tsc_multiplier(vmx);
-+               vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_scaling_ratio);
-
-        nested_vmx_transition_tlb_flush(vcpu, vmcs12, true);
-
-@@ -4505,7 +4505,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
-                vmcs_write32(TPR_THRESHOLD, vmx->nested.l1_tpr_threshold);
-
-        if (kvm_has_tsc_control)
--               decache_tsc_multiplier(vmx);
-+               vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_scaling_ratio);
-
-        if (vmx->nested.change_vmcs01_virtual_apic_mode) {
-                vmx->nested.change_vmcs01_virtual_apic_mode = false;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4b70431c2edd..bf845a08995e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1390,11 +1390,6 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
-
-                vmx->loaded_vmcs->cpu = cpu;
-        }
--
--       /* Setup TSC multiplier */
--       if (kvm_has_tsc_control &&
--           vmx->current_tsc_ratio != vcpu->arch.tsc_scaling_ratio)
--               decache_tsc_multiplier(vmx);
- }
-
- /*
-@@ -1813,6 +1808,11 @@ static void vmx_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
-        vmcs_write64(TSC_OFFSET, offset);
-...skipping...
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -322,8 +322,6 @@ struct vcpu_vmx {
-        /* apic deadline value in host tsc */
-        u64 hv_deadline_tsc;
-
--       u64 current_tsc_ratio;
--
-        unsigned long host_debugctlmsr;
-
-        /*
-@@ -532,12 +530,6 @@ static inline struct vmcs *alloc_vmcs(bool shadow)
-                              GFP_KERNEL_ACCOUNT);
- }
-
--static inline void decache_tsc_multiplier(struct vcpu_vmx *vmx)
--{
--       vmx->current_tsc_ratio = vmx->vcpu.arch.tsc_scaling_ratio;
--       vmcs_write64(TSC_MULTIPLIER, vmx->current_tsc_ratio);
--}
--
- static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
- {
-        return vmx->secondary_exec_control &
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b61b54cea495..690de1868873 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2179,14 +2179,16 @@ static u32 adjust_tsc_khz(u32 khz, s32 ppm)
-        return v;
- }
-
-+static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu,
-+                                         u64 l1_multiplier);
-+
- static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
- {
-        u64 ratio;
-
-        /* Guest TSC same frequency as host TSC? */
-        if (!scale) {
--               vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
--               vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
-+               kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
-                return 0;
-        }
-
-@@ -2212,7 +2214,7 @@ static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
-                return -1;
-        }
-
--       vcpu->arch.l1_tsc_scaling_ratio = vcpu->arch.tsc_scaling_ratio = ratio;
-+       kvm_vcpu_write_tsc_multiplier(vcpu, ratio);
-        return 0;
- }
-
-@@ -2224,8 +2226,7 @@ static int kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz)
-        /* tsc_khz can be zero if TSC calibration fails */
-        if (user_tsc_khz == 0) {
-                /* set tsc_scaling_ratio to a safe value */
--               vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
--               vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
-+               kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
-                return -1;
-        }
-
-@@ -2383,6 +2384,25 @@ static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 l1_offset)
-        static_call(kvm_x86_write_tsc_offset)(vcpu, vcpu->arch.tsc_offset);
- }
-
-+static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu,
-+                                         u64 l1_multiplier)
-+{
-+       if (!kvm_has_tsc_control)
-+               return;
-+
-+       vcpu->arch.l1_tsc_scaling_ratio = l1_multiplier;
-+
-+       /* Userspace is changing the multiplier while L2 is active... */
-+       if (is_guest_mode(vcpu))
-+               vcpu->arch.tsc_scaling_ratio = kvm_calc_nested_tsc_multiplier(
-+                       l1_multiplier,
-+                       static_call(kvm_x86_get_l2_tsc_multiplier)(vcpu));
-+       else
-+               vcpu->arch.tsc_scaling_ratio = l1_multiplier;
-+
-+       static_call(kvm_x86_write_tsc_multiplier)(vcpu, vcpu->arch.tsc_scaling_ratio);
-+}
-+
- static inline bool kvm_check_tsc_unstable(void)
- {
- #ifdef CONFIG_X86_64
+> ---
+>  .../sound/kernel-api/writing-an-alsa-driver.rst     | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> index e6365836fa8b..01d59b8aea92 100644
+> --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> @@ -3508,14 +3508,15 @@ field must be set, though).
+>  
+>  “IEC958 Playback Con Mask” is used to return the bit-mask for the IEC958
+>  status bits of consumer mode. Similarly, “IEC958 Playback Pro Mask”
+> -returns the bitmask for professional mode. They are read-only controls,
+> -and are defined as MIXER controls (iface =
+> -``SNDRV_CTL_ELEM_IFACE_MIXER``).
+> +returns the bitmask for professional mode. They are read-only controls.
+>  
+>  Meanwhile, “IEC958 Playback Default” control is defined for getting and
+> -setting the current default IEC958 bits. Note that this one is usually
+> -defined as a PCM control (iface = ``SNDRV_CTL_ELEM_IFACE_PCM``),
+> -although in some places it's defined as a MIXER control.
+> +setting the current default IEC958 bits.
+> +
+> +Due to historical reasons, both variants of the Playback Mask and the
+> +Playback Default controls can be implemented on either a
+> +``SNDRV_CTL_ELEM_IFACE_PCM`` or a ``SNDRV_CTL_ELEM_IFACE_MIXER`` iface.
+> +Drivers should expose the mask and default on the same iface though.
+>  
+>  In addition, you can define the control switches to enable/disable or to
+>  set the raw bit mode. The implementation will depend on the chip, but
+> -- 
+> 2.31.1
+> 
