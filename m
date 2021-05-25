@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47DA38FA6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC00E38FA78
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 08:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhEYF5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:57:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6381 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229476AbhEYF5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:57:20 -0400
-IronPort-SDR: LxM+ldHm+7Ojx9iGR9sry1r88gVc5TJadE2b93pLngqPv7rUYqcwmp+EQM5BMW8ArGawzDeL2i
- wthLpe570zGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="201860402"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="201860402"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 22:55:51 -0700
-IronPort-SDR: fxzLbUfFVHEbsRkNrPKG5pqht9ZyH/zhsQquL3K9tzylGIbruuxq70RtZVbKLjq+1AnYMCmNtX
- BlTP4eZ4nJrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="408614873"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 24 May 2021 22:55:51 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
-        by linux.intel.com (Postfix) with ESMTP id D4B05580911;
-        Mon, 24 May 2021 22:55:48 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC net-next 2/2] net: stmmac: allow gmac4 to probe for c45 devices before c22
-Date:   Tue, 25 May 2021 14:00:54 +0800
-Message-Id: <20210525060054.23750-1-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S230314AbhEYGH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 02:07:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55861 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhEYGH2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 02:07:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621922759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r9QfkiWTazDYUtE1Luc4hV82nC6GoaJdxYTDUHwiTtU=;
+        b=Ia3nM7wZUnyBCc69CgohhfSWkhm2cKKTvivfsm/TwyzCOekdX1g9hIBSPdk2h3xouJdpLR
+        KN8W+uCcYTBU/QAM1T4eYPkb3lPkHMygQ/5rHEejg2mFAbv7HHrIzkm3j4O0McuBc5AVVX
+        ysLdkFe+V47E7VnDc+yrPVn8V/fMsjA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-CBk8SG8WMry_anwHQduvIA-1; Tue, 25 May 2021 02:05:57 -0400
+X-MC-Unique: CBk8SG8WMry_anwHQduvIA-1
+Received: by mail-wm1-f72.google.com with SMTP id n127-20020a1c27850000b02901717a27c785so5517799wmn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 23:05:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=r9QfkiWTazDYUtE1Luc4hV82nC6GoaJdxYTDUHwiTtU=;
+        b=fXrRlT5PCFksWqR+GWYJMzPNE0bd+GHjJauAJxigXBX3xLYTJSWtEKto5GFlCgnsD4
+         cqVI3INgDglU6ibB5lSwRED8w5iwUbgfEz9Y8xA3+A7u56+HUSjyjTzKb349m//bnsHg
+         OWjfItcGcY14OrQEFpuLVkYmnHhEY6MOKvD25We5P0ZyP63pN68OXI9Vq6Sh3C4RA6TE
+         IBBrwuw/bXenm4aTyUn4fSgMV3Vrhy2rrb6s/kGLG24/ISujDaBN61T9EDaARHbkZZmJ
+         DfPyrdwJdWjh/CgMNOTdtjSpn0tZiRPULdEVtEbtJKGiV3zdWhq8dGcpbSw1Bl1+6B+k
+         r6Ew==
+X-Gm-Message-State: AOAM530O6hWF4c3keHqvL29EFzc1DSdt+9WBDBFg8Gj8ZaAWOE6ASdRn
+        7Y7YtlnATBo2LtZctAFt1XTx4y2/M28grZJdCV4Npc8jat4t3Ey0fWOo5fbKAlnrPGxvoIgtpBM
+        TuTjts1N6Xt93GhC6DAM5fNUN
+X-Received: by 2002:a5d:64cf:: with SMTP id f15mr24582939wri.327.1621922756166;
+        Mon, 24 May 2021 23:05:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyfsthrHqZDORFny3PkPPPeOrcDPeoQH9q5hYHy/9xCUEv21MTIaAZm54SxRMgPqJN2wFdkfQ==
+X-Received: by 2002:a5d:64cf:: with SMTP id f15mr24582933wri.327.1621922756019;
+        Mon, 24 May 2021 23:05:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id n20sm9759911wmk.12.2021.05.24.23.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 23:05:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: Fix ERROR: modpost: .kvm_vcpu_can_poll undefined!
+In-Reply-To: <1621911770-11744-1-git-send-email-wanpengli@tencent.com>
+References: <1621911770-11744-1-git-send-email-wanpengli@tencent.com>
+Date:   Tue, 25 May 2021 08:05:54 +0200
+Message-ID: <87im378i0t.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the order of probing devices to Clause-45 followed by Clause-22.
-This will allow probing devices that only return valid PHY ID when
-accessed via Clause-45.
+Wanpeng Li <kernellwp@gmail.com> writes:
 
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> Export kvm_vcpu_can_poll to fix ERROR: modpost: .kvm_vcpu_can_poll undefined!
+>
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index b750074f8f9c..1050d4c128ff 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -425,7 +425,7 @@ int stmmac_mdio_register(struct net_device *ndev)
- 	new_bus->name = "stmmac";
- 
- 	if (priv->plat->has_gmac4)
--		new_bus->probe_capabilities = MDIOBUS_C22_C45;
-+		new_bus->probe_capabilities = MDIOBUS_C45_C22;
- 
- 	if (priv->plat->has_xgmac) {
- 		new_bus->read = &stmmac_xgmac2_mdio_read;
+Fixes: 0fee89fbc44b ("KVM: PPC: exit halt polling on need_resched()")
+
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  virt/kvm/kvm_main.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 62522c1..8eaec42 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2949,6 +2949,7 @@ bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
+>  {
+>  	return single_task_running() && !need_resched() && ktime_before(cur, stop);
+>  }
+> +EXPORT_SYMBOL_GPL(kvm_vcpu_can_poll);
+>  
+>  /*
+>   * The vCPU has executed a HLT instruction with in-kernel mode enabled.
+
 -- 
-2.25.1
+Vitaly
 
