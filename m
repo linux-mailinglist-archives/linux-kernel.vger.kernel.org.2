@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BCD390C32
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376D0390C3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbhEYWbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 18:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
+        id S232862AbhEYWbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 18:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhEYWa7 (ORCPT
+        with ESMTP id S230147AbhEYWbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 18:30:59 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526FAC061574;
-        Tue, 25 May 2021 15:29:28 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id n2so33904808wrm.0;
-        Tue, 25 May 2021 15:29:28 -0700 (PDT)
+        Tue, 25 May 2021 18:31:40 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD1EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:30:10 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id t24so16287632oiw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=yHrYHt9lX7EfFlqtvt9zE3RQPwkkMllvHJPqz5tzqnk=;
-        b=KctzmADNy8hq3ORFwjPbcZ+2ne8jXz8auizHW+olGT9VbwbfXURRKo6gAoz7Yd7nDz
-         +ey86WUfYFxD8kwRjjgM7wswcu6Apk5IdABUP7bj/JrLcV/iKdtks4KRFmwZo5vBBQ/s
-         IDRTQrhG+XQWJyf3tZTgqmpi9sEg/ym4yZGqv8aD96NkwZPD4g6sApuvPkfLf0ENLVKB
-         zatR1xvt/cxG3wNMEaYKuj8mkODtMRNP7wLka+zzBZerrs2xMHNbH+hQIUGMndbMdQl4
-         ohpHKVz+LgGj92Z8Vs/hf6YRnQhMs15WYeZemIHTm2n3/OQ18l3kkWVHDK7Uuu+8pWyS
-         SlfA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YRai1FABwcG3qj1sZ1sAYvilNEmlVeCZF91PHh6OwVY=;
+        b=ABiL69p7DpymrzTzefq+Ldtsg4kNOO0yvkKh9JLXXNM8QRPXYi3wnJln4B9ZhNTVKe
+         dOIZgxHEz/R569knkBfPb8YRD6lQUs7KJapkMzhPVRrcGJbqHuzBqFAHVsHX3r6JiS/o
+         Gu3sJXEvP4XfKNljzu3u3moBSme+0BZGHWUtJumXpIb0kTrK56V/+1V1AX+3nGC5eL8g
+         oM20HqoMV/GyqmN8CrJ1dKiYjJv7toOIZ6JcFwWO9QbbWOh1+De1CIztKlf8CaFhxhgx
+         0y8e9cYA9xIFVnLNz0lg4hnH8GgOwK9akQrqDGCCef4MP7L2zjpnHJO5ely2rWLO2mqC
+         6gOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=yHrYHt9lX7EfFlqtvt9zE3RQPwkkMllvHJPqz5tzqnk=;
-        b=gE8nLTyxcE43Pbr3tCB0UKIlU8nbsXvxcfAmKgt3HTl9ndKll1cX++XPzaJ5tLRH10
-         K28X5eY4TftM92in0SGm8SUoDfRew7CPNW4NjyI3PTrMvtKchCNBGjVNcWeCyOkCmgiL
-         HoSdao9y0Rw3tQJ8iYpMzhAnWe4lWhLUGw0CdPKfMhQtBQzO5vDaFzV1ayFscXm111+6
-         sX6BxA3IfeVxufjlX2dp2eCMp6Nvv1d3RAGm0nvSDT7cSg/QcUpeprGIVHdhjqJQsEXP
-         kxFepXiGoa3ug2TmGB8BtO/RdOnFaqRY/OsTDfOBQ0RWRSgsBIYeJcOk29poJKO6na9D
-         Kdog==
-X-Gm-Message-State: AOAM530lvRvznpXm66qnmSEElRut9bwvMfFGTxJ5iLtP2vdrOARHZU4o
-        pS1IzQGSuAzxnkAP0pvODcY=
-X-Google-Smtp-Source: ABdhPJwghEMpeIbiYervpgptKtIrJHjTkEsbsLRwUHSE49JK3LGObn65hnvWlPB00tWyLKZ8nEKFOw==
-X-Received: by 2002:a05:6000:12cc:: with SMTP id l12mr29161723wrx.91.1621981766965;
-        Tue, 25 May 2021 15:29:26 -0700 (PDT)
-Received: from [192.168.1.211] ([91.110.20.117])
-        by smtp.gmail.com with ESMTPSA id i11sm17883091wrq.26.2021.05.25.15.29.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 15:29:26 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] ACPI: utils: Fix reference counting in
- for_each_acpi_dev_match()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-References: <20210519210253.3578025-1-andy.shevchenko@gmail.com>
- <CAJZ5v0in=qEtVULLF=RwBTiFqiRK-DyPfD4F6uUAqeUfPFB8QQ@mail.gmail.com>
- <CAJZ5v0hsDpGtLHPQvcnof3c1LBnhoZSwWyHJdj1mOov9gV_W8A@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <50903d09-96f8-0dc9-a1f7-21bf1543b15a@gmail.com>
-Date:   Tue, 25 May 2021 23:29:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YRai1FABwcG3qj1sZ1sAYvilNEmlVeCZF91PHh6OwVY=;
+        b=j5/a43LRXtDo4vdRXKGwvCoMZ2ajX3NjU/TPxPiX6g+l9ayOon3nIgUid9wtV7t7u8
+         DtqOu3GmYvuhVe7bOwHwTIYoIJgaqj//Ljcl8sZ9EaHKvwjdr+MyP9WftPZH+0J3tgdu
+         PwuseC/dmrW30pIk9+YQY8AFut7VYgvlHoWU+yPK4RGhuYPEEvLOhCS5FmsE0owvSLHF
+         L3f2ZTJKmV3+Tpm0Ajf+cjbxIMWF87gx1zIB7uTzhMl+JwP/mHybCI0gfXFLbApNLPUz
+         kqcsw9FShqfuPargt75sVH4euxBx4xuRVrZsDjSe3JFzbAZo5VU/KeCQ/1ZFVkF7YGfE
+         KF/A==
+X-Gm-Message-State: AOAM532RdhaF25AEcE+wEeTaLgU2sMyqJa/YSQvPzFvaOk5dcoeknObD
+        fggUOFx5AeJvc6JHYZ2LlBsCM/IEbbchJEZKBOOV7g==
+X-Google-Smtp-Source: ABdhPJyYUUYdIO3NltesNXilMOlQNA5nHhciFqjIUPvEzjEBsn6S6p7pyfyaJXSHDv3c/BRW0vZPYNEmcXXVgCYcaNY=
+X-Received: by 2002:a05:6808:144f:: with SMTP id x15mr15631888oiv.172.1621981809478;
+ Tue, 25 May 2021 15:30:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hsDpGtLHPQvcnof3c1LBnhoZSwWyHJdj1mOov9gV_W8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210525175819.699786-1-elver@google.com> <202105260629.X6n5yc4D-lkp@intel.com>
+In-Reply-To: <202105260629.X6n5yc4D-lkp@intel.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 26 May 2021 00:29:58 +0200
+Message-ID: <CANpmjNMT=HQQpK9U4bnoGb-=+KJC246dSZ3u2VB0TXw4itsB-w@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael, Andy
-
-On 20/05/2021 20:40, Rafael J. Wysocki wrote:
-> On Thu, May 20, 2021 at 9:13 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->> On Wed, May 19, 2021 at 11:19 PM Andy Shevchenko
->> <andy.shevchenko@gmail.com> wrote:
->>> Currently it's possible to iterate over the dangling pointer in case the device
->>> suddenly disappears. This may happen becase callers put it at the end of a loop.
->>>
->>> Instead, let's move that call inside acpi_dev_get_next_match_dev().
->> Not really.
-> OK, I see what you want to achieve and the macro is actually buggy,
-> because it leaves unbalanced references behind.
-
-
-Yeah; I guess the originally intended use (which was "get all these
-devices") doesn't really tally with the naming or with the operation of
-similar functions in the kernel like the fwnode_handle ops; sorry about
-that. Anyway; I think Andy's fix is the right way to do it, so the
-calling code's responsible for holding onto a reference if it wants to
-keep it.
-
+On Wed, 26 May 2021 at 00:23, kernel test robot <lkp@intel.com> wrote:
+[...]
+> [auto build test WARNING on linux/master]
+> [also build test WARNING on kees/for-next/pstore linus/master v5.13-rc3 next-20210525]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 >
->>> Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
->>> Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
->>> Cc: Daniel Scally <djrscally@gmail.com>
->>> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
->>> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->>> ---
->>>  drivers/acpi/utils.c                       | 5 +----
->>>  drivers/media/pci/intel/ipu3/cio2-bridge.c | 8 +++-----
->>>  include/acpi/acpi_bus.h                    | 5 -----
->>>  3 files changed, 4 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
->>> index 3b54b8fd7396..ccfc484dbffd 100644
->>> --- a/drivers/acpi/utils.c
->>> +++ b/drivers/acpi/utils.c
->>> @@ -846,10 +846,6 @@ EXPORT_SYMBOL(acpi_dev_present);
->>>   * Return the next match of ACPI device if another matching device was present
->>>   * at the moment of invocation, or NULL otherwise.
->>>   *
->>> - * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
->>> - * in the case of a hotplug event. That said, the caller should ensure that
->>> - * this will never happen.
->>> - *
->>>   * The caller is responsible for invoking acpi_dev_put() on the returned device.
->>>   *
->>>   * See additional information in acpi_dev_present() as well.
-> But the kerneldoc really needs to say that the caller is required to
-> obtain a reference on adev before passing it here, because that
-> reference will be dropped and the object pointed to by adev may not be
-> present any more after this returns.
->
->>> @@ -866,6 +862,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
->>>         match.hrv = hrv;
->>>
->>>         dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
->>> +       acpi_dev_put(adev);
+> url:    https://github.com/0day-ci/linux/commits/Marco-Elver/kcov-add-__no_sanitize_coverage-to-fix-noinstr-for-all-architectures/20210526-020046
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd860052c99b1e088352bdd4fb7aef46f8d2ef47
+> config: s390-randconfig-r002-20210525 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 99155e913e9bad5f7f8a247f8bb3a3ff3da74af1)
+
+^^^ you're using a Clang pre-release, breakages are expected until
+Clang 13 is final.
+
+I think there was a thread about this at some point. I guess LKP has
+decided that testing Clang pre-releases is fair game? I guess it's
+useful, but this warning here needs to be ignored. It'll go away when
+you rebuild your pre-release Clang 13 from the latest LLVM main
+branch.
+
+[...]
+> >> arch/s390/kernel/nmi.c:182:6: warning: unknown sanitizer 'coverage' ignored [-Wunknown-sanitizers]
+>    void noinstr s390_handle_mcck(void)
+>         ^
+>    include/linux/compiler_types.h:213:35: note: expanded from macro 'noinstr'
+>            __no_kcsan __no_sanitize_address __no_sanitize_coverage
+>                                             ^
+>    include/linux/compiler-clang.h:49:59: note: expanded from macro '__no_sanitize_coverage'
+>    #define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
+>                                                              ^
+
+Clang 13 will support the attribute, but this is a pre-release Clang
+13 -- so please ignore the report. FWIW, I tested my patch of course
+with a version of Clang 13 that supports the attribute. :-)
+
+Thanks,
+-- Marco
