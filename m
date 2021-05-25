@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DD238F75B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B2F38F767
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhEYBJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhEYBJT (ORCPT
+        id S229693AbhEYBOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:14:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhEYBOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:09:19 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA54C06138E;
-        Mon, 24 May 2021 18:07:50 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id l15so21500731iln.8;
-        Mon, 24 May 2021 18:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pVif8BOmdy7xXqArUgQhM4hL5Kyfy23SPGVr8JCHGd4=;
-        b=ZXlpfF1SmYcGXtVsHK4PQL1yVyTJotz4FBHSHXc9WT8Msi3aoeP5WG6X6WQE8lmTt4
-         fPUQJbBApnXxcrPJnZG3GSVXsKukSdFe0WwhDWegOI/IOqkfBDaR8qFRrLfmw9JkDoh6
-         +ZRRebPW9hmNQvAxQvBo9Nz+Fh874OwU7wwOpiNRJ7EnDT4qvKuwIb0Zwe1rkX5fFAFn
-         JqspsnlWDvksgWqUhxhbZIXuN/ho1dmidAEiRn3aBOSU4Mg6pKbPOGSZPssHau+huSzu
-         wP3vUDgEqUQJ95h/Dp6LBkGQj0PrstEDj2DJUXZRZfI1YsiL94ZsKcyxU1dbRDZaJc73
-         7ubw==
+        Mon, 24 May 2021 21:14:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621905187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UBzLgDtqavpwimWGiZi7MD4QY+93E8r07zUbXutzxWU=;
+        b=hlqdVbkJ0yiboBKs/nJyrG4gvp++R0/uWTIdm/3LCgptpv+70tq/0bGFXpSetce8q0BIqs
+        Z0A8KGZfa+mwptA9DiZUs+fOz8EzZBLDvjWY3rey66ceV4t+19nsKHC49NPZgECmt1sq1P
+        8Zs4N1uFTAYL3LdtflNSI9EIIg62U5o=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-2u-zoZkGNjOK4syY6NOVvQ-1; Mon, 24 May 2021 21:13:05 -0400
+X-MC-Unique: 2u-zoZkGNjOK4syY6NOVvQ-1
+Received: by mail-pj1-f70.google.com with SMTP id c13-20020a17090aa60db029015c73ea2ce5so15153029pjq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:13:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pVif8BOmdy7xXqArUgQhM4hL5Kyfy23SPGVr8JCHGd4=;
-        b=Bq2Djp6G4gH3ouuCEq/kM4W1evPtFpiB9WOoKBPSx+4P/sg+zBZErNTEePUsPMBJNY
-         7YnoFBWezSVXup9O0FBA0qmavPWPM78H5yX8IHMiCms2I8/cy+6MGVHeqawp9v5jZrND
-         L2IMa+gzli5abJVbYB+A51F3YAfScfzxnKqRsfzMNjcNJkgo/qvcW1+EGgpFT6CMssqf
-         uN/iw5Y+guitJwNzir/8f1RelTEOsVaSd3UD8NiG7G1/3iXrcZlvFTN3k/vqnONswxkm
-         3HZCnqwoYMoGGzlxA17g2FeHWjCDRJbuGjDEq6/hxOfn3dCKOxwthEYqgbS6zYDXc5J+
-         t4WQ==
-X-Gm-Message-State: AOAM532U+cvFc0Fxn0cYuFD4KOT17N/heZeRsh8lMFh3L6f16jTBgQTo
-        dgMjcVfV/u9WS/5OGzpsb6s=
-X-Google-Smtp-Source: ABdhPJyLtpDPaYyrDPzdTTrR5wI1NKr9M9FWvlRAlfBWIQ6OG5JC5JwMd/AjMGkIx1HbLmbvBClWXA==
-X-Received: by 2002:a92:c74b:: with SMTP id y11mr20601316ilp.302.1621904869422;
-        Mon, 24 May 2021 18:07:49 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:599b:b8c7:b3a9:9f1d])
-        by smtp.gmail.com with ESMTPSA id w20sm12318413ilj.16.2021.05.24.18.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 18:07:49 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: imx8mn: Add GPU node
-Date:   Mon, 24 May 2021 20:07:32 -0500
-Message-Id: <20210525010732.115562-6-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210525010732.115562-1-aford173@gmail.com>
-References: <20210525010732.115562-1-aford173@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UBzLgDtqavpwimWGiZi7MD4QY+93E8r07zUbXutzxWU=;
+        b=f3DcN3owxHafDW9bKFP0CZdymyKewXcw+chEu2XEjzu4AJ4HxoI8CsfOeC4ygt4OAi
+         jVnQ1ZAi3UAu1jM0L96Ayg0AuHtC+xZdJYoe7KqZejxiQrksdydgbbVH1+US0v3YdCx8
+         Z4yHSJcYVnKc2OrI78lCllf3fwNRzPAThOINLml1pukTJgILWrERoL4KyBIysEn5ukRk
+         ZkC/wi96OHOT2DA0pFN099CD2wQjndiM64+PBlb7D3vJcv+YKqn7E7GUqH6ZfkZxjnhQ
+         naRlY7Gikp8CH7jq8h7bryhLf9ekXcLJ0NUIjjZ3EcacBggLtL+wjmZ7ujZ96ojCEUWt
+         qoGA==
+X-Gm-Message-State: AOAM530wDxeXRBgHO8zK2L2HeI2R0O48NTj+2oKm5M/xnUzSl4CLEqwD
+        r3pCb0tGmlQCsySTgnb0C0sfizVo5IU++k7mv/6GUjM8UNL8B8bPue8fvbRCGhjH+HpHp5Z02nD
+        ahs3Z2sFe/gIivMC7t8mNc5LZ
+X-Received: by 2002:a63:ed41:: with SMTP id m1mr16325190pgk.252.1621905184668;
+        Mon, 24 May 2021 18:13:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6D+XOATiRb+OS1/ThQcY+LFli2pfGqzdPD1APVDzJx1s8GwA9GrRbRoA7EMCbeWMP3l95kw==
+X-Received: by 2002:a63:ed41:: with SMTP id m1mr16325169pgk.252.1621905184388;
+        Mon, 24 May 2021 18:13:04 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 204sm11729687pfy.56.2021.05.24.18.13.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 18:13:03 -0700 (PDT)
+Subject: Re: [PATCH -next] virtio_ring: Correct function name
+ virtqueue_get_buf_ctx()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     mst@redhat.com
+References: <20210518050057.614081-1-yangyingliang@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d5e348da-6101-9ead-f675-387db8c90844@redhat.com>
+Date:   Tue, 25 May 2021 09:12:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210518050057.614081-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the documentation from NXP, the i.MX8M Nano has a
-Vivante GC7000 Ultra Lite as its GPU core.
 
-With this patch, the Etnaviv driver presents the GPU as:
-   etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+ÔÚ 2021/5/18 ÏÂÎç1:00, Yang Yingliang Ð´µÀ:
+> Fix the following make W=1 kernel build warning:
+>
+>    drivers/virtio/virtio_ring.c:1903: warning: expecting prototype for virtqueue_get_buf(). Prototype was for virtqueue_get_buf_ctx() instead
+>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>   drivers/virtio/virtio_ring.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 88f0b16b11b8..992cb1cbec93 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -1882,7 +1882,7 @@ bool virtqueue_kick(struct virtqueue *vq)
+>   EXPORT_SYMBOL_GPL(virtqueue_kick);
+>   
+>   /**
+> - * virtqueue_get_buf - get the next used buffer
+> + * virtqueue_get_buf_ctx - get the next used buffer
+>    * @_vq: the struct virtqueue we're talking about.
+>    * @len: the length written into the buffer
+>    * @ctx: extra context for the token
 
-The stock operating voltage for the i.MX8M Nano is .85V which means
-the GPU needs to run at 400MHz.  For boards where the operating
-voltage is higher, this can be increased.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 8b1fb83cb893..8fc5d46d076b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -1049,6 +1049,31 @@ gpmi: nand-controller@33002000 {
- 			status = "disabled";
- 		};
- 
-+		gpu: gpu@38000000 {
-+			compatible = "vivante,gc";
-+			reg = <0x38000000 0x8000>;
-+			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&clk IMX8MN_CLK_GPU_AHB>,
-+				<&clk IMX8MN_CLK_GPU_BUS_ROOT>,
-+				<&clk IMX8MN_CLK_GPU_CORE_ROOT>,
-+				<&clk IMX8MN_CLK_GPU_SHADER_DIV>;
-+			clock-names = "reg", "bus", "core", "shader";
-+			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE_SRC>,
-+					  <&clk IMX8MN_CLK_GPU_SHADER_SRC>,
-+					  <&clk IMX8MN_CLK_GPU_AXI>,
-+					  <&clk IMX8MN_CLK_GPU_AHB>,
-+					  <&clk IMX8MN_GPU_PLL>,
-+					  <&clk IMX8MN_CLK_GPU_CORE_DIV>,
-+					  <&clk IMX8MN_CLK_GPU_SHADER_DIV>;
-+			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
-+						  <&clk IMX8MN_GPU_PLL_OUT>,
-+						  <&clk IMX8MN_SYS_PLL1_800M>,
-+						  <&clk IMX8MN_SYS_PLL1_800M>;
-+			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
-+				<400000000>, <400000000>;
-+			power-domains = <&pgc_gpumix>;
-+		};
-+
- 		gic: interrupt-controller@38800000 {
- 			compatible = "arm,gic-v3";
- 			reg = <0x38800000 0x10000>,
--- 
-2.25.1
 
