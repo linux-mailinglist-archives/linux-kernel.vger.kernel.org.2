@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95426390BCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C69390BCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhEYVu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:50:29 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:55776 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhEYVu2 (ORCPT
+        id S233528AbhEYVur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:50:47 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:49946 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232114AbhEYVuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:50:28 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:52988 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        Tue, 25 May 2021 17:50:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=h1UvXr+IRNohjqK913qBRc1ANsdAb76bs7rLunSi2xs=; b=p2D+bXjs9h/DiPW3j3QeaeX6Fi
+        Eu7RY6n21Sd6xg0F1xMdF0eBRKA4iPAjQ/NqZUix/9unmc/dOQPudpdzLIr2umK8LRxyfmdL5mhdL
+        vWe0o/4zRCtE0jVh5g6WsUCa0dV/rWVl9pSlg0V4TnSR0wSBR2sFBWJlwSAOCS7r2bdk=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1llev2-0003aX-85; Tue, 25 May 2021 17:48:56 -0400
-Message-ID: <6133244fb6181420b27694abdfe3f42d43df8868.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 25 May 2021 17:48:55 -0400
-In-Reply-To: <af1a868ed91466312786f11913cf06118139838e.camel@trillion01.com>
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
-         <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-         <2236ed83-81fd-cd87-8bdb-d3173060cc7c@gmail.com>
-         <af1a868ed91466312786f11913cf06118139838e.camel@trillion01.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1llevG-005qQM-UN; Tue, 25 May 2021 21:49:11 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id C0FD7D0DECA; Tue, 25 May 2021 22:49:44 +0100 (BST)
+Date:   Tue, 25 May 2021 22:49:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH AUTOSEL 5.10 30/62] ASoC: rt5645: add error checking to
+ rt5645_probe function
+Message-ID: <YK1w+H70aqLGDaDl@sirena.org.uk>
+References: <20210524144744.2497894-1-sashal@kernel.org>
+ <20210524144744.2497894-30-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+9E0EyJd3tE2r8IF"
+Content-Disposition: inline
+In-Reply-To: <20210524144744.2497894-30-sashal@kernel.org>
+X-Cookie: You are always busy.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-25 at 17:26 -0400, Olivier Langlois wrote:
-> but the pointers should be hashed by trace.
-> 
-> That would be nice if someone more knowledgeable about the tracing
-> system could jump in and comment about the hash-ptr option and tell
-> when it is applied and when it is not...
 
-My concern about hashing pointers directly in the io_uring code
-directly. It is that by doing so will make it impossible for a
-sufficiently priviledged user to get the raw pointer values without
-reverting back the pointer hashing stuff.
+--+9E0EyJd3tE2r8IF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-that would not be the right way to address the security concern if the
-tracing subsystem already hash them by default and is configurable to
-display raw pointers if desired.
+On Mon, May 24, 2021 at 10:47:11AM -0400, Sasha Levin wrote:
+> From: Phillip Potter <phil@philpotter.co.uk>
+>=20
+> [ Upstream commit 5e70b8e22b64eed13d5bbebcb5911dae65bf8c6b ]
+>=20
+> Check for return value from various snd_soc_dapm_* calls, as many of
+> them can return errors and this should be handled. Also, reintroduce
+> the allocation failure check for rt5645->eq_param as well. Make all
 
-My issue is that I haven't been able to see hashed pointers output from
-trace.
+Now I've looked at the patch I don't think it's appropriate for
+stable, it's essentially equivalent to a patch that adds -Werror
+- the changes in it are upgrading things from error messages that
+would be generated by what are essentially static checks (even
+though we do do them at runtime they're on hard coded strings) to
+probe failures which would be a regression.  Unfortunately people
+do ignore warnings like that in shipping stuff so it's possible
+it's happening, we could do an audit to see if it is but it seems
+like more effort than it's worth.
 
-The only way that I know to get the traces is with 'sudo perf' and I
-have never seen hashed pointers with it.
+The only case I can think where it might help is if we're
+managing to OOM during probe() but that feels very unlikely to
+happen, and improved handling unlikely to make substantial
+difference compared to the risk that the routing warnings are
+triggering but being ignored so someone's sound stops working due
+to a stable update.  Otherwise it won't do much so why risk it?
 
-but the code is there... If you grep 'TRACE_ITER_HASH_PTR' in
-kernel/trace/trace.c
+--+9E0EyJd3tE2r8IF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I just haven't spent days in studying the tracing code to figure out
-how it all works...
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCtcPcACgkQJNaLcl1U
+h9BhPgf/QwPQszIviJZPkEDsCrlmdi0IWBRg2sa+8dwinV4RMlV342IGAtTEZxIY
+hhdgJ0BM+pCEhXHbHn1ZprphK6eEuiescflqk4RywaFM/AakFvuJRMdoazcNXkZI
+zNdS1yuaimfHHJ4/HkD463ikeXEBehoH+Fkrp/6qM+lgo5UZwtZ/bG6EBpUmIClK
+JGI+WZkysyx+qzoVHIF5weXw+oCkvjz/Qby83mWjK7KOM4MnB0x9PtKOyRURXrZJ
+82L7/uM8heK1LujQKxr+FoVVfkdr6ymBvatZpbLYt5JlLQoT3K7PdDaPj1ULNVke
+KLM9pJwHanFu9ia/yC7okZgonz1VBg==
+=ygou
+-----END PGP SIGNATURE-----
 
+--+9E0EyJd3tE2r8IF--
