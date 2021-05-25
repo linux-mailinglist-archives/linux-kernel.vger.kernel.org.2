@@ -2,93 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3CE38FDF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D9738FDFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhEYJhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        id S232553AbhEYJhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhEYJhF (ORCPT
+        with ESMTP id S232527AbhEYJhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:37:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E9AC061574;
-        Tue, 25 May 2021 02:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=77alA0oNaOdxO9Nn5XAmzEZ6uOPGgpzTh0etFfYrlAM=; b=CJtzWCtnRisoGTNMJQCQYaQgVp
-        ZVGRtAAqogEkkwH9F9sBAGoaUIJqf8hyB4tWDL7yuZj/sqQh0U+BWtvZWmQGjuMN34YGl+CVRhKqY
-        SpUjecHol9ErWniyWlQeiZ55SyQ6f5qUrCbAB5OfKHdCF0QtETh17x5xH9Cm8rZZgktR5YKtOhTaY
-        BAo+VxbRlblic7Pi6monzUyPO9BA4KI29sePHIRFeDpFieohokdd8OHlD/lC11YmnpM9AjF2UhJvK
-        mi4DXoLwyN6+LX4/ewdxrfmy4NRfdBhlIaoT1r8+VKmnGA1IUj76nNdLFH4YSTQJZb4oPpyYKmINK
-        b2mPNq0A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1llTSP-003LFb-Qx; Tue, 25 May 2021 09:34:52 +0000
-Date:   Tue, 25 May 2021 10:34:37 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH 2/3] riscv: Fixup PAGE_UP in asm/page.h
-Message-ID: <YKzErU3lpFO58hkY@infradead.org>
-References: <1621839068-31738-1-git-send-email-guoren@kernel.org>
- <1621839068-31738-2-git-send-email-guoren@kernel.org>
- <YKyae+8O25A8vxMS@infradead.org>
- <CAJF2gTRA=tUid7akgVXfk6MHOd0KmJpDQEZ2m9wRfhigBDzQTw@mail.gmail.com>
+        Tue, 25 May 2021 05:37:35 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3EEC061574;
+        Tue, 25 May 2021 02:36:05 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v14so19555259pgi.6;
+        Tue, 25 May 2021 02:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hAQ8nIZj/L/k8q7yFsMHi5/JFrCRshtxQkR6rH9Qus8=;
+        b=ChqFXRNi+q7D4k8kudtWRdJ3FknWhQXMNd4TSvwFxws1VSzooU1XiFa/JeMpQAAHv1
+         a16a+xOGN43+kxFgAgMpd1Vj6/POxnG1x/2yu1mmSdPPx/vhyI1Z3tjiDxdmDgtxGJux
+         T2QKUczJJ61N8CDJdKfmIa1gBO1aTcbbLmIHRq7gl2fpQ3cHlaESLRfx5dXkimugZyFf
+         4BBCalA6BjJrcThTbY1kCvWQqn00gRW6EoYg1dNhtOGNOcNu0ZAQ2OrCgu9k939g1zeS
+         OjcVDYcbJrLus/HWvh+Z7U4IoFyjEbBkCGoXqk0/iuxVNWZh3aSwIpAjTVTZnz9mOkpZ
+         C+sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hAQ8nIZj/L/k8q7yFsMHi5/JFrCRshtxQkR6rH9Qus8=;
+        b=RKue2UlOx4DsyrlQQlRyj9JOSRx3IUf5gEMcbA4N4k8lMjEw8va4miPxzIpwxsweYx
+         0dCXOeLr/Ui/cTEAzKshHTC6hx6sN/xZG04fZ0KrTBev3Hplifile0vatInz22hduO/s
+         uTAB/4rmJ0nS0zWV+/AUPcRTTLwjJMQ/7WIWFhOrkxJbZsvdF9PgXNABWp0A+/wNl131
+         Kxw0mXCgJ6XZpAdzm+wP87/HO1lMW94wBhoiFu+yCVwQRGqErU8IqiNBHIjciKTL1QZB
+         9EfF1ZWDGWtlG6ZMGXxGmAXBPiACp2WlkrGw6RFg8QbqpBeCmdcN4EhYMZOC8qu2TMaM
+         WqeA==
+X-Gm-Message-State: AOAM531g3V7RBMCtsYa/0ydEuOZEPjt3PVlsZWnMGehWGxL5M+3azzUP
+        miSpeuDc55PQtMGiai5W96s=
+X-Google-Smtp-Source: ABdhPJzc8T8OURsXgPzvtj8PWgeGchMRU581KFyuJBGbAVL7JXGSDI/1GyT5R5xItmfZiZw/9Q3lUA==
+X-Received: by 2002:a63:5448:: with SMTP id e8mr18113248pgm.170.1621935359828;
+        Tue, 25 May 2021 02:35:59 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id y1sm13383189pfn.13.2021.05.25.02.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 02:35:59 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: core: Use host instead of mq parameter from mmc_issue_type()
+Date:   Tue, 25 May 2021 17:35:10 +0800
+Message-Id: <20210525093510.1373-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTRA=tUid7akgVXfk6MHOd0KmJpDQEZ2m9wRfhigBDzQTw@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 05:28:21PM +0800, Guo Ren wrote:
-> On Tue, May 25, 2021 at 2:34 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Mon, May 24, 2021 at 06:51:07AM +0000, guoren@kernel.org wrote:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > Current PAGE_UP implementation is wrong. PAGE_UP(0) should be
-> > > 0x1000, but current implementation will give out 0.
-> > >
-> > > Although the current PAGE_UP isn't used, it will soon be used in
-> > > tlb_flush optimization.
-> >
-> > Nak.  Please just remove the PAGE_UP/PAGE_DOWN macros just like they
-> > have been removed from other architectures long ago and use the
-> > generic DIV_ROUND_UP macro for your new code like everyone else.
-> 
-> This patch has been dropped because it's wrong, ref Anup's reply.
-> 
-> Remove PAGE_UP/DOWN is okay for me. How about:
->  static inline void local_flush_tlb_range_asid(unsigned long start,
-> unsigned long size,
->                                               unsigned long asid)
->  {
-> -       unsigned long page_add = PAGE_DOWN(start);
-> -       unsigned long page_end = PAGE_UP(start + size);
-> +       unsigned long page_add = _ALIGN_DOWN(start, PAGE_SIZE);
-> +       unsigned long page_end = _ALIGN_UP(start + size, PAGE_SIZE);
-> 
-> _ALIGN_XXX are also defined in arch/riscv/include/asm/page.h.
+From: Yue Hu <huyue2@yulong.com>
 
-And these also are leftovers from days gone by and should be removed.
+Note that the role of 'mq' parameter is just to get 'host' in
+mmc_issue_type(). And all callers to this API have already 'host'
+except mmc_blk_mq_dec_in_flight(). So, let's use existing 'host'
+directly to make code simpler. Update related code at the same time.
 
-I think this should simply be:
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/core/block.c | 6 +++---
+ drivers/mmc/core/queue.c | 8 +++-----
+ drivers/mmc/core/queue.h | 2 +-
+ 3 files changed, 7 insertions(+), 9 deletions(-)
 
-	
-	unsigned long page_add = start & PAGE_MASK;
-	unsigned long page_end = PAGE_ALIGN(start + size);
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 689eb9a..4b6d4b0 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1382,7 +1382,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+ 	struct mmc_request *mrq = &mqrq->brq.mrq;
+ 	struct request_queue *q = req->q;
+ 	struct mmc_host *host = mq->card->host;
+-	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
++	enum mmc_issue_type issue_type = mmc_issue_type(host, req);
+ 	unsigned long flags;
+ 	bool put_card;
+ 	int err;
+@@ -1977,7 +1977,7 @@ static void mmc_blk_mq_dec_in_flight(struct mmc_queue *mq, struct request *req)
+ 
+ 	spin_lock_irqsave(&mq->lock, flags);
+ 
+-	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
++	mq->in_flight[mmc_issue_type(mq->card->host, req)] -= 1;
+ 
+ 	put_card = (mmc_tot_in_flight(mq) == 0);
+ 
+@@ -2209,7 +2209,7 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+ 	if (ret)
+ 		return MMC_REQ_FAILED_TO_START;
+ 
+-	switch (mmc_issue_type(mq, req)) {
++	switch (mmc_issue_type(host, req)) {
+ 	case MMC_ISSUE_SYNC:
+ 		ret = mmc_blk_wait_for_idle(mq, host);
+ 		if (ret)
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index d600e0a..3478f0a 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -56,10 +56,8 @@ static enum mmc_issue_type mmc_cqe_issue_type(struct mmc_host *host,
+ 	}
+ }
+ 
+-enum mmc_issue_type mmc_issue_type(struct mmc_queue *mq, struct request *req)
++enum mmc_issue_type mmc_issue_type(struct mmc_host *host, struct request *req)
+ {
+-	struct mmc_host *host = mq->card->host;
+-
+ 	if (host->cqe_enabled && !host->hsq_enabled)
+ 		return mmc_cqe_issue_type(host, req);
+ 
+@@ -97,7 +95,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
+ 	struct mmc_request *mrq = &mqrq->brq.mrq;
+ 	struct mmc_queue *mq = req->q->queuedata;
+ 	struct mmc_host *host = mq->card->host;
+-	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
++	enum mmc_issue_type issue_type = mmc_issue_type(host, req);
+ 	bool recovery_needed = false;
+ 
+ 	switch (issue_type) {
+@@ -259,7 +257,7 @@ static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 		return BLK_STS_IOERR;
+ 	}
+ 
+-	issue_type = mmc_issue_type(mq, req);
++	issue_type = mmc_issue_type(host, req);
+ 
+ 	spin_lock_irq(&mq->lock);
+ 
+diff --git a/drivers/mmc/core/queue.h b/drivers/mmc/core/queue.h
+index 3319d8a..d41bacb 100644
+--- a/drivers/mmc/core/queue.h
++++ b/drivers/mmc/core/queue.h
+@@ -104,7 +104,7 @@ extern unsigned int mmc_queue_map_sg(struct mmc_queue *,
+ void mmc_cqe_check_busy(struct mmc_queue *mq);
+ void mmc_cqe_recovery_notifier(struct mmc_request *mrq);
+ 
+-enum mmc_issue_type mmc_issue_type(struct mmc_queue *mq, struct request *req);
++enum mmc_issue_type mmc_issue_type(struct mmc_host *host, struct request *req);
+ 
+ static inline int mmc_tot_in_flight(struct mmc_queue *mq)
+ {
+-- 
+1.9.1
 
-(and page_add is a pretty horrible name as well..)
