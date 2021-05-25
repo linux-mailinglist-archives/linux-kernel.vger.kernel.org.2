@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A28238F6E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BD38F6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhEYAPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S229907AbhEYAQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYAPe (ORCPT
+        with ESMTP id S229539AbhEYAQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:15:34 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31661C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:14:05 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id b17so34025814ede.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:14:05 -0700 (PDT)
+        Mon, 24 May 2021 20:16:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E827C061574;
+        Mon, 24 May 2021 17:15:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id jt22so233150ejb.7;
+        Mon, 24 May 2021 17:15:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YpLETO2kegr5zaqwxVuMFc+jL2gq1zcvvCi89cGTXjA=;
-        b=S6p0we3vjgutYm8K3vYy0CEZf0Y4ENmWA685eGh39GimTJqdXqzizuhYdf69bkfIBf
-         TO45xGWyLmdbS7eTxU8pjN7M8RW1ajjMYctm8Hnzl8pE2DvZ3O23ARltmLaFJrCyLNr3
-         IzBBpMLLIbciG38e7hmk7ETxWgfMaTQap6dKayMXy6IgREtJh9EFZxN5afn8AUL6ra2J
-         +8snK9wIlfnHeAqH4L3O8ifEY1INverjg9wopsp353Ua+B4yV0bz79exq17Yfb8n2w5B
-         3NDXbXMdLs+PW7FdfmmpZAZ9mXu124O6QrK575q8I6qtu5sgtPd0N3j+Dj1WcSbpCsr6
-         Kxug==
+        bh=qsmlRIkgq2zV5frevaV4WTTbksGQGcj6H85aoJ0Ejt8=;
+        b=q7Ocqmkns5l1r5KzX/QKurVUeFmPQH9c1DhFDzd87dFqvC5j4v+cO6y6Y3ndzRX0u5
+         Cl97L0mD2Zp9T7moehtSRy65RmpLbjEM1IgYR0/EfQFTFGtMDOv3WWjDk4QcdMB/oTWe
+         dWl6cnN0quBvaYbBwQGoHSMVOfUg32Il2vtpbBX3kMJAuoM4PLwNFJsqCSIKmM9kutoO
+         UPzSxqi1//NfbTQFS9lsOI8GHdiH0L5FS3fmrYoaNLrpGpAN3VlcC3WV2cTljlKsRzWB
+         Tq2o0Qx/AMkRPMcsI+dALFfDnOfWHeHPYBpZWA+9wKNJcaEyPGXJSUOPVlQ4E7HUHIDI
+         NxRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YpLETO2kegr5zaqwxVuMFc+jL2gq1zcvvCi89cGTXjA=;
-        b=hHQ8Fhal6uFr50kBNgMjTNtsX4tv9XGMmhB1+7pARHgwQ9LM58QO3yiH6XenA1KHVD
-         OxWDZJ9zKEPM73XTWM0YjyHBZK6phw+05UcFP7h8kDVYbhGDSkROlyj4htfis7z5ditQ
-         a0JjPDJof/tGB+4/25ZFOpIdVPjW3bxSajbSgi3feWdZzHwOUDqbvJHE4l/JNEifrlzz
-         i/OtkTG1xKHAUR0FlahH73RB6Kjoi933saEgPjzXeTW22HUK7T2RD/4WTkOW6YlwPXbm
-         vwuWMgaMy9ayBKgorjipNGHrnbkK4n3aZmw418ZcQATPy6ot5JpxNkmsnsYjF72nEkHO
-         bEPA==
-X-Gm-Message-State: AOAM533wlouwSpo/GBueViFGUWvmrwgs6zJExX9QYcAG4wCq9MIg0kOE
-        avNqnOAR+xsK8Y1r9j6u0FI=
-X-Google-Smtp-Source: ABdhPJzaXdvjJUuRn3vv1IWI2k4XUdNRCFCN4hPRNqIh/gAUUCiTVSCww1e6fsQb70rDM5CZlifsxA==
-X-Received: by 2002:aa7:d659:: with SMTP id v25mr28785038edr.271.1621901643628;
-        Mon, 24 May 2021 17:14:03 -0700 (PDT)
+        bh=qsmlRIkgq2zV5frevaV4WTTbksGQGcj6H85aoJ0Ejt8=;
+        b=GbrIp+0sw+I5UIm0/K9eTPZKpI/8Hku2ahjFoILLmKhlTxCdfm66TVxMXhpvCZxjn2
+         VZMU1KyUG4iP/utDEHay9mfPSRJ57ebOpXNW/JI7Bl45qhXQ78rT31OpSSHEW2vmGVd+
+         gijrAiVmL90t11tKDFd/dyxO000dOdWRsrFFwd4FHL/C/I7wgcEDoVLCyKTF8mvT/k9w
+         xVPeOAoyDyUrfvv62cj8j9mdl/F9hutnjKb9SL3QZ5NV8f/GJCzufLlYqooabaVRyFAO
+         HytK1OFnUn+2uZMjpRmQngN1Ax96RGX4ySsPaEcaLcll/7BJPx4marS8+PEvRxOZgo6H
+         Y2TA==
+X-Gm-Message-State: AOAM5310e+Q9CFmibV9kmTggldCM4UaupnOuKfX5kfhiCRPCBlsvFXsQ
+        zwkG0rFeOhETX4ejt3X38fku1SG7GaO0KQ==
+X-Google-Smtp-Source: ABdhPJxLpRdzFVmTZm9zlKW4qOFdgQStppgfa8WmFcOlQhXn2XulruJIuoMAi/X73ZXZ6n0OJlVMgA==
+X-Received: by 2002:a17:907:d1a:: with SMTP id gn26mr23234142ejc.42.1621901702156;
+        Mon, 24 May 2021 17:15:02 -0700 (PDT)
 Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id rn2sm8390599ejb.45.2021.05.24.17.14.02
+        by smtp.googlemail.com with ESMTPSA id yr15sm8448017ejb.16.2021.05.24.17.15.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 17:14:03 -0700 (PDT)
+        Mon, 24 May 2021 17:15:01 -0700 (PDT)
 From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH] mfd: syscon: Fix leak of syscon name
-Date:   Tue, 25 May 2021 02:13:51 +0200
-Message-Id: <20210525001351.10300-1-ansuelsmth@gmail.com>
+Subject: [PATCH] mtd: parsers: qcom: Fix leaking of partition name
+Date:   Tue, 25 May 2021 02:14:49 +0200
+Message-Id: <20210525001449.10386-1-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,35 +68,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-regmap_init_mmio duplicate the name and never free the provided name in
-the sysconf_config. Always free the name instead of freeing only on
-error to fix error from kmemleak generated by any syscon user.
+Partition name are already allocated and defined by the ptable struct.
+Skip reallocation of name variable and directly lowercase the name in
+the ptable struct. The name variable was duplicated but never freed.
+The leak was found using kmemleak.
 
+Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
 Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
- drivers/mfd/syscon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/parsers/qcomsmempart.c | 22 ++++------------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-index c6f139b2e0c0..765c0210cb52 100644
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -108,6 +108,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
- 	syscon_config.max_register = resource_size(&res) - reg_io_width;
+diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
+index d9083308f6ba..3d083f0815f8 100644
+--- a/drivers/mtd/parsers/qcomsmempart.c
++++ b/drivers/mtd/parsers/qcomsmempart.c
+@@ -62,8 +62,8 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
+ 	struct smem_flash_ptable *ptable;
+ 	size_t len = SMEM_FLASH_PTABLE_HDR_LEN;
+ 	struct mtd_partition *parts;
+-	int ret, i, numparts;
+-	char *name, *c;
++	int i, numparts;
++	char *c;
  
- 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
-+	kfree(syscon_config.name);
- 	if (IS_ERR(regmap)) {
- 		pr_err("regmap init failed\n");
- 		ret = PTR_ERR(regmap);
-@@ -144,7 +145,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
- 	regmap_exit(regmap);
- err_regmap:
- 	iounmap(base);
--	kfree(syscon_config.name);
- err_map:
- 	kfree(syscon);
- 	return ERR_PTR(ret);
+ 	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS)
+ 			&& mtd->type == MTD_NORFLASH) {
+@@ -125,17 +125,11 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
+ 		if (pentry->name[0] == '\0')
+ 			continue;
+ 
+-		name = kstrdup(pentry->name, GFP_KERNEL);
+-		if (!name) {
+-			ret = -ENOMEM;
+-			goto out_free_parts;
+-		}
+-
+ 		/* Convert name to lower case */
+-		for (c = name; *c != '\0'; c++)
++		for (c = pentry->name; *c != '\0'; c++)
+ 			*c = tolower(*c);
+ 
+-		parts[i].name = name;
++		parts[i].name = pentry->name;
+ 		parts[i].offset = le32_to_cpu(pentry->offset) * mtd->erasesize;
+ 		parts[i].mask_flags = pentry->attr;
+ 		parts[i].size = le32_to_cpu(pentry->length) * mtd->erasesize;
+@@ -149,14 +143,6 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
+ 	*pparts = parts;
+ 
+ 	return numparts;
+-
+-out_free_parts:
+-	while (--i >= 0)
+-		kfree(parts[i].name);
+-	kfree(parts);
+-	*pparts = NULL;
+-
+-	return ret;
+ }
+ 
+ static const struct of_device_id qcomsmem_of_match_table[] = {
 -- 
 2.31.1
 
