@@ -2,213 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3B9390120
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C64390123
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhEYMmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhEYMmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:42:00 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A9AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:40:29 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id u7so7719183plq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2N4dAd5lfUN8BZ7LLducedLUzeb6/WJJK8osT2X1nug=;
-        b=PQJJMZAT7Cqwz/d/UdXrHikWAwwrq5mriUciH4Pi01zb0FPk2+nv5uU3odiMUCPPX1
-         jL3zbQ39pA5qvJ6TmNh2ovNjMeh9QeHmJ1g43Y1BlzGbaNakqKvuTUtxvU4RpbvgwwQr
-         FDcmjOla5iP2ygwGelaY/d545jW3yeT1Oa7ibeh2QQCRzU20Erf8O2a9+bzRTwL3zziF
-         IHqUfV76KtzKij5QndOKk6VKxk9+6NhZs+Gsx+m3jibIyizg+jaK7WkFf70nRRxCvDpy
-         YyGBLWV3zw93SiX/KCA5OB4mTRazXDFWjmtL87Yu/mw3nJLbfLUG+RDJO+5WI5fzuxZB
-         gVBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2N4dAd5lfUN8BZ7LLducedLUzeb6/WJJK8osT2X1nug=;
-        b=V2e/A4+ISiheApXt+AIyCsHZNtm740PZBI2/pTwFV0b2ny/jpa4gULOWlqm8UVHm0L
-         Kxroqshf5iG4ihYrXdAUgkNbwQ88EsVKV5sZKpKiugyXJLCp7a2jQkcXV5kdrsT171yn
-         s0h9xOO4TGGsgnTFdvfGDjNc1a0fsmOCLbxPzvK2835dVBKLQV92GC2Q+ilUEbubcWCN
-         qcQ0ypJFEbdf2cn+WZsEqCFisCz1HfmUW/ziGvWHZOTPTMH2AP2goZT4v+4Ir5OcJqO2
-         yXTfmMFByKc6mM3aiLYaKcfAdyI0sCle8pqAlka8zQy/EFfBWV9T2R8wvwc4Jfx3wUdu
-         KilQ==
-X-Gm-Message-State: AOAM530PfLifviLu9kJHa2LDB3MC5nlNnTfIyw/AcmwoUCr+V4cufx9a
-        +VhnPvacf1tbhxIaCjTB+Bqn4w==
-X-Google-Smtp-Source: ABdhPJx3kH1VuwvaWaTspCfcfYY/nLsGGuIf12k9Buzj1u3YM+UAqHfGM1ANeBEBfeIAtf9ftq3Tng==
-X-Received: by 2002:a17:902:b687:b029:eb:6491:b3f7 with SMTP id c7-20020a170902b687b02900eb6491b3f7mr30361593pls.38.1621946428666;
-        Tue, 25 May 2021 05:40:28 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id i8sm14586927pgt.58.2021.05.25.05.40.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 05:40:28 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Yunfan Zhang <yfzhang@marvell.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] regulator: fan53555: Convert to use regulator_set_ramp_delay_regmap
-Date:   Tue, 25 May 2021 20:40:17 +0800
-Message-Id: <20210525124017.2550029-2-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210525124017.2550029-1-axel.lin@ingics.com>
-References: <20210525124017.2550029-1-axel.lin@ingics.com>
+        id S232636AbhEYMmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:42:53 -0400
+Received: from mail-eopbgr30093.outbound.protection.outlook.com ([40.107.3.93]:8260
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232590AbhEYMmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:42:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y4LmZ6+gr4/oa9r/FbjXGEXXOS6TtTiIf/wBEAlXzpl3DT4QMqp3CeNcN9PfNPccGPG/12EEAm3RHn89EFLc3ZC4cS80Ax5KzBkG6nd9Pf892JNkNOJICO49MjzciLpWFsp28vDqdrNIBDH61mhDSW1+f7R+2rqWqKExos/IVkDMlx1wDONwNtK4d2csifexb8e3w5MojhZOb3qIKzSiBbyLdK+e9TLShISi9EsaX76L/DzOqsckT9tw+BTYpIlRk4WSsSNz6GC7g20bxbYEKxnCoFTZOsPWchDBtLi60qBN/XmpmeYaF7/YGYSZkvm9uVzwGnYP7noT6MzcFJsffw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oTFkxAi3auCaCKwP16bLkqs6vm7DH+2ztrmbU4GBjac=;
+ b=O/6eU2dlkTzLY4odbrhFEsUNY4eplTUz2RBZXtm2sUmTUf3Miiq2eFx/qepfbUnFvFd5o7DcVL9x+LLNc38DOVTut8pNweR3ocu5/QM3QyYEUP7xXYuVHiBqc7Cm15HyGR2S22o9EGcUSnrl4YBdBH6icvHXdsADLZUwQcmY159jS6F2J9WJdR+wRVtenldFoWtowubrrdi0nPlQxf03VAg1X1NgSa3HANmztWRIAHRgIMdvF52Ems1hA5U24B8g9rdWKanErOy+0+6WN31vzCUp8o+TYheb/3S2zsqpcWS6+3sXGptZC6Cm2ScBz3hwnZKm0yTpBjg5/XkUcawN2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oTFkxAi3auCaCKwP16bLkqs6vm7DH+2ztrmbU4GBjac=;
+ b=hZtk6OtkYeI/Yo8JqaIqR0Yf2KRBU4atjObwI9w1rxhT+Zxi6/WX1WjKQp1HVivvVtqhX4Bc7i2ANUdPhE4LZ/FUEs8Xpam+t4Ml4pcbrX59/I9mVtH3vlT8c70EoCOXzL3qeW2sdKIZcFSO4eaNeEfsG8in8A1CdWQovfYxDV0=
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
+ HE1PR0701MB2460.eurprd07.prod.outlook.com (2603:10a6:3:70::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.12; Tue, 25 May 2021 12:41:15 +0000
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::85ed:ce03:c8de:9abf]) by HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::85ed:ce03:c8de:9abf%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 12:41:15 +0000
+From:   "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jan.kratochvil@redhat.com" <jan.kratochvil@redhat.com>
+Subject: LTS perf unwind fix
+Thread-Topic: LTS perf unwind fix
+Thread-Index: AQHXUWNAMimraUixrEyqdytsWPBp1w==
+Date:   Tue, 25 May 2021 12:41:15 +0000
+Message-ID: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
+Accept-Language: en-US, en-150, fi-FI
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nokia.com;
+x-originating-ip: [131.228.2.7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e119111-75bc-4d38-9059-08d91f7a6319
+x-ms-traffictypediagnostic: HE1PR0701MB2460:
+x-microsoft-antispam-prvs: <HE1PR0701MB24607E9A86FD10710ACE3A0EB4259@HE1PR0701MB2460.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0aR526Tew5KdA+FJ/y1aJgA1in64VIR3oWJDvfOkvFu2bCGSeNGWC//lyiSb5KTlSXp6whpQkJ5wrUAviHYYB5gA+J0IVsXFMifAIh5NG/mMkFsYF63ELVQ2c4xQp38WUmgyTPTD96m8OOSKqRArQEAtzi6tC8GLPTORb85acOtqZOU5NNTlPpFZO7Kve+Je1hxgMEz2ULgEZSGyrJwRWEIJWEs9fkfvXVdbAhvZSHJ1qwL14CsEx8Pi1oTN5HOqMCoSwg4nloqHdVhBmeUw23mYjYikpNX70tmWdFWNC47xinvTbBIb0gDJWuqs8ceRaO9zKFFVt6QOHXQkAtHBXvMhf+Gl0rm1F3ov4HYhH0gFMCDRpo07RFzOWXGf600NNFkP5tVxciet4tvMXy0NsEnphjYfPh8dJGwfKVNh+li7P8FeKQGaKvZUotLmyXvi1WYTf95ut1B0vg3qOc7k1KYcYrGXK7NWUrWrQrtUYuMN2aMEsrAybThtMpJtSg0kfdchmFqfFVhGOjIKD0FZfyb2/hMe3sbzEGJBo5bODgaMO5EG77VIB5O6Wl3VBojYLhitn97hzPI4VP4QPfBYTXrjhek6Rih3L1qPUSNVLJI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(136003)(376002)(478600001)(76116006)(2616005)(2906002)(36756003)(6512007)(66946007)(5660300002)(122000001)(38100700002)(186003)(6506007)(3480700007)(6916009)(86362001)(66556008)(6486002)(64756008)(71200400001)(8936002)(54906003)(66446008)(66476007)(26005)(316002)(4326008)(8676002)(558084003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?TTd3OVQxd0hiMEZNVVlFYTh2TE9EMGhWdFNVMFF1eHNnaTdlaXZQM21Vc0Nm?=
+ =?utf-8?B?dGpRZ3djYWg5TWZ0dEpQd2xrMHJadVIwSnZid3RITmwwR2licjROS2xMRmFj?=
+ =?utf-8?B?cWVKY1pDaG1zS0MvYWlLTWl5ZVZNdEJwOStmaEZIMjNCMXhhMGFuZGpxVDdL?=
+ =?utf-8?B?SUp3dG1EL0UwUWFzQmx3K1N6RElPOTdxc2MzTzhUajFzRjZPVWZENDE5TWdn?=
+ =?utf-8?B?bzZxY1R5RzhuK29JYW9OcHBmV1VON3BleExuL21JNzFhcWRTTExqYWRDdCtk?=
+ =?utf-8?B?Znc5cmdKSndETnNnemFnMnNXbU1nY2tlVHRVSTZyVlF1WE5UZzlFdWUxKy9Q?=
+ =?utf-8?B?WGt5N0hXQ2tNYTJ0aEVxVWdDM3RQeUN5d0RzSDl3YXg1SGVwaUI3dEh5MnlF?=
+ =?utf-8?B?SVloTXdGVWFINzVZQ0lteVErUGJPYzl1TTgrdm9NUS93Z2pxZXZiSng0YkJ2?=
+ =?utf-8?B?bEhuZ1RVem1tbzcrTldHSzI2cWFZWFdqMFV5b1QyODUyWklZWFVrZkRiMDVH?=
+ =?utf-8?B?UlhCOHhYV3FWTEp2N1hqY0oxNVJQZjRrWXlXZXhLQ2hvclRmRzgvN3VYaVE4?=
+ =?utf-8?B?ckI1Z2Z1WEtGek9HdUsxTGw1dnEvNGp2RFh2MTBPNjJ4MkpEWENIaUMyYXAx?=
+ =?utf-8?B?SjZqS1BRQ0JUY29FZFI0K0crQnltdUhuajQ5WDRmL2x3SGh2M2YyVDN2NVhX?=
+ =?utf-8?B?SkE0V01sZG5hUnJyZlRMK0dUdmFuM3MzUGNoZUgxY05ZYklIWDQ0VDVYd0Zj?=
+ =?utf-8?B?bjBBek5sWUplUWlWM0Z4cE1LNnhTb2hlenZ2RXFRSDU2NVpBUVU1ejhZRDl6?=
+ =?utf-8?B?RGVJTEQvRWRLYmJpdGxrZnlQdU4xbm4vN0hHbEJ1WmI1WWxUdklyU2Qyc3Yv?=
+ =?utf-8?B?ZVVNRmV3NHI1MTV5ZjhkRjdBT0paNWFnc2NyaDBnUm5sMm90ZGJMUGxuMlVV?=
+ =?utf-8?B?M2JLdVJBdkd6U0N2VlB1Z1NGbnlZOFpScG90Q1Zqd2UzY1o2WC8wbFNhMTYx?=
+ =?utf-8?B?eTBrajZuam5LYkZLbytDdFhERDRWU1hKMDZ1MmQ4TjUrZ2lUQzJzVUNibUxv?=
+ =?utf-8?B?WGVLM3BKeHh1amxWckpkVkdjOFdST0NsMkxMa1ZIR2pITi9aZVBSTm5Pd0hR?=
+ =?utf-8?B?Z3kxS3hJOGFETXZjdVJCWWFINkZXZlNzeXVpSkM2elhjbnhYaGgrYkw5S3FI?=
+ =?utf-8?B?U0UvMXhRUkFwM2ZrdGV6RjUwTk9JWktjOEtleVFQRGR5R2RJb29FY3kxUGRQ?=
+ =?utf-8?B?aGVjM1VkY01DSnJFc3E3a0t0TnlFMzNRc3pVbVhKenZxUWVjZStQb1lxMTRu?=
+ =?utf-8?B?cHpFL1FkdVc1VVdvQWhCNmxUQlV2ZDZ3Z1M2YjRwSm1IUUwvVVFDTFgvU0JS?=
+ =?utf-8?B?aElhYndUd0xTQ3B0NnBOZFFmZi9tOTlTWFB4QS8zTVo2RFRPcHd3NXEyOUFF?=
+ =?utf-8?B?VEEwdnVvTGYvUklsbitmdmVwUTQyKytuRGRnU0NvQW41OGFacE9BM0NkVkNh?=
+ =?utf-8?B?c05ZbG1HYXNXTGk4OW5LOENtN1grT1BxdnNaWlBQTlU1bThYck1GNVZkVk82?=
+ =?utf-8?B?S2pnaEtuOWNVY0RtM1czM1EvYjBjb3hnejBRMldsbmdOV2V5MTBPN1VqdGdX?=
+ =?utf-8?B?Y29CSHl1bTJuQlBEVloxYUg4Z0QweWd1eCsyLzZmWFJ1NzZjNUZwTU9TZWpU?=
+ =?utf-8?B?MDRMSG14OEJuVGRLaktwZHVaU1ZXdzJNRzhwcDdBN0p4K2RDVTJlSGJwZEh3?=
+ =?utf-8?Q?Mly8ZHWzaDAlccqZ6nkgLu8rqYwod5gdTAGHF1V?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <32B06FE1E6FE654C85EC09EAB42B361E@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e119111-75bc-4d38-9059-08d91f7a6319
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2021 12:41:15.7297
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fNpCd3FgUVJ7yvWTCPOU7a5929MJlGZqLS6V5X/tMQnfBI9QqH7mq8hubjRPBWaTvdAjok9/rTpFSBM0rrA5DwQsTY4IJuVHQepiTxKBnt4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0701MB2460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use regulator_set_ramp_delay_regmap instead of open-coded.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/fan53555.c | 63 ++++++++++--------------------------
- 1 file changed, 17 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
-index 9770a4df83d4..eb67500ad279 100644
---- a/drivers/regulator/fan53555.c
-+++ b/drivers/regulator/fan53555.c
-@@ -126,7 +126,8 @@ struct fan53555_device_info {
- 	/* Slew rate */
- 	unsigned int slew_reg;
- 	unsigned int slew_mask;
--	unsigned int slew_shift;
-+	const unsigned int *ramp_delay_table;
-+	unsigned int n_ramp_values;
- 	unsigned int slew_rate;
- };
- 
-@@ -200,7 +201,7 @@ static unsigned int fan53555_get_mode(struct regulator_dev *rdev)
- 		return REGULATOR_MODE_NORMAL;
- }
- 
--static const int slew_rates[] = {
-+static const unsigned int slew_rates[] = {
- 	64000,
- 	32000,
- 	16000,
-@@ -211,51 +212,13 @@ static const int slew_rates[] = {
- 	  500,
- };
- 
--static const int tcs_slew_rates[] = {
-+static const unsigned int tcs_slew_rates[] = {
- 	18700,
- 	 9300,
- 	 4600,
- 	 2300,
- };
- 
--static int fan53555_set_ramp(struct regulator_dev *rdev, int ramp)
--{
--	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
--	int regval = -1, i;
--	const int *slew_rate_t;
--	int slew_rate_n;
--
--	switch (di->vendor) {
--	case FAN53526_VENDOR_FAIRCHILD:
--	case FAN53555_VENDOR_FAIRCHILD:
--	case FAN53555_VENDOR_SILERGY:
--		slew_rate_t = slew_rates;
--		slew_rate_n = ARRAY_SIZE(slew_rates);
--		break;
--	case FAN53526_VENDOR_TCS:
--		slew_rate_t = tcs_slew_rates;
--		slew_rate_n = ARRAY_SIZE(tcs_slew_rates);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	for (i = 0; i < slew_rate_n; i++) {
--		if (ramp <= slew_rate_t[i])
--			regval = i;
--		else
--			break;
--	}
--
--	if (regval < 0) {
--		dev_err(di->dev, "unsupported ramp value %d\n", ramp);
--		return -EINVAL;
--	}
--
--	return regmap_update_bits(rdev->regmap, di->slew_reg,
--				  di->slew_mask, regval << di->slew_shift);
--}
--
- static const struct regulator_ops fan53555_regulator_ops = {
- 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
- 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-@@ -268,7 +231,7 @@ static const struct regulator_ops fan53555_regulator_ops = {
- 	.is_enabled = regulator_is_enabled_regmap,
- 	.set_mode = fan53555_set_mode,
- 	.get_mode = fan53555_get_mode,
--	.set_ramp_delay = fan53555_set_ramp,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
- 	.set_suspend_enable = fan53555_set_suspend_enable,
- 	.set_suspend_disable = fan53555_set_suspend_disable,
- };
-@@ -298,7 +261,8 @@ static int fan53526_voltages_setup_fairchild(struct fan53555_device_info *di)
- 
- 	di->slew_reg = FAN53555_CONTROL;
- 	di->slew_mask = CTL_SLEW_MASK;
--	di->slew_shift = CTL_SLEW_SHIFT;
-+	di->ramp_delay_table = slew_rates;
-+	di->n_ramp_values = ARRAY_SIZE(slew_rates);
- 	di->vsel_count = FAN53526_NVOLTAGES;
- 
- 	return 0;
-@@ -343,7 +307,8 @@ static int fan53555_voltages_setup_fairchild(struct fan53555_device_info *di)
- 	}
- 	di->slew_reg = FAN53555_CONTROL;
- 	di->slew_mask = CTL_SLEW_MASK;
--	di->slew_shift = CTL_SLEW_SHIFT;
-+	di->ramp_delay_table = slew_rates;
-+	di->n_ramp_values = ARRAY_SIZE(slew_rates);
- 	di->vsel_count = FAN53555_NVOLTAGES;
- 
- 	return 0;
-@@ -365,7 +330,8 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
- 	}
- 	di->slew_reg = FAN53555_CONTROL;
- 	di->slew_mask = CTL_SLEW_MASK;
--	di->slew_shift = CTL_SLEW_SHIFT;
-+	di->ramp_delay_table = slew_rates;
-+	di->n_ramp_values = ARRAY_SIZE(slew_rates);
- 	di->vsel_count = FAN53555_NVOLTAGES;
- 
- 	return 0;
-@@ -377,7 +343,8 @@ static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
- 	case TCS4525_CHIP_ID_12:
- 		di->slew_reg = TCS4525_TIME;
- 		di->slew_mask = TCS_SLEW_MASK;
--		di->slew_shift = TCS_SLEW_SHIFT;
-+		di->ramp_delay_table = tcs_slew_rates;
-+		di->n_ramp_values = ARRAY_SIZE(tcs_slew_rates);
- 
- 		/* Init voltage range and step */
- 		di->vsel_min = 600000;
-@@ -516,6 +483,10 @@ static int fan53555_regulator_register(struct fan53555_device_info *di,
- 	rdesc->uV_step = di->vsel_step;
- 	rdesc->vsel_reg = di->vol_reg;
- 	rdesc->vsel_mask = di->vsel_count - 1;
-+	rdesc->ramp_reg = di->slew_reg;
-+	rdesc->ramp_mask = di->slew_mask;
-+	rdesc->ramp_delay_table = di->ramp_delay_table;
-+	rdesc->n_ramp_values = di->n_ramp_values;
- 	rdesc->owner = THIS_MODULE;
- 
- 	rdev = devm_regulator_register(di->dev, &di->desc, config);
--- 
-2.25.1
-
+SGkgR3JlZywNCg0KQ2FuIHlvdSBwbGVhc2UgY2hlcnJ5LXBpY2sgdGhpcyB0byBMVFM6DQoNCmNv
+bW1pdCBiZjUzZmM2YjVmNDE1Y2RkYzcxMTgwOTFjYjhmZDZhMjExYjIzMjBkDQpBdXRob3I6IEph
+biBLcmF0b2NodmlsIDxqYW4ua3JhdG9jaHZpbEByZWRoYXQuY29tPg0KRGF0ZTogICBGcmkgRGVj
+IDQgMDk6MTc6MDIgMjAyMCAtMDMwMA0KDQogICAgcGVyZiB1bndpbmQ6IEZpeCBzZXBhcmF0ZSBk
+ZWJ1ZyBpbmZvIGZpbGVzIHdoZW4gdXNpbmcgZWxmdXRpbHMnIGxpYmR3J3MgdW53aW5kZXINCg0K
+DQotVG9tbWkNCg0K
