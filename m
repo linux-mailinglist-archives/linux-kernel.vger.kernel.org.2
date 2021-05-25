@@ -2,190 +2,402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916C539067C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6319390663
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhEYQU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:20:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39230 "EHLO mx2.suse.de"
+        id S233298AbhEYQR0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 25 May 2021 12:17:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:33752 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231936AbhEYQU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:20:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621959566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wOLQrLx78QxIRxytGL8WQqOpzKDP90+qDZBKi8kCbGw=;
-        b=y309SESAi1IKh9bbtHJp4fLSFcTpVLXMVAi8h1rX2nvwaFl40bP0icZKI5A6i7WH7Z927u
-        WZIcIFVyPkmZ5Br9wUBCa+gxaNmtgWhAfdrQ63RJo7iVGblDoY0V1b4GjNtCBBzJvV7gRo
-        Qq6XWMHMRdiuzp1S2TLcpPFlLnoAgfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621959566;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wOLQrLx78QxIRxytGL8WQqOpzKDP90+qDZBKi8kCbGw=;
-        b=5y+TOxVgDFjkcLfOrHMRqSK3Fx1gDGHi/SmX9qxvjGhVYkNru/sdFXdqV5q1hC3zMBjlcF
-        8qOp2s3GDpnc5VCw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2CD5CAEAA;
-        Tue, 25 May 2021 16:19:26 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BDC091F2C9E; Tue, 25 May 2021 18:19:25 +0200 (CEST)
-Date:   Tue, 25 May 2021 18:19:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, kernel@pengutronix.de,
-        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v3 0/2] quota: Add mountpath based quota support
-Message-ID: <20210525161925.GF4112@quack2.suse.cz>
-References: <20210304123541.30749-1-s.hauer@pengutronix.de>
- <20210316112916.GA23532@quack2.suse.cz>
- <20210512110149.GA31495@quack2.suse.cz>
- <20210512150346.GQ19819@pengutronix.de>
- <20210524084912.GC32705@quack2.suse.cz>
- <20210525072615.GR19819@pengutronix.de>
- <YKyv3sFKLKDWUZ3C@infradead.org>
+        id S232561AbhEYQRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:17:24 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FqK2137DzzB7k2;
+        Tue, 25 May 2021 18:15:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jqBU9LutuFUq; Tue, 25 May 2021 18:15:53 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FqK2120ZlzB7DJ;
+        Tue, 25 May 2021 18:15:53 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id C888764E; Tue, 25 May 2021 18:20:18 +0200 (CEST)
+Received: from 37.173.125.11 ([37.173.125.11]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Tue, 25 May 2021 18:20:18 +0200
+Date:   Tue, 25 May 2021 18:20:18 +0200
+Message-ID: <20210525182018.Horde.RpVsAs9V_zh-RmbuxnlQTQ2@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au
+Subject: Re: [PATCH] drivers: crypto: talitos.c: Replace space with tabs
+In-Reply-To: <20210525140903.nqj5rdohduzemm4l@kewl-virtual-machine>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="YZ5djTAD1cGYuMQK"
 Content-Disposition: inline
-In-Reply-To: <YKyv3sFKLKDWUZ3C@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Shubhankar Kuranagatti <shubhankarvk@gmail.com> a écrit :
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Tabs have been used instead of spaces for indentation
+> This is done to maintain code uniformity(LINDENT).
 
-On Tue 25-05-21 09:05:50, Christoph Hellwig wrote:
-> Adding the dfd argument should be as simple as this patch (which also
-> moves the cmd argument later to match typical calling conventions).
-> 
-> It might be worth to rename the syscall to quotactlat to better match
-> other syscalls.  A flags argument doesn't make much sense here, as the
-> cmd argument can be used for extensions and is properly checked for
-> unknown values.
+Nack.
 
-Thanks for the patch! So I was actually thinking about going to completely
-fd-based syscall like ioctl(2) and then we don't have to worry about lookup
-flags or paths at all. What do people thing about attached patch?
+The changes done by this patch break linux codying style. For  
+instance, additional lines alignment must match open parenthesis.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Did you run checkpatch.pl on your path ?
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-quota-Change-quotactl_path-systcall-to-an-fd-based-o.patch"
+>
+> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+> ---
+>  drivers/crypto/talitos.c | 198 +++++++++++++++++++--------------------
+>  1 file changed, 99 insertions(+), 99 deletions(-)
+>
+> diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+> index 25c9f825b8b5..e40f78ec8c4b 100644
+> --- a/drivers/crypto/talitos.c
+> +++ b/drivers/crypto/talitos.c
+> @@ -174,7 +174,7 @@ static int reset_channel(struct device *dev, int ch)
+>  	/* and ICCR writeback, if available */
+>  	if (priv->features & TALITOS_FTR_HW_AUTH_CHECK)
+>  		setbits32(priv->chan[ch].reg + TALITOS_CCCR_LO,
+> -		          TALITOS_CCCR_LO_IWSE);
+> +				TALITOS_CCCR_LO_IWSE);
+>
+>  	return 0;
+>  }
+> @@ -249,7 +249,7 @@ static int init_device(struct device *dev)
+>  	/* disable integrity check error interrupts (use writeback instead) */
+>  	if (priv->features & TALITOS_FTR_HW_AUTH_CHECK)
+>  		setbits32(priv->reg_mdeu + TALITOS_EUICR_LO,
+> -		          TALITOS_MDEUICR_LO_ICE);
+> +				TALITOS_MDEUICR_LO_ICE);
+>
+>  	return 0;
+>  }
+> @@ -2276,12 +2276,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = SHA1_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_AESU |
+> -		                     DESC_HDR_MODE0_AESU_CBC |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+> +			DESC_HDR_SEL0_AESU |
+> +			DESC_HDR_MODE0_AESU_CBC |
+> +			DESC_HDR_SEL1_MDEUA |
+> +			DESC_HDR_MODE1_MDEU_INIT |
+> +			DESC_HDR_MODE1_MDEU_PAD |
+> +			DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2321,13 +2321,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA1_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2413,13 +2413,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2438,13 +2438,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+> -				     DESC_HDR_SEL0_DEU |
+> -				     DESC_HDR_MODE0_DEU_CBC |
+> -				     DESC_HDR_MODE0_DEU_3DES |
+> -				     DESC_HDR_SEL1_MDEUA |
+> -				     DESC_HDR_MODE1_MDEU_INIT |
+> -				     DESC_HDR_MODE1_MDEU_PAD |
+> -				     DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA224_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2460,12 +2460,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = SHA256_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_AESU |
+> -		                     DESC_HDR_MODE0_AESU_CBC |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+> +					DESC_HDR_SEL0_AESU |
+> +					DESC_HDR_MODE0_AESU_CBC |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2505,13 +2505,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2530,13 +2530,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+> -				     DESC_HDR_SEL0_DEU |
+> -				     DESC_HDR_MODE0_DEU_CBC |
+> -				     DESC_HDR_MODE0_DEU_3DES |
+> -				     DESC_HDR_SEL1_MDEUA |
+> -				     DESC_HDR_MODE1_MDEU_INIT |
+> -				     DESC_HDR_MODE1_MDEU_PAD |
+> -				     DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_SHA256_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2552,12 +2552,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = SHA384_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_AESU |
+> -		                     DESC_HDR_MODE0_AESU_CBC |
+> -		                     DESC_HDR_SEL1_MDEUB |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+> +					DESC_HDR_SEL0_AESU |
+> +					DESC_HDR_MODE0_AESU_CBC |
+> +					DESC_HDR_SEL1_MDEUB |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2575,13 +2575,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUB |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+> +				DESC_HDR_SEL0_DEU |
+> +				DESC_HDR_MODE0_DEU_CBC |
+> +				DESC_HDR_MODE0_DEU_3DES |
+> +				DESC_HDR_SEL1_MDEUB |
+> +				DESC_HDR_MODE1_MDEU_INIT |
+> +				DESC_HDR_MODE1_MDEU_PAD |
+> +				DESC_HDR_MODE1_MDEUB_SHA384_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2597,12 +2597,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = SHA512_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_AESU |
+> -		                     DESC_HDR_MODE0_AESU_CBC |
+> -		                     DESC_HDR_SEL1_MDEUB |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+> +					DESC_HDR_SEL0_AESU |
+> +					DESC_HDR_MODE0_AESU_CBC |
+> +					DESC_HDR_SEL1_MDEUB |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2620,13 +2620,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUB |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUB |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEUB_SHA512_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2642,12 +2642,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = MD5_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_AESU |
+> -		                     DESC_HDR_MODE0_AESU_CBC |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_MD5_HMAC,
+> +					DESC_HDR_SEL0_AESU |
+> +					DESC_HDR_MODE0_AESU_CBC |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2664,12 +2664,12 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.maxauthsize = MD5_DIGEST_SIZE,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_HMAC_SNOOP_NO_AFEU |
+> -				     DESC_HDR_SEL0_AESU |
+> -				     DESC_HDR_MODE0_AESU_CBC |
+> -				     DESC_HDR_SEL1_MDEUA |
+> -				     DESC_HDR_MODE1_MDEU_INIT |
+> -				     DESC_HDR_MODE1_MDEU_PAD |
+> -				     DESC_HDR_MODE1_MDEU_MD5_HMAC,
+> +					DESC_HDR_SEL0_AESU |
+> +					DESC_HDR_MODE0_AESU_CBC |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.alg.aead = {
+> @@ -2686,13 +2686,13 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = aead_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_IPSEC_ESP |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES |
+> -		                     DESC_HDR_SEL1_MDEUA |
+> -		                     DESC_HDR_MODE1_MDEU_INIT |
+> -		                     DESC_HDR_MODE1_MDEU_PAD |
+> -		                     DESC_HDR_MODE1_MDEU_MD5_HMAC,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES |
+> +					DESC_HDR_SEL1_MDEUA |
+> +					DESC_HDR_MODE1_MDEU_INIT |
+> +					DESC_HDR_MODE1_MDEU_PAD |
+> +					DESC_HDR_MODE1_MDEU_MD5_HMAC,
+>  	},
+>  	{	.type = CRYPTO_ALG_TYPE_AEAD,
+>  		.priority = TALITOS_CRA_PRIORITY_AEAD_HSNA,
+> @@ -2839,9 +2839,9 @@ static struct talitos_alg_template driver_algs[] = {
+>  			.setkey = skcipher_des3_setkey,
+>  		},
+>  		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+> -			             DESC_HDR_SEL0_DEU |
+> -		                     DESC_HDR_MODE0_DEU_CBC |
+> -		                     DESC_HDR_MODE0_DEU_3DES,
+> +					DESC_HDR_SEL0_DEU |
+> +					DESC_HDR_MODE0_DEU_CBC |
+> +					DESC_HDR_MODE0_DEU_3DES,
+>  	},
+>  	/* AHASH algorithms. */
+>  	{	.type = CRYPTO_ALG_TYPE_AHASH,
+> @@ -3131,7 +3131,7 @@ static int hw_supports(struct device *dev,  
+> __be32 desc_hdr_template)
+>
+>  	if (SECONDARY_EU(desc_hdr_template))
+>  		ret = ret && (1 << SECONDARY_EU(desc_hdr_template)
+> -		              & priv->exec_units);
+> +				& priv->exec_units);
+>
+>  	return ret;
+>  }
+> @@ -3176,7 +3176,7 @@ static int talitos_remove(struct  
+> platform_device *ofdev)
+>
+>  static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
+>  						    struct talitos_alg_template
+> -						           *template)
+> +							*template)
+>  {
+>  	struct talitos_private *priv = dev_get_drvdata(dev);
+>  	struct talitos_crypto_alg *t_alg;
+> --
+> 2.17.1
 
-From 359222f02ff7b69668a493207e3b84d53195f818 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 25 May 2021 16:07:48 +0200
-Subject: [PATCH] quota: Change quotactl_path() systcall to an fd-based one
 
-Some users have pointed out that path-based syscalls are problematic in
-some environments and at least directory fd argument and possibly also
-resolve flags are desirable for such syscalls. Rather than
-reimplementing all details of pathname lookup and following where it may
-eventually evolve, let's go for full file descriptor based syscall
-similar to how ioctl(2) works since the beginning. Managing of quotas
-isn't performance sensitive so the extra overhead of open does not
-matter and we are able to consume O_PATH descriptors as well which makes
-open cheap anyway. Also for frequent operations (such as retrieving
-usage information for all users) we can reuse single fd and in fact get
-even better performance as well as avoiding races with possible remounts
-etc.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/quota/quota.c         | 27 ++++++++++++---------------
- include/linux/syscalls.h |  4 ++--
- 2 files changed, 14 insertions(+), 17 deletions(-)
-
-diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-index 05e4bd9ab6d6..8450bb6186f4 100644
---- a/fs/quota/quota.c
-+++ b/fs/quota/quota.c
-@@ -968,31 +968,29 @@ SYSCALL_DEFINE4(quotactl, unsigned int, cmd, const char __user *, special,
- 	return ret;
- }
- 
--SYSCALL_DEFINE4(quotactl_path, unsigned int, cmd, const char __user *,
--		mountpoint, qid_t, id, void __user *, addr)
-+SYSCALL_DEFINE4(quotactl_fd, unsigned int, fd, unsigned int, cmd,
-+		qid_t, id, void __user *, addr)
- {
- 	struct super_block *sb;
--	struct path mountpath;
- 	unsigned int cmds = cmd >> SUBCMDSHIFT;
- 	unsigned int type = cmd & SUBCMDMASK;
-+	struct fd f = fdget_raw(fd);
- 	int ret;
- 
--	if (type >= MAXQUOTAS)
--		return -EINVAL;
-+	if (!f.file)
-+		return -EBADF;
- 
--	ret = user_path_at(AT_FDCWD, mountpoint,
--			     LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT, &mountpath);
--	if (ret)
--		return ret;
--
--	sb = mountpath.mnt->mnt_sb;
-+	ret = -EINVAL;
-+	if (type >= MAXQUOTAS)
-+		goto out;
- 
- 	if (quotactl_cmd_write(cmds)) {
--		ret = mnt_want_write(mountpath.mnt);
-+		ret = mnt_want_write(f.file->f_path.mnt);
- 		if (ret)
- 			goto out;
- 	}
- 
-+	sb = f.file->f_path.mnt->mnt_sb;
- 	if (quotactl_cmd_onoff(cmds))
- 		down_write(&sb->s_umount);
- 	else
-@@ -1006,9 +1004,8 @@ SYSCALL_DEFINE4(quotactl_path, unsigned int, cmd, const char __user *,
- 		up_read(&sb->s_umount);
- 
- 	if (quotactl_cmd_write(cmds))
--		mnt_drop_write(mountpath.mnt);
-+		mnt_drop_write(f.file->f_path.mnt);
- out:
--	path_put(&mountpath);
--
-+	fdput(f);
- 	return ret;
- }
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 050511e8f1f8..586128d5c3b8 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -485,8 +485,8 @@ asmlinkage long sys_pipe2(int __user *fildes, int flags);
- /* fs/quota.c */
- asmlinkage long sys_quotactl(unsigned int cmd, const char __user *special,
- 				qid_t id, void __user *addr);
--asmlinkage long sys_quotactl_path(unsigned int cmd, const char __user *mountpoint,
--				  qid_t id, void __user *addr);
-+asmlinkage long sys_quotactl_fd(unsigned int fd, unsigned int cmd, qid_t id,
-+				void __user *addr);
- 
- /* fs/readdir.c */
- asmlinkage long sys_getdents64(unsigned int fd,
--- 
-2.26.2
-
-
---YZ5djTAD1cGYuMQK--
