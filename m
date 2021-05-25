@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4299D39077F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EE5390781
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhEYR0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:26:17 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9404 "EHLO mga03.intel.com"
+        id S233957AbhEYR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:26:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45592 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233843AbhEYR0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:26:16 -0400
-IronPort-SDR: ORtokHP8GR+g4SaXWfdeAE+JDGJVwxfY5z5f0gcX0cugm8brw5jFZ1wabDmgBEBbJBiz4wiEVN
- fVzYdac7PPXw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202288219"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="202288219"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 10:24:33 -0700
-IronPort-SDR: iSJB6XtPrtPA88Et5nfaFUasQXO07mqz6NAlMsTbI4655hsWgUQEF6JYKXVXNX+nNviIytsXNY
- l00jeGp5eGPQ==
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="633105450"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 10:24:32 -0700
-From:   ira.weiny@intel.com
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 3/3] dax: Ensure errno is returned from dax_direct_access
-Date:   Tue, 25 May 2021 10:24:28 -0700
-Message-Id: <20210525172428.3634316-4-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210525172428.3634316-1-ira.weiny@intel.com>
-References: <20210525172428.3634316-1-ira.weiny@intel.com>
+        id S233866AbhEYR0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 13:26:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621963486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aYyeinUAq0H1U93rCYr+guudzE86Z5+s4i82KHGINMI=;
+        b=NQF509v5vB4KfKsbys/q0DSbhGkjYiLUf9BIYfndTecQChmKIqd0uz+LwfzpEAuFnjwE8j
+        A92MIdBvMbAJU+2e/f74mAc2peK2iWNebQf5ojro4Y4pLh+wykCxpkyLESt4fRbUnfjEzL
+        DEcNXFZhRfkEFEBgcrbcNu2Et52ohUI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621963486;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aYyeinUAq0H1U93rCYr+guudzE86Z5+s4i82KHGINMI=;
+        b=brrEX2/5HORQBhzlvcrc/7INEzj963Khh8LAk46gx4vJ8uYYDhn4EU3CKGLx1NxYBDeKoS
+        11qZxR3xa7Dmb+CA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 80ABEAF32;
+        Tue, 25 May 2021 17:24:46 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+References: <20210524233946.20352-1-vbabka@suse.cz>
+ <20210524233946.20352-10-vbabka@suse.cz>
+ <20210525123536.GR30378@techsingularity.net>
+ <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
+Subject: Re: [RFC 09/26] mm, slub: move disabling/enabling irqs to
+ ___slab_alloc()
+Message-ID: <1c9027d9-c6d7-f05d-49a4-a6396a59280c@suse.cz>
+Date:   Tue, 25 May 2021 19:24:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <f2e9187a-dea8-ef55-b815-9ac295b46919@suse.cz>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On 5/25/21 2:47 PM, Vlastimil Babka wrote:
+> On 5/25/21 2:35 PM, Mel Gorman wrote:
+>> 
+>> Why did you use migrate_disable instead of preempt_disable? There is a
+>> fairly large comment in include/linux/preempt.h on why migrate_disable
+>> is undesirable so new users are likely to be put under the microscope
+>> once Thomas or Peter notice it.
+> 
+> I understood it as while undesirable, there's nothing better for now.
 
-If the caller specifies a negative nr_pages that is an invalid
-parameter.
+Ah I now recalled the more important reason. By my understanding of
+Documentation/locking/locktypes.rst it's not possible on PREEMPT_RT to do a
+preempt_disable() and then take a spin_lock (or local_lock) which is a mutex on
+RT and needs preemption enabled to take it. And one of the goals is that
+list_lock would not have to be raw_spinlock on RT anymore.
 
-Return -EINVAL to ensure callers get an errno if they want to check it.
+>> I think you are using it so that an allocation request can be preempted by
+>> a higher priority task but given that the code was disabling interrupts,
+>> there was already some preemption latency.
+> 
+> Yes, and the disabled interrupts will get progressively "smaller" in the series.
+> 
+>> However, migrate_disable
+>> is more expensive than preempt_disable (function call versus a simple
+>> increment).
+> 
+> That's true, I think perhaps it could be reimplemented so that on !PREEMPT_RT
+> and with no lockdep/preempt/whatnot debugging it could just translate to an
+> inline migrate_disable?
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/dax/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-index 5fa6ae9dbc8b..44736cbd446e 100644
---- a/drivers/dax/super.c
-+++ b/drivers/dax/super.c
-@@ -313,7 +313,7 @@ long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
- 		return -ENXIO;
- 
- 	if (nr_pages < 0)
--		return nr_pages;
-+		return -EINVAL;
- 
- 	avail = dax_dev->ops->direct_access(dax_dev, pgoff, nr_pages,
- 			kaddr, pfn);
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+Correction: I meant "translate to an inline preempt_disable" which would then
+not change anything for !PREEMPT_RT.
 
