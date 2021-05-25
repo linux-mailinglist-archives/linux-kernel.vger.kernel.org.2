@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAE13903FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A45F390402
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhEYOfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        id S234017AbhEYOgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233870AbhEYOfv (ORCPT
+        with ESMTP id S234026AbhEYOgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:35:51 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F27EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:34:20 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id o8so38485314ljp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:34:20 -0700 (PDT)
+        Tue, 25 May 2021 10:36:02 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16882C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:34:26 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id y197so1624795ybe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 07:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=k1BOfirE/CqN20z8rJwhxZ4UusN2SWlS5nrmjMURapc=;
-        b=Crp447sIVoC9SF7/yh+4ueyMzvzvJZ4qBC2jgEp4MptNjdYJGXZjse1WSXcN2an3r9
-         5sDgufXyvOlGlttuNoriQ40PwlTNjH6A0ZEVcQpz7/F76QnXwEKEfaTCg7IABsAFQANP
-         AZ9B8/DMgsPY76ajmOtb3GfXucTP4jR3VYhZjhVt7n7mgBsdaOBwLzgtzp+rxKmb79lD
-         wy0l9H4bufA66HgOWk0nhgASQJT1PGXBVjFq7TjVZLxwdyh1nZRPhcipDC1Rr8hz+1hU
-         pq39L5rDhepRTz00saAUIN05bDYejMNIeeXSv7bY6CUleB+jExVkCUE7lzOJTI+RvZ/Z
-         c1ng==
+        bh=J87R9tGiD9qctV4x8vijaWhBzZTCCpwwEZSuP/rj7yI=;
+        b=DfjIbrccGsOONpshpqpgyzHXUeXlDTIb7+n07hF3C0K/Apkws/U7vq7MUssKfyYbH4
+         JW/GkEuWU2SM+e7WQiaS653ngRi3Z/6jrRH2ViGAzBE3WHJwqjsrOgpghCryNo+Xn8Qw
+         Eokvd9R0RPYI5oiOKUp/cB6GPP1IsWJIuVVTF5OoujB/V+BoXVSeEL8dsmjhiUIo4ShC
+         wFMwPVGNicErpOLVuK3ARe9OyR+R0J3aOkaVbMqKNuwKet6OldMiDKoWMVTXE1CQwAQY
+         ZnNhPiFRzBAFPSnS4g06SABRAdYAQ/17sKxg+IRjOJnQbfR0+Y+tvATRlDHPKmWJOQw5
+         g0ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=k1BOfirE/CqN20z8rJwhxZ4UusN2SWlS5nrmjMURapc=;
-        b=j2orlqCb+JaacvSQmiFNCvPNk+1dN+6wMOgWXOn4kEz5r94wEbX2vtJuT1gCLr6s8V
-         GWSnWIEcjLPLfbdkLgXcAQXahCPO1zCuMCVPB3TRJGC+qshBxlkNj/tu2ee3QlWOzZoP
-         fr3s/ovtd0nZ99Z5Z1FZK2DII3ZFplxncP9ag2282LT5OjKa6fVaSk/t+IoKqKNobjOf
-         bacHY1L+bPkCF5sBd/Fvd/XrV/WF0n4cbjqtfjhSF6hyamXfOkL3b8/q3Xkj3BLF37Y5
-         XbUKlvFR/7a94r7GlnhzwODa/Gcta18LJ7/GIMQA+kP5u8rpazhUE5QrIsLqSrw4T4cd
-         Pg/g==
-X-Gm-Message-State: AOAM532RMn+mI12qMWoMjXp2z99GbVrFNds5QRyWmKPU6fMHQOlYL8xv
-        d5N7yaeeLpfBT+EkKjHaK6G8qodfq1uw5FxARS+r3A==
-X-Google-Smtp-Source: ABdhPJyGFGvKSoEfd3aqsTmscuhsefCSjpqlZhVFsaJBZMfgdfLCHQIjf9UhB3iCEqZSllnJudXNvYu+15np3Zbzt3g=
-X-Received: by 2002:a05:651c:a06:: with SMTP id k6mr21014106ljq.347.1621953258657;
- Tue, 25 May 2021 07:34:18 -0700 (PDT)
+        bh=J87R9tGiD9qctV4x8vijaWhBzZTCCpwwEZSuP/rj7yI=;
+        b=R4kw7hzOeg2Qy6SzHOEEfEMAC0c+2V05neikOp1pH351Ql/eFXSc15a1ul0X15VZha
+         QipwGC5PfsQ8jhD0I8tL3yBG2ExQj2/+ovpYdZgJis+qtWIEwyiNv5Xog1ABzxOS0uBI
+         KwF9z+siDErVHS3dbuw+IPkEmnBExA2Df4Cul3hJG2RSUz8gQGHtFJfEM9y+Lvzi5qtd
+         T9vAWzHC78uMp2YyYMVxCM38kfacmh7R1oe/3fL+Wz8e0nbL+/rkPc6gw8tAQLQ5SDAb
+         Nl6M8YiszEPlavmkja9gluHzd+aZxIGsId9prw2UYERVD9R2b2TsbsvJqPlNoDPliVZy
+         dP/g==
+X-Gm-Message-State: AOAM533cmj26r2YNu68wTGMm5Mt/5M7whdMDOZix13Fahh7boI8KGomA
+        u7pkFvJoAxzk+waCT5W5SuLAAZJvqFPjagnkoATJIw==
+X-Google-Smtp-Source: ABdhPJzBzcqbICD0tyi3BQmP2SWh0dbpw78j3Ea6Tcpet57GoI8yzQRqi9jzWtt6VAa829lWWXNvS//+ayHLxDrZkXM=
+X-Received: by 2002:a25:9d86:: with SMTP id v6mr41609806ybp.366.1621953264969;
+ Tue, 25 May 2021 07:34:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525102941.3958649-1-apusaka@google.com> <CAO1O6sehBfi+Tn6EEC8XgoORrD=JF9zO9tDCbJBgL=JpaBdL2w@mail.gmail.com>
-In-Reply-To: <CAO1O6sehBfi+Tn6EEC8XgoORrD=JF9zO9tDCbJBgL=JpaBdL2w@mail.gmail.com>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Tue, 25 May 2021 22:34:07 +0800
-Message-ID: <CAJQfnxG1Q=6n4H_kTbFA-=b0Rbs6v7WE8mKKonqvw-nXhLnLMA@mail.gmail.com>
-Subject: Re: [PATCH 00/12] Bluetooth: use inclusive language
-To:     Emil Lenngren <emil.lenngren@gmail.com>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        =?UTF-8?B?T2xlIEJqw7hybiBNaWR0YsO4?= <omidtbo@cisco.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
+References: <20210516062315.10832-1-aardelean@deviqon.com>
+In-Reply-To: <20210516062315.10832-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 25 May 2021 16:34:14 +0200
+Message-ID: <CAMpxmJXJOnEfMrDf5krOAOydEui6fAHGqUx8Ub7iWZxMEOqT5Q@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-sta2x11: remove platform_set_drvdata() +
+ cleanup probe
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Emil,
-
-On Tue, 25 May 2021 at 20:19, Emil Lenngren <emil.lenngren@gmail.com> wrote:
+On Sun, May 16, 2021 at 8:23 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
 >
-> Hi Archie,
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
 >
-> Den tis 25 maj 2021 kl 12:46 skrev Archie Pusaka <apusaka@google.com>:
-> >
-> > From: Archie Pusaka <apusaka@chromium.org>
-> >
-> > Hi linux-bluetooth maintainers,
-> >
-> > This series contains inclusive language patches, to promote usage of
-> > central, peripheral, reject list, and accept list. I tried to divide
-> > the change to several smaller patches to ease downstreamers to make
-> > gradual change.
-> >
-> > There are still three occurences in debugfs (patch 09/12) in which the
-> > original less inclusive terms is still left as-is since it is a
-> > file name, and I afraid replacing them will cause instability to
-> > other systems depending on that file name.
-> >
-> >
-> > Archie Pusaka (12):
-> >   Bluetooth: use inclusive language in HCI role
-> >   Bluetooth: use inclusive language in hci_core.h
-> >   Bluetooth: use inclusive language to describe CPB
-> >   Bluetooth: use inclusive language in HCI LE features
-> >   Bluetooth: use inclusive language in L2CAP
-> >   Bluetooth: use inclusive language in RFCOMM
-> >   Bluetooth: use inclusive language when tracking connections
-> >   Bluetooth: use inclusive language in SMP
-> >   Bluetooth: use inclusive language in debugfs
-> >   Bluetooth: use inclusive language when filtering devices out
-> >   Bluetooth: use inclusive language when filtering devices in
-> >   Bluetooth: use inclusive language in comments
-> >
-> >  include/net/bluetooth/hci.h      |  98 +++++++++++++-------------
-> >  include/net/bluetooth/hci_core.h |  22 +++---
-> >  include/net/bluetooth/l2cap.h    |   2 +-
-> >  include/net/bluetooth/mgmt.h     |   2 +-
-> >  include/net/bluetooth/rfcomm.h   |   2 +-
-> >  net/bluetooth/amp.c              |   2 +-
-> >  net/bluetooth/hci_conn.c         |  32 ++++-----
-> >  net/bluetooth/hci_core.c         |  46 ++++++-------
-> >  net/bluetooth/hci_debugfs.c      |  20 +++---
-> >  net/bluetooth/hci_event.c        | 114 +++++++++++++++----------------
-> >  net/bluetooth/hci_request.c      | 106 ++++++++++++++--------------
-> >  net/bluetooth/hci_sock.c         |  12 ++--
-> >  net/bluetooth/hidp/core.c        |   2 +-
-> >  net/bluetooth/l2cap_core.c       |  16 ++---
-> >  net/bluetooth/l2cap_sock.c       |   4 +-
-> >  net/bluetooth/mgmt.c             |  36 +++++-----
-> >  net/bluetooth/rfcomm/sock.c      |   4 +-
-> >  net/bluetooth/smp.c              |  86 +++++++++++------------
-> >  net/bluetooth/smp.h              |   6 +-
-> >  19 files changed, 309 insertions(+), 303 deletions(-)
-> >
-> > --
-> > 2.31.1.818.g46aad6cb9e-goog
-> >
+> If this is removed, we can also just do a direct return on
+> devm_gpiochip_add_data(). We don't need to print that this call failed as
+> there are other ways to log/see this during probe.
 >
-> Interesting move and good initiative!
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/gpio/gpio-sta2x11.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
 >
-> In my opinion however, shouldn't we wait until Bluetooth SIG changes
-> the naming in the specification itself first (or rather push them to
-> make the changes in the first place)? If they are about to change
-> names, it would be good to make sure we end up with the same word
-> choices so that we don't call one thing "le peripheral initiated
-> feature exchange" while the standard calls it "le follower initiated
-> feature exchange" or similar. Using different terminology than what's
-> specified by the standard could easily end up in confusion I guess,
-> and even more if different stacks invented their own alternative
-> terminology.
+> diff --git a/drivers/gpio/gpio-sta2x11.c b/drivers/gpio/gpio-sta2x11.c
+> index a74bb97a41e2..392fcab06ab8 100644
+> --- a/drivers/gpio/gpio-sta2x11.c
+> +++ b/drivers/gpio/gpio-sta2x11.c
+> @@ -398,15 +398,7 @@ static int gsta_probe(struct platform_device *dev)
+>                 return err;
+>         }
+>
+> -       err = devm_gpiochip_add_data(&dev->dev, &chip->gpio, chip);
+> -       if (err < 0) {
+> -               dev_err(&dev->dev, "sta2x11 gpio: Can't register (%i)\n",
+> -                       -err);
+> -               return err;
+> -       }
+> -
+> -       platform_set_drvdata(dev, chip);
+> -       return 0;
+> +       return devm_gpiochip_add_data(&dev->dev, &chip->gpio, chip);
+>  }
+>
+>  static struct platform_driver sta2x11_gpio_platform_driver = {
+> --
+> 2.31.1
+>
 
-So far the Bluetooth SIG has only published an "Appropriate Language
-Mapping Table" (https://specificationrefs.bluetooth.com/language-mapping/Appropriate_Language_Mapping_Table.pdf).
-It doesn't look like it's finalized, but it's enough to get started.
-Hopefully someone in the community can help to push the changes to the
-spec?
+Applied, thanks!
 
-> In any case, I'm for example not sure if central/peripheral are the
-> best words to use, since those are tied to a specific higher level
-> profile (Generic Access Profile) and those words are not mentioned at
-> all in the spec outside that context. The SMP chapter for example uses
-> the terminology "initiator" and "responder", so maybe those are better
-> word choices, at least in SMP.
-
-Thanks, you are correct about that. I didn't read the spec thoroughly
-and just did a simple replacement. I shall incorporate your suggestion
-if this set of patches is greenlighted.
-
-Cheers,
-Archie
+Bart
