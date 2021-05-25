@@ -2,120 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1A638FA66
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DE838FA62
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhEYFzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:55:40 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56037 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231313AbhEYFzd (ORCPT
+        id S231298AbhEYFza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:55:30 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:14668 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhEYFzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:55:33 -0400
-X-UUID: dad6ddd890bf453f9aca5c7a0bd46524-20210525
-X-UUID: dad6ddd890bf453f9aca5c7a0bd46524-20210525
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <nina-cm.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 101585140; Tue, 25 May 2021 13:54:00 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 25 May 2021 13:53:59 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 13:53:59 +0800
-From:   Nina Wu <nina-cm.wu@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Nina Wu <Nina-CM.Wu@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tue, 25 May 2021 01:55:25 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14P5eI8Q028256;
+        Tue, 25 May 2021 13:40:18 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from slee-VirtualBox.localdomain (192.168.100.253) by
+ TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 25 May 2021 13:53:15 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        "moderated list:ASPEED PINCTRL DRIVERS" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v4 7/7] arm64: dts: mt8192: Add devapc node
-Date:   Tue, 25 May 2021 13:53:06 +0800
-Message-ID: <1621921986-20578-7-git-send-email-nina-cm.wu@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1621921986-20578-1-git-send-email-nina-cm.wu@mediatek.com>
-References: <1621921986-20578-1-git-send-email-nina-cm.wu@mediatek.com>
+        open list <linux-kernel@vger.kernel.org>
+CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
+        <ryan_chen@aspeedtech.com>, <billy_tsai@aspeedtech.com>
+Subject: [PATCH v3 3/3] pinctrl: pinctrl-aspeed-g6: Add sgpio pinctrl settings
+Date:   Tue, 25 May 2021 13:53:07 +0800
+Message-ID: <20210525055308.31069-4-steven_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210525055308.31069-1-steven_lee@aspeedtech.com>
+References: <20210525055308.31069-1-steven_lee@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14P5eI8Q028256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nina Wu <Nina-CM.Wu@mediatek.com>
+AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
+Current pinctrl driver only define the first sgpio master and slave
+interfaces.
+The second SGPIO master and slave interfaces should be added in
+pinctrl driver as well.
 
-Add devapc nodes to mt8192.
-
-Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 ---
-This patch depends on "Add dt-bindings of MT8192 clocks" [1]
-and "Add mt8192 clock controllers" [2]
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 24 ++++++++++++++++++----
+ drivers/pinctrl/aspeed/pinmux-aspeed.h     |  9 ++++++++
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210524122053.17155-7-chun-jie.chen@mediatek.com/
-[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20210331083854.7650-2-chun-jie.chen@mediatek.com/
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 36 ++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index b0923de..6f5c8c5 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -517,6 +517,33 @@
- 			clock-names = "clk13m";
- 		};
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+index 5c1a109842a7..36688793b3a0 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+@@ -46,8 +46,10 @@
+ #define SCU620		0x620 /* Disable GPIO Internal Pull-Down #4 */
+ #define SCU634		0x634 /* Disable GPIO Internal Pull-Down #5 */
+ #define SCU638		0x638 /* Disable GPIO Internal Pull-Down #6 */
++#define SCU690		0x690 /* Multi-function Pin Control #24 */
+ #define SCU694		0x694 /* Multi-function Pin Control #25 */
+ #define SCU69C		0x69C /* Multi-function Pin Control #27 */
++#define SCU6D0		0x6D0 /* Multi-function Pin Control #29 */
+ #define SCUC20		0xC20 /* PCIE configuration Setting Control */
  
-+		devapc_infra: devapc@10207000 {
-+			compatible = "mediatek,mt8192-devapc";
-+			reg = <0 0x10207000 0 0x1000>;
-+			vio-idx-num = <367>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_DEVICE_APC>;
-+			clock-names = "devapc-infra-clock";
-+		};
-+
-+		devapc_peri: devapc@10274000 {
-+			compatible = "mediatek,mt8192-devapc";
-+			reg = <0 0x10274000 0 0x1000>;
-+			vio-idx-num = <292>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_DEVICE_APC>;
-+			clock-names = "devapc-infra-clock";
-+		};
-+
-+		devapc_peri2: devapc@10275000 {
-+			compatible = "mediatek,mt8192-devapc";
-+			reg = <0 0x10275000 0 0x1000>;
-+			vio-idx-num = <242>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_DEVICE_APC>;
-+			clock-names = "devapc-infra-clock";
-+		};
-+
- 		scp_adsp: syscon@10720000 {
- 			compatible = "mediatek,mt8192-scp_adsp", "syscon";
- 			reg = <0 0x10720000 0 0x1000>;
-@@ -661,6 +688,15 @@
- 			status = "disabled";
- 		};
+ #define ASPEED_G6_NR_PINS 256
+@@ -81,13 +83,17 @@ FUNC_GROUP_DECL(I2C12, L26, K24);
+ #define K26 4
+ SIG_EXPR_LIST_DECL_SESG(K26, MACLINK1, MACLINK1, SIG_DESC_SET(SCU410, 4));
+ SIG_EXPR_LIST_DECL_SESG(K26, SCL13, I2C13, SIG_DESC_SET(SCU4B0, 4));
+-PIN_DECL_2(K26, GPIOA4, MACLINK1, SCL13);
++SIG_EXPR_LIST_DECL_SESG(K26, SGPS2CK, SGPS2, SIG_DESC_SET(SCU690, 4));
++SIG_EXPR_LIST_DECL_SESG(K26, SGPM2CLK, SGPM2, SIG_DESC_SET(SCU6D0, 4));
++PIN_DECL_4(K26, GPIOA4, MACLINK1, SCL13, SGPS2CK, SGPM2CLK);
+ FUNC_GROUP_DECL(MACLINK1, K26);
  
-+		devapc_peri_par: devapc@11020000 {
-+			compatible = "mediatek,mt8192-devapc";
-+			reg = <0 0x11020000 0 0x1000>;
-+			vio-idx-num = <58>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_DEVICE_APC>;
-+			clock-names = "devapc-infra-clock";
-+		};
+ #define L24 5
+ SIG_EXPR_LIST_DECL_SESG(L24, MACLINK2, MACLINK2, SIG_DESC_SET(SCU410, 5));
+ SIG_EXPR_LIST_DECL_SESG(L24, SDA13, I2C13, SIG_DESC_SET(SCU4B0, 5));
+-PIN_DECL_2(L24, GPIOA5, MACLINK2, SDA13);
++SIG_EXPR_LIST_DECL_SESG(L24, SGPS2LD, SGPS2, SIG_DESC_SET(SCU690, 5));
++SIG_EXPR_LIST_DECL_SESG(L24, SGPM2LD, SGPM2, SIG_DESC_SET(SCU6D0, 5));
++PIN_DECL_4(L24, GPIOA5, MACLINK2, SDA13, SGPS2LD, SGPM2LD);
+ FUNC_GROUP_DECL(MACLINK2, L24);
+ 
+ FUNC_GROUP_DECL(I2C13, K26, L24);
+@@ -95,16 +101,22 @@ FUNC_GROUP_DECL(I2C13, K26, L24);
+ #define L23 6
+ SIG_EXPR_LIST_DECL_SESG(L23, MACLINK3, MACLINK3, SIG_DESC_SET(SCU410, 6));
+ SIG_EXPR_LIST_DECL_SESG(L23, SCL14, I2C14, SIG_DESC_SET(SCU4B0, 6));
+-PIN_DECL_2(L23, GPIOA6, MACLINK3, SCL14);
++SIG_EXPR_LIST_DECL_SESG(L23, SGPS2O, SGPS2, SIG_DESC_SET(SCU690, 6));
++SIG_EXPR_LIST_DECL_SESG(L23, SGPM2O, SGPM2, SIG_DESC_SET(SCU6D0, 6));
++PIN_DECL_4(L23, GPIOA6, MACLINK3, SCL14, SGPS2O, SGPM2O);
+ FUNC_GROUP_DECL(MACLINK3, L23);
+ 
+ #define K25 7
+ SIG_EXPR_LIST_DECL_SESG(K25, MACLINK4, MACLINK4, SIG_DESC_SET(SCU410, 7));
+ SIG_EXPR_LIST_DECL_SESG(K25, SDA14, I2C14, SIG_DESC_SET(SCU4B0, 7));
+-PIN_DECL_2(K25, GPIOA7, MACLINK4, SDA14);
++SIG_EXPR_LIST_DECL_SESG(K25, SGPS2I, SGPS2, SIG_DESC_SET(SCU690, 7));
++SIG_EXPR_LIST_DECL_SESG(K25, SGPM2I, SGPM2, SIG_DESC_SET(SCU6D0, 7));
++PIN_DECL_4(K25, GPIOA7, MACLINK4, SDA14, SGPS2I, SGPM2I);
+ FUNC_GROUP_DECL(MACLINK4, K25);
+ 
+ FUNC_GROUP_DECL(I2C14, L23, K25);
++FUNC_GROUP_DECL(SGPM2, K26, L24, L23, K25);
++FUNC_GROUP_DECL(SGPS2, K26, L24, L23, K25);
+ 
+ #define J26 8
+ SIG_EXPR_LIST_DECL_SESG(J26, SALT1, SALT1, SIG_DESC_SET(SCU410, 8));
+@@ -2060,7 +2072,9 @@ static const struct aspeed_pin_group aspeed_g6_groups[] = {
+ 	ASPEED_PINCTRL_GROUP(EMMCG4),
+ 	ASPEED_PINCTRL_GROUP(EMMCG8),
+ 	ASPEED_PINCTRL_GROUP(SGPM1),
++	ASPEED_PINCTRL_GROUP(SGPM2),
+ 	ASPEED_PINCTRL_GROUP(SGPS1),
++	ASPEED_PINCTRL_GROUP(SGPS2),
+ 	ASPEED_PINCTRL_GROUP(SIOONCTRL),
+ 	ASPEED_PINCTRL_GROUP(SIOPBI),
+ 	ASPEED_PINCTRL_GROUP(SIOPBO),
+@@ -2276,7 +2290,9 @@ static const struct aspeed_pin_function aspeed_g6_functions[] = {
+ 	ASPEED_PINCTRL_FUNC(SD1),
+ 	ASPEED_PINCTRL_FUNC(SD2),
+ 	ASPEED_PINCTRL_FUNC(SGPM1),
++	ASPEED_PINCTRL_FUNC(SGPM2),
+ 	ASPEED_PINCTRL_FUNC(SGPS1),
++	ASPEED_PINCTRL_FUNC(SGPS2),
+ 	ASPEED_PINCTRL_FUNC(SIOONCTRL),
+ 	ASPEED_PINCTRL_FUNC(SIOPBI),
+ 	ASPEED_PINCTRL_FUNC(SIOPBO),
+diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.h b/drivers/pinctrl/aspeed/pinmux-aspeed.h
+index dba5875ff276..b69ba6b360a2 100644
+--- a/drivers/pinctrl/aspeed/pinmux-aspeed.h
++++ b/drivers/pinctrl/aspeed/pinmux-aspeed.h
+@@ -730,6 +730,15 @@ struct aspeed_pin_desc {
+ 			SIG_EXPR_LIST_PTR(pin, low), \
+ 			SIG_EXPR_LIST_PTR(pin, other))
+ 
++#define PIN_DECL_4(pin, other, prio1, prio2, prio3, prio4) \
++	SIG_EXPR_LIST_DECL_SESG(pin, other, other); \
++	PIN_DECL_(pin, \
++			SIG_EXPR_LIST_PTR(pin, prio1), \
++			SIG_EXPR_LIST_PTR(pin, prio2), \
++			SIG_EXPR_LIST_PTR(pin, prio3), \
++			SIG_EXPR_LIST_PTR(pin, prio4), \
++			SIG_EXPR_LIST_PTR(pin, other))
 +
- 		nor_flash: spi@11234000 {
- 			compatible = "mediatek,mt8192-nor";
- 			reg = <0 0x11234000 0 0xe0>;
+ #define GROUP_SYM(group) group_pins_ ## group
+ #define GROUP_DECL(group, ...) \
+ 	static const int GROUP_SYM(group)[] = { __VA_ARGS__ }
 -- 
-2.6.4
+2.17.1
 
