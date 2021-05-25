@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B892138FE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038C538FE62
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhEYKF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:05:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57670 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232545AbhEYKFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:05:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621937019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KQN4c/IEDnlVqwRAkpeA/2Q51G85LbKZZpN5Ztu9LC8=;
-        b=GJsKG2Xv17GHbAL8kvtBAtKG645wcjooaFtBI4RPI3kakfBl2JsF3GQu4nLR1a4TyRgd1J
-        TuZnreJwXiJlRNsURWpw/pp6onRL+2iIwCAw2anNyjtILCJj1mmkpnGP28eYVMvOYH6BcL
-        M6Qgq7RsBKxaB0Hba4GopsynxNjXwJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621937019;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KQN4c/IEDnlVqwRAkpeA/2Q51G85LbKZZpN5Ztu9LC8=;
-        b=LiYnlBdOcbtVPemDH43SgF/MsS2XQRFmcvY0HY449TxeBu7zWdkAwWT/vZCjxhXgQlVA+D
-        XYcZhi8TQJWgguCw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4D6FEAE1F;
-        Tue, 25 May 2021 10:03:39 +0000 (UTC)
-Subject: Re: [PATCH v5 0/3] Add option to mmap GEM buffers cached
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, list@opendingux.net
-References: <20210523170415.90410-1-paul@crapouillou.net>
- <452b2228-2415-69d7-9212-51707daf8616@suse.de>
- <F0RKTQ.VPIWIN1LS7JH3@crapouillou.net>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <5012b318-dbd6-aedb-9d02-1c7e927637a7@suse.de>
-Date:   Tue, 25 May 2021 12:03:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231634AbhEYKFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhEYKFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 06:05:48 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A98FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:04:19 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id x18so18910138pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=57ECND8nPavSh6NMH2Nmej1tsV8ESrkOIEhL0JKqaQg=;
+        b=LDBiiby7gI8qQMr5tgtnfSpGxe0mkQs1iXPPENTeNI/qsU9NY0jwm67ETwmT5TwFF7
+         Khrwqhsq8xvj9jna33LA5ZFBdzutRU6taE9/RAnBS5P6Uq8RUNLS+uBxHvPUg1TVQCkG
+         /0uZ3kCMKLd8w95Tblzj49D8TI3Jc8qJE1ehCQpcgPnDKRG8N2Y3GHRvM9WPZq+fOasg
+         JCB97Wov+TGg5Cz2ni/dxikfeik0tr6A1r5+wS14DWF8caGBhyvrkcO+yaDEQuzdnCkE
+         8oQJLjAeJoyUkRyXSDj9PWOnpwmr6NxLinsA7imM4VSC79K9EWu+vPzfpl2+NX8ZphND
+         Wbyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=57ECND8nPavSh6NMH2Nmej1tsV8ESrkOIEhL0JKqaQg=;
+        b=S/NvgMYi/gMHngV6FjVAXVr7pZsw/WU6k4p1icCY0nD4CojbTMXNDLxwlDTC2SB8h2
+         hkzK7JT4/QbEZPxxbfpZmar92Z6p6PGIHlMwrhBw8AekCWIC7gU+2QYdNYAMQFTHHdDv
+         CbFjzygfS1toDmEckhaEwaiZ5SFnEaRBx/mWisxfrIQyptsWMQeEfQ/bnhpeGFC38dbI
+         PRQA9k+VSaufUbI2CeR4jPcIMjKfOd+dDMRYiuD15plVFxQK4r3ZnVRP/xXsByTczSVb
+         z4cS1LGX4dk54gY6LQ6ivpY//uLcnvBeGJGhJZeJU5Hi6IT4uKqDq4t9HnuQzyLgly2w
+         X22w==
+X-Gm-Message-State: AOAM531uaQ3B4IfCvXWYwKuOb6+Ce1tx6xbPmvKYcg0jc2m11sR591w7
+        JJJHcaXFNf1Mt0Px8HjYz0waUYLasiZ5zMV9
+X-Google-Smtp-Source: ABdhPJyNYSADZiSauCmehE7HTmQIlKofXEvGKjy2Smi9Z8vqHtf++Pc6so2j6TVrdIqhg8h381Db2Q==
+X-Received: by 2002:a63:d45:: with SMTP id 5mr18100732pgn.72.1621937058736;
+        Tue, 25 May 2021 03:04:18 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id np1sm1586495pjb.13.2021.05.25.03.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 03:04:18 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-power@fi.rohmeurope.com, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: bd9576: Constify the voltage tables
+Date:   Tue, 25 May 2021 18:04:05 +0800
+Message-Id: <20210525100405.2506483-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <F0RKTQ.VPIWIN1LS7JH3@crapouillou.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="v0AcL5C2mtYydwyBD2wF9vN1QPUELrBtZ"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---v0AcL5C2mtYydwyBD2wF9vN1QPUELrBtZ
-Content-Type: multipart/mixed; boundary="WdwKxz6I4ioqHFvp67m0AFmR0dZuNEkAV";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
- Christoph Hellwig <hch@infradead.org>, list@opendingux.net
-Message-ID: <5012b318-dbd6-aedb-9d02-1c7e927637a7@suse.de>
-Subject: Re: [PATCH v5 0/3] Add option to mmap GEM buffers cached
-References: <20210523170415.90410-1-paul@crapouillou.net>
- <452b2228-2415-69d7-9212-51707daf8616@suse.de>
- <F0RKTQ.VPIWIN1LS7JH3@crapouillou.net>
-In-Reply-To: <F0RKTQ.VPIWIN1LS7JH3@crapouillou.net>
+Also use unsigned int instead of int for the voltage tables.
 
---WdwKxz6I4ioqHFvp67m0AFmR0dZuNEkAV
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/bd9576-regulator.c | 34 ++++++++++++++++------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-Hi
+diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
+index 204a2da054f5..8e63169eebae 100644
+--- a/drivers/regulator/bd9576-regulator.c
++++ b/drivers/regulator/bd9576-regulator.c
+@@ -21,20 +21,26 @@
+ #define BD957X_VOUTS4_BASE_VOLT	1030000
+ #define BD957X_VOUTS34_NUM_VOLT	32
+ 
+-static int vout1_volt_table[] = {5000000, 4900000, 4800000, 4700000, 4600000,
+-				 4500000, 4500000, 4500000, 5000000, 5100000,
+-				 5200000, 5300000, 5400000, 5500000, 5500000,
+-				 5500000};
+-
+-static int vout2_volt_table[] = {1800000, 1780000, 1760000, 1740000, 1720000,
+-				 1700000, 1680000, 1660000, 1800000, 1820000,
+-				 1840000, 1860000, 1880000, 1900000, 1920000,
+-				 1940000};
+-
+-static int voutl1_volt_table[] = {2500000, 2540000, 2580000, 2620000, 2660000,
+-				  2700000, 2740000, 2780000, 2500000, 2460000,
+-				  2420000, 2380000, 2340000, 2300000, 2260000,
+-				  2220000};
++static const unsigned int vout1_volt_table[] = {
++	5000000, 4900000, 4800000, 4700000, 4600000,
++	4500000, 4500000, 4500000, 5000000, 5100000,
++	5200000, 5300000, 5400000, 5500000, 5500000,
++	5500000
++};
++
++static const unsigned int vout2_volt_table[] = {
++	1800000, 1780000, 1760000, 1740000, 1720000,
++	1700000, 1680000, 1660000, 1800000, 1820000,
++	1840000, 1860000, 1880000, 1900000, 1920000,
++	1940000
++};
++
++static const unsigned int voutl1_volt_table[] = {
++	2500000, 2540000, 2580000, 2620000, 2660000,
++	2700000, 2740000, 2780000, 2500000, 2460000,
++	2420000, 2380000, 2340000, 2300000, 2260000,
++	2220000
++};
+ 
+ struct bd957x_regulator_data {
+ 	struct regulator_desc desc;
+-- 
+2.25.1
 
-Am 23.05.21 um 21:19 schrieb Paul Cercueil:
-> Hi Thomas,
->=20
-> Le dim., mai 23 2021 at 21:05:30 +0200, Thomas Zimmermann=20
-> <tzimmermann@suse.de> a =C3=A9crit :
->> Hi
->>
->> Am 23.05.21 um 19:04 schrieb Paul Cercueil:
->>> V5 of my patchset which adds the option for having GEM buffers backed=20
-by
->>> non-coherent memory.
->>>
->>> Changes from V4:
->>>
->>> - [2/3]:
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - Rename to drm_fb_cma_sync_non_coherent
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - Invert loops for better cache locality
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - Only sync BOs that have the non-coherent f=
-lag
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - Properly sort includes
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - Move to drm_fb_cma_helper.c to avoid circu=
-lar dependency
->>
->> I'm pretty sure it's still not the right place. That would be=20
->> something like drm_gem_cma_atomic_helper.c, but creating a new file=20
->> just for a single function doesn't make sense.
->=20
-> drm_fb_cma_sync_non_coherent calls drm_fb_cma_* functions, so it's a=20
-> better match than its former location (which wasn't good as it created =
-a=20
-> circular dependency between drm.ko and drm-kms-helper.ko).
->=20
-> Do you have a better idea?
-
-No, it was more of a rant than a review comment. Please go ahead and=20
-merge the patchset.
-
-Best regards
-Thomas
-
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---WdwKxz6I4ioqHFvp67m0AFmR0dZuNEkAV--
-
---v0AcL5C2mtYydwyBD2wF9vN1QPUELrBtZ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCsy3oFAwAAAAAACgkQlh/E3EQov+Cf
-LxAAwsovVR0wiZoN949SM2Xd30RMs7n6lDgxQaI3cIatjQmQCeq/TH6T297/sKW96oU4+Lc8FxGd
-FI4VLqyK1SzQDNe931XX46Rr8CdQDGf6Q8kUzvv/GmPdtagOBTxuIrElbwpkeu7JIRMJ7A4UmEbb
-WrltRYB8zncjpDmqFGZqDEIJPnFxqC2zoXUCTN/XRIurnlVc970ivq05MmCWjh5L1SeqcCKVUwXX
-OUx5DmtVEvUr2HvieniVDl2W2GFoiH5M79J+5gZhTHQN0a9FlUoGQz3Pn7lyTuea+E8L3GrMz1M2
-1M5d00Ki4KgnSRprPg5msffR4MKASDRJitOMx8r3rGGfqsjXFgb7LkvGfjHG/3bov5ppBFu0AW2n
-1EnpGmdKi/4pz2Zu+TwhiWH++I+OThE42k8uAh5eSY4iXAx0935rx1CLOy9HLABF3QdEokK5VCRv
-0rldeFTKKPqiNlKDdchX5PiIPnMRMgKT+qJOnoFOFjbFZVeRuqaWeomMoZ4gPnoadgMIb/mosYoq
-OSRbxt+/hQIHlP6quth4ZjAzV37KamCOKfvtEL8Wuu17gxTOvLW5dw/nJDmNFgwyh3hLYnsWtpdp
-jZbXG8B7YwAa7sJX/sUF+P9VI44CemhbbZqj9KYmafQEfPyvcC9SI3CaK5hpTtQPJhYddeKawLWc
-T+k=
-=Ml+Z
------END PGP SIGNATURE-----
-
---v0AcL5C2mtYydwyBD2wF9vN1QPUELrBtZ--
