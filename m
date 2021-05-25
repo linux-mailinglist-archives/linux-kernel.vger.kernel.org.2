@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D7938FCCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D01038FCDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhEYI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:29:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5700 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhEYI3i (ORCPT
+        id S231286AbhEYIdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhEYIdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:29:38 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fq6b03qY1z1BRl2;
-        Tue, 25 May 2021 16:25:16 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 16:28:07 +0800
-Received: from [10.174.177.91] (10.174.177.91) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 16:28:06 +0800
-Subject: Re: [PATCH -next] module: fix build error when CONFIG_SYSFS is
- disabled
-To:     Stephen Boyd <swboyd@chromium.org>, <jeyu@kernel.org>
-CC:     <sfr@canb.auug.org.au>, <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210525085400.15854-1-cuibixuan@huawei.com>
- <CAE-0n522LiGxorhBXtqE2yj8ZKtnmVCikCPFV_iQp8MJzNA+Zg@mail.gmail.com>
-From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <03c7a51d-fad4-da67-36d6-5ab501dea3ed@huawei.com>
-Date:   Tue, 25 May 2021 16:28:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 25 May 2021 04:33:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275CDC061574;
+        Tue, 25 May 2021 01:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2Tbd9SAdqfznWwtvifNl7ucpqO0NCIjR2dWlrNyfo+U=; b=1HljjSmp7Ygdz+35kryD2Docd
+        D+Jkj42s/l6RhTS67aeNr7O9w15ay5E2xamcrgUC6u/7EiQEkjtoshXDvBiObzk7QNszRyzxeI/gv
+        6HZ5kh6aoDeET9BnoqQSk3tS30EkeK+bY6ihjddlQkrlh0AMIghhuX9T+dJjrEhImXFDKYu0UKi+c
+        PmPEROGUtCezv3I7qyDXDDEV8ujMJHQ5OyUvI1FKXiZupqukCaCBVdz/HQq27eUk584g2kqoiX5/G
+        +TzGwFt/PEgpx4rmshMXcr6scf6otQkSKGdYy+0iiaZl4apU2zQcF1d6gQZkUrPytbv9pmscpLAWS
+        JcbkQG1Dg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44344)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1llST8-0003zS-GW; Tue, 25 May 2021 09:31:18 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1llST7-0001kB-IW; Tue, 25 May 2021 09:31:17 +0100
+Date:   Tue, 25 May 2021 09:31:17 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 1/2] net: phy: allow mdio bus to probe for c45
+ devices before c22
+Message-ID: <20210525083117.GC30436@shell.armlinux.org.uk>
+References: <20210525055839.22496-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n522LiGxorhBXtqE2yj8ZKtnmVCikCPFV_iQp8MJzNA+Zg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525055839.22496-1-vee.khee.wong@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 01:58:39PM +0800, Wong Vee Khee wrote:
+> Some MAC controllers that is able to pair with  external PHY devices
+> such as the Synopsys MAC Controller (STMMAC) support both Clause-22 and
+> Clause-45 access.
+> 
+> When paired with PHY devices that only accessible via Clause-45, such as
+> the Marvell 88E2110, any attempts to access the PHY devices via
+> Clause-22 will get a PHY ID of all zeroes.
+> 
+> To fix this, we introduce MDIOBUS_C45_C22 which the MAC controller will
+> try with Clause-45 access before going to Clause-22.
+> 
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> ---
+>  include/linux/phy.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 60d2b26026a2..9b0e2c76e19b 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -368,6 +368,7 @@ struct mii_bus {
+>  		MDIOBUS_C22,
+>  		MDIOBUS_C45,
+>  		MDIOBUS_C22_C45,
+> +		MDIOBUS_C45_C22,
+>  	} probe_capabilities;
+>  
+>  	/** @shared_lock: protect access to the shared element */
 
+The new definition doesn't seem to be used anywhere, so this patch
+merely adds the definition. It doesn't do what it says in the subject
+line. Any driver that sets the capabilities to MDIOBUS_C45_C22 will
+end up not doing any probing of the PHY.
 
-On 2021/5/25 15:36, Stephen Boyd wrote:
-> Quoting Bixuan Cui (2021-05-25 01:54:00)
->>  kernel/module.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/module.c b/kernel/module.c
->> index decf4601e943..7287ecc76714 100644
->> --- a/kernel/module.c
->> +++ b/kernel/module.c
->> @@ -2794,7 +2794,8 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
->>  }
->>  #endif /* CONFIG_KALLSYMS */
->>
->> -#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
->> +#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && \
->> +       IS_ENABLED(CONFIG_SYSFS)
-> Thanks for the report. It is the wrong fix though as we don't care that
-> sysfs is enabled or not. How about this patch?
-Hello, your patch solves that problem very well. Will you send a new patch?
-
-Thanks
-Bixuan Cui
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
