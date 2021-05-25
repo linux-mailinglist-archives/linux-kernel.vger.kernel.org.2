@@ -2,287 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F239390A43
+	by mail.lfdr.de (Postfix) with ESMTP id 97487390A44
 	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhEYUFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233174AbhEYUFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:05:03 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264B7C06175F;
-        Tue, 25 May 2021 13:03:32 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id v77so1264855ybi.3;
-        Tue, 25 May 2021 13:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EjG4/YcUiUInF52I3SI8udsrAaIdhHacSgRDd972qfc=;
-        b=snWOSXP/fQ2RaBcoTtGBdrjhSh8CXONtvb566iZwKOJty5cflo28kk3Hoc815K6EA0
-         ulfnkFK8hrKxldGXo5bpoNNcFQNcVezK8R1x6fuwxdgOMRRConL5QIFsLYyT+8Marv5N
-         qaRYVbAe2FPGdDJWxtdCJzXWHjO+wlDiRNTvj/eoLIPSe1v0ag/MZKvHIrleHDNHlcNk
-         cRVeYnajzSKb7/GnERDMr4WB32Tp24uQlLKqVmkHx8Ykeu7QbXhkLOqqkNFxBDxeXaTJ
-         np52FDhHuSnfQhcG0u3HH/91Oiypv6PgNVutcp1l318Rmzawgh5MWDpTYo6ONoVAAy71
-         2qEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EjG4/YcUiUInF52I3SI8udsrAaIdhHacSgRDd972qfc=;
-        b=Ez0JlrxkNiUor4i5JrGUiURpThuktZzEWtsWyx8LmTSn+yDUPEETcgbXc+4upKyxh+
-         ZMnCn7ErNbph9CGP1WBzc5eCtTvmyF5OH/gO18gF5CxvG3rtQTd7Qe2CLVZF4ZvoASEo
-         B67xoTakiv263zja8/Dzc0hl229tF4QUMZkLLzEGLZfDsLJYJHqU01qKKgCRTf2acGqa
-         n2QfhWLijLXDxdea87WcwXN1PznFJxODMxvUpZufro16URWcie8fFJWkxcpmatZK5ilY
-         dsZTFOEdCOx7sEeGRzxpXv8DfXjepVl/SzXGxi52FIPqt8T8DvpPPJr8uJKPKUqzk3Ax
-         a0vA==
-X-Gm-Message-State: AOAM532nefcDOqDHsL2TmBl+F3rkXpcVdrvSM0vY8jTEBHhsJE6038hO
-        t74whVwm52tbEoJAO9TggtOj7dTUMAj+yxJtGbw=
-X-Google-Smtp-Source: ABdhPJxD6gz64df0CaNFCYv+WmsmVsyOcBYumkbbqqHuetRBixAMPjetSMWs5TTFzHHBuwqeUE15OMrlFot8Hw6fhlE=
-X-Received: by 2002:a5b:303:: with SMTP id j3mr42210666ybp.433.1621973011159;
- Tue, 25 May 2021 13:03:31 -0700 (PDT)
+        id S233270AbhEYUFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:05:20 -0400
+Received: from mail-bn7nam10on2065.outbound.protection.outlook.com ([40.107.92.65]:57441
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233209AbhEYUFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:05:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XXKDhGeN0flWhBU8hDDy9cAjNqUyQkZzHnGDMv3VYs3b59uZksm/Moq9tEDOqNeNYw8vQk40nIXvweHc7XDAMSYCdNrYzN749lg/qQOnibZDEjCP3EjM794JnwioIrD1vGxLRNSPueocKa7JvP6NZZFzX384i4QcZB8EMmzYsqrzg8s74SEOuurjj3/wCWroOs3tV5CiO/YPgIjxhr1NUd0oQ0dca4uUcVOFQoOMovb0A6q5AizsUzXcO15NZ9bJtZk7Avw8qfOw9usKAhU8jQ5jI57+5rsFARxw6uFecrpOkm4w7og5vRXu1pc7tQ4Ss881K6vHxXnCZgJ6u49swA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YsCoOTnO4WOgHLcpwp9t44Krc9Bz9UB5UsFH8i/GcOo=;
+ b=R11bvnsmj1u8ocaJRz935A39YHfKDVmGuJnNWE0tDXYXWV3ca3JHE89GDwH0TV7XNEbhZMo4IWPuonbWDtxLvfeihdI+Zt2feNGRoSqsp9qJ7eJn0O5hMLO5L9zU7zvJXJZeSb2pCb7NsPqs4if70+HkGt5IIsBau49GDG0ELYr6tJCt16suVVQ62dWyADQewizJ38LQY96HsGE2BFKtUO+mj1SFIB6YkWwZkBwaWlrZehgvFeWMFSaR6ohmFDbtLC6cgV083K7GnxyHamd4x6In/mT3gGQaXvMAE3tN/I0PcfaAGDx4qdQScahHwKUGBmp0kv5FjcdRmA6SsOcTFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YsCoOTnO4WOgHLcpwp9t44Krc9Bz9UB5UsFH8i/GcOo=;
+ b=v7rMOcFngOoa2kR3at9quKn6P36wAaB/QYNnHmIT9RLOeV/juMiIS4wfyGO+V0p//fGJVZ+Oyc9zzgzY2ZOnORmmCJxb5R+iSQihppvjPvGvWkPiBlD6cJza8uw+s8nIxnYZEvdVVNExDncddVXRn43oQfGSAC5PLvdFuNKyXlQ=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR1201MB0212.namprd12.prod.outlook.com (2603:10b6:405:56::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Tue, 25 May
+ 2021 20:03:34 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::453f:6e2a:468d:ad6e]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::453f:6e2a:468d:ad6e%5]) with mapi id 15.20.4150.027; Tue, 25 May 2021
+ 20:03:34 +0000
+Date:   Tue, 25 May 2021 16:03:27 -0400
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "M K, Muralidhara" <Muralidhara.MK@amd.com>
+Subject: Re: [PATCH 1/3] x86/MCE/AMD, EDAC/mce_amd: Add new SMCA bank types.
+Message-ID: <20210525200327.GA8891@aus-x-yghannam.amd.com>
+References: <20210511152538.148084-1-nchatrad@amd.com>
+ <YJq+ca+kJ4cRl5B8@zn.tnic>
+ <DM6PR12MB4388D2F749166A72974718C6E8269@DM6PR12MB4388.namprd12.prod.outlook.com>
+ <YK07xEG4567yv8vl@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK07xEG4567yv8vl@zn.tnic>
+X-Originating-IP: [165.204.84.11]
+X-ClientProxiedBy: BN9PR03CA0159.namprd03.prod.outlook.com
+ (2603:10b6:408:f4::14) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <CAMj1kXEBePfKDOc6eo9yjZPnVeFimX-zxR+R3As+2pP9XnZkuQ@mail.gmail.com>
- <20210525191556.GA1220872@bjorn-Precision-5520> <CAMj1kXG=dDwhNGe1tdHZH65KfcFzRHJKy6OwhWzYryZD9K9q_A@mail.gmail.com>
-In-Reply-To: <CAMj1kXG=dDwhNGe1tdHZH65KfcFzRHJKy6OwhWzYryZD9K9q_A@mail.gmail.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Tue, 25 May 2021 16:03:20 -0400
-Message-ID: <CAMdYzYptcAyb3U3ZZvNL8GwdcP-a2X8MX+rji2z0nEuiw0Br5A@mail.gmail.com>
-Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
- 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
- memory addresses")
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Rob Herring <robh@kernel.org>, PCI <linux-pci@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aus-x-yghannam.amd.com (165.204.84.11) by BN9PR03CA0159.namprd03.prod.outlook.com (2603:10b6:408:f4::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Tue, 25 May 2021 20:03:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c426c038-9a8f-4fe1-a6f1-08d91fb82cf3
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0212:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB0212C40DF8124202954A905DF8259@BN6PR1201MB0212.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9cKwfmGUWDb/8N5bou5g2bNu1IzTG2E0DZvmaMg8IqYKRJUXxLKc8yD9U8rR3U2jw3ZAmsYrM4A/4t057CgIaWJuiW6H8+UsCcmDexsNadkeVoLl/WYcSB4kPQg9UnIV+WKIkEO7lc+r8LKdR9h5rDUTNt9XKchSn68UOARSNJuAgrc8Qu9eENDszMws+Sx3vVeqfxmQnQbeI4tdHOlzGeMqD8gwIgz6Wvrt2dCni2L9ApbVLgUTGQktjDi+GQjAe1x7VnnvKWRi3m04lhQFIdP1zpcESeUjDq/jt+btpHR9i/65W6IJMmztTnekbYGuex97/k52z+jw1/F/xcslR9DdCZRvn9uhbOwXvAflVhblqc+G0LPyCwdwzh9t6TcpMOEffvjzkd9J9osBYymP64Z4rQACGqw5RS5J9LB0aau0ByaxpRpot2C7L621TD+3k6hC4l/NXtoNKR715intaROfaUqsnmGTkzUCqIHkOeGxva6GPzEvDtFV/xJnb2GGIms/nVF2H4wT9jNBZ7sSpjhU0iouX4n7pa7zjvBgEz/z0yO23oolFik6EJu9ex7d14a4/Jr6dH0HHZU2HpgMoRrNW6cHb8ogi9ya3XgWuR11AOBFEWJsQO+Z3jIQ1O/hFV0vGkDduEWvm5YWpGHJXJMAb7phRJOQkIfYP9tNBOU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(7696005)(83380400001)(55016002)(44832011)(52116002)(66946007)(8676002)(8936002)(26005)(66556008)(16526019)(66476007)(186003)(4326008)(6916009)(38100700002)(5660300002)(4744005)(1076003)(33656002)(6666004)(478600001)(86362001)(316002)(38350700002)(956004)(54906003)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3rDgOUxCl+kLHRqw2mnFKSscw8PaqrQkV8Y+ITtUxGMN1mQKm8ZdJli4EQri?=
+ =?us-ascii?Q?imIXy/pYhJZIjCyECtC9ywMYM4QOzlYTJUXBoEm4g5dFTUfDbqRmPRu9xNng?=
+ =?us-ascii?Q?+P9c16iRzLB0xFTTzAzUClWsK8z/4xEzcO3TpVsso40/fx/RXW3Yt7R6bnAG?=
+ =?us-ascii?Q?SrSSh8+80O6e9zUGqJDjKrtlwmQOOtCJdGqD2/ekVQ/4ucAlL6p8WWxDWUaC?=
+ =?us-ascii?Q?SX/3n+ouJa49YeOfaD5efm9tgrvQjvqe81JFGANK+Cl5leVdlZI4udBGYT4k?=
+ =?us-ascii?Q?IthOIaIPe0J3pKNrvSWnNYUCe6r68VVOj6Eu9KfwPQAAPZmSLHcTpquOmt3p?=
+ =?us-ascii?Q?wG1DbONofQwcGH90ptArFW31j9roxlX2nAIQTVa0B7xwlV20lNOt0rHLIDbq?=
+ =?us-ascii?Q?/CILshJaAJzSRCcKmULb6r/8QLdxFcK7zTvJgfRFbIEJIrmwAPj9ymWwB0hY?=
+ =?us-ascii?Q?FL8ZTrrN/r64rXDEahI31/VGNx/odOBYRM2aJT3yFT4r5PXydkeCCOozh/rV?=
+ =?us-ascii?Q?NgMMN+7PIxjn0SRJiBLn8nTRHbb6NwJFSRfn9ayneVI6inGET+Qg1PNuEDUx?=
+ =?us-ascii?Q?i0YpIE3Jnce6W1Zi825eezNIp9lA/QKmub1cWlU8RhmJXRsoIeb0i5gLmCo+?=
+ =?us-ascii?Q?Ut02FWM0MsiedSn+QxKWkkpCcZKPSbfHIXOXt9LcQcLTbP3aK2a7uenNht7x?=
+ =?us-ascii?Q?RfERMJxIA5oa3e1n5gVELU3Pp1WbDnWaY5Glmhm1g+sV5NxrjHXeXo/7T1i3?=
+ =?us-ascii?Q?V4PDkWC+qPosieGwV0dGED6D+gI/arKLqxI+zFbztgJRERU9WwsH6vBRxzvE?=
+ =?us-ascii?Q?69374GnYomarqHA7jJc0Iv/3vd8QOqxC3q8aIpE8HRvvFqjbyznlsEMIr/+G?=
+ =?us-ascii?Q?zyT+LxfVjaDRjE8FnIPAEIB84A8/S4vSdGzZkUqXxTU6GTX82T7hm/h5LpCi?=
+ =?us-ascii?Q?z1pQRPIw7UtZnB1f8/EcBVemC+skk0Haka0/5rEvCDe3oecdF+7cA7GV8371?=
+ =?us-ascii?Q?A5Ym95mp+5MeZmtk5u5VS+/IRw4OKL9cGJmaxb9yRZEYjGVolggQv+eqF+t+?=
+ =?us-ascii?Q?i/nFUS9EDMv+wq4zE2u8rJvROQEjSsOcKK2LGB2hPllmpwX7CcqXarpNdgJR?=
+ =?us-ascii?Q?DPbftGsS0QRPyIBy8jsomTLBdoY8uHChRwzGWjucSG4j1j2Wu2lrmsel5Cc8?=
+ =?us-ascii?Q?8GNgfgEtB9zQHzHr4f680vuEs4oJFleQl3fJ+9GHLou25UEjkj66HHha8QfL?=
+ =?us-ascii?Q?Zu0rQ9p9496xaDvgILMsc0G7Fl08AcEx1eNQJa5kCNDR/r46begTerSTTf+M?=
+ =?us-ascii?Q?whOkUwmIAS51wDDUv69zz+RK?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c426c038-9a8f-4fe1-a6f1-08d91fb82cf3
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 20:03:33.9654
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IzwctDTICEGRnYbD4zEw1qUhL6iynJLZfiOYMoobyJK+bI/egatAO236V1JyxFEiP6AcM4Titf2Zx4bet4FuWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0212
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 3:43 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+On Tue, May 25, 2021 at 08:02:44PM +0200, Borislav Petkov wrote:
+> On Mon, May 24, 2021 at 04:41:25PM +0000, Chatradhi, Naveen Krishna wrote:
+> > [naveenk:] There is a possibility for a heterogenous system with both
+> > the SMCA_UMC and SMCA_UMC_V2 variant of controllers to exist.
+> 
+> Wait, what? You can have systems with *both* UMCs in the same coherent
+> fabric and thus the OS can see UMCs of both types on the same system?
 >
-> On Tue, 25 May 2021 at 21:15, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Tue, May 25, 2021 at 05:54:56PM +0200, Ard Biesheuvel wrote:
-> > > On Tue, 25 May 2021 at 17:34, Peter Geis <pgwipeout@gmail.com> wrote:
-> >
-> > > > > > >> > On 2021-05-18 10:09, Alexandru Elisei wrote:
-> > > > > > >> >> [..]
-> > > > > > >> >> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
-> > > > > > >> >> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff -> 0x00fa000000
-> > > > > > >> >> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff -> 0x00fbe00000
-> > > > > > >> >> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
-> > > > > > >> >> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
-> > > > > > >> >> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
-> > > > > > >> >> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus address [0xfbe00000-0xfbefffff])
-> >
-> > > ... For some reason, lspci translates the BAR values to CPU
-> > > addresses, but the PCI side addresses are within 32-bits.
-> >
-> > lspci shows BARs as CPU physical addresses by default.  These are the
-> > same addresses you would see in pdev->resource[n] and the same as BAR
-> > values you would see in dmesg.
-> >
-> > A 64-bit CPU physical address can certainly be translated by the host
-> > bridge to a 32-bit PCI address.  But that's not happening here because
-> > this host bridge applies no translation (CPU physical 0xfa000000 maps
-> > to bus address 0xfa000000).
-> >
-> > "lspci -b" shows the PCI bus addresses.
->
-> Ah, thanks.
->
-> It does seem, though, that the information overload in this thread is
-> causing confusion now. Peter shared some log output where there is
-> definitely MMIO translation being applied.
 
-Yes, I've done work on the rk3399 pcie controller which is why this
-caught my attention.
-The original issue still seems to exist:
-For some reason:
-commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for
-64-bit memory addresses")
-causes allocation issues now.
-The original description of the issue aligned with issues I was having
-bringing up the rk356x pcie controller.
+Yep, that's right. The UMCs are the only case of this so far and in the
+foreseeable future. Though we may be moving towards more cases like
+this.
 
->
-> > > [    6.673497] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff]
-> > > (bus address [0x3f700000-0x3f7fffff])
-> > > [    6.674642] pci_bus 0000:00: root bus resource [mem
-> > > 0x300000000-0x33f6fffff] (bus address [0x00000000-0x3f6fffff])
->
-> In this case, the I/O translation definitely looks wrong. On a typical
-> ARM DT system, you will see something like
->
-> [    1.500324] Remapped I/O 0x0000000067f00000 to [io  0x0000-0xffff window]
-> [    1.500522] pci_bus 0000:00: root bus resource [io  0x0000-0xffff window]
->
-> The MMIO window looks correct, but I suspect that both 0x82000000 and
-> 0x83000000 in the DT ranges are describing the resource window as
-> prefetchable, preventing the allocation of non-prefetchable BARs in
-> this window.
-
-I checked with lspci -vvvbxxxxnn:
-
-Before your changes:
-00:00.0 PCI bridge [0604]: Fuzhou Rockchip Electronics Co., Ltd Device
-[1d87:3566] (rev 01) (prog-if 00 [Normal decode])
-        I/O behind bridge: 00001000-00001fff [size=4K]
-        Memory behind bridge: 50000000-500fffff [size=1M]
-        Prefetchable memory behind bridge:
-0000000040000000-000000004fffffff [size=256M]
-01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc.
-[AMD/ATI] Turks PRO [Radeon HD 7570] [1002:675d] (prog-if 00 [VGA
-controller])
-        Region 0: Memory at 40000000 (64-bit, prefetchable)
-        Region 2: Memory at 50000000 (64-bit, non-prefetchable)
-        Region 4: I/O ports at 7f701000
-        Expansion ROM at 50020000 [disabled]
-
-After your changes:
-lspci -vvvbxxxxnn
-00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd Device 3566
-(rev 01) (prog-if 00 [Normal decode])
-        I/O behind bridge: 00001000-00001fff [size=4K]
-        Memory behind bridge: 10000000-100fffff [size=1M]
-        Prefetchable memory behind bridge:
-0000000000000000-000000000fffffff [size=256M]
-01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-[AMD/ATI] Turks PRO [Radeon HD 7570] (prog-if 00 [VGA controller])
-        Region 0: Memory at <unassigned> (64-bit, prefetchable) [virtual]
-        Region 2: Memory at 10000000 (64-bit, non-prefetchable) [virtual]
-        Region 4: I/O ports at 1000 [virtual]
-        Expansion ROM at 10020000 [disabled]
-
->
-> Peter, for the configuration listed here, could you try something like
->
-> ranges = <0x1000000 0x0 0x0 [IO base in the CPU address map] [IO size]>,
->          <0x2000000 0x0 0x0 [MMIO base in the CPU address map] [MMIO size]>;
-
-That was similar to what I already had, removing the relocatable flag
-and setting both addresses to 0x0 are the changes.
-
-Here is the result:
-[    6.410670] rockchip-dw-pcie 3c0000000.pcie: Looking up
-vpcie3v3-supply from device tree
-[    6.413924] rockchip-dw-pcie 3c0000000.pcie: host bridge
-/pcie@fe260000 ranges:
-[    6.414653] rockchip-dw-pcie 3c0000000.pcie: Parsing ranges property...
-[    6.415321] rockchip-dw-pcie 3c0000000.pcie:       IO
-0x033f700000..0x033f7fffff -> 0x0000000000
-[    6.416375] rockchip-dw-pcie 3c0000000.pcie:      MEM
-0x0300000000..0x033f6fffff -> 0x0000000000
-[    6.417363] rockchip-dw-pcie 3c0000000.pcie: got 49 for legacy interrupt
-[    6.418676] rockchip-dw-pcie 3c0000000.pcie: found 5 interrupts
-[    6.419224] rockchip-dw-pcie 3c0000000.pcie: invalid resource
-[    6.419764] rockchip-dw-pcie 3c0000000.pcie: iATU unroll: enabled
-[    6.420388] rockchip-dw-pcie 3c0000000.pcie: Detected iATU regions:
-8 outbound, 8 inbound
-[    6.628630] rockchip-dw-pcie 3c0000000.pcie: Link up
-[    6.631026] rockchip-dw-pcie 3c0000000.pcie: PCI host bridge to bus 0000:00
-[    6.631734] pci_bus 0000:00: root bus resource [bus 00]
-[    6.632548] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff]
-[    6.633175] pci_bus 0000:00: root bus resource [mem
-0x300000000-0x33f6fffff] (bus address [0x00000000-0x3f6fffff])
-[    6.634170] pci_bus 0000:00: scanning bus
-[    6.635052] pci 0000:00:00.0: disabling Extended Tags (this device
-can't handle them)
-[    6.635813] pci 0000:00:00.0: [1d87:3566] type 01 class 0x060400
-[    6.636782] pci 0000:00:00.0: reg 0x38: [mem 0x300000000-0x30000ffff pref]
-[    6.638302] pci 0000:00:00.0: supports D1 D2
-[    6.638742] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-[    6.639432] pci 0000:00:00.0: PME# disabled
-[    6.650984] pci_bus 0000:00: fixups for bus
-[    6.651465] pci 0000:00:00.0: scanning [bus 01-ff] behind bridge, pass 0
-[    6.653454] pci_bus 0000:01: busn_res: can not insert [bus 01-ff]
-under [bus 00] (conflicts with (null) [bus 00])
-[    6.654427] pci_bus 0000:01: scanning bus
-[    6.655134] pci 0000:01:00.0: [1002:675d] type 00 class 0x030000
-[    6.655938] pci 0000:01:00.0: reg 0x10: [mem
-0x300000000-0x30fffffff 64bit pref]
-[    6.656934] pci 0000:01:00.0: reg 0x18: [mem 0x300000000-0x30001ffff 64bit]
-[    6.657677] pci 0000:01:00.0: reg 0x20: [io  0x0000-0x00ff]
-[    6.658363] pci 0000:01:00.0: reg 0x30: [mem 0x300000000-0x30001ffff pref]
-[    6.659845] pci 0000:01:00.0: supports D1 D2
-[    6.660715] pci 0000:01:00.0: 2.000 Gb/s available PCIe bandwidth,
-limited by 2.5 GT/s PCIe x1 link at 0000:00:00.0 (capable of 32.000
-Gb/s with 2.5 GT/s PCIe x16 link)
-[    6.664276] pci 0000:01:00.0: vgaarb: VGA device added:
-decodes=io+mem,owns=none,locks=none
-[    6.666120] pci 0000:01:00.1: [1002:aa90] type 00 class 0x040300
-[    6.666922] pci 0000:01:00.1: reg 0x10: [mem 0x300000000-0x300003fff 64bit]
-[    6.668888] pci 0000:01:00.1: supports D1 D2
-[    6.680490] pci_bus 0000:01: fixups for bus
-[    6.680941] pci_bus 0000:01: bus scan returning with max=01
-[    6.681507] pci 0000:00:00.0: scanning [bus 01-ff] behind bridge, pass 1
-[    6.682180] pci_bus 0000:00: bus scan returning with max=ff
-[    6.682780] pci 0000:00:00.0: BAR 15: assigned [mem
-0x300000000-0x30fffffff 64bit pref]
-[    6.683535] pci 0000:00:00.0: BAR 14: assigned [mem 0x310000000-0x3100fffff]
-[    6.684322] pci 0000:00:00.0: BAR 6: assigned [mem
-0x310100000-0x31010ffff pref]
-[    6.685021] pci 0000:00:00.0: BAR 13: assigned [io  0x1000-0x1fff]
-[    6.685669] pci 0000:01:00.0: BAR 0: assigned [mem
-0x300000000-0x30fffffff 64bit pref]
-[    6.686500] pci 0000:01:00.0: BAR 2: assigned [mem
-0x310000000-0x31001ffff 64bit]
-[    6.687281] pci 0000:01:00.0: BAR 6: assigned [mem
-0x310020000-0x31003ffff pref]
-[    6.687985] pci 0000:01:00.1: BAR 0: assigned [mem
-0x310040000-0x310043fff 64bit]
-[    6.688872] pci 0000:01:00.0: BAR 4: assigned [io  0x1000-0x10ff]
-[    6.689492] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-[    6.690000] pci 0000:00:00.0:   bridge window [io  0x1000-0x1fff]
-[    6.690593] pci 0000:00:00.0:   bridge window [mem 0x310000000-0x3100fffff]
-[    6.691254] pci 0000:00:00.0:   bridge window [mem
-0x300000000-0x30fffffff 64bit pref]
-[    6.694100] pcieport 0000:00:00.0: assign IRQ: got 95
-[    6.695189] ITS ALLOCATE 2nd level WORKAROUND
-[    6.727845] pcieport 0000:00:00.0: PME: Signaling with IRQ 96
-[    6.729830] pcieport 0000:00:00.0: saving config space at offset
-0x0 (reading 0x35661d87)
-[    6.730587] pcieport 0000:00:00.0: saving config space at offset
-0x4 (reading 0x100507)
-[    6.731315] pcieport 0000:00:00.0: saving config space at offset
-0x8 (reading 0x6040001)
-[    6.732051] pcieport 0000:00:00.0: saving config space at offset
-0xc (reading 0x10000)
-[    6.733095] pcieport 0000:00:00.0: saving config space at offset
-0x10 (reading 0x0)
-[    6.733797] pcieport 0000:00:00.0: saving config space at offset
-0x14 (reading 0x0)
-[    6.734496] pcieport 0000:00:00.0: saving config space at offset
-0x18 (reading 0xff0100)
-[    6.735231] pcieport 0000:00:00.0: saving config space at offset
-0x1c (reading 0x20001010)
-[    6.735981] pcieport 0000:00:00.0: saving config space at offset
-0x20 (reading 0x10001000)
-[    6.736786] pcieport 0000:00:00.0: saving config space at offset
-0x24 (reading 0xff10001)
-[    6.737528] pcieport 0000:00:00.0: saving config space at offset
-0x28 (reading 0x0)
-[    6.738223] pcieport 0000:00:00.0: saving config space at offset
-0x2c (reading 0x0)
-[    6.738918] pcieport 0000:00:00.0: saving config space at offset
-0x30 (reading 0x0)
-[    6.739613] pcieport 0000:00:00.0: saving config space at offset
-0x34 (reading 0x40)
-[    6.740369] pcieport 0000:00:00.0: saving config space at offset
-0x38 (reading 0x0)
-[    6.741067] pcieport 0000:00:00.0: saving config space at offset
-0x3c (reading 0x2015f)
-[    6.742525] radeon 0000:01:00.0: assign IRQ: got 95
+Thanks,
+Yazen
