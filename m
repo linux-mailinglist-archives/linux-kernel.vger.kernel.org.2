@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FD038FD74
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F84138FD76
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhEYJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:10:40 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:27088 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231490AbhEYJKi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:10:38 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14P97IsG008620;
-        Tue, 25 May 2021 04:08:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=CuPkBOU+Sw4zKXqljYp7hETUN1j+lmbdzK/X2BMYo7Q=;
- b=I1ZDJXrkXRuV0HwyIHJF1BYwt7pnvovBuswgABGmuO7wjulzks/kXZbP+lbEb7rNJ/HG
- htvoz6Vpw1/jaSc3oiceJoTYbwL/YJA/oSlzAi7CLBBYQicWYIAgQuuxddexUMWPhu+/
- f2ZceUPq3Pvfz9eN1WGpOkXuj2yzhymmF/c9iHzhnX3B5HXnbw41dUW+EtTAOgTGyNGC
- tv8/fyISXHEj+EEI5jb9NnBV4pcx1Db8K8b77KUuEbju/v/D3eVoO8LOSXlstXivM9Os
- /bJnycuKsrB+YyvGOvOeMksI5eUzfgsYYWfXDB291BiqweqeK8o2AhlzAovPNhfguCNe nA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 38r28v1khx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 25 May 2021 04:08:27 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 25 May
- 2021 10:08:25 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 25 May 2021 10:08:25 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.177])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 62E7E11CD;
-        Tue, 25 May 2021 09:08:25 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH 4/4] ASoC: cs42l42: Check jack status before reporting button events
-Date:   Tue, 25 May 2021 10:08:22 +0100
-Message-ID: <20210525090822.64577-4-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210525090822.64577-1-tanureal@opensource.cirrus.com>
-References: <20210525090822.64577-1-tanureal@opensource.cirrus.com>
+        id S232342AbhEYJLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:11:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60658 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231429AbhEYJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:10:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621933762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VMjceT9vwzkrZQiya/elFoq1dJf0z/5I+bdC8ntYH9k=;
+        b=GIHsAw35IfIvEt+YIwJgiYqbOh/kgsUbhe4zaENhaJJXa9qlBhRfYhMUTJM1pgx5N91Qpm
+        W6eq2qhWpMmMFIFA8pB82aZWBFk+PYravQWcDYoojfgLK5jWD6w8hCDhqFUbJGL77ywahF
+        A6uPQGS152jqRyf/M7Iut5ZzPWSfZes=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621933762;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VMjceT9vwzkrZQiya/elFoq1dJf0z/5I+bdC8ntYH9k=;
+        b=Z1Q27/swwWOpfYBUeRbZC9peLa+e8OjWlTBG8TKTY6KBfMqh6QY3SO7uUUdnF7DXFHCpKm
+        t/xJpL94eLELjkBA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2F739AE1F;
+        Tue, 25 May 2021 09:09:22 +0000 (UTC)
+Date:   Tue, 25 May 2021 11:09:18 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/2] mm,hwpoison: fix race with hugetlb page allocation
+Message-ID: <20210525090918.GE3300@linux>
+References: <20210518231259.2553203-1-nao.horiguchi@gmail.com>
+ <20210518231259.2553203-2-nao.horiguchi@gmail.com>
+ <d78f430c-2390-2a5f-564a-e20e0ba6b26a@oracle.com>
+ <20210520071717.GA2641190@hori.linux.bs1.fc.nec.co.jp>
+ <20210525073559.GA844@linux>
+ <20210525080707.GA3325050@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -5_N_XhPBkuNFOW2NNfTXC4lHYpQ4LRP
-X-Proofpoint-GUID: -5_N_XhPBkuNFOW2NNfTXC4lHYpQ4LRP
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250061
+In-Reply-To: <20210525080707.GA3325050@hori.linux.bs1.fc.nec.co.jp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jack must be connected before reporting button events and
-if the jack is disconnected button release must be reported
+On Tue, May 25, 2021 at 08:07:07AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> OK, here's the current draft.
+> 
+> Thanks,
+> Naoya Horiguchi
+> 
+> ---
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Date: Tue, 18 May 2021 23:49:18 +0900
+> Subject: [PATCH] mm,hwpoison: fix race with hugetlb page allocation
+> 
+> When hugetlb page fault (under overcommitting situation) and
+> memory_failure() race, VM_BUG_ON_PAGE() is triggered by the following race:
+> 
+>     CPU0:                           CPU1:
+> 
+>                                     gather_surplus_pages()
+>                                       page = alloc_surplus_huge_page()
+>     memory_failure_hugetlb()
+>       get_hwpoison_page(page)
+>         __get_hwpoison_page(page)
+>           get_page_unless_zero(page)
+>                                       zero = put_page_testzero(page)
+>                                       VM_BUG_ON_PAGE(!zero, page)
+>                                       enqueue_huge_page(h, page)
+>       put_page(page)
+> 
+> __get_hwpoison_page() only checks the page refcount before taking an
+> additional one for memory error handling, which is wrong because there's
+> a time window where compound pages have non-zero refcount during
+> initialization.  So make __get_hwpoison_page() check page status a bit
+> more for hugetlb pages.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I think that this changelog would benefit from some information about the new
+!PageLRU && !__PageMovable check.
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 8260de81b56c..eff013f295be 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1478,6 +1478,10 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 				default:
- 					break;
- 				}
-+				snd_soc_jack_report(cs42l42->jack, 0,
-+						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
-+
- 				dev_dbg(component->dev, "Unplug event\n");
- 			}
- 			break;
-@@ -1489,7 +1493,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	}
- 
- 	/* Check button detect status */
--	if ((~masks[7]) & irq_params_table[7].mask) {
-+	if (cs42l42->plug_state == CS42L42_TS_PLUG && ((~masks[7]) & irq_params_table[7].mask)) {
- 		if (!(current_button_status &
- 			CS42L42_M_HSBIAS_HIZ_MASK)) {
- 
+>  static int __get_hwpoison_page(struct page *page)
+>  {
+>  	struct page *head = compound_head(page);
+> +	int ret = 0;
+> +	bool hugetlb = false;
+> +
+> +	ret = get_hwpoison_huge_page(head, &hugetlb);
+> +	if (hugetlb)
+> +		return ret;
+> +
+> +	if (!PageLRU(head) && !__PageMovable(head))
+> +		return 0;
+
+This definitely needs a comment hinting the reader why we need to check for this.
+AFAICS, this is to close the race where a page is about to be a hugetlb page soon,
+so we do not go for get_page_unless_zero(), right?
+
+From soft_offline_page's POV I __guess__ that's fine because we only deal with
+pages we know about.
+But what about memory_failure()? I think memory_failure() is less picky about that,
+so it is okay to not take a refcount on that case?
+
 -- 
-2.31.1
-
+Oscar Salvador
+SUSE L3
