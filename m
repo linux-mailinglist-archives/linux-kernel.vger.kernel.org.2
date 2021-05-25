@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0265F3908D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625FB3908D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhEYSXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
+        id S232240AbhEYSXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhEYSW4 (ORCPT
+        with ESMTP id S231707AbhEYSX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:22:56 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CBBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:21:26 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id f22so15889742pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:21:26 -0700 (PDT)
+        Tue, 25 May 2021 14:23:28 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F0AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:21:56 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so18935787oty.7
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:21:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+BZyml4QNPakkE47UBP4P5/G1VBzFvh2K0aZZhlkKa8=;
-        b=YTp2x0SQduyFfOcah8WlxA2ladVZsZv1Mf04xl1F3UzQdo3jswV2APsR5l9zoB8tBC
-         gsVxNtVPCv+bxn9p0Vt4Sasg2hJ8LHbioxgs/cyNlwh6RCapCa97pgskCD61LMsUgiF/
-         zqh7PILQNlnf1OmIXPIJMED19VYeU6MjKR9v9+9tOHgdlNeMqhtWTiQK1WFVEN7rGEly
-         AUSGN/i25EDEpMb+rkHMgR2Z4BY8dM4jF7gg5iPbMYFzHr25MElN0jPJeiTmPfrhEekJ
-         RsDxi1BzI/hBRxDWQ/kNhH6wyOFUtC3UhZiNcHMLnTTmBugwKKc838+fqZQZmqja4rMS
-         kaig==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=rJ15/M9nlVKr6ZEwr5KeSZUGRGIjK4uwwMnv6h7U550=;
+        b=R1crsP+shdHhiuseCe6QdWzpIsPvxDthEh9r+eshbiydRyuQnGQfkwsJN8pgFBh0/U
+         T1zZGxTJDkgH3aXyrLrwiCe/lRugtgvUphoVbQVxE6hEF6WOaNASL+wtiAA2EItf05Sw
+         mU9z3JMZASewA3k9Izo1mrzUwPnQ4qoA3ECAM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+BZyml4QNPakkE47UBP4P5/G1VBzFvh2K0aZZhlkKa8=;
-        b=Z5ZBDY4nqvZM9cwrD4hTDyzA1ki/0cqW6YEBX2o1oQRtRCAYiZQzMpdP8sL5P8s29s
-         FmWAT6iVa4M3uy0qmdup6Mrs7ZSGrK39YFLa00U0fyPK7zod/+KJTW0QFTubVbWF5Hit
-         7PIOarnIcqJCmhvaPxo/GWXBQxjsg7xJRFjcDo2cCQawqdwJyXH5xnH2caHs/6XqFDWn
-         ytOlZMKN+j3yhtm1CmTTpzVVMHBOhR+SpnRmX3Twos1Zx7S5GVruU/c5l2hpOX3hqodP
-         orGlcIjv/zx2Us+HaqGu00CjpWdrPiHcRwKGUUnzWrGVWLj5CHclqllYLb4jMkYEFHPl
-         Q/WQ==
-X-Gm-Message-State: AOAM532INY4TjogMcKlTE9nXaNQ9/WvTpFg5k7/wFWnOXx5cemF3Su7o
-        VHtMq1jyjyCHKLzcdoRDkbEpZQ==
-X-Google-Smtp-Source: ABdhPJzWYlLigzgP76oNS+BdV10DlODEGG/NGo+XEV3m2Apt0qjB8ZjsTQMBilWhlfDHImNpF7khlQ==
-X-Received: by 2002:a63:de4e:: with SMTP id y14mr20294242pgi.30.1621966885319;
-        Tue, 25 May 2021 11:21:25 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k1sm13323160pfa.30.2021.05.25.11.21.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 11:21:24 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:21:21 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Stamatis, Ilias" <ilstam@amazon.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "zamsden@gmail.com" <zamsden@gmail.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
- decache_tsc_multiplier()
-Message-ID: <YK1AIfr/Ot4ND5Pn@google.com>
-References: <20210521102449.21505-1-ilstam@amazon.com>
- <20210521102449.21505-10-ilstam@amazon.com>
- <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
- <YKv0KA+wJNCbfc/M@google.com>
- <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
- <YK0emU2NjWZWBovh@google.com>
- <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
- <YK0nGozm4PRPv6D7@google.com>
- <204c0b60-5e39-eb61-da85-705c56604cde@redhat.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=rJ15/M9nlVKr6ZEwr5KeSZUGRGIjK4uwwMnv6h7U550=;
+        b=cpr1Usd6gWAvdgBEszyPZP8YoG49vxsoWdgMMAI9aRXA/XWfeOCoHFI0R5NBGVloGP
+         YYyvCQxq6FMsO50sb5ScMyIckdV71T313pmHjIGHHaNyk5orqkRhH4Naeom6NhrDGvSj
+         LDzHIylXa0eXgL3w6Zlg4OriuJWprGQFTFcAB9simw+9rVD/OKsrV7Ng1J1nbccCsPS7
+         /8Qve9r9mJd/W4rxUMJdD7vEl6w3MRl7lN5vOC+LJW6EGvC46J7Nm7KybsW0rJo/9JaD
+         an0UMgtirspoPo9ZVYA9E4rv9myZnNzg1k3rQB4/Qq4xRXznMiko0wml8olArYe8ilYJ
+         QbLw==
+X-Gm-Message-State: AOAM531ptyhzTMX85weegdwjLdWp000KlQh+NlyjgOeF6h3Li20CyYX7
+        DDxGuHaIkquui3UQ09Z/HFAdWcWpqfdIkgbPSqHOsA==
+X-Google-Smtp-Source: ABdhPJxQybJVB1qLFLWPI1y2guP5iZa9iO84nxXjX79CooXys999eeGALwLBzMT9qgFd0409BTLHHEttixWh5I0uwKA=
+X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr24015712otp.34.1621966915846;
+ Tue, 25 May 2021 11:21:55 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 25 May 2021 14:21:55 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <204c0b60-5e39-eb61-da85-705c56604cde@redhat.com>
+In-Reply-To: <20210525105049.34804-1-cuibixuan@huawei.com>
+References: <20210525105049.34804-1-cuibixuan@huawei.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 25 May 2021 14:21:55 -0400
+Message-ID: <CAE-0n53ugXGsdJfa_B6kfcmMzvQPDXMjz=NWf6_kVwSSW+5gaQ@mail.gmail.com>
+Subject: Re: [PATCH -next v2] module: fix build error when CONFIG_SYSFS is disabled
+To:     Bixuan Cui <cuibixuan@huawei.com>, jeyu@kernel.org
+Cc:     sfr@canb.auug.org.au, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021, Paolo Bonzini wrote:
-> On 25/05/21 18:34, Sean Christopherson wrote:
-> > > I actually like the idea of storing the expected value in kvm_vcpu and the
-> > > current value in loaded_vmcs.  We might use it for other things such as
-> > > reload_vmcs01_apic_access_page perhaps.
-> > I'm not necessarily opposed to aggressively shadowing the VMCS, but if we go
-> > that route then it should be a standalone series that implements a framework
-> > that can be easily extended to arbitrary fields.  Adding fields to loaded_vmcs
-> > one at a time will be tedious and error prone.  E.g. what makes TSC_MULTIPLIER
-> > more special than TSC_OFFSET, GUEST_IA32_PAT, GUEST_IA32_DEBUGCTL, GUEST_BNDCFGS,
-> > and other number of fields that are likely to persist for a given vmcs02?
-> 
-> That it can be changed via ioctls in a way that affects both vmcs01 and vmcs02.
+Quoting Bixuan Cui (2021-05-25 03:50:49)
+> Fix build error when disable CONFIG_SYSFS:
+> kernel/module.c:2805:8: error: implicit declaration of function =EF=BF=BD=
+=EF=BF=BD=EF=BF=BDsect_empty=EF=BF=BD=EF=BF=BD=EF=BF=BD; did you mean =EF=
+=BF=BD=EF=BF=BD=EF=BF=BDdesc_empty=EF=BF=BD=EF=BF=BD=EF=BF=BD? [-Werror=3Di=
+mplicit-function-declaration]
+>  2805 |   if (!sect_empty(sechdr) && sechdr->sh_type =3D=3D SHT_NOTE &&
+>
+> Fixes: 9ee6682aa528 ("module: add printk formats to add module build ID t=
+o stacktraces")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-That holds true for any MSR that is conditionally loaded/cleared on enter/exit,
-e.g. userspace can stuff MSR_IA32_CR_PAT while L2 is active, and that can affect
-L1 if L1 is running without VM_EXIT_LOAD_IA32_PAT.
+Ok. The SoB chain is wrong but you may have my SoB.
 
-I'm not saying that the above is likely, but neither is changing the TSC scaling
-ratio while L2 is active (I assume it occurs on migration, but in the grand
-scheme that's not a common operation).
+> ---
+> Changes from v2:
+> Put the sect_empty() definition outside of #ifdef CONFIG_SYSFS.
+>
+>  kernel/module.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/module.c b/kernel/module.c
+> index decf4601e943..0543b44db81d 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -1462,6 +1462,13 @@ resolve_symbol_wait(struct module *mod,
+>         return ksym;
+>  }
+>
+> +#ifdef CONFIG_KALLSYMS
+> +static inline bool sect_empty(const Elf_Shdr *sect)
+> +{
+> +       return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size =3D=3D 0;
+> +}
+> +#endif
+> +
+>  /*
+>   * /sys/module/foo/sections stuff
+>   * J. Corbet <corbet@lwn.net>
+> @@ -1469,11 +1476,6 @@ resolve_symbol_wait(struct module *mod,
+>  #ifdef CONFIG_SYSFS
+>
+>  #ifdef CONFIG_KALLSYMS
+> -static inline bool sect_empty(const Elf_Shdr *sect)
+> -{
+> -       return !(sect->sh_flags & SHF_ALLOC) || sect->sh_size =3D=3D 0;
+> -}
+> -
+>  struct module_sect_attr {
+>         struct bin_attribute battr;
+>         unsigned long address;
+> --
+> 2.17.1
+>
