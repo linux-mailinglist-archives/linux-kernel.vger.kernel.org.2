@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF21538FE46
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7675938FE3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhEYJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:57:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5551 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhEYJ5W (ORCPT
+        id S232819AbhEYJ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232807AbhEYJ4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:57:22 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fq8XD2SKlzwTbK;
-        Tue, 25 May 2021 17:53:00 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 17:55:50 +0800
-Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 10:55:48 +0100
-Date:   Tue, 25 May 2021 10:54:00 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] cxl/mem: Reserve all device regions at once
-Message-ID: <20210525105400.000001fd@Huawei.com>
-In-Reply-To: <20210522001154.2680157-3-ira.weiny@intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
-        <20210522001154.2680157-3-ira.weiny@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 25 May 2021 05:56:07 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5B4C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:54:38 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id n2so31603505wrm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qEEO2ZMZSJeGntakUFqLDv8eZl5wPjg44rw10m7qX/E=;
+        b=cDF46+XCEHEFL7A4rUBDi5JNXMPCM6KrOkEgxy+c5CUhsMBtEmXtK+68UFGsF+bQSf
+         S8L3gF3SYJ62GC9sOfz+9m6xu0tXvMqaaBSQLLkm/heYMU/S0BR0tF1zVBxXJnYqVJr/
+         zHm6g6f0VdrdCrPDIqL91bsL0fsahZu3M0Vr2W05YiQL4VDWi4AnTAkcGzrR4lZz0yXq
+         f8dBXMmOmFjrznE1VdXda0YWCLhttlSoIeX7Nhbut4LASnRlhUrfYbVi0qPsMiCJpFug
+         JlE6xGVPT724Tbvd20jpDndUUIni5ktwzbuOO2J5zFeBseCLdlDRvDbfpLa14cL0dYy2
+         T70A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qEEO2ZMZSJeGntakUFqLDv8eZl5wPjg44rw10m7qX/E=;
+        b=tV2ZqLVsqNakJMPhL06xaOpJSoSnp8TIIg1oRDfCozcy/jCQH84zd14ryk03BG+eDV
+         geO1YSBnwlDyjCn5I69l0TlbTotYLtcFzawq9BFz8xTtH5jNX7E1Nf89l28cJhf8aZys
+         eTI/WKwInClCchGFgzQqhu5DMUu197CDWyyVK5wGE8sYtx8tzuufOIFzg/RJhBeskGF/
+         ZENqvLOD+A+hSQhAZOjauh2Xty7vpCFH68XU0PP2KHydPkwhKHzGRRfumklIopevsp2w
+         RR11dntHtODAEHyLiSZ+0TWj4QdZ/6HuUTcUc09+L+rCoN9utKZLr2K2ax0/8EJudI/3
+         9mWg==
+X-Gm-Message-State: AOAM532mywnnb7gBO6SbidSRNoYhhV7RN2Wzpr05o5/Hs0k3SzmcLhFm
+        AgPO4nAGmC87xoN237UpzAyUpQ==
+X-Google-Smtp-Source: ABdhPJxgc8Fs5Rlucz6ZpHrZ8PnjCMCAtctbTJIiX9Yihtlh11kRIAUepyNe+aeT/+zHzezPWW6HNw==
+X-Received: by 2002:adf:f805:: with SMTP id s5mr26405921wrp.143.1621936476659;
+        Tue, 25 May 2021 02:54:36 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id y6sm2109727wmy.23.2021.05.25.02.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 02:54:36 -0700 (PDT)
+Date:   Tue, 25 May 2021 09:54:33 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH v2 2/3] PM / EM: Extend em_perf_domain with a flag field
+Message-ID: <YKzJWabSyUzHiRb5@google.com>
+References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+ <1621616064-340235-3-git-send-email-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.147]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621616064-340235-3-git-send-email-vincent.donnefort@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:11:51 -0700
-<ira.weiny@intel.com> wrote:
-
-> From: Ira Weiny <ira.weiny@intel.com>
+On Friday 21 May 2021 at 17:54:23 (+0100), Vincent Donnefort wrote:
+> Merge the current "milliwatts" option into a "flag" field. This intends to
+> prepare the extension of this structure for inefficient states support in
+> the Energy Model.
 > 
-> In order to remap individual register sets each bar region must be
-> reserved prior to mapping.  Because the details of individual register
-> sets are contained within the BARs themselves, the bar must be mapped 2
-> times, once to extract this information and a second time for each
-> register set.
-> 
-> Rather than attempt to reserve each BAR individually and track if that
-> bar has been reserved.  Open code pcim_iomap_regions() by first
-> reserving all memory regions on the device and then mapping the bars
-> individually as needed.
-> 
-> NOTE pci_request_mem_regions() does not need a corresponding
-> pci_release_mem_regions() because the pci device is managed via
-> pcim_enable_device().
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> 
-> ---
-> Changes for V2:
-> 	Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git/commit/?h=pending
-> 	Clarify why pci_release_mem_regions() does not need to be
-> 	called.
-
-Gah - I'm never keen on hidden automated cleanup.  Oh well.
-
-> 	Adjust for the different return code between pcim_iomap_regions() and
-> 	pcim_iomap()
-> 	Change print specifier.
-> ---
->  drivers/cxl/pci.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index b2f978954daa..33fc6e1634e3 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -927,7 +927,7 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
->  {
->  	struct pci_dev *pdev = cxlm->pdev;
->  	struct device *dev = &pdev->dev;
-> -	int rc;
-> +	void __iomem *addr;
->  
->  	/* Basic sanity check that BAR is big enough */
->  	if (pci_resource_len(pdev, bar) < offset) {
-> @@ -936,13 +936,14 @@ static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm,
->  		return IOMEM_ERR_PTR(-ENXIO);
->  	}
->  
-> -	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
-> -	if (rc) {
-> +	addr = pcim_iomap(pdev, bar, 0);
-> +	if (!addr) {
->  		dev_err(dev, "failed to map registers\n");
-> -		return IOMEM_ERR_PTR(rc);
-> +		return addr;
->  	}
->  
-> -	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
-> +	dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
-> +		bar, offset);
->  
->  	return pcim_iomap_table(pdev)[bar] + offset;
->  }
-> @@ -1003,6 +1004,9 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  		return -ENXIO;
->  	}
->  
-> +	if (pci_request_mem_regions(pdev, pci_name(pdev)))
-> +		return -ENODEV;
-> +
->  	/* Get the size of the Register Locator DVSEC */
->  	pci_read_config_dword(pdev, regloc + PCI_DVSEC_HEADER1, &regloc_size);
->  	regloc_size = FIELD_GET(PCI_DVSEC_HEADER1_LENGTH_MASK, regloc_size);
-> @@ -1028,8 +1032,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
->  
->  		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
->  			base = cxl_mem_map_regblock(cxlm, bar, offset);
-> -			if (IS_ERR(base))
-> -				return PTR_ERR(base);
-> +			if (!base)
-> +				return -ENOMEM;
->  			break;
->  		}
->  	}
-
+Reviewed-by: Quentin Perret <qperret@google.com>
