@@ -2,152 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1FC3904C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABC23904CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 17:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhEYPMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 11:12:51 -0400
-Received: from mail-bn8nam12on2044.outbound.protection.outlook.com ([40.107.237.44]:26880
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229898AbhEYPMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 11:12:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lqRpoy+iAXJQ5oMzswwv1MLNYrktNvLGLW3B/pzL8QTp4OkXxWNPCRd/OSRWe/fKmzk/sGCMq9FqqC9ZTglY5xHk+LbrocSj8VYDnPopsVaUcToIWsHU2I4eNJmVq02wxAMgg+FoNXDClcsL9ijcSbQbhRXJMWPpKM3BNbVZzI7W6W7NwBSbIGdTc7TGgHThExvfijRbYPXdySfv9aZDTjWBtn+OYRz95sLCpeLCjX+VRekBRgeYZqMd0p0jOpPp+l0d1/Vv/K6yS3ii9t2rn6tUxO7Bp+OFgiK5GZl5zNruM0zAUVyJ7xXmkCY2uJjeJk72wuVXFNysEFHHL80cEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M3fDXP2unGF5S1kJyoL8C7MJhWoJsCqJ/3WpuFST8Eg=;
- b=Ii2wW6vz+f6On/DzAgOI3MG8owvx6FPFenPkn7lpRUlbzJqncqiMG1Nft5WigLATxn7HJumu3yztkdkwGXnJss4vbiubEHHm+dK61027ekQssI7uhfFztXzkxmt66VPikL+VWKDmf/YnxK40RTm5PsX0fxS3TmRVvMwqRZ9jMrIFtECbSHG/9qaLXzwe1ow0wCu8aEof4bPYgJWqbB6uO+Djq3onBX2d+zrC6fYm8Qv3szTgGdZV8fiZxKlLCHCzWeKGV/j/8AigpDovupdUmMPhtCr4ESCZkzTE+ziHZqYGhOQ8lzzEgLpoQDlTQQ4xsDVmOJBWm1/WPIUpE+kGKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M3fDXP2unGF5S1kJyoL8C7MJhWoJsCqJ/3WpuFST8Eg=;
- b=Ba7msVAv/9AhTzNqW1LsAVh1bf6997iPd7mZMPk0GCLcBPelsUxUN8yzBA5Aq6wAwsOkacZvYKjV5Ta9NYlda3d0iz5M4XFc0+uONFiojgBc2up1+D9wjMspPYLq8oZ8PsQ31YGWEb6CDiMjtuVJMGQX54hPw/E07ohjuw14F5ptdgvw97GLFm4oJ6/AWr1ZVqTX1Lol95syq1UjJnvhsZCUuklFHVAl5f8d1dRcCUNlk/feyI2/fsD7/BHa+V9x0/mQ8tPCU7yRBkUjgmm6TD86ot9A9Pry4WZK7JOAPLe3rL+RIAgVRDEKG4XOT8IzmGXVx5s1TOrAXINcojcRXQ==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5111.namprd12.prod.outlook.com (2603:10b6:208:31b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Tue, 25 May
- 2021 15:11:19 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
- 15:11:19 +0000
-Date:   Tue, 25 May 2021 12:11:17 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-Message-ID: <20210525151117.GB1002214@nvidia.com>
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-3-akrowiak@linux.ibm.com>
- <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
- <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
- <20210525131912.GW1002214@nvidia.com>
- <6542986f-b20e-3f41-b96c-70f0ce42af2d@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6542986f-b20e-3f41-b96c-70f0ce42af2d@linux.ibm.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: YTXPR0101CA0027.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::40) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231164AbhEYPOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 11:14:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229610AbhEYPOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 11:14:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621955599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=G/fCjyB7iNAHQ0ure1mFwutfJ1NArBGdlauCkoAWAjw=;
+        b=DmRm2mqx6v4wuc9gfC9lQsVMkaeXVI0xWR9J/h4BKQuf4tWqb4b9JmmTanGuFOno57LUcA
+        rA/pCR6U3hcp1/FM4EdGM9nr0fNeoh2q6wnn5O/YHOEfKLh1OqUKaKHEmSFIdyg4OV7MBO
+        I2H7LwL45inYdn83BUmdkwfKlqR6pEo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-R-6ngoSZN5W6pICfaDxokg-1; Tue, 25 May 2021 11:13:18 -0400
+X-MC-Unique: R-6ngoSZN5W6pICfaDxokg-1
+Received: by mail-wr1-f72.google.com with SMTP id h22-20020adfa4d60000b029011244156c68so4709160wrb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 08:13:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G/fCjyB7iNAHQ0ure1mFwutfJ1NArBGdlauCkoAWAjw=;
+        b=VhaZ6gdMRyRmmKM+aK1Si+AloMhM6ZYYO/IrReQfHUhYV06ZIsd6NJaxoES4dKSrOr
+         qmUfaV43JvG+vR/nmCZFnozQuIhUSu8e85F2VZQiDw3hAGxwPOtiMRRlzqIMS71AWz0S
+         Zc9w60qq29+qsY8tdLFm13dLWMuKPl2Pa6UgfAHHwRcQNFeTwo7qD8yJfhElMdRtdOTF
+         TdE/D74R4CQ5nICvetKHVVv++KQJXtyclsEeNexs7goAS52cx8Soe3hjZEXvLfxGGTme
+         cVhS+pVDGp2RlkKvjYJoNs/vxntBvbmxWpM4YfFUyVOpKFGJaOI9/lNsmClobFN0/lvw
+         uL7g==
+X-Gm-Message-State: AOAM532Ix9mPIUg2/fFBy6a5I8rctIqJDIj8Fz5dn4QhoVcrIIejWw8a
+        RQU3dfe4ofqhfJHaMApVpnNSBgH2A8IDT/iNfxay9c9wv5W10QzUD8O67P7JlmH8Ju3nvqGSmMm
+        /beZP2vhdb8Z0vC8yTAuIIxx9iOpnvyAV5tUAcZ3Zyl6c0L4oBt3PwoxOeMWSais8EwhKmi/zy2
+        U=
+X-Received: by 2002:a5d:6ac2:: with SMTP id u2mr27334647wrw.272.1621955596580;
+        Tue, 25 May 2021 08:13:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRW+ZtNXlXygGeJ2boKH56TGYwHy3jnjhrNP1uaP2v8xyPBBzPxW/IypraSH2vxWBBzjo0ZA==
+X-Received: by 2002:a5d:6ac2:: with SMTP id u2mr27334620wrw.272.1621955596297;
+        Tue, 25 May 2021 08:13:16 -0700 (PDT)
+Received: from minerva.redhat.com ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id g11sm16396801wri.59.2021.05.25.08.13.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 08:13:15 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v2] drm/fb-helper: improve DRM fbdev emulation device names
+Date:   Tue, 25 May 2021 17:13:13 +0200
+Message-Id: <20210525151313.3379622-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0027.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Tue, 25 May 2021 15:11:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llYiD-00EPDU-VH; Tue, 25 May 2021 12:11:17 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d91a269-64dd-4bfe-b181-08d91f8f59a0
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5111:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5111F883913EE1CD79498512C2259@BL1PR12MB5111.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YqHIjm1ByvFqwnUX2ERv0Njb9hocthJQraMrNYw5rzn04wd5kkqT5/f75xCzBxBmWyz95aNLp53V/TdHw35QHyJgcxgC+corCwANwGr7zkdeDpAaoboNDYYpI3wffbDPucy11jzXYOBs2/1swJhQUNg5XCSGS80auuybGL76vcZ4d+hZpRumkeb2W7vgHYcin/Ekc4nbLCavMNUEb4R+WxTk7Kn0Q7QHZTVRwfciicc3sOuvkGO6NqWNSJUN9oWoHGErPJyJUsq8ah23KEjR+/jYC3HjCam1hqBcxHMSS+4e13EqbYBnml1rbRGbRGIg3prnDzHVDOpOu+b89MZdUpeAsUsPbckbsp5VIGTYWYIgS4niInhYTOVloYzeQdHqJQYvYr5adfrob4kQpizlNlLkqMZ0Kb0Wr0r84CQZkEJIuI6H3ivRmtkv9FuKfWtlCoY6RF2SyhY0ofJC7gQM5ivHmdBDMyJOZfJmTBa/5Emgaj0U1XYASxR2D3JQQvgGtxDhSN3fo0SgfoDaNTg7YBIzviDrzPR1zNeED0kx0YjQJiUYURSmwOKv/uqjhj9jVWM26tTz5VvL2Zg4M9f17BmQyou4s/HQdpmcgVxVvE4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(4326008)(33656002)(478600001)(86362001)(2906002)(7416002)(316002)(66476007)(5660300002)(9746002)(186003)(66556008)(66946007)(6916009)(83380400001)(38100700002)(2616005)(9786002)(426003)(8676002)(1076003)(36756003)(26005)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2OIzPyT8u9LuwYWoqeRsV8K3R2qyMsy3nVBYOW21L0IN8Qtk1LnN3EDMFVJc?=
- =?us-ascii?Q?voQQ9qdKdD20nf/nmRizbdlgmarZhhutYF9NTVJQPKFFnwsTz6JEbwtWmQC1?=
- =?us-ascii?Q?bS5dRX0yi29FE7Ok4QX7TtYGBD4ewvwBfpf7+ZdXEpbWRKNw+RScurITT6b8?=
- =?us-ascii?Q?2G/fgXj/V4s8MqeB4GlSs77v667u+UyAyFERqnS7XORFxdk/h1rWlrQaTZUS?=
- =?us-ascii?Q?q/0tXTkxwhg7AZ5zeF1Eku4cTrck23eATlEV9gDE0+eXfjHMvPZpZVD8t9/u?=
- =?us-ascii?Q?qA8Q1JCWtvwOKfPlvKlRym9jGzEW6v/Xq83BMxJHdslojnGlXokhybfuKCMe?=
- =?us-ascii?Q?ytqItfrzzbGBLuA//tqYzvZl3JQhnPBsRFn1oP6ppIJcA5rufaavq4d1WbV6?=
- =?us-ascii?Q?ri4eUmCn86iAeWywrJ9nlZolpVXDwNo1+yHFGnD74WDCZKxwErYpWDTB/Dmu?=
- =?us-ascii?Q?HJiR3AU4iSX329tfEKXVFq/pxX7uiCDviOmaRRwBh2gj2J4LOxntkAIsGLCJ?=
- =?us-ascii?Q?34UqO+ezNjSHBE2025tJRgRtRvuydp/xZDIQSduqjZmersI7L0kvEi02z/RT?=
- =?us-ascii?Q?RVZlh5PfHqsu2C1O7mipQlwANaXMRG8LLqwWnEfVAJ3fOfHQ6qcQxXTiKetK?=
- =?us-ascii?Q?hZ9DvwrEUmQzyUyynDDaqaQ1sS8nYxklXGcCHK2LJqrLyVE3NjWcZlxOWPvf?=
- =?us-ascii?Q?dZACpI7icuVeUzthJphs1SonylpGaA+p/GWhJS+CdxSDxJYdUVlbI2Ko9zQp?=
- =?us-ascii?Q?NHOdJpZE05eyM5IBfJhYvNLZgj+Fprjeh/+FVDtYhPIgShV9SE+eaVU016aq?=
- =?us-ascii?Q?cPRS7CUw7p9FCECx9mtQ9kdJFuVm1tC65xWHCRwQXWvSTnq4g2DD+qLgbJa9?=
- =?us-ascii?Q?bsrwWNjmedjV96W8a5Z9GcZ9q8BDsCLE2npp7INEyGAY7/pXPdMbEALM4IR5?=
- =?us-ascii?Q?2cSdshSqqWbqBslBrn9aFtJ6JgMwI7uFqS7s6X21nyUkN0VIzElx6F1k9Eit?=
- =?us-ascii?Q?/lat1m5H2YZ8Ea/NI+Ex93ojSwgrn518cuWmjLRNHGs+Pz8BtfuILu3usu4O?=
- =?us-ascii?Q?5TnGROvwyAR+tznSnr3zEWT245tRdlk6rY8SDUI3yt+PJKbTgEwcyssn3ObJ?=
- =?us-ascii?Q?Q+gnKi76m7wywszQMjhFhqP2KATtFJIXhlwFvnLVYDwt4LhOmfm+6wL/BCGZ?=
- =?us-ascii?Q?MzUjt8GFGYDgCXYxEwlKmczaXMabshIjopgHz9jIjom+Sa/0P27jqieVUg4+?=
- =?us-ascii?Q?Q78qSMg2RMJxGHws2wyn6cw/CGVM4jkWngZFiqHRNvJYoP5wg8t9phHYtvqe?=
- =?us-ascii?Q?mpJQHfrBKGvN1euNxMxyS1ns?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d91a269-64dd-4bfe-b181-08d91f8f59a0
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 15:11:19.5885
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bwAMsVBOl1RsABrWREtnuIj5jgCEZEA3jdnb4UuKkQWnxy9soCHmC2cpjhByuN5h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5111
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:08:22AM -0400, Tony Krowiak wrote:
+Framebuffer devices that are registered by DRM drivers for fbdev emulation
+have a "drmfb" suffix in their name. But makes them to be quite confusing
+for drivers that already have "drm" in their name:
 
-> > Why can't you put the locks in the right order? It looked trivial, I'm confused.
-> 
-> Because the handle_pqap() function in priv.c does not have access to the
-> matrix_dev lock.
+$ cat /proc/fb
+0 rockchipdrmdrmfb
 
-Based on the sketch  made the handle_pqap() should only handle the
-arch.crypto.rwsem.
+$ cat /proc/fb
+0 simpledrmdrmfb
 
-When it calls the hook it gets the matrix dev
+Also, there isn't a lot of value in adding these "drmfb" suffices to their
+names, since users shouldn't really care if the FB devices were registered
+by a real fbdev driver or a DRM driver using the fbdev emulation.
 
-This sets the lock order as always: rwsem then matrix_dev
+What programs should be interested about is if there's a DRM device, and
+there are better ways to query that info than reading this procfs entry.
 
-Of the other two places:
+So let's just remove the suffix, which leads to much better device names:
 
-@@ -352,8 +352,7 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
-+       down_write(&&vcpu->kvm->arch.crypto.rwsem);
-        mutex_lock(&matrix_dev->lock);
+$ cat /proc/fb
+0 rockchipdrm
 
-Obviously correct
+$ cat /proc/fb
+0 simpledrm
 
-@@ -1202,7 +1203,9 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-                mutex_lock(&matrix_dev->lock);
-                vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-+               down_write(&matrix_mdev->kvm->arch.crypto.rwsem);
-                matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+               up_write(&matrix_mdev->kvm->arch.crypto.rwsem);
+Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-This is inverted
+Changes in v2:
+- Just remove the "drmfb" suffix instead of using a different one (tzimmermann).
 
-Just move the down_write up two lines
+ drivers/gpu/drm/drm_fb_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What is missing?
+diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+index f6baa204612..d77a24507d3 100644
+--- a/drivers/gpu/drm/drm_fb_helper.c
++++ b/drivers/gpu/drm/drm_fb_helper.c
+@@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info,
+ 			       sizes->fb_width, sizes->fb_height);
+ 
+ 	info->par = fb_helper;
+-	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
++	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
+ 		 fb_helper->dev->driver->name);
+ 
+ }
+-- 
+2.31.1
 
-Jason
