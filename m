@@ -2,175 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD86390A92
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43000390A9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhEYUhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:37:16 -0400
-Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:29569
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230218AbhEYUhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:37:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KLiHDWNGW0pi/YCnvNuR016rfDbM0RqrImfQQf51dN4YDkuJt6SIX1Wqp0+jAJS4REiSMNcYCpJAWuuu5ZLrKmIzhTXdLW2TiKgE6Lz3Mcbt1X7lZKlNfv8C129ciJipwWQ0dWgE1d8MHyNWCrmhuEYVWJc9q8F1KNUZY6Hseq55W2ZFsXuNzT/btqJAnpEzPjLq55UBaJtXuuSfQgH+4sTKD39FA4YJhViDxH+BL+pm9qvruC3wRCbuNZ/IhAw1dDfV5VLbDcMJQx3FR4SOlyK+WwnZMJqIPfnbYpBJuYD2L8vnIc/3RqZo73MEhKM65Fegu/lBfof70S6O/Krv6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MyIlcjAF/KXn1Ycw02DC6gRHVU1ZOTRceyRp5JVsuro=;
- b=FEthkEulsHPHvhHJk8CM1mCWkNYgvhTY0/tPeTnZMGwikW8rMK/JxHV33YL7KCyH0lcERwrBDEF640xWarFDpfnT49Fx+KNUXQGlnj2o9x1TcanNWivMlEq9oZC3dhvLGnMo0pSig7/HZw9STrd5CfRLywDcrcD08jJLQqSu4OGwddd3PxMrSpuKBUtUqENwerfuJeGLWAylkFIigBIkE2VxQ4h0hwvBP/3kjTZqB+AkYOpANp+eer97m79ds0j25mhxblOXSWe3BxYF3RszqGzX0Lkx0x6iXMqess/HAP+2JlqqoH8s/qzJdNJ2ghlAW2ONzGgA96RLAgamNwF2Mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MyIlcjAF/KXn1Ycw02DC6gRHVU1ZOTRceyRp5JVsuro=;
- b=QM0e88D+NDQkDyG1/BiDHV9o5IckCOUskYH+pbPOCcZ8mUHFRpXYSb4++MjCac2bpHaPkYEIBJK618QrMpMb574w7lEb1iBQM8FrLh2wtQmPfr/prY2Q32E/zvRDkG7ALWM50LoUN0chDC5smBBSFiWkyOmg3tqkvHVSqjoaABWsSH9JTZolvfReskoDJAo/2m/sPZoKgenpM5C0u5X9kDRf66hDYrEuYEjPnW8EyIq3ghvjWb9MJpXR5e+L6PU7vGdRxFydgMnzOOxc8saZRouO5Fq2AL07NAjEvP9pp3A9sZK6FsGroY8K2tmGm+a9jPlZloveudWB98BqANeR4g==
-Received: from BYAPR12MB3416.namprd12.prod.outlook.com (2603:10b6:a03:ac::10)
- by BY5PR12MB4068.namprd12.prod.outlook.com (2603:10b6:a03:203::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Tue, 25 May
- 2021 20:35:37 +0000
-Received: from BYAPR12MB3416.namprd12.prod.outlook.com
- ([fe80::e9aa:71fa:d0fd:1a7f]) by BYAPR12MB3416.namprd12.prod.outlook.com
- ([fe80::e9aa:71fa:d0fd:1a7f%6]) with mapi id 15.20.4150.027; Tue, 25 May 2021
- 20:35:37 +0000
-From:   Nitin Gupta <nigupta@nvidia.com>
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH V2] mm: compaction: support triggering of proactive
- compaction by user
-Thread-Topic: [PATCH V2] mm: compaction: support triggering of proactive
- compaction by user
-Thread-Index: AQHXS+sbP7JG2jAKA0uVYnCsOKlt46r0sTFQ
-Date:   Tue, 25 May 2021 20:35:37 +0000
-Message-ID: <BYAPR12MB3416727DB2BE2198C324124CD8259@BYAPR12MB3416.namprd12.prod.outlook.com>
-References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-In-Reply-To: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2459213f-bdf5-4a5a-4092-08d91fbca7a8
-x-ms-traffictypediagnostic: BY5PR12MB4068:
-x-microsoft-antispam-prvs: <BY5PR12MB40680456E9838C475C0EB911D8259@BY5PR12MB4068.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /0aVg1IJp1zk2Gq6JtKYra2JequUGu+n0k2guup25oCzA8D52ea/9htXXsVXcDfln2evlPdsWBT0xZXkaw73xCS6Df0iAf8o6pS1ZS60ATsRM0aTxU7C96NDdDt4bS+/8LLssZkysbnCpQKdKnKkrdsoBmWV+P667iXnNBphvsdnnsHO6rGS5QpWBmYyjMOqB4QChc8qk+k/Y5+UNz7XwAq1a6LIfRrnK8XZZfEFYkT1+0DmDw+71rrMU05TB3yesQQMalObRExGUV/xSTuPnJccoLmcoXzW24eDvsNAy5BsjxRVAH55ggUSNUuxgf8B3vheR+cWNYK/bJyYUHM5ubX7CJK610dXVtRLLSWOYwY6FVTEkpUdvihrQTcZOY+69ccaYksN2BF0k7qlOWckVPiyfAYy3QpBOk513g/im7EQQ4H/IYn8Cc8INMmAgi4aUwToW7aAF+pQkYzuT99vFGtrQFlIHeczF8NlQHgfgPCMP/ZW8mg6oZW2FqDteW18NKRdhbgJg8P5TWalUpD1uLcCLwaEsEgXKESmh0hrfttFtOE1TZtcUEXxs0ZDqNthc8JEg5reexQ1ewvS80O0uzcuH5Uigss7wxxnWysHIzeUhieJH5SmHdrCEcbtBM9V3a01Vdyd+hVaqjVfjp4kKA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3416.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(346002)(396003)(136003)(71200400001)(5660300002)(52536014)(33656002)(7696005)(83380400001)(478600001)(38100700002)(7416002)(76116006)(66476007)(186003)(9686003)(2906002)(66446008)(26005)(4326008)(86362001)(122000001)(66946007)(66556008)(6506007)(110136005)(64756008)(55016002)(54906003)(8676002)(8936002)(53546011)(316002)(921005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?H2Uko9VZluZDXbtj9xtJSXMnh1U1GA3NbZzGvZ+jz1pKxlY3D4sKqnbb2cyf?=
- =?us-ascii?Q?xavHHVm5tlEbsPCBXkr3i6cTBMamqST3RfvOSjBkLLjzMv7OEu92P+Msdysi?=
- =?us-ascii?Q?wwIpghmAVuMfBnIOPs3n0rGHZtu4G6P9BG4BokrtKpJVcYNLiSw0vKZyFkre?=
- =?us-ascii?Q?9v4oPOwkA6dEhA3K4gYPJJJwALtoHena9+8ZpoE90q20zoxNheZWV7tx+jrz?=
- =?us-ascii?Q?LzmRiTueFrWZrzKdmiz4QQT341xnrrPjYdals87Axx8GeDnbh42wG+Tk51TM?=
- =?us-ascii?Q?YXaKpzTUq/zfcs2P3Fex/CVhYVELGPFa6nTURI12IMhVZDYn0YRRwNYN3uxO?=
- =?us-ascii?Q?sKMuRs4w0r6aMbD/zi91eIIqPblRrPKQLu9at+/LK8Sj+jlmBGjkCm68iplk?=
- =?us-ascii?Q?wmjoknacE9dI5CUGEGyER+7GEegsGnNuuTFc9YWlSegffpE6DXKuCMnnKRW8?=
- =?us-ascii?Q?w8Lra57/bF1PLZtMecPJmEbdQ2rs6wXEZiUOoqCqSJ07ARUKImliDppNg8Sg?=
- =?us-ascii?Q?Q+OwIIWZBRh/JU5BY0jWbQewCCyXe+TR5obkuJUOdOgnIDYpqVoJGrANu0Uo?=
- =?us-ascii?Q?fyVtvuxo3FJ2m9OKyJnpirhFw6eqv6qDy+fKN19EJbyyfrO+rwDXu1Kx8Y+x?=
- =?us-ascii?Q?fE6GObeU6xvyKdyHd4V5kqf8L9AMk9zcpEdF1hePMiv6nxeSI5aEIkrEHGxd?=
- =?us-ascii?Q?5PcVDwF5lwGijUSTNF8k0chw+z4le22w4WC5AUHBzOXHlo8IPLet2+593B+k?=
- =?us-ascii?Q?fM4A8Jhnog0XukBNVvqYdv0/ZsUi7Ci5EKCtMC5YGgToffPpWuK5wWBQgvs4?=
- =?us-ascii?Q?JZjDQumTjgmiyBkcoIi3uAVCetqS0EpvXKG/NRAXyBdN33LzS11L8Lu5muw2?=
- =?us-ascii?Q?3Ct5PaWZG0SvfEZNRs/jLWyVX176ctcAii42+TVMNsV8J06cLdErKpm1cGh2?=
- =?us-ascii?Q?dGTtSKQcUcox/f2hvZbxrITshGhfh+GZSU16d7iJnBcWwZpheILvRnB/1+rT?=
- =?us-ascii?Q?Zx8GZXFPIjzt3OrlXeyDj90gRgQu27RD/thexoKGrA0KGWZT/hknOawgPaI6?=
- =?us-ascii?Q?WgpMc1c8ErYpy3fIhrb+sD/ao59faVeFju/Xcw8Vr61SP0fcMjliVD00rXJF?=
- =?us-ascii?Q?03s5hGA/Do+qTPLiKxGkpfiPWFesHygnnN5wJA+MvvRHN9Oy98buXFBYGSoQ?=
- =?us-ascii?Q?2ng/F02+ieBe8PVr73zFT/Le/FXSqVvni6yGMsG42qXqIGOdfnFlDWoeUeKO?=
- =?us-ascii?Q?nqJTSOijr3gangHnw0Zjk0BcTqoXRAlR7/vV7SP3+A3uyS7gIzW7yv40VZFd?=
- =?us-ascii?Q?JS4=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233356AbhEYUmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231826AbhEYUm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:42:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D0A610CE;
+        Tue, 25 May 2021 20:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621975259;
+        bh=lcx7k3RVs0NCfWu8vmFay20W2MTfz1Oofo22BYHYjeM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VgOhhaonzhHl6B2pw5HBrwQ3OtZqVOQaNBGkAB13xZj6jDgR6qya8wAZCoVoyFNps
+         S7wveqms2svXttOfYOkcYSwKyh6QxRu7VPAE2TfX8sQEEYsaNxBTKZXbo89S6eRN7/
+         5JicQ96xncnIhC8+sFIQ5Lz/jLvIvpxTKxm+BPhxZULc6cSopoecPjghKwZisMMUl3
+         G7jJV2D+cmi7BWKGGkYDKb/sVrVvAOaKijULsAQHCgJYIF+nxkq39l+YK15Xq23xwf
+         MPzEK9w61tgDiQx8LCT3BddZ1XplU6wyOLF9K0FPEw6Bjt9YNjav/IqTAoDlCj8NI1
+         nAKt+KQ54M2vA==
+Date:   Tue, 25 May 2021 15:40:57 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/4] PCI: brcmstb: Add panic/die handler to RC driver
+Message-ID: <20210525204057.GA1227343@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3416.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2459213f-bdf5-4a5a-4092-08d91fbca7a8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2021 20:35:37.4871
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /Ihzdb1WvtHS7N6oh5ASA+sVSPQ3M5gb1+HG9pOTI+KjIuDk++6MqePTd+PanKA7GjYgccqrghoXcFC99P0Xqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4068
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427175140.17800-4-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 27, 2021 at 01:51:38PM -0400, Jim Quinlan wrote:
+> Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
+> by default Broadcom's STB PCIe controller effects an abort.  This simple
+> handler determines if the PCIe controller was the cause of the abort and if
+> so, prints out diagnostic info.
+> 
+> Example output:
+>   brcm-pcie 8b20000.pcie: Error: Mem Acc: 32bit, Read, @0x38000000
+>   brcm-pcie 8b20000.pcie:  Type: TO=0 Abt=0 UnspReq=1 AccDsble=0 BadAddr=0
 
+What happens to the driver that performed the illegal access?
 
-> -----Original Message-----
-> From: charante=3Dcodeaurora.org@mg.codeaurora.org
-> <charante=3Dcodeaurora.org@mg.codeaurora.org> On Behalf Of Charan Teja
-> Reddy
-> Sent: Tuesday, May 18, 2021 6:38 AM
-> To: akpm@linux-foundation.org; mcgrof@kernel.org;
-> keescook@chromium.org; yzaikin@google.com; vbabka@suse.cz; Nitin
-> Gupta <nigupta@nvidia.com>; bhe@redhat.com;
-> mateusznosek0@gmail.com; sh_def@163.com; iamjoonsoo.kim@lge.com;
-> vinmenon@codeaurora.org
-> Cc: linux-kernel@vger.kernel.org; linux-mm@kvack.org; linux-
-> fsdevel@vger.kernel.org; Charan Teja Reddy <charante@codeaurora.org>
-> Subject: [PATCH V2] mm: compaction: support triggering of proactive
-> compaction by user
->=20
-> External email: Use caution opening links or attachments
->=20
->=20
-> The proactive compaction[1] gets triggered for every 500msec and run
-> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-> pages based on the value set to sysctl.compaction_proactiveness.
-> Triggering the compaction for every 500msec in search of
-> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
-> especially on the embedded system usecases which may have few MB's of
-> RAM. Enabling the proactive compaction in its state will endup in running
-> almost always on such systems.
->=20
+Does this mean that errors that are recoverable on other hardware (by
+noticing the 0xffffffff and checking for error) are fatal on the
+Broadcom STB?
 
-You can disable proactive compaction by setting sysctl.compaction_proactive=
-ness to 0.
-
-
-> Other side, proactive compaction can still be very much useful for gettin=
-g a
-> set of higher order pages in some controllable manner(controlled by using
-> the sysctl.compaction_proactiveness). Thus on systems where enabling the
-> proactive compaction always may proove not required, can trigger the same
-> from user space on write to its sysctl interface. As an example, say app
-> launcher decide to launch the memory heavy application which can be
-> launched fast if it gets more higher order pages thus launcher can prepar=
-e
-> the system in advance by triggering the proactive compaction from
-> userspace.
->=20
-
-You can always do: echo 1 > /proc/sys/vm/compact_memory
-On a small system, this should not take much time.
-
-Hijacking proactive compaction for one-off compaction (say, before a large =
-app launch)
-does not sound right to me.
-
-Thanks,
-Nitin
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 122 ++++++++++++++++++++++++++
+>  1 file changed, 122 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index 3b6a62dd2e72..d3af8d84f0d6 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -12,11 +12,13 @@
+>  #include <linux/ioport.h>
+>  #include <linux/irqchip/chained_irq.h>
+>  #include <linux/irqdomain.h>
+> +#include <linux/kdebug.h>
+>  #include <linux/kernel.h>
+>  #include <linux/list.h>
+>  #include <linux/log2.h>
+>  #include <linux/module.h>
+>  #include <linux/msi.h>
+> +#include <linux/notifier.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/of_pci.h>
+> @@ -184,6 +186,39 @@
+>  #define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
+>  #define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
+>  
+> +/* Error report regiseters */
+> +#define PCIE_OUTB_ERR_TREAT				0x6000
+> +#define  PCIE_OUTB_ERR_TREAT_CONFIG_MASK		0x1
+> +#define  PCIE_OUTB_ERR_TREAT_MEM_MASK			0x2
+> +#define PCIE_OUTB_ERR_VALID				0x6004
+> +#define PCIE_OUTB_ERR_CLEAR				0x6008
+> +#define PCIE_OUTB_ERR_ACC_INFO				0x600c
+> +#define  PCIE_OUTB_ERR_ACC_INFO_CFG_ERR_MASK		0x01
+> +#define  PCIE_OUTB_ERR_ACC_INFO_MEM_ERR_MASK		0x02
+> +#define  PCIE_OUTB_ERR_ACC_INFO_TYPE_64_MASK		0x04
+> +#define  PCIE_OUTB_ERR_ACC_INFO_DIR_WRITE_MASK		0x10
+> +#define  PCIE_OUTB_ERR_ACC_INFO_BYTE_LANES_MASK		0xff00
+> +#define PCIE_OUTB_ERR_ACC_ADDR				0x6010
+> +#define PCIE_OUTB_ERR_ACC_ADDR_BUS_MASK			0xff00000
+> +#define PCIE_OUTB_ERR_ACC_ADDR_DEV_MASK			0xf8000
+> +#define PCIE_OUTB_ERR_ACC_ADDR_FUNC_MASK		0x7000
+> +#define PCIE_OUTB_ERR_ACC_ADDR_REG_MASK			0xfff
+> +#define PCIE_OUTB_ERR_CFG_CAUSE				0x6014
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_TIMEOUT_MASK		0x40
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ABORT_MASK		0x20
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_UNSUPP_REQ_MASK	0x10
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_TIMEOUT_MASK	0x4
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_DISABLED_MASK	0x2
+> +#define  PCIE_OUTB_ERR_CFG_CAUSE_ACC_64BIT__MASK	0x1
+> +#define PCIE_OUTB_ERR_MEM_ADDR_LO			0x6018
+> +#define PCIE_OUTB_ERR_MEM_ADDR_HI			0x601c
+> +#define PCIE_OUTB_ERR_MEM_CAUSE				0x6020
+> +#define  PCIE_OUTB_ERR_MEM_CAUSE_TIMEOUT_MASK		0x40
+> +#define  PCIE_OUTB_ERR_MEM_CAUSE_ABORT_MASK		0x20
+> +#define  PCIE_OUTB_ERR_MEM_CAUSE_UNSUPP_REQ_MASK	0x10
+> +#define  PCIE_OUTB_ERR_MEM_CAUSE_ACC_DISABLED_MASK	0x2
+> +#define  PCIE_OUTB_ERR_MEM_CAUSE_BAD_ADDR_MASK		0x1
+> +
+>  /* Forward declarations */
+>  struct brcm_pcie;
+>  static inline void brcm_pcie_bridge_sw_init_set_7278(struct brcm_pcie *pcie, u32 val);
+> @@ -215,6 +250,7 @@ struct pcie_cfg_data {
+>  	const enum pcie_type type;
+>  	void (*perst_set)(struct brcm_pcie *pcie, u32 val);
+>  	void (*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+> +	const bool has_err_report;
+>  };
+>  
+>  static const int pcie_offsets[] = {
+> @@ -262,6 +298,7 @@ static const struct pcie_cfg_data bcm7216_cfg = {
+>  	.type		= BCM7278,
+>  	.perst_set	= brcm_pcie_perst_set_7278,
+>  	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_7278,
+> +	.has_err_report = true,
+>  };
+>  
+>  struct brcm_msi {
+> @@ -302,8 +339,87 @@ struct brcm_pcie {
+>  	u32			hw_rev;
+>  	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
+>  	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+> +	bool			has_err_report;
+> +	struct notifier_block	die_notifier;
+>  };
+>  
+> +/* Dump out PCIe errors on die or panic */
+> +static int dump_pcie_error(struct notifier_block *self, unsigned long v, void *p)
+> +{
+> +	const struct brcm_pcie *pcie = container_of(self, struct brcm_pcie, die_notifier);
+> +	void __iomem *base = pcie->base;
+> +	int i, is_cfg_err, is_mem_err, lanes;
+> +	char *width_str, *direction_str, lanes_str[9];
+> +	u32 info;
+> +
+> +	if (readl(base + PCIE_OUTB_ERR_VALID) == 0)
+> +		return NOTIFY_DONE;
+> +	info = readl(base + PCIE_OUTB_ERR_ACC_INFO);
+> +
+> +
+> +	is_cfg_err = !!(info & PCIE_OUTB_ERR_ACC_INFO_CFG_ERR_MASK);
+> +	is_mem_err = !!(info & PCIE_OUTB_ERR_ACC_INFO_MEM_ERR_MASK);
+> +	width_str = (info & PCIE_OUTB_ERR_ACC_INFO_TYPE_64_MASK) ? "64bit" : "32bit";
+> +	direction_str = (info & PCIE_OUTB_ERR_ACC_INFO_DIR_WRITE_MASK) ? "Write" : "Read";
+> +	lanes = FIELD_GET(PCIE_OUTB_ERR_ACC_INFO_BYTE_LANES_MASK, info);
+> +	for (i = 0, lanes_str[8] = 0; i < 8; i++)
+> +		lanes_str[i] = (lanes & (1 << i)) ? '1' : '0';
+> +
+> +	if (is_cfg_err) {
+> +		u32 cfg_addr = readl(base + PCIE_OUTB_ERR_ACC_ADDR);
+> +		u32 cause = readl(base + PCIE_OUTB_ERR_CFG_CAUSE);
+> +		int bus = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_BUS_MASK, cfg_addr);
+> +		int dev = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_DEV_MASK, cfg_addr);
+> +		int func = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_FUNC_MASK, cfg_addr);
+> +		int reg = FIELD_GET(PCIE_OUTB_ERR_ACC_ADDR_REG_MASK, cfg_addr);
+> +
+> +		dev_err(pcie->dev, "Error: CFG Acc, %s, %s, Bus=%d, Dev=%d, Fun=%d, Reg=0x%x, lanes=%s\n",
+> +			width_str, direction_str, bus, dev, func, reg, lanes_str);
+> +		dev_err(pcie->dev, " Type: TO=%d Abt=%d UnsupReq=%d AccTO=%d AccDsbld=%d Acc64bit=%d\n",
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_TIMEOUT_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ABORT_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_UNSUPP_REQ_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_TIMEOUT_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_DISABLED_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_CFG_CAUSE_ACC_64BIT__MASK));
+> +	}
+> +
+> +	if (is_mem_err) {
+> +		u32 cause = readl(base + PCIE_OUTB_ERR_MEM_CAUSE);
+> +		u32 lo = readl(base + PCIE_OUTB_ERR_MEM_ADDR_LO);
+> +		u32 hi = readl(base + PCIE_OUTB_ERR_MEM_ADDR_HI);
+> +		u64 addr = ((u64)hi << 32) | (u64)lo;
+> +
+> +		dev_err(pcie->dev, "Error: Mem Acc, %s, %s, @0x%llx, lanes=%s\n",
+> +			width_str, direction_str, addr, lanes_str);
+> +		dev_err(pcie->dev, " Type: TO=%d Abt=%d UnsupReq=%d AccDsble=%d BadAddr=%d\n",
+> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_TIMEOUT_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_ABORT_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_UNSUPP_REQ_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_ACC_DISABLED_MASK),
+> +			!!(cause & PCIE_OUTB_ERR_MEM_CAUSE_BAD_ADDR_MASK));
+> +	}
+> +
+> +	/* Clear the error */
+> +	writel(1, base + PCIE_OUTB_ERR_CLEAR);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static void brcm_register_die_notifiers(struct brcm_pcie *pcie)
+> +{
+> +	pcie->die_notifier.notifier_call = dump_pcie_error;
+> +	register_die_notifier(&pcie->die_notifier);
+> +	atomic_notifier_chain_register(&panic_notifier_list, &pcie->die_notifier);
+> +}
+> +
+> +static void brcm_unregister_die_notifiers(struct brcm_pcie *pcie)
+> +{
+> +	unregister_die_notifier(&pcie->die_notifier);
+> +	atomic_notifier_chain_unregister(&panic_notifier_list, &pcie->die_notifier);
+> +	pcie->die_notifier.notifier_call = NULL;
+> +}
+> +
+>  /*
+>   * This is to convert the size of the inbound "BAR" region to the
+>   * non-linear values of PCIE_X_MISC_RC_BAR[123]_CONFIG_LO.SIZE
+> @@ -1216,6 +1332,8 @@ static int brcm_pcie_remove(struct platform_device *pdev)
+>  	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
+>  
+>  	pci_stop_root_bus(bridge->bus);
+> +	if (pcie->has_err_report)
+> +		brcm_unregister_die_notifiers(pcie);
+>  	pci_remove_root_bus(bridge->bus);
+>  	__brcm_pcie_remove(pcie);
+>  
+> @@ -1255,6 +1373,7 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  	pcie->np = np;
+>  	pcie->reg_offsets = data->offsets;
+>  	pcie->type = data->type;
+> +	pcie->has_err_report = data->has_err_report;
+>  	pcie->perst_set = data->perst_set;
+>  	pcie->bridge_sw_init_set = data->bridge_sw_init_set;
+>  
+> @@ -1322,6 +1441,9 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, pcie);
+>  
+> +	if (pcie->has_err_report)
+> +		brcm_register_die_notifiers(pcie);
+> +
+>  	return pci_host_probe(bridge);
+>  fail:
+>  	__brcm_pcie_remove(pcie);
+> -- 
+> 2.17.1
+> 
