@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35063906B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E9E3906BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhEYQcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S233245AbhEYQgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhEYQb6 (ORCPT
+        with ESMTP id S231235AbhEYQgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:31:58 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88540C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:30:28 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so6941622wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:30:28 -0700 (PDT)
+        Tue, 25 May 2021 12:36:09 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FACFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:34:39 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so12319371pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9nwt4Wpg0hmZ7kHGH/PciQ0lTJpG5RlqOKYlvkngWns=;
-        b=V68yr1iVeGoSNSNnL4Tn+Pmqt8s71eX0caRne/9WoExjiHXAoGj69icDo54SlgjsI8
-         nbt67XcFHWApel03RicpB5v/RqxlNyR4Orl+qvrLwHIAw7PoZzYB1l0zoE8861TxONAM
-         AC6iItHOSzFS3KCJt6J2PmnMrTI0RKHBY+PfcXWUKGxgrQvDjS6nGVDJ+FKSnoCiQcfc
-         cUOnBg6+ekCKLDSw1Acc3SUjs0CtH6ZRWSj0jMncgSNq0ddyomy7H42cj0EMl5wvLkiX
-         9SnHoD674p2cGMkN+DhxdK6f/VsGX2jlwbNjsoZ84lqgt/jyyLH65f1Fi11a3iKNkL0O
-         ZPWA==
+         :content-disposition:in-reply-to;
+        bh=dXoi1LYFfpdbKWHNrkGgXE8yw6j2AtvMSaL5M8EYa9I=;
+        b=ODZN+ptaC53QKg9tJEuMjkU3m5Yx14qJPW5cYXiVRcY8+hX/rwhVtCsH+c63nNBFS9
+         AtZ/xK5eopky4Yx7CM092gDOdFWH7gCsKLsYCj29/GTXKzklI5saaEXu5PxdW/UrkIU/
+         UfhIlam+PSaIBYZrmTQYnV55nlmHUpwMSsTmI3okckkiL+tzVbqlWsuT/08RJ7cYAFN9
+         rkxm0UDy/Ie/Flsm+v76JpOA8Oh+ozNH3dhH3hiSluAbK+riAo2EQX0EICSoZTLPF9iQ
+         wxsFhNsIKFmctQn7DdM9DyqUizZiMV2pYq1EIP0TcztGQlQLXBWD22F7pdybFjh10o7q
+         9j6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9nwt4Wpg0hmZ7kHGH/PciQ0lTJpG5RlqOKYlvkngWns=;
-        b=JTNBCbPdEtccESTX0VcqP46T2VYPGNWCO8VfVNxcL6RHUeIIb+Ld8b6lUSLEAoAW4M
-         1jTO1c39m3AFtKAy0QDxpLNLk0Y/QBerrHi+wDeb7783NLVI9Wk6yxE9Tbr09rtgczhi
-         hGmkQvQ2P03jahXR9lGTYbAn21yWw4lAPbxJxMBgEnLGzwWxAvXncldlFBmrt7JKRxc/
-         reZSv97500snl9Iflg2Fs/bB0hdWxMEswpWj2lo2ELchMT/PXeg/ySeEvWgthgQcEFDU
-         VWE23h/yZd2IUQvW/JZtHqTB9RevcJgjBIylx9KtybV5lwmCDiMAxnj0AMoRsUDk1i+J
-         R0Pg==
-X-Gm-Message-State: AOAM531FE++wumfQRHa/DUAUdDAMuLg8SIooIriaBXilYehM3zH+UQg0
-        3xKR22PPxLcHWCuMjvaI+Yi8qtY4lVAdOg==
-X-Google-Smtp-Source: ABdhPJzZ0krWACNsjmS0+Hh2AvTmE8Bxm17Apsd2RbWDZmmWCCvsFgApYmgEVO2+2WxZdzlYFJzrtQ==
-X-Received: by 2002:a05:600c:4e8e:: with SMTP id f14mr4686030wmq.65.1621960227081;
-        Tue, 25 May 2021 09:30:27 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id e8sm16622464wrt.30.2021.05.25.09.30.26
+         :mime-version:content-disposition:in-reply-to;
+        bh=dXoi1LYFfpdbKWHNrkGgXE8yw6j2AtvMSaL5M8EYa9I=;
+        b=DDWR6XubHNOakhK8BtGF8qfI3+UYiQ5904SCWaXrqpSQdJqhrsgqv+NSM7RoU1O04k
+         VcDB0WjNslJQNSnSQxSXVt+uhh2MomFj5SjlmXK11TpDMIhjcDr2eidibR1SGQ0hZjnV
+         fTMAllJI+2CHcQFoJh2J/WtCMFsvN3mHhk6csJERW1AX7ZeQSE4TLfMvfqTqfMUjFk92
+         fFRWZ+sd8LmH9bgXHc8nDGzWdwVAWTZsThSQki5MBWiQA2c9YEv1GjMA8OksO74TTHnv
+         hKxLkKdO2Y3Xb8vEmDlI+pPTmUhVjrmntbRQK7nBpW55lh3OD1lVrR0NBE9ssM6fUJGn
+         YJNA==
+X-Gm-Message-State: AOAM533z+l+Ubc09kFPz80ajq5mnIS7qMwkPy3ASlL3IhBPMlbDVEdir
+        aPXRDzSorK38bUY5iDXtFqmo+w==
+X-Google-Smtp-Source: ABdhPJzEA1uqEwImTdL1LFcJBjNgn+HaTWAVrJOuGRaq71ZArHvalHJi9+QWbOpqw8wQJU6ukS046w==
+X-Received: by 2002:a17:90a:7a89:: with SMTP id q9mr5628234pjf.0.1621960478568;
+        Tue, 25 May 2021 09:34:38 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s184sm14527003pgc.29.2021.05.25.09.34.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 09:30:26 -0700 (PDT)
-Date:   Tue, 25 May 2021 17:30:24 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
- as a module
-Message-ID: <20210525163024.GD4005783@dell>
-References: <20201020072532.949137-1-narmstrong@baylibre.com>
- <20201020072532.949137-2-narmstrong@baylibre.com>
- <7hsga8kb8z.fsf@baylibre.com>
- <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org>
- <7hsg2au6sv.fsf@baylibre.com>
+        Tue, 25 May 2021 09:34:37 -0700 (PDT)
+Date:   Tue, 25 May 2021 16:34:34 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Stamatis, Ilias" <ilstam@amazon.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Subject: Re: [PATCH v3 09/12] KVM: VMX: Remove vmx->current_tsc_ratio and
+ decache_tsc_multiplier()
+Message-ID: <YK0nGozm4PRPv6D7@google.com>
+References: <20210521102449.21505-1-ilstam@amazon.com>
+ <20210521102449.21505-10-ilstam@amazon.com>
+ <2b3bc8aff14a09c4ea4a1b648f750b5ffb1a15a0.camel@redhat.com>
+ <YKv0KA+wJNCbfc/M@google.com>
+ <8a13dedc5bc118072d1e79d8af13b5026de736b3.camel@amazon.com>
+ <YK0emU2NjWZWBovh@google.com>
+ <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7hsg2au6sv.fsf@baylibre.com>
+In-Reply-To: <0220f903-2915-f072-b1da-0b58fc07f416@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Kevin Hilman wrote:
-
-> Marc Zyngier <maz@kernel.org> writes:
+On Tue, May 25, 2021, Paolo Bonzini wrote:
+> On 25/05/21 17:58, Sean Christopherson wrote:
+> > > The right place for the hw multiplier
+> > > field to be updated is inside set_tsc_khz() in common code when the ratio
+> > > changes.
 > 
-> > On Fri, 21 May 2021 10:47:48 +0100,
-> > Lee Jones <lee.jones@linaro.org> wrote:
-> >> 
-> >> [1  <text/plain; UTF-8 (quoted-printable)>]
-> >> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
-> >> 
-> >> > Neil Armstrong <narmstrong@baylibre.com> writes:
-> >> >
-> >> > > In order to reduce the kernel Image size on multi-platform distributions,
-> >> > > make it possible to build the Amlogic GPIO IRQ controller as a module
-> >> > > by switching it to a platform driver.
-> >> > >
-> >> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> >> >
-> >> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> >> > Tested-by: Kevin Hilman <khilman@baylibre.com>
-> >> >
-> >> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
-> >> > uses GPIO IRQs.
-> >> >
-> >> 
-> >> Good morning Neil, Kevin,
-> >> 
-> >> What happened to this set in the end?  I still don't see it in Mainline.
-> >
-> > Last time I tried this patch, it broke my test setup in non-obvious
-> > ways. Has someone checked that the issue I reported back then has been
-> > resolved now that fw_devlink is more usable?
+> Sort of, the problem is that you have two VMCS's to update.  If properly
+> fixed, the cache is useful to fix the issue with KVM_SET_TSC_KHZ needing to
+> update both of them.  For that to work, you'd have to move the cache to
+> struct loaded_vmcs.
+
+vmcs01 and vmcs02 will get updated at enter/exit, if there's no caching then
+it all Just Works.
+
+> So you can:
 > 
-> Not yet, that's (still) on my TODO list... (well, TBH, I forgot about
-> it, but I'll have another look.)
+> 1) move the cached tsc_ratio to struct loaded_vmcs
+> 
+> 2) add a function in common code (update_tsc_parameters or something like
+> that) to update both the offset and the ratio depending on is_guest_mode()
+> 
+> 3) call that function from nested vmentry/vmexit
+> 
+> And at that point the cache will do its job and figure out whether a vmwrite
+> is needed, on both vmentry and vmexit.
+> 
+> I actually like the idea of storing the expected value in kvm_vcpu and the
+> current value in loaded_vmcs.  We might use it for other things such as
+> reload_vmcs01_apic_access_page perhaps.
 
-Superstar!  Thanks Kevin.
+I'm not necessarily opposed to aggressively shadowing the VMCS, but if we go
+that route then it should be a standalone series that implements a framework
+that can be easily extended to arbitrary fields.  Adding fields to loaded_vmcs
+one at a time will be tedious and error prone.  E.g. what makes TSC_MULTIPLIER
+more special than TSC_OFFSET, GUEST_IA32_PAT, GUEST_IA32_DEBUGCTL, GUEST_BNDCFGS,
+and other number of fields that are likely to persist for a given vmcs02?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+The current caching logic is just plain ugly and should not exist.
