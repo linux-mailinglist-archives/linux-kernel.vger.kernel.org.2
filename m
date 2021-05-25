@@ -2,165 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2E8390615
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8F6390614
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhEYQCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:02:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1839 "EHLO mga03.intel.com"
+        id S233329AbhEYQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:02:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44222 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhEYQCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:02:41 -0400
-IronPort-SDR: cgX0EZ4QbWl2zLWkQLjAVaISdoahNOw8saJY9CTTPmU9KaYz/O/3ChG2qexh2Cmlne1xi5hnUH
- 6dRDdFTYTg6A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202265988"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="202265988"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:01:02 -0700
-IronPort-SDR: WLODMvOLqtpOE75Dwul1gst6vp9VgMAyE0Ryu4KH240t7tWH1ds66WPgPi749vDn1PqVVgYH2Z
- 7sqRdtFYznBA==
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="546829469"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 09:00:59 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1llZUF-00EcKd-0G; Tue, 25 May 2021 19:00:55 +0300
-Date:   Tue, 25 May 2021 19:00:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, andy@kernel.org,
-        akpm@linux-foundation.org, oskar@scara.com,
-        Daniel Latypov <dlatypov@google.com>
-Subject: Re: [PATCH v2 2/2] lib/math/rational: Add Kunit test cases
-Message-ID: <YK0fNuZFGpCQw3Sd@smile.fi.intel.com>
-References: <20210525144250.214670-1-tpiepho@gmail.com>
- <20210525144250.214670-2-tpiepho@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210525144250.214670-2-tpiepho@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S233057AbhEYQCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 12:02:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621958477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnQk2EnrULXDbLlOknbDCceBI4BQxTF+S6KqI6l9suw=;
+        b=ZKZRyalGloOyEqEutXS38VwiM65DSjWuu/yP8sylQ3T4wMy8KTFw21+l40cpDzhX7HU8K3
+        b+zQFGPiwNT/e8y2AKdvr3abYEV1xEx1IgjGrMr4jElYd/9ScsWYqn2bLqdgJFnvSPfiFI
+        VShWwhBy6yFdKCN4D5l/OIE3bAYrxgw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621958477;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnQk2EnrULXDbLlOknbDCceBI4BQxTF+S6KqI6l9suw=;
+        b=F0HaFIzq5DbMWZQEvbmayEfBjpqkUcyol2Rzlyjy3tWBLiIP6xnVi6o1rUJCW6cd/cGbLo
+        vbqz0pqjxZB89WCw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7C60AE5C;
+        Tue, 25 May 2021 16:01:16 +0000 (UTC)
+Date:   Tue, 25 May 2021 18:01:16 +0200
+Message-ID: <s5hmtsiby5v.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 02/12] ALSA: iec958: Split status creation and fill
+In-Reply-To: <20210525132354.297468-3-maxime@cerno.tech>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+        <20210525132354.297468-3-maxime@cerno.tech>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 07:42:50AM -0700, Trent Piepho wrote:
-> Adds a number of test cases that cover a range of possible code paths.
+On Tue, 25 May 2021 15:23:44 +0200,
+Maxime Ripard wrote:
+> 
+> In some situations, like a codec probe, we need to provide an IEC status
+> default but don't have access to the sampling rate and width yet since
+> no stream has been configured yet.
+> 
+> Each and every driver has its own default, whereas the core iec958 code
+> also has some buried in the snd_pcm_create_iec958_consumer functions.
+> 
+> Let's split these functions in two to provide a default that doesn't
+> rely on the sampling rate and width, and another function to fill them
+> when available.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Good for the starter!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-> Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+
+thanks,
+
+Takashi
+
 > ---
->  lib/Kconfig.debug        | 12 +++++++++
->  lib/math/Makefile        |  1 +
->  lib/math/rational-test.c | 56 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 69 insertions(+)
->  create mode 100644 lib/math/rational-test.c
+>  include/sound/pcm_iec958.h |   8 ++
+>  sound/core/pcm_iec958.c    | 176 ++++++++++++++++++++++++++++---------
+>  2 files changed, 141 insertions(+), 43 deletions(-)
 > 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c13967580..6c0e66a7d416 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2429,6 +2429,18 @@ config BITS_TEST
+> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+> index 0939aa45e2fe..64e84441cde1 100644
+> --- a/include/sound/pcm_iec958.h
+> +++ b/include/sound/pcm_iec958.h
+> @@ -4,6 +4,14 @@
 >  
->  	  If unsure, say N.
+>  #include <linux/types.h>
 >  
-> +config RATIONAL_KUNIT_TEST
-> +	tristate "KUnit test for rational.c" if !KUNIT_ALL_TESTS
-> +	depends on KUNIT
-> +	select RATIONAL
-> +	default KUNIT_ALL_TESTS
-> +	help
-> +	  This builds the rational math unit test.
-> +	  For more information on KUnit and unit tests in general please refer
-> +	  to the KUnit documentation in Documentation/dev-tools/kunit/.
+> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len);
 > +
-> +	  If unsure, say N.
+> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +				 size_t len);
 > +
->  config TEST_UDELAY
->  	tristate "udelay test driver"
->  	help
-> diff --git a/lib/math/Makefile b/lib/math/Makefile
-> index 7456edb864fc..bfac26ddfc22 100644
-> --- a/lib/math/Makefile
-> +++ b/lib/math/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
->  obj-$(CONFIG_RATIONAL)		+= rational.o
+> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+> +					   u8 *cs, size_t len);
+> +
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	size_t len);
 >  
->  obj-$(CONFIG_TEST_DIV64)	+= test_div64.o
-> +obj-$(CONFIG_RATIONAL_KUNIT_TEST) += rational-test.o
-> diff --git a/lib/math/rational-test.c b/lib/math/rational-test.c
-> new file mode 100644
-> index 000000000000..f64166dbe9ea
-> --- /dev/null
-> +++ b/lib/math/rational-test.c
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+> index f9a211cc1f2c..7a1b816f67cc 100644
+> --- a/sound/core/pcm_iec958.c
+> +++ b/sound/core/pcm_iec958.c
+> @@ -9,41 +9,85 @@
+>  #include <sound/pcm_params.h>
+>  #include <sound/pcm_iec958.h>
+>  
+> -static int create_iec958_consumer(uint rate, uint sample_width,
+> -				  u8 *cs, size_t len)
+> +/**
+> + * snd_pcm_create_iec958_consumer_default - create default consumer format IEC958 channel status
+> + * @cs: channel status buffer, at least four bytes
+> + * @len: length of channel status buffer
+> + *
+> + * Create the consumer format channel status data in @cs of maximum size
+> + * @len. When relevant, the configuration-dependant bits will be set as
+> + * unspecified.
+> + *
+> + * Drivers should then call einter snd_pcm_fill_iec958_consumer() or
+> + * snd_pcm_fill_iec958_consumer_hw_params() to replace these unspecified
+> + * bits by their actual values.
+> + *
+> + * Drivers may wish to tweak the contents of the buffer after creation.
+> + *
+> + * Returns: length of buffer, or negative error code if something failed.
+> + */
+> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len)
+>  {
+> -	unsigned int fs, ws;
+> -
+>  	if (len < 4)
+>  		return -EINVAL;
+>  
+> -	switch (rate) {
+> -	case 32000:
+> -		fs = IEC958_AES3_CON_FS_32000;
+> -		break;
+> -	case 44100:
+> -		fs = IEC958_AES3_CON_FS_44100;
+> -		break;
+> -	case 48000:
+> -		fs = IEC958_AES3_CON_FS_48000;
+> -		break;
+> -	case 88200:
+> -		fs = IEC958_AES3_CON_FS_88200;
+> -		break;
+> -	case 96000:
+> -		fs = IEC958_AES3_CON_FS_96000;
+> -		break;
+> -	case 176400:
+> -		fs = IEC958_AES3_CON_FS_176400;
+> -		break;
+> -	case 192000:
+> -		fs = IEC958_AES3_CON_FS_192000;
+> -		break;
+> -	default:
+> +	memset(cs, 0, len);
 > +
-> +#include <kunit/test.h>
+> +	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
+> +	cs[1] = IEC958_AES1_CON_GENERAL;
+> +	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
+> +	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | IEC958_AES3_CON_FS_NOTID;
 > +
-> +#include <linux/rational.h>
+> +	if (len > 4)
+> +		cs[4] = IEC958_AES4_CON_WORDLEN_NOTID;
 > +
-> +struct rational_test_param {
-> +	unsigned long num, den;
-> +	unsigned long max_num, max_den;
-> +	unsigned long exp_num, exp_den;
-> +
-> +	const char *name;
-> +};
-> +
-> +static const struct rational_test_param test_parameters[] = {
-> +	{ 1230,	10,	100, 20,	100, 1,    "Exceeds bounds, semi-convergent term > ½ last term" },
-> +	{ 34567,100, 	120, 20,	120, 1,    "Exceeds bounds, semi-convergent term < ½ last term" },
-> +	{ 1, 30,	100, 10,	0, 1,	   "Closest to zero" },
-> +	{ 1, 19,	100, 10,	1, 10,     "Closest to smallest non-zero" },
-> +	{ 27,32,	16, 16,		11, 13,    "Use convergent" },
-> +	{ 1155, 7735,	255, 255,	33, 221,   "Exact answer" },
-> +	{ 87, 32,	70, 32,		68, 25,    "Semiconvergent, numerator limit" },
-> +	{ 14533, 4626,	15000, 2400,	7433, 2366, "Semiconvergent, demominator limit" },
-> +};
-> +
-> +static void get_desc(const struct rational_test_param *param, char *desc)
-> +{
-> +	strscpy(desc, param->name, KUNIT_PARAM_DESC_SIZE);
+> +	return len;
 > +}
+> +EXPORT_SYMBOL_GPL(snd_pcm_create_iec958_consumer_default);
 > +
-> +/* Creates function rational_gen_params */
-> +KUNIT_ARRAY_PARAM(rational, test_parameters, get_desc);
-> +
-> +static void rational_test(struct kunit *test)
+> +static int fill_iec958_consumer(uint rate, uint sample_width,
+> +				u8 *cs, size_t len)
 > +{
-> +	const struct rational_test_param *param = (const struct rational_test_param *)test->param_value;
-> +	unsigned long n = 0, d = 0;
+> +	if (len < 4)
+>  		return -EINVAL;
 > +
-> +	rational_best_approximation(param->num, param->den, param->max_num, param->max_den, &n, &d);
-> +	KUNIT_EXPECT_EQ(test, n, param->exp_num);
-> +	KUNIT_EXPECT_EQ(test, d, param->exp_den);
+> +	if ((cs[3] & IEC958_AES3_CON_FS) == IEC958_AES3_CON_FS_NOTID) {
+> +		unsigned int fs;
+> +
+> +		switch (rate) {
+> +			case 32000:
+> +				fs = IEC958_AES3_CON_FS_32000;
+> +				break;
+> +			case 44100:
+> +				fs = IEC958_AES3_CON_FS_44100;
+> +				break;
+> +			case 48000:
+> +				fs = IEC958_AES3_CON_FS_48000;
+> +				break;
+> +			case 88200:
+> +				fs = IEC958_AES3_CON_FS_88200;
+> +				break;
+> +			case 96000:
+> +				fs = IEC958_AES3_CON_FS_96000;
+> +				break;
+> +			case 176400:
+> +				fs = IEC958_AES3_CON_FS_176400;
+> +				break;
+> +			case 192000:
+> +				fs = IEC958_AES3_CON_FS_192000;
+> +				break;
+> +			default:
+> +				return -EINVAL;
+> +		}
+> +
+> +		cs[3] &= ~IEC958_AES3_CON_FS;
+> +		cs[3] |= fs;
+>  	}
+>  
+> -	if (len > 4) {
+> +	if (len > 4 &&
+> +	    (cs[4] & IEC958_AES4_CON_WORDLEN) == IEC958_AES4_CON_WORDLEN_NOTID) {
+> +		unsigned int ws;
+> +
+>  		switch (sample_width) {
+>  		case 16:
+>  			ws = IEC958_AES4_CON_WORDLEN_20_16;
+> @@ -64,21 +108,58 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+>  		default:
+>  			return -EINVAL;
+>  		}
+> +
+> +		cs[4] &= ~IEC958_AES4_CON_WORDLEN;
+> +		cs[4] |= ws;
+>  	}
+>  
+> -	memset(cs, 0, len);
+> -
+> -	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
+> -	cs[1] = IEC958_AES1_CON_GENERAL;
+> -	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
+> -	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
+> -
+> -	if (len > 4)
+> -		cs[4] = ws;
+> -
+>  	return len;
+>  }
+>  
+> +/**
+> + * snd_pcm_fill_iec958_consumer - Fill consumer format IEC958 channel status
+> + * @runtime: pcm runtime structure with ->rate filled in
+> + * @cs: channel status buffer, at least four bytes
+> + * @len: length of channel status buffer
+> + *
+> + * Fill the unspecified bits in an IEC958 status bits array using the
+> + * parameters of the PCM runtime @runtime.
+> + *
+> + * Drivers may wish to tweak the contents of the buffer after its been
+> + * filled.
+> + *
+> + * Returns: length of buffer, or negative error code if something failed.
+> + */
+> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime,
+> +				 u8 *cs, size_t len)
+> +{
+> +	return fill_iec958_consumer(runtime->rate,
+> +				    snd_pcm_format_width(runtime->format),
+> +				    cs, len);
 > +}
+> +EXPORT_SYMBOL_GPL(snd_pcm_fill_iec958_consumer);
 > +
-> +static struct kunit_case rational_test_cases[] = {
-> +       KUNIT_CASE_PARAM(rational_test, rational_gen_params),
-> +       {}
-> +};
+> +/**
+> + * snd_pcm_fill_iec958_consumer_hw_params - Fill consumer format IEC958 channel status
+> + * @params: the hw_params instance for extracting rate and sample format
+> + * @cs: channel status buffer, at least four bytes
+> + * @len: length of channel status buffer
+> + *
+> + * Fill the unspecified bits in an IEC958 status bits array using the
+> + * parameters of the PCM hardware parameters @params.
+> + *
+> + * Drivers may wish to tweak the contents of the buffer after its been
+> + * filled..
+> + *
+> + * Returns: length of buffer, or negative error code if something failed.
+> + */
+> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+> +					   u8 *cs, size_t len)
+> +{
+> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_pcm_fill_iec958_consumer_hw_params);
 > +
-> +static struct kunit_suite rational_test_suite = {
-> +       .name = "rational",
-> +       .test_cases = rational_test_cases,
-> +};
+>  /**
+>   * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+>   * @runtime: pcm runtime structure with ->rate filled in
+> @@ -95,9 +176,13 @@ static int create_iec958_consumer(uint rate, uint sample_width,
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	size_t len)
+>  {
+> -	return create_iec958_consumer(runtime->rate,
+> -				      snd_pcm_format_width(runtime->format),
+> -				      cs, len);
+> +	int ret;
 > +
-> +kunit_test_suites(&rational_test_suite);
+> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
+> +	if (ret < 0)
+> +		return ret;
 > +
-> +MODULE_LICENSE("GPL v2");
+> +	return snd_pcm_fill_iec958_consumer(runtime, cs, len);
+>  }
+>  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+>  
+> @@ -117,7 +202,12 @@ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+>  int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+>  					     u8 *cs, size_t len)
+>  {
+> -	return create_iec958_consumer(params_rate(params), params_width(params),
+> -				      cs, len);
+> +	int ret;
+> +
+> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
+>  }
+>  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
 > -- 
-> 2.26.2
+> 2.31.1
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
