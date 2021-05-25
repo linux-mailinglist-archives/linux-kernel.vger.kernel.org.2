@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF15390BE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A0B390BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 00:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhEYWDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 18:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
+        id S232063AbhEYWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 18:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhEYWDv (ORCPT
+        with ESMTP id S231157AbhEYWFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 18:03:51 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E75C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:02:20 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id y14so31675293wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:02:20 -0700 (PDT)
+        Tue, 25 May 2021 18:05:01 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3717AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:03:31 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id j30so29585593ila.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 15:03:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/0ItfAMtkVpU9nBcbKoe9t7bf7Srx4FJQesKUZK3OuU=;
-        b=Eag5tZkHiIuZWvleiEbEB7gObqHQVUkDu42pDkcxOJV2l3f6H6Hh62VD3HIgEOaOsX
-         hyCl2WGaHpyt1gplu794yP8n+OUoT/7NqIp8plP+BIuFKMdfmiKpF3zLjx6DepbbCdlz
-         Dr210IGMAtSPBIj6tbVNk+7oS0SoouY1Q/WeKBcpjOsxaouyzPXYhN3mHjoQAE6pdH2B
-         AR+XPpwMPNu3cHIa5pveszDWZP1N8xjt0tiFmv0NtUUa1oAM8k7LKkGVdYZXTywE0NgY
-         zmwynOl3dcz5Y4d0wh3woDqvlpdbqSuotJvYaHjEC0XJllDw0/3tlqusfHjjTeaG2k0W
-         /4FQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9r5LQNRHZJ9OLYfdLSCyczxeiXiKMnpVrYtJQiiVJCs=;
+        b=LduDF+layyUZoy+t/xHpySrPA946f8tlsvCUNBhHlKlFSZPRn3TZ68KJv2pD05poTW
+         YqwlBohuEnym5uafG79D05Qa+rf4Q3G+L6lpVVUUG5HyABZOkfrjhcdli6Qf8NeWpv5i
+         lYcf+NvDhT8VjO0qGfN7KK00Vq9W6qjIwxcX4j0LVR/SlslQQCOpS4wqSCf/dGPEDQL4
+         UNMV0Gcnf85hXd3XyWrf9PcQKZs6+N3Z0oZnxu4aiOclZSWDimkIByASgUbL9lctwa9j
+         IG4Cb2+O0x6DSV3DaSHPX624xDwA9mPkTr3ub95g9j3ovItAW3CEGlRlTd9s68GO6bJt
+         1FbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/0ItfAMtkVpU9nBcbKoe9t7bf7Srx4FJQesKUZK3OuU=;
-        b=n6SqbEXecj3mRsZ21x9aDKv466a0mSMH4cd/Zp+cuuxEWb76wzXx9QPkl53yI2GkV7
-         G9j+f/xXr24UofKznWGmh1jSzSV1HOkd3HP7BgIZKM5hMyF5vsB7gIFXyyUguqwGLdFs
-         HGoKbAQOkL5qRiUjoIA1PJoCfxxq8bL8O2vRuMJI7CVl77UKx4P82jOh8xKKcZwZilAA
-         pG835V5YjkzM1q5EJrvqDiY+k4kp04KVy8SZjT/wBvnsGEF2V+kZUgYtJI1Fizlz5kuV
-         Gyr5Gu29G66v+drf5qqzTOIUlTTiGtUcmShLuULar1RKHO5R3g/+ekw2oHQslrnI0dA/
-         +bXg==
-X-Gm-Message-State: AOAM531Dnhst+9yZWWWhJf+Re8M7GdtQMaeLMkzlohqKb+/wuZKnXq4b
-        PE8SNJ7QvpSpozc8wCGEeSS2gg==
-X-Google-Smtp-Source: ABdhPJxFu/iwbc1Btt6wNV3mn0jIW8PeoEA4loiX7laqazTOVmcGDBZ4mZu4ZL9UK1uZuOrDim0ltw==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr27715496wrn.155.1621980139194;
-        Tue, 25 May 2021 15:02:19 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id k6sm4054319wmi.42.2021.05.25.15.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 15:02:18 -0700 (PDT)
-Date:   Tue, 25 May 2021 23:02:16 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 55/69] ASoC: rt5645: add error checking to rt5645_probe
- function
-Message-ID: <YK1z6AlOAMxYCh75@equinox>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-56-gregkh@linuxfoundation.org>
- <YK1uZdtgffiCnUVQ@sirena.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9r5LQNRHZJ9OLYfdLSCyczxeiXiKMnpVrYtJQiiVJCs=;
+        b=TAh4d+LUfvck8FlA9obm4w01qNYBzGAPzLqNJs+QWDzKepU/UXlDIv/Lt5apmFktes
+         HM5Hb63xXln9Igv4wGCVaa/x5m8E/8ndR8FcDCOb/RhEVTVBHC+gED4upIYViozJv/J7
+         UMEgsXOAvl4zLosCPj9+cVRtmGJ11Jp3Gxx1VPtIc0IOVayBWN05Y7Dj+MIUlh4WWOWF
+         y/G1zzWNopr9bu8nku0u8dVmJGpryT1h74h07kv41kiBKOjwjHxpIdPuPZ/ocJgVV1XF
+         Knf+xrk14zA0heM2g//hH6vp1/o/NIO3kztiF0Mvt7Mcj5zzGUgQCRDsyRgfpyiiQ9hA
+         Ipyg==
+X-Gm-Message-State: AOAM533U+BK667z4pzjGrLweBLIDgrBX179TCmKWnQkHAXxT1EIIGp1e
+        UQDVOGsnVuTyeG2iKKIfBvv+PoPdqWlg6gr5RkFlfq/SK30=
+X-Google-Smtp-Source: ABdhPJwZxBVE0tETy34dxFsN9+JVUpJRArYnM/yVYxxy3XNozeaY36M5lHs2mZ3IkcgsUqdd/c7zURqfmkzAu1jJH00=
+X-Received: by 2002:a92:c70b:: with SMTP id a11mr26718580ilp.136.1621980209861;
+ Tue, 25 May 2021 15:03:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK1uZdtgffiCnUVQ@sirena.org.uk>
+References: <20210525144250.214670-1-tpiepho@gmail.com> <20210525144250.214670-2-tpiepho@gmail.com>
+ <CAGS_qxqSo=s5=geB56QGKtgsHwjYfULYJfuaCTcghY3+c9yVBA@mail.gmail.com> <CA+7tXijdGYdEBT6PB7hWk0Ups3Y97iWPx=AWWsb0z=OPqVzA1g@mail.gmail.com>
+In-Reply-To: <CA+7tXijdGYdEBT6PB7hWk0Ups3Y97iWPx=AWWsb0z=OPqVzA1g@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 25 May 2021 15:03:17 -0700
+Message-ID: <CAGS_qxr9RvjKLRyq3Pb1RqYdLAaNdhhRgSN_R2EiU_bj8fnjYg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] lib/math/rational: Add Kunit test cases
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Oskar Schirmer <oskar@scara.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:38:45PM +0100, Mark Brown wrote:
-> On Mon, May 03, 2021 at 01:57:22PM +0200, Greg Kroah-Hartman wrote:
-> > From: Phillip Potter <phil@philpotter.co.uk>
-> > 
-> > Check for return value from various snd_soc_dapm_* calls, as many of
-> > them can return errors and this should be handled. Also, reintroduce
-> > the allocation failure check for rt5645->eq_param as well. Make all
-> 
-> Phillip, please follow the standard patch submission process,
-> this is documented in submitting-paches.rst in the kernel tree.
-> In particular please make sure that you copy the relevant
-> maintainers and mailing lists for the subsystem and any driver
-> specific maintainers on any patches that you are submitting to
-> the kernel so that they can be reviewed.
-> 
+On Tue, May 25, 2021 at 2:09 PM Trent Piepho <tpiepho@gmail.com> wrote:
+>
+> On Tue, May 25, 2021 at 10:34 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > On Tue, May 25, 2021 at 7:43 AM Trent Piepho <tpiepho@gmail.com> wrote:
+> > > Adds a number of test cases that cover a range of possible code paths.
+> > >
+> > > Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+> >
+> > Reviewed-by: Daniel Latypov <dlatypov@google.com>
+> >
+> > Looks really good to me, just two nits.
+> >
+> > Tangent:
+> > I didn't check to see that this covers all the interesting cases, but
+> > it seems like it does.
+> > If you want, you can try generating a code coverage report to double check.
+> > Instructions for doing so can be found in
+> > https://lore.kernel.org/linux-kselftest/20210414222256.1280532-1-dlatypov@google.com/
+> > I would have done that and included the #s in this email, but my
+> > workplace decided to subtly break my workstation in some way and I
+> > haven't gotten around to root causing...
+>
+> I installed a gcc 6.4 toolchain and changed the uml_abort() call to
+> exit(), coverage was generated, but still truncated and incorrectly
+> near 0%.  So what I did was crash after running all the test cases I
+> cared about by dividing by zero and then coverage data was produced
+> correctly.  It's 100% by lines.  But I think both possibilities when
+> the largest semiconvergent is exactly half the previous convergent
+> aren't tested.
 
-Dear Mark,
+Yeah, it's finicky.
+Hopefully Brendan's change to cleanly shutdown the kernel at the end
+of the tests might make it a bit more robust (still probably requires
+gcc-6).
 
-This patch was submitted to a closed mentoring group as part of the
-University of Minnesota reversion/checking process. I was not
-responsible for the final send out to the public mailing lists etc. as
-the patches were collated first and sent out together en masse.
+Thanks for running it!
+It's nice to know we have 100% (line) coverage.
 
-> > +exit:
-> > +	/*
-> > +	 * If there was an error above, everything will be cleaned up by the
-> > +	 * caller if we return an error here.  This will be done with a later
-> > +	 * call to rt5645_remove().
-> > +	 */
-> > +	return ret;
-> 
-> This comment is not accurate, rt5645_remove() just resets the
-> hardware - it's not going to clean up anything to do with any of
-> the branches to error you've got above.  The core *will* clean up
-> any routes and widgets that are added, but it doesn't do it by
-> calling remove() and people shouldn't add code in their remove
-> functions which does so.
+>
+> > >  lib/math/rational-test.c | 56 ++++++++++++++++++++++++++++++++++++++++
+> >
+> > Ah, sorry, I forgot to mention this in the previous email.
+> > If you look at kunit/style.rst docs, you'll see the documentation now
+> > states a preference for the name of this file to be one of
+> > {rational_test.c, rational_kunit.c}
+>
+> Before I chose a name, I checked every file with kunit tests cases,
+> and *-test was the most common naming pattern, including the sample
+> case.  I would be nice if changing the docs to say something is a
+> standard also updated the code to make that reality.
 
-My comment was adjusted after submission for brevity's sake. This was
-what I originally wrote:
- /*
-  * All of the above is cleaned up when we return an error here, as
-  * the caller will notice the error and invoke rt5645_remove and
-  * other cleanup routines, as it does for the snd_soc_dapm_* calls
-  * above as well.
-  */
-Happy to resubmit/rewrite as needed? Based on what you've written
-though it may be better to drop the patch?
-
-> 
-> Also I'm guessing this was done purely through inspection rather
-> than the code having been tested?  If there was a problem seen at
-> runtime this isn't fixing it, TBH I'm more than a little dubious
-> about applying this untested - it's really random if things check
-> these errors since they're basically static checks that we're not
-> smart enough to do at compile time and the core is pretty loud
-> when they hit.  I occasionally wonder about just removing the
-> return codes, I think more callers don't have the checks than do
-> (certainly in the case of _force_enable() where I was surprised
-> to find any callers that do), but never got round to it.
-
-Yes, that's correct - I did not test this directly other than making
-sure it builds, as I don't have this hardware to test with. 
-
-Regards,
-Phil
+Yeah, it's frustrating...
+Andy sent out some changes renaming a lot of the files, but we've not
+managed to get everything up to date.
