@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A627438FFDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E252838FFDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhEYLWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:22:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229968AbhEYLWQ (ORCPT
+        id S231148AbhEYLYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:24:46 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:20769 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhEYLYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:22:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621941646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65FnAA3WH54ZOxvJt+P34jBai9dAjFV0gIwV3QSKVls=;
-        b=cXxEiCs93EKlH11i1xbrVgvqF7wNr3t+qUNUNgJeyfpGdPamwgGUHo/mCKgO2CwQfiB9+9
-        p3UA/leDkgCyb+ymBPQOEN/wIz0bfzLyuD8GgXTlyBJVmqI2KYSA4eYz0NwjVer+1EeomT
-        hnHeiU8F3Z+tcPqORxpJD7qVQ3DKSh0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-NHoYtUHQPzWQsZpRShLRuQ-1; Tue, 25 May 2021 07:20:45 -0400
-X-MC-Unique: NHoYtUHQPzWQsZpRShLRuQ-1
-Received: by mail-ej1-f69.google.com with SMTP id mp38-20020a1709071b26b02903df8ccd76fbso1875912ejc.23
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 04:20:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=65FnAA3WH54ZOxvJt+P34jBai9dAjFV0gIwV3QSKVls=;
-        b=IP4qtgfoq3kA6dgOmXeAxWqfwvxc1YsKaLgXF3DLowlXlw/kioV7M/YYRM5HJASQd3
-         z2hvdYXbZNh/VQoFK7eEDx3jbIM0lRTHBqwGNbAnCQndNYCnZxl6h0kVxQ/XFU/Nb6Cd
-         h0QaEH+1h8p3A6hAXBePegf5USx+w976HfIYIlcGYTFs5G5Qb1mLwELnnBsJHr/x6tZg
-         mctuoeJ1TtFhtWpRljbbUNWAvVtgEHbH/ocIeEVZ6zUVOWXTD0Vvr3Yj6rLHPr2lK2Dx
-         k5Dqz+L9d7FZASRu78ixlkCfJAbLQTKdqNFeCXZeX7xW9fquf7DGJ9hd9Gj/ebxQnUjd
-         m7/Q==
-X-Gm-Message-State: AOAM532FOA/Dj08nLKVsQP7M49v1B328hrtZMLt5y9zwNffI5PH0diaO
-        GWf++dfdci31nSK/MqSpnDbMb4PTNY6OakPZJE6/u7UHWQysA5dW3gtX9dOeyG7CQiT0MsKIFhR
-        6m0L3IdzviT/FxOIpcCMrJa0W
-X-Received: by 2002:a17:906:f2ca:: with SMTP id gz10mr29046351ejb.317.1621941643861;
-        Tue, 25 May 2021 04:20:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3r+S0pXgo7THwTP1FnYJEelbvKLgeE3jCcgxoX+XtNU7sI4OXaJuvOBo7CiKeI0DQuzj+Dw==
-X-Received: by 2002:a17:906:f2ca:: with SMTP id gz10mr29046328ejb.317.1621941643637;
-        Tue, 25 May 2021 04:20:43 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y27sm8948476ejf.104.2021.05.25.04.20.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 04:20:43 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] KVM: hyper-v: Advertise support for fast XMM
- hypercalls
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <cover.1618349671.git.sidcha@amazon.de>
- <33a7e27046c15134667ea891feacbe3fe208f66e.1618349671.git.sidcha@amazon.de>
- <17a1ab38-10db-4fdf-411e-921738cd94e1@redhat.com>
- <20210525085708.GA26335@uc8bbc9586ea454.ant.amazon.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7fb8d792-e6e5-c241-6903-2a8c66fc2268@redhat.com>
-Date:   Tue, 25 May 2021 13:20:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 07:24:44 -0400
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 14PBMqPQ015643
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:22:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 14PBMqPQ015643
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621941773;
+        bh=e3I5tcZjuWv588TkG9hTTFqte/LCOhraM5uF3Hlb/bo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kq5ZhWTJuF6r7/vvvJnir3exOAlse6bm6yWaKqa2YAfmlsePtHzQ5lvUhik+a+iaa
+         XD2SEc5EfAKkl+8rErcG4CBge2OFMJ5FK3dho7JHm1wjawo1R9cS3eK7WYkUkaXCg6
+         M9BDks/LFDczZwby7+bJrMOnbo9w+Htjf2Zk+x0wm/zRQWLtSrTB+r1mTW4f0uWdbM
+         xsYJyULh5JethO6O/Mn0ix0g9sFRiRjGIMLwZE8fkOk1K//Bp8Wsgifa5jkDBp/Aej
+         vP9SQ8BNbzmgNc8C9GCcC9GTfFWsUHwpggyyilkF2hg+e0SLhFYcWScsbeenoog5C6
+         w/4pDwSzsTONQ==
+X-Nifty-SrcIP: [209.85.210.174]
+Received: by mail-pf1-f174.google.com with SMTP id f22so14989636pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 04:22:52 -0700 (PDT)
+X-Gm-Message-State: AOAM532E8p8G8ksjrrHibyvOKBLOA2OD8Hy+TIR2GaiGHZ7Oej3xVsd5
+        OMo6NjXFMbL0tau4hbmIZi+/LNl64/EP3v8UfjA=
+X-Google-Smtp-Source: ABdhPJwIdjotQg4s469zaiVhc2T4yKzWArhwKAD41DnMMNy9+oOczz9tedErXHDJ2jf4RZIECwah48FJu08EWne8ECk=
+X-Received: by 2002:a63:a547:: with SMTP id r7mr18740751pgu.7.1621941770469;
+ Tue, 25 May 2021 04:22:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525085708.GA26335@uc8bbc9586ea454.ant.amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210524181707.132844-1-brgerst@gmail.com> <20210524181707.132844-2-brgerst@gmail.com>
+In-Reply-To: <20210524181707.132844-2-brgerst@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 25 May 2021 20:22:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS1-4+PrP15ZRpkWB0boX-2b_gYa9gg8_HR5jOmG4HWiw@mail.gmail.com>
+Message-ID: <CAK7LNAS1-4+PrP15ZRpkWB0boX-2b_gYa9gg8_HR5jOmG4HWiw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86/uml/syscalls: Remove array index from syscall initializers
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/21 11:00, Siddharth Chandrasekaran wrote:
-> Have you already picked these? Or can you still wait for v4? I can send
-> send separate patches too if it is too late to drop them. I had one
-> minor fixup and was waiting for Vitaly's changes to get merged as he
-> wanted me to add checks on the guest exposed cpuid bits before handling
-> XMM args.
+On Tue, May 25, 2021 at 3:17 AM Brian Gerst <brgerst@gmail.com> wrote:
+>
+> Commit 44fe4895f47c ("Stop filling syscall arrays with *_sys_ni_syscall")
+> removed the index from the initializers for native x86 syscall tables, but
+> missed the UML syscall tables.
 
-You can still send v4.
 
-Paolo
+Ah, right.
+I missed cleaning up this in UML. Thanks.
 
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+
+
+
+
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> ---
+>  arch/x86/um/sys_call_table_32.c | 2 +-
+>  arch/x86/um/sys_call_table_64.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
+> index f8323104e353..0575decb5e54 100644
+> --- a/arch/x86/um/sys_call_table_32.c
+> +++ b/arch/x86/um/sys_call_table_32.c
+> @@ -31,7 +31,7 @@
+>  #include <asm/syscalls_32.h>
+>
+>  #undef __SYSCALL
+> -#define __SYSCALL(nr, sym) [ nr ] = sym,
+> +#define __SYSCALL(nr, sym) sym,
+>
+>  extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+>
+> diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
+> index 5ed665dc785f..95725b5a41ac 100644
+> --- a/arch/x86/um/sys_call_table_64.c
+> +++ b/arch/x86/um/sys_call_table_64.c
+> @@ -39,7 +39,7 @@
+>  #include <asm/syscalls_64.h>
+>
+>  #undef __SYSCALL
+> -#define __SYSCALL(nr, sym) [ nr ] = sym,
+> +#define __SYSCALL(nr, sym) sym,
+>
+>  extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
+>
+> --
+> 2.31.1
+>
+
+
+--
+Best Regards
+Masahiro Yamada
