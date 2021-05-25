@@ -2,101 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C848B390B22
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CB4390B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhEYVTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhEYVTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E2F161429;
-        Tue, 25 May 2021 21:18:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621977485;
-        bh=AeBkEcxQxV+uktorBSzRzGwOfsqEOsQNS87LoS48g/o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=BdNAAFtFb/I36Xt9VZ9KsOcpDgEalTVg60Yc0tYzgKHVgUWDF/+DLPLan7+AJk1UP
-         p2lHGMAkvcskGGM/v9Cs7F8urRB78Ko6j5VeRTuOr1JkY9MqJUf1jlMNaBpX6cw1hM
-         PaugW+JaQNs/zzrPNH0XChQnmN9CJ116gSrCtht96IuDSWrkPsUvpdtRq1Ap03a2OM
-         6IjG6bp4cfYGXQHLygUwRwZu9jg0g4msiNG1F1NdFoIc2N2oNFC+2co9kXb9AqIRQM
-         /r1hk7f1kuX5yJOHf3xXMF5GK8dA780+aGzfvxGFJQPfCc3/rlL48tUP+zlf8xVAV1
-         WkfhhvnJiiUuQ==
-Date:   Tue, 25 May 2021 16:18:04 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
-Message-ID: <20210525211804.GA1228022@bjorn-Precision-5520>
+        id S232678AbhEYVTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:19:51 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:43703 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhEYVTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 17:19:50 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D359C40003;
+        Tue, 25 May 2021 21:18:17 +0000 (UTC)
+Date:   Tue, 25 May 2021 23:18:17 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     "qxj511mail@gmail.com" <qxj511mail@gmail.com>
+Cc:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        "a.zummo" <a.zummo@towertech.it>,
+        linux-rtc <linux-rtc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?6YKx5pmT6YeR?= <qiuxiaojin@cvte.com>
+Subject: Re: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal
+ When reading time from an uninitialized RTC chip, The value may be illegal
+Message-ID: <YK1pmXd8ODTzw0r/@piout.net>
+References: <20210520033156.23209-1-qxj511mail@gmail.com>
+ <CABMQnV+5gN_6BA4tYS+GugrA0HrQD9+_EkQk_emqsUy1YzFCOA@mail.gmail.com>
+ <202105251924130320028@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210427175140.17800-5-jim2101024@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202105251924130320028@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Capitalize "Add" in the subject.
+Hi,
 
-On Tue, Apr 27, 2021 at 01:51:39PM -0400, Jim Quinlan wrote:
-> The shutdown() call is similar to the remove() call except the former does
-> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
-> if it does.
-
-This doesn't explain why shutdown() is necessary.  "errors occur"
-might be a hint, except that AFAICT, many similar drivers do invoke
-pci_stop_root_bus() and pci_remove_root_bus() (several of them while
-holding pci_lock_rescan_remove()), without implementing .shutdown().
-
-It is ... unfortunate that there's such a variety of implementations
-here.  I don't believe these driver differences are all necessary
-consequences of hardware differences.
-
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+On 25/05/2021 19:24:14+0800, qxj511mail@gmail.com wrote:
+> Please briefly describe the patch contained in the email to the subject.
+> And, please write a description of the patch in the text
+> ---->   The legal days are 1 to 31 and the legal month is less than or equal to 12.
+>            But for an uninitialized RTC chip, the time is random.
+>            Days and month may be zero, leading to RTC_valid_TM failed
 > 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index d3af8d84f0d6..a1fe1a2ada48 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -1340,6 +1340,15 @@ static int brcm_pcie_remove(struct platform_device *pdev)
->  	return 0;
->  }
+
+If the time on the RTC is invalid, then rtc_valid_tm has to fail, there
+is nothing to fix here.
+
+> add description  && fix build error, so I modefied my code :
 >  
-> +static void brcm_pcie_shutdown(struct platform_device *pdev)
-> +{
-> +	struct brcm_pcie *pcie = platform_get_drvdata(pdev);
-> +
-> +	if (pcie->has_err_report)
-> +		brcm_unregister_die_notifiers(pcie);
-> +	__brcm_pcie_remove(pcie);
-> +}
-> +
->  static const struct of_device_id brcm_pcie_match[] = {
->  	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
->  	{ .compatible = "brcm,bcm4908-pcie", .data = &bcm4908_cfg },
-> @@ -1460,6 +1469,7 @@ static const struct dev_pm_ops brcm_pcie_pm_ops = {
->  static struct platform_driver brcm_pcie_driver = {
->  	.probe = brcm_pcie_probe,
->  	.remove = brcm_pcie_remove,
-> +	.shutdown = brcm_pcie_shutdown,
->  	.driver = {
->  		.name = "brcm-pcie",
->  		.of_match_table = brcm_pcie_match,
-> -- 
-> 2.17.1
+> Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
+> ---
+>  drivers/rtc/rtc-rs5c372.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
+> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+> index 3bd6eaa0dcf6..cb3f90983778 100644
+> --- a/drivers/rtc/rtc-rs5c372.c
+> +++ b/drivers/rtc/rtc-rs5c372.c
+> @@ -128,6 +128,9 @@ struct rs5c372 {
+>   char *regs;
+>  };
+>  
+> +
+> +static int rs5c372_rtc_set_time(struct device *dev, struct rtc_time *tm);
+> +
+>  static int rs5c_get_regs(struct rs5c372 *rs5c)
+>  {
+>   struct i2c_client *client = rs5c->client;
+> @@ -212,6 +215,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+>   struct rs5c372 *rs5c = i2c_get_clientdata(client);
+>   int status = rs5c_get_regs(rs5c);
+>   unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
+> + int flags_utime = 0;
+>  
+>   if (status < 0)
+>   return status;
+> @@ -239,12 +243,28 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+>   tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
+>   tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
+>  
+> + /* The value read from the register may be zero, which is an illegal value */
+> + if (tm->tm_mday < 1) {
+> + flags_utime++;
+> + tm->tm_mday = 1;
+> + }
+> +
+>   /* tm->tm_mon is zero-based */
+>   tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
+>  
+> + if (tm->tm_mon < 0) {
+> + /* avoid illegal month */
+> + flags_utime++;
+> + tm->tm_mon = 0;
+> + }
+> +
+>   /* year is 1900 + tm->tm_year */
+>   tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
+>  
+> + /* update legal time */
+> + if (flags_utime > 0)
+> + rs5c372_rtc_set_time(dev, tm);
+> +
+>   dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
+>   "mday=%d, mon=%d, year=%d, wday=%d\n",
+>   __func__,
+> -- 
+> 2.29.0
+> 
+> 
+> 
+> qxj511mail@gmail.com
+>  
+> From: Nobuhiro Iwamatsu
+> Date: 2021-05-24 12:40
+> To: qxj511mail
+> CC: Alessandro Zummo; Alexandre Belloni; linux-rtc; Linux Kernel Mailing List; qiuxiaojin
+> Subject: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal When reading time from an uninitialized RTC chip, The value may be illegal
+> Hi,
+>  
+> 2021年5月20日(木) 12:32 <qxj511mail@gmail.com>:
+> >
+> > From: qiuxiaojin <qiuxiaojin@cvte.com>
+>  
+> Please briefly describe the patch contained in the email to the subject.
+> And, please write a description of the patch in the text
+>  
+> >
+> > Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
+> > ---
+> >  drivers/rtc/rtc-rs5c372.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+> > index 3bd6eaa0dcf6..ce61e15d5f3a 100644
+> > --- a/drivers/rtc/rtc-rs5c372.c
+> > +++ b/drivers/rtc/rtc-rs5c372.c
+> > @@ -212,6 +212,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+> >         struct rs5c372  *rs5c = i2c_get_clientdata(client);
+> >         int             status = rs5c_get_regs(rs5c);
+> >         unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
+> > +       int flags_utime = 0;
+> >
+> >         if (status < 0)
+> >                 return status;
+> > @@ -239,12 +240,27 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+> >         tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
+> >         tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
+> >
+> > +       if (tm->tm_mday < 1) {
+> > +               // The value read from the register may be zero, which is an illegal value
+>  
+> Please use C89 style commet (/* */).
+>  
+> > +               flags_utime = flags_utime + 1;
+>  
+> I like using ++ (flags_utime++).
+>  
+> > +               tm->tm_mday = 1;
+> > +       }
+> > +
+> >         /* tm->tm_mon is zero-based */
+> >         tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
+> >
+> > +       if (tm->tm_mon < 0) {
+> > +               flags_utime = flags_utime + 1;
+> > +               tm->tm_mday = 0;
+> > +       }
+> > +
+> >         /* year is 1900 + tm->tm_year */
+> >         tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
+> >
+> > +       if (flags_utime > 0) {
+>  
+> {} is unnecessary.
+>  
+> > +               rs5c372_rtc_set_time(dev, tm);
+>  
+> A build error will occur because there is no declaration of
+> rs5c372_rtc_set_time.
+> Please make sure this can be compiled.
+>  
+> > +       }
+> > +
+> >         dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
+> >                 "mday=%d, mon=%d, year=%d, wday=%d\n",
+> >                 __func__,
+> > --
+> > 2.29.0
+> >
+>  
+>  
+> -- 
+> Nobuhiro Iwamatsu
+>    iwamatsu at {nigauri.org / debian.org}
+>    GPG ID: 40AD1FA6
+
+
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
