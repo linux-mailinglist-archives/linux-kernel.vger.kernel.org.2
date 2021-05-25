@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE8038FBF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760E738FC0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhEYHtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36438 "EHLO mail.kernel.org"
+        id S231942AbhEYH7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:59:53 -0400
+Received: from mga04.intel.com ([192.55.52.120]:39251 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231263AbhEYHtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:49:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE486128B;
-        Tue, 25 May 2021 07:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621928893;
-        bh=P+PllHqMuh+hS59i4iVdppeAUj9XXQuHIklVnWcWX94=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0zyZYtFD7ZgbFRIhaW5NyiomeCGZjHh3SKhOPLveqKrAnP4jT03OervbSUj2n4kNT
-         k3qyHG8q6rFPZ8Y9oR1T0ZYGMfV4HfkATmReSzl7M5i4Q1GKbNoVj3bTmoBYnmafyI
-         tIuv6FWCbvIHtz2zacr4Y4zOKW/1mXCBmEW5B/0g=
-Date:   Tue, 25 May 2021 09:48:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] debugfs: remove return value of debugfs_create_bool()
-Message-ID: <YKyrusKNbH+8tpcY@kroah.com>
-References: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
- <CAMuHMdW42UAWRPWe09=0c=pkNLwwswoQHEbSHyXEjsfF6UZJdw@mail.gmail.com>
- <YKt0v2etlFzpvE9r@kroah.com>
- <CAMuHMdWL=Jy-PHMU3NTuc2YT=oK7gGGrrj008_k0ATivPsPc8w@mail.gmail.com>
- <YKt9Z82KbBQZIWVl@kroah.com>
- <CAMuHMdXbSyresZNUqq-g4=HNFXqtj2QkPpN1s0LRjmOnNPxn8w@mail.gmail.com>
- <YKuedipmEjIW91Jr@kroah.com>
- <CAMuHMdUhSKFrcaiB0KHsgg1=4_RX3XjUpzMV=Y=RxErRmsn=sA@mail.gmail.com>
+        id S231477AbhEYH72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:59:28 -0400
+IronPort-SDR: 0WVyNm3USEH7qYjViZaDn+GC+rOhymMUCu1P2qd4wgqFuZCD3VrlTD9E4c/jc+Z0/pI6w9qgE7
+ 9tKWpTiFEpAw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="200231377"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="200231377"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:50:38 -0700
+IronPort-SDR: /3bdNeeimRPEbziclmisq8qcBIllCPKbDomBj5N4NNSaf9+EHktBiVIm7Id6/gvtL4P00r8E3k
+ YJQxU/9Hdwmw==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="442432356"
+Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 00:50:35 -0700
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com> <20210513110040.2268-12-maciej.kwapulinski@linux.intel.com> <YJ0MXK2XSISC1fIl@kroah.com> <85o8ddiv51.fsf@linux.intel.com> <YJ41h6lt8lSqaH7r@kroah.com> <85h7isif8y.fsf@linux.intel.com> <YKuEsD9UMlSz3+HA@kroah.com>
+User-agent: mu4e 1.4.13; emacs 26.3
+From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v3 11/14] intel_gna: add ioctl handler
+In-reply-to: <YKuEsD9UMlSz3+HA@kroah.com>
+Date:   Tue, 25 May 2021 09:50:32 +0200
+Message-ID: <85cztfi75j.fsf@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUhSKFrcaiB0KHsgg1=4_RX3XjUpzMV=Y=RxErRmsn=sA@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:26:42AM +0200, Geert Uytterhoeven wrote:
-> Hi Greg,
-> 
-> On Mon, May 24, 2021 at 2:39 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > On Mon, May 24, 2021 at 01:44:38PM +0200, Geert Uytterhoeven wrote:
-> > > On Mon, May 24, 2021 at 12:18 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Mon, May 24, 2021 at 11:51:42AM +0200, Geert Uytterhoeven wrote:
-> > > > > On Mon, May 24, 2021 at 11:41 AM Greg Kroah-Hartman
-> > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > On Mon, May 24, 2021 at 11:11:32AM +0200, Geert Uytterhoeven wrote:
-> > > > > > > On Fri, May 21, 2021 at 10:28 PM Greg Kroah-Hartman
-> > > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > > > No one checks the return value of debugfs_create_bool(), as it's not
-> > > > > > > > needed, so make the return value void, so that no one tries to do so in
-> > > > > > >
-> > > > > > > Please explain in the patch description why it is not needed.
-> > > > > >
-> > > > > > Because you just do not need it, like almost all other debugfs calls
-> > > > > > now.
-> > > > >
-> > > > > Why do I just not need it?
-> > > >
-> > > > Let me flip it around, why do you need it?  There are no in-kernel users
-> > > > of the return value anymore so what code requires this pointer now?
-> > >
-> > > There still are a few users of other members in the family, and some
-> > > of them are meant to be removed without removing the full parent
-> > > directory.  Having all debugfs_create_*() functions behave the same
-> > > is a bonus.
-> >
-> > I agree, and we are almost there, all that is left is:
-> >         debugfs_create_blob()
-> >         debugfs_create_file()
-> >         debugfs_create_file_unsafe()
-> > for creating debugfs files.
-> >
-> > There is still:
-> >         debugfs_create_dir()
-> >         debugfs_create_symlink()
-> >         debugfs_create_automount()
-> > for non-file creations that do not return void.
-> >
-> > The majority of the debugfs_create_* functions now do not return
-> > anything.
-> >
-> > > But if other people are fine with having to call
-> > > debugfs_remove(debugfs_lookup(...)), well, let it be like that...
-> >
-> > It saves at least a static variable, so what's not to like?  :)
-> 
-> Which is more than offset by the cost of the new debugfs_lookup() call...
 
-Not when people were keeping a dentry-per-entry in lots of structures.
-That's from the heap, this dentry pointer sits on the stack, or if we
-are lucky, only in a register :)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-thanks,
+> On Mon, May 24, 2021 at 12:43:25PM +0200, Maciej Kwapulinski wrote:
+>> 
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> 
+>> > On Fri, May 14, 2021 at 10:20:42AM +0200, Maciej Kwapulinski wrote:
+>> >> 
+>> >> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> >> 
+>> >> > On Thu, May 13, 2021 at 01:00:37PM +0200, Maciej Kwapulinski wrote:
+>> >> >> From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
+>> >> >> 
+>> >> >> Add ioctl handler into GNA driver.
+>> >> >> The ioctl interface provides the ability to do the following:
+>> >> >>  - Map and unmap memory buffers for GNA computation requests.
+>> >> >>  - Retrieve capabilities of the underlying GNA IP.
+>> >> >>  - Submit GNA computation requests.
+>> >> >>  - Request notification of scoring completion.
+>> >> >
+>> >> > Do you have a pointer to the userspace code that uses this ioctl?
+>> >> > That's kind of required here, otherwise we have no idea how this all
+>> >> > works.
+>> >> >
+>> >> 
+>> >> yes, it's present under following link:
+>> >> 
+>> >> https://github.com/intel/gna
+>> >
+>> > Then that needs to go here in this changelog text, right?
+>> 
+>> link to library is already present in 00/14, I didn't want to have it in
+>> two places, that's why not present here.
+>
+> Commit 00/XX never shows up in the changelog :(
 
-greg k-h
+right
