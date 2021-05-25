@@ -2,160 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF96938F78D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A1F38F78F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 03:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhEYBdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 21:33:04 -0400
-Received: from mail-dm6nam08on2053.outbound.protection.outlook.com ([40.107.102.53]:18465
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229480AbhEYBdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 21:33:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PnWAYq2DYSIYW6iOeOviLR3oXCMJJJZF61V9KKDvU2QxUV79f78Od4x9Z17QFuYS5TThUQM6Dzh5/bVaSp8eqTObGKRtlbsVjVbhBmqqIYXnI3oKCF+qcSbCuFMdaTvgVOg+90zKr+fhRYd/TZSaszikGYWunuCo6urGnOKmH2vBCEyAix2/WHNcpS0dhI2lMI2lyDZ/hYJpYaPQprogJBqRIDqrjDDKLNimJ+mQ9v+6vWecWTtc0oPPMDNe/czs2WhFnxgAmY+fFTPqR4prPRm0Z4ccn+yxYaqp2X4ok75KivYpgxg5ujVhoj03pVtzBDr65yhExOVIrCimLjoXiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gs77B8WKghey5N9TGirCGUFv3BoOnZwqhcRQDDgtnhg=;
- b=KzdlXscX7eNW36PtXjZEj5vvObwIm7wTy/0PQiEbnhSBJtbPviEp9OV5IKauYSFFFQe/WmarX5A/57T7t//SoqoniqJYQ59nW6NE8Pbi4qzMhu8RabW2NhwstVixnpbCdMEhYm4FC+O971oyPjSCp+MybnXaBCpD/sDcDG9ZAWSptm0j27M2Dh83i8RZ/eTUMsJk0EBvHrljdiMr7WjC4yx7cnAGjKx4sadplUw6ksnfCP3vBnPH/KdDx9eSADwcgI+ut8AvQWQrOqDuUCtu4JRQ9YdI/O+mobY/7jIJ5HCF1ICCtcGtuhTMUFTcY6NQPBKo/j7QVDjGNpatYfCR3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gs77B8WKghey5N9TGirCGUFv3BoOnZwqhcRQDDgtnhg=;
- b=dwhM71PfOMoYhlei+j+YI/1DtH1ZMvS5FsECTAR4IJBk9yfnvsgKngBJfA3QCTiR1yc8sLqV70JlqY2I7osnMvWKwFWGU9RMjCYy5EnhB72c6TNsVhvsRCNI9q9eaRsfRWw/uj8kriRbIXxi/eahv9YtrbqRc9TDX99Mkesy00zYLyVOOgLGRNyFqgWcN+9DNSdv1iWweAcVLLXkWsCBiM7sGR1oeeT5nL9bNZ98nUnbKBYrhTVFcz5mQlv+Ciuh2BpLF8VMBL/uEN/DgajOVz0b8vRGGBCK4G61Wma+BGRX8V8GmkZFKHzhCl1DBbnojHQB36G5UUoiiOf0ISVLwQ==
-Received: from BN6PR13CA0009.namprd13.prod.outlook.com (2603:10b6:404:10a::19)
- by MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Tue, 25 May
- 2021 01:31:32 +0000
-Received: from BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:10a:cafe::ad) by BN6PR13CA0009.outlook.office365.com
- (2603:10b6:404:10a::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend
- Transport; Tue, 25 May 2021 01:31:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT030.mail.protection.outlook.com (10.13.177.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Tue, 25 May 2021 01:31:32 +0000
-Received: from [10.2.60.51] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 01:31:18 +0000
-Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <rcampbell@nvidia.com>,
-        <linux-doc@vger.kernel.org>, <bsingharora@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <hch@infradead.org>, <jglisse@redhat.com>, <willy@infradead.org>,
-        <jgg@nvidia.com>, <peterx@redhat.com>, <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210524132725.12697-1-apopple@nvidia.com>
- <20210524132725.12697-8-apopple@nvidia.com>
- <20210524151157.2dc5d2bb510ff86dc449bf0c@linux-foundation.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <ccedcc53-ead0-a482-1ef0-3702cc82faef@nvidia.com>
-Date:   Mon, 24 May 2021 18:31:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229921AbhEYBdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 21:33:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49890 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhEYBdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 21:33:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621906309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cDdaKbZRoEfpRx7jvBHZ30BNzMElKWImpQ5xMxNgdjo=;
+        b=SfA3m2VzLmYhEUyZxxfZJgSqpCLwYbQlhtL0zK8s3VXYuT1hVgLsL4dPm6IC0VMvBa8v9+
+        Y2j71aITQ2NALkbDArvlKzFXGpL7dSSm6xLwWEFUVkzj5dMs3OLKUkty7rY/GaqmDPHRQ4
+        FlePnPmJMupH0dfmOuYehAjBnE8H1pg=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-W39gDJscN2SmUiR_jVIrlw-1; Mon, 24 May 2021 21:31:47 -0400
+X-MC-Unique: W39gDJscN2SmUiR_jVIrlw-1
+Received: by mail-pf1-f197.google.com with SMTP id s5-20020aa78d450000b02902ace63a7e93so19376782pfe.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 18:31:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cDdaKbZRoEfpRx7jvBHZ30BNzMElKWImpQ5xMxNgdjo=;
+        b=mTbIiV8uKYa90ETMekqgq8wioqXm5xLydnjY/AohgWyKfRsE3eLmdaV+kNqN+1B09r
+         PX7R2L6C6K+LGf/iyPCa74NUEufcJhXZOdT6yKh4NEaLUUSk2vgQdM/R7fwU7itzsvF7
+         FkBI/2OTyTjw91/bEQec6PDmRDxS9S925GR0d0d9Lfq6qbAi+oH5BabdZ2NejA5WYo2h
+         qDlyxRop9Ftf6eReiIYMPrTxOSiR6DCWoX54o+SNrMYB798C4XdikuXvhVZnQiqWv18W
+         nREnz4zSOCencmQu5snAlEed9NL8byhY50uR+exC92yVXvuj+pwqIRKDmXppOUBP/Re7
+         TJ/A==
+X-Gm-Message-State: AOAM5329HLo04waSIhJWXqM1tsNtDZNt9+Fe9uiHuQRGKA6f5UN9UBwe
+        QMCrro6+Jx5izV2ylf1MYLlIUiTtMu4fi4+aPWus1ZULXVRd99QMtlpgvh6uQIMfrgLGgyspTtE
+        wOKHuuuoqNfSJpjgk5Ccqje4GFoMh1Z7ecPt7xgO4oqdyQ++zM77fuyMK0NRyIH4igSKPpwAA1Z
+        BA
+X-Received: by 2002:a17:90b:1b4c:: with SMTP id nv12mr27605024pjb.55.1621906305717;
+        Mon, 24 May 2021 18:31:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaC2zarJrBIyP6vFqRiVxlMn0IGK6h9Za0XGOhe7G4c1aNDy85YgjxCOlh7xcd0n+tZ+3O1A==
+X-Received: by 2002:a17:90b:1b4c:: with SMTP id nv12mr27604972pjb.55.1621906305157;
+        Mon, 24 May 2021 18:31:45 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f80sm11774204pfa.160.2021.05.24.18.31.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 18:31:44 -0700 (PDT)
+Subject: Re: [RFC PATCH 17/17] virtio_ring: Add validation for used length
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>
+Cc:     stefanha@redhat.com, amit@kernel.org, arei.gonglei@huawei.com,
+        airlied@linux.ie, kraxel@redhat.com, dan.j.williams@intel.com,
+        johannes@sipsolutions.net, ohad@wizery.com,
+        bjorn.andersson@linaro.org, david@redhat.com, vgoyal@redhat.com,
+        miklos@szeredi.hu, sgarzare@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210517090836.533-1-xieyongji@bytedance.com>
+ <20210517090836.533-18-xieyongji@bytedance.com>
+ <20210517193641-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3cda643a-1363-65bf-be84-f6dea6714477@redhat.com>
+Date:   Tue, 25 May 2021 09:31:33 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210524151157.2dc5d2bb510ff86dc449bf0c@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210517193641-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 68d0f4be-31ec-4eb6-cf32-08d91f1cd3fe
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3008:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB30081116ACC7DF89952AC5F6A8259@MN2PR12MB3008.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Juozi7ME+ONBjhp5tGi+YsTC2SnGiXBm0WFPFoIebctRSbnDcFsi9wr9Vd3rDcZjZ79ntlcuQrAS8/Us29kEoZUjbshnmvmMOw6NDielFYfRmsUCVTxsr4FJZPu2/C84deeW4vlvixAianqJUJ7FPFGDY77VIm3tXTCL/rmsF51omlDuu5GHcNSFEtB1hIFRG0tAEYbn2XY5LLgpqKpXA7CJadMJ/GwkoE2PL5bKxGbVAbEsAeHG66wc26UQg4N3HwbF7vx3ncjlbw+XiY/q6HN7P+bOi+pQ84FmIGPsg8mUKJF+jXYlWX1dzdvg5M7Tjm5j1Ba1ev0ORyXFdrA/Zgv6m19/uJGOCnw8W3FXZ5KVlFDgEeUtzz5P6E1e1AF0pcmPr4CxIkBp08IJQZeIVgeo+agF2a1PAxcKPyPA8gvc6oGYOFibvcPQt3gbk+pS8AtmxQUZwKAqKuEB45o7FTNVSOOfR/30hUrkbp4NI16fwA5dcjIg/+4xBFvUMXEJrYqoJFVZGH9SiAJAaTJLQXlfT2YWOx+bDbcpK7zgMswcgULrPUAwDvUdQcfRgDRcU906f4wbEiWKlkhBxst8wPtqQJQJRIZ6dHFj7teNWnGqsSd9QVWrJSbgaFhL61pTmvNfKPmH818vFUvTLAJkE0QDDQwts7p/YcOMcPKhEDFkWFBTdkGvpNJeZPFZYjrT
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(70206006)(70586007)(86362001)(36756003)(16526019)(186003)(110136005)(82310400003)(82740400003)(36860700001)(356005)(2906002)(5660300002)(47076005)(54906003)(8676002)(31686004)(53546011)(426003)(7636003)(83380400001)(336012)(7416002)(6636002)(316002)(26005)(16576012)(478600001)(31696002)(8936002)(36906005)(2616005)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 01:31:32.2315
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68d0f4be-31ec-4eb6-cf32-08d91f1cd3fe
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 3:11 PM, Andrew Morton wrote:
->> ...
+
+ÔÚ 2021/5/18 ÉÏÎç7:39, Michael S. Tsirkin Ð´µÀ:
+> On Mon, May 17, 2021 at 05:08:36PM +0800, Xie Yongji wrote:
+>> This adds validation for used length (might come
+>> from an untrusted device) when it will be used by
+>> virtio device driver.
 >>
->>   Documentation/vm/hmm.rst     |  17 ++++
->>   include/linux/mmu_notifier.h |   6 ++
->>   include/linux/rmap.h         |   4 +
->>   include/linux/swap.h         |   7 +-
->>   include/linux/swapops.h      |  44 ++++++++-
->>   mm/hmm.c                     |   5 +
->>   mm/memory.c                  | 128 +++++++++++++++++++++++-
->>   mm/mprotect.c                |   8 ++
->>   mm/page_vma_mapped.c         |   9 +-
->>   mm/rmap.c                    | 186 +++++++++++++++++++++++++++++++++++
->>   10 files changed, 405 insertions(+), 9 deletions(-)
+>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>> ---
+>>   drivers/virtio/virtio_ring.c | 22 +++++++++++++++++++---
+>>   1 file changed, 19 insertions(+), 3 deletions(-)
 >>
-> 
-> This is quite a lot of code added to core MM for a single driver.
-> 
-> Is there any expectation that other drivers will use this code?
-
-Yes! This should work for GPUs (and potentially, other devices) that support
-OpenCL SVM atomic accesses on the device. I haven't looked into how amdgpu
-works in any detail, but that's certainly at the top of the list of likely
-additional callers.
-
-> 
-> Is there a way of reducing the impact (code size, at least) for systems
-> which don't need this code?
-
-I'll leave this question to others for the moment, in order to answer
-the "do we need it at all" points.
-
-> 
-> How beneficial is this code to nouveau users?  I see that it permits a
-> part of OpenCL to be implemented, but how useful/important is this in
-> the real world?
-> 
-
-So this is interesting. Right now, OpenCL support in Nouveau is rather new
-and so probably not a huge impact yet. However, we've built up enough experience
-with CUDA and OpenCL to learn that atomic operations, as part of the user
-space programming model, are a super big deal. Atomic operations are so
-useful and important that I'd expect many OpenCL SVM users to be uninterested in
-programming models that lack atomic operations for GPU compute programs.
-
-Again, this doesn't rule out future, non-GPU accelerator devices that may
-come along.
-
-Atomic ops are just a really important piece of high-end multi-threaded
-programming, it turns out. So this is the beginning of support for an
-important building block for general purpose programming on devices that
-have GPU-like memory models.
+>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>> index d999a1d6d271..7d4845d06f21 100644
+>> --- a/drivers/virtio/virtio_ring.c
+>> +++ b/drivers/virtio/virtio_ring.c
+>> @@ -68,11 +68,13 @@
+>>   struct vring_desc_state_split {
+>>   	void *data;			/* Data for callback. */
+>>   	struct vring_desc *indir_desc;	/* Indirect descriptor, if any. */
+>> +	u32 in_len;			/* Total length of writable buffer */
+>>   };
+>>   
+>>   struct vring_desc_state_packed {
+>>   	void *data;			/* Data for callback. */
+>>   	struct vring_packed_desc *indir_desc; /* Indirect descriptor, if any. */
+>> +	u32 in_len;			/* Total length of writable buffer */
+>>   	u16 num;			/* Descriptor list length. */
+>>   	u16 last;			/* The last desc state in a list. */
+>>   };
+>
+> Hmm for packed it's aligned to 64 bit anyway, so we are not making it
+> any worse. But for split this pushes struct size up by 1/3 increasing
+> cache pressure.
 
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+We can eliminate this by validating through virtio device driver instead 
+of virtio core.
+
+E.g for virtio-net we know the rx buffer size so there's no need to 
+store in twice in the core.
+
+Thanks
+
+
+>
+>
+>> @@ -486,7 +488,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>>   	struct vring_virtqueue *vq = to_vvq(_vq);
+>>   	struct scatterlist *sg;
+>>   	struct vring_desc *desc;
+>> -	unsigned int i, n, avail, descs_used, prev, err_idx;
+>> +	unsigned int i, n, avail, descs_used, prev, err_idx, in_len = 0;
+>>   	int head;
+>>   	bool indirect;
+>>   
+>> @@ -570,6 +572,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>>   						     VRING_DESC_F_NEXT |
+>>   						     VRING_DESC_F_WRITE,
+>>   						     indirect);
+>> +			in_len += sg->length;
+>>   		}
+>>   	}
+>>   	/* Last one doesn't continue. */
+>> @@ -604,6 +607,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>>   
+>>   	/* Store token and indirect buffer state. */
+>>   	vq->split.desc_state[head].data = data;
+>> +	vq->split.desc_state[head].in_len = in_len;
+>>   	if (indirect)
+>>   		vq->split.desc_state[head].indir_desc = desc;
+>>   	else
+>> @@ -784,6 +788,10 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>>   		BAD_RING(vq, "id %u is not a head!\n", i);
+>>   		return NULL;
+>>   	}
+>> +	if (unlikely(len && vq->split.desc_state[i].in_len < *len)) {
+>> +		BAD_RING(vq, "id %u has invalid length: %u!\n", i, *len);
+>> +		return NULL;
+>> +	}
+>>   
+>>   	/* detach_buf_split clears data, so grab it now. */
+>>   	ret = vq->split.desc_state[i].data;
+>> @@ -1059,7 +1067,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+>>   {
+>>   	struct vring_packed_desc *desc;
+>>   	struct scatterlist *sg;
+>> -	unsigned int i, n, err_idx;
+>> +	unsigned int i, n, err_idx, in_len = 0;
+>>   	u16 head, id;
+>>   	dma_addr_t addr;
+>>   
+>> @@ -1084,6 +1092,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+>>   			if (vring_mapping_error(vq, addr))
+>>   				goto unmap_release;
+>>   
+>> +			in_len += (n < out_sgs) ? 0 : sg->length;
+>>   			desc[i].flags = cpu_to_le16(n < out_sgs ?
+>>   						0 : VRING_DESC_F_WRITE);
+>>   			desc[i].addr = cpu_to_le64(addr);
+>> @@ -1141,6 +1150,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+>>   	vq->packed.desc_state[id].data = data;
+>>   	vq->packed.desc_state[id].indir_desc = desc;
+>>   	vq->packed.desc_state[id].last = id;
+>> +	vq->packed.desc_state[id].in_len = in_len;
+>>   
+>>   	vq->num_added += 1;
+>>   
+>> @@ -1173,7 +1183,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>>   	struct vring_virtqueue *vq = to_vvq(_vq);
+>>   	struct vring_packed_desc *desc;
+>>   	struct scatterlist *sg;
+>> -	unsigned int i, n, c, descs_used, err_idx;
+>> +	unsigned int i, n, c, descs_used, err_idx, in_len = 0;
+>>   	__le16 head_flags, flags;
+>>   	u16 head, id, prev, curr, avail_used_flags;
+>>   
+>> @@ -1223,6 +1233,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>>   			if (vring_mapping_error(vq, addr))
+>>   				goto unmap_release;
+>>   
+>> +			in_len += (n < out_sgs) ? 0 : sg->length;
+>>   			flags = cpu_to_le16(vq->packed.avail_used_flags |
+>>   				    (++c == total_sg ? 0 : VRING_DESC_F_NEXT) |
+>>   				    (n < out_sgs ? 0 : VRING_DESC_F_WRITE));
+>> @@ -1268,6 +1279,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>>   	vq->packed.desc_state[id].data = data;
+>>   	vq->packed.desc_state[id].indir_desc = ctx;
+>>   	vq->packed.desc_state[id].last = prev;
+>> +	vq->packed.desc_state[id].in_len = in_len;
+>>   
+>>   	/*
+>>   	 * A driver MUST NOT make the first descriptor in the list
+>> @@ -1456,6 +1468,10 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
+>>   		BAD_RING(vq, "id %u is not a head!\n", id);
+>>   		return NULL;
+>>   	}
+>> +	if (unlikely(len && vq->packed.desc_state[id].in_len < *len)) {
+>> +		BAD_RING(vq, "id %u has invalid length: %u!\n", id, *len);
+>> +		return NULL;
+>> +	}
+>>   
+>>   	/* detach_buf_packed clears data, so grab it now. */
+>>   	ret = vq->packed.desc_state[id].data;
+>> -- 
+>> 2.11.0
+
