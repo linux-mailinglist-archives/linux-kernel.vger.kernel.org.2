@@ -2,207 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CB4390B2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36217390B3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 23:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhEYVTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 17:19:51 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:43703 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbhEYVTu (ORCPT
+        id S232891AbhEYVXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 17:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232146AbhEYVXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 17:19:50 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D359C40003;
-        Tue, 25 May 2021 21:18:17 +0000 (UTC)
-Date:   Tue, 25 May 2021 23:18:17 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "qxj511mail@gmail.com" <qxj511mail@gmail.com>
-Cc:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        "a.zummo" <a.zummo@towertech.it>,
-        linux-rtc <linux-rtc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?6YKx5pmT6YeR?= <qiuxiaojin@cvte.com>
-Subject: Re: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal
- When reading time from an uninitialized RTC chip, The value may be illegal
-Message-ID: <YK1pmXd8ODTzw0r/@piout.net>
-References: <20210520033156.23209-1-qxj511mail@gmail.com>
- <CABMQnV+5gN_6BA4tYS+GugrA0HrQD9+_EkQk_emqsUy1YzFCOA@mail.gmail.com>
- <202105251924130320028@gmail.com>
+        Tue, 25 May 2021 17:23:51 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910B0C061574;
+        Tue, 25 May 2021 14:22:20 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id s19so31631053oic.7;
+        Tue, 25 May 2021 14:22:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nq5Lyl63Cxp5G8zHQgyIjlov5Lk7a01uqNJZRsLVhWY=;
+        b=iZbe2L+hF/jJpwSDM5aBUCxTc6ZuFB0w2E4KwU9llJS4Wc09/W8G7q3sbX/YRa0DwC
+         VM1Jumpy0YZ8YFWWUxQ5IO+TqFDq+8dRsz86dL3TxLnZnchMpNnvqPe+xGOj/ww09lq3
+         WvX6SI5rg8f5P7aMBoFAt2w8flkn7Q8XJGQAhfD3jVxpuzqhJFJHP0Ut4TjXstV08FRC
+         qHNzmz0o1017isHiDmHGRT1CsF/ZtcidAPCkf8xputDYBUMVBITkizy7KsPfqO8aFF6T
+         TYJhpkH+JioP9J9SQupM5nw0SjqKS+JQN+rl+TPc7+E4Hvy5EvF6HOHWw87GVB+P/Gj9
+         Alkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Nq5Lyl63Cxp5G8zHQgyIjlov5Lk7a01uqNJZRsLVhWY=;
+        b=pccdUlly+oN+/I4JIwZ34EQyBn85ByDBpsR078wXVApn3a7FcQ8BNR5P/aa1q9Z9mn
+         uFWOFHH6Tf7t3AzjvLJpf+CA9FMGW+UGtw6et0zSyut1zjfJK84XvMV+f4hmQIJG4gM5
+         rJ/xOmr4eJqKV4sDh7doZ73ve60hIBK7we4ZBvw6+fvcerYWohnI/KjdCg064DPmdss2
+         gp5crHJJMbow3oZEgl+bvKyVAQRzJ4kK96l5QQaF8I+GKSsW1YCCA1RknBuDJDky9uuS
+         QZeyKxAlMqD/cGwj6kWS6jbO/SuK8coWXQ7wB7td2EaXOEHR8PeZgibYs2FEi3aG16cg
+         RhqQ==
+X-Gm-Message-State: AOAM530rPzMU64k19UGFG1qZdQYMoIhi4BHc264hbqc+uPdhezZzByQI
+        XWnzu1nqqC+WT/KoMGnFuIA=
+X-Google-Smtp-Source: ABdhPJw0C+r9iElBSfvRs8s7icPI5TvEzGzCuC/710BWv2WrzYV4NR/l7ono15ct0R9MjfWxXctsQQ==
+X-Received: by 2002:aca:c753:: with SMTP id x80mr236906oif.25.1621977739945;
+        Tue, 25 May 2021 14:22:19 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o14sm3418351oik.29.2021.05.25.14.22.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 14:22:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 25 May 2021 14:22:17 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/31] 4.4.270-rc1 review
+Message-ID: <20210525212217.GA921026@roeck-us.net>
+References: <20210524152322.919918360@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202105251924130320028@gmail.com>
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 25/05/2021 19:24:14+0800, qxj511mail@gmail.com wrote:
-> Please briefly describe the patch contained in the email to the subject.
-> And, please write a description of the patch in the text
-> ---->   The legal days are 1 to 31 and the legal month is less than or equal to 12.
->            But for an uninitialized RTC chip, the time is random.
->            Days and month may be zero, leading to RTC_valid_TM failed
+On Mon, May 24, 2021 at 05:24:43PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.270 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
 > 
 
-If the time on the RTC is invalid, then rtc_valid_tm has to fail, there
-is nothing to fix here.
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 326 pass: 326 fail: 0
 
-> add description  && fix build error, so I modefied my code :
->  
-> Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
-> ---
->  drivers/rtc/rtc-rs5c372.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> index 3bd6eaa0dcf6..cb3f90983778 100644
-> --- a/drivers/rtc/rtc-rs5c372.c
-> +++ b/drivers/rtc/rtc-rs5c372.c
-> @@ -128,6 +128,9 @@ struct rs5c372 {
->   char *regs;
->  };
->  
-> +
-> +static int rs5c372_rtc_set_time(struct device *dev, struct rtc_time *tm);
-> +
->  static int rs5c_get_regs(struct rs5c372 *rs5c)
->  {
->   struct i2c_client *client = rs5c->client;
-> @@ -212,6 +215,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
->   struct rs5c372 *rs5c = i2c_get_clientdata(client);
->   int status = rs5c_get_regs(rs5c);
->   unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
-> + int flags_utime = 0;
->  
->   if (status < 0)
->   return status;
-> @@ -239,12 +243,28 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
->   tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
->   tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
->  
-> + /* The value read from the register may be zero, which is an illegal value */
-> + if (tm->tm_mday < 1) {
-> + flags_utime++;
-> + tm->tm_mday = 1;
-> + }
-> +
->   /* tm->tm_mon is zero-based */
->   tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
->  
-> + if (tm->tm_mon < 0) {
-> + /* avoid illegal month */
-> + flags_utime++;
-> + tm->tm_mon = 0;
-> + }
-> +
->   /* year is 1900 + tm->tm_year */
->   tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
->  
-> + /* update legal time */
-> + if (flags_utime > 0)
-> + rs5c372_rtc_set_time(dev, tm);
-> +
->   dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
->   "mday=%d, mon=%d, year=%d, wday=%d\n",
->   __func__,
-> -- 
-> 2.29.0
-> 
-> 
-> 
-> qxj511mail@gmail.com
->  
-> From: Nobuhiro Iwamatsu
-> Date: 2021-05-24 12:40
-> To: qxj511mail
-> CC: Alessandro Zummo; Alexandre Belloni; linux-rtc; Linux Kernel Mailing List; qiuxiaojin
-> Subject: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal When reading time from an uninitialized RTC chip, The value may be illegal
-> Hi,
->  
-> 2021年5月20日(木) 12:32 <qxj511mail@gmail.com>:
-> >
-> > From: qiuxiaojin <qiuxiaojin@cvte.com>
->  
-> Please briefly describe the patch contained in the email to the subject.
-> And, please write a description of the patch in the text
->  
-> >
-> > Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
-> > ---
-> >  drivers/rtc/rtc-rs5c372.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> > index 3bd6eaa0dcf6..ce61e15d5f3a 100644
-> > --- a/drivers/rtc/rtc-rs5c372.c
-> > +++ b/drivers/rtc/rtc-rs5c372.c
-> > @@ -212,6 +212,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> >         struct rs5c372  *rs5c = i2c_get_clientdata(client);
-> >         int             status = rs5c_get_regs(rs5c);
-> >         unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
-> > +       int flags_utime = 0;
-> >
-> >         if (status < 0)
-> >                 return status;
-> > @@ -239,12 +240,27 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> >         tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
-> >         tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
-> >
-> > +       if (tm->tm_mday < 1) {
-> > +               // The value read from the register may be zero, which is an illegal value
->  
-> Please use C89 style commet (/* */).
->  
-> > +               flags_utime = flags_utime + 1;
->  
-> I like using ++ (flags_utime++).
->  
-> > +               tm->tm_mday = 1;
-> > +       }
-> > +
-> >         /* tm->tm_mon is zero-based */
-> >         tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
-> >
-> > +       if (tm->tm_mon < 0) {
-> > +               flags_utime = flags_utime + 1;
-> > +               tm->tm_mday = 0;
-> > +       }
-> > +
-> >         /* year is 1900 + tm->tm_year */
-> >         tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
-> >
-> > +       if (flags_utime > 0) {
->  
-> {} is unnecessary.
->  
-> > +               rs5c372_rtc_set_time(dev, tm);
->  
-> A build error will occur because there is no declaration of
-> rs5c372_rtc_set_time.
-> Please make sure this can be compiled.
->  
-> > +       }
-> > +
-> >         dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
-> >                 "mday=%d, mon=%d, year=%d, wday=%d\n",
-> >                 __func__,
-> > --
-> > 2.29.0
-> >
->  
->  
-> -- 
-> Nobuhiro Iwamatsu
->    iwamatsu at {nigauri.org / debian.org}
->    GPG ID: 40AD1FA6
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Guenter
