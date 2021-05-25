@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE98138FC3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED1838FC20
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhEYIKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhEYIJH (ORCPT
+        id S232047AbhEYIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:09:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49427 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231730AbhEYIJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:09:07 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BE4C061345
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:52 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id h16so35015691edr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bd88TalnqZ3LuY6/Du24s6lZTeOXLy91wdCf8bz37vI=;
-        b=VxaQezS2eXZGJC806EUOiml4bqh6+BZ2t6g1CV6E9uZsWy3JBsCa1x5hXGdJ0fm6ra
-         MhKSl75VS6vcuI9YzVq1Ctwpoz/a8/vbmN3Mk7CcSgWyQ3lmVPceZmeVUJzxsEsj5Kc6
-         RK6gH1XjcsNMC4SjRa3U7vCO2Woo9yuryB/Ck=
+        Tue, 25 May 2021 04:09:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621930002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ub5yjHLwnKgzkGvx4GaW/I0s0yGaXeZ4jZCMAsk/qs4=;
+        b=iOsAfrrqHKZWQViAAUHhrBhUWcaJQBGdRr+8NQtmil8S/4ue0CejCP4hb5Hhvwq7NIaQw2
+        8bMxIGjodLmIiGRkRZ/qocu/hrjkdEw5hmDoMaODWzULkMBt+2VVqDHq8oz0QWBknQZKZr
+        pQfudtR7CJb5CSUPa007G8O3b4b74gs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-200KBWvgMYSOPHmI2QVRAA-1; Tue, 25 May 2021 04:06:39 -0400
+X-MC-Unique: 200KBWvgMYSOPHmI2QVRAA-1
+Received: by mail-ed1-f71.google.com with SMTP id q18-20020a0564025192b02903888712212fso16898508edd.19
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bd88TalnqZ3LuY6/Du24s6lZTeOXLy91wdCf8bz37vI=;
-        b=Q8duaftv9RXk+fCq+eUIwkHf7HuE9dic/ILntnzKBfWI2C9sNNkpytZbqm8p4FdHYc
-         IiZ4CgJ7D+gPlGkdNayKTiczV2kXPlSI7WlrCQ2YBSIu/Cxeq0ZDQc3i7BzX0QtcmNcS
-         0sZOoBATfrV43cNgmlpwKvaNqpOi9K6OniiJ+1dNlFMGlmVa4GN3RNnOkvhbBd8j5z+Q
-         jFvTKGf7zWSEiuOt8vgOrPsw4GNfBXQK+ikl7/cHeCIp3TU9hjtK9IBscA1KkP23q+ZW
-         AGcowXTC0gpsuT4OyBwzs08VRjPemXhUhheFQFcXvhvnSpvCUwCTOcygnsAfbqmmyjaj
-         +i5Q==
-X-Gm-Message-State: AOAM5323/FOS8b/hM9hmSh8eyzqLxU3lijSqi5V4m+rt7b6SkJfF23iI
-        NzD5+/iU9DATHtJuD6KKpFGG8bCwfiKbmg==
-X-Google-Smtp-Source: ABdhPJx/A6ZgUFIYyAgH2CXxCrafH773fndFHgi5J0mgY7LhHUqFMnpGCC+oQruxUiwKeko8OSES5g==
-X-Received: by 2002:aa7:cdd8:: with SMTP id h24mr29937603edw.276.1621930010358;
-        Tue, 25 May 2021 01:06:50 -0700 (PDT)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id i5sm10453234edt.11.2021.05.25.01.06.47
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ub5yjHLwnKgzkGvx4GaW/I0s0yGaXeZ4jZCMAsk/qs4=;
+        b=ru6sSrmDM2iQbn9eZL2KHM0JJBtqxER8PFnx6zL7Lv9wGBTBbXdlsNpoTPFcUMAakQ
+         hmkjTykrrAdkIikGJsI369/K1Gpc4MOPH49Z6ceAAfoGlERVD36IOAYKQQTq2OICWxeE
+         dNdLk2ElU3mQ+Hs/4dNGSkGjo+cBlOnJbp7oJUEht1+vnBGuPe0pyN4g5CQU4SoocNXi
+         NQGWekNdLWEYRfajGRjlUaazivTmvoJzR/x9H86CJL5zpbf2+kT906zA5jbhIErKAqDY
+         EZ93nXfJTNjRt+KrrFkBDQ0nDokCQVLI9W071BmpgCRPeHURBMqGS5670tax3lSsBzTb
+         YwiA==
+X-Gm-Message-State: AOAM5302UlzomIUUJlxX2s1OA+jPBOLl3pLe3gH/N0V8S7C0RPe5518I
+        LUZHdrLwxPk0vZuYXPidV0cefiElU5lv7Y/6CJh56Qz81AkyI8JkRQ2pCJC2R1CQpfOTYOcv83O
+        ttgEvjeiaaEfoWycgs88GOeCa
+X-Received: by 2002:a05:6402:40c1:: with SMTP id z1mr29288930edb.97.1621929998260;
+        Tue, 25 May 2021 01:06:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygZqhf+xYB7Ndg3ayTHtQu/3t0kArAedOP5pe98sDgQVP2z7+rV66oJGM/D3XST8tFG3f5gA==
+X-Received: by 2002:a05:6402:40c1:: with SMTP id z1mr29288906edb.97.1621929998039;
+        Tue, 25 May 2021 01:06:38 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n8sm8645618ejl.0.2021.05.25.01.06.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 01:06:48 -0700 (PDT)
-Received: by mail-wr1-f45.google.com with SMTP id q5so31113456wrs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:06:47 -0700 (PDT)
-X-Received: by 2002:a5d:4385:: with SMTP id i5mr26095922wrq.192.1621930007302;
- Tue, 25 May 2021 01:06:47 -0700 (PDT)
+        Tue, 25 May 2021 01:06:37 -0700 (PDT)
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        slp@redhat.com, sgarzare@redhat.com,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com> <20210524145928.GA3873@lst.de>
+ <7cc7f19b-34b3-1501-898d-3f41e047d766@redhat.com> <YKypgi2qcYVTgYdv@T590>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f1997919-e059-b50b-19b3-5741e3309000@redhat.com>
+Date:   Tue, 25 May 2021 10:06:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210326095840.364424-1-ribalda@chromium.org>
-In-Reply-To: <20210326095840.364424-1-ribalda@chromium.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 25 May 2021 17:06:35 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5AegMJCrcV7Qpb0oUQLjSiDa+Q7=ojrZs+z+WDSwLq6Ng@mail.gmail.com>
-Message-ID: <CAAFQd5AegMJCrcV7Qpb0oUQLjSiDa+Q7=ojrZs+z+WDSwLq6Ng@mail.gmail.com>
-Subject: Re: [PATCH v9 00/22] uvcvideo: Fix v4l2-compliance errors
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ricardo Ribalda <ribalda@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKypgi2qcYVTgYdv@T590>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+On 25/05/21 09:38, Ming Lei wrote:
+> On Tue, May 25, 2021 at 09:22:48AM +0200, Paolo Bonzini wrote:
+>> On 24/05/21 16:59, Christoph Hellwig wrote:
+>>> On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
+>>>> Possible drawbacks of this approach:
+>>>>
+>>>> - Hardware virtio_blk implementations may find virtqueue_disable_cb()
+>>>>     expensive since it requires DMA. If such devices become popular then
+>>>>     the virtio_blk driver could use a similar approach to NVMe when
+>>>>     VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+>>>>
+>>>> - If a blk_poll() thread is descheduled it not only hurts polling
+>>>>     performance but also delays completion of non-REQ_HIPRI requests on
+>>>>     that virtqueue since vq notifications are disabled.
+>>>
+>>> Yes, I think this is a dangerous configuration.  What argument exists
+>>> again just using dedicated poll queues?
+>>
+>> There isn't an equivalent of the admin queue in virtio-blk, which would
+>> allow the guest to configure the desired number of poll queues.  The number
+>> of queues is fixed.
+> 
+> Dedicated vqs can be used for poll only, and I understand VM needn't to know
+> if the vq is polled or driven by IRQ in VM.
+> 
+> I tried that in v5.4, but not see obvious IOPS boost, so give up.
+> 
+> https://github.com/ming1/linux/commits/my_v5.4-virtio-irq-poll
 
-On Fri, Mar 26, 2021 at 6:58 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
->
-> *v4l2-compliance -m /dev/media0 -a -f
-> Total for uvcvideo device /dev/media0: 8, Succeeded: 6, Failed: 2, Warnings: 0
-> Total for uvcvideo device /dev/video0: 54, Succeeded: 50, Failed: 4, Warnings: 2
-> Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
-> Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 102,
-> Failed: 6, Warnings: 2
->
-> After fixing all of them we go down to:
->
-> Total for uvcvideo device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
-> Total for uvcvideo device /dev/video0: 54, Succeeded: 54, Failed: 0, Warnings: 0
-> Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
-> Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 108,
-> Failed: 0, Warnings: 0
->
-> YES, NO MORE WARNINGS :)
->
-> Note that we depend on:
->
-> https://patchwork.linuxtv.org/project/linux-media/patch/20210317143453.483470-1-ribalda@chromium.org/
->
-> With Hans patch we can also pass v4l2-compliance -s.
->
-> Changelog from v8 (Thanks to Hans)
-> - 3 patches from Hans
-> - Add Reviewed-by
->
-> Hans Verkuil (4):
->   uvcvideo: uvc_ctrl_is_accessible: check for INACTIVE
->   uvcvideo: improve error handling in uvc_query_ctrl()
->   uvcvideo: don't spam the log in uvc_ctrl_restore_values()
->   uvc: use vb2 ioctl and fop helpers
->
-> Ricardo Ribalda (18):
->   media: v4l2-ioctl: Fix check_ext_ctrls
->   media: pvrusb2: Do not check for V4L2_CTRL_WHICH_DEF_VAL
->   media: uvcvideo: Do not check for V4L2_CTRL_WHICH_DEF_VAL
->   media: v4l2-ioctl: S_CTRL output the right value
->   media: uvcvideo: Remove s_ctrl and g_ctrl
->   media: uvcvideo: Set capability in s_param
->   media: uvcvideo: Return -EIO for control errors
->   media: uvcvideo: refactor __uvc_ctrl_add_mapping
->   media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
->   media: uvcvideo: Use dev->name for querycap()
->   media: uvcvideo: Set unique vdev name based in type
->   media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
->   media: uvcvideo: Use control names from framework
->   media: uvcvideo: Check controls flags before accessing them
->   media: uvcvideo: Set error_idx during ctrl_commit errors
->   media: uvcvideo: Return -EACCES to inactive controls
->   media: docs: Document the behaviour of uvcdriver
->   media: uvcvideo: Downgrade control error messages
->
->  .../userspace-api/media/v4l/vidioc-g-ctrl.rst |   5 +
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |   5 +
->  drivers/media/usb/pvrusb2/pvrusb2-v4l2.c      |   4 -
->  drivers/media/usb/uvc/uvc_ctrl.c              | 343 +++++++++++----
->  drivers/media/usb/uvc/uvc_driver.c            |  22 +-
->  drivers/media/usb/uvc/uvc_metadata.c          |  10 +-
->  drivers/media/usb/uvc/uvc_queue.c             | 143 -------
->  drivers/media/usb/uvc/uvc_v4l2.c              | 389 +++---------------
->  drivers/media/usb/uvc/uvc_video.c             |  51 ++-
->  drivers/media/usb/uvc/uvcvideo.h              |  54 +--
->  drivers/media/v4l2-core/v4l2-ioctl.c          |  67 +--
->  11 files changed, 444 insertions(+), 649 deletions(-)
->
-> --
-> 2.31.0.291.g576ba9dcdaf-goog
->
+Sure, but polling can be beneficial even for a single queue.  Queues 
+have a cost on the host side as well, so a 1 vCPU - 1 queue model may 
+not be always the best.
 
-Any comments on this? Could we have this merged?
+Paolo
 
-Thanks,
-Tomasz
