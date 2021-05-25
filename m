@@ -2,120 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7D63907BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0742F3907C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhEYRd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhEYRdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:33:52 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B83DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:32:21 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id b17so37244386ede.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FX+Myz9UW9+R3DoFF03APM91XZJ8+7X0lpmWP9GVHdc=;
-        b=j3/RnxzjxBQSByHoAXbaUZpLCoRKxj6b7S4lVDAMFxmWZ9K9Y8vp3bcjnonF1J6YoV
-         CFqMmCUnRQ0AjRprdBTtwoAuX3pchRY9X3IFu8qrOeGoz1sFiAXNMLBCbFUdalsd+JTl
-         TqfuE0kwZcqaDCE+ru1t/sVtYWAKprjX5cljC7MO7PvS5pW0Vye1a0z5p7UmFDGbUp/V
-         eO1OI5OdP7CC7+P+xRZqN1sKYYaSaelwrEQ++hal2SyblpLpqhmuOUbhFB83E4j+PNcg
-         VsBUCGbrsIQcS7iBAFfM/3+2p0iLRMYk2qa0tVUxCJbx7KRWSi9s7Zp84q6gps76VcRI
-         3q5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FX+Myz9UW9+R3DoFF03APM91XZJ8+7X0lpmWP9GVHdc=;
-        b=R94xR1IQGiC4Qzl3qf+c9zOYRokxnXsYtNFjpjotTJ9Jnj5HDElTnfFovsgS7eSyT6
-         fouLg+BMXlZCrTQPixeYkYzlq8BVGE/hEUSgXwl0Fx17sInY2G5we2y1zlxU5UEs3/rM
-         AnkJjfbvtfkhyy+fJ1Ac2l8yaZY0Tsw3g1n2IuBtZWmAQmC+rp0YcBilXVSvLu5K+6WN
-         46EusHnaY2XHus7budznmumXtXeXilldXhEBRIl8Lbun6Oe10Ag5iVaUYnTM2owH/XMQ
-         m4c67Rpxs547x9bK8askzRlHXbpjBiWO/17uHtzKHAzM0lylDF/FfeIUwHnGskOKLUgh
-         GaTg==
-X-Gm-Message-State: AOAM533WXh/LHqKlIgR5p0KlCPpEtRtKwJN/aZb7ZOpXkc6dcRoeda94
-        twgFSaZ+aY/D2kA25EbDVjI=
-X-Google-Smtp-Source: ABdhPJzqbdQp4LPkjittPUdOdComclEgugyKd2qH/RiZEWU244OkNGIfIUuVKM4ZdqJ7Hv7F1iPl2g==
-X-Received: by 2002:a05:6402:1d39:: with SMTP id dh25mr33179428edb.113.1621963939861;
-        Tue, 25 May 2021 10:32:19 -0700 (PDT)
-Received: from flex-5.fritz.box (x4db5b374.dyn.telefonica.de. [77.181.179.116])
-        by smtp.gmail.com with ESMTPSA id z4sm11061591edc.1.2021.05.25.10.32.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 10:32:19 -0700 (PDT)
-From:   Andreas Rehn <rehn.andreas86@gmail.com>
-To:     mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com
-Cc:     rfried.dev@gmail.com, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Andreas Rehn <rehn.andreas86@gmail.com>
-Subject: [PATCH v3] ARM: dts: sun8i: v3s: enable emac for zero Dock
-Date:   Tue, 25 May 2021 19:31:59 +0200
-Message-Id: <20210525173159.183415-1-rehn.andreas86@gmail.com>
+        id S233784AbhEYRew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:34:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:33014 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231266AbhEYReq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 13:34:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 921CB168F;
+        Tue, 25 May 2021 10:33:15 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7CCBF3F73B;
+        Tue, 25 May 2021 10:33:14 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: [RFC PATCH v2 00/10] irqchip/irq-gic: Optimize masking by leveraging EOImode=1
+Date:   Tue, 25 May 2021 18:32:45 +0100
+Message-Id: <20210525173255.620606-1-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210522205039.179486-1-rehn.andreas86@gmail.com>
-References: <20210522205039.179486-1-rehn.andreas86@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dwmac-sun8i supports v3s and
-Licheepi-zero Dock provides an ethernet port
-furthermore, align nodes in alphabetical order
+Hi folks!
 
-Signed-off-by: Andreas Rehn <rehn.andreas86@gmail.com>
----
-Changes in v3:
-	- align nodes in alphabetical order
-Changes in v2:
-	- add ethernet0 alias.
- .../boot/dts/sun8i-v3s-licheepi-zero-dock.dts   | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+This is the spiritual successor to [1], which was over 6 years ago (!).
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-index db5cd0b8574b..752ad05c8f83 100644
---- a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-+++ b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-@@ -49,16 +49,18 @@ / {
- 	compatible = "licheepi,licheepi-zero-dock", "licheepi,licheepi-zero",
- 		     "allwinner,sun8i-v3s";
- 
-+	aliases {
-+		ethernet0 = &emac;
-+	};
-+
- 	leds {
- 		/* The LEDs use PG0~2 pins, which conflict with MMC1 */
- 		status = "disabled";
- 	};
- };
- 
--&mmc1 {
--	broken-cd;
--	bus-width = <4>;
--	vmmc-supply = <&reg_vcc3v3>;
-+&emac {
-+	allwinner,leds-active-low;
- 	status = "okay";
- };
- 
-@@ -94,3 +96,10 @@ button-800 {
- 		voltage = <800000>;
- 	};
- };
-+
-+&mmc1 {
-+	broken-cd;
-+	bus-width = <4>;
-+	vmmc-supply = <&reg_vcc3v3>;
-+	status = "okay";
-+};
--- 
+Revisions
+=========
+
+RFCv1 -> RFCv2
+++++++++++++++
+
+o Rebased against latest tip/irq/core
+o Applied cleanups suggested by Thomas
+
+o Collected some performance results
+
+Background
+==========
+
+GIC mechanics
++++++++++++++
+
+There are three IRQ operations:
+o Acknowledge. This gives us the IRQ number that interrupted us, and also
+  - raises the running priority of the CPU interface to that of the IRQ
+  - sets the active bit of the IRQ
+o Priority Drop. This "clears" the running priority.
+o Deactivate. This clears the active bit of the IRQ.
+
+o The CPU interface has a running priority value. No interrupt of lower or
+  equal priority will be signaled to the CPU attached to that interface. On
+  Linux, we only have two priority values: pNMIs at highest priority, and
+  everything else at the other priority.
+o Most GIC interrupts have an "active" bit. This bit is set on Acknowledge
+  and cleared on Deactivate. A given interrupt cannot be re-signaled to a
+  CPU if it has its active bit set (i.e. if it "fires" again while it's
+  being handled).
+
+EOImode fun
++++++++++++
+
+In EOImode=0, Priority Drop and Deactivate are undissociable. The
+(simplified) interrupt handling flow is as follows: 
+
+  <~IRQ>
+    Acknowledge
+    Priority Drop + Deactivate
+    <interrupts can once again be signaled, once interrupts are re-enabled>
+
+With EOImode=1, we can invoke each operation individually. This gives us:
+
+  <~IRQ>
+    Acknowledge
+    Priority Drop
+    <*other* interrupts can be signaled from here, once interrupts are re-enabled>
+    Deactivate
+    <*this* interrupt can be signaled again>
+
+What this means is that with EOImode=1, any interrupt is kept "masked" by
+its active bit between Priority Drop and Deactivate.
+
+Threaded IRQs and ONESHOT
+=========================
+
+ONESHOT threaded IRQs must remain masked between the main handler and the
+threaded handler. Right now we do this using the conventional irq_mask()
+operations, which looks like this: 
+
+ <irq handler>
+   Acknowledge
+   Priority Drop   
+   irq_mask()
+   Deactivate
+
+ <threaded handler>
+   irq_unmask()
+
+However, masking for the GICs means poking the distributor, and there's no
+sysreg for that - it's an MMIO access. We've seen above that our IRQ
+handling can give us masking "for free", and this is what this patch set is
+all about. It turns the above handling into:
+
+  <irq handler>
+    Acknowledge
+    Priority Drop
+
+  <threaded handler>
+    Deactivate
+
+No irq_mask() => fewer MMIO accesses => happier users (or so I've been
+told). This is especially relevant to PREEMPT_RT which forces threaded
+IRQs.
+    
+Functional testing
+==================
+
+GICv2
++++++
+
+I've tested this on my Juno with forced irqthreads. This makes the pl011
+IRQ into a threaded ONESHOT IRQ, so I spammed my keyboard into the console
+and verified via ftrace that there were no irq_mask() / irq_unmask()
+involved.
+
+GICv3
++++++
+
+I've tested this on my Ampere eMAG, which uncovered "fun" interactions with
+the MSI domains. Did the same trick as the Juno with the pl011.
+
+pNMIs cause said eMAG to freeze, but that's true even without my patches. I
+did try them out under QEMU+KVM and that looked fine, although that means I
+only got to test EOImode=0. I'll try to dig into this when I get some more
+cycles.
+
+Performance impact
+==================
+
+Benchmark
++++++++++
+
+Finding a benchmark that leverages a force-threaded IRQ has proved to be
+somewhat of a pain, so I crafted my own. It's a bit daft, but so are most
+benchmarks (though this one might win a prize).
+
+Long story short, I'm picking an unused IRQ and have it be
+force-threaded. The benchmark then is:
+
+  <bench thread>
+    loop:
+      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
+      wait_for_completion(&done);
+
+  <threaded handler>
+    complete(&done);
+
+A more complete picture would be:
+
+  <bench thread>   <whatever is on CPU0>   <IRQ thread>
+    raise IRQ
+    wait
+		    run flow handler
+		      wake IRQ thread
+					    finish handling
+					    wake bench thread
+    
+Letting this run for a fixed amount of time lets me measure an entire IRQ
+handling cycle, which is what I'm after since there's one less mask() in
+the flow handler and one less unmask() in the threaded handler.
+
+You'll note there's some potential "noise" in there due to scheduling both
+the benchmark thread and the IRQ thread. However, the IRQ thread is pinned
+to the IRQ's affinity, and I also pinned the benchmark thread in my tests,
+which should keep this noise to a minimum.
+
+Results
++++++++
+
+On a Juno r0, 20 iterations of 5 seconds of that benchmark yields
+(measuring irqs/sec): 
+
+  | mean | median | 90th percentile | 99th percentile |
+  |------+--------+-----------------+-----------------|
+  | +11% |   +11% |            +12% |            +14% |
+
+On an Ampere eMAG, 20 iterations of 5 seconds of that benchmark yields
+(measuring irqs/sec):
+
+  | mean | median | 90th percentile | 99th percentile |
+  |------+--------+-----------------+-----------------|
+  | +20% |   +20% |            +20% |            +20% |
+
+This is still quite "artificial", but it reassures me in that skipping those
+(un)mask operations can yield some measurable improvement.
+
+Valentin Schneider (10):
+  genirq: Add chip flag to denote automatic IRQ (un)masking
+  genirq: Define irq_ack() and irq_eoi() helpers
+  genirq: Employ ack_irq() and eoi_irq() where relevant
+  genirq: Add handle_strict_flow_irq() flow handler
+  genirq: Let purely flow-masked ONESHOT irqs through
+    unmask_threaded_irq()
+  genirq: Don't mask IRQ within flow handler if IRQ is flow-masked
+  genirq, irq-gic-v3: Make NMI flow handlers use ->irq_ack() if
+    available
+  irqchip/gic-v3-its: Use irq_chip_ack_parent()
+  irqchip/gic: Convert to handle_strict_flow_irq()
+  irqchip/gic-v3: Convert to handle_strict_flow_irq()
+
+ drivers/irqchip/irq-gic-v3-its-pci-msi.c |   1 +
+ drivers/irqchip/irq-gic-v3-its.c         |   1 +
+ drivers/irqchip/irq-gic-v3.c             |  27 +++--
+ drivers/irqchip/irq-gic.c                |  14 ++-
+ include/linux/irq.h                      |  15 ++-
+ kernel/irq/chip.c                        | 122 ++++++++++++++++++++---
+ kernel/irq/debugfs.c                     |   2 +
+ kernel/irq/internals.h                   |   7 ++
+ kernel/irq/manage.c                      |   2 +-
+ 9 files changed, 159 insertions(+), 32 deletions(-)
+
+--
 2.25.1
 
