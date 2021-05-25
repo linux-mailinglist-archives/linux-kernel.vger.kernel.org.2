@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7F139038B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737FF390386
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhEYOKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbhEYOKp (ORCPT
+        id S233812AbhEYOKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:10:41 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:44722 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233481AbhEYOKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:10:45 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D7EC061574;
-        Tue, 25 May 2021 07:09:15 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id l18-20020a1c79120000b0290181c444b2d0so6352280wme.5;
-        Tue, 25 May 2021 07:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=hg0kLFdzUIdBjsi4lARjo6wP7z8MYrdqivPZrwICJsM=;
-        b=Rma14aAQYBXaxY6uZ4wfhq86yRkCJq8fuDMm5Dls1pmgyo2tJmZO9E2OZeypvtjgdR
-         fbBV33m11Y6vk+ldV7LF8kX0FAeGhwKvrCU8+Qf0O0L47G8+J6ea8ZjJZv1BaxjYZHjR
-         PM2yRsI0yhlakCN5k47kj3j9pLgag/qdGWvoGT7q3Y3uTZnDHyshh2hcLe2Pf0UjuBqr
-         9U8n489LVlqfheYYqUk1o3i6AbZ1jRu8mpaFiBKT6CS7wXxTAa7xGagqCnUiQSJ7/dHn
-         zqIl7LwxShg9ZqvCK+s+CNPVIGV77QkDE5YAWh2nQlDj2N1JPSb2m8efj5nF5Y2C1zWP
-         myGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=hg0kLFdzUIdBjsi4lARjo6wP7z8MYrdqivPZrwICJsM=;
-        b=qvgIUioMPxdo7V8cMe8JbtqAcVXJ35V+kl/jzMKuUIm35UTZVx2f99IfRFsKYZZreW
-         lNWFa0pOcZ5SahhuSqqMXLoCR/0QL6CVKMzqIvFC9oTwcMkFWEhrZtIEqzT5UDZZNqHs
-         hMfLU5zj/4UwtV+o+3IYC+tA7reTzOJ6Q3OJ8onSmEHk9HansiKww734Bd2sOzm0IN8c
-         WDDvJkEjCWGb4/ejyClYptF7GzlxZL6/t4Gm7x388WidtjU6y27qQLxrjnDSDkIsOtqV
-         K282hF5QLhJpcelgmWhFIezYfAvXb3W6O6NEUI70QDhW17Q3ClZ01OgAkd+Zqx0nOtVO
-         RwGQ==
-X-Gm-Message-State: AOAM530qyQSya/peVtLHK79QcEWyX+boM9XDzlNtT+sQwhSLSChxkZtM
-        qcllDV0h5Yq9Km/DGv4j04FyY1C5vSE=
-X-Google-Smtp-Source: ABdhPJw9LWIiUBXzKRCmur/frT8mNLcwchqQ0hbKF05DQ70SIz3IzbILlMtineBcApx+kWKJ+9SSkA==
-X-Received: by 2002:a1c:bcc3:: with SMTP id m186mr24240821wmf.74.1621951753781;
-        Tue, 25 May 2021 07:09:13 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:d67f:bd9a:6dbf:33b1? ([2a02:908:1252:fb60:d67f:bd9a:6dbf:33b1])
-        by smtp.gmail.com with ESMTPSA id l16sm3089148wmj.47.2021.05.25.07.09.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 07:09:13 -0700 (PDT)
-Subject: Re: [PATCH v2] amdgpu: remove unreachable code
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        alexander.deucher@amd.com
-Cc:     airlied@linux.ie, Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, sumit.semwal@linaro.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, christian.koenig@amd.com,
-        linux-media@vger.kernel.org
-References: <1621939214-57004-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <0dbdc879-8da7-3a08-1e42-6b8b88dfceb6@gmail.com>
-Date:   Tue, 25 May 2021 16:09:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 10:10:36 -0400
+X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 May 2021 10:10:35 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pJL83TGl0mX04nFFBoTwiq0XD/0RboBicSXs5ma3mwg=; b=jmeaga3+cisqWvTamaQfrtT5sJ
+        0BZ+PSNAZSnPIDtUOnJugy8lNJeV+TO/j6RYV/Lk1ULVlsxbyLvtdwy0yaIpVcOoUTHHerNvaxoQl
+        ILJ9r6bJ6qAXkm/EmMbfL+HvCgRQFHaYXm3lZnNcj55CnESVYK1ExxjtMJwY9PoqBCqI=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1llXjm-005l4l-ML; Tue, 25 May 2021 14:08:51 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 8195DD00386; Tue, 25 May 2021 15:09:24 +0100 (BST)
+Date:   Tue, 25 May 2021 15:09:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Lucas Tanure <tanureal@opensource.cirrus.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ASoC: cs42l42: Fix 1536000 Bit Clock instability
+Message-ID: <YK0FFJOOalQZKl1q@sirena.org.uk>
+References: <20210525090822.64577-1-tanureal@opensource.cirrus.com>
+ <d71d321f-1467-f8d6-4d1b-529723404d3c@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <1621939214-57004-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ED9N/z5atBV0RZe6"
+Content-Disposition: inline
+In-Reply-To: <d71d321f-1467-f8d6-4d1b-529723404d3c@opensource.cirrus.com>
+X-Cookie: The wages of sin are unreported.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--ED9N/z5atBV0RZe6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Am 25.05.21 um 12:40 schrieb Jiapeng Chong:
-> In the function amdgpu_uvd_cs_msg(), every branch in the switch
-> statement will have a return, so the code below the switch statement
-> will not be executed.
->
-> Eliminate the follow smatch warning:
->
-> drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
-> ignoring unreachable code.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
-> Changes in v2:
->    -For the follow advice: https://lore.kernel.org/patchwork/patch/1435074/
->
->   drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> index 82f0542..b32ed85 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> @@ -840,7 +840,6 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_ctx *ctx,
->   
->   	default:
->   		DRM_ERROR("Illegal UVD message type (%d)!\n", msg_type);
-> -		return -EINVAL;
->   	}
->   	BUG();
+On Tue, May 25, 2021 at 10:12:39AM +0100, Richard Fitzgerald wrote:
+> Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>=20
+> On 25/05/2021 10:08, Lucas Tanure wrote:
+> > The 16 Bits, 2 channels, 48K sample rate use case needs
+> > to configure a safer pll_divout during the start of PLL
 
-You also need to remove the BUG() here or otherwise that will crash on 
-an relatively harmless error.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-Christian.
+--ED9N/z5atBV0RZe6
+Content-Type: application/pgp-signature; name="signature.asc"
 
->   	return -EINVAL;
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCtBRMACgkQJNaLcl1U
+h9BkRAf8DQK0EW13T9xELk3PoeaZqHPbZt7haB9ejlDgKLlMXqpQ6vC3509HUk/O
+voRWJA7yr4Yt+jXhDXyU5t8pjfb0ImEpRw2+NHOBduU2DQa8E6tWG1i/pX3mnryj
+KJEFPnkltiioD6htW6IfJDa48Sg8QQchInpp8buEK70563OSa17FDw01qRNwFfkl
+w+gdE4EG31pVd6rvM45R0mwzYwLBKLGiIyx7YeD/NjR/NkqWW31g5WXMEBvXfrdi
+jI9ZnVMBWG+oMQ8SBmU5vmxyjDVaTb6kVQBDiUJ73+hjHVS/imJFMPl9Krn7dDYm
+JOaBbZqSv896Y+l7GUkS7IXlcCQwiA==
+=Jd8O
+-----END PGP SIGNATURE-----
+
+--ED9N/z5atBV0RZe6--
