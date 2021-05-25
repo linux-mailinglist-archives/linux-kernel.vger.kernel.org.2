@@ -2,368 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1345F3903EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750853903E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 16:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhEYOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 10:32:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6709 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233406AbhEYOcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 10:32:22 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FqGcd4rkszlYWh;
-        Tue, 25 May 2021 22:27:13 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 22:30:49 +0800
-Received: from localhost (10.52.120.147) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 25 May
- 2021 15:30:46 +0100
-Date:   Tue, 25 May 2021 15:28:58 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     <ira.weiny@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Alison Schofield" <alison.schofield@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/5] cxl: Add HDM decoder capbilities
-Message-ID: <20210525152858.00006a4a@Huawei.com>
-In-Reply-To: <20210522001154.2680157-6-ira.weiny@intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
-        <20210522001154.2680157-6-ira.weiny@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+        id S233962AbhEYOaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 10:30:46 -0400
+Received: from mail-bn8nam12on2124.outbound.protection.outlook.com ([40.107.237.124]:65152
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233635AbhEYOao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 10:30:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cgyy4y3jYHDZxuy+avVckmiC3r4F0RBldt3W4Ej1y45PqvbylQUvmZMGIyRJ1xYS4B9lCw+4f5XaVdL0B2pYo3G9pzlko8JBaA3nlldJhBhreNvJlSNZvG4BazeNIogRoTZGRCoGeKSIMEkskgQscXuV1Mz7/+3gGToIYIV+QV8xPly/46aFoXrqdWoflIa2/N6djJL76753cQlwgjBtF0NTddPNHn6o8frmFj0i/i3dUUWD66g7wmWyTvJuBXXP5d2l4GyG8ibhoIryLuow48TOcQSAV/fXYmRB6JcBbAckyQ5uTKDUUavX4gfTYXRnPUg8fvY4DppDaxyQVwidPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fnp79yGgN4TeoV+5FmmzTw3MzG4O8ixZ+X+WYRsgsTg=;
+ b=WCenoOLtJSHrB+P0Hb0JIecCWlNuvWJLS3DJA9OmA/E5ToTZLxsfWy9ubuJYHPH0QIfkVyMhtEurBskMuzjUD1iPvfadIHsJE84ImXKXFbE4LhdxuDmKhovt043S5zntKwchu0yhC56W6zVGlYCkUIh3J5sAZUU0CZb0QOf/jWNO7pm+izdkMnhS2Ml6W6ZkzBrVJNx6PGelSZJIxVZCw+lu3ajLb1XcQu9E0spZh66doGlrk43X2ehxZpuGBlmTJVHtOR0JQjr+6WFDw1Avn0hcG1Po5nEUmZt2J9MWH576V8i41+CFtvWpC22227uPtf6BoNdZwBoE2EsIOJ6mqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fnp79yGgN4TeoV+5FmmzTw3MzG4O8ixZ+X+WYRsgsTg=;
+ b=k+aOFj+0sB0bhLVcoJ9ofu6Gq0eET42X0/nvAev1T15+PuoatUiA/3BZFzfVq4Q9I8uxA8Jb2ZgnFvJXYD3oolw51wVmVPzucP1vI9cCE83Wfpc0/KkKU3jrpmK4GqQ8BzQt+fa8HIJHeGITvMRoazAPs7l/YuNce4/rOZdQSzSheLi305TKlUkhMBhfGCoSmWB4kduhGQ05OM4D/5gqn7O+Zm0oZ0OmKvXC9403qz6RqOkbRaILIJyF4QZkROSOpEQgvHe96slmrbNvrDhgQ5D13qHK7otqTE+E3q3EOqgxNJOyJUu1L+6VBCzTNHJNYVSWRkP278wQOEBKv1FzXg==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6198.prod.exchangelabs.com (2603:10b6:510:16::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.20; Tue, 25 May 2021 14:29:11 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 14:29:11 +0000
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210514150237.GJ1002214@nvidia.com> <YKTDPm6j29jziSxT@unreal>
+ <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+ <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+ <20210519202623.GU1002214@nvidia.com>
+ <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+ <20210525131358.GU1002214@nvidia.com>
+ <4e4df8bd-4e3a-fe35-041d-ed3ed95be1cb@cornelisnetworks.com>
+ <20210525142048.GZ1002214@nvidia.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <d37c470d-8ff3-b1a4-58fa-e198de952b01@cornelisnetworks.com>
+Date:   Tue, 25 May 2021 10:29:08 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
+In-Reply-To: <20210525142048.GZ1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.147]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [24.154.216.5]
+X-ClientProxiedBy: MN2PR12CA0008.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::21) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Denniss-MacBook-Pro.local (24.154.216.5) by MN2PR12CA0008.namprd12.prod.outlook.com (2603:10b6:208:a8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Tue, 25 May 2021 14:29:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2d718019-347e-46c3-940f-08d91f897699
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6198:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB61986C067E621CDC41E4D14AF4259@PH0PR01MB6198.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iIq6moKEyD7LmJL9SV0fijef4mc+pfn6iKv3nNjZaaD1JpR8QbAp9w1qVH/0L9VxPQMYE//8AqvKsaV416MuRjN5KF4uqBHM9WXxMdo18sFhW6fmls8COAxwjZBS5CbeyvwDY57e0xYRWBn4/iLGfDTRREeQIzeHDP6vlzaXcpYojKdS2I/kdfIYySWtovGn+Zm/n6TEA6uD7+/0K1vNTosM8I9j3REqX30r0+8DeJeA6bFTjML6NQLcXNJ9IymGJrBnTwV5oaugQZE8dU1KzLn58hD2+xljtxOOu7JYFIalgADnRfkRayRzhmIy9rf/U1yHnTUhwePc3US8jBRMYn/3pYvuvGdyLy4Kp+Im06FJCvDshnna1NT13a6BBbjzeHkuHJn+XXuPcj1/pmBGoZMbarodvZXvFnSDsV+WTKXlTqui/CLeI9/4WsqeQsR5GC4aOS36LowItOwFP0UeJ5JSRXjUmIRrCHu/A6xGXsWQ4mJmB0kqTiiNqnZFB7s/az7TvAXJopXMEH1arU7rZ8EUYNeZj2jpQhuYpBHYZgHTp4nNgKysn5rJShw+X3TbytHzkkuQ276YHh7PFLrezFN08UjQ1Yvse7ZuI0kv9BbUROJ0XkyD1MjHJ5rKeSwe6a92sZp0T9hXP3asoDlVNt3VIJxUHkCWlmDmC0SRN5JtZNaV+A++55BhZ84koU2B2M0KDBuJMQNIAjnI+sHLcHbGkaMsD2tEwlCGS5cZETs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39830400003)(366004)(136003)(376002)(36756003)(26005)(38350700002)(66556008)(66476007)(2906002)(31696002)(66946007)(54906003)(316002)(8936002)(8676002)(2616005)(186003)(16526019)(4326008)(956004)(44832011)(6512007)(6486002)(38100700002)(4744005)(478600001)(6506007)(86362001)(31686004)(6916009)(52116002)(53546011)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M0YzNnBYa0RqZjdYT25CQ3JCYUlLUkphUHgwUjVHemZPSWpOcEZFUHNPVWFy?=
+ =?utf-8?B?YmVrNHhURCtWL1RNWVZXcmM2Wk83R0V5YTVJWU5zK1FjYlpldCttcTJORGpn?=
+ =?utf-8?B?dlBkYkluSU1KYk53bFUzSnByNGpNMjRpbDZBV3FXbGVtcmZ1UDByRDk5SHM0?=
+ =?utf-8?B?VUtNRDF4WlpLL3BKeTVRVE5reE9rYnVzUnQ0Nmp2bzdCdjRpbW5mdEJSRHd3?=
+ =?utf-8?B?emE4di9GdkNScm5Bb2tFRXlCdDJ6VytUeEN2MVU2RDBwUzIrTEpDbmVYT2g2?=
+ =?utf-8?B?eWQ4VGRGRFhMSEFseGJXMjJqQlY1RzJYUDVOdmdmdkUzakEwNGVDY05STTFO?=
+ =?utf-8?B?bUNQMndCNkVNeTcvWDlCV3JyVndpeWtCR1pOVTE0NkJhQVpFcjk0ZytuMzhx?=
+ =?utf-8?B?ZFVyUHR5ZzdwZ2RXWXpRdXBLTkVZR2Y0OGluKzMwcVNxVW11Q2VmcDNaQ2xM?=
+ =?utf-8?B?WVZtTWhrN2tiRndnR3FMS3BHQ2pJRWUrTnRYbzdSREEyTWJ1eFU4OHBOTzhK?=
+ =?utf-8?B?UEp4Q0txRW5mL2RnRmZkMXg5RmEvSVdmMWtrdWNEaUZjVjBHdXYxbStpWUJi?=
+ =?utf-8?B?M1JibGxKSFNWcUhHSVQyUnAxbXJERkIyU2hKN3NETk1IcnZJZFpCSGtZZysx?=
+ =?utf-8?B?ak8rNDN1ZDdFbW5uclp4dDlSVjFmWmUyUElrZ0hGT1dFZjBRb2JlNUNsNG8y?=
+ =?utf-8?B?Mi91eEQ2Wk9EMlNJMzRQdGxCYzZDbUZiRnFrZW04b2Ezd2R0SHBxOUtiVVhr?=
+ =?utf-8?B?NDJBTUhXekNaN25MdDJEL3d0WWVienpHMkZQT1E5TVVXeDFsbnVwdG94YkRx?=
+ =?utf-8?B?QlNBdkdLVmZjTFdhZ2RnV3g4R2tNa3lTUFI2aHJKbzhVZVg4cmVFWlRIZExU?=
+ =?utf-8?B?ZnhtVllocVcwQWFHY1lzcjgrdVV4cWdubHE5NC9rd2ViNGpxZDQ2ajBPWGJF?=
+ =?utf-8?B?NnNxaGhKVDdwMjZqakF5S01MdG1RcUFjUDZqZGZIVjJmSTVDRFNPNUcrR0pu?=
+ =?utf-8?B?MHRuQ3dDK3RtcGczUHpmWm5NL2NYT0lVdmpVTmF6TFF0N3pETDBvQ2x3SXox?=
+ =?utf-8?B?SnZtWmloVW1SUFh3Q0FrSjhSaVBlbWJFcDBMZllUcGhVMmhyTmFYdkd1OHc5?=
+ =?utf-8?B?NDJOYTluc3FzMHc2bUdXcitvNGRtUzdveEZtb3pIUzViSzJaMGVhY2xBL2ZG?=
+ =?utf-8?B?MkpncHkxdWl6T3diMDl0M05xNUdIemxyZDdvekc3UXd2NnRzS0dDT01EUlV2?=
+ =?utf-8?B?NGJldmNDZGxZcVkwdEZhZ2J2MEl4eDUzK05kRlEzTXF6dGFENytZRE9DczEr?=
+ =?utf-8?B?aURkbGdLak5JSzd1VExPT2VlcUZUMVNCSm9rMElGcklYRlZvWDROb0hjQWRN?=
+ =?utf-8?B?SzZFUVRBb2IyYjF3VDdZUjhkTmJyQVpSOW9UVFFFNHRyQzJaT1FlTXJtZnRN?=
+ =?utf-8?B?NnFscFZUcHEvcExDYmpMbnd0KzJYZ1VQWjVWQUExYjVHbFU0dldpUFZaMFRY?=
+ =?utf-8?B?a3Z3WTFZMkxrdUViL3QxZ3pOaGxFRi83Ny9RSm0yLy8wSVZnUm50L1FqcWZy?=
+ =?utf-8?B?VWJybnp5bThzT1ovY21rRmFnSEI3ZnhGbFhlWFFtSUVsUGFteVJnenJxMkNH?=
+ =?utf-8?B?QTc1VTlya1FiNldwa21Dem94OTI3VGFhYy9YQ25jZldPSDJDODhmeHdQdnhr?=
+ =?utf-8?B?OG1EMys4dk1ISzc5K0JkcExCZ2hxVU1kZzY4QVc0UnQvczRFME5yWGF5czk4?=
+ =?utf-8?Q?+KRbkJnZsY/zOlNg7jWwwqb/rVKnfPfH/dqgcbn?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d718019-347e-46c3-940f-08d91f897699
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 14:29:11.1866
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lDzi5Wi6SD17qstn5U/35Or/w9eOa/maxJI3nxHJbYag7vfs/nXMIBlYKZlzb7PjkQjD/K8ZDWVHuixqxV5m+XQx5Zjw1QMa2YigobpFUbYtAid2AoPAV3wV69HYygDh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6198
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:11:54 -0700
-<ira.weiny@intel.com> wrote:
-
-> From: Ben Widawsky <ben.widawsky@intel.com>
+On 5/25/21 10:20 AM, Jason Gunthorpe wrote:
+>> We are already mid 5.13 cycle. So the earliest this could be queued up to go
+>> in is 5.14. Can this wait one more cycle? If we can't get it tested/proven
+>> to make a difference mid 5.14, we will drop the objection and Leon's patch
+>> can go ahead in for 5.15. Fair compromise?
 > 
-> An HDM decoder is defined in the CXL 2.0 specification as a mechanism
-> that allow devices and upstream ports to claim memory address ranges and
-> participate in interleave sets. HDM decoder registers are within the
-> component register block defined in CXL 2.0 8.2.3 CXL 2.0 Component
-> Registers as part of the CXL.cache and CXL.mem subregion.
-> 
-> The Component Register Block is found via the Register Locator DVSEC
-> in a similar fashion to how the CXL Device Register Block is found. The
-> primary difference is the capability id size of the Component Register
-> Block is a single DWORD instead of 4 DWORDS.
-> 
-> It's now possible to configure a CXL type 3 device's HDM decoder. Such
-> programming is expected for CXL devices with persistent memory, and hot
-> plugged CXL devices that participate in CXL.mem with volatile memory.
-> 
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> Co-developed-by: Vishal Verma <vishal.l.verma@intel.com>
-> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Fine, but the main question is if you can use normal memory policy
+> settings, not this.
 
-Totally trivial comments inline. Otherwise LGTM
+Agreed.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> 
-> ---
-> Version 1:
-> Link: https://lore.kernel.org/r/20210407222625.320177-8-ben.widawsky@intel.com
-> Message-Id: <20210407222625.320177-8-ben.widawsky@intel.com>
-> 
-> Changes for V2:
-> 	Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git/commit/?h=pending
-> 	From Dan
-> 		Remove version checking
-> 		Remove unneeded TODO/FIXME comments
-> ---
->  drivers/cxl/core.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/cxl.h  | 65 +++++++++++++++++++++++++++++++++----
->  drivers/cxl/pci.c  | 15 +++++++++
->  drivers/cxl/pci.h  |  1 +
->  4 files changed, 156 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> index ae38f17be1e7..c0ced872a48d 100644
-> --- a/drivers/cxl/core.c
-> +++ b/drivers/cxl/core.c
-> @@ -13,6 +13,67 @@
->   * point for cross-device interleave coordination through cxl ports.
->   */
->  
-> +void cxl_probe_component_regs(struct device *dev, void __iomem *base,
-> +			      struct cxl_component_reg_map *map)
-> +{
-> +	int cap, cap_count;
-> +	u64 cap_array;
-> +
-> +	*map = (struct cxl_component_reg_map) { 0 };
-> +
-> +	/*
-> +	 * CXL.cache and CXL.mem registers are at offset 0x1000 as defined in
-> +	 * CXL 2.0 8.2.4 Table 141.
-
-Perhaps makes more sense to have this next to the define?
-
-> +	 */
-> +	base += CXL_CM_OFFSET;
-> +
-> +	cap_array = readq(base + CXL_CM_CAP_HDR_OFFSET);
-> +
-> +	if (FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, cap_array) != CM_CAP_HDR_CAP_ID) {
-> +		dev_err(dev,
-> +			"Couldn't locate the CXL.cache and CXL.mem capability array header./n");
-> +		return;
-> +	}
-> +
-> +	/* It's assumed that future versions will be backward compatible */
-> +	cap_count = FIELD_GET(CXL_CM_CAP_HDR_ARRAY_SIZE_MASK, cap_array);
-> +
-> +	for (cap = 1; cap <= cap_count; cap++) {
-> +		void __iomem *register_block;
-> +		u32 hdr;
-> +		int decoder_cnt;
-> +		u16 cap_id, offset;
-> +		u32 length;
-> +
-> +		hdr = readl(base + cap * 0x4);
-> +
-> +		cap_id = FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, hdr);
-> +		offset = FIELD_GET(CXL_CM_CAP_PTR_MASK, hdr);
-> +		register_block = base + offset;
-> +
-> +		switch (cap_id) {
-> +		case CXL_CM_CAP_CAP_ID_HDM:
-> +			dev_dbg(dev, "found HDM decoder capability (0x%x)\n",
-> +				offset);
-> +
-> +			hdr = readl(register_block);
-> +
-> +			decoder_cnt = FIELD_GET(CXL_HDM_DECODER_COUNT_MASK, hdr);
-> +			length = 0x20 * decoder_cnt + 0x10;
-> +
-> +			map->hdm_decoder.valid = true;
-> +			map->hdm_decoder.offset = offset;
-> +			map->hdm_decoder.size = length;
-> +			break;
-> +		default:
-> +			dev_dbg(dev, "Unknown CM cap ID: %d (0x%x)\n", cap_id,
-> +				offset);
-> +			break;
-> +		}
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(cxl_probe_component_regs);
-> +
->  void cxl_probe_device_regs(struct device *dev, void __iomem *base,
->  			   struct cxl_device_reg_map *map)
->  {
-> @@ -97,6 +158,26 @@ static void __iomem *cxl_ioremap_block(struct pci_dev *pdev,
->  	return ret_val;
->  }
->  
-> +int cxl_map_component_regs(struct pci_dev *pdev,
-> +			   struct cxl_component_regs *regs,
-> +			   struct cxl_register_map *map)
-> +{
-> +	resource_size_t phys_addr;
-> +	resource_size_t length;
-> +
-> +	phys_addr = pci_resource_start(pdev, map->barno);
-> +	phys_addr += map->block_offset;
-> +
-> +	phys_addr += map->component_map.hdm_decoder.offset;
-> +	length = map->component_map.hdm_decoder.size;
-> +	regs->hdm_decoder = cxl_ioremap_block(pdev, phys_addr, length);
-> +	if (!regs->hdm_decoder)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(cxl_map_component_regs);
-> +
->  int cxl_map_device_regs(struct pci_dev *pdev,
->  			struct cxl_device_regs *regs,
->  			struct cxl_register_map *map)
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index ae4b4c96c6b5..2c47e9cffd44 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -8,6 +8,31 @@
->  #include <linux/bitops.h>
->  #include <linux/io.h>
->  
-> +/* CXL 2.0 8.2.5 CXL.cache and CXL.mem Registers*/
-> +#define CXL_CM_OFFSET 0x1000
-> +#define CXL_CM_CAP_HDR_OFFSET 0x0
-> +#define   CXL_CM_CAP_HDR_ID_MASK GENMASK(15, 0)
-> +#define     CM_CAP_HDR_CAP_ID 1
-> +#define   CXL_CM_CAP_HDR_VERSION_MASK GENMASK(19, 16)
-> +#define     CM_CAP_HDR_CAP_VERSION 1
-> +#define   CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK GENMASK(23, 20)
-> +#define     CM_CAP_HDR_CACHE_MEM_VERSION 1
-> +#define   CXL_CM_CAP_HDR_ARRAY_SIZE_MASK GENMASK(31, 24)
-> +#define CXL_CM_CAP_PTR_MASK GENMASK(31, 20)
-> +
-> +#define   CXL_CM_CAP_CAP_ID_HDM 0x5
-> +#define   CXL_CM_CAP_CAP_HDM_VERSION 1
-> +
-> +/* HDM decoders CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure */
-> +#define CXL_HDM_DECODER_CAP_OFFSET 0x0
-> +#define   CXL_HDM_DECODER_COUNT_MASK GENMASK(3, 0)
-> +#define   CXL_HDM_DECODER_TARGET_COUNT_MASK GENMASK(7, 4)
-> +#define CXL_HDM_DECODER0_BASE_LOW_OFFSET 0x10
-> +#define CXL_HDM_DECODER0_BASE_HIGH_OFFSET 0x14
-> +#define CXL_HDM_DECODER0_SIZE_LOW_OFFSET 0x18
-> +#define CXL_HDM_DECODER0_SIZE_HIGH_OFFSET 0x1c
-> +#define CXL_HDM_DECODER0_CTRL_OFFSET 0x20
-> +
->  /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
->  #define CXLDEV_CAP_ARRAY_OFFSET 0x0
->  #define   CXLDEV_CAP_ARRAY_CAP_ID 0
-> @@ -34,18 +59,30 @@
->  #define CXLDEV_MBOX_BG_CMD_STATUS_OFFSET 0x18
->  #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
->  
-> -/*
-> - * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
-> - * @status: CXL 2.0 8.2.8.3 Device Status Registers
-> - * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
-> - * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
-> - */
-> +#define CXL_COMPONENT_REGS() \
-> +	void __iomem *hdm_decoder
-> +
->  #define CXL_DEVICE_REGS() \
->  	void __iomem *status; \
->  	void __iomem *mbox; \
->  	void __iomem *memdev
->  
->  /* See note for 'struct cxl_regs' for the rationale of this organization */
-> +/*
-> + * CXL_COMPONENT_REGS - Common set of CXL Component register block base pointers
-> + * @hdm_decoder: CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure
-> + */
-> +struct cxl_component_regs {
-> +	CXL_COMPONENT_REGS();
-> +};
-> +
-> +/* See note for 'struct cxl_regs' for the rationale of this organization */
-> +/*
-> + * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
-> + * @status: CXL 2.0 8.2.8.3 Device Status Registers
-> + * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
-> + * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
-> + */
->  struct cxl_device_regs {
->  	CXL_DEVICE_REGS();
->  };
-> @@ -56,6 +93,12 @@ struct cxl_device_regs {
->   * agnostic code to include the prefix.
->   */
->  struct cxl_regs {
-> +	union {
-> +		struct {
-> +			CXL_COMPONENT_REGS();
-> +		};
-> +		struct cxl_component_regs component;
-> +	};
->  	union {
->  		struct {
->  			CXL_DEVICE_REGS();
-> @@ -70,6 +113,10 @@ struct cxl_reg_map {
->  	unsigned long size;
->  };
->  
-> +struct cxl_component_reg_map {
-> +	struct cxl_reg_map hdm_decoder;
-> +};
-> +
->  struct cxl_device_reg_map {
->  	struct cxl_reg_map status;
->  	struct cxl_reg_map mbox;
-> @@ -82,12 +129,18 @@ struct cxl_register_map {
->  	u8 reg_type;
->  	u8 barno;
->  	union {
-> +		struct cxl_component_reg_map component_map;
->  		struct cxl_device_reg_map device_map;
->  	};
->  };
->  
-> +void cxl_probe_component_regs(struct device *dev, void __iomem *base,
-> +			      struct cxl_component_reg_map *map);
->  void cxl_probe_device_regs(struct device *dev, void __iomem *base,
->  			   struct cxl_device_reg_map *map);
-> +int cxl_map_component_regs(struct pci_dev *pdev,
-> +			   struct cxl_component_regs *regs,
-> +			   struct cxl_register_map *map);
->  int cxl_map_device_regs(struct pci_dev *pdev,
->  			struct cxl_device_regs *regs,
->  			struct cxl_register_map *map);
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 776cb8e28c2d..bf16328c6992 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -982,9 +982,20 @@ static int cxl_probe_regs(struct cxl_mem *cxlm, void __iomem *base,
->  {
->  	struct pci_dev *pdev = cxlm->pdev;
->  	struct device *dev = &pdev->dev;
-> +	struct cxl_component_reg_map *comp_map;
->  	struct cxl_device_reg_map *dev_map;
->  
->  	switch (map->reg_type) {
-> +	case CXL_REGLOC_RBI_COMPONENT:
-> +		comp_map = &map->component_map;
-> +		cxl_probe_component_regs(dev, base, comp_map);
-> +		if (!comp_map->hdm_decoder.valid) {
-> +			dev_err(dev, "HDM decoder registers not found\n");
-> +			return -ENXIO;
-> +		}
-> +
-> +		dev_dbg(dev, "Set up component registers\n");
-> +		break;
->  	case CXL_REGLOC_RBI_MEMDEV:
->  		dev_map = &map->device_map;
->  		cxl_probe_device_regs(dev, base, dev_map);
-> @@ -1012,6 +1023,10 @@ static int cxl_map_regs(struct cxl_mem *cxlm, struct cxl_register_map *map)
->  	struct device *dev = &pdev->dev;
->  
->  	switch (map->reg_type) {
-> +	case CXL_REGLOC_RBI_COMPONENT:
-> +		cxl_map_component_regs(pdev, &cxlm->regs.component, map);
-> +		dev_dbg(dev, "Mapping component registers...\n");
-> +		break;
->  	case CXL_REGLOC_RBI_MEMDEV:
->  		cxl_map_device_regs(pdev, &cxlm->regs.device_regs, map);
->  		dev_dbg(dev, "Probing device registers...\n");
-> diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
-> index af3ec078cf6c..8b8c6afbe605 100644
-> --- a/drivers/cxl/pci.h
-> +++ b/drivers/cxl/pci.h
-> @@ -25,6 +25,7 @@
->  #define CXL_REGLOC_RBI_COMPONENT 1
->  #define CXL_REGLOC_RBI_VIRT 2
->  #define CXL_REGLOC_RBI_MEMDEV 3
-> +#define CXL_REGLOC_RBI_MAX CXL_REGLOC_RBI_MEMDEV
-
-This doesn't seem to be used.
-
->  
->  #define CXL_REGLOC_ADDR_MASK GENMASK(31, 16)
->  
+-Denny
 
