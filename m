@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0B338FEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0017238FEF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEYKTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:19:19 -0400
-Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:50724 "EHLO
-        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229597AbhEYKTP (ORCPT
+        id S231382AbhEYKWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhEYKVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:19:15 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id AE9E1C0BED
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 11:17:44 +0100 (IST)
-Received: (qmail 1239 invoked from network); 25 May 2021 10:17:44 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 May 2021 10:17:44 -0000
-Date:   Tue, 25 May 2021 11:17:42 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC 02/26] mm, slub: allocate private object map for
- validate_slab_cache()
-Message-ID: <20210525101742.GK30378@techsingularity.net>
-References: <20210524233946.20352-1-vbabka@suse.cz>
- <20210524233946.20352-3-vbabka@suse.cz>
+        Tue, 25 May 2021 06:21:55 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B376C061574;
+        Tue, 25 May 2021 03:20:24 -0700 (PDT)
+Received: from zn.tnic (p4fed31b3.dip0.t-ipconnect.de [79.237.49.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1549A1EC0249;
+        Tue, 25 May 2021 12:20:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621938020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fGrCayp66cgHTxO8nrBmCrkie2Nar3xGkMKSmgVgaMw=;
+        b=pnMzekdarafVVULSBhst4uXxGpj8q/Kpbg2hGrEvEoz/hRr9oDuiKTfuAa0G4O8FHCUbfQ
+        HJFucU7u5Aqdx8Q98FnT4zF40vc/qAmNZxVcumgog7v2yyEssfyysGPEJTRSMdCcW3ZUoC
+        P7+2Agyc/BaR5UeC3qEnznDFlVoZ1Aw=
+Date:   Tue, 25 May 2021 12:18:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 11/20] x86/compressed: Add helper for
+ validating pages in the decompression stage
+Message-ID: <YKzO2+Dwb5ABKFyF@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-12-brijesh.singh@amd.com>
+ <YKah5QInPK4+7xaC@zn.tnic>
+ <921408d1-a399-7089-8647-f9617eb12919@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210524233946.20352-3-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <921408d1-a399-7089-8647-f9617eb12919@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:39:22AM +0200, Vlastimil Babka wrote:
-> validate_slab_cache() is called either to handle a sysfs write, or from a
-> self-test context. In both situations it's straightforward to preallocate a
-> private object bitmap instead of grabbing the shared static one meant for
-> critical sections, so let's do that.
+On Thu, May 20, 2021 at 01:05:15PM -0500, Brijesh Singh wrote:
+> Maybe I am missing something, the statement above was executed for
+> either set or clr but the page shared need to happen only for clr. So,
+> from code readability point I kept it outside of that if().
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->
-> <SNIP>
->
-> @@ -4685,10 +4685,17 @@ static long validate_slab_cache(struct kmem_cache *s)
->  	int node;
->  	unsigned long count = 0;
->  	struct kmem_cache_node *n;
-> +	unsigned long *obj_map;
-> +
-> +	obj_map = bitmap_alloc(oo_objects(s->oo), GFP_KERNEL);
-> +	if (!obj_map)
-> +		return -ENOMEM;
->  
+> Otherwise we may have to do something like.
+> 
+> ...
+> 
+> if ((set | clr) & _PAGE_EN) {
+> 
+>    if (clr)
+> 
+>     snp_set_page_shared(pte_pfn(*ptep) << PAGE_SHIFT);
+> 
+>   }
+> 
+> I am okay with above is the preferred approach.
 
+Yes pls, because it keeps the _PAGE_ENC handling together in one
+statement.
 
-Most callers of validate_slab_cache don't care about the return value
-except when the validate sysfs file is written. Should a simply
-informational message be displayed for -ENOMEM in case a writer to
-validate fails and it's not obvious it was because of an allocation
-failure?
-
-It's a fairly minor concern so whether you add a message or not
-
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Thx.
 
 -- 
-Mel Gorman
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
