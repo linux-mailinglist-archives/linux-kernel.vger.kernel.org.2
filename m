@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE9D38F6F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBC638F6F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhEYAZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S229819AbhEYA2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhEYAZa (ORCPT
+        with ESMTP id S229539AbhEYA2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:25:30 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573B9C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:24:00 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id c15so35870865ljr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:24:00 -0700 (PDT)
+        Mon, 24 May 2021 20:28:43 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6FAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:27:13 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f30so6170897lfj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=67r0IyTNKB1ymOtz0XDUp8t8JuIpjQtfAAPkETfacjY=;
-        b=GJrle6GDtL8Vz7erdhdN6uADC6azVv6HIoWn1wjYxJFpu+/+6VHSwgQY+C0XOPTMRA
-         iDm4yJPjnwvtnEjayphzTvZCZfxld0LxvIiAtvLryd8mbm+lH9+Uf1XbjiFuAAjsGMkW
-         HC3+TTcbsTyvdCaD4UU+0rQV5e/LlaB5zpzyXgTA5cdG45dbW8vBxxsmhPTLFNTXC5Xr
-         mi9IGoQvMKmXkErLCYn2SW4ociWmRui0ChMWCZPZZHQiCommEd8wo2TduWSDZPsJqpC1
-         +8W4Sm9mGUaXQ1mv+DTuXEsGltnfBR0LSLmtbD/0tdEplHkC6QWBgbWinuUSVx+gol7g
-         VPwQ==
+        bh=ggN1ZyfpjeoPcK+b5TpMOSXo8A025wCmUM01aYg2EFg=;
+        b=yOT2sHQJz8nvp4O5Q4NWuzU2gw8PBgy3p+S3aN5f0xs7BIpw9pWlTB5YBfiIhph5Gq
+         3e33psxLGjctQdgqQbZapy3ir0V8qNI8Hjjc0YzhqWOMydI9tBoaYv+LsXyzCHmMJG7y
+         3bzpcXma78Www3l4uL1lNF6jOMiRuS4OwYSzkY117QzTmLdGPIVMsQWdHnww5QxrwNxN
+         Ulxqccg8A1YclQdQqkSYCME5+iV+SosXJAtPDM+vJqs2lj8beVe96oGlR0SY2QoklGvy
+         CNIeUM5pZJodgZSHoa+B+0UDGT/lp6TjDK1VsxnDxZeBma79xT4cd3vOuzmRsk1H4iI5
+         sOqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=67r0IyTNKB1ymOtz0XDUp8t8JuIpjQtfAAPkETfacjY=;
-        b=hV1n2eiA1JKoOhiSCjAbQyQ5b0TPgYgY0yAHxNt8aWaRRj0KM+4dslQt2iB0jQym9c
-         OlJSQJZckR9wzll2QZNlpS6GO8TQhk4oaMjTtZ1dnpy7q8oghWgxowtogQ4k6hoo4LTi
-         8TowNrtTS1qzL2OCJKgwqp6RShZyz7UssHR1H+FsQZwDF59skHwJp/5X+qd6F8HOze3a
-         X+1oMMowefoszkSorJYhD/IRbomxkmG7TeGi1Ms/Fed5HMlOLBY6D47FYXWeq/K7OYdR
-         yj6ouUN+xYfPO/jv2dD7lC70euMSGvfShg8fSVozxHY61HW92CcO6iJ4fF1D07ozdLYe
-         0IsQ==
-X-Gm-Message-State: AOAM533nAtq0clcygk7OpJPZ1BegcPXt3DyfAzDJkkJbGHh2jYr9AOfg
-        vy0vKHWAMCqqWDt9zaWKQQfZ24spjul0UHy4vyux40mBRQU=
-X-Google-Smtp-Source: ABdhPJxiz9uAg5mYC26qFwvFgWpntOH8FLCCrNFyNdBKjLbBKN+cJdD5HzDY1N6DT4gjxKfpK9gw1UEMeEk/qWEsn3k=
-X-Received: by 2002:a05:651c:4c6:: with SMTP id e6mr19398398lji.326.1621902238056;
- Mon, 24 May 2021 17:23:58 -0700 (PDT)
+        bh=ggN1ZyfpjeoPcK+b5TpMOSXo8A025wCmUM01aYg2EFg=;
+        b=rqkd0MCHPEHIR24xm7EhDXXQ98nOBVd7OlOsi2f7Lyj4+ZSc3Zcb+1w+6jZyYWcZSV
+         p08u4BztMPIxjnjHSABMjQzUAVbD1tHWjplyBVLnQxD2EBtUWpzUiIoWAOLWbHbpek7M
+         8jbveD8EFRykbwhjToIv/gOstVYKKtTdtSJcMSf3hw1CVYOuvoTiOqgKwV/aQUn5QwbY
+         MhE5S0X+8Qo28p6NF+uruk2cMxfW1D/UOzjZGEMRKU4yvQEQwbO8MjfleWE/73Y2hHlt
+         5AyeewgKoOiCgra9ehPvJWAupZPClfqrhRpmG6OA8hUfdg1JTbvxhmW4KETcDwFp+D0Z
+         Xowg==
+X-Gm-Message-State: AOAM533yPQbIlsna42sNyJmaHhOzfxIIdhwtcVrwdq9VNptnOIWfqTAG
+        KOmtE0gz0a/EzZTQ3qNOeX8P29LD17uC33oQxCc6Lw==
+X-Google-Smtp-Source: ABdhPJyTefEIZ5y+qK7V+5Tec9ATzRvj6RgLSmVl0ftrBQcwXR6JAiYbyr8zFfudSZ+XDMF1phSLLmlUZr5h2L0Zwic=
+X-Received: by 2002:ac2:5145:: with SMTP id q5mr12322949lfd.529.1621902431406;
+ Mon, 24 May 2021 17:27:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512144819.664462530@linuxfoundation.org> <20210512144825.099918971@linuxfoundation.org>
- <20210515081814.GA30461@amd> <55d58470-f606-8c75-1f00-a2eb09314081@linaro.org>
-In-Reply-To: <55d58470-f606-8c75-1f00-a2eb09314081@linaro.org>
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com> <20210518155013.45622-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210518155013.45622-2-andriy.shevchenko@linux.intel.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 25 May 2021 02:23:47 +0200
-Message-ID: <CACRpkdbr+grtuF3A-QsmDYWK+oDTQ9+DPkPULQRfnswPZRgOOA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 160/530] arm64: dts: qcom: db845c: fix correct
- powerdown pin for WSA881x
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 25 May 2021 02:27:00 +0200
+Message-ID: <CACRpkdZad8huHXpNrJ4eeMpxnEkPBpQy1paOM8OmG5TQ0q3Tww@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] gpiolib: Introduce gpiod_request_user() helper
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:46 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+On Tue, May 18, 2021 at 5:50 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-> > Do we have corresponding driver in 5.10 and was it fixed to match?
+> The gpiod_request_user() is a special helper to avoid propagating stuff
+> to user space that should not be propagated, e.g. internal error codes.
 >
-> This corresponding gpio driver patch was submitted along with the
-> original fix, however it looks like it was not picked up yet.
+> For now, hide EPROBE_DEFER with ENODEV.
 >
-> https://www.spinics.net/lists/linux-gpio/msg59264.html
->
-> Bartosz/Linus W, Do you want me to resend this?
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-OMG how could we have missed this patch with so many ACKs.
-
-Please rebase on v5.13-rc1 and resend with all ACKs so that Bartosz
-can apply it.
+This looks like a good solution.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
