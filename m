@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BF1390A48
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA13390A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhEYUF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
+        id S232296AbhEYUH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhEYUFz (ORCPT
+        with ESMTP id S229595AbhEYUH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:05:55 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2711C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:04:23 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id a8so24820132ioa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:04:23 -0700 (PDT)
+        Tue, 25 May 2021 16:07:56 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E81C061574;
+        Tue, 25 May 2021 13:06:24 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 6so23621642pgk.5;
+        Tue, 25 May 2021 13:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gHa/jxf5ff+nHL/HwGVIpDxyxV41oUcj3iWDlxx7pRk=;
-        b=I3d89PmSYtAAmPdU4bYuuICwd51StJRpwGaGZM5j0MPCjYFxuA6KINZq2/qzt7J4rF
-         oEafMbx80NTxz6DzoGZ5vzJhjLTnJrv0LxpzcGDsGKQzAPvIu4be39dXnzUxM18gDITV
-         EWdnOICM7SBsjxTA0aNsqqY4lP0Q2GGT46PQg=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hrmAyf4ekB8FpoHtyNAMAZhBlwYB6oLMGVhprZSO18c=;
+        b=fYNcnKcCLJRao2bFYyvroRFzvd90Tw9noB6EwiHO2huhVZKsPGIltNkWhksA1b+dd0
+         M2v+MZGiNxcNvfBagrTHPkglpfKqLvZswqlMNahoFc2ZPYNqPiXTWK5RyLtNLb0Kojuh
+         nbkqaQOkd/rRXM1mnJx1H9aa9PxlBF2OW85TmiD4TcJetxOqPx7m3fGJ1YRE+4LumPwp
+         o/uTV6kkZ3XDoo7vb8kamyBE2LurBAH9DzdRe6HY+iRzRVm1ZqwdY5o8K/SmuASEWPI9
+         Aj/expcKyb6yBG5qzYuzzc8uaTJL4Ouru/aut7S0K7lvmDLfV+FBNxAZrCO4xF3i2yru
+         ocFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gHa/jxf5ff+nHL/HwGVIpDxyxV41oUcj3iWDlxx7pRk=;
-        b=t63Etr18q0Foti4tPD0eqd4HEGiDq80ExxEVBsHB2zg/FosLRz1VWArus1hQogwkC9
-         1iLLNIEVu1LBdSEYCa3hYx02xese4Ajx08bm9I6cwpNeX6vEklVOEm4vPuSYpjf0CfyE
-         qusAb3cA5WwfLYPI6TPiQ8hEOhZHBhR+kvQuOVWwiPWxVDt3W26emAha8uCNhmW8456E
-         lw/SJEB5/olFk05d1By+9LH+t1wpWGDcDJpAOJpvsz6D7C+GLeAxryozqUN5umdL9RPC
-         eSNUJdE0ovEcSeIllvLOmi6Q0zn66KmDD2NO+5okIRYls6NMW2rUw/O8HmNz2vi2s8G/
-         /8dQ==
-X-Gm-Message-State: AOAM531lfqsbYfgogmp+yh2qDL/y83emOf3N+N6xJ2EMffueWUay8SOD
-        3NdRu3Ob/pzPwFSqJ2V/ONXS3WmIubjxEKLqs+6k+g==
-X-Google-Smtp-Source: ABdhPJy3QhgMgsWlXogc866Fmq75XIDGlvh7LZ7Gyq9bY4J2KUcupEDm/5ORfhwskrxUR0LgDB+PVTF6FXqUzMIEOLY=
-X-Received: by 2002:a6b:e91a:: with SMTP id u26mr23484337iof.83.1621973062946;
- Tue, 25 May 2021 13:04:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hrmAyf4ekB8FpoHtyNAMAZhBlwYB6oLMGVhprZSO18c=;
+        b=B2UA0j+T6XTBFk9VrK8syM68fCcqHdrYvoJZUNzWOZsLkYYNnF2c6Pf+QrhFAo0H7h
+         PDCl/HsykyOXp/0hl7RnGCKd2ZJgl3mqZyoQbwaG/cTwqmxldyEpWjkEZZiwO/2u2EAf
+         Do6hhZg0An1yAgOCtBpj0xioepwdo6ZOIJAZswtAsMn+qdUHBBWkJqrKMaUyenbfohks
+         XZgAIrkyXX71l5pqWvAJo9ZoqWI13tkSO7v23yjQ/l5BSHx8qB3tQJdL0O/gfaxvkPFj
+         cTNQWUn6QHGsgeu9sNX+kSRM9piAi0Jlrk5kTV4vbsXm/eoKCSYdDUx2lWVj5Ybu511j
+         V/6w==
+X-Gm-Message-State: AOAM533Bq8bLr9bFThVKijx+uEjKwipZyhyIbSN07z52DMxA3BAJkOL8
+        dlX974ZvlI+4znwYrKl1Hq4=
+X-Google-Smtp-Source: ABdhPJw505JxwnUALZ6tQJnxKexnvtJwEXchT7PYHpC8VmXCsUQaCt5MWOLf3ak1KCrUtxOBEufFJw==
+X-Received: by 2002:a63:3342:: with SMTP id z63mr20893123pgz.187.1621973183863;
+        Tue, 25 May 2021 13:06:23 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:b993:67d5:4c88:1ac9])
+        by smtp.gmail.com with ESMTPSA id lj13sm2639925pjb.3.2021.05.25.13.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 13:06:22 -0700 (PDT)
+Date:   Tue, 25 May 2021 13:06:19 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] add z1 and z2 channels support for
+ resistive-adc-touch driver
+Message-ID: <YK1Yu3k7alGWqEX7@google.com>
+References: <20210525054634.9134-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20210525113732.2648158-1-revest@chromium.org> <CAEf4BzYPbKYB4ky-A9x85OiMTrexV7oRkZ1rzNUErqz9nWNfLQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYPbKYB4ky-A9x85OiMTrexV7oRkZ1rzNUErqz9nWNfLQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 25 May 2021 22:04:12 +0200
-Message-ID: <CABRcYmKv92Ko6rhjNcUG4sjkMQR+tEtxbTfTVGYL4JdKHCeYYA@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525054634.9134-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:51 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, May 25, 2021 at 4:38 AM Florent Revest <revest@chromium.org> wrote:
-> > +#define ___bpf_concat(a, b) a ## b
-> > +#define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
-> > +#define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
-> > +#define ___bpf_narg(...) \
-> > +       ___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
->
-> wouldn't this conflict if both bpf_tracing.h and bpf_helpers.h are
-> included in the same file?
+Hi Oleksij,
 
-Oh, yeah, somehow I thought that double macro definitions wouldn't
-generate warnings but it would, indeed. Silly me :)
+On Tue, May 25, 2021 at 07:46:30AM +0200, Oleksij Rempel wrote:
+> changes v6:
+> - drop other DT changes
+> - add more Reviewed-by tags
+> - remove redundant GRTS_CH_NONE check
 
-> We can probably guard this block with
-> custom #ifdef both in bpf_helpers.h and bpf_tracing.h to avoid
-> dependency on order of includes?
+Applied the lot, thank you.
 
-Indeed, I think the cleanest would be:
-#ifndef ___bpf_concat
-#define ___bpf_concat(a, b) a ## b
-#endif
-#ifndef ___bpf_apply
- etc...
-
-I'm sending a v2.
+-- 
+Dmitry
