@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6DA38F9AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C8C38F9AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 06:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhEYEj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 00:39:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7932 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229476AbhEYEjY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 00:39:24 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14P4XJdQ183681;
-        Tue, 25 May 2021 00:37:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=5ZKnJJvMM/s76BCr9yEVccnrdIJeoK13qMVRszV01iY=;
- b=s/0TV32vg0uBg3wpRccEjCoA/ulWwn6i0JTL6z/AmEcqTY9UTdKIsyQ0AAoYVEJNCahe
- N/fiNPUUdmJ3M2tkiQxEdfk7uRDElDznP309LTlolOHHOGDEju8iCZAmuooINl7oCSfd
- mkr1NVZuKRzv/H2OcOE8xD2AloygaCO1fwQMw4kT2n70JunTDzITTpDMLrMOwBgqc4kD
- qJNOAAS7WyJOf5x01srmqT6vuyi0CUtcR6AU9P+Vj7X0GSY8ChstyNj2i2RolQZ/LZDi
- deB6/sGDW0F43GyuJ4dA3mOWLk7WZ1IbWQxzMPfBtTSXb+GWk23B9BWWt/ZNtbUQ3A77 Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38rrjna85c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 00:37:53 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14P4ZWBl191538;
-        Tue, 25 May 2021 00:37:52 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38rrjna84t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 00:37:52 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14P4X7nI010180;
-        Tue, 25 May 2021 04:37:51 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 38ps7h8kqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 04:37:50 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14P4blsJ21430548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 04:37:48 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDDC3AE051;
-        Tue, 25 May 2021 04:37:47 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 415E3AE045;
-        Tue, 25 May 2021 04:37:46 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.36.63])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 May 2021 04:37:46 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     ravi.bangoria@linux.ibm.com, jolsa@redhat.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: [PATCH] perf probe: Provide more detail with relocation warning
-Date:   Tue, 25 May 2021 10:07:44 +0530
-Message-Id: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YFzV-DSvEX9H-d7HAXFQlWz1PNf3TBHx
-X-Proofpoint-GUID: uo1rjiPnU0q86i4oPPuJYtutMS4cw_qc
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_02:2021-05-24,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 priorityscore=1501
- mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250029
+        id S230381AbhEYEsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 00:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhEYEsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 00:48:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E9E7613D5;
+        Tue, 25 May 2021 04:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621918001;
+        bh=vLP/Q4aOCG6Oa2I3J7oehXSVI9Mwkn7//OK8ywyD2Bs=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=XEPkzxoJikXui97PMGR9Aw1unUKQqv6v/gZqzMuJXRw4jtreuyaxa2FzxRPm6eFoh
+         +CFmaS1SvoDjoFNLp+H29vzS6Q1Y0ztH8Ya0ZN0pNFUQg/nknolS16m4VhTRiVyQuX
+         aI3hSdVwolsNOic0zndbcHd81P4OUfSZHSilSj43IY+raAYVg2fs0cUTnUWEKl0BH+
+         QijOjFPeGfpLHgxi+XhmeZzkYmQ4hRvJDPj3/sznaw/BiWKEvsaWSwl+91aVNORYJc
+         tCouH5JpA7CoWrLrdSgXRRTMlemt9fvPRwj4Gr/9c4RYCyrWVtjh6QeGZxdHSGiqC3
+         vqFLlpZRjSUJQ==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 4E0C427C0054;
+        Tue, 25 May 2021 00:46:39 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Tue, 25 May 2021 00:46:39 -0400
+X-ME-Sender: <xms:LoGsYLQnu7O0WoTqUnRqIpVa56ptki84jbHgLFjDn8Jyp81FACVL4A>
+    <xme:LoGsYMy7QabiXMgx5rz508EcJMS4eXerA7NCQ6EaeFEMR-c_531U-z4bz0ZKBJn5k
+    wyqPU-9GrByuB2wtGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdektddgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:LoGsYA2WJtgvUDzzy-M0kextGMrXPFYjW5uB5E-ulgR9j0sLr3H8TQ>
+    <xmx:LoGsYLD9HJLZ04cqQV5YXpHOhM3bdWwo_IQVcNydecOPuSDnmg-mjA>
+    <xmx:LoGsYEjox_zOHbne5AsTVbE-hiUriP84FpkPY_T5jsrL5CwQf4HD9Q>
+    <xmx:L4GsYNUbi0SBAPc0YVGNRFskbZWX7goP6yUB3LqV-kE9FluPzrtdTX2VJorwXHZ2bjNQpA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B9E2651C0060; Tue, 25 May 2021 00:46:38 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <ef151c13-1126-43b1-ab55-4bd86fa4c2c0@www.fastmail.com>
+In-Reply-To: <CAJvTdKmq2qKgkkbeQzQ6dG14+EWZ_eTbz6c6neGLFo_X=PCJeg@mail.gmail.com>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-26-chang.seok.bae@intel.com>
+ <6197fd94-76a9-a391-f290-7001a71add7f@kernel.org>
+ <CAJvTdKmq2qKgkkbeQzQ6dG14+EWZ_eTbz6c6neGLFo_X=PCJeg@mail.gmail.com>
+Date:   Mon, 24 May 2021 21:46:06 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Len Brown" <lenb@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Borislav Petkov" <bp@suse.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_25/28]_x86/fpu/xstate:_Skip_writing_zeros_to_sig?=
+ =?UTF-8?Q?nal_frame_for_dynamic_user_states_if_in_INIT-state?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When run as normal user with default sysctl kernel.kptr_restrict=0
-and kernel.perf_event_paranoid=2, perf probe fails with:
 
-  $ ./perf probe move_page_tables
-  Relocated base symbol is not found!
 
-The warning message is not much informative. The reason perf fails
-is because /proc/kallsyms is restricted by perf_event_paranoid=2
-for normal user and thus perf fails to read relocated address of
-the base symbol.
+On Mon, May 24, 2021, at 11:15 AM, Len Brown wrote:
+> On Sun, May 23, 2021 at 11:28 PM Andy Lutomirski <luto@kernel.org> wro=
+te:
+>=20
+> > But what happens if we don't have the XGETBV1 feature?  Are we makin=
+g
+> > AMX support depend on XGETBV1?
+>=20
+> Yes, AMX systems always have XGETBV.
+>=20
+> > How does this patch interact with "[PATCH v5 24/28] x86/fpu/xstate: =
+Use
+> > per-task xstate mask for saving xstate in signal frame"?  They seem =
+to
+> > be try to do something similar but not quite the same, and they seem=
+ to
+> > be patching the same function.  The result seems odd.
+>=20
+> The previous patch allowed non-AMX tasks to skip writing 8KB of zeros
+> to their signal stack.  This patch builds on that to allow an AMX-task=
 
-Tweaking kptr_restrict and perf_event_paranoid can change the
-behavior of perf probe. Also, running as root or privileged user
-works too. Add these details in the warning message.
+> in INIT to also skip writing 8KB of zeros to its signal stack.
 
-Plus, kmap->ref_reloc_sym might not be always set even if
-host_machine is initialized. Above is the example of the same.
-Remove that comment.
+If we ever have a task that is =E2=80=9Cnon-AMX=E2=80=9D but has non-INI=
+T AMX, then either we or the hardware has seriously screwed up.
 
-Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- tools/perf/util/probe-event.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+So the logic boils down to: if (a) optimize; if (b) optimize; where a im=
+plies b.  I maintain my objection =E2=80=94 I think this is redundant.
 
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index a78c8d59a555..3a7649835ec9 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -108,7 +108,6 @@ void exit_probe_symbol_maps(void)
- 
- static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
- {
--	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
- 	struct kmap *kmap;
- 	struct map *map = machine__kernel_map(host_machine);
- 
-@@ -819,7 +818,10 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
- 
- 	reloc_sym = kernel_get_ref_reloc_sym(&map);
- 	if (!reloc_sym) {
--		pr_warning("Relocated base symbol is not found!\n");
-+		pr_warning("Relocated base symbol is not found! "
-+			   "Check /proc/sys/kernel/kptr_restrict\n"
-+			   "and /proc/sys/kernel/perf_event_paranoid. "
-+			   "Or run as privileged perf user.\n\n");
- 		return -EINVAL;
- 	}
- 
-@@ -3025,7 +3027,10 @@ static int find_probe_trace_events_from_map(struct perf_probe_event *pev,
- 			(!pp->retprobe || kretprobe_offset_is_supported())) {
- 		reloc_sym = kernel_get_ref_reloc_sym(NULL);
- 		if (!reloc_sym) {
--			pr_warning("Relocated base symbol is not found!\n");
-+			pr_warning("Relocated base symbol is not found! "
-+				   "Check /proc/sys/kernel/kptr_restrict\n"
-+				   "and /proc/sys/kernel/perf_event_paranoid. "
-+				   "Or run as privileged perf user.\n\n");
- 			ret = -EINVAL;
- 			goto out;
- 		}
--- 
-2.31.1
+>=20
+> > Finally, isn't part of the point that we need to avoid even *allocat=
+ing*
+> > space for non-AMX-using tasks?  That would require writing out the
+> > compacted format and/or fiddling with XCR0.
+>=20
+> The current signal stack ABI is that the user receives all
+> architectural state in
+> uncompressed XTATE format on the signal stack.  They can XRESTOR it
+> and the right thing happens.
+>=20
+> We can optimize the data transfer (and we have), but we can't optimize=
+ the space
+> without changing that ABI.
 
+We are between a rock and a hard place here.  On the one hand, our ABI (=
+supposedly =E2=80=94 no one seems to have really confirmed this) has the=
+ signal frame in uncompacted form.  On the other hand, our ABI most defi=
+nitely has signal frames under 2kB by a decent amount.
+
+I think we should apply a simple patch to Linux to add a boot parameter =
+x86_extra_signal_space=3D8192 that will pad the signal frame by 8192 byt=
+es.  And then we ask people to seriously test their workloads with that =
+parameter set. If things break, then AMX in its current proposed form ma=
+y be off the table.
+
+At least my dynamic XCR0 proposal has the property that legacy programs =
+and AMX can reliably coexist on the same system.
