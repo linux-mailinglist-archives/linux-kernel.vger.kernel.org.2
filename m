@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7024138F7D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5FE38F7DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 04:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhEYCD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 22:03:26 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24699 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhEYCD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 22:03:26 -0400
-IronPort-SDR: vZEdsxUTSYMkwUcoKnlGznVJDqMUljzDkHQLWaBfAJ+2Y1hz34CPyBGgGDcogBL8MboyNCjIMR
- i5Wfl0Ktv6Vg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="181715516"
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="181715516"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 19:01:57 -0700
-IronPort-SDR: MUq8VZzO4v5/FNq/eicICWU0kvGFUjs5mGGZBannhFgiDHcp1/rHGsjDzZKZ5KXwN89Nz9liSc
- pdSQFigLWnjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="408349600"
-Received: from otc-chromeosbuild-1.jf.intel.com ([10.54.30.83])
-  by fmsmga007.fm.intel.com with ESMTP; 24 May 2021 19:01:56 -0700
-From:   Azhar Shaikh <azhar.shaikh@intel.com>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        azhar.shaikh@intel.com
-Subject: [PATCH] usb: typec: intel_pmc_mux: Update IOM port status offset for AlderLake
-Date:   Mon, 24 May 2021 19:04:01 -0700
-Message-Id: <20210525020401.6738-1-azhar.shaikh@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230087AbhEYCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 22:06:22 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:29125 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhEYCGV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 22:06:21 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14P1pJMg007540;
+        Tue, 25 May 2021 09:51:19 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 10:04:16 +0800
+Date:   Tue, 25 May 2021 10:04:13 +0800
+From:   Jamin Lin <jamin_lin@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     Tao Ren <rentao.bupt@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        Steven Lee <steven_lee@aspeedtech.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Message-ID: <20210525020412.GA2489@aspeedtech.com>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+ <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+ <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
+ <20210520033140.GA3656@aspeedtech.com>
+ <20210521020033.GB19153@taoren-ubuntu-R90MNF91>
+ <20210524015310.GA2591@aspeedtech.com>
+ <CACPK8Xd5HTNAR8MpQPWGp+-t9ixz2r3JYDjr6jUS+9ExyB94zg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CACPK8Xd5HTNAR8MpQPWGp+-t9ixz2r3JYDjr6jUS+9ExyB94zg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14P1pJMg007540
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel AlderLake(ADL) IOM has a different IOM port status offset than
-Intel TigerLake.
-Add a new ACPI ID for ADL and use the IOM port status offset as per
-the platform.
+The 05/24/2021 02:34, Joel Stanley wrote:
+> On Mon, 24 May 2021 at 01:53, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
+> >
+> > The 05/21/2021 02:00, Tao Ren wrote:
+> > > Hi Jamin,
+> > >
+> > > On Thu, May 20, 2021 at 11:31:41AM +0800, Jamin Lin wrote:
+> > > > The 05/19/2021 22:59, Joel Stanley wrote:
+> > > > > On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
+> > > > > >
+> > > > > > The register definition between AST2600 A2 and A3 is different.
+> > > > > > This patch avoid new registers definition of AST2600 to use
+> > > > > > this driver. We will submit the path for the new registers
+> > > > > > definition of AST2600.
+> > > > >
+> > > > > The AST2600 v9 datasheet says that bit 2 selects between old and new
+> > > > > register sets, and that the old register set is the default.
+> > > > >
+> > > > > Has the default changed for the A3?, and the datasheet is incorrect?
+> > > > >
+> > > > > Does the A3 still support the old register set?
+> > > > >
+> > > > We suggest user to use the new i2c driver for AST2600 and we will sumbit
+> > > > it. This driver is used to AST2500 and AST2400 SOCs. Change this
+> > > > driver to check global register of i2c to avoid user build the wrong driver.
+> > >
+> > > If I understand correctly, the answer implies old register set is still
+> > > supported in A3 although aspeed suggest people using the new driver/mode?
+> > >
+> > > Can you please share more context behind the suggestion? Such as new
+> > > register mode has better performance? Or some known issues that were
+> > > deteted in old mode are fixed in new register mode?
+> > >
+> > Yes, AST2600 A1, A2 and A3 support both old and new register set. The difference
+> > between old and new register set are the register address and supported registers.
+> > User can choose to use both old and new register set. However, ASPEED would like to
+> > change new register set by default for AST2600.
+> 
+> We can certainly make the driver for the new register set the default
+> for AST2600 when the new driver is merged.
+> 
+> I disagree that we should introduce a run time check to fail to probe
+> the old driver. Please do not merge this patch.
+> 
+> Please focus your effort on getting the new driver merged instead.
+> 
+> Cheers,
+> 
+> Joel
 
-Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
----
- drivers/usb/typec/mux/intel_pmc_mux.c | 28 ++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index 46a25b8db72e..5ef41cfa8213 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -83,8 +83,6 @@ enum {
- /*
-  * Input Output Manager (IOM) PORT STATUS
-  */
--#define IOM_PORT_STATUS_OFFSET				0x560
--
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_MASK		GENMASK(9, 6)
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_SHIFT		6
- #define IOM_PORT_STATUS_ACTIVITY_TYPE_USB		0x03
-@@ -144,6 +142,7 @@ struct pmc_usb {
- 	struct pmc_usb_port *port;
- 	struct acpi_device *iom_adev;
- 	void __iomem *iom_base;
-+	u32 iom_port_status_offset;
- };
- 
- static void update_port_status(struct pmc_usb_port *port)
-@@ -153,7 +152,8 @@ static void update_port_status(struct pmc_usb_port *port)
- 	/* SoC expects the USB Type-C port numbers to start with 0 */
- 	port_num = port->usb3_port - 1;
- 
--	port->iom_status = readl(port->pmc->iom_base + IOM_PORT_STATUS_OFFSET +
-+	port->iom_status = readl(port->pmc->iom_base +
-+				 port->pmc->iom_port_status_offset +
- 				 port_num * sizeof(u32));
- }
- 
-@@ -559,14 +559,32 @@ static int is_memory(struct acpi_resource *res, void *data)
- 	return !acpi_dev_resource_memory(res, &r);
- }
- 
-+/* IOM ACPI IDs and IOM_PORT_STATUS_OFFSET */
-+static const struct acpi_device_id iom_acpi_ids[] = {
-+	/* TigerLake */
-+	{ "INTC1072", 0x560, },
-+
-+	/* AlderLake */
-+	{ "INTC1079", 0x160, },
-+	{}
-+};
-+
- static int pmc_usb_probe_iom(struct pmc_usb *pmc)
- {
- 	struct list_head resource_list;
- 	struct resource_entry *rentry;
--	struct acpi_device *adev;
-+	static const struct acpi_device_id *id;
-+	struct acpi_device *adev = NULL;
- 	int ret;
- 
--	adev = acpi_dev_get_first_match_dev("INTC1072", NULL, -1);
-+	for (id = &iom_acpi_ids[0]; id->id[0]; id++) {
-+		if (acpi_dev_present((const char *)id, NULL, -1)) {
-+			pmc->iom_port_status_offset = (u32)id->driver_data;
-+			adev = acpi_dev_get_first_match_dev((const char *)id, NULL, -1);
-+			break;
-+		}
-+	}
-+
- 	if (!adev)
- 		return -ENODEV;
- 
--- 
-2.17.1
-
+Thanks for your suggestion. I will submit the new i2c driver for AST2600
+soon.
+Jamin
