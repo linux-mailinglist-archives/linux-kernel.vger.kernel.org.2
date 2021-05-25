@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DC7390984
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83A639098E
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhEYTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:17:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47972 "EHLO mail.kernel.org"
+        id S232310AbhEYTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230029AbhEYTR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E605F610A1;
-        Tue, 25 May 2021 19:15:57 +0000 (UTC)
+        id S230029AbhEYTYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 15:24:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74FF2613F9;
+        Tue, 25 May 2021 19:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621970158;
-        bh=Ic/XP5SaZJAGzEAKMh9ZFFeMeUnuVLBZvSWO7z7/HQs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=hJ1NmT7JQFhl1mf6po8zwX3S8ONxUyN33ksA+WIB1wbQtc7JUq/4edPHhJjl8QDso
-         Qn73DVaV7pQIW/eTgWte9ZdnqT1poUVzGDamaxarF7z+LTZKuqs6vkiDds9b1HVQFq
-         jBsnCiiT67t6eJNWEc49tqWY/d6hNhFo+F0KeWbnbDT21nTOLNpcFLUlW3bkL6a1Vw
-         bsYfAHhVhzDJrWvUmUrUZJvWSkuoXgVOhKKlTw6oRGhvKcYu8u3hZmHcjNAQDcA4jr
-         KBBZzTDv1YaoGHIkIES3em7lIU2qNXbK+B/7wMQTohBppGMd/RKvGmw4uAe7G7/7wO
-         OiYZdxyN4tF6Q==
-Date:   Tue, 25 May 2021 14:15:56 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Peter Geis <pgwipeout@gmail.com>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Rob Herring <robh@kernel.org>, PCI <linux-pci@vger.kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
- 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
- memory addresses")
-Message-ID: <20210525191556.GA1220872@bjorn-Precision-5520>
+        s=k20201202; t=1621970551;
+        bh=WNXCsny2RCHObuthw2EADUIfUrtcdPzIFkEJVokSliE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M1+FHRbf4nJcJ7uClpGPZP2H4rs4bO7eRu39nr4NQVLT49+4iEp96YhkFbkiyV8+h
+         16ae4fMV5LiYWt8MGdhUV+dE0ca/hy7Cc4WULLsMfZ49GhyW7G6lgDKjrDUZzPtOo2
+         WevIhRrCTcMZkSYTpjQ9M2kaIQjRCbuIh055TWJ9qY+4ohnU2dEfRqhdxuCSHbBu8y
+         muvFfUreJvUYPrUTplZxo5bSgI9G1P8QU8UybT5lNP4zr72l9Jc8Csg9XuQB3ZGaj/
+         if4icxsI+tj6u7duxUXkblC7h/nW7kUTfz/JvcV/MIIPcucfsmQQuaDC2v6EXGiZec
+         7Fs/nFM1eoChg==
+Date:   Tue, 25 May 2021 21:22:27 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Akash Asthana <akashast@codeaurora.org>
+Cc:     Colin King <colin.king@canonical.com>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: qcom-geni: fix spelling mistake "unepxected" ->
+ "unexpected"
+Message-ID: <YK1Oc2wVZ7Y7qgya@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Colin King <colin.king@canonical.com>,
+        Alok Chauhan <alokc@codeaurora.org>, Andy Gross <agross@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191103212204.13606-1-colin.king@canonical.com>
+ <74e71d14-9f27-6a44-f253-4756ba124695@codeaurora.org>
+ <ee839cf4-6310-aa4e-6ed2-322f20343953@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nCkcUKPtdBEoVDN0"
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXEBePfKDOc6eo9yjZPnVeFimX-zxR+R3As+2pP9XnZkuQ@mail.gmail.com>
+In-Reply-To: <ee839cf4-6310-aa4e-6ed2-322f20343953@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 05:54:56PM +0200, Ard Biesheuvel wrote:
-> On Tue, 25 May 2021 at 17:34, Peter Geis <pgwipeout@gmail.com> wrote:
 
-> > > > >> > On 2021-05-18 10:09, Alexandru Elisei wrote:
-> > > > >> >> [..]
-> > > > >> >> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
-> > > > >> >> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff -> 0x00fa000000
-> > > > >> >> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff -> 0x00fbe00000
-> > > > >> >> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
-> > > > >> >> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
-> > > > >> >> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
-> > > > >> >> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus address [0xfbe00000-0xfbefffff])
+--nCkcUKPtdBEoVDN0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ... For some reason, lspci translates the BAR values to CPU
-> addresses, but the PCI side addresses are within 32-bits.
+On Mon, Jul 27, 2020 at 01:28:56PM +0530, Akash Asthana wrote:
+>=20
+> On 7/27/2020 1:25 PM, Akash Asthana wrote:
+> >=20
+> > On 11/4/2019 2:52 AM, Colin King wrote:
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > >=20
+> > > There is a spelling mistake in an error message string, fix it.
+> > >=20
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-lspci shows BARs as CPU physical addresses by default.  These are the
-same addresses you would see in pdev->resource[n] and the same as BAR
-values you would see in dmesg.
+Applied to for-next, thanks!
 
-A 64-bit CPU physical address can certainly be translated by the host
-bridge to a 32-bit PCI address.  But that's not happening here because
-this host bridge applies no translation (CPU physical 0xfa000000 maps
-to bus address 0xfa000000).
 
-"lspci -b" shows the PCI bus addresses.
+--nCkcUKPtdBEoVDN0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCtTm8ACgkQFA3kzBSg
+KbZgKRAAnyWAZ+jU7Wvk4KvlmkOuniDeoaabLpp7+s4m0cOKT64cmGkWj/lrHhgs
+vsxQ9sshWV67CM3OojdPUcMh7lrz9RDQi6cS11HTgvAsWWJm2PTtJVGtjzS0CoBv
+WX0k4i285ErYVKwmLXjcxTfEnATiBlWwp5JqiC4+PNiM1KWWZiSWUUiUAHBEWwlO
+dwT3uPg2c+T690QHn2eGxVenIN6nrjbSnBK8/3x8Kyy05+m80XLN99Dy7LdFK3js
+VO69dug210Y3Ms5JPBvyV8nbmlNFuJ5S4PvsJ3i8YJigaAgECAv0nX6+RON0DI9J
+qrjBKVfgTX/KK/gZHSzHkCjBabmImcVrND9xhd/cGmYCKxSfNQrTs1e59uiJrTkm
+fAsooNSnZSaI/N3xpfqY3npa+uk+RlSoCkYeKF9VCHNAIApAPFYNW7y3GAVUNLBF
+uppFxZ9L7k4/ZsGtqfpSla/nOyEhjQMB1JG/16wsb24CkB0Ocq3wePtxpq1VkKtR
+j0NACJ4FrXJPDzloP5L+1FbI5QTGmPnDnT5sZmCOtGcXdsDbch7Vd5M65Dzm9ffF
+b5O8b8exhdTP5Yi/7RTCL9N5Je2k+JvVBVhZxMn3yfZ52m9AHtdmaeuNr4L4ZPtX
+mzPuFUXNLRjYeOoudy5+i9zam2ZbP5XuWoLoSuJ3MLg5FeNyEGg=
+=xvMw
+-----END PGP SIGNATURE-----
+
+--nCkcUKPtdBEoVDN0--
