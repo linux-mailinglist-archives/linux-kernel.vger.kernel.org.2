@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2DC38FE35
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9139A38FE36
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhEYJwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:52:53 -0400
-Received: from mga18.intel.com ([134.134.136.126]:18657 "EHLO mga18.intel.com"
+        id S232858AbhEYJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:52:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18661 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232755AbhEYJwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:52:38 -0400
-IronPort-SDR: vif5ySqEe5LaKy1N+eZWx6Vdtf9m0WFkqDfQoGB2PGpqJzQVejWIfR7wbt1vjgTKPPu3S74qrK
- o5m3C5otfcmA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189531615"
+        id S232807AbhEYJwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:52:40 -0400
+IronPort-SDR: jSEkNKTp+OIrWBZo92AgDgOH0wH4Wv8Zb0T6Mu2dyHyikT7gkiJUvQWZCQ4ndaCuopH2VwsIZF
+ k8PCf914oEGQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189531617"
 X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="189531615"
+   d="scan'208";a="189531617"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 02:51:06 -0700
-IronPort-SDR: z5SSbCa/a/fCVwbo7wcY4mPO/6cjQ6nnZsvzpYkS+FQ8PbLby5T8KgmLI72QwVZuNbaMmr+yUn
- f/Jf4CdgLJaA==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 02:51:08 -0700
+IronPort-SDR: 54aRHRYWHN9zaEwf0W4gA8wO02TibKdpdOW9HkrM3eU/xnERraDD0Ti7A9Md3tNPFb7Uu+k84M
+ PkJFgTJWMJEw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="479224583"
+   d="scan'208";a="479224589"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 25 May 2021 02:51:04 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 25 May 2021 02:51:06 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 09/10] perf scripting python: Add auxtrace error
-Date:   Tue, 25 May 2021 12:51:11 +0300
-Message-Id: <20210525095112.1399-10-adrian.hunter@intel.com>
+Subject: [PATCH 10/10] perf scripts python: intel-pt-events.py: Add branches to script
+Date:   Tue, 25 May 2021 12:51:12 +0300
+Message-Id: <20210525095112.1399-11-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210525095112.1399-1-adrian.hunter@intel.com>
 References: <20210525095112.1399-1-adrian.hunter@intel.com>
@@ -40,126 +40,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add auxtrace_error to general python scripting.
+As an example, add branch information to intel-pt-events.py script.
+This shows how a simple python script can be used to customize
+perf script output for Intel PT branch traces or power event traces.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/builtin-script.c                   | 13 ++++++
- .../scripting-engines/trace-event-python.c    | 42 +++++++++++++++++++
- tools/perf/util/trace-event.h                 |  2 +
- 3 files changed, 57 insertions(+)
+ .../scripts/python/bin/intel-pt-events-record |   4 +-
+ .../scripts/python/bin/intel-pt-events-report |   4 +-
+ tools/perf/scripts/python/intel-pt-events.py  | 143 ++++++++++++++----
+ 3 files changed, 116 insertions(+), 35 deletions(-)
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 69bce65ea430..7a7a19f52db5 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2432,6 +2432,17 @@ static int process_switch_event(struct perf_tool *tool,
- 			   sample->tid);
- }
+diff --git a/tools/perf/scripts/python/bin/intel-pt-events-record b/tools/perf/scripts/python/bin/intel-pt-events-record
+index 10fe2b6977d4..6b9877cfe23e 100644
+--- a/tools/perf/scripts/python/bin/intel-pt-events-record
++++ b/tools/perf/scripts/python/bin/intel-pt-events-record
+@@ -1,8 +1,8 @@
+ #!/bin/bash
  
-+static int process_auxtrace_error(struct perf_session *session,
-+				  union perf_event *event)
-+{
-+	if (scripting_ops && scripting_ops->process_auxtrace_error) {
-+		scripting_ops->process_auxtrace_error(session, event);
-+		return 0;
-+	}
-+
-+	return perf_event__process_auxtrace_error(session, event);
-+}
-+
- static int
- process_lost_event(struct perf_tool *tool,
- 		   union perf_event *event,
-@@ -2571,6 +2582,8 @@ static int __cmd_script(struct perf_script *script)
- 	}
- 	if (script->show_switch_events || (scripting_ops && scripting_ops->process_switch))
- 		script->tool.context_switch = process_switch_event;
-+	if (scripting_ops && scripting_ops->process_auxtrace_error)
-+		script->tool.auxtrace_error = process_auxtrace_error;
- 	if (script->show_namespace_events)
- 		script->tool.namespaces = process_namespaces_event;
- 	if (script->show_cgroup_events)
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index c422901d5344..ffc5f4cffdba 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -1014,6 +1014,11 @@ static int tuple_set_u64(PyObject *t, unsigned int pos, u64 val)
- #endif
- }
+ #
+-# print Intel PT Power Events and PTWRITE. The intel_pt PMU event needs
+-# to be specified with appropriate config terms.
++# print Intel PT Events including Power Events and PTWRITE. The intel_pt PMU
++# event needs to be specified with appropriate config terms.
+ #
+ if ! echo "$@" | grep -q intel_pt ; then
+ 	echo "Options must include the Intel PT event e.g. -e intel_pt/pwr_evt,ptw/"
+diff --git a/tools/perf/scripts/python/bin/intel-pt-events-report b/tools/perf/scripts/python/bin/intel-pt-events-report
+index 9a9c92fcd026..beeac3fde9db 100644
+--- a/tools/perf/scripts/python/bin/intel-pt-events-report
++++ b/tools/perf/scripts/python/bin/intel-pt-events-report
+@@ -1,3 +1,3 @@
+ #!/bin/bash
+-# description: print Intel PT Power Events and PTWRITE
+-perf script $@ -s "$PERF_EXEC_PATH"/scripts/python/intel-pt-events.py
+\ No newline at end of file
++# description: print Intel PT Events including Power Events and PTWRITE
++perf script $@ -s "$PERF_EXEC_PATH"/scripts/python/intel-pt-events.py
+diff --git a/tools/perf/scripts/python/intel-pt-events.py b/tools/perf/scripts/python/intel-pt-events.py
+index a73847c8f548..fcfae1de731b 100644
+--- a/tools/perf/scripts/python/intel-pt-events.py
++++ b/tools/perf/scripts/python/intel-pt-events.py
+@@ -1,5 +1,6 @@
+-# intel-pt-events.py: Print Intel PT Power Events and PTWRITE
+-# Copyright (c) 2017, Intel Corporation.
++# SPDX-License-Identifier: GPL-2.0
++# intel-pt-events.py: Print Intel PT Events including Power Events and PTWRITE
++# Copyright (c) 2017-2021, Intel Corporation.
+ #
+ # This program is free software; you can redistribute it and/or modify it
+ # under the terms and conditions of the GNU General Public License,
+@@ -23,8 +24,36 @@ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
+ #from perf_trace_context import *
+ #from Core import *
  
-+static int tuple_set_u32(PyObject *t, unsigned int pos, u32 val)
-+{
-+	return PyTuple_SetItem(t, pos, PyLong_FromUnsignedLong(val));
-+}
++try:
++	broken_pipe_exception = BrokenPipeError
++except:
++	broken_pipe_exception = IOError
 +
- static int tuple_set_s32(PyObject *t, unsigned int pos, s32 val)
- {
- 	return PyTuple_SetItem(t, pos, _PyLong_FromLong(val));
-@@ -1461,6 +1466,42 @@ static void python_process_switch(union perf_event *event,
- 		python_do_process_switch(event, sample, machine);
- }
++glb_switch_str = None
++glb_switch_printed = True
++
++def get_optional_null(perf_dict, field):
++	if field in perf_dict:
++		return perf_dict[field]
++	return ""
++
++def get_optional_zero(perf_dict, field):
++	if field in perf_dict:
++		return perf_dict[field]
++	return 0
++
++def get_optional(perf_dict, field):
++	if field in perf_dict:
++		return perf_dict[field]
++	return "[unknown]"
++
++def get_offset(perf_dict, field):
++	if field in perf_dict:
++		return "+%#x" % perf_dict[field]
++	return ""
++
+ def trace_begin():
+-	print("Intel PT Power Events and PTWRITE")
++	print("Intel PT Branch Trace, Power Events and PTWRITE")
  
-+static void python_process_auxtrace_error(struct perf_session *session __maybe_unused,
-+					  union perf_event *event)
-+{
-+	struct perf_record_auxtrace_error *e = &event->auxtrace_error;
-+	u8 cpumode = e->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
-+	const char *handler_name = "auxtrace_error";
-+	unsigned long long tm = e->time;
-+	const char *msg = e->msg;
-+	PyObject *handler, *t;
+ def trace_end():
+ 	print("End")
+@@ -77,58 +106,110 @@ def print_pwrx(raw_buf):
+ 	print("deepest cstate: %u last cstate: %u wake reason: %#x" %
+ 		(deepest_cstate, last_cstate, wake_reason), end=' ')
+ 
++def print_psb(raw_buf):
++	data = struct.unpack_from("<IQ", raw_buf)
++	offset = data[1]
++	print("offset: %#x" % (offset), end=' ')
 +
-+	handler = get_handler(handler_name);
-+	if (!handler)
-+		return;
+ def print_common_start(comm, sample, name):
+ 	ts = sample["time"]
+ 	cpu = sample["cpu"]
+ 	pid = sample["pid"]
+ 	tid = sample["tid"]
+-	print("%16s %5u/%-5u [%03u] %9u.%09u %7s:" %
+-		(comm, pid, tid, cpu, ts / 1000000000, ts %1000000000, name),
++	flags_disp = get_optional_null(sample, "flags_disp")
++	# Unused fields:
++	# period      = sample["period"]
++	# phys_addr   = sample["phys_addr"]
++	# weight      = sample["weight"]
++	# transaction = sample["transaction"]
++	# cpumode     = get_optional_zero(sample, "cpumode")
++	print("%16s %5u/%-5u [%03u] %9u.%09u  %7s  %19s" %
++		(comm, pid, tid, cpu, ts / 1000000000, ts %1000000000, name, flags_disp),
+ 		end=' ')
+ 
+-def print_common_ip(sample, symbol, dso):
+-	ip = sample["ip"]
+-	print("%16x %s (%s)" % (ip, symbol, dso))
++def print_common_ip(param_dict, sample, symbol, dso):
++	ip   = sample["ip"]
++	offs = get_offset(param_dict, "symoff")
++	print("%16x %s%s (%s)" % (ip, symbol, offs, dso), end=' ')
++	if "addr_correlates_sym" in sample:
++		addr   = sample["addr"]
++		dso    = get_optional(sample, "addr_dso")
++		symbol = get_optional(sample, "addr_symbol")
++		offs   = get_offset(sample, "addr_symoff")
++		print("=> %x %s%s (%s)" % (addr, symbol, offs, dso))
++	else:
++		print()
+ 
+-def process_event(param_dict):
++def do_process_event(param_dict):
++	global glb_switch_printed
++	if not glb_switch_printed:
++		print(glb_switch_str)
++		glb_switch_printed = True
+ 	event_attr = param_dict["attr"]
+-	sample	 = param_dict["sample"]
+-	raw_buf	= param_dict["raw_buf"]
++	sample	   = param_dict["sample"]
++	raw_buf	   = param_dict["raw_buf"]
+ 	comm	   = param_dict["comm"]
+ 	name	   = param_dict["ev_name"]
++	# Unused fields:
++	# callchain  = param_dict["callchain"]
++	# brstack    = param_dict["brstack"]
++	# brstacksym = param_dict["brstacksym"]
+ 
+ 	# Symbol and dso info are not always resolved
+-	if "dso" in param_dict:
+-		dso = param_dict["dso"]
+-	else:
+-		dso = "[unknown]"
++	dso    = get_optional(param_dict, "dso")
++	symbol = get_optional(param_dict, "symbol")
+ 
+-	if "symbol" in param_dict:
+-		symbol = param_dict["symbol"]
+-	else:
+-		symbol = "[unknown]"
++	print_common_start(comm, sample, name)
+ 
+ 	if name == "ptwrite":
+-		print_common_start(comm, sample, name)
+ 		print_ptwrite(raw_buf)
+-		print_common_ip(sample, symbol, dso)
+ 	elif name == "cbr":
+-		print_common_start(comm, sample, name)
+ 		print_cbr(raw_buf)
+-		print_common_ip(sample, symbol, dso)
+ 	elif name == "mwait":
+-		print_common_start(comm, sample, name)
+ 		print_mwait(raw_buf)
+-		print_common_ip(sample, symbol, dso)
+ 	elif name == "pwre":
+-		print_common_start(comm, sample, name)
+ 		print_pwre(raw_buf)
+-		print_common_ip(sample, symbol, dso)
+ 	elif name == "exstop":
+-		print_common_start(comm, sample, name)
+ 		print_exstop(raw_buf)
+-		print_common_ip(sample, symbol, dso)
+ 	elif name == "pwrx":
+-		print_common_start(comm, sample, name)
+ 		print_pwrx(raw_buf)
+-		print_common_ip(sample, symbol, dso)
++	elif name == "psb":
++		print_psb(raw_buf)
 +
-+	if (!e->fmt) {
-+		tm = 0;
-+		msg = (const char *)&e->time;
-+	}
++	print_common_ip(param_dict, sample, symbol, dso)
 +
-+	t = tuple_new(9);
++def process_event(param_dict):
++	try:
++		do_process_event(param_dict)
++	except broken_pipe_exception:
++		# Stop python printing broken pipe errors and traceback
++		sys.stdout = open(os.devnull, 'w')
++		sys.exit(1)
 +
-+	tuple_set_u32(t, 0, e->type);
-+	tuple_set_u32(t, 1, e->code);
-+	tuple_set_s32(t, 2, e->cpu);
-+	tuple_set_s32(t, 3, e->pid);
-+	tuple_set_s32(t, 4, e->tid);
-+	tuple_set_u64(t, 5, e->ip);
-+	tuple_set_u64(t, 6, tm);
-+	tuple_set_string(t, 7, msg);
-+	tuple_set_u32(t, 8, cpumode);
++def auxtrace_error(typ, code, cpu, pid, tid, ip, ts, msg, cpumode, *x):
++	try:
++		print("%16s %5u/%-5u [%03u] %9u.%09u  error type %u code %u: %s ip 0x%16x" %
++			("Trace error", pid, tid, cpu, ts / 1000000000, ts %1000000000, typ, code, msg, ip))
++	except broken_pipe_exception:
++		# Stop python printing broken pipe errors and traceback
++		sys.stdout = open(os.devnull, 'w')
++		sys.exit(1)
 +
-+	call_object(handler, t, handler_name);
-+
-+	Py_DECREF(t);
-+}
-+
- static void get_handler_name(char *str, size_t size,
- 			     struct evsel *evsel)
- {
-@@ -1999,6 +2040,7 @@ struct scripting_ops python_scripting_ops = {
- 	.stop_script		= python_stop_script,
- 	.process_event		= python_process_event,
- 	.process_switch		= python_process_switch,
-+	.process_auxtrace_error	= python_process_auxtrace_error,
- 	.process_stat		= python_process_stat,
- 	.process_stat_interval	= python_process_stat_interval,
- 	.generate_script	= python_generate_script,
-diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-index 7276674e2971..35c354a15c3a 100644
---- a/tools/perf/util/trace-event.h
-+++ b/tools/perf/util/trace-event.h
-@@ -83,6 +83,8 @@ struct scripting_ops {
- 	void (*process_switch)(union perf_event *event,
- 			       struct perf_sample *sample,
- 			       struct machine *machine);
-+	void (*process_auxtrace_error)(struct perf_session *session,
-+				       union perf_event *event);
- 	void (*process_stat)(struct perf_stat_config *config,
- 			     struct evsel *evsel, u64 tstamp);
- 	void (*process_stat_interval)(u64 tstamp);
++def context_switch(ts, cpu, pid, tid, np_pid, np_tid, machine_pid, out, out_preempt, *x):
++	global glb_switch_printed
++	global glb_switch_str
++	if out:
++		out_str = "Switch out "
++	else:
++		out_str = "Switch In  "
++	if out_preempt:
++		preempt_str = "preempt"
++	else:
++		preempt_str = ""
++	if machine_pid == -1:
++		machine_str = ""
++	else:
++		machine_str = "machine PID %d" % machine_pid
++	glb_switch_str = "%16s %5d/%-5d [%03u] %9u.%09u %5d/%-5d %s %s" % \
++		(out_str, pid, tid, cpu, ts / 1000000000, ts %1000000000, np_pid, np_tid, machine_str, preempt_str)
++	glb_switch_printed = False
 -- 
 2.17.1
 
