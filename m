@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC29F38F6FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA9538F704
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhEYAcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYAcE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:32:04 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4096EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:30:34 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id v8so38209230lft.8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oLP4oglLNCR+9nXwmE8IhmlcVIVSmG3eaWpMOp4bmk8=;
-        b=rP/2hrI1pD+HuYaQkfSjt5L/O90JURl9WFveM0Bp/G+tbVrsVgygnir3hDkS9zFJqX
-         XwL1LfEOIOxuB2aKqJEngEBuhsCz6MqBjebju6J+qBFyEqlvdRwR5atOCQXXH3Kkx2N1
-         3fY2XXDpsZlfzLr4UMLuyNrxt/cNHjLd0CZdrgN1EMztuULY0zPEj5BwznG9AS3nIfd/
-         Jpyu3RspjH4vFW3p5DQ/fhfYDFtsnm5XHL1ibkcu/Rny8E7jbDKOStD/nbSOvBdYKnco
-         4wpIIkaIXl924s6i38dplGClI6DKYZSrxnniQcXThYcEDAsgkwfVcoYyxGdrcze3TwKm
-         CB+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oLP4oglLNCR+9nXwmE8IhmlcVIVSmG3eaWpMOp4bmk8=;
-        b=ZxrFTvTRb+0mMiHGyGEXhFng1NBG/n0iRczWL0F66QKgIwtGrwlPf4exj8DqJY9hJB
-         ZYPCtHetnnqcDdL1AwW9Yi8x/eXY39cRWXnuPbd7534FQ3jokUx8VdomwRr1LF3S9ZR2
-         MUCUyiuFQ1NG9jPjEpMctjobllaGF4yGM3m8/L3HXTSgMnIpl7YcLlFQX34eMK1EEuKE
-         11r2G2aPFsx348bd51nB690hhvutnHCIJF4HElOmu/UCwGTTBdCBUHgTRfDzw78ZGsml
-         D44EEzC0BxSNi1W7aVDpYROk8sZpERXbCAqm5+zt0QDg7HXgnzUolNHEi2zPTuoheQWn
-         r+Cg==
-X-Gm-Message-State: AOAM532tMwmYNht4rTLF3Ftjocuv9Fhx4AfDduTH1sOMvgvPJMs57cNf
-        LYV1my9NdhfDJ0cQ5sDnh+1qCFzsXpYqtFGh9slChA==
-X-Google-Smtp-Source: ABdhPJw1HN3EJMYQmc9N6v18t6ySbunlT/243xY0jxo6mquZnjHFnii7atHe6NxbmrbfQ6HLxJ1mbqJN+Y9YvZPTUTs=
-X-Received: by 2002:a05:6512:11ea:: with SMTP id p10mr11731891lfs.157.1621902632596;
- Mon, 24 May 2021 17:30:32 -0700 (PDT)
+        id S229894AbhEYAh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:37:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45301 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhEYAh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 20:37:57 -0400
+IronPort-SDR: 7YlEPWpkftMZy2rzp3KBrccBNSX+LDLc5oEUQJBQXGlI/gFI9vmOHNPwbJdkjTHKE6WYzc/wga
+ lBWqNqBdnfSA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="181702956"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="181702956"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 17:36:23 -0700
+IronPort-SDR: PNiE8R7tlZZxl6b4LbKo4BLWsWIzK93sQ+05/lDy6TClUiBMGpG5c5+bmpK0ukdbJ2HOkupc6Z
+ uEzwQ2eLmDEQ==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="546281419"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.195.214]) ([10.212.195.214])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 17:36:22 -0700
+Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX
+ guest
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
+ <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <e932f6f4-fe64-8937-b982-b9987324d83e@linux.intel.com>
+Date:   Mon, 24 May 2021 17:36:21 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <cover.1621413933.git.mchehab+huawei@kernel.org> <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
-In-Reply-To: <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 25 May 2021 02:30:21 +0200
-Message-ID: <CACRpkdYU4LQM54rht9quJvfxJ7N4KjJf27+ckNGTdLOW1LF1UQ@mail.gmail.com>
-Subject: Re: [PATCH 05/10] docs: update pin-control.rst references
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:51 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
 
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
->
-> Update the cross-references accordingly.
->
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+  that.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-I suppose you take it through the doc tree? I can apply it if you prefer.
+> I thought we discussed that there are other considerations for wbinvd
+> besides DMA? In any event this paragraph is actively misleading
+> because it disregards ACPI and Persistent Memory secure-erase whose
+> usages of wbinvd have nothing to do with DMA.
 
-Yours,
-Linus Walleij
+
+In this case they would be broken in KVM too.
+
+
+> I would much prefer a
+> patch to shutdown all the known wbinvd users as a precursor to this
+> patch rather than assuming it's ok to simply ignore it. You have
+> mentioned that TDX does not need to use those paths, but rather than
+> assume they can't be used why not do the audit to explicitly disable
+> them? Otherwise this statement seems to imply that the audit has not
+> been done.
+
+We're not assuming it. We know it because KVM does it since forever.
+
+All we want to do is do the same as KVM.
+
+-Andi
+
+
