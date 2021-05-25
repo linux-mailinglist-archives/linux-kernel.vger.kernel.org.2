@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B70390D1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E90390D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 01:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhEYX7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 19:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhEYX7r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 19:59:47 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43846C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:58:17 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so30317847otg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 16:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=96SWrhLmUCKQijao48QxB8kgaW2ggVLMSJIzzAAK82s=;
-        b=JkbcbieZnBP98eCaMaDkGpBNne2U71qQhBMxkWGZmcfquJDvt0qyhK3d+7swAYlm9e
-         diraHkDZjp3fJCUYEBZ/IONDfA9fe6O4Q1TkHyYhmI3cVrDbgcVlUiEm11EZzrWeyOUF
-         acoql4FHCAz36VGkUzduCJNi89OqBsboKsVB1Q1DSqPrR4SqEldZTZoku3LDetlgz6Tc
-         gtO5AJUvdl1TwdnW9nyIj9qYi3S8PAuIU7SxJJkNz6A7eizyqtLZWal1umQahwgv23gk
-         3D/KvNXhYw4bjdcoAYUj6ObB9bmZb71upekftP5ZX+ihYcxfvmbrrXZtxx7+iqsKZM/K
-         Xhag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=96SWrhLmUCKQijao48QxB8kgaW2ggVLMSJIzzAAK82s=;
-        b=H2+oDXYLEQuh04b5KMik6IKCpK3BfgOqgJvw3Wg7BEXldaPpnP0nKBX4FHaDy1pTH4
-         bJbVb7au6KVXvC1o/61SBQzjWWezMmVJfvfOZCB7Bg19mQBFdHToSEUXa39BWVL0SMsQ
-         2UV2OlluJLgC1tCQKRwsaQmLgW/weN14ZwBTdZyTBh7f3VuRoaW5ihItrziF4MWZ9QA7
-         a/HB1Do3ZZCPjotH0vLHwK7tX/tacfgGxecURdiPoUdwEWmdKbi6lHyVnybIZh6ovIYj
-         gf82NBMi3vcXn4f6WRr585D2Me7AjtKeF4OTxJPiWJYA36MFGCbIXSUos65tyvwG9GiX
-         pHyA==
-X-Gm-Message-State: AOAM533ixM+n1yk9F8IaYiafiu6p6sDVNNXduE5ZXhL1H2iPzOKhW3/K
-        r8YGF7Ij6fa8ymUmXW7bUWeZuw==
-X-Google-Smtp-Source: ABdhPJxYTgORel00p83Ig33bBNDTJPo4Kko+a5E/oDEYLjvCYkAWza0i04mqKo/jpxN4eiqAVjA+hQ==
-X-Received: by 2002:a9d:4e88:: with SMTP id v8mr168567otk.110.1621987096235;
-        Tue, 25 May 2021 16:58:16 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 129sm3773659ooq.34.2021.05.25.16.58.15
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 25 May 2021 16:58:15 -0700 (PDT)
-Date:   Tue, 25 May 2021 16:58:03 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>, Zi Yan <ziy@nvidia.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3_=E7=9B=B4=E4=B9=9F=29?= 
-        <naoya.horiguchi@nec.com>, Wang Yugui <wangyugui@e16-tech.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/2] mm: thp: check page_mapped instead of page_mapcount
- for split
-In-Reply-To: <CAHbLzkqs32HkRiAoQeSv2ik9fBYmdhwUFq5vWkcs7PY0rUu2fA@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2105251643320.2804@eggly.anvils>
-References: <20210525162145.3510-1-shy828301@gmail.com> <20210525162145.3510-2-shy828301@gmail.com> <alpine.LSU.2.11.2105251412140.2003@eggly.anvils> <CAHbLzkqs32HkRiAoQeSv2ik9fBYmdhwUFq5vWkcs7PY0rUu2fA@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S232209AbhEZAA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232171AbhEZAA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:00:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1273B613CD;
+        Tue, 25 May 2021 23:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621987136;
+        bh=Z62AZ6dPeOWcKfVmlINa/gucXFM8K/vuNtPp7AKyiNc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XEKwL8DPxi9bL2QIRcJQlYVU6RCI8LIOAFiL7FBN18B/XdBiWmDeLtJ7nef92kLET
+         U81ct/r5hByJbTWYNBGtNQkeskryMifMaNXJBy8Cq3O6U5FXstX/7EPa37n0jxmEfl
+         I1OOWPG63oCAVxJFbyxE24LxW+i3VlWa/quHOrKFt2FUH0PMcYzpqexNX6APTAOxE8
+         AOWxeqX1F+hQpL6WgFysH11fMt5jqfwEOUxLIeTn627rXutG8Fr0FMnllWRK78SLA8
+         IKYSRVFWdZboGCU76tstLMiuTrBkRS6EL0uqRTF7rglvgRKWroJBJiA3saJ+AcVanP
+         Uvvodsip7obEA==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Yejune Deng <yejune.deng@gmail.com>
+Subject: [PATCH] sched: Fix PF_NO_SETAFFINITY blind inheritance
+Date:   Wed, 26 May 2021 01:58:49 +0200
+Message-Id: <20210525235849.441842-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Yang Shi wrote:
-> On Tue, May 25, 2021 at 3:06 PM Hugh Dickins <hughd@google.com> wrote:
-> > On Tue, 25 May 2021, Yang Shi wrote:
-> >
-> > > When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-> > > return false positive for PTE-mapped THP since page_mapcount() is used
-> > > to check if the THP is unmapped, but it just checks compound mapount and
-> > > head page's mapcount.  If the THP is PTE-mapped and head page is not
-> > > mapped, it may return false positive.
-> >
-> > But those false positives did not matter because there was a separate
-> > DEBUG_VM check later.
-> >
-> > It's good to have the link to Wang Yugui's report, but that paragraph
-> > is not really about this patch, as it has evolved now: this patch
-> > consolidates the two DEBUG_VM checks into one VM_WARN_ON_ONCE_PAGE.
-> >
-> > >
-> > > The try_to_unmap() has been changed to void function, so check
-> > > page_mapped() after it.  And changed BUG_ON to WARN_ON since it is not a
-> > > fatal issue.
-> >
-> > The change from DEBUG_VM BUG to VM_WARN_ON_ONCE is the most important
-> > part of this, and the reason it's good for stable: and the patch title
-> > ought to highlight that, not the page_mapcount business.
-> 
-> Will update the subject and the commit log accordingly.
+The patch 00b89fe0197f
+	("sched: Make the idle task quack like a per-CPU kthread")
+added PF_KTHREAD | PF_NO_SETAFFINITY to the idle kernel threads.
 
-Thanks!
+Unfortunately these properties are inherited to the init/0 children
+through kernel_thread() calls: init/1 and kthreadd. There are several
+side effects to that:
 
-> 
-> >
-> > >
-> > > [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
-> > >
-> > > Reviewed-by: Zi Yan <ziy@nvidia.com>
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >
-> > This will be required Cc: stable@vger.kernel.org
-> > (but we don't want to Cc them on this mail).
-> >
-> > As I said on the other, I think this should be 1/2 not 2/2.
-> 
-> Sure.
+1) kthreadd affinity can not be reset anymore from userspace. Also
+   PF_NO_SETAFFINITY propagates to all kthreadd children, including
+   the unbound kthreads Therefore it's not possible anymore to overwrite
+   the affinity of any of them. Here is an example of warning reported
+   by rcutorture:
 
-Great.
+		WARNING: CPU: 0 PID: 116 at kernel/rcu/tree_nocb.h:1306 rcu_bind_current_to_nocb+0x31/0x40
+		Modules linked in:
+		CPU: 0 PID: 116 Comm: rcu_torture_fwd Not tainted 5.13.0-rc3-next-20210524 #478
+		Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+		RIP: 0010:rcu_bind_current_to_nocb+0x31/0x40
+		Code: e8 d4 0c 35 00 85 c0 75 01 c3 65 48 8b 04 25 00 6d 01 00 8b b8 58 05 00 00 48 c7 c6 68 76 ce a6 e8 e4 2e fc ff 48 85 c0 74 df <0f> 0b c3 66 66 2e 0f 1f 84 00 00 00 00 00 90 41 55 48
+		+63 c7 48 c7
+		RSP: 0000:ffff9bb78036fe48 EFLAGS: 00010282
+		RAX: ffffffffffffffea RBX: ffff8a2d01b1b800 RCX: 0000000000000000
+		RDX: ffff8a2d01b1b800 RSI: 0000000000000074 RDI: ffffffffa644eec0
+		RBP: ffff9bb78036ff00 R08: ffff8a2d01b06400 R09: ffff8a2d014346d8
+		R10: ffff8a2d014348a0 R11: 0000000000000000 R12: ffff8a2d01af8420
+		R13: ffff8a2d01895000 R14: ffff8a2d01895000 R15: ffff8a2d01b1b800
+		FS:  0000000000000000(0000) GS:ffff8a2d1f400000(0000) knlGS:0000000000000000
+		CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+		CR2: 0000000000000000 CR3: 000000000660c000 CR4: 00000000000006f0
+		Call Trace:
+		 rcu_torture_fwd_prog+0x62/0x730
+		 ? ttwu_do_wakeup.isra.0+0xd/0xd0
+		 ? rcu_torture_read_lock_trivial+0x10/0x10
+		 ? kthread+0x122/0x140
+		 kthread+0x122/0x140
+		 ? set_kthread_struct+0x40/0x40
+		 ret_from_fork+0x22/0x30
+		---[ end trace 135cca867023305b ]---
 
-> 
-> >
-> > > ---
-> > > v3: Incorporated the comments from Hugh. Keep Zi Yan's reviewed-by tag
-> > >     since there is no fundamental change against v2.
-> > > v2: Removed dead code and updated the comment of try_to_unmap() per Zi
-> > >     Yan.
-> > >  mm/huge_memory.c | 17 +++++------------
-> > >  1 file changed, 5 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > index 80fe642d742d..72d81d8e01b1 100644
-> > > --- a/mm/huge_memory.c
-> > > +++ b/mm/huge_memory.c
-> > > @@ -2343,6 +2343,8 @@ static void unmap_page(struct page *page)
-> > >               ttu_flags |= TTU_SPLIT_FREEZE;
-> > >
-> > >       try_to_unmap(page, ttu_flags);
-> > > +
-> > > +     VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
-> >
-> > There is one useful piece of information that dump_page() will not show:
-> > total_mapcount(page).  Is there a way of crafting that into the output?
-> >
-> > Not with the macros available, I think.  Maybe we should be optimistic
-> > and assume I already have the fixes, so not worth trying to refine the
-> > message (but I'm not entirely convinced of that!).
-> >
-> > The trouble with
-> >         if (VM_WARN_ON_ONCE_PAGE(page_mapped(page), page))
-> >                 pr_warn("total_mapcount:%d\n", total_mapcount(page));
-> > is that it's printed regardless of the ONCEness.  Another "trouble"
-> > is that it's printed so long after the page_mapped(page) check that
-> > it may be 0 by now - but one can see that as itself informative.
-> 
-> We should be able to make dump_page() print total mapcount, right? The
-> dump_page() should be just called in some error paths so taking some
-> extra overhead to dump more information seems harmless, or am I
-> missing something? Of course, this can be done in a separate patch.
+2) init/1 does an exec() in the end which clears both
+   PF_KTHREAD and PF_NO_SETAFFINITY so we are fine once kernel_init()
+   escapes to userspace. But until then, no initcall or init code can
+   successfully call sched_setaffinity() to init/1.
 
-I didn't want to ask that of you, but yes, if you're willing to add
-total_mapcount() into dump_page(), I think that would be ideal; and
-could be helpful for other cases too.
+   Also PF_KTHREAD looks legit on init/1 before it calls exec() but
+   we better be careful with unknown introduced side effects.
 
-Looking through total_mapcount(), I think it's safe to call from
-dump_page() - I always worry about extending crash info with
-something that depends on a maybe-corrupted pointer which would
-generate a further crash and either recurse or truncate the output -
-but please check that carefully.
+One way to solve the PF_NO_SETAFFINITY issue is to not inherit this flag
+on copy_process() at all. The cases where it matters are:
 
-Yes, a separate patch please: which can come later on, and no
-need for stable for that one, but good to know it's coming.
+* fork_idle(): explicitly set the flag already.
+* fork() syscalls: userspace tasks that shouldn't be concerned by that.
+* create_io_thread(): the callers explicitly attribute the flag to the
+                      newly created tasks.
+* kernel_thread():
+	_ Fix the issues on init/1 and kthreadd
+	_ Fix the issues on kthreadd children.
+	_ Usermode helper created by an unbound workqueue. This shouldn't
+	  matter. In the worst case it gives more control to userspace
+	  on setting affinity to these short living tasks although this can
+	  be tuned with inherited unbound workqueues affinity already.
 
-Thanks,
-Hugh
+Reported-and-tested-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Yejune Deng <yejune.deng@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/fork.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index ace4631b5b54..e595e77913eb 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2000,7 +2000,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 		goto bad_fork_cleanup_count;
+ 
+ 	delayacct_tsk_init(p);	/* Must remain after dup_task_struct() */
+-	p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE);
++	p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE | PF_NO_SETAFFINITY);
+ 	p->flags |= PF_FORKNOEXEC;
+ 	INIT_LIST_HEAD(&p->children);
+ 	INIT_LIST_HEAD(&p->sibling);
+-- 
+2.25.1
+
