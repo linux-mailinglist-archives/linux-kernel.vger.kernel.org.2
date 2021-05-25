@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8A9390209
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34208390210
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 15:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhEYNWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 09:22:11 -0400
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:44998 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhEYNWJ (ORCPT
+        id S233200AbhEYNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 09:22:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28390 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233070AbhEYNWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 09:22:09 -0400
-Received: by mail-ej1-f50.google.com with SMTP id lz27so47288497ejb.11;
-        Tue, 25 May 2021 06:20:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0m3RCAXahdUBRecbZdgKCTWuOHPg5vuE0WA5DSFNEuc=;
-        b=oElrAF+IsJ6+8vqxWH2pp7cP8yfSoH0g+JCXd+wBPDyG3QaNr0fTgP6uCtpAGp/jAz
-         BAgSemkLDZQUtezSEvOYvezFp0HpJO0VCbhrV9DcMiXgZPGT04Gi1PJazVL3Ax+K5+vG
-         F2xEe4JwcrtI7rKjLpCb+KjzznAc+XxVIdrMrvTRA+4xA+IozhSDKO69wbv9PnMDJpP3
-         qFwBewpUsV6nOCDANPr/Jowm2SHxA3spyy+ZzfLtMEMPuK5KkvCRyoGhVv/+5+tV6kzs
-         qeX2YgFvTRr/LS5ZrrrFKumTdMgwwG2XdXc/9LpG8F5bo2VBjxLnppte+hMrnaktPmbQ
-         T4zA==
-X-Gm-Message-State: AOAM530GQ89BtHACi+9wG6/pmVn7TmGGFy6Vg+QZNgEFrSP4zsgAReX+
-        mHqR8JSkRUhAwpIgZtmG7snGCdcuEr6LJw==
-X-Google-Smtp-Source: ABdhPJx5aVn41DNMK5gv9dunAXVDJ/Xo7i7sbPDWRgE/jgacGLLtKQpJvClJGUHIRUYo16+aqq8kug==
-X-Received: by 2002:a17:906:2b8c:: with SMTP id m12mr25091741ejg.358.1621948837922;
-        Tue, 25 May 2021 06:20:37 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id s21sm10759721edy.23.2021.05.25.06.20.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 06:20:37 -0700 (PDT)
-Date:   Tue, 25 May 2021 15:20:35 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Lambert Wang <lambert.q.wang@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pci: add pci_dev_is_alive API
-Message-ID: <20210525132035.GA66609@rocinante.localdomain>
-References: <20210525125925.112306-1-lambert.q.wang@gmail.com>
+        Tue, 25 May 2021 09:22:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621948866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mNt+DjVfGGIxrVvGjGmM2V8MGzWk+ZVdoTSHQp30M6w=;
+        b=Llq6nAkrJQ3nYldz/rdojmyhG5Byz4Wm/evoEIxu32+pe23S+dLuVTGQDpd7jMji+P0ju+
+        Sv5KTdND+vCB7rTBB9HiwPc0vvLRZUe6LN51BfIldClqYBsQQXMD6AZ+dxWnBP1ArAyy7t
+        o9MUqhRisV8CKzd4Ik+BKQ9AH/4KX+M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-c7s7ocZ1NLmyw36_7g7jGg-1; Tue, 25 May 2021 09:21:02 -0400
+X-MC-Unique: c7s7ocZ1NLmyw36_7g7jGg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11D28107ACCD;
+        Tue, 25 May 2021 13:21:01 +0000 (UTC)
+Received: from localhost (ovpn-115-80.ams2.redhat.com [10.36.115.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C1205D6AC;
+        Tue, 25 May 2021 13:20:49 +0000 (UTC)
+Date:   Tue, 25 May 2021 14:20:49 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        slp@redhat.com, sgarzare@redhat.com,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+Message-ID: <YKz5sQPPNdccztHh@stefanha-x1.localdomain>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
+ <20210524145928.GA3873@lst.de>
+ <7cc7f19b-34b3-1501-898d-3f41e047d766@redhat.com>
+ <YKypgi2qcYVTgYdv@T590>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GTdFGyW7Xz8tnV5A"
 Content-Disposition: inline
-In-Reply-To: <20210525125925.112306-1-lambert.q.wang@gmail.com>
+In-Reply-To: <YKypgi2qcYVTgYdv@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lambert,
 
-Thank you for sending the patch over!
+--GTdFGyW7Xz8tnV5A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To match the style of other patches you'd need to capitalise "PCI" in
-the subject, see the following for some examples:
+On Tue, May 25, 2021 at 03:38:42PM +0800, Ming Lei wrote:
+> On Tue, May 25, 2021 at 09:22:48AM +0200, Paolo Bonzini wrote:
+> > On 24/05/21 16:59, Christoph Hellwig wrote:
+> > > On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
+> > > > Possible drawbacks of this approach:
+> > > >=20
+> > > > - Hardware virtio_blk implementations may find virtqueue_disable_cb=
+()
+> > > >    expensive since it requires DMA. If such devices become popular =
+then
+> > > >    the virtio_blk driver could use a similar approach to NVMe when
+> > > >    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+> > > >=20
+> > > > - If a blk_poll() thread is descheduled it not only hurts polling
+> > > >    performance but also delays completion of non-REQ_HIPRI requests=
+ on
+> > > >    that virtqueue since vq notifications are disabled.
+> > >=20
+> > > Yes, I think this is a dangerous configuration.  What argument exists
+> > > again just using dedicated poll queues?
+> >=20
+> > There isn't an equivalent of the admin queue in virtio-blk, which would
+> > allow the guest to configure the desired number of poll queues.  The nu=
+mber
+> > of queues is fixed.
+>=20
+> Dedicated vqs can be used for poll only, and I understand VM needn't to k=
+now
+> if the vq is polled or driven by IRQ in VM.
+>=20
+> I tried that in v5.4, but not see obvious IOPS boost, so give up.
+>=20
+> https://github.com/ming1/linux/commits/my_v5.4-virtio-irq-poll
 
- $ git log --oneline drivers/pci/pci.c 
+Hey, that's cool. I see a lot of similarity between our patches :).
 
-Also, it might be worth mentioning in the subject that this is a new API
-that will be added.
+Stefan
 
-> Device drivers use this API to proactively check if the device
-> is alive or not. It is helpful for some PCI devices to detect
-> surprise removal and do recovery when Hotplug function is disabled.
-> 
-> Note: Device in power states larger than D0 is also treated not alive
-> by this function.
-[...]
+--GTdFGyW7Xz8tnV5A
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Question to you: do you have any particular users of this new API in
-mind?  Or is this solving some problem you've seen and/or reported via
-the kernel Bugzilla?
+-----BEGIN PGP SIGNATURE-----
 
-> +/**
-> + * pci_dev_is_alive - check the pci device is alive or not
-> + * @pdev: the PCI device
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCs+bEACgkQnKSrs4Gr
+c8gpvwf9Gsszvx3thnjSlUHG86t1HZE4scSNI6lprmUa91+ClXSNycaUbWeVwhFb
+RtBBVcKmNyhhn/GKBlczjmVd5BepVijB8cQflfk2gVVol4c/4IfckdlAuhn4SM2F
+FAcyRrUqV17bUzOMCWpnN50nSHaGFBGxnJncMb04WdaM23J+Mi8PfD/ixcRkJCQq
+ZDAR51KF4iHXK5eSC4dPnQ3MI40NZRBnyxT+09k8c522XdAT55GUbQeAxAtvA5Mm
+5jr5DfO1SRrCZyKstnEVZTu6cN+2Y7sunsJ/9sR+VNKTAMpCuX29EyDOxTZBB8fd
+SVNiZeqFPX42bPVbwvacmEC35OHJ7w==
+=wyc4
+-----END PGP SIGNATURE-----
 
-That would be "PCI" in the function brief above.  Also, try to be
-consistent and capitalise everything plus add missing periods, see the
-following for an example on how to write kernel-doc:
+--GTdFGyW7Xz8tnV5A--
 
-  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#function-documentation
-
-> + * Device drivers use this API to proactively check if the device
-> + * is alive or not. It is helpful for some PCI devices to detect
-> + * surprise removal and do recovery when Hotplug function is disabled.
-
-As per my question above - what users of this new API do you have in
-mind?  Are they any other patches pending adding users of this API?
-
-> + * Note: Device in power state larger than D0 is also treated not alive
-> + * by this function.
-> + *
-> + * Returns true if the device is alive.
-> + */
-> +bool pci_dev_is_alive(struct pci_dev *pdev)
-> +{
-> +	u16 vendor;
-> +
-> +	pci_read_config_word(pdev, PCI_VENDOR_ID, &vendor);
-> +
-> +	return vendor == pdev->vendor;
-> +}
-> +EXPORT_SYMBOL(pci_dev_is_alive);
-
-Why not use the EXPORT_SYMBOL_GPL()?
-
-	Krzysztof
