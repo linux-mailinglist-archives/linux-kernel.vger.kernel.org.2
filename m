@@ -2,119 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679E83909A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCBB3909AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhEYTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbhEYTaJ (ORCPT
+        id S230094AbhEYTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:33:30 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:31715 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhEYTd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:30:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6998BC061574;
-        Tue, 25 May 2021 12:28:39 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w12so29825212edx.1;
-        Tue, 25 May 2021 12:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=75Ks06KfSSPpj59wqT5+AJhX+CfpPc9kzdj5LvsQWiw=;
-        b=svvJ8KLxm7v7XhkPXDu/85D+q9srvsXD0Nk4QdWz6di44zcR+CGg/SWo+Vku0xABPc
-         kY+YdfpEEZvg8LYfQBvYHufE1xabHJZy1ssdSlqpBxB9LSJVn83UomkRgVwV+pNVuAh/
-         aMqcLO5FUr1V+UzqiekdsjvUzKvqe+jU64Ys0VG4KhA/wN5UdcI1dUXR5Wyhw7V2ObY+
-         4Nokaju+rctQYQ/XcEvIXKybnXcyaxDN7K5ta9TnKkQhKbC3jC5y2vRfBkkRSgGdoT26
-         XB4WNFeqt2YTplmrk2C6kePyODG9g/rpM/CaapJ+hhJ0kHQ5hjGu7pIpqrGPfdecRzbk
-         hxxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=75Ks06KfSSPpj59wqT5+AJhX+CfpPc9kzdj5LvsQWiw=;
-        b=RHIMUf6NKoxeD49emq1dOeLC361LCwOj0SwSPvc3pzwPpyp8Q2/cHsZPx+TPVsw0Fr
-         4tUokpAE0uaeSUqclEf1SJf8M4Q3wS2qTE4/mthaq2egQ/Pn4soGndzz2jMAjiHB/wyd
-         PsujKeoKLahOgHfky/KuMPVYpGAgnxl/vK90GTe7jgFUzNf/ofLpD3Hla7OSxyimFZCw
-         Rn2D/1EjSR/Oprt7sytVwkKZOSQH/cSXfXfnwkTO0FN8Y/TXPctkPZq//TULAMyALczk
-         hVMI3Vq8mI7808cl2NJT3rVfIBunaslN+WWk6CElMAslF0N8iXT0N7uTRBTuy55nBjCt
-         kvIg==
-X-Gm-Message-State: AOAM533ULWO/trJ3Mk0C78G40j3dDJICP8vKqP58Tw1KplC/9VbGDq4f
-        Mv5nS7eqVKQ4aXSj2oApjRs=
-X-Google-Smtp-Source: ABdhPJxSYHD+fbJHJRqiTr2DOaX4XZdyd8dfJiksgDH0FbB8/hifaTzAku+sEK5rhVwGQ0f1F4LDig==
-X-Received: by 2002:a50:fd13:: with SMTP id i19mr33694293eds.386.1621970917954;
-        Tue, 25 May 2021 12:28:37 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id dh21sm11292027edb.28.2021.05.25.12.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 12:28:37 -0700 (PDT)
-Message-ID: <f285211d2b8ef2c9c3c01974c91b7b7439b0fd0b.camel@gmail.com>
-Subject: Re: [PATCH v1 1/3] scsi: ufs: Let UPIU completion trace print RSP
- UPIU
-From:   Bean Huo <huobean@gmail.com>
-To:     Bart Van Assche <bvanassche@acm.org>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 25 May 2021 21:28:36 +0200
-In-Reply-To: <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
-References: <20210523211409.210304-1-huobean@gmail.com>
-         <20210523211409.210304-2-huobean@gmail.com>
-         <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 25 May 2021 15:33:29 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d64 with ME
+        id 97Xv2500221Fzsu037Xvxk; Tue, 25 May 2021 21:31:58 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 25 May 2021 21:31:58 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] mmc: mxs-mmc: Disable the 'reg_vmmc' regulator when
+ needed
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Chris Ball <cjb@laptop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <d05074c11962a046ff9c2f457c240432ca8a7194.1621600443.git.christophe.jaillet@wanadoo.fr>
+ <CAPDyKFrS3wdYs3AQtjZEOsLzNvxgy1n3EfxZ+a8w8J8rH8kQ-w@mail.gmail.com>
+Message-ID: <7c973bfd-8fc3-026d-351c-dc00e92c8b01@wanadoo.fr>
+Date:   Tue, 25 May 2021 21:31:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAPDyKFrS3wdYs3AQtjZEOsLzNvxgy1n3EfxZ+a8w8J8rH8kQ-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-05-23 at 18:24 -0700, Bart Van Assche wrote:
-> On 5/23/21 2:14 PM, Bean Huo wrote:
+Le 24/05/2021 à 15:59, Ulf Hansson a écrit :
+> On Fri, 21 May 2021 at 14:36, Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>>
+>> The 'reg_vmmc' regulator is never disabled. Neither in the error handling
+>> of the probe, nor in the remove function.
+>>
+>> Add a managed action to do the required clean-up before a 'regulator_put()'
+>> call.
+>>
+>> Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/mmc/host/mxs-mmc.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+>> index 947581de7860..b043d53dd728 100644
+>> --- a/drivers/mmc/host/mxs-mmc.c
+>> +++ b/drivers/mmc/host/mxs-mmc.c
+>> @@ -552,6 +552,13 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
+>>
+>> +static void regulator_disable_action(void *_data)
+>> +{
+>> +       struct regulator *regulator = _data;
+>> +
+>> +       regulator_disable(regulator);
+>> +}
+>> +
+>>   static int mxs_mmc_probe(struct platform_device *pdev)
+>>   {
+>>          struct device_node *np = pdev->dev.of_node;
+>> @@ -591,6 +598,10 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+>>                                  "Failed to enable vmmc regulator: %d\n", ret);
+>>                          goto out_mmc_free;
+>>                  }
+>> +               ret = devm_add_action_or_reset(&pdev->dev,
+>> +                                       regulator_disable_action, reg_vmmc);
+>> +               if (ret)
+>> +                       goto out_mmc_free;
 > 
-> > +             rq_rsp = (struct utp_upiu_req *)hba-
-> > >lrb[tag].ucd_rsp_ptr;
+> Even if this improves the behaviour, there is a standardized way for
+> how we deal with regulators for mmc.
 > 
+> 1. Call mmc_regulator_get_supply() during probe to fetch the optional
+> regulator. If a regulator is found a corresponding OCR mask, in
+> host->ocr_avail is assigned.
 > 
-> So a pointer to a response (hba->lrb[tag].ucd_rsp_ptr) is cast to a
+> 2. In the ->set_ios() callback, invoke mmc_regulator_set_ocr(). This
+> will also set the correct voltage-level and turn on/off the regulator,
+> depending on the requested OCR/voltage-level.
+
+Hi,
+I don't know this API.
+I've tried to look at a few drivers to see how it was used, but it 
+didn't help me either.
+
+So, I won't be able to provide any other proposal on this. It would only 
+be trial/error.
+It is yours if something needs to be fixed here.
+
+Anyway, thanks for your time for answering and trying to show the right 
+direction.
+
+CJ
+
 > 
-> pointer to a request (struct utp_upiu_req *)? That seems really odd
-> to
+>>          }
+>>
+>>          ssp->clk = devm_clk_get(&pdev->dev, NULL);
+>> --
+>> 2.30.2
+>>
 > 
-> me. Please explain.
-
-Bart,
-
-these two structures have the same size, and inside the structures,
-the both unions have the same members(not exactly 100% identical). 
-
-struct utp_upiu_rsp {
-        struct utp_upiu_header header;
-        union {
-                struct utp_cmd_rsp sr;
-                struct utp_upiu_query qr;
-        };
-};
-
-
-struct utp_upiu_req {
-        struct utp_upiu_header header;
-        union {
-                struct utp_upiu_cmd             sc;
-                struct utp_upiu_query           qr;
-                struct utp_upiu_query           uc;
-        };
-};
-
-Use one point for response and request both, no problem here. It is
-true that looks very ood, and very difficult to read them.
-
-If this is problem, I can change the code, let them more readable.
-
-how do you think?
-
-Bean
-
-
+> Kind regards
+> Uffe
+> 
 
