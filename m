@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF5D3909A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679E83909A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 21:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbhEYT2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 15:28:55 -0400
-Received: from www.zeus03.de ([194.117.254.33]:43442 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231722AbhEYT2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 15:28:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=HvLGgx0eQepKO1HoTBijMMAUh98E
-        WwZW/ZZrK15+eqI=; b=B0k0uW4F1haP2/9rbHKmjg8smqGnObfuI76iijsc8ooO
-        gXqrBcAMaeAsS0+SV+Z0BV29QhFXIaNmx5pK1pP5TCIGWdZAIc1RcUM70hM9EfLm
-        VQuzF7KbkxM5/MYmCDS+bFZSjyltrBbNtl4yRxf6vTFyXDWzkbnyJohrxsW7UpM=
-Received: (qmail 1362255 invoked from network); 25 May 2021 21:27:20 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 May 2021 21:27:20 +0200
-X-UD-Smtp-Session: l3s3148p1@KnS+gyzDdtsgAwDPXxHuAKg5HweM3jRU
-Date:   Tue, 25 May 2021 21:27:19 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: I2C_HISI should depend on ACPI
-Message-ID: <YK1Pl/eaJFhZ2f7Q@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
+        id S232678AbhEYTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 15:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231573AbhEYTaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 15:30:09 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6998BC061574;
+        Tue, 25 May 2021 12:28:39 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id w12so29825212edx.1;
+        Tue, 25 May 2021 12:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=75Ks06KfSSPpj59wqT5+AJhX+CfpPc9kzdj5LvsQWiw=;
+        b=svvJ8KLxm7v7XhkPXDu/85D+q9srvsXD0Nk4QdWz6di44zcR+CGg/SWo+Vku0xABPc
+         kY+YdfpEEZvg8LYfQBvYHufE1xabHJZy1ssdSlqpBxB9LSJVn83UomkRgVwV+pNVuAh/
+         aMqcLO5FUr1V+UzqiekdsjvUzKvqe+jU64Ys0VG4KhA/wN5UdcI1dUXR5Wyhw7V2ObY+
+         4Nokaju+rctQYQ/XcEvIXKybnXcyaxDN7K5ta9TnKkQhKbC3jC5y2vRfBkkRSgGdoT26
+         XB4WNFeqt2YTplmrk2C6kePyODG9g/rpM/CaapJ+hhJ0kHQ5hjGu7pIpqrGPfdecRzbk
+         hxxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=75Ks06KfSSPpj59wqT5+AJhX+CfpPc9kzdj5LvsQWiw=;
+        b=RHIMUf6NKoxeD49emq1dOeLC361LCwOj0SwSPvc3pzwPpyp8Q2/cHsZPx+TPVsw0Fr
+         4tUokpAE0uaeSUqclEf1SJf8M4Q3wS2qTE4/mthaq2egQ/Pn4soGndzz2jMAjiHB/wyd
+         PsujKeoKLahOgHfky/KuMPVYpGAgnxl/vK90GTe7jgFUzNf/ofLpD3Hla7OSxyimFZCw
+         Rn2D/1EjSR/Oprt7sytVwkKZOSQH/cSXfXfnwkTO0FN8Y/TXPctkPZq//TULAMyALczk
+         hVMI3Vq8mI7808cl2NJT3rVfIBunaslN+WWk6CElMAslF0N8iXT0N7uTRBTuy55nBjCt
+         kvIg==
+X-Gm-Message-State: AOAM533ULWO/trJ3Mk0C78G40j3dDJICP8vKqP58Tw1KplC/9VbGDq4f
+        Mv5nS7eqVKQ4aXSj2oApjRs=
+X-Google-Smtp-Source: ABdhPJxSYHD+fbJHJRqiTr2DOaX4XZdyd8dfJiksgDH0FbB8/hifaTzAku+sEK5rhVwGQ0f1F4LDig==
+X-Received: by 2002:a50:fd13:: with SMTP id i19mr33694293eds.386.1621970917954;
+        Tue, 25 May 2021 12:28:37 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id dh21sm11292027edb.28.2021.05.25.12.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 12:28:37 -0700 (PDT)
+Message-ID: <f285211d2b8ef2c9c3c01974c91b7b7439b0fd0b.camel@gmail.com>
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Let UPIU completion trace print RSP
+ UPIU
+From:   Bean Huo <huobean@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 25 May 2021 21:28:36 +0200
+In-Reply-To: <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
+References: <20210523211409.210304-1-huobean@gmail.com>
+         <20210523211409.210304-2-huobean@gmail.com>
+         <628c0050-e3e2-033c-8a25-6fc04d4d5657@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9D1xoyWcCrPVSRBC"
-Content-Disposition: inline
-In-Reply-To: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2021-05-23 at 18:24 -0700, Bart Van Assche wrote:
+> On 5/23/21 2:14 PM, Bean Huo wrote:
+> 
+> > +             rq_rsp = (struct utp_upiu_req *)hba-
+> > >lrb[tag].ucd_rsp_ptr;
+> 
+> 
+> So a pointer to a response (hba->lrb[tag].ucd_rsp_ptr) is cast to a
+> 
+> pointer to a request (struct utp_upiu_req *)? That seems really odd
+> to
+> 
+> me. Please explain.
 
---9D1xoyWcCrPVSRBC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bart,
 
-On Tue, May 04, 2021 at 11:06:32AM +0200, Geert Uytterhoeven wrote:
-> The HiSilicon Kunpeng I2C controller driver relies on ACPI to probe for
-> its presence.  Hence add a dependency on ACPI, to prevent asking the
-> user about this driver when configuring a kernel without ACPI firmware
-> support.
->=20
-> Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+these two structures have the same size, and inside the structures,
+the both unions have the same members(not exactly 100% identical). 
 
-Applied to for-current, thanks!
+struct utp_upiu_rsp {
+        struct utp_upiu_header header;
+        union {
+                struct utp_cmd_rsp sr;
+                struct utp_upiu_query qr;
+        };
+};
 
 
---9D1xoyWcCrPVSRBC
-Content-Type: application/pgp-signature; name="signature.asc"
+struct utp_upiu_req {
+        struct utp_upiu_header header;
+        union {
+                struct utp_upiu_cmd             sc;
+                struct utp_upiu_query           qr;
+                struct utp_upiu_query           uc;
+        };
+};
 
------BEGIN PGP SIGNATURE-----
+Use one point for response and request both, no problem here. It is
+true that looks very ood, and very difficult to read them.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCtT5cACgkQFA3kzBSg
-KbY1fhAApAakjaGkBT2VA5O/soAPau6NM5YwHl6x0TjAp5nQX8xoP/IdIDLU3Xqo
-5AI+t/RyfdGj+3Bn6y04IrZYkXQmGOMf8q0laIYAP1R/DTcfO+7p9eBkmwoxYr6R
-9udNEx3E14b9NOc8UL7gu0eVMJER9ZcrllHiCHmTL1TA2PE5cFqSOpLJKGdfVIPz
-DAnkMNlApxsb07da1NkBObAMXm8wX+zD8PajloCxA07LpKNk6Iz/iDuJcU38/NYY
-FKl0buQgJvOI5rHimXnvF4yWk9pGFKBiqJ+ZG4w5Rcl0hHXC4r1P73PnEkZHJ2rY
-HHHu658/UtDUwEWY692sZYxKUv5sbjCQg3/PMYJrjieovm1tWJimHMN3zrZWiNCJ
-/lmWm6p/yBhIVQ+nfBf3Z/DreHXonBnMbVQ+itLHzhBb/otbQc7sHTQDGM1MtUzf
-ko0sFM37cW5JKhdieU+Qh1K8dtYMHF45x/EXS2WrAhECQ9PT89p0RxLuYTa3CLPp
-HMcbs4NKnBugALar37hOAkuSL7JvPudhPAQHwUvyWVUo04J3wA6MgHSVDKwaizqV
-rTzWGXXFL5GsgItCvKvPHJC0R6xpaghjR6lfQb2A9M3jgGgZySLrx98pqX24GhIN
-Wya/60U+TBqeoYmpDA7Z+P7x3WIHzl8UeSIIYR+v7uUi6ZKqYSs=
-=V9Ve
------END PGP SIGNATURE-----
+If this is problem, I can change the code, let them more readable.
 
---9D1xoyWcCrPVSRBC--
+how do you think?
+
+Bean
+
+
+
