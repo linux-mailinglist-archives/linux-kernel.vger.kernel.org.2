@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DF738FDAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EB538FDA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhEYJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhEYJW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:22:56 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C40C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:21:21 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id p24so44963683ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BZTuEqLmGNl02YmfLP5PxVjqs62Ikettm3LSYBztvwU=;
-        b=RL3Qqgi1li8RxeZRnGxuZnx649DfSgBleh19zT9AS8jkydT/2fnKCXMiWz5BHTkJob
-         gPWlu5KDgWD39SHNCW5RYZ+4SlG3P9ZWLY6N5O4nQoU3Lcq5L7Sbcqmmvo7lHEkPrMNa
-         WPwQtYJQ3BjiFtf12eUcfyt8Z+obnYHh1/mS9xoKePOgBV3OfDe/pnhMAKhtN9EW2wq3
-         NXU6HLWpYBJ+kbjqCe81u20pJi/Pjnyynkc5uSuwxpEPYZOqkNdp3knkjtCWixNHZtPo
-         jx9x9yDp/lO1JFnfoG8E24jcyiBT3RHh7FomQaL+zruKaOAESN9qDKJPrS6aHkW1gWkL
-         R/rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BZTuEqLmGNl02YmfLP5PxVjqs62Ikettm3LSYBztvwU=;
-        b=UaUwSPsgpDsXJF0UNuSqTvHaAZF7sq9meVoM3p5oS9KQi95CHri466RI5BrOMHZXu+
-         q60mmo5FNN9sBwD+VnAdeuXpmjJQOmSAfKCrMc7NzqPPM7CPBYgtutoaDWkZYRchfJdP
-         8fuAbrQk8qamDrSMouxqgQAKoQV9ibdHvq/EdoWTE1ZXnz55Y0ycqST6ZTsRiXHi2k2p
-         gKZ/dfZ8FsbMDy6iejNXUrKmv3EDXuqIu6Wk+rltailvmXBkTjE3GXhDzUpafgTF4CXL
-         x4gVqZy+qD4ae5wfTTwCXl2stjU+sYiZ1mKq5CEKMuiOL19Gg6I/VvBQ7kivFCLDtkVQ
-         ATLg==
-X-Gm-Message-State: AOAM531bc5dNG7rxUAXQO07anXEf91wHjV0pws3+Le43zpPjjJlbPFgr
-        j7wlSPLdbM2mjknZi4rieIFt2xC0F4pshxXQNZM=
-X-Google-Smtp-Source: ABdhPJwZt41wiN/C66srXKSL4bOqj1B7wdmXOGKfU21A8DSyOoxYSPs10Xth3CiLZRBcJ8G3MeR7F+s2EtbSzF7C7Mw=
-X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr27315360ejc.360.1621934479619;
- Tue, 25 May 2021 02:21:19 -0700 (PDT)
+        id S232503AbhEYJWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:22:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:53688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232495AbhEYJWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:22:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AE5A6D;
+        Tue, 25 May 2021 02:20:40 -0700 (PDT)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C18F3F73D;
+        Tue, 25 May 2021 02:20:38 -0700 (PDT)
+Date:   Tue, 25 May 2021 10:21:37 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        lukasz.luba@arm.com, dietmar.eggemann@arm.com
+Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
+Message-ID: <20210525092137.GA369979@e124901.cambridge.arm.com>
+References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+ <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
+ <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210523001806.3927609-1-tpiepho@gmail.com> <YKuFPeH0sIFqrBt6@smile.fi.intel.com>
- <CA+7tXiiogw+bWCj2=QiRBc+sp01dUh1j_mfLJC19CB6Wch0nuQ@mail.gmail.com> <YKy9PHIbuhsomsTq@smile.fi.intel.com>
-In-Reply-To: <YKy9PHIbuhsomsTq@smile.fi.intel.com>
-From:   Trent Piepho <tpiepho@gmail.com>
-Date:   Tue, 25 May 2021 02:21:08 -0700
-Message-ID: <CA+7tXihtuzw3+7boMFqmvHcpe-hr2qF0TnaduskbXUbfsFwb=A@mail.gmail.com>
-Subject: Re: [PATCH] lib/math/rational.c: Fix divide by zero
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Daniel Latypov <dlatypov@google.com>, linux-kernel@vger.kernel.org,
-        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Oskar Schirmer <oskar@scara.com>, Yiyuan Guo <yguoaz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 2:02 AM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
->
-> On Mon, May 24, 2021 at 01:17:48PM -0700, Trent Piepho wrote:
-> > On Mon, May 24, 2021 at 3:51 AM Andy Shevchenko
-> > <andriy.shevchenko@intel.com> wrote:
-> > > On Sat, May 22, 2021 at 05:18:06PM -0700, Trent Piepho wrote:
-> > >
-> > > This misses the test cases (*). Please, develop them with Daniel.
-> > >
-> > > *) We usually don't accept changes in the generic libraries without test cases.
-> > >
-> > > Fixes tag?
-> >
-> > Is there a bug report on a tracker?  I just got the email from Yigua.
->
-> Fixes tag refers to the existing commit that brought the bug.
-> Also you may need to add Reported-by tag since Yigua reported it.
+On Tue, May 25, 2021 at 10:48:23AM +0200, Peter Zijlstra wrote:
+> On Fri, May 21, 2021 at 05:54:24PM +0100, Vincent Donnefort wrote:
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 4f09afd..5a91a2b 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -10,6 +10,7 @@
+> >  
+> >  #include "sched.h"
+> >  
+> > +#include <linux/energy_model.h>
+> >  #include <linux/sched/cpufreq.h>
+> >  #include <trace/events/power.h>
+> >  
+> > @@ -153,6 +154,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> >  
+> >  	freq = map_util_freq(util, freq, max);
+> >  
+> > +	/* Avoid inefficient performance states */
+> > +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
+> > +
+> >  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+> >  		return sg_policy->next_freq;
+> >  
+> 
+> This seems somewhat unfortunate, it adds a loop over the OPPs only to
+> then call into cpufreq to do the exact same thing again :/
 
-I did add a Reported-by tag.  Wasn't clear to me fixing a specific
-commit was entirely appropriate since not handling out of range values
-correctly has been there all along.
+Indeed, but it would be complicated to avoid the double loop:
+
+It is possible to register OPPs (and by extension perf_states) for a
+frequency for which, the cpufreq table entry is marked with
+CPUFREQ_ENTRY_INVALID. It would probably be an issue that would have to be
+fixed in the driver, but it is currently allowed.
+
+More importantly, while resolving the frequency, we also cache the index in
+cached_resolved_idx. Some drivers, such as qcom-cpufreq-hw rely on this
+value for their fastswitch support.
+
+Notice though, we would iterate over the EM only in the case where the
+performance state has found inefficiencies.
+
