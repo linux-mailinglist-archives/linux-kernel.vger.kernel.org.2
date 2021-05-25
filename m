@@ -2,235 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631CA39071F
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75EC390723
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 19:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbhEYRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 13:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        id S233375AbhEYRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 13:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbhEYRIu (ORCPT
+        with ESMTP id S232224AbhEYRL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 13:08:50 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:07:18 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id k14so45040331eji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:07:18 -0700 (PDT)
+        Tue, 25 May 2021 13:11:57 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E65C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:10:27 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id d25so20588853ioe.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 10:10:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=shX5o7fX3QC1vBrjY1MAQkvRCh6xIuYlJU65dj3inTo=;
-        b=EZx5bOBS1D3lFTJnRSsg224irnopnZIFuU9EIi23AcWgi3puLB8NM/RhYBvXIcyv3T
-         5w+Z/FOTRJX1ibduGD4k2I0l0xDoYtM2NgWwpFwBo2XMsIQeBrS3NDlzHgF0/aXSpXt8
-         1cTPMTfNJc9SAr2oN/cE1Ndhc6EUrLQIVcVYoN4ofOU402PhFMQY1PHgnt6Cgp4gBdqM
-         pZgLZbznGnOEYHvN1s21/soP/HcdRNp6jsOpP3AH9mDdJVjBOhz5k4e5zp8HtWYljhFK
-         Ip3h4YvpqZfTh8HATErqgSa9gaabPyTeKjmZTBbU5D9JNQLHiPFGBJPZhu+orzVn8tjh
-         dgVg==
+        bh=BGhKWueGkFJNScUYpjr13ZZiSFueS7vnLwxNVEzc8Ko=;
+        b=hkctTkTSIaIn3pj5Qv1EvhhT1cPhiWJ/4s/DAb/h7t1MNt34Br9HFkPXbI/iPNOj0j
+         29LBBMzPkXlYZpEVnbW+m+zEDvOYM2WALs/AruQs43ZKH4qN+3mxwlKBj94+SNbHMvL+
+         9iyHzhDrhWrXIFeIvo6dCGgnH8viB+qTBNcVv9kMD1OUm7vpXe7xp3yiXbI9Ey+R5UUg
+         yHfJnsthT31Fj3/NxmzCOcYuDTEYb71X0Kmlt1MAXRwNeULPsHzsy9JEHtfI+5q7dLk3
+         qBzMOSVVr1Lm9paQD/ZPNvhxYqHF+ZjqX7L0uqgimE8r5emiw6wlahVC2ypU9sgf2FJZ
+         Rh7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=shX5o7fX3QC1vBrjY1MAQkvRCh6xIuYlJU65dj3inTo=;
-        b=bcyqtFpXT/+a8bpoNEYqfs0kmJvSkg80QPu9nEeyh69vjV1AdsH8UnPL6Je88d/+qJ
-         P5h+3JI00a6nocRTuLM1F13iUMfYZtfjMnByOCLUdQWVTeia/DzDUyW7SP+4AIAX8oSy
-         HvQlj4RZr+j4U4MVjql8alYIvL1fEhMf7B5b/cro3+0mDUGU6D0bkIKBRkKYplrsaMIS
-         mRGgTqPYD2ugRNfLjsGXlnryu3mWr5QX/4pJePRwaSsePRh6qoztGbnSyjAWcWGqhpWD
-         z9R/oJTRkN+n9IiWff0yN7StW21nqaFGI3W0K/Vuak7Mhsr/EM0H/CQJfmrVa/FbDtr3
-         8bxA==
-X-Gm-Message-State: AOAM531rXffz72Nw23yyvkE3f8VwpA10ZLcSBZXV29rJ82QRstY0c691
-        QHK30AeqPGBXU/w3qgLc/uHaZvyouA9oz9o/9G8=
-X-Google-Smtp-Source: ABdhPJwf9CiiGaJWdMqwlVDs9Mk0UOGu6dNQmIVUXJqjoqUuy4s3sORqO7ENhE2AE8f8SG0F1GFLXf9GvPoXDEmUphM=
-X-Received: by 2002:a17:906:1699:: with SMTP id s25mr29258812ejd.238.1621962437398;
- Tue, 25 May 2021 10:07:17 -0700 (PDT)
+        bh=BGhKWueGkFJNScUYpjr13ZZiSFueS7vnLwxNVEzc8Ko=;
+        b=dfJFCwg9vd87hFt29MgiKszalC8YVict/Ro3HSp14XrhlYihUN2LGyxLRhl5RIbMoB
+         xCuF+phF1ZGBXDTK2gzEYYDsHGqy+N/lvQ+M6EGeZFkvjp8dwuWVRNl0BHEUMmHQggBC
+         VPrAfEuFjRSdFCRkKDcMImHi8TAoUnhwHWTqT+HWx+nBXO6aT8BSZWLHZnW73fSXDOmD
+         1ZufupF7ODrE3pnyY6gOd7HEwEyam+G1uo6NM1EM9aUeazmQVrWFCM+NNA6jzZjEk3u+
+         Sl1spyJqGMKXRPK8o6GL1w93mdtuCllt88EVMy/n2zMjAHuKYktA5F9E+WfJgVpIvTE8
+         khMA==
+X-Gm-Message-State: AOAM533YzqgT1ArY817gRVAXXpUzioUKMAtkqrto/u+x5EUp0QZeAYBF
+        z3FHNIGU8pqB2Xw6+bLrv/HVe3s6AnEcyISmLXf5DA==
+X-Google-Smtp-Source: ABdhPJzeIpevk5xDCGlpe9Kc3jgJo3ztAndGvM+LiMnVZofBGoUW7Dsu1oFs1CwiblmZsfKzt3wAu3ooZ1TFmIdOfPc=
+X-Received: by 2002:a02:aa85:: with SMTP id u5mr33795253jai.75.1621962626279;
+ Tue, 25 May 2021 10:10:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525162145.3510-1-shy828301@gmail.com> <YK0p4fSXk1vhsmKt@google.com>
-In-Reply-To: <YK0p4fSXk1vhsmKt@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 25 May 2021 10:07:05 -0700
-Message-ID: <CAHbLzkqLjB8V0s4S==qv-KFgXcBaCrLuSM4XAsKuj+95WDQhfw@mail.gmail.com>
-Subject: Re: [v3 PATCH 1/2] mm: rmap: make try_to_unmap() void function
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Hugh Dickins <hughd@google.com>, Zi Yan <ziy@nvidia.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Wang Yugui <wangyugui@e16-tech.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210523001806.3927609-1-tpiepho@gmail.com> <YKuFPeH0sIFqrBt6@smile.fi.intel.com>
+ <CA+7tXiiogw+bWCj2=QiRBc+sp01dUh1j_mfLJC19CB6Wch0nuQ@mail.gmail.com> <YKy9PHIbuhsomsTq@smile.fi.intel.com>
+In-Reply-To: <YKy9PHIbuhsomsTq@smile.fi.intel.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 25 May 2021 10:10:15 -0700
+Message-ID: <CAGS_qxqfu1Sdu6m0Sf8uVpbbpUkB5_xO3E6xbeyg-7Z67a+mQg@mail.gmail.com>
+Subject: Re: [PATCH] lib/math/rational.c: Fix divide by zero
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Trent Piepho <tpiepho@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        andy@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Oskar Schirmer <oskar@scara.com>, Yiyuan Guo <yguoaz@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:46 AM Minchan Kim <minchan@kernel.org> wrote:
+On Tue, May 25, 2021 at 2:02 AM Andy Shevchenko
+<andriy.shevchenko@intel.com> wrote:
 >
-> On Tue, May 25, 2021 at 09:21:44AM -0700, Yang Shi wrote:
-> > Currently try_to_unmap() return bool value by checking page_mapcount(),
-> > however this may return false positive since page_mapcount() doesn't
-> > check all subpages of compound page.  The total_mapcount() could be used
-> > instead, but its cost is higher since it traverses all subpages.
+> On Mon, May 24, 2021 at 01:17:48PM -0700, Trent Piepho wrote:
+> > On Mon, May 24, 2021 at 3:51 AM Andy Shevchenko
+> > <andriy.shevchenko@intel.com> wrote:
+> > > On Sat, May 22, 2021 at 05:18:06PM -0700, Trent Piepho wrote:
+> > >
+> > > This misses the test cases (*). Please, develop them with Daniel.
+> > >
+> > > *) We usually don't accept changes in the generic libraries without test cases.
+> > >
+> > > Fixes tag?
 > >
-> > Actually the most callers of try_to_unmap() don't care about the
-> > return value at all.  So just need check if page is still mapped by
-> > page_mapped() when necessary.  And page_mapped() does bail out early
-> > when it finds mapped subpage.
-> >
-> > Suggested-by: Hugh Dickins <hughd@google.com>
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/rmap.h |  2 +-
-> >  mm/huge_memory.c     |  4 +---
-> >  mm/memory-failure.c  | 13 ++++++-------
-> >  mm/rmap.c            |  6 +-----
-> >  mm/vmscan.c          |  3 ++-
-> >  5 files changed, 11 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> > index def5c62c93b3..116cb193110a 100644
-> > --- a/include/linux/rmap.h
-> > +++ b/include/linux/rmap.h
-> > @@ -194,7 +194,7 @@ static inline void page_dup_rmap(struct page *page, bool compound)
-> >  int page_referenced(struct page *, int is_locked,
-> >                       struct mem_cgroup *memcg, unsigned long *vm_flags);
-> >
-> > -bool try_to_unmap(struct page *, enum ttu_flags flags);
-> > +void try_to_unmap(struct page *, enum ttu_flags flags);
-> >
-> >  /* Avoid racy checks */
-> >  #define PVMW_SYNC            (1 << 0)
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 19195fca1aee..80fe642d742d 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -2336,15 +2336,13 @@ static void unmap_page(struct page *page)
-> >  {
-> >       enum ttu_flags ttu_flags = TTU_IGNORE_MLOCK |
-> >               TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
-> > -     bool unmap_success;
-> >
-> >       VM_BUG_ON_PAGE(!PageHead(page), page);
-> >
-> >       if (PageAnon(page))
-> >               ttu_flags |= TTU_SPLIT_FREEZE;
-> >
-> > -     unmap_success = try_to_unmap(page, ttu_flags);
-> > -     VM_BUG_ON_PAGE(!unmap_success, page);
-> > +     try_to_unmap(page, ttu_flags);
-> >  }
-> >
-> >  static void remap_page(struct page *page, unsigned int nr)
-> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > index 9dcc9bcea731..6dd53ff34825 100644
-> > --- a/mm/memory-failure.c
-> > +++ b/mm/memory-failure.c
-> > @@ -1126,7 +1126,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
-> >               collect_procs(hpage, &tokill, flags & MF_ACTION_REQUIRED);
-> >
-> >       if (!PageHuge(hpage)) {
-> > -             unmap_success = try_to_unmap(hpage, ttu);
-> > +             try_to_unmap(hpage, ttu);
-> >       } else {
-> >               if (!PageAnon(hpage)) {
-> >                       /*
-> > @@ -1138,17 +1138,16 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
-> >                        */
-> >                       mapping = hugetlb_page_mapping_lock_write(hpage);
-> >                       if (mapping) {
-> > -                             unmap_success = try_to_unmap(hpage,
-> > -                                                  ttu|TTU_RMAP_LOCKED);
-> > +                             try_to_unmap(hpage, ttu|TTU_RMAP_LOCKED);
-> >                               i_mmap_unlock_write(mapping);
-> > -                     } else {
-> > +                     } else
-> >                               pr_info("Memory failure: %#lx: could not lock mapping for mapped huge page\n", pfn);
-> > -                             unmap_success = false;
-> > -                     }
-> >               } else {
-> > -                     unmap_success = try_to_unmap(hpage, ttu);
-> > +                     try_to_unmap(hpage, ttu);
-> >               }
-> >       }
-> > +
-> > +     unmap_success = !page_mapped(hpage);
-> >       if (!unmap_success)
-> >               pr_err("Memory failure: %#lx: failed to unmap page (mapcount=%d)\n",
-> >                      pfn, page_mapcount(hpage));
-> > diff --git a/mm/rmap.c b/mm/rmap.c
-> > index a35cbbbded0d..728de421e43a 100644
-> > --- a/mm/rmap.c
-> > +++ b/mm/rmap.c
-> > @@ -1748,10 +1748,8 @@ static int page_not_mapped(struct page *page)
-> >   *
-> >   * Tries to remove all the page table entries which are mapping this
-> >   * page, used in the pageout path.  Caller must hold the page lock.
-> > - *
-> > - * If unmap is successful, return true. Otherwise, false.
-> >   */
-> > -bool try_to_unmap(struct page *page, enum ttu_flags flags)
-> > +void try_to_unmap(struct page *page, enum ttu_flags flags)
-> >  {
-> >       struct rmap_walk_control rwc = {
-> >               .rmap_one = try_to_unmap_one,
-> > @@ -1776,8 +1774,6 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
-> >               rmap_walk_locked(page, &rwc);
-> >       else
-> >               rmap_walk(page, &rwc);
-> > -
-> > -     return !page_mapcount(page) ? true : false;
+> > Is there a bug report on a tracker?  I just got the email from Yigua.
 >
-> Couldn't we use page_mapped instead of page_mapcount here?
-
-Yes, of course. Actually this has been discussed in v2 review. Most
-(or half) callers actually don't check the return value of
-try_to_unmap() except hwpoison, vmscan and THP split. It sounds
-suboptimal to have everyone pay the cost. So I thought Hugh's
-suggestion made sense to me.
-
-Quoted the discussion below:
-
-> @@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
->   else
->   rmap_walk(page, &rwc);
+> Fixes tag refers to the existing commit that brought the bug.
+> Also you may need to add Reported-by tag since Yigua reported it.
 >
-> - return !page_mapcount(page) ? true : false;
-> + return !total_mapcount(page) ? true : false;
-
-That always made me wince: "return !total_mapcount(page);" surely.
-
-Or slightly better, "return !page_mapped(page);", since at least that
-one breaks out as soon as it sees a mapcount.  Though I guess I'm
-being silly there, since that case should never occur, so both
-total_mapcount() and page_mapped() scan through all pages.
-
-Or better, change try_to_unmap() to void: most callers ignore its
-return value anyway, and make their own decisions; the remaining
-few could be changed to do the same.  Though again, I may be
-being silly, since the expensive THP case is not the common case.
-
-
-> With boolean return of try sematic looks reasonable to me
-> rather than void.
+> ...
 >
-> >  }
+> > > I think that refactoring may lead us to check first iteration before even going
+> > > into the loop. But it's another story and we may do it later (the algo uses
 > >
-> >  /**
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index f96d62159720..fa5052ace415 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1499,7 +1499,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
-> >                       if (unlikely(PageTransHuge(page)))
-> >                               flags |= TTU_SPLIT_HUGE_PMD;
+> > I started that, but it had no advantages and some disadvantages.
 > >
-> > -                     if (!try_to_unmap(page, flags)) {
-> > +                     try_to_unmap(page, flags);
-> > +                     if (page_mapped(page)) {
-> >                               stat->nr_unmap_fail += nr_pages;
-> >                               if (!was_swapbacked && PageSwapBacked(page))
-> >                                       stat->nr_lazyfree_fail += nr_pages;
-> > --
-> > 2.26.2
+> > Basically, there are three cases: too large, too small & closest to
+> > zero, too small & closest to non-zero.  This code can handle those
+> > three cases by adding three branches, if(d1), if(n1), and if(!d1).
+> > The truth values we need already exist at this point the algorithm.
 > >
+> > If it's at the start, then there still needs to be the three branches
+> > for each case.  But the values to test must be calculated too.
 > >
+> > What's more, it's possible that the value is exactly representable in
+> > the allowed range.  That's actual appears to be the most common use
+> > case, reducing a fraction to lowest terms (*).  By putting the tests
+> > in the "terminate because of limits" case, they don't need to happen
+> > when "terminate because exact value find" is the result. If the check
+> > was first, then it would always happen, even if it wouldn't have been
+> > necessary.
+> >
+> > And the time it took to find this bug shows us that out of bounds
+> > inputs are not a common case, so putting that on the hot path by
+> > checking it first at the expense of the reducing to lowest terms path
+> > doesn't make sense.
+>
+> Thanks for detailed explanation of your view to the current state of the code.
+> As you noticed I am not insisting on refactoring or so, I was rather wondering
+> if it can be done in the future. Still we might need some performance tests.
+>
+> Daniel, does KUnit have a capability to test performance?
+> Like running test case 1M times or so and calc average (median?) time of
+> execution.
+
+No, it does not.
+It also currently lacks an option/flag for running a test multiple times.
+So one would have to manually modify the test code itself to handle
+that right now.
+
+(One non-option is to call `kunit.py execute` in a loop, which will
+avoid build + config overhead, but it still adds more than we'd find
+acceptable here).
+
+I don't think this was considered before bc it's unclear what the
+performance characteristics of UML would be like compared to a more
+"normal" arch. Brendan's current patchset to add QEMU support into
+kunit.py makes this a bit better, but still running on a physical
+machine is still probably safest.
+
+>
+> > (*)  One could write a reduce to lowest terms function with an easier
+> > interface.  It could be a trivial one expression wrapper around
+> > rational_best_approximation().  It could also be a simpler function,
+> > but I think it would still perform the exact same sequence of
+> > divisions and moduli, so it wouldn't really make any difference.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
