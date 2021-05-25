@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB3E390A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50235390A79
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhEYUZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhEYUZa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:25:30 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:23:59 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j10so47952475lfb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hj6Q582YLSyCLF0bnaerXxki+Pd33TZxYnZYraN74n4=;
-        b=TnoK4xpXhETtWOipxAfkDY7xnLfXT0gia75k9ZmZywXVjOgGc0J/k3EO98XDyldCR6
-         mzyFCfuCIxdpqJ3tuAfdR9ieAxsWs4ecGpBxIH4fK5glh/G/Ezx78utwePLlMDxRkjJA
-         fBhkAcKsA248MrkdVA84JGLbR4TOj/3J1u1IM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hj6Q582YLSyCLF0bnaerXxki+Pd33TZxYnZYraN74n4=;
-        b=OgSTEeebqupzzkXwLynK+xZ8IlhwAcjR/IE9Se32RSIYLa5kb++MJxRBQus8T/l7oP
-         QK8EoHVapzxUzPyyFYHR2nz99/5DXbkK/kttT9HtCFdVOWiYM4+90aRe7TWWyZBUVEkr
-         msRWMvkScDcftstHFOtISrjzOQtluxXukfVs7JYJiFB6saXWmTy0/NoQOHKMabaN/6q7
-         9qmEwmF+09DQE2tghjNECtd0zBNWPXoHEGMEioqCFN45pDatwc8TZB5FP/uOL8uPNkP0
-         TYLgouYuoTLPrapZo1n99yQMc/ubyWx6VEtGojZ/tVPQ8Ps/X6aryCoFHnz+1/VHLs3S
-         8Yug==
-X-Gm-Message-State: AOAM532d66nEXGjxxYSppMcvDc100K934RN0bbF5kLFCJG4lByJPzF8G
-        eJ54BtVia0gDDcKlzjOTpJGXijlhwz9NiBuWSQs=
-X-Google-Smtp-Source: ABdhPJwVrmzCOEU7l6WB3Ml/mCWNV9DnSpfDGI/YCA1wQgN0CRWvjkamx6UEGxnYdtwmbMhNZqcafg==
-X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr15520535lfu.102.1621974237033;
-        Tue, 25 May 2021 13:23:57 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id d7sm2193277lja.112.2021.05.25.13.23.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 13:23:56 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id b12so32631442ljp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:23:56 -0700 (PDT)
-X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr23160163ljq.220.1621974235838;
- Tue, 25 May 2021 13:23:55 -0700 (PDT)
+        id S233272AbhEYUc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229643AbhEYUcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:32:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA8A613EC;
+        Tue, 25 May 2021 20:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621974655;
+        bh=YB5s9KqU3I3U0EwmlQEZQw1u1H5+l4vhQZio8tQDxYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l/kSEVjzzpoSmDZtXwhyPpiLBWJFOMLiiJdkZnUkEnjVxIP+ymjMljIoA6VJxwL7f
+         6oHEtmU95MjYLld20dbrEUhyRA5a05j5LdrpfZ1SoSD+sNzvAeJj/L+x4UOLzJAMS7
+         jKhmGmaIqQUsWjxLEHCeJKHhYbQ7DLvN2m7scGtHFauO0fr53Y2S2j1EiuQcwC2/Vk
+         iYl3Wl6Ge54GPYeQONO0Tgm40jtbkOUI63JYunfQuFF0kzdTPv08bgrSWHJxWDl8Dx
+         ATTJniz3W3LO7Yyo3MkohMzYa407hq0Lp2pVYkkutpEObLKqUhHBmG4z72z+ZS9Uu8
+         8JDPTeCNf/1mw==
+Date:   Tue, 25 May 2021 22:30:52 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Sean Nyekjaer <sean@geanix.com>, trix@redhat.com, lars@metafoo.de,
+        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] iio: accel: fxls8962af: conditionally compile
+ fxls8962af_i2c_raw_read_errata3()
+Message-ID: <YK1efL7DMOVZSPuz@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Sean Nyekjaer <sean@geanix.com>, trix@redhat.com, lars@metafoo.de,
+        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20210518234828.1930387-1-trix@redhat.com>
+ <a3329058-2b2d-415a-5d2a-0bdf2f97d23d@geanix.com>
+ <20210521175406.274f713b@jic23-huawei>
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org> <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
- <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk> <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
- <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
- <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk> <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
- <4390e9fb839ebc0581083fc4fa7a82606432c0c0.camel@trillion01.com> <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
-In-Reply-To: <d9a12052074ba194fe0764c932603a5f85c5445a.camel@trillion01.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 25 May 2021 10:23:39 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whZZ-g6qJ1Epox6c-_U-jSs+syA_7a8QKQkxZaudXXR_Q@mail.gmail.com>
-Message-ID: <CAHk-=whZZ-g6qJ1Epox6c-_U-jSs+syA_7a8QKQkxZaudXXR_Q@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Olivier Langlois <olivier@trillion01.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v0fj/HaOmU5lDP4H"
+Content-Disposition: inline
+In-Reply-To: <20210521175406.274f713b@jic23-huawei>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 9:40 AM Olivier Langlois <olivier@trillion01.com> wrote:
->
-> If I look in the create_io_thread() function, I can see that CLONE_VM
-> isn't set...
 
-That would indeed be horribly buggy, but I'm not seeing it:
+--v0fj/HaOmU5lDP4H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-                .flags          = ((lower_32_bits(flags) | CLONE_VM |
-                                    CLONE_UNTRACED) & ~CSIGNAL),
 
-Yeah, it has that odd "first create 'flags' without the CLONE_VM, but
-that is only used for that
+> > > The build is failing with this link error
+> > > ld: fxls8962af-core.o: in function `fxls8962af_fifo_transfer':
+> > > fxls8962af-core.c: undefined reference to `i2c_verify_client'
+> > >=20
+> > > This is needed for the i2c variant, not the spi variant. So
+> > > conditionally compile based on CONFIG_FXLS8962AF_I2C.
+> > >  =20
+> > Fixes: 68068fad0e1c ("iio: accel: fxls8962af: fix errata bug E3 - I2C b=
+urst reads")
+> > > Signed-off-by: Tom Rix <trix@redhat.com> =20
+> > Reviewed-by: Sean Nyekjaer <sean@geanix.com>
+>=20
+> Given the purpose of that check is to verify it was an i2c_client
+> should we be looking to instead provide a stub for the case where
+> we don't have CONFIG_I2C?
+>=20
+> +CC Wolfram and linux-i2c list for input.
 
-        lower_32_bits(flags)
+Such a stub sounds reasonable.
 
-thing, and then we explicitly add CLONE_VM in there in the actual
-kernel_clone_args.
 
-It's because of how 'kernel_thread()' is written (that has historical
-reasons), and the oddity is copied from there.
+--v0fj/HaOmU5lDP4H
+Content-Type: application/pgp-signature; name="signature.asc"
 
-           Linus
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCtXncACgkQFA3kzBSg
+KbaGzg/+PC+EeK4TZxKGveYd0I11gaP37dNvJKXHqjBQO8pzsZnBpWzzprDPvrt7
+7+hC6jYXPErO5okEMg+Dj+LC0T94F+YoNG7zvq4Q3BZ9aar6F8pmACeXKCTxU+di
+NmBDqGVqGUqu6YQY/0Ya3XBewc4OXfAJtFvtxydVJjwZ4U1r0gKssXoT2QD9GY1r
+0MzNUtP6Vqgqu65wOGmtp36+hsxJQ+kesKA9YQhV/NyNwKKwO5+PRbUMeyNjAGIr
+nUsw7N+Y7K8jdinauJguJmwa75ff3ZL8fGj0hTJR4V+twKP+u0OwRHxNYi0jLNQF
+Zq7/4K+ktNEupCl0yJenrQyGTwdS6F5lpr3trPm8uY03SZBdnUZHUmmzpviX251l
+uyIv272uWq8PQVXQ203VjeOxbnvK6OUfOkc+yDoA5B22AWlrL/Q7HBWStZj8iVCr
+yjADh39qnZjdAbggBCkcL54hKumFhiHcIXP6tGsrtx64uAOoo7ndnqKDLVKPbuz7
+qZaggAabA18Pi6o3+y+jE8u8xSxoU2JRGu+WdsFvfCZaYkIAnP4mVgD/duhumWww
+vC+x4XxSWVvR9bGX/FK5P3sh0J3kQF+Re7ysreydNBLiHlniVZ60Z7AhwetIw7eR
+wwP2oeNwHfkF60289uRYcCtSCuwCfUBaY0w3TnP/PqUMXrvW98U=
+=XRTq
+-----END PGP SIGNATURE-----
+
+--v0fj/HaOmU5lDP4H--
