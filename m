@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBC638FF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2399238FFA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 13:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhEYLAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 07:00:18 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:33171 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229581AbhEYLAR (ORCPT
+        id S231279AbhEYLBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 07:01:54 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52522 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229581AbhEYLBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 07:00:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ua4Ghke_1621940322;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ua4Ghke_1621940322)
+        Tue, 25 May 2021 07:01:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ua4Wylo_1621940413;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ua4Wylo_1621940413)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 May 2021 18:58:46 +0800
+          Tue, 25 May 2021 19:00:18 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, linux-hyperv@vger.kernel.org,
+To:     aelior@marvell.com
+Cc:     skalluru@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.ne, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drivers: hv: Fix missing error code in vmbus_connect()
-Date:   Tue, 25 May 2021 18:58:41 +0800
-Message-Id: <1621940321-72353-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] bnx2x: Fix missing error code in bnx2x_iov_init_one()
+Date:   Tue, 25 May 2021 19:00:12 +0800
+Message-Id: <1621940412-73333-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -32,31 +32,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Eliminate the follow smatch warning:
 
-drivers/hv/connection.c:236 vmbus_connect() warn: missing error code
-'ret'.
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1227
+bnx2x_iov_init_one() warn: missing error code 'err'.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/hv/connection.c | 4 +++-
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index 311cd00..5e479d5 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -232,8 +232,10 @@ int vmbus_connect(void)
- 	 */
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+index d21f085..27943b0 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+@@ -1223,8 +1223,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
+ 		goto failed;
  
- 	for (i = 0; ; i++) {
--		if (i == ARRAY_SIZE(vmbus_versions))
-+		if (i == ARRAY_SIZE(vmbus_versions)) {
-+			ret = -EDOM;
- 			goto cleanup;
-+		}
+ 	/* SR-IOV capability was enabled but there are no VFs*/
+-	if (iov->total == 0)
++	if (iov->total == 0) {
++		err = -EINVAL;
+ 		goto failed;
++	}
  
- 		version = vmbus_versions[i];
- 		if (version > max_version)
+ 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
+ 
 -- 
 1.8.3.1
 
