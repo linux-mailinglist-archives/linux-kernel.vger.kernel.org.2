@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E47238FD26
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D3338FCAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhEYIuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:50:37 -0400
-Received: from new.vh-s.de ([178.63.54.93]:41092 "EHLO new.vh-s.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230507AbhEYIuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:50:35 -0400
-X-Greylist: delayed 1577 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 May 2021 04:50:35 EDT
-Received: from p4ff90040.dip0.t-ipconnect.de ([79.249.0.64] helo=vhssv2.vhs)
-        by new.vh-s.de with esmtpsa (TLS1.2:RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <knopf@vh-s.de>)
-        id 1llSKj-0005Ab-8J; Tue, 25 May 2021 10:22:37 +0200
-Received: from [10.1.0.22]
-        by vhssv2.vhs with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <knopf@vh-s.de>)
-        id 1llSKi-0002tG-Ue; Tue, 25 May 2021 10:22:37 +0200
-From:   Felix Knopf <knopf@vh-s.de>
-Subject: Re: [PATCH] driver: adc: ltc2497: return directly after reading the
- adc conversion value
-To:     "Li, Meng" <Meng.Li@windriver.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     "lars@metafoo.de" <lars@metafoo.de>,
-        "Michael.Hennerich@analog.com" <Michael.Hennerich@analog.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        id S232353AbhEYIZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:25:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231492AbhEYIZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:25:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621931048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMNrS2AH+pWQGLicYKYrV08FbwOU09YffgbHD3gux2Q=;
+        b=P5A9KrRtsLXVNPfo0wac7J6zkBsiE3zNljU6u/nSwBLWx10PyV8FJQt2aQ43h2l/4UhwDD
+        8Z9AfNhpf0kWa+K0kHPPlY3Jbhdnab5yaHxyEpdsaANCRS8faNOSZ6YBJg96j+ryz2GkGd
+        LdW8So2jMFAxzQ8ZsD4jSh9NVFVHg4Q=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-FfSJX0vUMhW2FtOsoBz7Sg-1; Tue, 25 May 2021 04:24:07 -0400
+X-MC-Unique: FfSJX0vUMhW2FtOsoBz7Sg-1
+Received: by mail-ej1-f71.google.com with SMTP id z1-20020a1709068141b02903cd421d7803so8497229ejw.22
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:24:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nMNrS2AH+pWQGLicYKYrV08FbwOU09YffgbHD3gux2Q=;
+        b=ki8UMGCozm0jwfFI0N8XHZo6ATj5QoKvCNAlhh9LSgsWhCvp0y116gT7NQnNxkOY3/
+         u4y4vyWQTKNNfxzxiplTbnwqxl6nHljH5bqfg91+uss7LuaO48VOKS/zZ5cYe+qFqqFt
+         00ZibGr5Fi4nNX3tFesgro2RaWbxmQhzCMyYv0vlJq1J1BXRz2Pu3JIr/MJjRg6by64Q
+         +/MHbMreS1fQVlQV/1/RDMeZXTgjD8l041SYSY3LBIXfYi2v6EoKBYDj+CVAqpL3BJ6v
+         qIMUM9bPKUDdLKtr8RZBNG5662otQd/kx5IujmNH5p8yM75GH8puLQn5HYBFliGuhLY4
+         zLdA==
+X-Gm-Message-State: AOAM530aDkHeaC3YhFel9yAZ4QM0rrr3Qbfi3xQ3dWL4GAGLIdMPRSVW
+        zQFDjM6m4V23ekhoI9gHXP5lltm5k9xdhhgGZSxOthBpN639Hb7BW2HSmbUViFQOinFwRcSuWAX
+        lnydGBma50NdK2IsdgVHB2TC/
+X-Received: by 2002:a17:906:2749:: with SMTP id a9mr7301261ejd.498.1621931045769;
+        Tue, 25 May 2021 01:24:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3ejiTVjnk0KxP0784vBVyBVdsw1rtPY3FP7JEZB/fGwja1e9e9HqFVf3ExrM8SXokAJlR3w==
+X-Received: by 2002:a17:906:2749:: with SMTP id a9mr7301238ejd.498.1621931045543;
+        Tue, 25 May 2021 01:24:05 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gl20sm8752886ejb.5.2021.05.25.01.24.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 01:24:05 -0700 (PDT)
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "graf@amazon.com" <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-References: <20210512045725.23390-1-Meng.Li@windriver.com>
- <20210519092104.pntanimcjg6s6fca@pengutronix.de>
- <PH0PR11MB51913E1982E3208302CE29CCF1269@PH0PR11MB5191.namprd11.prod.outlook.com>
-Message-ID: <45829810-7921-3150-6df1-c19ffcb2ae6f@vh-s.de>
-Date:   Tue, 25 May 2021 10:22:36 +0200
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
+References: <mhng-b093a5aa-ff9d-437f-a10b-47558f182639@palmerdabbelt-glaptop>
+ <DM6PR04MB708173B754E145BC843C4123E7269@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <YKypJ5SJg2sDtn7/@kroah.com>
+ <DM6PR04MB7081843419AFCECABA75AD74E7259@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <YKyxMy+djlscUhr1@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
+Message-ID: <fb03a89a-873d-ab85-8b05-f5f283f54489@redhat.com>
+Date:   Tue, 25 May 2021 10:24:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <PH0PR11MB51913E1982E3208302CE29CCF1269@PH0PR11MB5191.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <YKyxMy+djlscUhr1@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 79.249.0.64
-X-SA-Exim-Mail-From: knopf@vh-s.de
-X-SA-Exim-Scanned: No (on new.vh-s.de); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> On Wed, May 12, 2021 at 12:57:25PM +0800, Meng.Li@windriver.com wrote:
->>> When read adc conversion value with below command:
->>> cat /sys/.../iio:device0/in_voltage0-voltage1_raw
->>> There is an error reported as below:
->>> ltc2497 0-0014: i2c transfer failed: -EREMOTEIO This i2c transfer
->>> issue is introduced by commit 69548b7c2c4f ("iio:
->>> adc: ltc2497: split protocol independent part in a separate module").
->>> When extract the common code into ltc2497-core.c, it change the code
->>> logic of function ltc2497core_read(). With wrong reading sequence, the
->>> action of enable adc channel is sent to chip again during adc channel
->>> is in conversion status. In this way, there is no ack from chip, and
->>> then cause i2c transfer failed.
+On 25/05/21 10:11, Greg KH wrote:
+>> 1) facilitate the development work overall, both for Paolo and Anup on the KVM
+>> part, but also others to check that their changes do not break KVM support.
+> 
+> Who are the "others" here?  You can't force your code into the tree just
+> to keep it up to date with internal apis that others are changing, if
+> you have no real users for it yet.  That's asking others to do your work
+> for you:(
 
-Hi,
+I don't know about changes that would break KVM support.  However, 
+"other KVM developers" would be able to check that their changes do not 
+break the RISC-V implementation, and I would certainly either enforce 
+that or do the work myself.
 
-I came across the same or a very similar issue with the ltc2497 but took
-a different approach to solve it.  I suspect this issue is caused by a
-suboptimal I2C access pattern.
+Also, excluding simulators and emulators from the set of "real users" 
+ignores the needs of userspace developers, as well as other uses such as 
+education/academia.  Linux for x86 (both KVM and bare metal) supports 
+features that are only available in emulators and simulators which are 
+not even free software.  I am pretty sure that there would be more users 
+of KVM/RISC-V than with KVM/MIPS, despite the latter having support in 
+real hardware.
 
-The ltc2497 triggers a new conversion on the stop condition of
-transactions addressed to it.  As the chip cannot communicate during a
-conversion, it will not ACK until it is finished.  The current driver
-produces the following sequence to read from an arbitrary channel:
+Paolo
 
-ltc2497_result_and_measure(…, NULL);
-1) S <ADDR> W A | <CONF> A | P    (select channel)
-
-2) [sleep 150ms]                  (wait for conversion)
-
-ltc2497_result_and_measure(…, val);
-3) S <ADDR> R A | <data> … | P    (read data)
-4) S <ADDR> W N | P               (chip is busy, error)
-
-Transaction 3 triggers a new conversion on the previously selected
-channel and causes the following channel select (4) to fail.  The
-examples in the datasheet [1] make use of repeated start conditions to
-prevent unintended triggers.  In our case, 3 and 4 should be combined
-into one transaction.
-
-Limeng's patch sikps 4 which solves the problem but causes issues at
-high sample rates, were 1 is skipped by the core.
-
-I attached my ad-hoc solution below.
-@Limeng: Could you test this with your hardware?
-
-If there is interest, I will prepare a proper patch.
-(Should that go into a new thread then?)
-
-Regards, Felix
-
-[1] https://www.analog.com/media/en/technical-documentation/data-sheets/2497fb.pdf#page=18
-
--- 
-Felix Knopf
-von Hoerner & Sulger GmbH
-https://vh-s.de
-
-
-diff --git a/drivers/iio/adc/ltc2497.c b/drivers/iio/adc/ltc2497.c
-index 1adddf5a88a9..8968bf70859b 100644
---- a/drivers/iio/adc/ltc2497.c
-+++ b/drivers/iio/adc/ltc2497.c
-@@ -34,20 +34,23 @@ static int ltc2497_result_and_measure(struct ltc2497core_driverdata *ddata,
-        int ret;
- 
-        if (val) {
--               ret = i2c_master_recv(st->client, (char *)&st->buf, 3);
-+               ret = i2c_smbus_read_i2c_block_data(st->client,
-+                                                   LTC2497_ENABLE | address, 3,
-+                                                   (char *)&st->buf);
-                if (ret < 0) {
--                       dev_err(&st->client->dev, "i2c_master_recv failed\n");
-+                       dev_err(&st->client->dev, "i2c transfer failed\n");
-                        return ret;
-                }
- 
-                *val = (be32_to_cpu(st->buf) >> 14) - (1 << 17);
-+       } else {
-+               ret = i2c_smbus_write_byte(st->client,
-+                                          LTC2497_ENABLE | address);
-+               if (ret)
-+                       dev_err(&st->client->dev, "i2c write failed: %pe\n",
-+                               ERR_PTR(ret));
-        }
- 
--       ret = i2c_smbus_write_byte(st->client,
--                                  LTC2497_ENABLE | address);
--       if (ret)
--               dev_err(&st->client->dev, "i2c transfer failed: %pe\n",
--                       ERR_PTR(ret));
-        return ret;
- }
