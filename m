@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBD838FC52
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF5738FC58
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhEYIMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:12:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44046 "EHLO mx2.suse.de"
+        id S232183AbhEYINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:13:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232340AbhEYILC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:11:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621930172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X4K/eFCPs5ZyC3dq4RSvLq5Boc7xvE8slnEIPMBZGpw=;
-        b=c1s1plU6q0xrLR+wXrLfQf62Fs8wZWwnwCoO9eX9RbnlSx1ytXiGg2P44Npq03wQ028FsM
-        Pgv6/QpacFC/f/qRjUIhAlTYPlbJPDo7MUvqlxT5zDg/PV6Gcp2Al6e1IaSae4vwoLAj9n
-        ora26UMWYB1ymnK3BrlQj4iK8b3K/3s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621930172;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X4K/eFCPs5ZyC3dq4RSvLq5Boc7xvE8slnEIPMBZGpw=;
-        b=ADAQcDeXbTkMZE5JillIUtK1huQAY3rN8g/TrXwlUJb8X94NEHSD8dKdcBd+3MMfXW6E6n
-        Y++137sQrMpl4cBw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBAC5AEBD;
-        Tue, 25 May 2021 08:09:31 +0000 (UTC)
-Date:   Tue, 25 May 2021 10:09:27 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v2 3/6] fs/proc/kcore: don't read offline sections,
- logically offline pages and hwpoisoned pages
-Message-ID: <20210525080922.GA3300@linux>
-References: <20210514172247.176750-1-david@redhat.com>
- <20210514172247.176750-4-david@redhat.com>
+        id S231931AbhEYINC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 04:13:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C60E46135F;
+        Tue, 25 May 2021 08:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621930293;
+        bh=sq30Nux5kzxrfWlMxk8Z+sT6DW7J2lC9jSS4VULUTTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MRHmbz1/2b7962bKYp/12EcWXOXO/yMTQF+Q7PDxe3EcO15qk+CCl7pi0sY87LaHE
+         wn5/VWiiP2gbtBg7MCE5HS5Z5qtFyL+9NHkOboMNDNNEhJDod5hDD5hXCyjRQAEwWP
+         7gzDC4MyxnvXF6GlnHJKhjAadj7My6Ruqu05cw9E=
+Date:   Tue, 25 May 2021 10:11:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "graf@amazon.com" <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
+Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
+Message-ID: <YKyxMy+djlscUhr1@kroah.com>
+References: <mhng-b093a5aa-ff9d-437f-a10b-47558f182639@palmerdabbelt-glaptop>
+ <DM6PR04MB708173B754E145BC843C4123E7269@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <YKypJ5SJg2sDtn7/@kroah.com>
+ <DM6PR04MB7081843419AFCECABA75AD74E7259@DM6PR04MB7081.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514172247.176750-4-david@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DM6PR04MB7081843419AFCECABA75AD74E7259@DM6PR04MB7081.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:22:44PM +0200, David Hildenbrand wrote:
-> Let's avoid reading:
+On Tue, May 25, 2021 at 08:01:01AM +0000, Damien Le Moal wrote:
+> On 2021/05/25 16:37, Greg KH wrote:
+> > On Mon, May 24, 2021 at 11:08:30PM +0000, Damien Le Moal wrote:
+> >> On 2021/05/25 7:57, Palmer Dabbelt wrote:
+> >>> On Mon, 24 May 2021 00:09:45 PDT (-0700), guoren@kernel.org wrote:
+> >>>> Thx Anup,
+> >>>>
+> >>>> Tested-by: Guo Ren <guoren@kernel.org> (Just on qemu-rv64)
+> >>>>
+> >>>> I'm following your KVM patchset and it's a great job for riscv
+> >>>> H-extension. I think hardware companies hope Linux KVM ready first
+> >>>> before the real chip. That means we can ensure the hardware could run
+> >>>> mainline linux.
+> >>>
+> >>> I understand that it would be wonderful for hardware vendors to have a 
+> >>> guarantee that their hardware will be supported by the software 
+> >>> ecosystem, but that's not what we're talking about here.  Specifically, 
+> >>> the proposal for this code is to track the latest draft extension which 
+> >>> would specifically leave vendors who implement the current draft out in 
+> >>> the cold was something to change.  In practice that is the only way to 
+> >>> move forward with any draft extension that doesn't have hardware 
+> >>> available, as the software RISC-V implementations rapidly deprecate 
+> >>> draft extensions and without a way to test our code it is destined to 
+> >>> bit rot.
+> >>
+> >> To facilitate the process of implementing, and updating, against draft
+> >> specifications, I proposed to have arch/riscv/staging added. This would be the
+> >> place to put code based on drafts. Some simple rules can be put in place:
+> >> 1) The code and eventual ABI may change any time, no guarantees of backward
+> >> compatibility
+> >> 2) Once the specifications are frozen, the code is moved out of staging
+> >> somewhere else.
+> >> 3) The code may be removed any time if the specification proposal is dropped, or
+> >> any other valid reason (can't think of any other right now)
+> >> 4) ...
+> >>
+> >> This way, the implementation process would be greatly facilitated and
+> >> interactions between different extensions can be explored much more easily.
+> >>
+> >> Thoughts ?
+> > 
+> > It will not work, unless you are mean and ruthless and people will get
+> > mad at you.  I do not recommend it at all.
+> > 
+> > Once code shows up in the kernel tree, and people rely on it, you now
+> > _have_ to support it.  Users don't know the difference between "staging
+> > or not staging" at all.  We have reported problems of staging media
+> > drivers breaking userspace apps and people having problems with that,
+> > despite the media developers trying to tell the world, "DO NOT RELY ON
+> > THESE!".
+> > 
+> > And if this can't be done with tiny simple single drivers, you are going
+> > to have a world-of-hurt if you put arch/platform support into
+> > arch/riscv/.  Once it's there, you will never be able to delete it,
+> > trust me.
 > 
-> 1) Offline memory sections: the content of offline memory sections is stale
->    as the memory is effectively unused by the kernel. On s390x with standby
->    memory, offline memory sections (belonging to offline storage
->    increments) are not accessible. With virtio-mem and the hyper-v balloon,
->    we can have unavailable memory chunks that should not be accessed inside
->    offline memory sections. Last but not least, offline memory sections
->    might contain hwpoisoned pages which we can no longer identify
->    because the memmap is stale.
+> All very good points. Thank you for sharing.
 > 
-> 2) PG_offline pages: logically offline pages that are documented as
->    "The content of these pages is effectively stale. Such pages should not
->     be touched (read/write/dump/save) except by their owner.".
->    Examples include pages inflated in a balloon or unavailble memory
->    ranges inside hotplugged memory sections with virtio-mem or the hyper-v
->    balloon.
+> > If you REALLY wanted to do this, you could create drivers/staging/riscv/
+> > and try to make the following rules:
+> > 
+> > 	- stand-alone code only, can not depend on ANYTHING outside of
+> > 	  the directory that is not also used by other in-kernel code
+> > 	- does not expose any userspace apis
+> > 	- interacts only with existing in-kernel code.
+> > 	- can be deleted at any time, UNLESS someone is using it for
+> > 	  functionality on a system
+> > 
+> > But what use would that be?  What could you put into there that anyone
+> > would be able to actually use?
 > 
-> 3) PG_hwpoison pages: Reading pages marked as hwpoisoned can be fatal.
->    As documented: "Accessing is not safe since it may cause another machine
->    check. Don't touch!"
-> 
-> Introduce is_page_hwpoison(), adding a comment that it is inherently
-> racy but best we can really do.
-> 
-> Reading /proc/kcore now performs similar checks as when reading
-> /proc/vmcore for kdump via makedumpfile: problematic pages are exclude.
-> It's also similar to hibernation code, however, we don't skip hwpoisoned
-> pages when processing pages in kernel/power/snapshot.c:saveable_page() yet.
-> 
-> Note 1: we can race against memory offlining code, especially
-> memory going offline and getting unplugged: however, we will properly tear
-> down the identity mapping and handle faults gracefully when accessing
-> this memory from kcore code.
-> 
-> Note 2: we can race against drivers setting PageOffline() and turning
-> memory inaccessible in the hypervisor. We'll handle this in a follow-up
-> patch.
-> 
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Yes, you already mentioned this and we were not thinking about this solution.
+> drivers/staging really is for device drivers and does not apply to arch code.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Then you can not use the "staging model" anywhere else, especially in
+arch code.  We tried that many years ago, and it instantly failed and we
+ripped it out.  Learn from our mistakes please.
 
+> > So back to the original issue here, what is the problem that you are
+> > trying to solve?  Why do you want to have in-kernel code for hardware
+> > that no one else can have access to, and that isn't part of a "finalized
+> > spec" that ends up touching other subsystems and is not self-contained?
+> 
+> For the case at hand, the only thing that would be outside of the staging area
+> would be the ABI definition, but that one depends only on the ratified riscv ISA
+> specs. So having it outside of staging would be OK. The idea of the arch staging
+> area is 2 fold:
+> 1) facilitate the development work overall, both for Paolo and Anup on the KVM
+> part, but also others to check that their changes do not break KVM support.
 
--- 
-Oscar Salvador
-SUSE L3
+Who are the "others" here?  You can't force your code into the tree just
+to keep it up to date with internal apis that others are changing, if
+you have no real users for it yet.  That's asking others to do your work
+for you :(
+
+> 2) Provide feedback to the specs groups that their concerns are moot. E.g. one
+> reason the hypervisor specs are being delayed is concerns with interrupt
+> handling. With a working implementation based on current ratified specs for
+> other components (e.g. interrupt controller), the hope is that the specs group
+> can speed up freezing of the specs.
+
+There is the issue of specs-without-working-code that can cause major
+problems.  But you have code, it does not have to be merged into the
+kernel tree to prove/disprove specs, so don't push the inability of your
+standards group to come to an agreement to the kernel developer
+community.  Again, you are making us do your work for you here :(
+
+> But your points about how users will likely end up using this potentially
+> creates a lot more problems than we are solving...
+
+Thank you for understanding.
+
+good luck with your standards meetings!
+
+greg k-h
