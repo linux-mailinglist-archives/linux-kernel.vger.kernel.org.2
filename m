@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3DB39013C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2280A390140
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhEYMrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:47:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232222AbhEYMrh (ORCPT
+        id S232823AbhEYMsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:48:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6706 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhEYMsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:47:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621946767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BAsSn0QqqS827pEDp2tUmlZZNLwNBxRbKX1OInU2lIM=;
-        b=Y1C3Js3MVc6gBf82pWGNt0iQsh10gpABJ3zE9SrEtBtFu317TRF+3syR4GiQb5IfmB+4Rn
-        kRCLpqdNdXRaK3mBaKW3KsO75eSDfvlZ6MNxucSThE6DSExeR5Iw0lPBSLSKboCOzIIzil
-        BA3jOcpomNmmE5wHR0iazmKw0E7IhzE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-bcvHTPzwNpCPpdE7rkJUew-1; Tue, 25 May 2021 08:46:06 -0400
-X-MC-Unique: bcvHTPzwNpCPpdE7rkJUew-1
-Received: by mail-ej1-f72.google.com with SMTP id eb10-20020a170907280ab02903d65bd14481so8437488ejc.21
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:46:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BAsSn0QqqS827pEDp2tUmlZZNLwNBxRbKX1OInU2lIM=;
-        b=iXFm2lDI6WctPCybHCx0XvcmbisgFBBKV9pphfm658xjKnTd8gNlu896WELRNlkJLE
-         Rc2HfXDscc6JROrYK4Nf0kYtf/3By2hIF5DvdHvyaPkxyjp1t39S6+eHMHlrCsSyR7+R
-         2o3QokANLFbsu/2mzWvAKtHIGGxvRJVvrxhRDIko+oLNctB5HXb5rPzrdgKikRX6+bZl
-         TmQW0heaU7HO+eoSGpUJVU84ntPKXeiV6moV5P3dtWWXzqM4hXDGkuvqc8D9jZvRcRQR
-         YmfVu7hJbBq+qChxNyOHVtlgAc5Ro9hG6+b2RpXvYo/sSF8L6BgsGFXgNdblgvDkXoLz
-         vXCA==
-X-Gm-Message-State: AOAM5338zebGZImH4C0RSUHlDpMaRsndej9DtnvIzR7E0mfS0wtdhscC
-        k5LrMd9jx0oixVG/rLnHw9RqFdLRjns6hksRQ3JPNTdyS4+M1niOaHosmtU33KqB1WKkTbNNbXu
-        A79X797vRegwt7Sfjfy76ftUU
-X-Received: by 2002:a17:906:914d:: with SMTP id y13mr28396471ejw.489.1621946764867;
-        Tue, 25 May 2021 05:46:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzC24QkEUJbBUYm9nsAY/iT6F2AsbeP/cQgBHwWHXbl0ufK8TwUkYxJZeJhUNBBg0OZ4UCYgw==
-X-Received: by 2002:a17:906:914d:: with SMTP id y13mr28396455ejw.489.1621946764680;
-        Tue, 25 May 2021 05:46:04 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q18sm10517988edd.3.2021.05.25.05.46.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 05:46:04 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: thinkpad_acpi: Fix inconsistent
- indenting
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, hmh@hmh.eng.br
-Cc:     mgross@linux.intel.com, jdelvare@suse.com, linux@roeck-us.net,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-References: <1621837438-70790-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <86bee518-cf29-f1b1-c1fc-b939f418be84@redhat.com>
-Date:   Tue, 25 May 2021 14:46:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 25 May 2021 08:48:17 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FqDJZ0fQtzlYbD;
+        Tue, 25 May 2021 20:43:10 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 20:46:46 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 25 May 2021 20:46:45 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+Subject: [PATCH v5 0/2] drivers/perf: hisi: Add support for PCIe PMU
+Date:   Tue, 25 May 2021 20:46:33 +0800
+Message-ID: <1621946795-14046-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <1621837438-70790-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset adds support for HiSilicon PCIe Performance Monitoring
+Unit(PMU). It is a PCIe Root Complex integrated End Point(RCiEP) device
+added on Hip09. Each PCIe Core has a PMU RCiEP to monitor multi root
+ports and all Endpoints downstream these root ports.
 
-On 5/24/21 8:23 AM, Jiapeng Chong wrote:
-> Eliminate the follow smatch warning:
-> 
-> drivers/platform/x86/thinkpad_acpi.c:7942 volume_write() warn:
-> inconsistent indenting.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+HiSilicon PCIe PMU is supported to collect performance data of PCIe bus,
+such as: bandwidth, latency etc.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+This patchset is based on 5.13-rc3. 
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Changes since v4:
+- Replace irq_set_affinity_hint() with irq_set_affinity().
+- Link: https://lore.kernel.org/linux-arm-kernel/1621417741-5229-1-git-send-email-liuqi115@huawei.com/
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Changes since v3:
+- Fix some warnings when build under 32bits architecture.
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1618490885-44612-1-git-send-email-liuqi115@huawei.com/
 
-Regards,
+Changes since v2:
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617959157-22956-1-git-send-email-liuqi115@huawei.com/
 
-Hans
+Changes since v1:
+- Drop the internal Reviewed-by tag.
+- Fix some build warnings when W=1.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617788943-52722-1-git-send-email-liuqi115@huawei.com/
 
+Qi Liu (2):
+  docs: perf: Add description for HiSilicon PCIe PMU driver
+  drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
 
-> ---
-> Changes in v2:
->   -For the follow advice: https://lore.kernel.org/patchwork/patch/1434215/
-> 
->  drivers/platform/x86/thinkpad_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index dd60c93..b7fec1b 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -7938,7 +7938,7 @@ static int volume_write(char *buf)
->  				continue;
->  			} else if (sscanf(cmd, "level %u", &l) == 1 &&
->  				   l >= 0 && l <= TP_EC_VOLUME_MAX) {
-> -					new_level = l;
-> +				new_level = l;
->  				continue;
->  			}
->  		}
-> 
+ Documentation/admin-guide/perf/hisi-pcie-pmu.rst |  104 +++
+ MAINTAINERS                                      |    6 +
+ drivers/perf/Kconfig                             |    2 +
+ drivers/perf/Makefile                            |    1 +
+ drivers/perf/pci/Kconfig                         |   16 +
+ drivers/perf/pci/Makefile                        |    2 +
+ drivers/perf/pci/hisilicon/Makefile              |    3 +
+ drivers/perf/pci/hisilicon/hisi_pcie_pmu.c       | 1016 ++++++++++++++++++++++
+ include/linux/cpuhotplug.h                       |    1 +
+ 9 files changed, 1151 insertions(+)
+ create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+ create mode 100644 drivers/perf/pci/Kconfig
+ create mode 100644 drivers/perf/pci/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+
+-- 
+2.7.4
 
