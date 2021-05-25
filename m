@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C202E3906E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07413906E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 18:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhEYQtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 12:49:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232555AbhEYQtP (ORCPT
+        id S232550AbhEYQvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 12:51:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57513 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230451AbhEYQvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 12:49:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621961264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fL6Y/duGHBMJKkmMDJ4jflONRQgZgnAzPjAPflMfB2s=;
-        b=NirqhuDVVDLTpqdbUNHL4TtQ8UcYuD8wcTaOtX0CZxeLb4ir/ucGSE278+bmp/Cbj37WBA
-        bkUiIRMMaM1fl2MAbroxbE8lrDWYo9//TnwbUVpSGlja58E4IZHrd+MAFDhZy+fgWbyOmm
-        1x6uygak2EVcRUXmM/9sEraDQqUrYmQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-M1ILaIflOF2vHlFCyOjrRg-1; Tue, 25 May 2021 12:47:42 -0400
-X-MC-Unique: M1ILaIflOF2vHlFCyOjrRg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B8AA180FD66;
-        Tue, 25 May 2021 16:47:41 +0000 (UTC)
-Received: from localhost (ovpn-115-80.ams2.redhat.com [10.36.115.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 449B9421F;
-        Tue, 25 May 2021 16:47:37 +0000 (UTC)
-Date:   Tue, 25 May 2021 17:47:36 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        virtualization@lists.linux-foundation.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        pbonzini@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, joe.jin@oracle.com,
-        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
-Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
- handler
-Message-ID: <YK0qKMF0I8Wm1euN@stefanha-x1.localdomain>
-References: <20210523063843.1177-1-dongli.zhang@oracle.com>
- <ac161748-15d2-2962-402e-23abca469623@suse.de>
- <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
- <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
+        Tue, 25 May 2021 12:51:10 -0400
+Received: from mail-lj1-f200.google.com ([209.85.208.200])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1llaFP-0002aZ-0v
+        for linux-kernel@vger.kernel.org; Tue, 25 May 2021 16:49:39 +0000
+Received: by mail-lj1-f200.google.com with SMTP id o5-20020a05651c0505b02900e5a95dd51eso13653933ljp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 09:49:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YJaCYdrDxV6hFjr7P9dKxuwmpFAJtjJ9oxxDaSIJ6Go=;
+        b=Xg/Ga6lAqjzBux2PecmmEaB1A1bak5d0XT+fCDspRk291tgZLCZrJRwieGx5XAMjt/
+         orzq0XhPvNem/INbonuKt/90kC9uW6LBNpcW6HKXPxFxq1lgkLUUAFnma2HAVcbbsAeH
+         MVmuHg0ZwChv7A3ifUoH9Pc5DObnYmHomOyx0settOTDHXMLo8bxrCHO/X0YKJKtDvI7
+         QkpGr77NDozLpuTf5JgGMjC9JJHlrXT3WaKHCVVOxYHrJue4a3okMpxD6hqePdgPt5zN
+         smkEgHvpsytJA9IKdSD95g9/b9n1cy8AZK2L+nsPXS0j/MlQ82mJXxSRhEMYI/7BC/UX
+         M/Sg==
+X-Gm-Message-State: AOAM530ojPcysfOWSsCJO4otY+Hf01hfFYgXPjpbOIl6CptaIXbibnmI
+        DxAqI1aMD+I7XNeyiXhXE4H02ymQfmMYNxG6Bm8WsEVxzaKTH+9PZFCGvr/l4CqbJpsoP7cr7uV
+        BMvjJMs0TSR6pjDY64RcoxRBpn+dwX9EVfzpGxFg+sq0TeUrTAqssQUOFQg==
+X-Received: by 2002:a05:6512:1153:: with SMTP id m19mr8111640lfg.290.1621961378502;
+        Tue, 25 May 2021 09:49:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymQiimH+CbsO7SXttRtmgzlQND/9nKiElblzw2Wx5kB4zclyWI8q+1Em3tAhbyMgEgXsZlONs6r6p26Y0E4nY=
+X-Received: by 2002:a05:6512:1153:: with SMTP id m19mr8111630lfg.290.1621961378269;
+ Tue, 25 May 2021 09:49:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VNMvGmWXBqxStO+j"
-Content-Disposition: inline
-In-Reply-To: <a0404035-2ab7-6b9c-f393-0bb0417c4b3d@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210520033315.490584-1-koba.ko@canonical.com> <20210525074426.GA14916@lst.de>
+In-Reply-To: <20210525074426.GA14916@lst.de>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 26 May 2021 00:49:26 +0800
+Message-ID: <CAAd53p7Qw1d+P_SirjOT=6YLvap+OLGAgdeW7dyMUwbqdHHfyQ@mail.gmail.com>
+Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Koba Ko <koba.ko@canonical.com>, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme <linux-nvme@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Henrik Juul Hansen <hjhansen2020@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 3:44 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
+> > After resume, host can't change power state of the closed controller
+> > from D3cold to D0.
+>
+> Why?
 
---VNMvGmWXBqxStO+j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+IIUC it's a regression introduced by commit b97120b15ebd ("nvme-pci:
+use simple suspend when a HMB is enabled"). The affected NVMe is using
+HMB.
 
-On Mon, May 24, 2021 at 11:33:33PM -0700, Dongli Zhang wrote:
-> On 5/24/21 6:24 AM, Stefan Hajnoczi wrote:
-> > On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
-> >> On 5/23/21 8:38 AM, Dongli Zhang wrote:
-> >>> This RFC is to trigger the discussion about to poll and kick the
-> >>> virtqueue on purpose in virtio-scsi timeout handler.
-> >>>
-> >>> The virtio-scsi relies on the virtio vring shared between VM and host.
-> >>> The VM side produces requests to vring and kicks the virtqueue, while=
- the
-> >>> host side produces responses to vring and interrupts the VM side.
-> >>>
-> >>> By default the virtio-scsi handler depends on the host timeout handler
-> >>> by BLK_EH_RESET_TIMER to give host a chance to perform EH.
-> >>>
-> >>> However, this is not helpful for the case that the responses are avai=
-lable
-> >>> on vring but the notification from host to VM is lost.
-> >>>
-> >> How can this happen?
-> >> If responses are lost the communication between VM and host is broken,=
- and
-> >> we should rather reset the virtio rings themselves.
-> >=20
-> > I agree. In principle it's fine to poll the virtqueue at any time, but I
-> > don't understand the failure scenario here. It's not clear to me why the
-> > device-to-driver vq notification could be lost.
-> >=20
->=20
-> One example is the CPU hotplug issue before the commit bf0beec0607d ("blk=
--mq:
-> drain I/O when all CPUs in a hctx are offline") was available. The issue =
-is
-> equivalent to loss of interrupt. Without the CPU hotplug fix, while NVMe =
-driver
-> relies on the timeout handler to complete inflight IO requests, the PV
-> virtio-scsi may hang permanently.
->=20
-> In addition, as the virtio/vhost/QEMU are complex software, we are not ab=
-le to
-> guarantee there is no further lost of interrupt/kick issue in the future.=
- It is
-> really painful if we encounter such issue in production environment.
+That commit intentionally put the device to D3hot instead of D0 on
+suspend, as the root port of the NVMe device has _PR3, the NVMe was
+put to D3cold as a result. I believe because the other OS doesn't put
+the NVMe to D3cold, so turning off the power resource is untested by
+the vendor.
 
-Any number of hardware or software bugs might exist that we don't know
-about, yet we don't pre-emptively add workarounds for them because where
-do you draw the line?
+I think the proper fix would be reverting that commit, and
+teardown/setup DMA on suspend/resume for HMB NVMes.
 
-I checked other SCSI/block drivers and found it's rare to poll in the
-timeout function so there does not seem to be a consensus that it's
-useful to do this.
+Kai-Heng
 
-That said, it's technically fine to do it, the virtqueue APIs are there
-and can be used like this. So if you and others think this is necessary,
-then it's a pretty small change and I'm not against merging a patch like
-this.
-
-Stefan
-
---VNMvGmWXBqxStO+j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCtKigACgkQnKSrs4Gr
-c8jE6gf/SzpIij5k5NFqXRfDYjrAoN/hHDK0f8rALj06t2cmrKq1LugoGygtb4nd
-MmJypVvxZZW037iS8fChHC5kcqvBA9Y/N+0tABVJNT8GHLnvDZI8diTONgXVUCzj
-X/u0+3EjQNz2TX6W9pZbEJmeVv0z7JiWCQKcLf9DYq77Xei8U4U5Xv4k0Nks1b1A
-PFH+j4R42eYdziIwwxCPgAQtlCWlTgWbGO9B14kqeybM7I9pq2Ar+WQXIItptuuA
-9R3RBQ6n1cOqtiOHwOXjz2Y4zSa3o4jrLeV8/u3MEmZAwpc2+1A7QL+fW2uxpWJf
-7geSWXbXMdwb7odJ+yKHBNAMOjZqmA==
-=d024
------END PGP SIGNATURE-----
-
---VNMvGmWXBqxStO+j--
-
+>
+> > For these devices, just avoid to go deeper than d3hot.
+>
+> What are "these devices"?
+>
+> > @@ -2958,6 +2959,15 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >
+> >       dev_info(dev->ctrl.device, "pci function %s\n", dev_name(&pdev->dev));
+> >
+> > +     if (pm_suspend_via_firmware() || !dev->ctrl.npss ||
+> > +         !pcie_aspm_enabled(pdev) ||
+> > +         dev->nr_host_mem_descs ||
+> > +         (dev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND)) {
+>
+> Before we start open coding this in even more places we really want a
+> little helper function for these checks, which should be accomodated with
+> the comment near the existing copy of the checks.
+>
+> > +             pdev->d3cold_allowed = false;
+> > +             pci_d3cold_disable(pdev);
+> > +             pm_runtime_resume(&pdev->dev);
+>
+> Why do we need to both set d3cold_allowed and call pci_d3cold_disable?
+>
+> What is the pm_runtime_resume doing here?
