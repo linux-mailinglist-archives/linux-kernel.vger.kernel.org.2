@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0E338FF2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E16138FF34
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbhEYKco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
+        id S232114AbhEYKdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhEYKcI (ORCPT
+        with ESMTP id S232038AbhEYKcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:32:08 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2281FC06134A
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:08 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id v3-20020a0cdd830000b02901efe0c3571eso27226401qvk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:08 -0700 (PDT)
+        Tue, 25 May 2021 06:32:11 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C924FC061354
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 129-20020a2501870000b0290526b90a2992so2039811ybb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=JQK1EHK4aOakeCprBWj7aKMHOh08lvflh7jGMcWacII=;
-        b=dJgZMfAMc/NW7C1vk8k5bgZAfmX4Ja/MgezxZhsFsc2vGRBBtuwdh5YRMaYbxBb5Ze
-         ohNxUIOK3XGyg3xDonu05+hbskjIrB7ww+0dG2aUnFB2NhAsMlohmxFR/8ZI6MVlIQQJ
-         OSrPiszHyZ0mOIqrbdxZuv9SSNooosasWOIJCdVEHKJk6VV7YTSqUzMEYfsIzbzfwCfY
-         AegO3cSNEWH7jCjS/7Yg8Yi/GwNd4ib/Mg7Miht2mmed54yD0FrtBStoYRsRvseUjcIp
-         HlLuTYlhKkv2V7LnfiJ6ib/kh1bLxxRgflid3ruqklnQPxC+jlFNadBDWzVXuCFMn5QE
-         wM3A==
+        bh=fyjIrLzYntEHHLrRAIzBQQt2AEsBdUtB3IMjcBPkQ9g=;
+        b=wVCX+TVKyjcdWoHrgXmlUhvQjo0GsS23RxJFN3W7YopCvFYw+sNNupJhJUTJ4ywtmm
+         +A5hfK8rWRR/tr6bN9P4Z6HXEPV4VwkiSSswqR5hCN2NvWq929j35Qo4IaQuOK6/j7sG
+         aifd280V1o6FMYsAVx9Wo8WxjNHb9JTjszEBnBaXTY9IOsJcPoOwJvdr6sFLyeQQzC+y
+         jLQ51zJFG22G+hfmf6PWIAphcxiGP4yazuadFOp0brNlcPycsjq1VfkUuS3x3gN2aUJw
+         rm5Ul7aCruDj0bnPM9bshN+sKnBDS/ZBkfXyxacxiFveoVK+ZI1rPX9BAfNUBxjUp71s
+         Xtlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JQK1EHK4aOakeCprBWj7aKMHOh08lvflh7jGMcWacII=;
-        b=nfYC9mkZpW/o+jjDhUKGdvLdpcV009WaVzr5M6hrwUV1AJvIX3a/YxFHyAQcLgn/yZ
-         g6rNEqfHgo09H1a7VhDrm1H73PqZgm7N0aRBVdTRFnSmsexK57dwUmC5IENr8EHFnl5y
-         lpPiIvFvb4PhaHEDAdRgZeamUZMdIv90yyOG61h2a7GJekaRFTyIGmuwcIo3YPW6UOQ9
-         fT1j0XgyJjrHaivyD525XbERjuEFXiZbImOuBNX9wMiRozORQzh5OyRssnVE2d13+saN
-         RrH8MaCoIFAkyPA4K4Xi8uITHUWGE8YDZKx9BqIxTqAuG4kYDBGnwFfJNrVpxc6ZWsqm
-         Xf9w==
-X-Gm-Message-State: AOAM532oMLMcnOWUkhg1BhiLygwM9Gqqc31G0rc+Jx8zqTSam4dpjmQW
-        7gqN0D5n3QJlBuAOY1yTx0/xEN8yf5j2
-X-Google-Smtp-Source: ABdhPJwNpUGygtLBgz6MEnsU96mYHVIJWIP0Wk1azb58WqTF+GZ5rpkpB/PFe3h+lfupzWd76OYB13UFw8A7
+        bh=fyjIrLzYntEHHLrRAIzBQQt2AEsBdUtB3IMjcBPkQ9g=;
+        b=GUqVIXV/vwMvlp3toTIYSdlejdpgmUo0EpUj17s1LX4mVXEf24DO4weSPlIRd9mQns
+         iUrDuwgMdUBxG21keFqgaIc4tjiMeKxijf7BQX5wgNZxTBjv2QNTbEb1alYHdidRq6zK
+         qJ0nSEmwmD1CI6xpnLVc5IfQILd3rwStMK/1i/vPyqCM+Ia+MmDWk9lEEFpDTrHeGyaA
+         1vsRD6QeGOjTu6gv2mJA6TwGkNu5pAY+xEoMR+OaHYlpc1FCG/lTg4nRiF9PpjwpddjX
+         cfU/FeqpjhUnOfTHOFsZcoITpPIDDaJTh949xUt77A4OPz6o80YkxNImjAJSfEQhlCMl
+         jn+Q==
+X-Gm-Message-State: AOAM531vqMb1zDecVUMUGAFv7huQOygBK3yK2Ry0pfopx+rryEvY0LaE
+        aBpvLXCIRnp8HPerzGFfKMk7s1chqNs9
+X-Google-Smtp-Source: ABdhPJw6OPs/uVtSZcBHz2FT9mMKID2FZjmYHAS3+H7DjT1NQh+6pBz5N57c06RrZ5Z9R23LI2a6wH+Ktal4
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:8806:6b98:8ae6:8824])
- (user=apusaka job=sendgmr) by 2002:ad4:4c45:: with SMTP id
- cs5mr36050943qvb.6.1621938607208; Tue, 25 May 2021 03:30:07 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:29:33 +0800
+ (user=apusaka job=sendgmr) by 2002:a25:cb01:: with SMTP id
+ b1mr1683727ybg.236.1621938611056; Tue, 25 May 2021 03:30:11 -0700 (PDT)
+Date:   Tue, 25 May 2021 18:29:34 +0800
 In-Reply-To: <20210525102941.3958649-1-apusaka@google.com>
-Message-Id: <20210525182900.4.I12d95340363056b05f656880e3dad40322eab39f@changeid>
+Message-Id: <20210525182900.5.I8353f22ae68a7e5ed9aaa44a692dec6d11bcb43a@changeid>
 Mime-Version: 1.0
 References: <20210525102941.3958649-1-apusaka@google.com>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH 04/12] Bluetooth: use inclusive language in HCI LE features
+Subject: [PATCH 05/12] Bluetooth: use inclusive language in L2CAP
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -77,80 +77,45 @@ Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
 
- include/net/bluetooth/hci.h |  6 +++---
- net/bluetooth/hci_event.c   | 14 +++++++-------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ include/net/bluetooth/l2cap.h | 2 +-
+ net/bluetooth/l2cap_sock.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index a7cf5a2d87c5..441125f6b616 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -489,7 +489,7 @@ enum {
- /* LE features */
- #define HCI_LE_ENCRYPTION		0x01
- #define HCI_LE_CONN_PARAM_REQ_PROC	0x02
--#define HCI_LE_SLAVE_FEATURES		0x08
-+#define HCI_LE_PERIPHERAL_FEATURES	0x08
- #define HCI_LE_PING			0x10
- #define HCI_LE_DATA_LEN_EXT		0x20
- #define HCI_LE_LL_PRIVACY		0x40
-@@ -498,8 +498,8 @@ enum {
- #define HCI_LE_PHY_CODED		0x08
- #define HCI_LE_EXT_ADV			0x10
- #define HCI_LE_CHAN_SEL_ALG2		0x40
--#define HCI_LE_CIS_MASTER		0x10
--#define HCI_LE_CIS_SLAVE		0x20
-+#define HCI_LE_CIS_CENTRAL		0x10
-+#define HCI_LE_CIS_PERIPHERAL		0x20
+diff --git a/include/net/bluetooth/l2cap.h b/include/net/bluetooth/l2cap.h
+index 3c4f550e5a8b..1f5ed6b163af 100644
+--- a/include/net/bluetooth/l2cap.h
++++ b/include/net/bluetooth/l2cap.h
+@@ -89,7 +89,7 @@ struct l2cap_conninfo {
+ };
  
- /* Connection modes */
- #define HCI_CM_ACTIVE	0x0000
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index e5f3840abd1a..a809e90326d7 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5243,17 +5243,17 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
- 	hci_debugfs_create_conn(conn);
- 	hci_conn_add_sysfs(conn);
+ #define L2CAP_LM	0x03
+-#define L2CAP_LM_MASTER		0x0001
++#define L2CAP_LM_CENTRAL	0x0001
+ #define L2CAP_LM_AUTH		0x0002
+ #define L2CAP_LM_ENCRYPT	0x0004
+ #define L2CAP_LM_TRUSTED	0x0008
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index c99d65ef13b1..9080d001a03a 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -503,7 +503,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname,
+ 		}
  
--	/* The remote features procedure is defined for master
-+	/* The remote features procedure is defined for central
- 	 * role only. So only in case of an initiated connection
- 	 * request the remote features.
- 	 *
--	 * If the local controller supports slave-initiated features
--	 * exchange, then requesting the remote features in slave
-+	 * If the local controller supports peripheral-initiated features
-+	 * exchange, then requesting the remote features in peripheral
- 	 * role is possible. Otherwise just transition into the
- 	 * connected state without requesting the remote features.
- 	 */
- 	if (conn->out ||
--	    (hdev->le_features[0] & HCI_LE_SLAVE_FEATURES)) {
-+	    (hdev->le_features[0] & HCI_LE_PERIPHERAL_FEATURES)) {
- 		struct hci_cp_le_read_remote_features cp;
+ 		if (test_bit(FLAG_ROLE_SWITCH, &chan->flags))
+-			opt |= L2CAP_LM_MASTER;
++			opt |= L2CAP_LM_CENTRAL;
  
- 		cp.handle = __cpu_to_le16(conn->handle);
-@@ -5774,7 +5774,7 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
- 		if (conn->state == BT_CONFIG) {
- 			__u8 status;
+ 		if (test_bit(FLAG_FORCE_RELIABLE, &chan->flags))
+ 			opt |= L2CAP_LM_RELIABLE;
+@@ -807,7 +807,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname,
+ 		if (opt & L2CAP_LM_SECURE)
+ 			chan->sec_level = BT_SECURITY_HIGH;
  
--			/* If the local controller supports slave-initiated
-+			/* If the local controller supports peripheral-initiated
- 			 * features exchange, but the remote controller does
- 			 * not, then it is possible that the error code 0x1a
- 			 * for unsupported remote feature gets returned.
-@@ -5783,8 +5783,8 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
- 			 * transition into connected state and mark it as
- 			 * successful.
- 			 */
--			if ((hdev->le_features[0] & HCI_LE_SLAVE_FEATURES) &&
--			    !conn->out && ev->status == 0x1a)
-+			if (!conn->out && ev->status == 0x1a &&
-+			    (hdev->le_features[0] & HCI_LE_PERIPHERAL_FEATURES))
- 				status = 0x00;
- 			else
- 				status = ev->status;
+-		if (opt & L2CAP_LM_MASTER)
++		if (opt & L2CAP_LM_CENTRAL)
+ 			set_bit(FLAG_ROLE_SWITCH, &chan->flags);
+ 		else
+ 			clear_bit(FLAG_ROLE_SWITCH, &chan->flags);
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
