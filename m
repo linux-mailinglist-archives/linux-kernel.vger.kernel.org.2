@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ECD38FDFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C8038FE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhEYJjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:39:37 -0400
-Received: from mail.synology.com ([211.23.38.101]:53532 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232563AbhEYJjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:39:32 -0400
-Subject: Re: [PATCH v2] block: fix trace completion for chained bio
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1621935449; bh=pyh7Wvy0eo8qDjfoSG3IQUSH3Z/keP/gcb0hzR7DpoU=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To;
-        b=MJiUB/Yf+sXio24HtfILVjS+nsMDr6KoYJgHhDXEt2cjCbQp8dm/XWLkIXxvlW5DP
-         7diC2grtpkywKzRaP6yyws3/Eu6DpakCxpPB93cGIhFtyDL+9lqIt3uoZUo2yoNYFz
-         8Yjm+lLT7504ZRpiQNSnT/lgiK5G2AAeLQMvCGKc=
-From:   Edward Hsieh <edwardh@synology.com>
-To:     NeilBrown <neilb@suse.de>, axboe@kernel.dk, neilb@suse.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        s3t@synology.com, bingjingc@synology.com, cccheng@synology.com
-References: <1614741726-28074-1-git-send-email-edwardh@synology.com>
- <87zgyudgss.fsf@notabene.neil.brown.name>
- <fb8620bf-f4e9-5787-ab79-6e0a5d79d26d@synology.com>
- <10f3e198-f34c-47e9-608a-e5f84e3379a1@synology.com>
-Message-ID: <3600b6c0-f83d-f375-bebc-cd5ac811c3d5@synology.com>
-Date:   Tue, 25 May 2021 17:37:29 +0800
+        id S232641AbhEYJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:41:24 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1108 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232557AbhEYJlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 05:41:23 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14P9SaKq008627;
+        Tue, 25 May 2021 04:39:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=S4LBE+cK2/3DyOr83rBZxfFQxR2lw4WfocQTuOKqwxU=;
+ b=PWPdKYhsji7jBR5xvmrcJbJbPoGJwGFTVW5pZYmQmXFdAu5HwMVv9rYt6pleS0okWw/F
+ Qq/kU7x72wj1A0oJA5pN/hVCgvaumS4lWnOmsznMCyZSp2NvuY5kBc4+BTFcm4JalX1a
+ pC3T2PogwOsHJcQlbqIRyIGSXpRUDvO4SPurBBYw1ufWwIqYqC0GAoY6z4Inrt2/p8lN
+ a94Ym/c331vT0OkQbF4ffsLVSYzJO1W3E6TujAW7JZbYSzwBP1kgW99UuT82p+nh1aF3
+ u8FZrolLbyjaUPCHT4QUHGxPT4WnB86vNYF0CSYJpi81bq/81Vzw8O/7M3bBAPs62MPF RQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 38r28v1mfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 25 May 2021 04:39:45 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 25 May
+ 2021 10:39:44 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Tue, 25 May 2021 10:39:44 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.127])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 940C311CD;
+        Tue, 25 May 2021 09:39:43 +0000 (UTC)
+Subject: Re: [PATCH] ASoC: Intel: boards: Select SND_SOC_HDAC_HDMI for
+ Soundwire machine driver
+To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CC:     <broonie@kernel.org>, <cezary.rojewski@intel.com>,
+        <liam.r.girdwood@linux.intel.com>, <yang.jie@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20210520163324.19046-1-rf@opensource.cirrus.com>
+ <9ed54875-fe77-f70f-9085-0f3b4c9d576e@linux.intel.com>
+ <alpine.DEB.2.22.394.2105251158580.3922722@eliteleevi.tm.intel.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <d7d3b76a-ad3a-85ac-092b-8bc2bab90430@opensource.cirrus.com>
+Date:   Tue, 25 May 2021 10:39:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <10f3e198-f34c-47e9-608a-e5f84e3379a1@synology.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <alpine.DEB.2.22.394.2105251158580.3922722@eliteleevi.tm.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: AnmxL3aOzJasMdIr4AhYj2C4iGrC2uhE
+X-Proofpoint-GUID: AnmxL3aOzJasMdIr4AhYj2C4iGrC2uhE
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/10/2021 10:06 AM, Edward Hsieh wrote:
+On 25/05/2021 10:28, Kai Vehmanen wrote:
+> Hi,
 > 
-> On 4/23/2021 4:04 PM, Edward Hsieh wrote:
->> On 3/23/2021 5:22 AM, NeilBrown wrote:
->>> On Wed, Mar 03 2021, edwardh wrote:
->>>
->>>> From: Edward Hsieh <edwardh@synology.com>
->>>>
->>>> For chained bio, trace_block_bio_complete in bio_endio is currently 
->>>> called
->>>> only by the parent bio once upon all chained bio completed.
->>>> However, the sector and size for the parent bio are modified in 
->>>> bio_split.
->>>> Therefore, the size and sector of the complete events might not 
->>>> match the
->>>> queue events in blktrace.
->>>>
->>>> The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
->>>> completion of all bios.") wants multiple complete events to correspond
->>>> to one queue event but missed this.
->>>>
->>>> md/raid5 read with bio cross chunks can reproduce this issue.
->>>>
->>>> To fix, move trace completion into the loop for every chained bio to 
->>>> call.
->>>
->>> Thanks.  I think this is correct as far as tracing goes.
->>> However the code still looks a bit odd.
->>>
->>> The comment for the handling of bio_chain_endio suggests that the *only*
->>> purpose for that is to avoid deep recursion.  That suggests it should be
->>> at the end of the function.
->>> As it is blk_throtl_bio_endio() and bio_unint() are only called on the
->>> last bio in a chain.
->>> That seems wrong.
->>>
->>> I'd be more comfortable if the patch moved the bio_chain_endio()
->>> handling to the end, after all of that.
->>> So the function would end.
->>>
->>> if (bio->bi_end_io == bio_chain_endio) {
->>>     bio = __bio_chain_endio(bio);
->>>     goto again;
->>> } else if (bio->bi_end_io)
->>>     bio->bi_end_io(bio);
->>>
->>> Jens:  can you see any reason why that functions must only be called on
->>> the last bio in the chain?
->>>
->>> Thanks,
->>> NeilBrown
->>>
->>
->> Hi Neil and Jens,
->>
->>  From the commit message, bio_uninit is put here for bio allocated in
->> special ways (e.g., on stack), that will not be release by bio_free. For
->> chained bio, __bio_chain_endio invokes bio_put and release the
->> resources, so it seems that we don't need to call bio_uninit for chained
->> bio.
->>
->> The blk_throtl_bio_endio is used to update the latency for the throttle
->> group. I think the latency should only be updated after the whole bio is
->> finished?
->>
->> To make sense for the "tail call optimization" in the comment, I'll
->> suggest to wrap the whole statement with an else. What do you think?
->>
->> if (bio->bi_end_io == bio_chain_endio) {
->>      bio = __bio_chain_endio(bio);
->>      goto again;
->> } else {
->>      blk_throtl_bio_endio(bio);
->>      /* release cgroup info */
->>      bio_uninit(bio);
->>      if (bio->bi_end_io)
->>          bio->bi_end_io(bio);
->> }
->>
->> Thanks,
->> Edward Hsieh
+> On Mon, 24 May 2021, Pierre-Louis Bossart wrote:
 > 
-> Hi Neil and Jens,
+>> On 5/20/21 11:33 AM, Richard Fitzgerald wrote:
+>>> Add select of SND_SOC_HDAC_HDMI for SND_SOC_INTEL_SOUNDWIRE_SOF_MACH.
+>>> Without this the build results in missing references to
+>>> hdac_hdmi_jack_port_init and hdac_hdmi_jack_init.
+>> Kai, can you comment on this one? There is nothing specific to HDMI in this
+>> driver.
 > 
-> Any feedback on this one?
+> usage of hdac-hdmi is removed in newer mach drivers (like
+> sof_da7219_max98373, sof-pcm512 and ehl_rt5660 -> and there's no select
+> for SND_SOC_HDAC_HDMI for these). For older ones, we've kept hdac-hdmi in
+> to keep compatibility.
 > 
-> Thank you,
-> Edward Hsieh >
+> For sof_sdw, there are still calls to hdac_hdmi_jack_init() and friends
+> in sof_sdw_hdmi.c, so this is a real problem.
+> 
+> I'd say a better fix is that we remove the hdac-hdmi support from sof_sdw.
+> I can do a patch for that.
+> 
 
-  Hi Neil and Jens,
+Ok with me. I'm not using the hdmi.
 
-Any comments?
-
-Thank you,
-Edward Hsieh
+>> Something's inconsistent here, it's not limited to SoundWire I am afraid
+> 
+> I checked all the related mach drivers and the Kconfig definitions are
+> correct for others. So select is done to HDAC_HDMI whenever the mach
+> driver uses hdac_hdmi_jack_*().
+> 
+> Br, Kai
+> 
