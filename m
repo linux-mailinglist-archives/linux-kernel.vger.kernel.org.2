@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F739011D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6491F39011F
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 14:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhEYMki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 08:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232627AbhEYMkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 08:40:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89B276140E;
-        Tue, 25 May 2021 12:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621946346;
-        bh=/vZdsDJghPOhaskyihnVquOx0gtCUPIcL1HHuW88hFw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gNLVIVutCdom27ITDvkbnAvDdHFCcWeovKJxvbAx8OuZ50fbUPimBfRsfZU39D/18
-         IARkHgE25Kuvh+Q3irzMlVJaAfJURHqC7yYIMHQz6yVVg1R0bEksfBJqzlxUYV0v/B
-         B2AiyTddBVSVzTIH2N1pF0ijGpZ0wBVyLHXtiflk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linma <linma@zju.edu.cn>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hao Xiong <mart1n@zju.edu.cn>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2] Bluetooth: fix the erroneous flush_work() order
-Date:   Tue, 25 May 2021 14:39:02 +0200
-Message-Id: <20210525123902.189012-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
+        id S232680AbhEYMmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 08:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhEYMl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 08:41:57 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED614C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:40:26 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso1733469pjx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 05:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PUSkZPrTo4hXQ/NUoInJ1V3UNHg4yEH+B8SXWXI1XtM=;
+        b=CAXGnC6ezIC2uHiq5izoHG16uh+4h6AzWxjc290cFVma+LE2qTS7C2irnA7o3UHewH
+         S9TUyeRnf5o/tbR28kjofEFNC7up6emJWtyUKlntpI8eI612XoDfzCwju40UMitvNVYq
+         v0dvcAsRQsB4n1qjMUKLp+/X8cG9zmecOHSWcPNqXNZZSCgPBknEIXv6HPRdHpVhFGYA
+         W88ouqGgj9QXvmWBf3RwCmWBRsgqIKcXvJtFI9VOoER11HkcL7Wh+WQ2IPBLyZY4t1GI
+         eaN/q1cM+ceZrg4M2JlYH8oOdeu6CGXTSVDGk4ycTzDFb8tPD4nzZ24L1m00cHKbMIya
+         KXZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PUSkZPrTo4hXQ/NUoInJ1V3UNHg4yEH+B8SXWXI1XtM=;
+        b=bT3l+tAEVyxGKa+9Y4cZGSK8E99o7UQVyEdGwe81URIZITFJq334L4yQ7iCptqVGXa
+         bER0N4CpvOxVqEeOS112uUGXPtHAtxo64J3oD6swj1Yf0SqnaqNqDQOyGgMIMytoIXvu
+         Umr1V+DBlmxQcTrHjCDfN05xCTxPQEoo/Sv9MSdnTT4Rw0Vm3Ptf4Wbhe1lGCfxrlm9I
+         icjv3VkormW2V35XdpiMqDHbne5oGOEjj85pZbFpnQf8jYhfW6S95uh36/5X4TaL8SGN
+         58VZkS2L6pyNUDao+epwRwavWLYbfQz3eIwg6B24VTSl18J5y6Fam9uxbIQNuaNeL+xT
+         HloA==
+X-Gm-Message-State: AOAM531btuYhAKThOLkuePw0C3qOrc+maOK3TXdPufWkBy0Q3gSEHdUQ
+        ORDVr5TE7mSlcyOAcwDLLpL/YQ==
+X-Google-Smtp-Source: ABdhPJzNTSn/8zaWZhp8M+9LeU73A+sOv8hBSJ7QghBZgcrUBGqEE6NHGlSKh3gdMnHbPKlklTDQGw==
+X-Received: by 2002:a17:902:8f93:b029:f0:ad44:35ee with SMTP id z19-20020a1709028f93b02900f0ad4435eemr30079017plo.43.1621946426178;
+        Tue, 25 May 2021 05:40:26 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id i8sm14586927pgt.58.2021.05.25.05.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 05:40:25 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Yunfan Zhang <yfzhang@marvell.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/2] regulator: fan53555: Fix missing slew_reg/mask/shift settings for FAN53526
+Date:   Tue, 25 May 2021 20:40:16 +0800
+Message-Id: <20210525124017.2550029-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: linma <linma@zju.edu.cn>
+The di->slew_reg/di->slew_mask/di->slew_shift was not set in current code,
+fix it.
 
-In the cleanup routine for failed initialization of HCI device,
-the flush_work(&hdev->rx_work) need to be finished before the
-flush_work(&hdev->cmd_work). Otherwise, the hci_rx_work() can
-possibly invoke new cmd_work and cause a bug, like double free,
-in late processings.
-
-This was assigned CVE-2021-3564.
-
-This patch reorder the flush_work() to fix this bug.
-
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-bluetooth@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Hao Xiong <mart1n@zju.edu.cn>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f2a9eb975ab2 ("regulator: fan53555: Add support for FAN53526")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- net/bluetooth/hci_core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/regulator/fan53555.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-v2: use "network comment style" for block comment.
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index fd12f1652bdf..7d71d104fdfd 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1610,8 +1610,13 @@ static int hci_dev_do_open(struct hci_dev *hdev)
- 	} else {
- 		/* Init failed, cleanup */
- 		flush_work(&hdev->tx_work);
--		flush_work(&hdev->cmd_work);
-+
-+		/* Since hci_rx_work() is possible to awake new cmd_work
-+		 * it should be flushed first to avoid unexpected call of
-+		 * hci_cmd_work()
-+		 */
- 		flush_work(&hdev->rx_work);
-+		flush_work(&hdev->cmd_work);
+diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+index f3f49cf3731b..9770a4df83d4 100644
+--- a/drivers/regulator/fan53555.c
++++ b/drivers/regulator/fan53555.c
+@@ -296,6 +296,9 @@ static int fan53526_voltages_setup_fairchild(struct fan53555_device_info *di)
+ 		return -EINVAL;
+ 	}
  
- 		skb_queue_purge(&hdev->cmd_q);
- 		skb_queue_purge(&hdev->rx_q);
++	di->slew_reg = FAN53555_CONTROL;
++	di->slew_mask = CTL_SLEW_MASK;
++	di->slew_shift = CTL_SLEW_SHIFT;
+ 	di->vsel_count = FAN53526_NVOLTAGES;
+ 
+ 	return 0;
 -- 
-2.31.1
+2.25.1
 
