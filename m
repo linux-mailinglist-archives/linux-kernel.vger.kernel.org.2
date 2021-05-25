@@ -2,184 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8C9390AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46325390ABD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhEYUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:51:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232229AbhEYUva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:51:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AABB86140E;
-        Tue, 25 May 2021 20:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621975800;
-        bh=WdrvbrkL97uxF12QDG+VFdSvWGh5V0sKoD7lYsbjdHA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oirxlvASno54IUjoLBeq8eAr9cIJPE5mcSV/2WpqvG4t5+dKaSQWPcJCuK82YchlZ
-         QkpMmcXsjoDir48UGaNcJyE5dwpOvVELMiNb34RfRVuVhcy6irVkV08tfN3xpce9tn
-         +olchq9oClc/HHr7ZOJSBP0YK6DQaeFAag7wPhisdheK2SWEA3hRJHfgU+kQomaEbu
-         jOc3eYnvee+RIh9rw/Cy2FWpH1hmZdyR35gXICsUKb/5+hQhNH5b2/Ph+Y20SeF6Ma
-         nMOWYQfSETiKuDtSdxL1NnivObGL24ErQtlg3tiD1RYKDzAVcAupzFSW+i9CjUv3BQ
-         fYiT8b/1YLgUw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 2/2] f2fs: introduce FI_COMPRESS_RELEASED instead of using IMMUTABLE bit
-Date:   Tue, 25 May 2021 13:49:55 -0700
-Message-Id: <20210525204955.2512409-2-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-In-Reply-To: <20210525204955.2512409-1-jaegeuk@kernel.org>
-References: <20210525204955.2512409-1-jaegeuk@kernel.org>
+        id S232142AbhEYUw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230379AbhEYUww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:52:52 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63545C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:51:22 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so14251783wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 13:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GG0lmyh6wk8QWw6LsQd7vh3tXFz+o5qSuD/MyeyDIVI=;
+        b=cXpsfFM4hWRlTVShaYr1/6xaxfRxXsJWwDlck3RTswYvi5wld6wZTbV6hUWOlWE69G
+         KKxnBai/yawcnJTPoJGwmxJzIzT/KGeG2ROc3j/JbQ1dEe3FF5z38CpwPgjgesaKocKX
+         FBlVFEdwzRSNGXeCcgI0WtwxhcEq9javE04c1ZJ/2galZbz+FDOJ8N2f8csMKEAmhbVJ
+         +eaM4ZE3bBkSdIH5U3bJWqXrhJj+NE4vfU0bPyNprZjUOvFq0ESLyN5QG84AMekIsHhD
+         11MBqe2nd1P44c2kORSlMhVNVFJ6kYGc+PNZkB6KjXWRtydulilCcH5wjlWyR/fc6roH
+         2MsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GG0lmyh6wk8QWw6LsQd7vh3tXFz+o5qSuD/MyeyDIVI=;
+        b=Y3+hP4IU9aeDdqgBP5ZGwk1KCPt7v/O3MBGkp04jN4Ol/xQulfRJJCXYv8YacZthKL
+         +1ZKqhnc4NWhK8nmOS6NXSWRDVcTMD0wyJX1uTKQBIHQ/xtt7ayk+dtzBZxi+9NJldNR
+         Ij1sDdDLlbVjSj3T5jz0of4Cx2gRszV61QM1wpDmRXpczr7rOO7xp32/0ytL6PWiIuhv
+         0PGXr8jELcCViJaSz/9wTWqGW/r8sSp8aqvnYHESLSFLG9XGXCJBQdI5/qnO2lPnc9M3
+         yPcSFltiVMdqTB4GdwNC+FWh/ujISVqMYoWLr+JMUt8alN+krfi0UqAqCqWJgoO9mtcq
+         WVQA==
+X-Gm-Message-State: AOAM533YYX8/ZV4sbVmqjAxCpoej1FbRuAU0wLYhnGxJF8g9REyHat1z
+        fr7pvzm3o1PvVtOBg/JaeTPuJw==
+X-Google-Smtp-Source: ABdhPJxaSeJdGoB68Lkd7mIqFOqozmYqQ7Mq5x5+9H6QP/UmQjjDEmEO7yjsDtHZN5NMpoUZ5R+CRg==
+X-Received: by 2002:a1c:f303:: with SMTP id q3mr195460wmq.9.1621975880940;
+        Tue, 25 May 2021 13:51:20 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id g78sm4580140wme.27.2021.05.25.13.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 13:51:19 -0700 (PDT)
+Date:   Tue, 25 May 2021 21:51:17 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8188eu: remove ASSERT and ODM_RT_ASSERT
+ macros
+Message-ID: <YK1jRYWpGjENtruM@equinox>
+References: <20210524224532.1230-1-phil@philpotter.co.uk>
+ <YKyc3AM51xODwW0Q@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKyc3AM51xODwW0Q@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once we release compressed blocks, we used to set IMMUTABLE bit. But it turned
-out it disallows every fs operations which we don't need for compression.
+On Tue, May 25, 2021 at 08:44:44AM +0200, Greg KH wrote:
+> On Mon, May 24, 2021 at 11:45:32PM +0100, Phillip Potter wrote:
+> > Remove the ASSERT and ODM_RT_ASSERT macros from include/odm_debug.h
+> > as they are unnecessary.
+> > 
+> > ASSERT does nothing, compiling to a single empty statement.
+> > ODM_RT_ASSERT is used in only one place, in the ODM_RAStateCheck
+> > function with hal/odm.c - it seems to have been intended as an
+> > assertion of some kind, but given it is always called with false
+> > here, there is little point in it not just being a pr_info() call.
+> > 
+> > Also, the lines relating to the file, function and line number are
+> > not needed as the pr_info() with the function name and error message
+> > is sufficient should anyone wish to track down this error at a source
+> > level, within what is currently a relatively small function.
+> > 
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >  drivers/staging/rtl8188eu/hal/odm.c           |  2 +-
+> >  drivers/staging/rtl8188eu/include/odm_debug.h | 13 -------------
+> >  2 files changed, 1 insertion(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8188eu/hal/odm.c b/drivers/staging/rtl8188eu/hal/odm.c
+> > index 4d659a812aed..b800d0c6dff5 100644
+> > --- a/drivers/staging/rtl8188eu/hal/odm.c
+> > +++ b/drivers/staging/rtl8188eu/hal/odm.c
+> > @@ -824,7 +824,7 @@ bool ODM_RAStateCheck(struct odm_dm_struct *pDM_Odm, s32 RSSI, bool bForceUpdate
+> >  		LowRSSIThreshForRA += GoUpGap;
+> >  		break;
+> >  	default:
+> > -		ODM_RT_ASSERT(pDM_Odm, false, ("wrong rssi level setting %d !", *pRATRState));
+> > +		pr_info("%s(): wrong rssi level setting %d!\n", __func__, *pRATRState);
+> 
+> I know you're just copying what the existing code does, but this really
+> should just be a dev_err() call instead.  It's not "info", and as this
+> is a driver, dev_*() should be called instead.
+> 
+> So I'll take this one, but for future cleanups, consider changing the
+> pr_*() calls to the correct ones.
+> 
+> thanks,
+> 
+> greg k-h
 
-Let's just prevent writing data only.
+Dear Greg,
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/compress.c      |  3 ++-
- fs/f2fs/f2fs.h          |  6 ++++++
- fs/f2fs/file.c          | 18 ++++++++++++------
- include/linux/f2fs_fs.h |  1 +
- 4 files changed, 21 insertions(+), 7 deletions(-)
+Thank you for this, I will make sure to bear this in mind for the
+future.
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index bec92ff5ee7d..1c3e98085591 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -928,7 +928,8 @@ static int __f2fs_cluster_blocks(struct inode *inode,
- 		}
- 
- 		f2fs_bug_on(F2FS_I_SB(inode),
--			!compr && ret != cluster_size && !IS_IMMUTABLE(inode));
-+			!compr && ret != cluster_size &&
-+			!is_inode_flag_set(inode, FI_COMPRESS_RELEASED));
- 	}
- fail:
- 	f2fs_put_dnode(&dn);
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 2c6913261586..9ad502f92529 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -707,6 +707,7 @@ enum {
- 	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
- 	FI_MMAP_FILE,		/* indicate file was mmapped */
- 	FI_ENABLE_COMPRESS,	/* enable compression in "user" compression mode */
-+	FI_COMPRESS_RELEASED,	/* compressed blocks were released */
- 	FI_MAX,			/* max flag, never be used */
- };
- 
-@@ -2748,6 +2749,7 @@ static inline void __mark_inode_dirty_flag(struct inode *inode,
- 	case FI_DATA_EXIST:
- 	case FI_INLINE_DOTS:
- 	case FI_PIN_FILE:
-+	case FI_COMPRESS_RELEASED:
- 		f2fs_mark_inode_dirty_sync(inode, true);
- 	}
- }
-@@ -2869,6 +2871,8 @@ static inline void get_inline_info(struct inode *inode, struct f2fs_inode *ri)
- 		set_bit(FI_EXTRA_ATTR, fi->flags);
- 	if (ri->i_inline & F2FS_PIN_FILE)
- 		set_bit(FI_PIN_FILE, fi->flags);
-+	if (ri->i_inline & F2FS_COMPRESS_RELEASED)
-+		set_bit(FI_COMPRESS_RELEASED, fi->flags);
- }
- 
- static inline void set_raw_inline(struct inode *inode, struct f2fs_inode *ri)
-@@ -2889,6 +2893,8 @@ static inline void set_raw_inline(struct inode *inode, struct f2fs_inode *ri)
- 		ri->i_inline |= F2FS_EXTRA_ATTR;
- 	if (is_inode_flag_set(inode, FI_PIN_FILE))
- 		ri->i_inline |= F2FS_PIN_FILE;
-+	if (is_inode_flag_set(inode, FI_COMPRESS_RELEASED))
-+		ri->i_inline |= F2FS_COMPRESS_RELEASED;
- }
- 
- static inline int f2fs_has_extra_attr(struct inode *inode)
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 4a8c3128b5a5..4714925e1974 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -63,6 +63,9 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
- 	if (unlikely(IS_IMMUTABLE(inode)))
- 		return VM_FAULT_SIGBUS;
- 
-+	if (is_inode_flag_set(inode, FI_COMPRESS_RELEASED))
-+		return VM_FAULT_SIGBUS;
-+
- 	if (unlikely(f2fs_cp_error(sbi))) {
- 		err = -EIO;
- 		goto err;
-@@ -3420,7 +3423,7 @@ static int f2fs_release_compress_blocks(struct file *filp, unsigned long arg)
- 		goto out;
- 	}
- 
--	if (IS_IMMUTABLE(inode)) {
-+	if (is_inode_flag_set(inode, FI_COMPRESS_RELEASED)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -3429,8 +3432,7 @@ static int f2fs_release_compress_blocks(struct file *filp, unsigned long arg)
- 	if (ret)
- 		goto out;
- 
--	F2FS_I(inode)->i_flags |= F2FS_IMMUTABLE_FL;
--	f2fs_set_inode_flags(inode);
-+	set_inode_flag(inode, FI_COMPRESS_RELEASED);
- 	inode->i_ctime = current_time(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
- 
-@@ -3585,7 +3587,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 
- 	inode_lock(inode);
- 
--	if (!IS_IMMUTABLE(inode)) {
-+	if (!is_inode_flag_set(inode, FI_COMPRESS_RELEASED)) {
- 		ret = -EINVAL;
- 		goto unlock_inode;
- 	}
-@@ -3630,8 +3632,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 	up_write(&F2FS_I(inode)->i_mmap_sem);
- 
- 	if (ret >= 0) {
--		F2FS_I(inode)->i_flags &= ~F2FS_IMMUTABLE_FL;
--		f2fs_set_inode_flags(inode);
-+		clear_inode_flag(inode, FI_COMPRESS_RELEASED);
- 		inode->i_ctime = current_time(inode);
- 		f2fs_mark_inode_dirty_sync(inode, true);
- 	}
-@@ -4249,6 +4250,11 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		goto unlock;
- 	}
- 
-+	if (is_inode_flag_set(inode, FI_COMPRESS_RELEASED)) {
-+		ret = -EPERM;
-+		goto unlock;
-+	}
-+
- 	ret = generic_write_checks(iocb, from);
- 	if (ret > 0) {
- 		bool preallocated = false;
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index 5487a80617a3..f93000c3a127 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -229,6 +229,7 @@ struct f2fs_extent {
- #define F2FS_INLINE_DOTS	0x10	/* file having implicit dot dentries */
- #define F2FS_EXTRA_ATTR		0x20	/* file having extra attribute */
- #define F2FS_PIN_FILE		0x40	/* file should not be gced */
-+#define F2FS_COMPRESS_RELEASED	0x80	/* file released compressed blocks */
- 
- struct f2fs_inode {
- 	__le16 i_mode;			/* file mode */
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
-
+Regards,
+Phil
