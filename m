@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D3338FCAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BE238FCAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhEYIZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 04:25:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231492AbhEYIZi (ORCPT
+        id S232376AbhEYI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 04:26:18 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:38395 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232367AbhEYIZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 04:25:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621931048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nMNrS2AH+pWQGLicYKYrV08FbwOU09YffgbHD3gux2Q=;
-        b=P5A9KrRtsLXVNPfo0wac7J6zkBsiE3zNljU6u/nSwBLWx10PyV8FJQt2aQ43h2l/4UhwDD
-        8Z9AfNhpf0kWa+K0kHPPlY3Jbhdnab5yaHxyEpdsaANCRS8faNOSZ6YBJg96j+ryz2GkGd
-        LdW8So2jMFAxzQ8ZsD4jSh9NVFVHg4Q=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-FfSJX0vUMhW2FtOsoBz7Sg-1; Tue, 25 May 2021 04:24:07 -0400
-X-MC-Unique: FfSJX0vUMhW2FtOsoBz7Sg-1
-Received: by mail-ej1-f71.google.com with SMTP id z1-20020a1709068141b02903cd421d7803so8497229ejw.22
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 01:24:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nMNrS2AH+pWQGLicYKYrV08FbwOU09YffgbHD3gux2Q=;
-        b=ki8UMGCozm0jwfFI0N8XHZo6ATj5QoKvCNAlhh9LSgsWhCvp0y116gT7NQnNxkOY3/
-         u4y4vyWQTKNNfxzxiplTbnwqxl6nHljH5bqfg91+uss7LuaO48VOKS/zZ5cYe+qFqqFt
-         00ZibGr5Fi4nNX3tFesgro2RaWbxmQhzCMyYv0vlJq1J1BXRz2Pu3JIr/MJjRg6by64Q
-         +/MHbMreS1fQVlQV/1/RDMeZXTgjD8l041SYSY3LBIXfYi2v6EoKBYDj+CVAqpL3BJ6v
-         qIMUM9bPKUDdLKtr8RZBNG5662otQd/kx5IujmNH5p8yM75GH8puLQn5HYBFliGuhLY4
-         zLdA==
-X-Gm-Message-State: AOAM530aDkHeaC3YhFel9yAZ4QM0rrr3Qbfi3xQ3dWL4GAGLIdMPRSVW
-        zQFDjM6m4V23ekhoI9gHXP5lltm5k9xdhhgGZSxOthBpN639Hb7BW2HSmbUViFQOinFwRcSuWAX
-        lnydGBma50NdK2IsdgVHB2TC/
-X-Received: by 2002:a17:906:2749:: with SMTP id a9mr7301261ejd.498.1621931045769;
-        Tue, 25 May 2021 01:24:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3ejiTVjnk0KxP0784vBVyBVdsw1rtPY3FP7JEZB/fGwja1e9e9HqFVf3ExrM8SXokAJlR3w==
-X-Received: by 2002:a17:906:2749:: with SMTP id a9mr7301238ejd.498.1621931045543;
-        Tue, 25 May 2021 01:24:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id gl20sm8752886ejb.5.2021.05.25.01.24.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 01:24:05 -0700 (PDT)
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        "guoren@kernel.org" <guoren@kernel.org>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "graf@amazon.com" <graf@amazon.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
-References: <mhng-b093a5aa-ff9d-437f-a10b-47558f182639@palmerdabbelt-glaptop>
- <DM6PR04MB708173B754E145BC843C4123E7269@DM6PR04MB7081.namprd04.prod.outlook.com>
- <YKypJ5SJg2sDtn7/@kroah.com>
- <DM6PR04MB7081843419AFCECABA75AD74E7259@DM6PR04MB7081.namprd04.prod.outlook.com>
- <YKyxMy+djlscUhr1@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <fb03a89a-873d-ab85-8b05-f5f283f54489@redhat.com>
-Date:   Tue, 25 May 2021 10:24:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 25 May 2021 04:25:52 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 20E84134E;
+        Tue, 25 May 2021 04:24:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 25 May 2021 04:24:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=T/RJ8jiQp+vj5a/FxgpoVSB6RkM
+        3N/iycSA1uRI4V9Y=; b=E6LWyS/AL240aCpCg0oTZ0rCRNqvK1REKMqJETsp6so
+        q8bfE9MS9h+VozUQoEM7hi/MhlIGzcU9L9B3d92VM2ZBSjkNvOYcNKPiH+GknLad
+        n16W/ULfrI6TMp7ZbmIOZ1ZuakKGOWlJwh8u1tpuXtyiU6vby671YCqzpRGeOX4O
+        iRBl7qXSg019Ix0yP//PuJq5u+OyVnMRa2UY9qZTPj2/BqoiiILzZCpZ8nfBgjps
+        6+lbg0z6EaZB6hidK1/INdMhQirD5KHhA1/VwHU65RretnDgMq8pWnmV35EjZEeA
+        AaHtRvMEoLYJ/pU6afEVixqLqjKOV5jb0Fx5fB43LTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=T/RJ8j
+        iQp+vj5a/FxgpoVSB6RkM3N/iycSA1uRI4V9Y=; b=G7dCijkWcD6Lo0klqzMSxH
+        ZxaL1q8SPZdGtIDYRuc1Og+3VIhFgLezP22O7J0VvY3isFt2CWnbADdWA0aWrF1m
+        +W1/OKIC75NNW7Jjk9ll2uRKNs1Q2TeWpAheJC7Kjhb/NcU5YK3Lvdy/DxR1Wlqy
+        k7hF5RmeOFosvr8irUzajWUz2Tkz9LNtpnEcEuwWRME0MwTJUsI+tcH7iAn6/Z3X
+        bnB0+9NWFpwcqay0VZHUnZiU71fQeBdFxbMnopZ3ge8HgJejaKba1llJuNRiNNg/
+        O+d/bAs/9cHOWCaVGDRI61OuTJQJlGc/lu/JBm/HIRDxcxr6UfopSN6IEUslPMJw
+        ==
+X-ME-Sender: <xms:MrSsYKDHe2Ve7v8xMI1Nm-a-Z3DFZ4uRgcybubU-Uy_Pmb1WDFqotQ>
+    <xme:MrSsYEjbg3rskx2DGuWGP_G-bZbjXHEl32nUCJCBsGKbiBk_WVT-dHq6Q15OvLRE4
+    2lD-lsiFdxrDspGWPA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:MrSsYNll5y5WwZSPVPEKuqejkPFgqJ5GoaLDJKTLzm255XlGrXpKjg>
+    <xmx:MrSsYIy_9jRluU9lX4uKu4yNWdDoCW3uZAbgnJJ5Mid3sKu8tZHUYQ>
+    <xmx:MrSsYPQae3bCTC5d9gLbFOA_f3KPKx1eomLafcxRerXw_Efe3qwcFA>
+    <xmx:NLSsYOFU6tt5S4gLXNDuSCFbPHAAg5k6GxhBt3Zcf51S5RznFDSZiw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 25 May 2021 04:24:18 -0400 (EDT)
+Date:   Tue, 25 May 2021 10:24:16 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: sun6i: Add NVMEM provider
+Message-ID: <20210525082416.jkqmlkbdx6nhrens@gilmour>
+References: <20210419014549.26900-1-samuel@sholland.org>
+ <20210430090206.lybmygrt636nysoc@gilmour>
+ <a3b03a06-c8fc-7dbe-7c0b-ffd1f194ecbc@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <YKyxMy+djlscUhr1@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4ls3b5jytkdblw2f"
+Content-Disposition: inline
+In-Reply-To: <a3b03a06-c8fc-7dbe-7c0b-ffd1f194ecbc@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/21 10:11, Greg KH wrote:
->> 1) facilitate the development work overall, both for Paolo and Anup on the KVM
->> part, but also others to check that their changes do not break KVM support.
-> 
-> Who are the "others" here?  You can't force your code into the tree just
-> to keep it up to date with internal apis that others are changing, if
-> you have no real users for it yet.  That's asking others to do your work
-> for you:(
 
-I don't know about changes that would break KVM support.  However, 
-"other KVM developers" would be able to check that their changes do not 
-break the RISC-V implementation, and I would certainly either enforce 
-that or do the work myself.
+--4ls3b5jytkdblw2f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, excluding simulators and emulators from the set of "real users" 
-ignores the needs of userspace developers, as well as other uses such as 
-education/academia.  Linux for x86 (both KVM and bare metal) supports 
-features that are only available in emulators and simulators which are 
-not even free software.  I am pretty sure that there would be more users 
-of KVM/RISC-V than with KVM/MIPS, despite the latter having support in 
-real hardware.
+On Sun, May 09, 2021 at 10:39:30PM -0500, Samuel Holland wrote:
+> On 4/30/21 4:02 AM, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Sun, Apr 18, 2021 at 08:45:49PM -0500, Samuel Holland wrote:
+> >> The sun6i RTC provides 32 bytes of general-purpose data registers.
+> >> They can be used to save data in the always-on RTC power domain.
+> >> The registers are writable via 32-bit MMIO accesses only.
+> >>
+> >> Expose the region as a NVMEM provider so it can be used by userspace a=
+nd
+> >> other drivers.
+> >>
+> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> >=20
+> > As far as I understood, you want to use those registers to implement
+> > super-standby? If so, while it makes sense for the kernel to be able to
+> > be able to write to those registers, I guess it would be a bit unwise to
+> > allow the userspace to access it?
+>=20
+> I want the user to be able to pass information to the bootloader (to
+> select a boot device, e.g. reboot to FEL). I also want the user to be
+> able to read data stored to these registers by system firmware (e.g.
+> crust writes exception information there). It's not really related to
+> standby.
 
-Paolo
+What information do you want to provide? This looks like punching
+through the abstraction layer provided by the kernel. This is also an
+issue since it ties an ABI to the use of crust: if there's another user
+for those RTC registers at some point, the userspace would have no way
+to tell whether or not crust is being used and might get complete
+garbage (compared to what crust usually provides) instead.
 
+> I would want to stack a nvmem-reboot-mode on top to give friendlier
+> names to some of the numbers, but I don't see a problem with root having
+> direct access to the registers. It's no different from /dev/nvram
+> providing access to the PC CMOS RAM.
+
+And those solutions have issues too. efivarfs for example can totally
+brick the system it runs on if the user has an unfortunate rm -rf.
+
+Maxime
+
+--4ls3b5jytkdblw2f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKy0MAAKCRDj7w1vZxhR
+xR+VAP0ZpqtCK0cgTcMjk72tdAhvDqLefB0iokheh3dtgHzhfAEAv6UX65vsXn/P
+qCCHgsLdWfCH+BHEVtSEd+X1hNOuJwk=
+=TKw9
+-----END PGP SIGNATURE-----
+
+--4ls3b5jytkdblw2f--
