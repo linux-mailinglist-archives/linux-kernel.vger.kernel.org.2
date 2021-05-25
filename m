@@ -2,179 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4027A390906
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAFC39090C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 20:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhEYSfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 14:35:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30262 "EHLO m43-7.mailgun.net"
+        id S232240AbhEYSgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 14:36:36 -0400
+Received: from mga17.intel.com ([192.55.52.151]:45532 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230115AbhEYSfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 14:35:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621967662; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=wAGWZGwhPHXFsgocMwNQwb25WGwLb6HfTZos1TGO8XI=;
- b=Zd7uEZ3KlnhiVGWhjsrdUcTXlWSaexUzkJnhkUsYN4fyc1EiVVSe83dmzYBEDujGY5MWi9Zd
- iE+RX+ebolXGzbr2UEf/22MjW9cm7qx3zjUBnzX4iI5a/2n1d/T1Jizx2v8rgQP3IiF5T4o1
- EM88pC5mLMuIWpVq1Gdo0K3EJvU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60ad432967d156359aab4730 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 25 May 2021 18:34:17
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 389E4C43145; Tue, 25 May 2021 18:34:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3242AC4338A;
-        Tue, 25 May 2021 18:34:16 +0000 (UTC)
+        id S231565AbhEYSge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 14:36:34 -0400
+IronPort-SDR: uAyytL6uT87SnoTd/1yfkI9pk6pFirOz6p892GVBHR0n0ed2lpzSOXNRx674jnIylzu53kUWSe
+ KjI3A+P3cgdA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182593695"
+X-IronPort-AV: E=Sophos;i="5.82,329,1613462400"; 
+   d="scan'208";a="182593695"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 11:35:01 -0700
+IronPort-SDR: fu1NKNP3vp3R3hg0ZSxFlfzeLTnadcB2gxFBoebJgiHQdZ7cFIBCCZu1Xvd+rZSzkW72sn4pvI
+ EHnLGs3lU66Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,329,1613462400"; 
+   d="scan'208";a="614633850"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 25 May 2021 11:34:59 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 0228F12A; Tue, 25 May 2021 21:35:21 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/2] gpiolib: Split fastpath array to two
+Date:   Tue, 25 May 2021 21:35:17 +0300
+Message-Id: <20210525183518.63149-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 25 May 2021 11:34:16 -0700
-From:   abhinavk@codeaurora.org
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        freedreno@lists.freedesktop.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Drop unnecessary NULL checks
- after container_of
-In-Reply-To: <20210525032033.453143-1-linux@roeck-us.net>
-References: <20210525032033.453143-1-linux@roeck-us.net>
-Message-ID: <9bc7ffae7e4b2361be337c96f5524cbe@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-24 20:20, Guenter Roeck wrote:
-> The result of container_of() operations is never NULL unless the 
-> embedded
-> element is the first element of the structure. This is not the case 
-> here.
-> The NULL check on the result of container_of() is therefore unnecessary
-> and misleading. Remove it.
-> 
-> This change was made automatically with the following Coccinelle 
-> script.
-> 
-> @@
-> type t;
-> identifier v;
-> statement s;
-> @@
-> 
-> <+...
-> (
->   t v = container_of(...);
-> |
->   v = container_of(...);
-> )
->   ...
->   when != v
-> - if (\( !v \| v == NULL \) ) s
-> ...+>
-> 
-> While at it, remove unused but assigned variable hpd in
-> dp_display_usbpd_attention_cb().
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 25 -------------------------
->  1 file changed, 25 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 1784e119269b..a74e7ef96fcf 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -208,10 +208,6 @@ static int dp_display_bind(struct device *dev,
-> struct device *master,
-> 
->  	dp = container_of(g_dp_display,
->  			struct dp_display_private, dp_display);
-> -	if (!dp) {
-> -		DRM_ERROR("DP driver bind failed. Invalid driver data\n");
-> -		return -EINVAL;
-> -	}
-> 
->  	dp->dp_display.drm_dev = drm;
->  	priv = drm->dev_private;
-> @@ -252,10 +248,6 @@ static void dp_display_unbind(struct device *dev,
-> struct device *master,
-> 
->  	dp = container_of(g_dp_display,
->  			struct dp_display_private, dp_display);
-> -	if (!dp) {
-> -		DRM_ERROR("Invalid DP driver data\n");
-> -		return;
-> -	}
-> 
->  	dp_power_client_deinit(dp->power);
->  	dp_aux_unregister(dp->aux);
-> @@ -406,11 +398,6 @@ static int dp_display_usbpd_configure_cb(struct
-> device *dev)
-> 
->  	dp = container_of(g_dp_display,
->  			struct dp_display_private, dp_display);
-> -	if (!dp) {
-> -		DRM_ERROR("no driver data found\n");
-> -		rc = -ENODEV;
-> -		goto end;
-> -	}
-> 
->  	dp_display_host_init(dp, false);
-> 
-> @@ -437,11 +424,6 @@ static int dp_display_usbpd_disconnect_cb(struct
-> device *dev)
-> 
->  	dp = container_of(g_dp_display,
->  			struct dp_display_private, dp_display);
-> -	if (!dp) {
-> -		DRM_ERROR("no driver data found\n");
-> -		rc = -ENODEV;
-> -		return rc;
-> -	}
-> 
->  	dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
-> 
-> @@ -502,7 +484,6 @@ static int dp_display_usbpd_attention_cb(struct 
-> device *dev)
->  	int rc = 0;
->  	u32 sink_request;
->  	struct dp_display_private *dp;
-> -	struct dp_usbpd *hpd;
-> 
->  	if (!dev) {
->  		DRM_ERROR("invalid dev\n");
-> @@ -511,12 +492,6 @@ static int dp_display_usbpd_attention_cb(struct
-> device *dev)
-> 
->  	dp = container_of(g_dp_display,
->  			struct dp_display_private, dp_display);
-> -	if (!dp) {
-> -		DRM_ERROR("no driver data found\n");
-> -		return -ENODEV;
-> -	}
-> -
-> -	hpd = dp->usbpd;
-> 
->  	/* check for any test request issued by sink */
->  	rc = dp_link_process_request(dp->link);
+Split fastpath array to two, i.e. for mask and for bits.
+At the same time declare them as bitmaps.
+
+This makes code better to read and gives a clue about use of
+bitmap API.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpio/gpiolib.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 97a69362a584..79df075f8b82 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2540,21 +2540,24 @@ int gpiod_get_array_value_complex(bool raw, bool can_sleep,
+ 
+ 	while (i < array_size) {
+ 		struct gpio_chip *gc = desc_array[i]->gdev->chip;
+-		unsigned long fastpath[2 * BITS_TO_LONGS(FASTPATH_NGPIO)];
++		DECLARE_BITMAP(fastpath_mask, FASTPATH_NGPIO);
++		DECLARE_BITMAP(fastpath_bits, FASTPATH_NGPIO);
+ 		unsigned long *mask, *bits;
+ 		int first, j;
+ 
+ 		if (likely(gc->ngpio <= FASTPATH_NGPIO)) {
+-			mask = fastpath;
++			mask = fastpath_mask;
++			bits = fastpath_bits;
+ 		} else {
+ 			mask = kmalloc_array(2 * BITS_TO_LONGS(gc->ngpio),
+ 					   sizeof(*mask),
+ 					   can_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 			if (!mask)
+ 				return -ENOMEM;
++
++			bits = mask + BITS_TO_LONGS(gc->ngpio);
+ 		}
+ 
+-		bits = mask + BITS_TO_LONGS(gc->ngpio);
+ 		bitmap_zero(mask, gc->ngpio);
+ 
+ 		if (!can_sleep)
+@@ -2577,7 +2580,7 @@ int gpiod_get_array_value_complex(bool raw, bool can_sleep,
+ 
+ 		ret = gpio_chip_get_multiple(gc, mask, bits);
+ 		if (ret) {
+-			if (mask != fastpath)
++			if (mask != fastpath_mask)
+ 				kfree(mask);
+ 			return ret;
+ 		}
+@@ -2598,7 +2601,7 @@ int gpiod_get_array_value_complex(bool raw, bool can_sleep,
+ 						       j);
+ 		}
+ 
+-		if (mask != fastpath)
++		if (mask != fastpath_mask)
+ 			kfree(mask);
+ 	}
+ 	return 0;
+@@ -2823,21 +2826,24 @@ int gpiod_set_array_value_complex(bool raw, bool can_sleep,
+ 
+ 	while (i < array_size) {
+ 		struct gpio_chip *gc = desc_array[i]->gdev->chip;
+-		unsigned long fastpath[2 * BITS_TO_LONGS(FASTPATH_NGPIO)];
++		DECLARE_BITMAP(fastpath_mask, FASTPATH_NGPIO);
++		DECLARE_BITMAP(fastpath_bits, FASTPATH_NGPIO);
+ 		unsigned long *mask, *bits;
+ 		int count = 0;
+ 
+ 		if (likely(gc->ngpio <= FASTPATH_NGPIO)) {
+-			mask = fastpath;
++			mask = fastpath_mask;
++			bits = fastpath_bits;
+ 		} else {
+ 			mask = kmalloc_array(2 * BITS_TO_LONGS(gc->ngpio),
+ 					   sizeof(*mask),
+ 					   can_sleep ? GFP_KERNEL : GFP_ATOMIC);
+ 			if (!mask)
+ 				return -ENOMEM;
++
++			bits = mask + BITS_TO_LONGS(gc->ngpio);
+ 		}
+ 
+-		bits = mask + BITS_TO_LONGS(gc->ngpio);
+ 		bitmap_zero(mask, gc->ngpio);
+ 
+ 		if (!can_sleep)
+@@ -2882,7 +2888,7 @@ int gpiod_set_array_value_complex(bool raw, bool can_sleep,
+ 		if (count != 0)
+ 			gpio_chip_set_multiple(gc, mask, bits);
+ 
+-		if (mask != fastpath)
++		if (mask != fastpath_mask)
+ 			kfree(mask);
+ 	}
+ 	return 0;
+-- 
+2.30.2
+
