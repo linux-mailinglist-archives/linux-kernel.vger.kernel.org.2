@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9610738F6F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2B538F6FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhEYA25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEYA24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:28:56 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D6FC061574;
-        Mon, 24 May 2021 17:27:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fpvzc6ClBz9sSn;
-        Tue, 25 May 2021 10:27:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621902445;
-        bh=uY1tMlJDraie7CtVEoPLKUE0zodkOSlHe/tyaZb/89E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=a73lRudqDUPoHOxD4sZB+RvLENAbSGY1a7iWlXpOgtMO5byGjyZ8fjdin4csMemeJ
-         FVtnEfnvY31wDDKRTFBW7tsg6cklXWx1EX+WMgXcgVvb9AEnD4Et8b0YOirwGCTHUW
-         ll3B7rpfsGXV/Y8ZRp6kc/nWiBOo+PQxuj0Dc6op2V9Qjq5EYUVpmSLY9aFQEK6tav
-         8+Y+Z0Ci+EMwNzFKHkwhCyqJIXau84EhlDUQxjusSTCsMQL6nDguLRh4yvCJY2ha80
-         QvvxRSdRLXKX24jvn4bt1rNcVeBpe63FQDB2J3U6DlEXvIddA8UP8Wi4gEVA4ffDeP
-         qTQnB05FkP6jg==
-Date:   Tue, 25 May 2021 10:27:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20210525102724.6037e7bd@canb.auug.org.au>
+        id S229724AbhEYAbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:31:25 -0400
+Received: from mga01.intel.com ([192.55.52.88]:23242 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhEYAbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 20:31:22 -0400
+IronPort-SDR: nJPTPfkrsan9OevJceyiionwN2rO6qMyXuXreTnplJwHdRlCbiwoCs8aSIobsH6r57AvfeUqG0
+ 2pDQkv6lLcIQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="223225906"
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="223225906"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 17:29:51 -0700
+IronPort-SDR: 9mSnlww6VoH7H7Iq/bSBAc877sWZX1OCE5sTDwndxDkuOCI5WYiTvlRC+hlt3Fzx/SuNQYH15w
+ jHggnMT3e0mA==
+X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
+   d="scan'208";a="396607630"
+Received: from akatzin-mobl4.ger.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.71.138])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 17:29:50 -0700
+Subject: Re: [RFC v2-fix-v2 2/2] x86/tdx: Ignore WBINVD instruction for TDX
+ guest
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
+ <20210524233211.802033-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210524233211.802033-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <b420a7af-5202-fee9-9e0b-39680d0cc9c8@linux.intel.com>
+Date:   Mon, 24 May 2021 17:29:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iCWy5p1XHKbwihCFSchm0Z8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAPcyv4jKY0rmewFnyL6My5-b+w8ANAwDY2tLXZk4CYKydoVbtg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iCWy5p1XHKbwihCFSchm0Z8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-In commit
+On 5/24/21 4:39 PM, Dan Williams wrote:
+>> Functionally only DMA devices can notice a side effect from
+>> WBINVD's cache flushing. But, TDX does not support DMA,
+>> because DMA typically needs uncached access for MMIO, and
+>> the current TDX module always sets the IgnorePAT bit, which
+>> prevents that.
 
-  8dbde399044b ("drm/msm/dp: handle irq_hpd with sink_count =3D 0 correctly=
-")
+> I thought we discussed that there are other considerations for wbinvd
+> besides DMA? In any event this paragraph is actively misleading
+> because it disregards ACPI and Persistent Memory secure-erase whose
+> usages of wbinvd have nothing to do with DMA. I would much prefer a
+> patch to shutdown all the known wbinvd users as a precursor to this
+> patch rather than assuming it's ok to simply ignore it. You have
+> mentioned that TDX does not need to use those paths, but rather than
+> assume they can't be used why not do the audit to explicitly disable
+> them? Otherwise this statement seems to imply that the audit has not
+> been done.
 
-Fixes tag
+But KVM also emulates WBINVD only if DMA is supported. Otherwise it
+will be treated as noop.
 
-  Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and=
- pm_resume")
+static bool need_emulate_wbinvd(struct kvm_vcpu *vcpu)
+{
+         return kvm_arch_has_noncoherent_dma(vcpu->kvm);
+}
 
-has these problem(s):
 
-  - Target SHA1 does not exist
 
-Maybe you meant
-
-Fixes: ea9f337ce81e ("drm/msm/dp: reset dp controller only at boot up and p=
-m_resume")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iCWy5p1XHKbwihCFSchm0Z8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCsRGwACgkQAVBC80lX
-0GyPnwgAgObDcg8b09wPwJDysoHzpYmFFPLqdk3DtH9mjaZyFa6n5n4UKRqV/kf8
-vDw8mXyXb3abpGGQsVyqmEfJhq4uD/Be9SUv5LzHYVntyJzd9c75V5mKeyVkbvBW
-2uz7RgT/UO04te3ViVklotgZnnXv1Zg9qIU4Op2rGEtQNzXq2iFhfY6qjtquCTJv
-g+rbvv+buAQHykb+EOf9t/B/bRdcQNIhiOUU5aeUVWU1hpGzut2uK6K2i1ISGbq2
-DVie5DYKMJI6Wkbcwjdf4ZRCpjpSPpG1wDpBvzflWFay3U6t3QgPA/3f9hqGRncH
-/gSxQ9IudPA8p/K+gw3iaR5EV9JVuQ==
-=6D45
------END PGP SIGNATURE-----
-
---Sig_/iCWy5p1XHKbwihCFSchm0Z8--
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
