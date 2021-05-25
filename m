@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7511B38FDEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6C738FDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 11:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbhEYJeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbhEYJeh (ORCPT
+        id S232616AbhEYJfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:35:06 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:52607 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232553AbhEYJfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:34:37 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A02C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:33:06 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso13005108wmm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 02:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6kjvv3YNnHMO/UJjVB7qqgBNxh5QL8EaN6jFc+x6A+M=;
-        b=dYve/ksRNHNKl+8wiBtIRks0wz2KAW+jcmlQk8jOd15Fe9gOIbJVEBlFa6Tggy694U
-         MzIKfUD/su2/F5NXp0Zgx+rcGvsHKdJ3XaH8lSa5NcqnjRGyCX52GOthKcXkN0LMdBiy
-         tBdHnW+mLlKywIroWdKmxa0V0nK9Nzvvam2i+ZDq+KvX3CVM+p3iDZhENKIKkXRSVhtm
-         R4RFLgQfXnsEUeZobuchWf7pjTArW0qBm4TLhsAP6HS30Z/mJmiVwSMFo5v2ssBF5mSX
-         cQYbywMVOGljKn06+w6sEjq/F/nPQi0IOFODeSk8viueIYEY/XQHIqLh72AQnsDII64E
-         lQEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6kjvv3YNnHMO/UJjVB7qqgBNxh5QL8EaN6jFc+x6A+M=;
-        b=Srlfn1Qm2DZFxoj8Us3kKHihb3s7fepQzY+3ZVHqEoP72xZpf3Is+LWhH0G7syoDTs
-         IoL7S21+bpGv1iVfGTSw2dJVbfBH0zq4dXWomN03lwKZ4KQKvPcfAH0XrJqWsEu27oqH
-         4gQzZJXrMk8NJIcCwaPzhoFfLQzvZ+YdXY83VsicWBnx/bcdPLgO+qj8ujvAekZiY128
-         xTBNNulxwABEKb4JbDgA7sLTEMNGG3XXS7Pr9TAYvfF/bAPLg0ul1foeMNONhykizhNe
-         kyDE2wGW0GLmCcwdmrd26Kac53ENWvvlmVKmXnA9AK+dY529OYKECMn5/hkom7Flr16i
-         8jZg==
-X-Gm-Message-State: AOAM533H0GWXSmZFtROegkGxiJUPVK//3xlVj66FClBapCLr/FT3m3iM
-        zYWqbKLpIl4VYQOZvfZqXwitww==
-X-Google-Smtp-Source: ABdhPJzdOsNCfCpThLEUohgWHuCpedtqkhSnMHE8Lx9MztgTi8iyEJeDSryof/Bp68qiNqkLVJAxPQ==
-X-Received: by 2002:a1c:4c03:: with SMTP id z3mr23177949wmf.58.1621935185092;
-        Tue, 25 May 2021 02:33:05 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id a16sm14878926wrw.62.2021.05.25.02.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 02:33:04 -0700 (PDT)
-Date:   Tue, 25 May 2021 09:33:01 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-Message-ID: <YKzETaPD/Flnz+dz@google.com>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
+        Tue, 25 May 2021 05:35:05 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id B65C213C9;
+        Tue, 25 May 2021 05:33:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 25 May 2021 05:33:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=jROtr0lHgeFAU/OduOZJ0abHrau
+        DG88KGsvMrltysdI=; b=TLPZBtCagzgKGJPCmH4mUGQRE54Ss6YUFxm47RiK/7w
+        D3DdIzzPJlix+xCCczeO3AbQm78U/XAROdw3rosxCxoLOtAIbqY1PEw7IaKDdiD1
+        ge1iDpNAEHdinDomQpkVzLC2ePI//nrpzhDFq7hSfzLgdBAgIVwx+BUxaXTiZ++m
+        s0IzBnjnWwHtmkBw4sJt24n0BOT2lMZAN36/zlDHxDMIsepuZlWinJey2mUegmJV
+        wLfQQYil5kKWFTf5lKLU/4jw2RkVUCSE0Rn9d+l7bPvn/FZLcmvkQRmEvr8ez1du
+        S5/eTUCYo3rffAqJj9DVVeln+3dRB8eyrWWCkxEbiAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jROtr0
+        lHgeFAU/OduOZJ0abHrauDG88KGsvMrltysdI=; b=EPrdFpjy5DbjELj8+jWq4I
+        H7kslYwLoyWuKudCa/+iYse2L8azuHIi/CJUfv6Sx5878orW6UPRxO6xC5hn+NIS
+        KS5R4q3/AwEaH/ZAcMwLgmXoprrIWdAsz9qCBEwD3ECZqrJ1D2Lzla0759/nuIPF
+        HrLMD8nG2hCqpj9695bUlF5qKB3xOuBmyz+Siwe3HAJAOAvBBoMB9psU6gpLZeED
+        sKcoAxgdRHv3BVo92RS2ObkeCqODErHNKzlwjSdvK/PV8fGElw1ae/2Uos4EA+Hi
+        u5+FfK+0Rh5YKWDWaWjSNUd62Y8+UZm72URoYE26ATxf3OdEpl3DbZZfd9qJueXg
+        ==
+X-ME-Sender: <xms:bMSsYNWWx4K7zZOUZnyIzS5z0uNCe4gX4e_Y6j_9hFPZJvmjQkAbyA>
+    <xme:bMSsYNmy0AodNTZsM50cPsJ2ysIo86rC9SIJxu2uF2JD5RwSq5deQ5OIcxYdPzDYo
+    -mGBeDBZtfJkMEJNq0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:bMSsYJZ09yBox5hokHxS0K0cxQZCLOKJUfo_j29kM51BdRWzrYge0g>
+    <xmx:bMSsYAXURi_GssbkSTkTX_pne958RhRhOquoeW-KLY65ONYDMDA2FQ>
+    <xmx:bMSsYHmIhMqVwQGl6FBrDJttHkSzgOJh3W-Fwi6yziF8813X8OHKeA>
+    <xmx:bsSsYJuJydhsJUXfxb7fKgfdgGY2uVOCcOoB9hcOxw_4IlJoiVLtJrPm08g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 25 May 2021 05:33:31 -0400 (EDT)
+Date:   Tue, 25 May 2021 11:33:29 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, nsaenz@kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-rpi-kernel@lists.infradead.org, Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH 01/11] snd: iec958: split status creation and fill
+Message-ID: <20210525093329.trltam5mqtvbqkr5@gilmour>
+References: <20210507140334.204865-1-maxime@cerno.tech>
+ <20210507140334.204865-2-maxime@cerno.tech>
+ <s5hbl8ze082.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qxe2w3b6f53vgutz"
 Content-Disposition: inline
-In-Reply-To: <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
+In-Reply-To: <s5hbl8ze082.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 21 May 2021 at 17:54:24 (+0100), Vincent Donnefort wrote:
-> @@ -161,6 +162,8 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
->  		table[i].cost = div64_u64(fmax * table[i].power,
->  					  table[i].frequency);
->  		if (table[i].cost >= prev_cost) {
-> +			table[i].flags = EM_PERF_STATE_INEFFICIENT;
-> +			pd->flags |= EM_PERF_DOMAIN_INEFFICIENCIES;
 
-If we're looking for micro-optimizations, then perhaps you could store
-the index of the next efficient OPP (which would be 'i' if the current
-OPP is already efficient), so you can jump to it directly when doing the
-search.
+--qxe2w3b6f53vgutz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  			dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
->  				table[i].frequency);
->  		} else {
+Hi,
+
+On Tue, May 25, 2021 at 09:33:49AM +0200, Takashi Iwai wrote:
+> On Fri, 07 May 2021 16:03:24 +0200,
+> Maxime Ripard wrote:
+> >=20
+> > In some situations, like a codec probe, we need to provide an IEC status
+> > default but don't have access to the sampling rate and width yet since
+> > no stream has been configured yet.
+> >=20
+> > Each and every driver has its own default, whereas the core iec958 code
+> > also has some buried in the snd_pcm_create_iec958_consumer functions.
+> >=20
+> > Let's split these functions in two to provide a default that doesn't
+> > rely on the sampling rate and width, and another function to fill them
+> > when available.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>=20
+> The changes look almost good, but please use EXPORT_SYMBOL_GPL() for
+> newly introduced symbols.
+
+Ack, I'll change it.
+
+> Also, it'd be worth to mention that some bits update are done only for
+> the default values; if a rate value has been already set, it won't be
+> overridden by this *_fill_*() call, that's the intentional behavior,
+> right?
+
+Sorry, I forgot to put a commit log on the patch 2 that implements this.
+
+My intent was to provide a default in the probe, but if it was ever
+overridden, we would return it in the control afterwards and pass it
+along to the hw_params (and later prepare) hooks
+
+I'll add a commit message
+
+> Last but not least, the subject prefix should be "ALSA:" in general :)
+
+Ok, I'll change it then
+
+Thanks!
+Maxime
+
+--qxe2w3b6f53vgutz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKzEaQAKCRDj7w1vZxhR
+xX/iAQDyKGU5zZGT0hhjwnnBey03GOnI+zvb2A8SFJmO7NaZvQD9Fo3ynLNkuX+w
+ANzO43UIWP4npIS3a391pApWC4R1tAg=
+=d5nb
+-----END PGP SIGNATURE-----
+
+--qxe2w3b6f53vgutz--
