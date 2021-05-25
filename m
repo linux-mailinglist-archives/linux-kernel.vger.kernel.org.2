@@ -2,245 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA2D38FD46
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E3C38FD4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 10:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhEYJBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 05:01:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20767 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231184AbhEYJBA (ORCPT
+        id S232269AbhEYJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 05:01:08 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:43218 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232137AbhEYJBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 05:01:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621933170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XXenCqETpb2RlyNBZ4FMXd5sgQb4F7cjovB7dQEodrE=;
-        b=C3loCtzZzjTY+mIUrNUL15Djszxis3uukzieLuMJMWY4YRJnnv3yhKND7flx65BWpwv5o0
-        NPCfUsMXNntHBiyua0yNtssk3Vb7WraCdvPFmx51TsUGjfKrwdAyNQ9bCX72WOoX6qooFz
-        aQATtiY8URj6r0Lx4yFVmx/NDZQqDRY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-63-nd6P3C9rNq-ygIYqC8kzXQ-1; Tue, 25 May 2021 04:59:28 -0400
-X-MC-Unique: nd6P3C9rNq-ygIYqC8kzXQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41F061009446;
-        Tue, 25 May 2021 08:59:27 +0000 (UTC)
-Received: from localhost (ovpn-115-80.ams2.redhat.com [10.36.115.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BCD8910023AC;
-        Tue, 25 May 2021 08:59:19 +0000 (UTC)
-Date:   Tue, 25 May 2021 09:59:18 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
-        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
-Message-ID: <YKy8Znh/MqHWSmON@stefanha-x1.localdomain>
-References: <20210520141305.355961-1-stefanha@redhat.com>
- <20210520141305.355961-4-stefanha@redhat.com>
- <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
+        Tue, 25 May 2021 05:01:05 -0400
+X-UUID: e5adcea2bc644d8cbd4a1a63529765f3-20210525
+X-UUID: e5adcea2bc644d8cbd4a1a63529765f3-20210525
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 69365162; Tue, 25 May 2021 16:59:33 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 25 May 2021 16:59:27 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 25 May 2021 16:59:26 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 1/3] usb: common: move usb_get_dr_mode() kerneldoc next to its definition
+Date:   Tue, 25 May 2021 16:59:23 +0800
+Message-ID: <1621933165-9661-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GGAVikb14LUB3vAD"
-Content-Disposition: inline
-In-Reply-To: <eefac014-0361-b554-ffdc-2ce920810fa5@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 2977430AD55DCCDB2143F58A4BF46AD99FC6668D274A0FBE524214208E31C2FE2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Following a general rule, add the kerneldoc for a function next
+to it's definition, but not next to its declaration in a header
+file, meanwhile fix typo 'correspondig'
 
---GGAVikb14LUB3vAD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ drivers/usb/common/common.c | 7 +++++++
+ include/linux/usb/otg.h     | 7 -------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-On Tue, May 25, 2021 at 11:21:41AM +0800, Jason Wang wrote:
->=20
-> =E5=9C=A8 2021/5/20 =E4=B8=8B=E5=8D=8810:13, Stefan Hajnoczi =E5=86=99=E9=
-=81=93:
-> > Request completion latency can be reduced by using polling instead of
-> > irqs. Even Posted Interrupts or similar hardware support doesn't beat
-> > polling. The reason is that disabling virtqueue notifications saves
-> > critical-path CPU cycles on the host by skipping irq injection and in
-> > the guest by skipping the irq handler. So let's add blk_mq_ops->poll()
-> > support to virtio_blk.
-> >=20
-> > The approach taken by this patch differs from the NVMe driver's
-> > approach. NVMe dedicates hardware queues to polling and submits
-> > REQ_HIPRI requests only on those queues. This patch does not require
-> > exclusive polling queues for virtio_blk. Instead, it switches between
-> > irqs and polling when one or more REQ_HIPRI requests are in flight on a
-> > virtqueue.
-> >=20
-> > This is possible because toggling virtqueue notifications is cheap even
-> > while the virtqueue is running. NVMe cqs can't do this because irqs are
-> > only enabled/disabled at queue creation time.
-> >=20
-> > This toggling approach requires no configuration. There is no need to
-> > dedicate queues ahead of time or to teach users and orchestration tools
-> > how to set up polling queues.
-> >=20
-> > Possible drawbacks of this approach:
-> >=20
-> > - Hardware virtio_blk implementations may find virtqueue_disable_cb()
-> >    expensive since it requires DMA.
->=20
->=20
-> Note that it's probably not related to the behavior of the driver but the
-> design of the event suppression mechanism.
->=20
-> Device can choose to ignore the suppression flag and keep sending
-> interrupts.
-
-Yes, it's the design of the event suppression mechanism.
-
-If we use dedicated polling virtqueues then the hardware doesn't need to
-check whether interrupts are enabled for each notification. However,
-there's no mechanism to tell the device that virtqueue interrupts are
-permanently disabled. This means that as of today, even dedicated
-virtqueues cannot suppress interrupts without the device checking for
-each notification.
-
-> >   If such devices become popular then
-> >    the virtio_blk driver could use a similar approach to NVMe when
-> >    VIRTIO_F_ACCESS_PLATFORM is detected in the future.
-> >=20
-> > - If a blk_poll() thread is descheduled it not only hurts polling
-> >    performance but also delays completion of non-REQ_HIPRI requests on
-> >    that virtqueue since vq notifications are disabled.
->=20
->=20
-> Can we poll only when only high pri requests are pending?
-
-Yes, that's what this patch does.
-
-> If the backend is a remote one, I think the polling may cause more cpu
-> cycles.
-
-Right, but polling is only done when userspace sets the RWF_HIPRI
-request flag. Most applications don't support it and for those that do
-it's probably an option that the user needs to enable explicitly.
-
-Stefan
-
-> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > index fc0fb1dcd399..f0243dcd745a 100644
-> > --- a/drivers/block/virtio_blk.c
-> > +++ b/drivers/block/virtio_blk.c
-> > @@ -29,6 +29,16 @@ static struct workqueue_struct *virtblk_wq;
-> >   struct virtio_blk_vq {
-> >   	struct virtqueue *vq;
-> >   	spinlock_t lock;
-> > +
-> > +	/* Number of non-REQ_HIPRI requests in flight. Protected by lock. */
-> > +	unsigned int num_lopri;
-> > +
-> > +	/* Number of REQ_HIPRI requests in flight. Protected by lock. */
-> > +	unsigned int num_hipri;
-> > +
-> > +	/* Are vq notifications enabled? Protected by lock. */
-> > +	bool cb_enabled;
->=20
->=20
-> We had event_flag_shadow, is it sufficient to introduce a new helper
-> virtqueue_cb_is_enabled()?
-
-Yes, I'll try that in the next revision.
-
-> > +
-> >   	char name[VQ_NAME_LEN];
-> >   } ____cacheline_aligned_in_smp;
-> > @@ -171,33 +181,67 @@ static inline void virtblk_request_done(struct re=
-quest *req)
-> >   	blk_mq_end_request(req, virtblk_result(vbr));
-> >   }
-> > -static void virtblk_done(struct virtqueue *vq)
-> > +/* Returns true if one or more requests completed */
-> > +static bool virtblk_complete_requests(struct virtqueue *vq)
-> >   {
-> >   	struct virtio_blk *vblk =3D vq->vdev->priv;
-> >   	struct virtio_blk_vq *vbq =3D &vblk->vqs[vq->index];
-> >   	bool req_done =3D false;
-> > +	bool last_hipri_done =3D false;
-> >   	struct virtblk_req *vbr;
-> >   	unsigned long flags;
-> >   	unsigned int len;
-> >   	spin_lock_irqsave(&vbq->lock, flags);
-> > +
-> >   	do {
-> > -		virtqueue_disable_cb(vq);
-> > +		if (vbq->cb_enabled)
-> > +			virtqueue_disable_cb(vq);
-> >   		while ((vbr =3D virtqueue_get_buf(vq, &len)) !=3D NULL) {
-> >   			struct request *req =3D blk_mq_rq_from_pdu(vbr);
-> > +			if (req->cmd_flags & REQ_HIPRI) {
-> > +				if (--vbq->num_hipri =3D=3D 0)
-> > +					last_hipri_done =3D true;
-> > +			} else
-> > +				vbq->num_lopri--;
-> > +
-> >   			if (likely(!blk_should_fake_timeout(req->q)))
-> >   				blk_mq_complete_request(req);
-> >   			req_done =3D true;
-> >   		}
-> >   		if (unlikely(virtqueue_is_broken(vq)))
-> >   			break;
-> > -	} while (!virtqueue_enable_cb(vq));
-> > +
-> > +		/* Enable vq notifications if non-polled requests remain */
-> > +		if (last_hipri_done && vbq->num_lopri > 0) {
-> > +			last_hipri_done =3D false;
-> > +			vbq->cb_enabled =3D true;
-> > +		}
-> > +	} while (vbq->cb_enabled && !virtqueue_enable_cb(vq));
-> >   	/* In case queue is stopped waiting for more buffers. */
-> >   	if (req_done)
-> >   		blk_mq_start_stopped_hw_queues(vblk->disk->queue, true);
-> >   	spin_unlock_irqrestore(&vbq->lock, flags);
-> > +
-> > +	return req_done;
-> > +}
-> > +
-> > +static int virtblk_poll(struct blk_mq_hw_ctx *hctx)
-> > +{
-> > +	struct virtio_blk *vblk =3D hctx->queue->queuedata;
-> > +	struct virtqueue *vq =3D vblk->vqs[hctx->queue_num].vq;
-> > +
-> > +	if (!virtqueue_more_used(vq))
->=20
->=20
-> I'm not familiar with block polling but what happens if a buffer is made
-> available after virtqueue_more_used() returns false here?
-
-Can you explain the scenario, I'm not sure I understand? "buffer is made=20
-available" -> are you thinking about additional requests being submitted
-by the driver or an in-flight request being marked used by the device?
-
-Stefan
-
---GGAVikb14LUB3vAD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCsvGYACgkQnKSrs4Gr
-c8gvIwf/dkaMys4a6Kfqzdx7Pvmvw2BGcTZFfqK5FbgvYv8M+3aGZnU2qzdXrFPt
-RKHGmU2FpekVV/t4NySPajwBsglNuNYuO+9TYjl6hkKR9SM3Z+p4mr+8xoQ8QPsg
-uW2VVWpOssrHp5/gar9+Bs8yrDYlmx27CNHJU/Qv9V3C+Ff6zdpeoiyP3N68Cf+K
-VlPpsdkA0MYJQyYuvq3tf2J7d+Y+qMWeJ+VJJ8bRp+DcMULp3HDcfzytZxvX3r4a
-ekWSM5XSvxAjqi7fWDCREy+snm0ys0svKPEABYKn+Iyz/h+cYhdF2FaksBOw/wRv
-kGgurxPcrMtSfsTEIhyqvvoTqQjJnA==
-=Wmed
------END PGP SIGNATURE-----
-
---GGAVikb14LUB3vAD--
+diff --git a/drivers/usb/common/common.c b/drivers/usb/common/common.c
+index 347fb3d3894a..fff318597337 100644
+--- a/drivers/usb/common/common.c
++++ b/drivers/usb/common/common.c
+@@ -187,6 +187,13 @@ static enum usb_dr_mode usb_get_dr_mode_from_string(const char *str)
+ 	return (ret < 0) ? USB_DR_MODE_UNKNOWN : ret;
+ }
+ 
++/**
++ * usb_get_dr_mode - Get dual role mode for given device
++ * @dev: Pointer to the given device
++ *
++ * The function gets phy interface string from property 'dr_mode',
++ * and returns the corresponding enum usb_dr_mode
++ */
+ enum usb_dr_mode usb_get_dr_mode(struct device *dev)
+ {
+ 	const char *dr_mode;
+diff --git a/include/linux/usb/otg.h b/include/linux/usb/otg.h
+index 69f1b6328532..a86ee6aad51b 100644
+--- a/include/linux/usb/otg.h
++++ b/include/linux/usb/otg.h
+@@ -120,13 +120,6 @@ enum usb_dr_mode {
+ 	USB_DR_MODE_OTG,
+ };
+ 
+-/**
+- * usb_get_dr_mode - Get dual role mode for given device
+- * @dev: Pointer to the given device
+- *
+- * The function gets phy interface string from property 'dr_mode',
+- * and returns the correspondig enum usb_dr_mode
+- */
+ extern enum usb_dr_mode usb_get_dr_mode(struct device *dev);
+ 
+ #endif /* __LINUX_USB_OTG_H */
+-- 
+2.18.0
 
