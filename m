@@ -2,117 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50DD38F9F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D031C38F9FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 07:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhEYFfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 01:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhEYFfm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 01:35:42 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9988AC061574;
-        Mon, 24 May 2021 22:34:13 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id r1so6974751pgk.8;
-        Mon, 24 May 2021 22:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zac22uAhz/Ss8FPGvYhFKLAp0Z8bAkUW4CspCmu4NcE=;
-        b=kQYinu00gWIACsHG4Bo+fhR1pddPy5fh7cCWwHjxZTLSLGUTgKh7xMWG1N4dGzpHeh
-         7MrDDqKCOk7XK22vY0U9wWWzteTDhcDQadwXfiuiRXFs5NPAWZB3jNMTPOsU9GxBSwcM
-         l69mH0aGtKb7LnwiphP6jnNSazwq/uYTGeJzgVm+h9Yae/TJmXptD3wsbLxvWTqJfg93
-         N1w0c1mSyGwspIPGEW76ZPGT/w4GYpKufkN0BjIK+a4gBpBi0eZ2E8yKmM/shtvV5PZ5
-         3WOvorZyb3hyGUGJHnFt7ekzPuH7O0+b6maDg4qeWHUdyXxlX/LlyAj1oNWXXju6l1O1
-         ZUWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zac22uAhz/Ss8FPGvYhFKLAp0Z8bAkUW4CspCmu4NcE=;
-        b=k4dDRSbbbnx8xtk8SYlKaqaeft8wKsdgWp8BSNTKH4Rgw1CGS0laJAqOHklhqEit2/
-         N9po52TAkb3mL7so8qCN269XlgdsqIlL49JZEdcsuJfh+yIVSR7Z3/HdOUqIItQtB9fZ
-         48CeUkB/ZDYqnz2z4P4YLOuPn2ByCndVNEMTddX7pDLl72goNzXNc0SWX+7TjiU2dKHA
-         BmxMFaqhkqEF1Eplk1lcqZwkbarud0KEuYlsNnzWNu+WNYc7fapSBMY9h1p4arAqygFK
-         rXIVrSQ0rRanV3WwECKWspmm43A7ililckPbrLYv1i6gjV8DD3mH0mhDz8gx8KUrP3XI
-         uzOQ==
-X-Gm-Message-State: AOAM531PS139GisJyWtSB0ss9XLjt7kN08dXKNyuOR3ZIdeklvGONFRJ
-        uquKcDu2HGygfQ+9Z+V8ZR0=
-X-Google-Smtp-Source: ABdhPJxOCgeBsF5GzgeXJF/apvRxPjSBRTc3CZW8+n/YOWJdhAeGG6Wb414eW+6smyOt/V1uKIHZpw==
-X-Received: by 2002:a65:5684:: with SMTP id v4mr16832577pgs.218.1621920852844;
-        Mon, 24 May 2021 22:34:12 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.113])
-        by smtp.gmail.com with ESMTPSA id h13sm339242pfr.216.2021.05.24.22.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 22:34:12 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
-Subject: [PATCH] media: dvd_usb: memory leak in cinergyt2_fe_attach
-Date:   Tue, 25 May 2021 13:33:59 +0800
-Message-Id: <20210525053359.1147899-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230504AbhEYFjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 01:39:15 -0400
+Received: from first.geanix.com ([116.203.34.67]:59786 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230218AbhEYFjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 01:39:14 -0400
+Received: from [192.168.64.199] (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id E782A464055;
+        Tue, 25 May 2021 05:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1621921063; bh=rvt46guryJk9/Wnd4YA1ncpdXvc8YqbSChYOuGt4yHs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=SV90DYl4ICZDpG7ZH4nflCT3i1GPF6moa91VBUZuB7pYw4uM/FHwbj0Sgu8ld8ymO
+         4iGVaNfBOWbAiqVYoaJX7eY79t0A7PSoNj8GfawdVc3AIOcP8dzgZ72sr+wfYNMqeM
+         DYtE7AJZI9ijMJBMearYEwVEsDM3+prvy7cSVITEzhZG7xWNrQgIjwsVi53DP/AnM5
+         FHF89dLgYm86rk/idx5Bvh2yPJwx5Cxo+mdSk9CBP8iBKeR31EdEt9CmEwGALS75wx
+         Phi5VcmePAW9K35mqCfZCr5v4tAUJPoGwlMzJNpwJw+rSh5U8MWsvZSPAMgM/X9eWp
+         qpGPmjNexbB0g==
+Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
+ flashing rootfs volume
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     Phillip Lougher <phillip@squashfs.org.uk>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
+ <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+ <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+ <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
+ <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
+ <486335206.6969995.1621485014357@webmail.123-reg.co.uk>
+ <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
+ <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com>
+ <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
+From:   Sean Nyekjaer <sean@geanix.com>
+Message-ID: <4304c082-6fc5-7389-f883-d0adfc95ee86@geanix.com>
+Date:   Tue, 25 May 2021 07:37:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        URIBL_BLOCKED autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When cinergyt2_frontend_attach returns a negative value, the allocation
-is already successful, but in the error handling, there is no any clean
-corresponding operation, which leads to memory leak.
+On 24/05/2021 08.12, Pintu Agarwal wrote:
+> On Sun, 23 May 2021 at 23:01, Sean Nyekjaer <sean@geanix.com> wrote:
+>>
+> 
+>>> I have also tried that and it seems the checksum exactly matches.
+>>> $ md5sum system.squash
+>>> d301016207cc5782d1634259a5c597f9  ./system.squash
+>>>
+>>> On the device:
+>>> /data/pintu # dd if=/dev/ubi0_0 of=squash_rootfs.img bs=1K count=48476
+>>> 48476+0 records in
+>>> 48476+0 records out
+>>> 49639424 bytes (47.3MB) copied, 26.406276 seconds, 1.8MB/s
+>>> [12001.375255] dd (2392) used greatest stack depth: 4208 bytes left
+>>>
+>>> /data/pintu # md5sum squash_rootfs.img
+>>> d301016207cc5782d1634259a5c597f9  squash_rootfs.img
+>>>
+>>> So, it seems there is no problem with either the original image
+>>> (unsquashfs) as well as the checksum.
+>>>
+>>> Then what else could be the suspect/issue ?
+>>> If you have any further inputs please share your thoughts.
+>>>
+>>> This is the kernel command line we are using:
+>>> [    0.000000] Kernel command line: ro rootwait
+>>> console=ttyMSM0,115200,n8 androidboot.hardware=qcom
+>>> msm_rtb.filter=0x237 androidboot.console=ttyMSM0
+>>> lpm_levels.sleep_disabled=1 firmware_class.path=/lib/firmware/updates
+>>> service_locator.enable=1 net.ifnames=0 rootfstype=squashfs
+>>> root=/dev/ubiblock0_0 ubi.mtd=30 ubi.block=0,0
+>>>
+>>> These are few more points to be noted:
+>>> a) With squashfs we are getting below error:
+>>> [    4.603156] squashfs: SQUASHFS error: unable to read xattr id index table
+>>> [...]
+>>> [    4.980519] Kernel panic - not syncing: VFS: Unable to mount root
+>>> fs on unknown-block(254,0)
+>>>
+>>> b) With ubifs (without squashfs) we are getting below error:
+>>> [    4.712458] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0,
+>>> name "rootfs", R/O mode
+>>> [...]
+>>> UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 9)
+>>> UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB
+>>> 336:250560, LEB mapping status 1
+>>> Not a node, first 24 bytes:
+>>> 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>> ff ff ff ff
+>>>
+>>> c) While flashing "usrfs" volume (ubi0_1) there is no issue and device
+>>> boots successfully.
+>>>
+>>> d) This issue is happening only after flashing rootfs volume (ubi0_0)
+>>> and rebooting the device.
+>>>
+>>> e) We are using "uefi" and fastboot mechanism to flash the volumes.
+>> Are you writing the squashfs into the ubi block device with uefi/fastboot?
+>>>
+>>> f) Next I wanted to check the read-only UBI volume flashing mechanism
+>>> within the Kernel itself.
+>>> Is there a way to try a read-only "rootfs" (squashfs type) ubi volume
+>>> flashing mechanism from the Linux command prompt ?
+>>> Or, what are the other ways to verify UBI volume flashing in Linux ?
+>>>
+>>> g) I wanted to root-cause, if there is any problem in our UBI flashing
+>>> logic, or there's something missing on the Linux/Kernel side (squashfs
+>>> or ubifs) or the way we configure the system.
+> 
+>>
+>> Have you had it to work? Or is this a new project?
+>> If you had it to work, i would start bisecting...
+>>
+> 
+> No, this is still experimental.
+> Currently we are only able to write to ubi volumes but after that
+> device is not booting (with rootfs volume update).
+> However, with "userdata" it is working fine.
+> 
+> I have few more questions to clarify.
+> 
+> a) Is there a way in kernel to do the ubi volume update while the
+> device is running ?
+>     I tried "ubiupdatevol" but it does not seem to work.
+>     I guess it is only to update the empty volume ?
+>     Or, maybe I don't know how to use it to update the live "rootfs" volume
 
-Fix it by freeing struct cinergyt2_fe_state when the return value is
-nonzero.
+We are writing our rootfs with this command:
+ubiupdatevol /dev/ubi0_4 rootfs.squashfs
 
-backtrace:
-  [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
-  [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
-  [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
-  [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
-  [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
-  [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
-  [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
-  [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+> 
+> b) How to verify the volume checksum as soon as we finish writing the
+> content, since the device is not booting ?
+>      Is there a way to verify the rootfs checksum at the bootloader or
+> kernel level before mounting ?
+> 
+> c) We are configuring the ubi volumes in this way. Is it fine ?
+> [rootfs_volume]
+> mode=ubi
+> image=.<path>/system.squash
+> vol_id=0
+> vol_type=dynamic
+> vol_name=rootfs
+> vol_size=62980096  ==> 60.0625 MiB
+> 
+> Few more info:
+> ----------------------
+> Our actual squashfs image size:
+> $ ls -l ./system.squash
+> rw-rr- 1 pintu users 49639424 ../system.squash
+> 
+> after earse_volume: page-size: 4096, block-size-bytes: 262144,
+> vtbl-count: 2, used-blk: 38, leb-size: 253952, leb-blk-size: 62
+> Thus:
+> 49639424 / 253952 = 195.46 blocks
+> 
+> This then round-off to 196 blocks which does not match exactly.
+> Is there any issue with this ?
+> 
+> If you have any suggestions to debug further please help us...
+> 
+> 
+> Thanks,
+> Pintu
+> 
 
-Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/media/usb/dvb-usb/dvb-usb-dvb.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Please understand the differences between the UBI and UBIFS. UBI(unsorted block image) and UBIFS(UBI File System).
+I think you want to write the squashfs to the UBI(unsorted block image).
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-index 0a7f8ba90992..f9f004fb0a92 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-dvb.c
-@@ -288,7 +288,7 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
- 		}
- 
- 		ret = adap->props.fe[i].frontend_attach(adap);
--		if (ret || adap->fe_adap[i].fe == NULL) {
-+		if (adap->fe_adap[i].fe == NULL) {
- 			/* only print error when there is no FE at all */
- 			if (i == 0)
- 				err("no frontend was attached by '%s'",
-@@ -297,6 +297,12 @@ int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
- 			return 0;
- 		}
- 
-+		if (ret) {
-+			struct dvb_frontend *fe = adap->fe_adap[i].fe;
-+
-+			fe->ops.release(fe);
-+			return 0;
-+		}
-+
- 		adap->fe_adap[i].fe->id = i;
- 
- 		/* re-assign sleep and wakeup functions */
--- 
-2.25.1
+Can you try to boot with a initramfs, and then use ubiupdatevol to write the rootfs.squshfs.
 
+/Sean
