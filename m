@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50235390A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0464E390A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 22:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhEYUc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 16:32:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhEYUcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 16:32:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA8A613EC;
-        Tue, 25 May 2021 20:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621974655;
-        bh=YB5s9KqU3I3U0EwmlQEZQw1u1H5+l4vhQZio8tQDxYs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l/kSEVjzzpoSmDZtXwhyPpiLBWJFOMLiiJdkZnUkEnjVxIP+ymjMljIoA6VJxwL7f
-         6oHEtmU95MjYLld20dbrEUhyRA5a05j5LdrpfZ1SoSD+sNzvAeJj/L+x4UOLzJAMS7
-         jKhmGmaIqQUsWjxLEHCeJKHhYbQ7DLvN2m7scGtHFauO0fr53Y2S2j1EiuQcwC2/Vk
-         iYl3Wl6Ge54GPYeQONO0Tgm40jtbkOUI63JYunfQuFF0kzdTPv08bgrSWHJxWDl8Dx
-         ATTJniz3W3LO7Yyo3MkohMzYa407hq0Lp2pVYkkutpEObLKqUhHBmG4z72z+ZS9Uu8
-         8JDPTeCNf/1mw==
-Date:   Tue, 25 May 2021 22:30:52 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Sean Nyekjaer <sean@geanix.com>, trix@redhat.com, lars@metafoo.de,
-        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] iio: accel: fxls8962af: conditionally compile
- fxls8962af_i2c_raw_read_errata3()
-Message-ID: <YK1efL7DMOVZSPuz@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Sean Nyekjaer <sean@geanix.com>, trix@redhat.com, lars@metafoo.de,
-        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20210518234828.1930387-1-trix@redhat.com>
- <a3329058-2b2d-415a-5d2a-0bdf2f97d23d@geanix.com>
- <20210521175406.274f713b@jic23-huawei>
+        id S233299AbhEYUev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 16:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhEYUes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 16:34:48 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D43C061574;
+        Tue, 25 May 2021 13:33:18 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id j184so9752194qkd.6;
+        Tue, 25 May 2021 13:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9qilWmNlzfl6fvjkh4Q/jQnzzgBrCqLLxE6DcLSuqOc=;
+        b=L1KClaDKIohLYlR385K9XGa5vtqsqHPx+lPVLdwyuv0lsNdRrtqj4ItwdhoEFsztst
+         tYYYK7EiBTd0GP4ZXbQxL09h/deNlDP2l88PouUlvLpZiw7gk9A4xXuRIPQ4JjYKvo4T
+         Y+9YGiyQ73k9oz+i7CabMC6/+aHk9nLvFAUwP7eN8kjFV1yaYhd6cwpUK0gSBqyCKHnC
+         9ogWTf1icOdV0b6/ktfBnDwpbJy/936ACvZjku962tCMRxv1mAQP2JG0Ekd7a9MJSlQp
+         D1OSrfrtu42kDVnEMZBobf2ddYjjgXi3CfSN1ZINbyOIS4yFoGM9ge3D4s4vGoIkOfbC
+         vBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9qilWmNlzfl6fvjkh4Q/jQnzzgBrCqLLxE6DcLSuqOc=;
+        b=HEzI04prn2CB4R2MM9QZerprYKGklGEljLIF7Kd/Z3gyMLDjWpbZ7h9Bj6icf2GvVh
+         2cOhTYMSSRD0JxtGA6sH/0Hc4t5nktiPdjef3m1MnuOzBzSeMxiTC6Z1uT2Ui1WZPvce
+         MSzKhviNceqZVzeYV4ZVyMFEM0aox0GyTb3A3p3b3RuvBQOPEUUucVASTSbegmtYExat
+         8ydz/DEMHKU5PwAKmkFjulQ727BI0xXFcYoZ5FG506t/wWmCp2AtHwrFDkShrLhaqg54
+         YSvfb2WaDXTtWtInqCOF8N5GVolWsj8AJB4cjG+Tn9omzWC94zsMGNmW3gQUtEZFJUiD
+         EQGA==
+X-Gm-Message-State: AOAM530pL9Ktwd/VXeLZIwhF+wHOj7RrzGMt7B2nHB/yifLmH9YcAF9Y
+        XeiHIHXIUek+G85wNU4zvSc=
+X-Google-Smtp-Source: ABdhPJxb99gzSWh5vAWsadbIhK88O71Uer9ZaNKpD93/HteHpjUwRD2ng4gnN377OcMehun4zvVXNw==
+X-Received: by 2002:a37:c4d:: with SMTP id 74mr37056735qkm.264.1621974797856;
+        Tue, 25 May 2021 13:33:17 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:a465:c799:7794:b233])
+        by smtp.gmail.com with ESMTPSA id g4sm159312qtg.86.2021.05.25.13.33.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 13:33:17 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH v2 0/2] fixes for yt8511 phy driver
+Date:   Tue, 25 May 2021 16:33:12 -0400
+Message-Id: <20210525203314.14681-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v0fj/HaOmU5lDP4H"
-Content-Disposition: inline
-In-Reply-To: <20210521175406.274f713b@jic23-huawei>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Intel clang bot caught a few uninitialized variables in the new
+Motorcomm driver. While investigating the issue, it was found that the
+driver would have unintended effects when used in an unsupported mode.
 
---v0fj/HaOmU5lDP4H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixed the uninitialized ret variable and abort loading the driver in
+unsupported modes.
 
+Thank you to the Intel clang bot for catching these.
 
-> > > The build is failing with this link error
-> > > ld: fxls8962af-core.o: in function `fxls8962af_fifo_transfer':
-> > > fxls8962af-core.c: undefined reference to `i2c_verify_client'
-> > >=20
-> > > This is needed for the i2c variant, not the spi variant. So
-> > > conditionally compile based on CONFIG_FXLS8962AF_I2C.
-> > >  =20
-> > Fixes: 68068fad0e1c ("iio: accel: fxls8962af: fix errata bug E3 - I2C b=
-urst reads")
-> > > Signed-off-by: Tom Rix <trix@redhat.com> =20
-> > Reviewed-by: Sean Nyekjaer <sean@geanix.com>
->=20
-> Given the purpose of that check is to verify it was an i2c_client
-> should we be looking to instead provide a stub for the case where
-> we don't have CONFIG_I2C?
->=20
-> +CC Wolfram and linux-i2c list for input.
+Changelog:
+V2:
+- fix variable order
+- add Andrew Lunn's reviewed-by tags
 
-Such a stub sounds reasonable.
+Peter Geis (2):
+  net: phy: fix yt8511 clang uninitialized variable warning
+  net: phy: abort loading yt8511 driver in unsupported modes
 
+ drivers/net/phy/motorcomm.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
---v0fj/HaOmU5lDP4H
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCtXncACgkQFA3kzBSg
-KbaGzg/+PC+EeK4TZxKGveYd0I11gaP37dNvJKXHqjBQO8pzsZnBpWzzprDPvrt7
-7+hC6jYXPErO5okEMg+Dj+LC0T94F+YoNG7zvq4Q3BZ9aar6F8pmACeXKCTxU+di
-NmBDqGVqGUqu6YQY/0Ya3XBewc4OXfAJtFvtxydVJjwZ4U1r0gKssXoT2QD9GY1r
-0MzNUtP6Vqgqu65wOGmtp36+hsxJQ+kesKA9YQhV/NyNwKKwO5+PRbUMeyNjAGIr
-nUsw7N+Y7K8jdinauJguJmwa75ff3ZL8fGj0hTJR4V+twKP+u0OwRHxNYi0jLNQF
-Zq7/4K+ktNEupCl0yJenrQyGTwdS6F5lpr3trPm8uY03SZBdnUZHUmmzpviX251l
-uyIv272uWq8PQVXQ203VjeOxbnvK6OUfOkc+yDoA5B22AWlrL/Q7HBWStZj8iVCr
-yjADh39qnZjdAbggBCkcL54hKumFhiHcIXP6tGsrtx64uAOoo7ndnqKDLVKPbuz7
-qZaggAabA18Pi6o3+y+jE8u8xSxoU2JRGu+WdsFvfCZaYkIAnP4mVgD/duhumWww
-vC+x4XxSWVvR9bGX/FK5P3sh0J3kQF+Re7ysreydNBLiHlniVZ60Z7AhwetIw7eR
-wwP2oeNwHfkF60289uRYcCtSCuwCfUBaY0w3TnP/PqUMXrvW98U=
-=XRTq
------END PGP SIGNATURE-----
-
---v0fj/HaOmU5lDP4H--
