@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04F138FBF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B0038FBF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 09:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhEYHqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 03:46:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:58036 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231477AbhEYHp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 03:45:58 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E209367357; Tue, 25 May 2021 09:44:26 +0200 (CEST)
-Date:   Tue, 25 May 2021 09:44:26 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Koba Ko <koba.ko@canonical.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
- npss.
-Message-ID: <20210525074426.GA14916@lst.de>
-References: <20210520033315.490584-1-koba.ko@canonical.com>
+        id S231860AbhEYHqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 03:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231477AbhEYHqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 03:46:24 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:44:53 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id y184-20020a1ce1c10000b02901769b409001so12251862wmg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 00:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0KlRjzQm22CeZiyIa7aNXzjG3v3++JjJtrb3QKuBlFg=;
+        b=uB+kt1kCTABrxvP71MO/n7oJKKWZxxOY0SZ56SjDWmi4r8ZYrJ2oMZSR1p6MAn7/Ke
+         BTDTIL7ZyTyexNXr9aM4P4K230w16Q4mGyL3pZjSCINPdGdhqVkKZRgAYA0FvamFI2T7
+         1zEUPzpE3AiPVefkgxi1iK+1xHTSdTaJ+ZPhY9rjq7ajvyTtLy/wAcV3++C2MSYnJx4L
+         Q7tQoZR8p9bLHu84VYOMhphc6UO1yoMIWz3Y4k+YcoW15QuHGG1ef+KVGcgtEHTJW2YZ
+         C1gq7pMuGhQyWsRNNSyU2f7b3L90xtLt9GE549P65ntog9z52gyPuG4yOoK+muL9PMLd
+         1yMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0KlRjzQm22CeZiyIa7aNXzjG3v3++JjJtrb3QKuBlFg=;
+        b=ijOgd5wQAS/BSd3QhEMs8Ggyy8BeYjOCsu9v2+Pfxu3KEVFTxs+1indBWwrbTXh6nU
+         +ps7oFG3d1OUMtdQcxZTvEbtyOAfPz5cZiPUzpAS+VBkJknd5iQLxcbM4YyLjyHww10a
+         +uYJQwSplglCe969zrMjeQg+X9K2iqET8FpY9EyMy4Y+Ir9aMKWAQfIAdYB5iqK2BlFh
+         ptoJxWOZ2EhOSBwDZAxftc1G3o83IDkBkAB6S0Yq+/sFs4BNQXGXsOYhVRyv4DPsaNHs
+         dvkN4NgSomxOPTfE79gnig/8vu9j0tqXXJAE+OaY+vJ4JV16tZe3aWfBTdcvFg8FoA9m
+         sIPQ==
+X-Gm-Message-State: AOAM530PHzWszs6YTlhEvrtvS/3673hBPuyjswRRC87QvRiEafgYfHUC
+        UVOyt640KbeU0mJuHoD/+Bn8jQ==
+X-Google-Smtp-Source: ABdhPJzPX9go0KIvC9xcUVS2o7b7XUzjSCHwzXD1enbWBXmTmvkDd73ZsDxOb7JjDszh15bMkfX7Gg==
+X-Received: by 2002:a05:600c:2298:: with SMTP id 24mr22948839wmf.10.1621928692250;
+        Tue, 25 May 2021 00:44:52 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id t17sm14740546wrp.89.2021.05.25.00.44.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 00:44:51 -0700 (PDT)
+Date:   Tue, 25 May 2021 08:44:50 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: syscon: Fix leak of syscon name
+Message-ID: <20210525074450.GB4005783@dell>
+References: <20210525001351.10300-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210520033315.490584-1-koba.ko@canonical.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210525001351.10300-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
-> After resume, host can't change power state of the closed controller
-> from D3cold to D0.
+On Tue, 25 May 2021, Ansuel Smith wrote:
 
-Why?
+> regmap_init_mmio duplicate the name and never free the provided name in
+> the sysconf_config. Always free the name instead of freeing only on
+> error to fix error from kmemleak generated by any syscon user.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/mfd/syscon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> For these devices, just avoid to go deeper than d3hot.
+Which repo have you authored this against?
 
-What are "these devices"?
+I believe this is already fixed in -next.
 
-> @@ -2958,6 +2959,15 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+> index c6f139b2e0c0..765c0210cb52 100644
+> --- a/drivers/mfd/syscon.c
+> +++ b/drivers/mfd/syscon.c
+> @@ -108,6 +108,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>  	syscon_config.max_register = resource_size(&res) - reg_io_width;
 >  
->  	dev_info(dev->ctrl.device, "pci function %s\n", dev_name(&pdev->dev));
->  
-> +	if (pm_suspend_via_firmware() || !dev->ctrl.npss ||
-> +	    !pcie_aspm_enabled(pdev) ||
-> +	    dev->nr_host_mem_descs ||
-> +	    (dev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND)) {
+>  	regmap = regmap_init_mmio(NULL, base, &syscon_config);
+> +	kfree(syscon_config.name);
+>  	if (IS_ERR(regmap)) {
+>  		pr_err("regmap init failed\n");
+>  		ret = PTR_ERR(regmap);
+> @@ -144,7 +145,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>  	regmap_exit(regmap);
+>  err_regmap:
+>  	iounmap(base);
+> -	kfree(syscon_config.name);
+>  err_map:
+>  	kfree(syscon);
+>  	return ERR_PTR(ret);
 
-Before we start open coding this in even more places we really want a
-little helper function for these checks, which should be accomodated with
-the comment near the existing copy of the checks.
-
-> +		pdev->d3cold_allowed = false;
-> +		pci_d3cold_disable(pdev);
-> +		pm_runtime_resume(&pdev->dev);
-
-Why do we need to both set d3cold_allowed and call pci_d3cold_disable?
-
-What is the pm_runtime_resume doing here?
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
