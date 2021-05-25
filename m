@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC6738F6D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB98638F6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 02:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhEYAMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 20:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51358 "EHLO
+        id S229915AbhEYANR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 20:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEYAMV (ORCPT
+        with ESMTP id S229543AbhEYANP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 20:12:21 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C871C061574;
-        Mon, 24 May 2021 17:10:51 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id b26so27081329lfq.4;
-        Mon, 24 May 2021 17:10:51 -0700 (PDT)
+        Mon, 24 May 2021 20:13:15 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A18C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:11:47 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k5so15809425pjj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:11:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t47JtVy6KStbnEN3bYR8XchCG9158eP6cF4birDMKa0=;
-        b=G/U0nPV1Xjr3193n014viIGgNkMnhsWpnLKWnb900gKF1JBYt1cCdfOrjwhttWtrOF
-         XdajzNZL52kbVvmEwxUM8iG0sP22GIUcK5pQA5SXS0Pu9cmq1n4H/tvyvrrZQNqypXKF
-         yzDSgOzur70gjqARQOhXZD7SO1iyj5aaqbaeoTczxwguTxghgJUyhkR8WaYaR+vNA54q
-         BJZ8dk2SbcggfZfokwpz9Om0/Ee7FxT88canLXZycqxFyVdwqWz4DmRZFqp43Q944d+d
-         vonC4tkfYl4uFveq1EFNg660ZjzQLSm0ZJP7mnd/v7SwPR/3n1rkVIlhBzJQxbu9mUs3
-         5c7Q==
+        bh=OUlwWPEjEBC466iZ6g8hcxYhiN/KFRQWiFx0UlEipac=;
+        b=U9fMhp00ZsfRAVyT9JVw0V+4wEIZ53dxOQhQr+RJ7edEyGoasKWtcqmMn1r50OcqIM
+         4KrICxJ9rycntJ5xA4ASSTGWxLRdzz71HoK8E314h8xHF2nzZOkwDEbxmusYVgTCkVeE
+         8q75THtH8pMEISNJMbyv0jQ8hCAKetfexGqsRdi/aIqkasHXxyuupBw6PmL2c6GmZeyB
+         h8ZT6hre36tPaZeU4w33IIbf7c+bqWOQbKm5mK8QIOixAJwj9/03TDFYUm25Fj9c42Jx
+         jNFfDFkrzIs/tR3sR0Zm9AvispJyP3dWquDcGJYL2/ig+VRcU4MyL2t2iD0r71T76i6P
+         EW5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t47JtVy6KStbnEN3bYR8XchCG9158eP6cF4birDMKa0=;
-        b=NlRjmiaWCH9R2oAA5MCarwmYJ4sDRCeHFPoBtj8+FDCLIvTyRrr6XrQEySbb2xO/dU
-         k6qrQQkHPm8LUWFM8mRACsD3C5aKBzysEqr4SLVAEuieCBtsOl42P2ndXDOSOoEK9vz/
-         dw+FvN2vW9UcHyh/xuxanDo+QXgjUjKq6CWrkl2WSxjXal09r9moNa+SXWU9NoeoKiU6
-         w4DBL6ZHRWkGXM0jECke0aSYfouklPIJP+ufDqkEls7kMbbmkK4lU02h0sLsj0/Xxuo1
-         VGSccFQvIYc4HxPE2WbdOsAFYDLzxImgH1fvyJuowfXPkkJd8Vj2iDcTX1Mbfcxabvlz
-         47Lg==
-X-Gm-Message-State: AOAM533ugiBp2eZJZvk5HnII0hUiguiQ9SCwFBwdvua6Dlzl6dryUI57
-        BvZ6eaQodMio19zilQ7RggLkirkQe3YzsbUzYeg=
-X-Google-Smtp-Source: ABdhPJzd004l0A4EycAUS1IJ/n71pXJaFU/sj8ALH0v9m4OuRqvXaFqbFRo+GeHTcMOWIixGW7oPbxFa7kz4HLNZj7k=
-X-Received: by 2002:a05:6512:1031:: with SMTP id r17mr11948626lfr.583.1621901449531;
- Mon, 24 May 2021 17:10:49 -0700 (PDT)
+        bh=OUlwWPEjEBC466iZ6g8hcxYhiN/KFRQWiFx0UlEipac=;
+        b=bgYeavvlFRCyop9LVKNHi99qcmvLPfABsURsPY+UTPaKFZ/zackpfJdR9iajt2kxXK
+         srzzsgY712dwLhx/Led8T6RgjXJMk7193ZeWgCr7Ws/diQM47uqo6+1mTutNwmbZb7Mr
+         U/ceIoYBmP0GEIWFi7p5CO/+BWcqsQNvai+SNNDxkqntraHdwcTEnd+0uTRUiT5dSWkE
+         CxPwEPF0c+54LJgm88rrM7qzb3TmE/Mn2IarMwIBlwY9jpkxcnd0BjJjzhyA7lTfhlP6
+         nZps8lF/yh1UVcT+rs2nVmRl4EDI4uRMLF5XCRlssAfAm41YFvdnYQEGWWp4s4IAABVP
+         L7og==
+X-Gm-Message-State: AOAM5315NHr+obYQtoGvV0EQ8mZtfoRChT1SCueNAGOChF9JStapL+m/
+        +nNXxHf0c1jNGOKOhhqL3B+jKDi9jOPHJBOictH8Fg==
+X-Google-Smtp-Source: ABdhPJzDpAY5Kl7EYrbTh60YtA/nIgzXVmikK11bIk7UFwcPG3S/kJ7+gTYXYzmM5m694eIhFp/UI1892g3EYd+miWE=
+X-Received: by 2002:a17:902:ea0c:b029:f0:af3d:c5d6 with SMTP id
+ s12-20020a170902ea0cb02900f0af3dc5d6mr27426462plg.45.1621901506390; Mon, 24
+ May 2021 17:11:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <4964298a8d264dafaa807c43bab5d174@dh-electronics.com>
-In-Reply-To: <4964298a8d264dafaa807c43bab5d174@dh-electronics.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 24 May 2021 21:10:38 -0300
-Message-ID: <CAOMZO5CaK5mJpDp7-ak3Q08ErWrfBQ-xCgOPpqD+rH_yT1Ok8Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02
- boards [Klartext]
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        kernel <kernel@dh-electronics.com>
+References: <20210521074433.931380-1-almasrymina@google.com> <2a983662-ab90-0cdb-850c-eb50b0845b49@oracle.com>
+In-Reply-To: <2a983662-ab90-0cdb-850c-eb50b0845b49@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 24 May 2021 17:11:34 -0700
+Message-ID: <CAHS8izOB6OUsTwv2kvkW13+knrpXTmyA+igT3+jY+7SVwzt4PQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-On Mon, May 24, 2021 at 7:39 PM Christoph Niedermaier
-<cniedermaier@dh-electronics.com> wrote:
-
-> My thought was to be future proof. If there is no match with the Solo now,
-> it will fall back to the i.MX6 DualLite. That is why I added both fsl,imx6s
-> and fsl,imx6dl in this order.
+> > +                     if (!HPageRestoreReserve(page)) {
+> > +                             if (unlikely(hugetlb_unreserve_pages(
+> > +                                         mapping->host, idx, idx + 1, 1)))
+> > +                                     hugetlb_fix_reserve_counts(
+> > +                                             mapping->host);
+> > +                     }
 >
-> Should I remove the line with fsl,imx6s?
+> I do not understand the need to call hugetlb_unreserve_pages().  The
+> call to restore_reserve_on_error 'should' fix up the reserve map to
+> align with restoring the reserve count in put_page/free_huge_page.
+> Can you explain why that is there?
+>
 
-Yes, please.
+AFAICT here is what happens for a given index *without* the call to
+hugetlb_unreserve_pages():
 
-Thanks
+1. hugetlb_no_page() allocates a page consuming the reservation,
+resv_huge_pages decrements.
+2. remove_inode_hugepages() does remove_huge_page() and
+hugetlb_unreserve_pages(). This removes the entry from the resv_map,
+but does NOT increment back the resv_huge_pages. Because we removed
+the entry, it looks like we have no reservation for this index.
+free_huge_page() gets called on this page, and resv_huge_pages is not
+incremented, I'm not sure why. This page should have come from the
+reserves.
+3. hugetlb_mcopy_pte_atomic() gets called for this index. Because of
+the prior call to hugetlb_unreserve_page(), there is no entry in the
+resv_map for this index, which means it looks like we don't have a
+reservation for this index. We allocate a page outside the reserves
+(deferred_reservation=1, HPageRestoreReserve=0), add an entry into
+resv_map, and don't modify resv_huge_pages.
+4. The copy fails and we deallocate the page, since
+HPageRestoreReserve==0 for this page, restore_reserve_on_error() does
+nothing.
+5. hugetlb_mcopy_pte_atomic() gets recalled with the temporary page,
+and we allocate another page. Now, since we added an entry in the
+resv_map in the previous allocation, it looks like we have a
+reservation for this allocation. We allocate a page with
+deferred_reserve=0 && HPageRestoreReserve=1, we decrement
+resv_huge_pages. Boom, we decremented resv_huge_pages twice for this
+index, never incremented it.
+
+To fix this, in step 4, when I deallocate a page, I check
+HPageRestoreReserve(page). If HPageRestoreReserve=0, then this
+reservation was consumed and deallocated before, and so I need to
+remove the entry from the resv_map.
