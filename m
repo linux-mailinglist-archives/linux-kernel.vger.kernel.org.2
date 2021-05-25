@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033BD38FF36
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4F638FF39
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 12:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhEYKdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 06:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        id S232310AbhEYKd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 06:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbhEYKcN (ORCPT
+        with ESMTP id S231981AbhEYKca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 06:32:13 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA8FC061358
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:15 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id f15-20020a17090aa78fb029015c411f061bso15921063pjq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:15 -0700 (PDT)
+        Tue, 25 May 2021 06:32:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633E1C06135C
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id e125-20020a25d3830000b029051975a6c1e9so20442694ybf.7
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 03:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=y6YaFo9xMSyv5si5BVZOxww4rwo4OSsWWh5xilxnc1g=;
-        b=QmCvf6vxSJmUaWr07r2Af0WtkWFbXQSxFR51Ok5fioSUZgOmtzctE/dZ7X8q1KdRmJ
-         ATu1C+hF2yXKUKBt0hzYNfKcKXYe5tT8tQFX625um6lPYW/+RxboQHA5Sy4M8II2ElNV
-         v+fb16/ZN+sfsFGwRFz8X+wuiB+StUq9rOCpIKsZx8KZhG2+PeVZ9zANkwPFgQYrT5Co
-         r9bce3xqn9NO/4lvWH0cJeMk838LS0IrRP34srMl1/m3LXCIqGpUx6A3H1n0fXVUmP/h
-         s/FhWd/dhQPYQ133A/FkRhe6DfN5A0uQEsITpsadLBpVc5XV06PywhqSkrrrkZDvxQ5z
-         JgOw==
+        bh=UXo23GwK/luqXob/Py9T0EVZy2iOWx16pZJGz6ZxQDU=;
+        b=aKPYkXbNTpTI1/TPsoRXDxDv/cdsJnQM4nvpvoTQ7XymGtPqhysT3wU42ITnSCKjhb
+         6E4fWga6oPp0gsi6h3Xq5ncixCDa2W6gdIWy5T48dU78p7+naHvW1dM+CW3lMtEHvn2/
+         GU8DuRkb3Jw3P4aeZHpVr5Gdd32h1+9sJIaeaLHA45+8AFnBc0YYEkHVuT659xtmMUlU
+         K5d620FNPMlyOar2u+eH3UbyY2VmxgghFFZoPCYxtk5L+wt0ESbZURQPNRddRi43CAFX
+         exJvRkxGu8qS6OGN/PPhPqoPIDQ3kA1xDaE6kX4ufWADOvw9TU4TvpMCPxgepAhRlK/y
+         pMuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=y6YaFo9xMSyv5si5BVZOxww4rwo4OSsWWh5xilxnc1g=;
-        b=hdO6F2t1yY9pUZIcgbUH/hwqSDaVMaEKGr+FJx7e58lrYcukROwZ6guCv+Xq8tQTGy
-         oZC3zApdeObG2Ye8EN2sql4M/Ioov/2I8BIUiV++tS1/7sg21BZiiGBRkrW0alA6rEBV
-         JKjdM+CV+X/81hLg6a3KH3siJ2TvSyZDrZ3yZruIWMprFB+S2bq+/Q0IoGFn8IyEINbd
-         SRFm4I6P+mPA+TMVvAkSbKPgfZlpOCjbAkzR2fuCZUfx/OKyXaGeh+P1C0q3iPtT4988
-         utugzSprppQ3BtDG+LGIfkRd/1JXjmVZ+LmZWExcQGiDmxEX8gd8ltrFWlNN+5eYHupm
-         FnBA==
-X-Gm-Message-State: AOAM533fkaJVTRFMgP6vd11a3bOBQZiGX/WYnR2slCRtOWRp82qFAORN
-        DbcsTqNNBz+g9plJM9VHammxV+otZJK6
-X-Google-Smtp-Source: ABdhPJxAvsMZeTF3Sxy/Sq7R2QI1AMCtxljQX5HNv8dIrJeXEru+uiJB2OkZ0Uw2basdV7EtW/cu1q+pzdRv
+        bh=UXo23GwK/luqXob/Py9T0EVZy2iOWx16pZJGz6ZxQDU=;
+        b=HjRvmqsKslLz39eB+Cw1yWX6CQ3O01vBQsUxDnFAqv8W2dhJ1y9iUKaSScQaZbFgOw
+         gxB3Q3fWPwScMkMsLtOIYcmRU/U8q7halWfaKLodKmmfrDlztGozk/ZHTUVSNeJ6YkqJ
+         pVKDi+ZnZ0PRwc3YaZaC82glA1MIDZVAJJ8uuYrKid37RwaVdxJL8KaiF7/S4IWLN4zY
+         WI69DcO6fWGL9tiicaHGZ/dndop6JJZxNvVDeuJnKaEFKsQrXVAjWK2TpvWQUzDettli
+         GaNoRFQYANq3Pcky+g94zHChan3zfdXiOUWqAh3M3GKcmnH8zfPX1PVIRuQQB/6JoDPH
+         RbvA==
+X-Gm-Message-State: AOAM530WpMdXrgOGZF5Ve7lBmnwWjYDBYVqjHL5rpsPebp2QGPSkV2+w
+        b5w4FhuTtco1l++TtGoOrrS3E97vhFhP
+X-Google-Smtp-Source: ABdhPJyoV+Zo7rkBl/WtwI/KW4L1RCHSLbXle/C0FUYdwLdD63gI+j7VoQa/VBE9H4d0V6SjTGr8OFD7rB/k
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:8806:6b98:8ae6:8824])
- (user=apusaka job=sendgmr) by 2002:a17:90b:90c:: with SMTP id
- bo12mr30044645pjb.10.1621938614725; Tue, 25 May 2021 03:30:14 -0700 (PDT)
-Date:   Tue, 25 May 2021 18:29:35 +0800
+ (user=apusaka job=sendgmr) by 2002:a25:6911:: with SMTP id
+ e17mr4108665ybc.162.1621938618586; Tue, 25 May 2021 03:30:18 -0700 (PDT)
+Date:   Tue, 25 May 2021 18:29:36 +0800
 In-Reply-To: <20210525102941.3958649-1-apusaka@google.com>
-Message-Id: <20210525182900.6.Id35872ce1572f18e0792e6f4d70721132e97a480@changeid>
+Message-Id: <20210525182900.7.I4401b43eaf53e45e02ccaadef43cdcd3396173be@changeid>
 Mime-Version: 1.0
 References: <20210525102941.3958649-1-apusaka@google.com>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH 06/12] Bluetooth: use inclusive language in RFCOMM
+Subject: [PATCH 07/12] Bluetooth: use inclusive language when tracking connections
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -59,13 +59,9 @@ Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
         Archie Pusaka <apusaka@chromium.org>,
         Miao-chen Chou <mcchou@chromium.org>,
         "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
         Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -81,45 +77,99 @@ Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
 
- include/net/bluetooth/rfcomm.h | 2 +-
- net/bluetooth/rfcomm/sock.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/net/bluetooth/hci_core.h |  6 +++---
+ net/bluetooth/hci_event.c        |  4 ++--
+ net/bluetooth/hci_request.c      | 17 +++++++++--------
+ 3 files changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/bluetooth/rfcomm.h b/include/net/bluetooth/rfcomm.h
-index 99d26879b02a..6472ec0053b9 100644
---- a/include/net/bluetooth/rfcomm.h
-+++ b/include/net/bluetooth/rfcomm.h
-@@ -290,7 +290,7 @@ struct rfcomm_conninfo {
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 929768f6ed93..cfe2ada49ca2 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -122,7 +122,7 @@ struct hci_conn_hash {
+ 	unsigned int     amp_num;
+ 	unsigned int     sco_num;
+ 	unsigned int     le_num;
+-	unsigned int     le_num_slave;
++	unsigned int     le_num_peripheral;
  };
  
- #define RFCOMM_LM	0x03
--#define RFCOMM_LM_MASTER	0x0001
-+#define RFCOMM_LM_CENTRAL	0x0001
- #define RFCOMM_LM_AUTH		0x0002
- #define RFCOMM_LM_ENCRYPT	0x0004
- #define RFCOMM_LM_TRUSTED	0x0008
-diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
-index ae6f80730561..b02d0e8a7030 100644
---- a/net/bluetooth/rfcomm/sock.c
-+++ b/net/bluetooth/rfcomm/sock.c
-@@ -674,7 +674,7 @@ static int rfcomm_sock_setsockopt_old(struct socket *sock, int optname,
- 		if (opt & RFCOMM_LM_SECURE)
- 			rfcomm_pi(sk)->sec_level = BT_SECURITY_HIGH;
- 
--		rfcomm_pi(sk)->role_switch = (opt & RFCOMM_LM_MASTER);
-+		rfcomm_pi(sk)->role_switch = (opt & RFCOMM_LM_CENTRAL);
+ struct bdaddr_list {
+@@ -894,7 +894,7 @@ static inline void hci_conn_hash_add(struct hci_dev *hdev, struct hci_conn *c)
+ 	case LE_LINK:
+ 		h->le_num++;
+ 		if (c->role == HCI_ROLE_PERIPHERAL)
+-			h->le_num_slave++;
++			h->le_num_peripheral++;
  		break;
+ 	case SCO_LINK:
+ 	case ESCO_LINK:
+@@ -920,7 +920,7 @@ static inline void hci_conn_hash_del(struct hci_dev *hdev, struct hci_conn *c)
+ 	case LE_LINK:
+ 		h->le_num--;
+ 		if (c->role == HCI_ROLE_PERIPHERAL)
+-			h->le_num_slave--;
++			h->le_num_peripheral--;
+ 		break;
+ 	case SCO_LINK:
+ 	case ESCO_LINK:
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index a809e90326d7..c5871c2a16ba 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5384,9 +5384,9 @@ static struct hci_conn *check_pending_le_conn(struct hci_dev *hdev,
+ 		return NULL;
  
- 	default:
-@@ -794,7 +794,7 @@ static int rfcomm_sock_getsockopt_old(struct socket *sock, int optname, char __u
- 		}
+ 	/* Most controller will fail if we try to create new connections
+-	 * while we have an existing one in slave role.
++	 * while we have an existing one in peripheral role.
+ 	 */
+-	if (hdev->conn_hash.le_num_slave > 0 &&
++	if (hdev->conn_hash.le_num_peripheral > 0 &&
+ 	    (!test_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks) ||
+ 	     !(hdev->le_states[3] & 0x10)))
+ 		return NULL;
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index fa9125b782f8..28a477a7d320 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1502,13 +1502,14 @@ static bool is_advertising_allowed(struct hci_dev *hdev, bool connectable)
+ 	if (hci_conn_num(hdev, LE_LINK) == 0)
+ 		return true;
  
- 		if (rfcomm_pi(sk)->role_switch)
--			opt |= RFCOMM_LM_MASTER;
-+			opt |= RFCOMM_LM_CENTRAL;
+-	/* Check le_states if there is any connection in slave role. */
+-	if (hdev->conn_hash.le_num_slave > 0) {
+-		/* Slave connection state and non connectable mode bit 20. */
++	/* Check le_states if there is any connection in peripheral role. */
++	if (hdev->conn_hash.le_num_peripheral > 0) {
++		/* Peripheral connection state and non connectable mode bit 20.
++		 */
+ 		if (!connectable && !(hdev->le_states[2] & 0x10))
+ 			return false;
  
- 		if (put_user(opt, (u32 __user *) optval))
- 			err = -EFAULT;
+-		/* Slave connection state and connectable mode bit 38
++		/* Peripheral connection state and connectable mode bit 38
+ 		 * and scannable bit 21.
+ 		 */
+ 		if (connectable && (!(hdev->le_states[4] & 0x40) ||
+@@ -1516,13 +1517,13 @@ static bool is_advertising_allowed(struct hci_dev *hdev, bool connectable)
+ 			return false;
+ 	}
+ 
+-	/* Check le_states if there is any connection in master role. */
+-	if (hci_conn_num(hdev, LE_LINK) != hdev->conn_hash.le_num_slave) {
+-		/* Master connection state and non connectable mode bit 18. */
++	/* Check le_states if there is any connection in central role. */
++	if (hci_conn_num(hdev, LE_LINK) != hdev->conn_hash.le_num_peripheral) {
++		/* Central connection state and non connectable mode bit 18. */
+ 		if (!connectable && !(hdev->le_states[2] & 0x02))
+ 			return false;
+ 
+-		/* Master connection state and connectable mode bit 35 and
++		/* Central connection state and connectable mode bit 35 and
+ 		 * scannable 19.
+ 		 */
+ 		if (connectable && (!(hdev->le_states[4] & 0x08) ||
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
