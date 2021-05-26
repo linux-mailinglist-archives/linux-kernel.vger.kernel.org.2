@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701253911C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5F13911CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhEZIEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232812AbhEZID4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E4B7613D3;
-        Wed, 26 May 2021 08:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622016145;
-        bh=lruHPAWz+JCx1JmZ/0Vse4XTb21USc/CY1aMZrfI25g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJd0Rk23zHcoI4KJ4yWdfJ/xU3z3lhlEVC5s0XCINOGDmbvZnW4erjhOFYAfL/wYk
-         DnQXZ79DJr9SUf8OnY/76848Vvo6ukfk6u7pu+KQriN4bq99z6xsd9fILzSOCuiEm9
-         DBR11L8RllQHJyBsHo8sACGmT5FhWoyB19Hlf0iGaKIMUiORrkOnbvJhFCv1na1VKV
-         P+vyCd53galgzKurW2iSM42FXBXcycr+WqIl//yLaITTSKKjBEIcpbr4bKa6UCJ4ze
-         Xx0j27ickBYBR11hR6hmWO/0/bTVOv1sLwuXTcFQuUJTA2hLDlkOK53nfNBC95cGgc
-         Ai3KVNnVC+1Kw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v6 01/13] ia64: kprobes: Fix to pass correct trampoline address to the handler
-Date:   Wed, 26 May 2021 17:02:20 +0900
-Message-Id: <162201614019.278331.4298879353454259298.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162201612941.278331.5293566981784464165.stgit@devnote2>
-References: <162201612941.278331.5293566981784464165.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S233121AbhEZIEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233093AbhEZID7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:03:59 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3F7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:02:28 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so406321wmf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:02:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QKYMHuHj0rbRUvGsShexdweEmy0NImIy2gA8dj6fkuE=;
+        b=T5q7OTy6oO8Uxl4kJVPH+6k/22Oq4u5P5Syiyrm8N0Kkyl8yxvHJdzDg+3eN/NxRBd
+         WFBgJEUvgpwQcSqbSbtepgsp6dCbHn3dD2+MR1kvmhmpVmSqDVOGAlGiT57y4is4cVKs
+         kHbmcqWUi6HRepE51rTn7K+2enZHmTPlkL+Q2x4FhF3CPkZkJg8WQYnUQD6aqC/eWcp8
+         soGqlEfvI00R3esiCgOJkykUeB1HizxPgfxD4BYr9CWoTtkuhagdPwb8F00WNQrHSRXP
+         UETyn+MIeQvCxDco5L7UsXru93iZnIPVVTDYhug9eEhb4MUAJ/dec73GEj3k0XZmY84x
+         etWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QKYMHuHj0rbRUvGsShexdweEmy0NImIy2gA8dj6fkuE=;
+        b=Iqxg3r807kEqJCkiZfEZGeD5DxoajcWTkQMAp7Vv2QJsD5wR9AxDcRM7C6JziKD/Ew
+         y1EScadWl2MQ0/idW7QXmDdXKvxu3fE1H6SMtZDMxJPdvzxuC+oORFbaRxvmfYvD7yig
+         VgdABtjZNgM++d1NCQPFKtsn/qrIl+XG4hxjQzmKtYUVzWUcLfJNeCNvMlB6NNBMAIDt
+         +k8MfNtFaHIbXyxNlzmEI2aFq98J/rPnMHwMKjLR5ZawBhKnIyA/RbZ3P+rm25pEO5q2
+         jS1n4D1M2y58aPTPtkPpKvSsbGLu/PDlppuAt676EFrPP2Untf0SdOCoCJepXKyl9YhS
+         5XMw==
+X-Gm-Message-State: AOAM5335zNX2/Yc2TAojLC1eN4uXj5+Q5NGjkyvvk29PgG2ACkJ/8H/8
+        VN/rogV1EM0sCpwErX0CNaaHhA==
+X-Google-Smtp-Source: ABdhPJwrEx+pejVdZrENSeUjbsMmHQqcH7okPp5KpG7TvcFBGPoRuHHoqjtEN+zZbUOLp+4rBgmJNQ==
+X-Received: by 2002:a1c:5419:: with SMTP id i25mr2146740wmb.51.1622016146591;
+        Wed, 26 May 2021 01:02:26 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id l13sm5033812wrv.57.2021.05.26.01.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 01:02:26 -0700 (PDT)
+Date:   Wed, 26 May 2021 09:02:24 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 0/8] add support for direct I/O with fscrypt using
+ blk-crypto
+Message-ID: <20210526080224.GI4005783@dell>
+References: <20210121230336.1373726-1-satyat@google.com>
+ <CAF2Aj3jbEnnG1-bHARSt6xF12VKttg7Bt52gV=bEQUkaspDC9w@mail.gmail.com>
+ <YK09eG0xm9dphL/1@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK09eG0xm9dphL/1@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
-missed to pass the wrong trampoline address (it passes the descriptor address
-instead of function entry address).
-This fixes it to pass correct trampoline address to __kretprobe_trampoline_handler().
-This also changes to use correct symbol dereference function to get the
-function address from the kretprobe_trampoline.
+On Tue, 25 May 2021, Satya Tangirala wrote:
+65;6200;1c
+> On Tue, May 25, 2021 at 01:57:28PM +0100, Lee Jones wrote:
+> > On Thu, 21 Jan 2021 at 23:06, Satya Tangirala <satyat@google.com> wrote:
+> > 
+> > > This patch series adds support for direct I/O with fscrypt using
+> > > blk-crypto.
+> > >
+> > 
+> > Is there an update on this set please?
+> > 
+> > I can't seem to find any reviews or follow-up since v8 was posted back in
+> > January.
+> > 
+> This patchset relies on the block layer fixes patchset here
+> https://lore.kernel.org/linux-block/20210325212609.492188-1-satyat@google.com/
+> That said, I haven't been able to actively work on both the patchsets
+> for a while, but I'll send out updates for both patchsets over the
+> next week or so.
 
-Fixes: e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v5:
-  - Fix a compile error typo.
----
- arch/ia64/kernel/kprobes.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Thanks Satya, I'd appreciate that.
 
-diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
-index fc1ff8a4d7de..ca4b4fa45aef 100644
---- a/arch/ia64/kernel/kprobes.c
-+++ b/arch/ia64/kernel/kprobes.c
-@@ -398,7 +398,8 @@ static void kretprobe_trampoline(void)
- 
- int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
--	regs->cr_iip = __kretprobe_trampoline_handler(regs, kretprobe_trampoline, NULL);
-+	regs->cr_iip = __kretprobe_trampoline_handler(regs,
-+		dereference_function_descriptor(kretprobe_trampoline), NULL);
- 	/*
- 	 * By returning a non-zero value, we are telling
- 	 * kprobe_handler() that we don't want the post_handler
-@@ -414,7 +415,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 	ri->fp = NULL;
- 
- 	/* Replace the return addr with trampoline addr */
--	regs->b0 = ((struct fnptr *)kretprobe_trampoline)->ip;
-+	regs->b0 = (unsigned long)dereference_function_descriptor(kretprobe_trampoline);
- }
- 
- /* Check the instruction in the slot is break */
-@@ -918,14 +919,14 @@ static struct kprobe trampoline_p = {
- int __init arch_init_kprobes(void)
- {
- 	trampoline_p.addr =
--		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip;
-+		dereference_function_descriptor(kretprobe_trampoline);
- 	return register_kprobe(&trampoline_p);
- }
- 
- int __kprobes arch_trampoline_kprobe(struct kprobe *p)
- {
- 	if (p->addr ==
--		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip)
-+		dereference_function_descriptor(kretprobe_trampoline))
- 		return 1;
- 
- 	return 0;
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
