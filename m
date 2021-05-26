@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C88391A5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C793391A60
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhEZOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:37:31 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:50246 "EHLO mail.ispras.ru"
+        id S234754AbhEZOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:37:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:34045 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234894AbhEZOhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:37:15 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 8FFE54076B20;
-        Wed, 26 May 2021 14:35:26 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] media: marvell-ccic: set error code in probe
-Date:   Wed, 26 May 2021 17:35:06 +0300
-Message-Id: <20210526143506.6945-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S234810AbhEZOhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:37:22 -0400
+IronPort-SDR: YbqxrKzf9EAfYCg9HDnoYGmqT7eb/i7mqlbEfVHxyWi3OQzMpgLSex2qm/Gf1ZiG/D7j1dsEXb
+ smm+fTPRtHFA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189599616"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="189599616"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 07:35:49 -0700
+IronPort-SDR: prVRViGLE3U/Iz2MmVMKcKzyhEVIetiuMOV0ft0MCJSv7vSZWG056uTdSJAhOcv2923qlVZXNe
+ G4uAoXTQFBmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="547215348"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 26 May 2021 07:35:46 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 26 May 2021 17:35:45 +0300
+Date:   Wed, 26 May 2021 17:35:45 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 03/24] usb: common: ulpi: Add leading underscores for
+ function name '__ulpi_register_driver()'
+Message-ID: <YK5cwXE/23Kg7Lml@kuha.fi.intel.com>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-4-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526130037.856068-4-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When i2c_new_client_device() fails, cafe_pci_probe() cleans up all
-resources and returns 0. The patch sets the error code on the
-corresponding path.
+On Wed, May 26, 2021 at 02:00:16PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/usb/common/ulpi.c:151: warning: expecting prototype for ulpi_register_driver(). Prototype was for __ulpi_register_driver() instead
+> 
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/media/platform/marvell-ccic/cafe-driver.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+> ---
+>  drivers/usb/common/ulpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
+> index ce5e6f6711f79..7e13b74e60e5a 100644
+> --- a/drivers/usb/common/ulpi.c
+> +++ b/drivers/usb/common/ulpi.c
+> @@ -141,7 +141,7 @@ static const struct device_type ulpi_dev_type = {
+>  /* -------------------------------------------------------------------------- */
+>  
+>  /**
+> - * ulpi_register_driver - register a driver with the ULPI bus
+> + * __ulpi_register_driver - register a driver with the ULPI bus
+>   * @drv: driver being registered
+>   * @module: ends up being THIS_MODULE
+>   *
+> -- 
+> 2.31.1
 
-diff --git a/drivers/media/platform/marvell-ccic/cafe-driver.c b/drivers/media/platform/marvell-ccic/cafe-driver.c
-index baac86f3d153..9aa374fa8b36 100644
---- a/drivers/media/platform/marvell-ccic/cafe-driver.c
-+++ b/drivers/media/platform/marvell-ccic/cafe-driver.c
-@@ -486,6 +486,7 @@ static int cafe_pci_probe(struct pci_dev *pdev,
- 	struct cafe_camera *cam;
- 	struct mcam_camera *mcam;
- 	struct v4l2_async_subdev *asd;
-+	struct i2c_client *i2c_dev;
- 
- 	/*
- 	 * Start putting together one of our big camera structures.
-@@ -561,11 +562,16 @@ static int cafe_pci_probe(struct pci_dev *pdev,
- 	clkdev_create(mcam->mclk, "xclk", "%d-%04x",
- 		i2c_adapter_id(cam->i2c_adapter), ov7670_info.addr);
- 
--	if (!IS_ERR(i2c_new_client_device(cam->i2c_adapter, &ov7670_info))) {
--		cam->registered = 1;
--		return 0;
-+	i2c_dev = i2c_new_client_device(cam->i2c_adapter, &ov7670_info);
-+	if (IS_ERR(i2c_dev)) {
-+		ret = PTR_ERR(i2c_dev);
-+		goto out_mccic_shutdown;
- 	}
- 
-+	cam->registered = 1;
-+	return 0;
-+
-+out_mccic_shutdown:
- 	mccic_shutdown(mcam);
- out_smbus_shutdown:
- 	cafe_smbus_shutdown(cam);
 -- 
-2.26.2
-
+heikki
