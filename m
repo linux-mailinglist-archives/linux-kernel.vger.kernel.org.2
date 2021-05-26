@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748323922E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58F63922E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhEZWpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:45:33 -0400
-Received: from ozlabs.org ([203.11.71.1]:46333 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234099AbhEZWpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:45:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fr5bK0llpz9sCD;
-        Thu, 27 May 2021 08:43:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622069037;
-        bh=yoHGcZrfZWRUzRlHB6uGfY1Ujgs3zJ9QzpcaUtUjtmk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DKdh5ij1oxJk/92uTHuuvF78FqR+aDxgGIVtLhVBbqdkonLWlw/GSLvpIVaZjLmj2
-         5JyLsgtqTyfBTBN1zmxHEFXHYYdDIvjMvqorMSWAHmEisiGQLMBT6LxTwNtWxaBqbv
-         gDDUhYR1N4JCVTSgOVoMoAApG5lH6BEKTb+xYKrKJt9tFIHIc3seBgzbsePj3hpdP8
-         t/kqOwOUoXyphpW/34FI4XC5NUlygenBj7uH1BETAq5QA1XPPI1Ge0K6DC5H9u1gLS
-         wDx6ihX+k+1x/RN5H/W3dMFnZB0b4ABHbYVxj2QzxcL6ahnIinyHDTbOWBib6ocCEh
-         UmFzTEKkyRVMQ==
-Date:   Thu, 27 May 2021 08:43:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kvm-fixes tree
-Message-ID: <20210527084356.12c2784f@canb.auug.org.au>
+        id S234641AbhEZWsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234099AbhEZWs3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 18:48:29 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B36C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:46:56 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id a5so4253731lfm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gh6D0NmIuyBi9REXwAXFztqizN+UX22Sn24ASBHof08=;
+        b=RFpfi51XYUTh4MvV3R5Rf5owzqAC2vrcks9E7IOUfBd9gRw34msYfBl503zc5r/YHg
+         9u4wCA+i9E1Lx6FfC/a7m02x0mzD/fvkTN1Z9ZxFsnBZq+kiWoqrjVKOS95NgDJKjAya
+         ISaFVPtioEikoHd+xVWcLLpsGJUGmJUoThYY5dlqM24dRpef7Pz2D3naNbhSeC2jOeWw
+         VdwSg8PyXurJHDyhzkgVNnXC+sWJIPokokEhAFa9qwsqu+fqK/K8d58fNgMX+a/nn6p3
+         RXfzf5aZXdPgH8cKAQJ+dBdlajGQ/EEyIg3phuR/vUAL2+7vfQd8C9INrFjCOjl9dCq0
+         Vw8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gh6D0NmIuyBi9REXwAXFztqizN+UX22Sn24ASBHof08=;
+        b=kPEiKiEw0bEPKJRuZpJnUrU6JYN7QBowhibE+MXQwu0+9H3g9hrpsC2GX7Rk7B2tTj
+         tCscgSHjiST95Ig2KlSSEsmRRCw6wBS7EwZlq0f5WK8ZpHKidq+kOrVjRZv8rGzNlKq7
+         j1XWo1cJFbLIfZM4KXJ0L/yoK2N02Wo3H+hV6nlpyXMV/o30wr+GSdtkWxZq4TqYPUIT
+         yaAAGrDrtrPbRn9rBRtROZGxjWaUG46Sdq4KLLFvNjKGqFVh93OYJRkysKs2G5Aguas4
+         vMbLEIFCGcZn0rm8V3WQvYIyt8AmEUqAJWzalHhOTza0WpkZxsfKKBLs8i2ZFoo+5avj
+         d3LA==
+X-Gm-Message-State: AOAM531DM4kI0WeWiMqMOS4wVSf/y4mVSVOr6ifwKMJzaX8skr+igEUt
+        EppeDXlLItWGfMi5iB4VLnKu7RxDDyxs5e585+wnGQ==
+X-Google-Smtp-Source: ABdhPJzhE84v8PWYX99hs+I7PILyvcwxc9Kvwqp7WHkVupAuNHV563yAdHvVtLSjZUdEehwrlOErcf5oG0if7UNv0OY=
+X-Received: by 2002:a05:6512:11ea:: with SMTP id p10mr237601lfs.157.1622069214022;
+ Wed, 26 May 2021 15:46:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4fTwIM5hZ+5y2gI_IMwP4IA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 27 May 2021 00:46:42 +0200
+Message-ID: <CACRpkdaSr_CV1pKS44Ru15AEJ0-1429+6E7Lei2sPHdaijr9iw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-power@fi.rohmeurope.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4fTwIM5hZ+5y2gI_IMwP4IA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 26, 2021 at 8:02 AM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
 
-Hi all,
+> Support providing some IC specific operations at gpio_regmap registration.
 
-After merging the kvm-fixes tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+I see there is some discussion around the abstractions here.
 
-In file included from arch/powerpc/include/asm/kvm_ppc.h:19,
-                 from arch/powerpc/include/asm/dbell.h:17,
-                 from arch/powerpc/kernel/asm-offsets.c:38:
-include/linux/kvm_host.h: In function 'kvm_vcpu_can_poll':
-include/linux/kvm_host.h:270:9: error: implicit declaration of function 'si=
-ngle_task_running' [-Werror=3Dimplicit-function-declaration]
-  270 |  return single_task_running() && !need_resched() && ktime_before(cu=
-r, stop);
-      |         ^~~~~~~~~~~~~~~~~~~
+I can only say how we designed gpio-mmio.c (CONFIG_GPIO_GENERIC).
 
-Caused by commit
+It was designed for GPIO controllers with 8, 16 or 32 bits of GPIO,
+each stuffed in a consecutive bit in a set of registers. We later
+amended it to deal with bigendian as well, and 64 bit registers,
+and some quirks around the registers (like just readable etc).
 
-  85d4c3baeb45 ("KVM: PPC: exit halt polling on need_resched()")
+But that's it. For anything more complex we have opted for
+users to write their own drivers with elaborate code.
 
-I have used the kvm-fixes tree from next-20210524 again today.
+As library it can sometimes be combined with an irqchip,
+if the interrupts are simple.
 
---=20
-Cheers,
-Stephen Rothwell
+But overall: each GPIO needs to be a single bit, not 2 not 3
+not in every 7th register etc.
 
---Sig_/4fTwIM5hZ+5y2gI_IMwP4IA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I would not try to turn gpio regmap into a Rube Goldberg Machine
+panacea-fit-all for all kinds of register and bit layouts, it's nice to
+be able to combine it with an interrupt chip or pin controller if those
+functions are also simple, like the set/get registers.
 
------BEGIN PGP SIGNATURE-----
+Any too bold ambitions will be hard to maintain, I think.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCuzywACgkQAVBC80lX
-0GxAMQf/YaCEHH3QHYGkCsUeAbZ5L1Jk0cItYgEHAY9dGy4X7gkUAGb/uzH+AbfP
-ZXUPMOK7Ucy6yudZwe/TUHQlZAGjc5nP7tTtp6WFIRSWHjL6yh0oKZg/b3maPJqy
-kp/GNSUb+VIFIMei0LtggbVh+Ot3jrzi/DD1C9iuIbmhRNe78JOBOrxD5whEG+dP
-dq3gVJeCDD61vCgNtF6T0E03OTdr4Aj4xTNNL/9L4urpgmEI/Ed2iHHUrk9uf9H8
-okQl3CeAQt6svhxMtFmEsIYcxWzmZvUqOA1/NoIddenV7mbIPLujUm/uyxuhBmlE
-MwuHBkGpnJTexv3+ewc6WlkdFqcH0Q==
-=Cx9t
------END PGP SIGNATURE-----
-
---Sig_/4fTwIM5hZ+5y2gI_IMwP4IA--
+Yours,
+Linus Walleij
