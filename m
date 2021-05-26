@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5096D391875
+	by mail.lfdr.de (Postfix) with ESMTP id 6002B391876
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhEZNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S235268AbhEZNED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234994AbhEZNCn (ORCPT
+        with ESMTP id S235003AbhEZNCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 09:02:43 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA56C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:08 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id m18so1071441wrv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:08 -0700 (PDT)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E4DC061344
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:09 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z17so1041768wrq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=o36LW+hTNNsqoigEuNG+wNAHEgSOlM2c2v5gTuumT6A=;
-        b=fe2q372U1NRt7LxZBrrrBiv/0gEAOAmRpODo8k5VMyG+7Xr4MOjtWdZImmZUg1V/XC
-         /2m2FX+GOzkufz6Qo1w24rzpKoUKlSdGx9fstG2I301jTVu3AIFKSWCF2v+bmkX3asMj
-         kYPUmLrcwYKMnZ0zr5XBYa7O5z5VK7WF+3Zh1tA1hlGfqWk+sfewoqGPPtYPuyDZQ3l6
-         17uUYjqAou5k7d3/ZAKRusc2BvK1gP7yhS0onSbQ1flstx71443M4wDOQL975US7ZIAL
-         YmdOLO4A379l9SyE7RtPrAAZOkkQpFqUhIFdPCrBUG63sVhtquhzlBq8XC0M2rL18dE/
-         M6LQ==
+        bh=Jb3Z8YQiJXIHCxHdQR6bpLMBiPX+oY6Ogmx9bytHFZg=;
+        b=EvVo2ectQ9owwKk7Y/bcDbUANdvrdyNy+Bo8qjqFPN3hp+p5tqnmM/ZTHRFkAxmnLu
+         zRMLaMQaC8SRDnvDEnogMxECQqs4qqg6IYn2DvCApUTGlZ3affwRK6s5AOy9sMM3AWte
+         iXZ3pJunIwEEVyZQSm2oZhCHBv/zx7xUE/R+L8mncIao6jvSe9AQD7J+JsnodmxYm7BK
+         usoRyCRnDUAzPd/R5rD804KwHEkiFOEehttu9iGTfu0cNC6WInb59jHRQ6lFg6GnYjIg
+         Pr/0mkTZVVctHsLZaF/mhred28d73fN41aOlzBh84Fy4MTTXJ06KHKe7CZ6loLEUV8Qt
+         KoWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=o36LW+hTNNsqoigEuNG+wNAHEgSOlM2c2v5gTuumT6A=;
-        b=hCMR3mY2p9tvEw3U8569XvsNnkmMGXDYtgSvBVonzFnnj/WrGPDKPGdunSOCrlSpwx
-         4MQJ0IHuKJ3pWjl3NDrzg8sZDu/ywJr4h08B7pK3ItpYKunufAeSqoUJIfcPLPKy+hSL
-         Lblv+JiNE08km1en7R576YTtG9p5lDiasCnzKODjNLzwXC6MK1/6GDdBoGx0XSqnljdW
-         /HsXnirdxdzTRfrnpm5L42LgLTeJ4k0mrpKcXBJawtc6sy+Tup4+nlx2TESS7gaRvkev
-         Damg44rMXFkwrW98Ee9uBFpI1vGoHWRQfz6XD783MBJCtWYr4ke5pQGpbgV/yFuTB88l
-         hMog==
-X-Gm-Message-State: AOAM532WlU3D/rdgV1DTxOhkUJM+N5kjcs6kmPO4KzEKVPmdweLKR/pZ
-        4s/gjwpInifl8R+JgEaYG1JMqg==
-X-Google-Smtp-Source: ABdhPJxbGb+Q0j/7v5WuRF+0wZltMrwCJKhRTJIXKl3ptpTQ4KxLGZloC1MW7YR2CQ085BEG/JQplQ==
-X-Received: by 2002:a5d:4246:: with SMTP id s6mr29164312wrr.9.1622034067391;
-        Wed, 26 May 2021 06:01:07 -0700 (PDT)
+        bh=Jb3Z8YQiJXIHCxHdQR6bpLMBiPX+oY6Ogmx9bytHFZg=;
+        b=s5OE2JPkfavX/U7FPcfAgPaKJKehGQcKzSa+tjmwCIhwhMPKuomWzr6bSJ5NHKNSJH
+         SEMmBi1YM3thFuF25NZEE0zaN93Q6jY0WTQwRpM6DQAjIK7lZQSmBm0UHX7h2pg1LAqV
+         Y4xXJo8vSfMvjZJWegy6ivqaAn0Ac4HTdYXnfEgl57dQ5P8DrgzSYMWB0MFzPTBH9Qq1
+         PZzTqbIiS3DR7gThUBXq3m4RR/8/V/aE7J1LXgBy+GIQ3agMvofW7L6HPqliFFSMYR+O
+         IJYzMqkdIEQH6gXojXTVOv0/08MU25d7mlK78qiT1U7rOGoEr2geFOgUtfa2PXpXOxo/
+         XUog==
+X-Gm-Message-State: AOAM530nW+jjjRxy3ZysUrKkJHmoHaDtB1kh/vFy4jc0tNlDzUuJK3Co
+        oMUrYXHBcRrdb9/tnWnwBfqKow==
+X-Google-Smtp-Source: ABdhPJysJzaJHg8v6C+H+04qOo7HKqWB6dgXQTROFeTjTcAPu7ct9vscg3kahwp0hH5849vpbBzx9g==
+X-Received: by 2002:adf:e411:: with SMTP id g17mr32218603wrm.402.1622034068386;
+        Wed, 26 May 2021 06:01:08 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.06
+        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:01:06 -0700 (PDT)
+        Wed, 26 May 2021 06:01:07 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Jez <pjez@cadence.com>, linux-usb@vger.kernel.org
-Subject: [PATCH 20/24] usb: cdns3: cdns3-gadget: Provide correct function naming for '__cdns3_gadget_ep_queue()'
-Date:   Wed, 26 May 2021 14:00:33 +0100
-Message-Id: <20210526130037.856068-21-lee.jones@linaro.org>
+        linux-usb@vger.kernel.org
+Subject: [PATCH 21/24] usb: host: xhci: Move array of structs from the stack onto the heap
+Date:   Wed, 26 May 2021 14:00:34 +0100
+Message-Id: <20210526130037.856068-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526130037.856068-1-lee.jones@linaro.org>
 References: <20210526130037.856068-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,33 +69,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/cdns3/cdns3-gadget.c:2499: warning: expecting prototype for cdns3_gadget_ep_queue(). Prototype was for __cdns3_gadget_ep_queue() instead
+ drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
+ drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-Cc: Peter Chen <peter.chen@kernel.org>
-Cc: Pawel Laszczak <pawell@cadence.com>
-Cc: Roger Quadros <rogerq@kernel.org>
-Cc: Aswath Govindraju <a-govindraju@ti.com>
+Cc: Mathias Nyman <mathias.nyman@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Pawel Jez <pjez@cadence.com>
 Cc: linux-usb@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/cdns3/cdns3-gadget.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index 54fa429fae777..57adcdbfab5f6 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -2486,7 +2486,7 @@ static int cdns3_gadget_ep_disable(struct usb_ep *ep)
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index ac2a7d4288883..40ce4b4eb12ad 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -2773,7 +2773,7 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 		struct xhci_virt_device *virt_dev,
+ 		struct xhci_container_ctx *in_ctx)
+ {
+-	struct xhci_bw_info ep_bw_info[31];
++	struct xhci_bw_info *ep_bw_info;
+ 	int i;
+ 	struct xhci_input_control_ctx *ctrl_ctx;
+ 	int old_active_eps = 0;
+@@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 		return -ENOMEM;
+ 	}
+ 
++	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
++	if (!ep_bw_info)
++		return -ENOMEM;
++
+ 	for (i = 0; i < 31; i++) {
+ 		if (!EP_IS_ADDED(ctrl_ctx, i) && !EP_IS_DROPPED(ctrl_ctx, i))
+ 			continue;
+@@ -2824,6 +2828,7 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 		 * Update the number of active TTs.
+ 		 */
+ 		xhci_update_tt_active_eps(xhci, virt_dev, old_active_eps);
++		kfree(ep_bw_info);
+ 		return 0;
+ 	}
+ 
+@@ -2855,6 +2860,7 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 					&virt_dev->eps[i],
+ 					virt_dev->tt_info);
+ 	}
++	kfree(ep_bw_info);
+ 	return -ENOMEM;
  }
  
- /**
-- * cdns3_gadget_ep_queue - Transfer data on endpoint
-+ * __cdns3_gadget_ep_queue - Transfer data on endpoint
-  * @ep: endpoint object
-  * @request: request object
-  * @gfp_flags: gfp flags
 -- 
 2.31.1
 
