@@ -2,185 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8132391960
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C167391964
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhEZOAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:00:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232939AbhEZOAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:00:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0FB16101E;
-        Wed, 26 May 2021 13:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622037562;
-        bh=E6SxjG86/NK12PE3EmEpctHxJlkfhLvj0WNIo/6ynGY=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=QxYx4HS5Ei/ud7cNS7Oj1FrBcKAuA5VdcbL1jR3uXg2hNCA+Syv84tSRBgZgCF3nt
-         P5ZxdFTb47WNVRp76Z2hBBR5ODX28/RUIrsGwjp0k3g48mw2jontfY75lsKIgtNwL+
-         GiNZGIYKoV5HzgCVeOw2mLR0lsUfqAoJo3k3NUEcIB5rBUoPezNW7XrrBQiEsDPTQf
-         3pc2GJvUWdMJLi74vIsyKI+NK+YndkD1r2qJKcBjay1IA/eEfUBUt/Qh1M1t8dFHsQ
-         7OsFnFlmywOFbMGE2nGtw4WYlAkn0RgjzWk2715e6IoSCxqSyhD7I6Mrjzp3SDG+kU
-         EWR28Kpy4FIMw==
-Date:   Wed, 26 May 2021 06:59:21 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 2/2 v2] f2fs: support RO feature
-Message-ID: <YK5UOfzwdZni7c5W@google.com>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org>
+        id S233805AbhEZOBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232939AbhEZOBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:01:31 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCB9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:59:58 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id a5so1987247lfm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EFzbhVu6bM6oWlXhaR3zxfrfJHwO7BkLYCWZCGzNBX8=;
+        b=ck6ScM5tpxHXLIOvFo4SoQVlW3wceQ3Z8bP1mIl51sIKlqZq9a3Dv1rrszOEHKcwuw
+         cfFN+AZxMowNTXbRhJCHb1xGWwN1m81jGuDCv5vpL1SxGtJvvfquIMUR5Qi1KzybK8F5
+         d/9+cRydPO+OeySDLYNp9VFYH+7iKI2u9niwkpwv7EEV6gjgBN6KRP1TsgQ9322sT1ts
+         gi56gNtGIJ1kdmp7Y/irO3MklJ/XqyX8+/+PDQED+IiKGEtWngSenEl//6feyN2r/P0H
+         xRDYTAqhLL2II6glmPIk4oVYM1FIE8vRFyY23EPYjDxisn2OEAsKHpmruhK6FIpjOv2O
+         /Rvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EFzbhVu6bM6oWlXhaR3zxfrfJHwO7BkLYCWZCGzNBX8=;
+        b=G83ejkUXVa1dPFggpZcXAq4xp8iRHFYW3WUMlHE4HGZICHKrA0nCBF8LmppDrZkLfe
+         7L5+aICmQQ1A1OIxKzyzelSPesjqoLJwUmJV6NKt8Hcaoi5s4xelMwlvLEot0aM0pVa3
+         x6nVr6rqcJMRdjf2uxhl82Mzietyqs4jKyk0J0R3I7AkUrNYWUcxIW+5Zy1XLqL3MBVN
+         cHcnE+bYbGAfkNzR8mryt9gSACF/RA94A8oDWzrRSM6jodAY2yuqG9pCtOApAEGXycWN
+         0W+pii9sjEPqKrbUeQSUUUL+bUk0KDor/KnoVnH7luURyCGZUQl+4ciPwWj4yPJvZmFO
+         gn7w==
+X-Gm-Message-State: AOAM531ZATfneIE+GRyO9z/9Zvnn2FVRTjj2/y+yixjrODkfzWXwkiQx
+        nq8I7jld24haORlb/kL+UmUpDg==
+X-Google-Smtp-Source: ABdhPJxzFIrtQR/OWj+vCXJXdAgBU3v8J52f5YvPe7f1DD3L3qhEomov7ffod+aE4z79rHDRW4JcTg==
+X-Received: by 2002:ac2:5a47:: with SMTP id r7mr2366705lfn.138.1622037596750;
+        Wed, 26 May 2021 06:59:56 -0700 (PDT)
+Received: from [192.168.88.254] ([85.249.41.56])
+        by smtp.gmail.com with ESMTPSA id p1sm2044585lfr.78.2021.05.26.06.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 06:59:56 -0700 (PDT)
+Subject: Re: [PATCH 04/17] media: camss: csid-170: fix non-10bit formats
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Cc:     robert.foss@linaro.org, Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210511180728.23781-1-jonathan@marek.ca>
+ <20210511180728.23781-5-jonathan@marek.ca>
+ <fd72befe-f39c-ecb0-1130-50aa8452a90e@linaro.org>
+ <99f482de-78f8-82da-e52b-7f76da67ff39@marek.ca>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <8e8b4ae8-d4af-2b8d-9ed0-6a4b82d575e6@linaro.org>
+Date:   Wed, 26 May 2021 16:59:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521190217.2484099-2-jaegeuk@kernel.org>
+In-Reply-To: <99f482de-78f8-82da-e52b-7f76da67ff39@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given RO feature in superblock, we don't need to check provisioning/reserve
-spaces and SSA area.
+Hi Jonathan,
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/f2fs.h    |  2 ++
- fs/f2fs/segment.c |  4 ++++
- fs/f2fs/super.c   | 35 ++++++++++++++++++++++++++++++-----
- 3 files changed, 36 insertions(+), 5 deletions(-)
+On 25.05.2021 21:38, Jonathan Marek wrote:
+> On 5/25/21 2:15 PM, Andrey Konovalov wrote:
+>> Hi Jonathan,
+>>
+>> Thank you for your patch!
+>>
+>> On 11.05.2021 21:07, Jonathan Marek wrote:
+>>> Use the decode_format/data_type from the "format" struct instead of a
+>>> hardcoded 10-bit format.
+>>>
+>>> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
+>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>>> ---
+>>>   drivers/media/platform/qcom/camss/camss-csid-170.c | 6 +++---
+>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
+>>> index ac22ff29d2a9..a81cc94c075f 100644
+>>> --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
+>>> +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
+>>> @@ -366,7 +366,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+>>>               val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
+>>>               writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
+>>> -            val = DATA_TYPE_RAW_10BIT << TPG_DT_n_CFG_1_DATA_TYPE;
+>>> +            val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
+>>>               writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
+>>>               val = tg->mode << TPG_DT_n_CFG_2_PAYLOAD_MODE;
+>>> @@ -382,8 +382,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+>>>           val = 1 << RDI_CFG0_BYTE_CNTR_EN;
+>>>           val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
+>>>           val |= 1 << RDI_CFG0_TIMESTAMP_EN;
+>>> -        val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
+>>> -        val |= DATA_TYPE_RAW_10BIT << RDI_CFG0_DATA_TYPE;
+>>> +        val |= format->decode_format << RDI_CFG0_DECODE_FORMAT;
+>>> +        val |= format->data_type << RDI_CFG0_DATA_TYPE;
+>>
+>> I've given it a try on RB3 board (aka db845c plus the navigation mezzanine), which uses ov8856 camera
+>> sensor (its output format is SGRBG10_1X10).
+>>
+>> The above change doesn't work for me because format->decode_format has the value of 0x02 (which is
+>> DECODE_FORMAT_UNCOMPRESSED_10_BIT). format->data_type has the expected value of 0x2b (DATA_TYPE_RAW_10BIT).
+>>
+> 
+> I will change it back to using DECODE_FORMAT_PAYLOAD_ONLY for the v2, since it does seem like this is the correct value for the 
+> RDI path.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index eaf57b5f3c4b..9ad502f92529 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -168,6 +168,7 @@ struct f2fs_mount_info {
- #define F2FS_FEATURE_SB_CHKSUM		0x0800
- #define F2FS_FEATURE_CASEFOLD		0x1000
- #define F2FS_FEATURE_COMPRESSION	0x2000
-+#define F2FS_FEATURE_RO			0x4000
- 
- #define __F2FS_HAS_FEATURE(raw_super, mask)				\
- 	((raw_super->feature & cpu_to_le32(mask)) != 0)
-@@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
- #define	NR_CURSEG_DATA_TYPE	(3)
- #define NR_CURSEG_NODE_TYPE	(3)
- #define NR_CURSEG_INMEM_TYPE	(2)
-+#define NR_CURSEG_RO_TYPE	(2)
- #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
- #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 8668df7870d0..02e0c38be7eb 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
- 		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
- 		unsigned int blkofs = curseg->next_blkoff;
- 
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-+			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
-+			continue;
-+
- 		sanity_check_seg_type(sbi, curseg->seg_type);
- 
- 		if (f2fs_test_bit(blkofs, se->cur_valid_map))
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index e70aca8f97bd..7769ed789b38 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1162,6 +1162,12 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 	 */
- 	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
- 		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-+
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-+		f2fs_info(sbi, "Allow to mount readonly mode only");
-+		err = -EINVAL;
-+		goto free_options;
-+	}
- 	return 0;
- }
- 
-@@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
- static void default_options(struct f2fs_sb_info *sbi)
- {
- 	/* init some FS parameters */
--	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-+	else
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+
- 	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
- 	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
- 	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-@@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
- 		goto skip;
- 
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
-+		err = -EROFS;
-+		goto restore_opts;
-+	}
-+
- #ifdef CONFIG_QUOTA
- 	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
- 		err = dquot_suspend(sb, -1);
-@@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
- 	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
- 
--	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-+	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-+			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
- 			ovp_segments == 0 || reserved_segments == 0)) {
- 		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
- 		return 1;
- 	}
--
- 	user_block_count = le64_to_cpu(ckpt->user_block_count);
--	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
-+	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
-+			F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0;
- 	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
- 	if (!user_block_count || user_block_count >=
- 			segment_count_main << log_blocks_per_seg) {
-@@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+			goto check_data;
-+
- 		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_node_segno[j])) {
-@@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
-+check_data:
- 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
- 		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-+			goto skip_cross;
-+
- 		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_data_segno[j])) {
-@@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
--
-+skip_cross:
- 	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
- 	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
- 
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+Sounds good. Just in case, I've tried
 
+--- a/drivers/media/platform/qcom/camss/camss-csid-170.c
++++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
+@@ -390,7 +390,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+                 val = 1 << RDI_CFG0_BYTE_CNTR_EN;
+                 val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
+                 val |= 1 << RDI_CFG0_TIMESTAMP_EN;
+-               val |= format->decode_format << RDI_CFG0_DECODE_FORMAT;
++               val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
+                 val |= format->data_type << RDI_CFG0_DATA_TYPE;
+                 val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
+                 val |= dt_id << RDI_CFG0_DT_ID;
+
+on top of v1 patchset, and it worked OK on RB3 with the ov8856 camera.
+
+I planned to check the other RB3's camera too - the "tracking" ov7251 one, but it turned out that I don't
+have the information on which particular SOC's MIPI lanes are connected to this camera. I've tried a few
+clock-lanes/data-lanes combinations, but none worked (ov7251 is controlled OK via the i2c bus, but no
+data are captured).
+
+> (but IIRC, using DECODE_FORMAT_UNCOMPRESSED_10_BIT worked on RB3 with the ov8856 camera last year when I brought it up. maybe 
+> the VFE or another register is configured differently)
+
+OK. I only used the current upstream camss driver, so have nothing to compare it against.
+
+I also noticed that with ov8856 camera, only 3264x2448 and 1632x1224 modes work correctly on RB3
+(used the current media_tree). But with the below change all the other modes (3280x2464 and 1640x1232)
+start working OK too:
+
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1575,7 +1575,7 @@ int msm_vfe_register_entities(struct vfe_device *vfe,
+                 }
+
+                 video_out->ops = &vfe->video_ops;
+-               video_out->bpl_alignment = 8;
++               video_out->bpl_alignment = 16;
+                 video_out->line_based = 0;
+                 if (i == VFE_LINE_PIX) {
+                         video_out->bpl_alignment = 16;
+
+And (with the increased size of the capture buffer) I did see that the data captured from camss were padded
+to the next 16-byte boundary with the data from the previous 16-byte chunk. E.g. in the 3280x2464 case 12
+padding bytes were added.
+Personally I don't have access to the datasheet, but I've been told that as per the docs, 16-byte alignment
+should not be needed in this case (RAW10P camera connected through rdi).
+Does it ring any bell for you?
+
+Thanks,
+Andrey
+
+>> Thanks,
+>> Andrey
+>>
+>>>           val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
+>>>           val |= dt_id << RDI_CFG0_DT_ID;
+>>>           writel_relaxed(val, csid->base + CSID_RDI_CFG0(0));
+>>>
