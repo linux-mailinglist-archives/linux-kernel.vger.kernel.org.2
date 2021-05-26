@@ -2,163 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23B4390D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2172B390D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhEZADA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhEZACy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:02:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C34F061420;
-        Wed, 26 May 2021 00:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621987283;
-        bh=cMM7Bk50oz+P2FRsUKDbD7UktmnSmO7vUpLohfS5wTI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hDpQBCLj+QP9gqGVupCLadKq5svYg3I4rmWyMW7TxUaSHQ78Y7UWwGBra3RQvUl0r
-         joGOn/Q2fHAhfFy/BS3KGwz959mnCOySCLMfhjeItWZmltokLa9n9qOsj9bfq6bAEh
-         7NwR7C7Pfdx82TF4rd687hR2/rSlthcAheqSW9bI0tn3HP36G9kvuFxJMSgrMZSRWB
-         c1Zz0+Ze9tyYBE6KkIL55QxgbmJUo0fT2GCzkseLOzhABZhaD3mqkzYyIxUm256w8a
-         6lBFDegViAn5GEkazAN5c5H2NIUjO0+dhRZyaUmSWlKOT9CZjwOF7PdzljqzN5H4bO
-         szodhiBh/7XXA==
-Received: by mail-ed1-f49.google.com with SMTP id t15so38346174edr.11;
-        Tue, 25 May 2021 17:01:23 -0700 (PDT)
-X-Gm-Message-State: AOAM533LhP7kU7QnIIuJJzuU0JjDD8sFQsnmn3CtuyvhhuagFJwcU3mR
-        wFRxlWLOl/JyqJyD97LPQ6impOAUf+80lg/TrA==
-X-Google-Smtp-Source: ABdhPJy1oDnaYpLU8X/cl7NIOPaEIw45IshBooChnuh12l1QRQ8hL/Z2puieZJQRDPdggduT1yMK61LXcza2N49AtaQ=
-X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr34605470edc.38.1621987282361;
- Tue, 25 May 2021 17:01:22 -0700 (PDT)
+        id S232277AbhEZAEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:04:54 -0400
+Received: from mail-bn7nam10on2067.outbound.protection.outlook.com ([40.107.92.67]:13763
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229685AbhEZAEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:04:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dE/HlRMHtCQOHZ2qQAedoue0hIeKE3t+kmTWp/9/Gkz5HFCXLMJPBYvWDaa/1NLqkmT2u3hIlDNGatWLWcyA1dmU9dQs6WOjpNLnWNPmrKCujEk7Vx5/+CdDeE7fo6pK7qqvSWxEchozFMb8Bfz4CE8jvj5Wqxu05h3VA0sLvult4iUR3eBLkSQ+u+sP2Ql7qlO02VJHtQ/CddffXLJ01y7D3e9T6RlKX10q6D1Pgp5zw9bs7IqUa2JfrbrldjLAAKF0rzM5w36uZtiS+TfrVceX5EZKlKrs1CVJCmeoKKriX60rcw/DGRazWUPkqXq6tR8y0+9KnFqyJJQjabKFTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14uRvXT4+9JFurIc11K1fBY3TH0f9NnNKg0Jy6tcJp0=;
+ b=PXChUAiWcq7SrYLMnw0RBtxonn21dljoAIBraKy9tV/FRBka/prk3IQhhB7aooLkioGFTAA3yXnSqeP60X6QVQvW9NX+c6PHPQCXjT51pKIWQx/RxijSCKnOT28zsood8lSMC0837tOM5MVzvx3d6j+9lb+3fATlrCTEU2dNZq2yX9BpW80y6kgJkT4TWRDSXrfDWIWdJ042hcASJHbecCPobnh9lKx2A6o4ZnMXbHWDePw2CXERWg2nwAi3sVcpSwO0r+DP/K7xFgQl7EF9NpP5BhMh8Rb7ji7sXN0ZQJCbDFnXvnW/50BDRxl/PM3tGzdMHc1a0sydEweTfqfCaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14uRvXT4+9JFurIc11K1fBY3TH0f9NnNKg0Jy6tcJp0=;
+ b=HLYaCKwf6PW4PjXR7vcpqExcMyFOdXSvL9PFUloE98A3DK5PTbYeyYuQ50CBNRv1V90hGwXvYVFGk5s2oxaeQFk+XpuD2bQIP9f1u+AxQxVMny0gxkbRoOxkBMZTRGGDbYXzEl2BCbATu5Zhxx64nWnj4wUynDhUOIg0uRvz8gs=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MW2PR12MB2346.namprd12.prod.outlook.com (2603:10b6:907:4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Wed, 26 May
+ 2021 00:03:17 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::acae:934f:8e7f:8db2]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::acae:934f:8e7f:8db2%8]) with mapi id 15.20.4150.027; Wed, 26 May 2021
+ 00:03:17 +0000
+Subject: Re: x86/fpu/xsave: protection key test failures
+To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, shuah@kernel.org, jroedel@suse.de,
+        ubizjak@gmail.com, viro@zeniv.linux.org.uk, jpa@git.mail.kapsi.fi,
+        fenghua.yu@intel.com, kan.liang@linux.intel.com,
+        akpm@linux-foundation.org, rppt@kernel.org, Fan_Yang@sjtu.edu.cn,
+        anshuman.khandual@arm.com, b.thiel@posteo.de, jgross@suse.com,
+        keescook@chromium.org, seanjc@google.com, mh@glandium.org,
+        sashal@kernel.org, krisman@collabora.com, chang.seok.bae@intel.com,
+        0x7f454c46@gmail.com, jhubbard@nvidia.com, sandipan@linux.ibm.com,
+        ziy@nvidia.com, kirill.shutemov@linux.intel.com,
+        suxingxing@loongson.cn, harish@linux.ibm.com,
+        rong.a.chen@intel.com, linuxram@us.ibm.com, bauerman@linux.ibm.com,
+        dave.kleikamp@oracle.com
+References: <b2e0324a-9125-bb34-9e76-81817df27c48@amd.com>
+ <7a407363-e074-aa84-3ca1-909b497122aa@intel.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <a4f6b80d-8546-09dc-7435-25b3d890aace@amd.com>
+Date:   Tue, 25 May 2021 19:03:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <7a407363-e074-aa84-3ca1-909b497122aa@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9P223CA0001.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:806:26::6) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-References: <20210525121448.30075-1-rex-bc.chen@mediatek.com> <20210525121448.30075-2-rex-bc.chen@mediatek.com>
-In-Reply-To: <20210525121448.30075-2-rex-bc.chen@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 26 May 2021 08:01:11 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__aasihVxC72f7b_R-=UcR85Z1G9M8TxUS9dBrad-aRxQ@mail.gmail.com>
-Message-ID: <CAAOTY__aasihVxC72f7b_R-=UcR85Z1G9M8TxUS9dBrad-aRxQ@mail.gmail.com>
-Subject: Re: [v4,PATCH 1/3] drm/mediatek: dpi dual edge sample mode support
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jitao Shi <jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by SA9P223CA0001.NAMP223.PROD.OUTLOOK.COM (2603:10b6:806:26::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 00:03:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 311ddf38-5e31-4337-f7f4-08d91fd9a9e0
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2346:
+X-Microsoft-Antispam-PRVS: <MW2PR12MB23465FC946EE0B3D0A3E99EB95249@MW2PR12MB2346.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2AuisTXCEwI61BjZFHLcu6f10rcZN9URk+/QxwOoEsA1058Tew2XPLXUl9tVxYoq4mhEZldWFQMRLUTtUCYmDEbhlmNLAxhGEcNbXMS4MII1kFW/8b4zceoPvX4B7qKp7QukYAv+W1j5lmfJm1t/F/WGu2BvHjg65gpScfKLkHvUEeQxA7IILEbJK7tB/BVk5q/mXoz6MnKUbVi5phvhrNaWcW6CWDIl2GKr9DaTk/Gk3EZOSEqJpZbNP7I2SXEewMT9WRwzdwk0by8lhS8RncT1Y5nyGlyakf+y+FKnhxC+M/LssKF0txemV1rwPqBpZUTP3sIlCPf46dcH3hmqdhCNPTTKh5mwb+LDzYNGaThlHmWCGT+M+PVEA3S/nTkJxu+pht4q9GupYtd9HCXEIwlmfJ/XPkkLsb1h90y9W/KiflCbt6BZruV0XNZniLjFTk+Ud+KrQckK/L/oGGSRhUnsy5+jv7QYuXLD/ZNgHtjVFVau/5hZ20BxpTjq6cCisr74XlJH01qq/WIvELAJjnC9MLGQiBAMc1diJZLxzWv74IbDS72tA1yEFjuVerXn3scDnj08F158DCVBYhobLpi0C4WHaE4uU8VwJPjvifGB5QMEkNdtaoR+G/dnIn3Hl7rAwhR3wnpf3dqYdlpp2B0dZF5yH04Eb6wVW4KbDvShKEVDPlw5mOwcDSi+A3SxKFBgbpdu3U3JK9RKft3kf8MU6qThyaociLAqe0m9l6A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(376002)(366004)(5660300002)(38100700002)(8936002)(7406005)(956004)(2616005)(31696002)(38350700002)(16576012)(2906002)(316002)(7416002)(478600001)(6486002)(86362001)(8676002)(44832011)(31686004)(36756003)(83380400001)(53546011)(66476007)(16526019)(186003)(66556008)(66946007)(52116002)(26005)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?2Mu9sllR4PMu+hiMSZyUyvFkryKNwWk51PzlaBz/XZUAW9+mbaKyy9WQ?=
+ =?Windows-1252?Q?jSnSkT9jrDT5igynHIZ6QQxbqlDQw2b2pqEW+QSJQy1U1MqJIQ/Ik6gV?=
+ =?Windows-1252?Q?ilVJo2ECiWswsNqaCDZgcTsT8Z6IWZYlYymA2u7/7KjnkOdarMnG8kCA?=
+ =?Windows-1252?Q?Q8BeeGZtY1Ve0wQQwQnRuuyb8+NItJ06jgrTQUldzFXfkPmw4xWORRkO?=
+ =?Windows-1252?Q?0iDu45AB/0IdV9ge8una9T7jo9U+Ku0ZdnO3y+Az31uL5qVJ9d47wJvz?=
+ =?Windows-1252?Q?YMfdi1AHGPTWZmJQ81q9I/1b2ooDAInntgbHPW82M2NLtfD+VQnm3cdU?=
+ =?Windows-1252?Q?4CiiL0qXgeINgpZv2Tyw55QoGW8DLi6m9JSRrQUzClEgVYPoXTGkJWTQ?=
+ =?Windows-1252?Q?AaMi5jH9RB4Ym3pT0o59xOaVjVEWS3nUOEu7nwcao6tDGmD0S8KdFwKg?=
+ =?Windows-1252?Q?VecxHUOWzeEXDAGqdY2pNC0xRsVX2KnGc/zRahTEoDAphy6NG5i61rIY?=
+ =?Windows-1252?Q?ZN5C/eXK1uCii4mJW6KrRJd0zttNl8l/Dn4LDWuJsiLdDK1IUDzQ59De?=
+ =?Windows-1252?Q?3HpeDgTe9sqHyUc8b2sHQA+1K+DOwmLMB8Z2Gn81B7+4+I6Ht31M+eRM?=
+ =?Windows-1252?Q?Qm4QDkl2HKGZ/n4lw66aBAKRJZYPsS10bcLYvcbDw2aSh2eTKs2XRSYb?=
+ =?Windows-1252?Q?ymoIhtwrnu5Q6ebIuZVXBFfvIYZ1oxMeIt9rDCCJfVc5K8Chdu5oEmax?=
+ =?Windows-1252?Q?jLxrpEZmXmhLoMFLFFA91BMFlFDIhznOnbzSojxWs/afMATjAGkfCR7/?=
+ =?Windows-1252?Q?wc81++Y66uIU0ra/G42aRFaishz3f1wyIRXgpgdmXQ0wtoAJCUEePxjC?=
+ =?Windows-1252?Q?opWxk6G7y/rUxHw4eDJbA45qT5eTc1jzLOKnd4dc16dRstZsT4WqLv7L?=
+ =?Windows-1252?Q?RAUHs2u1vB5y/RyEp0UN6D0HZx2vZsX6guvxl31iP3MmOzWTBPRawMZI?=
+ =?Windows-1252?Q?4a7F7U/6E1y9t9uVHfswmFo8+xDxcw4u9J88kDhdh72f0/MFChWz/BaE?=
+ =?Windows-1252?Q?g2k/caZw9LaBLeR/ubjwPHvWd0P2TOD5ixLqskBOwtTCOftrt/w7gk1f?=
+ =?Windows-1252?Q?qFrnZRiMuy7I/Dq17ey0bwBeJ+lhg9DIMlOUdH8iY6h0b/YeVhyW3f4v?=
+ =?Windows-1252?Q?Y2zT6H4Akdxd4+PZ5j1uFuTV3+7ZtgeDYvBQ/piNvoqigvcAyjJljSR4?=
+ =?Windows-1252?Q?UVtpWCpejGcNICoT4jy7vzBs11pVmNkZb9ICllk8PCjaRaKKJ46TLTIU?=
+ =?Windows-1252?Q?F0wEhKGz7KfAbKLG9E7GZ75vnLy1JTJ38MF59v55VhTk8dn4Dm3FaCYC?=
+ =?Windows-1252?Q?gNNMJEtrn15X7aDteQtJolsRtw7xaCez/r/1gzlGZylrpulA3ADlK56+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 311ddf38-5e31-4337-f7f4-08d91fd9a9e0
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 00:03:17.2384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 04ig+zqg3STq2bxTKxjkwsZO5zVlbnz6uvwOruPIli4YOHj/Lvj1lRFMKZ5Si6uW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2346
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rex:
 
-Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8825=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:15=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> DPI can sample on falling, rising or both edge.
-> When DPI sample the data both rising and falling edge.
-> It can reduce half data io pins.
-> Use num_output_fmts to determine whether it is dual edge mode.
->
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index bea91c81626e..d3b883c97aaf 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -83,6 +83,7 @@ struct mtk_dpi {
->         struct pinctrl *pinctrl;
->         struct pinctrl_state *pins_gpio;
->         struct pinctrl_state *pins_dpi;
-> +       bool ddr_edge_sel;
 
-I would like to keep output_fmt instead of ddr_edge_sel.
-Initialize output_fmt to MEDIA_BUS_FMT_RGB888_1X24 in this patch.
+On 5/25/21 5:18 PM, Dave Hansen wrote:
+> On 5/25/21 2:37 PM, Babu Moger wrote:
+>> My suspicion at this point is towards the selftest tool protection_keys.c.
+>> I will keep looking. Any feedback would be much appreciated to debug further.
+> 
+> The pkey selftest code that pokes at the signal stack is rather hackish.
+>  If I had to guess, I'd suspect that PKRU ends up in there in a slightly
+> different place than on Intel CPUs.
 
->         int refcount;
->  };
->
-> @@ -122,6 +123,8 @@ struct mtk_dpi_conf {
->         u32 reg_h_fre_con;
->         u32 max_clock_khz;
->         bool edge_sel_en;
-> +       const u32 *output_fmts;
-> +       u32 num_output_fmts;
+You mean the offsets can be different? Not sure how to figure that out.
+Let me take a look.
 
-Move these to next patch.
+> 
+> One oddity is that xfeatures seems to lose its pkey bit somewhere:
 
->  };
->
->  static void mtk_dpi_mask(struct mtk_dpi *dpi, u32 offset, u32 val, u32 m=
-ask)
-> @@ -381,6 +384,16 @@ static void mtk_dpi_config_color_format(struct mtk_d=
-pi *dpi,
->         }
->  }
->
-> +static void mtk_dpi_dual_edge(struct mtk_dpi *dpi)
-> +{
-> +       if (dpi->conf->num_output_fmts > 1) {
-> +               mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE,
-> +                            DDR_EN | DDR_4PHASE);
-> +               mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING,
-> +                            dpi->ddr_edge_sel ? EDGE_SEL : 0, EDGE_SEL);
-> +       }
+Yes. I noticed that. I did not see that happening on Intel box where test
+runs successfully.
+> 
+>>  protection_keys-17350 [035] 59275.834197: x86_fpu_copy_src:     	x86/fpu: 0xffff93d7595e2dc0 load: 0 xfeatures: 202 xcomp_bv: 8000000000000207
+>>  protection_keys-17350 [035] 59275.834197: x86_fpu_copy_dst:     	x86/fpu: 0xffff93d722877800 load: 0 xfeatures: 2 xcomp_bv: 8000000000000207 
+> 
+> The only legitimate way that can happen (on Intel at least) is an XRSTOR
+> that brings PKRU back to the init state.  That would destroy all
+> meaningful PKRU state, unless PKRU=0, which it almost never does on Linux.
+> 
+> What values do PKRU and the shadow have when the test fails?  Is PKRU 0?
 
-if (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_LE) ||
-   (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_BE) {
-    mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE, DDR_EN |
-DDR_4PHASE);
-    mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING,
-                             dpi->output_fmt =3D=3D
-MEDIA_BUS_FMT_RGB888_2X12_LE ? EDGE_SEL : 0, EDGE_SEL);
-} else {
-    mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE, 0);
-}
+It goes back to default value 0x55555554. The test is expecting it to be
+0. Printed them below.
 
-> +}
-> +
->  static void mtk_dpi_power_off(struct mtk_dpi *dpi)
->  {
->         if (WARN_ON(dpi->refcount =3D=3D 0))
-> @@ -455,7 +468,8 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *d=
-pi,
->         pll_rate =3D clk_get_rate(dpi->tvd_clk);
->
->         vm.pixelclock =3D pll_rate / factor;
-> -       clk_set_rate(dpi->pixel_clk, vm.pixelclock);
-> +       clk_set_rate(dpi->pixel_clk,
-> +                    vm.pixelclock * ((dpi->conf->num_output_fmts > 1) ? =
-2 : 1));
+test_ptrace_of_child()::1346, pkey_reg: 0x0000000055555554 shadow:
+0000000000000000
+protection_keys_64: pkey-helpers.h:127: _read_pkey_reg: Assertion
+`pkey_reg == shadow_pkey_reg' failed.
 
-if (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_LE) ||
-   (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_BE)
-    clk_set_rate(dpi->pixel_clk, vm.pixelclock * 2);
-else
-    clk_set_rate(dpi->pixel_clk, vm.pixelclock);
 
->         vm.pixelclock =3D clk_get_rate(dpi->pixel_clk);
->
->         dev_dbg(dpi->dev, "Got  PLL %lu Hz, pixel clock %lu Hz\n",
-> @@ -519,6 +533,7 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *d=
-pi,
->         mtk_dpi_config_yc_map(dpi, dpi->yc_map);
->         mtk_dpi_config_color_format(dpi, dpi->color_format);
->         mtk_dpi_config_2n_h_fre(dpi);
-> +       mtk_dpi_dual_edge(dpi);
->         mtk_dpi_config_disable_edge(dpi);
->         mtk_dpi_sw_reset(dpi, false);
->
-> --
-> 2.18.0
->
+>  Any idea how xfeatures&0x200 got clear?
+
+Printed all the flags while in __switch_to, the header flags and CR4 flags
+appears to be intact. Dont know how the feature 0x200 got cleared. Let me
+check if XRSTOR is coming into play here.
+
