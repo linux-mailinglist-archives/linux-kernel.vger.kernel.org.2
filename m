@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E003A391241
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F054391248
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhEZI0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:26:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22977 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232918AbhEZI0T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:26:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622017488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o40Fmid6nNIkbFe8iYePDZhpBrn8pMAYTwjh787uFdE=;
-        b=UrltD6GGCKogpgJmWsl/tvfqjsF7qxh0oHrLwDBnktnS8fYMP5+vXD+FQi7gq8eDIORynj
-        lDs0TbKAPDsmMsDtwjH2dZB6x3vg1rLihRQMB3c8GKGGaLJL9bMzLZffupEykz+CfjaTHT
-        0DAxdl3cTMobY3PaDUpvmhquX6UzIlk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-Tvqqyt16MACINWfpNKFkHw-1; Wed, 26 May 2021 04:24:47 -0400
-X-MC-Unique: Tvqqyt16MACINWfpNKFkHw-1
-Received: by mail-wm1-f69.google.com with SMTP id 19-20020a05600c2313b0290193637766d9so20579wmo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:24:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o40Fmid6nNIkbFe8iYePDZhpBrn8pMAYTwjh787uFdE=;
-        b=CRhrxuXA2XnUBvFLEf5Vp/9O6MQrrAB/s0Hl9NFTXIcV2IKsEQDHwF5VZi5oP5++Uf
-         /EvZT2XXklWwvhSAYWYviqLVyEqCNoAzotP9bjMmIf4tvWcGFx8P1MlHlgJpsmWDWhFe
-         gZOj+6gjxqCi2aMEhEYnZmqaFU4sgt/S34hLiP/WhNjAa04PuwLWViXcngLBQoOhJepb
-         WVa1rPkTr0ZCRHlH3MCT3ZDDgxQqICWW95384fXYGKRmJJpwKlF08aaS1CGu15tnQwaP
-         UozXodOHZkGv366uzwPT4pQDdQJLf9/7tdlyTbx7UFl0BtnlmgCn1l/Gh/Vwf10SGyI1
-         /Y3Q==
-X-Gm-Message-State: AOAM530JjyU8W/7yH+EVTSz0gehXswF5nYUU2wm/HJddlC/EAOpXkjpE
-        JCq44a8YdTDKjwhmlTtuLTH0nnfxIiF3yfmP8YoaSrxEgCiKdjYbbujIxGU5+i719ltiScYbzbV
-        iitbTl1br67goWugvTe6loBcXAzbqZB1lnLAWLg8mCYWMYY988+tzawJTmKt/wjs+CrOHzw==
-X-Received: by 2002:a1c:f303:: with SMTP id q3mr2246266wmq.9.1622017485603;
-        Wed, 26 May 2021 01:24:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3YaY8d7OxUasPPsyIXLBzSHdDVjW4txQgjFtjWKP91pjY4SLYxtZjAEHxMjzrOAh+TdWZzQ==
-X-Received: by 2002:a1c:f303:: with SMTP id q3mr2246253wmq.9.1622017485441;
-        Wed, 26 May 2021 01:24:45 -0700 (PDT)
-Received: from redhat.com ([2a10:8006:fcda:0:90d:c7e7:9e26:b297])
-        by smtp.gmail.com with ESMTPSA id l188sm769420wmf.27.2021.05.26.01.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:24:45 -0700 (PDT)
-Date:   Wed, 26 May 2021 04:24:43 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v3 4/4] virtio_net: disable cb aggressively
-Message-ID: <20210526082423.47837-5-mst@redhat.com>
-References: <20210526082423.47837-1-mst@redhat.com>
+        id S232215AbhEZI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:28:28 -0400
+Received: from ni.piap.pl ([195.187.100.5]:34466 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231410AbhEZI21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:28:27 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 4658B444197;
+        Wed, 26 May 2021 10:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 4658B444197
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1622017611; bh=3LRQt2E5u2Et0YwP2CERJJ7UAiUDgL0XQ3wycJ4BWRY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MFDncosxgB1wXc2KmWoV/9r+W9SJJ2HjJbbB3Ns9fO5uBnU9ry0kYNfX4SWjK7UNk
+         RQO/CSX7YwltiuDuOnU2k5O5O7KP9rkXUyfMlotFPWFnvMgVWPh4DJm09UGn90tSkP
+         DXP03CMpbXiw25WTclU2k0oRd0cEZ1eFCSUTfhwM=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>
+Subject: Data corruption on i.MX6 IPU in arm_copy_from_user()
+Sender: khalasa@piap.pl
+Date:   Wed, 26 May 2021 10:26:50 +0200
+Message-ID: <m3y2c1uchh.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526082423.47837-1-mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are currently two cases where we poll TX vq not in response to a
-callback: start xmit and rx napi.  We currently do this with callbacks
-enabled which can cause extra interrupts from the card.  Used not to be
-a big issue as we run with interrupts disabled but that is no longer the
-case, and in some cases the rate of spurious interrupts is so high
-linux detects this and actually kills the interrupt.
+Hello,
 
-Fix up by disabling the callbacks before polling the tx vq.
+I've encountered an interesting case of data corruption while accessing
+IPU (Image Processing Unit) on i.MX6 (rev1.2, Cortex A9). What I'm doing
+here is basically:
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/net/virtio_net.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+openat(AT_FDCWD, "/dev/mem", O_RDWR|O_SYNC) =3D 3
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0x2630000) =3D ptr
+write(1, ptr, 32)                =3D 32
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c29f42d1e04f..a83dc038d8af 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1433,7 +1433,10 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 		return;
- 
- 	if (__netif_tx_trylock(txq)) {
--		free_old_xmit_skbs(sq, true);
-+		do {
-+			virtqueue_disable_cb(sq->vq);
-+			free_old_xmit_skbs(sq, true);
-+		} while (unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
- 
- 		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 			netif_tx_wake_queue(txq);
-@@ -1605,12 +1608,17 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct netdev_queue *txq = netdev_get_tx_queue(dev, qnum);
- 	bool kick = !netdev_xmit_more();
- 	bool use_napi = sq->napi.weight;
-+	unsigned int bytes = skb->len;
- 
- 	/* Free up any pending old buffers before queueing new ones. */
--	free_old_xmit_skbs(sq, false);
-+	do {
-+		if (use_napi)
-+			virtqueue_disable_cb(sq->vq);
- 
--	if (use_napi && kick)
--		virtqueue_enable_cb_delayed(sq->vq);
-+		free_old_xmit_skbs(sq, false);
-+
-+	} while (use_napi && kick &&
-+	       unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
- 
- 	/* timestamp packet in software */
- 	skb_tx_timestamp(skb);
--- 
-MST
+Normally, the write() should end up with:
+ 04008A00 02FF03FF 02FF03FF 00000000 00000000 00000000 00000000 00000000
 
+However, with current kernels, the first 32 bits (the first IPU
+ register) are dropped:
+ 02FF03FF 02FF03FF 00000000 00000000 00000000 00000000 00000000 00000000
+
+0x2630000 is IPU1 CSI0 address (i.e., a register block). The same
+happens with other IPU regions. Writes shorter than 8 * 32 bits are not
+affected.
+
+write() uses arm_copy_from_user() and since commit f441882a5229:
+    ARM: 8812/1: Optimise copy_{from/to}_user for !CPU_USE_DOMAINS
+
+    ARMv6+ processors do not use CONFIG_CPU_USE_DOMAINS and use privileged
+    ldr/str instructions in copy_{from/to}_user.  They are currently
+    unnecessarily using single ldr/str instructions and can use ldm/stm
+    instructions instead like memcpy does (but with appropriate fixup
+    tables).
+
+apparently uses 8 * 32-bit ldmia instruction to copy data:
+    .macro ldr8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
+    USERL(\abort, ldmia \ptr!, {\reg1, \reg2, \reg3, \reg4, \reg5, \reg6, \=
+reg7, \reg8})
+    .endm
+
+Before this commit it used ldr instruction (single 32-bit value) and the
+problem didn't show up (reverting f441882a5229 on v5.11 fixes it as
+well). The i.MX6 errata doesn't seem to list this problem.
+
+I wonder what the theory says about this case. Is it at all valid to
+read 8 IPU registers at a time using LDM instruction? If so, should
+something be done with this problem, or should it be left as is?
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
