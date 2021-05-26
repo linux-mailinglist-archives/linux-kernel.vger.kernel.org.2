@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BF23910D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F793910D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhEZGny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:43:54 -0400
-Received: from www62.your-server.de ([213.133.104.62]:44712 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbhEZGnw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:43:52 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1llnF7-00074V-5W; Wed, 26 May 2021 08:42:13 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1llnF6-000Rf8-SY; Wed, 26 May 2021 08:42:12 +0200
-Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ncardwell@google.com, ycheng@google.com
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
-Date:   Wed, 26 May 2021 08:42:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232725AbhEZGo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:44:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230419AbhEZGoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:44:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E48EC613C3;
+        Wed, 26 May 2021 06:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622011373;
+        bh=lEpDCkdGFxeAtsrwix5D4X1FiG+U93Ll7WS12qIJF1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MA5ONux5V0tTneMn7Of6bbOMAxEYY3vkFYvARGb4wbTeAH5AJYidLmZxwSxg4fQLJ
+         Lk9PQCjml2RMsDLy+iRyO8+y1vH6b36scZTH8HHMHDbW7qzvdKAF15vVfI1uHZatmI
+         OTdye/DISGOOo5dLCpK4S0x/kRT/f3EzYtJYNF5U=
+Date:   Wed, 26 May 2021 08:42:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hridya Valsaraju <hridya@google.com>
+Cc:     daniel@ffwll.ch, Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        kernel-team@android.com, john.stultz@linaro.org, surenb@google.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v4] dmabuf: Add the capability to expose DMA-BUF stats in
+ sysfs
+Message-ID: <YK3t6+kOVSkGOuyb@kroah.com>
+References: <20210525183720.1739480-1-hridya@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26181/Tue May 25 13:17:38 2021)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210525183720.1739480-1-hridya@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> accept connections evenly. However, there is a defect in the current
-> implementation [1]. When a SYN packet is received, the connection is tied
-> to a listening socket. Accordingly, when the listener is closed, in-flight
-> requests during the three-way handshake and child sockets in the accept
-> queue are dropped even if other listeners on the same port could accept
-> such connections.
+On Tue, May 25, 2021 at 11:37:13AM -0700, Hridya Valsaraju wrote:
+> This patch allows statistics to be enabled for each DMA-BUF in
+> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
 > 
-> This situation can happen when various server management tools restart
-> server (such as nginx) processes. For instance, when we change nginx
-> configurations and restart it, it spins up new workers that respect the new
-> configuration and closes all listeners on the old workers, resulting in the
-> in-flight ACK of 3WHS is responded by RST.
+> The following stats will be exposed by the interface:
 > 
-> To avoid such a situation, users have to know deeply how the kernel handles
-> SYN packets and implement connection draining by eBPF [2]:
+> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> /sys/kernel/dmabuf/buffers/<inode_number>/size
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/device
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/map_counter
 > 
->    1. Stop routing SYN packets to the listener by eBPF.
->    2. Wait for all timers to expire to complete requests
->    3. Accept connections until EAGAIN, then close the listener.
+> The inode_number is unique for each DMA-BUF and was added earlier [1]
+> in order to allow userspace to track DMA-BUF usage across different
+> processes.
 > 
->    or
+> Currently, this information is exposed in
+> /sys/kernel/debug/dma_buf/bufinfo.
+> However, since debugfs is considered unsafe to be mounted in production,
+> it is being duplicated in sysfs.
 > 
->    1. Start counting SYN packets and accept syscalls using the eBPF map.
->    2. Stop routing SYN packets.
->    3. Accept connections up to the count, then close the listener.
+> Procfs also uses the proc/<pid>/fdinfo/<fd> file to expose some
+> information about DMA-BUF fds. However, the existing procfs interfaces
+> can only provide information about the buffers for which processes
+> hold fds or have the buffers mmapped into their address space.
+> The sysfs interface also exposes attachment statistics for each buffer.
 > 
-> In either way, we cannot close a listener immediately. However, ideally,
-> the application need not drain the not yet accepted sockets because 3WHS
-> and tying a connection to a listener are just the kernel behaviour. The
-> root cause is within the kernel, so the issue should be addressed in kernel
-> space and should not be visible to user space. This patchset fixes it so
-> that users need not take care of kernel implementation and connection
-> draining. With this patchset, the kernel redistributes requests and
-> connections from a listener to the others in the same reuseport group
-> at/after close or shutdown syscalls.
+> This information will be used to derive DMA-BUF
+> per-exporter stats and per-device usage stats for Android Bug reports.
+> The corresponding userspace changes can be found at [2].
+> Telemetry tools will also capture this information(along with other
+> memory metrics) periodically as well as on important events like a
+> foreground app kill (which might have been triggered by Low Memory
+> Killer). It will also contribute to provide a snapshot of the system
+> memory usage on other events such as OOM kills and Application Not
+> Responding events.
 > 
-> Although some software does connection draining, there are still merits in
-> migration. For some security reasons, such as replacing TLS certificates,
-> we may want to apply new settings as soon as possible and/or we may not be
-> able to wait for connection draining. The sockets in the accept queue have
-> not started application sessions yet. So, if we do not drain such sockets,
-> they can be handled by the newer listeners and could have a longer
-> lifetime. It is difficult to drain all connections in every case, but we
-> can decrease such aborted connections by migration. In that sense,
-> migration is always better than draining.
+> A shell script that can be run on a classic Linux environment to read
+> out the DMA-BUF statistics can be found at [3](suggested by John
+> Stultz).
 > 
-> Moreover, auto-migration simplifies user space logic and also works well in
-> a case where we cannot modify and build a server program to implement the
-> workaround.
+> The patch contains the following major improvements over v1:
+> 1) Each attachment is represented by its own directory to allow creating
+> a symlink to the importing device and to also provide room for future
+> expansion.
+> 2) The number of distinct mappings of each attachment is exposed in a
+> separate file.
+> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffers
+> inorder to make the interface expandable in future.
 > 
-> Note that the source and destination listeners MUST have the same settings
-> at the socket API level; otherwise, applications may face inconsistency and
-> cause errors. In such a case, we have to use the eBPF program to select a
-> specific listener or to cancel migration.
+> All of the improvements above are based on suggestions/feedback from
+> Daniel Vetter and Christian König.
 > 
-> Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
-> snippets along the way.
+> [1]: https://lore.kernel.org/patchwork/patch/1088791/
+> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sysfs%22+(status:open%20OR%20status:merged)
+> [3]: https://android-review.googlesource.com/c/platform/system/memory/libmeminfo/+/1549734
 > 
-> 
-> Link:
->   [1] The SO_REUSEPORT socket option
->   https://lwn.net/Articles/542629/
-> 
->   [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
->   https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
 
-This series needs review/ACKs from TCP maintainers. Eric/Neal/Yuchung please take
-a look again.
-
-Thanks,
-Daniel
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
