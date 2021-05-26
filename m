@@ -2,264 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE726391B10
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E161D391B13
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhEZPE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:04:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235194AbhEZPE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:04:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 857D6613BC;
-        Wed, 26 May 2021 15:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622041375;
-        bh=ME8zkKRVZO70XmKWmbJmC8KJO/3nsnIkTtNBmvoBI6g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=OS2ttHJ6yJDUKeJAu7RjjIQTAJpnjG9Cv9QKpD004FLxBALHfCpp/q8wsvbMPPxG8
-         ufBdoVC93Wo3BIPzPUGZ+j4qk/rbdCA2UQXmlfhPBPAaVSuED3DCW1jLbSDbZK/CWz
-         bEJhcAkvL+N/H98G1TU1vj3Vo7GIGY5LkYAdvuZbVgx6a0ldoSBVimmOBofFkLfXaY
-         mtBYBKW466Zoa8VQ1I1QB5n93C6SQYkNUzAR3WBNeSeXlSAAU7yi6NNCDS0r102aMT
-         mgHIHnkJx3Jtl6syQeYKPJqfNkSksQfTYbTG+PtzacpTD7LNsLJzjZCd8I83WS7pcn
-         QEl89eUZ8lWQQ==
-Subject: Re: [PATCH 1/2] f2fs: swap: remove dead codes
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20210526062927.52629-1-yuchao0@huawei.com>
- <YK5NXdyjgB6EFY5Q@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <e4c1df88-f1f4-99e0-6f83-fa0f3110d737@kernel.org>
-Date:   Wed, 26 May 2021 23:02:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235270AbhEZPEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234987AbhEZPEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:04:50 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3027C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:03:16 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b25so1323888iot.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yd9BkCgkqeJ67/8O8QywKaJ9wtr2QyuJ36blaYWY/JM=;
+        b=yHuqERU3TkbAe/bG033XfWs4GeDHGVLnIuQNaUt9VtitjN9iCorY3E2KG/d/w+NBT5
+         ShOtCRoO9B8P7yPD/CcBV6yFjjXLlJPcPcJfsQWUq4O7+eCuYLcl4aECmUSAMe57dcH7
+         tpOEXiSqyzB+x5qHcvM7zyChRabeTxA1/dySGnypT9TYtw/RAwMJKbv/tQFgy+Rgcu2U
+         yTu7cFn26ipm3gKRhAF+T4i3pqYTQI2n3TH6pwAl3JP4MPGTEB1PqOJTeMJd1IyaIPV2
+         dlXfER1MllTP+gTjSn86R3Vizo7smQXVWR7tIurIiuRbDQy7a62OHdgQyJqKpkqKfvXH
+         Wpaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yd9BkCgkqeJ67/8O8QywKaJ9wtr2QyuJ36blaYWY/JM=;
+        b=DtUyHAPH7XLxn0DyVnz/JfbKbhJ/CFHSTCdBd0OEiqDB5xUXb60rnx8FNuUM5KY8ow
+         3iSJKVBPqkuqJA2QPo27a0LEpfTM0vfbZIqbAUWh3HQL9quyIq36ygo2puIspx3lBbV9
+         mviE+RERlRU3rC8tsmcGKjmCWRlkZIjbFj4aDxKssTpIXgVpBlA9S5ApPSbi0nGqZwWs
+         VfQtPi51tdmUTZno7+w1nT2c8tRsQhJHRibApF8owgJvn7AHCrWTFAZ9vea5PAztALRC
+         Quu4hEuszhh1byPGo9BlhamPzxI9Hgvn+BhTygGHIxAYIBRBVXi1I0yGnYAPnDtAiHwc
+         PFCg==
+X-Gm-Message-State: AOAM5331H3g5d+Mo5zXPBiJOUjxFyLRF3Ds+E5aQGNT0x8ZzaJM/7dZi
+        bWoruzhWvJHM9k/7xzbU53yRIVexp4N+80D2
+X-Google-Smtp-Source: ABdhPJxgiL9seMiRRDh/Q/XCkBfXu4i6STpw9ewvI1V/RFnO/RQs4fZChtSqAOIzk/F3q4MM5sWnQw==
+X-Received: by 2002:a5e:8a42:: with SMTP id o2mr24394616iom.144.1622041395719;
+        Wed, 26 May 2021 08:03:15 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m8sm14720010ilh.38.2021.05.26.08.03.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 08:03:15 -0700 (PDT)
+Subject: Re: [PATCH v2] io-wq: Fix UAF when wakeup wqe in hash waitqueue
+To:     qiang.zhang@windriver.com, asml.silence@gmail.com
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210526050826.30500-1-qiang.zhang@windriver.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4b0a8cfa-938c-19fd-ee82-bd4426d55823@kernel.dk>
+Date:   Wed, 26 May 2021 09:03:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YK5NXdyjgB6EFY5Q@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210526050826.30500-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/26 21:30, Jaegeuk Kim wrote:
-> On 05/26, Chao Yu wrote:
->> After commit af4b6b8edf6a ("f2fs: introduce check_swap_activate_fast()"),
->> we will never run into original logic of check_swap_activate() before
->> f2fs supports non 4k-sized page, so let's delete those dead codes.
+On 5/25/21 11:08 PM, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> Why not keeping this for large page support in future maybe?
-
-Well, if so, at that time, it would be better to refactor
-check_swap_activate_fast() implementation based on f2fs_map_block() rather
-than refactoring check_swap_activate() implementation based on low efficient
-bmap()?
-
-Thanks,
-
+> BUG: KASAN: use-after-free in __wake_up_common+0x637/0x650
+> Read of size 8 at addr ffff8880304250d8 by task iou-wrk-28796/28802
 > 
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>   fs/f2fs/data.c | 171 +------------------------------------------------
->>   1 file changed, 3 insertions(+), 168 deletions(-)
->>
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index 3058c7e28b11..9c23fde93b76 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -3830,67 +3830,7 @@ int f2fs_migrate_page(struct address_space *mapping,
->>   #endif
->>   
->>   #ifdef CONFIG_SWAP
->> -static int f2fs_is_file_aligned(struct inode *inode)
->> -{
->> -	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->> -	block_t main_blkaddr = SM_I(sbi)->main_blkaddr;
->> -	block_t cur_lblock;
->> -	block_t last_lblock;
->> -	block_t pblock;
->> -	unsigned long nr_pblocks;
->> -	unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
->> -	unsigned int not_aligned = 0;
->> -	int ret = 0;
->> -
->> -	cur_lblock = 0;
->> -	last_lblock = bytes_to_blks(inode, i_size_read(inode));
->> -
->> -	while (cur_lblock < last_lblock) {
->> -		struct f2fs_map_blocks map;
->> -
->> -		memset(&map, 0, sizeof(map));
->> -		map.m_lblk = cur_lblock;
->> -		map.m_len = last_lblock - cur_lblock;
->> -		map.m_next_pgofs = NULL;
->> -		map.m_next_extent = NULL;
->> -		map.m_seg_type = NO_CHECK_TYPE;
->> -		map.m_may_create = false;
->> -
->> -		ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
->> -		if (ret)
->> -			goto out;
->> -
->> -		/* hole */
->> -		if (!(map.m_flags & F2FS_MAP_FLAGS)) {
->> -			f2fs_err(sbi, "Swapfile has holes\n");
->> -			ret = -ENOENT;
->> -			goto out;
->> -		}
->> -
->> -		pblock = map.m_pblk;
->> -		nr_pblocks = map.m_len;
->> -
->> -		if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
->> -			nr_pblocks & (blocks_per_sec - 1)) {
->> -			if (f2fs_is_pinned_file(inode)) {
->> -				f2fs_err(sbi, "Swapfile does not align to section");
->> -				ret = -EINVAL;
->> -				goto out;
->> -			}
->> -			not_aligned++;
->> -		}
->> -
->> -		cur_lblock += nr_pblocks;
->> -	}
->> -	if (not_aligned)
->> -		f2fs_warn(sbi, "Swapfile (%u) is not align to section: \n"
->> -			"\t1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate()",
->> -			not_aligned);
->> -out:
->> -	return ret;
->> -}
->> -
->> -static int check_swap_activate_fast(struct swap_info_struct *sis,
->> +static int check_swap_activate(struct swap_info_struct *sis,
->>   				struct file *swap_file, sector_t *span)
->>   {
->>   	struct address_space *mapping = swap_file->f_mapping;
->> @@ -3907,6 +3847,8 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
->>   	unsigned int not_aligned = 0;
->>   	int ret = 0;
->>   
->> +	f2fs_bug_on(sbi, PAGE_SIZE != F2FS_BLKSIZE);
->> +
->>   	/*
->>   	 * Map all the blocks into the extent list.  This code doesn't try
->>   	 * to be very smart.
->> @@ -3986,113 +3928,6 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
->>   	return ret;
->>   }
->>   
->> -/* Copied from generic_swapfile_activate() to check any holes */
->> -static int check_swap_activate(struct swap_info_struct *sis,
->> -				struct file *swap_file, sector_t *span)
->> -{
->> -	struct address_space *mapping = swap_file->f_mapping;
->> -	struct inode *inode = mapping->host;
->> -	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->> -	unsigned blocks_per_page;
->> -	unsigned long page_no;
->> -	sector_t probe_block;
->> -	sector_t last_block;
->> -	sector_t lowest_block = -1;
->> -	sector_t highest_block = 0;
->> -	int nr_extents = 0;
->> -	int ret = 0;
->> -
->> -	if (PAGE_SIZE == F2FS_BLKSIZE)
->> -		return check_swap_activate_fast(sis, swap_file, span);
->> -
->> -	ret = f2fs_is_file_aligned(inode);
->> -	if (ret)
->> -		goto out;
->> -
->> -	blocks_per_page = bytes_to_blks(inode, PAGE_SIZE);
->> -
->> -	/*
->> -	 * Map all the blocks into the extent list.  This code doesn't try
->> -	 * to be very smart.
->> -	 */
->> -	probe_block = 0;
->> -	page_no = 0;
->> -	last_block = bytes_to_blks(inode, i_size_read(inode));
->> -	while ((probe_block + blocks_per_page) <= last_block &&
->> -			page_no < sis->max) {
->> -		unsigned block_in_page;
->> -		sector_t first_block;
->> -		sector_t block = 0;
->> -
->> -		cond_resched();
->> -
->> -		block = probe_block;
->> -		ret = bmap(inode, &block);
->> -		if (ret)
->> -			goto out;
->> -		if (!block)
->> -			goto bad_bmap;
->> -		first_block = block;
->> -
->> -		/*
->> -		 * It must be PAGE_SIZE aligned on-disk
->> -		 */
->> -		if (first_block & (blocks_per_page - 1)) {
->> -			probe_block++;
->> -			goto reprobe;
->> -		}
->> -
->> -		for (block_in_page = 1; block_in_page < blocks_per_page;
->> -					block_in_page++) {
->> -
->> -			block = probe_block + block_in_page;
->> -			ret = bmap(inode, &block);
->> -			if (ret)
->> -				goto out;
->> -			if (!block)
->> -				goto bad_bmap;
->> -
->> -			if (block != first_block + block_in_page) {
->> -				/* Discontiguity */
->> -				probe_block++;
->> -				goto reprobe;
->> -			}
->> -		}
->> -
->> -		first_block >>= (PAGE_SHIFT - inode->i_blkbits);
->> -		if (page_no) {	/* exclude the header page */
->> -			if (first_block < lowest_block)
->> -				lowest_block = first_block;
->> -			if (first_block > highest_block)
->> -				highest_block = first_block;
->> -		}
->> -
->> -		/*
->> -		 * We found a PAGE_SIZE-length, PAGE_SIZE-aligned run of blocks
->> -		 */
->> -		ret = add_swap_extent(sis, page_no, 1, first_block);
->> -		if (ret < 0)
->> -			goto out;
->> -		nr_extents += ret;
->> -		page_no++;
->> -		probe_block += blocks_per_page;
->> -reprobe:
->> -		continue;
->> -	}
->> -	ret = nr_extents;
->> -	*span = 1 + highest_block - lowest_block;
->> -	if (page_no == 0)
->> -		page_no = 1;	/* force Empty message */
->> -	sis->max = page_no;
->> -	sis->pages = page_no - 1;
->> -	sis->highest_bit = page_no - 1;
->> -out:
->> -	return ret;
->> -bad_bmap:
->> -	f2fs_err(sbi, "Swapfile has holes\n");
->> -	return -EINVAL;
->> -}
->> -
->>   static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
->>   				sector_t *span)
->>   {
->> -- 
->> 2.29.2
+> Call Trace:
+>  __dump_stack [inline]
+>  dump_stack+0x141/0x1d7
+>  print_address_description.constprop.0.cold+0x5b/0x2c6
+>  __kasan_report [inline]
+>  kasan_report.cold+0x7c/0xd8
+>  __wake_up_common+0x637/0x650
+>  __wake_up_common_lock+0xd0/0x130
+>  io_worker_handle_work+0x9dd/0x1790
+>  io_wqe_worker+0xb2a/0xd40
+>  ret_from_fork+0x1f/0x30
+> 
+> Allocated by task 28798:
+>  kzalloc_node [inline]
+>  io_wq_create+0x3c4/0xdd0
+>  io_init_wq_offload [inline]
+>  io_uring_alloc_task_context+0x1bf/0x6b0
+>  __io_uring_add_task_file+0x29a/0x3c0
+>  io_uring_add_task_file [inline]
+>  io_uring_install_fd [inline]
+>  io_uring_create [inline]
+>  io_uring_setup+0x209a/0x2bd0
+>  do_syscall_64+0x3a/0xb0
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Freed by task 28798:
+>  kfree+0x106/0x2c0
+>  io_wq_destroy+0x182/0x380
+>  io_wq_put [inline]
+>  io_wq_put_and_exit+0x7a/0xa0
+>  io_uring_clean_tctx [inline]
+>  __io_uring_cancel+0x428/0x530
+>  io_uring_files_cancel
+>  do_exit+0x299/0x2a60
+>  do_group_exit+0x125/0x310
+>  get_signal+0x47f/0x2150
+>  arch_do_signal_or_restart+0x2a8/0x1eb0
+>  handle_signal_work[inline]
+>  exit_to_user_mode_loop [inline]
+>  exit_to_user_mode_prepare+0x171/0x280
+>  __syscall_exit_to_user_mode_work [inline]
+>  syscall_exit_to_user_mode+0x19/0x60
+>  do_syscall_64+0x47/0xb0
+>  entry_SYSCALL_64_after_hwframe
+> 
+> There are the following scenarios, hash waitqueue is shared by
+> io-wq1 and io-wq2. (note: wqe is worker)
+> 
+> io-wq1:worker2     | locks bit1
+> io-wq2:worker1     | waits bit1
+> io-wq1:worker3     | waits bit1
+> 
+> io-wq1:worker2     | completes all wqe bit1 work items
+> io-wq1:worker2     | drop bit1, exit
+> 
+> io-wq2:worker1     | locks bit1
+> io-wq1:worker3     | can not locks bit1, waits bit1 and exit
+> io-wq1             | exit and free io-wq1
+> io-wq2:worker1     | drops bit1
+> io-wq1:worker3     | be waked up, even though wqe is freed
+> 
+> After all iou-wrk belonging to io-wq1 have exited, remove wqe
+> form hash waitqueue, it is guaranteed that there will be no more
+> wqe belonging to io-wq1 in the hash waitqueue.
+
+Thanks, applied.
+
+-- 
+Jens Axboe
+
