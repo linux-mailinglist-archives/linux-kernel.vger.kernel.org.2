@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE37390D9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6B4390DA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhEZA7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:59:23 -0400
-Received: from m12-17.163.com ([220.181.12.17]:37001 "EHLO m12-17.163.com"
+        id S232691AbhEZA7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:59:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231373AbhEZA7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:59:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=cPH5Hg7aCKUvPB2wbv
-        u+VOANrZ+iZsaBNFD4X/zNBzQ=; b=Oi135XrbTrNT167mRcEyBkQCvGgXEQjjqg
-        EvBqCd4J1kEfxX5XS1FaNGM4EwEYLw362SrFvZBYXmcyeKmly8WmC5rZlZKnhl6P
-        TiG5rONhMZIfjk50U5hTSHYu9JOsiWHvUBZKSNfp+KlFmkhQsj4+GhDkeUVE33bv
-        fCHd5sFBE=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowACXwYXWnK1g5t2d3Q--.46987S2;
-        Wed, 26 May 2021 08:56:55 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
-        dinghao.liu@zju.edu.cn
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] nfc: st95hf: remove unnecessary assignment and label
-Date:   Wed, 26 May 2021 08:56:51 +0800
-Message-Id: <20210526005651.12652-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EcCowACXwYXWnK1g5t2d3Q--.46987S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW3Wr1xtF1rAF4kJw17trb_yoWkGwbE9r
-        yYv347ZFyUGr1UJry2g3ZxX34rKwn7ur4rX3Wag3WYkryjqwsxZanYyrZ5W3sxW3yFyas8
-        G3Z5A3yxurnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU51c_DUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqxeesVUMZimqwQAAsu
+        id S232651AbhEZA7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:59:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD38613FA;
+        Wed, 26 May 2021 00:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621990684;
+        bh=kD8pmqfXMnZqFiWQiqQiliQE8WnhQTkQKe9ScqcbX4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pMYDPyhxL67F0uRMRNOOEP3Pbb9O9u9H9oWazON6OocViIQ37yms4U5UO+rRE4raP
+         Yju2Y0a4jRkEnDiGjybrNTNGXeIKyHUROkjEfe+bolDK54j+p+U/vBIMIT0pujqYwT
+         uhKnjZPTwxYRVxcL8vShPRQWXxMS88ulQ5qHo/virjAbQJNQgYEvuhDbknJzuxtLuo
+         QjnOe3Tip5cFtI3uxpiwFvkfae247kOGWMHPgvxJpKB4gvvKLWQXCtgwnQMSozN1qc
+         +UDXNdkDSMLw3gvovQCkXKbpB4+ifuNFGSgQDQT+3PkVaNbCJ6yRY4qAq3TLuA+L5r
+         w71zQpgdu/i9A==
+Date:   Tue, 25 May 2021 20:58:03 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kangjie Lu <kjlu@umn.edu>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH AUTOSEL 5.10 29/62] Revert "ASoC: rt5645: fix a NULL
+ pointer dereference"
+Message-ID: <YK2dGw3IJdCNSVN0@sashalap>
+References: <20210524144744.2497894-1-sashal@kernel.org>
+ <20210524144744.2497894-29-sashal@kernel.org>
+ <YK1zgS7FwtySdeCg@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YK1zgS7FwtySdeCg@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Tue, May 25, 2021 at 11:00:33PM +0100, Mark Brown wrote:
+>On Mon, May 24, 2021 at 10:47:10AM -0400, Sasha Levin wrote:
+>
+>> Lots of things seem to be still allocated here and must be properly
+>> cleaned up if an error happens here.
+>
+>That's not true, the core already has cleanup for everything else
+>(as the followup patch in your series identified, though it was a
+>bit confused as to how).
+>
+>>  		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+>>  		GFP_KERNEL);
+>>
+>> -	if (!rt5645->eq_param)
+>> -		return -ENOMEM;
+>> -
+>
+>Without the followup patch (which I don't think is suitable for
+>stable) this will just remove error checking.  It's not likely to
+>happen and hence make a difference but on the other hand it
+>introduces a problem, especially when backported in isolation.
 
-In function st95hf_in_send_cmd, the variable rc is assigned then goto
-error label, which just returns rc, so we use return to replace it.
-Since error label only used once in the function, so we remove error label.
+I'll drop this and the follow up patch, thanks.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/st95hf/core.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
-index 4578547..88924be 100644
---- a/drivers/nfc/st95hf/core.c
-+++ b/drivers/nfc/st95hf/core.c
-@@ -926,10 +926,8 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
- 	int len_data_to_tag = 0;
- 
- 	skb_resp = nfc_alloc_recv_skb(MAX_RESPONSE_BUFFER_SIZE, GFP_KERNEL);
--	if (!skb_resp) {
--		rc = -ENOMEM;
--		goto error;
--	}
-+	if (!skb_resp)
-+		return -ENOMEM;
- 
- 	switch (stcontext->current_rf_tech) {
- 	case NFC_DIGITAL_RF_TECH_106A:
-@@ -986,7 +984,6 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
- 
- free_skb_resp:
- 	kfree_skb(skb_resp);
--error:
- 	return rc;
- }
- 
 -- 
-1.9.1
-
-
+Thanks,
+Sasha
