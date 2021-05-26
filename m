@@ -2,119 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0419B391BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82841391C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbhEZPaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbhEZPaK (ORCPT
+        id S235377AbhEZPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:32:24 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58452 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232692AbhEZPcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:30:10 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49354C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:28:39 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d11so1563636wrw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DqGWzSetuJV5yU6UPV/mQ1JntSoPe9tC6OnrezMJZ1s=;
-        b=CzjVtl2pHIqRyEzxlJBTKHFNfdZi85fSQipYLTp+y2ILFDF9Z5G5HqWmuqBLUimdDL
-         thVRnXK+n9HEUIrzIpzS6RN16nbeww4sxqDbZcsmmOY3YXA0CZ0IrzhLTgMabtPNBQHC
-         hc+2WDxXBoRvlgjjklhzEVLnf5t6DCwnjbjidqsDLUvEZ8KYQ06ifXcEw/td7GVVN/aR
-         CyonnsjanQmr5KTeTN6IzioWXZeHhH8wvCjYcYl/7rw1NepziJjbNf1JBDCw5NdG+d/J
-         qzNitKyW+Tg+DtBbAcdBlfVqH6SYHS7G7WD3wVPj/gXlDd4gMyPBqqzEWQYS4Xlyu4Kq
-         fqvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DqGWzSetuJV5yU6UPV/mQ1JntSoPe9tC6OnrezMJZ1s=;
-        b=CPKnG73wVtnfElab4hPWpXOiNALK7wJo+C9lmVD2hcr9LHe1Tec1e2jqIOGl43siso
-         T1W6+DXUixM9KWQ4hM7IzWHCvDBDRTYUeZFEuq9ZDhDQB2J91GFFNiV80i4zlGrp4wP3
-         G3KzmrbtdCeTf/PccXLKQ9zEosGUlWuglf/7BBlN4Z7EugNh5qvH7PuA/W9DqCVGO1qZ
-         NmetAlTlGGmm97NO/7iWFu4Sy8Hlyu2gSjRBxl5FfCIQDhbX4849XbIPkVQW+OTHr3wp
-         XUEs0jSkQbfJU2Q9/5NHNjHJO+3vbfsgEKlbdC6sAqmnlwcbhjgMDU7oiPmQ13St98L6
-         QcLQ==
-X-Gm-Message-State: AOAM533IxNwf4ZGSjP58I6OXPg511DOXsfQeEH3enl31fN8ki633LqjA
-        CL5k5jtMcCEQwC5ZepqdMwMeegKPY3hXKA==
-X-Google-Smtp-Source: ABdhPJzsAR+2ItQN3p3yxI8OUH7dyFhf6pOmXZtZKiXpGfslhAKxCUlmOQmJ4AbqiBvzIWi++8f5oA==
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr33077154wrn.85.1622042917923;
-        Wed, 26 May 2021 08:28:37 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id g6sm7054803wmg.10.2021.05.26.08.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:28:37 -0700 (PDT)
-Date:   Wed, 26 May 2021 16:28:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
- stack onto the heap
-Message-ID: <20210526152835.GE543307@dell>
-References: <20210526130037.856068-1-lee.jones@linaro.org>
- <20210526130037.856068-22-lee.jones@linaro.org>
- <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
- <20210526144451.GB543307@dell>
- <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
+        Wed, 26 May 2021 11:32:22 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QFRH2U024026;
+        Wed, 26 May 2021 17:30:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=8aMVxx7/anGHC80AZ2C2O3wr2dBJMnXa01oHuLKGtjk=;
+ b=Ievr84DvLzxiIUVDTC0Xbw3dZyNF/XTGfN/PWm9L/aGyG9vkGOzcygECR9/G920bHazJ
+ bU/ts5sT14Q4B4NN9odIwfVsDNKUQrfcjAkkg1KWi5bx+CpVbbJbynIEtXcLtXdK6uks
+ Yhft4ADY1shXCJlx0UOfzwvwUnWf2BmDcYwM5XUIf5pnzFNU9p3yapLd/xERaxCOzu9I
+ r4a1Zf/xmbmFa+ZEITJfVAZWjZedsId+v0nVWXiZlr0be/L8E8MWVfl8WAwI/tS9tP5h
+ aZUymn3+XeYEKQMu+wMsOgvoDJb+NSwgFVQ1uNl1/dsDPu/9XVqfLKHkjmybXXSdLram ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38skxvht99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 17:30:34 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5318F10002A;
+        Wed, 26 May 2021 17:30:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 292AF231DC0;
+        Wed, 26 May 2021 17:30:32 +0200 (CEST)
+Received: from localhost (10.75.127.51) by GPXDAG2NODE6.st.com (10.75.127.70)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May 2021 17:30:31
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: mtd: spinand: add spi nand mtd resume handler
+Date:   Wed, 26 May 2021 17:30:16 +0200
+Message-ID: <20210526153016.32653-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To GPXDAG2NODE6.st.com
+ (10.75.127.70)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_10:2021-05-26,2021-05-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021, Sergei Shtylyov wrote:
+From: Christophe Kerello <christophe.kerello@foss.st.com>
 
-> On 5/26/21 5:44 PM, Lee Jones wrote:
-> 
-> [...]
-> >>> Fixes the following W=1 kernel build warning(s):
-> >>>
-> >>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
-> >>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> >>>
-> >>> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>> Cc: linux-usb@vger.kernel.org
-> >>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >>> ---
-> >>>  drivers/usb/host/xhci.c | 8 +++++++-
-> >>>  1 file changed, 7 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> >>> index ac2a7d4288883..40ce4b4eb12ad 100644
-> >>> --- a/drivers/usb/host/xhci.c
-> >>> +++ b/drivers/usb/host/xhci.c
-> >> [...]
-> >>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
-> >>>  		return -ENOMEM;
-> >>>  	}
-> >>>  
-> >>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
-> >>
-> >>    Why not kcalloc()?
-> > 
-> > No particular reason.  Muscle memory I guess.
-> > 
-> > Happy either way.
-> 
->     kcalloc( is designed for allocatiung arrays and clearing them, like calloc(),
-> so let's stick wuth it...
+After power up, all SPI NAND's blocks are locked. Only read operations
+are allowed, write and erase operations are forbidden.
+The SPI NAND framework unlocks all the blocks during its initialization.
 
-No problem.  Will fix.
+During a standby low power, the memory is powered down, losing its
+configuration.
+During the resume, the QSPI driver state is restored but the SPI NAND
+framework does not reconfigured the memory.
 
+This patch adds spi nand mtd PM handlers for resume ops.
+SPI NAND resume op re-initializes SPI NAND flash to its probed state.
+
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ drivers/mtd/nand/spi/core.c | 56 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 17f63f95f4a2..6abaf874eb3f 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1074,6 +1074,61 @@ static int spinand_detect(struct spinand_device *spinand)
+ 	return 0;
+ }
+ 
++static void spinand_mtd_resume(struct mtd_info *mtd)
++{
++	struct spinand_device *spinand = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++	struct device *dev = &spinand->spimem->spi->dev;
++	int ret, i;
++
++	ret = spinand_reset_op(spinand);
++	if (ret)
++		return;
++
++	ret = spinand_init_quad_enable(spinand);
++	if (ret) {
++		dev_err(dev,
++			"Failed to initialize the quad part (err = %d)\n",
++			ret);
++		return;
++	}
++
++	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
++	if (ret) {
++		dev_err(dev,
++			"Failed to updtae the OTP (err = %d)\n",
++			ret);
++		return;
++	}
++
++	ret = spinand_manufacturer_init(spinand);
++	if (ret) {
++		dev_err(dev,
++			"Failed to initialize the SPI NAND chip (err = %d)\n",
++			ret);
++		return;
++	}
++
++	/* After power up, all blocks are locked, so unlock them here. */
++	for (i = 0; i < nand->memorg.ntargets; i++) {
++		ret = spinand_select_target(spinand, i);
++		if (ret) {
++			dev_err(dev,
++				"Failed to select the target (err = %d)\n",
++				ret);
++			return;
++		}
++
++		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
++		if (ret) {
++			dev_err(dev,
++				"Failed to unlock block (err = %d)\n",
++				ret);
++			return;
++		}
++	}
++}
++
+ static int spinand_init(struct spinand_device *spinand)
+ {
+ 	struct device *dev = &spinand->spimem->spi->dev;
+@@ -1167,6 +1222,7 @@ static int spinand_init(struct spinand_device *spinand)
+ 	mtd->_block_isreserved = spinand_mtd_block_isreserved;
+ 	mtd->_erase = spinand_mtd_erase;
+ 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
++	mtd->_resume = spinand_mtd_resume;
+ 
+ 	if (nand->ecc.engine) {
+ 		ret = mtd_ooblayout_count_freebytes(mtd);
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
