@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73D9391465
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0C1391467
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhEZKIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:08:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37528 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbhEZKID (ORCPT
+        id S233807AbhEZKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:08:35 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:46763 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233773AbhEZKId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:08:03 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QA6TW7007152;
-        Wed, 26 May 2021 05:06:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622023589;
-        bh=fWC48oPoBecd0pUdziLbRbw69tljmmg8oN7KBmO41Jo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=HRztiDeOpx5I2X9oeCYdZU4q00TRjA2BwvqpX8u9n6q6xbWMZPqa66LYmRH2ssVcx
-         TfvqQF2HyuZ2nEBDPHZCvwTb9VVOJJCb4sPJBqij+VbIzmRrOirYiUBmxghnQsiyML
-         /wK06PmsyeHHdM+/wEsXBLIRvgFvYvrC+UgiQQi0=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QA6Tol043572
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 05:06:29 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 05:06:29 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 05:06:29 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QA6QZX012623;
-        Wed, 26 May 2021 05:06:27 -0500
-Subject: Re: [PATCH v2 0/5] dt-bindings: gpio: omap: Convert to json-schema
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, <devicetree@vger.kernel.org>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>
-References: <20210525175858.11611-1-grygorii.strashko@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <2dbbf0f1-be2c-de11-8ffd-77a06688a83d@ti.com>
-Date:   Wed, 26 May 2021 13:06:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 26 May 2021 06:08:33 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id lqRFlSYYrWkKblqRIlCbAY; Wed, 26 May 2021 12:07:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622023621; bh=QP7uSUzeBedOP/1n1Z/ut19kYR8grdlDG6nSrUb3goY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=jCJGhOSlNv0ZqqcCtMfrA8FQ74EymfZ3K4H0jRY2Ecx3dDKwMlRLA2ucRALVEx27I
+         akevdPb03pv57nVfiksE6L/fye1UvCvppfaq/hIs9RBtoxSt4UTuKSx8pSOeq0Koc+
+         JJFsAlX3eP8r4SEKJRNK6VrMRqLKYKhwBo3+vGGkjSYGBsRQy4AOmBY3c+hsqRb+XY
+         wHk6tWZXUYxxjtFuNHehqiRTrzsWGrvcf2KK02OgK6j3L04HlOFpYP5B4FRZbYlc4L
+         kauydH2camm7vnhbBDL+JNO/6MUt7bilALzC7Q5X00CZZAMJlRly6FN4KkzT/ApzFy
+         bidrHrmtbEUtQ==
+Subject: Re: [PATCH] drivers: media: Simplify the return expression of
+ interpolate_value()
+To:     zuoqilin1@163.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+References: <20210524124754.1491-1-zuoqilin1@163.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f80d155f-42f3-1a7c-bf42-1b9ebb1e3889@xs4all.nl>
+Date:   Wed, 26 May 2021 12:06:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210525175858.11611-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210524124754.1491-1-zuoqilin1@163.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CMAE-Envelope: MS4xfEIZc8FjKISpTvbf2DIVIS9NtYVSdR+1K5SQQMWD1/EwgYFOl+7yTkm6EMU8esoaLyaehDzCx6uQSSoSyhiCol8FkP4DHSq4zcLWD0bj8B6z7RIjJMLV
+ CZ+RibIKBeIHLQH9VPWF4yt4Op1HBH1CCuNGqYxSzHXFtRUrutgvd/Pb3rrUQIF8fVh84vGxxmf6XcrkDAq2d7GyLxjwz/rVjcN0gpBXFS1Hd1LQ58U03UVg
+ YzO6Jqz2MTy1tWK55MIFANU1kfRlm3Jrirok6OVbqCCab7cWlNgOSopvYXZFsH6AT70GkiZVIjHQBAM0OmpYXZcfRyBGkUTaNJIJe2qkaQ0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony, Linus, Bartosz,
+Please include the driver you are changing in the subject line. I asked for that
+before. Just saying 'drivers: media:' suggests it is a media-subsystem wide change.
 
-On 25/05/2021 20:58, Grygorii Strashko wrote:
-> Hi
-> 
-> Convert the OMAP GPIO Device Tree binding documentation to json-schema.
-> The GPIO hogs node names defined to end with a 'hog' suffix.
-> 
-> All existing GPIO Hogs fixed to follow above naming convention
-> before changing the binding to avoid dtbs_check warnings.
+Rejecting this and the other patch you posted on the same day with the same problem.
 
-There is one note. The DT bindings change, without DTS changes, will
-cause dtbs_check warnings, so all these patches better to be merged through one tree.
+Regards,
 
+	Hans
+
+On 24/05/2021 14:47, zuoqilin1@163.com wrote:
+> From: zuoqilin <zuoqilin@yulong.com>
 > 
-> Changes in v2:
-> - Patch 5 fixed "wrong indentation" warning
+> Simplify the return expression.
 > 
-> v1: https://lore.kernel.org/patchwork/cover/1434566/
+> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> ---
+>  drivers/media/dvb-frontends/mb86a20s.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> Grygorii Strashko (5):
->    ARM: dts: am335x: align GPIO hog names with dt-schema
->    ARM: dts: am437x: align gpio hog names with dt-schema
->    ARM: dts: omap3: align gpio hog names with dt-schema
->    ARM: dts: omap5-board-common: align gpio hog names with dt-schema
->    dt-bindings: gpio: omap: Convert to json-schema
-> 
->   .../devicetree/bindings/gpio/gpio-omap.txt    |  45 --------
->   .../bindings/gpio/ti,omap-gpio.yaml           | 108 ++++++++++++++++++
->   .../boot/dts/am335x-boneblack-wireless.dts    |   2 +-
->   arch/arm/boot/dts/am335x-boneblue.dts         |   2 +-
->   .../boot/dts/am335x-bonegreen-wireless.dts    |   4 +-
->   arch/arm/boot/dts/am335x-icev2.dts            |   4 +-
->   arch/arm/boot/dts/am335x-shc.dts              |   8 +-
->   arch/arm/boot/dts/am437x-gp-evm.dts           |   4 +-
->   arch/arm/boot/dts/am43x-epos-evm.dts          |   2 +-
->   .../boot/dts/omap3-evm-processor-common.dtsi  |   2 +-
->   arch/arm/boot/dts/omap3-gta04a5.dts           |   2 +-
->   arch/arm/boot/dts/omap5-board-common.dtsi     |   2 +-
->   12 files changed, 124 insertions(+), 61 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
->   create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
+> diff --git a/drivers/media/dvb-frontends/mb86a20s.c b/drivers/media/dvb-frontends/mb86a20s.c
+> index a7faf0c..fc80391 100644
+> --- a/drivers/media/dvb-frontends/mb86a20s.c
+> +++ b/drivers/media/dvb-frontends/mb86a20s.c
+> @@ -1346,7 +1346,7 @@ static u32 interpolate_value(u32 value, const struct linear_segments *segments,
+>  {
+>  	u64 tmp64;
+>  	u32 dx, dy;
+> -	int i, ret;
+> +	int i;
+>  
+>  	if (value >= segments[0].x)
+>  		return segments[0].y;
+> @@ -1367,9 +1367,7 @@ static u32 interpolate_value(u32 value, const struct linear_segments *segments,
+>  	tmp64 = value - segments[i].x;
+>  	tmp64 *= dy;
+>  	do_div(tmp64, dx);
+> -	ret = segments[i].y - tmp64;
+> -
+> -	return ret;
+> +	return segments[i].y - tmp64;
+>  }
+>  
+>  static int mb86a20s_get_main_CNR(struct dvb_frontend *fe)
 > 
 
--- 
-Best regards,
-grygorii
