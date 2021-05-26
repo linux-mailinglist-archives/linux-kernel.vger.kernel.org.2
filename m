@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A19392257
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207C839225E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234263AbhEZVvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:51:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35420 "EHLO
+        id S234230AbhEZVyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:54:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32900 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233790AbhEZVvh (ORCPT
+        by vger.kernel.org with ESMTP id S233801AbhEZVyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:51:37 -0400
+        Wed, 26 May 2021 17:54:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622065805;
+        s=mimecast20190719; t=1622065963;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s2jDM/TpmfLpzDZ7Dd8kJfaXr/uLu6JzfCGH8PAhY6A=;
-        b=htI3YB/aTJlrd299nfRLiek/B2z1u5bsWwAg/L/u4jA+rxjJxkbUFELi++C0aGHoswZe4K
-        jALiICGS6EwTnnYHvE/opfN9cFzhC0AoUihjvsGLc2s+ECUi04MFk0MNVVzrPCvuwS0ezD
-        u4iXWNMlfoxzVaTyO9LNemRo9BjpRXk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-5lkVHQU2PUe9mTx4XTdMzw-1; Wed, 26 May 2021 17:50:01 -0400
-X-MC-Unique: 5lkVHQU2PUe9mTx4XTdMzw-1
-Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso781671wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:50:01 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2ooIrO6+PnLW9RdU2+GIho8vABniPqVAPdMUszZt5uE=;
+        b=cj1SZ5pWr8EzGGozjqMn0LwX7m6IMMK/ixyBZThsUvnADTXyfeRDbtr7dboRSWxEP1m0i3
+        2YIie27l2s71yvsfdYjCDvw2P3MitVTYSb08m0tjNSoH+rO79OMisy1Ja/16gy+Cc+iQwJ
+        WCx+p7/U1gdByU8hvvBTf1n2cOrMC04=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-oU8tpAjqM0mNpw6PzxAClQ-1; Wed, 26 May 2021 17:52:41 -0400
+X-MC-Unique: oU8tpAjqM0mNpw6PzxAClQ-1
+Received: by mail-wm1-f71.google.com with SMTP id o3-20020a05600c3783b029017dca14ec2dso765737wmr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:52:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=s2jDM/TpmfLpzDZ7Dd8kJfaXr/uLu6JzfCGH8PAhY6A=;
-        b=E+5JDh3YlIJJhHjmyL+glS1tjDJ0d3K77iMIoPx6tOw6KCf4NTshUNy8Ez67/uK7yV
-         niXo3Nw+CaPbwdDv/Hrnw0xinHui0fd5cafodq4IV0wLk+smRtGTZOgVcJw43UPTSG5B
-         hgdTFLWVxEWbKG3ip7ChinT4q9lnLnphzG/OnSDcVqn0pXfBbF7yG+hOInzD6i1LGnwY
-         ZV2PnMNC0dT/o8nw7nzu2jqod8G8FEWe/Pl9LsSkKIB0AjXnybGyJ1Jb70LQvbt3Ko36
-         dWfCngbuIGXhTqK8sZo7QNqDbo7QxvLPBQGKFBJAp7GwyW2nldKzHZzaj7Wcm/8Ca5OW
-         hFoA==
-X-Gm-Message-State: AOAM531Br+9jPkKkhRU4ZJRfZXlSIW+tA+dLmmFLrQMtjlnDJ4V6feoe
-        8x4l7SnWYx3jEAKEmTdvls40qO/OR5mzmLnts7xg1fLwMFLFWUSWtHtk5hcWaHs+ydHkQgLIUur
-        1ClpE/l+cUQvzeD1bNrmpXdyo
-X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr85975wrx.320.1622065800500;
-        Wed, 26 May 2021 14:50:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzX3XLrans83aVeEW49CvKbVeLkqlNa3AgNJRBQ+d+nHfyxrTBw4pmjGbjCUesYgRVfH6dHEg==
-X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr85963wrx.320.1622065800347;
-        Wed, 26 May 2021 14:50:00 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id f14sm235371wry.40.2021.05.26.14.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 14:49:59 -0700 (PDT)
-Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
- the build
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-References: <20210518142302.1046718-1-javierm@redhat.com>
- <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
- <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
- <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
+        bh=2ooIrO6+PnLW9RdU2+GIho8vABniPqVAPdMUszZt5uE=;
+        b=dL+gTRb2cRUUwbYP3mkXkucVgqQfOeG2J6Hkvp39D4aFJ2U63rbgIcNIXMJRuyjaTX
+         st0y1meJIuXCKRiTNDjDNXJmHbT9fNK/fLdPoRdMVjShSNnqLoT7YksBsYOaqL2ieB43
+         aGytHtPitv6e2U6eIHMuCUNFUfql5t2+qVxZuh4dCYkQx17+KgWXNR//h7KryOxUBJ4a
+         hxgiR2vBdKkixA7fjduAh18E5TZwd+SPCWgkn67B8PF+1nS2np6xf2DPgqHKe5DOskOn
+         iAPq94KvgAW8F9KqlKuzdPs1wu/zdmVH5EnhvSSkMHewTUGpTmNOSRSg3J3JEnciiq8H
+         MePA==
+X-Gm-Message-State: AOAM530RFBidqiilGfyesPLXgKOHGB0bWiKW33774Oj7eVFDUC/58+lG
+        iLhzLdMA/wh0yzwzVajOLQAAXX7ZKliLIWyFJEhMHvinMZI5L9sotOehm9jZM40Cm/KCEylRJwq
+        8LHfszJt9gQ/6Iwj4KQpPyNzK/A2tAu9ffKfaHXlYKG4maU2WOKGv9mEcvZqXbxAKf6KD4QGMvp
+        w=
+X-Received: by 2002:a05:6000:11ce:: with SMTP id i14mr80407wrx.221.1622065960196;
+        Wed, 26 May 2021 14:52:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpR2jhnqwvB6Ifd8antV8AzpNPZsvRhuhOfJO+5wlVtFi9SUKlsBy9gkyhhjnjvo1hBm188Q==
+X-Received: by 2002:a05:6000:11ce:: with SMTP id i14mr80383wrx.221.1622065959965;
+        Wed, 26 May 2021 14:52:39 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id q5sm388996wmc.0.2021.05.26.14.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 14:52:39 -0700 (PDT)
 From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <a5004a7e-14bf-4fb1-beec-9dc19165f2d2@redhat.com>
-Date:   Wed, 26 May 2021 23:49:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH v2] kbuild: quote OBJCOPY var to avoid a pahole call break the build
+Date:   Wed, 26 May 2021 23:52:28 +0200
+Message-Id: <20210526215228.3729875-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 11:02 PM, Andrii Nakryiko wrote:
+The ccache tool can be used to speed up cross-compilation, by calling the
+compiler and binutils through ccache. For example, following should work:
 
-[snip]
+    $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
 
->>
->> BTW, I see similar code in scripts/link-vmlinux.sh too.
->>
->>      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
->>
->> Is it OK to leave it unquoted?
-> 
-> You are right, link-vmlinux.sh should be updated accordingly.
->
+    $ make M=drivers/gpu/drm/rockchip/
 
-Good catch. I'll include this in v2 as well.
+but pahole fails to extract the BTF info from DWARF, breaking the build:
+
+      CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+      LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+      BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+    aarch64-linux-gnu-objcopy: invalid option -- 'J'
+    Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+     Copies a binary file, possibly transforming it in the process
+    ...
+    make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+    make: *** [Makefile:1866: modules] Error 2
+
+this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+later pahole is executed with the following command line:
+
+    LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
+
+which gets expanded to:
+
+    LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
+
+instead of:
+
+    LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+
+Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+
+Changes in v2:
+- Add collected Acked-by tags.
+- Also quote on a similar assignment in scripts/link-vmlinux.sh (masahiroy)
+
+ scripts/Makefile.modfinal | 2 +-
+ scripts/link-vmlinux.sh   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index dd87cea9fba..a7883e45529 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+ quiet_cmd_btf_ko = BTF [M] $@
+       cmd_btf_ko = 							\
+ 	if [ -f vmlinux ]; then						\
+-		LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
++		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+ 	else								\
+ 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+ 	fi;
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index f4de4c97015..0e0f6466b18 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -240,7 +240,7 @@ gen_btf()
+ 	fi
  
-> Javier, can you please send v2 and cc bpf@vger.kernel.org? Thanks!
->
-
-Sure, thanks!
+ 	info "BTF" ${2}
+-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
++	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
  
-Best regards,
+ 	# Create ${2} which contains just .BTF section but no symbols. Add
+ 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
 -- 
-Javier Martinez Canillas
-Software Engineer
-New Platform Technologies Enablement team
-RHEL Engineering
+2.31.1
 
