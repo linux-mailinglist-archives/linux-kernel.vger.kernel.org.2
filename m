@@ -2,152 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05199391730
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114F5391734
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhEZMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:17:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:43706 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232546AbhEZMRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:17:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FEDB1516;
-        Wed, 26 May 2021 05:15:59 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB1743F73B;
-        Wed, 26 May 2021 05:15:57 -0700 (PDT)
-Date:   Wed, 26 May 2021 13:15:49 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210526121546.GA13262@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
- <87a6oj6sxo.mognet@arm.com>
- <20210525102945.GA24210@e120325.cambridge.arm.com>
- <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+        id S233845AbhEZMRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:17:45 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:46260 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhEZMRm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:17:42 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 1635677034;
+        Wed, 26 May 2021 15:16:09 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1622031369;
+        bh=sUAg7c0OJaDV8893akfTQUnFA9//98ey29nrJI7rLlk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=bXc+5kW4ZAA5MnQRMLVFqfJU/asSbIkOyQ/WQ9lUS+FAsFLzMBT33L+JJ9fEulXrK
+         niYQfTvwUZ3Fcjr6XG9eLM86//TZaeOiMTgd2K8z/twUlZm9hpCctJUsU3vSEIhpEo
+         aNP2m2JMwfgMNVoJ6Dp33co8q1smJO//pdDD0AAnZRD4fFp8Y6EXpVqrGtasrCUFTb
+         Jpl28Fce2vKtXzJjlYsmXqKCDHSFlQFk1T4MBO/9lPA9QMngbXnc4e56+JUfcHMxD7
+         yEf178axo514r1vCZ8HalGs8l3z/nmveKcfpcXQtIeZaZ+2t9sFxtevK5+BqVFOE8Q
+         sSatzWMzf4SRQ==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 451607704D;
+        Wed, 26 May 2021 15:16:08 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Wed, 26
+ May 2021 15:16:07 +0300
+Subject: Re: [PATCH v10 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210521075520.ghg75wpzz42zorxg@steredhat>
+ <108b0bba-5909-cdde-97ee-321b3f5351ca@kaspersky.com>
+ <b8dd3b55-0e2c-935a-d9bb-b13b7adc4458@kaspersky.com>
+ <20210525145220.amzme5mqqv4npirt@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <becbd621-3773-be9e-b314-5fd0c589110e@kaspersky.com>
+Date:   Wed, 26 May 2021 15:16:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210525145220.amzme5mqqv4npirt@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/26/2021 12:06:35
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163941 [May 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: patchwork.kernel.org:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2;lists.oasis-open.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/26/2021 12:08:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 26.05.2021 10:27:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/26 10:29:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/26 08:53:00 #16657861
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
-> On 25/05/2021 12:29, Beata Michalska wrote:
-> > On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
-> >> On 24/05/21 23:55, Beata Michalska wrote:
-> >>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> >>>> On 24/05/21 11:16, Beata Michalska wrote:
-> 
-> [...]
-> 
-> >>>>> +static inline int
-> >>>>> +asym_cpu_capacity_classify(struct sched_domain *sd,
-> >>>>> +			   const struct cpumask *cpu_map)
-> >>>>> +{
-> >>>>> +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> >>>>> +	struct asym_cap_data *entry;
-> >>>>> +	int asym_cap_count = 0;
-> >>>>> +
-> >>>>> +	if (list_is_singular(&asym_cap_list))
-> >>>>> +		goto leave;
-> >>>>> +
-> >>>>> +	list_for_each_entry(entry, &asym_cap_list, link) {
-> >>>>> +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> >>>>> +			++asym_cap_count;
-> >>>>> +		} else {
-> >>>>> +			/*
-> >>>>> +			 * CPUs with given capacity might be offline
-> >>>>> +			 * so make sure this is not the case
-> >>>>> +			 */
-> >>>>> +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> >>>>> +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
-> >>>>> +				if (asym_cap_count > 1)
-> >>>>> +					break;
-> >>>>> +			}
-> >>>>
-> >>>> Readability nit: That could be made into an else if ().
-> >>> It could but then this way the -comment- gets more exposed.
-> >>> But that might be my personal perception so I can change that.
-> >>
-> >> As always those are quite subjective! Methink something like this would
-> >> still draw attention to the offline case:
-> >>
-> >>                /*
-> >>                 * Count how many unique capacities this domain covers. If a
-> >>                 * capacity isn't covered, we need to check if any CPU with
-> >>                 * that capacity is actually online, otherwise it can be
-> >>                 * ignored.
-> >>                 */
-> >>                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> >>                         ++asym_cap_count;
-> >>                 } else if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> >>                         sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
-> >>                         if (asym_cap_count > 1)
-> >>                                 break;
-> >>                 }
-> > Noted.
-> > Will wait for some more comments before sending out 'polished' version.
-> 
-> For me asym_cpu_capacity_classify() is pretty hard to digest ;-) But I
-> wasn't able to break it. It also performs correctly on (non-existing SMT)
-> layer (with sd span eq. single CPU).
-> 
-> Something like this (separating asym_cap_list iteration and flags
-> construction would be easier for me. But like already said here,
-> it's subjective.
-> I left the two optimizations (list_is_singular(), break on asym_cap_count
-> > 1) out for now. asym_cap_list shouldn't have > 4 entries (;-)).
-> 
-> static inline int
-> asym_cpu_capacity_classify(struct sched_domain *sd, 
->                            const struct cpumask *cpu_map)
-> {
->         int sd_span_match = 0, cpu_map_match = 0, flags = 0; 
->         struct asym_cap_data *entry;
-> 
->         list_for_each_entry(entry, &asym_cap_list, link) {
->                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask))
->                         ++sd_span_match;
->                 else if (cpumask_intersects(cpu_map, entry->cpu_mask))
->                         ++cpu_map_match;
->         }
-> 
->         WARN_ON_ONCE(!sd_span_match);
-> 
->         if (sd_span_match > 1) { 
->                 flags |= SD_ASYM_CPUCAPACITY;
->                 if (!cpu_map_match)
->                         flags |= SD_ASYM_CPUCAPACITY_FULL;
->         }
-> 
->         return flags;
-> }
-So I planned to drop the list_is_singular check as it is needless really.
-Otherwise, I am not really convinced by the suggestion. I could add comments
-around current version to make it more ..... 'digestible' but I'd rather
-stay with it as it seems more compact to me (subjective).
 
-> 
-> BTW, how would this mechanism behave on a system with SMT and asymmetric CPU
-> capacity? Something EAS wouldn't allow but I guess asym_cap_list will be
-> constructed and the SD_ASYM_CPUCAPACITY_XXX flags will be set?
-Yes, the list would get created and flags set. I do not think there is
-a difference with current approach (?). So EAS would be disabled (it only cares
-about SD_ASYM_CPUCAPACITY_FULL flag) but the misift might still kick in.
-
----
-BR
-B.
+On 25.05.2021 17:52, Stefano Garzarella wrote:
+> On Tue, May 25, 2021 at 11:22:09AM +0300, Arseny Krasnov wrote:
+>> On 23.05.2021 15:14, Arseny Krasnov wrote:
+>>> On 21.05.2021 10:55, Stefano Garzarella wrote:
+>>>> Hi Arseny,
+>>>>
+>>>> On Thu, May 20, 2021 at 10:13:53PM +0300, Arseny Krasnov wrote:
+>>>>> 	This patchset implements support of SOCK_SEQPACKET for virtio
+>>>>> transport.
+>>>> I'll carefully review and test this series next Monday, in the mean time
+>>>> I think we should have at least an agreement about the changes that
+>>>> regards virtio-spec before merge this series, to avoid any compatibility
+>>>> issues.
+>>>>
+>>>> Do you plan to send a new version of the specification changes?
+>>>>
+>>>> Thanks,
+>>>> Stefano
+>>> Hello, sorry for long answer. I'm on vacation now, but i plan to send
+>>>
+>>> it in next several days, because with current implementation it is short
+>>>
+>>>
+>>> Thank You
+>> Hello, here is spec patch:
+>>
+>> https://lists.oasis-open.org/archives/virtio-comment/202105/msg00017.html
+>>
+>> Let's discuss it
+> Yep, sure.
+>
+> About this series I think is better to split in two series since it 
+> became very long. Patchwork [1] also complains here [2].
+>
+> You can send a first series with patches from 1 to 7. These patches are 
+> reviewed by me and can go regardless of the discussion of the VIRTIO 
+> specifications.
+Ok, i'll send it on next week.
+> Maybe you can also add the patch with the test to this first series.
+>
+> Please specify in the cover letter that the implementation for virtio 
+> devices is under development and will be sent later.
+>
+>
+> When it will be merged in the net-next tree, you can post the second 
+> part with the rest of the series that implements SEQPACKET for virtio 
+> devices, possibly after we received an agreement for the specifications.
+>
+> Please use the "net-next" tag and take a look at 
+> Documentation/networking/netdev-FAQ.rst about netdev development.
+Ok
+>
+>
+> Anyway, in the next days (hopefully tomorrow) I'll review the rest of 
+> the series related to virtio devices and spec.
+>
+> Thanks,
+> Stefano
+>
+> [1] 
+> https://patchwork.kernel.org/project/netdevbpf/list/?series=486011&state=*
+>
+> [2] 
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210520191449.1270723-1-arseny.krasnov@kaspersky.com/
+>
+>
