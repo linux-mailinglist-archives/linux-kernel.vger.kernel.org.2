@@ -2,301 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19C53910B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915FD3910BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhEZGbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:31:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:4010 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbhEZGbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:31:05 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqgwJ3scyzmb14;
-        Wed, 26 May 2021 14:27:12 +0800 (CST)
-Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 14:29:31 +0800
-Received: from szvp000207684.huawei.com (10.120.216.130) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 26 May 2021 14:29:31 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: swap: support migrating swapfile in aligned write mode
-Date:   Wed, 26 May 2021 14:29:27 +0800
-Message-ID: <20210526062927.52629-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210526062927.52629-1-yuchao0@huawei.com>
-References: <20210526062927.52629-1-yuchao0@huawei.com>
+        id S232717AbhEZGde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:33:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39957 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232591AbhEZGdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:33:32 -0400
+IronPort-SDR: GAgX5s0O/nx66Fvl3b/LPwlJl1pEe8Z+f4Y8Xo9dsudCO4o8bknzv+5Pxn4YDRPPB1Y8ha3hM3
+ h4xi+EGY6T4A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="189512086"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="189512086"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:32:00 -0700
+IronPort-SDR: lyhjnbscqwWOtB2Ue8vR+6xPh+qHKNVBYRF+E0FVbCNPTTo3D5k8xVEJGJaUN+4Dn5KjxSUisO
+ TUTImWWgD1Xw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="547077456"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 25 May 2021 23:31:56 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 26 May 2021 09:31:55 +0300
+Date:   Wed, 26 May 2021 09:31:55 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] usb: roles: add helper usb_role_string()
+Message-ID: <YK3rW6NjED+07IdC@kuha.fi.intel.com>
+References: <1621932786-9335-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621932786-9335-1-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch supports to migrate swapfile in aligned write mode during
-swapon in order to keep swapfile being aligned to section as much as
-possible, then pinned swapfile will locates fully filled section which
-may not affected by GC.
+On Tue, May 25, 2021 at 04:53:05PM +0800, Chunfeng Yun wrote:
+> Introduces usb_role_string() function, which returns a
+> human-readable name of provided usb role, it's useful to
+> make the log readable.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-However, for the case that swapfile's size is not aligned to section
-size, it will still leave last extent in file's tail as unaligned due
-to its size is smaller than section size, like case #2.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-case #1
-xfs_io -f /mnt/f2fs/file -c "pwrite 0 4M" -c "fsync"
+> ---
+>  drivers/usb/roles/class.c | 9 +++++++++
+>  include/linux/usb/role.h  | 6 ++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/usb/roles/class.c b/drivers/usb/roles/class.c
+> index 33b637d0d8d9..dfaed7eee94f 100644
+> --- a/drivers/usb/roles/class.c
+> +++ b/drivers/usb/roles/class.c
+> @@ -214,6 +214,15 @@ static const char * const usb_roles[] = {
+>  	[USB_ROLE_DEVICE]	= "device",
+>  };
+>  
+> +const char *usb_role_string(enum usb_role role)
+> +{
+> +	if (role < 0 || role >= ARRAY_SIZE(usb_roles))
+> +		return "unknown";
+> +
+> +	return usb_roles[role];
+> +}
+> +EXPORT_SYMBOL_GPL(usb_role_string);
+> +
+>  static ssize_t
+>  role_show(struct device *dev, struct device_attribute *attr, char *buf)
+>  {
+> diff --git a/include/linux/usb/role.h b/include/linux/usb/role.h
+> index 0164fed31b06..031f148ab373 100644
+> --- a/include/linux/usb/role.h
+> +++ b/include/linux/usb/role.h
+> @@ -65,6 +65,7 @@ void usb_role_switch_unregister(struct usb_role_switch *sw);
+>  
+>  void usb_role_switch_set_drvdata(struct usb_role_switch *sw, void *data);
+>  void *usb_role_switch_get_drvdata(struct usb_role_switch *sw);
+> +const char *usb_role_string(enum usb_role role);
+>  #else
+>  static inline int usb_role_switch_set_role(struct usb_role_switch *sw,
+>  		enum usb_role role)
+> @@ -109,6 +110,11 @@ static inline void *usb_role_switch_get_drvdata(struct usb_role_switch *sw)
+>  	return NULL;
+>  }
+>  
+> +static inline const char *usb_role_string(enum usb_role role)
+> +{
+> +	return "unknown";
+> +}
+> +
+>  #endif
+>  
+>  #endif /* __LINUX_USB_ROLE_H */
+> -- 
+> 2.18.0
 
-Before swapon:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..3047]:       1123352..1126399  3048 0x1000
-   1: [3048..7143]:    237568..241663    4096 0x1000
-   2: [7144..8191]:    245760..246807    1048 0x1001
-After swapon:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..8191]:       249856..258047    8192 0x1001
-Kmsg:
-F2FS-fs (zram0): Swapfile (2) is not align to section:
-1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate(2097152 * n)
-
-case #2
-xfs_io -f /mnt/f2fs/file -c "pwrite 0 3M" -c "fsync"
-
-Before swapon:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..3047]:       246808..249855    3048 0x1000
-   1: [3048..6143]:    237568..240663    3096 0x1001
-After swapon:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       258048..262143    4096 0x1000
-   1: [4096..6143]:    238616..240663    2048 0x1001
-Kmsg:
-F2FS-fs (zram0): Swapfile: last extent is not aligned to section
-F2FS-fs (zram0): Swapfile (2) is not align to section:
-1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate(2097152 * n)
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/data.c    | 107 ++++++++++++++++++++++++++++++++++++++++------
- fs/f2fs/f2fs.h    |   1 +
- fs/f2fs/node.h    |   3 ++
- fs/f2fs/segment.c |   3 ++
- 4 files changed, 101 insertions(+), 13 deletions(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 9c23fde93b76..348d88c4a8df 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2472,6 +2472,10 @@ static inline bool check_inplace_update_policy(struct inode *inode,
- 
- bool f2fs_should_update_inplace(struct inode *inode, struct f2fs_io_info *fio)
- {
-+	/* swap file is migrating in aligned write mode */
-+	if (is_inode_flag_set(inode, FI_ALIGNED_WRITE))
-+		return false;
-+
- 	if (f2fs_is_pinned_file(inode))
- 		return true;
- 
-@@ -2494,6 +2498,11 @@ bool f2fs_should_update_outplace(struct inode *inode, struct f2fs_io_info *fio)
- 		return true;
- 	if (f2fs_is_atomic_file(inode))
- 		return true;
-+
-+	/* swap file is migrating in aligned write mode */
-+	if (is_inode_flag_set(inode, FI_ALIGNED_WRITE))
-+		return true;
-+
- 	if (fio) {
- 		if (page_private_gcing(fio->page))
- 			return true;
-@@ -3830,6 +3839,65 @@ int f2fs_migrate_page(struct address_space *mapping,
- #endif
- 
- #ifdef CONFIG_SWAP
-+static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
-+							unsigned int blkcnt)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+	unsigned int blkofs;
-+	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
-+	unsigned int secidx = start_blk / blk_per_sec;
-+	unsigned int end_sec = secidx + blkcnt / blk_per_sec;
-+	int ret = 0;
-+
-+	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+	down_write(&F2FS_I(inode)->i_mmap_sem);
-+
-+	set_inode_flag(inode, FI_ALIGNED_WRITE);
-+
-+	for (; secidx < end_sec; secidx++) {
-+		down_write(&sbi->pin_sem);
-+
-+		f2fs_lock_op(sbi);
-+		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
-+		f2fs_unlock_op(sbi);
-+
-+		set_inode_flag(inode, FI_DO_DEFRAG);
-+
-+		for (blkofs = 0; blkofs < blk_per_sec; blkofs++) {
-+			struct page *page;
-+			unsigned int blkidx = secidx * blk_per_sec + blkofs;
-+
-+			page = f2fs_get_lock_data_page(inode, blkidx, true);
-+			if (IS_ERR(page)) {
-+				up_write(&sbi->pin_sem);
-+				ret = PTR_ERR(page);
-+				goto done;
-+			}
-+
-+			set_page_dirty(page);
-+			f2fs_put_page(page, 1);
-+		}
-+
-+		clear_inode_flag(inode, FI_DO_DEFRAG);
-+
-+		ret = filemap_fdatawrite(inode->i_mapping);
-+
-+		up_write(&sbi->pin_sem);
-+
-+		if (ret)
-+			break;
-+	}
-+
-+done:
-+	clear_inode_flag(inode, FI_DO_DEFRAG);
-+	clear_inode_flag(inode, FI_ALIGNED_WRITE);
-+
-+	up_write(&F2FS_I(inode)->i_mmap_sem);
-+	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+
-+	return ret;
-+}
-+
- static int check_swap_activate(struct swap_info_struct *sis,
- 				struct file *swap_file, sector_t *span)
- {
-@@ -3843,7 +3911,8 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 	sector_t highest_pblock = 0;
- 	int nr_extents = 0;
- 	unsigned long nr_pblocks;
--	unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
-+	unsigned int blks_per_sec = BLKS_PER_SEC(sbi);
-+	unsigned int sec_blks_mask = BLKS_PER_SEC(sbi) - 1;
- 	unsigned int not_aligned = 0;
- 	int ret = 0;
- 
-@@ -3858,7 +3927,7 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 
- 	while (cur_lblock < last_lblock && cur_lblock < sis->max) {
- 		struct f2fs_map_blocks map;
--
-+retry:
- 		cond_resched();
- 
- 		memset(&map, 0, sizeof(map));
-@@ -3883,16 +3952,28 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 		pblock = map.m_pblk;
- 		nr_pblocks = map.m_len;
- 
--		if ((pblock - SM_I(sbi)->main_blkaddr) & (blocks_per_sec - 1) ||
--				nr_pblocks & (blocks_per_sec - 1)) {
--			if (f2fs_is_pinned_file(inode)) {
--				f2fs_err(sbi, "Swapfile does not align to section");
--				ret = -EINVAL;
--				goto out;
--			}
-+		if ((pblock - SM_I(sbi)->main_blkaddr) & sec_blks_mask ||
-+				nr_pblocks & sec_blks_mask) {
- 			not_aligned++;
--		}
- 
-+			nr_pblocks = roundup(nr_pblocks, blks_per_sec);
-+			if (cur_lblock + nr_pblocks > sis->max)
-+				nr_pblocks -= blks_per_sec;
-+
-+			if (!nr_pblocks) {
-+				/* this extent is last one */
-+				nr_pblocks = map.m_len;
-+				f2fs_warn(sbi, "Swapfile: last extent is not aligned to section");
-+				goto next;
-+			}
-+
-+			ret = f2fs_migrate_blocks(inode, cur_lblock,
-+							nr_pblocks);
-+			if (ret)
-+				goto out;
-+			goto retry;
-+		}
-+next:
- 		if (cur_lblock + nr_pblocks >= sis->max)
- 			nr_pblocks = sis->max - cur_lblock;
- 
-@@ -3920,11 +4001,11 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 	sis->pages = cur_lblock - 1;
- 	sis->highest_bit = cur_lblock - 1;
- 
-+out:
- 	if (not_aligned)
- 		f2fs_warn(sbi, "Swapfile (%u) is not align to section: \n"
--			"\t1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate()",
--			not_aligned);
--out:
-+			"\t1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate(%u * n)",
-+			not_aligned, blks_per_sec * F2FS_BLKSIZE);
- 	return ret;
- }
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 7798fb842847..de672c8239bf 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -708,6 +708,7 @@ enum {
- 	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
- 	FI_MMAP_FILE,		/* indicate file was mmapped */
- 	FI_ENABLE_COMPRESS,	/* enable compression in "user" compression mode */
-+	FI_ALIGNED_WRITE,	/* enable aligned write */
- 	FI_MAX,			/* max flag, never be used */
- };
- 
-diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
-index d85e8659cfda..e5235dfe4670 100644
---- a/fs/f2fs/node.h
-+++ b/fs/f2fs/node.h
-@@ -38,6 +38,9 @@
- /* return value for read_node_page */
- #define LOCKED_PAGE	1
- 
-+/* check pinned file's alignment status of physical blocks */
-+#define FILE_NOT_ALIGNED	1
-+
- /* For flag in struct node_info */
- enum {
- 	IS_CHECKPOINTED,	/* is it checkpointed before? */
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 19b86bea0dbc..1cc7a555763b 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3291,6 +3291,9 @@ static int __get_segment_type_6(struct f2fs_io_info *fio)
- 	if (fio->type == DATA) {
- 		struct inode *inode = fio->page->mapping->host;
- 
-+		if (is_inode_flag_set(inode, FI_ALIGNED_WRITE))
-+			return CURSEG_COLD_DATA_PINNED;
-+
- 		if (page_private_gcing(fio->page)) {
- 			if (fio->sbi->am.atgc_enabled &&
- 				(fio->io_type == FS_DATA_IO) &&
 -- 
-2.29.2
-
+heikki
