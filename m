@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96853922CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555D3922D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbhEZWfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:35:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234278AbhEZWfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:35:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64D34613CA;
-        Wed, 26 May 2021 22:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622068415;
-        bh=Lgc2ApRO4m7E7FHqU9DmoWY4keZyJY0T6HyK7vuHDkY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=HtKesleSte7hB3z0+wNl6epd0GgeKEzh3Q+gRZ88dSKbgwsZkREsndbQBhD8c8UBN
-         Rh/cySddD1WwD3/zF4TPhVH1pYINGzrmFUme74BKeYU4swxEV4T8p5hGZqxwvr1sCf
-         Lw4K8nb0N3JvbJsFCN+Z3ynvC+SiwSgNrY6ARuBmfG6nbAW0wjjiyl6SITlQSphAW/
-         cL38SowC1CrVp1QVjjMfAjr0+x1d7m+rFBJtCMFD3Jjnbk+l9c1GNuLJClUjP+S056
-         vMq4fP1Wh16PhszXQtyzCgEfzwJ5XyPtk5b/LecS4YuDk0ug7XEVch9N6kTHMgtTMg
-         /5yxyj1YXss7w==
-Content-Type: text/plain; charset="utf-8"
+        id S234610AbhEZWgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233648AbhEZWgi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 18:36:38 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03B6C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:35:05 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so2559811oth.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RiTRNHS1ejuygpTt5xXgXCB+d0rqEUKIB0Nj1i+xQDY=;
+        b=IsEjAVpJPCM9sAw6G1yIlOtxfdXTrw3mEXlgtLrpEO16mJ1mnI86/pKL+M2F3nMY3g
+         PmbmlE5R7fCMARFpTVFmYXEZISShFHh93XtIlZrKwCAhQfpTbTgKIZdNnfe3fpIxTkIR
+         dfQIeLEd6QUpWEd+81Q4N26SOr5GJqxKocK/A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=RiTRNHS1ejuygpTt5xXgXCB+d0rqEUKIB0Nj1i+xQDY=;
+        b=UaRNQl0qZiBKjlcjQN2ZSp3M3N3SyjOJJh3nNwsS9nIdaSmldiAZyMtxMaCF+rYJca
+         FELlsb3W/vJkS3OZq1WPzkV5PD8pSj3kw+fWLrtpS98lylML/KqVFZE/smyDo6Sb9VpF
+         m0zsEJ2EP0UCkyHnrG97wjXZV0i4tjEScfy/4QkB2PBvpxOK8pQlbV7TUnkrveR4i5SW
+         CSIwFmZJkgfHg9VtRPA6sebpvFHSUqe101KBUR9963Rv5nYyb6nc/JfZY69QffiugqGi
+         NPg8zPcMYnvHOOmuXeyAOz7zHDFjC7ZLquvniqdlFp/VMFR8DeJpbUOQDhRrOSVvZhyI
+         VepQ==
+X-Gm-Message-State: AOAM532zvJOwk8U0rh3YCFkzEufLv3QOxF8p0jga4o/5ec5WEkKIVfCz
+        nZoBFkflSRPOeqeI01lzZiFZdw==
+X-Google-Smtp-Source: ABdhPJwCmyUAdh5K+OT1BNb62Luj9O/u2ZkZDzDbqrX7BpjoaY69yIVhnw4dYOuaGbi7xo/egfSr3w==
+X-Received: by 2002:a05:6830:2093:: with SMTP id y19mr442231otq.128.1622068505101;
+        Wed, 26 May 2021 15:35:05 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id v22sm116487oic.37.2021.05.26.15.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 15:35:04 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
+To:     axboe@kernel.dk, asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Justin M. Forbes" <jforbes@fedoraproject.org>
+Subject: [PATCH] io_uring: Remove CONFIG_EXPERT
+Date:   Wed, 26 May 2021 17:34:45 -0500
+Message-Id: <20210526223445.317749-1-jforbes@fedoraproject.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210526172036.183223-3-krzysztof.kozlowski@canonical.com>
-References: <20210526172036.183223-1-krzysztof.kozlowski@canonical.com> <20210526172036.183223-3-krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v2 2/7] mfd: max77686: Do not enforce (incorrect) interrupt trigger type
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh@kernel.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Date:   Wed, 26 May 2021 15:33:34 -0700
-Message-ID: <162206841417.4130789.13945208806958598688@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Krzysztof Kozlowski (2021-05-26 10:20:31)
-> From: Krzysztof Kozlowski <krzk@kernel.org>
->=20
-> Interrupt line can be configured on different hardware in different way,
-> even inverted.  Therefore driver should not enforce specific trigger
-> type - edge falling - but instead rely on Devicetree to configure it.
->=20
-> The Maxim 77686 datasheet describes the interrupt line as active low
-> with a requirement of acknowledge from the CPU therefore the edge
-> falling is not correct.
->=20
-> The interrupt line is shared between PMIC and RTC driver, so using level
-> sensitive interrupt is here especially important to avoid races.  With
-> an edge configuration in case if first PMIC signals interrupt followed
-> shortly after by the RTC, the interrupt might not be yet cleared/acked
-> thus the second one would not be noticed.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
->=20
-> ---
+While IO_URING has been in fairly heavy development, it is hidden behind
+CONFIG_EXPERT with a default of on.  It has been long enough now that I
+think we should remove EXPERT and allow users and distros to decide how
+they want this config option set without jumping through hoops.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org> # clock binding
+Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+---
+ init/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 1ea12c64e4c9..0decca696bf7 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1621,7 +1621,7 @@ config AIO
+ 	  this option saves about 7k.
+
+ config IO_URING
+-	bool "Enable IO uring support" if EXPERT
++	bool "Enable IO uring support"
+ 	select IO_WQ
+ 	default y
+ 	help
+-- 
+2.31.1
+
