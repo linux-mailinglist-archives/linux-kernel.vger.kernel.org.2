@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAA9391133
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D49839114B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhEZHKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbhEZHKT (ORCPT
+        id S233009AbhEZHTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:19:39 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:39653 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232968AbhEZHTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:10:19 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E8AC061574;
-        Wed, 26 May 2021 00:08:47 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id p7so30964990wru.10;
-        Wed, 26 May 2021 00:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UIsoLMn5RoixwHJ5dhWXuu2fz9vEguk6KHRZLQrMsj8=;
-        b=Q4MEs9fBCeWwLgVBQ8nmc961lBZWhjXv+hqshVVlKQGqtr/8lG+ixVrGfhDeN85NE4
-         HXDn/FkiBbpCFlvDQF6JPS0mndVMtUgm6pJoCjU3Z6eMC+4Tzd3mXxxuMqLxIVki5Xdn
-         b5vsUGYrsIRfr76ivZMaGpMAPUo/InprxroqLqOoKKzw9O4PvkqEMh/6B6wI/14zspAU
-         jBX1zo+vhVT8zSy1Znq4lQSP8kZVjtWkgAUTBLmwDQEqGdssT9bMLRDgOTqPxuyfxkpN
-         P+umbLOcv1QFw6l4Q3DHArJ8GQPHBdA8Vv6cHcQ1U8Z/kA5fHTnSDUB9Dzxo8IXJ+shi
-         sXNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UIsoLMn5RoixwHJ5dhWXuu2fz9vEguk6KHRZLQrMsj8=;
-        b=m/JzDsxmY4wk436nS3NoOJjz09ZgO9ii9FRhZ9ui4pFL9hp6y+bcLsieXVPzskKTov
-         eefm46PlZWca36E5ygh2pvWu1rvfdgBLIQng0zql9ZaX18pbhunBK2MchaPNvWFOO+hr
-         OxBuS51oOgQNP6Vo9Ikh++Mb23PjXaBww74VZmE/zvcg1vQxq3kkB/oN29bjqSEUa+3B
-         dL8d1NE6uUeAqeGVfNF+53AadZMwh23KgXd8aAlbc38WVrlTj1PEGnZ1ALuBx/h4yoMh
-         bbtIAqrUYbHh25nR/VK6l0uJY6YWvPgYsIxG6cY6b2ITb9vtqkg9Xs+3XKvfOdDF7GVP
-         RNdg==
-X-Gm-Message-State: AOAM533iJOyA5qWjFo/9L4RKHc4Rs+yg57/jMJCt2Iyo5ZRGstQgyEvj
-        aikJveXNFgkrKVe5FiPvXgmekhknHBE=
-X-Google-Smtp-Source: ABdhPJy/loBwcw3gDbsyade0rOjDoCIaqf6WZH72B2utsYHXLRE8KPI/vCwGsI8t/9FE3qVBc9Cwog==
-X-Received: by 2002:adf:f907:: with SMTP id b7mr30816996wrr.357.1622012926349;
-        Wed, 26 May 2021 00:08:46 -0700 (PDT)
-Received: from gmail.com (0526ECF1.unconfigured.pool.telekom.hu. [5.38.236.241])
-        by smtp.gmail.com with ESMTPSA id b13sm5225405wmj.40.2021.05.26.00.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 00:08:45 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 26 May 2021 09:08:44 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: linux-next: Tree for May 25 (x86: NR_CPUS undeclared)
-Message-ID: <YK3z/OojxVvXvIeK@gmail.com>
-References: <20210525163932.785c1a2a@canb.auug.org.au>
- <e76d764e-9ed2-b11e-cf0f-53e7172745d4@infradead.org>
+        Wed, 26 May 2021 03:19:23 -0400
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id C8B173C00BA;
+        Wed, 26 May 2021 09:10:48 +0200 (CEST)
+Received: from lxhi-059.adit-jv.com (10.72.93.144) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Wed, 26 May
+ 2021 09:10:48 +0200
+From:   Christoph Gellner <cgellner@de.adit-jv.com>
+To:     <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
+CC:     <jens.wiklander@linaro.org>,
+        Christoph Gellner <cgellner@de.adit-jv.com>
+Subject: [RFC PATCH 0/3] tee: optee: Allow to freeze when tee-supplicant is frozen
+Date:   Wed, 26 May 2021 09:09:08 +0200
+Message-ID: <20210526070911.31681-1-cgellner@de.adit-jv.com>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e76d764e-9ed2-b11e-cf0f-53e7172745d4@infradead.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.72.93.144]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the system is going to hibernate or suspend it might happen
+that the tee-supplicant task is frozen first.
+In this case a running OP-TEE task might get stuck in the loop using
+wait_for_completion_interruptible to wait for response of tee-supplicant.
+    
+As a consequence other OP-TEE tasks waiting for the above or a
+succeeding stuck OP-TEE task might get stuck as well
+- waiting for call queue entry to be completed
+- waiting for OPTEE_RPC_WAIT_QUEUE_WAKEUP
 
-* Randy Dunlap <rdunlap@infradead.org> wrote:
+This will result in the tasks "refusing to freeze" and
+the hibernate or suspend will fail.
 
-> On 5/24/21 11:39 PM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20210524:
-> > 
-> 
-> on x86_64, there can be +/- 100 build errors like so:
-> 
-> ../arch/x86/include/asm/fixmap.h:103:48: error: 'NR_CPUS' undeclared here (not in a function); did you mean 'NR_OPEN'?
->   FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
->                                                 ^~~~~~~
->                                                 NR_OPEN
-> 
-> Fix is here:
-> https://lore.kernel.org/lkml/20210521195918.2183-1-rdunlap@infradead.org/
+OP-TEE issue: https://github.com/OP-TEE/optee_os/issues/4581
 
-This came into -next via a stray header dependencies patch in -mm.
 
-I followed up in that thread, but I'm somewhat worried that the complexity 
-of header dependencies are not going in the right direction in that group 
-of headers. ;-)
+- Read back the object
+PM: suspend entry (s2idle)
+Filesystems sync: 0.000 seconds
+Freezing user space processes ...
+Freezing of tasks failed after 20.008 seconds (3 tasks refusing to freeze, wq_busy=0):
+task:optee_example_s state:R  running task     stack:    0 pid:  124 ppid:     1 flags:0x00000001
+[<807d3e24>] (__schedule) from [<841c4000>] (0x841c4000)
+task:optee_example_s state:D stack:    0 pid:  126 ppid:     1 flags:0x00000001
+[<807d3e24>] (__schedule) from [<807d41d0>] (schedule+0x60/0x120)
+[<807d41d0>] (schedule) from [<807d7ffc>] (schedule_timeout+0x1f4/0x340)
+[<807d7ffc>] (schedule_timeout) from [<807d56a0>] (wait_for_completion+0x94/0xfc)
+[<807d56a0>] (wait_for_completion) from [<80692134>] (optee_cq_wait_for_completion+0x14/0x60)
+[<80692134>] (optee_cq_wait_for_completion) from [<806924dc>] (optee_do_call_with_arg+0x14c/0x154)
+[<806924dc>] (optee_do_call_with_arg) from [<80692edc>] (optee_shm_unregister+0x78/0xcc)
+[<80692edc>] (optee_shm_unregister) from [<80690a9c>] (tee_shm_release+0x88/0x174)
+[<80690a9c>] (tee_shm_release) from [<8057f89c>] (dma_buf_release+0x44/0xb0)
+[<8057f89c>] (dma_buf_release) from [<8028e4e8>] (__dentry_kill+0x110/0x17c)
+[<8028e4e8>] (__dentry_kill) from [<80276cfc>] (__fput+0xc0/0x234)
+[<80276cfc>] (__fput) from [<80140b1c>] (task_work_run+0x90/0xbc)
+[<80140b1c>] (task_work_run) from [<8010b1c8>] (do_work_pending+0x4a0/0x5a0)
+[<8010b1c8>] (do_work_pending) from [<801000cc>] (slow_work_pending+0xc/0x20)
+Exception stack(0x843f5fb0 to 0x843f5ff8)
+5fa0:                                     00000000 7ef63448 fffffffe 00000000
+5fc0: 7ef63448 76f163b0 7ef63448 00000006 7ef63448 7ef634e0 7ef63438 00000000
+5fe0: 00000006 7ef63400 76e74833 76dff856 800e0130 00000004
+task:optee_example_s state:D stack:    0 pid:  128 ppid:     1 flags:0x00000001
+[<807d3e24>] (__schedule) from [<807d41d0>] (schedule+0x60/0x120)
+[<807d41d0>] (schedule) from [<807d7ffc>] (schedule_timeout+0x1f4/0x340)
+[<807d7ffc>] (schedule_timeout) from [<807d56a0>] (wait_for_completion+0x94/0xfc)
+[<807d56a0>] (wait_for_completion) from [<8069359c>] (optee_handle_rpc+0x554/0x710)
+[<8069359c>] (optee_handle_rpc) from [<806924cc>] (optee_do_call_with_arg+0x13c/0x154)
+[<806924cc>] (optee_do_call_with_arg) from [<80692910>] (optee_invoke_func+0x110/0x190)
+[<80692910>] (optee_invoke_func) from [<8068fe3c>] (tee_ioctl+0x113c/0x1244)
+[<8068fe3c>] (tee_ioctl) from [<802892ec>] (sys_ioctl+0xe0/0xa24)
+[<802892ec>] (sys_ioctl) from [<80100060>] (ret_fast_syscall+0x0/0x54)
+Exception stack(0x8424ffa8 to 0x8424fff0)
+ffa0:                   00000000 7eb67584 00000003 8010a403 7eb67438 7eb675fc
+ffc0: 00000000 7eb67584 7eb67604 00000036 7eb67448 7eb674e0 7eb67438 00000000
+ffe0: 76ef7030 7eb6742c 76ee6469 76e83178
+OOM killer enabled.
+Restarting tasks ... done.
+PM: suspend exit
+sh: write error: Device or resource busy
 
-Thanks,
 
-	Ingo
+The patch set will switch to interruptible waits and add try_to_freeze to allow the waiting
+OP-TEE tasks to be frozen as well.
+
+---
+
+In my humble understanding without these patches OP-TEE tasks have only been frozen in user-space.
+With these patches it is possible that OP-TEE tasks are frozen although the OP-TEE command
+invocation didn't complete.
+I'm unable to judge if there are any OP-TEE implementations relying on the fact that suspend won't
+happen while the OP-TEE command invocation didn't complete.
+
+The theoretical alternative would be to prevent that tee-supplicant is frozen first.
+
+
+I was able to reproduce the issue in OP-TEE QEMU v7 using a modified version of
+optee_example_secure_storage (loop around REE FS read, support multi-session).
+See https://github.com/OP-TEE/optee_os/issues/4581 for details.
+
+After applying these patches (minor adjustments of the includes) I was no longer able to
+reproduce the issues.
+In my tests OP-TEE QEMU v7 did suspend and resume without troubles.
+
+I'm not able to test on other devices supporting OP-TEE.
+
+
+I decided to handle each of the locations the OP-TEE task could get stuck as a separate commit.
+The downside is that the above call stack doesn't really fit to any of the commits.
+
+Christoph Gellner (3):
+  tee: optee: Allow to freeze the task waiting for tee-supplicant
+  tee: optee: Allow to freeze while waiting for call_queue
+  tee: optee: Allow to freeze while waiting in
+    OPTEE_RPC_WAIT_QUEUE_SLEEP
+
+ drivers/tee/optee/call.c | 8 +++++++-
+ drivers/tee/optee/rpc.c  | 9 ++++++++-
+ drivers/tee/optee/supp.c | 3 +++
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
+-- 
+2.32.0.rc0
+
