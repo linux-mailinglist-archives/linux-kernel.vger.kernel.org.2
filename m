@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E161D391B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC455391B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbhEZPEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S235232AbhEZPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbhEZPEu (ORCPT
+        with ESMTP id S233472AbhEZPFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:04:50 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3027C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:03:16 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id b25so1323888iot.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:03:16 -0700 (PDT)
+        Wed, 26 May 2021 11:05:49 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CE0C061574;
+        Wed, 26 May 2021 08:04:17 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id r5so3033515lfr.5;
+        Wed, 26 May 2021 08:04:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yd9BkCgkqeJ67/8O8QywKaJ9wtr2QyuJ36blaYWY/JM=;
-        b=yHuqERU3TkbAe/bG033XfWs4GeDHGVLnIuQNaUt9VtitjN9iCorY3E2KG/d/w+NBT5
-         ShOtCRoO9B8P7yPD/CcBV6yFjjXLlJPcPcJfsQWUq4O7+eCuYLcl4aECmUSAMe57dcH7
-         tpOEXiSqyzB+x5qHcvM7zyChRabeTxA1/dySGnypT9TYtw/RAwMJKbv/tQFgy+Rgcu2U
-         yTu7cFn26ipm3gKRhAF+T4i3pqYTQI2n3TH6pwAl3JP4MPGTEB1PqOJTeMJd1IyaIPV2
-         dlXfER1MllTP+gTjSn86R3Vizo7smQXVWR7tIurIiuRbDQy7a62OHdgQyJqKpkqKfvXH
-         Wpaw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KX3mTJcobyHBIRoKcg4YudqAe4oQ4LVZkBgHwMBLcTs=;
+        b=RkHMB7GpLI3Ptu1yH+DydH3Y9tzPjzR/GFBb9HEJwGUwpJUNe3LS1mKeoNw6TsDHH/
+         cHI3frc4wwcmM17ZBkeoQNCy457/hILrlUWmXVKS7nmatJt4ZB5kj/4pLvcQXam7krg3
+         pMmG+ATXI3oO5fIv3cAqfCoAoyIu5IQ/NWPD0s0QkJFErlGUPAatmLtdS9Ku6eNqI+t3
+         VkZq5QIFDefFYdFWIlX4GpCtyd9WnplNFwe4qWguWqFTYjUNR1fMU2pKezrbtmdmGUoZ
+         nygjStaLJIMdTXWZntJ5yvNZpjUhOu0VJ8e5sPmVxfxcg4oUWRtmF84XKI+NylYu7KyQ
+         pa6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yd9BkCgkqeJ67/8O8QywKaJ9wtr2QyuJ36blaYWY/JM=;
-        b=DtUyHAPH7XLxn0DyVnz/JfbKbhJ/CFHSTCdBd0OEiqDB5xUXb60rnx8FNuUM5KY8ow
-         3iSJKVBPqkuqJA2QPo27a0LEpfTM0vfbZIqbAUWh3HQL9quyIq36ygo2puIspx3lBbV9
-         mviE+RERlRU3rC8tsmcGKjmCWRlkZIjbFj4aDxKssTpIXgVpBlA9S5ApPSbi0nGqZwWs
-         VfQtPi51tdmUTZno7+w1nT2c8tRsQhJHRibApF8owgJvn7AHCrWTFAZ9vea5PAztALRC
-         Quu4hEuszhh1byPGo9BlhamPzxI9Hgvn+BhTygGHIxAYIBRBVXi1I0yGnYAPnDtAiHwc
-         PFCg==
-X-Gm-Message-State: AOAM5331H3g5d+Mo5zXPBiJOUjxFyLRF3Ds+E5aQGNT0x8ZzaJM/7dZi
-        bWoruzhWvJHM9k/7xzbU53yRIVexp4N+80D2
-X-Google-Smtp-Source: ABdhPJxgiL9seMiRRDh/Q/XCkBfXu4i6STpw9ewvI1V/RFnO/RQs4fZChtSqAOIzk/F3q4MM5sWnQw==
-X-Received: by 2002:a5e:8a42:: with SMTP id o2mr24394616iom.144.1622041395719;
-        Wed, 26 May 2021 08:03:15 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id m8sm14720010ilh.38.2021.05.26.08.03.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 08:03:15 -0700 (PDT)
-Subject: Re: [PATCH v2] io-wq: Fix UAF when wakeup wqe in hash waitqueue
-To:     qiang.zhang@windriver.com, asml.silence@gmail.com
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210526050826.30500-1-qiang.zhang@windriver.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4b0a8cfa-938c-19fd-ee82-bd4426d55823@kernel.dk>
-Date:   Wed, 26 May 2021 09:03:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KX3mTJcobyHBIRoKcg4YudqAe4oQ4LVZkBgHwMBLcTs=;
+        b=q5VrRK2psZNIBDROPuVjmNbhNEgjTv2l22cFWt9cRVJMxSEYlueb2OeMGRK2YBpy+Q
+         6aBiYM6rKNctPkvSyhFVcGsDO72mZnunm832YFpDR+XDGxyIJPm25DlI+/5cgZXpOd0L
+         kEInaxqZ25vWw2KK3Vi0RZ9W8GLc8TR2V0hxxd2aE4hB57VyEKYGoIf4FYpKDtxQBtf2
+         QzHRA6fa2zlXs1SeFPuKD0V60CzcqY5wtq6wQn9aWuZMGuz8oWXFkGv2Ein5+hvMJ/zm
+         NQCDWIT3SqNiFAO0K8viuhbu+rYDM6uvLwGQUjLm/+MVM/H5GC0Le/27J8eM0r24O0fC
+         r7Ww==
+X-Gm-Message-State: AOAM532rqZkJFItKs+0ElKdx5wXOFa121dG2dwmChahWE0eeL1G/pv4q
+        IewGFQTh3Ub/IsRzvNj93PGQ1qy1REWkrwhDeJcWkw+Xc+E=
+X-Google-Smtp-Source: ABdhPJy3ZBLNOjbMpjCn4a0MBF0VNId/zr/BBgE8aLdGWjaN41TIVcXKGBZUcgtGtJmTWnJsiRFoocDy1iFt5xfK6KA=
+X-Received: by 2002:ac2:533a:: with SMTP id f26mr2466714lfh.424.1622041455695;
+ Wed, 26 May 2021 08:04:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526050826.30500-1-qiang.zhang@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1622008068-13474-1-git-send-email-u0084500@gmail.com>
+ <1622008068-13474-2-git-send-email-u0084500@gmail.com> <YK4oGB5cZ/DhG5vm@sirena.org.uk>
+In-Reply-To: <YK4oGB5cZ/DhG5vm@sirena.org.uk>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Wed, 26 May 2021 23:04:03 +0800
+Message-ID: <CADiBU393NchfrTmgPApNRqSVrTBGT+bs+H+m2UF_H3tSGLyFVQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] regulator: rt6160: Add support for Richtek RT6160
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 11:08 PM, qiang.zhang@windriver.com wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
-> 
-> BUG: KASAN: use-after-free in __wake_up_common+0x637/0x650
-> Read of size 8 at addr ffff8880304250d8 by task iou-wrk-28796/28802
-> 
-> Call Trace:
->  __dump_stack [inline]
->  dump_stack+0x141/0x1d7
->  print_address_description.constprop.0.cold+0x5b/0x2c6
->  __kasan_report [inline]
->  kasan_report.cold+0x7c/0xd8
->  __wake_up_common+0x637/0x650
->  __wake_up_common_lock+0xd0/0x130
->  io_worker_handle_work+0x9dd/0x1790
->  io_wqe_worker+0xb2a/0xd40
->  ret_from_fork+0x1f/0x30
-> 
-> Allocated by task 28798:
->  kzalloc_node [inline]
->  io_wq_create+0x3c4/0xdd0
->  io_init_wq_offload [inline]
->  io_uring_alloc_task_context+0x1bf/0x6b0
->  __io_uring_add_task_file+0x29a/0x3c0
->  io_uring_add_task_file [inline]
->  io_uring_install_fd [inline]
->  io_uring_create [inline]
->  io_uring_setup+0x209a/0x2bd0
->  do_syscall_64+0x3a/0xb0
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 28798:
->  kfree+0x106/0x2c0
->  io_wq_destroy+0x182/0x380
->  io_wq_put [inline]
->  io_wq_put_and_exit+0x7a/0xa0
->  io_uring_clean_tctx [inline]
->  __io_uring_cancel+0x428/0x530
->  io_uring_files_cancel
->  do_exit+0x299/0x2a60
->  do_group_exit+0x125/0x310
->  get_signal+0x47f/0x2150
->  arch_do_signal_or_restart+0x2a8/0x1eb0
->  handle_signal_work[inline]
->  exit_to_user_mode_loop [inline]
->  exit_to_user_mode_prepare+0x171/0x280
->  __syscall_exit_to_user_mode_work [inline]
->  syscall_exit_to_user_mode+0x19/0x60
->  do_syscall_64+0x47/0xb0
->  entry_SYSCALL_64_after_hwframe
-> 
-> There are the following scenarios, hash waitqueue is shared by
-> io-wq1 and io-wq2. (note: wqe is worker)
-> 
-> io-wq1:worker2     | locks bit1
-> io-wq2:worker1     | waits bit1
-> io-wq1:worker3     | waits bit1
-> 
-> io-wq1:worker2     | completes all wqe bit1 work items
-> io-wq1:worker2     | drop bit1, exit
-> 
-> io-wq2:worker1     | locks bit1
-> io-wq1:worker3     | can not locks bit1, waits bit1 and exit
-> io-wq1             | exit and free io-wq1
-> io-wq2:worker1     | drops bit1
-> io-wq1:worker3     | be waked up, even though wqe is freed
-> 
-> After all iou-wrk belonging to io-wq1 have exited, remove wqe
-> form hash waitqueue, it is guaranteed that there will be no more
-> wqe belonging to io-wq1 in the hash waitqueue.
+HI:
 
-Thanks, applied.
+Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:50=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, May 26, 2021 at 01:47:48PM +0800, cy_huang wrote:
+>
+> This looks mostly good, a few small issues below:
+>
+> > +static int rt6160_set_suspend_voltage(struct regulator_dev *rdev, int =
+uV)
+> > +{
+> > +     struct rt6160_priv *priv =3D rdev_get_drvdata(rdev);
+> > +     struct regmap *regmap =3D rdev_get_regmap(rdev);
+> > +     unsigned int reg =3D RT6160_REG_VSELH;
+> > +     int vsel;
+> > +
+> > +     vsel =3D regulator_map_voltage_linear(rdev, uV, uV);
+> > +     if (vsel < 0)
+> > +             return vsel;
+> > +
+> > +     if (priv->vsel_active_low)
+> > +             reg =3D RT6160_REG_VSELL;
+> > +
+> > +     return regmap_update_bits(regmap, reg, RT6160_VSEL_MASK, vsel);
+> > +}
+>
+> This seems to just be updating the normal voltage configuration
+> regulator, the suspend mode operations are there for devices that
+> have a hardware suspend mode that's entered as part of the very
+> low level system suspend process.
+>
+There's a independent 'vsel' pin. It depend on user's HW design.
+And that's why there's a 'richtek,vsel_active_low' property.
+Its normal application is to use vsel high active level, and it means
+the opposite level can be used for the suspend voltage
 
--- 
-Jens Axboe
-
+And there're also two voltage registers for vsel level high and low.
+> > +static int rt6160_set_ramp_delay(struct regulator_dev *rdev, int ramp_=
+delay)
+> > +{
+> > +     struct regmap *regmap =3D rdev_get_regmap(rdev);
+> > +     unsigned int ramp_value =3D RT6160_RAMPRATE_1VMS;
+> > +
+> > +     switch (ramp_delay) {
+> > +     case 1 ... 1000:
+> > +             ramp_value =3D RT6160_RAMPRATE_1VMS;
+> > +             break;
+>
+> This looks like it could be converted to regulator_set_ramp_delay_regmap(=
+)
+>
+I didn't notice there's the regulator_set_ramp_delay_regmap API that
+can be used in kernel 5.13.
+Ack in next.
+> > +static unsigned int rt6160_of_map_mode(unsigned int mode)
+> > +{
+> > +     if (mode =3D=3D RT6160_MODE_FPWM)
+> > +             return REGULATOR_MODE_FAST;
+> > +     else if (mode =3D=3D RT6160_MODE_AUTO)
+> > +             return REGULATOR_MODE_NORMAL;
+> > +
+>
+> This would be more idiomatically written as a switch statement.
+>
+Ack in next. Change the if-else to switch case. Thx.
+> > +     enable_gpio =3D devm_gpiod_get_optional(&i2c->dev, "enable", GPIO=
+D_OUT_HIGH);
+> > +     if (IS_ERR(enable_gpio)) {
+> > +             dev_err(&i2c->dev, "Failed to get 'enable' gpio\n");
+> > +             return PTR_ERR(enable_gpio);
+> > +     }
+>
+> There's no other references to enable_gpio?
+>
+The IC is designed for low IQ.
+So from the driver probe, I only need to keep 'enable' pin high.
+Or if user specify the 'enable' gpio, it will block i2c communication,
+register also be reset,
+and add more delay time on enable/disable.
+That's why there's no other references to 'enable' gpio.
+> > +     regmap =3D devm_regmap_init_i2c(i2c, &rt6160_regmap_config);
+> > +     if (IS_ERR(regmap)) {
+> > +             dev_err(&i2c->dev, "Failed to init regmap\n");
+> > +             return PTR_ERR(regmap);
+> > +     }
+>
+> It's better to print the error code to help anyone who runs into
+> issues figure out what's wrong.
+Sure, change it to dev_err(&i2c->dev, "Failed to init regmap (%d)\n",
+PTR_ERR(regmap));
+Ack in next, thx.
