@@ -2,299 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117B3392253
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A19392257
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbhEZVvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:51:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50008 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234205AbhEZVvB (ORCPT
+        id S234263AbhEZVvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:51:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233790AbhEZVvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:51:01 -0400
-Received: from x64host.home (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 29A1220B8008;
-        Wed, 26 May 2021 14:49:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 29A1220B8008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622065769;
-        bh=ESpyZLlRv061AvnJH30Utw2fdRza4055Ovdy85dsDXg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=f/Vyemg+FkJKCXaxElSXEgx9V5gTmlvl9sXoxlz52UakYV8r8xF59xccvCfphZF4X
-         PcC5OOk1riwJPduVhGoVKI5As2mZnb2gDPo5LR0m1hpaZNDo6ueRoQ1J2CbuAjZLtn
-         AAW7d5+BrxmRcQy03Gdwl9kFHwgLpw9hShcr0uNM=
-From:   madvenka@linux.microsoft.com
-To:     broonie@kernel.org, mark.rutland@arm.com, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com, catalin.marinas@arm.com,
-        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
-        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions, check return PC against list
-Date:   Wed, 26 May 2021 16:49:17 -0500
-Message-Id: <20210526214917.20099-3-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210526214917.20099-1-madvenka@linux.microsoft.com>
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
+        Wed, 26 May 2021 17:51:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622065805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s2jDM/TpmfLpzDZ7Dd8kJfaXr/uLu6JzfCGH8PAhY6A=;
+        b=htI3YB/aTJlrd299nfRLiek/B2z1u5bsWwAg/L/u4jA+rxjJxkbUFELi++C0aGHoswZe4K
+        jALiICGS6EwTnnYHvE/opfN9cFzhC0AoUihjvsGLc2s+ECUi04MFk0MNVVzrPCvuwS0ezD
+        u4iXWNMlfoxzVaTyO9LNemRo9BjpRXk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-5lkVHQU2PUe9mTx4XTdMzw-1; Wed, 26 May 2021 17:50:01 -0400
+X-MC-Unique: 5lkVHQU2PUe9mTx4XTdMzw-1
+Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso781671wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:50:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s2jDM/TpmfLpzDZ7Dd8kJfaXr/uLu6JzfCGH8PAhY6A=;
+        b=E+5JDh3YlIJJhHjmyL+glS1tjDJ0d3K77iMIoPx6tOw6KCf4NTshUNy8Ez67/uK7yV
+         niXo3Nw+CaPbwdDv/Hrnw0xinHui0fd5cafodq4IV0wLk+smRtGTZOgVcJw43UPTSG5B
+         hgdTFLWVxEWbKG3ip7ChinT4q9lnLnphzG/OnSDcVqn0pXfBbF7yG+hOInzD6i1LGnwY
+         ZV2PnMNC0dT/o8nw7nzu2jqod8G8FEWe/Pl9LsSkKIB0AjXnybGyJ1Jb70LQvbt3Ko36
+         dWfCngbuIGXhTqK8sZo7QNqDbo7QxvLPBQGKFBJAp7GwyW2nldKzHZzaj7Wcm/8Ca5OW
+         hFoA==
+X-Gm-Message-State: AOAM531Br+9jPkKkhRU4ZJRfZXlSIW+tA+dLmmFLrQMtjlnDJ4V6feoe
+        8x4l7SnWYx3jEAKEmTdvls40qO/OR5mzmLnts7xg1fLwMFLFWUSWtHtk5hcWaHs+ydHkQgLIUur
+        1ClpE/l+cUQvzeD1bNrmpXdyo
+X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr85975wrx.320.1622065800500;
+        Wed, 26 May 2021 14:50:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzX3XLrans83aVeEW49CvKbVeLkqlNa3AgNJRBQ+d+nHfyxrTBw4pmjGbjCUesYgRVfH6dHEg==
+X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr85963wrx.320.1622065800347;
+        Wed, 26 May 2021 14:50:00 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id f14sm235371wry.40.2021.05.26.14.49.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 14:49:59 -0700 (PDT)
+Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
+ the build
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <20210518142302.1046718-1-javierm@redhat.com>
+ <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
+ <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
+ <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <a5004a7e-14bf-4fb1-beec-9dc19165f2d2@redhat.com>
+Date:   Wed, 26 May 2021 23:49:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+On 5/26/21 11:02 PM, Andrii Nakryiko wrote:
 
-The unwinder should check if the return PC falls in any function that
-is considered unreliable from an unwinding perspective. If it does,
-mark the stack trace unreliable.
+[snip]
 
-Function types
-==============
+>>
+>> BTW, I see similar code in scripts/link-vmlinux.sh too.
+>>
+>>      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
+>>
+>> Is it OK to leave it unquoted?
+> 
+> You are right, link-vmlinux.sh should be updated accordingly.
+>
 
-The compiler generates code for C functions and assigns the type STT_FUNC
-to them.
-
-Assembly functions are manually assigned a type:
-
-	- STT_FUNC for functions defined with SYM_FUNC*() macros
-
-	- STT_NONE for functions defined with SYM_CODE*() macros
-
-In the future, STT_FUNC functions will be analyzed by objtool and "fixed"
-as necessary. So, they are not "interesting" to the reliable unwinder in
-the kernel.
-
-That leaves SYM_CODE*() functions. These contain low-level code that is
-difficult or impossible for objtool to analyze. So, objtool ignores them
-leaving them to the reliable unwinder. These functions must be considered
-unreliable from an unwinding perspective.
-
-Define a special section for unreliable functions
-=================================================
-
-Define a SYM_CODE_END() macro for arm64 that adds the function address
-range to a new section called "sym_code_functions".
-
-Linker file
-===========
-
-Include the "sym_code_functions" section under initdata in vmlinux.lds.S.
-
-Initialization
-==============
-
-Define an early_initcall() to copy the function address ranges from the
-"sym_code_functions" section to an array by the same name.
-
-Unwinder check
-==============
-
-Define a function called unwinder_is_unreliable() that compares a return
-PC with sym_code_functions[]. If there is a match, then mark the stack trace
-as unreliable. Call unwinder_is_unreliable() from unwind_frame().
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm64/include/asm/linkage.h  |  12 +++
- arch/arm64/include/asm/sections.h |   1 +
- arch/arm64/kernel/stacktrace.c    | 118 +++++++++++++++++++++++++++++-
- arch/arm64/kernel/vmlinux.lds.S   |   7 ++
- 4 files changed, 137 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
-index ba89a9af820a..3b5f1fd332b0 100644
---- a/arch/arm64/include/asm/linkage.h
-+++ b/arch/arm64/include/asm/linkage.h
-@@ -60,4 +60,16 @@
- 		SYM_FUNC_END(x);		\
- 		SYM_FUNC_END_ALIAS(__pi_##x)
+Good catch. I'll include this in v2 as well.
  
-+/*
-+ * Record the address range of each SYM_CODE function in a struct code_range
-+ * in a special section.
-+ */
-+#define SYM_CODE_END(name)				\
-+	SYM_END(name, SYM_T_NONE)			;\
-+	99:						;\
-+	.pushsection "sym_code_functions", "aw"		;\
-+	.quad	name					;\
-+	.quad	99b					;\
-+	.popsection
-+
- #endif
-diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
-index 2f36b16a5b5d..29cb566f65ec 100644
---- a/arch/arm64/include/asm/sections.h
-+++ b/arch/arm64/include/asm/sections.h
-@@ -20,5 +20,6 @@ extern char __exittext_begin[], __exittext_end[];
- extern char __irqentry_text_start[], __irqentry_text_end[];
- extern char __mmuoff_data_start[], __mmuoff_data_end[];
- extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
-+extern char __sym_code_functions_start[], __sym_code_functions_end[];
+> Javier, can you please send v2 and cc bpf@vger.kernel.org? Thanks!
+>
+
+Sure, thanks!
  
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 9061375c8785..5477a9d39b12 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -18,6 +18,109 @@
- #include <asm/stack_pointer.h>
- #include <asm/stacktrace.h>
- 
-+struct code_range {
-+	unsigned long	start;
-+	unsigned long	end;
-+};
-+
-+static struct code_range	*sym_code_functions;
-+static int			num_sym_code_functions;
-+
-+int __init init_sym_code_functions(void)
-+{
-+	size_t size;
-+
-+	size = (unsigned long)__sym_code_functions_end -
-+	       (unsigned long)__sym_code_functions_start;
-+
-+	sym_code_functions = kmalloc(size, GFP_KERNEL);
-+	if (!sym_code_functions)
-+		return -ENOMEM;
-+
-+	memcpy(sym_code_functions, __sym_code_functions_start, size);
-+	/* Update num_sym_code_functions after copying sym_code_functions. */
-+	smp_mb();
-+	num_sym_code_functions = size / sizeof(struct code_range);
-+
-+	return 0;
-+}
-+early_initcall(init_sym_code_functions);
-+
-+/*
-+ * Check the return PC against sym_code_functions[]. If there is a match, then
-+ * the consider the stack frame unreliable. These functions contain low-level
-+ * code where the frame pointer and/or the return address register cannot be
-+ * relied upon. This addresses the following situations:
-+ *
-+ *	- Exception handlers and entry assembly
-+ *	- Trampoline assembly (e.g., ftrace, kprobes)
-+ *	- Hypervisor-related assembly
-+ *	- Hibernation-related assembly
-+ *	- CPU start-stop, suspend-resume assembly
-+ *	- Kernel relocation assembly
-+ *
-+ * Some special cases covered by sym_code_functions[] deserve a mention here:
-+ *
-+ *	- All EL1 interrupt and exception stack traces will be considered
-+ *	  unreliable. This is the correct behavior as interrupts and exceptions
-+ *	  can happen on any instruction including ones in the frame pointer
-+ *	  prolog and epilog. Unless stack metadata is available so the unwinder
-+ *	  can unwind through these special cases, such stack traces will be
-+ *	  considered unreliable.
-+ *
-+ *	- A task can get preempted at the end of an interrupt. Stack traces
-+ *	  of preempted tasks will show the interrupt frame in the stack trace
-+ *	  and will be considered unreliable.
-+ *
-+ *	- Breakpoints are exceptions. So, all stack traces in the break point
-+ *	  handler (including probes) will be considered unreliable.
-+ *
-+ *	- All of the ftrace entry trampolines are considered unreliable. So,
-+ *	  all stack traces taken from tracer functions will be considered
-+ *	  unreliable.
-+ *
-+ *	- The Function Graph Tracer return trampoline (return_to_handler)
-+ *	  and the Kretprobe return trampoline (kretprobe_trampoline) are
-+ *	  also considered unreliable.
-+ *
-+ * Some of the special cases above can be unwound through using special logic
-+ * in unwind_frame().
-+ *
-+ *	- return_to_handler() is handled by the unwinder by attempting to
-+ *	  retrieve the original return address from the per-task return
-+ *	  address stack.
-+ *
-+ *	- kretprobe_trampoline() can be handled in a similar fashion by
-+ *	  attempting to retrieve the original return address from the per-task
-+ *	  kretprobe instance list.
-+ *
-+ *	- I reckon optprobes can be handled in a similar fashion in the future?
-+ *
-+ *	- Stack traces taken from the FTrace tracer functions can be handled
-+ *	  as well. ftrace_call is an inner label defined in the Ftrace entry
-+ *	  trampoline. This is the location where the call to a tracer function
-+ *	  is patched. So, if the return PC equals ftrace_call+4, it is
-+ *	  reliable. At that point, proper stack frames have already been set
-+ *	  up for the traced function and its caller.
-+ */
-+static bool unwinder_is_unreliable(unsigned long pc)
-+{
-+	const struct code_range *range;
-+	int i;
-+
-+	/*
-+	 * If sym_code_functions[] were sorted, a binary search could be
-+	 * done to make this more performant.
-+	 */
-+	for (i = 0; i < num_sym_code_functions; i++) {
-+		range = &sym_code_functions[i];
-+		if (pc >= range->start && pc < range->end)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * AArch64 PCS assigns the frame pointer to x29.
-  *
-@@ -133,7 +236,20 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- 	 *	- Foreign code (e.g. EFI runtime services)
- 	 *	- Procedure Linkage Table (PLT) entries and veneer functions
- 	 */
--	if (!__kernel_text_address(frame->pc))
-+	if (!__kernel_text_address(frame->pc)) {
-+		frame->reliable = false;
-+		return 0;
-+	}
-+
-+	/*
-+	 * If the final frame has been reached, there is no more unwinding
-+	 * to do. There is no need to check if the return PC is considered
-+	 * unreliable by the unwinder.
-+	 */
-+	if (!frame->fp)
-+		return 0;
-+
-+	if (unwinder_is_unreliable(frame->pc))
- 		frame->reliable = false;
- 
- 	return 0;
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 7eea7888bb02..32e8d57397a1 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -103,6 +103,12 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SYM_CODE_FUNCTIONS                                     \
-+       . = ALIGN(16);                                           \
-+       __sym_code_functions_start = .;                         \
-+       KEEP(*(sym_code_functions))                             \
-+       __sym_code_functions_end = .;
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -218,6 +224,7 @@ SECTIONS
- 		CON_INITCALL
- 		INIT_RAM_FS
- 		*(.init.altinstructions .init.bss)	/* from the EFI stub */
-+               SYM_CODE_FUNCTIONS
- 	}
- 	.exit.data : {
- 		EXIT_DATA
+Best regards,
 -- 
-2.25.1
+Javier Martinez Canillas
+Software Engineer
+New Platform Technologies Enablement team
+RHEL Engineering
 
