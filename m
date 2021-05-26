@@ -2,387 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BFF391905
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D144F391907
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhEZNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:42:50 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:60445 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhEZNmt (ORCPT
+        id S233428AbhEZNnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:43:10 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:55337 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233304AbhEZNnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:42:49 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E1E4EC0007;
-        Wed, 26 May 2021 13:41:13 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v2] riscv: Map the kernel with correct permissions the first time
-Date:   Wed, 26 May 2021 15:41:10 +0200
-Message-Id: <20210526134110.217073-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 26 May 2021 09:43:08 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id ltmrlTu1XWkKbltmulDNIB; Wed, 26 May 2021 15:41:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622036493; bh=pbfotMPo+JMAllo3pDgMOiJij6DQTsGzbfoMYCwF3Ls=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=rk7K+ueZFEkNBksOSUjoAybneO+Rq0LeHfd/xKkT/9QveiWHWlH+win0nY+rtUMtO
+         XcUQMHrRdEmRkUIng94PerMBbrU8S+DSxHqBP83w74yn6pGASe1ZlbU8HbEyjCTiRw
+         EfG63XxjK7HLUZ7Ig5jABucImglfCa2njldHU7OZJ3oIO91LLISEoVKu6Kxe5nMqkl
+         pBF09nfw1vfUCvhdE8xX4nbYIU7DoxYFcKZ+b2pmmq/QXOIEOz2lgs7cOi/wr/IA27
+         Y1u0Ak8pj+cCItaqXVi8DY31VZ1bn4Z+XT36zrJDCYlI7+ZNkHGQEY0gczA5O7N0Jc
+         +VYtDNKTPVDFQ==
+Subject: Re: [PATCH] media: s5p-g2d: Fix a memory leak on ctx->fh.m2m_ctx
+To:     dillon.minfei@gmail.com, mchehab+huawei@kernel.org,
+        a.hajda@samsung.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1620706164-28856-1-git-send-email-dillon.minfei@gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <2193bb5c-89c3-cb1a-f2ef-1389ccfb7d61@xs4all.nl>
+Date:   Wed, 26 May 2021 15:41:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1620706164-28856-1-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMxCTRiyuTgwtVFqwRQpu+18Vo3y2/UVXkddCLUmD6pyNesvtDJ5MkHefKYpjQwihlAjajaJFXuAuWwmTPkgx6KJy717o1c6d6wR4GljrlKc7jIBv7AW
+ yV5M1Mv4IhpOhgFpBC1KMPJie5gl9har1+i8uRna6klut14SRKnENPzBzGXuA5gcVRT7xz5ru/2IkyDzcjzP+x0G6F4M649ysV0XQQU1r5LOhvG4LUlwIGpp
+ fDaNlDjHH2R19uKC6DvtW5YajSosO9Jt5CFtmqTaO3TGIoVTGZzUXBjTMSC+MSiI1nHtNijwJXOZw1QG351SWXYGy04fu/95SByIcXfVAOz4OvRPcJelbvrE
+ fqHMu3rYuEhhlgN0rYMsUQn8rfawX+27LSY7nrq4EscuJEYHheM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For 64b kernels, we map all the kernel with write and execute permissions
-and afterwards remove writability from text and executability from data.
+On 11/05/2021 06:09, dillon.minfei@gmail.com wrote:
+> From: Dillon Min <dillon.minfei@gmail.com>
+> 
+> The m2m_ctx resources was allocated by v4l2_m2m_ctx_init() in g2d_open()
+> should be freed from g2d_release() when it's not used.
+> 
+> Fix it
+> 
+> Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> ---
+>  drivers/media/platform/s5p-g2d/g2d.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
+> index 15bcb7f6e113..0818fdd3e984 100644
+> --- a/drivers/media/platform/s5p-g2d/g2d.c
+> +++ b/drivers/media/platform/s5p-g2d/g2d.c
+> @@ -279,6 +279,9 @@ static int g2d_release(struct file *file)
+>  	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
+>  	v4l2_fh_del(&ctx->fh);
+>  	v4l2_fh_exit(&ctx->fh);
+> +	mutex_lock(&dev->mutex);
+> +	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
+> +	mutex_unlock(&dev->mutex);
 
-For 32b kernels, the kernel mapping resides in the linear mapping, so we
-map all the linear mapping as writable and executable and afterwards we
-remove those properties for unused memory and kernel mapping as
-described above.
+This should be moved up to just before the v4l2_ctrl_handler_free() call.
 
-Change this behavior to directly map the kernel with correct permissions
-and avoid going through the whole mapping to fix the permissions.
+Regards,
 
-At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
-("riscv: Move kernel mapping outside of linear mapping") as reported
-here https://github.com/starfive-tech/linux/issues/17.
+	Hans
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
-
-Changes in v2:
-* Rebased on top of for-next (and "riscv: mm: fix build errors caused by
-  mk_pmd()")
-* Get rid of protect_kernel_linear_mapping_text_rodata as suggested by
-  Jisheng
-* Improve code in general compared to previous RFC
-
-Tested on:
-
-* kernel
-- rv32: OK
-- rv64: OK
-
-* kernel w/o CONFIG_STRICT_KERNEL_RWX:
-- rv32: OK
-- rv64: OK
-
-* xipkernel:
-- rv32: build only
-- rv64: OK
-
-* nommukernel:
-- rv64: build only
-
- arch/riscv/include/asm/page.h       |   9 +-
- arch/riscv/include/asm/sections.h   |  16 ++++
- arch/riscv/include/asm/set_memory.h |   8 --
- arch/riscv/kernel/setup.c           |   5 --
- arch/riscv/mm/init.c                | 123 +++++++++++++++-------------
- 5 files changed, 89 insertions(+), 72 deletions(-)
-
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 6e004d8fda4d..7ff5e0d81e41 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -95,6 +95,7 @@ extern unsigned long va_kernel_pa_offset;
- #endif
- extern unsigned long va_kernel_xip_pa_offset;
- extern unsigned long pfn_base;
-+extern uintptr_t load_sz;
- #define ARCH_PFN_OFFSET		(pfn_base)
- #else
- #define va_pa_offset		0
-@@ -108,6 +109,9 @@ extern unsigned long pfn_base;
- extern unsigned long kernel_virt_addr;
- 
- #ifdef CONFIG_64BIT
-+#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-+#define is_linear_mapping(x)	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
-+
- #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
- #define kernel_mapping_pa_to_va(y)	({						\
- 	unsigned long _y = y;								\
-@@ -127,10 +131,13 @@ extern unsigned long kernel_virt_addr;
- 
- #define __va_to_pa_nodebug(x)	({						\
- 	unsigned long _x = x;							\
--	(_x < kernel_virt_addr) ?						\
-+	is_linear_mapping(_x) ?							\
- 		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
- 	})
- #else
-+#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-+#define is_linear_mapping(x)	((x) >= PAGE_OFFSET)
-+
- #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
- #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
- #endif /* CONFIG_64BIT */
-diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-index 8a303fb1ee3b..6b5affecca83 100644
---- a/arch/riscv/include/asm/sections.h
-+++ b/arch/riscv/include/asm/sections.h
-@@ -6,6 +6,7 @@
- #define __ASM_SECTIONS_H
- 
- #include <asm-generic/sections.h>
-+#include <linux/mm.h>
- 
- extern char _start[];
- extern char _start_kernel[];
-@@ -13,4 +14,19 @@ extern char __init_data_begin[], __init_data_end[];
- extern char __init_text_begin[], __init_text_end[];
- extern char __alt_start[], __alt_end[];
- 
-+static inline bool is_va_kernel_text(uintptr_t va)
-+{
-+	return (va >= (uintptr_t)_start && va < (uintptr_t)__init_text_begin);
-+}
-+
-+static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
-+{
-+	return (va >= (uintptr_t)lm_alias(_start) && va < (uintptr_t)lm_alias(__init_text_begin));
-+}
-+
-+static inline bool is_va_kernel_init_text(uintptr_t va)
-+{
-+	return (va >= (uintptr_t)__init_text_begin && va < (uintptr_t)__init_data_begin);
-+}
-+
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 086f757e8ba3..ebb8516ec5bc 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -16,22 +16,14 @@ int set_memory_rw(unsigned long addr, int numpages);
- int set_memory_x(unsigned long addr, int numpages);
- int set_memory_nx(unsigned long addr, int numpages);
- int set_memory_rw_nx(unsigned long addr, int numpages);
--void protect_kernel_text_data(void);
- #else
- static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
--static inline void protect_kernel_text_data(void) {}
- static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
- #endif
- 
--#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
--void protect_kernel_linear_mapping_text_rodata(void);
--#else
--static inline void protect_kernel_linear_mapping_text_rodata(void) {}
--#endif
--
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
- bool kernel_page_present(struct page *page);
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 4db4d0b5911f..96f483e7c279 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -290,11 +290,6 @@ void __init setup_arch(char **cmdline_p)
- 	init_resources();
- 	sbi_init();
- 
--	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
--		protect_kernel_text_data();
--		protect_kernel_linear_mapping_text_rodata();
--	}
--
- #ifdef CONFIG_SWIOTLB
- 	swiotlb_init(1);
- #endif
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 2d80088f33d5..4b1bcbbd50aa 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -425,6 +425,63 @@ asmlinkage void __init __copy_data(void)
- }
- #endif
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+static __init pgprot_t pgprot_from_va(uintptr_t va)
-+{
-+#ifdef CONFIG_64BIT
-+	if (is_va_kernel_text(va) || is_va_kernel_init_text(va))
-+		return PAGE_KERNEL_READ_EXEC;
-+
-+	/*
-+	 * We must mark only text as read-only as init text will get freed later
-+	 * and rodata section is marked readonly in mark_rodata_ro.
-+	 */
-+	if (is_va_kernel_lm_alias_text(va))
-+		return PAGE_KERNEL_READ;
-+
-+	return PAGE_KERNEL;
-+#else
-+	if (is_va_kernel_text(va))
-+		return PAGE_KERNEL_READ_EXEC;
-+
-+	if (is_va_kernel_init_text(va))
-+		return PAGE_KERNEL_EXEC;
-+
-+	return PAGE_KERNEL;
-+#endif /* CONFIG_64BIT */
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	unsigned long rodata_start = (unsigned long)__start_rodata;
-+	unsigned long data_start = (unsigned long)_data;
-+	unsigned long __maybe_unused lm_rodata_start = (unsigned long)lm_alias(__start_rodata);
-+	unsigned long __maybe_unused lm_data_start = (unsigned long)lm_alias(_data);
-+
-+	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-+#ifdef CONFIG_64BIT
-+	set_memory_ro(lm_rodata_start, (lm_data_start - lm_rodata_start) >> PAGE_SHIFT);
-+#endif
-+
-+	debug_checkwx();
-+}
-+#else /* CONFIG_STRICT_KERNEL_RWX */
-+static __init pgprot_t pgprot_from_va(uintptr_t va)
-+{
-+#ifdef CONFIG_64BIT
-+	if (is_kernel_mapping(va))
-+		return PAGE_KERNEL_EXEC;
-+
-+	if (is_linear_mapping(va))
-+		return PAGE_KERNEL;
-+
-+	return PAGE_KERNEL;
-+#else
-+	return PAGE_KERNEL_EXEC;
-+#endif /* CONFIG_64BIT */
-+}
-+#endif /* CONFIG_STRICT_KERNEL_RWX */
-+
- /*
-  * setup_vm() is called from head.S with MMU-off.
-  *
-@@ -454,7 +511,8 @@ uintptr_t xiprom, xiprom_sz;
- #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
- #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
- 
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
-+					    __always_unused bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -473,7 +531,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 				   map_size, PAGE_KERNEL);
- }
- #else
--static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-+static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
- {
- 	uintptr_t va, end_va;
- 
-@@ -481,7 +539,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
- 	for (va = kernel_virt_addr; va < end_va; va += map_size)
- 		create_pgd_mapping(pgdir, va,
- 				   load_pa + (va - kernel_virt_addr),
--				   map_size, PAGE_KERNEL_EXEC);
-+				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
- }
- #endif
- 
-@@ -558,7 +616,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	 * us to reach paging_init(). We map all memory banks later
- 	 * in setup_vm_final() below.
- 	 */
--	create_kernel_page_table(early_pg_dir, map_size);
-+	create_kernel_page_table(early_pg_dir, map_size, true);
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 	/* Setup early PMD for DTB */
-@@ -634,22 +692,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- #endif
- }
- 
--#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
--void protect_kernel_linear_mapping_text_rodata(void)
--{
--	unsigned long text_start = (unsigned long)lm_alias(_start);
--	unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
--	unsigned long rodata_start = (unsigned long)lm_alias(__start_rodata);
--	unsigned long data_start = (unsigned long)lm_alias(_data);
--
--	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--	set_memory_nx(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--
--	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--}
--#endif
--
- static void __init setup_vm_final(void)
- {
- 	uintptr_t va, map_size;
-@@ -682,21 +724,15 @@ static void __init setup_vm_final(void)
- 		map_size = best_map_size(start, end - start);
- 		for (pa = start; pa < end; pa += map_size) {
- 			va = (uintptr_t)__va(pa);
--			create_pgd_mapping(swapper_pg_dir, va, pa,
--					   map_size,
--#ifdef CONFIG_64BIT
--					   PAGE_KERNEL
--#else
--					   PAGE_KERNEL_EXEC
--#endif
--					);
- 
-+			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
-+					   pgprot_from_va(va));
- 		}
- 	}
- 
- #ifdef CONFIG_64BIT
- 	/* Map the kernel */
--	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
-+	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
- #endif
- 
- 	/* Clear fixmap PTE and PMD mappings */
-@@ -727,35 +763,6 @@ static inline void setup_vm_final(void)
- }
- #endif /* CONFIG_MMU */
- 
--#ifdef CONFIG_STRICT_KERNEL_RWX
--void __init protect_kernel_text_data(void)
--{
--	unsigned long text_start = (unsigned long)_start;
--	unsigned long init_text_start = (unsigned long)__init_text_begin;
--	unsigned long init_data_start = (unsigned long)__init_data_begin;
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
--
--	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
--	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
--	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
--	/* rodata section is marked readonly in mark_rodata_ro */
--	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
--}
--
--void mark_rodata_ro(void)
--{
--	unsigned long rodata_start = (unsigned long)__start_rodata;
--	unsigned long data_start = (unsigned long)_data;
--
--	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
--
--	debug_checkwx();
--}
--#endif
--
- #ifdef CONFIG_KEXEC_CORE
- /*
-  * reserve_crashkernel() - reserves memory for crash kernel
--- 
-2.30.2
+>  	kfree(ctx);
+>  	v4l2_info(&dev->v4l2_dev, "instance closed\n");
+>  	return 0;
+> 
 
