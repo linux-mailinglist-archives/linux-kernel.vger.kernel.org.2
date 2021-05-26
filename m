@@ -2,152 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B63839154E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767C8391550
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbhEZKtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhEZKtG (ORCPT
+        id S234149AbhEZKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:50:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48228 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233959AbhEZKuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:49:06 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB30FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:47:34 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 124so449586qkh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=exoErGopz9r9cmPj/pYTClm6/JTZ0qnY8Xv04MntANI=;
-        b=HtZQ/bpZsETEJcs3hZ5U3xBUjslSxSDA5XLgGKcYpNKpwxKxHEBF6X54A5uhwprlbq
-         ZME7cv4tAK4W0YLv6UhFO3vpsoopFR7WNbD7BJnHfWN1wX82F2ea0iRk7q/4QtY1nzBS
-         74Dnj74ikMda+k7NSSlmUYuwVckorHM2wlIx3U+ZNC09A3RP5e3aYBFyNXyO3+uWgIfk
-         gXUgr0KYzVSYwMqMzm8JhW0tkONUqFlBmK+5RuTI9QHxhPFmD5Zp+1oD1evn0ylyLILV
-         KSNLXLssT0DGXXGgmqh0oPasqEOl/S71T3BtagDyboyDc8jAFvpwlkV5HUjvcUsXH1N3
-         5oLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=exoErGopz9r9cmPj/pYTClm6/JTZ0qnY8Xv04MntANI=;
-        b=G+CAJqR5IUCYLMinAPMh3ywwpS0EwqiIsXJy7xZeJwf2DvftokeBCLj30xz+TDDLRg
-         qsk5KRKkxCTniLU+GVGzBpM9h9tp7kJINLUITDI3r/I7RCrD8fnFzh7o6qR+FCpiJccn
-         wk4UVFhvA5s+brwvBCFb+S9tqFD8zkoJ4BAUht5y580t+hoobxkF7EJ4tIh81YUY26Vq
-         ITRXg87wdLSY1VoYsKe4QmwgOeixKdZCFURyru7JT4/RjAQIhYDoY8N6JLuMJMuk7Q8z
-         HkTMEmYsLDGH/J4Qsf2+7uzi/niYl9LT6E9j+Nola2Ya3eOBB7BIHDBxc7nzeru3+pfn
-         fTPg==
-X-Gm-Message-State: AOAM5330sKfP+JaI1TJxl4kAvzLUwRe8aQ/qP4dN9Tt6c8KIXZ/wpAH1
-        s3Qh6Jv+mk1n2fjsg31YUyo=
-X-Google-Smtp-Source: ABdhPJxyYsXpqATJqMsGypLpbQUz+iPDDWELGalSguhvQhCkFOCsWoxBCaoz/Xi74Z4TNPCtRBoChw==
-X-Received: by 2002:a37:38d:: with SMTP id 135mr43048087qkd.136.1622026054097;
-        Wed, 26 May 2021 03:47:34 -0700 (PDT)
-Received: from errol.ini.cmu.edu (pool-108-39-255-32.pitbpa.fios.verizon.net. [108.39.255.32])
-        by smtp.gmail.com with ESMTPSA id m10sm1241071qkk.113.2021.05.26.03.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 03:47:33 -0700 (PDT)
-Date:   Wed, 26 May 2021 06:47:31 -0400
-From:   "Gabriel L. Somlo" <gsomlo@gmail.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kgugala@antmicro.com,
-        mholenko@antmicro.com, pczarnecki@internships.antmicro.com,
-        davidgow@google.com, florent@enjoy-digital.fr, joel@jms.id.au
-Subject: Re: [PATCH] drivers/soc/litex: remove 8-bit subregister option
-Message-ID: <YK4nQ9lnJXrKAWSE@errol.ini.cmu.edu>
-References: <20210521183621.224260-1-gsomlo@gmail.com>
- <YKhF4x/vOTmGTnB9@antec>
+        Wed, 26 May 2021 06:50:20 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE0581FD29;
+        Wed, 26 May 2021 10:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622026127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbKOu0mEdoI8kb/j45kMc9SQNVujWd8DYO1qXhK9sJU=;
+        b=eecEfF7/YaFpVcAsGAC8iuypEktd/q31uW5UstHTYrO+KI+9bc56yLBywjUGd33D8LMDME
+        FtmYR41nzqhyTIp5StyyCIrjds3f5mkpYVvcOnj9nWFWH3bauf3T+FqXQXN/Qf2p82bNfK
+        IDPJs96YXhFX9p2wUgtDZVyU+hD4JZA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622026127;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbKOu0mEdoI8kb/j45kMc9SQNVujWd8DYO1qXhK9sJU=;
+        b=e03ko3PzoWQAGjlT5ZrE2L6sVje8ABvU+ugaDtkfvtUe43QjLEZUJcE0uvbOOLUwEHVBJW
+        hRjijFPGMSrYtyCA==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id C1F6A11A98;
+        Wed, 26 May 2021 10:48:47 +0000 (UTC)
+Subject: Re: [PATCH v2 4/4] slub: Force on no_hash_pointers when slub_debug is
+ enabled
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+References: <20210526025625.601023-1-swboyd@chromium.org>
+ <20210526025625.601023-5-swboyd@chromium.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <555eaf8b-deb2-fa49-ddef-a74645848159@suse.cz>
+Date:   Wed, 26 May 2021 12:48:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKhF4x/vOTmGTnB9@antec>
-X-Clacks-Overhead: GNU Terry Pratchett
+In-Reply-To: <20210526025625.601023-5-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 08:44:35AM +0900, Stafford Horne wrote:
-> On Fri, May 21, 2021 at 02:36:21PM -0400, Gabriel Somlo wrote:
-> > Since upstream LiteX recommends that Linux support be limited to
-> > designs configured with 32-bit CSR subregisters (see commit a2b71fde
-> > in upstream LiteX, https://github.com/enjoy-digital/litex), remove
-> > the option to select 8-bit subregisters, significantly reducing the
-> > complexity of LiteX CSR (MMIO register) accessor methods.
-> > 
-> > NOTE: for details on the underlying mechanics of LiteX CSR registers,
-> > see https://github.com/enjoy-digital/litex/wiki/CSR-Bus or the original
-> > LiteX accessors (litex/soc/software/include/hw/common.h in the upstream
-> > repository).
-> > 
-> > Signed-off-by: Gabriel Somlo <gsomlo@gmail.com>
-> > Cc: Stafford Horne <shorne@gmail.com>
-> > Cc: Florent Kermarrec <florent@enjoy-digital.fr>
-> > Cc: Mateusz Holenko <mholenko@antmicro.com>
-> > Cc: Joel Stanley <joel@jms.id.au>
-> > 
-> > ---
-> >  drivers/soc/litex/Kconfig |  12 -----
-> >  include/linux/litex.h     | 100 +++++++-------------------------------
-> >  2 files changed, 17 insertions(+), 95 deletions(-)
+On 5/26/21 4:56 AM, Stephen Boyd wrote:
+> Obscuring the pointers that slub shows when debugging makes for some
+> confusing slub debug messages:
 > 
-> ...
+>  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
 > 
-> >  static inline void litex_write64(void __iomem *reg, u64 val)
-> >  {
-> > -	_litex_set_reg(reg, sizeof(u64), val);
-> > +	_write_litex_subregister(val >> LITEX_SUBREG_SIZE_BIT, reg);
-> > +	_write_litex_subregister(val, reg + LITEX_SUBREG_ALIGN);
-> >  }
+> Those addresses are hashed for kernel security reasons. If we're trying
+> to be secure with slub_debug on the commandline we have some big
+> problems given that we dump whole chunks of kernel memory to the kernel
+> logs. Let's force on the no_hash_pointers commandline flag when
+> slub_debug is on the commandline. This makes slub debug messages more
+> meaningful and if by chance a kernel address is in some slub debug
+> object dump we will have a better chance of figuring out what went
+> wrong.
 > 
-> I wonder if it would be more clear to remove the macros and just write as:
+> Note that we don't use %px in the slub code because we want to reduce
+> the number of places that %px is used in the kernel. This also nicely
+> prints a big fat warning at kernel boot if slub_debug is on the
+> commandline so that we know that this kernel shouldn't be used on
+> production systems.
 > 
-> static inline void litex_write64(void __iomem *reg, u64 val)
-> {
-> 	_litex_set_reg(reg, sizeof(u64), val);
-> 	_write_litex_subregister(val >> 32, reg);
-> 	_write_litex_subregister(val, reg + 0x4);
-> }
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 > 
-> >  static inline u8 litex_read8(void __iomem *reg)
-> >  {
-> > -	return _litex_get_reg(reg, sizeof(u8));
-> > +	return _read_litex_subregister(reg);
-> >  }
-> >  
-> >  static inline u16 litex_read16(void __iomem *reg)
-> >  {
-> > -	return _litex_get_reg(reg, sizeof(u16));
-> > +	return _read_litex_subregister(reg);
-> >  }
-> >  
-> >  static inline u32 litex_read32(void __iomem *reg)
-> >  {
-> > -	return _litex_get_reg(reg, sizeof(u32));
-> > +	return _read_litex_subregister(reg);
-> >  }
-> >  
-> >  static inline u64 litex_read64(void __iomem *reg)
-> >  {
-> > -	return _litex_get_reg(reg, sizeof(u64));
-> > +	return ((u64)_read_litex_subregister(reg) << LITEX_SUBREG_SIZE_BIT) |
-> > +		_read_litex_subregister(reg + LITEX_SUBREG_ALIGN);
-> >  }
-> 
-> Same here.
-> 
-> This all looks good to me.  Just a bit of style preference/question for
-> discussion, for me it's easier to read without the macro's but it just may be
-> me.  The macro's make sense when they could change, but now it's just something
-> to double check when reading the code.
-> 
-> Though they are used here in the init code which we could remove too now:
-> 
->         pr_info("LiteX SoC Controller driver initialized: subreg:%d, align:%d",
->                 LITEX_SUBREG_SIZE, LITEX_SUBREG_ALIGN);
+> I opted for extern because I guess we don't want to advertise
+> no_hash_pointers_enable() in some sort of header file? It can be put in
+> a header file
 
-Since nobody else seems to have any strong feelings on the topic, I'll
-just send out a v2 with the changes suggested above in a few minutes.
+Hm looks like the bots disagree. I suppose a declaration right above definition
+in lib/vsprintf.c would silence them, but I'll leave it to printk maintainers if
+they would prefer that way or traditionally
+include/linux/kernel.h
 
-Thanks,
---Gabriel
+> but I see that the no_hash_pointers variable is also not 
+> in a header file but exported as symbol.
+
+Yeah it's only used by tests, and a variable doesn't need separate declaration.
+
+>  lib/vsprintf.c | 2 +-
+>  mm/slub.c      | 6 ++++++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index f0c35d9b65bf..cc281f5895f9 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2186,7 +2186,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  bool no_hash_pointers __ro_after_init;
+>  EXPORT_SYMBOL_GPL(no_hash_pointers);
+>  
+> -static int __init no_hash_pointers_enable(char *str)
+> +int __init no_hash_pointers_enable(char *str)
+>  {
+>  	if (no_hash_pointers)
+>  		return 0;
+> diff --git a/mm/slub.c b/mm/slub.c
+> index bf4949115412..1c30436d3e6c 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4451,6 +4451,8 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
+>  	return s;
+>  }
+>  
+> +extern int no_hash_pointers_enable(char *str);
+> +
+>  void __init kmem_cache_init(void)
+>  {
+>  	static __initdata struct kmem_cache boot_kmem_cache,
+> @@ -4470,6 +4472,10 @@ void __init kmem_cache_init(void)
+>  	for_each_node_state(node, N_NORMAL_MEMORY)
+>  		node_set(node, slab_nodes);
+>  
+> +	/* Print slub debugging pointers without hashing */
+> +	if (static_branch_unlikely(&slub_debug_enabled))
+> +		no_hash_pointers_enable(NULL);
+> +
+>  	create_boot_cache(kmem_cache_node, "kmem_cache_node",
+>  		sizeof(struct kmem_cache_node), SLAB_HWCACHE_ALIGN, 0, 0);
+>  
+> 
+
