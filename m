@@ -2,82 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E766E39131F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D51539132D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhEZI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:58:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:41830 "EHLO foss.arm.com"
+        id S233529AbhEZI6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:58:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49944 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232808AbhEZI6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:58:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B9B41516;
-        Wed, 26 May 2021 01:56:44 -0700 (PDT)
-Received: from [10.57.31.7] (unknown [10.57.31.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D37643F73D;
-        Wed, 26 May 2021 01:56:41 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        dietmar.eggemann@arm.com
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <068fa9c4-2b55-3d75-adc7-cf5ef2174b12@arm.com>
-Date:   Wed, 26 May 2021 09:56:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233463AbhEZI6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:58:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622019421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YhkPVaZKIm9DZQqqxgLb/Cl0n6VLgqEfhyr5+MGRQiM=;
+        b=CzKC88p6vMROOwspfcEw1cL6s53X7tKkK9jA7OVrL3WCYzjh3f6p2myiTIRJcyRBmlLOWq
+        /UsF7tQvL7bE6w/r7UCJ1pIULq3n+YEkTdPKBT2TjPzrPpUph+bFmj4vPwQlA/1OwRIhdc
+        kANy4gO5wC3efYXIs48L0l7s0w9BNIE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C6B82B01E;
+        Wed, 26 May 2021 08:57:01 +0000 (UTC)
+Date:   Wed, 26 May 2021 10:57:00 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
+Subject: Re: [PATCH v6 4/4] printk: index: Add indexing support to dev_printk
+Message-ID: <YK4NXO0Tv9O0Ss9u@alley>
+References: <cover.1621338324.git.chris@chrisdown.name>
+ <fff5e1c790f14e9af4559e902ba9689ec93d38e2.1621338324.git.chris@chrisdown.name>
 MIME-Version: 1.0
-In-Reply-To: <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fff5e1c790f14e9af4559e902ba9689ec93d38e2.1621338324.git.chris@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On Tue 2021-05-18 13:00:48, Chris Down wrote:
+> While for most kinds of issues we have counters, tracepoints, or metrics
+> with a stable interface which can reliably be used to indicate issues,
+> in order to react to production issues quickly we sometimes need to work
+> with the interface which most kernel developers naturally use when
+> developing: printk, and printk-esques like dev_printk.
+> 
+> dev_printk is by far the most likely custom subsystem printk to benefit
+> from the printk indexing infrastructure, since niche device issues
+> brought about by production changes, firmware upgrades, and the like are
+> one of the most common things that we need printk infrastructure's
+> assistance to monitor.
+> 
+> Often these errors were never expected to practically manifest in
+> reality, and exhibit in code without extensive (or any) metrics present.
+> As such, there are typically very few options for issue detection
+> available to those with large fleets at the time the incident happens,
+> and we thus benefit strongly from monitoring netconsole in these
+> instances.
+> 
+> As such, add the infrastructure for dev_printk to be indexed in the
+> printk index. Even on a minimal kernel config, the coverage of the base
+> kernel's printk index is significantly improved:
+> 
+> Before:
+> 
+>     [root@ktst ~]# wc -l /sys/kernel/debug/printk/index/vmlinux
+>     4497 /sys/kernel/debug/printk/index/vmlinux
+> 
+> After:
+> 
+>     [root@ktst ~]# wc -l /sys/kernel/debug/printk/index/vmlinux
+>     5573 /sys/kernel/debug/printk/index/vmlinux
 
-On 5/26/21 4:47 AM, Viresh Kumar wrote:
+Cool.
 
-[snip]
+> In terms of implementation, in order to trivially disambiguate them,
+> dev_printk is now a macro which wraps _dev_printk. If preferred, it's
+> also possible to have the macro and function have the same name.
 
-> 
-> First of all, sorry about not replying earlier. I have seen this earlier and was
-> shying away to receive some feedback from Rafael/Peter instead :(
-> 
-> I think the problem you mention is genuine, I have realized it in the past,
-> discussed with Vincent Guittot (cc'd) but never was able to get to a proper
-> solution as the EM model wasn't there then.
-> 
-> I have seen your approach (from top level) and I feel maybe we can improve upon
-> the whole idea a bit, lemme know what you think. The problem I see with this
-> approach is the unnecessary updates to schedutil that this series makes, which
-> IMHO is the wrong thing to do. Schedutil isn't the only governor and such
-> changes will end up making the performance delta between ondemand and schedutil
-> even more (difference based on their core design philosophy is fine, but these
-> are improvements which each of them should enjoy). And if another governor wants
-> these smart decisions to be added there, then it is trouble again.
-> 
-> Since the whole thing depends on EM and OPPs, I think we can actually do this.
-> 
-> When the cpufreq driver registers with the EM core, lets find all the
-> Inefficient OPPs and disable them once and for all. Of course, this must be done
-> on voluntarily basis, a flag from the drivers will do. With this, we won't be
-> required to update any thing at any of the governors end.
-> 
-> Will that work ?
-> 
+I prefer to use _dev_printk to disambiguate the macro and function
+names. By other words, I prefer the approach used in this patch.
 
-No, these OPPs have to stay because they are used in thermal for cooling
-states. DT cooling devices might have them set as a scope of possible
-states. We don't want to break existing platforms, don't we?
-We want to 'avoid' those OPPs when possible (no thermal pressure), but
-we might have to use them sometimes.
+Please, remove the "If preferred..." sentence in the next version.
 
-Regards,
-Lukasz
+> diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
+> index 6f009559ee54..202c6a9ea7eb 100644
+> --- a/include/linux/dev_printk.h
+> +++ b/include/linux/dev_printk.h
+> @@ -97,25 +97,54 @@ void _dev_info(const struct device *dev, const char *fmt, ...)
+>  
+>  #endif
+>  
+> +/*
+> + * Some callsites directly call dev_printk rather than going through the
+> + * dev_<level> infrastructure, so we need to emit here as well as inside those
+> + * level-specific macros. Only one index entry will be produced, either way,
+> + * since dev_printk's `fmt` isn't known at compile time if going through the
+> + * dev_<level> macros.
+> + */
+> +#define dev_printk(level, dev, fmt, ...) ({			\
+> +	dev_printk_index_emit(level, fmt);			\
+
+Please, define dev_printk_index_emit() macro before it is used
+for the first time.
+
+> +	_dev_printk(level, dev, fmt, ##__VA_ARGS__);		\
+> +})
+> +
+>  /*
+>   * #defines for all the dev_<level> macros to prefix with whatever
+>   * possible use of #define dev_fmt(fmt) ...
+>   */
+>  
+> -#define dev_emerg(dev, fmt, ...)					\
+> -	_dev_emerg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_crit(dev, fmt, ...)						\
+> -	_dev_crit(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_alert(dev, fmt, ...)					\
+> -	_dev_alert(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_err(dev, fmt, ...)						\
+> -	_dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_warn(dev, fmt, ...)						\
+> -	_dev_warn(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_notice(dev, fmt, ...)					\
+> -	_dev_notice(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> -#define dev_info(dev, fmt, ...)						\
+> -	_dev_info(dev, dev_fmt(fmt), ##__VA_ARGS__)
+> +#define dev_printk_index_emit(level, fmt)				\
+> +	printk_index_subsys_emit("%s %s: ", "", level, fmt)
+> +
+> +#define dev_emerg(dev, fmt, ...) ({					\
+> +	dev_printk_index_emit(KERN_EMERG, dev_fmt(fmt));		\
+> +	_dev_emerg(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
+> +})
+> +#define dev_crit(dev, fmt, ...) ({					\
+> +	dev_printk_index_emit(KERN_CRIT, dev_fmt(fmt));			\
+> +	_dev_crit(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
+> +})
+> +#define dev_alert(dev, fmt, ...) ({					\
+> +	dev_printk_index_emit(KERN_ALERT, dev_fmt(fmt));		\
+> +	_dev_alert(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
+> +})
+
+I would slightly reduce the duplcation the follwing way:
+
+#define dev_printk_index_wrap(_p_func, level, dev, fmt, ...)			\
+	({								       \
+		printk_index_subsys_emit("%s %s: ", "", level, dev_fmt(fmt));  \
+		_p_func(dev, dev_fmt(fmt), ##__VA_ARGS__);			\
+	})
+
+#define dev_printk(level, dev, fmt, ...)				\
+	dev_printk_index_wrap(_dev_printk, level, dev, ##__VA_ARGS__)
+
+#define dev_crit(dev, fmt, ...)							\
+	dev_printk_index_wrap(_dev_crit, KERN_CRIT, dev, ##__VA_ARGS__)
+#define dev_alert(dev, fmt, ...)						\
+	dev_printk_index_wrap(_dev_alert, KERN_ALERT, dev, ##__VA_ARGS__)
+
+
+Note that I did not try to complile it, so there might be a mistake.
+
+
+BTW: I was curious why we actually need _dev_crit() defined as a function.
+But it seems to reduce size of the kernel binaries, see
+the commit 38a1ec40efa196efbac0253 ("device.h drivers/base/core.c
+Convert dev_<level> logging macros to functions"). Sigh.
+
+Best Regards,
+Petr
