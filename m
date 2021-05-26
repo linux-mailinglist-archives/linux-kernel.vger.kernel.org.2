@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5DF39134C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D3039134E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhEZJEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:04:52 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:38233 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233609AbhEZJEi (ORCPT
+        id S233644AbhEZJE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:04:57 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:36800 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233165AbhEZJEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:04:38 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 3ED6410000D;
-        Wed, 26 May 2021 09:03:04 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] mtd: core: Fix freeing of otp_info buffer
-Date:   Wed, 26 May 2021 11:03:04 +0200
-Message-Id: <20210526090304.180839-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210518185503.162787-1-jonathanh@nvidia.com>
-References: 
+        Wed, 26 May 2021 05:04:44 -0400
+Received: by mail-pl1-f176.google.com with SMTP id a7so291999plh.3;
+        Wed, 26 May 2021 02:03:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FfaHo86msd1EgsJw0CluY8kQybsB/BEq62rqhKYqHGg=;
+        b=HE7d6v1gxGcHupBLogEwpNG56jVwVarfR4ICrIr+JrTI0a4vJth+fBAIK/IX54QE+6
+         725blKc+1U8uhAMZeA3rkSAISwzW5ekhzEmdAIHt5CN+Efniov49I1y8srj22a1SluDi
+         fchU7jdaD28lilprVqZxqgK9Xp5sewGfDbR8bX+yk4faTLmDFFSgRbjAMTt2XJ+svk1A
+         KKzJQSsBeZKAkdkkRjTcbqCezs2xuBjTvQyd6poSJHV9WUAObiy7/d6sCoDQpcZZiB6/
+         mEjyJ4fiDtAEEmgFGjAZaO+4bEPC9WG0HBVxFdl4HhuG7fMREPVxquCsO+lDv0c+CQq3
+         v6sw==
+X-Gm-Message-State: AOAM5311LoHKBv4BVLY2wuHnfGlTPdZnepCYZ/GrgSw6Zt52/6x0xwOz
+        34legj2I10zOIKWDgZ0EQiM=
+X-Google-Smtp-Source: ABdhPJzCzlRGDdb9oh59T1rIT1mKuLZYc1+OZySDa6uTw/G4F08G+VegLYCrJe2h9nQXC5lGK3c4Rw==
+X-Received: by 2002:a17:902:bf46:b029:ee:b949:bd0 with SMTP id u6-20020a170902bf46b02900eeb9490bd0mr34888223pls.14.1622019792132;
+        Wed, 26 May 2021 02:03:12 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id gg10sm13914062pjb.49.2021.05.26.02.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 02:03:11 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 27E3840254; Wed, 26 May 2021 09:03:10 +0000 (UTC)
+Date:   Wed, 26 May 2021 09:03:10 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
+        johan@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        masahiroy@kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
+        joe@perches.com, Jens Axboe <axboe@kernel.dk>, hare@suse.de,
+        Jan Kara <jack@suse.cz>, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        f.fainelli@gmail.com, arnd@arndb.de,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        wangkefeng.wang@huawei.com, Barret Rhoden <brho@google.com>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
+        pmladek@suse.com, Chris Down <chris@chrisdown.name>,
+        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
+        mingo@kernel.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org
+Subject: Re: [PATCH v2 2/3] init/do_cmounts.c: introduce 'user_root' for
+ initramfs
+Message-ID: <20210526090310.GI4332@42.do-not-panic.com>
+References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
+ <20210525141524.3995-3-dong.menglong@zte.com.cn>
+ <m18s42odgz.fsf@fess.ebiederm.org>
+ <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
+ <m11r9umb4y.fsf@fess.ebiederm.org>
+ <YK3Pb/OGwWVzvDZM@localhost>
+ <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'bc8e157fdb466536557b97b6c0df6d7b46a2b91b'
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-18 at 18:55:03 UTC, Jon Hunter wrote:
-> Commit 4b361cfa8624 ("mtd: core: add OTP nvmem provider support") is
-> causing the following panic ...
+On Wed, May 26, 2021 at 04:33:00PM +0800, Menglong Dong wrote:
+> On Wed, May 26, 2021 at 12:33 PM Josh Triplett <josh@joshtriplett.org> wrote:
+> >
+> > On Tue, May 25, 2021 at 10:23:09PM -0500, Eric W. Biederman wrote:
+> > > If we are going to do this something that is so small and clean it can
+> > > be done unconditionally always.
+> > [...]
+> > > The net request as I understand it: Make the filesystem the initramfs
+> > > lives in be an ordinary filesystem so it can just be used as the systems
+> > > primary filesystem.
+> >
+> > Including the ability to pivot_root it away, which seems like the main
+> > sticking point.
+> >
+> > If this can be done without any overhead, that seems fine, but if this
+> > involves mounting an extra filesystem, that may add an appreciable
+> > amount of boot time for systems trying to boot in milliseconds. (Such
+> > systems would not use an initramfs if they're going to go on and boot a
+> > separate root filesystem, but they can use an initramfs as their *only*
+> > filesystem.)
 > 
->  ------------[ cut here ]------------
->  kernel BUG at /local/workdir/tegra/linux_next/kernel/mm/slab.c:2730!
->  Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
->  Modules linked in:
->  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc2-next-20210518 #1
->  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
->  PC is at ___cache_free+0x3f8/0x51c
->  ...
->  [<c029bb1c>] (___cache_free) from [<c029c658>] (kfree+0xac/0x1bc)
->  [<c029c658>] (kfree) from [<c06da094>] (mtd_otp_size+0xc4/0x108)
->  [<c06da094>] (mtd_otp_size) from [<c06dc864>] (mtd_device_parse_register+0xe4/0x2b4)
->  [<c06dc864>] (mtd_device_parse_register) from [<c06e3ccc>] (spi_nor_probe+0x210/0x2c0)
->  [<c06e3ccc>] (spi_nor_probe) from [<c06e9578>] (spi_probe+0x88/0xac)
->  [<c06e9578>] (spi_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
->  [<c066891c>] (really_probe) from [<c0668b14>] (driver_probe_device+0x68/0xc0)
->  [<c0668b14>] (driver_probe_device) from [<c0666cf8>] (bus_for_each_drv+0x5c/0xbc)
->  [<c0666cf8>] (bus_for_each_drv) from [<c0668694>] (__device_attach+0xe4/0x150)
->  [<c0668694>] (__device_attach) from [<c06679e0>] (bus_probe_device+0x84/0x8c)
->  [<c06679e0>] (bus_probe_device) from [<c06657f8>] (device_add+0x48c/0x868)
->  [<c06657f8>] (device_add) from [<c06eb784>] (spi_add_device+0xa0/0x168)
->  [<c06eb784>] (spi_add_device) from [<c06ec9a8>] (spi_register_controller+0x8b8/0xb38)
->  [<c06ec9a8>] (spi_register_controller) from [<c06ecc3c>] (devm_spi_register_controller+0x14/0x50)
->  [<c06ecc3c>] (devm_spi_register_controller) from [<c06f0510>] (tegra_spi_probe+0x33c/0x450)
->  [<c06f0510>] (tegra_spi_probe) from [<c066abec>] (platform_probe+0x5c/0xb8)
->  [<c066abec>] (platform_probe) from [<c066891c>] (really_probe+0x214/0x3a4)
->  [<c066891c>] (really_probe) from [<c0668b14>] (driver_probe_device+0x68/0xc0)
->  [<c0668b14>] (driver_probe_device) from [<c0668e30>] (device_driver_attach+0x58/0x60)
->  [<c0668e30>] (device_driver_attach) from [<c0668eb8>] (__driver_attach+0x80/0xc8)
->  [<c0668eb8>] (__driver_attach) from [<c0666c48>] (bus_for_each_dev+0x78/0xb8)
->  [<c0666c48>] (bus_for_each_dev) from [<c0667c44>] (bus_add_driver+0x164/0x1e8)
->  [<c0667c44>] (bus_add_driver) from [<c066997c>] (driver_register+0x7c/0x114)
->  [<c066997c>] (driver_register) from [<c010223c>] (do_one_initcall+0x50/0x2b0)
->  [<c010223c>] (do_one_initcall) from [<c11011f0>] (kernel_init_freeable+0x1a8/0x1fc)
->  [<c11011f0>] (kernel_init_freeable) from [<c0c09190>] (kernel_init+0x8/0x118)
->  [<c0c09190>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
->  ...
->  ---[ end trace 0f652dd222de75d7 ]---
-> 
-> In the function mtd_otp_size() a buffer is allocated by calling
-> kmalloc() and a pointer to the buffer is stored in a variable 'info'.
-> The pointer 'info' may then be incremented depending on the length
-> returned from mtd_get_user/fact_prot_info(). If 'info' is incremented,
-> when kfree() is called to free the buffer the above panic occurs because
-> we are no longer passing the original address of the buffer allocated.
-> Fix this by indexing through the buffer allocated to avoid incrementing
-> the pointer.
-> 
-> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> Reviewed-by: Michael Walle <michael@walle.cc>
+> Compared to the time the unpacking spent, a mounting seems nothing. In the
+> scene above, this change can be disabled by kconfig, if pivot_root
+> is not needed in initramfs.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+I asked for the kconfig entry. And it would be good to document then
+also the worst case expected on boot for what this could do to you. I
+mean, we are opening a different evil universe. So that's why the
+kconfig exists.  How bad and evil can this be?
 
-Miquel
+I don't think anyone has clarified that yet.
+
+  Luis
