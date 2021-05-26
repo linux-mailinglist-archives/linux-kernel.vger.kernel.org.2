@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4839120E
+	by mail.lfdr.de (Postfix) with ESMTP id 6850E39120D
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhEZIMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        id S233315AbhEZIMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232995AbhEZIMY (ORCPT
+        with ESMTP id S233016AbhEZIMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 04:12:24 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190D6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:52 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id y14so41679wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:52 -0700 (PDT)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE7AC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:53 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v12so82681wrq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eguwAvzb70gl9qIGz7oSfuMcIr+zDEjogz9qlQbZV1s=;
-        b=tNHq8eZ4eE+IKepnCFbyUs7a7dVS3vNhFVEAM2D902fDNphxqG1ZTsznEsaO50RhY8
-         /9UZ+jS14c7szcFLCVKkF52NOM58qUqVSyvu7u/adCtx1/aDE5FdjUlCfaLAzka7ZXq0
-         9T+opuockIywRnhLvRUR1Qo0SA3vTGyDY4o1IBG9J1U/v2f7dsWrs1BLURMGE9bD11mS
-         KcfEBz/zAwKLL3mD8SwAkoP7X/B5RchLAHcV39PF/upEI5DGybP+AnwibmxESavIppMI
-         5aFWCsfNnn13wQyY8RGkMdcdzAEBMGiYhD/gE94qtXm57sFt85/FyWJT7tm0m0ItaVWT
-         AdsA==
+        bh=P5Uj5Rjjm4ZKYV7rpwdmoSf7YzKkWMegnA41y5gkr6w=;
+        b=mG3GfbOWVxf50knzK1KMfu8LhDH6iR6fdHvVmkJARZTpUWHGV3oCywGDYS+ZRuTU/G
+         u0ZjX+bWU73XSbLISTzscDGcZE1lczfUERZpIpHA8wcsc+XkohXIAyeUzdWKzdiSsFWa
+         0b4npdadFPkilGMnjyYzdK3l++v94gYNiiFO/egFvjpQ5dkc890ELnjim9YSoFibRseh
+         LgzNJaG9XIvxAZm6Eq5TmKBHsiaTHZqpCGsoIVrYL2ATfhGTtoRGVBqC+fXWQ7TZQ/K5
+         3/wELfhpv5YRQNT9KTxBm4rz9SYH49+Qq17aloTvwsxksEAQ5lSfvUbIHfIAUbYbacSo
+         bKdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eguwAvzb70gl9qIGz7oSfuMcIr+zDEjogz9qlQbZV1s=;
-        b=jtHQh0t7jEtkXziNyL9SwQx17r6Fxhr66NwhsE2zsjvIDtTA7u7CJjhF24PDfHtjCA
-         GB/JidsclSv1djbaeQNDbUQ7eVeEahv84D5RFWz5Jm98NYjOR8ra0fFEedXiSOUXEdy0
-         Pc8EY4dUGoV2iZ8wpVMw6noWaZfzRELHL8yTWr/ehPnyaFHTOSGOjFH4QVrlWz2VbXnF
-         BmVQtevHFVN9ObrUQjQwEGuMO+xWH2l3H3IMkPeodczAUz1ETP9zPYxlSAexPA7qTsJF
-         JFKGXfGKkcDZdze3Ip15MCnBqrEWEjWGlcJh4e7/rO/2uz0JmJE+6uYFE+jb20SLtMwQ
-         UeAw==
-X-Gm-Message-State: AOAM533jODpRIuzX6CaeRH2A95x0gDqc8SGC/Vpbt7ROfMc7hn3PvxgJ
-        co8VLpwHi3lzM3UOvbz5jKOVRA==
-X-Google-Smtp-Source: ABdhPJxKHx5yKpCANO4YsXniVf+RaDI9Gt4pcKywB3uNVi7LfG2PCWAbIAzxSzxANHkMAKpui+vGHQ==
-X-Received: by 2002:a5d:5249:: with SMTP id k9mr31771621wrc.301.1622016650736;
-        Wed, 26 May 2021 01:10:50 -0700 (PDT)
+        bh=P5Uj5Rjjm4ZKYV7rpwdmoSf7YzKkWMegnA41y5gkr6w=;
+        b=qbU1A9pP+aydhjc1eqVDiFrci+d3D1e9FRVT7tYS04ACdnVzSIZLN7YoZtOSrScth1
+         xnPjgujNpGLF2dr0TqH7aUHfu0a2G/pYxQAkGFMipTNqHLc3fsHOGA2/DDpLUXOHKxha
+         YDUAdIKngJLPT3tVa0HEAaDDbOp5s1asMS8BG3CsEdF+lZIX5S7nMevW0Cam5kLLuRoN
+         6sRjhVP++Cj/OKLZCIkd7RdxZenZhOvqag5GA0vE4zMXEapKThfRXnNnHhNsIM4/zEWJ
+         OY3DKn8V+imaIPzKtsLNqtGypTWreZRZhWCslV40hk1YVSzt9+K/phQ/OGCcfYvN7WKb
+         mpQw==
+X-Gm-Message-State: AOAM5339mo0wmyICfi+ytwy4/MGhiwQo2C/6GGMGvLd03Fi5HXTef7Dv
+        CNvHA40j71j8CVardXpU/XF23A==
+X-Google-Smtp-Source: ABdhPJy6DJWNL29M//luo66JTJZk5k9MUAPbrScm4tpyyvTs0KUkTd5jSvIsBhyKhvj24CsMweoDvw==
+X-Received: by 2002:a5d:4e91:: with SMTP id e17mr32599957wru.396.1622016651730;
+        Wed, 26 May 2021 01:10:51 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.49
+        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:10:50 -0700 (PDT)
+        Wed, 26 May 2021 01:10:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        German Rivera <German.Rivera@freescale.com>
-Subject: [PATCH 05/10] bus: fsl-mc: dprc-driver: Fix some missing/incorrect function parameter descriptions
-Date:   Wed, 26 May 2021 09:10:33 +0100
-Message-Id: <20210526081038.544942-6-lee.jones@linaro.org>
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH 06/10] bus: fsl-mc: fsl-mc-allocator: Fix misspelling of 'new_mc_adev' and demote non-kernel-doc headers
+Date:   Wed, 26 May 2021 09:10:34 +0100
+Message-Id: <20210526081038.544942-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526081038.544942-1-lee.jones@linaro.org>
 References: <20210526081038.544942-1-lee.jones@linaro.org>
@@ -67,56 +66,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/bus/fsl-mc/dprc-driver.c:360: warning: Function parameter or member 'alloc_interrupts' not described in 'dprc_scan_container'
- drivers/bus/fsl-mc/dprc-driver.c:383: warning: Function parameter or member 'irq_num' not described in 'dprc_irq0_handler'
- drivers/bus/fsl-mc/dprc-driver.c:383: warning: Excess function parameter 'irq' description in 'dprc_irq0_handler'
- drivers/bus/fsl-mc/dprc-driver.c:394: warning: Function parameter or member 'irq_num' not described in 'dprc_irq0_handler_thread'
- drivers/bus/fsl-mc/dprc-driver.c:394: warning: Excess function parameter 'irq' description in 'dprc_irq0_handler_thread'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:271: warning: Function parameter or member 'new_mc_adev' not described in 'fsl_mc_object_allocate'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:271: warning: Excess function parameter 'new_mc_dev' description in 'fsl_mc_object_allocate'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:417: warning: Function parameter or member 'mc_bus_dev' not described in 'fsl_mc_cleanup_irq_pool'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:417: warning: expecting prototype for Teardown the interrupt pool associated with an fsl(). Prototype was for fsl_mc_cleanup_irq_pool() instead
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:443: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocate_irqs'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:443: warning: expecting prototype for Allocate the IRQs required by a given fsl(). Prototype was for fsl_mc_allocate_irqs() instead
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:586: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocator_probe'
+ drivers/bus/fsl-mc/fsl-mc-allocator.c:618: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocator_remove'
 
 Cc: Stuart Yoder <stuyoder@gmail.com>
 Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc: German Rivera <German.Rivera@freescale.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/bus/fsl-mc/dprc-driver.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/bus/fsl-mc/fsl-mc-allocator.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/dprc-driver.c b/drivers/bus/fsl-mc/dprc-driver.c
-index e3e2ae41c22b3..315e830b6ecda 100644
---- a/drivers/bus/fsl-mc/dprc-driver.c
-+++ b/drivers/bus/fsl-mc/dprc-driver.c
-@@ -350,7 +350,8 @@ int dprc_scan_objects(struct fsl_mc_device *mc_bus_dev,
-  * dprc_scan_container - Scans a physical DPRC and synchronizes Linux bus state
+diff --git a/drivers/bus/fsl-mc/fsl-mc-allocator.c b/drivers/bus/fsl-mc/fsl-mc-allocator.c
+index 2d7c764bb7dcf..6c513556911e3 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-allocator.c
++++ b/drivers/bus/fsl-mc/fsl-mc-allocator.c
+@@ -254,7 +254,7 @@ EXPORT_SYMBOL_GPL(fsl_mc_resource_free);
+  * @mc_dev: fsl-mc device which is used in conjunction with the
+  * allocated object
+  * @pool_type: pool type
+- * @new_mc_dev: pointer to area where the pointer to the allocated device
++ * @new_mc_adev: pointer to area where the pointer to the allocated device
+  * is to be returned
   *
-  * @mc_bus_dev: pointer to the fsl-mc device that represents a DPRC object
-- *
-+ * @alloc_interrupts: if true the function allocates the interrupt pool,
-+ *                    otherwise the interrupt allocation is delayed
-  * Scans the physical DPRC and synchronizes the state of the Linux
-  * bus driver with the actual state of the MC by adding and removing
-  * devices as appropriate.
-@@ -373,10 +374,11 @@ int dprc_scan_container(struct fsl_mc_device *mc_bus_dev,
- 	return error;
+  * Allocatable objects are always used in conjunction with some functional
+@@ -409,7 +409,7 @@ int fsl_mc_populate_irq_pool(struct fsl_mc_device *mc_bus_dev,
  }
- EXPORT_SYMBOL_GPL(dprc_scan_container);
-+
- /**
-  * dprc_irq0_handler - Regular ISR for DPRC interrupt 0
-  *
-- * @irq: IRQ number of the interrupt being handled
-+ * @irq_num: IRQ number of the interrupt being handled
-  * @arg: Pointer to device structure
+ EXPORT_SYMBOL_GPL(fsl_mc_populate_irq_pool);
+ 
+-/**
++/*
+  * Teardown the interrupt pool associated with an fsl-mc bus.
+  * It frees the IRQs that were allocated to the pool, back to the GIC-ITS.
   */
- static irqreturn_t dprc_irq0_handler(int irq_num, void *arg)
-@@ -387,7 +389,7 @@ static irqreturn_t dprc_irq0_handler(int irq_num, void *arg)
- /**
-  * dprc_irq0_handler_thread - Handler thread function for DPRC interrupt 0
-  *
-- * @irq: IRQ number of the interrupt being handled
-+ * @irq_num: IRQ number of the interrupt being handled
-  * @arg: Pointer to device structure
+@@ -436,7 +436,7 @@ void fsl_mc_cleanup_irq_pool(struct fsl_mc_device *mc_bus_dev)
+ }
+ EXPORT_SYMBOL_GPL(fsl_mc_cleanup_irq_pool);
+ 
+-/**
++/*
+  * Allocate the IRQs required by a given fsl-mc device.
   */
- static irqreturn_t dprc_irq0_handler_thread(int irq_num, void *arg)
+ int __must_check fsl_mc_allocate_irqs(struct fsl_mc_device *mc_dev)
+@@ -578,7 +578,7 @@ void fsl_mc_cleanup_all_resource_pools(struct fsl_mc_device *mc_bus_dev)
+ 		fsl_mc_cleanup_resource_pool(mc_bus_dev, pool_type);
+ }
+ 
+-/**
++/*
+  * fsl_mc_allocator_probe - callback invoked when an allocatable device is
+  * being added to the system
+  */
+@@ -610,7 +610,7 @@ static int fsl_mc_allocator_probe(struct fsl_mc_device *mc_dev)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * fsl_mc_allocator_remove - callback invoked when an allocatable device is
+  * being removed from the system
+  */
 -- 
 2.31.1
 
