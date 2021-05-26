@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AA6391109
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB9939110C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhEZG4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S232736AbhEZG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbhEZG4r (ORCPT
+        with ESMTP id S232678AbhEZG5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:56:47 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F387C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:15 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y202so237348pfc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:15 -0700 (PDT)
+        Wed, 26 May 2021 02:57:06 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD326C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:34 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ot16so284167pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lIYi5GnoKtr8i2F095rp7bhScVGwxvgeu7J1/N2EUAk=;
-        b=TAHzx3QbIOsujqmEG+HQ52yVDfI9Y+k0TE0z6yWLam76zV1j3Bljso+qDhDs+XH04X
-         vMTaL/pvMa2fSonYSD0hp/PfT4qIv40b2qbL3vtyLKAXdJ7bb1R7+RfnxqwlPBLx1bQF
-         toyt/iC8s3j24OuMUxvT0hI1zIZo0wpHWZZb8ceMIbHYLNtTuXhCZhqCDvcwaXaKHGog
-         QUS2P5UOzNYUbc0RjO+UlRVZe+zoD8rMsIFR54BfxZx1RIYCILUGaxwPYuTQavhFYJat
-         R0K6eNIFkmhpdlV7Wru86HMY0xM0fapOvj3z1ET7dVkncGnrGbI8I4TQEJM6nxU5i/yp
-         cp1w==
+        bh=RjiFmCiLoMXys/jJOXLgjINLJSxKbFwfyeipr8yG200=;
+        b=UILHNq0ZQ44Op1yN22PE+fr0aPxKsRcqBKe2vgj/ZYCZ5zgqK8ESD6c0o2OctpBqAO
+         F4gAYpcVJYglNj74YRntIWOHnu/4MftKwOz/Wv1XjE09wrxeTqPZvM1gXTb8/Gac51M9
+         Eez1H76ppX48hU+F3TNmSSSy1KabYUGNcA97NTM445m8zOv6Mag/4vBmqaeqUm3scvXk
+         T1k3kW60T8B2TqEuavy1/nAP17gACa3ZkHtkIyetscuvYT+QmJ4is+ecgGBneayKgBn8
+         0jnWZX9XPv+8aVYjiFtP4kZ7aVFyX5gdsQHRHMlJMX7+KMSd13kfi7dkTx7O/gDIr3Bx
+         MrSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lIYi5GnoKtr8i2F095rp7bhScVGwxvgeu7J1/N2EUAk=;
-        b=szcE0yknbr5Z6t7wi++xa1rDgXOI03GMQyKQ9SUCy4I+uFSbAaaxfU8j58cjmxipR/
-         6P0wRvbxURfLwQ47azc3WSZKKXoAmNi+NFSzO5vLKwqMC6cI+Zt4gLPOpgXU72kzNs0u
-         k5vSTUa5cSc5sBf27S4SMLJgv2ji1+5QIBcYw8rAAt5DVrSCGKP9ytv3u7Ey2FmVCKSY
-         0SlF7l6mF95qCxAutGIG7b9b2PpMCh0o5HOS7VBS4BKQBSoaBQWpNkOPVp5KH0CHOqyt
-         3P0fsZmVZVEwqPHdu9kWFtV5J5IN/a0moaFciF5WFJm1SuFjGV9BtDfxkvFrmYf8Wt9S
-         OkrQ==
-X-Gm-Message-State: AOAM531JTCYUy7MXFp6Bcv9iqtWGlUTiZtBL6xkgmMoCuaCU867FWgkR
-        1+QqfhqKUHOTlmNz4S87f3EaI/bSTag2OfObVOpMPQ==
-X-Google-Smtp-Source: ABdhPJxqcWSulclnjmI7hHh8p2hlD5seevQBCNSAUIHO5Hm1wujO2iFXmGa0oes7zjBWwhnrusw6Kk0A0xLa+Z7/1jM=
-X-Received: by 2002:a63:1e4f:: with SMTP id p15mr23315875pgm.40.1622012115027;
- Tue, 25 May 2021 23:55:15 -0700 (PDT)
+        bh=RjiFmCiLoMXys/jJOXLgjINLJSxKbFwfyeipr8yG200=;
+        b=j5KkckSp2P6mHGyloQsoxj3ZA/qpqGYnUvHe/m2qOrP0wswx/TcoIpqOaLu3XhEpyi
+         7vL9ws8JWlGRQrieY68vFYUeS3MxWbfofPe21muir5nzh9bcksZ6Op1e/xhymT+f3jkP
+         mv8HvAo5v0zFpvyRQDYeAWoUe3FkgF8GLZjULd5SRT4/SkokyaOTF0aKfatkt1QGk0ao
+         O9uVCFA+W0/qGXRlmWQi8zWng25LGGuYfvQStSC1HapTaJFiRmRNsMBY22CWw7Mf6d5u
+         3uyt4Xv4W69iC4irkUzvo7lPtPicTZlDIg6kj2tlml8NA4gZvwhYvIUi0t6y1AvlCdty
+         J0Ew==
+X-Gm-Message-State: AOAM5326T8GAg/Rd83e9bghsll2zL7qvwwQYqcmTyxns3toZFOYkKSDL
+        eK8vvThIG59+VzukiNn9Y7oGif1XxIX/rwUBsIhupA==
+X-Google-Smtp-Source: ABdhPJwRRVEHDVTMqfFTUnYVfd0PVGRjf+M4h6VX2CYE8bx4GDAuDS39o3O9kkzOO/8gmF6Auu/QL9KeqY9zad/UMz4=
+X-Received: by 2002:a17:90b:1185:: with SMTP id gk5mr33983187pjb.168.1622012134164;
+ Tue, 25 May 2021 23:55:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-13-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-13-seanjc@google.com>
+References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-15-seanjc@google.com>
+In-Reply-To: <20210424004645.3950558-15-seanjc@google.com>
 From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 25 May 2021 23:54:59 -0700
-Message-ID: <CAAeT=FxK_2hjL5w93b1sgOg0WdHuFkvLCbxvoMoJyTWW2m7cRw@mail.gmail.com>
-Subject: Re: [PATCH 12/43] KVM: x86: Remove defunct BSP "update" in local APIC reset
+Date:   Tue, 25 May 2021 23:55:18 -0700
+Message-ID: <CAAeT=FzQBOy=ysxXM24_w0O+p5vrAOWCTMxxv__aF2TG=U_AHA@mail.gmail.com>
+Subject: Re: [PATCH 14/43] KVM: x86: Don't force set BSP bit when local APIC
+ is managed by userspace
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -63,24 +64,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 5:49 PM Sean Christopherson <seanjc@google.com> wrote:
+On Fri, Apr 23, 2021 at 5:50 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> Remove a BSP APIC update in kvm_lapic_reset() that is a glorified and
-> confusing nop.  When the code was originally added, kvm_vcpu_is_bsp()
-> queried kvm->arch.bsp_vcpu, i.e. the intent was to set the BSP bit in the
-> BSP vCPU's APIC.  But, stuffing the BSP bit at INIT was wrong since the
-> guest can change its BSP(s); this was fixed by commit 58d269d8cccc ("KVM:
-> x86: BSP in MSR_IA32_APICBASE is writable").
+> Don't set the BSP bit in vcpu->arch.apic_base when the local APIC is
+> managed by userspace.  Forcing all vCPUs to be BSPs is non-sensical, and
+> was dead code when it was added by commit 97222cc83163 ("KVM: Emulate
+> local APIC in kernel").  At the time, kvm_lapic_set_base() was invoked
+> if and only if the local APIC was in-kernel (and it couldn't be called
+> before the vCPU created its APIC).
 >
-> In other words, kvm_vcpu_is_bsp() is now purely a reflection of
-> vcpu->arch.apic_base.MSR_IA32_APICBASE_BSP, thus the update will always
-> set the current value and kvm_lapic_set_base() is effectively a nop if
-> the new and old values match.  The RESET case, which does need to stuff
-> the BSP for the reset vCPU, is handled by vendor code (though this will
-> soon be moved to common code).
+> kvm_lapic_set_base() eventually gained generic usage, but the latent bug
+> escaped notice because the only true consumer would be the guest itself
+> in the form of an explicit RDMSRs on APs.  Out of Linux, SeaBIOS, and
+> EDK2/OVMF, only OVMF consume the BSP bit from the APIC_BASE MSR.  For
+> the vast majority of usage in OVMF, BSP confusion would be benign.
+> OVMF's BSP election upon SMI rendezvous might be broken, but practically
+> no one runs KVM with an out-of-kernel local APIC, let alone does so while
+> utilizing SMIs with OVMF.
 >
-> No functional change intended.
->
+> Fixes: 97222cc83163 ("KVM: Emulate local APIC in kernel")
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 
 Reviewed-by: Reiji Watanabe <reijiw@google.com>
