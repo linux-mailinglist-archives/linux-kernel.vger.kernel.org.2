@@ -2,85 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2528C391D12
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F98391D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbhEZQeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbhEZQen (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:34:43 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2187C061574;
-        Wed, 26 May 2021 09:33:10 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so871157wmh.4;
-        Wed, 26 May 2021 09:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TeMQf0+FO4ym4hfoS0vMKgOKCQ0f25mg9GpSl0nXAx4=;
-        b=NdfZIzmtg8AV9+i2/ZJK84FGl8KxAq0sI1zLGz+4QEDHdH/oXgYZT++64Yd8rp3o+d
-         VwUOfzwurhFS0+d1ch1f+ywU6E2R4RUXYRiiVHNc7VojKfFK2y3L1Du4YFQ5OwkxiRf+
-         4pfyiBuVLY+iqWEJLFa5OHhCv6AaXqdOUsPtf9IMRasoSR5KIBu0wAW9zUe0a+6IjCq5
-         AV8o6OlOWYV/UHXWqZGtROmSMaGf3HReLO6788GyMaREGx3BOjU+UpqpjGIrTIU6pSUs
-         FPinedH1n7Y2yCToiSO5qn2w5JryTquq14oSvc/fFY6JLhflG/dHotyQWzpLhAFe2rlm
-         Ocmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TeMQf0+FO4ym4hfoS0vMKgOKCQ0f25mg9GpSl0nXAx4=;
-        b=VzkAmoucHbigO8YnTw9auC5d3fd2vV9QQkSXwqixy/b0QJ+0icD5vBY4wTfzrK8+81
-         6KN0b7E+pf6RYGbEvIz7sPh47TZLOigrEiDHsYmIV2sUNaXsXUKNIUtqx5h0Q1/NAp6t
-         ayo6jyoiKe3T/gD/49FTMvSjFge/AngfAVQw1yz/X2GZVWADPfPgigUlwTZSzOfdJUjs
-         x1YC/5vjo4zRjCr1GNinMT/vY/GxjE+YLwKX+OSfdFB6/wysywx1TSHwbXEN4Ru0Qd0M
-         OOw7rMIL7WO9L6LopCgMGOzisLv0JWxT1Q37ty0CmJ/VpWfoZ7u3h96YrN7zwFUw87HZ
-         mzQQ==
-X-Gm-Message-State: AOAM533801VnEPpytjIrFxluMHm+q72aS4+/LlQlH/iW239UZim8wkQh
-        Pli3nes31D+g+wbRnCQ+/Ps=
-X-Google-Smtp-Source: ABdhPJzH1UUmSHD3autQYEOj6mow+MtyrkyCZhDR0bW/18RPdCcwOCe89bcJO50YxIDQ6JflKGuj+g==
-X-Received: by 2002:a7b:c770:: with SMTP id x16mr3522670wmk.126.1622046789472;
-        Wed, 26 May 2021 09:33:09 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.10])
-        by smtp.gmail.com with ESMTPSA id s2sm5661727wmc.21.2021.05.26.09.33.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 09:33:09 -0700 (PDT)
-Subject: Re: [syzbot] KCSAN: data-race in __io_uring_cancel /
- io_uring_try_cancel_requests
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Marco Elver <elver@google.com>, axboe@kernel.dk
-Cc:     syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, dvyukov@google.com
-References: <000000000000fa9f7005c33d83b9@google.com>
- <YK5tyZNAFc8dh6ke@elver.google.com> <YK5uygiCGlmgQLKE@elver.google.com>
- <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
-Message-ID: <0b33f17e-9105-aad0-5d32-c3ed54a00da4@gmail.com>
-Date:   Wed, 26 May 2021 17:33:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234818AbhEZQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:35:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234665AbhEZQfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:35:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 328E7613E5;
+        Wed, 26 May 2021 16:33:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622046829;
+        bh=kovUxkfq29J2qv1KN2+/JPS+nX4ZQzEH6SoLPMxR0ak=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pbB6BAboDmEashbjaO40Qcj1N6kYAOe9sUDMk4k4AjKY+MSsvxhp9ey+5s6OTvuZI
+         lOWycAeiw9xCcHTcLL7jUhOMUvweU7ruAbWufEJmIt3CXuLZuePSHnijaqJwtcZrWF
+         b6z/7GTfX71n+Q8tojXzU34cJmOapGiRhD/T0ssjWklyEsIFQaUJwLq2noZjyzW4nE
+         g++dlmXO46USHeNvNDThRunj1AzEvQo1xs5XSbkel8g1RoPO9ny9RNiQeUBs/aL+ey
+         2K6emMGgpsef2wv0xhYpwABds9yJogfo2KAKNwjTNcnyGDNvV7ArsP3+Ew0TU0stCD
+         OzrxsIHZtSrJA==
+Received: by mail-ej1-f48.google.com with SMTP id s22so3403027ejv.12;
+        Wed, 26 May 2021 09:33:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532OXToywRefEGBgeR+6n468GauorB9+rjWXlHTS5qgOEaRAHANg
+        XfZ2/XLgv0tcy95hW9sk3iZETg5/xumT49ePlw==
+X-Google-Smtp-Source: ABdhPJz/NQU3/oyiHOCSt1947VmfYPxPrIrrv74R97/vZaKYMNtIj0NNv/rt5oyOhC2oYOSh6w2uI57ApOhldcTPSs0=
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr34108710ejc.108.1622046827604;
+ Wed, 26 May 2021 09:33:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210524063004.132043-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210524063004.132043-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20210524063004.132043-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 26 May 2021 11:33:35 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKE0o9dUmJxgSg3_e_s7Dh3Vrjb60=u+xRd7erCVnFHWQ@mail.gmail.com>
+Message-ID: <CAL_JsqKE0o9dUmJxgSg3_e_s7Dh3Vrjb60=u+xRd7erCVnFHWQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: pci: Add DT binding for Toshiba
+ Visconti PCIe controller
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 5:29 PM, Pavel Begunkov wrote:
-> On 5/26/21 4:52 PM, Marco Elver wrote:
->> Due to some moving around of code, the patch lost the actual fix (using
->> atomically read io_wq) -- so here it is again ... hopefully as intended.
->> :-)
-> 
-> "fortify" damn it...
+On Mon, May 24, 2021 at 1:30 AM Nobuhiro Iwamatsu
+<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
+>
+> This commit adds the Device Tree binding documentation that allows
+> to describe the PCIe controller found in Toshiba Visconti SoCs.
+>
+> v1 -> v2:
+>  - Remove white space.
+>  - Drop num-viewport and bus-range from required.
+>  - Drop status line from example.
+>  - Drop bus-range from required.
+>  - Removed lines defined in pci-bus.yaml from required.
+>
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> ---
+>  .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++++++++++++++
+>  1 file changed, 110 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
 
-fwiw, it's a reference to my own commit that came after -rc
+Please resend to DT list. Otherwise, automated checks don't run
+(though I'm sure you ran 'make dt_binding_check' already, right?).
 
--- 
-Pavel Begunkov
+>
+> diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> new file mode 100644
+> index 000000000000..d47a4a3c49e3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+> @@ -0,0 +1,110 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/toshiba,visconti-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Toshiba Visconti5 SoC PCIe Host Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> +
+> +description: |+
+> +  Toshiba Visconti5 SoC PCIe host controller is based on the Synopsys DesignWare PCIe IP.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: toshiba,visconti-pcie
+> +
+> +  reg:
+> +    items:
+> +      - description: Data Bus Interface (DBI) registers.
+> +      - description: PCIe configuration space region.
+> +      - description: Visconti specific additional registers.
+> +      - description: Visconti specific SMU registers
+> +      - description: Visconti specific memory protection unit registers (MPU)
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: config
+> +      - const: ulreg
+> +      - const: smu
+> +      - const: mpu
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PCIe reference clock
+> +      - description: PCIe system clock
+> +      - description: Auxiliary clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pcie_refclk
+
+Just 'refclk'. Though 'clk' is redundant too. I'd go with 'ref',
+'aux', and 'core'.
+
+> +      - const: sysclk
+> +      - const: auxclk
+> +
+> +  num-lanes:
+> +    const: 2
+> +
+> +required:
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - "#interrupt-cells"
+> +  - interrupt-map
+> +  - interrupt-map-mask
+> +  - num-lanes
+> +  - clocks
+> +  - clock-names
+> +  - max-link-speed
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pcie: pcie@28400000 {
+> +            compatible = "toshiba,visconti-pcie";
+> +            reg = <0x0 0x28400000 0x0 0x00400000>,
+> +                  <0x0 0x70000000 0x0 0x10000000>,
+> +                  <0x0 0x28050000 0x0 0x00010000>,
+> +                  <0x0 0x24200000 0x0 0x00002000>,
+> +                  <0x0 0x24162000 0x0 0x00001000>;
+> +            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
+> +            device_type = "pci";
+> +            bus-range = <0x00 0xff>;
+> +            num-lanes = <2>;
+> +            num-viewport = <8>;
+> +
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            #interrupt-cells = <1>;
+> +            ranges = <0x81000000 0 0x40000000 0 0x40000000 0 0x00010000>,
+> +                     <0x82000000 0 0x50000000 0 0x50000000 0 0x20000000>;
+> +            interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "intr";
+> +            interrupt-map-mask = <0 0 0 7>;
+> +            interrupt-map =
+> +                <0 0 0 1 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> +                 0 0 0 2 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> +                 0 0 0 3 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
+> +                 0 0 0 4 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&extclk100mhz>, <&clk600mhz>, <&clk25mhz>;
+> +            clock-names = "pcie_refclk", "sysclk", "auxclk";
+> +            max-link-speed = <2>;
+> +        };
+> +    };
+> +...
+> --
+> 2.31.1
+>
