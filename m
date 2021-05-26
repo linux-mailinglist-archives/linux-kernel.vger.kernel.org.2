@@ -2,104 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F63B391A8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCD7391A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbhEZOqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:46:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55892 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234737AbhEZOqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:46:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622040269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y4JlXUoqOIqKnobUh41tn3vEh7dafg2XJZ7ppKxkYSI=;
-        b=BkssxGINa2mqUBE5vFu/l4oD1Ng0j2RpUAYmeTjsJnow5Ksblw/nUUycTDN1d4ny1ijnBe
-        8/LOoHEh2uWtimoy1lxQ33rwC9XRxe7/o0LG5SiL+x0580d6yS2p26LWFYNswLAuW+42eW
-        6gqxRzyVAAu6Uqw5kqwdRhI4LDJkmQc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-H7Jsr9rvMuuIzGU6AgnbEQ-1; Wed, 26 May 2021 10:44:28 -0400
-X-MC-Unique: H7Jsr9rvMuuIzGU6AgnbEQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E60510CE781;
-        Wed, 26 May 2021 14:44:27 +0000 (UTC)
-Received: from starship (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0227B5C238;
-        Wed, 26 May 2021 14:44:24 +0000 (UTC)
-Message-ID: <c67f25392377819e4bb38595e58f5aa6f2e12206.camel@redhat.com>
-Subject: Re: [PATCH v2 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when
- eVMCS data is copied in vmx_get_nested_state()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Date:   Wed, 26 May 2021 17:44:23 +0300
-In-Reply-To: <d049467a-e2a9-d888-4217-9261eec4a40b@redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
-         <20210517135054.1914802-4-vkuznets@redhat.com>
-         <48f7950dd6504a9ecc7a5209db264587958cafdf.camel@redhat.com>
-         <87zgwk5lqy.fsf@vitty.brq.redhat.com>
-         <d049467a-e2a9-d888-4217-9261eec4a40b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S235025AbhEZOqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:46:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:45928 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235014AbhEZOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:46:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 433501516;
+        Wed, 26 May 2021 07:44:32 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A26B03F73D;
+        Wed, 26 May 2021 07:44:30 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:44:28 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH 3/4] firmware: arm_scmi: Introduce monotonically
+ increasing tokens
+Message-ID: <20210526144428.GO28060@e120937-lin>
+References: <20210524231503.34924-1-cristian.marussi@arm.com>
+ <20210524231503.34924-4-cristian.marussi@arm.com>
+ <38fb1a44-3ed4-3a8f-0716-e91159b72a9b@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38fb1a44-3ed4-3a8f-0716-e91159b72a9b@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-24 at 15:58 +0200, Paolo Bonzini wrote:
-> On 24/05/21 15:01, Vitaly Kuznetsov wrote:
-> > With 'need_vmcs12_to_shadow_sync', we treat eVMCS as shadow VMCS which
-> > happens to shadow all fields and while it may not be the most optimal
-> > solution, it is at least easy to comprehend. We can try drafting
-> > something up instead, maybe it will also be good but honestly I'm afraid
-> > of incompatible changes in KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE, we
-> > can ask Paolo's opinion on that.
+Hi Florian,
+
+On Mon, May 24, 2021 at 07:13:35PM -0700, Florian Fainelli wrote:
 > 
-> Yes, it's much easier to understand it if the eVMCS is essentially a 
-> memory-backed shadow VMCS, than if it's really the vmcs12 format.  I 
-> understand that it's bound to be a little slower, but at least the two 
-> formats are not all over the place.
 > 
-> Paolo
+> On 5/24/2021 4:15 PM, Cristian Marussi wrote:
+> > Tokens are sequence numbers embedded in the each SCMI message header: they
+> > are used to correlate commands with responses (and delayed responses), but
+> > their usage and policy of selection is entirely up to the caller (usually
+> > the OSPM agent), while they are completely opaque to the callee (SCMI
+> > server platform) which merely copies them back from the command into the
+> > response message header.
+> > This also means that the platform does not, can not and should not enforce
+> > any kind of policy on received messages depending on the contained sequence
+> > number: platform can perfectly handle concurrent requests carrying the same
+> > identifiying token if that should happen.
+> > 
+> > Moreover the platform is not required to produce in-order responses to
+> > agent requests, the only constraint in these regards is that in case of
+> > an asynchronous message the delayed response must be sent after the
+> > immediate response for the synchronous part of the command transaction.
+> > 
+> > Currenly the SCMI stack of the OSPM agent selects as token for the
 > 
+> s/as token/a token/?
+> 
+> > egressing commands the lowest possible number which is not already in use
+> > by an existing in-flight transaction, which means, in other words, that
+> > we immediately reuse any token after its transaction has completed or it
+> > has timed out: this indeed simplifies token and associated xfer management
+> > and lookup.
+> > 
+> > Under the above assumptions and constraints, since there is really no state
+> > shared between the agent and the platform to let the platform know when a
+> > token and its associated message has timed out, the current policy of early
+> > reuse of tokens can easily lead to the situation in which a spurios or late
+> 
+> s/spurios/spurious/
+> 
+> > received response (or delayed_response), related to an old stale and timed
+> > out transaction, can be wrongly associated to a newer valid in-flight xfer
+> > that just happens to have reused the same token.
+> > 
+> > This misbehavior on such ghost responses is more easily exposed on those
+> > transports that naturally have an higher level of parallelism in processing
+> > multiple concurrent in-flight messages.
+> > 
+> > This commit introduces a new policy of selection of tokens for the OSPM
+> > agent: each new transfer now gets the next available and monotonically
+> > increasing token, until tokens are exhausted and the counter rolls over.
+> > 
+> > Such new policy mitigates the above issues with ghost responses since the
+> > tokens are now reused as later as possible (when they roll back ideally)
+> > and so it is much easier to identify ghost responses to stale timed out
+> > transactions: this also helps in simplifying the specific transports
+> > implementation since stale transport messages can be easily identified
+> > and discarded early on in the rx path without the need to cross check
+> > their actual sate with the core transport layer.
+> > This mitigation is even more effective when, as is usual the case, the
+> 
+> s/usual/usually/
+> 
+> > maximum number of pending messages is capped by the platform to a much
+> > lower value than whole possible range of tokens.(2^10)
+> > 
+> > This internal policy change in the core SCMI transport layer is fully
+> > transparent to the specific transports so it has not and should not have
+> > any impact on the transports implementation.
+> > 
+> > The empirically observed cost of such new procedure of token selection
+> > amounts in the best case to ~10us out of an observed full transaction cost
+> > of 3ms for the completion of a synchronous sensor reading command on a
+> > platform supporting commmands completion interrupts.
+> 
+> s/commmands/commands/
+> 
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> 
+> Overall this looks good to me and is more straightforward than I thought.
+> [snip]
+> 
+> > +/**
+> > + * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
+> > + *
+> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
+> > + * @xfer: The xfer to act upon
+> > + *
+> > + * Pick the next unused monotonically increasing token and set it into
+> > + * xfer->hdr.seq: picking a monotonically increasing value avoids reusing
+> > + * immediately tokens of just completed or timed-out xfers, mitigating the risk
+> > + * of wrongly associating a late received answer for an expired xfer to a live
+> > + * in-flight transaction which happened to have reused the same token.
+> 
+> This was a bit harder to read than I thought, how about:
+> 
+> picking a monotonically increasing value avoids immediate reuse of
+> freshly completed or timed-out xfers, thus mitigating the risk of
+> incorrect association of a late and expired xfer with a live in-flight
+> transaction, both happening to re-use the same token identifier.
+> -- 
+> Florian
 
-Hi!
+Thanks for having a look and for the feedback !
+I'll fix you remarks in V2.
 
-Please see my other reply to this in patch 1.
- 
-I understand this concern, but what bugs me is that we sort of 
-shouldn't read evmcs while L1 is running.
-(e.g its clean bits might be not up to date and
-such).
- 
-Actually instead of thinking of evmcs as a shadow, I am thinking of it
-more as a vmcb12 (the SVM one), 
-which we load when we do a nested entry and which is then
-updated when we do a nested vmexit, and other than that, while
-L1 is running, we don't touch it.
- 
-Yes there is that vm instruction error field in evmcs which I suppose we should
-write when we fail a VMX instruction (invept only practically I think) 
-while we just run L1, and even that we might just avoid doing, 
-which will allow us to avoid even keeping
-the evmcs mapped while L1 is running.
-
-Just my 0.2 cents.
-
-Best regards,
-	Maxim Levitsky
+Thanks,
+Cristian
 
