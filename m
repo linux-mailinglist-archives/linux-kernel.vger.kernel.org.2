@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF3F391B70
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C85F391B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhEZPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
+        id S235417AbhEZPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235335AbhEZPQk (ORCPT
+        with ESMTP id S235399AbhEZPQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:16:40 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82323C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:15:08 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id m190so1226084pga.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:15:08 -0700 (PDT)
+        Wed, 26 May 2021 11:16:43 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94621C061574;
+        Wed, 26 May 2021 08:15:11 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id v12so1544228wrq.6;
+        Wed, 26 May 2021 08:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gyPqMlWx0UGmus8UTSY9WUsK8ZBsk5nqFBqX0s/G7yY=;
-        b=p/Ou/fdmAh55byEwBF8c18CI5ZSzs8YfUQ6WzubkB1roSNmpO8jAtO0ruzU2WRzTZb
-         OTPta8JD+/cVxf1qamokAXWgTI6siNRm3yG706F4Ba9GBdDI+dtUZgeb7P92tW/+arGh
-         OlIsi9Ir/+WIeXYP/th89Jf8VfoNsY5trO+Q2Z6njeDAHeWdNhiNBNEg+rWcjE2Q1aFi
-         PCWZj7FdC94BdPguA+h3UmiUk0/gCNBoc7yhftUXDjrNZJTq0S5avzbwYyGPzvEmuQFS
-         i6TlRmDo72KHfPLNA0bfq7AyEB1YP+U0XHK8SQtK5XPBGdihpoHSoAYKhNa20YnLVRa0
-         Qm+A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zKJ+d2xdcQaoB86Ynp+qKaVBKetJQslZOwN/xQshRB8=;
+        b=KES3ksYHStQ8/mkQZCs5zeLeMkaAH4nC6yhbnk9UPF7+IfT858MJijVOdsVUBP7HRc
+         5pIh67hsUI8/kjjmVKZW0jVxpsfhwy7sS49DQ7t1GsCwkTfBXZzwvzjwMwLgAG3ycyot
+         BsEU2khpD+3Xhgfe/XM3G/NGbNTf+Q3o3NPNNIVx5qWbd9D/SxNKeRdoZB5rQ6Mjq586
+         uI9l/U6fU+yHOsAJHciWoKZnWzCQAPHUQJ17xawm7IsV1A9UgbSTLwuugRr8K4UKl+Ii
+         nynya7Z67fF3cjfgnzErQrByX/+0jYaT5U5OCRhBPQdzy8zfHTacbzEJrk7CdRnPlOIq
+         7KdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gyPqMlWx0UGmus8UTSY9WUsK8ZBsk5nqFBqX0s/G7yY=;
-        b=Vf6Olpu1R/Q281NF7JEBL9kLQl13ZUegjhlOms85CAe2WrF17Ey/rL+hg4hEFazH4m
-         afcsJlKesBtJ0uhh7CAP9EARpvtUVkPETFSsHZozFdlIlggnOAqChYBNIZPAUBz5RYQQ
-         aXbeWNcOQieeoiFJLyEPc9vjGOKwbokIRKzPIPFOUL92SKD2cqbknPZoWwjhv2VIO5ls
-         a+3NqE/vrkpH6VETd2MLpCnW4MFFvt4FbYfERalC1NAh5amhN9XgKPqwo7H9Y4bF8Fcu
-         cbHlPKhBGzsRAk7RF5mXpdp2uanmC6rq39bBI76v2LCZHaM+JfhGQfiucfgMj8Fe1vmY
-         WaRg==
-X-Gm-Message-State: AOAM533nCtEPOKOqtJw0vwTawK9+EV0k0MjlsirjXHw19t1IkmbsCqAu
-        kWawHUECG0frEk3bL4zfsn9BRQ==
-X-Google-Smtp-Source: ABdhPJxc7QcsdxpS5IJfjnCaFHxER5bNMrdafpqQ+D5Uiod1DLIdizne556iLrpewx1qXxweLHIIHA==
-X-Received: by 2002:a63:e14:: with SMTP id d20mr26047737pgl.35.1622042107988;
-        Wed, 26 May 2021 08:15:07 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 184sm15445516pfv.38.2021.05.26.08.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:15:07 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:15:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Reiji Watanabe <reijiw@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/43] KVM: x86: Open code necessary bits of
- kvm_lapic_set_base() at vCPU RESET
-Message-ID: <YK5l9/73AHeuVw0q@google.com>
-References: <20210424004645.3950558-1-seanjc@google.com>
- <20210424004645.3950558-18-seanjc@google.com>
- <CAAeT=Fw2zfvTkvCSuRqo6K1+L7LaPOpsSHHU1oGbUnUSDtELVQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zKJ+d2xdcQaoB86Ynp+qKaVBKetJQslZOwN/xQshRB8=;
+        b=ImWfOLFgK5OMySJis/AYshEZIe2D2clz0zrz9XlVKIoU+/cbvxyu1OLCv4ccUuuaHk
+         Db62ufPm5Xjp0j/7AsSbC2g3r3mM7WcM9XyBzkObooc+c4oldi9jtpI8miljzNjpBCTe
+         Osk9zXqiuOqIzFkRcTv1A++8AXAsAip+UErvDVSREqv0EEhw0MzwYyvWHPCNVWJKhBC4
+         vjfy7zbg18ejktLLuJK6Ezkg459oMOy2IKFVSDXU9VNJVwJCzXV83L+BWOsQhZxJGz7t
+         dymgSO3xG6bW5wi1NVc1tlRf1zwhfYGxonpyVE+Z3fp0KeWbsV8wzGkpbsRcRfoS/erU
+         KBaw==
+X-Gm-Message-State: AOAM530ReUx7sY1wVDEv6dTnPB+fgfI8GbHuEMR2xykbO3eiQWpgF4Te
+        7rziupQBKPQwhhWlPUjveMU=
+X-Google-Smtp-Source: ABdhPJy9NnY2LhH3kKQdhNXpEedeixyGrR0OX9dVm2JF4HKUWdQTid8aqP3v4clKFGZKsGe/8G02Bw==
+X-Received: by 2002:a5d:45c6:: with SMTP id b6mr33464058wrs.333.1622042110246;
+        Wed, 26 May 2021 08:15:10 -0700 (PDT)
+Received: from [10.0.0.2] ([37.170.107.4])
+        by smtp.gmail.com with ESMTPSA id k7sm20137292wro.8.2021.05.26.08.15.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 08:15:09 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] virtio_net: disable cb aggressively
+To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+References: <20210526082423.47837-1-mst@redhat.com>
+ <20210526082423.47837-5-mst@redhat.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <18b47c22-8c8a-7699-ffaf-ccfdcbf39d37@gmail.com>
+Date:   Wed, 26 May 2021 17:15:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeT=Fw2zfvTkvCSuRqo6K1+L7LaPOpsSHHU1oGbUnUSDtELVQ@mail.gmail.com>
+In-Reply-To: <20210526082423.47837-5-mst@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Reiji Watanabe wrote:
-> On Fri, Apr 23, 2021 at 5:51 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Stuff vcpu->arch.apic_base and apic->base_address directly during APIC
-> > reset, as opposed to bouncing through kvm_set_apic_base() while fudging
-> > the ENABLE bit during creation to avoid the other, unwanted side effects.
-> >
-> > This is a step towards consolidating the APIC RESET logic across x86,
-> > VMX, and SVM.
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/lapic.c | 15 ++++++---------
-> >  1 file changed, 6 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > index b088f6984b37..b1366df46d1d 100644
-> > --- a/arch/x86/kvm/lapic.c
-> > +++ b/arch/x86/kvm/lapic.c
-> > @@ -2305,7 +2305,6 @@ EXPORT_SYMBOL_GPL(kvm_apic_update_apicv);
-> >  void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >  {
-> >         struct kvm_lapic *apic = vcpu->arch.apic;
-> > -       u64 msr_val;
-> >         int i;
-> >
-> >         if (!apic)
-> > @@ -2315,10 +2314,13 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >         hrtimer_cancel(&apic->lapic_timer.timer);
-> >
-> >         if (!init_event) {
-> > -               msr_val = APIC_DEFAULT_PHYS_BASE | MSR_IA32_APICBASE_ENABLE;
-> > +               vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
-> > +                                      MSR_IA32_APICBASE_ENABLE;
-> >                 if (kvm_vcpu_is_reset_bsp(vcpu))
-> > -                       msr_val |= MSR_IA32_APICBASE_BSP;
-> > -               kvm_lapic_set_base(vcpu, msr_val);
-> > +                       vcpu->arch.apic_base |= MSR_IA32_APICBASE_BSP;
-> > +
-> > +               apic->base_address = MSR_IA32_APICBASE_ENABLE;
-> 
-> I think you wanted to make the code above set apic->base_address
-> to APIC_DEFAULT_PHYS_BASE (not MSR_IA32_APICBASE_ENABLE).
 
-Indeed!  It also means I need to double check that I'm testing a guest without
-x2apic enabled.  Thanks much!
+
+On 5/26/21 10:24 AM, Michael S. Tsirkin wrote:
+> There are currently two cases where we poll TX vq not in response to a
+> callback: start xmit and rx napi.  We currently do this with callbacks
+> enabled which can cause extra interrupts from the card.  Used not to be
+> a big issue as we run with interrupts disabled but that is no longer the
+> case, and in some cases the rate of spurious interrupts is so high
+> linux detects this and actually kills the interrupt.
+> 
+> Fix up by disabling the callbacks before polling the tx vq.
+
+
+It is not clear why we want to poll TX completions from ndo_start_xmit() in napi mode ?
+
+This seems not needed, adding costs to sender thread, this might
+reduce the ability to use a different cpu for tx completions.
+
+Also this will likely conflict with BQL model if we want to use BQL at some point.
+
+> 
+
+This probably needs a Fixes: tag 
+
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  drivers/net/virtio_net.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index c29f42d1e04f..a83dc038d8af 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1433,7 +1433,10 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+>  		return;
+>  
+>  	if (__netif_tx_trylock(txq)) {
+> -		free_old_xmit_skbs(sq, true);
+> +		do {
+> +			virtqueue_disable_cb(sq->vq);
+> +			free_old_xmit_skbs(sq, true);
+> +		} while (unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
+>  
+>  		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+>  			netif_tx_wake_queue(txq);
+> @@ -1605,12 +1608,17 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	struct netdev_queue *txq = netdev_get_tx_queue(dev, qnum);
+>  	bool kick = !netdev_xmit_more();
+>  	bool use_napi = sq->napi.weight;
+> +	unsigned int bytes = skb->len;
+>  
+>  	/* Free up any pending old buffers before queueing new ones. */
+> -	free_old_xmit_skbs(sq, false);
+> +	do {
+> +		if (use_napi)
+> +			virtqueue_disable_cb(sq->vq);
+>  
+> -	if (use_napi && kick)
+> -		virtqueue_enable_cb_delayed(sq->vq);
+> +		free_old_xmit_skbs(sq, false);
+> +
+> +	} while (use_napi && kick &&
+> +	       unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
+>  
+>  	/* timestamp packet in software */
+>  	skb_tx_timestamp(skb);
+> 
