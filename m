@@ -2,119 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B35391F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288CA391F1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235516AbhEZSas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbhEZSar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:30:47 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C52DC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:29:16 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id g11so1787026ilq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:29:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PmhlWA1tcmd7i5WpuGzdloktFmGN5uwrhIb1Qmrmdq8=;
-        b=eujV0BV0nOL+dAmq0I+fW3ZDP1ywprfFUR13/hpuElx7AmBAs7QBrYGxfUDU55/Z6K
-         rDag5m1igx9H8jp53Ay34Y6dLDmb8fbMqlXjakwkJVrAd2oCmBhRGbGiTpeSjDhyTwT9
-         jZFDrwqhn0AYSVRVTllg0kc+t+gBExetxtVemJtoOGvig+baW4kpuVdGLS/T3UTwo/rq
-         Ku3at9oUpH4A2G86VByEu41gpafCs/CqWDdakg1Gr1sZsz2FzlW69XsN4olGsE1lBPU7
-         sxdGkeCwrgPSRiMutxIRrLFrVkCAko3x9WYVrPIfFwg+mJuOjyfdml07p+/ACQ0Jxz6v
-         +Jyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PmhlWA1tcmd7i5WpuGzdloktFmGN5uwrhIb1Qmrmdq8=;
-        b=ohML3jcgQCinZbjRjtzXV11SdrJzPV12VrEr1DPozacWhT4wMZKKXcPVN2t4TUkGxJ
-         AL4IIfFaV36/gFFwfkcbQqGB7gza1udBhLu8AF8t9XEy2Ar82EbDu/SMlmUkoLY8RvWT
-         Va0TME/5AP1fdhv5GAkHnOVqrQL1HmhAEGZ7HW891bbZrC9iRePVQlkq8s4OjelAhBto
-         bPXsIUkuGpE5txqdxTjDn2aguZLguPollZ5zqw49pcBLVKgSMq3JMC52JYR5FuekZXCH
-         hMWUaEjxYz0HkVI0kPFBe+bOhoKBxEWc489uosPEtux0hOL6QA/CitBO5iATSF1OwpXH
-         pAuw==
-X-Gm-Message-State: AOAM5319CJ9Nt0cAZmMxLa6jcoZ3UNGeISKNAQZr1IyvpaWuR20UC2En
-        tCDhKvKC46vH1AIvtB878/9p+qdvoun8X0HbdfsHlLeT5io=
-X-Google-Smtp-Source: ABdhPJyQxhvNJ1T571Xy4x9pQnOTA36skTI7ksgiynb0ysIu58FsLu8vxkO9i44GwrTY+q6YCOQDSM2tYdZ1MSOaz0A=
-X-Received: by 2002:a92:c70b:: with SMTP id a11mr30705547ilp.136.1622053755188;
- Wed, 26 May 2021 11:29:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210526081112.3652290-1-davidgow@google.com> <20210526081112.3652290-3-davidgow@google.com>
- <YK4NRlyrYJ8ktsWQ@elver.google.com>
-In-Reply-To: <YK4NRlyrYJ8ktsWQ@elver.google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 26 May 2021 11:29:03 -0700
-Message-ID: <CAGS_qxp=EV1iy5tCs+YpxH-Pug=MDTBXo3jSc13-h7HJnzBnDA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kunit: test: Add example_skip test suite which is
- always skipped
+        id S235530AbhEZSbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:31:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232577AbhEZSbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 14:31:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96587613B0;
+        Wed, 26 May 2021 18:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622053783;
+        bh=wNW/3lbAzflM5LIUM/8IdAP6xp80z8iphq0uxRQwSx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SgohjmzjSckj5W7Js4HNE69pssksZSmiDuhkIP4QiufTQsfepo7I7C7dl93QlT5hT
+         kqOre2QXBBzp8owNkuu8p4zzekAjwDB2SE0qTKniFbFBBRLTCKO8rH2NM+7cIzto2p
+         zdORHyHbnOLK5/UNT6FApK7dT+9QO1tLL/wq3VQ0Hpd16g1eUOV3H6epco21Hgndw0
+         tPL/ywt8qRpXPFMjfYDODfZEz070EkdIEuXEvv724H580UOXSa8gf2/5DrYfaJNtgH
+         GJwWc027uThnJQHjhJK/f+d5VODEh4Hbn/NlhRo1qV7Nw8dDlqpnn+5fOeebl6IIcx
+         JaIXLHcmJHjcw==
+Date:   Wed, 26 May 2021 19:29:38 +0100
+From:   Will Deacon <will@kernel.org>
 To:     Marco Elver <elver@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH 3/3] arm64: Add compile-time asserts for siginfo_t offsets
+Message-ID: <20210526182937.GA20055@willie-the-truck>
+References: <20210429190734.624918-1-elver@google.com>
+ <20210429190734.624918-3-elver@google.com>
+ <20210526174217.GB19898@willie-the-truck>
+ <CANpmjNOOW6-8su=VNipvb7ztQ0TdF9THn+yeWepz7D7BAL418Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOOW6-8su=VNipvb7ztQ0TdF9THn+yeWepz7D7BAL418Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 1:56 AM 'Marco Elver' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> On Wed, May 26, 2021 at 01:11AM -0700, David Gow wrote:
-> > Add a new KUnit test suite which contains tests which are always
-> > skipped. This is used as an example for how to write tests which are
-> > skipped, and to demonstrate the difference between kunit_skip() and
-> > kunit_mark_skipped().
+On Wed, May 26, 2021 at 07:50:41PM +0200, Marco Elver wrote:
+> On Wed, 26 May 2021 at 19:42, Will Deacon <will@kernel.org> wrote:
+> > Hi Marco,
 > >
-> > Because these tests do not pass (they're skipped), they are not enabled
-> > by default, or by the KUNIT_ALL_TESTS config option: they must be
-> > enabled explicitly by setting CONFIG_KUNIT_EXAMPLE_SKIP_TEST=y in either
-> > a .config or .kunitconfig file.
+> > On Thu, Apr 29, 2021 at 09:07:34PM +0200, Marco Elver wrote:
+> > > To help catch ABI breaks at compile-time, add compile-time assertions to
+> > > verify the siginfo_t layout.
+> > >
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > > ---
+> > >  arch/arm64/kernel/signal.c   | 36 ++++++++++++++++++++++++++++++++++++
+> > >  arch/arm64/kernel/signal32.c | 36 ++++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 72 insertions(+)
 > >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >  lib/kunit/Kconfig                   | 15 +++++++++
-> >  lib/kunit/Makefile                  |  2 ++
-> >  lib/kunit/kunit-example-skip-test.c | 52 +++++++++++++++++++++++++++++
-> >  3 files changed, 69 insertions(+)
-> >  create mode 100644 lib/kunit/kunit-example-skip-test.c
->
-> I don't know if this test is useful for a user of KUnit. Given it's not
-> testing KUnit functionality (I see you added tests that the feature
-> works in patch 1/3), but rather a demonstration and therefore dead code.
-> I don't think the feature is difficult to understand from the API doc
-> text.
->
-> Instead, would it be more helpful to add something to
-> Documentation/dev-tools/kunit? Or perhaps just add something to
-> lib/kunit/kunit-example-test.c? It'd avoid introducing more Kconfig
+> > Do you want me to queue this patch in the arm64 tree, or is the series all
+> > going together via another route?
+> 
+> I think Eric will queue them together with a bunch of other cleanups,
+> because as-is these patches are out-of-date as of:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0e31f3a38e77612ed8967aaad28db6d3ee674b5
 
-I'm in favor of putting it in kunit-example-test.c as well.
+Ok, thanks. I will ignore this then :)
 
-But I hear there was pushback to have a non-passing test in the example?
-I guess the fear is that someone will see something that doesn't say
-"passed" in the example output and think something has gone wrong?
-
-Hence this more conservative change.
-But I hope that in the absence of any replies in opposition, we can
-just keep one example-test.c
-
-> options at least.
->
-> Thanks,
-> -- Marco
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/YK4NRlyrYJ8ktsWQ%40elver.google.com.
+Will
