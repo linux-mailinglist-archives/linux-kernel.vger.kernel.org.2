@@ -2,93 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B58391195
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6172391193
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhEZHyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:54:52 -0400
-Received: from mail-m121142.qiye.163.com ([115.236.121.142]:44884 "EHLO
-        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhEZHyp (ORCPT
+        id S233115AbhEZHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233039AbhEZHyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:54:45 -0400
-Received: from localhost.localdomain (unknown [14.154.30.253])
-        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id D9F0980288;
-        Wed, 26 May 2021 15:53:11 +0800 (CST)
-From:   Ding Hui <dinghui@sangfor.com.cn>
-To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        osalvador@suse.de, david@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Ding Hui <dinghui@sangfor.com.cn>
-Subject: [PATCH v3] mm/page_alloc: fix counting of free pages after take off from buddy
-Date:   Wed, 26 May 2021 15:52:47 +0800
-Message-Id: <20210526075247.11130-1-dinghui@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQksZQlZMGExLHU4eT0hKSEJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        9ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OFE6UTo*FT8UThkSFStJGCwr
-        GTUwCwNVSlVKTUlJS0pOTkJJT0hPVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKT1VKTk9VSEtVSU5IWVdZCAFZQUhLT0k3Bg++
-X-HM-Tid: 0a79a7a9c6aab037kuuud9f0980288
+        Wed, 26 May 2021 03:54:31 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E45BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:59 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j14so29030wrq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=goipG/skXtpzJOrucOfBrY3VZM0NMypmFPU8raSes5o=;
+        b=Avl4DWCrbzHPqkpuGI48j9AeJ8J0hHIoaq3PLQ0VHQrly6aBfca3S3QmyHD5kg75Mb
+         So+0y+pgVT3ZuLYxaAu8cXh/KP6F/+acEkUjb5iLHKKyvB0f/X/jRcZw8Cj4IQvg7ul3
+         KJdEsJJQNdGvGGwm6vBb7VlHeaowJxVUScfO0Bdb7gtA5WCJch7RHSCGesCWO6/fsSgv
+         XFFD0pBrlBnMWi8mV6TILI6RsR90zVmsA5sxbqQc+BLSJsnCJ0BZOOfaF9aNf2he6Biw
+         AezSph0mdR6MC9CMAwAxPiy6F7SJjSYy3kNL02OJPzSw/kkYkjvuVP+ZqQ04I7FB7HUC
+         g1qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=goipG/skXtpzJOrucOfBrY3VZM0NMypmFPU8raSes5o=;
+        b=JyAAzRp7ngyesbsf7DtRe+7A+37KYdERS5wD/pLx1+nlzvdymMd4WinnpCt175ThIP
+         XTN0QbVTqcOHsrIlDsavWayb/FogKfFhnlX619RxHQH3VhiVnhLNs/3DW7uM0AMw+OhL
+         48RXSWeDQThGUiFSG2yUeJWzzV52Xwfi4ZI5eonRDhmgRUO5jtMcVQ/bn9AyQ4R3wUgD
+         Rg/GtfQnWlbX3p4/R6shKG5RkX7WlGxo1919uqDEiDGIO7cz1cMpnzjFSuVc/gkmH4uW
+         hfpiqy9XDz7oSi+Eb1x9Z06zLov41158dDjBuiUwkwpds+22kNgmAqjKjRNLwenkAgVa
+         N7aQ==
+X-Gm-Message-State: AOAM5312UzCpX6myTNFOI1z+Sxt+28ClWs4gNanzSiKhUML8wAF4BGn5
+        dMxnZZm9iKVLXRrAKvn39LWwQeo7yJ5Frw==
+X-Google-Smtp-Source: ABdhPJz3p185K4KumVptR+JJxcC6XNNmzO6oRz2HQAxzODacIKdvbXNyGxksePhNqgeMCxhEbVE8BA==
+X-Received: by 2002:adf:8b4a:: with SMTP id v10mr31016770wra.274.1622015578162;
+        Wed, 26 May 2021 00:52:58 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id g11sm19052357wri.59.2021.05.26.00.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 00:52:57 -0700 (PDT)
+Date:   Wed, 26 May 2021 08:52:55 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210526075255.GG4005783@dell>
+References: <20210524120539.3267145-1-robert.marko@sartura.hr>
+ <20210524120539.3267145-3-robert.marko@sartura.hr>
+ <20210524230940.GA1350504@robh.at.kernel.org>
+ <20210525074649.GC4005783@dell>
+ <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently we found that there is a lot MemFree left in /proc/meminfo
-after do a lot of pages soft offline, it's not quite correct.
+On Tue, 25 May 2021, Robert Marko wrote:
 
-Before Oscar rework soft offline for free pages [1], if we soft
-offline free pages, these pages are left in buddy with HWPoison
-flag, and NR_FREE_PAGES is not updated immediately. So the difference
-between NR_FREE_PAGES and real number of available free pages is
-also even big at the beginning.
+> On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 24 May 2021, Rob Herring wrote:
+> >
+> > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
+> > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > >
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > ---
+> > > > Changes in v2:
+> > > > * Implement MFD as a simple I2C MFD
+> > > > * Add GPIO bindings as separate
+> > >
+> > > I don't understand why this changed. This doesn't look like an MFD to
+> > > me. Make your binding complete if there are missing functions.
+> > > Otherwise, stick with what I already ok'ed.
+> >
+> > Right.  What else, besides GPIO, does this do?
+> 
+> It currently does not do anything else as hwmon driver was essentially
+> NACK-ed for not exposing standard attributes.
 
-However, with the workload running, when we catch HWPoison page in
-any alloc functions subsequently, we will remove it from buddy,
-meanwhile update the NR_FREE_PAGES and try again, so the NR_FREE_PAGES
-will get more and more closer to the real number of available free pages.
-(regardless of unpoison_memory())
+Once this provides more than GPIO capabilities i.e. becomes a proper
+Multi-Function Device, then it can use the MFD framework.  Until then,
+it's a GPIO device I'm afraid.
 
-Now, for offline free pages, after a successful call take_page_off_buddy(),
-the page is no longer belong to buddy allocator, and will not be
-used any more, but we missed accounting NR_FREE_PAGES in this situation,
-and there is no chance to be updated later.
+Are you going to re-author the HWMON driver to conform?
 
-Do update in take_page_off_buddy() like rmqueue() does, but avoid
-double counting if some one already set_migratetype_isolate() on the
-page.
+> The CPLD itself has PSU status-related information, bootstrap related
+> information,
+> various resets for the CPU-s, OOB ethernet PHY, information on the exact board
+> model it's running etc.
+> 
+> PSU and model-related info stuff is gonna be exposed via a misc driver
+> in debugfs as
+> we have user-space SW depending on that.
+> I thought we agreed on that as v1 MFD driver was exposing those directly and
+> not doing anything else.
 
-[1]: commit 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
+Yes, we agreed that creating an MFD driver just to expose chip
+attributes was not an acceptable solution.
 
-Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
----
-v3:
-- as Naoya Horiguchi suggested, do update only when
-  is_migrate_isolate(migratetype)) is false
-- updated patch description
+> So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
+> which currently uses the same driver and then GPIO regmap as I do.
+> 
+> Other stuff like the resets is probably gonna get exposed later when
+> it's required
+> to control it directly.
 
-v2:
-- https://lore.kernel.org/linux-mm/20210508035533.23222-1-dinghui@sangfor.com.cn/
-- use __mod_zone_freepage_state instead of __mod_zone_page_state 
+In order for this driver to tick the MFD box, it's going to need more
+than one function.
 
- mm/page_alloc.c | 2 ++
- 1 file changed, 2 insertions(+)
+> > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 ++++++++++
+> > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 81 +++++++++++++++++++
+> > > >  2 files changed, 123 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> >
+> 
+> 
+> 
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index aaa1655cf682..d1f5de1c1283 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -9158,6 +9158,8 @@ bool take_page_off_buddy(struct page *page)
- 			del_page_from_free_list(page_head, zone, page_order);
- 			break_down_buddy_pages(zone, page_head, page, 0,
- 						page_order, migratetype);
-+			if (!is_migrate_isolate(migratetype))
-+				__mod_zone_freepage_state(zone, -1, migratetype);
- 			ret = true;
- 			break;
- 		}
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
