@@ -2,154 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5611391EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C124391EBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhEZSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:10:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56898 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbhEZSKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:10:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622052524; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=HxYk/lGdOlTsW5690GzfF2FHmdp5htr82R0uRAzcAZ8=; b=rnm2JqNSWe1DqPsNyXYPg4dP5HtWhtaixM8RX2OagfupqGBUOb7+fBbPvMZ7KCbw61y9G2MQ
- 2AcenN1aPYqvFc7bRpKA8BEyxM9I3ZIAczK7DtqY5i5A55/WKz0YDhiY6oSLE1QrOqb/iXfX
- TVEzZpAgjuLmNx/uumnO0xkk01I=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ae8ea2ceebd0e932c8659c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 18:08:34
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C713C433F1; Wed, 26 May 2021 18:08:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1A4CC4338A;
-        Wed, 26 May 2021 18:08:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B1A4CC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: power off DP phy base on mainlink status at suspend
-Date:   Wed, 26 May 2021 11:08:23 -0700
-Message-Id: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234770AbhEZSLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:11:51 -0400
+Received: from mail-co1nam11on2055.outbound.protection.outlook.com ([40.107.220.55]:12736
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232870AbhEZSLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 14:11:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n+d7BMRq+vUpiGL79d8JTsQBtzp8RnaZCpX0LoNPJBVohBSXbElwkQJNyA77wl+hFg08RbyfEzhSKN6vzV9Jk39QmA4Ok7bkwF5NyHvqz1zCYmdFO5aLl2KQ3OhR7ZJLjFs2ngYwT5Ar4ZlcBQ9MaEjtfKmrTmdXF3SiMs8LSp9gkRHJb3vsZ5KFwaOKiABcnC6CstWx+X7TrYDSZ/GDQk2avNxIefGicUnoQMDhkr4sdt2jQDbaNLbRNOjl/Ff5ia/Y0cIFu5reLXzUnb22DlF2PVmFDjrwoaRSDHkoT5Ql37Fv6qEOoOdbwhuvFkFLCdnUnhsG/akrFK6YElSNIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0XVL//L5kNQF28/pBy3nYSAekRS7X1lV3wJ+fMoxx0=;
+ b=S8rwPyIsybotdyfNUEEydE0Tq4/NSVfxTdQ/q6hEhc0qtcL9VKGhYdds0bsAKT8ZhComiFVkGBywuuoQHVPgLEVHDXjkCdBTuqqSvgbhdVbO9RwaPlx41LIXkGpPU7iCjMBzuCMBnxuqRrMVCbnuaAQL78Sg0fawmSjhWIP5FKxZ5iaSlG9c+/TmIAkcwyaZ9NN2BtJahmTbdt50cSWyXCUToApmfMrYWaSznXLiYL/2jIMaggVpltGRCO3MHUnyQOohETP1SzaP6uQzFlD2u6qQ449InpZ+LEjK025NJR47332WLY8hSS2r1V0N3MHM214GifIrJu2cTiqOqKb6Qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z0XVL//L5kNQF28/pBy3nYSAekRS7X1lV3wJ+fMoxx0=;
+ b=XRNirzhA8xtJfqbBIvAtnrux6Cv1pxx16UQKPiE5+EYvW+Z6Ltjci1aJNx21oE4C63VyVtr9FfU1Y0Vq97694G0kb7jMim9B1Z72kGlvCVeL1fFg9pVDqQmT5yeX2sCap0YDCkwNdrKm2+c5bQthdlfLJdEmLA/gEI6recFkVBUaYLBc2MSqBHLlemgXZaqxfxC4FIQzJVkR9PInBbG4Wq+ivAGjpwMY756wOO24VQCQ+Xl2osR8zX3QHjcYX4pOaVz+Ml0o5WA0mNyAdI3hNUYfjQC96lFRqL9xbE8QAw+6+y0UuDf/uIrrnE4HSHUQusW4hkiDeFRZhrazkoJjpQ==
+Received: from MWHPR14CA0019.namprd14.prod.outlook.com (2603:10b6:300:ae::29)
+ by SN6PR12MB4686.namprd12.prod.outlook.com (2603:10b6:805:d::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Wed, 26 May
+ 2021 18:10:16 +0000
+Received: from CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ae:cafe::bf) by MWHPR14CA0019.outlook.office365.com
+ (2603:10b6:300:ae::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Wed, 26 May 2021 18:10:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT066.mail.protection.outlook.com (10.13.175.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Wed, 26 May 2021 18:10:16 +0000
+Received: from [10.40.101.125] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
+ 2021 18:10:06 +0000
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Li Zefan" <lizefan@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
+References: <20210422233950.GD1370958@nvidia.com>
+ <YIecXkaEGNgICePO@yekko.fritz.box> <20210427171212.GD1370958@nvidia.com>
+ <YIizNdbA0+LYwQbI@yekko.fritz.box> <20210428145622.GU1370958@nvidia.com>
+ <YIoiJRY3FM7xH2bH@yekko> <20210503161518.GM1370958@nvidia.com>
+ <YJy9o8uEZs42/qDM@yekko> <20210513135938.GG1002214@nvidia.com>
+ <YKtbWo7PwIlXjFIV@yekko> <20210524233744.GT1002214@nvidia.com>
+ <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+ <20210525165252.6959d9da.alex.williamson@redhat.com>
+X-Nvconfidentiality: public
+From:   Kirti Wankhede <kwankhede@nvidia.com>
+Message-ID: <6f9dad1a-4e15-1703-d6f4-1b51b7fde15a@nvidia.com>
+Date:   Wed, 26 May 2021 23:40:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210525165252.6959d9da.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc3a8143-ff52-416f-e5fd-08d9207183c3
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4686:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB46867F2B4D76CC9560215E8DDC249@SN6PR12MB4686.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vD68mP7DJv5WMB48ywgGrade9l8IQ7u8KkCpQnl1h8xlODmphNsH/f3Xn0RAkj8pyN5lRKWeRM/fOARvi7JUeu+a8slrjzD0m/mkCDpMod+tkRbezLtPNw3DxkvPbManGGnibvRLvYBRD5E3d20RCby7bjDO7D0vbHce+CQj2YErUv02qLA6vlqm4RsXl7/sJPySs0FJMI50rg52ZNonH2AYp1iCkgJorGU1gbmB3rC27dxg22EFNLMRROGAOu3095eK4mTFLqI2arBpZ67UX0ogpR/R4eikfguNm4wycr3or9uq1FSSOXb8pmjyJuiT0VwDX64vdxvYoyekjwB2zXMaJ3PX3wi+v5TOg58TOW85hJHIBGfiWy4ljqQdmQ4nx7Tw5S3ZyiYRLXu1hmRPmuVxbIgVdQsjooeW/gR91gYcbaG5rMT3XBWlNXot0dlHgmz7Yz9kkPYu9MRD3kn/oTgYH8wZtm9WIiBlr0VKJsGq2n787Zv31WUImneaw7Llphn70QOcH33z4Wko1n5aEiKp4uhuZfUAaPtyT1ItVfKSV3nton07yl4wXxesY4gfWphRNN71Q1P/ceNpkeOtFA4Ck7avJkxOR/vd/2pngoBHumrAEiOQ+7Z0dSnvM6MKMTOHEAjCSVlFDGLhNyGBROs4uuUVrE0tMrCRCM/QAWG7LwjGmdidI2JbkaapQi3A
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(346002)(36840700001)(46966006)(2616005)(356005)(186003)(83380400001)(70206006)(70586007)(82740400003)(478600001)(5660300002)(36756003)(36906005)(7416002)(4326008)(6916009)(16526019)(26005)(2906002)(336012)(82310400003)(8676002)(31696002)(54906003)(426003)(6666004)(7636003)(31686004)(16576012)(8936002)(316002)(86362001)(47076005)(36860700001)(53546011)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 18:10:16.2813
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc3a8143-ff52-416f-e5fd-08d9207183c3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4686
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DP mainlink can be either enabled or disabled at the time of suspend
-happen. Therefore DP phy teared down at suspend should base on mainlink
-status at that instance.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 5 ++++-
- drivers/gpu/drm/msm/dp/dp_ctrl.h    | 2 +-
- drivers/gpu/drm/msm/dp/dp_display.c | 9 ++++++++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index dbd8943..5115c05 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1398,7 +1398,7 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
-  * Perform required steps to uninitialize DP controller
-  * and its resources.
-  */
--void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
-+void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on)
- {
- 	struct dp_ctrl_private *ctrl;
- 	struct dp_io *dp_io;
-@@ -1414,6 +1414,9 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
- 	phy = dp_io->phy;
- 
- 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-+	if (mainlink_on)
-+		phy_power_off(phy);
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("Host deinitialized successfully\n");
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-index 25e4f75..a23ee2b 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-@@ -20,7 +20,7 @@ struct dp_ctrl {
- };
- 
- int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
--void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
-+void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on);
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index cdec0a3..88eeeb5 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -104,6 +104,8 @@ struct dp_display_private {
- 
- 	bool encoder_mode_set;
- 
-+	bool mainlink_on;
-+
- 	/* wait for audio signaling */
- 	struct completion audio_comp;
- 
-@@ -353,11 +355,14 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
- 
- 	dp_link_reset_phy_params_vx_px(dp->link);
-+
-+	dp->mainlink_on = false;
- 	rc = dp_ctrl_on_link(dp->ctrl);
- 	if (rc) {
- 		DRM_ERROR("failed to complete DP link training\n");
- 		goto end;
- 	}
-+	dp->mainlink_on = true;
- 
- 	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
- 
-@@ -392,7 +397,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
- 		return;
- 	}
- 
--	dp_ctrl_host_deinit(dp->ctrl);
-+	dp_ctrl_host_deinit(dp->ctrl, dp->mainlink_on);
- 	dp_aux_deinit(dp->aux);
- 	dp_power_deinit(dp->power);
- 
-@@ -941,6 +946,8 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 		dp->core_initialized = false;
- 	}
- 
-+	dp->mainlink_on = false;
-+
- 	dp_display->power_on = false;
- 
- 	return 0;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On 5/26/2021 4:22 AM, Alex Williamson wrote:
+> On Wed, 26 May 2021 00:56:30 +0530
+> Kirti Wankhede <kwankhede@nvidia.com> wrote:
+> 
+>> On 5/25/2021 5:07 AM, Jason Gunthorpe wrote:
+>>> On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
+>>>    
+>>>>>> I don't really see a semantic distinction between "always one-device
+>>>>>> groups" and "groups don't matter".  Really the only way you can afford
+>>>>>> to not care about groups is if they're singletons.
+>>>>>
+>>>>> The kernel driver under the mdev may not be in an "always one-device"
+>>>>> group.
+>>>>
+>>>> I don't really understand what you mean by that.
+>>>
+>>> I mean the group of the mdev's actual DMA device may have multiple
+>>> things in it.
+>>>      
+>>>>> It is a kernel driver so the only thing we know and care about is that
+>>>>> all devices in the HW group are bound to kernel drivers.
+>>>>>
+>>>>> The vfio device that spawns from this kernel driver is really a
+>>>>> "groups don't matter" vfio device because at the IOMMU layer it should
+>>>>> be riding on the physical group of the kernel driver.  At the VFIO
+>>>>> layer we no longer care about the group abstraction because the system
+>>>>> guarentees isolation in some other way.
+>>>>
+>>>> Uh.. I don't really know how mdevs are isolated from each other.  I
+>>>> thought it was because the physical device providing the mdevs
+>>>> effectively had an internal IOMMU (or at least DMA permissioning) to
+>>>> isolate the mdevs, even though the physical device may not be fully
+>>>> isolated.
+>>>>
+>>>> In that case the virtual mdev is effectively in a singleton group,
+>>>> which is different from the group of its parent device.
+>>>    
+>>
+>> That's correct.
+>>
+>>> That is one way to view it, but it means creating a whole group
+>>> infrastructure and abusing the IOMMU stack just to create this
+>>> nonsense fiction.
+>>
+>> I really didn't get how this abuse the IOMMU stack.
+>> mdev can be used in 3 different ways:
+>> 1. non-iommu backed mdev devices where mdev vendor driver takes care to
+>> DMA map (iommu_map) and isolation is through device hardware internal
+>> MMU. Here vfio_iommu_type1 module provides a way to validate and pin
+>> pages required by mdev device for DMA mapping. Then IOMMU mapping is
+>> done by mdev vendor driver which is owner driver of physical device.
+>>
+>> 2. iommu backed mdev devices for SRIOV where mdev device is created per
+>> VF (mdev device == VF device) then that mdev device has same iommu
+>> protection scope as VF associated to it. Here mdev device is virtual
+>> device which uses features of mdev and represents underlying VF device,
+>> same as vfio-pci but with additional mdev features.
+> 
+> What features would those be?  There are no mdev specific parts of the
+> vfio uAPI.
+> 
+> The mdev device is a virtual device, by why it it virtual in this case?
+> Aren't we effectively assigning the VF itself (mdev device == VF device)
+> with a bunch of extra support code to fill in the gaps of the VF
+> implementing the complete device model in hardware?
+> 
+> We're effectively creating this virtual device, creating a fake IOMMU
+> group, and trying to create this association of this virtual device to
+> the real VF in order to shoehorn it into the mdev model.  What do we
+> get from that model other than lifecycle management (ie. type selection)
+> and re-use of a bunch of code from the driver supporting the 1) model
+> above?
+> 
+
+Yes, the lifecycle management which is in mdev is not in vfio-pci variant.
+
+> This specific model seems better served by a device specific peer
+> driver to vfio-pci (ie. a "vfio-pci variant").  You effectively already
+> have the code for this driver, it's just in the format of an mdev
+> driver rather than a vfio "bus driver".  The work Jason references
+> relative to Max aims to make these kinds of drivers easier to implement
+> through re-use of vfio-pci code.
+> 
+> There are certainly other solutions we could come up with for selecting
+> a specific device type for a vfio-pci variant driver to implement other
+> than pretending this model actually belongs in mdev, right?  Thanks,
+> 
+
+Sure and would like to see type selection mechanism to be implemented in 
+vfio-pci variant.
+
+Thanks,
+Kirti
 
