@@ -2,496 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E21C390EEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F148390EF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhEZDlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbhEZDlC (ORCPT
+        id S231960AbhEZDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:45:01 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:56742 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230313AbhEZDo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:41:02 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E843C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:38:48 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso8845814otl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:38:48 -0700 (PDT)
+        Tue, 25 May 2021 23:44:59 -0400
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q3cb8X013361;
+        Tue, 25 May 2021 20:43:04 -0700
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by mx0a-0064b401.pphosted.com with ESMTP id 38s7nt87w9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 20:43:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GD6RZkNz4YPf8dtTsRP59EI5KH0ikAe7BMvM+xP0Le2wA/mRmYMgEHiP2WB5nbE7E3mMmBRHJRbWxWKVFiYqekRr//9/Gu8UT3Lwp34YyeZogJHx6Xwh3YlKtkfyf7lgYUFor32YT1QdY/OMiqFsESn9hqpjhDHFk0Oc+NqKqWis7XF4FZgeIwIc0P7emdBn1bLnsDA/4XqkoiNeHpBz1kPWJrcq/sJ++f38OdAUCHDAh2RYhCMyFAcWP5qZcHbvMwrKSsBBNxvwluM+tFH3wE0qm/ut0mLtqokB/rn7obP7101NjTGc1mHK6BzsjeW1py0uPVky1GaSZit8++/TXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BHQOjMj+b/mYq/s6gIwEbETWWUNzThNGPI2GjMvHypw=;
+ b=TebEnbKqnVi5Dmhu6HEGYUwQsETZoHaiMDksHeCT6a6ivWmstM+C23gXFyREEEe1dz+3+haz3WNFpZYBiVPo7HXSOaXizgGPlkyOaGA7tWZXlvzEEIVN7zxXiJo8mimWGcYgAMouJAMg87plaNs9T0dyZmm9/DUaC3hBlcguQqIUOnuLEkLFCtFMeWTATd+I1PgOYq7cEieDq8PFMgkgmpBbg3+kH0P1bgJtCHCEhCwky3IQYp0+FuyQ4o5fWXNGUYJH15zVQSf1F+YiQ63Qhim28BpXldfDBg1ZU/pnZ97uoC4VOwhcmUBRYjt8IwWJFk97nLzUD/1b+zZayvsyZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EmENd3afQMDFunIlFV+w6Ig5j1ODnmDqdx0qo1A2RIg=;
-        b=Lub7tlHy4v2eSootNFur5xcImWfW0CFOlXd8kiOWsELAnWfKllhb7iKwczA+c6DMGe
-         OdvrTkatQbYze4FyGpjYG9CsxWiTY64zENTDJNwdh9DfZxzf/RBUUR1h0Uuz9WXTCJnF
-         sElFCRt1zLAGZNiYaUaSHAXZkk/2CHt3BLNsW8D23hx+xhE1AslFp/Zdo2qH5KVmwXQ+
-         GXt/TJPpsyNd6tTWUfatAulCuzNXUytQ4a8Z04CtJp7J/+FpW78XiboIltjwgKUWaWki
-         R7NE+Qh7Q0VPw4cARFCPi1Lrd1P7kYMqfn+QET/TYWv3cpbJvb+MKtoZrk9kMyD0R3Ky
-         8tGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EmENd3afQMDFunIlFV+w6Ig5j1ODnmDqdx0qo1A2RIg=;
-        b=hzYs3yh+3g7DBbZ3gHLTlj9T21nt2ppAO4e0TY36UPgnnGQmqNP1uOcBDlnjAd0uBQ
-         Wqn0u3nMfZ9zqK8wxmVFyzRGThvdlGXAbIlNgF0WtRkLRwhwnHxaILiyxc4rb3uuzvRi
-         IU534ZRXkmYKs2iT3O27fViHhLfWLFcBVR7iLsEdPTZw5/t9zv+Av2rady6/7tw1x2Jz
-         qF5xM+GTmboKrrbW7pEJQrZnXzULRcZryl2Q2zQzq4A1iifQbcGxxyEztNlZMKppwV8d
-         hGKVge0Smv4F70MsBkEGSadf2FU4g6SMHrx/Ae56y1/xMgD+1ztEFmq32yc413FKZU/R
-         JcJw==
-X-Gm-Message-State: AOAM531wwYmweAtb4kHZHEOEgbSpNKtMR7dbVWFZ6p27oFn5kertG8PW
-        eyeqZznEV1H0Qi5nzDzbsVrBuA==
-X-Google-Smtp-Source: ABdhPJzonFpb20GOwO/uuI9jdoqBGUjwgIOPc+DDmNcJQhKg3iQ2zUiNYnMKIqgbFKlMSwWPX72xXw==
-X-Received: by 2002:a05:6830:164c:: with SMTP id h12mr695618otr.321.1622000326789;
-        Tue, 25 May 2021 20:38:46 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y7sm4248222oto.60.2021.05.25.20.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 20:38:46 -0700 (PDT)
-Date:   Tue, 25 May 2021 22:38:44 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 7/7] arm64: dts: qcom: Add support for SONY Xperia X
- Performance / XZ / XZs (msm8996, Tone platform)
-Message-ID: <YK3CxHZELSQzz4Dp@builder.lan>
-References: <20210525200246.118323-1-konrad.dybcio@somainline.org>
- <20210525200246.118323-7-konrad.dybcio@somainline.org>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BHQOjMj+b/mYq/s6gIwEbETWWUNzThNGPI2GjMvHypw=;
+ b=PpiTt00P2UAtioS6ziWSxp0GOv/uxdtkh2vYP6Tkx3TlCMQc08ro00ToAUXCQ48FRhEc3+4TRQ4mmfWAKCL5v7M7iIfzH7aYiCNxWXHIxeL0BPFvzYBNSffkWawjjrlbkWjrDOu0NJ6dUlp457FiRzmBnOO4Dp+S2I4Akt3zZUk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18) by CO1PR11MB5074.namprd11.prod.outlook.com
+ (2603:10b6:303:97::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Wed, 26 May
+ 2021 03:43:02 +0000
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87]) by MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87%4]) with mapi id 15.20.4173.021; Wed, 26 May 2021
+ 03:43:02 +0000
+Subject: Re: Concern about arch/alpha/kernel/smc37c669.c
+From:   He Zhe <zhe.he@windriver.com>
+To:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <7b314145-cbb9-b491-ccf5-d6021a574339@windriver.com>
+Message-ID: <705dd441-27f0-6cdd-180c-a911ffaa015e@windriver.com>
+Date:   Wed, 26 May 2021 11:42:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <7b314145-cbb9-b491-ccf5-d6021a574339@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [147.11.3.104]
+X-ClientProxiedBy: BY3PR05CA0028.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::33) To MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525200246.118323-7-konrad.dybcio@somainline.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.175] (147.11.3.104) by BY3PR05CA0028.namprd05.prod.outlook.com (2603:10b6:a03:254::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend Transport; Wed, 26 May 2021 03:43:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6eae7194-85b2-4693-20e2-08d91ff85d29
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5074:
+X-Microsoft-Antispam-PRVS: <CO1PR11MB5074F95D6B789DA4E1F690038F249@CO1PR11MB5074.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iI8Qb1uYUnQtQKvJVzKmvQXHabnLB9+Fwq/m3g+DFypp1vzEOafGNJvQ8+ZQdlfUIWgUNyuZLXHiv3DClx0mbpeEdcxRgSYIdWHl6QT08v/xZs0hO1ep9pDawWXChfgm2fGGForw3D764BXfKPNdnDfRk+QsRCGtLc4ykFNJZVbSlu0XV+yKZlsMGNti22TlF+dC4wcL9qGwd0xhPJaPrctcfOYK8Tu4gsXUUVlzi11ndpp72Vx3XWzd0eTQ1lIG+qAFSGTqikBffRk7q9t0lDw94oAQ9OEQOkJBeObXAa9nbEtBpcfKtHU4Kk/I1lexV9jmMS7SsBAmZXS2ieS66yV/U9RaEo53wfiLBavariBsHZ89Zo9H3O8PG20Y60DpfUz/7TnHXYW3SCfRKKoK6K5rnKMTCaeINJHOwHQ8K6FKTx1doQEk3Mv+wT44gJ4X4u+vghURTmIeGin9nHI2ZMnLXNol3HNrb88Yab3zq8KnvOejldIm9XBHrTJ7RLv4Qnknh9s8tfSSw9XhCCQASUwZhMRRJSJp2t8TRwHO+eXv9dhU0rfxw0uvnt1vmVq73GV4BXZnJ57804OhMgnDq9HiF24nXY60DBQKfXQwHahJsrV/yWh8LRXDOpzAJHXDaHHPyMGH3j0JPRPtnWSn5zbgO9m2cfqehyRhcwiuwJIJSZePeDmbntxvIC1drgmNqs5ACuEZiHj+yFXHwAWF77xE8QyhF2/bX5ZFwhZhGjMiXL/eeuftP7+H7mlVX6kz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39850400004)(366004)(136003)(4744005)(53546011)(186003)(6666004)(52116002)(6706004)(6486002)(6916009)(16526019)(31696002)(316002)(2906002)(5660300002)(86362001)(31686004)(66476007)(66556008)(16576012)(66946007)(478600001)(38100700002)(26005)(8936002)(8676002)(38350700002)(956004)(36756003)(2616005)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?akV3KzV5cy8vTTVmVUVZaGt2UlZUaGNrdzhzMTR5aUFqOEdLSnM0YkFka2VO?=
+ =?utf-8?B?NmlKdSsxYUZaK2pCcVZCQ0tLVndxejN2OUhWdUZWZDFZemUyQmxUZ3RPS2FV?=
+ =?utf-8?B?NllsczF0dGx3dTNFVSt4WmVOWXpKOGErd29IeEo5V1BBcCt2YitOdCtkUXdU?=
+ =?utf-8?B?dEFZN0hDRUY2MzZSaTJvYnBOOXUwZjZDcjJ1WGJKaDdGcVByM0hMSUZmOFcw?=
+ =?utf-8?B?SWZQSUd3dW5uZHhDOWdqYkFySktpNElqNEdNSWI1S0Ywb0xGbmxOa0lySEk0?=
+ =?utf-8?B?ZjFQbXUrd0RlZnFRQlhnUDN5S0tOR0xQbUEwKytaREx5dHh6V3Z6SkhVMVlH?=
+ =?utf-8?B?eUZzOXBQSDBmRXhtYWZuZ090TER2d0RVRlhSWS9SOFd3SW93M2xTQ3lYUVpU?=
+ =?utf-8?B?U3FoODRKRVlDNVhETVFOS3RLcGVSTGZlTXgxTkUwQVBEM1hpM05qMHBJVGpX?=
+ =?utf-8?B?MjZmb1dZelB5eG1ZWGExUXBOeldRNTlJb2hNNlAvYzFrUmZyZ0wvV2owUmIw?=
+ =?utf-8?B?dktaVUFSNzlrZlRUdjVPTk9BdlNhZU9KZTFsbnZPalBYRDVTRUQrK1pXcHBF?=
+ =?utf-8?B?cGg5R0hTbFZ6WGRMUXV2bk1UdWtCc2dzZGJVV2ZTQmVBTjl4ZGNRUGZLc2Va?=
+ =?utf-8?B?LzJNdWtHRnZMV3NXSTNHVTNPT0R5aFlIcUdkd0JMeDg5Z2hMYTR1ZVFJRUtW?=
+ =?utf-8?B?TzJKUlNRYTNpT2NYVnBZdHdBdlJ6WUtUWng4SHU0TUJrT2RxOVVrZFZjVEVQ?=
+ =?utf-8?B?Y0dqNE9aZnE0eS8yWU5VaGpvSDV0aHNraG4wRjg5bWV4VFB4YXI2b05Hcmtv?=
+ =?utf-8?B?WFdDcWlBT2IycEFLZEhZMjhOZDJVa0xQVzVFUHRqSHVGaElzbU5HZkhKcjR6?=
+ =?utf-8?B?cFRKeS9DZjl4UVExVDZYQ0hRcXBjdlR5Ykg2b0dhbDJpaTZqY3IxdmdGQXBT?=
+ =?utf-8?B?eWNqemNDSnljWHpzN01mWTZHY1NIYjRBemlsY0lMQUpQMEtxTEpFejFUMlc0?=
+ =?utf-8?B?K2M1dlZwZkUwUkFWWFBib0s4bGdSYzJMRE83TjZZZHNEeWh1M25rK1hRRnYz?=
+ =?utf-8?B?T2dqZGxlSXZzVW9rOVYzbU1ldm5leFFSek5kYVN0UWxTR0xISWprMFpBcjJH?=
+ =?utf-8?B?YjFORUxZMkNxR1hWUDN3Z3VZSWJPd2xERlA3Vm0zK3hLNVFRUTJReEJlV3A1?=
+ =?utf-8?B?bE5UVGJzUWF0YlNUTTFyQmg3MnE0c09YYjU0dTVZUTFvV3FDZ3FyejE0dWIw?=
+ =?utf-8?B?ek5CYXJ0M2V6cXJJWkQ1cWhncVBRTDhpcmJhVXlvSmFOQXdUTGhnWVZHYjVr?=
+ =?utf-8?B?N1kvbXRnYmhLbmpaYVowVjY3WG44ckQ5L0dSNklaMGwzWVRDMWN1S0crZ3dH?=
+ =?utf-8?B?RnZ0VVprUUtBZ2ZrMVJkMmo4UlRlRVNvaGFhdk0rYmZmQ3Zmdm1VU0FDYXlS?=
+ =?utf-8?B?T3JjOFlabTcrb1Q5VDJwanFUS21uQzlvcVJJYXVlNDdlakJTQ0IzOHplSzZJ?=
+ =?utf-8?B?ZkhMVUxPanlhcU84R05EbUtUNnpMcXI5ekEzb3Z6aE11V3VhbDFRVDFycXRw?=
+ =?utf-8?B?TituSDdZd0hBSzF1QXNBWFlOUTZaOWd3aFNnYjlMNUV6OHo3UVNzaGhnelVK?=
+ =?utf-8?B?YUNZYXZXRTNsTXo5eWlncERRQXBXd1lCczUyRmxEN25YaWdFRHhCeTF3NUJW?=
+ =?utf-8?B?VFpZQ2tVZ3NwZTY2ZXkxano1dWZKdTBMbzNpWitZYmYrTGJoTDZreWJhaU1Y?=
+ =?utf-8?Q?rPO5oBKdgnmlL3bhozb6i8uuEjcKcMOxO2gJC3U?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6eae7194-85b2-4693-20e2-08d91ff85d29
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 03:43:02.6312
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j7MEf6Agy3/93QZDOuWQuDCYc4Ea1JrrneNXbBjetpSGLJyBZXvOGCt8ErAck+NdtCoThJzgmNKS1EDbTtLYCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5074
+X-Proofpoint-ORIG-GUID: EVj6dOieH2fgFmVCH6oBBUWwxmCliwkb
+X-Proofpoint-GUID: EVj6dOieH2fgFmVCH6oBBUWwxmCliwkb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_02:2021-05-25,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=934 clxscore=1011
+ priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105260022
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25 May 15:02 CDT 2021, Konrad Dybcio wrote:
+Kindly ping.
 
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> 
-> Add support for following boards:
-> 
-> - Xperia X Performance (dora)
-> - Xperia XZ (kagura)
-> - Xperia XZs (keyaki)
-> 
-> They are all based on the SONY Tone platform and feature largely similar hardware
-> with the most obvious differences being lack of USB-C and ToF sensor on Dora and
-> different camera sensor on Keyaki.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  arch/arm64/boot/dts/qcom/Makefile             |   6 +
->  .../msm8996-pmi8996-sony-xperia-tone-dora.dts |  11 +
->  ...sm8996-pmi8996-sony-xperia-tone-kagura.dts |  11 +
->  ...sm8996-pmi8996-sony-xperia-tone-keyaki.dts |  11 +
->  .../qcom/msm8996-sony-xperia-tone-dora.dts    |  27 +
->  .../qcom/msm8996-sony-xperia-tone-kagura.dts  |  15 +
->  .../qcom/msm8996-sony-xperia-tone-keyaki.dts  |  26 +
->  .../dts/qcom/msm8996-sony-xperia-tone.dtsi    | 980 ++++++++++++++++++
->  arch/arm64/boot/dts/qcom/msm8996.dtsi         |  12 +-
->  9 files changed, 1093 insertions(+), 6 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dts
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index ca4a7819d2c4..d079dc33d833 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -25,6 +25,12 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-sony-xperia-kitakami-satsuki.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-sony-xperia-kitakami-sumire.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-sony-xperia-kitakami-suzuran.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-sony-xperia-tone-dora.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-sony-xperia-tone-kagura.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-sony-xperia-tone-keyaki.dtb
+Zhe
 
-'s' > 'p', please keep them sorted alphabetically.
+On 5/7/21 4:30 PM, He Zhe wrote:
+> Hello maintainers,
+>
+> There is no "SPDX-License-Identifier: GPL-2.0" in arch/alpha/kernel/smc37c669.c
+> and the following copyright is found.
+> "
+> Copyright (C) 1997 by
+> Digital Equipment Corporation, Maynard, Massachusetts.
+> All rights reserved.
+> "
+>
+> Does this conflict with GPLv2? Anything else we need to know when using this as opensource software?
+>
+> Thanks,
+> Zhe
 
-That said, perhaps it would look better to move the "pmi8996" part later
-in the name?
-
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-pmi8996-sony-xperia-tone-dora.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-pmi8996-sony-xperia-tone-kagura.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-pmi8996-sony-xperia-tone-keyaki.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-asus-novago-tp370ql.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-hp-envy-x2.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dts b/arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dts
-> new file mode 100644
-> index 000000000000..b57ea0824ea5
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dts
-> @@ -0,0 +1,11 @@
-> +// SPDX-License-Identifier: GPL-2.0
-
-BSD license in all the files please.
-
-> +/*
-> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-> + */
-> +
-> +#include "msm8996-sony-xperia-tone-dora.dts"
-> +#include "pmi8996.dtsi"
-> +
-> +/ {
-> +	model = "Sony Xperia X Performance (PMI8996)";
-> +};
-> \ No newline at end of file
-[..]
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> new file mode 100644
-> index 000000000000..4644d5f9d1a6
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
-> @@ -0,0 +1,980 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021, AngeloGioacchino Del Regno
-> + *                     <angelogioacchino.delregno@somainline.org>
-> + * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-> + */
-> +
-> +#include "msm8996.dtsi"
-> +#include "pm8994.dtsi"
-> +#include "pmi8994.dtsi"
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/input/gpio-keys.h>
-
-This seems to be unused for now.
-
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
-> +
-> +/delete-node/ &hdmi;
-> +/delete-node/ &hdmi_phy;
-> +/delete-node/ &mdp5_intf3_out;
-> +/delete-node/ &slpi_region;
-> +/delete-node/ &venus_region;
-> +/delete-node/ &zap_shader_region;
-> +
-> +/ {
-> +	qcom,msm-id = <246 0x30001>; /* MSM8996 V3.1 (Final) */
-> +	qcom,pmic-id = <0x20009 0x2000a 0 0>; /* PM8994 + PMI8994 */
-> +	qcom,board-id = <8 0>;
-> +
-> +	chosen {
-> +		/*
-> +		 * Due to an unknown-for-a-few-years regression,
-> +		 * SDHCI only works on MSM8996 in PIO (lame) mode.
-> +		 */
-> +		bootargs = "sdhci.debug_quirks=0x40 sdhci.debug_quirks2=0x4 maxcpus=2";
-
-What's up with maxcpus=2? Is this simply because the last 2 are really
-really slow?
-
-> +	};
-> +
-> +	reserved-memory {
-> +		ramoops@a7f00000 {
-> +			compatible = "ramoops";
-> +			reg = <0 0xa7f00000 0 0x100000>;
-> +			record-size = <0x20000>;
-> +			console-size = <0x40000>;
-> +			ftrace-size = <0x20000>;
-> +			pmsg-size = <0x20000>;
-> +			ecc-size = <16>;
-> +		};
-> +
-> +		cont_splash_mem: memory@83401000 {
-> +			reg = <0 0x83401000 0 0x23ff000>;
-> +			no-map;
-> +		};
-> +
-> +		zap_shader_region: gpu@90400000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0x0 0x90400000 0x0 0x2000>;
-> +			no-map;
-> +		};
-> +
-> +		slpi_region: memory@90500000 {
-> +			reg = <0 0x90500000 0 0xa00000>;
-> +			no-map;
-> +		};
-> +
-> +		venus_region: memory@90f00000 {
-> +			reg = <0 0x90f00000 0 0x500000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	panel_tvdd: tvdd-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "panel_tvdd";
-> +		gpio = <&tlmm 50 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&tp_vddio_en>;
-> +		pinctrl-names = "default";
-> +	};
-> +
-> +	usb3_id: usb3-id {
-> +		compatible = "linux,extcon-usb-gpio";
-> +		id-gpio = <&tlmm 25 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&usb_detect>;
-> +	};
-> +
-> +	vph_pwr: vph-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-min-microvolt = <3700000>;
-> +		regulator-max-microvolt = <3700000>;
-> +		regulator-name = "vph_pwr";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +
-> +	wlan_en: wlan-en-1-8v {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "wlan-en-regulator";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		gpio = <&tlmm 84 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&wl_reg_on>;
-> +
-> +		/* WLAN card specific delay */
-> +		startup-delay-us = <70000>;
-> +		enable-active-high;
-> +	};
-> +};
-> +
-> +&blsp1_i2c3 {
-> +	status = "okay";
-> +	clock-frequency = <355000>;
-> +
-> +	tof_sensor: vl53l0x@29 {
-> +		compatible = "st,vl53l0x";
-> +		reg = <0x29>;
-> +	};
-> +};
-> +
-> +&blsp1_uart2 {
-> +	status = "okay";
-> +};
-> +
-> +&blsp2_i2c5 {
-> +	status = "okay";
-> +	clock-frequency = <355000>;
-> +
-> +	/* FUSB301 USB-C controller */
-> +};
-> +
-> +&blsp2_i2c6 {
-> +	status = "okay";
-> +	clock-frequency = <355000>;
-> +
-> +	synaptics@2c {
-> +		compatible = "syna,rmi4-i2c";
-> +		reg = <0x2c>;
-> +		interrupt-parent = <&tlmm>;
-> +		interrupts = <125 IRQ_TYPE_EDGE_FALLING>;
-> +		vdd-supply = <&panel_tvdd>;
-> +
-> +		syna,reset-delay-ms = <220>;
-> +		syna,startup-delay-ms = <220>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		rmi4-f01@1 {
-> +			reg = <0x1>;
-> +			syna,nosleep-mode = <1>;
-> +		};
-> +
-> +		rmi4-f11@11 {
-> +			reg = <0x11>;
-> +			syna,sensor-type = <1>;
-> +		};
-> +	};
-> +};
-> +
-> +&blsp2_uart2 {
-> +	status = "okay";
-> +};
-> +
-> +&camera0_mclk {
-> +	drive-strength = <2>;
-> +	output-low;
-> +};
-> +
-> +&camera0_pwdn {
-> +	drive-strength = <2>;
-> +	output-low;
-> +};
-> +
-> +&camera0_rst {
-> +	pins = "gpio30";
-> +	drive-strength = <2>;
-> +	output-low;
-> +};
-> +
-> +&camera2_mclk {
-> +	drive-strength = <2>;
-> +	output-low;
-> +};
-> +
-> +&camera2_rst {
-> +	drive-strength = <2>;
-> +	output-low;
-> +};
-> +
-> +&CPU0 {
-> +	cpu-supply = <&pmi8994_s11>;
-
-Isn't this the supply to the CPU-subsystem-internal LDO that actually
-feeds the CPU? Is there a benefit to describing this here?
-
-> +};
-> +
-> +&CPU1 {
-> +	cpu-supply = <&pmi8994_s11>;
-> +};
-> +
-> +&CPU2 {
-> +	cpu-supply = <&pmi8994_s11>;
-> +};
-> +
-> +&CPU3 {
-> +	cpu-supply = <&pmi8994_s11>;
-> +};
-> +
-> +&hsusb_phy1 {
-> +	status = "okay";
-> +
-> +	vdda-pll-supply = <&pm8994_l12>;
-> +	vdda-phy-dpdm-supply = <&pm8994_l24>;
-> +};
-> +
-> +&mmcc {
-> +	vdd-gfx-supply = <&vdd_gfx>;
-> +};
-> +
-> +&pcie0 {
-> +	status = "okay";
-> +	perst-gpio = <&tlmm 35 GPIO_ACTIVE_LOW>;
-> +	wake-gpio = <&tlmm 37 GPIO_ACTIVE_HIGH>;
-> +	vddpe-3v3-supply = <&wlan_en>;
-> +	vdda-supply = <&pm8994_l28>;
-> +};
-> +
-> +&pcie_phy {
-> +	status = "okay";
-> +
-> +	vdda-phy-supply = <&pm8994_l28>;
-> +	vdda-pll-supply = <&pm8994_l12>;
-> +};
-> +
-> +&pm8994_gpios {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pm8994_gpio_1 &pm8994_vol_down_n &pm8994_vol_up_n
-> +		     &pm8994_cam_snap_n &pm8994_cam_focus_n &pm8994_gpio_6
-> +		     &pm8994_nfc_dload &pm8994_gpio_8 &pm8994_gpio_9
-> +		     &pm8994_gpio_nfc_clk &pm8994_gpio_11 &pm8994_gpio_12
-> +		     &pm8994_ear_en &pm8994_gpio_14 &pm8994_pm_divclk1
-> +		     &pm8994_pmi_clk &pm8994_gpio_17 &pm8994_rome_sleep
-> +		     &pm8994_gpio_19 &pm8994_gpio_22>;
-
-Shouldn't several of these reference be done from the relevant nodes?
-
-For the ones that isn't, and that you're not going to ever change I
-think it would look better to have a single:
-
-pm8994_gpios_defaults: default-state {
-	nc {
-		nc pins...
-	};
-
-	vol-up {
-		...
-	};
-
-	...
-};
-
-> +
-> +	gpio-line-names =
-> +		"NC",
-> +		"VOL_DOWN_N",
-> +		"VOL_UP_N",
-> +		"SNAPSHOT_N",
-> +		"FOCUS_N",
-> +		"NC",
-> +		"NFC_VEN",
-> +		"NC",
-> +		"NC",
-> +		"NC",
-> +		"NC",
-> +		"NC",
-> +		"EAR_EN",
-> +		"NC",
-> +		"PM_DIVCLK1",
-> +		"PMI_CLK",
-> +		"NC",
-> +		"WL_SLEEP_CLK",
-> +		"NC",
-> +		"PMIC_SPON",
-> +		"UIM_BATT_ALARM",
-> +		"PMK_SLEEP_CLK";
-> +
-> +	pm8994_gpio_1: pm-gpio1-nc {
-> +		pins = "gpio1";
-> +		function = PMIC_GPIO_FUNC_NORMAL;
-> +		drive-push-pull;
-> +		bias-high-impedance;
-> +	};
-> +
-> +	pm8994_vol_down_n: vol-down-n {
-> +		pins = "gpio2";
-> +		function = PMIC_GPIO_FUNC_NORMAL;
-> +		drive-push-pull;
-> +		input-enable;
-> +		bias-pull-up;
-> +		qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
-> +		power-source = <PM8994_GPIO_S4>;
-> +	};
-> +
-[..]
-> +/*
-> + * For reasons that are currently unknown
-> + * (but probably related to fusb301), USB
-> + * takes about 6 minutes to wake up (nothing
-> + * interesting in kernel logs), but then it
-> + * works as it should.
-
-This is funny (but please make it ~80 chars wide).
-
-Regards,
-Bjorn
-
-> + */
-> +&usb3 {
-> +	status = "okay";
-> +	qcom,select-utmi-as-pipe-clk;
-> +};
-> +
-> +&usb3_dwc3 {
-> +	extcon = <&usb3_id>;
-> +	dr_mode = "peripheral";
-> +	phys = <&hsusb_phy1>;
-> +	phy-names = "usb2-phy";
-> +	snps,hird-threshold = /bits/ 8 <0>;
-> +};
