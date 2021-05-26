@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64DB39218D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A133921AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhEZUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhEZUhm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:37:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A30BC061574;
-        Wed, 26 May 2021 13:36:09 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id q7so4545604lfr.6;
-        Wed, 26 May 2021 13:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlfHDai4ONn60e6TNReFwPChDr2UAYYMQAwfbWWymqo=;
-        b=BiinMcC1tfG7D9B/MpBArh8RezrXAapNkwzZvVu9gpy8O0veUTGhyyYdosbVKvSPkZ
-         1TOxiyh9nKQ8lrkja+Vaq8SRebFOoJdYUd1YlqG6lRwe1VzbuZ6Hds2N8t8shzZX9bLL
-         qwkAat3gCIKqQVJixG0svWA7Sj/43V8Xpx4chL0g3gmKvSzpuHu6yagUSruINFFcuGfw
-         +GKz5n3V7wALXRcCmlt7E+e4K+kuf0veLOGj8yVUTkfjUd7MFfIhMfjL3jXRo6bxjcEr
-         5Ox72GCiJm6E0YvTQ6V6eXs3ItfqidR/3Y3eIGABzJ/9FFCPDxX/FVa0Hys2jcNQUqOr
-         MQgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlfHDai4ONn60e6TNReFwPChDr2UAYYMQAwfbWWymqo=;
-        b=N2AFIploHGp9ew/PEffd/5nkw1HH2FgV1zd+h89C6YVF8pyxXUoC02iKuuNIwdtXT9
-         naWoFrPY0ups5LoMXSsjkAQGujalwXfu7N4mK2EacCfi9U5Tji+k4I0oWzrO6rsmHjX5
-         QHm1t7kpwsJcZML6N9bsXRvN8MjKbUafo8G9J3eE48j2yLRMXD1qcRf0fumNLnosS053
-         Oh+6nZ+p1z2K+dvNxk8sJ2g21ph3RxrGvy11H8+1whyqFwVr9GGax+aJCGnZRJjqmqIV
-         Uh6OHeMBoY12oHVwP4K/G/G/iJ/QBgmh8VR5Ne8xwEl23TxnVcR156s0qc5jazTtCbjG
-         G+mA==
-X-Gm-Message-State: AOAM531rPNxUECr2P00SZqEw9NJWLo673UEdnwvXTN+NcnjJKCbcMnhu
-        K1KQDTyRXDpE0ugZ/HdNWaE=
-X-Google-Smtp-Source: ABdhPJwZjC/TUOd8aDc/+Ao3iaOCp7q1cSGq8xzn3GGkUc2a8mh2GEnzNZH2vXXl1rQ+iOhClTL3Lg==
-X-Received: by 2002:a05:6512:ac8:: with SMTP id n8mr3324320lfu.100.1622061367812;
-        Wed, 26 May 2021 13:36:07 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id c4sm7721lfc.258.2021.05.26.13.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 13:36:07 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Steve French <sfrench@samba.org>
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] cifs: Constify static struct genl_ops
-Date:   Wed, 26 May 2021 22:35:45 +0200
-Message-Id: <20210526203545.13160-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S233717AbhEZUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 16:54:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:49830 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233669AbhEZUyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 16:54:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D1F511D4;
+        Wed, 26 May 2021 13:43:23 -0700 (PDT)
+Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ED4A23F73B;
+        Wed, 26 May 2021 13:43:02 -0700 (PDT)
+From:   Jeremy Linton <jeremy.linton@arm.com>
+To:     coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>
+Subject: [PATCH] coresight: Propagate symlink failure
+Date:   Wed, 26 May 2021 15:40:42 -0500
+Message-Id: <20210526204042.2681700-1-jeremy.linton@arm.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of cifs_genl_ops[] is to assign its address to the ops
-field in the genl_family struct, which is a pointer to const. Make it
-const to allow the compiler to put it in read-only memory.
+If the symlink is unable to be created, the driver goes
+ahead and continues device creation. Instead lets propagate
+the failure, and fail the probe.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
 ---
- fs/cifs/netlink.c | 2 +-
+ drivers/hwtracing/coresight/coresight-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/cifs/netlink.c b/fs/cifs/netlink.c
-index 5aaabe4cc0a7..291cb606f149 100644
---- a/fs/cifs/netlink.c
-+++ b/fs/cifs/netlink.c
-@@ -30,7 +30,7 @@ static const struct nla_policy cifs_genl_policy[CIFS_GENL_ATTR_MAX + 1] = {
- 	[CIFS_GENL_ATTR_SWN_RESOURCE_NAME]	= { .type = NLA_STRING},
- };
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index 6c68d34d956e..2dc4b0110442 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -1392,7 +1392,7 @@ static int coresight_fixup_device_conns(struct coresight_device *csdev)
+ 		}
+ 	}
  
--static struct genl_ops cifs_genl_ops[] = {
-+static const struct genl_ops cifs_genl_ops[] = {
- 	{
- 		.cmd = CIFS_GENL_CMD_SWN_NOTIFY,
- 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+-	return 0;
++	return ret;
+ }
+ 
+ static int coresight_remove_match(struct device *dev, void *data)
 -- 
 2.31.1
 
