@@ -2,111 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6885C392360
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B2F392367
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhEZXvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 19:51:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:35428 "EHLO m43-7.mailgun.net"
+        id S234143AbhEZXya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 19:54:30 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64600 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232270AbhEZXvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 19:51:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622073000; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=wl02quHBTxudtWvZnM1Q03LAL3Jvf2lbvTCPghPkEsc=; b=Bhifl05dCx+m6y0GpvHQWK9kcYA5YC2jFHHpq99pn1VyvQT01s6JQAfcGdsILKM3GznFSkvb
- A6Gxp56QDsP2mqDhrVjGo/3PTm80qPG0wlItjdcCod3c/FzqIKsLCxQx9Ro2pq4vlhuta8YG
- s9JrgatSmdeNkW9YbvSWAIzyx1k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60aedea77b9a7a2b6c92aaea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 23:49:59
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6997C4323A; Wed, 26 May 2021 23:49:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24ACAC433F1;
-        Wed, 26 May 2021 23:49:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 24ACAC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: keep aux channel up when power of dp phy
-Date:   Wed, 26 May 2021 16:49:49 -0700
-Message-Id: <1622072989-793-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S232270AbhEZXy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 19:54:29 -0400
+IronPort-SDR: u5AjFweDpvh/72yx4UQLFZurVehMvYqWIsbBpU/MAj2kyQIgGnKCBEzLDSESgEu2lfvWOwE3U4
+ IxcNXkkzpZ0Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182944407"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="182944407"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 16:52:50 -0700
+IronPort-SDR: kiFtZ+Lz+gSxRiprxflquMVboZ9w7V85IlR8ReaQ6dmGb1Nz66lrgdMzBgPxZbVhKIndLucpur
+ /rSc3O95ES1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="480322372"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 26 May 2021 16:52:50 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 26 May 2021 16:52:49 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 26 May 2021 16:52:49 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 26 May 2021 16:52:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TsSjib84RbGvYGjAIkLfbecUl7wC2pBrn7mIGQ2WCSriVXpSwLPXvauZVYfdbXzj4pNQcq4PzEvkk4mkJGq9soR6HLJD677afFbPciAYR0yC08rbT7vSbA9GkUbXtOrRzdzRBJM/fttW5f7j/l6o7piQaswrEd2A9o1YZDnJfd3ZtwzD5nObSXUy/IyOmqo9TuOayjO3CyZDxDgCmBqyfnG9QeOgUK2aSvLbQWfDlkVPrWMNMB2xaGubzuMj57/zK6+LeHXGZsbVzeuLashZS12G1mK/a2s6tdT683wIxDkxtwD1rs4JowK5DWhjAzjjhbtbq7nPuwA8JpVC/XDdZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=32v3S1CJxmH5O+WALYFhaBBYsMF/PghJug3bHMziKAw=;
+ b=d9ZVat3AoEP0fNEnSwPcbsYt6dZ/LWvvVHKfRWytubjL1y5h1wOFXxOBGk8n/Fjb1xlDAGNvUAijj6pgSzVkYkkl/+vdT59LTCgWWnCNaToFEQPBzuykg0+XOd3yiHXkFuAHfmFx60llS/SmIOZUMGD44TNc7KHpeN2vXKWtKmxm13dxOg3iL2QsnpXJcQCYBXIuULX+HY9/r1Rt7R7tgosx7EfNHBfOOZAybqqTEfC11pjPtOGno5M3tc7PtsoDzheNCMnMxY6rB4BCzoc06OcvKK22JstdUcZH+KVxhsisUYceEGvRHvOt5KXIhF4a/s1TKhThy+JAsEZIup36FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=32v3S1CJxmH5O+WALYFhaBBYsMF/PghJug3bHMziKAw=;
+ b=uh2GIfLRoDIvih/tEcw8p2+gG3rbz9UJfTsVtlLY2VowAiAX12u07ItVSNNmzDdhH3w2Orek4LQMY5nowMJOCOlQn8cFbwCTMRhvGNc95icz963orMQnDmYd3x0Dnv5MCd4S7/PdXjW55Y9UWFjJA9kdHoJSwkyWYYw+7euUAxk=
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
+ by SJ0PR11MB4976.namprd11.prod.outlook.com (2603:10b6:a03:2d7::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Wed, 26 May
+ 2021 23:52:47 +0000
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::f071:7bd8:d502:a6eb]) by BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::f071:7bd8:d502:a6eb%3]) with mapi id 15.20.4150.027; Wed, 26 May 2021
+ 23:52:47 +0000
+From:   "Chrisanthus, Anitha" <anitha.chrisanthus@intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Dea, Edmund J" <edmund.j.dea@intel.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "sam@ravnborg.org" <sam@ravnborg.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] drm/kmb: Fix an error handling path
+Thread-Topic: [PATCH] drm/kmb: Fix an error handling path
+Thread-Index: AQHXTPAusZt7CdpHvU2ZAVNhU3ow06r2dQiA
+Date:   Wed, 26 May 2021 23:52:47 +0000
+Message-ID: <BY5PR11MB41823586394287D8D1D85B9D8C249@BY5PR11MB4182.namprd11.prod.outlook.com>
+References: <ce19f0d78174b0674dc963d134fbdec222250e84.1621457119.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <ce19f0d78174b0674dc963d134fbdec222250e84.1621457119.git.christophe.jaillet@wanadoo.fr>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: wanadoo.fr; dkim=none (message not signed)
+ header.d=none;wanadoo.fr; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.41.68.160]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4fa06a48-6247-46ea-f2e7-08d920a15d58
+x-ms-traffictypediagnostic: SJ0PR11MB4976:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB4976BFD2A8C391B0698039588C249@SJ0PR11MB4976.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4xPMiV5VXBUsVd+yPKGTzU1Uu36lKSe8pS04+QtN5rt6vGdCBdRHwNtpzhZr9mt5y8kCllman+oMD8M5C75QLn7tR4RKNa8Uaohv5mQzAwtQKU6fDbRaMaKQM3H/19Dmlxo7rt2hhTm1Q/1JfthVqUfFtb+/KlZBpNJzr4fJeYZXeOy7n4QGNFJVnWhEge/8Yzzfq4V2pX8hBH6t/U9/FHeJO80GjcfxC2uz/tLiirrFUTsfcRYmBEGczdRYYmEPan+hym7/gzdkUlKW1x5c2Ye07xTuxPyp94wMMI6Rz1f52oPFepQN7aPg+rHs3+DPcXxlV9qT083VWDzXrb8LacZUg7xIBxxsQecDiLygANqbZNoqK40w+pBJa73803BfA7SvD7lR+kIX4gN6lseAwXpCnprf6ly8LHDgkkhAtSEWgjNjspdPDJdPGSNRQ55h/HkEm85WCA6wqQTbrgNNe3RRxR2kXJ1clGzal9s041R/vsknA/yKHiJzGdoxEgodTo3oPQ/md0hvw6ukiZoUHEQ/ozAdj9pf+V3cZwQXS1eHIiWwAdT/ey60ZGWYFFycL278HX/KOdHifBfFptFNDrcMiRRDRSdOsQL2AHyq21Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(346002)(396003)(39860400002)(5660300002)(2906002)(71200400001)(64756008)(4326008)(66446008)(66556008)(52536014)(86362001)(9686003)(8676002)(186003)(8936002)(33656002)(122000001)(53546011)(7696005)(6506007)(83380400001)(110136005)(55016002)(26005)(54906003)(66476007)(76116006)(316002)(38100700002)(66946007)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nGnUAIXjhAN3EkgcS+VDiVvbdkBtoK4p03NwqCSqSExtS6LcKKUUJPk6nLE/?=
+ =?us-ascii?Q?kQ3GcrAF8SL2IOmL+XNHG2bD2RlZJYN+uvUtFAYfQsLxmM/VGmTguE4xFXKt?=
+ =?us-ascii?Q?auHfrQaIloE9oohOXvs21VtAnHYXt2Y7R+r46eJcHoEsqtmTNbZdGIlgq2IZ?=
+ =?us-ascii?Q?zHJUkh+r0eH0WDQsO2tgQwkh4PNKt8DNkFB1tT91l9T/6iNjDyslniukonN5?=
+ =?us-ascii?Q?n0ftQhKZygy4qm7pVpzhmkNQzMI1c3uSFOd1WnoX/7oo/BLXgqKVEyPsjYFl?=
+ =?us-ascii?Q?tKM8GH2UTUiwNhc4kgckkZ6Ndb+PgQnGwb36dU9vomBDcVOU3mCEChZxhoFZ?=
+ =?us-ascii?Q?mA4IgUGiPnPVKl4BJpGBXr0yE86xu7naxc9BtpCHU8c2W0qosYAqOFtwHQsO?=
+ =?us-ascii?Q?Cfu8Pr55mD/61R6PWE/AW9LiwOEYcg/IXeSIWGoFgeUXCK88IA4crtqPVKZj?=
+ =?us-ascii?Q?/rx7cP9M526sODnUUwJj//0COhZdI203PfrN4EZjgFhuMP9NGBNXtpVD28pa?=
+ =?us-ascii?Q?fs0KtOLYMJyH8WJNiAOCr34PLO1GzhsVI9vQM/8KmbcedjETXuxp7MzRLG44?=
+ =?us-ascii?Q?QchMKkU/CXMtr3RLQHbYdIzhDbj3/e825kx/O16EM06JCZN1XA8WDE9O9rqa?=
+ =?us-ascii?Q?pkBvypuogSxxSlqNPD/dOsh4TlozbCQunXTNp74OgeQGSJsd1g07t81x2wfh?=
+ =?us-ascii?Q?2D4oOeyW4yanj7cpIMDGAyl777EgHE7KFFjstCl7mxqk6Ybz7HihQE2xchDR?=
+ =?us-ascii?Q?e7KkDcaVzQXUI9qGPSIWnlTnKZa3yt+hgo1JMXfQTCQ33AZS1fmi8aQ8dRT9?=
+ =?us-ascii?Q?8w4GVtccdlW7Kkq2UGGqsAtl9TXrY9y6LQhFhmxrd53E04HNZj/Ohx0cyEQa?=
+ =?us-ascii?Q?EbLEKFteHBbRktqUav6ulbjuIN+hqbxTIUfs4YJ4l7GALO1Ej125GmHJJyoU?=
+ =?us-ascii?Q?kV61+N92ihlRtq9Vm2mrv72ruhY0pKiK09o5UStN5vWsbxZfGHcToQO4G9CZ?=
+ =?us-ascii?Q?Jqbmw3JGdx50Isr9MqhZfJZmx7F+JfGHZSJN7EpdNejOVSFTryDtXTwyjsZV?=
+ =?us-ascii?Q?yklCRmnFH7PFCpvjvT3pjWpp10y+AXQvoyuuTDXvu/aCBJW1s/YoxIdWYTQq?=
+ =?us-ascii?Q?xBaIlad8bJK6E3CH8ipMmKkgKpDNvDBALAJQ53kR0k29RPyu8oLaGzInB2PH?=
+ =?us-ascii?Q?W+ti+jz2+qa+hcGdAhMYxakDeAJHqI1RyQStbIX2PhOiwvitfKkHTQTJXOvT?=
+ =?us-ascii?Q?RVxIYwN+yaq0q6npwZMDtZMvBxfY+z2LIy+w2XTw9eGxS7c5clrGEdP3Uoby?=
+ =?us-ascii?Q?fZ0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fa06a48-6247-46ea-f2e7-08d920a15d58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2021 23:52:47.6250
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1JbRzvLzYJvOus4Nuj/dSXpDN8aZr1ef+VKkyii4kbO8Jx80y2CBYS6MypHzptX0uRep9MaiyJGPDVN6OCFUzuPWc0X+G5fDS4+zoA8gQaU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4976
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aux channel is used to perform management function and should be
-running in parallel with main link. Therefore should only power
-down main link and keep aux channel running when power down phy.
+Hi Christophe,
+Thanks for the patch, good catch! Patch looks good, few minor comments.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c    |  4 ----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 11 +++++++++--
- 2 files changed, 9 insertions(+), 6 deletions(-)
+Anitha
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 5115c05..5f93c64 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1844,10 +1844,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
- 
- 	phy_power_off(phy);
- 
--	/* aux channel down, reinit phy */
--	phy_exit(phy);
--	phy_init(phy);
+> -----Original Message-----
+> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Sent: Wednesday, May 19, 2021 1:47 PM
+> To: Chrisanthus, Anitha <anitha.chrisanthus@intel.com>; Dea, Edmund J
+> <edmund.j.dea@intel.com>; airlied@linux.ie; daniel@ffwll.ch;
+> sam@ravnborg.org
+> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; kernel=
 -
- 	DRM_DEBUG_DP("DP off link/stream done\n");
- 	return ret;
- }
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index b122e63..567e32e 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -3214,12 +3214,19 @@ static int qcom_qmp_phy_power_off(struct phy *phy)
- {
- 	struct qmp_phy *qphy = phy_get_drvdata(phy);
- 	const struct qmp_phy_cfg *cfg = qphy->cfg;
-+	u32 val;
- 
- 	clk_disable_unprepare(qphy->pipe_clk);
- 
- 	if (cfg->type == PHY_TYPE_DP) {
--		/* Assert DP PHY power down */
--		writel(DP_PHY_PD_CTL_PSR_PWRDN, qphy->pcs + QSERDES_V3_DP_PHY_PD_CTL);
-+		/*
-+		 * Assert DP PHY LANE_0_1, LANE_2_3, PSR power down
-+		 * keep aux channel up
-+		 */
-+		val = DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-+			DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN |
-+			DP_PHY_PD_CTL_PSR_PWRDN;
-+		writel(val, qphy->pcs + QSERDES_V3_DP_PHY_PD_CTL);
- 	} else {
- 		/* PHY reset */
- 		if (!cfg->no_pcs_sw_reset)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> janitors@vger.kernel.org; Christophe JAILLET <christophe.jaillet@wanadoo.=
+fr>
+> Subject: [PATCH] drm/kmb: Fix an error handling path
+>=20
+> If 'platform_get_irq()' fails, it is spurious to call
+> 'of_reserved_mem_device_release()' in the error handling path, because
+> 'of_reserved_mem_device_init() has not been called yet.
+>=20
+> Moreover, a previous 'kmb_initialize_clocks()' is unbalanced by a
+> corresponding 'kmb_display_clk_disable()' call, has already done in the
+> remove function.
+>=20
+> It is likely that 'kmb_display_clk_disable()' is expected in the error
+> handling path, instead of 'kmb_display_clk_disable()'.
+You mean instead of of_reserved_mem_device_release()
+>=20
+>=20
+> Also, it is spurious to return directly if 'of_reserved_mem_device_init()=
+'
+> fails.
+> Goto the error handling path instead to free some resources.
+>=20
+> Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/gpu/drm/kmb/kmb_drv.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/kmb/kmb_drv.c
+> b/drivers/gpu/drm/kmb/kmb_drv.c
+> index f64e06e1067d..b41b8789fe57 100644
+> --- a/drivers/gpu/drm/kmb/kmb_drv.c
+> +++ b/drivers/gpu/drm/kmb/kmb_drv.c
+> @@ -138,13 +138,13 @@ static int kmb_hw_init(struct drm_device *drm,
+> unsigned long flags)
+>  	irq_lcd =3D platform_get_irq(pdev, 0);
+>  	if (irq_lcd < 0) {
+>  		drm_err(&kmb->drm, "irq_lcd not found");
+> -		goto setup_fail;
+> +		goto disable_clk_err;
+Keep setup_fail label or something like err_free_clocks
+>  	}
+>=20
+>  	/* Get the optional framebuffer memory resource */
+>  	ret =3D of_reserved_mem_device_init(drm->dev);
+>  	if (ret && ret !=3D -ENODEV)
+> -		return ret;
+> +		goto disable_clk_err;
+>=20
+>  	spin_lock_init(&kmb->irq_lock);
+>=20
+> @@ -152,8 +152,8 @@ static int kmb_hw_init(struct drm_device *drm,
+> unsigned long flags)
+>=20
+>  	return 0;
+>=20
+> - setup_fail:
+> -	of_reserved_mem_device_release(drm->dev);
+> + disable_clk_err:
+> +	kmb_display_clk_disable(kmb);
+>=20
+>  	return ret;
+>  }
+> --
+> 2.30.2
 
