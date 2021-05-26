@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB49391343
+	by mail.lfdr.de (Postfix) with ESMTP id 88D56391344
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbhEZJEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233436AbhEZJEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:04:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26156613BF;
+        id S233492AbhEZJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:04:16 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:60517 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233501AbhEZJEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 05:04:12 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id F096AC000C;
         Wed, 26 May 2021 09:02:37 +0000 (UTC)
-Date:   Wed, 26 May 2021 10:02:34 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: linux-next: manual merge of the akpm tree with the arm64-fixes
- tree
-Message-ID: <20210526090234.GB19992@arm.com>
-References: <20210526164910.564f598f@canb.auug.org.au>
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: parsers: qcom: Fix leaking of partition name
+Date:   Wed, 26 May 2021 11:02:37 +0200
+Message-Id: <20210526090237.180505-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210525230931.30013-1-ansuelsmth@gmail.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526164910.564f598f@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'10f3b4d79958d6f9f71588c6fa862159c83fa80f'
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 04:49:10PM +1000, Stephen Rothwell wrote:
-> diff --cc arch/arm64/mm/mmu.c
-> index cbcbd64818eb,e3b639e2461d..000000000000
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@@ -515,8 -516,7 +516,7 @@@ static void __init map_mem(pgd_t *pgdp
->   	 */
->   	BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
->   
-> - 	if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
-> - 	    IS_ENABLED(CONFIG_KFENCE))
->  -	if (can_set_direct_map() || crash_mem_map)
-> ++	if (can_set_direct_map() || crash_mem_map || IS_ENABLED(CONFIG_KFENCE))
->   		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+On Tue, 2021-05-25 at 23:09:31 UTC, Ansuel Smith wrote:
+> Add cleanup function as the name variable for the partition name was
+> allocaed but never freed after the use as the add mtd function
+> duplicate the name and free the pparts struct as the partition name is
+> assumed to be static.
+> The leak was found using kmemleak.
+> 
+> Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-It looks fine. Thanks Stephen.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-
-
--- 
-Catalin
+Miquel
