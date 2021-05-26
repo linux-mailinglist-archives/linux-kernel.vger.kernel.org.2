@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1BE391850
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9BE391854
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234905AbhEZNCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S234215AbhEZNCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233945AbhEZNCW (ORCPT
+        with ESMTP id S234399AbhEZNCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:02:22 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFC8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:49 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id n2so1108578wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:49 -0700 (PDT)
+        Wed, 26 May 2021 09:02:23 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA78EC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:50 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id n4so1058523wrw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TkkM0jDN7On5m0is/63l4FwWkD1XQ6PSlPPlgMZBOWY=;
-        b=XZwmb2jY0GrP8+o7CoC5/5jswstErQrpabfm/cYlUioK4aypXH3/AW4kiZ/88qfHdm
-         50iSumAgfSHJ1+99krf3QkOWgtOQq4lJWRPohL/yFP4ZG8i8o7o5SIQlWjZPdjSJgSnf
-         tts7d/dnJLcww1R94QDa6MLP4VBHE8hQvWe9LI50rnmuFP3rPRvGtZVeU+2e3Xxojo+t
-         8WcwN3qF8l6rrl4bgV24uZPDNTf/9MBPnuZEO/tWPG8AzkFK3Tl8c2UMX8tQotnX1KKr
-         wUpG/4RvMnIaZ6xMuI9RbO1+7F2QpBZ54ARFEUQVasl1Dx6jQ5wPxC+BCCcZyu3eRHgT
-         ZuKw==
+        bh=wClzZvICbZY1gDqbs5K+gmqfI5n/KTxqQt4Q33U0XvY=;
+        b=VpxrOtJd113lP+VjeEIN7iNWNT3vxTAUF/jCgeAQmbLtvfWY4e+ytfafM1dhU/m4DT
+         UUSP1iUSbi3bMSzTAoliO7w/28GG32EaQ1/GzU8XPedUzVFsLnO2c8n2WKb8L64VIEA7
+         uT2zbHKlwICxHjmng6VP3DR2bD1esx2/dTBOuZTZuR0dKbrXspv8IO/7hDq7FDieTRrs
+         hJqhs7qXUDi0ZTeQOkJqEje+VxTUNisS4FOilETg5sVs3QJBPOG2MCzhgXQzhHcw2kUt
+         AazbdNLuCeDfe2UhzBs+pn4z51NFipJnhA9p3WP4UMy+pXKS2vJ7hKeVtQvoyt7LWkKD
+         ibRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TkkM0jDN7On5m0is/63l4FwWkD1XQ6PSlPPlgMZBOWY=;
-        b=ulZUT6bAdTxVLbx11bpDTtp7hX0N7Fd89CPgQCBRlLS6qZk0NXKSILStO/RkkcvHwU
-         vGoWw+L8QuPF/t1sFtN2SppKpYOQ/jzI54eXoLugIuZc8HNoQOdUpavfN8k1rJd0r1ZO
-         xanXqWdnF48PZ6Ug2WLHTuwT5s6cFz9GmyQrVyZT5l25SJmY9mkxXjoMr4DZUqS0cjYW
-         M4aOFImOUdRITgO4uGemKnVH6BdQlrUa7LHIqhpTQR7/w1tFv55fWq5dVhddSfoHSg0x
-         ONi3vo8iBdXvcdPENEGxtRB3VCweFG/iuDXQ+4DAkm1jBfA93ffq+0mo7h2CI59Mjq1s
-         W+uA==
-X-Gm-Message-State: AOAM533pPVWIQ+oy4HNCDX4i3xxtTZdKL82gUhGGaFhh1Ook2Q3QCu7s
-        f9HqpF+hzYkvnupekzim0Ju2aA==
-X-Google-Smtp-Source: ABdhPJzzwJI6Kuf7CICgHAvH50QQxCl1j6KlpuzOCkBlRKVHA6rTtlP56vhDK1Y98J3SUH2FMuELJA==
-X-Received: by 2002:adf:e411:: with SMTP id g17mr32216745wrm.402.1622034048238;
-        Wed, 26 May 2021 06:00:48 -0700 (PDT)
+        bh=wClzZvICbZY1gDqbs5K+gmqfI5n/KTxqQt4Q33U0XvY=;
+        b=fu7FS/qMF5dISzzwduaJfj0F4FlgRL9I/E2Vvux5WxFQ/Wywn06irXP5QQfUkr+YXz
+         jmTj5w5qL1rsU+MMLl0Jo3GLNEpjmcn2RqomVyiB5GKDvy0c4txJ8J3jjOidnP/aeUZs
+         1S8gmFp7PIR5CGj5wWfE2uoqSGPAeLjjepXYIKPYAB7npR/fcd2HBKJayx5CNbmPpZfB
+         A7PKxn7qdTw8Jblf9zac4G0DP/RWVPf8UXvsUk98Jouhm3zzCjqIcBU/OpUvcZ9+VU7a
+         HDQNK1wcYZeR5wYd6SaoK8br+4ZUvh9yQ4xj4ScRn8k04yyE9wgDI6ZmcIvAaeuYJEpH
+         YIug==
+X-Gm-Message-State: AOAM533NeFUG/p3RGmkDbOMO398/5FPvIZF4Bz4KlWpQovYyb3E30NwH
+        ZM0Sh5cYyEKOEyb05joQiYSaew==
+X-Google-Smtp-Source: ABdhPJzyC5CuTPA/mddKYnxBk2ZuzkwnF05QXDPiw/dHSZafcLnBzSwjlhOjPo4pUYzR2+8v9voY3A==
+X-Received: by 2002:adf:d4c7:: with SMTP id w7mr32509687wrk.35.1622034049311;
+        Wed, 26 May 2021 06:00:49 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.00.47
+        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.00.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:00:47 -0700 (PDT)
+        Wed, 26 May 2021 06:00:48 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Minas Harutyunyan <hminas@synopsys.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthijs Kooijman <matthijs@stdin.nl>,
         linux-usb@vger.kernel.org
-Subject: [PATCH 02/24] usb: dwc2: platform: Provide function name for 'dwc2_check_core_version()'
-Date:   Wed, 26 May 2021 14:00:15 +0100
-Message-Id: <20210526130037.856068-3-lee.jones@linaro.org>
+Subject: [PATCH 03/24] usb: common: ulpi: Add leading underscores for function name '__ulpi_register_driver()'
+Date:   Wed, 26 May 2021 14:00:16 +0100
+Message-Id: <20210526130037.856068-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526130037.856068-1-lee.jones@linaro.org>
 References: <20210526130037.856068-1-lee.jones@linaro.org>
@@ -72,32 +68,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/dwc2/platform.c:411: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/usb/common/ulpi.c:151: warning: expecting prototype for ulpi_register_driver(). Prototype was for __ulpi_register_driver() instead
 
-Cc: Minas Harutyunyan <hminas@synopsys.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Matthijs Kooijman <matthijs@stdin.nl>
 Cc: linux-usb@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/dwc2/platform.c | 2 +-
+ drivers/usb/common/ulpi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 520a0beef77ca..c8f18f3ba9e35 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -408,7 +408,7 @@ static bool dwc2_check_core_endianness(struct dwc2_hsotg *hsotg)
- }
+diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
+index ce5e6f6711f79..7e13b74e60e5a 100644
+--- a/drivers/usb/common/ulpi.c
++++ b/drivers/usb/common/ulpi.c
+@@ -141,7 +141,7 @@ static const struct device_type ulpi_dev_type = {
+ /* -------------------------------------------------------------------------- */
  
  /**
-- * Check core version
-+ * dwc2_check_core_version() - Check core version
-  *
-  * @hsotg: Programming view of the DWC_otg controller
+- * ulpi_register_driver - register a driver with the ULPI bus
++ * __ulpi_register_driver - register a driver with the ULPI bus
+  * @drv: driver being registered
+  * @module: ends up being THIS_MODULE
   *
 -- 
 2.31.1
