@@ -2,167 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D646A391079
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43C8391076
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhEZGOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbhEZGOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232827AbhEZGOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 26 May 2021 02:14:52 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48430C061574;
-        Tue, 25 May 2021 23:13:20 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id m190so75700pga.2;
-        Tue, 25 May 2021 23:13:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=69dcfTu5Rod0MWZh6A/dLucdJd56m6mON5Jg30AVkEw=;
-        b=bB7HCxKQ/O2P1eV233GGZpu1PGtZa3vSijw4+k6fy7YFBiLzqhoCcmNa37ViXSBaHc
-         0FWf0PtxxCxUo8UnhWTmb6AD0HFF3hlIKM/qr9QeSUdawjDnUEZ9G+4w1iqJpyB+dxO6
-         Qux8L3ONsxsWzKNA23O8PvzGzZ/mASpjRuKSYf1cwsfJgatOCtKwLZ71HdEzN3lRLzpO
-         rY0Zw0xniQnQUjK67Dq641Au8z4P5pyaEc76ySucJmPi+wVpfM0a4xhaKO8NJwDtYWeN
-         OLx8FLYEd0YUanY5Y9cn7UrRT/erg+bb2dCF7EklTnwM9v8AzhMsQX4rIhq2n4Bj3smx
-         8PnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=69dcfTu5Rod0MWZh6A/dLucdJd56m6mON5Jg30AVkEw=;
-        b=kDdciyFmiotDxe83fQ7MoH4JFS5M/QLWOiwNKZ2G5KL6/l0ALtwOAlVpEwInmaV9xt
-         z/rJtygCpEdUFMozcHdEOmi6kRS6PZQwvkgBPU4wHdC8AfSRbzb7F7BcvuoS4+CLYyJJ
-         LD8PNh7DE86EEvgv7ooNCKfzUWXNySNRyHbgQqWgZRLm64dTxKGdTu8JHpZCJLnLQrQW
-         qzGtoY07E4lfVi6FBD7zNuhvXQ9dS62MlR5rWLX/NtjQkNu23H4bBBSrRhfcsnFAYimq
-         iVovaz1ETh9LmufNKOremHAtepfcZK7xry9AGg1vG2lQJXDXgz/Sp9hDFTXIJ3TEL/xa
-         SrKg==
-X-Gm-Message-State: AOAM531w75S3IZd/1lImNIx3APBE2CRcQ9XIb45s65ioHJZdDeP5Sdyo
-        /9/SLsZZPuvn2MFCH//EN98=
-X-Google-Smtp-Source: ABdhPJyE2cflnST4gffTZdWw+CO2OxjusuQppwUuCJAxekq7NVYrawUfE3cKT1VmzFcFmTZWEHUnjg==
-X-Received: by 2002:a62:ae19:0:b029:2d9:11cf:5da7 with SMTP id q25-20020a62ae190000b02902d911cf5da7mr34234067pff.18.1622009599724;
-        Tue, 25 May 2021 23:13:19 -0700 (PDT)
-Received: from localhost.localdomain (1-171-3-30.dynamic-ip.hinet.net. [1.171.3.30])
-        by smtp.gmail.com with ESMTPSA id f14sm14496249pjq.50.2021.05.25.23.13.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 May 2021 23:13:19 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
-Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v1 1/2] regulator: rt6245: Add the binding document for Richtek RT6245
-Date:   Wed, 26 May 2021 14:12:57 +0800
-Message-Id: <1622009578-15577-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18300 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232734AbhEZGOs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:14:48 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q64EUF013326;
+        Wed, 26 May 2021 02:13:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=HEh6jiRhEKHTKOcKijy1XwvxEAL7bFyMz0AfMl/HghQ=;
+ b=Q4sB5iHU40TBoxxVec8MTMi7eaRf9uTzUK9+j4thgxQpVB6bKGJPtBRXdEkSU5j7HSUH
+ ShcJiulF5cllD858yclxwzG7R8dltgP/N2uJZe9O/Klogr2z4nclL2v6H0BkhabEiiZ8
+ fSb2XWv1Fyb2b5+o6wr5RCim+osN2wThsatx3k9H83wOXPzJ7cSo94OkxovQJGl0HiJ9
+ iUpL7I1b3pUnlQdpDjdZrqU5rtNs6ANgvlHqBkuwlyYGnl1y4VhYQ8QkG/CTQHKLTxva
+ r+bu7ClkB7PE3MDAu8jTwZgXhKUKt/+vlY0gYWlfV8JDBVawdBqQJ68nGfaFRxcSHXxA 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sgev0mcn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 02:13:09 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14Q64HAk013582;
+        Wed, 26 May 2021 02:13:08 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sgev0mbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 02:13:08 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14Q6CQJC002713;
+        Wed, 26 May 2021 06:13:06 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 38s1ht06dx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 06:13:06 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14Q6D2Zk26607958
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 May 2021 06:13:03 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D94BBA405C;
+        Wed, 26 May 2021 06:13:02 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0FEBBA4064;
+        Wed, 26 May 2021 06:13:01 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.85.126.125])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 26 May 2021 06:13:00 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH] perf vendor events: Fix eventcode of power10 json events
+From:   Nageswara Sastry <rnsastry@linux.ibm.com>
+In-Reply-To: <20210525152736.GB2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+Date:   Wed, 26 May 2021 11:42:58 +0530
+Cc:     Kajol Jain <kjain@linux.ibm.com>, acme@kernel.org,
+        maddy@linux.vnet.ibm.com,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, jolsa@redhat.com, mpe@ellerman.id.au,
+        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5960AF7C-64BD-4E57-BA6D-08AA9932B063@linux.ibm.com>
+References: <20210525063723.1191514-1-kjain@linux.ibm.com>
+ <20210525144215.GA2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <20210525152736.GB2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+To:     "Paul A. Clarke" <pc@us.ibm.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: koH-ecw_P2N0alB5FHKm8Ve0RZ14XCAX
+X-Proofpoint-ORIG-GUID: rhyOl8TBPd5YISrdFAxBctYknR2qzSfT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_04:2021-05-25,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105260040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
 
-Add the binding document for Richtek RT6245.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- .../regulator/richtek,rt6245-regulator.yaml        | 89 ++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
+> On 25-May-2021, at 8:57 PM, Paul A. Clarke <pc@us.ibm.com> wrote:
+>>=20
+> I lost the original message, but Nageswara Sastry said:
+>> 1. Extracted all the 244 events from the patch.
+>> 2. Check them in 'perf list' - all 244 events found
+>> 3. Ran all the events with 'perf stat -e "event name" sleep 1', all =
+ran fine.
+>>    No errors were seen in 'dmesg'
+>=20
+> I count 255 events.
+>=20
+> PC
 
-diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-new file mode 100644
-index 00000000..796ceac
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/richtek,rt6245-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Richtek RT6245 High Current Voltage Regulator
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  The RT6245 is a high-performance, synchronous step-down converter
-+  that can deliver up to 14A output current with an input supply
-+  voltage range of 4.5V to 17V.
-+
-+allOf:
-+  - $ref: regulator.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - richtek,rt6245
-+
-+  reg:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: |
-+      A connection of the chip 'enable' gpio line. If not provided,
-+      it will be treat as a default-on power.
-+    maxItems: 1
-+
-+  richtek,oc-level-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2, 3]
-+    description: |
-+      Over current level selection. Each respective value means the current
-+      limit 8A, 14A, 12A, 10A. If this property is missing then keep in
-+      in chip default.
-+
-+  richtek,ot-level-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2]
-+    description: |
-+      Over temperature level selection. Each respective value means the degree
-+      150'c, 130'c, 170'c. If this property is missing then keep in chip
-+      default.
-+
-+  richtek,pgdly-time-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2, 3]
-+    description: |
-+      Power good signal delay time selection. Each respective value means the
-+      delay time 0us, 10us, 20us, 40us. If this property is missing then keep
-+      in chip default.
-+
-+
-+  richtek,switch-freq-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2]
-+    description: |
-+      Buck switch frequency selection. Each respective value means 400KHz,
-+      800KHz, 1200KHz. If this property is missing then keep in chip default.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      rt6245@34 {
-+        compatible = "richtek,rt6245";
-+        status = "okay";
-+        reg = <0x34>;
-+        enable-gpios = <&gpio26 2 0>;
-+
-+        regulator-name = "rt6245-regulator";
-+        regulator-min-microvolt = <437500>;
-+        regulator-max-microvolt = <1387500>;
-+        regulator-boot-on;
-+      };
-+    };
--- 
-2.7.4
+Seems while extracting I filtered out newly added ones, so I got =
+244(255-11).=20
+Now checked with all 255 events. Thanks for pointing out.
 
+Thanks!!
+R.Nageswara Sastry=
