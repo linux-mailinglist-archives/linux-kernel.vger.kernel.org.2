@@ -2,117 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EFA390D6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636B6390D77
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhEZAlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhEZAle (ORCPT
+        id S232573AbhEZAnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:43:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:44397 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231465AbhEZAnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:41:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9995C061574;
-        Tue, 25 May 2021 17:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=tETNDjNyS9VWp0lmkXGYY/OSTeXZstfAPKUdqUv0Z6g=; b=cuho+FlC0QiW7LCkxQwvlW2LIn
-        vdATixI4JJu6Nb5GPntqn1h36tTA2GAp4u6SqyHeh4v/U8os2HHd7AJ/qdpILv+k7W42QdTck2XWp
-        1JNEx++xFzzmG/OqOkdDRyqor7KWVOXZlaDgM5qdCCy4aTs/dbpv9AHRjiYmlFO0D6i/OWquSxpkO
-        qeUqZahCEgKwivrncyTcomGUWpOtgWIr5NwvudL22BrVdrI6GA11Ps039sQ6LcjvsUEDYGNXXWPzI
-        H9DZWM9o05gvYQiMEMB6c1Ey3T+ysWCYP18tsz3oEA7nbelPsDblH6/nnLJHpyNVnqgdwRAHAsJsK
-        6lhywPkA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llhaa-009Y5s-Ge; Wed, 26 May 2021 00:40:00 +0000
-Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
- enabled
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Burton <paul.burton@mips.com>,
-        John Crispin <john@phrozen.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>
-References: <20210523232556.15017-1-digetx@gmail.com>
- <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
- <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
- <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
- <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
- <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3661fdba-ad32-5d16-7714-1ebc58caf435@infradead.org>
-Date:   Tue, 25 May 2021 17:39:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 25 May 2021 20:43:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621989712; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=50NpdjUo/15mSOLHlwNmqUPYmCwce3Ug4lHCATEAoHE=; b=ZVHDCVigJt75tYDp1EP1abqRcbCs9xEAeOPGXPLD37eXipHsrF3KZbgE2dWAJ6sMfqQXoaii
+ bSSRPZAqA+lJ4o0F1OugFkLyiQXY69r+roDZ9lUiDYKEdv2vaACZW2WyewKph5sVZRTyIIQi
+ pd4orMmXva+D03nZBxMfOahkphY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60ad994fceebd0e932555e5c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 00:41:51
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E88E1C43217; Wed, 26 May 2021 00:41:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD70DC4338A;
+        Wed, 26 May 2021 00:41:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD70DC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH] remoteproc: core: Invoke subdev callbacks in list order
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     bjorn.andersson@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, ohad@wizery.com,
+        psodagud@codeaurora.org,
+        Android Kernel Team <kernel-team@android.com>
+References: <CAGETcx_N-+7e0hgnmtuqavce0qgk7Ertf=9P-0kNZ01SOnFq_w@mail.gmail.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <cc8a433f-bc66-22ad-1fc3-cf35ad5ba32b@codeaurora.org>
+Date:   Tue, 25 May 2021 17:41:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAGETcx_N-+7e0hgnmtuqavce0qgk7Ertf=9P-0kNZ01SOnFq_w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 2:29 PM, Dmitry Osipenko wrote:
-> 25.05.2021 15:19, Geert Uytterhoeven пишет:
-> ...
->>>> There 3 possible solutions:
->>>>
->>>> 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
->>>> 2. Build stubs universally, maybe using weak functions.
+
+On 5/25/2021 5:00 PM, Saravana Kannan wrote:
+> Sending again due to accidental HTML.
+>
+> On XXXXX, Siddharth Gupta wrote:
+>> On 5/24/2021 8:03 PM, Bjorn Andersson wrote:
+>>> On Mon 17 May 18:08 CDT 2021, Siddharth Gupta wrote:
 >>>
->>> I vote for this one - global stubs.
->>
->> Yep.
->>
->>> Or for a new one:
->>> 4. Disable COMPILE_TEST for specific platforms (mentioned in commit
->>> msg). Eventually could be like:
->>> config RALINK
->>>         depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
->>
->> That's a neat idea!
->>
->> Of course there's a fifth option:
->>
->> 5. Convert legacy platforms to COMMON_CLK.
->>
->> Which is already happening for ARM EP93XX.
-> 
-> I'll try to take a closer look at alternative options, thank you for
-> yours input.
+>>>> Subdevices at the beginning of the subdev list should have
+>>>> higher priority than those at the end of the list. Reverse
+>>>> traversal of the list causes priority inversion, which can
+>>>> impact the performance of the device.
+>>>>
+>>> The subdev lists layers of the communication onion, we bring them up
+>>> inside out and we take them down outside in.
+>>>
+>>> This stems from the primary idea that we want to be able to shut things
+>>> down cleanly (in the case of a stop) and we pass the "crashed" flag to
+>>> indicate to each recipient during "stop" that it may not rely on the
+>>> response of a lower layer.
+>>>
+>>> As such, I don't think it's right to say that we have a priority
+>>> inversion.
+>> My understanding of the topic was that each subdevice should be
+>> independent of the other. In our case unfortunately the sysmon
+>> subdevice depends on the glink endpoint.
+> In that case, the glink has to be prepared/started before sysmon, right?
+Yes, that will not change with the introduction of this change.
+>
+>> However the priority inversion doesn't happen in these
+>> subdevices, it happens due to the SSR notifications that we send
+>> to kernel clients. In this case kernel clients also can have QMI
+>> sockets that in turn depend on the glink endpoint, which means
+>> when they go to release the QMI socket a broadcast will be sent
+>> out to all connected clients about the closure of the connection
+>> which in this case happens to be the remoteproc which died. So
+>> if we peel the onion, we will be unnecessarily be waiting for a
+>> dead remoteproc.
+> So why can't the QMI layer be smart about this and check that the
+> remoteproc hasn't crashed before you try to communicate with it? Or if
+> the glink is torn down before QMI gets to broadcast, then it's a
+> pretty clear indication of failure and just notify all the kernel side
+> QMI clients?
+I made a mistake earlier, QMI is the layer that creates a QRTR
+based socket over glink, and is not going to understand how the
+socket works internally (think of an application creating a TCP
+socket). The change makes it so that the glink layer is torn
+down before.
+>
+>>>> For example a device adds the glink, sysmon and ssr subdevs
+>>>> to its list. During a crash the ssr notification would go
+>>>> before the glink and sysmon notifications. This can cause a
+>>>> degraded response when a client driver waits for a response
+>>>> from the crashed rproc.
+>>>>
+>>> In general the design is such that components are not expected to
+>>> communicate with the crashed remote when "crashed" is set, this avoids
+>>> the single-remote crash.
+>> Here the glink device on the rpmsg bus won't know about the
+>> crashed remoteproc till we send glink notification first, right?
+> Why not just query the current state of the remote proc before trying
+> to talk to it? It should be a quick check.
+The subdevice concept serves the purpose of informing devices
+like glink when the remoteproc goes down. It makes the entire
+concept redundant if the subdevices need to check if the
+remoteproc is up or not.
+>
+>> Since we send out sysmon and SSR notifications first, the glink
+>> device will still be "alive" on the rpmsg bus.
+>>> The case where this isn't holding up is when two remote processors
+>>> crashes simultaneously, in which case e.g. sysmon has been seen hitting
+>>> its timeout waiting for an ack from a dead remoteproc - but I was under
+>>> the impression that this window shrunk dramatically as a side effect of
+>>> us fixing the notification ordering.
+>> You are right, the window would become smaller in the case of two
+>> remoteprocs, but this issue can come up with even a single
+>> remoteproc unless prioritize certain subdevices.
+> I think the main problem you have here is rproc sub devices that
+> depend on other rproc sub devices. But there's no dependency tracking
+> here. Your change just happens to work for your specific case because
+> the order of the sub devices in the list happens to work for your
+> inter-subdevice dependencies. But this is definitely not going to work
+> for all users of subdevices.
+>
+> If keeping track of dependency is too much complexity (I haven't read
+> enough rproc code to comment on that), at the least, it looks like you
+> need another ops instead of changing the order of stop() callbacks. Or
+> at a minimum pick the ordering based on the "crashed" flag. A blanket,
+> I'll just switch the ordering of stop() for everyone for all cases is
+> wrong.
+I will agree with you if you call this change ugly (because it
+is), but I don't think this should break anything for anyone.
+If subdevices are independent of each other the order in which
+subdevice stop()/unprepare() is called becomes irrelevant.
 
-Hi,
+In case they are dependent, for example - A(SSR)->B(glink), we
+would call B start() before calling A start() since A cannot work
+without B. During tear down unless B stop() is called A will
+continue to think B exists, so B stop() needs to be called before
+A stop(). Think of the TCP socket example I gave before - unless
+TCP/IP knows that the NIC died it will continue to wait for the
+other side to respond.
+>
+> In fact, in the normal/clean shutdown case, I'd think you'll want to
+> stop the subdevices in reverse initialization order so that you can
+> cleanly stop QMI/sysmon first before shutting down glink.
+In the case of a normal/clean shutdown the users of the
+remoteproc should cleanup their side of the resources before
+informing the remoteproc framework to shutdown the remoteproc.
+Reference counting in the framework will ensure that a remoteproc
+framework isn't shutdown randomly unless it is a crash.
 
-If you are messing around with HAVE_LEGACY_CLK and COMMON_CLK
-and don't mind, please have a look at this report from
-'kernel test robot':
-  https://lore.kernel.org/lkml/202103162301.oomY9NwI-lkp@intel.com/
-
-
-Maybe this one is more MIPS-specific. I dunno.
-I tried to come up with a patch for it and failed.
-
-I will be happy to built-test any patches that you come up with.
-
-Maybe I have just looked at this too long...
-
-thanks.
--- 
-~Randy
-
+Thanks,
+Sid
+>
+> -Saravana
