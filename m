@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9657539151D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5C939151F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhEZKkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:40:31 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:56774 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbhEZKkV (ORCPT
+        id S234100AbhEZKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:40:46 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:38847 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234117AbhEZKkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:40:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ApStfRDU0a2Bcxs0DU/lRdHOKyM7PDXIMldhjFKUC1g=; b=JzBt+Vx/khdrcQKa/bcrJCd6Zx
-        fy2Ur+KbJUCQu1V1LvcbfXGMIpq0u2XGgTsHwqL30rHarLjr6Xz6zVL1S9wsQnQ6PHVGSK2FIujAL
-        TKSE7rn7w5l1aH2jN1YNF5v2xXXSAyKpOYiIC3Jx24xd/ETeQhNWS7t3T/uOUNTrTawc=;
-Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1llqvN-005xlj-Gk; Wed, 26 May 2021 10:38:05 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 93E77D05836; Wed, 26 May 2021 11:38:40 +0100 (BST)
-Date:   Wed, 26 May 2021 11:38:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Jaroslav Kysela <perex@perex.cz>, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 03/12] ASoC: hdmi-codec: Rework to support more
- controls
-Message-ID: <YK4lMLG6PlxzDJhs@sirena.org.uk>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-4-maxime@cerno.tech>
+        Wed, 26 May 2021 06:40:31 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id lqw9lSl1ZWkKblqwClChsM; Wed, 26 May 2021 12:38:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622025536; bh=XlNVC86Ptwa/dZno998hc4CkV9v44/KHlA+cDHnDUAA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=GsytanDInMl8owSubO+/OkkLYU8vHDSiK74jlal8gq3M7bHTyNm9iTs/ZBppDF9te
+         FJVnEfRkvmcL8aSWlW2JRmCRG+A1DOEQRPuimld19c/Ud9uvx1uc2eDUKG2f27fVc5
+         iX0L/1des7VIBLWB9vJDzVPa6tdktS/QYpt3fQBKDpTqCZDEpizrq6hN+INHsQSA1j
+         1U7PIfjEsR0zQfFOvt6h4mdynCnn4D3gDireQkehqPe1Lu/pn7GIkmKwUtH0uAtUgp
+         7O+tSsGiffDzaVuYDz3eZWWRm9LH3QZNkGd9xdkyIvYbfs4isG8qMmU3/Q8uzzEaSN
+         yHhq69cGNja+w==
+Subject: Re: [PATCHv5 0/5] media: uvcvideo: implement UVC 1.5 ROI
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210501082001.100533-1-senozhatsky@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <8583ed26-ef35-3341-5058-32dbf219d10c@xs4all.nl>
+Date:   Wed, 26 May 2021 12:38:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eIFZBnIxpSROlH5X"
-Content-Disposition: inline
-In-Reply-To: <20210525132354.297468-4-maxime@cerno.tech>
-X-Cookie: Ahead warp factor one, Mr. Sulu.
+In-Reply-To: <20210501082001.100533-1-senozhatsky@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFEUfC1WK0TKikrzxCp5mPl+0Ru3byt2BGHcXhHIthaBn6MiIf1jQ6M3xvU6s/+cVEnSlK4A1Z/7qpNfPKQxjMA8FgIuyIyQJLHjkkO1rqnt3mW2cj4e
+ kS+Ir/8KjKFIkH9WT7liXL2fbtHoq3wcgSUXmlbWoww0rYL5scW3Xdd7RQWwvylAAgzJUJ6oVaNIHN+I4ofHt1Y+nyhIiNqaMzHz34x5UlSjmkEwlPtrn6By
+ Ec63JJttldgmOqdBKVTfRg5oo6u3ewKGpAhvt5+W1kntMFkTDaiV7GHtKJMy/+W8AbEsHXQGjtt01FPjYk0YX/GUxgRWDCx1xRM+uh2PUrGE9XZ9xSspFJsz
+ hawXxMKETXfiI1pUKwo0wu8oPKs0hY6U35h6PZDK5EdEMo7X2prsXRdqWxgmCkj42y9fyDIk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sergey,
 
---eIFZBnIxpSROlH5X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 01/05/2021 10:19, Sergey Senozhatsky wrote:
+> Hello,
+> 
+> 	This patch set implements UVC 1.5 ROI using v4l2_selection API.
+> 
+> v5:
+> -- fixed UAPI typo: STABILIXATION
+> -- moved V4L2_CID_REGION_OF_INTEREST_AUTO to V4L2_CID_CAMERA_CLASS_BASE+36
+> -- added more comments (Ricardo)
+> -- added V4L2_CID_REGION_OF_INTEREST_AUTO to v4l2_ctrl_get_name() (Ricardo)
+> 
+> Sergey Senozhatsky (5):
+>   media: v4l UAPI: add ROI selection targets
 
-On Tue, May 25, 2021 at 03:23:45PM +0200, Maxime Ripard wrote:
-> We're going to add more controls to support the IEC958 output, so let's
-> rework the control registration a bit to support more of them.
+As mentioned in my reply to v4 0/5, I am quite strongly opposed to using the
+Selection API for this as opposed to using controls. Unless someone can provide
+strong arguments for using the Selection API, I am inclined to reject this.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Sorry about that, I probably should have been reviewing this series sooner.
 
---eIFZBnIxpSROlH5X
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
 
------BEGIN PGP SIGNATURE-----
+	Hans
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCuJS8ACgkQJNaLcl1U
-h9ABYQf/acYuDAkB3WhiZ1hCCQpVdonll1Aj3jSnr5WtK5yitGmh8cYms3T5uWUE
-XmT9B52fCJh6IAHjAm9XZbBWm49ShM/pgA00Q6otZDb8zVSS6v39HIFvnRDDsRNx
-ASGbUOdr4Z/1kPc4n8UDKlq45Dz8985Rtfoh5QknQEeD5P0zvNViwWcfjmVZ2UQ+
-qJk9oC/WJIxhR6PyY8x0XbI4plfCO4WvEG9dEdKE4navagTtBVa5e9RxF1wyXK9r
-dDaL9bRcRigdba+/DRBjrDrJEDQM5GUe9yT+znvJzcqmkPYt9q2qe6Wen6UxjKrf
-seBlUHvVi2p9QEVe3haqTNcmB5vqzQ==
-=RH7S
------END PGP SIGNATURE-----
+>   media: v4l UAPI: document ROI selection targets
+>   media: uvcvideo: add ROI auto controls
+>   media: v4l UAPI: document ROI auto_controls
+>   media: uvcvideo: add UVC 1.5 ROI control
+> 
+>  .../media/v4l/ext-ctrls-camera.rst            |  23 +++
+>  .../media/v4l/selection-api-configuration.rst |  22 ++
+>  .../media/v4l/selection-api-examples.rst      |  27 +++
+>  .../media/v4l/v4l2-selection-targets.rst      |  24 +++
+>  drivers/media/usb/uvc/uvc_ctrl.c              |  19 ++
+>  drivers/media/usb/uvc/uvc_v4l2.c              | 189 +++++++++++++++++-
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |   1 +
+>  include/uapi/linux/usb/video.h                |   1 +
+>  include/uapi/linux/v4l2-common.h              |   8 +
+>  include/uapi/linux/v4l2-controls.h            |  10 +
+>  10 files changed, 321 insertions(+), 3 deletions(-)
+> 
 
---eIFZBnIxpSROlH5X--
