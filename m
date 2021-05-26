@@ -2,100 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CAB39236C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DC8392371
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbhEZXyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 19:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbhEZXyp (ORCPT
+        id S234453AbhEZX5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 19:57:54 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24735 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232270AbhEZX5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 19:54:45 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C493C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:53:14 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id v12so1419663plo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mXh3c9ZB/hAxTDKi9fynEz6oh8bZIstdzjsb0THY5o=;
-        b=EEcT3ELNsQ9vVEUmHaT6Fa4RSd8lyVpze0AAw0NaoV8UlTeYSkXrowFBfeSw003bzT
-         4wvYDwpw/1KIRfUqx9GkAenx7vcAXYKis5a75qsisnIo8TFtMEqMA/YK1u10buvAfRGo
-         bUm5hGexCBBUK1adtCWh7Lo1eUz0fTMA8oElEj1EFtoHCnKSBiOL0pYz+o1SjarwRW+i
-         daukyuJwLIfW9Ic6jDeuPPeJavzffWMZpGdJZzsIAjKosil0u36vFIczG7yEZWPu1J1h
-         1DvQk8EPgeDjHsIP0JOHxqRmIkCPsVkeNjSgJqpzdISriOsnBUCjQaoNDoOm+A9lq5vh
-         /PVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mXh3c9ZB/hAxTDKi9fynEz6oh8bZIstdzjsb0THY5o=;
-        b=ACC003E1YBzl19cGdvOH4punlO2ag6DgE5dgxlzoyRGSrK7GtVxHSZr2saN5W34NQX
-         S3smC8fjkHIS6+Na2QfEvCMvwzHWMk46SYis/9dW5/8rnL4u3CxRWT4OLC08R2TFVQI3
-         eBGaDJX1ITcdfGDWFVeRTj+ustsertQHVaiJXpaD544MliyAlZqAYaC4+0jogE0rgKaY
-         TXvgsJGermd/ZPdlFljMg2mJ8un6FmNTs6mhN3p9I8RLdorrTVk8fVMArP2AOXkCKUh+
-         btabfQzRiQ6lsHGHdCYAAJXJl6dFyxHL5dZOM6x9n0HZx76pV0Sj9BT8suJUVmazCvU/
-         NOGA==
-X-Gm-Message-State: AOAM533k2ZkjXTfQxogc1ut7KJNBr5QuNeyGYiiyNieEQnOqm/FNGhNm
-        aViQlZTLSIMbRO0N6WtuNA==
-X-Google-Smtp-Source: ABdhPJyOdrOvfLiJxE/Lds0YBYaFooytCDXCqmFsBU7kwDmrQ0AgYeRWG+3FWq7Rmmj5obrZjkBu/w==
-X-Received: by 2002:a17:902:b683:b029:ee:f0e3:7a50 with SMTP id c3-20020a170902b683b02900eef0e37a50mr610607pls.7.1622073193498;
-        Wed, 26 May 2021 16:53:13 -0700 (PDT)
-Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
-        by smtp.gmail.com with ESMTPSA id 10sm177063pgl.39.2021.05.26.16.53.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 16:53:13 -0700 (PDT)
-From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
-To:     linux-mm@kvack.org, Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
-Date:   Thu, 27 May 2021 08:52:57 +0900
-Message-Id: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 19:57:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622073378; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Hiu2ypcR7tUPti7eowVxhYnxcS4L7xgP2ne/MPTNhIA=;
+ b=mAufyWI9DweAgqy4cNxmXSTMoGd4/og70nlS+wFBv0A9U5qD6BTznnp0G8JbKiLcxKnALbwT
+ +R1B6QHrgC38YTwwNQVv/4TRMrbIpWTMc1Uq55cyxuFZ5y2oWax6QNg8FX9HpiqsWTj5O3Sq
+ 200rtkHDe1XP8L8nUg4ZjMr20q4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60aee02214eae4d741fc8fcc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 23:56:18
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3CA73C4338A; Wed, 26 May 2021 23:56:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5494FC433D3;
+        Wed, 26 May 2021 23:56:15 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 May 2021 16:56:15 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: power off DP phy base on mainlink status at
+ suspend
+In-Reply-To: <CAE-0n53bGm4T7SE8sJWFgCbCs2uRYwKrXHxmKQ-0zHXQJpPKdw@mail.gmail.com>
+References: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n53bGm4T7SE8sJWFgCbCs2uRYwKrXHxmKQ-0zHXQJpPKdw@mail.gmail.com>
+Message-ID: <7fc1bc954aff77ca5373caaf5fbf06a9@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On 2021-05-26 15:30, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-05-26 11:08:23)
+>> DP mainlink can be either enabled or disabled at the time of suspend
+>> happen. Therefore DP phy teared down at suspend should base on 
+>> mainlink
+>> status at that instance.
+> 
+> Please add some more details here. The system crashes if you plug in 
+> the
+> HDMI cable during system wide suspend. That seems to be because the DP
+> phy isn't powered down during suspend if the HDMI cable is disconnected
+> so we try to process the hpd plug event on the path to suspend instead
+> of wait to bring up the phy and then the display?
+> 
+> I'm trying to find the case when we would be entering suspend and only
+> have called phy_init() without calling phy_exit(). What path is that? I
+> guess it is dp_ctrl_off_link_stream() called when the sink count goes 
+> to
+> 0? So plug in HDMI cable to apple dongle, unplug HDMI cable to apple
+> dongle and phy_power_off() followed by phy_exit() followed by 
+> phy_init()
+> and then enter suspend so we want to call phy_exit(). Then we only call
+> phy_power_off() if we've called dp_ctrl_on()? I think I followed it 
+> all.
+> 
+ok, will do
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 5 ++++-
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.h    | 2 +-
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 9 ++++++++-
+>>  3 files changed, 13 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index dbd8943..5115c05 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1398,7 +1398,7 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, 
+>> bool flip, bool reset)
+>>   * Perform required steps to uninitialize DP controller
+>>   * and its resources.
+>>   */
+>> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+>> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on)
+>>  {
+>>         struct dp_ctrl_private *ctrl;
+>>         struct dp_io *dp_io;
+>> @@ -1414,6 +1414,9 @@ void dp_ctrl_host_deinit(struct dp_ctrl 
+>> *dp_ctrl)
+>>         phy = dp_io->phy;
+>> 
+>>         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
+>> +       if (mainlink_on)
+>> +               phy_power_off(phy);
+>> +
+>>         phy_exit(phy);
+>> 
+>>         DRM_DEBUG_DP("Host deinitialized successfully\n");
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+>> index 25e4f75..a23ee2b 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+>> @@ -20,7 +20,7 @@ struct dp_ctrl {
+>>  };
+>> 
+>>  int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool 
+>> reset);
+>> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+>> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on);
+>>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+>>  int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+>>  int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index cdec0a3..88eeeb5 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -104,6 +104,8 @@ struct dp_display_private {
+>> 
+>>         bool encoder_mode_set;
+>> 
+>> +       bool mainlink_on;
+>> +
+> 
+> Is there a reason why this can't be stashed away in dp_ctrl.c in the
+> 'struct dp_ctrl'? It seems to follow closely with dp_ctrl_*() APIs.
+yes, I will do that.
 
-When memory_failure() or soft_offline_page() is called on a tail page of
-some hugetlb page, "BUG: unable to handle page fault" error can be
-triggered.
-
-remove_hugetlb_page() dereferences page->lru, so it's assumed that the
-page points to a head page, but one of the caller,
-dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
-which could be a tail page.  So pass 'head' to it, instead.
-
-Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git v5.13-rc3/mm/hugetlb.c v5.13-rc3_patched/mm/hugetlb.c
-index 95918f410c0f..470f7b5b437e 100644
---- v5.13-rc3/mm/hugetlb.c
-+++ v5.13-rc3_patched/mm/hugetlb.c
-@@ -1793,7 +1793,7 @@ int dissolve_free_huge_page(struct page *page)
- 			SetPageHWPoison(page);
- 			ClearPageHWPoison(head);
- 		}
--		remove_hugetlb_page(h, page, false);
-+		remove_hugetlb_page(h, head, false);
- 		h->max_huge_pages--;
- 		spin_unlock_irq(&hugetlb_lock);
- 		update_and_free_page(h, head);
--- 
-2.25.1
+> 
+>>         /* wait for audio signaling */
+>>         struct completion audio_comp;
+>> 
+>> @@ -353,11 +355,14 @@ static int dp_display_process_hpd_high(struct 
+>> dp_display_private *dp)
+>>         dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>> 
+>>         dp_link_reset_phy_params_vx_px(dp->link);
+>> +
+>> +       dp->mainlink_on = false;
+> 
+> Isn't this too late to be setting it to false? i.e. it should be false
+> by default, and then set to false when a dp_ctrl_off() call is made?
+> 
+>>         rc = dp_ctrl_on_link(dp->ctrl);
+>>         if (rc) {
+>>                 DRM_ERROR("failed to complete DP link training\n");
+>>                 goto end;
+>>         }
+>> +       dp->mainlink_on = true;
+>> 
+>>         dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+>> 
+>> @@ -392,7 +397,7 @@ static void dp_display_host_deinit(struct 
+>> dp_display_private *dp)
+>>                 return;
+>>         }
+>> 
+>> -       dp_ctrl_host_deinit(dp->ctrl);
+>> +       dp_ctrl_host_deinit(dp->ctrl, dp->mainlink_on);
+>>         dp_aux_deinit(dp->aux);
+>>         dp_power_deinit(dp->power);
+>> 
+>> @@ -941,6 +946,8 @@ static int dp_display_disable(struct 
+>> dp_display_private *dp, u32 data)
+>>                 dp->core_initialized = false;
+>>         }
+>> 
+>> +       dp->mainlink_on = false;
+>> +
+>>         dp_display->power_on = false;
+>> 
+>>         return 0;
+> 
+> It would certainly help to keep it contained to one file instead of 
+> two.
+agree,
 
