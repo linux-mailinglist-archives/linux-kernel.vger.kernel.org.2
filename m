@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BE8390DAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA6E390DB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhEZBCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 21:02:34 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:4008 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhEZBCc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 21:02:32 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqXdC3hXtzmYyM;
-        Wed, 26 May 2021 08:58:39 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 09:00:57 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 26 May 2021 09:00:56 +0800
-Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210524152332.844251980@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <8c4528c2-15cb-e32e-3e21-bb49916d0e78@huawei.com>
-Date:   Wed, 26 May 2021 09:00:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S232777AbhEZBDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 21:03:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:57237 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230499AbhEZBDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 21:03:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FqXjH4nDhz9s1l;
+        Wed, 26 May 2021 11:02:11 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1621990932;
+        bh=7YFaEXfPr9zaWFglhtnONuAD5PnCnM4K1fEPjwflXkk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=oHVrEdNnGr2oj9KRqvebzUCeS+mmscnS/EH66JqawKZP922vwiSxH10iV5/+2mhQH
+         OLbb8bi7+AuooHvmyQiAS2NrrzFTIx56EigazAl/Ja4jPyvlw+Nr0rA53ukrCBra2G
+         V8roIGSpzVK96pg1XYHKa+cr6s1zLDHC/BYd6ABr3rEdh9ngdnQzeMWsHQK8uILXbL
+         ADPab14Rqui7tx6TE7Zw6D19DHPkW+faFNLtIDVUQKnh+Rul/TGO72b2HR3oHIBwqf
+         dIW0KHamcspLPKd/T09N2KT/BWIly+XS9lsV5k+KK60GyxtiLmiOcyjbmz6rcFPFbK
+         ecugbPRrEnlMA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, andy.shevchenko@gmail.com,
+        robh+dt@kernel.org
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH v3 2/4] powerpc/fsl: set fsl,i2c-erratum-a004447 flag
+ for P2041 i2c controllers
+In-Reply-To: <20210511212052.27242-3-chris.packham@alliedtelesis.co.nz>
+References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
+ <20210511212052.27242-3-chris.packham@alliedtelesis.co.nz>
+Date:   Wed, 26 May 2021 11:02:05 +1000
+Message-ID: <874keqi9yq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
+> The i2c controllers on the P2040/P2041 have an erratum where the
+> documented scheme for i2c bus recovery will not work (A-004447). A
+> different mechanism is needed which is documented in the P2040 Chip
+> Errata Rev Q (latest available at the time of writing).
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>  arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
-On 2021/5/24 23:24, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.40 release.
-> There are 104 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.40-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+cheers
 
-Tested on arm64 and x86 for 5.10.40-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.40-rc1
-Commit: d8d2794a2bd357476a82c4d315ba323557fd5c80
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8896
-passed: 8896
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8896
-passed: 8896
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+> diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> index 872e4485dc3f..ddc018d42252 100644
+> --- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> +++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> @@ -371,7 +371,23 @@ sdhc@114000 {
+>  	};
+>  
+>  /include/ "qoriq-i2c-0.dtsi"
+> +	i2c@118000 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
+> +
+> +	i2c@118100 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
+> +
+>  /include/ "qoriq-i2c-1.dtsi"
+> +	i2c@119000 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
+> +
+> +	i2c@119100 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
+> +
+>  /include/ "qoriq-duart-0.dtsi"
+>  /include/ "qoriq-duart-1.dtsi"
+>  /include/ "qoriq-gpio-0.dtsi"
+> -- 
+> 2.31.1
