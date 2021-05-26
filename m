@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14783391D0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9021D391D0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbhEZQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhEZQdX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:33:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92887C061574;
-        Wed, 26 May 2021 09:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sOL3BvHKeXuTa8i7Byc9prFY//hqK/wPv2ycrlvaUAM=; b=ZYJ8C3RxiGEPbWFtIXjRPkM59W
-        sru2KByW3HIzP2hQPaAyW4Cw6bKx2JjtYevRI7O+wrSriourpVabI7o2eSa5miBvEGeZuX15BkUC2
-        omEq4h1sV5ayhhk2SBAN+MJFZKhao90FjW/wyW3Z9DsuaFMHR4Ai28EHerkMQoi4WYXJ1lQSl+iN7
-        UAvoqI/ZQ0JpAPRCD8tE/8hKYgtTRjSVdA5Yy1PIT+Va9pfJoTPqpIHO8BNUGs8k8wrfM7ff02/tJ
-        0ze/wAL9+MPwmPcI1rac1i4GaqYSFDoUuPWRBXYRRXfUJM4E0rvl6SWQ85PCtAK9hRe6cNOpS1lUF
-        jSd/7+Ig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1llwQ5-004hNf-HH; Wed, 26 May 2021 16:30:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E071430022A;
-        Wed, 26 May 2021 18:30:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C6453201D301D; Wed, 26 May 2021 18:30:08 +0200 (CEST)
-Date:   Wed, 26 May 2021 18:30:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 13/22] sched: Allow task CPU affinity to be restricted
- on asymmetric systems
-Message-ID: <YK53kDtczHIYumDC@hirez.programming.kicks-ass.net>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-14-will@kernel.org>
+        id S234684AbhEZQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234544AbhEZQbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:31:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8D8613CE;
+        Wed, 26 May 2021 16:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622046616;
+        bh=K2m+rOb2f5WbHdz8pamr+WIQ2N26pRLHMfuwQxJHfRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jhC4cjoVWCu6lSiiL7n4CJy8Ikr7zv8QwzE4SuU9kh/vXEJNpGroSZ+/An5/5Q4Xu
+         j/7s5x/MeU2UllKWl30Ze5nDPJR61nSny+59D5CA4DN3RVOGUN7t4X2/d6hQAWPNfW
+         m+ZIbdk14b+IRidC/kV+eEkG6wXYGcJAioi8/i2EVibXtBy+oitp6xc1eZDIHGsfQb
+         +VSRYHpgX9BYreoUIxRTlB+RbTRCLPwSnw9sFY6ZKXPXs5EKh03Q/uUKRwTWdiOvey
+         dslvDCRl08RxnTkYx1u4Sv1kMDFQZgy7dArO0+77lYOCEsbG0d17t2ErWzLqZ4CnMu
+         STGbT5UzBOX1A==
+Date:   Wed, 26 May 2021 19:30:09 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        untaintableangel@hotmail.co.uk, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Message-ID: <YK53kWHb4cPeeHsd@kernel.org>
+References: <20210526081100.12239-1-rppt@kernel.org>
+ <YK4LGUDWXJWOp7IR@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525151432.16875-14-will@kernel.org>
+In-Reply-To: <YK4LGUDWXJWOp7IR@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 04:14:23PM +0100, Will Deacon wrote:
-> @@ -2426,20 +2421,166 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->  
->  	__do_set_cpus_allowed(p, new_mask, flags);
->  
-> -	return affine_move_task(rq, p, &rf, dest_cpu, flags);
-> +	if (flags & SCA_USER)
-> +		release_user_cpus_ptr(p);
-> +
-> +	return affine_move_task(rq, p, rf, dest_cpu, flags);
->  
->  out:
-> -	task_rq_unlock(rq, p, &rf);
-> +	task_rq_unlock(rq, p, rf);
->  
->  	return ret;
->  }
+On Wed, May 26, 2021 at 10:47:21AM +0200, Borislav Petkov wrote:
+> On Wed, May 26, 2021 at 11:11:00AM +0300, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > After the consolidation of early memory reservations introduced by the
+> > commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+> > the kernel fails to boot if X86_RESERVE_LOW is set to 640K.
+> > 
+> > The boot fails because real-time trampoline must be allocated under 1M (or
+> > essentially under 640K) but with X86_RESERVE_LOW set to 640K the memory is
+> > already reserved by the time reserve_real_mode() is called.
+> > 
+> > Before the reordering of the early memory reservations it was possible to
+> > allocate from low memory even despite user's request to avoid using that
+> > memory. This lack of consistency could potentially lead to memory
+> > corruptions by BIOS in the areas allocated by kernel.
+> 
+> Hmm, so this sounds weird to me: real-time trampoline clearly has
+> precedence over X86_RESERVE_LOW because you need former to boot the
+> machine, right?
+> 
+> In that case, real-time trampoline should allocate first and *then* the
+> rest of low range requested to be reserved should be reserved, no?
+ 
+We can restore that behaviour, but it feels like cheating to me. We let
+user say "Hey, don't touch low memory at all", even though we know we must
+use at least some of it. And then we sneak in an allocation under 640K
+despite user's request not to use it.
 
-So sys_sched_setaffinity() releases the user_cpus_ptr thingy ?! How does
-that work?
-
-I thought the intended semantics were somethings like:
-
-	A - 0xff			B
-
-	restrict(0xf) // user: 0xff eff: 0xf
-
-					sched_setaffinity(A, 0x3c) // user: 0x3c eff: 0xc
-
-	relax() // user: NULL, eff: 0x3c
-
-
+-- 
+Sincerely yours,
+Mike.
