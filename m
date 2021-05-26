@@ -2,396 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A5F391A47
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2559D391A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234767AbhEZOeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:34:50 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:20173 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhEZOes (ORCPT
+        id S234754AbhEZOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:35:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24566 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234654AbhEZOfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:34:48 -0400
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 14QEX0hZ030416;
-        Wed, 26 May 2021 23:33:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 14QEX0hZ030416
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622039581;
-        bh=K2JBpUyGmknhlRJpT71wl4Baxz8GsbPi2HBWhe0fUJY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cnmXS+DqWdAPC0p8MNIg0X+ZuRBIktoOUUR+EQB4vPPRCGwGVlLjEGNDw3EmAqZlv
-         xlyoU4qIgALC1L++WZgyjKMXDzp+GxzDeYEL0F6IhJRd7Rpw2XWDIFJ8o7cQRW8BJc
-         58bmB0Jh48QslQPtKIaufL8A/fujJ7UQngW2AlQLs93Fom+msv11CPKYfc9S8R6atG
-         3OOPiA7jJYoMBhNmRyZsxR2MDGv0EVvIwT7A7e7yI9l8/pHrO3j3QQFOzjOgPaV2AN
-         D3pbKwvq9+nlzItRdCDnwVjN2eBR7ykeJ5nQmYRfOW40+I524Aqu+Vsx77vDiJBmu1
-         zIUzibiWGcAvw==
-X-Nifty-SrcIP: [209.85.214.181]
-Received: by mail-pl1-f181.google.com with SMTP id d20so700064pls.13;
-        Wed, 26 May 2021 07:33:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530GOUOKnQj3QL/c4ZQ46GiqErhr0ztzPNR1/JAnM+d4jhe3s5UJ
-        GuU5kapvCyfdDuHaoVR2HnibyZ/eo5oliR92Jac=
-X-Google-Smtp-Source: ABdhPJw/7i4Yr5Lur94Y0RHgLFU9NY7pValTqlXUvZTdqsgLwd6wmbbeeFmUfP1tSYkLq/bZEryNx1br7CSMU1EHLow=
-X-Received: by 2002:a17:902:541:b029:f0:3187:409b with SMTP id
- 59-20020a1709020541b02900f03187409bmr36247746plf.47.1622039579510; Wed, 26
- May 2021 07:32:59 -0700 (PDT)
+        Wed, 26 May 2021 10:35:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622039625; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cx/TUEyNqXeSLp9UoQnngGKYMbwq8P/Op8uX0hLOxm4=;
+ b=s2HGEurqjFarNDfAh0L4YdQylMKAQYnimAZ5bWSuJxfZZANpiO+cWS3K8JWnw1TbQkgDjCa8
+ je6KVMlX7oom9J23fcWHz4hkrB7VzO3UtBbVdNKIH3DDqPIqjrWnGbs+iUywbvoZ8epR8d16
+ Adu8EIH8TGCvJ73StPadmRJnAJk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60ae5c49b15734c8f9812005 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 14:33:44
+ GMT
+Sender: sharathv=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 45B3CC4360C; Wed, 26 May 2021 14:33:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sharathv)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A64EDC433D3;
+        Wed, 26 May 2021 14:33:42 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210512075729.60291-1-masahiroy@kernel.org>
-In-Reply-To: <20210512075729.60291-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 26 May 2021 23:32:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS7cEj9h=Hi0O-AoFjJPg2mxp0zbi8boXj4O9aYt_yg6Q@mail.gmail.com>
-Message-ID: <CAK7LNAS7cEj9h=Hi0O-AoFjJPg2mxp0zbi8boXj4O9aYt_yg6Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Michal Simek <monstr@monstr.eu>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rich Felker <dalias@libc.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-alpha@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        linux-um@lists.infradead.org,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        openrisc@lists.librecores.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 May 2021 20:03:42 +0530
+From:   sharathv@codeaurora.org
+To:     Alex Elder <elder@ieee.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 3/3] net: ethernet: rmnet: Add support for
+ MAPv5 egress packets
+In-Reply-To: <67955e34-d1e1-f73a-8f21-938976d9f34b@ieee.org>
+References:  <stranche@codeaurora.org linux-doc@vger.kernel.org
+ corbet@lwn.net> <1619180343-3943-1-git-send-email-sharathv@codeaurora.org>
+ <1619180343-3943-4-git-send-email-sharathv@codeaurora.org>
+ <67955e34-d1e1-f73a-8f21-938976d9f34b@ieee.org>
+Message-ID: <c4a6c20eab0818de4457bb0e4ca3bcd6@codeaurora.org>
+X-Sender: sharathv@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 5:00 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> arch/$(SRCARCH)/Kbuild is useful for Makefile cleanups because you can
-> use the obj-y syntax.
->
-> Add an empty file if it is missing in arch/$(SRCARCH)/.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+On 2021-04-23 18:18, Alex Elder wrote:
+> On 4/23/21 7:19 AM, Sharath Chandra Vurukala wrote:
+>> Adding Support for MAPv5 egress packets.
+>> Based on the configuration Request HW for csum offload
+>> by setting the csum_valid_required of Mapv5 packet.
+> 
+> Please try to re-word this description.  I'm not sure
+> I understand what it means.
+> 
+> I see what I think is a bug below.  Please either
+> fix or explain.
+> 
+>> Acked-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+>> Acked-by: Alex Elder <elder@linaro.org>
+> 
+> I did not acknowledge this patch.
+> 
+
+I will rewrite the description with more details and clear wordings. 
+Thanks.
 
 
-Applied to linux-kbuild.
+>> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+>> ---
+>>   drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
+>>   .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 14 +++-
+>>   drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
+>>   .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 
+>> ++++++++++++++++++++--
+>>   drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |  3 +-
+>>   include/uapi/linux/if_link.h                       |  1 +
+>>   6 files changed, 109 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h 
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
+>> index 8d8d469..8e64ca9 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
+>> @@ -1,5 +1,6 @@
+>>   /* SPDX-License-Identifier: GPL-2.0-only */
+>> -/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All 
+>> rights reserved.
+>> +/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
+>> + * All rights reserved.
+>>    *
+>>    * RMNET Data configuration engine
+>>    */
+>> @@ -56,6 +57,7 @@ struct rmnet_priv_stats {
+>>   	u64 csum_fragmented_pkt;
+>>   	u64 csum_skipped;
+>>   	u64 csum_sw;
+>> +	u64 csum_hw;
+> 
+> Why is this new statistic type added?  Would it be
+> meaningful to use before--with only QMAPv4?  Or is
+> there something different about QMAPv5 (inline) checksum
+> offload that makes this necessary or desirable?
+> 
+> This is something new that ought to be at least
+> mentioned in the description at the top.  And for
+> future reference, this could likely have been
+> defined in a separate patch, before this one.
+> 
 
->
->  Makefile               | 2 +-
->  arch/alpha/Kbuild      | 1 +
->  arch/arc/Makefile      | 3 ---
->  arch/arm/Makefile      | 1 -
->  arch/arm64/Makefile    | 1 -
->  arch/csky/Kbuild       | 1 +
->  arch/h8300/Kbuild      | 1 +
->  arch/hexagon/Kbuild    | 1 +
->  arch/ia64/Kbuild       | 1 +
->  arch/microblaze/Kbuild | 1 +
->  arch/mips/Makefile     | 3 ---
->  arch/nds32/Kbuild      | 1 +
->  arch/nios2/Kbuild      | 1 +
->  arch/openrisc/Makefile | 1 -
->  arch/parisc/Kbuild     | 1 +
->  arch/powerpc/Makefile  | 3 ---
->  arch/riscv/Makefile    | 1 -
->  arch/s390/Makefile     | 3 ---
->  arch/sh/Kbuild         | 1 +
->  arch/sparc/Makefile    | 3 ---
->  arch/um/Kbuild         | 1 +
->  arch/x86/Makefile      | 3 ---
->  arch/xtensa/Kbuild     | 1 +
->  23 files changed, 13 insertions(+), 23 deletions(-)
->  create mode 100644 arch/alpha/Kbuild
->  create mode 100644 arch/csky/Kbuild
->  create mode 100644 arch/h8300/Kbuild
->  create mode 100644 arch/hexagon/Kbuild
->  create mode 100644 arch/ia64/Kbuild
->  create mode 100644 arch/microblaze/Kbuild
->  create mode 100644 arch/nds32/Kbuild
->  create mode 100644 arch/nios2/Kbuild
->  create mode 100644 arch/parisc/Kbuild
->  create mode 100644 arch/sh/Kbuild
->  create mode 100644 arch/um/Kbuild
->  create mode 100644 arch/xtensa/Kbuild
->
-> diff --git a/Makefile b/Makefile
-> index 15b6476d0f89..7df040b1b023 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -658,7 +658,7 @@ endif
->
->  ifeq ($(KBUILD_EXTMOD),)
->  # Objects we will link into vmlinux / subdirs we need to visit
-> -core-y         := init/ usr/
-> +core-y         := init/ usr/ arch/$(SRCARCH)/
->  drivers-y      := drivers/ sound/
->  drivers-$(CONFIG_SAMPLES) += samples/
->  drivers-$(CONFIG_NET) += net/
-> diff --git a/arch/alpha/Kbuild b/arch/alpha/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/alpha/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-> index 4392c9c189c4..3e6d4b84797f 100644
-> --- a/arch/arc/Makefile
-> +++ b/arch/arc/Makefile
-> @@ -85,9 +85,6 @@ KBUILD_LDFLAGS        += $(ldflags-y)
->
->  head-y         := arch/arc/kernel/head.o
->
-> -# See arch/arc/Kbuild for content of core part of the kernel
-> -core-y         += arch/arc/
-> -
->  # w/o this dtb won't embed into kernel binary
->  core-y         += arch/arc/boot/dts/
->
-> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-> index 415c3514573a..173da685a52e 100644
-> --- a/arch/arm/Makefile
-> +++ b/arch/arm/Makefile
-> @@ -252,7 +252,6 @@ endif
->
->  export TEXT_OFFSET GZFLAGS MMUEXT
->
-> -core-y                         += arch/arm/
->  # If we have a machine-specific directory, then include it in the build.
->  core-y                         += $(machdirs) $(platdirs)
->
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 7ef44478560d..b73c151f3a53 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -149,7 +149,6 @@ KBUILD_CFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
->  KBUILD_CPPFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
->  KBUILD_AFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
->
-> -core-y         += arch/arm64/
->  libs-y         := arch/arm64/lib/ $(libs-y)
->  libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
->
-> diff --git a/arch/csky/Kbuild b/arch/csky/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/csky/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/h8300/Kbuild b/arch/h8300/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/h8300/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/hexagon/Kbuild b/arch/hexagon/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/hexagon/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/ia64/Kbuild b/arch/ia64/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/ia64/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/microblaze/Kbuild b/arch/microblaze/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/microblaze/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index 258234c35a09..4e942b7ef022 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -332,9 +332,6 @@ head-y := arch/mips/kernel/head.o
->  libs-y                 += arch/mips/lib/
->  libs-$(CONFIG_MIPS_FP_SUPPORT) += arch/mips/math-emu/
->
-> -# See arch/mips/Kbuild for content of core part of the kernel
-> -core-y += arch/mips/
-> -
->  drivers-y                      += arch/mips/crypto/
->
->  # suspend and hibernation support
-> diff --git a/arch/nds32/Kbuild b/arch/nds32/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/nds32/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/nios2/Kbuild b/arch/nios2/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/nios2/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/openrisc/Makefile b/arch/openrisc/Makefile
-> index 410e7abfac69..c52de526e518 100644
-> --- a/arch/openrisc/Makefile
-> +++ b/arch/openrisc/Makefile
-> @@ -42,7 +42,6 @@ endif
->
->  head-y                 := arch/openrisc/kernel/head.o
->
-> -core-y         += arch/openrisc/
->  libs-y         += $(LIBGCC)
->
->  PHONY += vmlinux.bin
-> diff --git a/arch/parisc/Kbuild b/arch/parisc/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/parisc/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> index 3212d076ac6a..af669aa75b73 100644
-> --- a/arch/powerpc/Makefile
-> +++ b/arch/powerpc/Makefile
-> @@ -267,9 +267,6 @@ head-$(CONFIG_PPC_FPU)              += arch/powerpc/kernel/fpu.o
->  head-$(CONFIG_ALTIVEC)         += arch/powerpc/kernel/vector.o
->  head-$(CONFIG_PPC_OF_BOOT_TRAMPOLINE)  += arch/powerpc/kernel/prom_init.o
->
-> -# See arch/powerpc/Kbuild for content of core part of the kernel
-> -core-y += arch/powerpc/
-> -
->  # Default to zImage, override when needed
->  all: zImage
->
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index 3eb9590a0775..c5f359540862 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -90,7 +90,6 @@ endif
->
->  head-y := arch/riscv/kernel/head.o
->
-> -core-y += arch/riscv/
->  core-$(CONFIG_RISCV_ERRATA_ALTERNATIVE) += arch/riscv/errata/
->
->  libs-y += arch/riscv/lib/
-> diff --git a/arch/s390/Makefile b/arch/s390/Makefile
-> index e443ed9947bd..37b61645694c 100644
-> --- a/arch/s390/Makefile
-> +++ b/arch/s390/Makefile
-> @@ -128,9 +128,6 @@ OBJCOPYFLAGS        := -O binary
->
->  head-y         := arch/s390/kernel/head64.o
->
-> -# See arch/s390/Kbuild for content of core part of the kernel
-> -core-y         += arch/s390/
-> -
->  libs-y         += arch/s390/lib/
->  drivers-y      += drivers/s390/
->
-> diff --git a/arch/sh/Kbuild b/arch/sh/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/sh/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
-> index bee99e65fe23..4e65245bc755 100644
-> --- a/arch/sparc/Makefile
-> +++ b/arch/sparc/Makefile
-> @@ -58,9 +58,6 @@ endif
->
->  head-y                 := arch/sparc/kernel/head_$(BITS).o
->
-> -# See arch/sparc/Kbuild for the core part of the kernel
-> -core-y                 += arch/sparc/
-> -
->  libs-y                 += arch/sparc/prom/
->  libs-y                 += arch/sparc/lib/
->
-> diff --git a/arch/um/Kbuild b/arch/um/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/um/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index c77c5d8a7b3e..4307bf48ec53 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -239,9 +239,6 @@ head-y += arch/x86/kernel/platform-quirks.o
->
->  libs-y  += arch/x86/lib/
->
-> -# See arch/x86/Kbuild for content of core part of the kernel
-> -core-y += arch/x86/
-> -
->  # drivers-y are linked after core-y
->  drivers-$(CONFIG_MATH_EMULATION) += arch/x86/math-emu/
->  drivers-$(CONFIG_PCI)            += arch/x86/pci/
-> diff --git a/arch/xtensa/Kbuild b/arch/xtensa/Kbuild
-> new file mode 100644
-> index 000000000000..a4e40e534e6a
-> --- /dev/null
-> +++ b/arch/xtensa/Kbuild
-> @@ -0,0 +1 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> --
-> 2.27.0
->
+Will update the description with details about this stat.
 
+>>   };
+>>     struct rmnet_priv {
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c 
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+>> index 706a225..51a2e94 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+>> @@ -133,7 +133,7 @@ static int rmnet_map_egress_handler(struct sk_buff 
+>> *skb,
+>>   				    struct rmnet_port *port, u8 mux_id,
+>>   				    struct net_device *orig_dev)
+>>   {
+>> -	int required_headroom, additional_header_len;
+>> +	int required_headroom, additional_header_len, csum_type = 0;
+>>   	struct rmnet_map_header *map_header;
+>>     	additional_header_len = 0;
+>> @@ -142,6 +142,10 @@ static int rmnet_map_egress_handler(struct 
+>> sk_buff *skb,
+>>   	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
+>>   		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
+>>   		required_headroom += additional_header_len;
+>> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
+>> +	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
+>> +		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
+>> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
+>>   	}
+> 
+> Does additional_header_len need to be added to required_headroom,
+> as it is for QMAPv4 above?
+> 
+> If so, this is a bug and must be fixed.
+> 
+> What I tested last week (and verified work for IPA v3.5.1 and
+> IPA v4.2) looked like this:
+> 
+>     if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
+>         additional_header_len = sizeof(struct 
+> rmnet_map_ul_csum_header);
+>         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
+>     } else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
+>         additional_header_len = sizeof(struct 
+> rmnet_map_v5_csum_header);
+>         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
+>     }
+>     required_headroom += additional_header_len;
+> 
+> 					-Alex
+> 
 
--- 
-Best Regards
-Masahiro Yamada
+Thanks a lot in identifying the bug, I messed up with the patches before 
+raising them for review.
+Will share the corrected version in subsequent patch.
+
+>>   	if (skb_headroom(skb) < required_headroom) {
+>> @@ -149,10 +153,12 @@ static int rmnet_map_egress_handler(struct 
+>> sk_buff *skb,
+>>   			return -ENOMEM;
+>>   	}
+>>   -	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
+>> -		rmnet_map_checksum_uplink_packet(skb, orig_dev);
+>> +	if (csum_type)
+>> +		rmnet_map_checksum_uplink_packet(skb, port, orig_dev,
+>> +						 csum_type);
+>>   -	map_header = rmnet_map_add_map_header(skb, additional_header_len, 
+>> 0);
+>> +	map_header = rmnet_map_add_map_header(skb, additional_header_len,
+>> +					      port, 0);
+>>   	if (!map_header)
+>>   		return -ENOMEM;
+>>   diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h 
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
+>> index 1a399bf..e5a0b38 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
+>> @@ -43,11 +43,15 @@ enum rmnet_map_commands {
+>>   struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
+>>   				      struct rmnet_port *port);
+>>   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff 
+>> *skb,
+>> -						  int hdrlen, int pad);
+>> +						  int hdrlen,
+>> +						  struct rmnet_port *port,
+>> +						  int pad);
+>>   void rmnet_map_command(struct sk_buff *skb, struct rmnet_port 
+>> *port);
+>>   int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 
+>> len);
+>>   void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+>> -				      struct net_device *orig_dev);
+>> +				      struct rmnet_port *port,
+>> +				      struct net_device *orig_dev,
+>> +				      int csum_type);
+>>   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
+>>     #endif /* _RMNET_MAP_H_ */
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c 
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> index 43813cf..339d964 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> @@ -12,6 +12,7 @@
+>>   #include "rmnet_config.h"
+>>   #include "rmnet_map.h"
+>>   #include "rmnet_private.h"
+>> +#include <linux/bitfield.h>
+>>     #define RMNET_MAP_DEAGGR_SPACING  64
+>>   #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
+>> @@ -251,12 +252,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
+>>   }
+>>   #endif
+>>   +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff 
+>> *skb,
+>> +						struct rmnet_port *port,
+>> +						struct net_device *orig_dev)
+>> +{
+>> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
+>> +	struct rmnet_map_v5_csum_header *ul_header;
+>> +
+>> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
+>> +		return;
+>> +
+>> +	ul_header = skb_push(skb, sizeof(*ul_header));
+>> +	memset(ul_header, 0, sizeof(*ul_header));
+>> +	ul_header->header_info = RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD <<
+>> +					MAPV5_HDRINFO_HDR_TYPE_SHIFT;
+>> +
+>> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+>> +		void *iph = (char *)ul_header + sizeof(*ul_header);
+>> +		__sum16 *check;
+>> +		void *trans;
+>> +		u8 proto;
+>> +
+>> +		if (skb->protocol == htons(ETH_P_IP)) {
+>> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
+>> +
+>> +			proto = ((struct iphdr *)iph)->protocol;
+>> +			trans = iph + ip_len;
+>> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>> +			u16 ip_len = sizeof(struct ipv6hdr);
+>> +
+>> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
+>> +			trans = iph + ip_len;
+>> +#else
+>> +			priv->stats.csum_err_invalid_ip_version++;
+>> +			goto sw_csum;
+>> +#endif /* CONFIG_IPV6 */
+>> +		} else {
+>> +			priv->stats.csum_err_invalid_ip_version++;
+>> +			goto sw_csum;
+>> +		}
+>> +
+>> +		check = rmnet_map_get_csum_field(proto, trans);
+>> +		if (check) {
+>> +			skb->ip_summed = CHECKSUM_NONE;
+>> +			/* Ask for checksum offloading */
+>> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
+>> +			priv->stats.csum_hw++;
+>> +			return;
+>> +		}
+>> +	}
+>> +
+>> +sw_csum:
+>> +	priv->stats.csum_sw++;
+>> +}
+>> +
+>>   /* Adds MAP header to front of skb->data
+>>    * Padding is calculated and set appropriately in MAP header. Mux ID 
+>> is
+>>    * initialized to 0.
+>>    */
+>>   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff 
+>> *skb,
+>> -						  int hdrlen, int pad)
+>> +						  int hdrlen,
+>> +						  struct rmnet_port *port,
+>> +						  int pad)
+>>   {
+>>   	struct rmnet_map_header *map_header;
+>>   	u32 padding, map_datalen;
+>> @@ -267,6 +325,10 @@ struct rmnet_map_header 
+>> *rmnet_map_add_map_header(struct sk_buff *skb,
+>>   			skb_push(skb, sizeof(struct rmnet_map_header));
+>>   	memset(map_header, 0, sizeof(struct rmnet_map_header));
+>>   +	/* Set next_hdr bit for csum offload packets */
+>> +	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
+>> +		map_header->flags |= MAP_NEXT_HEADER_FLAG;
+>> +
+>>   	if (pad == RMNET_MAP_NO_PAD_BYTES) {
+>>   		map_header->pkt_len = htons(map_datalen);
+>>   		return map_header;
+>> @@ -394,11 +456,8 @@ int rmnet_map_checksum_downlink_packet(struct 
+>> sk_buff *skb, u16 len)
+>>   	return 0;
+>>   }
+>>   -/* Generates UL checksum meta info header for IPv4 and IPv6 over 
+>> TCP and UDP
+>> - * packets that are supported for UL checksum offload.
+>> - */
+>> -void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+>> -				      struct net_device *orig_dev)
+>> +static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
+>> +						struct net_device *orig_dev)
+>>   {
+>>   	struct rmnet_priv *priv = netdev_priv(orig_dev);
+>>   	struct rmnet_map_ul_csum_header *ul_header;
+>> @@ -417,10 +476,12 @@ void rmnet_map_checksum_uplink_packet(struct 
+>> sk_buff *skb,
+>>     		if (skb->protocol == htons(ETH_P_IP)) {
+>>   			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
+>> +			priv->stats.csum_hw++;
+>>   			return;
+>>   		} else if (skb->protocol == htons(ETH_P_IPV6)) {
+>>   #if IS_ENABLED(CONFIG_IPV6)
+>>   			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
+>> +			priv->stats.csum_hw++;
+>>   			return;
+>>   #else
+>>   			priv->stats.csum_err_invalid_ip_version++;
+>> @@ -437,6 +498,26 @@ void rmnet_map_checksum_uplink_packet(struct 
+>> sk_buff *skb,
+>>   	priv->stats.csum_sw++;
+>>   }
+>>   +/* Generates UL checksum meta info header for IPv4 and IPv6 over 
+>> TCP and UDP
+>> + * packets that are supported for UL checksum offload.
+>> + */
+>> +void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+>> +				      struct rmnet_port *port,
+>> +				      struct net_device *orig_dev,
+>> +				      int csum_type)
+>> +{
+>> +	switch (csum_type) {
+>> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
+>> +		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
+>> +		break;
+>> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
+>> +		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
+>> +		break;
+>> +	default:
+>> +		break;
+>> +	}
+>> +}
+>> +
+>>   /* Process a MAPv5 packet header */
+>>   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
+>>   				      u16 len)
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c 
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
+>> index 41fbd2c..bc6d6ac 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
+>> @@ -174,6 +174,7 @@ static const char 
+>> rmnet_gstrings_stats[][ETH_GSTRING_LEN] = {
+>>   	"Checksum skipped on ip fragment",
+>>   	"Checksum skipped",
+>>   	"Checksum computed in software",
+>> +	"Checksum computed in hardware",
+>>   };
+>>     static void rmnet_get_strings(struct net_device *dev, u32 
+>> stringset, u8 *buf)
+>> @@ -354,4 +355,4 @@ int rmnet_vnd_update_dev_mtu(struct rmnet_port 
+>> *port,
+>>   	}
+>>     	return 0;
+>> -}
+>> \ No newline at end of file
+>> +}
+>> diff --git a/include/uapi/linux/if_link.h 
+>> b/include/uapi/linux/if_link.h
+>> index 21529b3..1691f3a 100644
+>> --- a/include/uapi/linux/if_link.h
+>> +++ b/include/uapi/linux/if_link.h
+>> @@ -1236,6 +1236,7 @@ enum {
+>>   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
+>>   #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
+>>   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
+>> +#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
+>>     enum {
+>>   	IFLA_RMNET_UNSPEC,
+>> 
