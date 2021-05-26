@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E020E390F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7225390F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhEZECZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
+        id S229677AbhEZEGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 00:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhEZECU (ORCPT
+        with ESMTP id S229467AbhEZEGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:02:20 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB982C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 21:00:49 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so30829562oto.0
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 21:00:49 -0700 (PDT)
+        Wed, 26 May 2021 00:06:03 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9464C061574;
+        Tue, 25 May 2021 21:04:30 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id z3so268126oib.5;
+        Tue, 25 May 2021 21:04:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1/0s4irIAHrEsalg1vYZ8qoD26aC19QWgqCayWmosVw=;
-        b=nfyuAbLzS6wleb8opN1gCeIdANOfcVxizXhDbL12q+twpO+KfBaDDqzQbkybbQkHuW
-         fy752HROUtfXiVARGwEt/9jYpplrjGUgXL04OszzgQhKbtktBx1arPwSVhE7F9hRBLyj
-         rtpaq7XKvwrhwEUdm+LcF/tVsnaM8Lea640urg+RmWA9GaSMjqX86CBR/D7AQcdEahRG
-         BmFjbncstNSXWASJbEmlSgBo7JaXA1/bnM+b9UNVYuDeFl3vIxU79Y7dzNbjEnOiV5z9
-         TTud1wsGlR+h2YLDsORMthKkb9eCG6tIC4KR+1H8Y5Z5ZeRwIHy+5TNmnCqKy40QU7xn
-         22Ww==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kw02UOm+gvYzlVaD+urN8TTUijZZK4B3fBuc8WdNWRo=;
+        b=B2ErviFdDUVSiovnWho6LkswDmgVXWEw0O7s8kea7knez+DuZWuaedFI3QOhXqzQQz
+         lCNAwFkNaAaTgx1vDlZXt+TV4vGpnsa3YrNsBvbIdw23ZPb5Kpn8QT0VPsUqYMml0tyG
+         0NiFhWBpSy9Y83SnqT8KUIxqTT0m95NCJMKjCbiaWUCKivL8SInuP3EE6vyMLfbJbLfY
+         xphIrzAFWpxgixT8ak+E+Z6WtWXx5VxbO5cvGClP/ptPNgFVasO1Edz0ejnspSEX2jUH
+         MRe6Zf58oMW0QjhW6ef+obGUDqrAqWRWoa7SNoiCY2kmCjb8JoIaA5TjbwhY/+RzCHsu
+         kE/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1/0s4irIAHrEsalg1vYZ8qoD26aC19QWgqCayWmosVw=;
-        b=pt5mIQtbx6blZuwuIPqV5V9aC5Ccf2w0ESw6+ao1Wz7EO/WaC4pmyxfys7/z2dY1cf
-         SlLijS78YSCqHb3rRF7m1O6+4fGyXikohLT0YU71Mom+np/qY8eFO4y4KOrzCkLOn1+7
-         2tliwij0mlDKYc/VlLOD3vuZTSwtJoP/dlkY3eUPzp7SpZMvbgcTHH83cSWlFAZqW/HY
-         RUWk9j7Jfy2xSQaJb5WGuGOzvMnUBbjgQO1D12DzYiTVuwP1B4qVBHckVdEr4RtHZAZQ
-         MgYYsrGD8inrg3D9bC/4ocO2VsdxeDSQPdtJNrccwR7wwMoh5kbf8bxHkPO8FoP9yjy0
-         O3MA==
-X-Gm-Message-State: AOAM530JyBzbvYaBYP6iMooykfAwDyg3BGnUmyQ4D6dfvei2acxgQ4uv
-        N6W8T5k/mtMGsweDZLbfoMonpA==
-X-Google-Smtp-Source: ABdhPJzk1HhgeuWiLDaU1PfKNdSJXCB+4kVlv9S0wuamiLM7l8i7S9GOa6B0UO5B2unyeDujQDsvhA==
-X-Received: by 2002:a9d:30d2:: with SMTP id r18mr750948otg.170.1622001649055;
-        Tue, 25 May 2021 21:00:49 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z9sm4248004oti.37.2021.05.25.21.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 21:00:48 -0700 (PDT)
-Date:   Tue, 25 May 2021 23:00:46 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH v7 2/5] soc: qcom: Add SoC sleep stats driver
-Message-ID: <YK3H7m7bpL2DJt9R@builder.lan>
-References: <1617704857-19620-1-git-send-email-mkshah@codeaurora.org>
- <1617704857-19620-3-git-send-email-mkshah@codeaurora.org>
- <20210412234317.GE1538589@yoga>
- <cd54214e-8c60-8f92-3c0b-f7367f1bd42e@codeaurora.org>
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kw02UOm+gvYzlVaD+urN8TTUijZZK4B3fBuc8WdNWRo=;
+        b=oAief/l19w6VWi9jC0pEcse2f0iNFlFMjfOwRLPMeRCf30l/gQ8UWRol6MZYYwAXfY
+         N331p7hlc3P7skU28gIboCwb2WM5jD/22JXgbqdFxWqfqcJv3bHiMdE4PK1ZCm3JC4s8
+         NcJoBZXDdyl/2AfXlu27BoFKlPgpY0VNnTPNpEQAC4OMMsbLzCK3mxxXyWaNk743JzNy
+         zDOuyC5L7fsW5LopT7FdszX6HSzebTQ0sDbu9G4BQaKQt4jUZoqe7wkqqU50wgOhVfIK
+         Dv/Qc+Ms2l0WiSDBeqyI7yXqLotyTsbl5UB3vkOtpXTK7qwrgnE/AFOHp3dJlSSz/voI
+         TkAg==
+X-Gm-Message-State: AOAM533X3OmmvXHEj+58l9tkFXQptv3X5Wb/STcFHEIzpp+QKfclY69G
+        +onxcbpq2e2Xwd4Q8vCnbCpEdJUzmFc=
+X-Google-Smtp-Source: ABdhPJzNRjp2aORpb/IXVM2lYhHiNoK+z8JnZ+iY0gUk99FU3/KtCDIM/hsxz9LFbsJVq+LzMaWrdg==
+X-Received: by 2002:a05:6808:290:: with SMTP id z16mr568964oic.147.1622001869862;
+        Tue, 25 May 2021 21:04:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o13sm4185788ote.32.2021.05.25.21.04.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 21:04:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 2/6] hwmon: (pmbus/pim4328) Add function for reading
+ direct mode coefficients
+To:     Erik Rosen <erik.rosen@metormote.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210524150246.90546-1-erik.rosen@metormote.com>
+ <20210524150246.90546-3-erik.rosen@metormote.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e358bc76-a06a-47dc-1729-cf1a8b6e5e27@roeck-us.net>
+Date:   Tue, 25 May 2021 21:04:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd54214e-8c60-8f92-3c0b-f7367f1bd42e@codeaurora.org>
+In-Reply-To: <20210524150246.90546-3-erik.rosen@metormote.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21 May 06:10 CDT 2021, Maulik Shah wrote:
-> On 4/13/2021 5:13 AM, Bjorn Andersson wrote:
-> > On Tue 06 Apr 05:27 CDT 2021, Maulik Shah wrote:
-[..]
-> > > diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
-[..]
-> > > +MODULE_SOFTDEP("pre: smem");
-> > I believe this should be "qcom_smem",
-> the module has smem.ko file so "smem" looks proper.
-> >   but given that you call
-> > qcom_smem_get() in your code you have a hard dependency in place
-> > already. So, can you help me understand what use this softdep provide?
+On 5/24/21 8:02 AM, Erik Rosen wrote:
+> Add the function pmbus_read_coefficients to pmbus_core to be able to
+> read and decode the coefficients for the direct format for a certain
+> command.
 > 
-> If both smem and soc_sleep_stats are compiled as DLKMs, this is to make sure
-> smem module was loaded first by keeping pre soft dependency.
+> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+> ---
+>   drivers/hwmon/pmbus/pmbus.h      |  4 ++++
+>   drivers/hwmon/pmbus/pmbus_core.c | 38 ++++++++++++++++++++++++++++++++
+>   2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+> index 3968924f8533..d9ed9736b480 100644
+> --- a/drivers/hwmon/pmbus/pmbus.h
+> +++ b/drivers/hwmon/pmbus/pmbus.h
+> @@ -499,6 +499,10 @@ int pmbus_get_fan_rate_cached(struct i2c_client *client, int page, int id,
+>   			      enum pmbus_fan_mode mode);
+>   int pmbus_update_fan(struct i2c_client *client, int page, int id,
+>   		     u8 config, u8 mask, u16 command);
+> +int pmbus_read_coefficients(struct i2c_client *client,
+> +			    struct pmbus_driver_info *info,
+> +			    enum pmbus_sensor_classes sensor_class,
+> +			    u8 command);
+>   struct dentry *pmbus_get_debugfs_dir(struct i2c_client *client);
+>   
+>   #endif /* PMBUS_H */
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index cb885efc4fba..460cbfd716e4 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -301,6 +301,44 @@ int pmbus_update_fan(struct i2c_client *client, int page, int id,
+>   }
+>   EXPORT_SYMBOL_NS_GPL(pmbus_update_fan, PMBUS);
+>   
+> +/*
+> + * Read the coefficients for direct mode.
+> + */
+> +int pmbus_read_coefficients(struct i2c_client *client,
+> +			    struct pmbus_driver_info *info,
+> +			    enum pmbus_sensor_classes sensor_class,
+> +			    u8 command)
+> +{
+> +	int rv;
+> +	union i2c_smbus_data data;
+> +	s8 R;
+> +	s16 m, b;
+> +
+> +	data.block[0] = 2;
+> +	data.block[1] = command;
+> +	data.block[2] = 0x01;
+> +
+> +	rv = i2c_smbus_xfer(client->adapter, client->addr, client->flags,
+> +			    I2C_SMBUS_WRITE, PMBUS_COEFFICIENTS,
+> +			    I2C_SMBUS_BLOCK_PROC_CALL, &data);
+> +
+> +	if (rv < 0)
+> +		return rv;
+> +
+> +	if (data.block[0] != 5)
+> +		return -EIO;
+> +
+> +	m = data.block[1] | (data.block[2] << 8);
+> +	b = data.block[3] | (data.block[4] << 8);
+> +	R = data.block[5];
+> +	info->m[sensor_class] = m;
+> +	info->b[sensor_class] = b;
+> +	info->R[sensor_class] = R;
+> +
+> +	return rv;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(pmbus_read_coefficients, PMBUS);
+
+I don't think this function needs to be exported.
+> +
+>   int pmbus_read_word_data(struct i2c_client *client, int page, int phase, u8 reg)
+>   {
+>   	int rv;
 > 
 
-But we're making a direct function call into the qcom_smem driver, so we
-already have a hard dependency on qcom_smem.ko being loaded.
-
-Regards,
-Bjorn
