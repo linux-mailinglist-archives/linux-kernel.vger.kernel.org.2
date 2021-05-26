@@ -2,205 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAEE391E96
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5611391EB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhEZSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:03:07 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36674 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234546AbhEZSDF (ORCPT
+        id S234284AbhEZSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:10:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56898 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232870AbhEZSKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:03:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QI1Qmu004711;
-        Wed, 26 May 2021 13:01:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622052086;
-        bh=i3Ct7CSYrl/F+D9zgRi2YeyJzxRL5IA4z86e3obtvpk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=T2l+7/Sh5GcuGLEOiSVBYIWvSBklTQ2mDA0BV6xDqEU4WyrIIgnWJ6yWdx0VqD4TU
-         AJRXlulUOcI5lO1OPyX3oHvZ5we0bTxn8z+h1ODZaA86rBfuJJ2VfK7hKYJ4YHNYEG
-         N2QjxqhZ6vHVo8VD6IkG8774JwjdrTiVGsCKTt+c=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QI1QH7050700
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 13:01:26 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 13:01:25 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 13:01:25 -0500
-Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QI1P7a118987;
-        Wed, 26 May 2021 13:01:25 -0500
-Subject: Re: [PATCH v2] ARM: dts: dra7: Fix duplicate USB4 device node
-To:     Gowtham Tammana <g-tammana@ti.com>, <tony@atomide.com>,
-        <bcousson@baylibre.com>
-CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nisanth Menon <nm@ti.com>
-References: <20210526172038.17542-1-g-tammana@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <64bb0e71-dc6d-e21d-cfc0-cfeb787ca7c2@ti.com>
-Date:   Wed, 26 May 2021 13:01:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210526172038.17542-1-g-tammana@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 26 May 2021 14:10:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622052524; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=HxYk/lGdOlTsW5690GzfF2FHmdp5htr82R0uRAzcAZ8=; b=rnm2JqNSWe1DqPsNyXYPg4dP5HtWhtaixM8RX2OagfupqGBUOb7+fBbPvMZ7KCbw61y9G2MQ
+ 2AcenN1aPYqvFc7bRpKA8BEyxM9I3ZIAczK7DtqY5i5A55/WKz0YDhiY6oSLE1QrOqb/iXfX
+ TVEzZpAgjuLmNx/uumnO0xkk01I=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60ae8ea2ceebd0e932c8659c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 18:08:34
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C713C433F1; Wed, 26 May 2021 18:08:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1A4CC4338A;
+        Wed, 26 May 2021 18:08:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B1A4CC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: power off DP phy base on mainlink status at suspend
+Date:   Wed, 26 May 2021 11:08:23 -0700
+Message-Id: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gowtham,
+DP mainlink can be either enabled or disabled at the time of suspend
+happen. Therefore DP phy teared down at suspend should base on mainlink
+status at that instance.
 
-On 5/26/21 12:20 PM, Gowtham Tammana wrote:
-> With [1] USB4 device node got defined in dra74x.dtsi file. However,
-> there was a prior defintion of the same in [2] which didn't get removed
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 5 ++++-
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    | 2 +-
+ drivers/gpu/drm/msm/dp/dp_display.c | 9 ++++++++-
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
-I like this approach and is more in line with the original move of USB4 node
-into dra74x.dtsi file.
-
-Looks like you mixed up [1] and [2] or I misunderstand your terminology. Also,
-let's be precise, it is the USB4 target-module node that got duplicated in [2],
-USB4 node always existed but outside of ti-sysc control before [2] and did not
-conflict with the target-module node added in [1].
-
-> causing boot failures. 
-
-on what boards? Is it affecting all of them?
-
-regards
-Suman
-
-USB4 node is present only in DRA74x variants so
-> keeping the entry in dra74x.dtsi and removing it from the top level
-> interconnect hierarchy dra7-l4.dtsi file.
-> 
-> Since USB4 is only included in DRA74x variants, remove its reference
-> for AM5718, DRA71x and DR72x boards.
-> 
-> [1]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-> hierarchy and ti-sysc data")
-> [2]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-> dra7 dwc3")
-> 
-> Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-> Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-> ---
-> v2:
->   - changed reference to commit sha instead of line numbers
->   - added Fixes: tag
->   - moved the definition to dra74.dtsi as per Suman and Tony review comments
-> 
->  arch/arm/boot/dts/am5718.dtsi  |  6 +-----
->  arch/arm/boot/dts/dra7-l4.dtsi | 22 ----------------------
->  arch/arm/boot/dts/dra71x.dtsi  |  4 ----
->  arch/arm/boot/dts/dra72x.dtsi  |  4 ----
->  arch/arm/boot/dts/dra74x.dtsi  |  2 +-
->  5 files changed, 2 insertions(+), 36 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
-> index ebf4d3cc1cfb..6d7530a48c73 100644
-> --- a/arch/arm/boot/dts/am5718.dtsi
-> +++ b/arch/arm/boot/dts/am5718.dtsi
-> @@ -17,17 +17,13 @@ / {
->   * VCP1, VCP2
->   * MLB
->   * ISS
-> - * USB3, USB4
-> + * USB3
->   */
->  
->  &usb3_tm {
->  	status = "disabled";
->  };
->  
-> -&usb4_tm {
-> -	status = "disabled";
-> -};
-> -
->  &atl_tm {
->  	status = "disabled";
->  };
-> diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
-> index 149144cdff35..648d23f7f748 100644
-> --- a/arch/arm/boot/dts/dra7-l4.dtsi
-> +++ b/arch/arm/boot/dts/dra7-l4.dtsi
-> @@ -4129,28 +4129,6 @@ usb3: usb@10000 {
->  			};
->  		};
->  
-> -		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
-> -			compatible = "ti,sysc-omap4", "ti,sysc";
-> -			reg = <0x140000 0x4>,
-> -			      <0x140010 0x4>;
-> -			reg-names = "rev", "sysc";
-> -			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
-> -			ti,sysc-midle = <SYSC_IDLE_FORCE>,
-> -					<SYSC_IDLE_NO>,
-> -					<SYSC_IDLE_SMART>,
-> -					<SYSC_IDLE_SMART_WKUP>;
-> -			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
-> -					<SYSC_IDLE_NO>,
-> -					<SYSC_IDLE_SMART>,
-> -					<SYSC_IDLE_SMART_WKUP>;
-> -			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
-> -			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
-> -			clock-names = "fck";
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -			ranges = <0x0 0x140000 0x20000>;
-> -		};
-> -
->  		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
->  			compatible = "ti,sysc-omap4", "ti,sysc";
->  			reg = <0x170010 0x4>;
-> diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
-> index cad0e4a2bd8d..9c270d8f75d5 100644
-> --- a/arch/arm/boot/dts/dra71x.dtsi
-> +++ b/arch/arm/boot/dts/dra71x.dtsi
-> @@ -11,7 +11,3 @@
->  &rtctarget {
->  	status = "disabled";
->  };
-> -
-> -&usb4_tm {
-> -	status = "disabled";
-> -};
-> diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
-> index d403acc754b6..f3e934ef7d3e 100644
-> --- a/arch/arm/boot/dts/dra72x.dtsi
-> +++ b/arch/arm/boot/dts/dra72x.dtsi
-> @@ -108,7 +108,3 @@ &pcie1_ep {
->  &pcie2_rc {
->  	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
->  };
-> -
-> -&usb4_tm {
-> -	status = "disabled";
-> -};
-> diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
-> index e1850d6c841a..60f2ab8d34d5 100644
-> --- a/arch/arm/boot/dts/dra74x.dtsi
-> +++ b/arch/arm/boot/dts/dra74x.dtsi
-> @@ -49,7 +49,7 @@ dsp2_system: dsp_system@41500000 {
->  			reg = <0x41500000 0x100>;
->  		};
->  
-> -		target-module@48940000 {
-> +		usb4_tm: target-module@48940000 {
->  			compatible = "ti,sysc-omap4", "ti,sysc";
->  			reg = <0x48940000 0x4>,
->  			      <0x48940010 0x4>;
-> 
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index dbd8943..5115c05 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1398,7 +1398,7 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
+  * Perform required steps to uninitialize DP controller
+  * and its resources.
+  */
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
++void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+@@ -1414,6 +1414,9 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+ 	phy = dp_io->phy;
+ 
+ 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++	if (mainlink_on)
++		phy_power_off(phy);
++
+ 	phy_exit(phy);
+ 
+ 	DRM_DEBUG_DP("Host deinitialized successfully\n");
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index 25e4f75..a23ee2b 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -20,7 +20,7 @@ struct dp_ctrl {
+ };
+ 
+ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index cdec0a3..88eeeb5 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -104,6 +104,8 @@ struct dp_display_private {
+ 
+ 	bool encoder_mode_set;
+ 
++	bool mainlink_on;
++
+ 	/* wait for audio signaling */
+ 	struct completion audio_comp;
+ 
+@@ -353,11 +355,14 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 
+ 	dp_link_reset_phy_params_vx_px(dp->link);
++
++	dp->mainlink_on = false;
+ 	rc = dp_ctrl_on_link(dp->ctrl);
+ 	if (rc) {
+ 		DRM_ERROR("failed to complete DP link training\n");
+ 		goto end;
+ 	}
++	dp->mainlink_on = true;
+ 
+ 	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+ 
+@@ -392,7 +397,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+ 		return;
+ 	}
+ 
+-	dp_ctrl_host_deinit(dp->ctrl);
++	dp_ctrl_host_deinit(dp->ctrl, dp->mainlink_on);
+ 	dp_aux_deinit(dp->aux);
+ 	dp_power_deinit(dp->power);
+ 
+@@ -941,6 +946,8 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 		dp->core_initialized = false;
+ 	}
+ 
++	dp->mainlink_on = false;
++
+ 	dp_display->power_on = false;
+ 
+ 	return 0;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
