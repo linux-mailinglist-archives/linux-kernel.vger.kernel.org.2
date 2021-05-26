@@ -2,104 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186FE391255
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398C2391259
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhEZIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S232349AbhEZIdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbhEZIan (ORCPT
+        with ESMTP id S231410AbhEZIdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:30:43 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66918C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:29:12 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id kr9so392289pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:29:12 -0700 (PDT)
+        Wed, 26 May 2021 04:33:03 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B36C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:31:31 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q5so161229wrs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jwaAsRaGDc+xiC4TWb/LXZJFMtg6HQDvxjDXok6GC+A=;
-        b=ydR56fCW/6RBbz8ac7XivwlpSHoZPiHdcG1DUKhgmtqZkmr64H67FxVOhS7uoZ0GGQ
-         O/U2ORpaJXJQA5ksQvEC415VMAMsARHiE0uPDpOfMJSN4ShfDBpz+9PRDEpm/lUwl1m8
-         2Es7KFa0n8UP/fz5cO51WrO/9TfNY9O0FT6RLpkL11HSSSvd3+HluLE5zqIJu5SxeQTo
-         02agk63DFjmA8J7yUtdJ4SJgUCuAIqqPmczLIuM4ATziM1e5Cz3RnFXlqV57X34xRlZA
-         4TmWH23HQUQLKvzqkhzo7rDge/pIHwoOq5Ky2oE6bp+qWLRzC4bdFCBYAoUNF5weWedG
-         Ro3A==
+        bh=a9K2ZcaJ0UvKBWGL+DeoaKZZOV/me504do+MmjS7kGQ=;
+        b=P70uwTkXc4vT2c5pOT9UmXAbxVfDBayRnjnwKwb5i7xU93GCfNy57HkEeIDQDX9kyr
+         oGV3731A637cYdMYRfYKRmso14jvlvYj2Hv2+JvBWrmC2f8g+Zvu8Z07NusMsWY3GPhc
+         UKmwoOnj1kuWVpOi1yblzuJ09IedkNgv40hsi0IbNutDC+tUeoLExdQEkLkUw/yivu5X
+         7AyciQWIxE6XD/2+z7F+tutFB0FiQnVj5DLOfvTB5a+Q0dk6wcOut7y1lJlSMlbDGK7/
+         MNd4rgdmsA8VDeVVg1zxVlukBaMXeXhNfLO/NNjaEBd0LXxpxnVg48MMhrqz55ts+ajA
+         tNLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jwaAsRaGDc+xiC4TWb/LXZJFMtg6HQDvxjDXok6GC+A=;
-        b=tOOHAp5cZbNaebMRY4A0Pm/UZXB1oV2UwwgZ3lXFo5cCmV0o6DX/iaL5YVxCtq8pJf
-         YDidsnRxy5fJJT46vdI6vWGnuqehSjdQU3/5rw3ithoTgTmliL38+kBej0tGFv6YnlJ6
-         DBr39ixhAjcjFqqQHrhJ0QTybeOW1UtZUaS9cFFWDfo/DXxVOkNxk4R17xqIvcdCFuTT
-         hgqkOUSnrM71ZhySVtRInZBLZVYmvMgdKw3bX24C6A00WB8tFV+h7sFDOo+W2/2Pu4aB
-         KPOxOtJpiwtIAjLielDsp4NRtFqGWsZkysof+6hmM3CROKGg8DVyKnCTjRM1TCmgdnOb
-         HGKw==
-X-Gm-Message-State: AOAM532m3VXIerHpDkbXpyWMIB7d2dcyYhIQtK/ugARbYjIl+2o7llSh
-        /YmXw5zd5zuLogDETXNSvACgTirbQ8+w
-X-Google-Smtp-Source: ABdhPJy5ey+0BNw8uJLeTvEUwOuOIUatQN/oTQDrXp2vGpFF11Y5EjIkxhvkRneQsjxtm/n96ZxtRw==
-X-Received: by 2002:a17:902:7c81:b029:ef:b02d:f15a with SMTP id y1-20020a1709027c81b02900efb02df15amr34280298pll.34.1622017751859;
-        Wed, 26 May 2021 01:29:11 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.4])
-        by smtp.gmail.com with ESMTPSA id 23sm4256686pgd.71.2021.05.26.01.29.08
+        bh=a9K2ZcaJ0UvKBWGL+DeoaKZZOV/me504do+MmjS7kGQ=;
+        b=DhCmdex0T8PWcb0PEiAdb0s1Io6IfTKdX0pRFJKOwVNOTCKFRISyufxPli6KfYwono
+         BMOZdYBtZl+I4RANJGbvuNFF15FbrKnWtMiHk9X1LYM/OWhn4xeD+p6RkdFaAlErWM9i
+         CE+4vUFc9gQWaC1ecL0DR8taXTH1ovQFMtX6MsxOnM++xa9fMMnrbN4GXNYzXKPKgZSJ
+         uU5XlK71NzCWZOK7Nl2p7jYkSus8v+JaZN/hS8xvsWiW9XgJ5DYNZIVNlqMjXi/iX+3u
+         IEAlplard3KCCdimYz7ZglNTc8QH5L4sva0JfsbafNCunU3yyMJSlntIzU/7mDMpwBv0
+         DB0Q==
+X-Gm-Message-State: AOAM532B8+lRoW9b2qvOgNY5jaT+IdxDUJBCoxlTwNf1qhIkPJufGyxF
+        ISk9k8iQaV8ZCYeHcrkJ8ATbtw==
+X-Google-Smtp-Source: ABdhPJyPsFXwbE1eTXxhQ/j5Y7oVhYsoZXPs/ZRPePhKsZQ/rDuz008HdVucTiMSLr9J9LdkFn9Rgw==
+X-Received: by 2002:a05:6000:1b0b:: with SMTP id f11mr32015361wrz.165.1622017889499;
+        Wed, 26 May 2021 01:31:29 -0700 (PDT)
+Received: from dell.default ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id r4sm237828wre.84.2021.05.26.01.31.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:29:11 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org, linus.walleij@linaro.org
-Cc:     vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] pinctrl: qcom: Fix duplication in gpio_groups
-Date:   Wed, 26 May 2021 13:58:57 +0530
-Message-Id: <20210526082857.174682-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 01:31:28 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
+        processes-Sapan Bhatia <sapan@corewars.org>
+Subject: [PATCH v2 1/1] tty: n_tty: Fix some misdocumented functions
+Date:   Wed, 26 May 2021 09:31:25 +0100
+Message-Id: <20210526083125.549626-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"gpio52" and "gpio53" are duplicated in gpio_groups, fix them!
+Fixes the following W=1 kernel build warning(s):
 
-Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+ drivers/tty/n_tty.c:623: warning: expecting prototype for process_echoes(). Prototype was for __process_echoes() instead
+ drivers/tty/n_tty.c:1109: warning: expecting prototype for isig(). Prototype was for __isig() instead
+ drivers/tty/n_tty.c:1268: warning: expecting prototype for n_tty_receive_char(). Prototype was for n_tty_receive_char_special() instead
+ drivers/tty/n_tty.c:2132: warning: Excess function parameter 'buf' description in 'n_tty_read'
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
+Cc: processes-Sapan Bhatia <sapan@corewars.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/pinctrl/qcom/pinctrl-sdx55.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-index 5aaf57b40407..0bb4931cec59 100644
---- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-@@ -410,15 +410,15 @@ static const char * const gpio_groups[] = {
- 	"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
- 	"gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", "gpio42",
- 	"gpio43", "gpio44", "gpio45", "gpio46", "gpio47", "gpio48", "gpio49",
--	"gpio50", "gpio51", "gpio52", "gpio52", "gpio53", "gpio53", "gpio54",
--	"gpio55", "gpio56", "gpio57", "gpio58", "gpio59", "gpio60", "gpio61",
--	"gpio62", "gpio63", "gpio64", "gpio65", "gpio66", "gpio67", "gpio68",
--	"gpio69", "gpio70", "gpio71", "gpio72", "gpio73", "gpio74", "gpio75",
--	"gpio76", "gpio77", "gpio78", "gpio79", "gpio80", "gpio81", "gpio82",
--	"gpio83", "gpio84", "gpio85", "gpio86", "gpio87", "gpio88", "gpio89",
--	"gpio90", "gpio91", "gpio92", "gpio93", "gpio94", "gpio95", "gpio96",
--	"gpio97", "gpio98", "gpio99", "gpio100", "gpio101", "gpio102",
--	"gpio103", "gpio104", "gpio105", "gpio106", "gpio107",
-+	"gpio50", "gpio51", "gpio52", "gpio53", "gpio54", "gpio55", "gpio56",
-+	"gpio57", "gpio58", "gpio59", "gpio60", "gpio61", "gpio62", "gpio63",
-+	"gpio64", "gpio65", "gpio66", "gpio67", "gpio68", "gpio69", "gpio70",
-+	"gpio71", "gpio72", "gpio73", "gpio74", "gpio75", "gpio76", "gpio77",
-+	"gpio78", "gpio79", "gpio80", "gpio81", "gpio82", "gpio83", "gpio84",
-+	"gpio85", "gpio86", "gpio87", "gpio88", "gpio89", "gpio90", "gpio91",
-+	"gpio92", "gpio93", "gpio94", "gpio95", "gpio96", "gpio97", "gpio98",
-+	"gpio99", "gpio100", "gpio101", "gpio102", "gpio103", "gpio104",
-+	"gpio105", "gpio106", "gpio107",
- };
+v2: Rebased
+
+ drivers/tty/n_tty.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index 0ec93f1a61f5d..56d3b43d8a3a4 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -596,7 +596,7 @@ static ssize_t process_output_block(struct tty_struct *tty,
+ }
  
- static const char * const qdss_stm_groups[] = {
+ /**
+- *	process_echoes	-	write pending echo characters
++ *	__process_echoes	-	write pending echo characters
+  *	@tty: terminal device
+  *
+  *	Write previously buffered echo (and other ldisc-generated)
+@@ -1092,7 +1092,7 @@ static void eraser(unsigned char c, struct tty_struct *tty)
+ }
+ 
+ /**
+- *	isig		-	handle the ISIG optio
++ *	__isig		-	handle the ISIG optio
+  *	@sig: signal
+  *	@tty: terminal
+  *
+@@ -1248,7 +1248,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
+ }
+ 
+ /**
+- *	n_tty_receive_char	-	perform processing
++ *	n_tty_receive_char_special	-	perform processing
+  *	@tty: terminal device
+  *	@c: character
+  *
+@@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
+ }
+ 
+ 
+-/**
++/*
+  *	n_tty_read		-	read function for tty
+  *	@tty: tty device
+  *	@file: file object
+- *	@buf: userspace buffer pointer
++ *	@kbuf: userspace buffer pointer
+  *	@nr: size of I/O
+  *
+  *	Perform reads for the line discipline. We are guaranteed that the
 -- 
-2.25.1
+2.31.1
 
