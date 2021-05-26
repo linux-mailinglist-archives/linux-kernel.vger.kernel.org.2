@@ -2,138 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6311F391E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC9C391E47
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbhEZRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
+        id S234474AbhEZRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbhEZRke (ORCPT
+        with ESMTP id S229500AbhEZRll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:40:34 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3BEC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:39:03 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u7so984085plq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:39:03 -0700 (PDT)
+        Wed, 26 May 2021 13:41:41 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F97C061574;
+        Wed, 26 May 2021 10:40:09 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id g38so3169247ybi.12;
+        Wed, 26 May 2021 10:40:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GJLBZVMEwbSbKIDqukcx7d1Y2z9DugvinO3Y2HE7Xb8=;
-        b=qhCJ07l3+S5RaNOra6cGWWoLN5s4AiiMiSNsT4kmmZRWWeS3ywD0sHd0FiEtvhI6rB
-         iDHzecKylmQV/alVl50UrPfL+lgoFTF+gwyC6OTbnRz/8S3G7cY1J+DXgCVBjokkOmQ3
-         MNtedZ93sVJlDjGU4e+WVUzbZz+IRpSVv+hd4dCJp8MoVlUDsFBxYiFnfQYTkH16d0kD
-         504lPpbw8Z6qcja/txaeMlwwOfnBJj8xaTI+/wuVhkhwDlXq+UPuO1cXMDDmQDDMvEb7
-         JPXNnACYkRiaa6QdmwGLcGJSpt1CRxPSxFfhE9IcGSt424UFT8e5IRuVTDTTw8FHKEP/
-         TZVg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
+        b=q14fR1x7ZC6FG7q+YFW4P6RUspWpjhXIvmW9USnA/SUNqRH1AUzv0WSzhYqRTohAz2
+         7irBwyQJFjA/i8GFWP8rx/cQwO6X5VHW3uQ4nvaXVtNHbSDiQY5SB2oDQ895viceF7P3
+         Fz1wQd6cmUcIc9W/QWS79G+z47BFExxBBKSlMv8thl79VEZJ/MRhnLZB+D+cqHCTzjXH
+         H39PDvxNpLrpYYaQaTRryNMAiAoc+3SfPpYsM28btzVdYJn0vba13w1/RTDgu2ulV1EH
+         ojkaLc4nwVpuiFi5aJtzofc1iU9DKu/HasrzoYs9EjIKw+VK/NIbWd+/+9Ucn47ddRyE
+         fhng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GJLBZVMEwbSbKIDqukcx7d1Y2z9DugvinO3Y2HE7Xb8=;
-        b=aUjhjizHUtINn4IInkL1b0TQ5iYV9A3QFcbteyHTQO7rqyN4t+hc762JHDRSU+sKsn
-         P2KAZabU/yuuLERO5LIyN8+DmiJODLnQw20umpVQwdk91yvJr051vR/L4GbfJKbS7sBs
-         6926XrhnwiiBzoNm+D96tSlIcsVD9BgTbhx1u5OqgjjpgM8MTgACaWXTMndazCu70C5u
-         OPkjx67SCSzfnqqkpj6iCEQjBegWl8WK9wCCbDLogEh0WpjzZwNzQMgOYYnzhSAGdDru
-         cH/xsgUTS/WCFIrHYh46dR6wmawmSvWMJ1Hc6V3bQ6eLZ4+aStVMoQnDBJMWUgc4TGfH
-         YK4w==
-X-Gm-Message-State: AOAM530swQRYkm5VYebqSJvyPT0yaveZCXNkp6qR9lmXTeXfGSPIkzoW
-        Pjx5f8G8AqGGKIvDlpfw/4VZFQ==
-X-Google-Smtp-Source: ABdhPJxleeFD/fo/p0B7jknSOU6gwCm53jI69+QHX5/sYO+byZxGUo96TTw409ZTZcLY8lmq7CZB6g==
-X-Received: by 2002:a17:902:d4cd:b029:f5:4ec0:d593 with SMTP id o13-20020a170902d4cdb02900f54ec0d593mr36661426plg.19.1622050742416;
-        Wed, 26 May 2021 10:39:02 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x9sm16309575pfd.66.2021.05.26.10.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 10:39:01 -0700 (PDT)
-Date:   Wed, 26 May 2021 17:38:57 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/pt: Do not inject TraceToPAPMI when guest PT
- isn't supported
-Message-ID: <YK6HsR4QXbVuhZf8@google.com>
-References: <20210514084436.848396-1-like.xu@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
+        b=FWOC+7OIHve66YafO5DfIYPIN51ARKXW7BYGEZki2NDluiE8WrsfNBtfp1yQGGKq/G
+         mQTsE0jdoX1Tta9DX9XoajBlTIEM7vEdRSPxqBxar5ZzhUo2jOGqy9a9rvzrXVcLvZsS
+         kbi45shpQ7XDfzsDGLbMS9csvslQopCh81GoGrcEkga6GI5qRHHcSgCG3XCu3oecjn+3
+         VYUgE6Pem/+KP8gIFSlPJTXmkMBRjaX+iuEDEIscIvPolihK1ed2LdI/mTz3nyVyqOzm
+         p//2QgGFEcyoffjyo6SoIEYhKISQIKszVQigUPTKoacHhaOuJVKyuSIQY2M3Vh7uVxXz
+         Rl4Q==
+X-Gm-Message-State: AOAM5328VR3l35GLvnogt39RPsbqC1k7INBVtLhb926gk57uQ62+nPQn
+        mXPmHb8w1vJT1wKmsPokF2Ya+Q4qvM3U7UwyzVBahQVG
+X-Google-Smtp-Source: ABdhPJyHiz6p+6b1Nq2tExGkbdorYbnD1UY697xYQETPqevt15o2HZJjdTPsN4ZBFpMJFOsWxQsAmgFDAigeVojp2nQ=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr54464936ybl.347.1622050808310;
+ Wed, 26 May 2021 10:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514084436.848396-1-like.xu@linux.intel.com>
+References: <162201612941.278331.5293566981784464165.stgit@devnote2>
+In-Reply-To: <162201612941.278331.5293566981784464165.stgit@devnote2>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 10:39:57 -0700
+Message-ID: <CAEf4BzbTKwnuutnJG6ALYX_YgLPg0Tzm+BNRGYLfh62oZPNGpg@mail.gmail.com>
+Subject: Re: [PATCH -tip v6 00/13] kprobes: Fix stacktrace with kretprobes on x86
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021, Like Xu wrote:
-> When a PT perf user is running in system-wide mode on the host,
-> the guest (w/ pt_mode=0) will warn about anonymous NMIs from
-> kvm_handle_intel_pt_intr():
-> 
-> [   18.126444] Uhhuh. NMI received for unknown reason 10 on CPU 0.
-> [   18.126447] Do you have a strange power saving mode enabled?
-> [   18.126448] Dazed and confused, but trying to continue
-> 
-> In this case, these PMIs should be handled by the host PT handler().
-> When PT is used in guest-only mode, it's harmless to call host handler.
-> 
-> Fix: 8479e04e7d("KVM: x86: Inject PMI for KVM guest")
-
-s/Fix/Fixes
-
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+On Wed, May 26, 2021 at 1:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hello,
+>
+> Here is the 6th version of the series to fix the stacktrace with kretprobe
+> on x86.
+>
+> The previous version is;
+>
+>  https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
+>
+> This version is rebased on the latest tip tree and add some patches for
+> improving stacktrace[13/13].
+>
+> Changes from v5:
+> [02/13]:
+>   - Use dereference_symbol_descriptor() instead of dereference_function_descriptor()
+> [04/13]:
+>   - Replace BUG_ON() with WARN_ON_ONCE() in __kretprobe_trampoline_handler().
+> [13/13]:
+>   - Add a new patch to fix return address in earlier stage.
+>
+>
+> With this series, unwinder can unwind stack correctly from ftrace as below;
+>
+>   # cd /sys/kernel/debug/tracing
+>   # echo > trace
+>   # echo 1 > options/sym-offset
+>   # echo r vfs_read >> kprobe_events
+>   # echo r full_proxy_read >> kprobe_events
+>   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+>   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+>   # echo 1 > events/kprobes/enable
+>   # cat /sys/kernel/debug/kprobes/list
+> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+>   # echo 0 > events/kprobes/enable
+>   # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+>            <...>-134     [007] ...1    16.185901: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x4a/0x70
+>  => __kretprobe_trampoline_handler+0xd4/0x170
+>  => trampoline_handler+0x43/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => vfs_read+0x98/0x180
+>  => ksys_read+0x5f/0xe0
+>  => do_syscall_64+0x37/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+>
+> This shows the double return probes (vfs_read and full_proxy_read) on the stack
+> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
+> will return to vfs_read+0x98)
+>
+> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> the pt_regs passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API.
+>
+> You can also get this series from
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v6
+>
+>
+> Thank you,
+>
 > ---
->  arch/x86/events/intel/core.c | 3 +--
->  arch/x86/kvm/x86.c           | 3 +++
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 2521d03de5e0..2f09eb0853de 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -2853,8 +2853,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
->  		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
->  			perf_guest_cbs->handle_intel_pt_intr))
->  			perf_guest_cbs->handle_intel_pt_intr();
-> -		else
-> -			intel_pt_interrupt();
-> +		intel_pt_interrupt();
+>
 
-Would it make sense to instead do something like:
+Thanks for following up on this! I've applied this patch set on top of
+bpf-next and tested with my local BPF-based tool that uses stack
+traces in kretprobes heavily. It all works now and I'm getting
+meaningful and correctly looking stacktraces. Thanks a lot!
 
-	bool host_pmi = true;
+Tested-by: Andrii Nakryik <andrii@kernel.org>
 
-	...
 
-		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
-			     perf_guest_cbs->handle_intel_pt_intr)
-			host_pmi = !perf_guest_cbs->handle_intel_pt_intr();
-
-		if (likely(host_pmi))
-			intel_pt_interrupt();
->  	}
->  
->  	/*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6529e2023147..6660f3948cea 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8087,6 +8087,9 @@ static void kvm_handle_intel_pt_intr(void)
->  {
->  	struct kvm_vcpu *vcpu = __this_cpu_read(current_vcpu);
->  
-> +	if (!guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT))
-> +		return;
-> +
->  	kvm_make_request(KVM_REQ_PMI, vcpu);
->  	__set_bit(MSR_CORE_PERF_GLOBAL_OVF_CTRL_TRACE_TOPA_PMI_BIT,
->  			(unsigned long *)&vcpu->arch.pmu.global_status);
-> -- 
-> 2.31.1
-> 
+> Josh Poimboeuf (1):
+>       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+>
+> Masami Hiramatsu (12):
+>       ia64: kprobes: Fix to pass correct trampoline address to the handler
+>       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+>       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+>       kprobes: Add kretprobe_find_ret_addr() for searching return address
+>       ARC: Add instruction_pointer_set() API
+>       ia64: Add instruction_pointer_set() API
+>       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+>       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+>       x86/kprobes: Push a fake return address at kretprobe_trampoline
+>       x86/unwind: Recover kretprobe trampoline entry
+>       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+>       x86/kprobes: Fixup return address in generic trampoline handler
+>
+>
+>  arch/arc/include/asm/ptrace.h       |    5 ++
+>  arch/arc/kernel/kprobes.c           |    2 -
+>  arch/arm/probes/kprobes/core.c      |    5 +-
+>  arch/arm64/kernel/probes/kprobes.c  |    3 -
+>  arch/csky/kernel/probes/kprobes.c   |    2 -
+>  arch/ia64/include/asm/ptrace.h      |    5 ++
+>  arch/ia64/kernel/kprobes.c          |   15 ++---
+>  arch/mips/kernel/kprobes.c          |    3 -
+>  arch/parisc/kernel/kprobes.c        |    4 +
+>  arch/powerpc/kernel/kprobes.c       |   13 ----
+>  arch/riscv/kernel/probes/kprobes.c  |    2 -
+>  arch/s390/kernel/kprobes.c          |    2 -
+>  arch/sh/kernel/kprobes.c            |    2 -
+>  arch/sparc/kernel/kprobes.c         |    2 -
+>  arch/x86/include/asm/kprobes.h      |    1
+>  arch/x86/include/asm/unwind.h       |   23 +++++++
+>  arch/x86/include/asm/unwind_hints.h |    5 ++
+>  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
+>  arch/x86/kernel/unwind_frame.c      |    4 +
+>  arch/x86/kernel/unwind_guess.c      |    3 -
+>  arch/x86/kernel/unwind_orc.c        |   19 +++++-
+>  include/linux/kprobes.h             |   41 +++++++++++--
+>  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
+>  kernel/trace/trace_output.c         |   17 +-----
+>  lib/error-inject.c                  |    3 +
+>  25 files changed, 237 insertions(+), 105 deletions(-)
+>
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
