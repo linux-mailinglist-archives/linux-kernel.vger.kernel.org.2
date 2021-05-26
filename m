@@ -2,148 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8A9392277
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB17392278
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhEZWD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbhEZWDu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:03:50 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9023CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:02:17 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id y76so3061866oia.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=+4HllXG54gfe8ZEeglIaINql3dVM8uhOiJune2YdDg8=;
-        b=ebuWdiTfHr5eD4p7IYU/65gQt0cF3VGp6rAyR4yBOGoCFyTDqLM2tUbUT1TkrDXPKf
-         Qc7L82VLVlMGXWFAt8sz3SNbvq3fVznQuriS3lnf9WxsZYQ/J6XMC7QbeYEcEkM+OId3
-         BjsiFUTLl9vPPiVi2Lkkj/HadjMeSD07sanVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=+4HllXG54gfe8ZEeglIaINql3dVM8uhOiJune2YdDg8=;
-        b=Yhz253amgnjX9fzxW96OV67Fa0UUNfh8c3oqABbQNXWJQ+1gdw1cMMjTzddGyKokEY
-         hgGFWs2LaCPCjPw2u3i98iw38bVmJCaPHQCJrGduxGct++N4lo7sSqI6CSLXhce54mjb
-         IlaTAjO0Y9eXoeo13r1ZrGif5+7R1CfgFlPoQn3i9gkGGnoKVMtSu3fZ3YVs5kCEV19k
-         UeZ5VlvQgeETikbNi4shKaWtuYfSHfnGmtqMk5wrgc4Gn2ulWvx1x9fHHN2TPS6oqrTK
-         oOFeYSS7awWlW0easXwqAlWFNCI7jkBH88oOuKvZeKWR1vch2m/8NFaSDY/dYVRfdiKB
-         wfcg==
-X-Gm-Message-State: AOAM531VGME8N+WnhPoG7iJioIllhkXGfhe6DrtaakHvgZBwY4Nq692w
-        QamrzUxQHm0uhopuWoEGSrtX5whlzz0B/wvFo20QaQ==
-X-Google-Smtp-Source: ABdhPJyHRHfa/vjrPgMKmf8sOPM3OqyfmvQhl89FBASFn0gMNY6AQc29rFGhS2QeJiHMNUq/2ErJSZ6cjPiBFiqHKMI=
-X-Received: by 2002:a05:6808:144e:: with SMTP id x14mr3538168oiv.166.1622066536891;
- Wed, 26 May 2021 15:02:16 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 26 May 2021 18:02:16 -0400
+        id S234376AbhEZWD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:03:59 -0400
+Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:16674
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234359AbhEZWD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 18:03:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EO2w0Tb7xivfcb/Gzq9gYwvA9uOxdPUfYmF6Aere6t2uNEdydWLsMpD44hlbzPVtk2LkVeqN1vWbuHHGxT0rHRwnJKqRicHCXHvcFt9xSgXR5dVBqNB7U6zZ2qIkUgDGveZIryNNpjlzOTiKVtYpU3cFbI8FE2t7lQnKZjoLMWx5AZeYzF0r9X6viDROlPYbLfYmb1AC0T6BgD61wZ7P3qO/MNdrRDNBPyq+zKyY+5leHHjXuQQEBcUnVQd6wlT7DtDVRfxvyGPwXfou9K7TX8gy31zk+HvNzDNLdgtsTZYaCvGgkteGzpZj+KM1VDMWhrIHD1P25+bga7FPXuohGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vcf3PemvPwY4aZFXah68IbA5gVIEDhHsJMr4JBQ4l0U=;
+ b=dSsaMF/fwBTUlq3E4Pcmr79q6OWvu3yWdPaJZnI86mJQgRt6CFe/F+AROfDV+nWKgwVTPy5vosDdeopT+rwRrwMzXT1LM7njTDz9PB3dgvFXPHwtfUKLxR1TGL4oOFMOxOoa8KX18V+1444cdjXCR5ahh/1l6l2NaoYfRxvWJE2NujW49NbjzBwxg+MyEtheYaDHr7fkQPvbaplpgBDneXybDp4tsyKQnteG4kCLwabP1L1C9onWAdX6sEaz7O9Y2Bi+mnNaehgJSP6Xmx4KVvxrfJMBKjZM2h1GYA0yN7+cAxQoeWxyBCoDXYb/tGYG8ZGmL1VZhlMQg4R/vKFR2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vcf3PemvPwY4aZFXah68IbA5gVIEDhHsJMr4JBQ4l0U=;
+ b=SlsXx7dZg0vXBcLnW3Wo1gGdQNikaAaYNDpAvLtq302/p/TDMuUVeJYuVJb7Fy8VBPjbASFhZ2bdiRC+4Wdal+VFv/NWYfEQ40u4LDCM8HjTqUQRNUc/vcZHTdRXjeBwVK7305NBdIRk6oN5TdPZJfoL50AVCJgqdOyQlfeGcaw=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB4355.namprd12.prod.outlook.com (2603:10b6:5:2a3::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.20; Wed, 26 May 2021 22:02:23 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4150.027; Wed, 26 May
+ 2021 22:02:23 +0000
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+ <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
+ <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+ <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+ <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
+ <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+ <YKfPLlulaqwypNkO@zn.tnic> <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+ <a53cd108-8758-e153-7ae6-c508fce02003@linux.intel.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <777db866-4c3d-d849-94cf-b4248c6ac2aa@amd.com>
+Date:   Wed, 26 May 2021 17:02:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <a53cd108-8758-e153-7ae6-c508fce02003@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN6PR08CA0013.namprd08.prod.outlook.com
+ (2603:10b6:805:66::26) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XfY3yNnH0ZJiRJQCcw8Rs=RGCntETXofK+5xRACVnDyQ@mail.gmail.com>
-References: <20210520012731.3731314-1-swboyd@chromium.org> <CAD=FV=XfY3yNnH0ZJiRJQCcw8Rs=RGCntETXofK+5xRACVnDyQ@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 26 May 2021 18:02:16 -0400
-Message-ID: <CAE-0n50Q17XHF1tp=pk-He0neLY87gerMn-cRvokSiwsBF0X4Q@mail.gmail.com>
-Subject: Re: [PATCH] of/fdt: Don't worry about non-memory region overlap for no-map
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by SN6PR08CA0013.namprd08.prod.outlook.com (2603:10b6:805:66::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 22:02:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2e1ea1b4-9a7b-4c55-6527-08d92091f082
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4355:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB43554A7D3E8DF5AD157F6963EC249@DM6PR12MB4355.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uNzm1ls5LxnocVL54F1dRp2SSwnxT1LodQPdeCFCUaADU1C0VUvqsUeVGYbeaEIaLw2caHXD1bRxMIK4OhNNPf0TPLdWVjl5wdROZFIBxB1PrrS1WJ3C2wVj2Dm/NyMWTMNSy+l4NYKFZYAMU2TTe0MFdV0KHAk9OuZCUvvRFC31f9kaD7/w5+t7X1sxMvAKtAguJpP08N+zIy3e542V5/n3bbc+dn8fkP/KChvQ4Wz9aISKI9Ucfst0jpE0RzjbTd2IQvzHFE8Dj+Sn9B+emtUhhnmGiAxm1TSm0vUFcEWBcV+ze1hMBCDAol8BPj1J2Z4nWXEt9QEV8bs0XfwsowdkqkQib3BfpV6oqaaatUJDX2xbjPWNIzMVLWmc0flhR0qIFeBT9kEd2fNQHb8yhCj/DVesDl0QOSeJC5qvM9HdeVJIh4Wa0bvB/oyxe1Gz+jQLTFZMf/fidYF07Ynb2rViCkNDQmdahYlfuDmyS96CFjNVc/1fvCzAOA42+FAmSZJ56FjJ7WHC9ccKIuyqSII5ja3ojMGfBp9RjtuAhnnYRNb0foCep13uZIG1ZWmTSdotEDcAAgGTKY71hmDrQGKb9Jyp88MtaUDWFEw44N5WmI4joYH50Ma2USzDZ5A5Gyfw0qJKCbnEU3bE2CVG2GRxC8uBxXiRZ4Bbio0GPAQyX4c81P6UhhrlPF81GykW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(478600001)(53546011)(956004)(2616005)(4326008)(8936002)(66476007)(16576012)(316002)(66946007)(5660300002)(38100700002)(16526019)(186003)(26005)(54906003)(31686004)(86362001)(83380400001)(6486002)(31696002)(7416002)(8676002)(2906002)(66556008)(110136005)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aTA3a3hHbHB1Y2JCb1JzbG5aMXRIcFJHR1JrQmFncnMwQk9Wei9teE40V0w2?=
+ =?utf-8?B?Nm9sakRXSFg2UGJ3eC91d2k0WjB6bmlPR1NHSmhaTGM4MWNwM2hWU0lRK3lD?=
+ =?utf-8?B?N3FaTkdVSlF6K082RyswSndidDc4ZEJtOXV2QmVTckIyeS85NlJzbkczUDJS?=
+ =?utf-8?B?WFJoZ1dkTEZqQjYrSEpiOWpSVE15QjFjdDRUNG1mczI2bVJkNEdSNHNXOU9R?=
+ =?utf-8?B?c2xqbW1jNm5NclNDM3pDQ3NBYnZIcUkzeWJDYnY1L2k5UmRPYm0rd25qS1RT?=
+ =?utf-8?B?U1BkL1dZN0M2VWRETENmekc2WG5XRUZ5Z3pGNWJPSWZuM0tLOVdqRkwxN2RS?=
+ =?utf-8?B?QTRCVzB1K3diTVp4bGY4aFQrdmpNYUI3Y2p2UGNTamxlLzgrKy80VTlVYlgr?=
+ =?utf-8?B?amFGd0xSUmNESzZJVzdhdzAwVFYyQnZKaTU4MnBtamVuQWlHa080bU9Yc2RB?=
+ =?utf-8?B?akQ3MjgrVlRkaHQrOTFtYXY2Y3c3ZHpNTHg4Q1pyTDA1UjJJUnNoQ0NpaUlk?=
+ =?utf-8?B?QTM0dzJ0WEFCNTJ0TEFwUVF3bytOQlk5UTJLdnY5TDd3VkpjaDVsWnVhRmJC?=
+ =?utf-8?B?TFcwdHQ4SExsMWZTNitZdlJVbExmR3dkM3Z5Zm9Eb29yS2FORUNZSTI0T09X?=
+ =?utf-8?B?RTVmV2d0TjRaRkVnL1Y4bytxNERCUW0wVER1M3VNM1ZBblcyQ1lER1JtQ09z?=
+ =?utf-8?B?dnNZUWF0bWl6NjJ1ZFdwNWdoOGRkRlF1RFdNVmJYNzR3L0ozOENPK0tyZmhx?=
+ =?utf-8?B?QmpxZURtTCt1SDlvbkpIbzBNbWxsaEdrYkRDR1Uxc0w5bHkyM2xURmdNN2ta?=
+ =?utf-8?B?OFpSdnZMdVdkenZLMDF6NHVMV1BsamU1cE0xNFVXdjhqY2VhZUROa0dzcFBV?=
+ =?utf-8?B?T2hTUlBnRHQ5N1R1MEVrbE80bkU3MWFsVDJMdmN4U0ZtV0Q2M1lWQnlxWUxt?=
+ =?utf-8?B?V2x1QUptSUp1M3FIWmt0cUJqdHRBYVc1SnpsNUFUcVpqeEVuNFh2NXpoRGxR?=
+ =?utf-8?B?Vm9hM3hzdUl2bFF6T2N2bTdLbXhtZWZBWlpjaUpvczE4M1JpekVTZDhuTVBl?=
+ =?utf-8?B?TmdDc3MyK2RVZGZ4cEJIWU5Ib1o5K2I3QVlyN29GcU9LbUxEelJNSzdRVWJX?=
+ =?utf-8?B?NVdEMkNJcDhmM2FnWVI4aHRGRVZhZ0pJc3VLNzRsOWc4MnRHMGJBU05yRk84?=
+ =?utf-8?B?dEZCOW9CMmRqVWRKMWRDazdMQnZHYk1KYjdoM1pkaWpFSDlSWFNpVTRxSjBj?=
+ =?utf-8?B?bXlhb0xkQUdKU0RNUCtHREJqNEF0cjUzTmV2a3QzdkwyTXVZMGtsMzNWd3hk?=
+ =?utf-8?B?bHJ6MzkrTFdRUVVpMWNFSDM1WDNISjZrY1BJUStRUjBiT3pFcnNZZGd1WmdK?=
+ =?utf-8?B?WUlVekM2aDNXV3pNUWgrM2VmTjYrTDdCVGhLaHJDMUZrMUpvaTZaRi8za1pa?=
+ =?utf-8?B?ZU5PU1FkZjd3eFZVWnNQTTBKWk95S1BUQVdldmhXT3N1eTVza0RiSGdUMzRV?=
+ =?utf-8?B?YTk2U29ROHR0VDJ0WmtjTkRkOEphZC9KanB1akZlVzBZaHBmcWFjdUR5alhU?=
+ =?utf-8?B?d2ViWEZXK21URjlKUkxiMHpPZzdsNjF4bVJ2VmxyNSs4bVpBRHU2UWVhUWZP?=
+ =?utf-8?B?dG0rMG1VRWowV0pZSEt1RkIyOTFFbEJxalV2NEF4cFN3d0VsRlZabXFldDA2?=
+ =?utf-8?B?Mi9WejRmSGFRNDZsL2NOMUcwNU9Ma2RiUHZSckxoN2tTMzRUTW1mZW5oV2Z2?=
+ =?utf-8?Q?5mzmyYiPyS1RzcrLco+3thjn9xj62rh0fd6lnFY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e1ea1b4-9a7b-4c55-6527-08d92091f082
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 22:02:22.9229
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EgpQ0Gmv/S+BrQzPthb7SZVAIdVZfs406EXZ1HnMv14zHjklGsPoCS/BM5bnMKOOcXCgzqDZPLRAWKx1Hegalw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4355
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2021-05-20 09:17:39)
-> Hi,
->
-> On Wed, May 19, 2021 at 6:27 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > In commit 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove
-> > already reserved regions") we returned -EBUSY when trying to mark
-> > regions as no-map when they're in the reserved memory node. This if
-> > condition will still trigger though if the DT has a /memreserve/ that
-> > completely subsumes the no-map memory carveouts in the reserved memory
-> > node. Let's only consider this to be a problem if we're trying to mark a
-> > region as no-map and it is actually memory. If it isn't memory,
-> > presumably it was removed from the memory map via /memreserve/ and thus
-> > can't be mapped anyway.
-> >
-> > This silences a warning seen at boot for me on sc7180-trogdor.dtsi
-> > boards that have /memreserve/ coming from the bootloader and those
-> > reserved regions overlap with the carveouts that we want to use in DT
-> > for other purposes like communicating with remote processors.
-> >
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Nicolas Boichat <drinkcat@chromium.org>
-> > Cc: Quentin Perret <qperret@google.com>
-> > Fixes: 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already reserved regions")
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> >  drivers/of/fdt.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > index ba17a80b8c79..be13b4b6c2d8 100644
-> > --- a/drivers/of/fdt.c
-> > +++ b/drivers/of/fdt.c
-> > @@ -1161,7 +1161,8 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
-> >                  * If the memory is already reserved (by another region), we
-> >                  * should not allow it to be marked nomap.
-> >                  */
-> > -               if (memblock_is_region_reserved(base, size))
-> > +               if (memblock_is_region_memory(base, size) &&
-> > +                   memblock_is_region_reserved(base, size))
-> >                         return -EBUSY;
->
-> I'm not an expert on this code, so take review comments w/ a grain of salt.
->
-> That being said, while the change looks right on the surface, I'm not
-> sure it's 100% right when I dig. The names of
-> memblock_is_region_memory() and memblock_is_region_reserved() make
-> them sound more similar than they actually are. One of the two tests
-> for intersection and the other for "subset of". I think if
-> memblock_is_region_memory() used "intersects" instead of "subset of"
-> then your patch would be correct.
->
-> Specifically if you've got memory regions:
->
-> 0x1000 - 0x2000 - memory
-> 0x3000 - 0x4000 - memory
->
-> Then you check memblock_is_region_memory(0x2800, 0x1000) or
-> memblock_is_region_memory(0x1800, 0x1000) then I think it will return
-> false, right? Because those aren't _subsets_ of memory even though
-> they intersect memory.
->
-> I don't know if cases like that show up in practice, but it seems
-> better to be safe?
->
 
-Good point. If the reserved region intersects with memory and "not
-memory" then the check won't be attempted to see if the region
-intersects with a reserved region. I was trying to match the spirit of
-the commit that this is fixing, i.e. trying to only care if the region
-is for kernel memory. At least my read of that commit text led me to
-believe that it was trying to print a warning if we have a big kernel
-image reservation that overlaps with the reserved memory regions in DT.
-Before that patch it would silently allow a no-map region to overlap
-with the kernel image (text/data/heap/bss) and then unmap the kernel,
-ouch! Now it will return -EBUSY and not let the kernel unmap itself.
 
-In my case I have a /memreserve/ region from DT that marks a large
-region as reserved, and then I have a few reserved memory nodes in DT
-that are marked no-map and they fit entirely inside the /memreserve/
-region so they're a "subset of". Let me see if I can devise some way to
-fix both scenarios. My understanding is /memreserve/ is essentially the
-same as no-map in that the kernel doesn't consider the region as memory
-and doesn't map it in the kernel page tables, so this silences a warning
-for me but functionally doesn't change anything.
+On 5/26/21 4:37 PM, Kuppuswamy, Sathyanarayanan wrote:
+> 
+> 
+> On 5/21/21 9:19 AM, Tom Lendacky wrote:
+>> In arch/x86/mm/mem_encrypt.c, sme_early_init() (should have renamed that
+>> when SEV support was added), we do:
+>>     if (sev_active())
+>>         swiotlb_force = SWIOTLB_FORCE;
+>>
+>> TDX should be able to do a similar thing without having to touch
+>> arch/x86/kernel/pci-swiotlb.c.
+>>
+>> That would remove any confusion over SME being part of a
+>> protected_guest_has() call.
+> 
+> You mean sme_active() check in arch/x86/kernel/pci-swiotlb.c is redundant?
+
+No, the sme_active() check is required to make sure that SWIOTLB is
+available under SME. Encrypted DMA is supported under SME if the device
+supports 64-bit DMA. But if the device doesn't support 64-bit DMA and the
+IOMMU is not active, then DMA will be bounced through SWIOTLB.
+
+As compared to SEV, where all DMA has to be bounced through SWIOTLB or
+unencrypted memory. For that, swiotlb_force is used.
+
+Thanks,
+Tom
+
+> 
+>  41 int __init pci_swiotlb_detect_4gb(void)
+>  42 {
+>  43         /* don't initialize swiotlb if iommu=off (no_iommu=1) */
+>  44         if (!no_iommu && max_possible_pfn > MAX_DMA32_PFN)
+>  45                 swiotlb = 1;
+>  46
+>  47         /*
+>  48          * If SME is active then swiotlb will be set to 1 so that bounce
+>  49          * buffers are allocated and used for devices that do not support
+>  50          * the addressing range required for the encryption mask.
+>  51          */
+>  52         if (sme_active() || is_tdx_guest())
+>  53                 swiotlb = 1;
+> 
+> 
