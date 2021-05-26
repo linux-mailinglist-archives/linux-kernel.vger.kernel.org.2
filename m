@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF0D390E64
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58020390E69
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhEZCoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:44:10 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3971 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhEZCoJ (ORCPT
+        id S232277AbhEZCpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232241AbhEZCpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:44:09 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqZrz5zCFzQshl;
-        Wed, 26 May 2021 10:38:59 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 10:42:33 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 26 May
- 2021 10:42:32 +0800
-Subject: Re: [PATCH 1/1] sched/topology: Fix a spelling mistake in error
- message
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210526021856.9060-1-thunder.leizhen@huawei.com>
- <42d36255-c1a6-956a-b56b-0c09eee125ec@infradead.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <5571d34f-1965-8d8e-3033-6352dd0dcaee@huawei.com>
-Date:   Wed, 26 May 2021 10:42:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 25 May 2021 22:45:15 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDCCC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:43:45 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id b9so15220907ejc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cyqKIBrVaRZ0+l7SzJYRtSgO5kugLUClFhe3a16fIks=;
+        b=xKidA34PKHbdo2S/y22PDRHuVMfazORIWEYHJGkmXyiAr04A+1NKfCILQLnwTFsJTw
+         lRVUQruT7CSfwCc2cJ2LKYGi325kEZ4NNyjn0UtAMMopoI0WzAE5ZrPqYsCmv/lbWb0c
+         z7ZqeM601wal6FC3dk9EhBre/t358GYPWlBkbbUdYNaKqlAK5vqVByIYmyXwX/y93vzO
+         bRNWCBb4JkU4DGAkIgbl4WTCvgU7CxcbWXya1+zo+mLJ+4sIWFlH/9XI6s69LnYlT6TH
+         Md+EyrgGTL9No0zpG2C/7ZHuO/606d+nruZSCbn/IOzSAExbb+3m94kMbAuqlPQ0irwx
+         J8oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cyqKIBrVaRZ0+l7SzJYRtSgO5kugLUClFhe3a16fIks=;
+        b=TgbmuhhHA32i6hPZGS6axg6zrDCwrXCM6n8Z0CeiWQGurLgsUfFPgSCS71e2vq0XHS
+         c0RaJdxA17Hhfy+4u7vPDQ1zJ6Afi38WKNN6ipNb6O5sv7M68FLBdwtdYO+s2TGpmFEo
+         Y0HhODZNYPyI7Can06HvdSX23RIXJx+kVCiAG/IhwE3bD2+XGSNWEpOYEpTmZ/dN0y0Z
+         jKxFVu6Hb+tKQ+mUggOPQqL/gwj2XsZQHOwAj8ajvFXbRa6rxNkxlpnoaBdlfDJE2e6y
+         cZM29UtZ8pUVqdLCVCoQR7BsJNXdc1wb9k31WdA4BT2cI1rFW0gKa8M8ka2r9yYganrV
+         1Vhw==
+X-Gm-Message-State: AOAM531LrSu+lrS8DzlQ74dmM1GhG8E5cldwOXibOZZH7QnrvQFuuK8X
+        927Fsr7pOvGa/WsDGYpln4GdxV8pM2smw4Y/wrMR
+X-Google-Smtp-Source: ABdhPJzi0wHuPmnuk+fERsSUwpHSaQvSPFz85+F584XY7DhSy3CxdOjcgz0J1YNwvp5PC9EH+9a60IN41oTUEUABAxo=
+X-Received: by 2002:a17:906:456:: with SMTP id e22mr31013766eja.427.1621997023688;
+ Tue, 25 May 2021 19:43:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <42d36255-c1a6-956a-b56b-0c09eee125ec@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-2-xieyongji@bytedance.com>
+ <6ca337fe-2c8c-95c9-672e-0d4f104f66eb@redhat.com>
+In-Reply-To: <6ca337fe-2c8c-95c9-672e-0d4f104f66eb@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Wed, 26 May 2021 10:43:33 +0800
+Message-ID: <CACycT3sA7jYr1TbBT+Q4wkiiqvk-sJppwzXvffeEUAgBMXOxfA@mail.gmail.com>
+Subject: Re: Re: [PATCH v7 01/12] iova: Export alloc_iova_fast()
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 26, 2021 at 10:36 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/5/17 =E4=B8=8B=E5=8D=885:55, Xie Yongji =E5=86=99=E9=81=93=
+:
+> > Export alloc_iova_fast() so that some modules can use it
+> > to improve iova allocation efficiency.
+> >
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > ---
+> >   drivers/iommu/iova.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> > index e6e2fa85271c..317eef64ffef 100644
+> > --- a/drivers/iommu/iova.c
+> > +++ b/drivers/iommu/iova.c
+> > @@ -450,6 +450,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned=
+ long size,
+> >
+> >       return new_iova->pfn_lo;
+> >   }
+> > +EXPORT_SYMBOL_GPL(alloc_iova_fast);
+> >
+> >   /**
+> >    * free_iova_fast - free iova pfn range into rcache
+>
+>
+> Interesting, do we need export free_iova_fast() as well?
+>
 
+Oh, yes. I missed this commit 6e1ea50a06 ("iommu: Stop exporting
+free_iova_fast()"). Will rebase on the newest kernel tree.
 
-On 2021/5/26 10:32, Randy Dunlap wrote:
-> On 5/25/21 7:18 PM, Zhen Lei wrote:
->> The misspelled word 'borken' should be 'broken'.
->>
->> Fixes: 6ae72dff3759 ("sched: Robustify topology setup")
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  kernel/sched/topology.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index 55a0a243e871..80295e224442 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -1937,7 +1937,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
->>  
->>  		if (!cpumask_subset(sched_domain_span(child),
->>  				    sched_domain_span(sd))) {
->> -			pr_err("BUG: arch topology borken\n");
->> +			pr_err("BUG: arch topology broken\n");
-> 
-> Would "borked" or "b0rken" be clearer?
-
-These two words don't seem to exist at all. Linux is an open-source
-code for the world, so it's better to use a more common word.
-
-> 
->>  #ifdef CONFIG_SCHED_DEBUG
->>  			pr_err("     the %s domain not a subset of the %s domain\n",
->>  					child->name, sd->name);
->>
-> 
-> 
-> I.e., this is misspelt on purpose.
-> 
-> Reply to a previous version of this patch:
->   https://lore.kernel.org/lkml/1493036801.6266.12.camel@gmx.de/
-> 
-> cheers.
-> 
-
+Thanks,
+Yongji
