@@ -2,170 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632BA3921BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2283921BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbhEZVEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        id S234019AbhEZVEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbhEZVET (ORCPT
+        with ESMTP id S233951AbhEZVEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:04:19 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377FAC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:02:47 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eafb:ee01:608b:3ab3:a907:c9a7] (unknown [IPv6:2a02:a03f:eafb:ee01:608b:3ab3:a907:c9a7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id D3479204254;
-        Wed, 26 May 2021 23:02:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1622062964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uOTg4YEJb6HOQk7WXdWXZ4uS3WO6WiebttDA/kSK6CA=;
-        b=QiK5sWIjaeFZy09t2fpzzQHRxWcuyhRkFtlvVQKiAfcCufS6cdTCXR0ry0DM3ER04qC63v
-        BXZIHM73vqSX+55uKHoN3wJLoswmvioTC/8xyU3iSb1YXrDUWGAdmPwyUDLYSySweQ/GgV
-        pFjPpFKp/R9Cc+lp1ADte9EtD5zvbC+/PFA3uCaPss/FJe9xYbCj9h+5ixbRAlQfFM9o8Z
-        zJtNTuoL5cSuJ4uG76NsfyFAybNVB6C1Bqc/bxw8hWneFiXrWlVnw+dMjIgApMdJAWooPJ
-        +bf5LKbCeUaZ7JNRXczFqqsyLE4SwCGHRoJk1VjHc8GLuKeRHSHVWTx+dCEF9A==
-Message-ID: <cbfba24a6206ec73ccc844da5d1331959e3f3520.camel@svanheule.net>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 26 May 2021 23:02:40 +0200
-In-Reply-To: <CAHp75VfCBtcQX4rvmQnRMquM0k7ZBqOgZN15Z7TFNSO60SB9TA@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
-         <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
-         <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
-         <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
-         <8f96b24d782e5bdeabf5370ccf3475794d0c2818.camel@svanheule.net>
-         <CAHp75VfzEwVGR7ttdcKzirPDN8oUFw1uTDXPFE=P=9+S3CAFYQ@mail.gmail.com>
-         <CAHp75VfCBtcQX4rvmQnRMquM0k7ZBqOgZN15Z7TFNSO60SB9TA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 26 May 2021 17:04:38 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A728EC061574;
+        Wed, 26 May 2021 14:03:04 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id y197so3988375ybe.11;
+        Wed, 26 May 2021 14:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fjggmNXP8aJJIe5LARZOetddJKB665gZqov3k0rARmE=;
+        b=oIshPE/fiYe7+ESpjqOYMCMYMV58cBEEthVeSftX73A3wP12A8wiQ+su72g7mM2vQq
+         mAa04QudN1IuRCoUtJj2BylIZx0rXdPmXYWJOiHv3WE+kKVffRVL2ppoOYHcsRP/WG3i
+         Dq2RGxcTv3G7lMaExu56gbKgeSFUTDANYZfhcUgDO2bf/IwGhQye1U0ES3YSOYFxGXXj
+         4qrojsSLFSgvI5U2KTDSpQV+CxBo/KCbxhfQiu5mZniLOU9/xZqFwYPj/2ljKjyqtwez
+         VKubTRx//LZQ2NmV2PUW4iyl0uXbncMaYqdRUMNTnnxS4udzZRNWTLUzfblVtafa348q
+         LzLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fjggmNXP8aJJIe5LARZOetddJKB665gZqov3k0rARmE=;
+        b=DPPSpim6T1XBe/qgvIJNgCq5rN7bEvCTMSRgzAQSqNMXg20KAF0Y7kwIkR4sbqgXcI
+         0+QY9MxdpYcTh8bu9i5lOyNBlfsLJmgWGngRDlN7nf1COLLVBGWMaIyT7zlW3UWBwAqw
+         06jiFgzP+J9gkA9vi8MS8MBAdq1rxGHci/sIqgEXFEbLziN5fF8P4oGH0xWYbvwBE/ph
+         wjyujOXdUxLgk7iZr059n4BuQaqCJ6UtPErhiyRc3PsMaAGvWxDjhfehJRyk3v7lnSiD
+         92Bz5pKC56fNDfRtmq4ihbtc8azFwcaD6c/pLW3+eqkaYu/RECZYejhz/EL0UMDYXsZr
+         Dfyg==
+X-Gm-Message-State: AOAM530+ffwTXK437GdHz9S4PvGWktpqFSErln8ROqqw8b+MWcDaDHIt
+        25K5A0ViD4ar5lxoMQHUvqOHYlRnYSvGyTSf0czzoh2zxMo=
+X-Google-Smtp-Source: ABdhPJz4+zhebIxWn7F4gfKP/NFsVuyboDr7JVj62TVrVWpMRjTAmq7cT8f6GsYU05z4bq0578DxNbKgFVOr2ZjIgS4=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr53013528ybz.260.1622062983834;
+ Wed, 26 May 2021 14:03:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210518142302.1046718-1-javierm@redhat.com> <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
+ <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 14:02:52 -0700
+Message-ID: <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
+ the build
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-25 at 20:11 +0300, Andy Shevchenko wrote:
-> On Mon, May 24, 2021 at 7:30 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, May 24, 2021 at 6:03 PM Sander Vanheule <sander@svanheule.net>
-> > wrote:
-> > > On Mon, 2021-05-24 at 15:54 +0300, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > Sadly, I don't. Most of the info we have comes from code archives of
-> > > switch
-> > > vendors (Zyxel, Cisco etc). Boards need to be reverse engineered, and the
-> > > few
-> > > leaked datasheets that can be found on the internet aren't exactly thick
-> > > in
-> > > information.
-> > > 
-> > > The RTL8231 datasheet is actually quite useful, but makes no mention of
-> > > the
-> > > output value isse. Since this isn't an official resource, I don't think it
-> > > would
-> > > be appropriate to link it via a Datasheet: tag.
-> > > https://github.com/libc0607/Realtek_switch_hacking/blob/files/RTL8231_Datasheet_
-> > > 1.2.pdf
-> > > 
-> > > Looking at the datasheet again, I came up with a... terrible hack to work
-> > > around
-> > > the output value issue.
-> > > 
-> > > The chip also has GPIO_INVERT registers that I hadn't used until now,
-> > > because
-> > > the logical inversion is handled in the kernel. However, these inversion
-> > > registers only apply to the output values. So, I could implement glitch-
-> > > free
-> > > output behaviour in the following way:
-> > >  * After chip reset, and before enabling the output driver (MFD
-> > > initialisation):
-> > >     - Mux all pins as GPIO
-> > >     - Change all pins to outputs,
-> > 
-> > No. no, no. This is much worse than the glitches. You never know what
-> > the hardware is connected there and it's potential breakage (on hw
-> > level) possible.
-> > 
-> > >  so the data registers (0x1c-0x1e) become writable
-> > >     - Write value 0 to all pins
-> > >     - Change all pins to GPI to change them into high-Z
-> > >  * In the pinctrl/gpio driver:
-> > >     - Use data registers as input-only
-> > >     - Use inversion register to determine output value (can be written any
-> > > time)
-> > > 
-> > > The above gives glitch-free outputs, but the values that are read back
-> > > (when
-> > > configured as output), come from the data registers. They should now be
-> > > coming
-> > > from the inversion (reg_set_base) registers, but the code prefers to use
-> > > the
-> > > data registers (reg_dat_base).
-> > 
-> > Lemme read the datasheet and see if I find any clue for the hw behaviour.
-> 
-> Thank you for your patience!
-> 
-> Have you explored the possibility of using En_Sync_GPIO?
+On Wed, May 26, 2021 at 12:53 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Thu, May 27, 2021 at 1:18 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
+> > <javierm@redhat.com> wrote:
+> > >
+> > > The ccache tool can be used to speed up cross-compilation, by calling the
+> > > compiler and binutils through ccache. For example, following should work:
+> > >
+> > >     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
+>
+> Actually, I did not know this...
+>
+> > >
+> > >     $ make M=drivers/gpu/drm/rockchip/
+> > >
+> > > but pahole fails to extract the BTF info from DWARF, breaking the build:
+> > >
+> > >       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+> > >       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+> > >       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+> > >     aarch64-linux-gnu-objcopy: invalid option -- 'J'
+> > >     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+> > >      Copies a binary file, possibly transforming it in the process
+> > >     ...
+> > >     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+> > >     make: *** [Makefile:1866: modules] Error 2
+> > >
+> > > this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+> > > later pahole is executed with the following command line:
+> > >
+> > >     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
+> > >
+> > > which gets expanded to:
+> > >
+> > >     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
+> > >
+> > > instead of:
+> > >
+> > >     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+> > >
+> > > Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+> > > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> > > ---
+> > >
+> >
+> > LGTM. Masahiro, would you like us to take this through bpf tree or
+> > you'll apply this to kbuild one?
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > >  scripts/Makefile.modfinal | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > > index dd87cea9fba..a7883e45529 100644
+> > > --- a/scripts/Makefile.modfinal
+> > > +++ b/scripts/Makefile.modfinal
+> > > @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+> > >  quiet_cmd_btf_ko = BTF [M] $@
+> > >        cmd_btf_ko =                                                     \
+> > >         if [ -f vmlinux ]; then                                         \
+> > > -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
+> > > +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+> > >         else                                                            \
+> > >                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+> > >         fi;
+> > > --
+> > > 2.31.1
+> > >
+>
+>
+> Please feel free to pick it up.
 
-Got around to testing things.
+Ok, sounds good.
 
-If En_Sync_GPIO is enabled, it's still possible to change the pin direction
-without also writing the Sync_GPIO bit. So even with the latching, glitches are
-still produced.
+> I do not know 5f9ae91f7c0.
+>
+> BTW, I see similar code in scripts/link-vmlinux.sh too.
+>
+>      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
+>
+> Is it OK to leave it unquoted?
 
-As long as Sync_GPIO is not set to latch the new values, it also appears that
-reads of the data registers result in the current output value, not the new one.
+You are right, link-vmlinux.sh should be updated accordingly.
 
-As a different test, I've added a pull-down, to make the input level low. Now I
-see the opposite behaviour as before (with set-value-before-direction):
- * OUT-HIGH > IN (low) > OUT-LOW: results in a high level (i.e. old value)
- * OUT-HIGH > IN (low) > OUT-HIGH: results in a high level (new/old value)
- * OUT-LOW > IN (low) > OUT-HIGH: results in a high level (new value, or toggled
-   old value?)
- * OUT-LOW > IN (low) > OUT-LOW: results in a low level (new/old value)
+Javier, can you please send v2 and cc bpf@vger.kernel.org? Thanks!
 
-For reference, with a pull-up:
- * OUT-HIGH > IN (high) > OUT-HIGH: high result
- * OUT-HIGH > IN (high) > OUT-LOW: low result
- * OUT-LOW > IN (high) > OUT-HIGH: low result
- * OUT-LOW > IN (high) > OUT-LOW: low result
-
-I've only tested this with the sysfs interface, so I don't know what the result
-would be on multiple writes to the data register (during input, but probably not
-very relevant). Nor have I tested direction changes if the input has changed
-between two output values.
-
-I may have some time tomorrow for more testing, but otherwise it'll have to wait
-until the weekend. Any other ideas in the meantime?
-
-
-Best,
-Sander
-
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
