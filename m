@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4803912C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262B53912C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhEZItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S233360AbhEZItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbhEZItK (ORCPT
+        with ESMTP id S233236AbhEZItL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:10 -0400
+        Wed, 26 May 2021 04:49:11 -0400
 Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22321C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:39 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso15025960wmm.3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107BAC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:40 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso2907819wmc.1
         for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OW7W47mIWK6yublPiEJWvFrVpFjoI7qTlEhI5W3sk3g=;
-        b=Q4Dzbneel0DMkx+zXQm4rfhuirMiZW0kumIdYTlWN3Rc8ONEfmPsGv5nSTgmMJMzm1
-         dDVTt75sX/MR1ZLRVZN3aTgKAPW2fjnN4y4HZQMD5UJnGpbzaGx3zX/TY54CwkTpN93z
-         ci3EPh0fpBN429rFH3EWjtZm/y/XmxGjjvLf/rm6l1smQ/An5IKRNRN0RO/bZnXExJD2
-         Yf/0VcrD5X5GZ/W8bFogzhmqOFHRKGj64yiSr/Eoafy5yJ46O/pFb3qzPGyq1W/bjEXy
-         qmrYNwBKc95Gk6tvYCz8Wc6n8OynNac2iK09tru9kJoWyxDnZIIE4BOk/y7Fl7k7Mgti
-         +IGA==
+        bh=YRtghyBemkM1f6IZ3GpJkWOqFfzHliaTl7AQXunGZzc=;
+        b=Y24P+kDZguBC+oVfwlOZFjooki7OrpJfb708/HImocxi6jC/uZws/ZGaZeCPgRGhsP
+         6rH5ZxL4BMZNfhpJiJ4g9XZYsk6YsowF9AlC7gvmBOEjVd1FoWoo67zki9tmuOORdyc4
+         SGdDw0BRw6nQ1CtrpdaCr0X3IS2WzJZs0HZ6AwQi1zhcuxR+rwOzbH2sbIuq5ZORCIeP
+         yq97uTNUjojtB0lP0QMQsNZRkVT9jOrCJu+Doa5X69vt5c6nB+i0o/f+KRMc+AV5jE1Q
+         rkYALgXhiGAs5SFxc/CIMVtGA+ypcoa6H5FoJ/9EGVWi9SpMhDkZxDwhgUoc2YLpQnab
+         LzYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OW7W47mIWK6yublPiEJWvFrVpFjoI7qTlEhI5W3sk3g=;
-        b=Ce9UTnu2etHFzKAU7WubEhkNaq2Jzsiv4X3HMloSfhSvtoeCqgmADL1KRVvZ3OX51Q
-         npBZqegH39S2suD/bW9wdqmza8h/dI4z74x9K2YmB6BBdkUNJHPHXaqNjcPfdcb49IRf
-         nGYNAXo3ehVt85PgI+Uqz8wob/GO1Yi8X6vz1QUsk9WiMMJ5nMQzgTIvAuJPOELiwR12
-         PbiV/rd0KDCwNTXHHOURK3h2ql6lPHgdFJ9c+QXahX82+39TMZyRhnLZy7CKld/riv5h
-         2U5jvPYJ5f8bvIBLCJLsQRWnbx/bc+eLR6q1Y3rKOpjOP1vD2l8XL+0049QyXRX5l9vM
-         X7bQ==
-X-Gm-Message-State: AOAM5308/H3NxmhlFt+H25DjXWGCHweL4ef5SGgV1vuQBT4tTdN2GD6C
-        p9902XdpaYiwTvy39l7xzx225IMyqVIbcg==
-X-Google-Smtp-Source: ABdhPJzKjOnP2FN9XbCVd5z8Nh671DlRl76pfsWhDUprJRbuK1oP+cI43ILSCrES9+8y0ekBcxVa9A==
-X-Received: by 2002:a7b:c446:: with SMTP id l6mr2223901wmi.75.1622018857723;
-        Wed, 26 May 2021 01:47:37 -0700 (PDT)
+        bh=YRtghyBemkM1f6IZ3GpJkWOqFfzHliaTl7AQXunGZzc=;
+        b=c5n9PTN2JbunaNySshpgo1/+PRiVXsbvm1Orp8h6kGgkxAVEoyusTDpg9csxm+IlzU
+         xx21f1fibGPC7DMEhAm5WiJ4MzMn2abajRxCd8gib6CkHGELT/lnuYSdrA6ggMyZ/qKu
+         90tWxNtcS6JglT6HEgrjuMyD0gXWoRbPx5b8SWbRFVqhKgg5qxzm3S+RQfxtHXocGxGa
+         ekKltmNHcJpiGc1YBaDV2jk+AeFhrOx2Xlqi+7t/oLSdYkyTRRc9fhQZihupWoNpMwNF
+         OgNmOISJ33bxG1k3R0d0V6lhCupMuPG8dOX+lPpPoPNbnqfSB6Y9hygvPGOUKckFhump
+         EexQ==
+X-Gm-Message-State: AOAM5303JW1VIuq+QzzOzEp4F7Cxha5LUdtOJ6i8Hav6Ie4+lypqXFiy
+        +joZlTorOh7C/vn3dbyr1VcXu1SBcEqzRQ==
+X-Google-Smtp-Source: ABdhPJx9vfcxXeT3oxlu5PcMyEPJqgiMaOfRGR7HD4cfqeoJ6OCvXxTjHoGViev/C4hAPtm4WP+X6g==
+X-Received: by 2002:a1c:2cc3:: with SMTP id s186mr2365738wms.150.1622018858606;
+        Wed, 26 May 2021 01:47:38 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.36
+        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:37 -0700 (PDT)
+        Wed, 26 May 2021 01:47:38 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 07/34] drm/amd/pm/powerplay/hwmgr/vega20_hwmgr: Provide function name 'vega20_init_smc_table()'
-Date:   Wed, 26 May 2021 09:46:59 +0100
-Message-Id: <20210526084726.552052-8-lee.jones@linaro.org>
+Subject: [PATCH 08/34] drm/amd/display/dc/bios/command_table_helper: Fix function name for 'dal_cmd_table_helper_transmitter_bp_to_atom()'
+Date:   Wed, 26 May 2021 09:47:00 +0100
+Message-Id: <20210526084726.552052-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
 References: <20210526084726.552052-1-lee.jones@linaro.org>
@@ -71,33 +73,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega20_hwmgr.c:781: warning: expecting prototype for Initializes the SMC table and uploads it(). Prototype was for vega20_init_smc_table() instead
+ drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table_helper.c:127: warning: expecting prototype for translate_transmitter_bp_to_atom(). Prototype was for dal_cmd_table_helper_transmitter_bp_to_atom() instead
 
-Cc: Evan Quan <evan.quan@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Leo Li <sunpeng.li@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Lee Jones <lee.jones@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c | 2 +-
+ drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-index d3177a534fdf0..0791309586c58 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-@@ -772,7 +772,7 @@ static int vega20_setup_default_dpm_tables(struct pp_hwmgr *hwmgr)
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
+index 5b77251e05909..e317a36151477 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
+@@ -114,7 +114,7 @@ bool dal_cmd_table_helper_controller_id_to_atom(
  }
  
  /**
-- * Initializes the SMC table and uploads it
-+ * vega20_init_smc_table - Initializes the SMC table and uploads it
-  *
-  * @hwmgr:  the address of the powerplay hardware manager.
-  * return:  always 0
+- * translate_transmitter_bp_to_atom - Translate the Transmitter to the
++ * dal_cmd_table_helper_transmitter_bp_to_atom - Translate the Transmitter to the
+  *                                    corresponding ATOM BIOS value
+  * @t: transmitter
+  * returns: output digitalTransmitter
 -- 
 2.31.1
 
