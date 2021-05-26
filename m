@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD039391D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47240391D0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234205AbhEZQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhEZQb1 (ORCPT
+        id S234665AbhEZQbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:31:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232985AbhEZQbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:31:27 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664E1C061574;
-        Wed, 26 May 2021 09:29:55 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id g17so1555870wrs.13;
-        Wed, 26 May 2021 09:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2BR2CpRv5HUtxyF1HEzJXZYtJUUJGLsBTSqdUuHN7zA=;
-        b=gf/XOSZVYbCOim1OET+mYLpTrqZ76gUyQqjCbZN/qlFwFtlzvuaZl61FdQEADmWaA0
-         TSAOGHv7/1Xy3c0e5CbBfqlJN9/x3VxAx7wm+5ER5sA9MBkANhIkiAJJfeRuzE5TIIxD
-         8SQtf6CPnIHV96nehAE01lGzq67TQ4ZHvEpdWPsht4syTldGlKewWOUHbbVtK4Ej/VOp
-         0nUKLj4HlVx7X38Uo0vT9bO/PnEIMm77uxE8Xq16aD/RMpVtokWc1rYITI8lKKBotfPd
-         LHWf+dga3w54rU3XXlDl6mKTSrfdxF/KB0vseClIjXnliKr97U7zCSUjSY/1Y9NsqPaZ
-         lEBQ==
+        Wed, 26 May 2021 12:31:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622046612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mKseMqEyU9vMlSVhMpCe0qu9Lfmtxe6btXv0lsnEZ5E=;
+        b=iw88gnSuAjUDmG1Z2+XNK4c1ZPCQy6rMKp3cZCb6aBKskFOkP8OMKP5gqE20VXVjLsd+6a
+        tpt/YbQRvBar0OaunlOIf1+9hkibFGZOyao1wIXU01wwv/OhPZXI0QkrEoqASVzBRwz+k/
+        PHm7n7V7diowhQw8TVMxOGgolnIkqPw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-NrgsYob4P5m6USp1KGKnZA-1; Wed, 26 May 2021 12:30:08 -0400
+X-MC-Unique: NrgsYob4P5m6USp1KGKnZA-1
+Received: by mail-ed1-f71.google.com with SMTP id y17-20020a0564023591b02903886c26ada4so894228edc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:30:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2BR2CpRv5HUtxyF1HEzJXZYtJUUJGLsBTSqdUuHN7zA=;
-        b=QZjyhu4VU1l6WAiBJvmj/KisCjrPV/KCzaZmEKegKbjp2xOwPkVpq/fVHcmdacgkC9
-         oS1AXZv+n3h3HQVgOUfBG2ShC1eEBrkUQjQlZD8XlzJIh1vMVHzaPSEW/3ZAZ+ViCVSK
-         zCdmcy4CgU2uIq/KEquYolW/WmAm1ThLcHckpmpbW5dHaYg9qhF5bJ3s9ivycikXj7n6
-         Rhf9P2OoFuCk8vy8jMiQV9+qgHPRYBYVjQzyh2H5SnYYSnjxzR7JU1TaoNEWbqb6iklP
-         kuf7gwtwDxRs4qxvaBHcO0mPzKCRqLEKpep/wMwQqhd8miMDEY3dxJQnVjXcTXqaTZJg
-         2PMQ==
-X-Gm-Message-State: AOAM533kdSRgoUzHxxY1UJFsgZT9J24Jzp+j8EJlxTHTsBr/ch7f1QZU
-        +2ksSAY/y9EKBaEKsEloNQk=
-X-Google-Smtp-Source: ABdhPJyOSJ3dplHGyVVRAngVGaxH8j406gBMGci9x8u/90yiXrPEDkoJqHB+H0PMlJGwXCnQkSXF9Q==
-X-Received: by 2002:a5d:4a4f:: with SMTP id v15mr34464625wrs.154.1622046594006;
-        Wed, 26 May 2021 09:29:54 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.10])
-        by smtp.gmail.com with ESMTPSA id z203sm3561450wmg.9.2021.05.26.09.29.52
+        bh=mKseMqEyU9vMlSVhMpCe0qu9Lfmtxe6btXv0lsnEZ5E=;
+        b=CHRgXi3y4mT70vNfi+VNMFVeYF+UsoKxWiWTSFAe/RNq60KUp3U7eCImVvzxXY555h
+         AaJDTiB77O3DmM9L4+tw+iIpWGTTuHz2zxmdycQdw4BFD3FVIP3Kw7ODy2NeNXQVdT4/
+         1F43F60lFbCxmksEEUzzZSJ+a9W6otxf2+p0/XaCKvtb/j2JmJ7pme5LLiEP1KQUZm56
+         Rf0t7dEdL0+ai+GM1yr9xvUSNYYnbB7j44g59U2IjA/AeNYtM2cLe6SqyRjavJqPm0xM
+         rOs9lpkyS3rLzhAJvRsLAZYe6yTsRWAHkckzusT4eIVbJ1TnSUFNJRv716W2DpP02IkF
+         5tyg==
+X-Gm-Message-State: AOAM530IUq4yYEty/sq/FM9z3cQ6pxm8be7uR6uv+te3E+StH/SPCtZl
+        OCXXhIKNaF+FAPof0NTtMHmRARyb/MSVFsf6LUANzkY6ZHglZlkOBFPpj+d+P65XVP9OOplF+sC
+        QrgXt3z61I2uUsFuwPLhW91B/
+X-Received: by 2002:a17:906:1444:: with SMTP id q4mr34703936ejc.459.1622046605699;
+        Wed, 26 May 2021 09:30:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfjTd0ATZ28BI6ZQRvwlDRMIHePtiPaN95IKdIhB2z+UP+qRArZCituwXQiXtiMFZ4p00YBA==
+X-Received: by 2002:a17:906:1444:: with SMTP id q4mr34703818ejc.459.1622046604662;
+        Wed, 26 May 2021 09:30:04 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x10sm12735679edd.30.2021.05.26.09.30.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 09:29:53 -0700 (PDT)
-To:     Marco Elver <elver@google.com>, axboe@kernel.dk
-Cc:     syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, dvyukov@google.com
-References: <000000000000fa9f7005c33d83b9@google.com>
- <YK5tyZNAFc8dh6ke@elver.google.com> <YK5uygiCGlmgQLKE@elver.google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in __io_uring_cancel /
- io_uring_try_cancel_requests
-Message-ID: <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
-Date:   Wed, 26 May 2021 17:29:44 +0100
+        Wed, 26 May 2021 09:30:03 -0700 (PDT)
+Subject: Re: Writable module parameters in KVM
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+References: <CANgfPd_Pq2MkRUZiJynh7zkNuKE5oFGRjKeCjmgYP4vwvfMc1g@mail.gmail.com>
+ <35fe7a86-d808-00e9-a6aa-e77b731bd4bf@redhat.com>
+ <2fd417c59f40bd10a3446f9ed4be434e17e9a64f.camel@redhat.com>
+ <YK5s5SUQh69a19/F@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <927cbe06-7183-1153-95ea-f97eb4ff12f6@redhat.com>
+Date:   Wed, 26 May 2021 18:30:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YK5uygiCGlmgQLKE@elver.google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YK5s5SUQh69a19/F@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 4:52 PM, Marco Elver wrote:
-> Due to some moving around of code, the patch lost the actual fix (using
-> atomically read io_wq) -- so here it is again ... hopefully as intended.
-> :-)
+On 26/05/21 17:44, Sean Christopherson wrote:
+>> Sure, making them writable is okay.
+>
+> making a param writable (new or existing) must come with strong
+> justification for taking on the extra complexity.
 
-"fortify" damn it... It was synchronised with &ctx->uring_lock
-before, see io_uring_try_cancel_iowq() and io_uring_del_tctx_node(),
-so should not clear before *del_tctx_node()
+I agree.  It's the same for every change, and it's the reason why most 
+parameters are read-only: no justification for the extra complexity. 
+But if somebody has a usecase, it can be considered.
 
-The fix should just move it after this sync point. Will you send
-it out as a patch?
+> Making 'npt' writable is probably feasible ('ept' would be beyond messy), but I
+> strongly prefer to keep it read-only.  The direct impacts on the MMU and SVM
+> aren't too bad, but NPT is required for SEV and VLS, affects kvm_cpu_caps, etc...
+> And, no offense to win98, there's isn't a strong use case because outside of
+> personal usage, the host admin/VMM doesn't know that the guest will be running a
+> broken kernel.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 7db6aaf31080..b76ba26b4c6c 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -9075,11 +9075,12 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
- 	struct io_tctx_node *node;
- 	unsigned long index;
- 
--	tctx->io_wq = NULL;
- 	xa_for_each(&tctx->xa, index, node)
- 		io_uring_del_tctx_node(index);
--	if (wq)
-+	if (wq) {
-+		tctx->io_wq = NULL;
- 		io_wq_put_and_exit(wq);
-+	}
- }
- 
- static s64 tctx_inflight(struct io_uring_task *tctx, bool tracked)
+Making 'npt' writable would be beyond messy too; allowing select VMs to 
+disable EPT/NPT might be simpler, but not that much.  I can't say 
+offhand if the code would be ugly or not.
 
- 
--- 
-Pavel Begunkov
+Paolo
+
