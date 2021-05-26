@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B9C3916CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9B23916E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhEZL6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:58:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37256 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232869AbhEZL6g (ORCPT
+        id S231174AbhEZMB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:01:59 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58872 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhEZMB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:58:36 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QBZ061171514;
-        Wed, 26 May 2021 07:57:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=eO8+n+Sq2ZxdbE7fydKtJxxn77bqvxKFRhLTUXbsAdc=;
- b=VEYDl1bwRKw7Qpl/Df4QCMQ+ojmViELmF4i2C//WWp8XyeeimoaMcqRHz+mK+b6b+Hgw
- xwwMBM4hX2qS9xSk9cIz7mDbvORWvJZu2hp5D4xm2KEhGjZA9IvlPqiui3/GD+o179xQ
- cZiRC94oXblwDBb5Gde3PRw83rVVpbh9ChYwZGihk9rCW5xDsVyuFMWq0YTYgjL3UUT4
- 7aQKfRB9jska1YcUhPnBYrd9yTwFgKAvAxOKwyWXR61Xscsh+kn3lwYmq5111iBfYVGd
- ub6dAwpMkYMrDxLwSQCMJnBqqBGUEIzdhg21j2IK8HptJ2Com9ezy8oA69Z3fckHc6q2 aA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38smgm2fek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 07:57:04 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14QBZ60R173013;
-        Wed, 26 May 2021 07:57:04 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38smgm2fe1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 07:57:04 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14QBrmV1013272;
-        Wed, 26 May 2021 11:57:02 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 38s1r48gvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 11:57:01 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14QBux3b32768438
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 May 2021 11:56:59 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 010454C04E;
-        Wed, 26 May 2021 11:56:59 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 718354C044;
-        Wed, 26 May 2021 11:56:58 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.174.11])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 May 2021 11:56:58 +0000 (GMT)
-Subject: Re: [PATCH v1 07/11] KVM: s390: pv: add export before import
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
- <20210517200758.22593-8-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <2ccebdfa-af59-a81f-9a18-35c3fb080331@linux.ibm.com>
-Date:   Wed, 26 May 2021 13:56:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 26 May 2021 08:01:56 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QC0Mjl122750;
+        Wed, 26 May 2021 07:00:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622030422;
+        bh=w+1yG06oMM2gTxx2gryJE3Zg3WgFOgAaSk6Mad9RwTQ=;
+        h=From:To:CC:Subject:Date;
+        b=N58g+pjdInLV1EE+rFcVoS0dR8zR2QEY0wX5k0K9fSvTVzvPrpAIBOztK/ds272NB
+         OcCKTSprCwf7lwTtNzdVzf4qwKJjkNcslj+Uu/r70q3tGroLVrsUd+mnfJYE2gnE0O
+         WG1tfLMrYWc2EgkT9I8NgOx7NjCdoFqScRRxpRik=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QC0M4Y093725
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 07:00:22 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 07:00:22 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 07:00:22 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QC0J2t108104;
+        Wed, 26 May 2021 07:00:20 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH 1/2] ARM: dts: dra7-l4: Drop ti,omap4-uart entry from UART nodes
+Date:   Wed, 26 May 2021 17:29:55 +0530
+Message-ID: <20210526115956.3065-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210517200758.22593-8-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6kB_OUbu9yEuqU2TKvNrxfqAwd8gtELF
-X-Proofpoint-ORIG-GUID: mMriH-6jgR_8uHuwK78QEmK9ezzsoTBC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_08:2021-05-26,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105260077
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/21 10:07 PM, Claudio Imbrenda wrote:
-> Due to upcoming changes, it will be possible to temporarily have
-> multiple protected VMs in the same address space. When that happens,
-> it is necessary to perform an export of every page that is to be
-> imported.
+ti,omap4-uart was kept around to work with legacy omap-serial driver.
+Now that we have completed move to 8250-omap.c drop legacy compatible.
+This will simplify writing YAML schema.
 
-... since the Ultravisor doesn't allow KVM to import a secure page
-belonging to guest A to be imported for guest B in order to guarantee
-proper guest isolation.
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ arch/arm/boot/dts/dra7-l4.dtsi | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/kernel/uv.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index b19b1a1444ec..dbcf4434eb53 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -242,6 +242,12 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->  	return rc;
->  }
->  
-> +static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_struct *mm)
-> +{
-> +	return uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
-> +		atomic_read(&mm->context.is_protected) > 1;
-> +}
-> +
->  /*
->   * Requests the Ultravisor to make a page accessible to a guest.
->   * If it's brought in the first time, it will be cleared. If
-> @@ -285,6 +291,8 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
->  
->  	lock_page(page);
->  	ptep = get_locked_pte(gmap->mm, uaddr, &ptelock);
-> +	if (should_export_before_import(uvcb, gmap->mm))
-> +		uv_convert_from_secure(page_to_phys(page));
->  	rc = make_secure_pte(ptep, uaddr, page, uvcb);
->  	pte_unmap_unlock(ptep, ptelock);
->  	unlock_page(page);
-> 
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+index 149144cdff35..a750f7829f79 100644
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -1159,7 +1159,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x20000 0x1000>;
+ 
+ 			uart3: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -1562,7 +1562,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x66000 0x1000>;
+ 
+ 			uart5: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -1594,7 +1594,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x68000 0x1000>;
+ 
+ 			uart6: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -1626,7 +1626,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x6a000 0x1000>;
+ 
+ 			uart1: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts-extended = <&crossbar_mpu GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -1658,7 +1658,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x6c000 0x1000>;
+ 
+ 			uart2: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -1690,7 +1690,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x6e000 0x1000>;
+ 
+ 			uart4: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -2424,7 +2424,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x20000 0x1000>;
+ 
+ 			uart7: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 218 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -2454,7 +2454,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x22000 0x1000>;
+ 
+ 			uart8: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 219 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -2484,7 +2484,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0x24000 0x1000>;
+ 
+ 			uart9: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+@@ -4530,7 +4530,7 @@ SYSC_OMAP2_SOFTRESET |
+ 			ranges = <0x0 0xb000 0x1000>;
+ 
+ 			uart10: serial@0 {
+-				compatible = "ti,dra742-uart", "ti,omap4-uart";
++				compatible = "ti,dra742-uart";
+ 				reg = <0x0 0x100>;
+ 				interrupts = <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
+ 				clock-frequency = <48000000>;
+-- 
+2.31.1
 
