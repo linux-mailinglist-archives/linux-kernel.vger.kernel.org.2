@@ -2,141 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068C2391F28
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBBF391F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhEZSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbhEZSdF (ORCPT
+        id S234114AbhEZSd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:33:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235544AbhEZSd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:33:05 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B7DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=1WnsrtUBknRy01baw7UyEUeOvHtXPbZ1Ph2+lJo90Dw=; b=CX6F5LsjQXtbvbkG1aIFbsQ75
-        kaijHEVcoNoUaTPG/04j7D6XrGaKoZvK6OjVkhb+8eAV3nsRzlBj7tlP6ntO7hsWasUticzjTkP9H
-        uqm4Ww4z4/M/TKLJINP+Ao8up6TlXeckj/y9y+S2HnVYq1DF3QFlMPHZCUQ7NiLmCT50q/uylQkVU
-        azW+Nz9frRFKupsYkX7dAOKHelpKCVHjA4PQPaTEX8LCZhwxd4tymVxDkvOSj9Wv3GcvPFOUzC1QI
-        bCcC8LYCwYilN/kRYkUl/ddpq5qIcv54lAGaTP0QYRFBwYH3gTEHCXFiKkygMNEhf5cdqbiFgIadQ
-        7VumJUgrw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44390)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1llyJX-000667-6O; Wed, 26 May 2021 19:31:31 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1llyJW-00032W-N2; Wed, 26 May 2021 19:31:30 +0100
-Date:   Wed, 26 May 2021 19:31:30 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: perf-kvm unable to resolve guest kernel symbols
-Message-ID: <20210526183130.GK30436@shell.armlinux.org.uk>
+        Wed, 26 May 2021 14:33:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622053914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=94syvOS2iq38iWgkmR3FPLbAVi2GFd1p/dJkRiGRhzE=;
+        b=eYyQfHe51CTv8OvkyM9yBMtuII2JFa60adtTursqTIMN0VsYxHnilOnLCc8jRKyull4iRm
+        DystXtF+O8qPaLM7A/Yy2n1lUdnRDLhjr2sCOGO1YDSimKE1eQulisJGq/zyEORNFpYyhv
+        aqK9U2jQrbwMWeudJUCo4UZb7zudKDk=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-2HmfZqTYPRePwsKBxqaFgw-1; Wed, 26 May 2021 14:31:52 -0400
+X-MC-Unique: 2HmfZqTYPRePwsKBxqaFgw-1
+Received: by mail-ej1-f71.google.com with SMTP id rs12-20020a170907036cb02903e0c5dcb92dso716127ejb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:31:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=94syvOS2iq38iWgkmR3FPLbAVi2GFd1p/dJkRiGRhzE=;
+        b=qHWG4kmAsprvhi3dNYzoPsDy2/y747gDWDa7wObO4zK5wez/IhJ0//RDtgghUM/7bG
+         xvtfS8/shSJ+81xXXq5YY7I/E11mdK8nfiHpkH1NJfsBf2WX+N3sFNXCqA+V1TpW6LLW
+         WSQJjGgwbCOaI3dpIJ9ObwNXA3rNnRR7c/IW1stu3O5ysB25j8nrJRb5Q/qIQgTVTbaC
+         8PmZbkeffGz9m/sH3p624x84+tb6EVn8IoHroz8tCOwyCnYHqKobypvOt5gka2x19ejh
+         ZcLXdEwYcuK9n5gIUCnl4pglWWmqDJuilJY1qRo1iuP9FV+IemcmPI5RYDQNkWjMcx3f
+         j1Nw==
+X-Gm-Message-State: AOAM530SlMzWOrg1VW0NILCryv0VCkI+Zu/Ox8LodBOKzVGYT6smFnK5
+        2gmtkQ/zEC8cHwWsJ54L0PL4DEj7nIJqsmZJXDaqwlSkh4iycZb6krFBrNdybB1nqPPDBroVRdV
+        WGnlbFiXtYqBjZO3Jg5o0X5Tz
+X-Received: by 2002:a50:fd9a:: with SMTP id o26mr38385069edt.76.1622053911609;
+        Wed, 26 May 2021 11:31:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxj/b4bQQAPZkwDCfSoX9eFDQaSkp7wcMIVVjBNJ19mjHBr5KE8Y3yPV7V8ObuGwD50taeBew==
+X-Received: by 2002:a50:fd9a:: with SMTP id o26mr38385033edt.76.1622053911300;
+        Wed, 26 May 2021 11:31:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dh21sm12995260edb.28.2021.05.26.11.31.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 11:31:50 -0700 (PDT)
+Subject: Re: [PATCH v2 08/10] KVM: selftests: create alias mappings when using
+ shared memory
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        David Matlack <dmatlack@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Gardon <bgardon@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>
+References: <20210519200339.829146-1-axelrasmussen@google.com>
+ <20210519200339.829146-9-axelrasmussen@google.com>
+ <CALzav=eGi2_TBx=LDYpg6hRi8JabGPsHLC8M5-Vzf8DJHomSVQ@mail.gmail.com>
+ <CAJHvVcjFJT8E35nhiNCLzT=f3DsPaWu1RjJNQqPWK9zspoBnSw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <553e0fdc-53ff-10a6-385a-2cf47f00899f@redhat.com>
+Date:   Wed, 26 May 2021 20:31:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAJHvVcjFJT8E35nhiNCLzT=f3DsPaWu1RjJNQqPWK9zspoBnSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 26/05/21 19:22, Axel Rasmussen wrote:
+> I applied this change on top of kvm/master and tested it, and indeed
+> it compiles and works correctly.
+> 
+> Paolo, feel free to take this with a:
+> 
+> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+> 
+> Or alternatively if you prefer I'm happy to send it as a real
+> git-send-email patch.
 
-While attempting to use "perf kvm --guestkallsyms=g-kallsyms report",
-I have found that perf 5.13-rc2 fails to convert IP values to symbols.
+Yes, I squashed it.
 
-After spending a while debugging, what I've found is:
+Paolo
 
-1) perf_session__new() will not read the gust kernel symbols in this
-   case (data is non-NULL, and is open read-only.) The comments say
-   that symbol reading will be deferred to the MMAP and MMAP2 events.
+> On Tue, May 25, 2021 at 4:50 PM David Matlack <dmatlack@google.com> wrote:
+>>
+>> On Wed, May 19, 2021 at 1:04 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>>>
+>>> When a memory region is added with a src_type specifying that it should
+>>> use some kind of shared memory, also create an alias mapping to the same
+>>> underlying physical pages.
+>>>
+>>> And, add an API so tests can get access to these alias addresses.
+>>> Basically, for a guest physical address, let us look up the analogous
+>>> host *alias* address.
+>>>
+>>> In a future commit, we'll modify the demand paging test to take
+>>> advantage of this to exercise UFFD minor faults. The idea is, we
+>>> pre-fault the underlying pages *via the alias*. When the *guest*
+>>> faults, it gets a "minor" fault (PTEs don't exist yet, but a page is
+>>> already in the page cache). Then, the userfaultfd theads can handle the
+>>> fault: they could potentially modify the underlying memory *via the
+>>> alias* if they wanted to, and then they install the PTEs and let the
+>>> guest carry on via a UFFDIO_CONTINUE ioctl.
+>>>
+>>> Reviewed-by: Ben Gardon <bgardon@google.com>
+>>> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>>> ---
+>>>   .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>>>   tools/testing/selftests/kvm/lib/kvm_util.c    | 51 +++++++++++++++++++
+>>>   .../selftests/kvm/lib/kvm_util_internal.h     |  2 +
+>>>   3 files changed, 54 insertions(+)
+>>>
+>>> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+>>> index a8f022794ce3..0624f25a6803 100644
+>>> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+>>> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+>>> @@ -146,6 +146,7 @@ void virt_map(struct kvm_vm *vm, uint64_t vaddr, uint64_t paddr,
+>>>   void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa);
+>>>   void *addr_gva2hva(struct kvm_vm *vm, vm_vaddr_t gva);
+>>>   vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva);
+>>> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa);
+>>>
+>>>   /*
+>>>    * Address Guest Virtual to Guest Physical
+>>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+>>> index e4a8d0c43c5e..0b88d1bbc1e0 100644
+>>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+>>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+>>> @@ -811,6 +811,19 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>>>
+>>>          /* Add to linked-list of memory regions. */
+>>>          list_add(&region->list, &vm->userspace_mem_regions);
+>>> +
+>>> +       /* If shared memory, create an alias. */
+>>> +       if (region->fd >= 0) {
+>>> +               region->mmap_alias = mmap(NULL, region->mmap_size,
+>>> +                                         PROT_READ | PROT_WRITE,
+>>> +                                         vm_mem_backing_src_alias(src_type)->flag,
+>>> +                                         region->fd, 0);
+>>> +               TEST_ASSERT(region->mmap_alias != MAP_FAILED,
+>>> +                           "mmap of alias failed, errno: %i", errno);
+>>> +
+>>> +               /* Align host alias address */
+>>> +               region->host_alias = align(region->mmap_alias, alignment);
+>>> +       }
+>>>   }
+>>>
+>>>   /*
+>>> @@ -1239,6 +1252,44 @@ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+>>>          return -1;
+>>>   }
+>>>
+>>> +/*
+>>> + * Address VM physical to Host Virtual *alias*.
+>>> + *
+>>> + * Input Args:
+>>> + *   vm - Virtual Machine
+>>> + *   gpa - VM physical address
+>>> + *
+>>> + * Output Args: None
+>>> + *
+>>> + * Return:
+>>> + *   Equivalent address within the host virtual *alias* area, or NULL
+>>> + *   (without failing the test) if the guest memory is not shared (so
+>>> + *   no alias exists).
+>>> + *
+>>> + * When vm_create() and related functions are called with a shared memory
+>>> + * src_type, we also create a writable, shared alias mapping of the
+>>> + * underlying guest memory. This allows the host to manipulate guest memory
+>>> + * without mapping that memory in the guest's address space. And, for
+>>> + * userfaultfd-based demand paging, we can do so without triggering userfaults.
+>>> + */
+>>> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa)
+>>> +{
+>>> +       struct userspace_mem_region *region;
+>>> +
+>>> +       list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+>>
+>> This patch fails to compile on top of with db0670ce3361 ("KVM:
+>> selftests: Keep track of memslots more efficiently").
+>>
+>> This can be reproduced by checking out kvm/master and running `make -C
+>> tools/testing/selftests/kvm`.
+>>
+>> The following diff fixes the compilation error but I did not have time
+>> to test it yet:
+>>
+>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c
+>> b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> index c98db1846e1b..28e528c19d28 100644
+>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> @@ -1374,19 +1374,17 @@ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+>>   void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa)
+>>   {
+>>          struct userspace_mem_region *region;
+>> +       uintptr_t offset;
+>>
+>> -       list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+>> -               if (!region->host_alias)
+>> -                       continue;
+>> +       region = userspace_mem_region_find(vm, gpa, gpa);
+>> +       if (!region)
+>> +               return NULL;
+>>
+>> -               if ((gpa >= region->region.guest_phys_addr)
+>> -                       && (gpa <= (region->region.guest_phys_addr
+>> -                               + region->region.memory_size - 1)))
+>> -                       return (void *) ((uintptr_t) region->host_alias
+>> -                               + (gpa - region->region.guest_phys_addr));
+>> -       }
+>> +       if (!region->host_alias)
+>> +               return NULL;
+>>
+>> -       return NULL;
+>> +       offset = gpa - region->region.guest_phys_addr;
+>> +       return (void *) ((uintptr_t) region->host_alias + offset);
+>>   }
+>>
+>>   /*
+>>
+>>
+>>
+>>> +               if (!region->host_alias)
+>>> +                       continue;
+>>> +
+>>> +               if ((gpa >= region->region.guest_phys_addr)
+>>> +                       && (gpa <= (region->region.guest_phys_addr
+>>> +                               + region->region.memory_size - 1)))
+>>> +                       return (void *) ((uintptr_t) region->host_alias
+>>> +                               + (gpa - region->region.guest_phys_addr));
+>>> +       }
+>>> +
+>>> +       return NULL;
+>>> +}
+>>> +
+>>>   /*
+>>>    * VM Create IRQ Chip
+>>>    *
+>>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+>>> index 91ce1b5d480b..a25af33d4a9c 100644
+>>> --- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+>>> +++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+>>> @@ -16,7 +16,9 @@ struct userspace_mem_region {
+>>>          int fd;
+>>>          off_t offset;
+>>>          void *host_mem;
+>>> +       void *host_alias;
+>>>          void *mmap_start;
+>>> +       void *mmap_alias;
+>>>          size_t mmap_size;
+>>>          struct list_head list;
+>>>   };
+>>> --
+>>> 2.31.1.751.gd2f1c929bd-goog
+>>>
+> 
 
-2) all of the MMAP and MMAP2 events seem to be for
-   PERF_RECORD_MISC_KERNEL and PERF_RECORD_MISC_USER. There are none
-   for PERF_RECORD_MISC_GUEST_KERNEL.
-
-I have found that disabling the checks in perf_session__new() mentioned
-in (1) allows the command above to give me symbolic information. As I
-don't know the code all that well, I'm not sure if this is a correct
-fix, or whether the problem lies in the "perf kvm record" side - that
-depends whether there are supposed to be MMAP/MMAP2 events for the
-guest kernel.
-
-Below is the debug diff I've been using so far... (building out of the
-kernel tree.) The change to tools/perf/util/session.c seems to be what
-has fixed the problem for me, but I don't think this is the correct
-fix.
-
-diff -ur -x '*.o' -x '*.cmd' perf-5.13.0-rc2.orig/tools/perf/util/machine.c perf-5.13.0-rc2/tools/perf/util/machine.c
---- perf-5.13.0-rc2.orig/tools/perf/util/machine.c	2021-05-19 15:04:47.000000000 +0100
-+++ perf-5.13.0-rc2/tools/perf/util/machine.c	2021-05-20 14:41:55.425771482 +0100
-@@ -1234,7 +1234,7 @@
- 	char path[PATH_MAX];
- 	pid_t pid;
- 	char *endp;
--
-+printf("machines__create_guest_kernel_maps: %s\n", symbol_conf.default_guest_kallsyms);
- 	if (symbol_conf.default_guest_vmlinux_name ||
- 	    symbol_conf.default_guest_modules ||
- 	    symbol_conf.default_guest_kallsyms) {
-@@ -1293,7 +1293,7 @@
- int machines__create_kernel_maps(struct machines *machines, pid_t pid)
- {
- 	struct machine *machine = machines__findnew(machines, pid);
--
-+printf("machines__create_kernel_maps: %p\n", machine);
- 	if (machine == NULL)
- 		return -1;
- 
-@@ -1763,7 +1763,7 @@
- 		bid = &__bid;
- 		build_id__init(bid, event->mmap2.build_id, event->mmap2.build_id_size);
- 	}
--
-+printf("%s: cpumode %d\n", "machine__process_mmap2_event", sample->cpumode);
- 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
- 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
- 		struct extra_kernel_map xm = {
-@@ -1821,6 +1821,7 @@
- 	if (dump_trace)
- 		perf_event__fprintf_mmap(event, stdout);
- 
-+printf("%s: cpumode %d\n", "machine__process_mmap_event", sample->cpumode);
- 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
- 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
- 		struct extra_kernel_map xm = {
-diff -ur -x '*.o' -x '*.cmd' perf-5.13.0-rc2.orig/tools/perf/util/session.c perf-5.13.0-rc2/tools/perf/util/session.c
---- perf-5.13.0-rc2.orig/tools/perf/util/session.c	2021-05-19 15:04:47.000000000 +0100
-+++ perf-5.13.0-rc2/tools/perf/util/session.c	2021-05-20 12:17:31.251730384 +0100
-@@ -243,14 +243,14 @@
- 	session->machines.host.single_address_space =
- 		perf_env__single_address_space(session->machines.host.env);
- 
--	if (!data || perf_data__is_write(data)) {
-+//	if (!data || perf_data__is_write(data)) {
- 		/*
- 		 * In O_RDONLY mode this will be performed when reading the
- 		 * kernel MMAP event, in perf_event__process_mmap().
- 		 */
- 		if (perf_session__create_kernel_maps(session) < 0)
- 			pr_warning("Cannot read kernel map\n");
--	}
-+//	}
- 
- 	/*
- 	 * In pipe-mode, evlist is empty until PERF_RECORD_HEADER_ATTR is
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
