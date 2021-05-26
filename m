@@ -2,60 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF863910DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3984C3910DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhEZGtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:49:24 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:46792 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhEZGtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:49:23 -0400
-Received: by mail-vs1-f48.google.com with SMTP id q6so167573vsp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:47:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7WCk+Lm6KZXZoIAY4GErskDfU9tkMKa8aGeK6Ro9QmU=;
-        b=pg7wmv7kRcp7hT3qmQLpkWNdNd9/31QD2Y7f+Vx/ODMT8jarl7z43EbwiTQ4CM7Dfw
-         WGnVbbjs7y1QlG/S7/vdEAsAzaGBhZ3gFR4I2pVvff+4y1Blbx0ohxXJSgBnMYnTSXqF
-         mk1Wugzf1+g/r02UPBpAcEdzds0ycWIdvCULhQlXzcSVijSnEdMOqdlJn98U8zpvI2bQ
-         V+9eBrxfuFKUMFJX3amY0xUg15JX7touCGbxBFHxJH7zh4VUIbDjK7URgEXo8MQxjNcI
-         nHjDcP9KF8+UPKv2TRfzEK1KvXChahfq+9Km14yvRQDcPPyJ5JsMAyUnKY+ps6tLEo4w
-         r+NA==
-X-Gm-Message-State: AOAM532wc7W2bymAVxGuk2C8HxFRVSrZmV4eLC2CMemBEXQMpP2qByVr
-        lm7a3NsUCFoj2xlXoSfsrf+hD0enfqK3WHwcCy3LZUM/
-X-Google-Smtp-Source: ABdhPJwvOFwELymYnoQHY72P8yzFEXxgYmnod7AWlMaGSRUKELZEDwPkLt2RaHRR/bb7PRjI4a0ciyh2yo/iLuomaJo=
-X-Received: by 2002:a67:4386:: with SMTP id q128mr12515959vsa.40.1622011671135;
- Tue, 25 May 2021 23:47:51 -0700 (PDT)
+        id S232526AbhEZGus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:50:48 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42865 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230419AbhEZGur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:50:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FqhPh6p0rz9sRN;
+        Wed, 26 May 2021 16:49:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622011754;
+        bh=IOR3XSUPjg5wfLQE6jqDhiWwjS1si1krGcr3ohaL1gc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=quX5eKLJkmeiRxQnbN6mLOzmq7YLzfR55n9cUqsYg3dyk4RHALWPp45yRbkKp8VsW
+         +AvEpBIVnDMUZ5+gz/YopupR0/I/dHRjxmup5YWrEyxBB9Xf+7QS1SuM7uE1M2kjHI
+         U/eccdtC8L6xpSHm6udZ2phXJK/dOXaVmx6Gm/w2KyVTQ18mSWEGREX6rMj71H0RAJ
+         kQomqH9dlRCHXD2buY+bvjd8fCc8NZHNLbu9/upStopWoKVNY+RKgZ1V5xTmcELAhQ
+         Ig02sXIdf+Av+b+4v6kGWE5wXr+0RFh5z168G4VmnmX7OKbzBXkKby5E5bPxrV8JMp
+         um1zRNPLTAK8A==
+Date:   Wed, 26 May 2021 16:49:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the akpm tree with the arm64-fixes tree
+Message-ID: <20210526164910.564f598f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <fc397a7074d627e22974ef8927910ad08744db5c.1621988847.git.fthain@linux-m68k.org>
-In-Reply-To: <fc397a7074d627e22974ef8927910ad08744db5c.1621988847.git.fthain@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 May 2021 08:47:39 +0200
-Message-ID: <CAMuHMdW9_Tg+pttOMzCce+tjQ2w_GOxtvVVMB=g_S4-T0CSYEg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS, .mailmap: Update my email address
-To:     fthain@linux-m68k.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/o4FcHccMb6AKRVExJvwGGNF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 3:01 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+--Sig_/o4FcHccMb6AKRVExJvwGGNF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, will queue in the m68k for-v5.14 branch.
+Hi all,
 
-Gr{oetje,eeting}s,
+Today's linux-next merge of the akpm tree got a conflict in:
 
-                        Geert
+  arch/arm64/mm/mmu.c
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+between commit:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  e69012400b0c ("arm64: mm: don't use CON and BLK mapping if KFENCE is enab=
+led")
+
+from the arm64-fixes tree and patch:
+
+  "set_memory: allow querying whether set_direct_map_*() is actually enable=
+d"
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/mm/mmu.c
+index cbcbd64818eb,e3b639e2461d..000000000000
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@@ -515,8 -516,7 +516,7 @@@ static void __init map_mem(pgd_t *pgdp
+  	 */
+  	BUILD_BUG_ON(pgd_index(direct_map_end - 1) =3D=3D pgd_index(direct_map_e=
+nd));
+ =20
+- 	if (rodata_full || crash_mem_map || debug_pagealloc_enabled() ||
+- 	    IS_ENABLED(CONFIG_KFENCE))
+ -	if (can_set_direct_map() || crash_mem_map)
+++	if (can_set_direct_map() || crash_mem_map || IS_ENABLED(CONFIG_KFENCE))
+  		flags |=3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ =20
+  	/*
+
+--Sig_/o4FcHccMb6AKRVExJvwGGNF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCt72YACgkQAVBC80lX
+0GxqOQf/d2NgutYbf7RQfFANuVYL2cxPCBqsSr1yECfBltRL/NcI2XBXXhbwUR3C
+PTYyoLM2eGliXodiUWOXTB7Kq3WpfGq6HCaT/B3lrmpaYhfOcG+JKqol4yRf7iEk
+brb+O9xi8qTrHO6UFd7UD8lywJ6dZ2V19RYzmil47fIQDe5jjXsycgAQjnRT2+UW
+vO0fGkNfJhq7KNNyJl2j2nLfqdL/HvwP+rFbejBeoP3t1C3m3Ax7TtPyshOP8el2
+V2kqEYsc4LOKqYLfn8pBUmddN38d7iEu7PC2iS5utMf4PTdfIEGXZ62Y/UFODPaV
+rnZHqMSEXY4+geTi+D7+7qKl294s8A==
+=Xf28
+-----END PGP SIGNATURE-----
+
+--Sig_/o4FcHccMb6AKRVExJvwGGNF--
