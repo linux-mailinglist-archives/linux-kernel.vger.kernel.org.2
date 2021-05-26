@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0522239186E
+	by mail.lfdr.de (Postfix) with ESMTP id 7311539186F
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235197AbhEZNDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        id S235208AbhEZND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbhEZNCf (ORCPT
+        with ESMTP id S234955AbhEZNCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:02:35 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B1CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:02 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z17so1041278wrq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:02 -0700 (PDT)
+        Wed, 26 May 2021 09:02:39 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BE6C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:03 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so486122wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0dnTAwnA+o8Rl6Vjmau/iU73tQSrbIJc4+Gm/DwQ8N8=;
-        b=yzpRHfuAFiJ4nJRki9oj+LQQzpcpbJb2uP+be+5hC7r2Qt8OnrD6+KrKWDKnNuUj/c
-         X55UMs7SbQnBOpSImIrawe7/2dcQyISDH40JFA60Z2tBxOvtul2Spxr5vriAA/ZJaPt9
-         pdLTcjZIn65Y6qKc8dR9fSpEVO1Oq/m93HkkpCBlbiHBXct9w0gPMycwJ3HU8gxS8BxO
-         KVZawzDCIphzcPs8olEFN2poev3L9YOHeEd29m/AJ3aFRFszSD7Xyd9PedF5TtQhttbB
-         SbGbINnZMNlzcGX2BiDBqMSfcC+j8rlZNjDgJjaxrDO2S9OJZ9zBHKvuFts9EvndA0q3
-         cbyQ==
+        bh=AwJu7HhhGbyc5eX5Sb7yrlHyOqnZlnbHO+cts8fAJx0=;
+        b=DwhkZXUFXg1XrohXL5lPgDeT4UgR4zcD3LMUIEVIZO7YN7v5cJfoIP3GUbrggiV84S
+         M3OgQq+YoqdoNq7KtHYgnotu4HZdkTjF3XvRrymeGNXHFCzC3o7r3xl7IkCGy+PTgxxJ
+         +e6YZwBg4dyQgdj1drhn6Ysh/B5yikrIfBe5egnRBgRLuPYG/ItNQ5yoLri546hqSr30
+         Cs96V1wWdQd8KJo4Nk/fhF54VYt2rvP+8WgQogd4R7WqJrUllXHWeimBNd/qGwWJM/Ma
+         bQUcPSCuaq8s6n2Y/sf/zmlqUpUEW+rbloP0BBPQgQ3+Kjwgh59fthxVvTrSzQdr+tE9
+         owhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0dnTAwnA+o8Rl6Vjmau/iU73tQSrbIJc4+Gm/DwQ8N8=;
-        b=s0BxrsMLnT2EKRygFF/vLMBAI02DIjKP9qY74Y1Mh8bZkQMfUArtn2jjZR+KFeep5A
-         rbB3B1KX2279fb6AbizlOqwwxIJJAE9voHM+trVxt07g08BreimCwaLEXqc9wQb3r/1e
-         lZUvJ2TO1CM0vxnmTOs/XxlKkHHntVyTjRIo6In8nmqPSc3R8BrV9L21YDXswnDKdfaT
-         uevwCLeP9Sd4fney0EUOWo7no2conf1qnmJwdIcuCHR5k+A4K/XLNecI8qSwnd7gHAmp
-         gP8x2zoEDl+21eLWCgOsBX1F8QjM6NUyB2LyRmqV4koYWOWzKbGqRwz0VSx2i9g8cHSv
-         k8KQ==
-X-Gm-Message-State: AOAM530SQnUJbaYyjLOser3SkNcSN5Y0F3KdgQfP03ZA/JwnG0fk37yT
-        2lQ27DM7z0jQpaD6/WdavYA5SQ==
-X-Google-Smtp-Source: ABdhPJxb1ylryAcKdKx8sQgn4UqK0bwJM+U0craSVOZlcd77UaWqPnLsLAiePr+lGIqjKdwYVdmOtQ==
-X-Received: by 2002:adf:efc7:: with SMTP id i7mr25188723wrp.421.1622034061209;
-        Wed, 26 May 2021 06:01:01 -0700 (PDT)
+        bh=AwJu7HhhGbyc5eX5Sb7yrlHyOqnZlnbHO+cts8fAJx0=;
+        b=YzRmqvlAvoNdPSZNQSpmng0TPoKueunXkf8yvzhY2l5Fh8Dn1gmBoeQXJD0DrH6z8g
+         +oOdKqlYE/b9RPgdR0ldT/ZqbLD1G5jTCs79z61/atg6vb3479iKmHjDTwahYz9eX9Hv
+         7UKJFDLxRwZ99oGwlCNSyzQSDI8CGGZneeAia6AZ0JgjSx0uMg34b2WVsdp+M3CKyZFE
+         AYkIWqg/2pptW7RncTZEjHPL7/VyxRvdFj3mpu8SIHKybIK+x5ga+kzdeyVlZQKVBdJN
+         mcpWJZ5KMRG/WnAgK/E497cf1J4PX1psc++IAeKFeqb0NWjikc6kis9INDSGeH1LJ03o
+         GwPg==
+X-Gm-Message-State: AOAM531u8XYR5G8YpVAnfmUNuM1lj4ZU8YNCUeC84lk8zTbUUgUcoUqU
+        8UQ53zVAiKJnNEfxDa6tii6IVRcou7veOQ==
+X-Google-Smtp-Source: ABdhPJxs5J0uIy5/04GWNCQlW4anwbQZPMZq5kdN+LbxzUNtNHNMW8ObkMx/nEpj2+AOwbYEp3E+rg==
+X-Received: by 2002:a7b:c14f:: with SMTP id z15mr3306718wmi.149.1622034062232;
+        Wed, 26 May 2021 06:01:02 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.00
+        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:01:00 -0700 (PDT)
+        Wed, 26 May 2021 06:01:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
+        Minas Harutyunyan <hminas@synopsys.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 14/24] usb: chipidea: otg: Fix formatting and missing documentation issues
-Date:   Wed, 26 May 2021 14:00:27 +0100
-Message-Id: <20210526130037.856068-15-lee.jones@linaro.org>
+        Ben Dooks <ben@simtec.co.uk>, linux-usb@vger.kernel.org
+Subject: [PATCH 15/24] usb: dwc2: gadget: Repair 'dwc2_hsotg_core_init_disconnected()'s documentation
+Date:   Wed, 26 May 2021 14:00:28 +0100
+Message-Id: <20210526130037.856068-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526130037.856068-1-lee.jones@linaro.org>
 References: <20210526130037.856068-1-lee.jones@linaro.org>
@@ -67,51 +68,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/chipidea/otg.c:25: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/usb/chipidea/otg.c:78: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/usb/chipidea/otg.c:143: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/usb/dwc2/gadget.c:3349: warning: expecting prototype for dwc2_hsotg_core_init(). Prototype was for dwc2_hsotg_core_init_disconnected() instead
 
-Cc: Peter Chen <peter.chen@kernel.org>
+Cc: Minas Harutyunyan <hminas@synopsys.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ben Dooks <ben@simtec.co.uk>
 Cc: linux-usb@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/chipidea/otg.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/usb/dwc2/gadget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
-index d3aada3ce7ec2..8dd59282827b0 100644
---- a/drivers/usb/chipidea/otg.c
-+++ b/drivers/usb/chipidea/otg.c
-@@ -22,7 +22,7 @@
- #include "otg_fsm.h"
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index b16fb3611a869..c581ee41ac81b 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -3338,7 +3338,7 @@ static void dwc2_hsotg_irq_fifoempty(struct dwc2_hsotg *hsotg, bool periodic)
  
+ static int dwc2_hsotg_ep_disable(struct usb_ep *ep);
  /**
-- * hw_read_otgsc returns otgsc register bits value.
-+ * hw_read_otgsc - returns otgsc register bits value.
-  * @ci: the controller
-  * @mask: bitfield mask
-  */
-@@ -75,7 +75,7 @@ u32 hw_read_otgsc(struct ci_hdrc *ci, u32 mask)
- }
- 
- /**
-- * hw_write_otgsc updates target bits of OTGSC register.
-+ * hw_write_otgsc - updates target bits of OTGSC register.
-  * @ci: the controller
-  * @mask: bitfield mask
-  * @data: to be written
-@@ -140,8 +140,9 @@ void ci_handle_vbus_change(struct ci_hdrc *ci)
- }
- 
- /**
-- * When we switch to device mode, the vbus value should be lower
-- * than OTGSC_BSV before connecting to host.
-+ * hw_wait_vbus_lower_bsv - When we switch to device mode, the vbus value
-+ *                          should be lower than OTGSC_BSV before connecting
-+ *                          to host.
-  *
-  * @ci: the controller
+- * dwc2_hsotg_core_init - issue softreset to the core
++ * dwc2_hsotg_core_init_disconnected - issue softreset to the core
+  * @hsotg: The device state
+  * @is_usb_reset: Usb resetting flag
   *
 -- 
 2.31.1
