@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCFB391AAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F496391AB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235059AbhEZOtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:49:25 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33846 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234893AbhEZOtY (ORCPT
+        id S235073AbhEZOuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234957AbhEZOum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:49:24 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D64891C0B80; Wed, 26 May 2021 16:47:51 +0200 (CEST)
-Date:   Wed, 26 May 2021 16:47:51 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
- ethernet type indicator
-Message-ID: <20210526144751.GA2141@amd>
-References: <20210519100253.49b155e9@thinkpad>
- <20210519121812.4285b3ea@coco.lan>
- <20210519141102.0161a9d9@thinkpad>
- <20210519162413.4feeab02@coco.lan>
- <20210519175503.567e6ecc@thinkpad>
- <20210519203014.1838de3a@coco.lan>
- <20210520130014.7189a315@dellmb>
- <20210520180028.495f94e4@coco.lan>
- <20210520183633.084a8c3f@thinkpad>
- <20210520205933.3cfc57a9@coco.lan>
+        Wed, 26 May 2021 10:50:42 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2798C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:49:10 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id m18so1467443wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4yzCAHgH1guS2Y/0Pu674rbF+XBExPOSLFaI2JjAr9o=;
+        b=RzcyMIr4so58tJ/yAtZJpcVi6jfoQjSa78q5+zCUvWhjT8ApP+sC9MGWT0SslIRymM
+         OOUsuUiB8Q8miGAkRv6t1l+V8AguLEnIXkCilfhI3WdUAj4rIjVvfDCX0QeOAob479qK
+         llkmocaP7/SJypt9g96oKJW63enU3yMMfT/6g2bBXJx0X5rlXpoiaDXRmtnelLQgKLng
+         uoIX7m5cRWPdlqNsFOxbphLBe65vbj17DoyKPkAg5PIZ2oXvNrBu4xcoKH3yRYeE5dHi
+         05Xs/YfPmdCUnBObgfyfvRQ5yUEINyxULpVaHrph4sFjMl3cfWrFsTyI7GgjlDCuGMH5
+         PWTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4yzCAHgH1guS2Y/0Pu674rbF+XBExPOSLFaI2JjAr9o=;
+        b=FvVM06Sx+6m5PWHTb+D16LCUnM5+OvPntCoruYkhXzHbcJlRhgou24kFI+fdqZONio
+         lmELxi12M9fqr7BUxOK5Ry7DPE+BEDzDCJD5sbGMx7hTHvCOrTugKPeP/YGFcPHAlsgC
+         NYhGvPtW/qzmdJIPfWeuPYMjiCVvw27p99GQ1VV4sUxTMzN2pQ3Orx9MJ6av0Ui6AHc+
+         Olxt1twiAVdTOXHYnqsCWZwOXVke65Sm+BRKzd7GYHTaSWcmC7r+0eUiPmZ551cv1sKs
+         I5pE0oRAHsCJ/0S5+9DDyrY6krLduADPPQUkhK7JY1RmrqYv0WvZzngEHx+ij1OkQvGp
+         tYtQ==
+X-Gm-Message-State: AOAM533fJbtqoIgxjPn2OMn4xAC+Gp1VOMS7gtZa7TVrsJbhQeM3b4y6
+        7edx4uzlS+7CCGt9a+Kv6vVpcQ==
+X-Google-Smtp-Source: ABdhPJymhCb8+adtmqlgsuAxsyUXeg3vOV/bRVZzi9wBHWjkqTj0A6AdeBSSxDHabNoMiIbDMcdDvg==
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr32872343wrn.85.1622040549363;
+        Wed, 26 May 2021 07:49:09 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id t204sm7201207wmg.38.2021.05.26.07.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 07:49:08 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:49:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        patches@opensource.cirrus.com,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [RESEND PATCH v2 06/13] mfd: wm831x: Correct kerneldoc
+Message-ID: <20210526144907.GC543307@dell>
+References: <20210526124711.33223-1-krzysztof.kozlowski@canonical.com>
+ <20210526124711.33223-7-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210520205933.3cfc57a9@coco.lan>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210526124711.33223-7-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 26 May 2021, Krzysztof Kozlowski wrote:
+65;6200;1c
+> Correct kerneldoc function name to fix W=1 warning:
+> 
+>   drivers/mfd/wm831x-core.c:121: warning:
+>     expecting prototype for wm831x_reg_unlock(). Prototype was for wm831x_reg_lock() instead
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. Add Ack
+> ---
+>  drivers/mfd/wm831x-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This one has been fixed already:
 
-Hi!
+https://lore.kernel.org/lkml/20210520120820.3465562-2-lee.jones@linaro.org/
 
-> > > See, there's nothing that the driver can possible do with
-> > > rx, tx, link, interval, device_name/device, as the the BIOS allows
-> > > to set to "LAN1", "LAN2" or "LAN1+LAN2". the WMI interface doesn't
-> > > provide *any* information about what LAN1 means. =20
-> >=20
-> > On the contrary, there is something the driver can do with these
-> > attributes. If the specific combination is not supported, the driver
-> > should return -EOPNOTSUPP in the trigger_offload method and let the
-> > netdev trigger do the work in software.=20
->=20
-> Letting netdev to trigger is something we don't want to allow, as this
-> can cause side effects, making it doing slow the system due to BIOS calls
-> for no good reason.
+> diff --git a/drivers/mfd/wm831x-core.c b/drivers/mfd/wm831x-core.c
+> index bcef08f58fb3..c31809b17547 100644
+> --- a/drivers/mfd/wm831x-core.c
+> +++ b/drivers/mfd/wm831x-core.c
+> @@ -109,7 +109,7 @@ static int wm831x_reg_locked(struct wm831x *wm831x, unsigned short reg)
+>  }
+>  
+>  /**
+> - * wm831x_reg_unlock: Unlock user keyed registers
+> + * wm831x_reg_lock: Unlock user keyed registers
+>   *
+>   * The WM831x has a user key preventing writes to particularly
+>   * critical registers.  This function locks those registers,
 
-I'm with Marek here. Please listen to him.
-
-Yes, operating LEDs can cost some CPU cycles. That's the case on most
-hardware. Yet we want to support most triggers on most hardware.
-
-Best regards,
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCuX5cACgkQMOfwapXb+vLAcwCbBzgQIYwh4JUJsSgQSrO7xbUU
-IioAmwX8mKnpRmC1qRAlJIiv382x+Z1Z
-=5jjI
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
