@@ -2,198 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FD039222F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEAF392234
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbhEZVj4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 17:39:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3953 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233550AbhEZVjy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:39:54 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fr44G6SSFz80wY;
-        Thu, 27 May 2021 05:35:26 +0800 (CST)
-Received: from dggpeml100024.china.huawei.com (7.185.36.115) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 05:38:19 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpeml100024.china.huawei.com (7.185.36.115) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 05:38:19 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Thu, 27 May 2021 05:38:19 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        tangchengchang <tangchengchang@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
- are already in same LLC
-Thread-Topic: [PATCH] sched: fair: don't depend on wake_wide if waker and
- wakee are already in same LLC
-Thread-Index: AQHXUhAXdUizMfoReUmU6BSpTsz4hqr1J2iAgAEbn9A=
-Date:   Wed, 26 May 2021 21:38:19 +0000
-Message-ID: <7dd00a98d6454d5e92a7d9b936d1aa1c@hisilicon.com>
-References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
- <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
-In-Reply-To: <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.79]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S234104AbhEZVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:41:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:50156 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234070AbhEZVlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:41:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69A3C11D4;
+        Wed, 26 May 2021 14:40:19 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFA4D3F73B;
+        Wed, 26 May 2021 14:40:12 -0700 (PDT)
+Date:   Wed, 26 May 2021 22:40:05 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210526214004.GA1712@e120325.cambridge.arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com>
+ <20210524101617.8965-3-beata.michalska@arm.com>
+ <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+ <87a6oj6sxo.mognet@arm.com>
+ <20210525102945.GA24210@e120325.cambridge.arm.com>
+ <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+ <20210526121546.GA13262@e120325.cambridge.arm.com>
+ <20210526125133.GB13262@e120325.cambridge.arm.com>
+ <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Peter Zijlstra [mailto:peterz@infradead.org]
-> Sent: Thursday, May 27, 2021 12:16 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: vincent.guittot@linaro.org; mingo@redhat.com; dietmar.eggemann@arm.com;
-> rostedt@goodmis.org; bsegall@google.com; mgorman@suse.de;
-> valentin.schneider@arm.com; juri.lelli@redhat.com; bristot@redhat.com;
-> linux-kernel@vger.kernel.org; guodong.xu@linaro.org; yangyicong
-> <yangyicong@huawei.com>; tangchengchang <tangchengchang@huawei.com>;
-> Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
-> are already in same LLC
+On Wed, May 26, 2021 at 08:17:41PM +0200, Dietmar Eggemann wrote:
+> On 26/05/2021 14:51, Beata Michalska wrote:
+> > On Wed, May 26, 2021 at 01:15:46PM +0100, Beata Michalska wrote:
+> >> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
+> >>> On 25/05/2021 12:29, Beata Michalska wrote:
+> >>>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
+> >>>>> On 24/05/21 23:55, Beata Michalska wrote:
+> >>>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+> >>>>>>> On 24/05/21 11:16, Beata Michalska wrote:
 > 
+> [...]
 > 
-> $subject is weird; sched/fair: is the right tag, and then start with a
-> capital letter.
+> >>> BTW, how would this mechanism behave on a system with SMT and asymmetric CPU
+> >>> capacity? Something EAS wouldn't allow but I guess asym_cap_list will be
+> >>> constructed and the SD_ASYM_CPUCAPACITY_XXX flags will be set?
+> >> Yes, the list would get created and flags set. I do not think there is
+> >> a difference with current approach (?). So EAS would be disabled (it only cares
+> >> about SD_ASYM_CPUCAPACITY_FULL flag) but the misift might still kick in.
+> >>
+> > That depends on the arch_scale_cpu_capacity. I would imagine it would
+> > return SCHED_CAPACITY_SCALE for those, which means no asymmetry will
+> > be detected ?
 > 
-> On Wed, May 26, 2021 at 09:10:57PM +1200, Barry Song wrote:
-> > when waker and wakee are already in the same LLC, it is pointless to worry
-> > about the competition caused by pulling wakee to waker's LLC domain.
+> I was thinking about an erroneous dts file like:
 > 
-> But there's more than LLC.
-
-I suppose other concerns might be about the "idle" and "load" of
-waker's cpu and wakee's prev_cpu. Here even though we disable
-wake_wide(), wake_affine() still has chance to select wakee's
-prev_cpu rather than pulling to waker. So disabling wake_wide()
-doesn't mean we will 100% pull.
-
-static int wake_affine(struct sched_domain *sd, struct task_struct *p,
-		       int this_cpu, int prev_cpu, int sync)
-{
-	int target = nr_cpumask_bits;
-
-	if (sched_feat(WA_IDLE))
-		target = wake_affine_idle(this_cpu, prev_cpu, sync);
-
-	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
-		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
-
-	if (target == nr_cpumask_bits)
-		return prev_cpu;
-
-	..
-	return target;
-}
-
-Furthermore, select_idle_sibling() can also pick wakee's prev_cpu
-if it is idle:
-
-static int select_idle_sibling(struct task_struct *p, int prev, int target)
-{
-	...
-
-	/*
-	 * If the previous CPU is cache affine and idle, don't be stupid:
-	 */
-	if (prev != target && cpus_share_cache(prev, target) &&
-	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-	    asym_fits_capacity(task_util, prev))
-		return prev;
-	...
-}
-
-Except those, could you please give me some clue about what else
-you have concerns on?
-
+>                 cpu-map {
+>                         cluster0 {
+>                                 core0 {
+> 					thread0 {
+>                                         	cpu = <&A53_0>;
+> 					};
+> 					thread1 {
+>                                         	cpu = <&A53_1>;
+> 					};
+>                                 };
+>                                 core1 {
+> 					thread0 {
+>                                         	cpu = <&A53_2>;
+> 					};
+> 					thread1 {
+>                                         	cpu = <&A53_3>;
+> 					};
+>                                 };
+>                                 core2 {
+> 					thread0 {
+>                                         	cpu = <&A53_4>;
+> 					};
+> 					thread1 {
+>                                         	cpu = <&A53_5>;
+> 					};
+>                                 };
+>                         };
 > 
-> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > ---
-> >  kernel/sched/fair.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 3248e24a90b0..cfb1bd47acc3 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6795,7 +6795,15 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu,
-> int wake_flags)
-> >  			new_cpu = prev_cpu;
-> >  		}
-> >
-> > -		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
-> > +		/*
-> > +		 * we use wake_wide to make smarter pull and avoid cruel
-> > +		 * competition because of jam-packed tasks in waker's LLC
-> > +		 * domain. But if waker and wakee have been already in
-> > +		 * same LLC domain, it seems it is pointless to depend
-> > +		 * on wake_wide
-> > +		 */
-> > +		want_affine = (cpus_share_cache(cpu, prev_cpu) || !wake_wide(p)) &&
-> > +				cpumask_test_cpu(cpu, p->cpus_ptr);
-> >  	}
+>                         cluster1 {
+>                                 core0 {
+> 					thread0 {
+>                                         	cpu = <&A53_6>;
+> 					};
+> 					thread1 {
+>                                         	cpu = <&A53_7>;
+> 					};
+>                                 };
+>                         };
+>                 };
 > 
-> And no supportive numbers...
+> 		A53_0: cpu@0 {
+> 			capacity-dmips-mhz = <446>;
+> 	 	A53_1: cpu@1 {
+> 			capacity-dmips-mhz = <1024>;
+> 		A53_2: cpu@2 {
+> 			capacity-dmips-mhz = <871>;
+> 		A53_3: cpu@3 {
+> 			capacity-dmips-mhz = <1024>;
+> 		A53_4: cpu@4 {
+> 			capacity-dmips-mhz = <446>;
+> 		A53_5: cpu@5 {
+> 			capacity-dmips-mhz = <871>;
+> 		A53_6: cpu@6 {
+> 			capacity-dmips-mhz = <1024>;
+> 		A53_7: cpu@7 {
+> 			capacity-dmips-mhz = <1024>;
+> 
+> Here I guess SD_ASYM_CPUCAPACITY will be attached to SMT[0-5]. So this
+> 'capacity-dmips-mhz' config error won't be detected.
+> 
+> In case all CPUs (i.e. hw threads would have the correct
+> capacity-dmips-mhz = <1024> or not being set (default 1024))
+> asym_cap_list would corrcetly only have 1 entry.
+We could possibly add a warning (like in EAS) if the asymmetry is detected
+for SMT which would give some indication that there is smth ... wrong ?
 
-Sorry for the confusion.
-
-I actually put some supportive numbers at the below thread which
-derived this patch:
-https://lore.kernel.org/lkml/bbc339cef87e4009b6d56ee37e202daf@hisilicon.com/
-
-when I tried to give Dietmar some pgbench data in that thread,
-I found in kunpeng920, while software ran in one die/numa with
-24cores sharing LLC, disabling wake_wide() brought the best
-pgbench result.
-
-                llc_as_factor          don't_use_wake_wide
-Hmean     1     10869.27 (   0.00%)    10723.08 *  -1.34%*
-Hmean     8     19580.59 (   0.00%)    19469.34 *  -0.57%*
-Hmean     12    29643.56 (   0.00%)    29520.16 *  -0.42%*
-Hmean     24    43194.47 (   0.00%)    43774.78 *   1.34%*
-Hmean     32    40163.23 (   0.00%)    40742.93 *   1.44%*
-Hmean     48    42249.29 (   0.00%)    48329.00 *  14.39%*
-
-The test was done by https://github.com/gormanm/mmtests
-and
-./run-mmtests.sh --config ./configs/config-db-pgbench-timed-ro-medium test_tag
-
-Commit "sched: Implement smarter wake-affine logic"
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=62470419
-says pgbench can improve by wake_wide(), but I've actually
-seen the opposite result while waker and wakee are already
-in one LLC.
-
-Not quite sure if it is specific to kunpeng920, perhaps
-I need to run the same test on some x86 machines.
-
-Thanks
-Barry
+---
+BR
+B.
