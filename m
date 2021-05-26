@@ -2,205 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DC8392371
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74B2392382
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhEZX5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 19:57:54 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24735 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbhEZX5u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 19:57:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622073378; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Hiu2ypcR7tUPti7eowVxhYnxcS4L7xgP2ne/MPTNhIA=;
- b=mAufyWI9DweAgqy4cNxmXSTMoGd4/og70nlS+wFBv0A9U5qD6BTznnp0G8JbKiLcxKnALbwT
- +R1B6QHrgC38YTwwNQVv/4TRMrbIpWTMc1Uq55cyxuFZ5y2oWax6QNg8FX9HpiqsWTj5O3Sq
- 200rtkHDe1XP8L8nUg4ZjMr20q4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60aee02214eae4d741fc8fcc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 23:56:18
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3CA73C4338A; Wed, 26 May 2021 23:56:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5494FC433D3;
-        Wed, 26 May 2021 23:56:15 +0000 (UTC)
+        id S234825AbhE0AA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:00:27 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:32804 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234615AbhE0AA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:00:26 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lm3QE-0004pF-4E; Thu, 27 May 2021 01:58:46 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Alex Bee <knaerzche@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-staging@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 05/10] media: hantro: add support for Rockchip RK3036
+Date:   Thu, 27 May 2021 01:58:45 +0200
+Message-ID: <3559518.1BCLMh4Saa@diego>
+In-Reply-To: <2640d65e-772b-6af4-f4be-8ed090693c22@gmail.com>
+References: <20210525152225.154302-1-knaerzche@gmail.com> <b65236f3b8bbf35411b536df8b260d9f8a9dbd80.camel@collabora.com> <2640d65e-772b-6af4-f4be-8ed090693c22@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 26 May 2021 16:56:15 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: power off DP phy base on mainlink status at
- suspend
-In-Reply-To: <CAE-0n53bGm4T7SE8sJWFgCbCs2uRYwKrXHxmKQ-0zHXQJpPKdw@mail.gmail.com>
-References: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53bGm4T7SE8sJWFgCbCs2uRYwKrXHxmKQ-0zHXQJpPKdw@mail.gmail.com>
-Message-ID: <7fc1bc954aff77ca5373caaf5fbf06a9@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-26 15:30, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-26 11:08:23)
->> DP mainlink can be either enabled or disabled at the time of suspend
->> happen. Therefore DP phy teared down at suspend should base on 
->> mainlink
->> status at that instance.
+Am Donnerstag, 27. Mai 2021, 01:27:59 CEST schrieb Alex Bee:
+> Hi Ezequiel,
 > 
-> Please add some more details here. The system crashes if you plug in 
-> the
-> HDMI cable during system wide suspend. That seems to be because the DP
-> phy isn't powered down during suspend if the HDMI cable is disconnected
-> so we try to process the hpd plug event on the path to suspend instead
-> of wait to bring up the phy and then the display?
-> 
-> I'm trying to find the case when we would be entering suspend and only
-> have called phy_init() without calling phy_exit(). What path is that? I
-> guess it is dp_ctrl_off_link_stream() called when the sink count goes 
-> to
-> 0? So plug in HDMI cable to apple dongle, unplug HDMI cable to apple
-> dongle and phy_power_off() followed by phy_exit() followed by 
-> phy_init()
-> and then enter suspend so we want to call phy_exit(). Then we only call
-> phy_power_off() if we've called dp_ctrl_on()? I think I followed it 
-> all.
-> 
-ok, will do
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 5 ++++-
->>  drivers/gpu/drm/msm/dp/dp_ctrl.h    | 2 +-
->>  drivers/gpu/drm/msm/dp/dp_display.c | 9 ++++++++-
->>  3 files changed, 13 insertions(+), 3 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index dbd8943..5115c05 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1398,7 +1398,7 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, 
->> bool flip, bool reset)
->>   * Perform required steps to uninitialize DP controller
->>   * and its resources.
->>   */
->> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
->> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on)
->>  {
->>         struct dp_ctrl_private *ctrl;
->>         struct dp_io *dp_io;
->> @@ -1414,6 +1414,9 @@ void dp_ctrl_host_deinit(struct dp_ctrl 
->> *dp_ctrl)
->>         phy = dp_io->phy;
->> 
->>         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
->> +       if (mainlink_on)
->> +               phy_power_off(phy);
->> +
->>         phy_exit(phy);
->> 
->>         DRM_DEBUG_DP("Host deinitialized successfully\n");
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> index 25e4f75..a23ee2b 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
->> @@ -20,7 +20,7 @@ struct dp_ctrl {
->>  };
->> 
->>  int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool 
->> reset);
->> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
->> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on);
->>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
->>  int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
->>  int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index cdec0a3..88eeeb5 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -104,6 +104,8 @@ struct dp_display_private {
->> 
->>         bool encoder_mode_set;
->> 
->> +       bool mainlink_on;
->> +
-> 
-> Is there a reason why this can't be stashed away in dp_ctrl.c in the
-> 'struct dp_ctrl'? It seems to follow closely with dp_ctrl_*() APIs.
-yes, I will do that.
+> Am 26.05.21 um 12:28 schrieb Ezequiel Garcia:
+> > Hi Alex,
+> >
+> > Thanks a lot for the patch.
+> >
+> > On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
+> >> RK3036's VPU IP block is the same as RK3288 has, except that it doesn't
+> >> have an encoder, decoding is supported up to 1920x1088 only and the axi
+> >> clock can be set to 300 MHz max.
+> >>
+> >> Add a new RK3036 variant which reflect this differences.
+> >>
+> >> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> >> ---
+> >>   drivers/staging/media/hantro/hantro_drv.c    |  1 +
+> >>   drivers/staging/media/hantro/hantro_hw.h     |  1 +
+> >>   drivers/staging/media/hantro/rk3288_vpu_hw.c | 49 ++++++++++++++++++++
+> >>   3 files changed, 51 insertions(+)
+> >>
+> >> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> >> index 38ea7b24036e..4f3c08e85bb8 100644
+> >> --- a/drivers/staging/media/hantro/hantro_drv.c
+> >> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> >> @@ -490,6 +490,7 @@ static const struct of_device_id of_hantro_match[] = {
+> >>          { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
+> >>          { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
+> >>          { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
+> >> +       { .compatible = "rockchip,rk3036-vpu", .data = &rk3036_vpu_variant, },
+> >>   #endif
+> >>   #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+> >>          { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> >> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> >> index de2bc367a15a..d8d6b0d3c3b3 100644
+> >> --- a/drivers/staging/media/hantro/hantro_hw.h
+> >> +++ b/drivers/staging/media/hantro/hantro_hw.h
+> >> @@ -164,6 +164,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+> >>   extern const struct hantro_variant rk3328_vpu_variant;
+> >>   extern const struct hantro_variant rk3288_vpu_variant;
+> >>   extern const struct hantro_variant rk3066_vpu_variant;
+> >> +extern const struct hantro_variant rk3036_vpu_variant;
+> >>   extern const struct hantro_variant imx8mq_vpu_variant;
+> >>   extern const struct hantro_variant sama5d4_vdec_variant;
+> >>   
+> >> diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> >> index 29805c4bd92f..c4684df4e012 100644
+> >> --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> >> +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> >> @@ -174,6 +174,13 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
+> >>          return IRQ_HANDLED;
+> >>   }
+> >>   
+> >> +static int rk3036_vpu_hw_init(struct hantro_dev *vpu)
+> >> +{
+> >> +       /* Bump ACLKs to max. possible freq. to improve performance. */
+> >> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+> >> +       return 0;
+> >> +}
+> >> +
+> >>   static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
+> >>   {
+> >>          /* Bump ACLKs to max. possible freq. to improve performance. */
+> >> @@ -209,6 +216,27 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+> >>   /*
+> >>    * Supported codec ops.
+> >>    */
+> >> +static const struct hantro_codec_ops rk3036_vpu_codec_ops[] = {
+> >> +       [HANTRO_MODE_H264_DEC] = {
+> >> +               .run = hantro_g1_h264_dec_run,
+> >> +               .reset = hantro_g1_reset,
+> >> +               .init = hantro_h264_dec_init,
+> >> +               .exit = hantro_h264_dec_exit,
+> >> +       },
+> >> +       [HANTRO_MODE_MPEG2_DEC] = {
+> >> +               .run = hantro_g1_mpeg2_dec_run,
+> >> +               .reset = hantro_g1_reset,
+> >> +               .init = hantro_mpeg2_dec_init,
+> >> +               .exit = hantro_mpeg2_dec_exit,
+> >> +       },
+> >> +       [HANTRO_MODE_VP8_DEC] = {
+> >> +               .run = hantro_g1_vp8_dec_run,
+> >> +               .reset = hantro_g1_reset,
+> >> +               .init = hantro_vp8_dec_init,
+> >> +               .exit = hantro_vp8_dec_exit,
+> >> +       },
+> >> +};
+> >> +
+> >>   static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+> >>          [HANTRO_MODE_JPEG_ENC] = {
+> >>                  .run = hantro_h1_jpeg_enc_run,
+> >> @@ -269,6 +297,10 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+> >>    * VPU variant.
+> >>    */
+> >>   
+> >> +static const struct hantro_irq rk3036_irqs[] = {
+> >> +       { "vdpu", hantro_g1_irq },
+> >> +};
+> >> +
+> >>   static const struct hantro_irq rk3288_irqs[] = {
+> >>          { "vepu", rk3288_vepu_irq },
+> >>          { "vdpu", hantro_g1_irq },
+> >> @@ -283,6 +315,23 @@ static const char * const rk3288_clk_names[] = {
+> >>          "aclk", "hclk"
+> >>   };
+> >>   
+> >> +const struct hantro_variant rk3036_vpu_variant = {
+> >> +       .dec_offset = 0x400,
+> > If it doesn't have an encoder, then you should just
+> > use dec_offset = 0x0.
+> >
+> > Thanks,
+> > Ezequiel
+> >
+> That would mean, I'd have to adapt the register offset in the device 
+> tree - I'd prefer to keep it in line with the TRM. Unless you insist, 
+> I'd like to keep it this way (It's , btw, the very same for RK3328).
 
-> 
->>         /* wait for audio signaling */
->>         struct completion audio_comp;
->> 
->> @@ -353,11 +355,14 @@ static int dp_display_process_hpd_high(struct 
->> dp_display_private *dp)
->>         dp_link_psm_config(dp->link, &dp->panel->link_info, false);
->> 
->>         dp_link_reset_phy_params_vx_px(dp->link);
->> +
->> +       dp->mainlink_on = false;
-> 
-> Isn't this too late to be setting it to false? i.e. it should be false
-> by default, and then set to false when a dp_ctrl_off() call is made?
-> 
->>         rc = dp_ctrl_on_link(dp->ctrl);
->>         if (rc) {
->>                 DRM_ERROR("failed to complete DP link training\n");
->>                 goto end;
->>         }
->> +       dp->mainlink_on = true;
->> 
->>         dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
->> 
->> @@ -392,7 +397,7 @@ static void dp_display_host_deinit(struct 
->> dp_display_private *dp)
->>                 return;
->>         }
->> 
->> -       dp_ctrl_host_deinit(dp->ctrl);
->> +       dp_ctrl_host_deinit(dp->ctrl, dp->mainlink_on);
->>         dp_aux_deinit(dp->aux);
->>         dp_power_deinit(dp->power);
->> 
->> @@ -941,6 +946,8 @@ static int dp_display_disable(struct 
->> dp_display_private *dp, u32 data)
->>                 dp->core_initialized = false;
->>         }
->> 
->> +       dp->mainlink_on = false;
->> +
->>         dp_display->power_on = false;
->> 
->>         return 0;
-> 
-> It would certainly help to keep it contained to one file instead of 
-> two.
-agree,
+I'd agree with Alex ... ideally the devicetree should match the block
+register area from the TRM not some internal offset.
+[DT describes hardware etc etc ;-) ]
+
+Heiko
+
 
