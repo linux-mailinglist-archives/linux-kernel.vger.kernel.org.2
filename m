@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3616A390ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF48E390ED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhEZD1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
+        id S231911AbhEZD2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhEZD1O (ORCPT
+        with ESMTP id S230288AbhEZD2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:27:14 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E6EC061574;
-        Tue, 25 May 2021 20:25:43 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c12so13594044pfl.3;
-        Tue, 25 May 2021 20:25:43 -0700 (PDT)
+        Tue, 25 May 2021 23:28:03 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AA4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:26:31 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id d21so180993oic.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YoZUck6mACAcFeCLCeOjEWHKBtPQRIKZClOKQNYjnV8=;
-        b=NQg9lJsdWkQlNt69XaB6VRnMQSBFOvlm9U/Mu3gumJFlXWi00/wrkcqodoms17ET4t
-         EWT8TYN2opkKmeeRfoSAwO1Byj2dWIzwhORbCltlT46BV7o41g8PmRiSspIyYunhhaEK
-         q8dX/TUL18wGrr9KPlocUad5i0LKBQ3A1tHIVDMPFLSA/T+P9P8dsLWaD2nhVyHaNoKp
-         o4wYtaeNpVXozxnF+XNSITA3ABDjK05C3pTHyZQIEIEYTcnXKcAvwrk+dk/vvESe0TTW
-         a7P0qaVmFfczk52jlcc3m0UZG3BwJkYs2amUyclxECN7T1wC2vh0wnT1Hwy8FQ7MzHLx
-         Ezyw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z2yP+ku7QrjLWJX/oew2T5TuLTAx5mCKhqruiqxpqcQ=;
+        b=O3ljL1lRtGVQnjW8rsxilo9NnYYFVfvcU+/khpdunoVIfI4W84MTpwjJpkRuZbfsge
+         3iRAMojK5fRFYnr8kf7Bnpgv3HdrtTrqKyui+mPtqtRCkxK+W3ULjS7ao6aDizRBrb1n
+         ldhJJ/bd31Fjy/4L7em6LUoHtABC3P9AiHM2xocsyiCcWF+AcRdBDXGc4sque9YUFVx6
+         3bR5etFDyuYjjlNQd6SGH4QGj5o8kS2QKh4rDugerss7iwrGzoxfdYpeq0DynpcFnxiJ
+         URGMYAaPOXtt9HdNfEzwiOHrpiUP8UjG0ClNE7KwmJPxaU+7Q0QWbREmzQsd12xGANjo
+         vmzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YoZUck6mACAcFeCLCeOjEWHKBtPQRIKZClOKQNYjnV8=;
-        b=SDmXnWZMBqJG884q7u6R0RQspjHEGbMZXakicvofBOf+kD22DetutH4bne6wVKZGVV
-         F75IUgyCiVdh7AfMtEGRj/Pc064M9mU9GYOYIA93X0IQvBpXq2+tkevSPpoO6Qn+5HPV
-         1F5IvgAqA5hi4p0THdWFpDN9i2CHmhkxXy2XKEnf1763td52UVPmoxWtHnG++G2vgikc
-         6djdhgRJkyQyOGHr0iaKBFFnB2ayIc1EZ8KSCH4k+esbl98BUyrRfzONg9CRmkC4LO1N
-         bmQMVKexawmf5uY1uAeyXAy6YzvPv3nI2gd+nR5bbQsDLM7cYLBaY5TGo+sypZcuRao9
-         uwGA==
-X-Gm-Message-State: AOAM533DVPEv/uL3UgjYxQBoOnkIbfuHSuI8oLgOszRh/J4yKpGna5wk
-        GuArl7aHy91G4LnMldQsXTe7myyGQn2ogA==
-X-Google-Smtp-Source: ABdhPJyL8FX9RtAiLvygAG1nAIBG5IreWjv8N0bqibFr2ZHmLnKtyCUHebH+aPoxgTuUMROiMbwCeg==
-X-Received: by 2002:a05:6a00:22c1:b029:2dc:edbe:5e9 with SMTP id f1-20020a056a0022c1b02902dcedbe05e9mr33462045pfj.51.1621999543297;
-        Tue, 25 May 2021 20:25:43 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id m2sm15340128pgu.85.2021.05.25.20.25.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 May 2021 20:25:42 -0700 (PDT)
-From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haocheng Xie <xiehaocheng.cn@gmail.com>
-Subject: [PATCH] perf core:  Make local function perf_pmu_snapshot_aux() static
-Date:   Wed, 26 May 2021 11:25:26 +0800
-Message-Id: <20210526032526.17660-1-xiehaocheng.cn@gmail.com>
-X-Mailer: git-send-email 2.9.5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z2yP+ku7QrjLWJX/oew2T5TuLTAx5mCKhqruiqxpqcQ=;
+        b=srs+xUidfkBwwcsxIU2YLC1fy/mZX25ptW6Viid4oI8N+KPIyjjK9rHL3J5pWDgWUz
+         XUzZvB8dpSvMG+CY8GJCvrCZLjSlNNOgt1lxKmC4wP5o1iw9g+ERJ8mRAQ4U/VkN3DTW
+         /il9zSgqHKCcoCozUS9ejPFFDW6De8qx3EGVDcDw0fpo/x88a3owWuyJ7ajIVyNN2ZTd
+         BRhMwtuq38+ESPV4MdbZJvBBC+VJ2SDqKcxXTYicd9ZZbNPGF7A3gVj3EB1BV4pt+GL9
+         nDDHmQhFPeh224sq/GIat5yyy48QG3arHgyOuIqT8KnLD6esCI1sACFLAG1G8G4ptDrS
+         B7yw==
+X-Gm-Message-State: AOAM531T27uJmi9scqlh6+uRB+D/KmdUxNDjPjJC83d9McAoVkUrDMAZ
+        y2XqkEwWVMQQZIXFhR6hj2eoRensHDWAe1RnVhatflRUaSc=
+X-Google-Smtp-Source: ABdhPJxEn4U0hetnvUphpr602aW+SAytDbAyj62ON2cN8CxvAmsHRKjnWPf8sPqYl5WXvOCS/SkUjrUOINKlFV1GAME=
+X-Received: by 2002:a05:6808:1592:: with SMTP id t18mr501125oiw.123.1621999590741;
+ Tue, 25 May 2021 20:26:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <1621997748-127963-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1621997748-127963-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 25 May 2021 23:26:19 -0400
+Message-ID: <CADnq5_PseP5LDdLY7=v6K7VZ-d_hZW_diuRh721S8gDHmaoYNg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning:
-  kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
+On Tue, May 25, 2021 at 10:56 PM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Fix function name in sdma_v5_2.c kernel-doc comment
+> to remove a warning found by clang_w1.
+>
+> drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c:528: warning: expecting prototype
+> for sdma_v_0_ctx_switch_enable(). Prototype was for
+> sdma_v5_2_ctx_switch_enable() instead.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
----
- kernel/events/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Already fixed:
+https://gitlab.freedesktop.org/agd5f/linux/-/commit/ef6f76407cd7796bdeec31305c435162ab54c030
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 6fee4a7..0d98d6a 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6667,7 +6667,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
- 	return data->aux_size;
- }
- 
--long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-+static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
- 			   struct perf_event *event,
- 			   struct perf_output_handle *handle,
- 			   unsigned long size)
--- 
-2.9.5
+Thanks,
 
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> index 240596b..db79ee5 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> @@ -512,7 +512,7 @@ static void sdma_v5_2_rlc_stop(struct amdgpu_device *adev)
+>  }
+>
+>  /**
+> - * sdma_v_0_ctx_switch_enable - stop the async dma engines context switch
+> + * sdma_v5_2_ctx_switch_enable - stop the async dma engines context switch
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @enable: enable/disable the DMA MEs context switch.
+> --
+> 1.8.3.1
+>
