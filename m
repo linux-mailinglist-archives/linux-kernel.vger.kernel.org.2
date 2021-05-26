@@ -2,283 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45DC3918F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF453918FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234315AbhEZNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:37:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:4014 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbhEZNhO (ORCPT
+        id S234342AbhEZNh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232829AbhEZNhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:37:14 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqsMy4cRszmYpW;
-        Wed, 26 May 2021 21:33:18 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 21:35:39 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 21:35:38 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] RDMA/srp: use DEVICE_ATTR_*() macro
-Date:   Wed, 26 May 2021 21:35:37 +0800
-Message-ID: <20210526133537.5544-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Wed, 26 May 2021 09:37:54 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E8EC061574;
+        Wed, 26 May 2021 06:36:21 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z38so2059587ybh.5;
+        Wed, 26 May 2021 06:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iFL5PNWXPS1rh53vwqSPIbk+0/gTsiYmqV4fuzzxBUA=;
+        b=FzT4OTBFNeRbMEDIl1/gOpXnFSWr1fmLO0y3S3SAfelHXi3E4MTdptws8/tgrn3BcD
+         Yz4UBZYic7J2ocmgSKoCYVIqTtd6DO3Xg7Uzek4YPa+5kbE7Lu0XgSe3uOy+lkYwoFM6
+         riinqBB1RW+Hr3bNvH0DKE7OK8a7zbSZdtlqomoZBHPKJIxzxpA5yTzh4ObW2gosjHp7
+         NtCJtKpz+i2FFcldBI21KRXHmU65Go2VnbPjqDBtqEaDdB/iAD1fnEpAh7fnzIAorL5G
+         fzpwtLGlYaJ7PuMrwZ0RVArfW/788ctt4L/mNnwfr6SWG5eNyalX4/Kq7XiOPx0NWH3k
+         +2pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iFL5PNWXPS1rh53vwqSPIbk+0/gTsiYmqV4fuzzxBUA=;
+        b=OdZO2Zbt0aSgtZrDH2MX0YBbc37kjDiC3lAn60C4oFrbwA7C7th2Oa+03/1OEP0icC
+         jzFUCUijoBLMP86XO3asExqIEb2LjafCAIT6EQ+NrOCBgdQjCh1alw8uhEUm3JIraNN5
+         hrDIDtRAzEk1rPQY3QQ4Suvnnfw7l3MvZmJEV1U1bwtu2R530/38zk9g1u2oZnC99fNz
+         xmCfqOBNr3fXxs3FKaaE7ArUvBxzizu5zD6BqZCa6glLtAG8RmQvIuEDdrhVL5XI0wS0
+         CIDt66V8MuNA514ccUs7KJgkiF7B+eCpLXFyurz1F0WlpEDEdEgNtfKoWE/bjlMCUP+x
+         FIZQ==
+X-Gm-Message-State: AOAM532q0CpGpgdYE80EC5hhd3LN5NuXxBqyducOLvlSyhU4RfHhIEZH
+        PWHURpM7Tbxg2GNUbI/rW6b++u0Z9BucgmeOr7c=
+X-Google-Smtp-Source: ABdhPJxDriuXtomCkO+vTu34Wdq2ggIF2h//mY2b7hbw86SINmkcT/Xha8Q9csfHatY/78s4PuJ6++W1rIW+pW6iefo=
+X-Received: by 2002:a25:3a41:: with SMTP id h62mr47838671yba.500.1622036180722;
+ Wed, 26 May 2021 06:36:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <20210525130043.186290-1-gerald.schaefer@linux.ibm.com>
+ <20210525130043.186290-2-gerald.schaefer@linux.ibm.com> <CADxRZqxdPodO8y+u=R4HB_727pjmXZFt8M5PPhg_qSsT1S-saQ@mail.gmail.com>
+ <3aadc76c-3a8c-d5d6-5ad2-e83c09f08213@arm.com>
+In-Reply-To: <3aadc76c-3a8c-d5d6-5ad2-e83c09f08213@arm.com>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Wed, 26 May 2021 16:36:09 +0300
+Message-ID: <CADxRZqxWkUdSJJ61WbFCjBFTq1h7nkS3O932St8nMcMpzZy=jA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/debug_vm_pgtable: fix alignment for pmd/pud_advanced_tests()
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Wed, May 26, 2021 at 3:35 PM Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+> spac64 does not enable ARCH_HAS_DEBUG_VM_PGTABLE, did you enable it
+> before running the test ? Did the entire test debug_vm_pgtable() run
+> successfully on sparc64 ?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/ulp/srp/ib_srp.c | 90 ++++++++++++++---------------
- 1 file changed, 45 insertions(+), 45 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 31f8aa2c40ed..e8ae75ab672c 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2891,23 +2891,23 @@ static int srp_slave_configure(struct scsi_device *sdev)
- 	return 0;
- }
- 
--static ssize_t show_id_ext(struct device *dev, struct device_attribute *attr,
--			   char *buf)
-+static ssize_t id_ext_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->id_ext));
- }
- 
--static ssize_t show_ioc_guid(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+static ssize_t ioc_guid_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->ioc_guid));
- }
- 
--static ssize_t show_service_id(struct device *dev,
-+static ssize_t service_id_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2918,8 +2918,8 @@ static ssize_t show_service_id(struct device *dev,
- 			  be64_to_cpu(target->ib_cm.service_id));
- }
- 
--static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static ssize_t pkey_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
-@@ -2929,16 +2929,16 @@ static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
- 	return sysfs_emit(buf, "0x%04x\n", be16_to_cpu(target->ib_cm.pkey));
- }
- 
--static ssize_t show_sgid(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static ssize_t sgid_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "%pI6\n", target->sgid.raw);
- }
- 
--static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static ssize_t dgid_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 	struct srp_rdma_ch *ch = &target->ch[0];
-@@ -2949,7 +2949,7 @@ static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
- 	return sysfs_emit(buf, "%pI6\n", ch->ib_cm.path.dgid.raw);
- }
- 
--static ssize_t show_orig_dgid(struct device *dev,
-+static ssize_t orig_dgid_show(struct device *dev,
- 			      struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2960,7 +2960,7 @@ static ssize_t show_orig_dgid(struct device *dev,
- 	return sysfs_emit(buf, "%pI6\n", target->ib_cm.orig_dgid.raw);
- }
- 
--static ssize_t show_req_lim(struct device *dev,
-+static ssize_t req_lim_show(struct device *dev,
- 			    struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2975,7 +2975,7 @@ static ssize_t show_req_lim(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", req_lim);
- }
- 
--static ssize_t show_zero_req_lim(struct device *dev,
-+static ssize_t zero_req_lim_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2983,7 +2983,7 @@ static ssize_t show_zero_req_lim(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->zero_req_lim);
- }
- 
--static ssize_t show_local_ib_port(struct device *dev,
-+static ssize_t local_ib_port_show(struct device *dev,
- 				  struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2991,7 +2991,7 @@ static ssize_t show_local_ib_port(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->srp_host->port);
- }
- 
--static ssize_t show_local_ib_device(struct device *dev,
-+static ssize_t local_ib_device_show(struct device *dev,
- 				    struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3000,15 +3000,15 @@ static ssize_t show_local_ib_device(struct device *dev,
- 			  dev_name(&target->srp_host->srp_dev->dev->dev));
- }
- 
--static ssize_t show_ch_count(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+static ssize_t ch_count_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "%d\n", target->ch_count);
- }
- 
--static ssize_t show_comp_vector(struct device *dev,
-+static ssize_t comp_vector_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3016,7 +3016,7 @@ static ssize_t show_comp_vector(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->comp_vector);
- }
- 
--static ssize_t show_tl_retry_count(struct device *dev,
-+static ssize_t tl_retry_count_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3024,7 +3024,7 @@ static ssize_t show_tl_retry_count(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->tl_retry_count);
- }
- 
--static ssize_t show_cmd_sg_entries(struct device *dev,
-+static ssize_t cmd_sg_entries_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3032,7 +3032,7 @@ static ssize_t show_cmd_sg_entries(struct device *dev,
- 	return sysfs_emit(buf, "%u\n", target->cmd_sg_cnt);
- }
- 
--static ssize_t show_allow_ext_sg(struct device *dev,
-+static ssize_t allow_ext_sg_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3040,22 +3040,22 @@ static ssize_t show_allow_ext_sg(struct device *dev,
- 	return sysfs_emit(buf, "%s\n", target->allow_ext_sg ? "true" : "false");
- }
- 
--static DEVICE_ATTR(id_ext,	    S_IRUGO, show_id_ext,	   NULL);
--static DEVICE_ATTR(ioc_guid,	    S_IRUGO, show_ioc_guid,	   NULL);
--static DEVICE_ATTR(service_id,	    S_IRUGO, show_service_id,	   NULL);
--static DEVICE_ATTR(pkey,	    S_IRUGO, show_pkey,		   NULL);
--static DEVICE_ATTR(sgid,	    S_IRUGO, show_sgid,		   NULL);
--static DEVICE_ATTR(dgid,	    S_IRUGO, show_dgid,		   NULL);
--static DEVICE_ATTR(orig_dgid,	    S_IRUGO, show_orig_dgid,	   NULL);
--static DEVICE_ATTR(req_lim,         S_IRUGO, show_req_lim,         NULL);
--static DEVICE_ATTR(zero_req_lim,    S_IRUGO, show_zero_req_lim,	   NULL);
--static DEVICE_ATTR(local_ib_port,   S_IRUGO, show_local_ib_port,   NULL);
--static DEVICE_ATTR(local_ib_device, S_IRUGO, show_local_ib_device, NULL);
--static DEVICE_ATTR(ch_count,        S_IRUGO, show_ch_count,        NULL);
--static DEVICE_ATTR(comp_vector,     S_IRUGO, show_comp_vector,     NULL);
--static DEVICE_ATTR(tl_retry_count,  S_IRUGO, show_tl_retry_count,  NULL);
--static DEVICE_ATTR(cmd_sg_entries,  S_IRUGO, show_cmd_sg_entries,  NULL);
--static DEVICE_ATTR(allow_ext_sg,    S_IRUGO, show_allow_ext_sg,    NULL);
-+static DEVICE_ATTR_RO(id_ext);
-+static DEVICE_ATTR_RO(ioc_guid);
-+static DEVICE_ATTR_RO(service_id);
-+static DEVICE_ATTR_RO(pkey);
-+static DEVICE_ATTR_RO(sgid);
-+static DEVICE_ATTR_RO(dgid);
-+static DEVICE_ATTR_RO(orig_dgid);
-+static DEVICE_ATTR_RO(req_lim);
-+static DEVICE_ATTR_RO(zero_req_lim);
-+static DEVICE_ATTR_RO(local_ib_port);
-+static DEVICE_ATTR_RO(local_ib_device);
-+static DEVICE_ATTR_RO(ch_count);
-+static DEVICE_ATTR_RO(comp_vector);
-+static DEVICE_ATTR_RO(tl_retry_count);
-+static DEVICE_ATTR_RO(cmd_sg_entries);
-+static DEVICE_ATTR_RO(allow_ext_sg);
- 
- static struct device_attribute *srp_host_attrs[] = {
- 	&dev_attr_id_ext,
-@@ -3617,9 +3617,9 @@ static int srp_parse_options(struct net *net, const char *buf,
- 	return ret;
- }
- 
--static ssize_t srp_create_target(struct device *dev,
--				 struct device_attribute *attr,
--				 const char *buf, size_t count)
-+static ssize_t add_target_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
- {
- 	struct srp_host *host =
- 		container_of(dev, struct srp_host, dev);
-@@ -3870,17 +3870,17 @@ static ssize_t srp_create_target(struct device *dev,
- 	goto out;
- }
- 
--static DEVICE_ATTR(add_target, S_IWUSR, NULL, srp_create_target);
-+static DEVICE_ATTR_WO(add_target);
- 
--static ssize_t show_ibdev(struct device *dev, struct device_attribute *attr,
--			  char *buf)
-+static ssize_t ibdev_show(struct device *dev,
-+			  struct device_attribute *attr, char *buf)
- {
- 	struct srp_host *host = container_of(dev, struct srp_host, dev);
- 
- 	return sysfs_emit(buf, "%s\n", dev_name(&host->srp_dev->dev->dev));
- }
- 
--static DEVICE_ATTR(ibdev, S_IRUGO, show_ibdev, NULL);
-+static DEVICE_ATTR_RO(ibdev);
- 
- static ssize_t show_port(struct device *dev, struct device_attribute *attr,
- 			 char *buf)
--- 
-2.17.1
-
+Ahh.. Sorry for the noise then... Thought that
+CONFIG_TRANSPARENT_HUGEPAGE would be enough...
