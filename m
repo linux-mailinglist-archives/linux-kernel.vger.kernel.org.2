@@ -2,184 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76E5390FCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993CA390FD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhEZEwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhEZEwm (ORCPT
+        id S230499AbhEZEzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 00:55:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49338 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230419AbhEZEzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:52:42 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABECFC061574;
-        Tue, 25 May 2021 21:51:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FqdnT1Nyxz9s1l;
-        Wed, 26 May 2021 14:51:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622004669;
-        bh=WTelUk4WBKTdtHIW4NBwEd+0Mg85jWmprXuRcY/Jm5A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WMiZo5/feg+obB5Jg8TP2ZARbd42P75hK9vILNqwwkrm/ZaAAxx1EorGoX3HfNs6j
-         VJfmpSDAS9sNYKAhZGFjzqMwSiwAReKPXzjyy2/laVoAR1b/9wkMWA95Ntzu3dtrD8
-         kZiQeYqlWX0Keqdg2AEn9co6KuW/gC3khUOOitBZY2yK0qdnoiEiB+T3WX82eFXBHN
-         xV6mvr1CvVLjSfecXycrGMcfOTmaTKJXeWIEhFcqJHndUWoq+8GKBveN0WSFmaIj+F
-         1TugRpMlut1yh6qq2DI/2VCCI/tGO0jBk13p/uQ+BbOAVrvAyTFF6ZAGqDzfpl0bWF
-         N+4Xa5YSt59jQ==
-Date:   Wed, 26 May 2021 14:51:08 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: linux-next: manual merge of the userns tree with Linus' tree
-Message-ID: <20210526145108.6ed2b348@canb.auug.org.au>
+        Wed, 26 May 2021 00:55:00 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q4WiCI042371;
+        Wed, 26 May 2021 00:53:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7pP7CxtCt1O/THb/5YJznPuB0UF+WIAlLEPOj/s7eSw=;
+ b=eFGaQfD78Z5eypmVTAEZh33A3wPaj4qdIJjAlyslxpG9m1VoZQp37oOJ0KVDO5FaCHxh
+ WhaeD+Ytgov3rNfJGs7UCFKANKtdzQALtqONTiUdY/KVtdecVlBrxhAIlBUyt8G4IdBG
+ 6AsQbH/skj0CrbIkIy7sye57HA6bU1KSV4sSm4vJd7MHzo1vHxLpOHb7n1mwY4vCcRaD
+ Di/W5xshFKVSK4Kk+cZ++M/iNUjgmNmGtaox4tettZ/pQkU4b8reZYYue2bCZiYye1/C
+ Cqam14XF8BX7goPqwdBKnKtrZ0+KzIhmLb18sNMYDBve9NnASGR8dv5J4G4vU0Xse1Tf 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sb5jdd23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 00:53:25 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14Q4XnK1044985;
+        Wed, 26 May 2021 00:53:25 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sb5jdd1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 00:53:25 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14Q4rN2N014268;
+        Wed, 26 May 2021 04:53:23 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 38s1r505ny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 04:53:23 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14Q4rKO527263310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 May 2021 04:53:20 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 78BFEAE055;
+        Wed, 26 May 2021 04:53:20 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F40D9AE045;
+        Wed, 26 May 2021 04:53:18 +0000 (GMT)
+Received: from [9.199.44.68] (unknown [9.199.44.68])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 26 May 2021 04:53:18 +0000 (GMT)
+Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+ <20210525214858.33a66846ac09e499c3268a63@kernel.org>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
+Date:   Wed, 26 May 2021 10:23:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JlleXE9dhCmKqjvPkVruk.B";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210525214858.33a66846ac09e499c3268a63@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jcXjU2DxqWhtS7Vscir9hqHWI6cJ_UIJ
+X-Proofpoint-ORIG-GUID: Byv_vLfWZbCDsBDvdzgYHT-O_FRWBwBV
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_02:2021-05-25,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0 phishscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105260028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/JlleXE9dhCmKqjvPkVruk.B
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the userns tree got a conflict in:
+On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
+> On Tue, 25 May 2021 10:07:44 +0530
+> Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+> 
+>> When run as normal user with default sysctl kernel.kptr_restrict=0
+>> and kernel.perf_event_paranoid=2, perf probe fails with:
+>>
+>>    $ ./perf probe move_page_tables
+>>    Relocated base symbol is not found!
+>>
+>> The warning message is not much informative. The reason perf fails
+>> is because /proc/kallsyms is restricted by perf_event_paranoid=2
+>> for normal user and thus perf fails to read relocated address of
+>> the base symbol.
+>>
+>> Tweaking kptr_restrict and perf_event_paranoid can change the
+>> behavior of perf probe. Also, running as root or privileged user
+>> works too. Add these details in the warning message.
+>>
+>> Plus, kmap->ref_reloc_sym might not be always set even if
+>> host_machine is initialized. Above is the example of the same.
+>> Remove that comment.
+> 
+> Yes, those are restricted in some cases. Anyway without priviledged
+> (super) user, perf probe can not set the probe in ftrace.
+> 
+> Hmm, I think it should check the effective user-id at first. If it
+> is not super user and the action will access tracefs and kallsyms,
+> it should warn at that point.
 
-  kernel/signal.c
+If kptr_restrict=2, perf probe fails with same error even for root user.
+That's why I thought to just change this warning message.
 
-between commits:
+Different combinations of privilege, perf_event_paranoid, kptr_restrict:
 
-  69995ebbb9d3 ("signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()")
-  4bad58ebc8bc ("signal: Allow tasks to cache one sigqueue struct")
+   Normal/Root user
+    |   perf_event_paranoid
+    V    V   kptr_restrict        perf probe error
+   ----------------------------------------------------------------
+    N   -1    0     Failed to open kprobe_events: Permission denied
+    N    0    0     Failed to open kprobe_events: Permission denied
+    N    1    0     Failed to open kprobe_events: Permission denied
+    N    2    0     Relocated base symbol is not found!
+   
+    N   -1    1     Relocated base symbol is not found!
+    N    0    1     Relocated base symbol is not found!
+    N    1    1     Relocated base symbol is not found!
+    N    2    1     Relocated base symbol is not found!
+   
+    N   -1    2     Relocated base symbol is not found!
+    N    0    2     Relocated base symbol is not found!
+    N    1    2     Relocated base symbol is not found!
+    N    2    2     Relocated base symbol is not found!
+   
+    R   -1    0     No error.
+    R    0    0     No error.
+    R    1    0     No error.
+    R    2    0     No error.
+   
+    R   -1    1     No error.
+    R    0    1     No error.
+    R    1    1     No error.
+    R    2    1     No error.
+   
+    R   -1    2     Relocated base symbol is not found!
+    R    0    2     Relocated base symbol is not found!
+    R    1    2     Relocated base symbol is not found!
+    R    2    2     Relocated base symbol is not found!
 
-from Linus' tree and commit:
-
-  d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
-
-from the userns tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/signal.c
-index f7c6ffcbd044,9a6dab712123..000000000000
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@@ -408,12 -410,11 +408,12 @@@ void task_join_group_stop(struct task_s
-   *   appropriate lock must be held to stop the target task from exiting
-   */
-  static struct sigqueue *
- -__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int overrid=
-e_rlimit)
- +__sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
- +		 int override_rlimit, const unsigned int sigqueue_flags)
-  {
-  	struct sigqueue *q =3D NULL;
-- 	struct user_struct *user;
-- 	int sigpending;
-+ 	struct ucounts *ucounts =3D NULL;
-+ 	long sigpending;
- =20
-  	/*
-  	 * Protect access to @t credentials. This can go away when all
-@@@ -424,36 -425,26 +424,35 @@@
-  	 * changes from/to zero.
-  	 */
-  	rcu_read_lock();
-- 	user =3D __task_cred(t)->user;
-- 	sigpending =3D atomic_inc_return(&user->sigpending);
-+ 	ucounts =3D task_ucounts(t);
-+ 	sigpending =3D inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-  	if (sigpending =3D=3D 1)
-- 		get_uid(user);
-+ 		ucounts =3D get_ucounts(ucounts);
-  	rcu_read_unlock();
- =20
-- 	if (override_rlimit || likely(sigpending <=3D task_rlimit(t, RLIMIT_SIGP=
-ENDING))) {
-+ 	if (override_rlimit || (sigpending < LONG_MAX && sigpending <=3D task_rl=
-imit(t, RLIMIT_SIGPENDING))) {
- -		q =3D kmem_cache_alloc(sigqueue_cachep, flags);
- +		/*
- +		 * Preallocation does not hold sighand::siglock so it can't
- +		 * use the cache. The lockless caching requires that only
- +		 * one consumer and only one producer run at a time.
- +		 */
- +		q =3D READ_ONCE(t->sigqueue_cache);
- +		if (!q || sigqueue_flags)
- +			q =3D kmem_cache_alloc(sigqueue_cachep, gfp_flags);
- +		else
- +			WRITE_ONCE(t->sigqueue_cache, NULL);
-  	} else {
-  		print_dropped_signal(sig);
-  	}
- =20
-  	if (unlikely(q =3D=3D NULL)) {
-- 		if (atomic_dec_and_test(&user->sigpending))
-- 			free_uid(user);
-+ 		if (ucounts && dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
-+ 			put_ucounts(ucounts);
-  	} else {
-  		INIT_LIST_HEAD(&q->list);
- -		q->flags =3D 0;
- +		q->flags =3D sigqueue_flags;
-- 		q->user =3D user;
-+ 		q->ucounts =3D ucounts;
-  	}
--=20
-  	return q;
-  }
- =20
-@@@ -492,9 -452,11 +491,11 @@@ static void __sigqueue_free(struct sigq
-  {
-  	if (q->flags & SIGQUEUE_PREALLOC)
-  		return;
-- 	if (atomic_dec_and_test(&q->user->sigpending))
-- 		free_uid(q->user);
-+ 	if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDIN=
-G, 1)) {
-+ 		put_ucounts(q->ucounts);
-+ 		q->ucounts =3D NULL;
-+ 	}
- -	kmem_cache_free(sigqueue_cachep, q);
- +	sigqueue_cache_or_free(q);
-  }
- =20
-  void flush_sigqueue(struct sigpending *queue)
-
---Sig_/JlleXE9dhCmKqjvPkVruk.B
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCt07wACgkQAVBC80lX
-0GzUowf9EPcpoK3+9+LSThRKkj2eTBFS5gCGarhHMbI7zH9gpJW2rhPw0fOL9ab7
-ThgcIsUINAZaf9+RgvkhRt0aw6ujqrudlVvQVcc5fkvqRRwR5Vl+NcThdvg3BIfk
-8GEbj9HohwheyrLPfjkLPt+NdH81VAkq/a9uqoNjqI8UHSLEehH857K6cVkdWORK
-xOVhCn62MAuHkj179hFVFllWWijWUDjdp5qOjohjyxrvt0B4Y7nDbF2F7n/EN452
-aUdWDqqmABT+i7/f52lTFzHmw9IQqbT7SS4Pq5PCqyhdneRfvP+KSk8giV+jfqhw
-XnWPKOpzUv+jpGajgCIFVEaa4iHtEQ==
-=x5CD
------END PGP SIGNATURE-----
-
---Sig_/JlleXE9dhCmKqjvPkVruk.B--
+Ravi
