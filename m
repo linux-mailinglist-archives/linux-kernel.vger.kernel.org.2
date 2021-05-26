@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DBD391205
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0659E391209
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhEZIMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:12:21 -0400
+        id S233105AbhEZIM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:12:29 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhEZIMT (ORCPT
+        with ESMTP id S231961AbhEZIMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:12:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6EAC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:48 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id t206so201283wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:48 -0700 (PDT)
+        Wed, 26 May 2021 04:12:20 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D62EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:49 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so8044069wmq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dFQkF96uoOmXNTrSzR/ePqfUTd4xGlWbaxlJsr2MtKE=;
-        b=qRa7GnzgtRsbbqhHHWYhyOJb7EzvL93QWpm8nMErca1eTzaI6Fn1l3vM8G76a5mgfV
-         lXfkz2Wje3plnFz5c+KoboopWeWCKyK8DNgWiJhKjfJjAU6lBJL1Ktqpo00WodYPXL0G
-         ++unosXXb0bmd0CSRlhE7W6atBSbg/8y2TKiWD9zXDxOWnpDraXmhVIBPWOvc+x8exOb
-         2Gqw3b+QMoVnwKixgpo6yPk65j8n/dmYQVu9qloFdZRxwuISCrDYfdWOogfyZZIO1ri1
-         m8Kq6+7mVlxv9fs1/BegpQ5XHoQvz+eVj4CZ+HgGfUTa3D4ROSKLWSqnl+Mg9sZfLcvr
-         wHBQ==
+        bh=vj1UOtHIUtHOnKuozxuAOWrVGLQXivpBI+YkeHeq/B8=;
+        b=c4NYhY0Ma0Z2m7x1AO4HY2cy771c3eOCdxbEyMjXuNTpd8jM7Wc1u8ROfzGYs+fYj7
+         lRM8ZYQ9ibq1fTnpV8EstUfR9ByCX+thKETe8/jym1zDJPPuZSCLXLBu46V1GbCVNl5r
+         84zaxQhcYDiJEVTo/aIT9i5s4RnkNUWL1wmDID1ZiZsrYRKMZkrQKGdspypJ8bdzRsem
+         QU2UYDugghQ3Kk1xJ3wDDFmfwZILLStbSF4MxBe5qjp9QHXOkwjfB+WmHjeTYk1ReebY
+         o5FjrQqeJEApzUlNlw3NRnOa3lqfHXoC2iM4B4BvUzYPqqULjvQTy49NUV0/FAyYbclB
+         etUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dFQkF96uoOmXNTrSzR/ePqfUTd4xGlWbaxlJsr2MtKE=;
-        b=ZeEALQ7oqgX4N7pG328gYTeIINyNBojLtvseNdbtyeOwzqZ5n0ggQAlzYOtcAM9Sjw
-         +rCprv38fZJyK23LcDYdQW15+eemKxnGAsIlDy7ZqbEqK/8btYaVCQbF2x2stKHg1Yeq
-         I95hdoypQpjHRSomAix04T3auAMvYbctO/AlQBJqlFbiyCxn0chZ/Igayrmupn8ntxg+
-         UFvWLpRxrTGtsOs6Sy2uRfgaFPkbhiEysVmB+fmh+9ttElm7xT2UjLsGMfB4uIck9yoY
-         8wUJt4dyEGHQW5PSZRqrN36iAlIft5FtZ2I52HH62jDRVr+ZI9N26KwvN5phV6U5Gf+z
-         2J5w==
-X-Gm-Message-State: AOAM533Yjyqsztzoa0Yg9owk3xxdgU2Fgu/osS15/MnC1NNhgLv7umJO
-        hceWHMte4HMNutuGyiQ8in1r6w==
-X-Google-Smtp-Source: ABdhPJxtwkGLYcP8g4KXQFrvzGdggp08dNZVHy2beCfSD6XlUI6n1nItuRS5a5ADDA+29miNl+hK1w==
-X-Received: by 2002:a05:600c:22cf:: with SMTP id 15mr2108584wmg.81.1622016646984;
-        Wed, 26 May 2021 01:10:46 -0700 (PDT)
+        bh=vj1UOtHIUtHOnKuozxuAOWrVGLQXivpBI+YkeHeq/B8=;
+        b=mdAJasld9t3ozdgTrp+nkW+R9ULn/cPMOWx0y+waYMeRqsnvRLI/Hiu8K46/gJzDp0
+         vlhHA+GVUX8gloZHwN9bSAxnriyCTW2QCN2HsndhhoojBp7SmqMcHf39zYYEn+txF71e
+         i/4R4hb6hbvDMk94Np7IVY0gxHOI833Oz8WSEgHWTRAZFcUoHzdnsjwLPU2xI7mBwxH8
+         WkuN8k9DoHQX6Qm2XMp+KcdPjjYUInHRPQ2zA3IH5QmX3/MI2T8aiBjWJ2KnpBeSIc/v
+         DZNOCrBv4Y4eBK3p/Rios0SaieAgpEGwIIKH/Cis00yBoiurBC8DvHdrEA63t0kULKCz
+         veDQ==
+X-Gm-Message-State: AOAM5317UdvzcVIr7jiIP1ea/fIcnsC6xeWt92an7k/4KOVjBv4gIp9R
+        SKbHqCBp3zp3Mn9OGYQT+JEf7w==
+X-Google-Smtp-Source: ABdhPJwHQ+OM/gKDtpzTAbVZ4HsxYlw6w1cSAGNKN71hyTlU3YxjI2pL9dyRh/rHdadhSZou82F/wQ==
+X-Received: by 2002:a05:600c:1551:: with SMTP id f17mr2064161wmg.17.1622016647955;
+        Wed, 26 May 2021 01:10:47 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.46
+        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:10:46 -0700 (PDT)
+        Wed, 26 May 2021 01:10:47 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
         Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH 01/10] bus: fsl-mc: mc-io: Supply function names for 'fsl_create_mc_io()' and 'fsl_destroy_mc_io()'
-Date:   Wed, 26 May 2021 09:10:29 +0100
-Message-Id: <20210526081038.544942-2-lee.jones@linaro.org>
+Subject: [PATCH 02/10] bus: fsl-mc: mc-sys: Supply missing function names in kernel-doc headers
+Date:   Wed, 26 May 2021 09:10:30 +0100
+Message-Id: <20210526081038.544942-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526081038.544942-1-lee.jones@linaro.org>
 References: <20210526081038.544942-1-lee.jones@linaro.org>
@@ -66,38 +66,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/bus/fsl-mc/mc-io.c:53: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/bus/fsl-mc/mc-io.c:126: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/bus/fsl-mc/mc-sys.c:20: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/bus/fsl-mc/mc-sys.c:151: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/bus/fsl-mc/mc-sys.c:197: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/bus/fsl-mc/mc-sys.c:237: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
 Cc: Stuart Yoder <stuyoder@gmail.com>
 Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/bus/fsl-mc/mc-io.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bus/fsl-mc/mc-sys.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
-index 305015486b91c..9af6b05b89d6f 100644
---- a/drivers/bus/fsl-mc/mc-io.c
-+++ b/drivers/bus/fsl-mc/mc-io.c
-@@ -50,7 +50,7 @@ static void fsl_mc_io_unset_dpmcp(struct fsl_mc_io *mc_io)
- }
+diff --git a/drivers/bus/fsl-mc/mc-sys.c b/drivers/bus/fsl-mc/mc-sys.c
+index b291b35e3884b..f2052cd0a0517 100644
+--- a/drivers/bus/fsl-mc/mc-sys.c
++++ b/drivers/bus/fsl-mc/mc-sys.c
+@@ -16,7 +16,7 @@
  
- /**
-- * Creates an MC I/O object
-+ * fsl_create_mc_io() - Creates an MC I/O object
-  *
-  * @dev: device to be associated with the MC I/O object
-  * @mc_portal_phys_addr: physical address of the MC portal to use
-@@ -123,7 +123,7 @@ int __must_check fsl_create_mc_io(struct device *dev,
- }
+ #include "fsl-mc-private.h"
  
- /**
-- * Destroys an MC I/O object
-+ * fsl_destroy_mc_io() - Destroys an MC I/O object
-  *
-  * @mc_io: MC I/O object to destroy
+-/**
++/*
+  * Timeout in milliseconds to wait for the completion of an MC command
   */
+ #define MC_CMD_COMPLETION_TIMEOUT_MS	500
+@@ -148,9 +148,10 @@ static inline enum mc_cmd_status mc_read_response(struct fsl_mc_command __iomem
+ }
+ 
+ /**
+- * Waits for the completion of an MC command doing preemptible polling.
+- * uslepp_range() is called between polling iterations.
+- *
++ * mc_polling_wait_preemptible() - Waits for the completion of an MC
++ *                                 command doing preemptible polling.
++ *                                 uslepp_range() is called between
++ *                                 polling iterations.
+  * @mc_io: MC I/O object to be used
+  * @cmd: command buffer to receive MC response
+  * @mc_status: MC command completion status
+@@ -194,9 +195,9 @@ static int mc_polling_wait_preemptible(struct fsl_mc_io *mc_io,
+ }
+ 
+ /**
+- * Waits for the completion of an MC command doing atomic polling.
+- * udelay() is called between polling iterations.
+- *
++ * mc_polling_wait_atomic() - Waits for the completion of an MC command
++ *                            doing atomic polling. udelay() is called
++ *                            between polling iterations.
+  * @mc_io: MC I/O object to be used
+  * @cmd: command buffer to receive MC response
+  * @mc_status: MC command completion status
+@@ -234,8 +235,8 @@ static int mc_polling_wait_atomic(struct fsl_mc_io *mc_io,
+ }
+ 
+ /**
+- * Sends a command to the MC device using the given MC I/O object
+- *
++ * mc_send_command() - Sends a command to the MC device using the given
++ *                     MC I/O object
+  * @mc_io: MC I/O object to be used
+  * @cmd: command to be sent
+  *
 -- 
 2.31.1
 
