@@ -2,52 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B873921A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D503921B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbhEZUv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56366 "EHLO mail.kernel.org"
+        id S233701AbhEZU7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 16:59:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:49866 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233669AbhEZUvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:51:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F4E0611BE;
-        Wed, 26 May 2021 20:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622062183;
-        bh=aG3UINtyIudcCr1jcShtuROgiwkLr+yC67i/e+rJ130=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OQwH8Nh0p62kPnQVnKw9Qkv+XdO/rDpNJhqsOhVin5GIOJh/KcfPrFp+TCZ0SQxtT
-         HIKBj/oMDfISR9tnVTIv3uFVdY2pchbUAk+iU7zkSYs9T5s+IHs5kuMj9oX5DSNDO7
-         15hbwX00Wy9vVEFS81Q+EEpxkZp9BzNquTJXj8EU=
-Date:   Wed, 26 May 2021 13:49:42 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        =?UTF-8?Q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>
-Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default"
-Message-Id: <20210526134942.2bf26d5cf5a9243583aec131@linux-foundation.org>
-In-Reply-To: <20210526094335.92948-1-tsbogend@alpha.franken.de>
-References: <20210526094335.92948-1-tsbogend@alpha.franken.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232716AbhEZU7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 16:59:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B91811D4;
+        Wed, 26 May 2021 13:57:59 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A11383F73B;
+        Wed, 26 May 2021 13:57:57 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: [PATCH 0/2] sched: SCA vs hotplug vs stopper races fixes
+Date:   Wed, 26 May 2021 21:57:49 +0100
+Message-Id: <20210526205751.842360-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 11:43:35 +0200 Thomas Bogendoerfer <tsbogend@alpha.franken.de> wrote:
+Hi folks,
 
-> This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
-> 
-> MIPS cache flush logic needs to know whether the mapping was already
-> established to decide how to flush caches. This is done by checking the
-> valid bit in the PTE. The commit above breaks this logic by setting
-> the valid in the PTE in new mappings, which causes kernel crashes.
+This is the continuation of [1]. As Will noted, that patch isn't sufficient to
+plug all the nasty races involving SCA, hotplug and the stopper task, hence
+patch 2.
 
-Thanks.  I added
+I have to apologize as this didn't see much testing (a CPU hog, a crazed
+taskset, and some hotplugs in a loop), and unfortunately I need to call it a day
+before running away to the british wilderness 'till Monday. I'll get back to it
+then to expunge the remaining daftness.  
 
-Fixes: f685a533a7f ("MIPS: make userspace mapping young by default")
-Cc: <stable@vger.kernel.org>
+[1]: http://lore.kernel.org/r/877djlhhmb.mognet@arm.com
+
+Cheers,
+Valentin
+
+Valentin Schneider (2):
+  sched: Don't defer CPU pick to migration_cpu_stop()
+  sched: Plug race between SCA, hotplug and migration_cpu_stop()
+
+ kernel/sched/core.c | 50 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 33 insertions(+), 17 deletions(-)
+
+--
+2.25.1
+
