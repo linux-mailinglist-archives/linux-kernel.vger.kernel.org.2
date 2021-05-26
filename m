@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AA23916C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD963916BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhEZL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:57:05 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43056 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234562AbhEZL4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:56:24 -0400
-IronPort-SDR: BOvCTY8qFBbJbrX2+fd/iOrUl+bdusUtzdk3tdbmHGw3XSYGBxsvX0NuypMwJmgDjV1ICW5PX/
- SEkGvoPrK90w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202200818"
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
-   d="scan'208";a="202200818"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 04:54:01 -0700
-IronPort-SDR: YM/p155tk0deTvBFGMg8m8K/l55zEd5Cwudek8iMOlJ0fUePokqn2t/4e3Fg/n9UULk5g7/iZl
- lDyG4sG+yp2w==
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
-   d="scan'208";a="547165940"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 04:53:59 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lls6n-00EmzC-9r; Wed, 26 May 2021 14:53:57 +0300
-Date:   Wed, 26 May 2021 14:53:57 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v4 1/4] devres: Make locking straight forward in
- release_nodes()
-Message-ID: <YK421dBVoXLElvKB@smile.fi.intel.com>
-References: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
+        id S233520AbhEZL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:56:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232721AbhEZL4D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 07:56:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622030072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEsIKIRHCi9DPvJFD3EoQW+cvLnGIYL/CMN7SIV9QKc=;
+        b=EkyPrsXBjpK4vNao3pphMVW5Sk+kkhkLC8GYzcKPodl7v239zSTETRj6+DMjK2Ji6CUIat
+        TH8+hM++D3/mxd2D/rZ9qlldfUbNqEysUiJus4kx2j9uZOHl2Sc3YhTsDIsNXJsDEUjTCM
+        f7qpnlnXBOpeCLhWP/R5wql20zdLqAw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-Snd52LuSPqq8PDX0Y6cjdQ-1; Wed, 26 May 2021 07:54:30 -0400
+X-MC-Unique: Snd52LuSPqq8PDX0Y6cjdQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB6A9107ACF5;
+        Wed, 26 May 2021 11:54:28 +0000 (UTC)
+Received: from krava (unknown [10.40.195.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 22EB3E149;
+        Wed, 26 May 2021 11:54:26 +0000 (UTC)
+Date:   Wed, 26 May 2021 13:54:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Denys Zagorui <dzagorui@cisco.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org
+Subject: Re: [PATCH v8 1/3] perf report: compile tips.txt in perf binary
+Message-ID: <YK428rtY1GsVFL4E@krava>
+References: <20210524111514.65713-1-dzagorui@cisco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210524111514.65713-1-dzagorui@cisco.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 03:29:43PM +0300, Andy Shevchenko wrote:
-> It seems for the sake of saving stack memory of couple of pointers,
-> the locking in release_nodes() callers becomes interesting.
+On Mon, May 24, 2021 at 04:15:12AM -0700, Denys Zagorui wrote:
+> It seems there is some need to have an ability to invoke perf from
+> build directory without installation
+> (84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+> DOCDIR definition contains an absolute path to kernel source directory.
+> It is build machine related info and it makes perf binary unreproducible.
 > 
-> Replace this logic with a straight forward locking and unlocking scheme.
+> This can be avoided by compiling tips.txt in perf directly.
+> 
+> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 
-Any comments on the series?
+for patchset
 
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
+thanks,
+jirka
 
