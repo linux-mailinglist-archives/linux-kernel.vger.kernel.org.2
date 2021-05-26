@@ -2,58 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F7239125F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CDC391264
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhEZIdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:33:24 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:46299 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbhEZIdW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:33:22 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0DB5710000C;
-        Wed, 26 May 2021 08:31:47 +0000 (UTC)
-Date:   Wed, 26 May 2021 10:31:46 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v5 2/3] mtd: spinand: use the spi-mem poll status APIs
-Message-ID: <20210526103146.5fcd8247@xps13>
-In-Reply-To: <20210518162754.15940-3-patrice.chotard@foss.st.com>
-References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
-        <20210518162754.15940-3-patrice.chotard@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        id S233042AbhEZIdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232209AbhEZIdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:33:35 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8E6D61402;
+        Wed, 26 May 2021 08:32:04 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lloxO-003gbK-JB; Wed, 26 May 2021 09:32:02 +0100
+Date:   Wed, 26 May 2021 09:32:01 +0100
+Message-ID: <871r9tx5dq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     jianyong.wu@arm.com, netdev <netdev@vger.kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, KVM list <kvm@vger.kernel.org>,
+        Steve Capper <Steve.Capper@arm.com>, justin.he@arm.com,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v19 7/7] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
+In-Reply-To: <CAMuHMdUBwcB-v0ugCPB3D6dbttiSbqQeHgNrr+r331ntRrfiAw@mail.gmail.com>
+References: <20210330145430.996981-1-maz@kernel.org>
+        <20210330145430.996981-8-maz@kernel.org>
+        <CAMuHMdWd5261ti-zKsroFLvWs0abaWa7G4DKefgPwFb3rEjnNw@mail.gmail.com>
+        <6c522f8116f54fa6f23a2d217d966c5a@kernel.org>
+        <CAMuHMdWzBqLVOVn_z8S2H-x-kL+DfOsM5mDb_D8OKsyRJtKpdA@mail.gmail.com>
+        <8735u9x6sb.wl-maz@kernel.org>
+        <CAMuHMdUBwcB-v0ugCPB3D6dbttiSbqQeHgNrr+r331ntRrfiAw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-<patrice.chotard@foss.st.com> wrote on Tue, 18 May 2021 18:27:53 +0200:
-
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Wed, 26 May 2021 09:18:27 +0100,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 > 
-> Make use of spi-mem poll status APIs to let advanced controllers
-> optimize wait operations.
-> This should also fix the high CPU usage for system that don't have
-> a dedicated STATUS poll block logic.
+> Hi Marc,
 > 
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> On Wed, May 26, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> > On Wed, 26 May 2021 08:52:42 +0100,
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, May 11, 2021 at 11:13 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > On 2021-05-11 10:07, Geert Uytterhoeven wrote:
+> > > > > On Tue, Mar 30, 2021 at 4:56 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >> From: Jianyong Wu <jianyong.wu@arm.com>
+> > > > >
+> > > > >> --- a/drivers/ptp/Kconfig
+> > > > >> +++ b/drivers/ptp/Kconfig
+> > > > >> @@ -108,7 +108,7 @@ config PTP_1588_CLOCK_PCH
+> > > > >>  config PTP_1588_CLOCK_KVM
+> > > > >>         tristate "KVM virtual PTP clock"
+> > > > >>         depends on PTP_1588_CLOCK
+> > > > >> -       depends on KVM_GUEST && X86
+> > > > >> +       depends on (KVM_GUEST && X86) || (HAVE_ARM_SMCCC_DISCOVERY &&
+> > > > >> ARM_ARCH_TIMER)
+> > > > >
+> > > > > Why does this not depend on KVM_GUEST on ARM?
+> > > > > I.e. shouldn't the dependency be:
+> > > > >
+> > > > >     KVM_GUEST && (X86 || (HAVE_ARM_SMCCC_DISCOVERY && ARM_ARCH_TIMER))
+> > > > >
+> > > > > ?
+> > > >
+> > > > arm/arm64 do not select KVM_GUEST. Any kernel can be used for a guest,
+> > > > and KVM/arm64 doesn't know about this configuration symbol.
+> > >
+> > > OK.
+> > >
+> > > Does PTP_1588_CLOCK_KVM need to default to yes?
+> > > Perhaps only on X86, to maintain the status quo?
+> >
+> > I think I don't really understand the problem you are trying to
+> > solve. Is it that 'make oldconfig' now asks you about this new driver?
+> > Why is that an issue?
+> 
+> My first "problem" was that it asked about this new driver on
+> arm/arm64, while I assumed there were some missing dependencies
+> (configuring a kernel should not ask useless questions).  That turned
+> out to be a wrong assumption, so there is no such problem here.
+> 
+> The second problem is "default y": code that is not critical should
+> not be enabled by default.  Hence my last question.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+I think consistency between architectures is important. Certainly,
+distributions depend on that, and we otherwise end-up with distro
+kernels missing functionalities.
 
+The notion of "critical" is also pretty relative. defconfig contains a
+gazillion of things that are not critical to most people, for example,
+and yet misses a bunch of things that are needed to boot on some of my
+systems.
+
+That's just to say that I find it difficult to make that choice from
+the PoV of a kernel hacker. I'm personally more inclined to leave
+things enabled and let people *disable* things if they want to reduce
+the footprint of their kernel.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
