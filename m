@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C2D390FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EA8390FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhEZEkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhEZEkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:40:21 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA71C061574;
-        Tue, 25 May 2021 21:38:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FqdWB33P1z9s1l;
-        Wed, 26 May 2021 14:38:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622003926;
-        bh=vuhV2Qz0o05/eToJNyBOXtbe9UPdcjJtGKi2Pd8FS1Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=saWSZA7UdsOEiwIGYQYzkerY1a9LylJQCfBUWM+UUH3jQl5bANa6cwDzBmq18Voiv
-         Zll3sKIRezvK2ifkzV8h41+ELE4dVgIfwJNK+caT+iwmvSPU4rl1Cxqluyahr/13nU
-         IcHej0Bqq0K6t4oDn+HsAvbLWjeVrvh9QFuNDyrSdDqTyozkt8hVmWUMwvIao5cow2
-         9xVh/gSnnG5DI8XN3PrVr3kV+iuKdyMt9lZerG9nQAa/8auAXls6VtNg5GofjW3Cf8
-         hMzOFK8J3PWYheaJj+aIlyD1O5HvAjwfs4GHoU2aBPLypLGigK8FjK6oBB5g0RFiwR
-         fbueDLeNilacQ==
-Date:   Wed, 26 May 2021 14:38:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the userns tree with Linus' tree
-Message-ID: <20210526143845.3f09a874@canb.auug.org.au>
+        id S229795AbhEZElA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 00:41:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:38442 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhEZEk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 00:40:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09BBB1516;
+        Tue, 25 May 2021 21:39:28 -0700 (PDT)
+Received: from [10.163.81.152] (unknown [10.163.81.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 685193F73D;
+        Tue, 25 May 2021 21:39:24 -0700 (PDT)
+Subject: Re: [PATCH 1/1] mm/debug_vm_pgtable: fix alignment for
+ pmd/pud_advanced_tests()
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>, stable@vger.kernel.org,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+References: <20210525130043.186290-1-gerald.schaefer@linux.ibm.com>
+ <20210525130043.186290-2-gerald.schaefer@linux.ibm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <53271f1e-51e3-7673-b58b-0bfe65ffde94@arm.com>
+Date:   Wed, 26 May 2021 10:10:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yVr=.DtgovgK8=XHL/+gLWl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210525130043.186290-2-gerald.schaefer@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yVr=.DtgovgK8=XHL/+gLWl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 5/25/21 6:30 PM, Gerald Schaefer wrote:
+> In pmd/pud_advanced_tests(), the vaddr is aligned up to the next pmd/pud
+> entry, and so it does not match the given pmdp/pudp and (aligned down) pfn
+> any more.
+> 
+> For s390, this results in memory corruption, because the IDTE instruction
+> used e.g. in xxx_get_and_clear() will take the vaddr for some calculations,
+> in combination with the given pmdp. It will then end up with a wrong table
+> origin, ending on ...ff8, and some of those wrongly set low-order bits will
+> also select a wrong pagetable level for the index addition. IDTE could
+> therefore invalidate (or 0x20) something outside of the page tables,
+> depending on the wrongly picked index, which in turn depends on the random
+> vaddr.
+> 
+> As result, we sometimes see "BUG task_struct (Not tainted): Padding
+> overwritten" on s390, where one 0x5a padding value got overwritten with
+> 0x7a.
+> 
+> Fix this by aligning down, similar to how the pmd/pud_aligned pfns are
+> calculated.
+> 
+> Fixes: a5c3b9ffb0f40 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
+> Cc: <stable@vger.kernel.org> # v5.9+
+> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 
-Today's linux-next merge of the userns tree got a conflict in:
+Did not see any problem on arm64 or x86, builds okay across all
+supported platforms. It would be great, if folks could test this
+on remaining platforms i.e arc, riscv etc.
 
-  include/linux/user_namespace.h
++ Vineet Gupta <vgupta@synopsys.com>
++ Palmer Dabbelt <palmer@dabbelt.com>
++ Paul Walmsley <paul.walmsley@sifive.com>
 
-between commit:
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-  5b8fea65d197 ("fanotify: configurable limits via sysfs")
-
-from Linus' tree and commits:
-
-  21d1c5e386bc ("Reimplement RLIMIT_NPROC on top of ucounts")
-  6e52a9f0532f ("Reimplement RLIMIT_MSGQUEUE on top of ucounts")
-  d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
-  d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
-
-from the userns tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/user_namespace.h
-index 1d08dbbcfe32,61794ae32fa8..000000000000
---- a/include/linux/user_namespace.h
-+++ b/include/linux/user_namespace.h
-@@@ -49,11 -49,11 +49,15 @@@ enum ucount_type=20
-  #ifdef CONFIG_INOTIFY_USER
-  	UCOUNT_INOTIFY_INSTANCES,
-  	UCOUNT_INOTIFY_WATCHES,
- +#endif
- +#ifdef CONFIG_FANOTIFY
- +	UCOUNT_FANOTIFY_GROUPS,
- +	UCOUNT_FANOTIFY_MARKS,
-  #endif
-+ 	UCOUNT_RLIMIT_NPROC,
-+ 	UCOUNT_RLIMIT_MSGQUEUE,
-+ 	UCOUNT_RLIMIT_SIGPENDING,
-+ 	UCOUNT_RLIMIT_MEMLOCK,
-  	UCOUNT_COUNTS,
-  };
- =20
-
---Sig_/yVr=.DtgovgK8=XHL/+gLWl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCt0NUACgkQAVBC80lX
-0GxeNwf6A99dTz7b7BzbVrd22BPExWhrvS2OKUjK34oUu3Q2Mwz9V4GqT1Sr2NtU
-81p2M8zRkQRZx1RgktFpSxpc6Ilurnog9I+CXsLCPOiOMSoHGApvTKUiH8MyKoNN
-aSFvhRsKHn18rfMjNiGkdGCdp7wlHqcY+nAQ7AFGuwXQeVsWnq8lFi5tndsjEcUA
-GkBdxK5h20ucBh9IDiqdLThHdCF6HQ+G2FcLjbttjetmJhSWdA+b1oZih/UY3OH0
-vOSikM+ap+UNPAQU6OpTopriw12lA+cLBDZ8jg+COlpgrRkid/Jo/CQwYaOUeOR3
-SmbGp3sGfuEZM71EiLmN4uy9tidlYA==
-=HvrR
------END PGP SIGNATURE-----
-
---Sig_/yVr=.DtgovgK8=XHL/+gLWl--
+> ---
+>  mm/debug_vm_pgtable.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 6ff92c8b0a00..f7b23565a04f 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -193,7 +193,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
+>  
+>  	pr_debug("Validating PMD advanced\n");
+>  	/* Align the address wrt HPAGE_PMD_SIZE */
+> -	vaddr = (vaddr & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE;
+> +	vaddr &= HPAGE_PMD_MASK;
+>  
+>  	pgtable_trans_huge_deposit(mm, pmdp, pgtable);
+>  
+> @@ -318,7 +318,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+>  
+>  	pr_debug("Validating PUD advanced\n");
+>  	/* Align the address wrt HPAGE_PUD_SIZE */
+> -	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
+> +	vaddr &= HPAGE_PUD_MASK;
+>  
+>  	pud = pfn_pud(pfn, prot);
+>  	set_pud_at(mm, vaddr, pudp, pud);
+> 
