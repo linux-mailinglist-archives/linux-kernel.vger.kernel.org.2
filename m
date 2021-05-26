@@ -2,132 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD7E391158
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD2139115C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhEZHWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:22:50 -0400
-Received: from mail-eopbgr60120.outbound.protection.outlook.com ([40.107.6.120]:7488
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232971AbhEZHWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:22:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TLd6b7A9ToUJUmAUB4UiYZk6PZzX0trkomk0qL5MqjsW7fNU8uhO3eRncMA3QOe/inD4N1OcOTCdK65ktQP/Rkuxachkbw1UwKQoI81Oeiaiqr13PBnZnxalO2BdyXFc35nhR9YBe6JzOMqUS79LskOkxDjjdIqZs1l/N6N+/t2AizY6rvMgrWtjxTfuOH95cIQ/RqzZ5Yl7MPsNvgTRfZE/su4+RwetxgTh0TrvGWG5iSE07bKjeSq7nttxoOQ+vkwFgYy9ZbsbyTlkUtjlmPc/Ifq9M00docRo45FgXjM87RTeK5bgSlCL2hffPP+/q3nrEDxREB4PBTWt+cpGYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wbs8WNzdbvH90unDQ3xwa9t8idoCi/49VZAfGmDqjUY=;
- b=Yi2QZ+P5+M/XeJD1Sr8rf6m1YMk4KW2I8mjb5i5cYaMAnmBn6U5GIvwMnwzs/dldOFw/1Y6QjNzhHJj+VnX3JJlLq/0Jrd9Okb2Z6oi4blr/DXMmuNMO2r5xmOVBElRj9iwxvr+PrUCAQCbzGMPgwLnl8dvmGrPcpPxN1JAFM3aE7pHgbuKXh4uxjOOZLYB09hmIUgBRXorQPfFzEoFbm6P5DwQWSfrFHiEodjhln5Rl41t9Z/aqoQIK30dyvhyxmV5AoaVugN3ZAt2oieGOMsUOLFktRv5Aon7WQE1YPag+TI1L80SwlKQR0M27O/h+iW4ItRUS3k5sR2bKde5ozg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wbs8WNzdbvH90unDQ3xwa9t8idoCi/49VZAfGmDqjUY=;
- b=N1LyKMztulFaIGuPipuMCogM8ul8fCtLxz8o34DV9kQ4iW5UsPY5LuOrVOZToGKQlbCKEEXTs9ssYz0aod+8D+EpYu77dRkYuD3Gec63M4r5qM/4tFGXBBkXQDVTrqqQrk2dOSi5Tws0YK7YOObImfnEHCFYNYMJaixKBm4GUAk=
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
- HE1PR07MB4172.eurprd07.prod.outlook.com (2603:10a6:7:99::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4173.12; Wed, 26 May 2021 07:21:15 +0000
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::85ed:ce03:c8de:9abf]) by HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::85ed:ce03:c8de:9abf%7]) with mapi id 15.20.4173.020; Wed, 26 May 2021
- 07:21:15 +0000
-From:   "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jan.kratochvil@redhat.com" <jan.kratochvil@redhat.com>
-Subject: Re: LTS perf unwind fix
-Thread-Topic: LTS perf unwind fix
-Thread-Index: AQHXUWNAMimraUixrEyqdytsWPBp16r0KrIAgAEx8AA=
-Date:   Wed, 26 May 2021 07:21:15 +0000
-Message-ID: <45b140543ccb85ab184ed17befca4a9e64661051.camel@nokia.com>
-References: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
-         <YKz2RIcTyD/FCF+a@kroah.com>
-In-Reply-To: <YKz2RIcTyD/FCF+a@kroah.com>
-Accept-Language: en-US, en-150, fi-FI
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.1 (3.40.1-1.fc34) 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nokia.com;
-x-originating-ip: [131.228.2.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1f6a01d2-58be-40b4-7b9c-08d92016d95e
-x-ms-traffictypediagnostic: HE1PR07MB4172:
-x-microsoft-antispam-prvs: <HE1PR07MB41724D5994FDBD3ECC45EE90B4249@HE1PR07MB4172.eurprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zc7PIjX5Bw6LR8GzcZ4VJE4YQfVBmTduAy6JaiUJzxTyqtsFPp+RD1hdjaW3m0i/YnDM4pj4JUiFKROaO1CpbEwOQOsOgCD8PtJqEvOSKQMAxa9FmOefTZciYOphYENH7Hc0qEEiXXof6LikvDATUu8B1pFq57Q89GY0P1gSPmszAIaNqEtq20oH0vFKqvi3d99Kriu5yZZG7lQybqqhEPPmgfPPvha9kaQkZBiNfjIJdvcDXfkXwbgoKPHtJFRGXGM7wX5eU4ChBOMpfhE+lbVa9ZXTr2TUVxxvJSJIvgqLNIZ1zrF0R15c8eTGmtSQE0ZhYiwTv3sgS2E7DNkbe89Wp0W9XuPcKXA+55bkxQC0p/ugJVUvExyHj2dZgNAvMDYNylG5ZDDnJqQNvcqVyVjkvVHA+Rt/Sdtyg2JoIOiLA1jJD9iDIBiNRipTYv4C816Ca/+S85qc6GD6y5e6CsXuehw/c6OiWv2bNl9lW7uxD7SKPWk5fTN8ke+Ii4TepdAagasbuorhoAemVQX8OyEKl3lr8nLmSd0zmRJZERMBFToAwOLw3jTNMPcnQ0BM0a2hFOq7tc+tBV5/oLd8iCkANttzERlsVVRfLbsi/es=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(366004)(136003)(346002)(3480700007)(6506007)(2906002)(4326008)(76116006)(6512007)(8676002)(6916009)(86362001)(26005)(4744005)(36756003)(478600001)(54906003)(2616005)(186003)(71200400001)(66946007)(8936002)(5660300002)(316002)(6486002)(38100700002)(64756008)(66556008)(66446008)(122000001)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?b3MrT1hwdldzN2xNck1BbWFQY2JFeUhMV2U2RzZpMkQzaElqcDJodjVvbHFz?=
- =?utf-8?B?M09WRVBOM3FHUUhJZXhzenNEVmEza2ozT3Blcmh3MnlDU3U0UGJkcUxWc2NW?=
- =?utf-8?B?eTk4YVFaekthYjBMTW9EeDJKeUtzRTdsTHF1QVpuczNFN0treXU1bCtJWmJq?=
- =?utf-8?B?bWVXSVUyRksrWXJVRndQS25ReTJITytRb1FFYkxiV1lkTlg1ZjdGY2RaLytW?=
- =?utf-8?B?b1JsazdFd0JvVyswL2pRY0hpVkpjZ3h6czV2VVo2NjU4UGVSeXBoRzFMMDBw?=
- =?utf-8?B?bjkrSE5tWnpGMGpwSDVreWpqQWtudkd2bmkvWHl6UXpESmwxeWREb2cveHhv?=
- =?utf-8?B?Wm1CWkRxZlduTTgrYllPdlpWczU3TjFhRjBtS25EMVFYMjAvN0JzaHZrMWgy?=
- =?utf-8?B?U0dXcVRrQUU1eENueW9zMUxZQ2RkTVFsbHlWZm5YV3REOFErbmNuTzF6TEE4?=
- =?utf-8?B?ZWtJdUZZeWQ0NmtsK2g4QjJRU0VSYmZnM21XZW8za1VZOXE3Y3kwMjVWeU5C?=
- =?utf-8?B?d2V0UTYvRGE5NFJDRkRhZnJxQWN3STArRW1xTng1bC95YWQxMGpJSHhhbjdF?=
- =?utf-8?B?SkJ3cjdVcFJCWWlzQlZMcUxYUHBubmxpdDJvOFgwb1pEVE1reDZDblRMS0Ns?=
- =?utf-8?B?TFBlcklVTGFoQUlXNWovWDYwb081OTFhS2lSeWdzQlQ5c05zY0VLdlU0bVJH?=
- =?utf-8?B?NnAvbTNEMmw3M0dZbm5KZVhKdVR2b2tId0lnM1hKcTIzLzk0c0Npb2tydTQv?=
- =?utf-8?B?SW9RNmswYm5UbEJDODIwUzJEWDlMN21XYm5JUlhUM0pJcStMZC8rZTFJeHVK?=
- =?utf-8?B?M2JYQTBMdlhLV1pJTitDUXlkcmQ3SWZIalJhNGJqZm1PU3pYVUhsLzFKY3JK?=
- =?utf-8?B?RlF0MXp1VDRUUlZwQXNYVUIxTXk2Zkh1WmhLWUpjQXFsRVlsbGdNc2hNRHpm?=
- =?utf-8?B?Tm1pUStOMDB4Z21BcG1JeWh5cGxWKzN4YjRaZVBzQmJNTjV5MTFsSzR4bVl0?=
- =?utf-8?B?bTR3ZTZDVHByYXM5d09UbGJoUnJBYUxOdGREQytCVkJlT0lmcFhUZUgvd1Aw?=
- =?utf-8?B?SCswcUtUTk4yWVRycGRBSEx3ZmROVVVRNGQrMm4wb3RHNFpOQlNLQ2d2R1Rk?=
- =?utf-8?B?RFdjQjZsamJDRlZvWmpXUkZaS1puYkoxOERtL3JNclFWU0RiRGdTOGJpTmxY?=
- =?utf-8?B?ZFhvN1lXRkN5ZFovNjV6SC9IZjhaQnlTbXNDZWlMbFdjbmJNMkZEdGt6Rkhk?=
- =?utf-8?B?ejZvVWFVWTljN25RNDJnWVZ6YzV1Wk96K1dYbDhRMGJJcFVPaVpPOUYrSFdI?=
- =?utf-8?B?Z2JZKzhETFlYUDVxNkloZEgwUEJ3blBYS201a0tid0w3R01nYXYwKzNoWTU1?=
- =?utf-8?B?Y2dKMjB1TjJvWUUvWFE4cldNVzQwR0tLbzU0ekYvVHM2Mm9YeFZoTVhoL3NP?=
- =?utf-8?B?NHE2VEVlU3FLSlVuUzNwb2NrUXl3OVdYQXNQZzdodFdraEhFaithVC91cGFF?=
- =?utf-8?B?TkIwZFdKQitLUnBnLzJvMVVqREQ1aUdzZ2RLcTZ6MDhhNkh5c21GWVNUaFVJ?=
- =?utf-8?B?WFo4bkg5UVhjTHV6dUdjeXhyc0pEc1hnQUVka2tyQWQ4RzAwT3pxZ0YwblVp?=
- =?utf-8?B?OWw5Z2xhUnp6TmxxcWtuMDlwQ1NHUWo2QnNmNDFnVHc0N0xaNlU5VTREa3pX?=
- =?utf-8?B?NVh1SjNsL2dFdHhwd21rVDU1Z1RwajM1cHU2bUFQb1FlMitTdFVSWWhudksv?=
- =?utf-8?Q?Fq1nLGFjU8Y6CTJZtqvdpuJa4yeWXawAtocTmzS?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CF3E283E30DF2F4CA087EB24A83A450B@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S233006AbhEZHZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:25:01 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18960 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232971AbhEZHY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:24:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622013807; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=HzIPuifBsSrOAMCIHmn9qh/aKUR9SCIU/XmPKKlgABg=;
+ b=KPu8q4+XJTqS92WcrZUEhEJVIClldJCf1RQMxOt0qU6V/soO+cIgEGqq6PmdZHoaiDTHcqAh
+ LcuWABHbeNMYNCUZC93wzltVDw8mJSkQelEqJbaWLUZcKQK98aWDlicpTXbvTMnQRyPldUWl
+ 6o2h/F5655HkxcjStxniwbVqCgQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60adf75c8dd30e785f0cdfb6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 07:23:07
+ GMT
+Sender: nitirawa=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 156E1C4360C; Wed, 26 May 2021 07:23:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nitirawa)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34254C433F1;
+        Wed, 26 May 2021 07:23:05 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f6a01d2-58be-40b4-7b9c-08d92016d95e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2021 07:21:15.5934
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m+lE+I0gmpMua1J8OmgyM3MTnhFFphhuJwxSJwQZk4ZSqUY37eZjQMkKU+cbaOrS02L7HKiRMcb5ZyFen2t09bNjkzgsbls2D+8qekzkJUQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR07MB4172
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 May 2021 12:53:05 +0530
+From:   nitirawa@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
+ vendor file
+In-Reply-To: <20210401151234.GO904837@yoga>
+References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+ <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
+ <20210323152834.GH5254@yoga>
+ <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
+ <20210331181959.GL904837@yoga>
+ <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
+ <20210401151234.GO904837@yoga>
+Message-ID: <7fb8b7a30c1e24e5102772e7c5acf55a@codeaurora.org>
+X-Sender: nitirawa@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MjAyMS0wNS0yNSAxNTowNiArMDIwMCwgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc6DQo+IE9u
-IFR1ZSwgTWF5IDI1LCAyMDIxIGF0IDEyOjQxOjE1UE0gKzAwMDAsIFJhbnRhbGEsIFRvbW1pIFQu
-IChOb2tpYSAtDQo+IEZJL0VzcG9vKSB3cm90ZToNCj4gPiBDYW4geW91IHBsZWFzZSBjaGVycnkt
-cGljayB0aGlzIHRvIExUUzoNCj4gPiANCj4gPiBjb21taXQgYmY1M2ZjNmI1ZjQxNWNkZGM3MTE4
-MDkxY2I4ZmQ2YTIxMWIyMzIwZA0KPiA+IEF1dGhvcjogSmFuIEtyYXRvY2h2aWwgPGphbi5rcmF0
-b2NodmlsQHJlZGhhdC5jb20+DQo+ID4gRGF0ZTrCoMKgIEZyaSBEZWMgNCAwOToxNzowMiAyMDIw
-IC0wMzAwDQo+ID4gDQo+ID4gwqDCoMKgIHBlcmYgdW53aW5kOiBGaXggc2VwYXJhdGUgZGVidWcg
-aW5mbyBmaWxlcyB3aGVuIHVzaW5nIGVsZnV0aWxzJw0KPiA+IGxpYmR3J3MgdW53aW5kZXINCj4g
-DQo+IFdoYXQgZXhhY3Qga2VybmVsKHMpIGRvIHlvdSB3YW50IGl0IGJhY2twb3J0ZWQgdG8/DQoN
-CjUuNC55IHBsZWFzZSwgdGVzdGVkIEphbidzIGFuZCBEYXZlJ3MgcGF0Y2hlcyB3aXRoIGl0LCBh
-bmQgdGhleSBjdXJlDQpzb21lIGJyb2tlbiBiYWNrdHJhY2VzLg0KDQoNCiAgY29tbWl0IDRlMTQ4
-MTQ0NTQwN2I4NmE0ODM2MTZjNDU0MmZmZGM4MTBlZmI2ODANCiAgQXV0aG9yOiBEYXZlIFJpZ2J5
-IDxkLnJpZ2J5QG1lLmNvbT4NCiAgRGF0ZTogICBUaHUgRmViIDE4IDE2OjU2OjU0IDIwMjEgKzAw
-MDANCg0KICAgIHBlcmYgdW53aW5kOiBTZXQgdXNlcmRhdGEgZm9yIGFsbCBfX3JlcG9ydF9tb2R1
-bGUoKSBwYXRocw0KDQoNCg==
+On 2021-04-01 20:42, Bjorn Andersson wrote:
+> On Thu 01 Apr 09:58 CDT 2021, nitirawa@codeaurora.org wrote:
+> 
+>> On 2021-03-31 23:49, Bjorn Andersson wrote:
+>> > On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
+>> >
+>> > > On 2021-03-23 20:58, Bjorn Andersson wrote:
+>> > > > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
+>> > > >
+>> > > > > As a part of vops handler, VCC voltage is updated
+>> > > > > as per the ufs device probed after reading the device
+>> > > > > descriptor. We follow below steps to configure voltage
+>> > > > > level.
+>> > > > >
+>> > > > > 1. Set the device to SLEEP state.
+>> > > > > 2. Disable the Vcc Regulator.
+>> > > > > 3. Set the vcc voltage according to the device type and reenable
+>> > > > >    the regulator.
+>> > > > > 4. Set the device mode back to ACTIVE.
+>> > > > >
+>> > > >
+>> > > > When we discussed this a while back this was described as a requirement
+>> > > > from the device specification, you only operate on objects "owned" by
+>> > > > ufshcd and you invoke ufshcd operations to perform the actions.
+>> > > >
+>> > > > So why is this a ufs-qcom patch and not something in ufshcd?
+>> > > >
+>> > > > Regards,
+>> > > > Bjorn
+>> > > >
+>> > > > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+>> > > > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+>> > > > > ---
+>> > > > >  drivers/scsi/ufs/ufs-qcom.c | 51
+>> > > > > +++++++++++++++++++++++++++++++++++++++++++++
+>> > > > >  1 file changed, 51 insertions(+)
+>> > > > >
+>> > > > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+>> > > > > index f97d7b0..ca35f5c 100644
+>> > > > > --- a/drivers/scsi/ufs/ufs-qcom.c
+>> > > > > +++ b/drivers/scsi/ufs/ufs-qcom.c
+>> > > > > @@ -21,6 +21,17 @@
+>> > > > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
+>> > > > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
+>> > > > >
+>> > > > > +#define	ANDROID_BOOT_DEV_MAX	30
+>> > > > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
+>> > > > > +
+>> > > > > +/* Min and Max VCC voltage values for ufs 2.x and
+>> > > > > + * ufs 3.x devices
+>> > > > > + */
+>> > > > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
+>> > > > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
+>> > > > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
+>> > > > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
+>> > > > > +
+>> > > > >  enum {
+>> > > > >  	TSTBUS_UAWM,
+>> > > > >  	TSTBUS_UARM,
+>> > > > > @@ -1293,6 +1304,45 @@ static void
+>> > > > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
+>> > > > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
+>> > > > >  }
+>> > > > >
+>> > > > > +  /**
+>> > > > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
+>> > > > > +   * @hba: host controller instance
+>> > > > > +   * Update VCC voltage based on UFS device(ufs 2.x or
+>> > > > > +   * ufs 3.x probed)
+>> > > > > +   */
+>> > > > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
+>> > > > > +{
+>> > > > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
+>> > > > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
+>> > > > > +	int ret;
+>> > > > > +
+>> > > > > +	/* Put the device in sleep before lowering VCC level */
+>> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
+>> > > > > +
+>> > > > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
+>> > > > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
+>> > > > > +
+>> > > > > +	/* add ~2ms delay before renabling VCC at lower voltage */
+>> > > > > +	usleep_range(2000, 2100);
+>> > > > > +
+>> > > > > +	/* set VCC min and max voltage according to ufs device type */
+>> > > > > +	if (dev_info->wspecversion >= 0x300) {
+>> > > > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
+>> > > > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
+>> > > > > +	}
+>> > > > > +
+>> > > > > +	else {
+>> > > > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
+>> > > > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
+>> > > > > +	}
+>> > > > > +
+>> > > > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
+>> > > > > +
+>> > > > > +	/* Bring the device in active now */
+>> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
+>> > > > > +	return ret;
+>> > > > > +}
+>> > > > > +
+>> > > > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
+>> > > > >  {
+>> > > > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
+>> > > > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
+>> > > > > ufs_hba_qcom_vops = {
+>> > > > >  	.device_reset		= ufs_qcom_device_reset,
+>> > > > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
+>> > > > >  	.program_key		= ufs_qcom_ice_program_key,
+>> > > > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
+>> > > > >  };
+>> > > > >
+>> > > > >  /**
+>> > > > > --
+>> > > > > 2.7.4
+>> > > > >
+>> > >
+>> > > Hi Bjorn,
+>> > > Thanks for your review.
+>> > > But As per the earlier discussion regarding handling of vcc voltage
+>> > > for platform supporting both ufs 2.x and ufs 3.x , it was finally
+>> > > concluded
+>> > > to
+>> > > use "vops and let vendors handle it, until specs or someone
+>> > > has a better suggestion". Please correct me in case i am wrong.
+>> > >
+>> >
+>> > I was under the impression that this would result in something custom
+>> > per platform, but what I'm objecting to now that I see the code is that
+>> > this is completely generic.
+>> >
+>> > And the concerns we discussed regarding these regulators being shared
+>> > with other devices is not considered in this implementation. But in
+>> > practice I don't see how you could support 2.x, 3.x and rail sharing at
+>> > the same time.
+>> >
+>> > Regards,
+>> > Bjorn
+>> >
+>> > > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
+>> > >
+>> > > Regards,
+>> > > Nitin
+>> 
+>> Hi Bjorn,
+>> Thanks for your feedback.
+>> Regarding your query for regulator being shared with other device,
+>> Imho, the soc/pmic designer should share only those device
+>> with ufs regulator which has the same voltage range (2.4-3.6v).
+>> If that is not considered by the pmic designer,
+>> wouldn't that would be a board design issue ???
+>> 
+> 
+> It's not only that the rail needs to stay within 2.4-3.6V, depending on
+> operating mode of this device it either need to be at 2.54-2.7V or
+> 2.95-2.96V depending on wspecversion for this instance.
+> 
+> So either that other device need to be completely flexible in that 
+> range
+> and support the voltage jumping between them without notice, or such
+> design isn't possible.
+> 
+> And as you say, that would be something that the hardware designers
+> would need to handle for us.
+> 
+>> And I agree with you that - the code looks generic but
+>> since the below steps is not part of the specs,
+>> I had to keep it in vendor specific file for which I
+>> had to export few api from ufshcd.c to use in vendor
+>> specific files.
+>> 
+>> 1. Set the device to SLEEP state.
+>> 2. Disable the Vcc Regulator.
+>> 3. Set the vcc voltage according to the device type and reenable
+>>    the regulator.
+>> 4. Set the device mode back to ACTIVE.
+>> 
+>> Please correct me if my understanding is not correct.
+>> 
+> 
+> Are you saying that steps 1 to 4 here are not defined in the
+> specification and therefor Qualcomm specific? Do we expect other 
+> vendors
+> to not follow this sequence, or do they simply not have these voltage
+> constraints?
+> 
+> And again, isn't this the voltage for the attached UFS device? (Rather
+> than a Qualcomm thing)
+> 
+> Regards,
+> Bjorn
+
+
+Hi Bjorn,
+Sorry for quite late reply.
+Yes Bjorn above steps(1-4) are not mentioned in the specs. But 
+definitely other
+vendor can follow the same steps . If no vendor have any concerns,
+I can put these steps as generic in ufshcd.c file.
+Let me know what's you opinion on this ??
+
+Thanks,
+Nitin
+
