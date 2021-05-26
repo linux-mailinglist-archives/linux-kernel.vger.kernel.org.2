@@ -2,86 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432FF3922B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079BA3922BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbhEZWbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S234455AbhEZWbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbhEZWbG (ORCPT
+        with ESMTP id S233535AbhEZWbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:31:06 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5268DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:29:33 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 27so2168482pgy.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:29:33 -0700 (PDT)
+        Wed, 26 May 2021 18:31:42 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA75AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:30:10 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so2562409otp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qSkyuRLIywOgSpc4Exwi+hfwQCVFKBm/lXDqy5wmBnk=;
-        b=r9U6b0w69kuX9cpBYYQ+ro++7IHUTvMcCWcpXHg3I+zP880ZXbtVedIaVGnN8MF00U
-         dI/lELbxhOv7z5Pfz4Vd1ChrGE2Fa/nwR/Ezl2G97xJ9rktvrLCqRLVwvE5GkINly+gJ
-         qNm0Zxm9QIIatcdkSC1WsBPjlDfifh2uOnjHwfQwmhLeHfo5yy9Pc3MVaXqW8IiEataS
-         04OQVyLN+yhwLzwLcG8As05euEReAkPUFGGOVQuwmS3VxF06AQXPfM8uiIiBR9Jy5oKm
-         JxiJyj4tONmIcPn3lXFUMu8PAADi/f87anwdrLbZteg7tJUNj2YKgzGsZX/hjK3aVR5N
-         XN4w==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=bLv+JsKXeZGaaykGI4ifZQ2oax0+vSb1bwQWj+u5YH8=;
+        b=cRhdaJHuD13kZGm9e4s/RfE6p5NXYn1cfcXxi7bNz9ZNYYSEjrxqXpg3fzrNo0aYmA
+         edMmNYKj443cY/lnSbNiBAZVvmdUbalCwTGzDOaO4v2VPaF8niLktvm5jnx/fuhFURmP
+         zrxk8uy43rVsYn7Wm2i+g6NCHFI7w9Qe6dNiA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qSkyuRLIywOgSpc4Exwi+hfwQCVFKBm/lXDqy5wmBnk=;
-        b=Rm3L4VTcemRrjecN1XFVk+ikK2rSsSGVJYtwQNTvDmMW67sSKyqRRNCJu4z6uTUZVY
-         lCuvXZevORdjERBcXUnnZLR2uDA32IxQNdNTp/1FhuyrEC6QeegudKxnzQfVVdomEmIE
-         gX7QLYfCu/ldAbnrR6ANBcZm6mOjhOz53dbarRvtni6xL4e0+PpLYjpXgLVBUgt+eJqX
-         uSKL9XgA8chRLhWfc4S5JIu3+OpkhB+xreKkK+0q+f+MtZsm7V7oaE+n47n8gV28aROJ
-         FnDASg6P97ktpYNX12sY/N7DfB86UNzdB3DgJmHzzAiDBq9Wj/r0V8fKGtB0umLu6fSx
-         Tfzw==
-X-Gm-Message-State: AOAM533n6YTfWaNGsZc+VAvfY7meYXTcBPhsub96MG2iHhSn83EK/axn
-        VTkzCvKukymtSISAMD6awHE=
-X-Google-Smtp-Source: ABdhPJyhluupXGvNB3jQonGlCku2FVrdJ5z41FMGM97XET+rfk2B3/0QqgzoGEqd1TbHYVdBKJhKRA==
-X-Received: by 2002:a62:1496:0:b029:2e7:2674:147 with SMTP id 144-20020a6214960000b02902e726740147mr281572pfu.51.1622068172854;
-        Wed, 26 May 2021 15:29:32 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:3dcc:6421:abe4:95d0])
-        by smtp.gmail.com with ESMTPSA id 4sm87124pgn.31.2021.05.26.15.29.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 15:29:32 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 26 May 2021 15:29:30 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     hughd@google.com, ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        naoya.horiguchi@nec.com, wangyugui@e16-tech.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v4 PATCH 2/2] mm: rmap: make try_to_unmap() void function
-Message-ID: <YK7LykQE0LzysBYU@google.com>
-References: <20210526201239.3351-1-shy828301@gmail.com>
- <20210526201239.3351-2-shy828301@gmail.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=bLv+JsKXeZGaaykGI4ifZQ2oax0+vSb1bwQWj+u5YH8=;
+        b=H4iDbCpn24uO/QfEdGUTRNg/LlRQR9bboPjHIcc8iSprHskKDdiucxClhEABYEgimB
+         Th5jjL9ysxWENqXvvn0aAxkwM3A81J0dYFe+QNyV00gXh7D2VLP8fytp9TwN4uiZ9yZd
+         2qBEQQFxTnUKTICPNZZ1Qq3PdzhFTGjNR33Jv2BrsBtvbeW2ItCtLnfk6tpIYvj0a9VB
+         nVQoywyYB0vH69iZnbxk2alpzeZXqasEGoc57Rt+ZZbdgV4Zir0P0cpANnHQ4wGygj7F
+         /VzdfItVxpo5z8fv1S+osb60m7WXVV/J/3+g145Pizz81RcNY9aVUIm/lOgE8NPD1Fnk
+         Y8rQ==
+X-Gm-Message-State: AOAM530HI9AZdGRNUOjqYWb7KNzgR7LrnprfJE5CmoON7xkfFDamOp1U
+        TzbjPYTaDJij5YPEMUtoQCbBpBOhK/tuyfl4wa6w2li3umk=
+X-Google-Smtp-Source: ABdhPJw0ZuSJ/bjsKrYTN4B3XofuVZOOvkQYChRi9Nenqb7Nei3nN+IOoKd3TCNXOMRC4TipVVgBy8OTUqzBnAXk5BY=
+X-Received: by 2002:a05:6830:1f51:: with SMTP id u17mr421146oth.25.1622068209699;
+ Wed, 26 May 2021 15:30:09 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 26 May 2021 18:30:09 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526201239.3351-2-shy828301@gmail.com>
+In-Reply-To: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
+References: <1622052503-21158-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 26 May 2021 18:30:09 -0400
+Message-ID: <CAE-0n53bGm4T7SE8sJWFgCbCs2uRYwKrXHxmKQ-0zHXQJpPKdw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: power off DP phy base on mainlink status at suspend
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 01:12:39PM -0700, Yang Shi wrote:
-> Currently try_to_unmap() return bool value by checking page_mapcount(),
-> however this may return false positive since page_mapcount() doesn't
-> check all subpages of compound page.  The total_mapcount() could be used
-> instead, but its cost is higher since it traverses all subpages.
-> 
-> Actually the most callers of try_to_unmap() don't care about the
-> return value at all.  So just need check if page is still mapped by
-> page_mapped() when necessary.  And page_mapped() does bail out early
-> when it finds mapped subpage.
-> 
-> Suggested-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
+Quoting Kuogee Hsieh (2021-05-26 11:08:23)
+> DP mainlink can be either enabled or disabled at the time of suspend
+> happen. Therefore DP phy teared down at suspend should base on mainlink
+> status at that instance.
 
-Thanks for the update, Yang Shi.
+Please add some more details here. The system crashes if you plug in the
+HDMI cable during system wide suspend. That seems to be because the DP
+phy isn't powered down during suspend if the HDMI cable is disconnected
+so we try to process the hpd plug event on the path to suspend instead
+of wait to bring up the phy and then the display?
+
+I'm trying to find the case when we would be entering suspend and only
+have called phy_init() without calling phy_exit(). What path is that? I
+guess it is dp_ctrl_off_link_stream() called when the sink count goes to
+0? So plug in HDMI cable to apple dongle, unplug HDMI cable to apple
+dongle and phy_power_off() followed by phy_exit() followed by phy_init()
+and then enter suspend so we want to call phy_exit(). Then we only call
+phy_power_off() if we've called dp_ctrl_on()? I think I followed it all.
+
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 5 ++++-
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h    | 2 +-
+>  drivers/gpu/drm/msm/dp/dp_display.c | 9 ++++++++-
+>  3 files changed, 13 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index dbd8943..5115c05 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1398,7 +1398,7 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
+>   * Perform required steps to uninitialize DP controller
+>   * and its resources.
+>   */
+> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on)
+>  {
+>         struct dp_ctrl_private *ctrl;
+>         struct dp_io *dp_io;
+> @@ -1414,6 +1414,9 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+>         phy = dp_io->phy;
+>
+>         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
+> +       if (mainlink_on)
+> +               phy_power_off(phy);
+> +
+>         phy_exit(phy);
+>
+>         DRM_DEBUG_DP("Host deinitialized successfully\n");
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> index 25e4f75..a23ee2b 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> @@ -20,7 +20,7 @@ struct dp_ctrl {
+>  };
+>
+>  int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+> +void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl, bool mainlink_on);
+>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index cdec0a3..88eeeb5 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -104,6 +104,8 @@ struct dp_display_private {
+>
+>         bool encoder_mode_set;
+>
+> +       bool mainlink_on;
+> +
+
+Is there a reason why this can't be stashed away in dp_ctrl.c in the
+'struct dp_ctrl'? It seems to follow closely with dp_ctrl_*() APIs.
+
+>         /* wait for audio signaling */
+>         struct completion audio_comp;
+>
+> @@ -353,11 +355,14 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+>         dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>
+>         dp_link_reset_phy_params_vx_px(dp->link);
+> +
+> +       dp->mainlink_on = false;
+
+Isn't this too late to be setting it to false? i.e. it should be false
+by default, and then set to false when a dp_ctrl_off() call is made?
+
+>         rc = dp_ctrl_on_link(dp->ctrl);
+>         if (rc) {
+>                 DRM_ERROR("failed to complete DP link training\n");
+>                 goto end;
+>         }
+> +       dp->mainlink_on = true;
+>
+>         dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+>
+> @@ -392,7 +397,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+>                 return;
+>         }
+>
+> -       dp_ctrl_host_deinit(dp->ctrl);
+> +       dp_ctrl_host_deinit(dp->ctrl, dp->mainlink_on);
+>         dp_aux_deinit(dp->aux);
+>         dp_power_deinit(dp->power);
+>
+> @@ -941,6 +946,8 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+>                 dp->core_initialized = false;
+>         }
+>
+> +       dp->mainlink_on = false;
+> +
+>         dp_display->power_on = false;
+>
+>         return 0;
+
+It would certainly help to keep it contained to one file instead of two.
