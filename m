@@ -2,117 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D239A391CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B70B391D00
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbhEZQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:25:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35277 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234191AbhEZQZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:25:52 -0400
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1llwKR-0008Fd-J0
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 16:24:19 +0000
-Received: by mail-lf1-f70.google.com with SMTP id g25-20020a19e0590000b029022452ed1b20so843029lfj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:24:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EaLER3aOaefvnJohx084gatUZrVitp6/k9BAoBcbFwQ=;
-        b=AbOd+YoAkmq3e7ZhZREw3PY6V5WuF6EC0pDWKDU1zhHT1U4E1a80RCWVjrAVM21nKn
-         wEdOpWiOKZbWV4DyubLK9ExvY70Rfy7d6+WOARzk7LLNvdUDKvK2td6DCdTJ6IyeDx0G
-         WUXzHGq+Oe9R+MuNtj0J2DSeUc3F59wFoKh1gDUqlcbXfAKqlrBwcNOivD/DR5da01Dt
-         7rGQo1gAiskyQhAO8XpnquMDUD8MJLOz1/gFaV8dqNlYx+hPmz7hoyEC1GXbDqPV2Bcr
-         DUw5v+NyYly8KWB+kbf3f8jmpvZhYcXH5eVrFXlPeii4R62/gU7wH7AWbtcyRNTebttI
-         BFfQ==
-X-Gm-Message-State: AOAM5330U4L7aVMNSdqZxDw8fx50v0OrhffaFEMIuI4Ef1ciylTJwjix
-        HusmIjN4psK88QKGXtpXnMAybrCE8+tY18535rrNBoWnASak+fB/CAXHxBmd0FMc4CFG9++/gGt
-        NoNCih2304WGf1yybiYpecefXTwJCtJXlX4nV2tyTlZEUKenW9joudMB6lQ==
-X-Received: by 2002:ac2:4144:: with SMTP id c4mr2630898lfi.425.1622046258902;
-        Wed, 26 May 2021 09:24:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTX2NBJBNN4eqh1bmc0CzSsdUjoLFqYdZdKExzytvKRntLCQ7lGSKYfKS2XXdeHamQs7tXA0/k/v58IQQ8mVE=
-X-Received: by 2002:ac2:4144:: with SMTP id c4mr2630873lfi.425.1622046258620;
- Wed, 26 May 2021 09:24:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAAd53p6TJev=LgdvGxC92A9HOy3B6jbPLymAqeB5bDe2=5Fdsw@mail.gmail.com>
- <20210526150633.GA1291513@bjorn-Precision-5520>
-In-Reply-To: <20210526150633.GA1291513@bjorn-Precision-5520>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 27 May 2021 00:24:06 +0800
-Message-ID: <CAAd53p7Mnv6HUv8hfjnsCpGeaSPXVAiA4D8gMxxdn6Bz8Z1fBQ@mail.gmail.com>
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-        Koba Ko <koba.ko@canonical.com>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234464AbhEZQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233629AbhEZQ1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:27:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 65343613CA;
+        Wed, 26 May 2021 16:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622046345;
+        bh=Rff+s8/qGL0bds1Gbre6PZ59RBghMMXlEuvk+nlSSdI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZqjkQgwQOWyvZhOQEHhxS46apV0YVyRhNEzXFD3M6HZUZe2iixUdK1XIVj4T3UMi5
+         oOrG5S6UIWH2Et4K2xv5/6eZc6ALcIJlnnQCHJhkNixpm25/epZneNoazLEa4HQfZN
+         6G4QgvBQh6CfKqEVjXo7lVlivIpK/pgljYkzW6VDexvEWQU6XdxHBRQAMWjNVMRZm1
+         ApGR8f9EBcHS+JSNvK+RZQGFWSjPAWQPF8jq/oXF//hoPrUl7V/YYVVMEabwFGLg6t
+         GheI6x+WghY+KHu+qNWtlxWmq0o8v81ajbUYkXM80CXc2XPi1MfRDvKwIhUFzms5Dz
+         AmR0Bh++kuNkw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A6AA60A16;
+        Wed, 26 May 2021 16:25:45 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for v5.13-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210526175924.4f9ab124@xps13>
+References: <20210526175924.4f9ab124@xps13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210526175924.4f9ab124@xps13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.13-rc4
+X-PR-Tracked-Commit-Id: 562b4e91d3b221f737f84ff78ee7d348c8a6891f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7ac3a1c1ae5152e1d18cf6df5b6c3c9847535e78
+Message-Id: <162204634524.25444.1664185134093644010.pr-tracker-bot@kernel.org>
+Date:   Wed, 26 May 2021 16:25:45 +0000
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:06 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, May 26, 2021 at 10:47:13PM +0800, Kai-Heng Feng wrote:
-> > On Wed, May 26, 2021 at 10:28 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > On Wed, May 26, 2021 at 10:21:59PM +0800, Kai-Heng Feng wrote:
-> > > > To be fair, resuming the NVMe from D3hot is much slower than keep it
-> > > > at D0, which gives us a faster s2idle resume time. And now AMD also
-> > > > requires s2idle on their latest laptops.
-> > >
-> > > We'd much prefer to use it, but due to the broken platforms we can't
-> > > unfortunately.
-> > >
-> > > > And it's more like NVMe controllers don't respect PCI D3hot.
-> > >
-> > > What do you mean with that?
-> >
-> > Originally, we found that under s2idle, most NVMe controllers caused
-> > substantially more power if D3hot was used.
-> > We were told by all the major NVMe vendors that D3hot is not
-> > supported.
->
-> What is this supposed to mean?  PCIe r5.0, sec 5.3.1, says
->
->   All Functions must support the D0 and D3 states (both D3Hot and D3Cold).
->
-> Since D3hot is required for all functions, I don't think there is a
-> standard way to discover whether D3hot is supported.  The PM
-> Capability (sec 7.5.2.1) has D1_Support and D2_Support bits, but no
-> D3_Support bit.
->
-> Are the vendors just saying "sorry, our devices don't conform to the
-> spec"?
+The pull request you sent on Wed, 26 May 2021 17:59:24 +0200:
 
-Yes, that's exactly what they said. Because Windows Modern Standby
-always keep the NVMe at D0, so D3hot is untested by the vendors.
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.13-rc4
 
-NVMe vendors explicitly asked us to keep the NVMe controllers at D0 for s2idle.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7ac3a1c1ae5152e1d18cf6df5b6c3c9847535e78
 
->
-> If what you really mean is "D3hot is supported and it works, but it
-> consumes more power than expected,
+Thank you!
 
-If D3hot consumes more power than D0, is it really supported?
-
-> or the D3hot->D0 transition takes
-> longer than expected," that's a totally different thing, and you should
-> say *that*.
-
-The D3hot->D0 transition doesn't take longer than expected. It's just
-relatively slower than keeping the NVMe at D0.
-
-Kai-Heng
-
->
-> Bjorn
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
