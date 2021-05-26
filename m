@@ -2,512 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDED03913E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140F63913E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhEZJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhEZJlt (ORCPT
+        id S233416AbhEZJnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:43:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5557 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233117AbhEZJnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:41:49 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1313BC061574;
-        Wed, 26 May 2021 02:40:18 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id z3so895699oib.5;
-        Wed, 26 May 2021 02:40:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GabZeTtpZL3JqUUthscu+MLUoyWKNc+vu/IuoGbuKUA=;
-        b=c7/m3uK35FyMES8a73FeV8aW+CDP2g5wKHjWIrKSGELMgXsCh7q6qW+LWImNge+fJn
-         mIp/mBADbXRv6QzIa31T+hpvb8Byc8BPtmf3nnY6MQsCOBnQg95gWTY+F1aJHfDzD+zO
-         xCbRPzdoimShFce9YEOMA5IaAqgHEFUuLKegK/L08dslej3fZ7lJtNc1Pi8TwXmR4xi5
-         VbRQwBidTLhkKGWemclfL0xhppBLRjTX9ofuLBeu6xRDsQvGzj9iCLwEO+IXV52xO095
-         3yic0FAmaXe8jdXdzHoA/RIt/QJW893DpRogHM6aFZ+bhepZsOi18fbAkwgfdtkHKgqD
-         E1mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GabZeTtpZL3JqUUthscu+MLUoyWKNc+vu/IuoGbuKUA=;
-        b=KsrwlUxLI4JM7u65B0jcMgY5fOqNdEQnrnD8c7d2LiE9WZwwU0CPRHxbEfGBjWtfxo
-         1mPzunXOdgqSAMqOiTzPCExs3Zene7dSSNr6hdMAlOcFphKh7+bWUl08BVe7rZXiT8eX
-         gYedwB4vz4zgIQXYzgh5HEqFz5Da8k2/UbAFBilwQEMo7yP2rjadJeD4kWzO9Lbd7b77
-         X297FhWivqBS+Z2mp9vFq9xGeOUmMaXbE70kqlPCnIiOCGCnCYs6J9q+OJQsMyT5VmRk
-         ZPie3etc3fKQ95tkTENZEw1W+KjUP6OTBwLyd39//KqQu9fi/tkHN4NTN6e9INc7Js+Y
-         TyJg==
-X-Gm-Message-State: AOAM532h4YkE1B/tAQw7Ek2ptFTV5XZAwwKjOY+FFgGXj3qJpLnjOITR
-        VTAodnvGELDS6dZm9V75OeAkw41E//kUWBdCWQE=
-X-Google-Smtp-Source: ABdhPJwFd4ppBY0ln/41ZlQXkpC9PACNFr6moUswHFrSYjSboftQjIl0ply9Mg5pHsW1H5gkL52MO3Ho4FTPZYN9eEY=
-X-Received: by 2002:aca:3197:: with SMTP id x145mr1206670oix.23.1622022017421;
- Wed, 26 May 2021 02:40:17 -0700 (PDT)
+        Wed, 26 May 2021 05:43:50 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqmB55VPpzkXFd;
+        Wed, 26 May 2021 17:39:25 +0800 (CST)
+Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 17:42:17 +0800
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 26 May 2021 17:42:16 +0800
+Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: support RO feature
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <984caf0c-ddec-930a-cbc6-084c8a9b67e5@huawei.com>
+Date:   Wed, 26 May 2021 17:42:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <1610973703-676-1-git-send-email-gene.chen.richtek@gmail.com>
- <1610973703-676-3-git-send-email-gene.chen.richtek@gmail.com> <771c7da0584cf37da6ba370207a89a7401a20c33.camel@fi.rohmeurope.com>
-In-Reply-To: <771c7da0584cf37da6ba370207a89a7401a20c33.camel@fi.rohmeurope.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Wed, 26 May 2021 17:40:06 +0800
-Message-ID: <CAE+NS35BOC6rr4U9rtBkNph8mZCVV=5MGbh0VQXBvhLRkBaAvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] power: supply: mt6360_charger: add MT6360 charger support
-To:     "Vaittinen, Matti" <matti.vaittinen@fi.rohmeurope.com>
-Cc:     sre@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210521190217.2484099-2-jaegeuk@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx702-chm.china.huawei.com (10.1.199.49) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com> =E6=96=BC 2021=E5=B9=B4=
-3=E6=9C=8830=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:48=E5=AF=AB=E9=
-=81=93=EF=BC=9A
->
->
-> On Mon, 2021-01-18 at 20:41 +0800, Gene Chen wrote:
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add basic support for the battery charger for MT6360 PMIC
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >  drivers/power/supply/Kconfig          |  10 +
-> >  drivers/power/supply/Makefile         |   1 +
-> >  drivers/power/supply/mt6360_charger.c | 914
-> > ++++++++++++++++++++++++++++++++++
-> >  3 files changed, 925 insertions(+)
-> >  create mode 100644 drivers/power/supply/mt6360_charger.c
-> >
->
-> Thanks for the contribution :)
->
-> Few comments which I am not demanding to be 'fixed' - but which might
-> be good to be checked. Eg, please consider my comments as 'nit's.
->
-> ...
->
-> > +static unsigned int mt6360_map_reg_sel(u32 data, u32 min, u32 max,
-> > u32 step)
-> > +{
-> > +     u32 target =3D 0, max_sel;
-> > +
-> > +     if (data >=3D min) {
-> > +             target =3D (data - min) / step;
-> > +             max_sel =3D (max - min) / step;
-> > +             if (target > max_sel)
-> > +                     target =3D max_sel;
-> > +     }
-> > +     return target;
-> > +}
->
-> lib/linear_ranges.c might already implement this ...
->
+On 2021/5/22 3:02, Jaegeuk Kim wrote:
+> Given RO feature in superblock, we don't need to check provisioning/reserve
+> spaces and SSA area.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/f2fs.h    |  2 ++
+>   fs/f2fs/segment.c |  3 +++
+>   fs/f2fs/super.c   | 35 +++++++++++++++++++++++++++++++----
+>   3 files changed, 36 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index c0bead0df66a..2c6913261586 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
+>   #define F2FS_FEATURE_SB_CHKSUM		0x0800
+>   #define F2FS_FEATURE_CASEFOLD		0x1000
+>   #define F2FS_FEATURE_COMPRESSION	0x2000
+> +#define F2FS_FEATURE_RO			0x4000
+>   
+>   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+>   	((raw_super->feature & cpu_to_le32(mask)) != 0)
+> @@ -939,6 +940,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+>   #define	NR_CURSEG_DATA_TYPE	(3)
+>   #define NR_CURSEG_NODE_TYPE	(3)
+>   #define NR_CURSEG_INMEM_TYPE	(2)
+> +#define NR_CURSEG_RO_TYPE	(2)
+>   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+>   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+>   
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 8668df7870d0..67cec8f858a2 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4674,6 +4674,9 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+>   {
+>   	int i;
+>   
+> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> +		return 0;
 
-I found we are neither linear_range_get_selector_high or
-linear_range_get_selector_low.
-When value lower than min_value, choose min_sel. If higher than
-max_value, choose max_sel.
-Should I create linear_range_get_selector() for this?
+We need to skip this sanity check because .next_blkoff may point to end position
+of image?
 
-> > +
-> > +static u32 mt6360_map_real_val(u32 sel, u32 min, u32 max, u32 step)
-> > +{
-> > +     u32 target =3D 0;
-> > +
-> > +     target =3D min + (sel * step);
-> > +     if (target > max)
-> > +             target =3D max;
-> > +     return target;
-> > +}
->
-> ...and this.
->
+> +
+>   	/*
+>   	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
+>   	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index b29de80ab60e..312bfab54693 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -1819,7 +1819,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>   static void default_options(struct f2fs_sb_info *sbi)
+>   {
+>   	/* init some FS parameters */
+> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
+> +	else
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +
+>   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+>   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+>   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+> @@ -1994,6 +1998,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	err = parse_options(sb, data, true);
+>   	if (err)
+>   		goto restore_opts;
+> +
+> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
+> +					!(*flags & SB_RDONLY))
 
-ACK, We can use "linear_range_get_value", but maybe wait for reply
-about "mt6360_map_reg_sel"
+err = -EROFS; ?
 
-> > +static int mt6360_charger_get_ichg(struct mt6360_chg_info *mci,
-> > +                                union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL7, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_ICHG_MASK) >> MT6360_ICHG_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_ICHG_MIN,
-> > +                                       MT6360_ICHG_MAX,
-> > +                                       MT6360_ICHG_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_max_ichg(struct mt6360_chg_info *mci,
-> > +                                    union power_supply_propval *val)
-> > +{
-> > +     val->intval =3D MT6360_ICHG_MAX;
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_cv(struct mt6360_chg_info *mci,
-> > +                              union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL4, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_VOREG_MASK) >> MT6360_VOREG_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_VOREG_MIN,
-> > +                                       MT6360_VOREG_MAX,
-> > +                                       MT6360_VOREG_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_max_cv(struct mt6360_chg_info *mci,
-> > +                                  union power_supply_propval *val)
-> > +{
-> > +     val->intval =3D MT6360_VOREG_MAX;
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_aicr(struct mt6360_chg_info *mci,
-> > +                                union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL3, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_IAICR_MASK) >> MT6360_IAICR_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_AICR_MIN,
-> > +                                       MT6360_AICR_MAX,
-> > +                                       MT6360_AICR_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_mivr(struct mt6360_chg_info *mci,
-> > +                                union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL6, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_VMIVR_MASK) >> MT6360_VMIVR_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_VMIVR_MIN,
-> > +                                       MT6360_VMIVR_MAX,
-> > +                                       MT6360_VMIVR_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_iprechg(struct mt6360_chg_info *mci,
-> > +                                   union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL8, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_IPREC_MASK) >> MT6360_IPREC_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_IPREC_MIN,
-> > +                                       MT6360_IPREC_MAX,
-> > +                                       MT6360_IPREC_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_get_ieoc(struct mt6360_chg_info *mci,
-> > +                                union power_supply_propval *val)
-> > +{
-> > +     int ret;
-> > +     unsigned int regval;
-> > +
-> > +     ret =3D regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL9, &regval);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     regval =3D (regval & MT6360_IEOC_MASK) >> MT6360_IEOC_SHFT;
-> > +     val->intval =3D mt6360_map_real_val(regval,
-> > +                                       MT6360_IEOC_MIN,
-> > +                                       MT6360_IEOC_MAX,
-> > +                                       MT6360_IEOC_STEP);
->
-> linear_ranges?
->
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_charger_set_online(struct mt6360_chg_info *mci,
-> > +                                  const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 force_sleep =3D val->intval ? 0 : 1;
-> > +
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL1,
-> > +                               MT6360_FSLP_MASK,
-> > +                               force_sleep << MT6360_FSLP_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_ichg(struct mt6360_chg_info *mci,
-> > +                                const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_ICHG_MIN,
-> > +                              MT6360_ICHG_MAX,
-> > +                              MT6360_ICHG_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL7,
-> > +                               MT6360_ICHG_MASK,
-> > +                               sel << MT6360_ICHG_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_cv(struct mt6360_chg_info *mci,
-> > +                              const union power_supply_propval *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_VOREG_MIN,
-> > +                              MT6360_VOREG_MAX,
-> > +                              MT6360_VOREG_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL4,
-> > +                               MT6360_VOREG_MASK,
-> > +                               sel << MT6360_VOREG_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_aicr(struct mt6360_chg_info *mci,
-> > +                                const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_AICR_MIN,
-> > +                              MT6360_AICR_MAX,
-> > +                              MT6360_AICR_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL3,
-> > +                               MT6360_IAICR_MASK,
-> > +                               sel << MT6360_IAICR_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_mivr(struct mt6360_chg_info *mci,
-> > +                                const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_VMIVR_MIN,
-> > +                              MT6360_VMIVR_MAX,
-> > +                              MT6360_VMIVR_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL3,
-> > +                               MT6360_VMIVR_MASK,
-> > +                               sel << MT6360_VMIVR_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_iprechg(struct mt6360_chg_info *mci,
-> > +                                   const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_IPREC_MIN,
-> > +                              MT6360_IPREC_MAX,
-> > +                              MT6360_IPREC_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL8,
-> > +                               MT6360_IPREC_MASK,
-> > +                               sel << MT6360_IPREC_SHFT);
-> > +}
-> > +
-> > +static int mt6360_charger_set_ieoc(struct mt6360_chg_info *mci,
-> > +                                const union power_supply_propval
-> > *val)
-> > +{
-> > +     u8 sel;
-> > +
-> > +     sel =3D mt6360_map_reg_sel(val->intval,
-> > +                              MT6360_IEOC_MIN,
-> > +                              MT6360_IEOC_MAX,
-> > +                              MT6360_IEOC_STEP);
->
-> linear_ranges?
->
-> > +     return regmap_update_bits(mci->regmap,
-> > +                               MT6360_PMU_CHG_CTRL9,
-> > +                               MT6360_IEOC_MASK,
-> > +                               sel << MT6360_IEOC_SHFT);
-> > +}
-> > +
-> > +
->
->
->
-> > +static const struct regulator_ops mt6360_chg_otg_ops =3D {
-> > +     .list_voltage =3D regulator_list_voltage_linear,
-> > +     .enable =3D regulator_enable_regmap,
-> > +     .disable =3D regulator_disable_regmap,
-> > +     .is_enabled =3D regulator_is_enabled_regmap,
-> > +     .set_voltage_sel =3D regulator_set_voltage_sel_regmap,
-> > +     .get_voltage_sel =3D regulator_get_voltage_sel_regmap,
-> > +};
-> > +
-> > +static const struct regulator_desc mt6360_otg_rdesc =3D {
-> > +     .of_match =3D "usb-otg-vbus",
-> > +     .name =3D "usb-otg-vbus",
-> > +     .ops =3D &mt6360_chg_otg_ops,
-> > +     .owner =3D THIS_MODULE,
-> > +     .type =3D REGULATOR_VOLTAGE,
-> > +     .min_uV =3D 4425000,
-> > +     .uV_step =3D 25000,
-> > +     .n_voltages =3D 57,
-> > +     .vsel_reg =3D MT6360_PMU_CHG_CTRL5,
-> > +     .vsel_mask =3D MT6360_VOBST_MASK,
-> > +     .enable_reg =3D MT6360_PMU_CHG_CTRL1,
-> > +     .enable_mask =3D MT6360_OPA_MODE_MASK,
-> > +};
->
-> Any particular reason why these are here and not in a regulator driver?
->
+> +		goto restore_opts;
+> +
+>   	checkpoint_changed =
+>   			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
+>   
+> @@ -3137,16 +3146,18 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+>   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+>   
+> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> +		goto no_reserved;
+>   	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+>   			ovp_segments == 0 || reserved_segments == 0)) {
+>   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+>   		return 1;
+>   	}
 
-MT6360 charger is a switching charger which can charging or boost OTG VBUS.
+Well, why not:
 
-> ...
->
-> > +static int mt6360_charger_probe(struct platform_device *pdev)
-> > +{
-> > +     struct mt6360_chg_info *mci;
-> > +     struct power_supply_config charger_cfg =3D {};
-> > +     struct regulator_config config =3D { };
-> > +     int ret;
-> > +
-> > +     mci =3D devm_kzalloc(&pdev->dev, sizeof(*mci), GFP_KERNEL);
-> > +     if (!mci)
-> > +             return -ENOMEM;
-> > +
-> > +     ret =3D mt6360_parse_dt(pdev);
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret, "Failed to parse
-> > dt\n");
-> > +
-> > +     mci->dev =3D &pdev->dev;
-> > +     mci->vinovp =3D 6500000;
-> > +     mutex_init(&mci->chgdet_lock);
-> > +     platform_set_drvdata(pdev, mci);
-> > +     INIT_WORK(&mci->chrdet_work, &mt6360_chrdet_work);
-> > +
-> > +     mci->regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
-> > +     if (!mci->regmap)
-> > +             return dev_err_probe(&pdev->dev, -ENODEV, "Failed to
-> > get parent regmap\n");
-> > +
-> > +     ret =3D mt6360_apply_dt(pdev);
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret, "Failed to apply
-> > dt\n");
-> > +
-> > +     memcpy(&mci->psy_desc, &mt6360_charger_desc, sizeof(mci-
-> > >psy_desc));
-> > +     mci->psy_desc.name =3D dev_name(&pdev->dev);
-> > +     charger_cfg.drv_data =3D mci;
-> > +     charger_cfg.of_node =3D pdev->dev.of_node;
-> > +     mci->psy =3D devm_power_supply_register(&pdev->dev,
-> > +                                           &mci->psy_desc,
-> > &charger_cfg);
-> > +     if (IS_ERR(mci->psy))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(mci->psy),
-> > +                                  "Failed to register power supply
-> > dev\n");
-> > +
-> > +     ret =3D mt6360_chg_init_setting(mci);
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret, "Failed to
-> > initial setting\n");
-> > +
-> > +     schedule_work(&mci->chrdet_work);
->
-> Is this work scheduled anywhere else? If not - why doing this in wq
-> context? If yes - does this wq need cancellation upon exit?
->
+if (!F2FS_HAS_FEATURE(, RO) && unlikely()) {
+}
 
-MT6360 MFD driver probe will clear all interrupts then add charger device.
-We need to schedule work for handling boot-up vbus is always exist,
-because irq is already cleared.
+> -
+> +no_reserved:
+>   	user_block_count = le64_to_cpu(ckpt->user_block_count);
+>   	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+>   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+> -	if (!user_block_count || user_block_count >=
+> +	if (!user_block_count || user_block_count >
 
-> > +
-> > +     ret =3D mt6360_chg_irq_register(pdev);
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret, "Failed to
-> > register irqs\n");
-> > +
-> > +     config.dev =3D &pdev->dev;
-> > +     config.regmap =3D mci->regmap;
-> > +     mci->otg_rdev =3D devm_regulator_register(&pdev->dev,
-> > &mt6360_otg_rdesc,
-> > +                                             &config);
-> > +     if (IS_ERR(mci->otg_rdev))
-> > +             return PTR_ERR(mci->otg_rdev);
-> > +
-> > +     return 0;
-> > +}
-> > +
->
-> Best Regards
->         Matti Vaittinen
->
+Does this change related to RO feature? if so, let's split condition for
+RO feature here?
+
+>   			segment_count_main << log_blocks_per_seg) {
+>   		f2fs_err(sbi, "Wrong user_block_count: %u",
+>   			 user_block_count);
+> @@ -3175,6 +3186,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> +			goto check_data;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_node_segno[j])) {
+> @@ -3185,10 +3200,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> +check_data:
+>   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+>   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
+> +			goto skip_cross;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_data_segno[j])) {
+> @@ -3210,7 +3230,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> -
+> +skip_cross:
+>   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+>   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+>   
+> @@ -3703,6 +3723,13 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>   	if (err)
+>   		goto free_options;
+>   
+> +	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
+> +					!f2fs_readonly(sbi->sb)) {
+> +		f2fs_info(sbi, "Allow to mount readonly mode only");
+> +		err = -EINVAL;
+> +		goto free_options;
+> +	}
+
+How about relocating this to parse_options() like other features did, then
+we don't need to handle this in both fill_super() and remount()?
+
+Thanks,
+
+> +
+>   	sb->s_maxbytes = max_file_blocks(NULL) <<
+>   				le32_to_cpu(raw_super->log_blocksize);
+>   	sb->s_max_links = F2FS_LINK_MAX;
+> 
