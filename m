@@ -2,160 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0B43911F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719203911FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhEZIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:09:18 -0400
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:38163 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229594AbhEZIJR (ORCPT
+        id S231846AbhEZIKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhEZIKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:09:17 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 4A7B41C3FDB
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:07:45 +0100 (IST)
-Received: (qmail 9993 invoked from network); 26 May 2021 08:07:45 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 May 2021 08:07:45 -0000
-Date:   Wed, 26 May 2021 09:07:41 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: [PATCH] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-Message-ID: <20210526080741.GW30378@techsingularity.net>
+        Wed, 26 May 2021 04:10:02 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A709C061574;
+        Wed, 26 May 2021 01:08:29 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p7so51859wru.10;
+        Wed, 26 May 2021 01:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yVcIsLaop0xFTxRezXJ3MSLuEhLYr+XKBNJbxOwir5s=;
+        b=WYbaBVSv16q5MTWMzaif39kIsCho53bHWXwf9Z/KMlYAAxCZtALxyQhWH7Gg2eWYd7
+         6nIhK9oO6tCBAo0juIZBBzEjU9QtK64YV6Azt2YNR9VGCRWQx1lrkX9agrTnGVlRgrm9
+         2L0hOPcam6w7yvn7vfkiNshrSVNvUNPYw5tRd5UvKNQ/eTdNhO+UIPFdy+wzBGHK1zKf
+         pMBmBj8Fmq6Z1i1B19jl3skq2f//GGGJ/dFr5YkSnFvA9pyH6H2NjU+/QFvFSDZCmawD
+         wMYJ3tL5Sz1ifLpT2cbzTnLzdnoLMICiKJIRQx7o6Yx9zM4Ppfa9XTfAy/B9Wrg5bNqN
+         Uy7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yVcIsLaop0xFTxRezXJ3MSLuEhLYr+XKBNJbxOwir5s=;
+        b=nxwLYRmO+fqiP2A8DZkLXZUdasGEQr9frxieSS9BDTP0v5V+BjwnD+7d9dTyXzqEcm
+         d/ELzvUQIVePsM2lCeA5e0b0a7iP+VIsuwt65ghupY5CKCvjV/LqWqJcJGem2sjFyNu4
+         omItGAGwL9wx4J/W0Gz1I2GhtMFKuNl+NQhV2No5vQTYv5PsbEjM634O/NljT2noF6NR
+         94hH+uhp3xzfOLIbVhzXQ5DGQC+5nq7jGTMu1gfX5NC7UX5nrazpqr9dQ8LvsuefgULT
+         99TxQwaNoTAarwfC5wCK07U8eeGrZd2DX0b1rIVz9emAcLDohREKa5QyvCH7vW8iPI8h
+         w1YA==
+X-Gm-Message-State: AOAM531BhTgFXHSkKGbuB89JYpzmjZJZHpE1ogseCM8F8pQ+hbK0IziO
+        ZfTTOXSuNcV3v0+jfBdtpUc4sPG7yvG/hFgqjKg=
+X-Google-Smtp-Source: ABdhPJzpuvOh0m7CXA37jLlei4+4VCuO9+LSYcUU5crIHmY5LaVh8NoHsVAadYTaqLaToEjoFwwVSXWkbmaHkBcqU40=
+X-Received: by 2002:a5d:43cb:: with SMTP id v11mr1351884wrr.198.1622016508091;
+ Wed, 26 May 2021 01:08:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210425123607.26537-1-kevin3.tang@gmail.com> <20210425123607.26537-5-kevin3.tang@gmail.com>
+ <20210430092249.n75to2das5m6p4zb@gilmour> <CAFPSGXYJxWJDo1cz+kJB8J9YayGx1hYa=04K5OJ3DHh9ifbuRQ@mail.gmail.com>
+ <YKI26bZGAA+ZNLLj@8bytes.org> <bc0e3025-60bd-c6b4-117f-592dc1c1a2f0@arm.com> <CAAfSe-ughdeZ7YaVsXuWeGNq-+Q+_z+P=aeKpj957kE6d-hLmQ@mail.gmail.com>
+In-Reply-To: <CAAfSe-ughdeZ7YaVsXuWeGNq-+Q+_z+P=aeKpj957kE6d-hLmQ@mail.gmail.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Wed, 26 May 2021 16:07:51 +0800
+Message-ID: <CAAfSe-sRjSw=7vAX21OPL5+OfLXJNS9RNf8Lg5Hy56LZwPBwCA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] drm/sprd: add Unisoc's drm display controller driver
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Kevin Tang <kevin3.tang@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Suchanek reported the following problem with linux-next
+resend for switching to plain text mode.
 
-  [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
-  [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
-...
-  [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
-  [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
-  [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
-  [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
-  [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
-  [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
-  [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
-  [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
-  [   26.147816] Freeing unused decrypted memory: 2036K
-  [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
-  [   26.165776] Write protecting the kernel read-only data: 26624k
-  [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
-  [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
-  [   26.187031] Run /init as init process
-  [   26.190693]   with arguments:
-  [   26.193661]     /init
-  [   26.195933]   with environment:
-  [   26.199079]     HOME=/
-  [   26.201444]     TERM=linux
-  [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
-  [   26.254154] BPF:      type_id=35503 offset=178440 size=4
-  [   26.259125] BPF:
-  [   26.261054] BPF:Invalid offset
-  [   26.264119] BPF:
-  [   26.264119]
-  [   26.267437] failed to validate module [efivarfs] BTF: -22
-
-Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
-per-cpu list protection to local_lock" currently staged in mmotm. In his
-own words
-
-  The immediate problem is two different definitions of numa_node per-cpu
-  variable. They both are at the same offset within .data..percpu ELF
-  section, they both have the same name, but one of them is marked as
-  static and another as global. And one is int variable, while another
-  is struct pagesets. I'll look some more tomorrow, but adding Jiri and
-  Arnaldo for visibility.
-
-  [110907] DATASEC '.data..percpu' size=178904 vlen=303
-  ...
-        type_id=27753 offset=163976 size=4 (VAR 'numa_node')
-        type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-
-  [27753] VAR 'numa_node' type_id=27556, linkage=static
-  [27754] VAR 'numa_node' type_id=20, linkage=global
-
-  [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-
-  [27556] STRUCT 'pagesets' size=0 vlen=1
-        'lock' type_id=507 bits_offset=0
-
-  [506] STRUCT '(anon)' size=0 vlen=0
-  [507] TYPEDEF 'local_lock_t' type_id=506
-
-The patch in question introduces a zero-sized per-cpu struct and while
-this is not wrong, versions of pahole prior to 1.22 (unreleased) get
-confused during BTF generation with two separate variables occupying the
-same address.
-
-This patch checks for older versions of pahole and forces struct pagesets
-to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
-warning is omitted so that distributions can update pahole when 1.22
-is released.
-
-Reported-by: Michal Suchanek <msuchanek@suse.de>
-Reported-by: Hritik Vijay <hritikxx8@gmail.com>
-Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- lib/Kconfig.debug |  3 +++
- mm/page_alloc.c   | 11 +++++++++++
- 2 files changed, 14 insertions(+)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c13967580..f88a155b80a9 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
- config PAHOLE_HAS_SPLIT_BTF
- 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
- 
-+config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
-+	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
-+
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
- 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ff8f706839ea..1d56d3de8e08 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -124,6 +124,17 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
- 
- struct pagesets {
- 	local_lock_t lock;
-+#if defined(CONFIG_DEBUG_INFO_BTF) &&			\
-+    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
-+    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
-+	/*
-+	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
-+	 * variables and produces invalid BTF. Ensure that
-+	 * sizeof(struct pagesets) != 0 for older versions of pahole.
-+	 */
-+	char __pahole_hack;
-+	#warning "pahole too old to support zero-sized struct pagesets"
-+#endif
- };
- static DEFINE_PER_CPU(struct pagesets, pagesets) = {
- 	.lock = INIT_LOCAL_LOCK(lock),
+On Wed, 26 May 2021 at 15:59, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+>
+> Hi Robin,
+>
+> On Tue, 18 May 2021 at 00:35, Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2021-05-17 10:27, Joerg Roedel wrote:
+>> > On Fri, Apr 30, 2021 at 08:20:10PM +0800, Kevin Tang wrote:
+>> >> Cc  Robin & Joerg
+>> >
+>> > This is just some GPU internal MMU being used here, it seems. It doesn=
+'t
+>> > use the IOMMU core code, so no Ack needed from the IOMMU side.
+>>
+>> Except the actual MMU being used is drivers/iommu/sprd_iommu.c - this is
+>
+> Yes, it is using drivers/iommu/sprd_iommu.c.
+>
+>>
+>>
+>> just the display driver poking directly at the interrupt registers of
+>> its associated IOMMU instance.
+>
+>
+> Actually the display driver is poking its own interrupt registers in whic=
+h some interrupts are caused by using IOMMU, others are purely its own ones=
+:
+> +/* Interrupt control & status bits */
+> +#define BIT_DPU_INT_DONE               BIT(0)
+> +#define BIT_DPU_INT_TE                 BIT(1)
+> +#define BIT_DPU_INT_ERR                        BIT(2)
+> +#define BIT_DPU_INT_UPDATE_DONE                BIT(4)
+> +#define BIT_DPU_INT_VSYNC              BIT(5)
+> +#define BIT_DPU_INT_MMU_VAOR_RD                BIT(16)
+> +#define BIT_DPU_INT_MMU_VAOR_WR                BIT(17)
+> +#define BIT_DPU_INT_MMU_INV_RD         BIT(18)
+> +#define BIT_DPU_INT_MMU_INV_WR         BIT(19)
+>
+> From what I see in the product code, along with the information my collea=
+gues told me, these _INT_MMU_ interrupts only need to be dealt with by clie=
+nt devices(i.e. display). IOMMU doesn't even have the INT_STS register for =
+some early products which we're trying to support in the mainstream kernel.
+>
+>>
+>> I still think this is wrong, and that it
+>> should be treated as a shared interrupt, with the IOMMU driver handling
+>> its own registers and reporting to the client through the standard
+>> report_iommu_fault() API, especially since there are apparently more
+>> blocks using these IOMMU instances than just the display.
+>
+> For the next generation IOMMU, we will handle interrupts in IOMMU drivers=
+ like you say here.
+> But like I explained above, we have to leave interrupt handling in the cl=
+ient device driver since the IOMMU we 're using in this display device does=
+n't have an INT_STS register in the IOMMU register range.
+>
+> Thanks for the review,
+> Chunyan
+>
+>>
+>> Robin.
