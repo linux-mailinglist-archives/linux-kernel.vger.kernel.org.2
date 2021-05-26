@@ -2,54 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560113920EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0769D3920ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhEZTeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhEZTeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD6F613CD;
-        Wed, 26 May 2021 19:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622057569;
-        bh=/QroVxf25iUsZmhleTWdOV1Mlxy+CftdDWEVZ1/8Hac=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kW6CTZWr/lzfyoHDJU28ofpO2M8u9/beae7uY7NfzdWHRGYR+6PMHi+FHgwACEC7O
-         poyNv78TqI6/7Mzo9Ce8bOLh3ijLHz7JkgyrCrxp8CLQ7K2j1zs517zoGIW/ZkkDcf
-         o8+75rGTvl/IXqSK/sPU1YZDS7oDzIb0a6FGtAa/TqcjO+OrWL6bJ2sPcyiCn5b8mc
-         86dOvr4cVycmxZiXbJp6wcrHYcmjDM3csWxfj+sHIk2p2nUjMkGnNID6LanNtsd5ow
-         8ExgMd1nhQnsV597sS8sExEzTNpNvSchB8dkCn8Uw7Zwt6LnIzrzBwwGUPnevym2nX
-         XXVtFlURFn5yA==
-Date:   Wed, 26 May 2021 12:32:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH net-next v3 9/9] net: phy: micrel: ksz886x/ksz8081: add
- cabletest support
-Message-ID: <20210526123248.1edf9f94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210526043037.9830-10-o.rempel@pengutronix.de>
-References: <20210526043037.9830-1-o.rempel@pengutronix.de>
-        <20210526043037.9830-10-o.rempel@pengutronix.de>
+        id S234263AbhEZTei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:34:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52462 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234265AbhEZTee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:34:34 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2220D1FD2A;
+        Wed, 26 May 2021 19:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622057579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XnKoLQ9wdrpqMlILXZXaccGxyHEJ08JoRUS4Y1cY7TY=;
+        b=F71eGL41aGRy6VGBnPaLriWrylB4kACYlYLUWrLanab0ea8TtyALa4rucBXWPtMgcns4nC
+        ol68lj7oEQG++xHjT0MItQGcmKj2ROYLY1fCfANKxQyG8ELxv1oIWbVwL46Y658bLvsV6w
+        3JjKDpuJZeAbk3/+5z1imRx1WGsW4H8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622057579;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XnKoLQ9wdrpqMlILXZXaccGxyHEJ08JoRUS4Y1cY7TY=;
+        b=Pg57YpSDGXoZfOdIkD8AAt3MjogHUVm379lxaFwOsoZ4ysThdrV4yR4cd+9PENYiJFdcEV
+        eQ3VTdYLC5Y1vlAw==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id D896B11A98;
+        Wed, 26 May 2021 19:32:58 +0000 (UTC)
+Subject: Re: [PATCH] fbdev: matrox: use modern module_init()
+To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210514213316.635070-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <f92da893-99fd-e666-c033-2a0dfda91af0@suse.de>
+Date:   Wed, 26 May 2021 21:32:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210514213316.635070-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="KjYTvGArAJW9dIAx3SZMsHc6xqgxm4dmw"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 06:30:37 +0200 Oleksij Rempel wrote:
-> +	if (phydev->dev_flags & MICREL_KSZ8_P1_ERRATA)
-> +		return -ENOTSUPP;
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KjYTvGArAJW9dIAx3SZMsHc6xqgxm4dmw
+Content-Type: multipart/mixed; boundary="VCDtghEHKrr9enattwxa4kCZWpmLROarj";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Masahiro Yamada <masahiroy@kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <f92da893-99fd-e666-c033-2a0dfda91af0@suse.de>
+Subject: Re: [PATCH] fbdev: matrox: use modern module_init()
+References: <20210514213316.635070-1-arnd@kernel.org>
+In-Reply-To: <20210514213316.635070-1-arnd@kernel.org>
 
-EOPNOTSUPP
+--VCDtghEHKrr9enattwxa4kCZWpmLROarj
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+Am 14.05.21 um 23:33 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> This is one of the last drivers with a global init_module() function
+> instead of the modern module_init() annotation. Convert it over.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Added to drm-misc-next. Thank you.
+
+Best regards
+Thomas
+
+> ---
+>   drivers/video/fbdev/matrox/matroxfb_base.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/video/fbdev/matrox/matroxfb_base.c b/drivers/video=
+/fbdev/matrox/matroxfb_base.c
+> index 4325bf7f388c..5c82611e93d9 100644
+> --- a/drivers/video/fbdev/matrox/matroxfb_base.c
+> +++ b/drivers/video/fbdev/matrox/matroxfb_base.c
+> @@ -2486,8 +2486,6 @@ static int __init matroxfb_init(void)
+>   	return err;
+>   }
+>  =20
+> -module_init(matroxfb_init);
+> -
+>   #else
+>  =20
+>   /* *************************** init module code *********************=
+******* */
+> @@ -2572,7 +2570,7 @@ module_param_named(cmode, default_cmode, int, 0);=
+
+>   MODULE_PARM_DESC(cmode, "Specify the video depth that should be used =
+(8bit default)");
+>   #endif
+>  =20
+> -int __init init_module(void){
+> +static int __init matroxfb_init(void){
+>  =20
+>   	DBG(__func__)
+>  =20
+> @@ -2603,6 +2601,7 @@ int __init init_module(void){
+>   }
+>   #endif	/* MODULE */
+>  =20
+> +module_init(matroxfb_init);
+>   module_exit(matrox_done);
+>   EXPORT_SYMBOL(matroxfb_register_driver);
+>   EXPORT_SYMBOL(matroxfb_unregister_driver);
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--VCDtghEHKrr9enattwxa4kCZWpmLROarj--
+
+--KjYTvGArAJW9dIAx3SZMsHc6xqgxm4dmw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCuomoFAwAAAAAACgkQlh/E3EQov+DP
+jBAAxh7FsZU/GHlQYV1R/8+f9sRJEVnK7bu0uj0uKHwt589HGsLi5zFO44WZQzUGW7WybD39bnAY
+q6N8iWPEvEPG2qrGOme1PMRr5cnELkUBedyMm0u905LkV73bLk/eNfUw+3ZoxqQYqvHq841UKsae
+hZkLEbUlsUYjhZVuSepGxhLLR9dglpsqYQAKnJyP9RsBXQrJvnz42EgDIDM0ncOfYefckGppkMrZ
+/218n85y7buLTWLGji7dbudu5Rerf0LKBNTkhJMlMSTunzP6/UgVTHQe1tZIla0oMDkaT5BSz3so
+0wwE5YbPtMcIAa+dAZKPO01NbFRIoZlEz8+d7bY7e5g7Ffl/f407jDUaI1wuc2/QHrByuu+rxS95
+UDS7Hh8VjL2xjx8rAD2AS1RvVkZPOtc9ZfXq3FS0/5BaNtNngC1aSq+TM0eGXofVJHwyrSXE9Zfh
+S1QSN1Uqv3A7vJQC5qPxu2V4Yz344bTxKSqsz6jD0Y+vp4hk7EXYG0ugZxxXgjVT8zE0NhO/ICp7
+CPlc3I5HF/IRtnh2FFGJI9bzV6BKfE+BSp/VtOjhgp5KxZmwG+W3pYLr5eUBzUXVHQcP5UEeQBuO
+L2vZPkuaum52joyu0DN5xZI/IE8Ktk9b42FG5pD8YDMdBIWsrGQB+ZmIo8aaYD+h3dzPg2kkiIo1
+Tdc=
+=ZCQi
+-----END PGP SIGNATURE-----
+
+--KjYTvGArAJW9dIAx3SZMsHc6xqgxm4dmw--
