@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDB8391A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07802391AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhEZOsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:48:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60464 "EHLO
+        id S235039AbhEZOtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:49:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60479 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbhEZOsK (ORCPT
+        with ESMTP id S234893AbhEZOs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:48:10 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        Wed, 26 May 2021 10:48:58 -0400
+Received: from mail-lj1-f200.google.com ([209.85.208.200])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1llunN-00018X-LG; Wed, 26 May 2021 14:46:21 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Christine Caulfield <ccaulfie@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Alexander Aring <aahringo@redhat.com>, cluster-devel@redhat.com
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH]  fs: dlm: Fix memory leak of object mh
-Date:   Wed, 26 May 2021 15:46:05 +0100
-Message-Id: <20210526144605.3751174-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lluog-0001OZ-Bi
+        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 14:47:26 +0000
+Received: by mail-lj1-f200.google.com with SMTP id j2-20020a2e6e020000b02900f2f75a122aso587051ljc.19
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:47:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tKkeDIyfg5tbUDNJPi4NgjfV5qFGc/eyNl9E9obon3I=;
+        b=W8b1lzTcmyax31aBjjsfN6xjsSCfy5D5Uk6xClbUwJQrAzn4+8Suwu5UmPdK1p1r1x
+         0cNFrOZIy1Kj5Rg+yIifusNso6lea/SUnxbX7biMlvFz7Qem2eFqUae7aaGV6Em2gOGl
+         6PPheDQdo1Dk7eqqeFQm6iWJfl4n3nWFSGMLfNOVPDz3UUfjmRs3DAyMOd7Gd2mM5U3m
+         s6PlsKxqnxHOpYSA9DkiB+0cf3lqCoh+N7RXPOsuf9AuEszFP0ofITUZY4lVt2wDTvGf
+         otr5XcWu/RimtpUAKwr++GwiLr/BkMu5ZkiRTb1NrpWWsKyXGJDjliP4KB9LhAcQH5cr
+         Q/vA==
+X-Gm-Message-State: AOAM530n8ATrQQa5Ihw2FnSWurl1wwmnKezSc6tUlbfU59ixZB9Xsqt1
+        3u3aHPedEZk70gVMoBasRaa1AyfECGIbf6CrrPK4R8Hon+DWMzsLbIVlSEQ1hmevpEexCfmz/4g
+        hQLH/wM2mpKpu5qdPygT8QoCuMz140HB4Pilf0VEHMJqnkwlp9tB4lK+Jsw==
+X-Received: by 2002:a2e:b892:: with SMTP id r18mr2494553ljp.402.1622040445849;
+        Wed, 26 May 2021 07:47:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLrPOwOay/G7viPPeObhmAqhusdasfgLFHKjudG5zu7fmIP7duHluGrol4HR6UOtuCA0uo4/HyjqUPvqVsicI=
+X-Received: by 2002:a2e:b892:: with SMTP id r18mr2494540ljp.402.1622040445600;
+ Wed, 26 May 2021 07:47:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210520033315.490584-1-koba.ko@canonical.com>
+ <20210525074426.GA14916@lst.de> <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
+ <20210526024934.GB3704949@dhcp-10-100-145-180.wdc.com> <CAAd53p7xabD2t__=t67uRLrrFOB7YGgr_GMhi6L48PFGhNe80w@mail.gmail.com>
+ <20210526125942.GA25080@lst.de> <CAAd53p4f2ZFsVRv-Q9maPBSD_uGjj7FoYKYy9MGjBPc6chk_1Q@mail.gmail.com>
+ <20210526142809.GA32077@lst.de>
+In-Reply-To: <20210526142809.GA32077@lst.de>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 26 May 2021 22:47:13 +0800
+Message-ID: <CAAd53p6TJev=LgdvGxC92A9HOy3B6jbPLymAqeB5bDe2=5Fdsw@mail.gmail.com>
+Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <kbusch@kernel.org>, Koba Ko <koba.ko@canonical.com>,
+        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme <linux-nvme@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Henrik Juul Hansen <hjhansen2020@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, May 26, 2021 at 10:28 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, May 26, 2021 at 10:21:59PM +0800, Kai-Heng Feng wrote:
+> > To be fair, resuming the NVMe from D3hot is much slower than keep it
+> > at D0, which gives us a faster s2idle resume time. And now AMD also
+> > requires s2idle on their latest laptops.
+>
+> We'd much prefer to use it, but due to the broken platforms we can't
+> unfortunately.
+>
+> > And it's more like NVMe controllers don't respect PCI D3hot.
+>
+> What do you mean with that?
 
-There is an error return path that is not kfree'ing mh after
-it has been successfully allocates.  Fix this by moving the
-call to create_rcom to after the check on rc_in->rc_id check
-to avoid this.
+Originally, we found that under s2idle, most NVMe controllers caused
+substantially more power if D3hot was used.
+We were told by all the major NVMe vendors that D3hot is not
+supported. It may also disable APST.
+And that's the reason why we have the host-managed power control for s2idle.
 
-Thanks to Alexander Ahring Oder Aring for suggesting the
-correct way to fix this.
+IIRC only Samsung NVMes respect D3hot and keeps the power consumption low.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: a070a91cf140 ("fs: dlm: add more midcomms hooks")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-V2: don't kfree the object, instead move the check to before
-    the call to create_rcom
----
- fs/dlm/rcom.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> > Because the NVMe continues to work after s2idle and the symbol is
+> > rather subtle, so I suspect this is not platform or vendor specific.
+> > Is it possible to disable DMA for HMB NVMe on suspend?
+>
+> Not in shipping products.  The NVMe technical working group is working
+> on a way to do that, but it will take a while until that shows up in
+> products.
 
-diff --git a/fs/dlm/rcom.c b/fs/dlm/rcom.c
-index 085f21966c72..a7727b9e5e83 100644
---- a/fs/dlm/rcom.c
-+++ b/fs/dlm/rcom.c
-@@ -385,10 +385,6 @@ static void receive_rcom_lookup(struct dlm_ls *ls, struct dlm_rcom *rc_in)
- 	int error, ret_nodeid, nodeid = rc_in->rc_header.h_nodeid;
- 	int len = rc_in->rc_header.h_length - sizeof(struct dlm_rcom);
- 
--	error = create_rcom(ls, nodeid, DLM_RCOM_LOOKUP_REPLY, 0, &rc, &mh);
--	if (error)
--		return;
--
- 	/* Old code would send this special id to trigger a debug dump. */
- 	if (rc_in->rc_id == 0xFFFFFFFF) {
- 		log_error(ls, "receive_rcom_lookup dump from %d", nodeid);
-@@ -396,6 +392,10 @@ static void receive_rcom_lookup(struct dlm_ls *ls, struct dlm_rcom *rc_in)
- 		return;
- 	}
- 
-+	error = create_rcom(ls, nodeid, DLM_RCOM_LOOKUP_REPLY, 0, &rc, &mh);
-+	if (error)
-+		return;
-+
- 	error = dlm_master_lookup(ls, nodeid, rc_in->rc_buf, len,
- 				  DLM_LU_RECOVER_MASTER, &ret_nodeid, NULL);
- 	if (error)
--- 
-2.31.1
+Hmm, then what else can we do? Because D3hot isn't support by the
+vendor, does it really stop HMB?
 
+Kai-Heng
