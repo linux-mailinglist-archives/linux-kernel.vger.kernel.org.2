@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6850E39120D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B801339120F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhEZIMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        id S233350AbhEZIMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbhEZIMY (ORCPT
+        with ESMTP id S233086AbhEZIM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:12:24 -0400
+        Wed, 26 May 2021 04:12:26 -0400
 Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE7AC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:53 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id v12so82681wrq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44530C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:54 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n4so102008wrw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P5Uj5Rjjm4ZKYV7rpwdmoSf7YzKkWMegnA41y5gkr6w=;
-        b=mG3GfbOWVxf50knzK1KMfu8LhDH6iR6fdHvVmkJARZTpUWHGV3oCywGDYS+ZRuTU/G
-         u0ZjX+bWU73XSbLISTzscDGcZE1lczfUERZpIpHA8wcsc+XkohXIAyeUzdWKzdiSsFWa
-         0b4npdadFPkilGMnjyYzdK3l++v94gYNiiFO/egFvjpQ5dkc890ELnjim9YSoFibRseh
-         LgzNJaG9XIvxAZm6Eq5TmKBHsiaTHZqpCGsoIVrYL2ATfhGTtoRGVBqC+fXWQ7TZQ/K5
-         3/wELfhpv5YRQNT9KTxBm4rz9SYH49+Qq17aloTvwsxksEAQ5lSfvUbIHfIAUbYbacSo
-         bKdA==
+        bh=QalgDLxIe/g/hTvvzl8xtwoLxem9VEdCVSmBFAk4KWI=;
+        b=QS0yg/qQ6lEc1SwIeywM3XroTH1sTb43NALJP8LwG8O8e0m9ZUl4paE+IjwiEEndB0
+         5CwoTTwIXuPrXIBS2CJNO/p80DZbgwYPHtWf5l/hVKL1d4qczuCZl6fdVvBMg7nV0OVd
+         GKkzmMVf6efxp1hH22YlDTPQb7OYmroy/reNQJA8PMFMPP2sBpOn/hD7jBJic96WKN0N
+         Er6B3h3LH4qfjlG6lsPFcs5x3zVdw0CNYjqIN2cZkwdwXC3O/Sa3BGCwr6CI6UGhCR73
+         WvDrmP8SQnaur8ycam0z8OfFWSgPhza7hzSdrT3ReZz82ksUub2zyq3CWloXb1fr9Ghv
+         x3Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P5Uj5Rjjm4ZKYV7rpwdmoSf7YzKkWMegnA41y5gkr6w=;
-        b=qbU1A9pP+aydhjc1eqVDiFrci+d3D1e9FRVT7tYS04ACdnVzSIZLN7YoZtOSrScth1
-         xnPjgujNpGLF2dr0TqH7aUHfu0a2G/pYxQAkGFMipTNqHLc3fsHOGA2/DDpLUXOHKxha
-         YDUAdIKngJLPT3tVa0HEAaDDbOp5s1asMS8BG3CsEdF+lZIX5S7nMevW0Cam5kLLuRoN
-         6sRjhVP++Cj/OKLZCIkd7RdxZenZhOvqag5GA0vE4zMXEapKThfRXnNnHhNsIM4/zEWJ
-         OY3DKn8V+imaIPzKtsLNqtGypTWreZRZhWCslV40hk1YVSzt9+K/phQ/OGCcfYvN7WKb
-         mpQw==
-X-Gm-Message-State: AOAM5339mo0wmyICfi+ytwy4/MGhiwQo2C/6GGMGvLd03Fi5HXTef7Dv
-        CNvHA40j71j8CVardXpU/XF23A==
-X-Google-Smtp-Source: ABdhPJy6DJWNL29M//luo66JTJZk5k9MUAPbrScm4tpyyvTs0KUkTd5jSvIsBhyKhvj24CsMweoDvw==
-X-Received: by 2002:a5d:4e91:: with SMTP id e17mr32599957wru.396.1622016651730;
-        Wed, 26 May 2021 01:10:51 -0700 (PDT)
+        bh=QalgDLxIe/g/hTvvzl8xtwoLxem9VEdCVSmBFAk4KWI=;
+        b=pVxOFRC/evxcLg79JEE5xaXxBOpqup9Y30OGjxoL0RvDs26agq580ZAeOiuca/Zc35
+         ikDygjWNnx/xbFSBdQGQYlGnaVpTqnSs2Z1dGriZ+KOTwhDQGCYvuGOcX6E2qnlNMMLx
+         1QdQb0ZwAbVmgegpV3984QHVJxMUASTwDuEnVManTzRJ/58qB2zhiy4+1P8MNHX1P+ub
+         gU3eDTtaeqvSaNKzk0qNXWjupF9sSqHHFuU+gpueq9jyxT32tRv/kxoQI/xk9hL9TpT/
+         iK1R5exsPPlQU1QlZeZpOtDQlqhWAgb9R8seHG7rE+7GoWrwdbq8I7C+Txjj9T2k6/Hm
+         SWIA==
+X-Gm-Message-State: AOAM532Xsi8r9joavQ6etR+NIx+lj/2k4zbtMflEHokXLPGOgwxMLqvg
+        vve+6RjpvpZbah8A+YqZN6JGm9DwbDRfWQ==
+X-Google-Smtp-Source: ABdhPJxKp/nuBns7h8mzFi6UjTt+3vkXBFVgZFeXkoOvM3KduN0Yay+0l2Omszk9emT2GcyL9ibWGw==
+X-Received: by 2002:a05:6000:52:: with SMTP id k18mr31210738wrx.419.1622016652758;
+        Wed, 26 May 2021 01:10:52 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.50
+        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:10:51 -0700 (PDT)
+        Wed, 26 May 2021 01:10:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH 06/10] bus: fsl-mc: fsl-mc-allocator: Fix misspelling of 'new_mc_adev' and demote non-kernel-doc headers
-Date:   Wed, 26 May 2021 09:10:34 +0100
-Message-Id: <20210526081038.544942-7-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH 07/10] bus: qcom-ebi2: Fix incorrect documentation for '{slow,fast}_cfg'
+Date:   Wed, 26 May 2021 09:10:35 +0100
+Message-Id: <20210526081038.544942-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526081038.544942-1-lee.jones@linaro.org>
 References: <20210526081038.544942-1-lee.jones@linaro.org>
@@ -66,71 +68,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/bus/fsl-mc/fsl-mc-allocator.c:271: warning: Function parameter or member 'new_mc_adev' not described in 'fsl_mc_object_allocate'
- drivers/bus/fsl-mc/fsl-mc-allocator.c:271: warning: Excess function parameter 'new_mc_dev' description in 'fsl_mc_object_allocate'
- drivers/bus/fsl-mc/fsl-mc-allocator.c:417: warning: Function parameter or member 'mc_bus_dev' not described in 'fsl_mc_cleanup_irq_pool'
- drivers/bus/fsl-mc/fsl-mc-allocator.c:417: warning: expecting prototype for Teardown the interrupt pool associated with an fsl(). Prototype was for fsl_mc_cleanup_irq_pool() instead
- drivers/bus/fsl-mc/fsl-mc-allocator.c:443: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocate_irqs'
- drivers/bus/fsl-mc/fsl-mc-allocator.c:443: warning: expecting prototype for Allocate the IRQs required by a given fsl(). Prototype was for fsl_mc_allocate_irqs() instead
- drivers/bus/fsl-mc/fsl-mc-allocator.c:586: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocator_probe'
- drivers/bus/fsl-mc/fsl-mc-allocator.c:618: warning: Function parameter or member 'mc_dev' not described in 'fsl_mc_allocator_remove'
+ drivers/bus/qcom-ebi2.c:112: warning: Function parameter or member 'slow_cfg' not described in 'cs_data'
+ drivers/bus/qcom-ebi2.c:112: warning: Function parameter or member 'fast_cfg' not described in 'cs_data'
 
-Cc: Stuart Yoder <stuyoder@gmail.com>
-Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/bus/fsl-mc/fsl-mc-allocator.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/bus/qcom-ebi2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-allocator.c b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-index 2d7c764bb7dcf..6c513556911e3 100644
---- a/drivers/bus/fsl-mc/fsl-mc-allocator.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-@@ -254,7 +254,7 @@ EXPORT_SYMBOL_GPL(fsl_mc_resource_free);
-  * @mc_dev: fsl-mc device which is used in conjunction with the
-  * allocated object
-  * @pool_type: pool type
-- * @new_mc_dev: pointer to area where the pointer to the allocated device
-+ * @new_mc_adev: pointer to area where the pointer to the allocated device
-  * is to be returned
-  *
-  * Allocatable objects are always used in conjunction with some functional
-@@ -409,7 +409,7 @@ int fsl_mc_populate_irq_pool(struct fsl_mc_device *mc_bus_dev,
- }
- EXPORT_SYMBOL_GPL(fsl_mc_populate_irq_pool);
- 
--/**
-+/*
-  * Teardown the interrupt pool associated with an fsl-mc bus.
-  * It frees the IRQs that were allocated to the pool, back to the GIC-ITS.
+diff --git a/drivers/bus/qcom-ebi2.c b/drivers/bus/qcom-ebi2.c
+index 0b8f53a688b8a..663c827492223 100644
+--- a/drivers/bus/qcom-ebi2.c
++++ b/drivers/bus/qcom-ebi2.c
+@@ -102,8 +102,8 @@
+ /**
+  * struct cs_data - struct with info on a chipselect setting
+  * @enable_mask: mask to enable the chipselect in the EBI2 config
+- * @slow_cfg0: offset to XMEMC slow CS config
+- * @fast_cfg1: offset to XMEMC fast CS config
++ * @slow_cfg: offset to XMEMC slow CS config
++ * @fast_cfg: offset to XMEMC fast CS config
   */
-@@ -436,7 +436,7 @@ void fsl_mc_cleanup_irq_pool(struct fsl_mc_device *mc_bus_dev)
- }
- EXPORT_SYMBOL_GPL(fsl_mc_cleanup_irq_pool);
- 
--/**
-+/*
-  * Allocate the IRQs required by a given fsl-mc device.
-  */
- int __must_check fsl_mc_allocate_irqs(struct fsl_mc_device *mc_dev)
-@@ -578,7 +578,7 @@ void fsl_mc_cleanup_all_resource_pools(struct fsl_mc_device *mc_bus_dev)
- 		fsl_mc_cleanup_resource_pool(mc_bus_dev, pool_type);
- }
- 
--/**
-+/*
-  * fsl_mc_allocator_probe - callback invoked when an allocatable device is
-  * being added to the system
-  */
-@@ -610,7 +610,7 @@ static int fsl_mc_allocator_probe(struct fsl_mc_device *mc_dev)
- 	return 0;
- }
- 
--/**
-+/*
-  * fsl_mc_allocator_remove - callback invoked when an allocatable device is
-  * being removed from the system
-  */
+ struct cs_data {
+ 	u32 enable_mask;
 -- 
 2.31.1
 
