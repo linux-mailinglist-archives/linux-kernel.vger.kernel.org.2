@@ -2,412 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2559D391A4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD48391A52
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhEZOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:35:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24566 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhEZOfQ (ORCPT
+        id S234845AbhEZOfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:35:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37123 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234654AbhEZOfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:35:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622039625; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cx/TUEyNqXeSLp9UoQnngGKYMbwq8P/Op8uX0hLOxm4=;
- b=s2HGEurqjFarNDfAh0L4YdQylMKAQYnimAZ5bWSuJxfZZANpiO+cWS3K8JWnw1TbQkgDjCa8
- je6KVMlX7oom9J23fcWHz4hkrB7VzO3UtBbVdNKIH3DDqPIqjrWnGbs+iUywbvoZ8epR8d16
- Adu8EIH8TGCvJ73StPadmRJnAJk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60ae5c49b15734c8f9812005 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 14:33:44
- GMT
-Sender: sharathv=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 45B3CC4360C; Wed, 26 May 2021 14:33:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Wed, 26 May 2021 10:35:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622039660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cg4hiWy2fDbdwLqpfIAe+URxMYySxFJtmpy6ISvJxvM=;
+        b=Ac+ZDiVLPjuv60FMA+d+W3jy6uXcjz0AynRHU4Rz16DHbqiG/UtIH1tRj3ZRgNJngvZY/0
+        T14jTSE517NiiYJUJ9E60YwIsQ4BVzs3UbTzc5gkT22c/dUU5cLNyF72fJCyW+EdKQVt3B
+        KbyIOJdBB91OY7Y/EfGSDrkmPXM62+M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-aWcTUJADMkmIO8lwdsnnMw-1; Wed, 26 May 2021 10:34:19 -0400
+X-MC-Unique: aWcTUJADMkmIO8lwdsnnMw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sharathv)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A64EDC433D3;
-        Wed, 26 May 2021 14:33:42 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 023DC189C447;
+        Wed, 26 May 2021 14:34:18 +0000 (UTC)
+Received: from starship (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C42595D6D3;
+        Wed, 26 May 2021 14:34:15 +0000 (UTC)
+Message-ID: <2a3eae6089958956f707dbc55d1d2a410edb6983.camel@redhat.com>
+Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 26 May 2021 17:34:14 +0300
+In-Reply-To: <875yz871j1.fsf@vitty.brq.redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+         <20210517135054.1914802-2-vkuznets@redhat.com>
+         <80892ca2e3d7122b5b92f696ecf4c1943b0245b9.camel@redhat.com>
+         <875yz871j1.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 26 May 2021 20:03:42 +0530
-From:   sharathv@codeaurora.org
-To:     Alex Elder <elder@ieee.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 3/3] net: ethernet: rmnet: Add support for
- MAPv5 egress packets
-In-Reply-To: <67955e34-d1e1-f73a-8f21-938976d9f34b@ieee.org>
-References:  <stranche@codeaurora.org linux-doc@vger.kernel.org
- corbet@lwn.net> <1619180343-3943-1-git-send-email-sharathv@codeaurora.org>
- <1619180343-3943-4-git-send-email-sharathv@codeaurora.org>
- <67955e34-d1e1-f73a-8f21-938976d9f34b@ieee.org>
-Message-ID: <c4a6c20eab0818de4457bb0e4ca3bcd6@codeaurora.org>
-X-Sender: sharathv@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-23 18:18, Alex Elder wrote:
-> On 4/23/21 7:19 AM, Sharath Chandra Vurukala wrote:
->> Adding Support for MAPv5 egress packets.
->> Based on the configuration Request HW for csum offload
->> by setting the csum_valid_required of Mapv5 packet.
+On Mon, 2021-05-24 at 14:35 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
 > 
-> Please try to re-word this description.  I'm not sure
-> I understand what it means.
+> > On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
+> > > Unlike regular set_current_vmptr(), nested_vmx_handle_enlightened_vmptrld()
+> > > can not be called directly from vmx_set_nested_state() as KVM may not have
+> > > all the information yet (e.g. HV_X64_MSR_VP_ASSIST_PAGE MSR may not be
+> > > restored yet). Enlightened VMCS is mapped later while getting nested state
+> > > pages. In the meantime, vmx->nested.hv_evmcs remains NULL and using it
+> > > for various checks is incorrect. In particular, if KVM_GET_NESTED_STATE is
+> > > called right after KVM_SET_NESTED_STATE, KVM_STATE_NESTED_EVMCS flag in the
+> > > resulting state will be unset (and such state will later fail to load).
+> > > 
+> > > Introduce nested_evmcs_is_used() and use 'is_guest_mode(vcpu) &&
+> > > vmx->nested.current_vmptr == -1ull' check to detect not-yet-mapped eVMCS
+> > > after restore.
+> > > 
+> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > > ---
+> > >  arch/x86/kvm/vmx/nested.c | 31 ++++++++++++++++++++++++++-----
+> > >  1 file changed, 26 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > > index 6058a65a6ede..3080e00c8f90 100644
+> > > --- a/arch/x86/kvm/vmx/nested.c
+> > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > @@ -141,6 +141,27 @@ static void init_vmcs_shadow_fields(void)
+> > >  	max_shadow_read_write_fields = j;
+> > >  }
+> > >  
+> > > +static inline bool nested_evmcs_is_used(struct vcpu_vmx *vmx)
+> > > +{
+> > > +	struct kvm_vcpu *vcpu = &vmx->vcpu;
+> > > +
+> > > +	if (vmx->nested.hv_evmcs)
+> > > +		return true;
+> > > +
+> > > +	/*
+> > > +	 * After KVM_SET_NESTED_STATE, enlightened VMCS is mapped during
+> > > +	 * KVM_REQ_GET_NESTED_STATE_PAGES handling and until the request is
+> > > +	 * processed vmx->nested.hv_evmcs is NULL. It is, however, possible to
+> > > +	 * detect such state by checking 'nested.current_vmptr == -1ull' when
+> > > +	 * vCPU is in guest mode, it is only possible with eVMCS.
+> > > +	 */
+> > > +	if (unlikely(vmx->nested.enlightened_vmcs_enabled && is_guest_mode(vcpu) &&
+> > > +		     (vmx->nested.current_vmptr == -1ull)))
+> > > +		return true;
+> > > +
+> > > +	return false;
+> > > +}
+> > 
+> > I think that this is a valid way to solve the issue,
+> > but it feels like there might be a better way.
+> > I don't mind though to accept this patch as is.
+> > 
+> > So here are my 2 cents about this:
+> > 
+> > First of all after studying how evmcs works I take my words back
+> > about needing to migrate its contents. 
+> > 
+> > It is indeed enough to migrate its physical address, 
+> > or maybe even just a flag that evmcs is loaded
+> > (and to my surprise we already do this - KVM_STATE_NESTED_EVMCS)
+> > 
+> > So how about just having a boolean flag that indicates that evmcs is in use, 
+> > but doesn't imply that we know its address or that it is mapped 
+> > to host address space, something like 'vmx->nested.enlightened_vmcs_loaded'
+> > 
+> > On migration that flag saved and restored as the KVM_STATE_NESTED_EVMCS,
+> > otherwise it set when we load an evmcs and cleared when it is released.
+> > 
+> > Then as far as I can see we can use this flag in nested_evmcs_is_used
+> > since all its callers don't touch evmcs, thus don't need it to be
+> > mapped.
+> > 
+> > What do you think?
+
+
+
+> > 
 > 
-> I see what I think is a bug below.  Please either
-> fix or explain.
+> First, we need to be compatible with older KVMs which don't have the
+> flag and this is problematic: currently, we always expect vmcs12 to
+> carry valid contents. This is challenging.
+
+All right, I understand this can be an issue!
+
+If the userspace doesn't set the KVM_STATE_NESTED_EVMCS
+but has a valid EVMCS as later indicated enabling it in the HV
+assist page, we can just use the logic that this patch uses but use it 
+to set vmx->nested.enlightened_vmcs_loaded flag or whatever
+we decide to name it.
+Later we can even deprecate and disable this with a new KVM cap.
+
+
+BTW, I like Paolo's idea of putting this flag into the evmcs_gpa,
+like that
+
+-1 no evmcs
+0 - evmcs enabled but its gpa not known
+anything else - valid gpa.
+
+
+Also as I said, I am not against this patch either, 
+I am just thinking maybe we can make it a bit better.
+
+
 > 
->> Acked-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
->> Acked-by: Alex Elder <elder@linaro.org>
+> Second, vCPU can be migrated in three different states:
+> 1) While L2 was running ('true' nested state is in VMCS02)
+> 2) While L1 was running ('true' nested state is in eVMCS)
+> 3) Right after an exit from L2 to L1 was forced
+> ('need_vmcs12_to_shadow_sync = true') ('true' nested state is in
+> VMCS12).
+
+Yes and this was quite difficult thing to understand
+when I was trying to figure out how this code works.
+
+Also you can add another intersting state:
+
+4) Right after emulating vmlauch/vmresume but before
+the actual entry to the nested guest (aka nested_run_pending=true)
+
+
+
 > 
-> I did not acknowledge this patch.
+> The current solution is to always use VMCS12 as a container to transfer
+> the state and conceptually, it is at least easier to understand.
+> 
+> We can, indeed, transfer eVMCS (or VMCS12) in case 2) through guest
+> memory and I even tried that but that was making the code more complex
+> so eventually I gave up and decided to preserve the 'always use VMCS12
+> as a container' status quo.
+
+
+My only point of concern is that it feels like it is wrong to update eVMCS
+when not doing a nested vmexit, because then the eVMCS is owned by the L1 hypervisor.
+At least not the fields which aren't supposed to be updated by us.
+
+
+This is a rough code draft of what I had in mind (not tested).
+To me this seems reasonable but I do agree that there is
+some complexety tradeoffs involved.
+
+About the compatibitly it can be said that:
+
+
+Case 1:
+Both old and new kernels will send/recive up to date vmcs12,
+while evcms is not up to date, and its contents aren't even defined
+(since L2 runs).
+
+Case 2:
+Old kernel will send vmcb12, with partial changes that L1 already
+made to evmcs, and latest state of evmcs with all changes
+in the guest memory.
+
+But these changes will be discarded on the receiving side, 
+since once L1 asks us to enter L2, we will reload all the state from eVMCS,
+(at least the state that is marked as dirty, which means differ
+from vmcs12 as it was on the last nested vmexit)
+
+New kernel will always send the vmcb12 as it was on the last vmexit,
+a bit older version but even a more consistent one.
+
+But this doesn't matter either as just like in case of the old kernel, 
+the vmcs12 will be updated from evmcs as soon as we do another L2 entry.
+
+So while in this case we send 'more stale' vmcb12, it doesn't
+really matter as it is stale anyway and will be reloaded from
+evmcs.
+
+Case 3:
+Old kernel will send up to date vmcb12 (since L1 didn't had a chance
+to run anyway after nested vmexit). The evmcs will not be up to date
+in the guest memory, but newer kernel can fix this by updating it
+as you did in patch 6.
+
+New kernel will send up to date vmcb12 (same reason) and up to date
+evmcs, so in fact an unchanged target kernel will be able to migrate
+from this state.
+
+So in fact my suggestion would allow to actually migrate to a kernel
+without the fix applied.
+This is even better than I thought.
+
+
+This is a rough draft of the idea:
+
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 6058a65a6ede..98eb7526cae6 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -167,15 +167,22 @@ static int nested_vmx_failInvalid(struct kvm_vcpu *vcpu)
+ static int nested_vmx_failValid(struct kvm_vcpu *vcpu,
+ 				u32 vm_instruction_error)
+ {
++	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	vmx_set_rflags(vcpu, (vmx_get_rflags(vcpu)
+ 			& ~(X86_EFLAGS_CF | X86_EFLAGS_PF | X86_EFLAGS_AF |
+ 			    X86_EFLAGS_SF | X86_EFLAGS_OF))
+ 			| X86_EFLAGS_ZF);
+ 	get_vmcs12(vcpu)->vm_instruction_error = vm_instruction_error;
++
+ 	/*
+ 	 * We don't need to force a shadow sync because
+ 	 * VM_INSTRUCTION_ERROR is not shadowed
++	 * We do need to update the evmcs
+ 	 */
++
++	if (vmx->nested.hv_evmcs)
++		vmx->nested.hv_evmcs->vm_instruction_error = vm_instruction_error;
++
+ 	return kvm_skip_emulated_instruction(vcpu);
+ }
+ 
+@@ -1962,6 +1969,10 @@ static int copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
+ 
+ 	evmcs->guest_bndcfgs = vmcs12->guest_bndcfgs;
+ 
++	/* All fields are clean */
++	vmx->nested.hv_evmcs->hv_clean_fields |=
++		HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
++
+ 	return 0;
+ }
+ 
+@@ -2055,16 +2066,7 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+-
+-	if (vmx->nested.hv_evmcs) {
+-		copy_vmcs12_to_enlightened(vmx);
+-		/* All fields are clean */
+-		vmx->nested.hv_evmcs->hv_clean_fields |=
+-			HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+-	} else {
+-		copy_vmcs12_to_shadow(vmx);
+-	}
+-
++	copy_vmcs12_to_shadow(vmx);
+ 	vmx->nested.need_vmcs12_to_shadow_sync = false;
+ }
+ 
+@@ -3437,8 +3439,13 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+ 
+ 	load_vmcs12_host_state(vcpu, vmcs12);
+ 	vmcs12->vm_exit_reason = exit_reason.full;
+-	if (enable_shadow_vmcs || vmx->nested.hv_evmcs)
++
++	if (enable_shadow_vmcs)
+ 		vmx->nested.need_vmcs12_to_shadow_sync = true;
++
++	if (vmx->nested.hv_evmcs)
++		copy_vmcs12_to_enlightened(vmx);
++
+ 	return NVMX_VMENTRY_VMEXIT;
+ }
+ 
+@@ -4531,10 +4538,12 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+ 		kvm_make_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu);
+ 	}
+ 
+-	if ((vm_exit_reason != -1) &&
+-	    (enable_shadow_vmcs || vmx->nested.hv_evmcs))
++	if ((vm_exit_reason != -1) && enable_shadow_vmcs)
+ 		vmx->nested.need_vmcs12_to_shadow_sync = true;
+ 
++	if (vmx->nested.hv_evmcs)
++		copy_vmcs12_to_enlightened(vmx);
++
+ 	/* in case we halted in L2 */
+ 	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 
+@@ -6111,12 +6120,8 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+ 		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
+ 	} else  {
+ 		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
+-		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
+-			if (vmx->nested.hv_evmcs)
+-				copy_enlightened_to_vmcs12(vmx);
+-			else if (enable_shadow_vmcs)
+-				copy_shadow_to_vmcs12(vmx);
+-		}
++		if (enable_shadow_vmcs && !vmx->nested.need_vmcs12_to_shadow_sync)
++			copy_shadow_to_vmcs12(vmx);
+ 	}
+ 
+ 	BUILD_BUG_ON(sizeof(user_vmx_nested_state->vmcs12) < VMCS12_SIZE);
+
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> -- 
+> Vitaly
 > 
 
-I will rewrite the description with more details and clear wordings. 
-Thanks.
 
-
->> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
->> ---
->>   drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
->>   .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 14 +++-
->>   drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
->>   .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 
->> ++++++++++++++++++++--
->>   drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |  3 +-
->>   include/uapi/linux/if_link.h                       |  1 +
->>   6 files changed, 109 insertions(+), 14 deletions(-)
->> 
->> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h 
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
->> index 8d8d469..8e64ca9 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
->> @@ -1,5 +1,6 @@
->>   /* SPDX-License-Identifier: GPL-2.0-only */
->> -/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All 
->> rights reserved.
->> +/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
->> + * All rights reserved.
->>    *
->>    * RMNET Data configuration engine
->>    */
->> @@ -56,6 +57,7 @@ struct rmnet_priv_stats {
->>   	u64 csum_fragmented_pkt;
->>   	u64 csum_skipped;
->>   	u64 csum_sw;
->> +	u64 csum_hw;
-> 
-> Why is this new statistic type added?  Would it be
-> meaningful to use before--with only QMAPv4?  Or is
-> there something different about QMAPv5 (inline) checksum
-> offload that makes this necessary or desirable?
-> 
-> This is something new that ought to be at least
-> mentioned in the description at the top.  And for
-> future reference, this could likely have been
-> defined in a separate patch, before this one.
-> 
-
-Will update the description with details about this stat.
-
->>   };
->>     struct rmnet_priv {
->> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c 
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
->> index 706a225..51a2e94 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
->> @@ -133,7 +133,7 @@ static int rmnet_map_egress_handler(struct sk_buff 
->> *skb,
->>   				    struct rmnet_port *port, u8 mux_id,
->>   				    struct net_device *orig_dev)
->>   {
->> -	int required_headroom, additional_header_len;
->> +	int required_headroom, additional_header_len, csum_type = 0;
->>   	struct rmnet_map_header *map_header;
->>     	additional_header_len = 0;
->> @@ -142,6 +142,10 @@ static int rmnet_map_egress_handler(struct 
->> sk_buff *skb,
->>   	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
->>   		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
->>   		required_headroom += additional_header_len;
->> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
->> +	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
->> +		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
->> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
->>   	}
-> 
-> Does additional_header_len need to be added to required_headroom,
-> as it is for QMAPv4 above?
-> 
-> If so, this is a bug and must be fixed.
-> 
-> What I tested last week (and verified work for IPA v3.5.1 and
-> IPA v4.2) looked like this:
-> 
->     if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
->         additional_header_len = sizeof(struct 
-> rmnet_map_ul_csum_header);
->         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
->     } else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
->         additional_header_len = sizeof(struct 
-> rmnet_map_v5_csum_header);
->         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
->     }
->     required_headroom += additional_header_len;
-> 
-> 					-Alex
-> 
-
-Thanks a lot in identifying the bug, I messed up with the patches before 
-raising them for review.
-Will share the corrected version in subsequent patch.
-
->>   	if (skb_headroom(skb) < required_headroom) {
->> @@ -149,10 +153,12 @@ static int rmnet_map_egress_handler(struct 
->> sk_buff *skb,
->>   			return -ENOMEM;
->>   	}
->>   -	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
->> -		rmnet_map_checksum_uplink_packet(skb, orig_dev);
->> +	if (csum_type)
->> +		rmnet_map_checksum_uplink_packet(skb, port, orig_dev,
->> +						 csum_type);
->>   -	map_header = rmnet_map_add_map_header(skb, additional_header_len, 
->> 0);
->> +	map_header = rmnet_map_add_map_header(skb, additional_header_len,
->> +					      port, 0);
->>   	if (!map_header)
->>   		return -ENOMEM;
->>   diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h 
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
->> index 1a399bf..e5a0b38 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
->> @@ -43,11 +43,15 @@ enum rmnet_map_commands {
->>   struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->>   				      struct rmnet_port *port);
->>   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff 
->> *skb,
->> -						  int hdrlen, int pad);
->> +						  int hdrlen,
->> +						  struct rmnet_port *port,
->> +						  int pad);
->>   void rmnet_map_command(struct sk_buff *skb, struct rmnet_port 
->> *port);
->>   int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 
->> len);
->>   void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->> -				      struct net_device *orig_dev);
->> +				      struct rmnet_port *port,
->> +				      struct net_device *orig_dev,
->> +				      int csum_type);
->>   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
->>     #endif /* _RMNET_MAP_H_ */
->> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c 
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> index 43813cf..339d964 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> @@ -12,6 +12,7 @@
->>   #include "rmnet_config.h"
->>   #include "rmnet_map.h"
->>   #include "rmnet_private.h"
->> +#include <linux/bitfield.h>
->>     #define RMNET_MAP_DEAGGR_SPACING  64
->>   #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
->> @@ -251,12 +252,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
->>   }
->>   #endif
->>   +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff 
->> *skb,
->> +						struct rmnet_port *port,
->> +						struct net_device *orig_dev)
->> +{
->> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
->> +	struct rmnet_map_v5_csum_header *ul_header;
->> +
->> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
->> +		return;
->> +
->> +	ul_header = skb_push(skb, sizeof(*ul_header));
->> +	memset(ul_header, 0, sizeof(*ul_header));
->> +	ul_header->header_info = RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD <<
->> +					MAPV5_HDRINFO_HDR_TYPE_SHIFT;
->> +
->> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
->> +		void *iph = (char *)ul_header + sizeof(*ul_header);
->> +		__sum16 *check;
->> +		void *trans;
->> +		u8 proto;
->> +
->> +		if (skb->protocol == htons(ETH_P_IP)) {
->> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
->> +
->> +			proto = ((struct iphdr *)iph)->protocol;
->> +			trans = iph + ip_len;
->> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
->> +#if IS_ENABLED(CONFIG_IPV6)
->> +			u16 ip_len = sizeof(struct ipv6hdr);
->> +
->> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
->> +			trans = iph + ip_len;
->> +#else
->> +			priv->stats.csum_err_invalid_ip_version++;
->> +			goto sw_csum;
->> +#endif /* CONFIG_IPV6 */
->> +		} else {
->> +			priv->stats.csum_err_invalid_ip_version++;
->> +			goto sw_csum;
->> +		}
->> +
->> +		check = rmnet_map_get_csum_field(proto, trans);
->> +		if (check) {
->> +			skb->ip_summed = CHECKSUM_NONE;
->> +			/* Ask for checksum offloading */
->> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
->> +			priv->stats.csum_hw++;
->> +			return;
->> +		}
->> +	}
->> +
->> +sw_csum:
->> +	priv->stats.csum_sw++;
->> +}
->> +
->>   /* Adds MAP header to front of skb->data
->>    * Padding is calculated and set appropriately in MAP header. Mux ID 
->> is
->>    * initialized to 0.
->>    */
->>   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff 
->> *skb,
->> -						  int hdrlen, int pad)
->> +						  int hdrlen,
->> +						  struct rmnet_port *port,
->> +						  int pad)
->>   {
->>   	struct rmnet_map_header *map_header;
->>   	u32 padding, map_datalen;
->> @@ -267,6 +325,10 @@ struct rmnet_map_header 
->> *rmnet_map_add_map_header(struct sk_buff *skb,
->>   			skb_push(skb, sizeof(struct rmnet_map_header));
->>   	memset(map_header, 0, sizeof(struct rmnet_map_header));
->>   +	/* Set next_hdr bit for csum offload packets */
->> +	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
->> +		map_header->flags |= MAP_NEXT_HEADER_FLAG;
->> +
->>   	if (pad == RMNET_MAP_NO_PAD_BYTES) {
->>   		map_header->pkt_len = htons(map_datalen);
->>   		return map_header;
->> @@ -394,11 +456,8 @@ int rmnet_map_checksum_downlink_packet(struct 
->> sk_buff *skb, u16 len)
->>   	return 0;
->>   }
->>   -/* Generates UL checksum meta info header for IPv4 and IPv6 over 
->> TCP and UDP
->> - * packets that are supported for UL checksum offload.
->> - */
->> -void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->> -				      struct net_device *orig_dev)
->> +static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
->> +						struct net_device *orig_dev)
->>   {
->>   	struct rmnet_priv *priv = netdev_priv(orig_dev);
->>   	struct rmnet_map_ul_csum_header *ul_header;
->> @@ -417,10 +476,12 @@ void rmnet_map_checksum_uplink_packet(struct 
->> sk_buff *skb,
->>     		if (skb->protocol == htons(ETH_P_IP)) {
->>   			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
->> +			priv->stats.csum_hw++;
->>   			return;
->>   		} else if (skb->protocol == htons(ETH_P_IPV6)) {
->>   #if IS_ENABLED(CONFIG_IPV6)
->>   			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
->> +			priv->stats.csum_hw++;
->>   			return;
->>   #else
->>   			priv->stats.csum_err_invalid_ip_version++;
->> @@ -437,6 +498,26 @@ void rmnet_map_checksum_uplink_packet(struct 
->> sk_buff *skb,
->>   	priv->stats.csum_sw++;
->>   }
->>   +/* Generates UL checksum meta info header for IPv4 and IPv6 over 
->> TCP and UDP
->> + * packets that are supported for UL checksum offload.
->> + */
->> +void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->> +				      struct rmnet_port *port,
->> +				      struct net_device *orig_dev,
->> +				      int csum_type)
->> +{
->> +	switch (csum_type) {
->> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
->> +		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
->> +		break;
->> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
->> +		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
->> +		break;
->> +	default:
->> +		break;
->> +	}
->> +}
->> +
->>   /* Process a MAPv5 packet header */
->>   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
->>   				      u16 len)
->> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c 
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
->> index 41fbd2c..bc6d6ac 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
->> @@ -174,6 +174,7 @@ static const char 
->> rmnet_gstrings_stats[][ETH_GSTRING_LEN] = {
->>   	"Checksum skipped on ip fragment",
->>   	"Checksum skipped",
->>   	"Checksum computed in software",
->> +	"Checksum computed in hardware",
->>   };
->>     static void rmnet_get_strings(struct net_device *dev, u32 
->> stringset, u8 *buf)
->> @@ -354,4 +355,4 @@ int rmnet_vnd_update_dev_mtu(struct rmnet_port 
->> *port,
->>   	}
->>     	return 0;
->> -}
->> \ No newline at end of file
->> +}
->> diff --git a/include/uapi/linux/if_link.h 
->> b/include/uapi/linux/if_link.h
->> index 21529b3..1691f3a 100644
->> --- a/include/uapi/linux/if_link.h
->> +++ b/include/uapi/linux/if_link.h
->> @@ -1236,6 +1236,7 @@ enum {
->>   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
->>   #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
->>   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
->> +#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
->>     enum {
->>   	IFLA_RMNET_UNSPEC,
->> 
