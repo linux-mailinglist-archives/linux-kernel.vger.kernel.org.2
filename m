@@ -2,125 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2ED391E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6311F391E41
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhEZRkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:40:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46854 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234588AbhEZRkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:40:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622050748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZUa2ajN4n6dAwvXL49SJ79dqRohBxVCl8r/IG+iC/fU=;
-        b=mUXykzBEyqbkEOhnt5txnbxEf9w16hbJU6BR5Ke41oG+yFwASYY8Ita7gLkZ8CNHtPNkzn
-        j2+WCUj1lcTTGeLiNboRBf+O+mslTZ59nXfnR5fQlIR6eeJkAQjc4URQr5dc5IgwmQZh3P
-        GLsGEsLVFsvLVogpK48JbvmyINrDfcw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622050748;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZUa2ajN4n6dAwvXL49SJ79dqRohBxVCl8r/IG+iC/fU=;
-        b=OJQgvRATxY9RlOYacjyxcAAybTFR5FOWQzeE+te70+8Uodl/5AsxrnwPpXpHx3MmlwjJiT
-        KriRUWRT0ccjHBBQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8B7A2AEB3;
-        Wed, 26 May 2021 17:39:08 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "kbuild: merge scripts/mkmakefile to top Makefile"
-Date:   Wed, 26 May 2021 19:38:55 +0200
-Message-Id: <20210526173855.5963-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S234558AbhEZRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232006AbhEZRke (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 13:40:34 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3BEC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:39:03 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id u7so984085plq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GJLBZVMEwbSbKIDqukcx7d1Y2z9DugvinO3Y2HE7Xb8=;
+        b=qhCJ07l3+S5RaNOra6cGWWoLN5s4AiiMiSNsT4kmmZRWWeS3ywD0sHd0FiEtvhI6rB
+         iDHzecKylmQV/alVl50UrPfL+lgoFTF+gwyC6OTbnRz/8S3G7cY1J+DXgCVBjokkOmQ3
+         MNtedZ93sVJlDjGU4e+WVUzbZz+IRpSVv+hd4dCJp8MoVlUDsFBxYiFnfQYTkH16d0kD
+         504lPpbw8Z6qcja/txaeMlwwOfnBJj8xaTI+/wuVhkhwDlXq+UPuO1cXMDDmQDDMvEb7
+         JPXNnACYkRiaa6QdmwGLcGJSpt1CRxPSxFfhE9IcGSt424UFT8e5IRuVTDTTw8FHKEP/
+         TZVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GJLBZVMEwbSbKIDqukcx7d1Y2z9DugvinO3Y2HE7Xb8=;
+        b=aUjhjizHUtINn4IInkL1b0TQ5iYV9A3QFcbteyHTQO7rqyN4t+hc762JHDRSU+sKsn
+         P2KAZabU/yuuLERO5LIyN8+DmiJODLnQw20umpVQwdk91yvJr051vR/L4GbfJKbS7sBs
+         6926XrhnwiiBzoNm+D96tSlIcsVD9BgTbhx1u5OqgjjpgM8MTgACaWXTMndazCu70C5u
+         OPkjx67SCSzfnqqkpj6iCEQjBegWl8WK9wCCbDLogEh0WpjzZwNzQMgOYYnzhSAGdDru
+         cH/xsgUTS/WCFIrHYh46dR6wmawmSvWMJ1Hc6V3bQ6eLZ4+aStVMoQnDBJMWUgc4TGfH
+         YK4w==
+X-Gm-Message-State: AOAM530swQRYkm5VYebqSJvyPT0yaveZCXNkp6qR9lmXTeXfGSPIkzoW
+        Pjx5f8G8AqGGKIvDlpfw/4VZFQ==
+X-Google-Smtp-Source: ABdhPJxleeFD/fo/p0B7jknSOU6gwCm53jI69+QHX5/sYO+byZxGUo96TTw409ZTZcLY8lmq7CZB6g==
+X-Received: by 2002:a17:902:d4cd:b029:f5:4ec0:d593 with SMTP id o13-20020a170902d4cdb02900f54ec0d593mr36661426plg.19.1622050742416;
+        Wed, 26 May 2021 10:39:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x9sm16309575pfd.66.2021.05.26.10.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 10:39:01 -0700 (PDT)
+Date:   Wed, 26 May 2021 17:38:57 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86/pt: Do not inject TraceToPAPMI when guest PT
+ isn't supported
+Message-ID: <YK6HsR4QXbVuhZf8@google.com>
+References: <20210514084436.848396-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514084436.848396-1-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 243b50c141d71fcf7b88e94474b3b9269f0b1f9d.
+On Fri, May 14, 2021, Like Xu wrote:
+> When a PT perf user is running in system-wide mode on the host,
+> the guest (w/ pt_mode=0) will warn about anonymous NMIs from
+> kvm_handle_intel_pt_intr():
+> 
+> [   18.126444] Uhhuh. NMI received for unknown reason 10 on CPU 0.
+> [   18.126447] Do you have a strange power saving mode enabled?
+> [   18.126448] Dazed and confused, but trying to continue
+> 
+> In this case, these PMIs should be handled by the host PT handler().
+> When PT is used in guest-only mode, it's harmless to call host handler.
+> 
+> Fix: 8479e04e7d("KVM: x86: Inject PMI for KVM guest")
 
-When packaging the kernel it is built in different place from the one in
-which it will be installed. After build the makefile needs to be
-regenerated with the target location but with mkmakefile merged into
-Makefile tehre is no way to do that.
+s/Fix/Fixes
 
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- Makefile           | 15 +++------------
- scripts/mkmakefile | 17 +++++++++++++++++
- 2 files changed, 20 insertions(+), 12 deletions(-)
- create mode 100755 scripts/mkmakefile
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>  arch/x86/events/intel/core.c | 3 +--
+>  arch/x86/kvm/x86.c           | 3 +++
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 2521d03de5e0..2f09eb0853de 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2853,8 +2853,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>  		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
+>  			perf_guest_cbs->handle_intel_pt_intr))
+>  			perf_guest_cbs->handle_intel_pt_intr();
+> -		else
+> -			intel_pt_interrupt();
+> +		intel_pt_interrupt();
 
-diff --git a/Makefile b/Makefile
-index 58b086b30144..462899c1b5d7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -573,24 +573,14 @@ scripts_basic:
- 	$(Q)rm -f .tmp_quiet_recordmcount
- 
- PHONY += outputmakefile
--ifdef building_out_of_srctree
- # Before starting out-of-tree build, make sure the source tree is clean.
- # outputmakefile generates a Makefile in the output directory, if using a
- # separate output directory. This allows convenient use of make in the
- # output directory.
- # At the same time when output Makefile generated, generate .gitignore to
- # ignore whole output directory
--
--quiet_cmd_makefile = GEN     $@
--      cmd_makefile = { \
--	echo "\# Automatically generated by $(srctree)/Makefile: don't edit"; \
--	echo "include $(srctree)/Makefile"; \
--	} > $@
--
--Makefile: FORCE
--	$(call cmd,makefile)
--
--outputmakefile: Makefile
-+outputmakefile:
-+ifdef building_out_of_srctree
- 	$(Q)if [ -f $(srctree)/.config -o \
- 		 -d $(srctree)/include/config -o \
- 		 -d $(srctree)/arch/$(SRCARCH)/include/generated ]; then \
-@@ -601,6 +591,7 @@ outputmakefile: Makefile
- 		false; \
- 	fi
- 	$(Q)ln -fsn $(srctree) source
-+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/mkmakefile $(srctree)
- 	$(Q)test -e .gitignore || \
- 	{ echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
- endif
-diff --git a/scripts/mkmakefile b/scripts/mkmakefile
-new file mode 100755
-index 000000000000..1cb174751429
---- /dev/null
-+++ b/scripts/mkmakefile
-@@ -0,0 +1,17 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Generates a small Makefile used in the root of the output
-+# directory, to allow make to be started from there.
-+# The Makefile also allow for more convinient build of external modules
-+
-+# Usage
-+# $1 - Kernel src directory
-+
-+if [ "${quiet}" != "silent_" ]; then
-+	echo "  GEN     Makefile"
-+fi
-+
-+cat << EOF > Makefile
-+# Automatically generated by $0: don't edit
-+include $1/Makefile
-+EOF
--- 
-2.26.2
+Would it make sense to instead do something like:
 
+	bool host_pmi = true;
+
+	...
+
+		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
+			     perf_guest_cbs->handle_intel_pt_intr)
+			host_pmi = !perf_guest_cbs->handle_intel_pt_intr();
+
+		if (likely(host_pmi))
+			intel_pt_interrupt();
+>  	}
+>  
+>  	/*
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 6529e2023147..6660f3948cea 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8087,6 +8087,9 @@ static void kvm_handle_intel_pt_intr(void)
+>  {
+>  	struct kvm_vcpu *vcpu = __this_cpu_read(current_vcpu);
+>  
+> +	if (!guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT))
+> +		return;
+> +
+>  	kvm_make_request(KVM_REQ_PMI, vcpu);
+>  	__set_bit(MSR_CORE_PERF_GLOBAL_OVF_CTRL_TRACE_TOPA_PMI_BIT,
+>  			(unsigned long *)&vcpu->arch.pmu.global_status);
+> -- 
+> 2.31.1
+> 
