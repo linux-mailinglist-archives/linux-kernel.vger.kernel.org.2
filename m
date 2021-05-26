@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6172391193
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C68A39119C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhEZHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbhEZHyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:54:31 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E45BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:59 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j14so29030wrq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=goipG/skXtpzJOrucOfBrY3VZM0NMypmFPU8raSes5o=;
-        b=Avl4DWCrbzHPqkpuGI48j9AeJ8J0hHIoaq3PLQ0VHQrly6aBfca3S3QmyHD5kg75Mb
-         So+0y+pgVT3ZuLYxaAu8cXh/KP6F/+acEkUjb5iLHKKyvB0f/X/jRcZw8Cj4IQvg7ul3
-         KJdEsJJQNdGvGGwm6vBb7VlHeaowJxVUScfO0Bdb7gtA5WCJch7RHSCGesCWO6/fsSgv
-         XFFD0pBrlBnMWi8mV6TILI6RsR90zVmsA5sxbqQc+BLSJsnCJ0BZOOfaF9aNf2he6Biw
-         AezSph0mdR6MC9CMAwAxPiy6F7SJjSYy3kNL02OJPzSw/kkYkjvuVP+ZqQ04I7FB7HUC
-         g1qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=goipG/skXtpzJOrucOfBrY3VZM0NMypmFPU8raSes5o=;
-        b=JyAAzRp7ngyesbsf7DtRe+7A+37KYdERS5wD/pLx1+nlzvdymMd4WinnpCt175ThIP
-         XTN0QbVTqcOHsrIlDsavWayb/FogKfFhnlX619RxHQH3VhiVnhLNs/3DW7uM0AMw+OhL
-         48RXSWeDQThGUiFSG2yUeJWzzV52Xwfi4ZI5eonRDhmgRUO5jtMcVQ/bn9AyQ4R3wUgD
-         Rg/GtfQnWlbX3p4/R6shKG5RkX7WlGxo1919uqDEiDGIO7cz1cMpnzjFSuVc/gkmH4uW
-         hfpiqy9XDz7oSi+Eb1x9Z06zLov41158dDjBuiUwkwpds+22kNgmAqjKjRNLwenkAgVa
-         N7aQ==
-X-Gm-Message-State: AOAM5312UzCpX6myTNFOI1z+Sxt+28ClWs4gNanzSiKhUML8wAF4BGn5
-        dMxnZZm9iKVLXRrAKvn39LWwQeo7yJ5Frw==
-X-Google-Smtp-Source: ABdhPJz3p185K4KumVptR+JJxcC6XNNmzO6oRz2HQAxzODacIKdvbXNyGxksePhNqgeMCxhEbVE8BA==
-X-Received: by 2002:adf:8b4a:: with SMTP id v10mr31016770wra.274.1622015578162;
-        Wed, 26 May 2021 00:52:58 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id g11sm19052357wri.59.2021.05.26.00.52.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 00:52:57 -0700 (PDT)
-Date:   Wed, 26 May 2021 08:52:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <20210526075255.GG4005783@dell>
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr>
- <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell>
- <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+        id S231924AbhEZH4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:56:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:32259 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhEZH4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:56:18 -0400
+IronPort-SDR: iTmoIPfQMq/5ummyGniLQzfMScKRBD+7dvtXQKWLugT+B3LKU8ozmrFONkTGVFh4Fx4eXUwbDh
+ cdXjz8PB/CqQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182049407"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="182049407"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 00:54:28 -0700
+IronPort-SDR: 1eDK10l4aELIeN+e7qSF++9Ypk821KL2VW5dlFw7M+S5sV4oFNOL/GUJ6THLMWqdrq16tEHfLY
+ TNHwFZgOmtRg==
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="476818609"
+Received: from unknown (HELO [10.238.130.158]) ([10.238.130.158])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 00:54:26 -0700
+Subject: Re: [PATCH RFC 7/7] kvm: x86: AMX XCR0 support for guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-8-jing2.liu@linux.intel.com>
+ <YKwgdBTqiyuItL6b@google.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <43eb3317-4101-0786-57f4-f35e7ec094eb@linux.intel.com>
+Date:   Wed, 26 May 2021 15:54:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <YKwgdBTqiyuItL6b@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, Robert Marko wrote:
 
-> On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Mon, 24 May 2021, Rob Herring wrote:
-> >
-> > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > >
-> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > ---
-> > > > Changes in v2:
-> > > > * Implement MFD as a simple I2C MFD
-> > > > * Add GPIO bindings as separate
-> > >
-> > > I don't understand why this changed. This doesn't look like an MFD to
-> > > me. Make your binding complete if there are missing functions.
-> > > Otherwise, stick with what I already ok'ed.
-> >
-> > Right.  What else, besides GPIO, does this do?
-> 
-> It currently does not do anything else as hwmon driver was essentially
-> NACK-ed for not exposing standard attributes.
 
-Once this provides more than GPIO capabilities i.e. becomes a proper
-Multi-Function Device, then it can use the MFD framework.  Until then,
-it's a GPIO device I'm afraid.
+On 5/25/2021 5:53 AM, Sean Christopherson wrote:
+> On Sun, Feb 07, 2021, Jing Liu wrote:
+>> Two XCR0 bits are defined for AMX to support XSAVE mechanism.
+>> Bit 17 is for tilecfg and bit 18 is for tiledata.
+> This fails to explain why they must be set in tandem.
+The spec says,
+"executing the XSETBV instruction causes a general-protection fault 
+(#GP) if ECX=0
+and EAX[17] ≠ EAX[18] (XTILECFG and XTILEDATA must be enabled together). 
+This
+implies that the value of XCR0[17:18] is always either 00b or 11b."
 
-Are you going to re-author the HWMON driver to conform?
+I can add more to changelog if this is reasonable.
+>   Out of curisoity, assuming
+> they do indeed need to be set/cleared as a pair, what's the point of having two
+> separate bits?
+What I can see is to separate different states and mirror by XFD which 
+can set
+bits separately.
 
-> The CPLD itself has PSU status-related information, bootstrap related
-> information,
-> various resets for the CPU-s, OOB ethernet PHY, information on the exact board
-> model it's running etc.
-> 
-> PSU and model-related info stuff is gonna be exposed via a misc driver
-> in debugfs as
-> we have user-space SW depending on that.
-> I thought we agreed on that as v1 MFD driver was exposing those directly and
-> not doing anything else.
+Thanks,
+Jing
 
-Yes, we agreed that creating an MFD driver just to expose chip
-attributes was not an acceptable solution.
+>
+>> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 8 +++++++-
+>>   1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index bfbde877221e..f1c5893dee18 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -189,7 +189,7 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
+>>   #define KVM_SUPPORTED_XCR0     (XFEATURE_MASK_FP | XFEATURE_MASK_SSE \
+>>   				| XFEATURE_MASK_YMM | XFEATURE_MASK_BNDREGS \
+>>   				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
+>> -				| XFEATURE_MASK_PKRU)
+>> +				| XFEATURE_MASK_PKRU | XFEATURE_MASK_XTILE)
+>>   
+>>   u64 __read_mostly host_efer;
+>>   EXPORT_SYMBOL_GPL(host_efer);
+>> @@ -946,6 +946,12 @@ static int __kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr)
+>>   		if ((xcr0 & XFEATURE_MASK_AVX512) != XFEATURE_MASK_AVX512)
+>>   			return 1;
+>>   	}
+>> +
+>> +	if (xcr0 & XFEATURE_MASK_XTILE) {
+>> +		if ((xcr0 & XFEATURE_MASK_XTILE) != XFEATURE_MASK_XTILE)
+>> +			return 1;
+>> +	}
+>> +
+>>   	vcpu->arch.xcr0 = xcr0;
+>>   
+>>   	if ((xcr0 ^ old_xcr0) & XFEATURE_MASK_EXTEND)
+>> -- 
+>> 2.18.4
+>>
 
-> So I moved to use the simple I2C MFD driver, this is all modeled on the sl28cpld
-> which currently uses the same driver and then GPIO regmap as I do.
-> 
-> Other stuff like the resets is probably gonna get exposed later when
-> it's required
-> to control it directly.
-
-In order for this driver to tick the MFD box, it's going to need more
-than one function.
-
-> > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 ++++++++++
-> > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 81 +++++++++++++++++++
-> > > >  2 files changed, 123 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> >
-> 
-> 
-> 
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
