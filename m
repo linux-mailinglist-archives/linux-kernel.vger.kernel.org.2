@@ -2,222 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D359391959
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7D239199E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhEZOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
+        id S234416AbhEZOOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:14:40 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43915 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231319AbhEZOAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:00:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 108CE6101E;
-        Wed, 26 May 2021 13:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622037528;
-        bh=TuPjYm63AEIX3xKPK7LaeAgYr240A8QnqaHp5LUvUDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CTGGYN+DAshEM8KkRCLuqifVp0nz/Ax0mkUa301X8W44+37x6M151ruaWV15yK7KK
-         hk4Nk0ofAtXH8vag8n9cgnNPAxErab+LISere42byVsqlL2c2j/ZVxTGYnmQtygyjz
-         tGpQ9ubNjZ9Nq6NX1W0p09fgKjUSESkGbpn/zZVcuVVZNBHpi3BaVTVvXs3/jtmtv6
-         m1/G29XkjCcw4SE1bQnEbI2RHeOJbM3k/LLiGAm18s/xHZ67N19m+1NCubyJSVLzMX
-         Nnulo8FX1jZqLiXvbZH+lpFkIX2cF+Hh2gNv7pQEh15oUZe6hlVMz5QXSoArhI1AsN
-         rxOWd4uRJUC1A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5116B4011C; Wed, 26 May 2021 10:58:45 -0300 (-03)
-Date:   Wed, 26 May 2021 10:58:45 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Riccardo Mancini <rickyman7@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Fabian Hemmer <copy@copy.sh>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Stephane Eranian <eranian@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf test: iterate over shell tests in alphabetical order
-Message-ID: <YK5UFUH2FnNHr1Vk@kernel.org>
-References: <20210525230521.244553-1-rickyman7@gmail.com>
- <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        id S233313AbhEZOOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:14:39 -0400
+IronPort-SDR: FoiouYgXQPsd4zt0/Y3ZKNzT8/CEHCemxIHtsgFwkUUzasv4+3dTdNtfHb8B86q/Cz5w53pi74
+ 1JVGlYeIbKWQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202510882"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="202510882"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 07:13:02 -0700
+IronPort-SDR: ZtLB4ojf6lkrwrjXkuqGA1frhIHjX9YVFaRNFSg/ySx6bS534MWjI6fcYvWv8VAKxe6kGQ55Rf
+ 68PJkFe05gKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="464818039"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by fmsmga004.fm.intel.com with ESMTP; 26 May 2021 07:13:02 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     steve.wahl@hpe.com, john.p.donnelly@oracle.com,
+        brian.maly@oracle.com, jack.vogel@oracle.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf/x86/intel/uncore: Fix a kernel WARNING triggered by maxcpus=1
+Date:   Wed, 26 May 2021 06:58:47 -0700
+Message-Id: <1622037527-156028-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 25, 2021 at 04:25:48PM -0700, Ian Rogers escreveu:
-> On Tue, May 25, 2021 at 4:08 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> >
-> > for_each_shell_test macro iterated over all shell tests in the directory
-> > using readdir, which does not guarantee any ordering, causing
-> > problems on certain fs. However, the order in which they are visited
-> > determines the id of the test, in case one wants to run a single test.
-> >
-> > This patch replaces readdir with scandir using alphabetical sorting.
-> > This guarantees that, given the same set of tests, all machines will
-> > see the tests in the same order, and, thus, that test ids are
-> > consistent.
-> >
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Thanks, applied and also added this, which I think it appropriate in
-this case, no?
+A kernel WARNING may be triggered when setting maxcpus=1.
 
-Reported-by: Ian Rogers <irogers@google.com>
+The uncore counters are Die-scope. When probing a PCI device, only the
+BUS information can be retrieved. The uncore driver has to maintain a
+mapping table used to calculate the logical Die ID from a given BUS#.
 
-- Arnaldo
- 
-> > ---
-> >  tools/perf/tests/builtin-test.c | 38 ++++++++++++++++++---------------
-> >  1 file changed, 21 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index c4b888f18e9ca..cbbfe48ab8029 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -510,8 +510,8 @@ static const char *shell_test__description(char *description, size_t size,
-> >         return description ? strim(description + 1) : NULL;
-> >  }
-> >
-> > -#define for_each_shell_test(dir, base, ent)    \
-> > -       while ((ent = readdir(dir)) != NULL)    \
-> > +#define for_each_shell_test(entlist, nr, base, ent)                    \
-> > +       for (int __i = 0; __i < nr && (ent = entlist[__i]); __i++)      \
-> 
-> I think this declaration of __i is okay as C99 allows declarations
-> here, but generally I don't see this style in the kernel.
-> 
-> Thanks,
-> Ian
-> 
-> >                 if (!is_directory(base, ent) && ent->d_name[0] != '.')
-> >
-> >  static const char *shell_tests__dir(char *path, size_t size)
-> > @@ -538,8 +538,9 @@ static const char *shell_tests__dir(char *path, size_t size)
-> >
-> >  static int shell_tests__max_desc_width(void)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
-> >         int width = 0;
-> > @@ -547,11 +548,11 @@ static int shell_tests__max_desc_width(void)
-> >         if (path == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(path);
-> > -       if (!dir)
-> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1)
-> >                 return -1;
-> >
-> > -       for_each_shell_test(dir, path, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
-> >                 char bf[256];
-> >                 const char *desc = shell_test__description(bf, sizeof(bf), path, ent->d_name);
-> >
-> > @@ -563,7 +564,8 @@ static int shell_tests__max_desc_width(void)
-> >                 }
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> > +
-> >         return width;
-> >  }
-> >
-> > @@ -589,8 +591,9 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
-> >
-> >  static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         struct shell_test st = {
-> >                 .dir = shell_tests__dir(path_dir, sizeof(path_dir)),
-> > @@ -599,14 +602,14 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >         if (st.dir == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(st.dir);
-> > -       if (!dir) {
-> > +       n_dirs = scandir(st.dir, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1) {
-> >                 pr_err("failed to open shell test directory: %s\n",
-> >                         st.dir);
-> >                 return -1;
-> >         }
-> >
-> > -       for_each_shell_test(dir, st.dir, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, st.dir, ent) {
-> >                 int curr = i++;
-> >                 char desc[256];
-> >                 struct test test = {
-> > @@ -623,7 +626,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >                 test_and_print(&test, false, -1);
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> >         return 0;
-> >  }
-> >
-> > @@ -722,19 +725,20 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
-> >
-> >  static int perf_test__list_shell(int argc, const char **argv, int i)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
-> >
-> >         if (path == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(path);
-> > -       if (!dir)
-> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1)
-> >                 return -1;
-> >
-> > -       for_each_shell_test(dir, path, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
-> >                 int curr = i++;
-> >                 char bf[256];
-> >                 struct test t = {
-> > @@ -747,7 +751,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
-> >                 pr_info("%2d: %s\n", i, t.desc);
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.31.1
-> >
+Before the patch ba9506be4e40, the mapping table stores the mapping
+information from the BUS# -> a Physical Socket ID. To calculate the
+logical die ID, perf does,
+- In snbep_pci2phy_map_init(), retrieve the BUS# -> a Physical Socket ID
+  from the UBOX PCI configure space.
+- Calculate the mapping information (a BUS# -> a Physical Socket ID) for
+  the other PCI BUS.
+- In the uncore_pci_probe(), get the physical Socket ID from a given BUS
+  and the mapping table.
+- Calculate the logical Die ID
 
+Since only the logical Die ID is required, with the patch ba9506be4e40,
+the mapping table stores the mapping information from the BUS# -> a
+logical Die ID. Now perf does,
+- In snbep_pci2phy_map_init(), retrieve the BUS# -> a Physical Socket ID
+  from the UBOX PCI configure space.
+- Calculate the logical Die ID
+- Calculate the mapping information (a BUS# -> a logical Die ID) for the
+  other PCI BUS.
+- In the uncore_pci_probe(), get the logical die ID from a given BUS and
+  the mapping table.
+
+When calculating the logical Die ID, -1 may be returned, especially when
+maxcpus=1. Here, -1 means the logical Die ID is not found. But when
+calculating the mapping information for the other PCI BUS, -1 indicates
+that it's the other PCI BUS that requires the calculation of the
+mapping. The driver will mistakenly do the calculation.
+
+Uses the -ENODEV to indicate the case which the logical Die ID is not
+found. The driver will not mess up the mapping table anymore.
+
+Fixes: ba9506be4e40 ("perf/x86/intel/uncore: Store the logical die id
+instead of the physical die id.")
+Reported-by: John Donnelly <john.p.donnelly@oracle.com>
+Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/uncore_snbep.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index f57d9cb..035787c 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1413,6 +1413,8 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
+ 						die_id = i;
+ 					else
+ 						die_id = topology_phys_to_logical_pkg(i);
++					if (die_id < 0)
++						die_id = -ENODEV;
+ 					map->pbus_to_dieid[bus] = die_id;
+ 					break;
+ 				}
+@@ -1459,14 +1461,14 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
+ 			i = -1;
+ 			if (reverse) {
+ 				for (bus = 255; bus >= 0; bus--) {
+-					if (map->pbus_to_dieid[bus] >= 0)
++					if (map->pbus_to_dieid[bus] != -1)
+ 						i = map->pbus_to_dieid[bus];
+ 					else
+ 						map->pbus_to_dieid[bus] = i;
+ 				}
+ 			} else {
+ 				for (bus = 0; bus <= 255; bus++) {
+-					if (map->pbus_to_dieid[bus] >= 0)
++					if (map->pbus_to_dieid[bus] != -1)
+ 						i = map->pbus_to_dieid[bus];
+ 					else
+ 						map->pbus_to_dieid[bus] = i;
 -- 
+2.7.4
 
-- Arnaldo
