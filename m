@@ -2,151 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BC339211F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE539392123
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhEZTuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:50:44 -0400
-Received: from mail-mw2nam10on2071.outbound.protection.outlook.com ([40.107.94.71]:29153
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231924AbhEZTum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:50:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bgAd/tfCo2eJBc7rWVu754dgxXUHzBTfij+zbgi/av1DyaOSxCazhpLCQj8D6Ri3DtzOb3C3dDsm37BTvzStFpNaj7pADdQVa9ae2O+LHeqvOX4w2zl+YCZZQoZ/Sa/Udqm/iJyyBYMxUBLyfrAYtxBVx5NRlZiZ2asRMO5xpAOSKiYZ0RJkAIxNlQSfmw6IWVGi2n2Q0zEjHpU4AOqySM4yf/ltAHFv2CL5xUI1NqxifUkkKwDKlNeM6qjSpjg30ciykLtsUDUpGDP1BIKJyQFlEipn/Q8HDjQkzkNhC8dHy6z9GifY+9ko6QT8JKq2iWk5fyatmGDD7cohP4JxoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t4LNgDHxJIIKAhocztp0tDJaP7WOUQoU6iIzfhbHGbE=;
- b=keHt66ZKdVswsO64gnwy4VzV7nrCkQ2ryAdFApRS8+/DT4qEoN9zykZc8SLb8/sb7KrePqMim/tIB9xJ/Ex16/eW05wsehxkL8UzYjNWyo0D4wWC1/btB5eRMqwhB+MDlCc+LLce2jKlZx2J59MOvexURP4wRFa+cy5u0h01vZMKRoKJtlFUblXAHs/XT0TPeYeqbAlUw6xehQiIdDEW5fP1+0lnx7ApE22AYoFevqhM3nurJbmDdi3kFYI7v6I519hq/lLXvdttaaF3oJAu/4pcwAIOPi0ge38ug+O6w15v5Pawu2MVVOwhS7Hnm5FTZoepmnWrfLaR99jAKMt58A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t4LNgDHxJIIKAhocztp0tDJaP7WOUQoU6iIzfhbHGbE=;
- b=QYcURN+bJY/zjjNBec4vKUo145/B+kxtPkud2zY9qxl1H1yvLeGbfmSQrIM6L/UHEfRiizzAfuDCYs635ZO+7aWisP3I4pmyVBh93r3RHjOgZ2qiLAmNCKPFDqgolagzoTdDYQ+nvUKfPfpCOOfvTuBKtk4WHPZMiamy4LtTv6MKmXaLHt97q1jyKBaOH1kAyPn0plSw0w/i1wg1taho0IbzPTfALb0urkCQrzN1cFWTkXP44M5FaLE5yu/qlzslEgHBiox4ck0+EjR5aQPACcSqHtq3vGY6OQAleJvGV1YuyvkoGAsTeayjhlWublJPH4D+S9hL9LHAffnNeQoEsA==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5272.namprd12.prod.outlook.com (2603:10b6:208:319::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Wed, 26 May
- 2021 19:49:08 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Wed, 26 May 2021
- 19:49:08 +0000
-Date:   Wed, 26 May 2021 16:49:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 2/2] RDMA/mlx5: Allow modifying Relaxed
- Ordering via fast registration
-Message-ID: <20210526194906.GA3646419@nvidia.com>
-References: <cover.1621505111.git.leonro@nvidia.com>
- <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH0PR13CA0020.namprd13.prod.outlook.com
- (2603:10b6:610:b1::25) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234489AbhEZTvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:51:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41934 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232868AbhEZTvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:51:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622058610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s1/6uItuxoYyE47GHbWu3zlHXfIxxg+Z3u434C7Z3XM=;
+        b=IoxGINoY/TdQEbrwfLFwUS/tT2cIoRg5hRU56gJhHaBxR6B6AQWi3GwYEQxX32giQ8qZbn
+        lelhRCnkTqQhrHCAXNNAoNuceuIDaNWfv2jjjnou+wH4NcnN47CiBeGrSeroj/xTVMkfS8
+        8Tw7wPXvXSEOCmk1e7kMgzTo6O/YHVE=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-bO1dKjBaMKar0dp4adxjKg-1; Wed, 26 May 2021 15:50:08 -0400
+X-MC-Unique: bO1dKjBaMKar0dp4adxjKg-1
+Received: by mail-qv1-f69.google.com with SMTP id h11-20020a0ceecb0000b0290211ed54e716so2129713qvs.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:50:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s1/6uItuxoYyE47GHbWu3zlHXfIxxg+Z3u434C7Z3XM=;
+        b=siNGf9KFMfmqe5Tn22KKrBJWvr4Ohitj8VTTYtP4Nw+KAUEgipIo7uMwcx1vf7b+Ul
+         gO5aLDkzFnmfivLhZewKQs2c6aVkbXc9fRAEtOgtX3Bvh2yF85JWLzo3HwkNspe14O3E
+         4yzXJzjoyX3gFYNWL549ngk04HSfq36NK5RtT6rwO+qWHDwop+AYN5InQu77mZKPk/lJ
+         pDHNSR3EoppnJDpOngWQSF2N/Cwmp4cwSB/R0TniPWvWRkhkC2Xjx7bwCJpo/Hh1P66d
+         391EmwfuEkCvbUfKYQtcWTqz5O00besKlndlOam40/5QIm2hj7qrkOiK/JqH3tbvGhu7
+         rOzw==
+X-Gm-Message-State: AOAM532wCFmZwwGs1TNo/SwkzrpSHpsKjqMZRdTXrUcZu4KF5Jw1ZqaO
+        BRaW9bcarY1aePKW9SdecGyq9bHesvKJ4GV1sUGQQx0cnWX66y2OeMqs0LcEHZUq5aZBm6ZbNHp
+        Pme/88yQrzgCTUxZQnxm/F/pA
+X-Received: by 2002:a37:7046:: with SMTP id l67mr43118522qkc.69.1622058607640;
+        Wed, 26 May 2021 12:50:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDF9KrF9YeP9fDUebqEr4gYyhgflPp+V4B+WrCnnvB/WRyfJdS1hsUee111LHB9PSeDuPW8w==
+X-Received: by 2002:a37:7046:: with SMTP id l67mr43118500qkc.69.1622058607342;
+        Wed, 26 May 2021 12:50:07 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id g18sm2200678qke.37.2021.05.26.12.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 12:50:06 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:50:05 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
+        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
+        jhubbard@nvidia.com, bsingharora@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        hch@infradead.org, jglisse@redhat.com, willy@infradead.org,
+        jgg@nvidia.com, hughd@google.com
+Subject: Re: [PATCH v9 06/10] mm/memory.c: Allow different return codes for
+ copy_nonpresent_pte()
+Message-ID: <YK6mbf967dV0ljHn@t490s>
+References: <20210524132725.12697-1-apopple@nvidia.com>
+ <20210524132725.12697-7-apopple@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR13CA0020.namprd13.prod.outlook.com (2603:10b6:610:b1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 19:49:08 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llzWc-00FIeQ-Uj; Wed, 26 May 2021 16:49:06 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aa95c0d9-6481-4d0d-8979-08d9207f536e
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5272:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB527207DEABB7BC900B3CA468C2249@BL1PR12MB5272.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rxb/jQYFoEVteHyKCTX1JX6pEovuPUwUmakyasiT0O9mfehkLUJpL/LfGSHTjDaD/QIENwMyh1xeSN/Dy223RPVAVIZC/6d4URu256jPKuHdH1fl7qQihVqxkX32sKahrVKNn2JeMudHl4QIqt3aTmS0IY8LDkqhr0hb6WLygcnQ8T4Ij7NkOIJj2Mc74GpzjLQC22iF0PraWqUJ7cpEhXEyIXVXcByancu/lP5BmmjXxCHmG2vQhXV1ik6QMvihWJ4ogxesv8OEZUiKODZ/gtHyzWYgH3Hek7uAe7ip7SsoTI7J3dz0ZHHvVqda69t+Xgk0G6VlzLnvi8Bf+5g0YuOGrd2NGMoK2Rc0L6rpaR9jKBzHjPkgoato0PYc1z8KdSRRI9P3k+xczHXefPqYIVllfKWFGwXTkAWr4kTz1VyGRwxQF7BkEh0Ic0dXrdG3yqQHpIR1PaT4o5OLg7NzPvYVUoc1jlYLd5ompWCoKcf9LFSF/XLZwJ2nG25B3zU/eRUkyNLdgMLRNR5edgh75oiVnvblML18oGImSRFeUUguRCrEokgiOrvsY5yoh2E0nmXBirTsF1VyGgSMoO7AGNDM/3VSZUi0ifrgjmNoflw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39860400002)(396003)(346002)(186003)(6916009)(4326008)(478600001)(26005)(426003)(8936002)(2616005)(36756003)(8676002)(38100700002)(54906003)(316002)(2906002)(5660300002)(33656002)(86362001)(66946007)(66556008)(83380400001)(1076003)(9746002)(9786002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QmQcHjCTec/lg6cvRET+xQ3AaNmKEmajR9FoAmJZpoPxpiAN5nxqywi6ZMmg?=
- =?us-ascii?Q?q5ed+Js1NECM3N7j+TaClOzmv5DfagyxRLSn0sCQ3ZXecLqO7+KoLre9J7q0?=
- =?us-ascii?Q?JVkR0xklFNyOgJ3ZboprfqQZlF3mB2F4Z/aPME8PTlZNVcTgSQleyzL6gaXb?=
- =?us-ascii?Q?XQm2hnja0CbVAen2hZq9X7dQUG79ijQ9t8V0gPOPUCBIwBiKUZSISdYccbIf?=
- =?us-ascii?Q?rPM2Me6sZ0oEWqKfCtnWHDo9cjQYkEkfgdTOI7NXkZaOKxEp3IAmhw/ed3wy?=
- =?us-ascii?Q?Ji7NxorFAYeqjrmJ86DybYcQnOvSDidxQQgPSt6FEAwnkwPNQLAqza4XjGGh?=
- =?us-ascii?Q?4BPr4mXQOqo67NtmYGmC9p6jz37V3DTS496N7c3Mqdgn+oDygOkA/D04zYKt?=
- =?us-ascii?Q?Tzq1ZrVLO/7I53VsCRrGap6vBIGCUyp9TeLJttl+xErzrPQZUDRdlVAW37wV?=
- =?us-ascii?Q?rveYvqf+UKn2Fhzqb/sfLQOftWo3xMwKrYGRpsneHReT5r9yQzXUZbpuNs2c?=
- =?us-ascii?Q?mULQHOU8i2dnLmdkii1uTi2EyZympIOJKlDXf/iy1Gjwb+etb8iaw5GkZ7dv?=
- =?us-ascii?Q?najHjnT+q0a+IHCm533RwTQ2y0lihVchTlIZATh3tTi8SceUlh2Zb4gnHpUq?=
- =?us-ascii?Q?MGMc6pzNCQtecUu6klO0RxtdnmxSBtMDZYly6Bf0wiKIiKmyN1B16J4QRS3c?=
- =?us-ascii?Q?Xz9G0kNgHCZfzKvt2rzNq2uminJe9UYqd6h6955/PkY5ZwuqplM/Xf0ERj33?=
- =?us-ascii?Q?FevlHzzsMlimiZ0N8TOqFnAsef8bOE0Td19cd7dGHo5yi8HlxbMgTLWKtXP3?=
- =?us-ascii?Q?VHs8Rq3a/K0EH020ahxPOk+suS/ElEfDtXYO6KNKz2wTHQfobMGQp4UvCaMm?=
- =?us-ascii?Q?aV7jUfNPx0cEGXj8MRJBf56zof+tMl/TyB/snVoNIAs6Op4Q6pqSpwUElKTP?=
- =?us-ascii?Q?U5JUchC8HRMdXmOvnGwzvESBx4rFvryS1OTv/0hDWFxzy2sEIsV8K33s42Nx?=
- =?us-ascii?Q?L+t383K71qeJvnX13M/2vIcf2w2PhWJRe7PtDnkFl+AOEOZxZjaEsus1pTwu?=
- =?us-ascii?Q?OZ4f1MI1QONBM7h8hytotlLBn4l4sEzCH2E9dYbcz9uOWJBmR/R7Hc4ii8Ve?=
- =?us-ascii?Q?PD/X8s1oH+RP6tvhh2otyvz/7+RnOXMm2J++NWTeHDEO9gWTk8kB4J+yUV7p?=
- =?us-ascii?Q?BaUoDHVawV0cChqJkK2cThGFzYcFv8Hc4FkPgiKCsXqI1ce0IbDWDXmmajJw?=
- =?us-ascii?Q?wB5iJDV384QVeGccz+W7+TU+jX+3M+X3g2d0sC5WtRsWLPDrDy00vF4XtTg1?=
- =?us-ascii?Q?3TZo3M+BIse1aN0SuFlhbUp2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa95c0d9-6481-4d0d-8979-08d9207f536e
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 19:49:08.3369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wBLyXv/imqu7GGeyoR+adiru/xwytf/G63IXOfzdq1HZv1J0Ak5qO1/3C0BMa5kE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5272
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210524132725.12697-7-apopple@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 01:13:36PM +0300, Leon Romanovsky wrote:
-> From: Avihai Horon <avihaih@nvidia.com>
+On Mon, May 24, 2021 at 11:27:21PM +1000, Alistair Popple wrote:
+> Currently if copy_nonpresent_pte() returns a non-zero value it is
+> assumed to be a swap entry which requires further processing outside the
+> loop in copy_pte_range() after dropping locks. This prevents other
+> values being returned to signal conditions such as failure which a
+> subsequent change requires.
 > 
-> Relaxed Ordering is enabled by default for kernel ULPs, and is set
-> during MKey creation, yet it cannot be modified by them afterwards.
+> Instead make copy_nonpresent_pte() return an error code if further
+> processing is required and read the value for the swap entry in the main
+> loop under the ptl.
 > 
-> Allow modifying Relaxed Ordering via fast registration work request.
-> This is done by setting the relevant flags in the MKey context mask and
-> the Relaxed Ordering flags in the MKey context itself.
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
 > 
-> Only ConnectX-7 supports modifying Relaxed Ordering via fast
-> registration, and HCA capabilities indicate it. These capabilities are
-> checked, and if a fast registration work request tries to modify Relaxed
-> Ordering and the capabilities are not present, the work request will fail.
+> ---
+> 
+> v9:
+> 
+> New for v9 to allow device exclusive handling to occur in
+> copy_nonpresent_pte().
+> ---
+>  mm/memory.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 2fb455c365c2..e061cfa18c11 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -718,7 +718,7 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+>  
+>  	if (likely(!non_swap_entry(entry))) {
+>  		if (swap_duplicate(entry) < 0)
+> -			return entry.val;
+> +			return -EAGAIN;
+>  
+>  		/* make sure dst_mm is on swapoff's mmlist. */
+>  		if (unlikely(list_empty(&dst_mm->mmlist))) {
+> @@ -974,11 +974,13 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  			continue;
+>  		}
+>  		if (unlikely(!pte_present(*src_pte))) {
+> -			entry.val = copy_nonpresent_pte(dst_mm, src_mm,
+> -							dst_pte, src_pte,
+> -							src_vma, addr, rss);
+> -			if (entry.val)
+> +			ret = copy_nonpresent_pte(dst_mm, src_mm,
+> +						dst_pte, src_pte,
+> +						src_vma, addr, rss);
+> +			if (ret == -EAGAIN) {
+> +				entry = pte_to_swp_entry(*src_pte);
+>  				break;
+> +			}
+>  			progress += 8;
+>  			continue;
+>  		}
 
- 
-> @@ -762,23 +786,33 @@ static void set_sig_mkey_segment(struct mlx5_mkey_seg *seg,
->  	seg->len = cpu_to_be64(length);
->  	seg->xlt_oct_size = cpu_to_be32(get_xlt_octo(size));
->  	seg->bsfs_octo_size = cpu_to_be32(MLX5_MKEY_BSF_OCTO_SIZE);
-> +
-> +	if (!(access_flags & IB_ACCESS_DISABLE_RELAXED_ORDERING)) {
-> +		MLX5_SET(mkc, seg, relaxed_ordering_write,
-> +			 MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write_umr));
-> +		MLX5_SET(mkc, seg, relaxed_ordering_read,
-> +			 MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read_umr));
-> +	}
->  }
+Note that -EAGAIN was previously used by copy_present_page() for early cow
+use.  Here later although we check entry.val first:
 
-I don't quite get this patch
+	if (entry.val) {
+		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0) {
+			ret = -ENOMEM;
+			goto out;
+		}
+		entry.val = 0;
+	} else if (ret) {
+		WARN_ON_ONCE(ret != -EAGAIN);
+		prealloc = page_copy_prealloc(src_mm, src_vma, addr);
+		if (!prealloc)
+			return -ENOMEM;
+		/* We've captured and resolved the error. Reset, try again. */
+		ret = 0;
+	}
 
-FRWR can only be used with kernel MRs
+We didn't reset "ret" in entry.val case (maybe we should?). Then in the next
+round of "goto again" if "ret" is unluckily untouched, it could reach the 2nd
+if check, and I think it could cause an unexpected page_copy_prealloc().
 
-All kernel MRs are created with relaxed ordering set
+-- 
+Peter Xu
 
-Nothing does a FRWR with IB_ACCESS_DISABLE_RELAXED_ORDERING set
-
-So why not leave the relaxed ordering bits masked in the UMR for FWRW
-so that the UMR doesn't change them at all and fail/panic if the
-caller requests IB_ACCESS_DISABLE_RELAXED_ORDERING ?
-
-Jason
