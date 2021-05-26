@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0CE391E8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D01E391E8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235144AbhEZSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
+        id S235242AbhEZSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234437AbhEZSBc (ORCPT
+        with ESMTP id S234239AbhEZSCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:01:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD6EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=EhcbGn82P1aMRBzk35vUH4tsbyiGy0EL2EgdMVyTk24=; b=j/6e+LpThe9SpuWQh+EkRNrt82
-        gcVeYpQ8BOFSXMJ7kL7qofAJgHZO+93nyhMx5QKhDlKQYCJxbusI5rzS4/FBfFP4E+wxx8Qhkz4nX
-        n0A/JqOhGIhKvxX7Z0G4zzoPfdjMOUeU5MZsK7rxGuVNg6U05GL8SzQz/VGLT3ve3ste0okQVYKHB
-        GyDzJrrmartXnXcYMe7pF5A40qFbafk4zOiZtnD9jM7j1rGZDS+ABikmFQi68qtBf6bXIGdp+XopN
-        bNSNlUCLKS9cXTk6Ia/Dr3u/XEfoks1itHw08z0B4RlOYAvfB4WHWmSUVkYhcQmFz+tU2ZXnTqHkA
-        eOq56Ksg==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llxou-00GKFL-HN; Wed, 26 May 2021 17:59:52 +0000
-Subject: Re: [PATCH] x86: fixmap: use CONFIG_NR_CPUS instead of NR_CPUS
-To:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 26 May 2021 14:02:42 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A262CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:01:10 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id r1so1598092pgk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ejN0eoIYKBN/84Zrv0CgeJaaHDuSEgwb8qud7/icrbk=;
+        b=HyowxsLM2scFnyqIhMxSOj+1Epc7shE+KUEVjC4cht5KRlJUfKCVnuq213R6Wg61SX
+         CCJFRRt2xZk7znIufJ2aqncJrmoRNBnL5K+7Fi7bDlEONEX7uYsMbnk41SLypLMNNtfS
+         cqAZ1XY/b5GO8ETbQXNwSgpbl1LHBJsRcXEEdBLWf8QX1jAD88eyB3liiO5bYb5I0q30
+         iFgY6BBsNSyvmtpkspmM6sB8+7gn/YcKXZKNHHpq4RH8GlYdSND7iebeM3sjrzAibsOF
+         Oy/bcAK9E+Kzg2Fkh4uPqBSW+MqDXWxKmZeFtpfskZsRVPT0vXPF0jiLA9RdgzB4VEGi
+         Yeww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ejN0eoIYKBN/84Zrv0CgeJaaHDuSEgwb8qud7/icrbk=;
+        b=XUpdcF1V8uIQvT1vNDLe5Lq8ad+cZhSbbVBplA8GTYR578RY5Z5fytI7yVq2EOk9Mv
+         G64DmihniMnFy2enpOO5EwHc+h+ApznchhXAkx3xagPreghYs9oK6XXK8SXbGBOvXA80
+         eD6/e29Y+4tHrYj+tYeJeXkKa7iPT1vstZeDYFsAECghyO3XF4ljNLyAYS8afRTWkke3
+         3yB1/l7JMvd0g1GhaUu6z4N3PjA273eAgz/FuiC3174jt7B0wtoISLuYZm7q9CcAdHFN
+         3F3AC0T4fL8dpSFQ2EB+LmRpYoyZSsHP0qMPNPD+S+mqQFkMxPk/p+Kl+VAzkn7HDelq
+         M+dA==
+X-Gm-Message-State: AOAM530qbqJc9Gt7P0FV4LCI2CTvN4Z8mVkxoxh/iycwLR60aK4o2lPO
+        mSfJCNBnBa/E5/k02jyN8fh2EQ==
+X-Google-Smtp-Source: ABdhPJzRGUd/HpFi11rQ4qFWoSjV9N7NM09tX6ZU72aaD7uBwGewropyY1i1khwE0k+aUsa2kx83kg==
+X-Received: by 2002:aa7:9f8f:0:b029:2dc:76bc:edce with SMTP id z15-20020aa79f8f0000b02902dc76bcedcemr36559993pfr.29.1622052069984;
+        Wed, 26 May 2021 11:01:09 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s48sm15923209pfw.205.2021.05.26.11.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 11:01:09 -0700 (PDT)
+Date:   Wed, 26 May 2021 18:01:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Mel Gorman <mgorman@techsingularity.net>,
-        Tom Rix <trix@redhat.com>
-References: <20210521195918.2183-1-rdunlap@infradead.org>
- <YK3vrIB7cWop+UIW@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <59676378-1b52-cae7-7944-adeffd27190e@infradead.org>
-Date:   Wed, 26 May 2021 10:59:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 0/6] Introduce KVM_{GET|SET}_SREGS2 and fix PDPTR
+ migration
+Message-ID: <YK6M4UwNGn1Gc5Sa@google.com>
+References: <20210426111333.967729-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YK3vrIB7cWop+UIW@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426111333.967729-1-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 11:50 PM, Ingo Molnar wrote:
+On Mon, Apr 26, 2021, Maxim Levitsky wrote:
+> This patch set aims to fix few flaws that were discovered
+> in KVM_{GET|SET}_SREGS on x86:
 > 
-> * Randy Dunlap <rdunlap@infradead.org> wrote:
+> * There is no support for reading/writing PDPTRs although
+>   these are considered to be part of the guest state.
 > 
->> Use CONFIG_NR_CPUS instead of NR_CPUS for an enum entry item.
->> (Alternatively, #include <linux/threads.h> unconditionally instead of
->> conditionally.)
->>
->> This fixes 100+ build errors like so:
->>
->> In file included from ../include/asm-generic/early_ioremap.h:6:0,
->>                  from ./arch/x86/include/generated/asm/early_ioremap.h:1,
->>                  from ../arch/x86/include/asm/io.h:44,
->>                  from ../include/linux/io.h:13,
->>                  from ../mm/early_ioremap.c:13:
->> ../arch/x86/include/asm/fixmap.h:103:48: error: ‘NR_CPUS’ undeclared here (not in a function); did you mean ‘NR_OPEN’?
->>   FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
->>
->> Fixes: e972c2511967 ("mm/early_ioremap: add prototype for early_memremap_pgprot_adjust")
+> * There is useless interrupt bitmap which isn't needed
 > 
-> I believe this patch is in the -mm tree, not the x86 tree.
+> * No support for future extensions (via flags and such)
 > 
->> @@ -100,7 +100,7 @@ enum fixed_addresses {
->>  #endif
->>  #ifdef CONFIG_KMAP_LOCAL
->>  	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
->> -	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
->> +	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * CONFIG_NR_CPUS) - 1,
->>  #ifdef CONFIG_PCI_MMCONFIG
->>  	FIX_PCIE_MCFG,
->>  #endif
+> Also if the user doesn't use the new SREG2 api, the PDPTR
+> load after migration is now done on KVM_REQ_GET_NESTED_STATE_PAGES
+> to at least read them correctly in cases when guest memory
+> map is not up to date when nested state is loaded.
 > 
-> Please resolve this bug properly:
+> This patch series was tested by doing nested migration test
+> of 32 bit PAE L1 + 32 bit PAE L2 on AMD and Intel and by
+> nested migration test of 64 bit L1 + 32 bit PAE L2 on AMD.
+> The later test currently fails on Intel (regardless of my patches).
 > 
->  - Don't sprinkle low level headers with random CONFIG_NR_CPUS conversions.
+> Changes from V1:
+>   - move only PDPTRS load to KVM_REQ_GET_NESTED_STATE_PAGES on VMX
+>   - rebase on top of kvm/queue
+>   - improve the KVM_GET_SREGS2 to have flag for PDPTRS
+>     and remove padding
 > 
->  - <asm/io.h> currently includes <asm/early_ioremap.h>, but this seems 
->    unjustified.
+> Patches to qemu will be send soon as well.
 
-Deleting it causes build errors.
+How did you want to handle integration with the removal of pdptrs_changed()?
 
->  - Once early_ioremap.h is gone from io.h, it's potentially possible to 
->    include <linux/threads.h>. More work to resolve dependencies might be 
->    needed though.
-
-Yes, my first patch for this (unsent) just included <linux/threads.h>
-in fixmap.h unconditionally instead of conditionally.
-
-> Frankly, I'd prefer if such a low level header dependencies change came in 
-> via the x86 tree so we can properly review it, test it, and keep it 
-> working. Right now I can only guess what is needed here...
-
-Sure, makes sense.
-
-Mel, do you have any patch suggestions here?  re:
-
-commit e972c2511967181d955f74181d74438e26b2e797
-Author: Mel Gorman <mgorman@techsingularity.net>
-Date:   Fri May 21 10:40:56 2021 +1000
-
-    mm/early_ioremap: add prototype for early_memremap_pgprot_adjust
-
-
-thanks.
--- 
-~Randy
-
+https://lkml.kernel.org/r/68ff1249-2902-43d5-3dfd-35b1f14c4f90@redhat.com
