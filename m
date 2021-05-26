@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32604391C47
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FC1391C4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbhEZPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:45:52 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:38434 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhEZPpv (ORCPT
+        id S235299AbhEZPqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:46:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233354AbhEZPqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:45:51 -0400
-Received: by mail-il1-f197.google.com with SMTP id r3-20020a92cd830000b02901c085bc9f5eso1100496ilb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:44:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OdL20YqkAI7JJ2Wurl0dYHvUrhMz0DHPO3AdkhEoqS8=;
-        b=Y0S5tCTSqRJ81sPBN4hyZ7/9eSlvzLZ7WkGhkiEJYLpWDo3b9CW2GEJcVZMwX6W1PA
-         sbYZkuoG1grOYHAW7suSKCITa+Udxc2zsSqxClFBh1+zWvPQH4RkAwnNfsVfn+HwGidT
-         oFU3zfoKxoFxDES1B78MTsMEf80bEyfuHea5fRRNCSHqlED1VG9l5gZgLj3lLoEpUpps
-         ZsoNU/ot0ir+MbypntVhpK2GlU7YPgkd3TRSTNvzMPREz5JwWkw/XvQfvNlivYOzR5+6
-         m30NJJ6MGX/PrKsNJ8vPebsECnZKG61EA6/nk1p4zlQQ2wtfPKlKxeWbRt14apEWIJnS
-         vFDg==
-X-Gm-Message-State: AOAM532PO7POWMShTp7Ev3Ki7TWM03rmOU34UeAxIdBudt1z7ZqI+cTg
-        hTKvkfyTrtsuGCfDggxee1WyIvRAwg9DSSSvZJmIQSyTgYLT
-X-Google-Smtp-Source: ABdhPJwg4V/nF+IW2KqtAB+SxTtb5cqxHI95UE+eQMXQMSI9dkKSicoQOTTt0voPm8eOjbAZCCPIWP6tVVmS/NzPyGjNGw36LDAF
+        Wed, 26 May 2021 11:46:08 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QFZHM0091469;
+        Wed, 26 May 2021 11:44:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=KLQMidqpNJXuUcsX6USaZJHzqRrH8FWeJImszu+cH9Y=;
+ b=gtlPXz9vb97Lo4KPxSrHwBDOXCal1nmIyTMQW1JG34wMHY+KXEG9juEiY3cxl+95lIrs
+ yaE8ik7fvJgoZRyXjnyC2lIMymfnPyREu6BVskt5ANV35CvCxqtSOJ36UlxU8YLToBX7
+ 00GUbRzxlzRCocOgb4qs5NwBMpT6yQIC+Fo/dWR/8U1B+dsoR5QVZ8LPas8XqujPg+XJ
+ ly+N5lc/9lftJM/bGT4zcd7lhgH4CYlmxazd97LuFwO/Bnenbo6H5Glq4Dj42XAUKMyA
+ b5Kt1s9KGwNDrW1dOrjPY7UU0bxzen5ttD6N/B6LyPM1GBHjCWxztQwzaBFxAE1garKx vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38srkp9nj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 11:44:36 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14QFZXsi094790;
+        Wed, 26 May 2021 11:44:35 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38srkp9nhh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 11:44:35 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14QFiHNg001697;
+        Wed, 26 May 2021 15:44:33 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 38sba2rg58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 15:44:33 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14QFi1ZI29688228
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 May 2021 15:44:01 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87265AE053;
+        Wed, 26 May 2021 15:44:30 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2454CAE04D;
+        Wed, 26 May 2021 15:44:30 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.7.194])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 26 May 2021 15:44:30 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org, david@redhat.com,
+        cohuck@redhat.com, kvm390-list@tuxmaker.boeblingen.de.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com
+Subject: [PATCH v1 1/1] KVM: s390: fix for hugepage vmalloc
+Date:   Wed, 26 May 2021 17:44:29 +0200
+Message-Id: <20210526154429.143591-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1ba7:: with SMTP id n7mr22093360ili.159.1622043858212;
- Wed, 26 May 2021 08:44:18 -0700 (PDT)
-Date:   Wed, 26 May 2021 08:44:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa9f7005c33d83b9@google.com>
-Subject: [syzbot] KCSAN: data-race in __io_uring_cancel / io_uring_try_cancel_requests
-From:   syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MJjluDSso3oXTUoBxpyzjk1MTgcwPizj
+X-Proofpoint-GUID: 1VrA7vWxPEal-QxMAb_xzuAx8G63x9bm
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_10:2021-05-26,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=987 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ clxscore=1015 phishscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105260104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The Create Secure Configuration Ultravisor Call does not support using
+large pages for the virtual memory area.
 
-syzbot found the following issue on:
+This patch replaces the vzalloc call with a longer but equivalent
+__vmalloc_node_range call, also setting the VM_NO_HUGE_VMAP flag, to
+guarantee that this allocation will not be performed with large pages.
 
-HEAD commit:    a050a6d2 Merge tag 'perf-tools-fixes-for-v5.13-2021-05-24'..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13205087d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3bcc8a6b51ef8094
-dashboard link: https://syzkaller.appspot.com/bug?extid=73554e2258b7b8bf0bbf
-compiler:       Debian clang version 11.0.1-2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in __io_uring_cancel / io_uring_try_cancel_requests
-
-write to 0xffff88811d8df330 of 8 bytes by task 3709 on cpu 1:
- io_uring_clean_tctx fs/io_uring.c:9042 [inline]
- __io_uring_cancel+0x261/0x3b0 fs/io_uring.c:9136
- io_uring_files_cancel include/linux/io_uring.h:16 [inline]
- do_exit+0x185/0x1560 kernel/exit.c:781
- do_group_exit+0xce/0x1a0 kernel/exit.c:923
- get_signal+0xfc3/0x1610 kernel/signal.c:2835
- arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:301
- do_syscall_64+0x56/0x90 arch/x86/entry/common.c:57
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-read to 0xffff88811d8df330 of 8 bytes by task 6412 on cpu 0:
- io_uring_try_cancel_iowq fs/io_uring.c:8911 [inline]
- io_uring_try_cancel_requests+0x1ce/0x8e0 fs/io_uring.c:8933
- io_ring_exit_work+0x7c/0x1110 fs/io_uring.c:8736
- process_one_work+0x3e9/0x8f0 kernel/workqueue.c:2276
- worker_thread+0x636/0xae0 kernel/workqueue.c:2422
- kthread+0x1d0/0x1f0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 6412 Comm: kworker/u4:9 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-==================================================================
-
-
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/s390/kvm/pv.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+index 813b6e93dc83..2c848606d7b9 100644
+--- a/arch/s390/kvm/pv.c
++++ b/arch/s390/kvm/pv.c
+@@ -140,7 +140,10 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
+ 	/* Allocate variable storage */
+ 	vlen = ALIGN(virt * ((npages * PAGE_SIZE) / HPAGE_SIZE), PAGE_SIZE);
+ 	vlen += uv_info.guest_virt_base_stor_len;
+-	kvm->arch.pv.stor_var = vzalloc(vlen);
++	kvm->arch.pv.stor_var = __vmalloc_node_range(vlen, PAGE_SIZE, VMALLOC_START, VMALLOC_END,
++						GFP_KERNEL | __GFP_ZERO, PAGE_KERNEL,
++						VM_NO_HUGE_VMAP, NUMA_NO_NODE,
++						__builtin_return_address(0));
+ 	if (!kvm->arch.pv.stor_var)
+ 		goto out_err;
+ 	return 0;
+-- 
+2.31.1
+
