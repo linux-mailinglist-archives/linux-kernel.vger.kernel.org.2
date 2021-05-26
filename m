@@ -2,96 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A973920C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02803920CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhEZTYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhEZTYE (ORCPT
+        id S233038AbhEZTZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:25:46 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52434 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhEZTZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:24:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAA5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:22:31 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1llz6f-00033s-Vn; Wed, 26 May 2021 21:22:18 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:405c:46a2:a678:b7b3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 9E1E762CD86;
-        Wed, 26 May 2021 19:22:15 +0000 (UTC)
-Date:   Wed, 26 May 2021 21:22:14 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v1 1/1] can: mcp251xfd: Fix header block to clarify
- independence from OF
-Message-ID: <20210526192214.ksgyjescrtnhg5yq@pengutronix.de>
-References: <20210526191801.70012-1-andriy.shevchenko@linux.intel.com>
+        Wed, 26 May 2021 15:25:46 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 649451FD29;
+        Wed, 26 May 2021 19:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622057053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfIzmKVHtGMuGMaPHkUtWywgtu4ZApE+V8z8c4nj+Fo=;
+        b=kWjL+FFm1lOsJFS0FjvVOr+mT6Z/rIjLgzpKULbTamg1NXxAjJzNPdnHezJ+3//9tfKC/Q
+        MnfwRtKoFz0WsL7QoumIElA9rVkN9CUwwpeV4/CnNXUS6YopKLkYJxmk37/I3B5Lort3ni
+        8WaN9J+b9FUh1faUN+sh+l6IlDZt7AM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622057053;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VfIzmKVHtGMuGMaPHkUtWywgtu4ZApE+V8z8c4nj+Fo=;
+        b=TJ+hlLRyqiZQPU0o/2ojcyWjo1qQa7Tuf3Qa1KuLopAh6NetEgOr8h/10P6TIKdEo1IidV
+        JDyNLlJNhIa04ZBA==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id 4664311A98;
+        Wed, 26 May 2021 19:24:13 +0000 (UTC)
+Subject: Re: [PATCH v2] drm/fb-helper: improve DRM fbdev emulation device
+ names
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
+References: <20210525151313.3379622-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <89bec7e1-135a-71b6-8d87-ebca19443d3d@suse.de>
+Date:   Wed, 26 May 2021 21:24:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="35obomvnpd3qtcqc"
-Content-Disposition: inline
-In-Reply-To: <20210526191801.70012-1-andriy.shevchenko@linux.intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210525151313.3379622-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="a8eqX8K04hs871qWOtEcWBpxq6Os19aSA"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--a8eqX8K04hs871qWOtEcWBpxq6Os19aSA
+Content-Type: multipart/mixed; boundary="V4kh2Ko020rS0aWXrYcbwenevlsZptesz";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
+Message-ID: <89bec7e1-135a-71b6-8d87-ebca19443d3d@suse.de>
+Subject: Re: [PATCH v2] drm/fb-helper: improve DRM fbdev emulation device
+ names
+References: <20210525151313.3379622-1-javierm@redhat.com>
+In-Reply-To: <20210525151313.3379622-1-javierm@redhat.com>
 
---35obomvnpd3qtcqc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--V4kh2Ko020rS0aWXrYcbwenevlsZptesz
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On 26.05.2021 22:18:01, Andy Shevchenko wrote:
-> The driver is neither dependent on OF, nor it requires any OF headers.
-> Fix header block to clarify independence from OF.
+
+
+Am 25.05.21 um 17:13 schrieb Javier Martinez Canillas:
+> Framebuffer devices that are registered by DRM drivers for fbdev emulat=
+ion
+> have a "drmfb" suffix in their name. But makes them to be quite confusi=
+ng
+> for drivers that already have "drm" in their name:
 >=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> $ cat /proc/fb
+> 0 rockchipdrmdrmfb
+>=20
+> $ cat /proc/fb
+> 0 simpledrmdrmfb
+>=20
+> Also, there isn't a lot of value in adding these "drmfb" suffices to th=
+eir
+> names, since users shouldn't really care if the FB devices were registe=
+red
+> by a real fbdev driver or a DRM driver using the fbdev emulation.
+>=20
+> What programs should be interested about is if there's a DRM device, an=
+d
+> there are better ways to query that info than reading this procfs entry=
+=2E
+>=20
+> So let's just remove the suffix, which leads to much better device name=
+s:
+>=20
+> $ cat /proc/fb
+> 0 rockchipdrm
+>=20
+> $ cat /proc/fb
+> 0 simpledrm
+>=20
+> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Does it already work on ACPI?
+Added to drm-misc-next. Thank you.
 
-Applied to linux-can-next/testing.=20
+Best regards
+Thomas
 
-thanks,
-Marc
+> ---
+>=20
+> Changes in v2:
+> - Just remove the "drmfb" suffix instead of using a different one (tzim=
+mermann).
+>=20
+>   drivers/gpu/drm/drm_fb_helper.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_h=
+elper.c
+> index f6baa204612..d77a24507d3 100644
+> --- a/drivers/gpu/drm/drm_fb_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_helper.c
+> @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info=
+,
+>   			       sizes->fb_width, sizes->fb_height);
+>  =20
+>   	info->par =3D fb_helper;
+> -	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
+> +	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
+>   		 fb_helper->dev->driver->name);
+>  =20
+>   }
+>=20
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
---35obomvnpd3qtcqc
-Content-Type: application/pgp-signature; name="signature.asc"
+
+--V4kh2Ko020rS0aWXrYcbwenevlsZptesz--
+
+--a8eqX8K04hs871qWOtEcWBpxq6Os19aSA
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCun+QACgkQqclaivrt
-76kfAwf/aK8QV0Ce/jJmkynoxALJjqE6oQDIJvq7XXLvDqfMlfk72C/bhXrL5VFq
-28bknJrFjlOPuCrU/a4RIzbCocpIOE4EaL58HhnJ0uBGsOtNNzLP6Xsk+nm/gMio
-Fy2KSetxowpmiYQaMJNFnBfn1a+L3Gu6P0MDpYENWG+W/fdvlaxLbjd5xe5zSPFN
-wfCWyCMkhPsJVqm1eA3kO2yGE2nMMfecYAWWDSeZ8fuc+lR9xqb/5/TYXym/Tq4D
-+irzNBKMR26mq2fPNumqMpXAlqnsc9euu3VufvGGV/TiIYOmxb76pXajmtJE5OgE
-vpsInk2VvqJ4VDJKmGYgzVTRWM3bBA==
-=KlTk
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCuoFwFAwAAAAAACgkQlh/E3EQov+BW
+QA//dCY5nLj7FoVjeLjeTu3l8bOIlbdSQZ2Wrm7o0KL6JhL4AmhwCwRXaTNqzB0EnbO+8e8V+Nc0
+ux4ds1NKFmPc32DkLouuTvz4tB6CNX8Hp20lLkldVgaThfv4IYeIzQ69+Hq6ZLrVY278C3gesDak
+RWM/EqeZBuZ+biJemc9zyH+2pFwilR6/wrtOGPni1EQGEaYsxrSTxjCnZHJlgLFy+n6L2N7+M9Dt
+ptZ7mNanThryr388jOWNofAjVqZfTT15YLmR+NYODB/aY0mUKkpA2Fmfp2JqeaiCVQ2M6M1puLnC
+i+Of4H/7YMMYcX9oJRGJZfxTuGugJlahNjDUJe/Fd8oXf3STmkj46mTw0VXC4J/R/nPhL5Ml12eI
+Jb8KoJiv6YkwXuFv8itrKOwDWc60aDjBqYRpd4LlLStvzajbGcqt1sZNOE2kdvDfqKOgXPy7oOML
+fB9qcKlTSyA0vkTYw/5Hex7Gigl/VgUB6rMxx6Azv9fRv4ThK0hKEqCsosC0u6jaNegM1H5W0lu8
+lk22S82RLXQa4j0LuimnbtHFshCUoztXnby6dwbUhvYef8XZbeYtfUlx7mtDF5kUgI/kC0QfcMZl
+k4Z51TxRUU3NAPSE4tiLvzzbS9L1oHzI9KSUo3007Kh8dM8Wl9Ju6wdfBQZGys/B9vtJJZ21XosF
+Rws=
+=f0SG
 -----END PGP SIGNATURE-----
 
---35obomvnpd3qtcqc--
+--a8eqX8K04hs871qWOtEcWBpxq6Os19aSA--
