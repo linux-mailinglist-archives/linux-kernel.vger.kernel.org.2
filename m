@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14BD391B2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97793391B30
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbhEZPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:08:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235188AbhEZPIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:08:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D09060C3D;
-        Wed, 26 May 2021 15:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622041595;
-        bh=Oy7BgTGryKAyp8xe25xWfjrue9Y5RYNIPBC147pGbFo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=niMC04LJXYXUtzW2Dcb2+dtMvOUv6SPJoC38MhVLRfGrARD2vKV5HnC4kTDzCFsaf
-         HBJ0YjHY7iiKCugbbQ7iAtNe+PhhN56l0Suz4Py6ZvdALce+9GoJjrw8DPRzuW5uRi
-         eL2F4OvDf6Czl3/XhIvDOG/VQpj1PFiR6F7iddWKy7+mPTBDR+umbrk0UdRtYuu73L
-         sM8k+3P3+7yysf3qw6fUzr6/clnnVNc7397aIPvEzVcelzW/DiM7I989qRRgUsBiJt
-         WGWpl1cmZb2Rly67CcMDMbX53C8wEXLsoX7ld5W+uf+HEncJLYQ70oVxre3iPdbfmO
-         4tdyjhbNtsrVQ==
-Date:   Wed, 26 May 2021 10:06:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-        Koba Ko <koba.ko@canonical.com>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
- npss.
-Message-ID: <20210526150633.GA1291513@bjorn-Precision-5520>
+        id S235308AbhEZPJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235159AbhEZPJW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:09:22 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840FCC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:07:51 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id i5so1232025pgm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3KxbR9KLUJdHdi9WoVn2ioU2lLX3Osv4SjBPrJHHLpw=;
+        b=i+FbhOYkmMxye7Hn3e2GqSSNrgdpxVk4Q1ICZ8+ls6kll9sYBZqHU2wSJABJgqxxxZ
+         Gelb8ApsDLde1sShXE4f7n50JtuoKdygm7+WacKgSUvw8Hf19OvMe0NYb36Z3nL2qyDo
+         z4RhorDEDA3i4siSVbhkJD4+hbOc5TzTxxVPuM99ovfztliDdhdtTjbX6O2Zb/W2k1T8
+         Ns+W8okQO83L9gKu/FLjCWAzZ4yK7vXqJGmlBPqfk9t2zCZsQMDGs25ZFZsAXtF+Fww1
+         8N3Ig//0cPanArfSunh6drKWX27WXm+EEXmop7dNcKJ8jXIAXjBtVtCxpUWCbzhyP8gC
+         FNqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3KxbR9KLUJdHdi9WoVn2ioU2lLX3Osv4SjBPrJHHLpw=;
+        b=T6rhlXMBCnbTYSylkaEAV4OfY9AF/KC6eEA7/19cSMGxQQ6Y/KFSmmwBurP3M2jnKp
+         FqgTKiCIlYsnthCpTgNIv6XSjnVfGGkoFSjD5YyNk9lWB6phgsPqktGAWeFoLqIWfjQl
+         hCWczLH6VqBYXAxHI5lI0ISQo4KrlAL84Z5yxCZctnlvAf10xUXv+hLFIVfXSvla8feZ
+         6KzFeqOPJwguY5HrDwOqsonynfiufPTW+xZ8yp/3PEp7UOcYMlGgTGJmHIrRqtyA+pCt
+         6MetgUqXu8Z17E4uLxzWnwyj2yHjtHBEtb8tiCmWYz28cdkShgcCv6TgLa9lmfUEV7jc
+         9sNA==
+X-Gm-Message-State: AOAM531KV2BxCfC9p05scdGrEKaxaE/LBT3Jrnz6WiwFWmNzBvYdwQ1c
+        6CffuhiGq++hBivNRNP3EWNhTg==
+X-Google-Smtp-Source: ABdhPJyI+pZSHLvbcC6gufmgjNVBW8KFR/GsXg9zH0gPYi3YANjsdqgZd4pCNM1KpUswyMhcj/NCvg==
+X-Received: by 2002:a05:6a00:26eb:b029:2db:6b23:18e9 with SMTP id p43-20020a056a0026ebb02902db6b2318e9mr35748283pfw.56.1622041670474;
+        Wed, 26 May 2021 08:07:50 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 11sm15791297pfh.182.2021.05.26.08.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 08:07:49 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:07:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] KVM: x86: Use common 'enable_apicv' variable for
+ both APICv and AVIC
+Message-ID: <YK5kQcTh8LmE0+8I@google.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+ <20210518144339.1987982-4-vkuznets@redhat.com>
+ <1b9a654596f755ee5ef42ce11136ed2bbb3995a0.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAd53p6TJev=LgdvGxC92A9HOy3B6jbPLymAqeB5bDe2=5Fdsw@mail.gmail.com>
+In-Reply-To: <1b9a654596f755ee5ef42ce11136ed2bbb3995a0.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:47:13PM +0800, Kai-Heng Feng wrote:
-> On Wed, May 26, 2021 at 10:28 PM Christoph Hellwig <hch@lst.de> wrote:
-> > On Wed, May 26, 2021 at 10:21:59PM +0800, Kai-Heng Feng wrote:
-> > > To be fair, resuming the NVMe from D3hot is much slower than keep it
-> > > at D0, which gives us a faster s2idle resume time. And now AMD also
-> > > requires s2idle on their latest laptops.
-> >
-> > We'd much prefer to use it, but due to the broken platforms we can't
-> > unfortunately.
-> >
-> > > And it's more like NVMe controllers don't respect PCI D3hot.
-> >
-> > What do you mean with that?
+On Wed, May 26, 2021, Maxim Levitsky wrote:
+> On Tue, 2021-05-18 at 16:43 +0200, Vitaly Kuznetsov wrote:
+> > Unify VMX and SVM code by moving APICv/AVIC enablement tracking to common
+> > 'enable_apicv' variable. Note: unlike APICv, AVIC is disabled by default.
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 9b6bca616929..23fdbba6b394 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -209,6 +209,9 @@ EXPORT_SYMBOL_GPL(host_efer);
+> >  bool __read_mostly allow_smaller_maxphyaddr = 0;
+> >  EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
+> >  
+> > +bool __read_mostly enable_apicv = true;
 > 
-> Originally, we found that under s2idle, most NVMe controllers caused
-> substantially more power if D3hot was used.
-> We were told by all the major NVMe vendors that D3hot is not
-> supported. 
+> Nitpick: I don't like this asymmetry.
+>
+> VMX and the common code uses the enable_apicv module param and variable,
+> while SVM uses avic, which sets the enable_apicv variable.
+>  
+> I'll prefer both VMX and SVM have their own private variable for their
+> avic/apicv module param, which should set a common variable later.
 
-What is this supposed to mean?  PCIe r5.0, sec 5.3.1, says
+I don't love the intermediate "avic" either, but there isn't a good alternative.
+Forcing VMX to also use an intermediate doesn't make much sense, we'd be penalizing
+ourselves in the form of unnecessary complexity just because AVIC needs to be
+disabled by default for reasons KVM can't fix.
 
-  All Functions must support the D0 and D3 states (both D3Hot and D3Cold).
-
-Since D3hot is required for all functions, I don't think there is a
-standard way to discover whether D3hot is supported.  The PM
-Capability (sec 7.5.2.1) has D1_Support and D2_Support bits, but no
-D3_Support bit.
-
-Are the vendors just saying "sorry, our devices don't conform to the
-spec"?
-
-If what you really mean is "D3hot is supported and it works, but it
-consumes more power than expected, or the D3hot->D0 transition takes
-longer than expected," that's a totally different thing, and you should
-say *that*.
-
-Bjorn
+As for the asymmetry, I actually like it because it makes "avic" stand out and
+highlights that there is weirdness with enabling AVIC.
