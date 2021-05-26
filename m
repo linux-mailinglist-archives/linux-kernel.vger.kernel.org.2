@@ -2,662 +2,2370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33883914AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673243914AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhEZKQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhEZKQS (ORCPT
+        id S233859AbhEZKRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:17:54 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:62655 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233742AbhEZKRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:16:18 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21D9C06138B;
-        Wed, 26 May 2021 03:14:46 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id a7so374786plh.3;
-        Wed, 26 May 2021 03:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DAZN0TnEkim3n9XAqfhlq/IkJcPTImfrdMGkmm/+jLE=;
-        b=sPWtzuy3bGWMd1X0omYzvyiiXIC9k5iCP9A5U96nI3Y199/5UKYO4qfNhQB9+TO1s7
-         j9s/kNNnFQBhq1jTCCKbPecU2nZ8uWZQeT5d71kJoiBtcQb7tr7QcZ64D/dF3UbSoYai
-         uB+Li3xpMCSLiE2CGmTT66gOPoMJdcBn3oAftXx15EJynx1gCV3DSwXru7u+PBBrBH50
-         kZKTLbK7gHHYDf4edhbwyTZDyB582PFNNm2tQuKem026PRiILLeRF3LhDziwLDefIF2p
-         1mJqk0fqXL/eUZR+vN7Dq61f5yeKulb5hODvJsQTg5fiDM05rIK36sRKhVTGmb6fPPZg
-         J/+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DAZN0TnEkim3n9XAqfhlq/IkJcPTImfrdMGkmm/+jLE=;
-        b=XO45g1dU4f8TS8EyaulikL45WnQrrMY3ojPH23g13XjyKq7GnJYw1iHwHYy4jp16jE
-         m/541m/aFReLVImP6A7BHuqJiZ9WUoXI06T7UL3WOiOoNGiSvyOz4RdGZPWTNidCPUmA
-         vKznxayii3CU0QSWGUG6scg24id29z2cFozxzbQEqn4hWadsgqxrMM3HwApxDQKty6/D
-         uGC6F0gn+uWE7jwVE166aRH+oXcy306XZ8Ro2W+plpbJwczoJA3QZ9TwMO+vHcXmFAsT
-         12FtfLtBkYjAoYX3YbMY5hhBeHnK3hDdVkI0DtbLzIBLm3VhzWDYbsB286WPiZSKt14D
-         PFSw==
-X-Gm-Message-State: AOAM530qnNDFIOMlOgESc+WlSbCjz0tTXcW8RgcmOElA8xdYlLDr8kFC
-        4dMt/fADYbFkmAR9lHL8ZeI=
-X-Google-Smtp-Source: ABdhPJzexDYLwj6QCw4yC9+ZvYXVePWNL+gcW3H6XTh2S/3TlJQVI9aXp8q+UfZResT+Lz4OEWKXtA==
-X-Received: by 2002:a17:902:fe02:b029:f5:6e58:91c0 with SMTP id g2-20020a170902fe02b02900f56e5891c0mr35242247plj.81.1622024086234;
-        Wed, 26 May 2021 03:14:46 -0700 (PDT)
-Received: from localhost.localdomain ([103.248.31.164])
-        by smtp.googlemail.com with ESMTPSA id c191sm15662614pfc.94.2021.05.26.03.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 03:14:45 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH v3 7/7] PCI: Change the type of probe argument in reset functions
-Date:   Wed, 26 May 2021 15:44:03 +0530
-Message-Id: <20210526101403.108721-8-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526101403.108721-1-ameynarkhede03@gmail.com>
-References: <20210526101403.108721-1-ameynarkhede03@gmail.com>
+        Wed, 26 May 2021 06:17:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1622024178; x=1653560178;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=4mr+g9DaWQ1KFajdOAW729Dn5E5nYbcT1fXQkULlkUU=;
+  b=mcwzVBDSMSLoeLbcOfa+UhJcJcSa7L7Bdni9xd1HTkB4k6Ozqd5Cg7ym
+   hcaOugHrEF4MX13SdHtXjtRZhrRyRN+4zE8wzw/LQltckFMOEXY7fhNs5
+   oWVrJv8T45NeaC5xGbVagUXcBBPDzreO+mW6I+qDpnd9k8khgM6LKPCcI
+   36IcCwBQFrDNV6XrxnB74TSGh77fDGSuISSPHQatF95cRYbVGBPp/vDSq
+   RMktO29Q/2WQf/r8jv/ykJW64HAXDHx97UFZeNFhTvYV92Kc6o6WhoYaF
+   rpkiMJ9hMhjIudI+hUwvv7gtZq5/mJGT43og6Qow12H6gLbH/u/KxFRZ3
+   w==;
+IronPort-SDR: vFydCqhz9k7J1/gRgqkF/OuRV856smkP66ZOFJ3jvGG7BzrlSvRej6mke3ADZdXhtOtUG5VnOh
+ XQVcinP7fpXfyyIK8wYP3YlVp8CK5iZOuDvqbAr60OTex3Xx3lbxxsitGXF3pjtmO8iRIWN9XI
+ Kd2Qow+dKCQr995h0B9D1WJnLCwsXTVt/19V2/t+kZuJ8IUIU+n2H7SGpvKf0PBr965MBK6Rjo
+ nk60y2uG+Cqq1pwfg/4dCkeERuEcBzFSvuwzZpUSa289mRfT+IvEdQEyXV39ruAAWKtHUEndEr
+ wVI=
+X-IronPort-AV: E=Sophos;i="5.82,331,1613458800"; 
+   d="scan'208";a="116656112"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 May 2021 03:16:18 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 03:16:17 -0700
+Received: from [10.12.72.167] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Wed, 26 May 2021 03:16:15 -0700
+Subject: Re: [PATCH v4 2/4] ARM: dts: at91: add sama7g5 SoC DT and sama7g5-ek
+To:     Eugen Hristev <eugen.hristev@microchip.com>, <robh+dt@kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <soc@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <claudiu.beznea@microchip.com>,
+        <codrin.ciubotariu@microchip.com>, <tudor.ambarus@microchip.com>
+References: <20210514082151.178571-1-eugen.hristev@microchip.com>
+ <20210514082151.178571-2-eugen.hristev@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <5a7e079e-372a-703d-84d6-8f61aaa86629@microchip.com>
+Date:   Wed, 26 May 2021 12:16:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210514082151.178571-2-eugen.hristev@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new enum pci_reset_mode_t to make the context
-of probe argument in reset functions clear and the code
-easier to read.
-Change the type of probe argument in functions which implement
-reset methods from int to pci_reset_mode_t to make the intent clear.
-Add a new line in return statement of pci_reset_bus_function.
+On 14/05/2021 at 10:21, Eugen Hristev wrote:
+> Add Device Tree for sama7g5 SoC and associated board sama7g5-ek
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> [claudiu.beznea@microchip.com: add clocks, ethernet, timers, power]
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> [codrin.ciubotariu@microchip.com: add audio]
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/crypto/cavium/nitrox/nitrox_main.c    |  2 +-
- .../ethernet/cavium/liquidio/lio_vf_main.c    |  2 +-
- drivers/pci/hotplug/pciehp.h                  |  2 +-
- drivers/pci/hotplug/pciehp_hpc.c              |  7 +-
- drivers/pci/pci.c                             | 85 +++++++++++++------
- drivers/pci/pci.h                             |  8 +-
- drivers/pci/pcie/aer.c                        |  2 +-
- drivers/pci/quirks.c                          | 46 +++++++---
- include/linux/pci.h                           |  8 +-
- include/linux/pci_hotplug.h                   |  2 +-
- 10 files changed, 112 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-index 15d6c8452..f97fa8e99 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-@@ -306,7 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
- 		return -ENOMEM;
- 	}
- 
--	pcie_reset_flr(pdev, 0);
-+	pcie_reset_flr(pdev, PCI_RESET_DO_RESET);
- 
- 	pci_restore_state(pdev);
- 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-index 336d149ee..6e666be69 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-@@ -526,7 +526,7 @@ static void octeon_destroy_resources(struct octeon_device *oct)
- 			oct->irq_name_storage = NULL;
- 		}
- 		/* Soft reset the octeon device before exiting */
--		if (!pcie_reset_flr(oct->pci_dev, 1))
-+		if (!pcie_reset_flr(oct->pci_dev, PCI_RESET_PROBE))
- 			octeon_pci_flr(oct);
- 		else
- 			cn23xx_vf_ask_pf_to_do_flr(oct);
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index 4fd200d8b..7cbc30dd3 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -181,7 +181,7 @@ void pciehp_release_ctrl(struct controller *ctrl);
- 
- int pciehp_sysfs_enable_slot(struct hotplug_slot *hotplug_slot);
- int pciehp_sysfs_disable_slot(struct hotplug_slot *hotplug_slot);
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe);
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, pci_reset_mode_t probe);
- int pciehp_get_attention_status(struct hotplug_slot *hotplug_slot, u8 *status);
- int pciehp_set_raw_indicator_status(struct hotplug_slot *h_slot, u8 status);
- int pciehp_get_raw_indicator_status(struct hotplug_slot *h_slot, u8 *status);
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index fb3840e22..31f75f5f2 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -834,14 +834,17 @@ void pcie_disable_interrupt(struct controller *ctrl)
-  * momentarily, if we see that they could interfere. Also, clear any spurious
-  * events after.
-  */
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe)
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, enum pci_reset_mode probe)
- {
- 	struct controller *ctrl = to_ctrl(hotplug_slot);
- 	struct pci_dev *pdev = ctrl_dev(ctrl);
- 	u16 stat_mask = 0, ctrl_mask = 0;
- 	int rc;
- 
--	if (probe)
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	down_write(&ctrl->reset_lock);
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 1d859b100..e731dab9f 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4616,10 +4616,13 @@ EXPORT_SYMBOL_GPL(pcie_flr);
-  *
-  * Initiate a function level reset on @dev.
-  */
--int pcie_reset_flr(struct pci_dev *dev, int probe)
-+int pcie_reset_flr(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	u32 cap;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
- 		return -ENOTTY;
- 
-@@ -4627,18 +4630,21 @@ int pcie_reset_flr(struct pci_dev *dev, int probe)
- 	if (!(cap & PCI_EXP_DEVCAP_FLR))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	return pcie_flr(dev);
- }
- EXPORT_SYMBOL_GPL(pcie_reset_flr);
- 
--static int pci_af_flr(struct pci_dev *dev, int probe)
-+static int pci_af_flr(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	int pos;
- 	u8 cap;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	pos = pci_find_capability(dev, PCI_CAP_ID_AF);
- 	if (!pos)
- 		return -ENOTTY;
-@@ -4650,7 +4656,7 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
- 	if (!(cap & PCI_AF_CAP_TP) || !(cap & PCI_AF_CAP_FLR))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	/*
-@@ -4693,10 +4699,13 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
-  * by default (i.e. unless the @dev's d3hot_delay field has a different value).
-  * Moreover, only devices in D0 can be reset by this function.
-  */
--static int pci_pm_reset(struct pci_dev *dev, int probe)
-+static int pci_pm_reset(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	u16 csr;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (!dev->pm_cap || dev->dev_flags & PCI_DEV_FLAGS_NO_PM_RESET)
- 		return -ENOTTY;
- 
-@@ -4704,7 +4713,7 @@ static int pci_pm_reset(struct pci_dev *dev, int probe)
- 	if (csr & PCI_PM_CTRL_NO_SOFT_RESET)
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	if (dev->current_state != PCI_D0)
-@@ -4953,10 +4962,13 @@ int pci_bridge_secondary_bus_reset(struct pci_dev *dev)
- }
- EXPORT_SYMBOL_GPL(pci_bridge_secondary_bus_reset);
- 
--static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
-+static int pci_parent_bus_reset(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	struct pci_dev *pdev;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (pci_is_root_bus(dev->bus) || dev->subordinate ||
- 	    !dev->bus->self || dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET)
- 		return -ENOTTY;
-@@ -4965,16 +4977,19 @@ static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
- 		if (pdev != dev)
- 			return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	return pci_bridge_secondary_bus_reset(dev->bus->self);
- }
- 
--static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, int probe)
-+static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, pci_reset_mode_t probe)
- {
- 	int rc = -ENOTTY;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (!hotplug || !try_module_get(hotplug->owner))
- 		return rc;
- 
-@@ -4986,8 +5001,11 @@ static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, int probe)
- 	return rc;
- }
- 
--static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-+static int pci_dev_reset_slot_function(struct pci_dev *dev, pci_reset_mode_t probe)
- {
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (dev->multifunction || dev->subordinate || !dev->slot ||
- 	    dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET)
- 		return -ENOTTY;
-@@ -4995,12 +5013,16 @@ static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
- 	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
- }
- 
--static int pci_reset_bus_function(struct pci_dev *dev, int probe)
-+static int pci_reset_bus_function(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	int rc = pci_dev_reset_slot_function(dev, probe);
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (rc != -ENOTTY)
- 		return rc;
-+
- 	return pci_parent_bus_reset(dev, probe);
- }
- 
-@@ -5081,17 +5103,20 @@ static void pci_dev_restore(struct pci_dev *dev)
-  * @dev: device to reset
-  * @probe: check if _RST method is included in the acpi_device context.
-  */
--static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-+static int pci_dev_acpi_reset(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- #ifdef CONFIG_ACPI
- 	acpi_handle handle = ACPI_HANDLE(&dev->dev);
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	/* Return -ENOTTY if _RST method is not included in the dev context */
- 	if (!handle || !acpi_has_method(handle, "_RST"))
- 		return -ENOTTY;
- 
- 	/* Return 0 for probe phase indicating that we can reset this device */
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	/* Invoke _RST() method to perform a function level reset */
-@@ -5157,7 +5182,7 @@ int __pci_reset_function_locked(struct pci_dev *dev)
- 				 * other error, we're also finished: this indicates that further
- 				 * reset mechanisms might be broken on the device.
- 				 */
--				rc = pci_reset_fn_methods[i].reset_fn(dev, 0);
-+				rc = pci_reset_fn_methods[i].reset_fn(dev, PCI_RESET_DO_RESET);
- 				if (rc != -ENOTTY)
- 					return rc;
- 				break;
-@@ -5193,7 +5218,7 @@ void pci_init_reset_methods(struct pci_dev *dev)
- 	might_sleep();
- 
- 	for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
--		rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
-+		rc = pci_reset_fn_methods[i].reset_fn(dev, PCI_RESET_PROBE);
- 		if (!rc)
- 			reset_methods[i] = prio--;
- 		else if (rc != -ENOTTY)
-@@ -5509,21 +5534,24 @@ static void pci_slot_restore_locked(struct pci_slot *slot)
- 	}
- }
- 
--static int pci_slot_reset(struct pci_slot *slot, int probe)
-+static int pci_slot_reset(struct pci_slot *slot, pci_reset_mode_t probe)
- {
- 	int rc;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (!slot || !pci_slot_resetable(slot))
- 		return -ENOTTY;
- 
--	if (!probe)
-+	if (probe == PCI_RESET_DO_RESET)
- 		pci_slot_lock(slot);
- 
- 	might_sleep();
- 
- 	rc = pci_reset_hotplug_slot(slot->hotplug, probe);
- 
--	if (!probe)
-+	if (probe == PCI_RESET_DO_RESET)
- 		pci_slot_unlock(slot);
- 
- 	return rc;
-@@ -5537,7 +5565,7 @@ static int pci_slot_reset(struct pci_slot *slot, int probe)
-  */
- int pci_probe_reset_slot(struct pci_slot *slot)
- {
--	return pci_slot_reset(slot, 1);
-+	return pci_slot_reset(slot, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_slot);
- 
-@@ -5560,14 +5588,14 @@ static int __pci_reset_slot(struct pci_slot *slot)
- {
- 	int rc;
- 
--	rc = pci_slot_reset(slot, 1);
-+	rc = pci_slot_reset(slot, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
- 	if (pci_slot_trylock(slot)) {
- 		pci_slot_save_and_disable_locked(slot);
- 		might_sleep();
--		rc = pci_reset_hotplug_slot(slot->hotplug, 0);
-+		rc = pci_reset_hotplug_slot(slot->hotplug, PCI_RESET_DO_RESET);
- 		pci_slot_restore_locked(slot);
- 		pci_slot_unlock(slot);
- 	} else
-@@ -5576,14 +5604,17 @@ static int __pci_reset_slot(struct pci_slot *slot)
- 	return rc;
- }
- 
--static int pci_bus_reset(struct pci_bus *bus, int probe)
-+static int pci_bus_reset(struct pci_bus *bus, pci_reset_mode_t probe)
- {
- 	int ret;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (!bus->self || !pci_bus_resetable(bus))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	pci_bus_lock(bus);
-@@ -5622,14 +5653,14 @@ int pci_bus_error_reset(struct pci_dev *bridge)
- 			goto bus_reset;
- 
- 	list_for_each_entry(slot, &bus->slots, list)
--		if (pci_slot_reset(slot, 0))
-+		if (pci_slot_reset(slot, PCI_RESET_DO_RESET))
- 			goto bus_reset;
- 
- 	mutex_unlock(&pci_slot_mutex);
- 	return 0;
- bus_reset:
- 	mutex_unlock(&pci_slot_mutex);
--	return pci_bus_reset(bridge->subordinate, 0);
-+	return pci_bus_reset(bridge->subordinate, PCI_RESET_DO_RESET);
- }
- 
- /**
-@@ -5640,7 +5671,7 @@ int pci_bus_error_reset(struct pci_dev *bridge)
-  */
- int pci_probe_reset_bus(struct pci_bus *bus)
- {
--	return pci_bus_reset(bus, 1);
-+	return pci_bus_reset(bus, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_bus);
- 
-@@ -5654,7 +5685,7 @@ static int __pci_reset_bus(struct pci_bus *bus)
- {
- 	int rc;
- 
--	rc = pci_bus_reset(bus, 1);
-+	rc = pci_bus_reset(bus, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 1b3ba3116..f05db86af 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -609,19 +609,19 @@ static inline int pci_enable_ptm(struct pci_dev *dev, u8 *granularity)
- struct pci_dev_reset_methods {
- 	u16 vendor;
- 	u16 device;
--	int (*reset)(struct pci_dev *dev, int probe);
-+	int (*reset)(struct pci_dev *dev, pci_reset_mode_t probe);
- };
- 
- struct pci_reset_fn_method {
--	int (*reset_fn)(struct pci_dev *, int probe);
-+	int (*reset_fn)(struct pci_dev *, pci_reset_mode_t probe);
- 	char *name;
- };
- 
- extern const struct pci_reset_fn_method pci_reset_fn_methods[];
- #ifdef CONFIG_PCI_QUIRKS
--int pci_dev_specific_reset(struct pci_dev *dev, int probe);
-+int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t probe);
- #else
--static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+static inline int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	return -ENOTTY;
- }
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index f4e891bd5..1259f1cdb 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1405,7 +1405,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 	}
- 
- 	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
--		rc = pcie_reset_flr(dev, 0);
-+		rc = pcie_reset_flr(dev, PCI_RESET_DO_RESET);
- 		if (!rc)
- 			pci_info(dev, "has been reset\n");
- 		else
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index ceec67342..17ed9a9c8 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3693,8 +3693,11 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
-  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
-  * not available.
-  */
--static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
-+static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, pci_reset_mode_t probe)
- {
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	/*
- 	 * http://www.intel.com/content/dam/doc/datasheet/82599-10-gbe-controller-datasheet.pdf
- 	 *
-@@ -3703,7 +3706,7 @@ static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
- 	 * Thus we must call pcie_flr() directly without first checking if it is
- 	 * supported.
- 	 */
--	if (!probe)
-+	if (probe == PCI_RESET_DO_RESET)
- 		pcie_flr(dev);
- 	return 0;
- }
-@@ -3715,13 +3718,16 @@ static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
- #define NSDE_PWR_STATE		0xd0100
- #define IGD_OPERATION_TIMEOUT	10000     /* set timeout 10 seconds */
- 
--static int reset_ivb_igd(struct pci_dev *dev, int probe)
-+static int reset_ivb_igd(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	void __iomem *mmio_base;
- 	unsigned long timeout;
- 	u32 val;
- 
--	if (probe)
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	mmio_base = pci_iomap(dev, 0, 0);
-@@ -3758,11 +3764,14 @@ static int reset_ivb_igd(struct pci_dev *dev, int probe)
- }
- 
- /* Device-specific reset method for Chelsio T4-based adapters */
--static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-+static int reset_chelsio_generic_dev(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	u16 old_command;
- 	u16 msix_flags;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	/*
- 	 * If this isn't a Chelsio T4-based device, return -ENOTTY indicating
- 	 * that we have no device-specific reset method.
-@@ -3774,7 +3783,7 @@ static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
- 	 * If this is the "probe" phase, return 0 indicating that we can
- 	 * reset this device.
- 	 */
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	/*
-@@ -3836,17 +3845,20 @@ static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-  *    Chapter 3: NVMe control registers
-  *    Chapter 7.3: Reset behavior
-  */
--static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-+static int nvme_disable_and_flr(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	void __iomem *bar;
- 	u16 cmd;
- 	u32 cfg;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	if (dev->class != PCI_CLASS_STORAGE_EXPRESS ||
--	    pcie_reset_flr(dev, 1) || !pci_resource_start(dev, 0))
-+	    pcie_reset_flr(dev, PCI_RESET_PROBE) || !pci_resource_start(dev, 0))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (probe == PCI_RESET_PROBE)
- 		return 0;
- 
- 	bar = pci_iomap(dev, 0, NVME_REG_CC + sizeof(cfg));
-@@ -3910,11 +3922,16 @@ static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-  * device too soon after FLR.  A 250ms delay after FLR has heuristically
-  * proven to produce reliably working results for device assignment cases.
-  */
--static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
-+static int delay_250ms_after_flr(struct pci_dev *dev, pci_reset_mode_t probe)
- {
--	int ret = pcie_reset_flr(dev, probe);
-+	int ret;
-+
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
- 
--	if (probe)
-+	ret = pcie_reset_flr(dev, probe);
-+
-+	if (probe == PCI_RESET_PROBE)
- 		return ret;
- 
- 	msleep(250);
-@@ -3941,10 +3958,13 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-  * because when a host assigns a device to a guest VM, the host may need
-  * to reset the device but probably doesn't have a driver for it.
-  */
--int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t probe)
- {
- 	const struct pci_dev_reset_methods *i;
- 
-+	if (probe >= PCI_RESET_ACTION_MAX)
-+		return -EINVAL;
-+
- 	for (i = pci_dev_reset_methods; i->reset; i++) {
- 		if ((i->vendor == dev->vendor ||
- 		     i->vendor == (u16)PCI_ANY_ID) &&
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 9bec3c616..ee7cd3577 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -51,6 +51,12 @@
- 
- #define PCI_RESET_METHODS_NUM 6
- 
-+typedef enum pci_reset_mode {
-+	PCI_RESET_DO_RESET,
-+	PCI_RESET_PROBE,
-+	PCI_RESET_ACTION_MAX,
-+} pci_reset_mode_t;
-+
- /*
-  * The PCI interface treats multi-function devices as independent
-  * devices.  The slot/function address of each device is encoded
-@@ -1222,7 +1228,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 			     enum pci_bus_speed *speed,
- 			     enum pcie_link_width *width);
- void pcie_print_link_status(struct pci_dev *dev);
--int pcie_reset_flr(struct pci_dev *dev, int probe);
-+int pcie_reset_flr(struct pci_dev *dev, pci_reset_mode_t probe);
- int pcie_flr(struct pci_dev *dev);
- bool pci_reset_supported(struct pci_dev *dev);
- int __pci_reset_function_locked(struct pci_dev *dev);
-diff --git a/include/linux/pci_hotplug.h b/include/linux/pci_hotplug.h
-index b482e42d7..84976d620 100644
---- a/include/linux/pci_hotplug.h
-+++ b/include/linux/pci_hotplug.h
-@@ -44,7 +44,7 @@ struct hotplug_slot_ops {
- 	int (*get_attention_status)	(struct hotplug_slot *slot, u8 *value);
- 	int (*get_latch_status)		(struct hotplug_slot *slot, u8 *value);
- 	int (*get_adapter_status)	(struct hotplug_slot *slot, u8 *value);
--	int (*reset_slot)		(struct hotplug_slot *slot, int probe);
-+	int (*reset_slot)		(struct hotplug_slot *slot, pci_reset_mode_t probe);
- };
- 
- /**
+We'll need to remove the eeprom entries as the compatibility string is 
+not ready yet and remove some of the DT warnings as exposed by "make 
+dtbs_check W=1"
+
+--- a/arch/arm/boot/dts/sama7g5.dtsi 
+ 
+
++++ b/arch/arm/boot/dts/sama7g5.dtsi 
+ 
+
+@@ -240,8 +240,8 @@ i2s0: i2s@e161c000 { 
+ 
+
+                         #sound-dai-cells = <0>;
+                         reg = <0xe161c000 0x4000>;
+                         interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+-                       dmas = <&dma0 AT91_XDMAC_DT_PERID(33)>, <&dma0 
+AT91_XDMAC_DT_PERID(34)>; 
+
+-                       dma-names = "rx", "tx"; 
+ 
+
++                       dmas = <&dma0 AT91_XDMAC_DT_PERID(34)>, <&dma0 
+AT91_XDMAC_DT_PERID(33)>; 
+
++                       dma-names = "tx", "rx"; 
+ 
+
+                         clocks = <&pmc PMC_TYPE_PERIPHERAL 57>, <&pmc 
+PMC_TYPE_GCK 57>;
+                         clock-names = "pclk", "gclk";
+                         status = "disabled";
+@@ -252,8 +252,8 @@ i2s1: i2s@e1620000 { 
+ 
+
+                         #sound-dai-cells = <0>;
+                         reg = <0xe1620000 0x4000>;
+                         interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+-                       dmas = <&dma0 AT91_XDMAC_DT_PERID(35)>, <&dma0 
+AT91_XDMAC_DT_PERID(36)>; 
+
+-                       dma-names = "rx", "tx"; 
+ 
+
++                       dmas = <&dma0 AT91_XDMAC_DT_PERID(36)>, <&dma0 
+AT91_XDMAC_DT_PERID(35)>; 
+
++                       dma-names = "tx", "rx"; 
+ 
+
+                         clocks = <&pmc PMC_TYPE_PERIPHERAL 58>, <&pmc 
+PMC_TYPE_GCK 58>;
+                         clock-names = "pclk", "gclk";
+                         status = "disabled";
+
+Regards,
+   Nicolas
+
+
+> ---
+> Changes in v4:
+> - moved spi flexcom11 in soc dtsi
+> - i2c and serial nodes disabled by default
+> 
+> Changes in v3:
+> - fixed one i2smcc1 pin name (typo)
+> - removed console=... from bootargs and reintroduced stdout-path.
+> 
+> Changes in v2:
+> - fixed license
+> - fixed warnings for make dtbs (changed ahb/apb to just soc)
+> - changed some node names as suggested
+> - removed some okay status properties
+> - addressed cpu node by label
+> - removed stdout path
+> 
+>   arch/arm/boot/dts/Makefile           |   2 +
+>   arch/arm/boot/dts/at91-sama7g5ek.dts | 694 ++++++++++++++++++++
+>   arch/arm/boot/dts/sama7g5-pinfunc.h  | 924 +++++++++++++++++++++++++++
+>   arch/arm/boot/dts/sama7g5.dtsi       | 555 ++++++++++++++++
+>   4 files changed, 2175 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/at91-sama7g5ek.dts
+>   create mode 100644 arch/arm/boot/dts/sama7g5-pinfunc.h
+>   create mode 100644 arch/arm/boot/dts/sama7g5.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 8e5d4ab4e75e..6bd2b1a2189e 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -74,6 +74,8 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
+>   	at91-sama5d4_xplained.dtb \
+>   	at91-sama5d4ek.dtb \
+>   	at91-vinco.dtb
+> +dtb-$(CONFIG_SOC_SAMA7G5) += \
+> +	at91-sama7g5ek.dtb
+>   dtb-$(CONFIG_ARCH_AXXIA) += \
+>   	axm5516-amarillo.dtb
+>   dtb-$(CONFIG_ARCH_BCM2835) += \
+> diff --git a/arch/arm/boot/dts/at91-sama7g5ek.dts b/arch/arm/boot/dts/at91-sama7g5ek.dts
+> new file mode 100644
+> index 000000000000..6f84a794f446
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/at91-sama7g5ek.dts
+> @@ -0,0 +1,694 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + *  at91-sama7g5ek.dts - Device Tree file for SAMA7G5-EK board
+> + *
+> + *  Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries
+> + *
+> + *  Author: Eugen Hristev <eugen.hristev@microchip.com>
+> + *  Author: Claudiu Beznea <claudiu.beznea@microchip.com>
+> + *
+> + */
+> +/dts-v1/;
+> +#include "sama7g5-pinfunc.h"
+> +#include "sama7g5.dtsi"
+> +#include <dt-bindings/mfd/atmel-flexcom.h>
+> +#include <dt-bindings/input/input.h>
+> +
+> +/ {
+> +	model = "Microchip SAMA7G5-EK";
+> +	compatible = "microchip,sama7g5ek", "microchip,sama7g5", "microchip,sama7";
+> +
+> +	chosen {
+> +		bootargs = "rw root=/dev/mmcblk1p2 rootfstype=ext4 rootwait";
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	aliases {
+> +		serial0 = &uart3;
+> +		serial1 = &uart4;
+> +		serial2 = &uart7;
+> +		serial3 = &uart0;
+> +		i2c0 = &i2c1;
+> +		i2c1 = &i2c8;
+> +		i2c2 = &i2c9;
+> +	};
+> +
+> +	clocks {
+> +		slow_xtal {
+> +			clock-frequency = <32768>;
+> +		};
+> +
+> +		main_xtal {
+> +			clock-frequency = <24000000>;
+> +		};
+> +	};
+> +
+> +	gpio_keys {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_key_gpio_default>;
+> +
+> +		bp1 {
+> +			label = "PB_USER";
+> +			gpios = <&pioA PIN_PA12 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_PROG1>;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_led_gpio_default>;
+> +		status = "okay"; /* Conflict with pwm. */
+> +
+> +		red_led {
+> +			label = "red";
+> +			gpios = <&pioA PIN_PB8 GPIO_ACTIVE_HIGH>;
+> +		};
+> +
+> +		green_led {
+> +			label = "green";
+> +			gpios = <&pioA PIN_PA13 GPIO_ACTIVE_HIGH>;
+> +		};
+> +
+> +		blue_led {
+> +			label = "blue";
+> +			gpios = <&pioA PIN_PD20 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +
+> +	/* 512 M */
+> +	memory@60000000 {
+> +		device_type = "memory";
+> +		reg = <0x60000000 0x20000000>;
+> +	};
+> +
+> +	sound: sound {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "sama7g5ek audio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		simple-audio-card,dai-link@0 {
+> +			reg = <0>;
+> +			cpu {
+> +				sound-dai = <&spdiftx>;
+> +			};
+> +			codec {
+> +				sound-dai = <&spdif_out>;
+> +			};
+> +		};
+> +		simple-audio-card,dai-link@1 {
+> +			reg = <1>;
+> +			cpu {
+> +				sound-dai = <&spdifrx>;
+> +			};
+> +			codec {
+> +				sound-dai = <&spdif_in>;
+> +			};
+> +		};
+> +	};
+> +
+> +	spdif_in: spdif-in {
+> +		#sound-dai-cells = <0>;
+> +		compatible = "linux,spdif-dir";
+> +	};
+> +
+> +	spdif_out: spdif-out {
+> +		#sound-dai-cells = <0>;
+> +		compatible = "linux,spdif-dit";
+> +	};
+> +};
+> +
+> +&cpu0 {
+> +	cpu-supply = <&vddcpu>;
+> +};
+> +
+> +&dma0 {
+> +	status = "okay";
+> +};
+> +
+> +&dma1 {
+> +	status = "okay";
+> +};
+> +
+> +&dma2 {
+> +	status = "okay";
+> +};
+> +
+> +&flx0 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+> +	status = "disabled";
+> +
+> +	uart0: serial@200 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx0_default>;
+> +		status = "disabled";
+> +	};
+> +};
+> +
+> +&flx1 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+> +	status = "okay";
+> +
+> +	i2c1: i2c@600 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_i2c1_default>;
+> +		i2c-analog-filter;
+> +		i2c-digital-filter;
+> +		i2c-digital-filter-width-ns = <35>;
+> +		status = "okay";
+> +
+> +		eeprom0: eeprom@52 {
+> +			compatible = "atmel,24mac02e4";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			reg = <0x52>;
+> +			pagesize = <16>;
+> +			size = <256>;
+> +			status = "okay";
+> +
+> +			eeprom0_eui48: eui48@fa {
+> +				reg = <0xfa 0x6>;
+> +			};
+> +		};
+> +
+> +		eeprom1: eeprom@53 {
+> +			compatible = "atmel,24mac02e4";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			reg = <0x53>;
+> +			pagesize = <16>;
+> +			size = <256>;
+> +			status = "okay";
+> +
+> +			eeprom1_eui48: eui48@fa {
+> +				reg = <0xfa 0x6>;
+> +			};
+> +		};
+> +
+> +		mcp16502@5b {
+> +			compatible = "microchip,mcp16502";
+> +			reg = <0x5b>;
+> +			status = "okay";
+> +
+> +			regulators {
+> +				vdd_3v3: VDD_IO {
+> +					regulator-name = "VDD_IO";
+> +					regulator-min-microvolt = <1200000>;
+> +					regulator-max-microvolt = <3700000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddioddr: VDD_DDR {
+> +					regulator-name = "VDD_DDR";
+> +					regulator-min-microvolt = <1300000>;
+> +					regulator-max-microvolt = <1450000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-on-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddcore: VDD_CORE {
+> +					regulator-name = "VDD_CORE";
+> +					regulator-min-microvolt = <1100000>;
+> +					regulator-max-microvolt = <1850000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddcpu: VDD_OTHER {
+> +					regulator-name = "VDD_OTHER";
+> +					regulator-min-microvolt = <1125000>;
+> +					regulator-max-microvolt = <1850000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-ramp-delay = <3125>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vldo1: LDO1 {
+> +					regulator-name = "LDO1";
+> +					regulator-min-microvolt = <1200000>;
+> +					regulator-max-microvolt = <3700000>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +					};
+> +				};
+> +
+> +				vldo2: LDO2 {
+> +					regulator-name = "LDO2";
+> +					regulator-min-microvolt = <1200000>;
+> +					regulator-max-microvolt = <3700000>;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&flx3 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+> +	status = "okay";
+> +
+> +	uart3: serial@200 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx3_default>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx4 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+> +	status = "okay";
+> +
+> +	uart4: serial@200 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx4_default>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx7 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+> +	status = "okay";
+> +
+> +	uart7: serial@200 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx7_default>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx8 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+> +	status = "okay";
+> +
+> +	i2c8: i2c@600 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_i2c8_default>;
+> +		i2c-analog-filter;
+> +		i2c-digital-filter;
+> +		i2c-digital-filter-width-ns = <35>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx9 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+> +	status = "okay";
+> +
+> +	i2c9: i2c@600 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_i2c9_default>;
+> +		i2c-analog-filter;
+> +		i2c-digital-filter;
+> +		i2c-digital-filter-width-ns = <35>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx11 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
+> +	status = "okay";
+> +
+> +	spi11: spi@400 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_mikrobus1_spi &pinctrl_mikrobus1_spi_cs>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&gmac0 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_gmac0_default &pinctrl_gmac0_txck_default &pinctrl_gmac0_phy_irq>;
+> +	phy-mode = "rgmii-id";
+> +	status = "okay";
+> +
+> +	nvmem-cells = <&eeprom0_eui48>;
+> +	nvmem-cell-names = "mac-address";
+> +
+> +	ethernet-phy@7 {
+> +		reg = <0x7>;
+> +		interrupt-parent = <&pioA>;
+> +		interrupts = <PIN_PA31 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +};
+> +
+> +&gmac1 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_gmac1_default &pinctrl_gmac1_phy_irq>;
+> +	phy-mode = "rmii";
+> +	status = "okay";
+> +
+> +	nvmem-cells = <&eeprom1_eui48>;
+> +	nvmem-cell-names = "mac-address";
+> +
+> +	ethernet-phy@0 {
+> +		reg = <0x0>;
+> +		interrupt-parent = <&pioA>;
+> +		interrupts = <PIN_PA21 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +};
+> +
+> +&i2s0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2s0_default>;
+> +};
+> +
+> +&pioA {
+> +	pinctrl_flx0_default: flx0_default {
+> +		pinmux = <PIN_PE3__FLEXCOM0_IO0>,
+> +			 <PIN_PE4__FLEXCOM0_IO1>,
+> +			 <PIN_PE6__FLEXCOM0_IO3>,
+> +			 <PIN_PE7__FLEXCOM0_IO4>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_flx3_default: flx3_default {
+> +		pinmux = <PIN_PD16__FLEXCOM3_IO0>,
+> +			 <PIN_PD17__FLEXCOM3_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_flx4_default: flx4_default {
+> +		pinmux = <PIN_PD18__FLEXCOM4_IO0>,
+> +			 <PIN_PD19__FLEXCOM4_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_flx7_default: flx7_default {
+> +		pinmux = <PIN_PC23__FLEXCOM7_IO0>,
+> +			 <PIN_PC24__FLEXCOM7_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_gmac0_default: gmac0_default {
+> +		pinmux = <PIN_PA16__G0_TX0>,
+> +			 <PIN_PA17__G0_TX1>,
+> +			 <PIN_PA26__G0_TX2>,
+> +			 <PIN_PA27__G0_TX3>,
+> +			 <PIN_PA19__G0_RX0>,
+> +			 <PIN_PA20__G0_RX1>,
+> +			 <PIN_PA28__G0_RX2>,
+> +			 <PIN_PA29__G0_RX3>,
+> +			 <PIN_PA15__G0_TXEN>,
+> +			 <PIN_PA30__G0_RXCK>,
+> +			 <PIN_PA18__G0_RXDV>,
+> +			 <PIN_PA22__G0_MDC>,
+> +			 <PIN_PA23__G0_MDIO>,
+> +			 <PIN_PA25__G0_125CK>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_gmac0_txck_default: gmac0_txck_default {
+> +		pinmux = <PIN_PA24__G0_TXCK>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	pinctrl_gmac0_phy_irq: gmac0_phy_irq {
+> +		pinmux = <PIN_PA31__GPIO>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_gmac1_default: gmac1_default {
+> +		pinmux = <PIN_PD30__G1_TXCK>,
+> +			 <PIN_PD22__G1_TX0>,
+> +			 <PIN_PD23__G1_TX1>,
+> +			 <PIN_PD21__G1_TXEN>,
+> +			 <PIN_PD25__G1_RX0>,
+> +			 <PIN_PD26__G1_RX1>,
+> +			 <PIN_PD27__G1_RXER>,
+> +			 <PIN_PD24__G1_RXDV>,
+> +			 <PIN_PD28__G1_MDC>,
+> +			 <PIN_PD29__G1_MDIO>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_gmac1_phy_irq: gmac1_phy_irq {
+> +		pinmux = <PIN_PA21__GPIO>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_i2c1_default: i2c1_default {
+> +		pinmux = <PIN_PC9__FLEXCOM1_IO0>,
+> +			 <PIN_PC10__FLEXCOM1_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_i2c8_default: i2c8_default {
+> +		pinmux = <PIN_PC14__FLEXCOM8_IO0>,
+> +			 <PIN_PC13__FLEXCOM8_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_i2c9_default: i2c9_default {
+> +		pinmux = <PIN_PC18__FLEXCOM9_IO0>,
+> +			 <PIN_PC19__FLEXCOM9_IO1>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_i2s0_default: i2s0_default {
+> +		pinmux = <PIN_PB23__I2SMCC0_CK>,
+> +			 <PIN_PB24__I2SMCC0_WS>,
+> +			 <PIN_PB25__I2SMCC0_DOUT1>,
+> +			 <PIN_PB26__I2SMCC0_DOUT0>,
+> +			 <PIN_PB27__I2SMCC0_MCK>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_key_gpio_default: key_gpio_default {
+> +		pinmux = <PIN_PC17__GPIO>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	pinctrl_led_gpio_default: led_gpio_default {
+> +		pinmux = <PIN_PA13__GPIO>,
+> +			 <PIN_PB8__GPIO>,
+> +			 <PIN_PD20__GPIO>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	pinctrl_mikrobus1_an_default: mikrobus1_an_default {
+> +		pinmux = <PIN_PD0__GPIO>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_mikrobus2_an_default: mikrobus2_an_default {
+> +		pinmux = <PIN_PD1__GPIO>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_mikrobus1_pwm2_default: mikrobus1_pwm2_default {
+> +		pinmux = <PIN_PA13__PWMH2>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_mikrobus2_pwm3_default: mikrobus2_pwm3_default {
+> +		pinmux = <PIN_PD20__PWMH3>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_mikrobus1_spi_cs: mikrobus1_spi_cs {
+> +		pinmux = <PIN_PB6__FLEXCOM11_IO3>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_mikrobus1_spi: mikrobus1_spi {
+> +		pinmux = <PIN_PB3__FLEXCOM11_IO0>,
+> +			 <PIN_PB4__FLEXCOM11_IO1>,
+> +			 <PIN_PB5__FLEXCOM11_IO2>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_sdmmc0_default: sdmmc0_default {
+> +		cmd_data {
+> +			pinmux = <PIN_PA1__SDMMC0_CMD>,
+> +				 <PIN_PA3__SDMMC0_DAT0>,
+> +				 <PIN_PA4__SDMMC0_DAT1>,
+> +				 <PIN_PA5__SDMMC0_DAT2>,
+> +				 <PIN_PA6__SDMMC0_DAT3>,
+> +				 <PIN_PA7__SDMMC0_DAT4>,
+> +				 <PIN_PA8__SDMMC0_DAT5>,
+> +				 <PIN_PA9__SDMMC0_DAT6>,
+> +				 <PIN_PA10__SDMMC0_DAT7>;
+> +			bias-pull-up;
+> +		};
+> +
+> +		ck_cd_rstn_vddsel {
+> +			pinmux = <PIN_PA0__SDMMC0_CK>,
+> +				 <PIN_PA2__SDMMC0_RSTN>,
+> +				 <PIN_PA11__SDMMC0_DS>;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	pinctrl_sdmmc1_default: sdmmc1_default {
+> +		cmd_data {
+> +			pinmux = <PIN_PB29__SDMMC1_CMD>,
+> +				 <PIN_PB31__SDMMC1_DAT0>,
+> +				 <PIN_PC0__SDMMC1_DAT1>,
+> +				 <PIN_PC1__SDMMC1_DAT2>,
+> +				 <PIN_PC2__SDMMC1_DAT3>;
+> +			bias-pull-up;
+> +		};
+> +
+> +		ck_cd_rstn_vddsel {
+> +			pinmux = <PIN_PB30__SDMMC1_CK>,
+> +				 <PIN_PB28__SDMMC1_RSTN>,
+> +				 <PIN_PC5__SDMMC1_1V8SEL>,
+> +				 <PIN_PC4__SDMMC1_CD>;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	pinctrl_sdmmc2_default: sdmmc2_default {
+> +		cmd_data {
+> +			pinmux = <PIN_PD3__SDMMC2_CMD>,
+> +				 <PIN_PD5__SDMMC2_DAT0>,
+> +				 <PIN_PD6__SDMMC2_DAT1>,
+> +				 <PIN_PD7__SDMMC2_DAT2>,
+> +				 <PIN_PD8__SDMMC2_DAT3>;
+> +			bias-pull-up;
+> +		};
+> +
+> +		ck {
+> +			pinmux = <PIN_PD4__SDMMC2_CK>;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	pinctrl_spdifrx_default: spdifrx_default {
+> +		pinmux = <PIN_PB0__SPDIF_RX>;
+> +		bias-disable;
+> +	};
+> +
+> +	pinctrl_spdiftx_default: spdiftx_default {
+> +		pinmux = <PIN_PB1__SPDIF_TX>;
+> +		bias-disable;
+> +	};
+> +};
+> +
+> +&ps_wdt {
+> +	status = "okay";
+> +};
+> +
+> +&pwm {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_mikrobus1_pwm2_default &pinctrl_mikrobus2_pwm3_default>;
+> +	status = "disabled"; /* Conflict with leds. */
+> +};
+> +
+> +&rtt {
+> +	atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
+> +};
+> +
+> +&sdmmc0 {
+> +	bus-width = <8>;
+> +	non-removable;
+> +	no-1-8-v;
+> +	sdhci-caps-mask = <0x0 0x00200000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sdmmc0_default>;
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc1 {
+> +	bus-width = <4>;
+> +	no-1-8-v;
+> +	sdhci-caps-mask = <0x0 0x00200000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sdmmc1_default>;
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc2 {
+> +	bus-width = <4>;
+> +	no-1-8-v;
+> +	sdhci-caps-mask = <0x0 0x00200000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sdmmc2_default>;
+> +};
+> +
+> +&spdifrx {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_spdifrx_default>;
+> +	status = "okay";
+> +};
+> +
+> +&spdiftx {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_spdiftx_default>;
+> +	status = "okay";
+> +};
+> +
+> +&trng {
+> +	status = "okay";
+> +};
+> +
+> +&vddout25 {
+> +	vin-supply = <&vdd_3v3>;
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm/boot/dts/sama7g5-pinfunc.h b/arch/arm/boot/dts/sama7g5-pinfunc.h
+> new file mode 100644
+> index 000000000000..998b94764527
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/sama7g5-pinfunc.h
+> @@ -0,0 +1,924 @@
+> +/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
+> +#define PINMUX_PIN(no, func, ioset) \
+> +(((no) & 0xffff) | (((func) & 0xf) << 16) | (((ioset) & 0xff) << 20))
+> +
+> +#define PIN_PA0				0
+> +#define PIN_PA0__GPIO			PINMUX_PIN(PIN_PA0, 0, 0)
+> +#define PIN_PA0__SDMMC0_CK		PINMUX_PIN(PIN_PA0, 1, 1)
+> +#define PIN_PA0__FLEXCOM0_IO0		PINMUX_PIN(PIN_PA0, 2, 1)
+> +#define PIN_PA0__CANTX3			PINMUX_PIN(PIN_PA0, 3, 1)
+> +#define PIN_PA0__PWML0			PINMUX_PIN(PIN_PA0, 5, 2)
+> +#define PIN_PA1				1
+> +#define PIN_PA1__GPIO			PINMUX_PIN(PIN_PA1, 0, 0)
+> +#define PIN_PA1__SDMMC0_CMD		PINMUX_PIN(PIN_PA1, 1, 1)
+> +#define PIN_PA1__FLEXCOM0_IO1		PINMUX_PIN(PIN_PA1, 2, 1)
+> +#define PIN_PA1__CANRX3			PINMUX_PIN(PIN_PA1, 3, 1)
+> +#define PIN_PA1__D14			PINMUX_PIN(PIN_PA1, 4, 1)
+> +#define PIN_PA1__PWMH0			PINMUX_PIN(PIN_PA1, 5, 3)
+> +#define PIN_PA2				2
+> +#define PIN_PA2__GPIO			PINMUX_PIN(PIN_PA2, 0, 0)
+> +#define PIN_PA2__SDMMC0_RSTN		PINMUX_PIN(PIN_PA2, 1, 1)
+> +#define PIN_PA2__FLEXCOM0_IO2		PINMUX_PIN(PIN_PA2, 2, 1)
+> +#define PIN_PA2__PDMC1_CLK		PINMUX_PIN(PIN_PA2, 3, 1)
+> +#define PIN_PA2__D15			PINMUX_PIN(PIN_PA2, 4, 1)
+> +#define PIN_PA2__PWMH1			PINMUX_PIN(PIN_PA2, 5, 3)
+> +#define PIN_PA2__FLEXCOM1_IO0		PINMUX_PIN(PIN_PA2, 6, 3)
+> +#define PIN_PA3				3
+> +#define PIN_PA3__GPIO			PINMUX_PIN(PIN_PA3, 0, 0)
+> +#define PIN_PA3__SDMMC0_DAT0		PINMUX_PIN(PIN_PA3, 1, 1)
+> +#define PIN_PA3__FLEXCOM0_IO3		PINMUX_PIN(PIN_PA3, 2, 1)
+> +#define PIN_PA3__PDMC1_DS0		PINMUX_PIN(PIN_PA3, 3, 1)
+> +#define PIN_PA3__NWR1_NBS1		PINMUX_PIN(PIN_PA3, 4, 1)
+> +#define PIN_PA3__PWML3			PINMUX_PIN(PIN_PA3, 5, 3)
+> +#define PIN_PA3__FLEXCOM1_IO1		PINMUX_PIN(PIN_PA3, 6, 3)
+> +#define PIN_PA4				4
+> +#define PIN_PA4__GPIO			PINMUX_PIN(PIN_PA4, 0, 0)
+> +#define PIN_PA4__SDMMC0_DAT1		PINMUX_PIN(PIN_PA4, 1, 1)
+> +#define PIN_PA4__FLEXCOM0_IO4		PINMUX_PIN(PIN_PA4, 2, 1)
+> +#define PIN_PA4__PDMC1_DS1		PINMUX_PIN(PIN_PA4, 3, 1)
+> +#define PIN_PA4__NCS2			PINMUX_PIN(PIN_PA4, 4, 1)
+> +#define PIN_PA4__PWMH3			PINMUX_PIN(PIN_PA4, 5, 3)
+> +#define PIN_PA4__FLEXCOM2_IO0		PINMUX_PIN(PIN_PA4, 6, 3)
+> +#define PIN_PA5				5
+> +#define PIN_PA5__GPIO			PINMUX_PIN(PIN_PA5, 0, 0)
+> +#define PIN_PA5__SDMMC0_DAT2		PINMUX_PIN(PIN_PA5, 1, 1)
+> +#define PIN_PA5__FLEXCOM1_IO0		PINMUX_PIN(PIN_PA5, 2, 1)
+> +#define PIN_PA5__CANTX2			PINMUX_PIN(PIN_PA5, 3, 1)
+> +#define PIN_PA5__A23			PINMUX_PIN(PIN_PA5, 4, 1)
+> +#define PIN_PA5__PWMEXTRG0		PINMUX_PIN(PIN_PA5, 5, 3)
+> +#define PIN_PA5__FLEXCOM2_IO1		PINMUX_PIN(PIN_PA5, 6, 3)
+> +#define PIN_PA6				6
+> +#define PIN_PA6__GPIO			PINMUX_PIN(PIN_PA6, 0, 0)
+> +#define PIN_PA6__SDMMC0_DAT3		PINMUX_PIN(PIN_PA6, 1, 1)
+> +#define PIN_PA6__FLEXCOM1_IO1		PINMUX_PIN(PIN_PA6, 2, 1)
+> +#define PIN_PA6__CANRX2			PINMUX_PIN(PIN_PA6, 3, 1)
+> +#define PIN_PA6__A24			PINMUX_PIN(PIN_PA6, 4, 1)
+> +#define PIN_PA6__PWMEXTRG1		PINMUX_PIN(PIN_PA6, 5, 3)
+> +#define PIN_PA6__FLEXCOM3_IO0		PINMUX_PIN(PIN_PA6, 6, 3)
+> +#define PIN_PA7				7
+> +#define PIN_PA7__GPIO			PINMUX_PIN(PIN_PA7, 0, 0)
+> +#define PIN_PA7__SDMMC0_DAT4		PINMUX_PIN(PIN_PA7, 1, 1)
+> +#define PIN_PA7__FLEXCOM2_IO0		PINMUX_PIN(PIN_PA7, 2, 1)
+> +#define PIN_PA7__CANTX1			PINMUX_PIN(PIN_PA7, 3, 1)
+> +#define PIN_PA7__NWAIT			PINMUX_PIN(PIN_PA7, 4, 1)
+> +#define PIN_PA7__PWMFI0			PINMUX_PIN(PIN_PA7, 5, 3)
+> +#define PIN_PA7__FLEXCOM3_IO1		PINMUX_PIN(PIN_PA7, 6, 3)
+> +#define PIN_PA8				8
+> +#define PIN_PA8__GPIO			PINMUX_PIN(PIN_PA8, 0, 0)
+> +#define PIN_PA8__SDMMC0_DAT5		PINMUX_PIN(PIN_PA8, 1, 1)
+> +#define PIN_PA8__FLEXCOM2_IO1		PINMUX_PIN(PIN_PA8, 2, 1)
+> +#define PIN_PA8__CANRX1			PINMUX_PIN(PIN_PA8, 3, 1)
+> +#define PIN_PA8__NCS0			PINMUX_PIN(PIN_PA8, 4, 1)
+> +#define PIN_PA8__PWMIF1			PINMUX_PIN(PIN_PA8, 5, 3)
+> +#define PIN_PA8__FLEXCOM4_IO0		PINMUX_PIN(PIN_PA8, 6, 3)
+> +#define PIN_PA9				9
+> +#define PIN_PA9__GPIO			PINMUX_PIN(PIN_PA9, 0, 0)
+> +#define PIN_PA9__SDMMC0_DAT6		PINMUX_PIN(PIN_PA9, 1, 1)
+> +#define PIN_PA9__FLEXCOM2_IO2		PINMUX_PIN(PIN_PA9, 2, 1)
+> +#define PIN_PA9__CANTX0			PINMUX_PIN(PIN_PA9, 3, 1)
+> +#define PIN_PA9__SMCK			PINMUX_PIN(PIN_PA9, 4, 1)
+> +#define PIN_PA9__SPDIF_RX		PINMUX_PIN(PIN_PA9, 5, 1)
+> +#define PIN_PA9__FLEXCOM4_IO1		PINMUX_PIN(PIN_PA9, 6, 3)
+> +#define PIN_PA10			10
+> +#define PIN_PA10__GPIO			PINMUX_PIN(PIN_PA10, 0, 0)
+> +#define PIN_PA10__SDMMC0_DAT7		PINMUX_PIN(PIN_PA10, 1, 1)
+> +#define PIN_PA10__FLEXCOM2_IO3		PINMUX_PIN(PIN_PA10, 2, 1)
+> +#define PIN_PA10__CANRX0		PINMUX_PIN(PIN_PA10, 3, 1)
+> +#define PIN_PA10__NCS1			PINMUX_PIN(PIN_PA10, 4, 1)
+> +#define PIN_PA10__SPDIF_TX		PINMUX_PIN(PIN_PA10, 5, 1)
+> +#define PIN_PA10__FLEXCOM5_IO0		PINMUX_PIN(PIN_PA10, 6, 3)
+> +#define PIN_PA11			11
+> +#define PIN_PA11__GPIO			PINMUX_PIN(PIN_PA11, 0, 0)
+> +#define PIN_PA11__SDMMC0_DS		PINMUX_PIN(PIN_PA11, 1, 1)
+> +#define PIN_PA11__FLEXCOM2_IO4		PINMUX_PIN(PIN_PA11, 2, 1)
+> +#define PIN_PA11__A0_NBS0		PINMUX_PIN(PIN_PA11, 4, 1)
+> +#define PIN_PA11__TIOA0			PINMUX_PIN(PIN_PA11, 5, 1)
+> +#define PIN_PA11__FLEXCOM5_IO1		PINMUX_PIN(PIN_PA11, 6, 3)
+> +#define PIN_PA12			12
+> +#define PIN_PA12__GPIO			PINMUX_PIN(PIN_PA12, 0, 0)
+> +#define PIN_PA12__SDMMC0_WP		PINMUX_PIN(PIN_PA12, 1, 1)
+> +#define PIN_PA12__FLEXCOM1_IO3		PINMUX_PIN(PIN_PA12, 2, 1)
+> +#define PIN_PA12__FLEXCOM3_IO5		PINMUX_PIN(PIN_PA12, 4, 1)
+> +#define PIN_PA12__PWML2			PINMUX_PIN(PIN_PA12, 5, 3)
+> +#define PIN_PA12__FLEXCOM6_IO0		PINMUX_PIN(PIN_PA12, 6, 3)
+> +#define PIN_PA13			13
+> +#define PIN_PA13__GPIO			PINMUX_PIN(PIN_PA13, 0, 0)
+> +#define PIN_PA13__SDMMC0_1V8SEL		PINMUX_PIN(PIN_PA13, 1, 1)
+> +#define PIN_PA13__FLEXCOM1_IO2		PINMUX_PIN(PIN_PA13, 2, 1)
+> +#define PIN_PA13__FLEXCOM3_IO6		PINMUX_PIN(PIN_PA13, 4, 1)
+> +#define PIN_PA13__PWMH2			PINMUX_PIN(PIN_PA13, 5, 3)
+> +#define PIN_PA13__FLEXCOM6_IO1		PINMUX_PIN(PIN_PA13, 6, 3)
+> +#define PIN_PA14			14
+> +#define PIN_PA14__GPIO			PINMUX_PIN(PIN_PA14, 0, 0)
+> +#define PIN_PA14__SDMMC0_CD		PINMUX_PIN(PIN_PA14, 1, 1)
+> +#define PIN_PA14__FLEXCOM1_IO4		PINMUX_PIN(PIN_PA14, 2, 1)
+> +#define PIN_PA14__A25			PINMUX_PIN(PIN_PA14, 4, 1)
+> +#define PIN_PA14__PWML1			PINMUX_PIN(PIN_PA14, 5, 3)
+> +#define PIN_PA15			15
+> +#define PIN_PA15__GPIO			PINMUX_PIN(PIN_PA15, 0, 0)
+> +#define PIN_PA15__G0_TXEN		PINMUX_PIN(PIN_PA15, 1, 1)
+> +#define PIN_PA15__FLEXCOM3_IO0		PINMUX_PIN(PIN_PA15, 2, 1)
+> +#define PIN_PA15__ISC_MCK		PINMUX_PIN(PIN_PA15, 3, 1)
+> +#define PIN_PA15__A1			PINMUX_PIN(PIN_PA15, 4, 1)
+> +#define PIN_PA15__TIOB0			PINMUX_PIN(PIN_PA15, 5, 1)
+> +#define PIN_PA16			16
+> +#define PIN_PA16__GPIO			PINMUX_PIN(PIN_PA16, 0, 0)
+> +#define PIN_PA16__G0_TX0		PINMUX_PIN(PIN_PA16, 1, 1)
+> +#define PIN_PA16__FLEXCOM3_IO1		PINMUX_PIN(PIN_PA16, 2, 1)
+> +#define PIN_PA16__ISC_D0		PINMUX_PIN(PIN_PA16, 3, 1)
+> +#define PIN_PA16__A2			PINMUX_PIN(PIN_PA16, 4, 1)
+> +#define PIN_PA16__TCLK0			PINMUX_PIN(PIN_PA16, 5, 1)
+> +#define PIN_PA17			17
+> +#define PIN_PA17__GPIO			PINMUX_PIN(PIN_PA17, 0, 0)
+> +#define PIN_PA17__G0_TX1		PINMUX_PIN(PIN_PA17, 1, 1)
+> +#define PIN_PA17__FLEXCOM3_IO2		PINMUX_PIN(PIN_PA17, 2, 1)
+> +#define PIN_PA17__ISC_D1		PINMUX_PIN(PIN_PA17, 3, 1)
+> +#define PIN_PA17__A3			PINMUX_PIN(PIN_PA17, 4, 1)
+> +#define PIN_PA17__TIOA1			PINMUX_PIN(PIN_PA17, 5, 1)
+> +#define PIN_PA18			18
+> +#define PIN_PA18__GPIO			PINMUX_PIN(PIN_PA18, 0, 0)
+> +#define PIN_PA18__G0_RXDV		PINMUX_PIN(PIN_PA18, 1, 1)
+> +#define PIN_PA18__FLEXCOM3_IO3		PINMUX_PIN(PIN_PA18, 2, 1)
+> +#define PIN_PA18__ISC_D2		PINMUX_PIN(PIN_PA18, 3, 1)
+> +#define PIN_PA18__A4			PINMUX_PIN(PIN_PA18, 4, 1)
+> +#define PIN_PA18__TIOB1			PINMUX_PIN(PIN_PA18, 5, 1)
+> +#define PIN_PA19			19
+> +#define PIN_PA19__GPIO			PINMUX_PIN(PIN_PA19, 0, 0)
+> +#define PIN_PA19__G0_RX0		PINMUX_PIN(PIN_PA19, 1, 1)
+> +#define PIN_PA19__FLEXCOM3_IO4		PINMUX_PIN(PIN_PA19, 2, 1)
+> +#define PIN_PA19__ISC_D3		PINMUX_PIN(PIN_PA19, 3, 1)
+> +#define PIN_PA19__A5			PINMUX_PIN(PIN_PA19, 4, 1)
+> +#define PIN_PA19__TCLK1			PINMUX_PIN(PIN_PA19, 5, 1)
+> +#define PIN_PA20			20
+> +#define PIN_PA20__GPIO			PINMUX_PIN(PIN_PA20, 0, 0)
+> +#define PIN_PA20__G0_RX1		PINMUX_PIN(PIN_PA20, 1, 1)
+> +#define PIN_PA20__FLEXCOM4_IO0		PINMUX_PIN(PIN_PA20, 2, 1)
+> +#define PIN_PA20__ISC_D4		PINMUX_PIN(PIN_PA20, 3, 1)
+> +#define PIN_PA20__A6			PINMUX_PIN(PIN_PA20, 4, 1)
+> +#define PIN_PA20__TIOA2			PINMUX_PIN(PIN_PA20, 5, 1)
+> +#define PIN_PA21			21
+> +#define PIN_PA21__GPIO			PINMUX_PIN(PIN_PA21, 0, 0)
+> +#define PIN_PA21__G0_RXER		PINMUX_PIN(PIN_PA21, 1, 1)
+> +#define PIN_PA21__FLEXCOM4_IO1		PINMUX_PIN(PIN_PA21, 2, 1)
+> +#define PIN_PA21__ISC_D5		PINMUX_PIN(PIN_PA21, 3, 1)
+> +#define PIN_PA21__A7			PINMUX_PIN(PIN_PA21, 4, 1)
+> +#define PIN_PA21__TIOB2			PINMUX_PIN(PIN_PA21, 5, 1)
+> +#define PIN_PA22			22
+> +#define PIN_PA22__GPIO			PINMUX_PIN(PIN_PA22, 0, 0)
+> +#define PIN_PA22__G0_MDC		PINMUX_PIN(PIN_PA22, 1, 1)
+> +#define PIN_PA22__FLEXCOM4_IO2		PINMUX_PIN(PIN_PA22, 2, 1)
+> +#define PIN_PA22__ISC_D6		PINMUX_PIN(PIN_PA22, 3, 1)
+> +#define PIN_PA22__A8			PINMUX_PIN(PIN_PA22, 4, 1)
+> +#define PIN_PA22__TCLK2			PINMUX_PIN(PIN_PA22, 5, 1)
+> +#define PIN_PA23			23
+> +#define PIN_PA23__GPIO			PINMUX_PIN(PIN_PA23, 0, 0)
+> +#define PIN_PA23__G0_MDIO		PINMUX_PIN(PIN_PA23, 1, 1)
+> +#define PIN_PA23__FLEXCOM4_IO3		PINMUX_PIN(PIN_PA23, 2, 1)
+> +#define PIN_PA23__ISC_D7		PINMUX_PIN(PIN_PA23, 3, 1)
+> +#define PIN_PA23__A9			PINMUX_PIN(PIN_PA23, 4, 1)
+> +#define PIN_PA24			24
+> +#define PIN_PA24__GPIO			PINMUX_PIN(PIN_PA24, 0, 0)
+> +#define PIN_PA24__G0_TXCK		PINMUX_PIN(PIN_PA24, 1, 1)
+> +#define PIN_PA24__FLEXCOM4_IO4		PINMUX_PIN(PIN_PA24, 2, 1)
+> +#define PIN_PA24__ISC_HSYNC		PINMUX_PIN(PIN_PA24, 3, 1)
+> +#define PIN_PA24__A10			PINMUX_PIN(PIN_PA24, 4, 1)
+> +#define PIN_PA24__FLEXCOM0_IO5		PINMUX_PIN(PIN_PA24, 5, 1)
+> +#define PIN_PA25			25
+> +#define PIN_PA25__GPIO			PINMUX_PIN(PIN_PA25, 0, 0)
+> +#define PIN_PA25__G0_125CK		PINMUX_PIN(PIN_PA25, 1, 1)
+> +#define PIN_PA25__FLEXCOM5_IO4		PINMUX_PIN(PIN_PA25, 2, 1)
+> +#define PIN_PA25__ISC_VSYNC		PINMUX_PIN(PIN_PA25, 3, 1)
+> +#define PIN_PA25__A11			PINMUX_PIN(PIN_PA25, 4, 1)
+> +#define PIN_PA25__FLEXCOM0_IO6		PINMUX_PIN(PIN_PA25, 5, 1)
+> +#define PIN_PA25__FLEXCOM7_IO0		PINMUX_PIN(PIN_PA25, 6, 3)
+> +#define PIN_PA26			26
+> +#define PIN_PA26__GPIO			PINMUX_PIN(PIN_PA26, 0, 0)
+> +#define PIN_PA26__G0_TX2		PINMUX_PIN(PIN_PA26, 1, 1)
+> +#define PIN_PA26__FLEXCOM5_IO2		PINMUX_PIN(PIN_PA26, 2, 1)
+> +#define PIN_PA26__ISC_FIELD		PINMUX_PIN(PIN_PA26, 3, 1)
+> +#define PIN_PA26__A12			PINMUX_PIN(PIN_PA26, 4, 1)
+> +#define PIN_PA26__TF0			PINMUX_PIN(PIN_PA26, 5, 1)
+> +#define PIN_PA26__FLEXCOM7_IO1		PINMUX_PIN(PIN_PA26, 6, 3)
+> +#define PIN_PA27			27
+> +#define PIN_PA27__GPIO			PINMUX_PIN(PIN_PA27, 0, 0)
+> +#define PIN_PA27__G0_TX3		PINMUX_PIN(PIN_PA27, 1, 1)
+> +#define PIN_PA27__FLEXCOM5_IO3		PINMUX_PIN(PIN_PA27, 2, 1)
+> +#define PIN_PA27__ISC_PCK		PINMUX_PIN(PIN_PA27, 3, 1)
+> +#define PIN_PA27__A13			PINMUX_PIN(PIN_PA27, 4, 1)
+> +#define PIN_PA27__TK0			PINMUX_PIN(PIN_PA27, 5, 1)
+> +#define PIN_PA27__FLEXCOM8_IO0		PINMUX_PIN(PIN_PA27, 6, 3)
+> +#define PIN_PA28			28
+> +#define PIN_PA28__GPIO			PINMUX_PIN(PIN_PA28, 0, 0)
+> +#define PIN_PA28__G0_RX2		PINMUX_PIN(PIN_PA28, 1, 1)
+> +#define PIN_PA28__FLEXCOM5_IO0		PINMUX_PIN(PIN_PA28, 2, 1)
+> +#define PIN_PA28__ISC_D8		PINMUX_PIN(PIN_PA28, 3, 1)
+> +#define PIN_PA28__A14			PINMUX_PIN(PIN_PA28, 4, 1)
+> +#define PIN_PA28__RD0			PINMUX_PIN(PIN_PA28, 5, 1)
+> +#define PIN_PA28__FLEXCOM8_IO1		PINMUX_PIN(PIN_PA28, 6, 3)
+> +#define PIN_PA29			29
+> +#define PIN_PA29__GPIO			PINMUX_PIN(PIN_PA29, 0, 0)
+> +#define PIN_PA29__G0_RX3		PINMUX_PIN(PIN_PA29, 1, 1)
+> +#define PIN_PA29__FLEXCOM5_IO1		PINMUX_PIN(PIN_PA29, 2, 1)
+> +#define PIN_PA29__ISC_D9		PINMUX_PIN(PIN_PA29, 3, 1)
+> +#define PIN_PA29__A15			PINMUX_PIN(PIN_PA29, 4, 1)
+> +#define PIN_PA29__RF0			PINMUX_PIN(PIN_PA29, 5, 1)
+> +#define PIN_PA29__FLEXCOM9_IO0		PINMUX_PIN(PIN_PA29, 6, 3)
+> +#define PIN_PA30			30
+> +#define PIN_PA30__GPIO			PINMUX_PIN(PIN_PA30, 0, 0)
+> +#define PIN_PA30__G0_RXCK		PINMUX_PIN(PIN_PA30, 1, 1)
+> +#define PIN_PA30__FLEXCOM6_IO4		PINMUX_PIN(PIN_PA30, 2, 1)
+> +#define PIN_PA30__ISC_D10		PINMUX_PIN(PIN_PA30, 3, 1)
+> +#define PIN_PA30__A16			PINMUX_PIN(PIN_PA30, 4, 1)
+> +#define PIN_PA30__RK0			PINMUX_PIN(PIN_PA30, 5, 1)
+> +#define PIN_PA30__FLEXCOM9_IO1		PINMUX_PIN(PIN_PA30, 6, 3)
+> +#define PIN_PA31			31
+> +#define PIN_PA31__GPIO			PINMUX_PIN(PIN_PA31, 0, 0)
+> +#define PIN_PA31__G0_TXER		PINMUX_PIN(PIN_PA31, 1, 1)
+> +#define PIN_PA31__FLEXCOM6_IO2		PINMUX_PIN(PIN_PA31, 2, 1)
+> +#define PIN_PA31__ISC_D11		PINMUX_PIN(PIN_PA31, 3, 1)
+> +#define PIN_PA31__A17			PINMUX_PIN(PIN_PA31, 4, 1)
+> +#define PIN_PA31__TD0			PINMUX_PIN(PIN_PA31, 5, 1)
+> +#define PIN_PA31__FLEXCOM10_IO0		PINMUX_PIN(PIN_PA31, 6, 3)
+> +#define PIN_PB0				32
+> +#define PIN_PB0__GPIO			PINMUX_PIN(PIN_PB0, 0, 0)
+> +#define PIN_PB0__G0_COL			PINMUX_PIN(PIN_PB0, 1, 1)
+> +#define PIN_PB0__FLEXCOM6_IO3		PINMUX_PIN(PIN_PB0, 2, 2)
+> +#define PIN_PB0__EXT_IRQ0		PINMUX_PIN(PIN_PB0, 3, 1)
+> +#define PIN_PB0__A18			PINMUX_PIN(PIN_PB0, 4, 1)
+> +#define PIN_PB0__SPDIF_RX		PINMUX_PIN(PIN_PB0, 5, 2)
+> +#define PIN_PB0__FLEXCOM10_IO1		PINMUX_PIN(PIN_PB0, 6, 3)
+> +#define PIN_PB1				33
+> +#define PIN_PB1__GPIO			PINMUX_PIN(PIN_PB1, 0, 0)
+> +#define PIN_PB1__G0_CRS			PINMUX_PIN(PIN_PB1, 1, 1)
+> +#define PIN_PB1__FLEXCOM6_IO1		PINMUX_PIN(PIN_PB1, 2, 2)
+> +#define PIN_PB1__EXT_IRQ1		PINMUX_PIN(PIN_PB1, 3, 1)
+> +#define PIN_PB1__A19			PINMUX_PIN(PIN_PB1, 4, 1)
+> +#define PIN_PB1__SPDIF_TX		PINMUX_PIN(PIN_PB1, 5, 2)
+> +#define PIN_PB1__FLEXCOM11_IO0		PINMUX_PIN(PIN_PB1, 6, 3)
+> +#define PIN_PB2				34
+> +#define PIN_PB2__GPIO			PINMUX_PIN(PIN_PB2, 0, 0)
+> +#define PIN_PB2__G0_TSUCOMP		PINMUX_PIN(PIN_PB2, 1, 1)
+> +#define PIN_PB2__FLEXCOM6_IO0		PINMUX_PIN(PIN_PB2, 2, 1)
+> +#define PIN_PB2__ADTRG			PINMUX_PIN(PIN_PB2, 3, 1)
+> +#define PIN_PB2__A20			PINMUX_PIN(PIN_PB2, 4, 1)
+> +#define PIN_PB2__FLEXCOM11_IO0		PINMUX_PIN(PIN_PB2, 6, 3)
+> +#define PIN_PB3				35
+> +#define PIN_PB3__GPIO			PINMUX_PIN(PIN_PB3, 0, 0)
+> +#define PIN_PB3__RF1			PINMUX_PIN(PIN_PB3, 1, 1)
+> +#define PIN_PB3__FLEXCOM11_IO0		PINMUX_PIN(PIN_PB3, 2, 1)
+> +#define PIN_PB3__PCK2			PINMUX_PIN(PIN_PB3, 3, 2)
+> +#define PIN_PB3__D8			PINMUX_PIN(PIN_PB3, 4, 1)
+> +#define PIN_PB4				36
+> +#define PIN_PB4__GPIO			PINMUX_PIN(PIN_PB4, 0, 0)
+> +#define PIN_PB4__TF1			PINMUX_PIN(PIN_PB4, 1, 1)
+> +#define PIN_PB4__FLEXCOM11_IO1		PINMUX_PIN(PIN_PB4, 2, 1)
+> +#define PIN_PB4__PCK3			PINMUX_PIN(PIN_PB4, 3, 2)
+> +#define PIN_PB4__D9			PINMUX_PIN(PIN_PB4, 4, 1)
+> +#define PIN_PB5				37
+> +#define PIN_PB5__GPIO			PINMUX_PIN(PIN_PB5, 0, 0)
+> +#define PIN_PB5__TK1			PINMUX_PIN(PIN_PB5, 1, 1)
+> +#define PIN_PB5__FLEXCOM11_IO2		PINMUX_PIN(PIN_PB5, 2, 1)
+> +#define PIN_PB5__PCK4			PINMUX_PIN(PIN_PB5, 3, 2)
+> +#define PIN_PB5__D10			PINMUX_PIN(PIN_PB5, 4, 1)
+> +#define PIN_PB6				38
+> +#define PIN_PB6__GPIO			PINMUX_PIN(PIN_PB6, 0, 0)
+> +#define PIN_PB6__RK1			PINMUX_PIN(PIN_PB6, 1, 1)
+> +#define PIN_PB6__FLEXCOM11_IO3		PINMUX_PIN(PIN_PB6, 2, 1)
+> +#define PIN_PB6__PCK5			PINMUX_PIN(PIN_PB6, 3, 2)
+> +#define PIN_PB6__D11			PINMUX_PIN(PIN_PB6, 4, 1)
+> +#define PIN_PB7				39
+> +#define PIN_PB7__GPIO			PINMUX_PIN(PIN_PB7, 0, 0)
+> +#define PIN_PB7__TD1			PINMUX_PIN(PIN_PB7, 1, 1)
+> +#define PIN_PB7__FLEXCOM11_IO4		PINMUX_PIN(PIN_PB7, 2, 1)
+> +#define PIN_PB7__FLEXCOM3_IO5		PINMUX_PIN(PIN_PB7, 3, 2)
+> +#define PIN_PB7__D12			PINMUX_PIN(PIN_PB7, 4, 1)
+> +#define PIN_PB8				40
+> +#define PIN_PB8__GPIO			PINMUX_PIN(PIN_PB8, 0, 0)
+> +#define PIN_PB8__RD1			PINMUX_PIN(PIN_PB8, 1, 1)
+> +#define PIN_PB8__FLEXCOM8_IO0		PINMUX_PIN(PIN_PB8, 2, 1)
+> +#define PIN_PB8__FLEXCOM3_IO6		PINMUX_PIN(PIN_PB8, 3, 2)
+> +#define PIN_PB8__D13			PINMUX_PIN(PIN_PB8, 4, 1)
+> +#define PIN_PB9				41
+> +#define PIN_PB9__GPIO			PINMUX_PIN(PIN_PB9, 0, 0)
+> +#define PIN_PB9__QSPI0_IO3		PINMUX_PIN(PIN_PB9, 1, 1)
+> +#define PIN_PB9__FLEXCOM8_IO1		PINMUX_PIN(PIN_PB9, 2, 1)
+> +#define PIN_PB9__PDMC0_CLK		PINMUX_PIN(PIN_PB9, 3, 1)
+> +#define PIN_PB9__NCS3_NANDCS		PINMUX_PIN(PIN_PB9, 4, 1)
+> +#define PIN_PB9__PWML0			PINMUX_PIN(PIN_PB9, 5, 2)
+> +#define PIN_PB10			42
+> +#define PIN_PB10__GPIO			PINMUX_PIN(PIN_PB10, 0, 0)
+> +#define PIN_PB10__QSPI0_IO2		PINMUX_PIN(PIN_PB10, 1, 1)
+> +#define PIN_PB10__FLEXCOM8_IO2		PINMUX_PIN(PIN_PB10, 2, 1)
+> +#define PIN_PB10__PDMC0_DS0		PINMUX_PIN(PIN_PB10, 3, 1)
+> +#define PIN_PB10__NWE_NWR0_NANDWE	PINMUX_PIN(PIN_PB10, 4, 1)
+> +#define PIN_PB10__PWMH0			PINMUX_PIN(PIN_PB10, 5, 2)
+> +#define PIN_PB11			43
+> +#define PIN_PB11__GPIO			PINMUX_PIN(PIN_PB11, 0, 0)
+> +#define PIN_PB11__QSPI0_IO1		PINMUX_PIN(PIN_PB11, 1, 1)
+> +#define PIN_PB11__FLEXCOM8_IO3		PINMUX_PIN(PIN_PB11, 2, 1)
+> +#define PIN_PB11__PDMC0_DS1		PINMUX_PIN(PIN_PB11, 3, 1)
+> +#define PIN_PB11__NRD_NANDOE		PINMUX_PIN(PIN_PB11, 4, 1)
+> +#define PIN_PB11__PWML1			PINMUX_PIN(PIN_PB11, 5, 2)
+> +#define PIN_PB12			44
+> +#define PIN_PB12__GPIO			PINMUX_PIN(PIN_PB12, 0, 0)
+> +#define PIN_PB12__QSPI0_IO0		PINMUX_PIN(PIN_PB12, 1, 1)
+> +#define PIN_PB12__FLEXCOM8_IO4		PINMUX_PIN(PIN_PB12, 2, 1)
+> +#define PIN_PB12__FLEXCOM6_IO5		PINMUX_PIN(PIN_PB12, 3, 1)
+> +#define PIN_PB12__A21_NANDALE		PINMUX_PIN(PIN_PB12, 4, 1)
+> +#define PIN_PB12__PWMH1			PINMUX_PIN(PIN_PB12, 5, 2)
+> +#define PIN_PB13			45
+> +#define PIN_PB13__GPIO			PINMUX_PIN(PIN_PB13, 0, 0)
+> +#define PIN_PB13__QSPI0_CS		PINMUX_PIN(PIN_PB13, 1, 1)
+> +#define PIN_PB13__FLEXCOM9_IO0		PINMUX_PIN(PIN_PB13, 2, 1)
+> +#define PIN_PB13__FLEXCOM6_IO6		PINMUX_PIN(PIN_PB13, 3, 1)
+> +#define PIN_PB13__A22_NANDCLE		PINMUX_PIN(PIN_PB13, 4, 1)
+> +#define PIN_PB13__PWML2			PINMUX_PIN(PIN_PB13, 5, 2)
+> +#define PIN_PB14			46
+> +#define PIN_PB14__GPIO			PINMUX_PIN(PIN_PB14, 0, 0)
+> +#define PIN_PB14__QSPI0_SCK		PINMUX_PIN(PIN_PB14, 1, 1)
+> +#define PIN_PB14__FLEXCOM9_IO1		PINMUX_PIN(PIN_PB14, 2, 1)
+> +#define PIN_PB14__D0			PINMUX_PIN(PIN_PB14, 4, 1)
+> +#define PIN_PB14__PWMH2			PINMUX_PIN(PIN_PB14, 5, 2)
+> +#define PIN_PB15			47
+> +#define PIN_PB15__GPIO			PINMUX_PIN(PIN_PB15, 0, 0)
+> +#define PIN_PB15__QSPI0_SCKN		PINMUX_PIN(PIN_PB15, 1, 1)
+> +#define PIN_PB15__FLEXCOM9_IO2		PINMUX_PIN(PIN_PB15, 2, 1)
+> +#define PIN_PB15__D1			PINMUX_PIN(PIN_PB15, 4, 1)
+> +#define PIN_PB15__PWML3			PINMUX_PIN(PIN_PB15, 5, 2)
+> +#define PIN_PB16			48
+> +#define PIN_PB16__GPIO			PINMUX_PIN(PIN_PB16, 0, 0)
+> +#define PIN_PB16__QSPI0_IO4		PINMUX_PIN(PIN_PB16, 1, 1)
+> +#define PIN_PB16__FLEXCOM9_IO3		PINMUX_PIN(PIN_PB16, 2, 1)
+> +#define PIN_PB16__PCK0			PINMUX_PIN(PIN_PB16, 3, 1)
+> +#define PIN_PB16__D2			PINMUX_PIN(PIN_PB16, 4, 1)
+> +#define PIN_PB16__PWMH3			PINMUX_PIN(PIN_PB16, 5, 2)
+> +#define PIN_PB16__EXT_IRQ0		PINMUX_PIN(PIN_PB16, 6, 2)
+> +#define PIN_PB17			49
+> +#define PIN_PB17__GPIO			PINMUX_PIN(PIN_PB17, 0, 0)
+> +#define PIN_PB17__QSPI0_IO5		PINMUX_PIN(PIN_PB17, 1, 1)
+> +#define PIN_PB17__FLEXCOM9_IO4		PINMUX_PIN(PIN_PB17, 2, 1)
+> +#define PIN_PB17__PCK1			PINMUX_PIN(PIN_PB17, 3, 1)
+> +#define PIN_PB17__D3			PINMUX_PIN(PIN_PB17, 4, 1)
+> +#define PIN_PB17__PWMEXTRG0		PINMUX_PIN(PIN_PB17, 5, 2)
+> +#define PIN_PB17__EXT_IRQ1		PINMUX_PIN(PIN_PB17, 6, 2)
+> +#define PIN_PB18			50
+> +#define PIN_PB18__GPIO			PINMUX_PIN(PIN_PB18, 0, 0)
+> +#define PIN_PB18__QSPI0_IO6		PINMUX_PIN(PIN_PB18, 1, 1)
+> +#define PIN_PB18__FLEXCOM10_IO0		PINMUX_PIN(PIN_PB18, 2, 1)
+> +#define PIN_PB18__PCK2			PINMUX_PIN(PIN_PB18, 3, 1)
+> +#define PIN_PB18__D4			PINMUX_PIN(PIN_PB18, 4, 1)
+> +#define PIN_PB18__PWMEXTRG1		PINMUX_PIN(PIN_PB18, 5, 2)
+> +#define PIN_PB19			51
+> +#define PIN_PB19__GPIO			PINMUX_PIN(PIN_PB19, 0, 0)
+> +#define PIN_PB19__QSPI0_IO7		PINMUX_PIN(PIN_PB19, 1, 1)
+> +#define PIN_PB19__FLEXCOM10_IO1		PINMUX_PIN(PIN_PB19, 2, 1)
+> +#define PIN_PB19__PCK3			PINMUX_PIN(PIN_PB19, 3, 1)
+> +#define PIN_PB19__D5			PINMUX_PIN(PIN_PB19, 4, 1)
+> +#define PIN_PB19__PWMFI0		PINMUX_PIN(PIN_PB19, 5, 2)
+> +#define PIN_PB20			52
+> +#define PIN_PB20__GPIO			PINMUX_PIN(PIN_PB20, 0, 0)
+> +#define PIN_PB20__QSPI0_DQS		PINMUX_PIN(PIN_PB20, 1, 1)
+> +#define PIN_PB20__FLEXCOM10_IO2		PINMUX_PIN(PIN_PB20, 2, 1)
+> +#define PIN_PB20__D6			PINMUX_PIN(PIN_PB20, 4, 1)
+> +#define PIN_PB20__PWMFI1		PINMUX_PIN(PIN_PB20, 5, 2)
+> +#define PIN_PB21			53
+> +#define PIN_PB21__GPIO			PINMUX_PIN(PIN_PB21, 0, 0)
+> +#define PIN_PB21__QSPI0_INT		PINMUX_PIN(PIN_PB21, 1, 1)
+> +#define PIN_PB21__FLEXCOM10_IO3		PINMUX_PIN(PIN_PB21, 2, 1)
+> +#define PIN_PB21__FLEXCOM9_IO5		PINMUX_PIN(PIN_PB21, 3, 1)
+> +#define PIN_PB21__D7			PINMUX_PIN(PIN_PB21, 4, 1)
+> +#define PIN_PB22			54
+> +#define PIN_PB22__GPIO			PINMUX_PIN(PIN_PB22, 0, 0)
+> +#define PIN_PB22__QSPI1_IO3		PINMUX_PIN(PIN_PB22, 1, 1)
+> +#define PIN_PB22__FLEXCOM10_IO4		PINMUX_PIN(PIN_PB22, 2, 1)
+> +#define PIN_PB22__FLEXCOM9_IO6		PINMUX_PIN(PIN_PB22, 3, 1)
+> +#define PIN_PB22__NANDRDY		PINMUX_PIN(PIN_PB22, 4, 1)
+> +#define PIN_PB23			55
+> +#define PIN_PB23__GPIO			PINMUX_PIN(PIN_PB23, 0, 0)
+> +#define PIN_PB23__QSPI1_IO2		PINMUX_PIN(PIN_PB23, 1, 1)
+> +#define PIN_PB23__FLEXCOM7_IO0		PINMUX_PIN(PIN_PB23, 2, 1)
+> +#define PIN_PB23__I2SMCC0_CK		PINMUX_PIN(PIN_PB23, 3, 1)
+> +#define PIN_PB23__PCK4			PINMUX_PIN(PIN_PB23, 6, 1)
+> +#define PIN_PB24			56
+> +#define PIN_PB24__GPIO			PINMUX_PIN(PIN_PB24, 0, 0)
+> +#define PIN_PB24__QSPI1_IO1		PINMUX_PIN(PIN_PB24, 1, 1)
+> +#define PIN_PB24__FLEXCOM7_IO1		PINMUX_PIN(PIN_PB24, 2, 1)
+> +#define PIN_PB24__I2SMCC0_WS		PINMUX_PIN(PIN_PB24, 3, 1)
+> +#define PIN_PB24__PCK5			PINMUX_PIN(PIN_PB24, 6, 1)
+> +#define PIN_PB25			57
+> +#define PIN_PB25__GPIO			PINMUX_PIN(PIN_PB25, 0, 0)
+> +#define PIN_PB25__QSPI1_IO0		PINMUX_PIN(PIN_PB25, 1, 1)
+> +#define PIN_PB25__FLEXCOM7_IO2		PINMUX_PIN(PIN_PB25, 2, 1)
+> +#define PIN_PB25__I2SMCC0_DOUT1		PINMUX_PIN(PIN_PB25, 3, 1)
+> +#define PIN_PB25__PCK6			PINMUX_PIN(PIN_PB25, 6, 1)
+> +#define PIN_PB26			58
+> +#define PIN_PB26__GPIO			PINMUX_PIN(PIN_PB26, 0, 0)
+> +#define PIN_PB26__QSPI1_CS		PINMUX_PIN(PIN_PB26, 1, 1)
+> +#define PIN_PB26__FLEXCOM7_IO3		PINMUX_PIN(PIN_PB26, 2, 1)
+> +#define PIN_PB26__I2SMCC0_DOUT0		PINMUX_PIN(PIN_PB26, 3, 1)
+> +#define PIN_PB26__PWMEXTRG0		PINMUX_PIN(PIN_PB26, 5, 1)
+> +#define PIN_PB26__PCK7			PINMUX_PIN(PIN_PB26, 6, 1)
+> +#define PIN_PB27			59
+> +#define PIN_PB27__GPIO			PINMUX_PIN(PIN_PB27, 0, 0)
+> +#define PIN_PB27__QSPI1_SCK		PINMUX_PIN(PIN_PB27, 1, 1)
+> +#define PIN_PB27__FLEXCOM7_IO4		PINMUX_PIN(PIN_PB27, 2, 1)
+> +#define PIN_PB27__I2SMCC0_MCK		PINMUX_PIN(PIN_PB27, 3, 1)
+> +#define PIN_PB27__PWMEXTRG1		PINMUX_PIN(PIN_PB27, 5, 1)
+> +#define PIN_PB28			60
+> +#define PIN_PB28__GPIO			PINMUX_PIN(PIN_PB28, 0, 0)
+> +#define PIN_PB28__SDMMC1_RSTN		PINMUX_PIN(PIN_PB28, 1, 1)
+> +#define PIN_PB28__ADTRG			PINMUX_PIN(PIN_PB28, 2, 2)
+> +#define PIN_PB28__PWMFI0		PINMUX_PIN(PIN_PB28, 5, 1)
+> +#define PIN_PB28__FLEXCOM7_IO0		PINMUX_PIN(PIN_PB28, 6, 4)
+> +#define PIN_PB29			61
+> +#define PIN_PB29__GPIO			PINMUX_PIN(PIN_PB29, 0, 0)
+> +#define PIN_PB29__SDMMC1_CMD		PINMUX_PIN(PIN_PB29, 1, 1)
+> +#define PIN_PB29__FLEXCOM3_IO2		PINMUX_PIN(PIN_PB29, 2, 2)
+> +#define PIN_PB29__FLEXCOM0_IO5		PINMUX_PIN(PIN_PB29, 3, 2)
+> +#define PIN_PB29__TIOA3			PINMUX_PIN(PIN_PB29, 4, 2)
+> +#define PIN_PB29__PWMFI1		PINMUX_PIN(PIN_PB29, 5, 1)
+> +#define PIN_PB29__FLEXCOM7_IO1		PINMUX_PIN(PIN_PB29, 6, 4)
+> +#define PIN_PB30			62
+> +#define PIN_PB30__GPIO			PINMUX_PIN(PIN_PB30, 0, 0)
+> +#define PIN_PB30__SDMMC1_CK		PINMUX_PIN(PIN_PB30, 1, 1)
+> +#define PIN_PB30__FLEXCOM3_IO3		PINMUX_PIN(PIN_PB30, 2, 2)
+> +#define PIN_PB30__FLEXCOM0_IO6		PINMUX_PIN(PIN_PB30, 3, 2)
+> +#define PIN_PB30__TIOB3			PINMUX_PIN(PIN_PB30, 4, 1)
+> +#define PIN_PB30__PWMH0			PINMUX_PIN(PIN_PB30, 5, 1)
+> +#define PIN_PB30__FLEXCOM8_IO0		PINMUX_PIN(PIN_PB30, 6, 4)
+> +#define PIN_PB31			63
+> +#define PIN_PB31__GPIO			PINMUX_PIN(PIN_PB31, 0, 0)
+> +#define PIN_PB31__SDMMC1_DAT0		PINMUX_PIN(PIN_PB31, 1, 1)
+> +#define PIN_PB31__FLEXCOM3_IO4		PINMUX_PIN(PIN_PB31, 2, 2)
+> +#define PIN_PB31__FLEXCOM9_IO5		PINMUX_PIN(PIN_PB31, 3, 2)
+> +#define PIN_PB31__TCLK3			PINMUX_PIN(PIN_PB31, 4, 1)
+> +#define PIN_PB31__PWML0			PINMUX_PIN(PIN_PB31, 5, 1)
+> +#define PIN_PB31__FLEXCOM8_IO1		PINMUX_PIN(PIN_PB31, 6, 4)
+> +#define PIN_PC0				64
+> +#define PIN_PC0__GPIO			PINMUX_PIN(PIN_PC0, 0, 0)
+> +#define PIN_PC0__SDMMC1_DAT1		PINMUX_PIN(PIN_PC0, 1, 1)
+> +#define PIN_PC0__FLEXCOM3_IO0		PINMUX_PIN(PIN_PC0, 2, 2)
+> +#define PIN_PC0__TIOA4			PINMUX_PIN(PIN_PC0, 4, 1)
+> +#define PIN_PC0__PWML1			PINMUX_PIN(PIN_PC0, 5, 1)
+> +#define PIN_PC0__FLEXCOM9_IO0		PINMUX_PIN(PIN_PC0, 6, 4)
+> +#define PIN_PC1				65
+> +#define PIN_PC1__GPIO			PINMUX_PIN(PIN_PC1, 0, 0)
+> +#define PIN_PC1__SDMMC1_DAT2		PINMUX_PIN(PIN_PC1, 1, 1)
+> +#define PIN_PC1__FLEXCOM3_IO1		PINMUX_PIN(PIN_PC1, 2, 2)
+> +#define PIN_PC1__TIOB4			PINMUX_PIN(PIN_PC1, 4, 1)
+> +#define PIN_PC1__PWMH1			PINMUX_PIN(PIN_PC1, 5, 1)
+> +#define PIN_PC1__FLEXCOM9_IO1		PINMUX_PIN(PIN_PC1, 6, 4)
+> +#define PIN_PC2				66
+> +#define PIN_PC2__GPIO			PINMUX_PIN(PIN_PC2, 0, 0)
+> +#define PIN_PC2__SDMMC1_DAT3		PINMUX_PIN(PIN_PC2, 1, 1)
+> +#define PIN_PC2__FLEXCOM4_IO0		PINMUX_PIN(PIN_PC2, 2, 2)
+> +#define PIN_PC2__TCLK4			PINMUX_PIN(PIN_PC2, 4, 1)
+> +#define PIN_PC2__PWML2			PINMUX_PIN(PIN_PC2, 5, 1)
+> +#define PIN_PC2__FLEXCOM10_IO0		PINMUX_PIN(PIN_PC2, 6, 4)
+> +#define PIN_PC3				67
+> +#define PIN_PC3__GPIO			PINMUX_PIN(PIN_PC3, 0, 0)
+> +#define PIN_PC3__SDMMC1_WP		PINMUX_PIN(PIN_PC3, 1, 1)
+> +#define PIN_PC3__FLEXCOM4_IO1		PINMUX_PIN(PIN_PC3, 2, 2)
+> +#define PIN_PC3__TIOA5			PINMUX_PIN(PIN_PC3, 4, 1)
+> +#define PIN_PC3__PWMH2			PINMUX_PIN(PIN_PC3, 5, 1)
+> +#define PIN_PC3__FLEXCOM10_IO1		PINMUX_PIN(PIN_PC3, 6, 4)
+> +#define PIN_PC4				68
+> +#define PIN_PC4__GPIO			PINMUX_PIN(PIN_PC4, 0, 0)
+> +#define PIN_PC4__SDMMC1_CD		PINMUX_PIN(PIN_PC4, 1, 1)
+> +#define PIN_PC4__FLEXCOM4_IO2		PINMUX_PIN(PIN_PC4, 2, 2)
+> +#define PIN_PC4__FLEXCOM9_IO6		PINMUX_PIN(PIN_PC4, 3, 2)
+> +#define PIN_PC4__TIOB5			PINMUX_PIN(PIN_PC4, 4, 1)
+> +#define PIN_PC4__PWML3			PINMUX_PIN(PIN_PC4, 5, 1)
+> +#define PIN_PC4__FLEXCOM11_IO0		PINMUX_PIN(PIN_PC4, 6, 4)
+> +#define PIN_PC5				69
+> +#define PIN_PC5__GPIO			PINMUX_PIN(PIN_PC5, 0, 0)
+> +#define PIN_PC5__SDMMC1_1V8SEL		PINMUX_PIN(PIN_PC5, 1, 1)
+> +#define PIN_PC5__FLEXCOM4_IO3		PINMUX_PIN(PIN_PC5, 2, 2)
+> +#define PIN_PC5__FLEXCOM6_IO5		PINMUX_PIN(PIN_PC5, 3, 2)
+> +#define PIN_PC5__TCLK5			PINMUX_PIN(PIN_PC5, 4, 1)
+> +#define PIN_PC5__PWMH3			PINMUX_PIN(PIN_PC5, 5, 1)
+> +#define PIN_PC5__FLEXCOM11_IO1		PINMUX_PIN(PIN_PC5, 6, 4)
+> +#define PIN_PC6				70
+> +#define PIN_PC6__GPIO			PINMUX_PIN(PIN_PC6, 0, 0)
+> +#define PIN_PC6__FLEXCOM4_IO4		PINMUX_PIN(PIN_PC6, 2, 2)
+> +#define PIN_PC6__FLEXCOM6_IO6		PINMUX_PIN(PIN_PC6, 3, 2)
+> +#define PIN_PC7				71
+> +#define PIN_PC7__GPIO			PINMUX_PIN(PIN_PC7, 0, 0)
+> +#define PIN_PC7__I2SMCC0_DIN0		PINMUX_PIN(PIN_PC7, 1, 1)
+> +#define PIN_PC7__FLEXCOM7_IO0		PINMUX_PIN(PIN_PC7, 2, 2)
+> +#define PIN_PC8				72
+> +#define PIN_PC8__GPIO			PINMUX_PIN(PIN_PC8, 0, 0)
+> +#define PIN_PC8__I2SMCC0_DIN1		PINMUX_PIN(PIN_PC8, 1, 1)
+> +#define PIN_PC8__FLEXCOM7_IO1		PINMUX_PIN(PIN_PC8, 2, 2)
+> +#define PIN_PC9				73
+> +#define PIN_PC9__GPIO			PINMUX_PIN(PIN_PC9, 0, 0)
+> +#define PIN_PC9__I2SMCC0_DOUT3		PINMUX_PIN(PIN_PC9, 1, 1)
+> +#define PIN_PC9__FLEXCOM7_IO2		PINMUX_PIN(PIN_PC9, 2, 2)
+> +#define PIN_PC9__FLEXCOM1_IO0		PINMUX_PIN(PIN_PC9, 6, 4)
+> +#define PIN_PC10			74
+> +#define PIN_PC10__GPIO			PINMUX_PIN(PIN_PC10, 0, 0)
+> +#define PIN_PC10__I2SMCC0_DOUT2		PINMUX_PIN(PIN_PC10, 1, 1)
+> +#define PIN_PC10__FLEXCOM7_IO3		PINMUX_PIN(PIN_PC10, 2, 2)
+> +#define PIN_PC10__FLEXCOM1_IO1		PINMUX_PIN(PIN_PC10, 6, 4)
+> +#define PIN_PC11			75
+> +#define PIN_PC11__GPIO			PINMUX_PIN(PIN_PC11, 0, 0)
+> +#define PIN_PC11__I2SMCC1_CK		PINMUX_PIN(PIN_PC11, 1, 1)
+> +#define PIN_PC11__FLEXCOM7_IO4		PINMUX_PIN(PIN_PC11, 2, 2)
+> +#define PIN_PC11__FLEXCOM2_IO0		PINMUX_PIN(PIN_PC11, 6, 4)
+> +#define PIN_PC12			76
+> +#define PIN_PC12__GPIO			PINMUX_PIN(PIN_PC12, 0, 0)
+> +#define PIN_PC12__I2SMCC1_WS		PINMUX_PIN(PIN_PC12, 1, 1)
+> +#define PIN_PC12__FLEXCOM8_IO2		PINMUX_PIN(PIN_PC12, 2, 2)
+> +#define PIN_PC12__FLEXCOM2_IO1		PINMUX_PIN(PIN_PC12, 6, 4)
+> +#define PIN_PC13			77
+> +#define PIN_PC13__GPIO			PINMUX_PIN(PIN_PC13, 0, 0)
+> +#define PIN_PC13__I2SMCC1_MCK		PINMUX_PIN(PIN_PC13, 1, 1)
+> +#define PIN_PC13__FLEXCOM8_IO1		PINMUX_PIN(PIN_PC13, 2, 2)
+> +#define PIN_PC13__FLEXCOM3_IO0		PINMUX_PIN(PIN_PC13, 6, 4)
+> +#define PIN_PC14			78
+> +#define PIN_PC14__GPIO			PINMUX_PIN(PIN_PC14, 0, 0)
+> +#define PIN_PC14__I2SMCC1_DOUT0		PINMUX_PIN(PIN_PC14, 1, 1)
+> +#define PIN_PC14__FLEXCOM8_IO0		PINMUX_PIN(PIN_PC14, 2, 2)
+> +#define PIN_PC14__FLEXCOM3_IO1		PINMUX_PIN(PIN_PC14, 6, 4)
+> +#define PIN_PC15			79
+> +#define PIN_PC15__GPIO			PINMUX_PIN(PIN_PC15, 0, 0)
+> +#define PIN_PC15__I2SMCC1_DOUT1		PINMUX_PIN(PIN_PC15, 1, 1)
+> +#define PIN_PC15__FLEXCOM8_IO3		PINMUX_PIN(PIN_PC15, 2, 2)
+> +#define PIN_PC15__FLEXCOM4_IO0		PINMUX_PIN(PIN_PC15, 6, 4)
+> +#define PIN_PC16			80
+> +#define PIN_PC16__GPIO			PINMUX_PIN(PIN_PC16, 0, 0)
+> +#define PIN_PC16__I2SMCC1_DOUT2		PINMUX_PIN(PIN_PC16, 1, 1)
+> +#define PIN_PC16__FLEXCOM8_IO4		PINMUX_PIN(PIN_PC16, 2, 2)
+> +#define PIN_PC16__FLEXCOM3_IO1		PINMUX_PIN(PIN_PC16, 6, 4)
+> +#define PIN_PC17			81
+> +#define PIN_PC17__GPIO			PINMUX_PIN(PIN_PC17, 0, 0)
+> +#define PIN_PC17__I2SMCC1_DOUT3		PINMUX_PIN(PIN_PC17, 1, 1)
+> +#define PIN_PC17__EXT_IRQ0		PINMUX_PIN(PIN_PC17, 2, 3)
+> +#define PIN_PC17__FLEXCOM5_IO0		PINMUX_PIN(PIN_PC17, 6, 4)
+> +#define PIN_PC18			82
+> +#define PIN_PC18__GPIO			PINMUX_PIN(PIN_PC18, 0, 0)
+> +#define PIN_PC18__I2SMCC1_DIN0		PINMUX_PIN(PIN_PC18, 1, 1)
+> +#define PIN_PC18__FLEXCOM9_IO0		PINMUX_PIN(PIN_PC18, 2, 2)
+> +#define PIN_PC18__FLEXCOM5_IO1		PINMUX_PIN(PIN_PC18, 6, 4)
+> +#define PIN_PC19			83
+> +#define PIN_PC19__GPIO			PINMUX_PIN(PIN_PC19, 0, 0)
+> +#define PIN_PC19__I2SMCC1_DIN1		PINMUX_PIN(PIN_PC19, 1, 1)
+> +#define PIN_PC19__FLEXCOM9_IO1		PINMUX_PIN(PIN_PC19, 2, 2)
+> +#define PIN_PC19__FLEXCOM6_IO0		PINMUX_PIN(PIN_PC19, 6, 4)
+> +#define PIN_PC20			84
+> +#define PIN_PC20__GPIO			PINMUX_PIN(PIN_PC20, 0, 0)
+> +#define PIN_PC20__I2SMCC1_DIN2		PINMUX_PIN(PIN_PC20, 1, 1)
+> +#define PIN_PC20__FLEXCOM9_IO4		PINMUX_PIN(PIN_PC20, 2, 2)
+> +#define PIN_PC20__FLEXCOM6_IO1		PINMUX_PIN(PIN_PC20, 6, 4)
+> +#define PIN_PC21			85
+> +#define PIN_PC21__GPIO			PINMUX_PIN(PIN_PC21, 0, 0)
+> +#define PIN_PC21__I2SMCC1_DIN3		PINMUX_PIN(PIN_PC21, 1, 1)
+> +#define PIN_PC21__FLEXCOM9_IO2		PINMUX_PIN(PIN_PC21, 2, 2)
+> +#define PIN_PC21__D3			PINMUX_PIN(PIN_PC21, 4, 2)
+> +#define PIN_PC21__FLEXCOM6_IO0		PINMUX_PIN(PIN_PC21, 6, 5)
+> +#define PIN_PC22			86
+> +#define PIN_PC22__GPIO			PINMUX_PIN(PIN_PC22, 0, 0)
+> +#define PIN_PC22__I2SMCC0_DIN2		PINMUX_PIN(PIN_PC22, 1, 1)
+> +#define PIN_PC22__FLEXCOM9_IO3		PINMUX_PIN(PIN_PC22, 2, 2)
+> +#define PIN_PC22__D4			PINMUX_PIN(PIN_PC22, 4, 2)
+> +#define PIN_PC22__FLEXCOM6_IO1		PINMUX_PIN(PIN_PC22, 6, 5)
+> +#define PIN_PC23			87
+> +#define PIN_PC23__GPIO			PINMUX_PIN(PIN_PC23, 0, 0)
+> +#define PIN_PC23__I2SMCC0_DIN3		PINMUX_PIN(PIN_PC23, 1, 1)
+> +#define PIN_PC23__FLEXCOM0_IO5		PINMUX_PIN(PIN_PC23, 2, 3)
+> +#define PIN_PC23__D5			PINMUX_PIN(PIN_PC23, 4, 2)
+> +#define PIN_PC23__FLEXCOM7_IO0		PINMUX_PIN(PIN_PC23, 6, 5)
+> +#define PIN_PC24			88
+> +#define PIN_PC24__GPIO			PINMUX_PIN(PIN_PC24, 0, 0)
+> +#define PIN_PC24__FLEXCOM0_IO6		PINMUX_PIN(PIN_PC24, 2, 3)
+> +#define PIN_PC24__EXT_IRQ1		PINMUX_PIN(PIN_PC24, 3, 3)
+> +#define PIN_PC24__D6			PINMUX_PIN(PIN_PC24, 4, 2)
+> +#define PIN_PC24__FLEXCOM7_IO1		PINMUX_PIN(PIN_PC24, 6, 5)
+> +#define PIN_PC25			89
+> +#define PIN_PC25__GPIO			PINMUX_PIN(PIN_PC25, 0, 0)
+> +#define PIN_PC25__NTRST			PINMUX_PIN(PIN_PC25, 1, 1)
+> +#define PIN_PC26			90
+> +#define PIN_PC26__GPIO			PINMUX_PIN(PIN_PC26, 0, 0)
+> +#define PIN_PC26__TCK_SWCLK		PINMUX_PIN(PIN_PC26, 1, 1)
+> +#define PIN_PC27			91
+> +#define PIN_PC27__GPIO			PINMUX_PIN(PIN_PC27, 0, 0)
+> +#define PIN_PC27__TMS_SWDIO		PINMUX_PIN(PIN_PC27, 1, 1)
+> +#define PIN_PC28			92
+> +#define PIN_PC28__GPIO			PINMUX_PIN(PIN_PC28, 0, 0)
+> +#define PIN_PC28__TDI			PINMUX_PIN(PIN_PC28, 1, 1)
+> +#define PIN_PC29			93
+> +#define PIN_PC29__GPIO			PINMUX_PIN(PIN_PC29, 0, 0)
+> +#define PIN_PC29__TDO			PINMUX_PIN(PIN_PC29, 1, 1)
+> +#define PIN_PC30			94
+> +#define PIN_PC30__GPIO			PINMUX_PIN(PIN_PC30, 0, 0)
+> +#define PIN_PC30__FLEXCOM10_IO0		PINMUX_PIN(PIN_PC30, 2, 2)
+> +#define PIN_PC31			95
+> +#define PIN_PC31__GPIO			PINMUX_PIN(PIN_PC31, 0, 0)
+> +#define PIN_PC31__FLEXCOM10_IO1		PINMUX_PIN(PIN_PC31, 2, 2)
+> +#define PIN_PD0				96
+> +#define PIN_PD0__GPIO			PINMUX_PIN(PIN_PD0, 0, 0)
+> +#define PIN_PD0__FLEXCOM11_IO0		PINMUX_PIN(PIN_PD0, 2, 2)
+> +#define PIN_PD1				97
+> +#define PIN_PD1__GPIO			PINMUX_PIN(PIN_PD1, 0, 0)
+> +#define PIN_PD1__FLEXCOM11_IO1		PINMUX_PIN(PIN_PD1, 2, 2)
+> +#define PIN_PD2				98
+> +#define PIN_PD2__GPIO			PINMUX_PIN(PIN_PD2, 0, 0)
+> +#define PIN_PD2__SDMMC2_RSTN		PINMUX_PIN(PIN_PD2, 1, 1)
+> +#define PIN_PD2__PCK0			PINMUX_PIN(PIN_PD2, 2, 2)
+> +#define PIN_PD2__CANTX4			PINMUX_PIN(PIN_PD2, 3, 1)
+> +#define PIN_PD2__D7			PINMUX_PIN(PIN_PD2, 4, 2)
+> +#define PIN_PD2__TIOA0			PINMUX_PIN(PIN_PD2, 5, 2)
+> +#define PIN_PD2__FLEXCOM8_IO0		PINMUX_PIN(PIN_PD2, 6, 5)
+> +#define PIN_PD3				99
+> +#define PIN_PD3__GPIO			PINMUX_PIN(PIN_PD3, 0, 0)
+> +#define PIN_PD3__SDMMC2_CMD		PINMUX_PIN(PIN_PD3, 1, 1)
+> +#define PIN_PD3__FLEXCOM0_IO0		PINMUX_PIN(PIN_PD3, 2, 2)
+> +#define PIN_PD3__CANRX4			PINMUX_PIN(PIN_PD3, 3, 1)
+> +#define PIN_PD3__NANDRDY		PINMUX_PIN(PIN_PD3, 4, 2)
+> +#define PIN_PD3__TIOB0			PINMUX_PIN(PIN_PD3, 5, 2)
+> +#define PIN_PD3__FLEXCOM8_IO1		PINMUX_PIN(PIN_PD3, 6, 5)
+> +#define PIN_PD4				100
+> +#define PIN_PD4__GPIO			PINMUX_PIN(PIN_PD4, 0, 0)
+> +#define PIN_PD4__SDMMC2_CK		PINMUX_PIN(PIN_PD4, 1, 1)
+> +#define PIN_PD4__FLEXCOM0_IO1		PINMUX_PIN(PIN_PD4, 2, 2)
+> +#define PIN_PD4__CANTX5			PINMUX_PIN(PIN_PD4, 3, 1)
+> +#define PIN_PD4__NCS3_NANDCS		PINMUX_PIN(PIN_PD4, 4, 2)
+> +#define PIN_PD4__TCLK0			PINMUX_PIN(PIN_PD4, 5, 2)
+> +#define PIN_PD4__FLEXCOM9_IO0		PINMUX_PIN(PIN_PD4, 6, 5)
+> +#define PIN_PD5				101
+> +#define PIN_PD5__GPIO			PINMUX_PIN(PIN_PD5, 0, 0)
+> +#define PIN_PD5__SDMMC2_DAT0		PINMUX_PIN(PIN_PD5, 1, 1)
+> +#define PIN_PD5__FLEXCOM0_IO2		PINMUX_PIN(PIN_PD5, 2, 2)
+> +#define PIN_PD5__CANRX5			PINMUX_PIN(PIN_PD5, 3, 1)
+> +#define PIN_PD5__NWE_NWR0_NANDWE	PINMUX_PIN(PIN_PD5, 4, 2)
+> +#define PIN_PD5__TIOA1			PINMUX_PIN(PIN_PD5, 5, 2)
+> +#define PIN_PD5__FLEXCOM9_IO1		PINMUX_PIN(PIN_PD5, 6, 5)
+> +#define PIN_PD6				102
+> +#define PIN_PD6__GPIO			PINMUX_PIN(PIN_PD6, 0, 0)
+> +#define PIN_PD6__SDMMC2_DAT1		PINMUX_PIN(PIN_PD6, 1, 1)
+> +#define PIN_PD6__FLEXCOM0_IO3		PINMUX_PIN(PIN_PD6, 2, 2)
+> +#define PIN_PD6__SPDIF_RX		PINMUX_PIN(PIN_PD6, 3, 3)
+> +#define PIN_PD6__NRD_NANDOE		PINMUX_PIN(PIN_PD6, 4, 2)
+> +#define PIN_PD6__TIOB1			PINMUX_PIN(PIN_PD6, 5, 2)
+> +#define PIN_PD6__FLEXCOM10_IO0		PINMUX_PIN(PIN_PD6, 6, 5)
+> +#define PIN_PD7				103
+> +#define PIN_PD7__GPIO			PINMUX_PIN(PIN_PD7, 0, 0)
+> +#define PIN_PD7__SDMMC2_DAT2		PINMUX_PIN(PIN_PD7, 1, 1)
+> +#define PIN_PD7__FLEXCOM0_IO4		PINMUX_PIN(PIN_PD7, 2, 2)
+> +#define PIN_PD7__SPDIF_TX		PINMUX_PIN(PIN_PD7, 2, 2)
+> +#define PIN_PD7__A21_NANDALE		PINMUX_PIN(PIN_PD7, 4, 2)
+> +#define PIN_PD7__TCLK1			PINMUX_PIN(PIN_PD7, 5, 2)
+> +#define PIN_PD7__FLEXCOM10_IO1		PINMUX_PIN(PIN_PD7, 6, 5)
+> +#define PIN_PD8				104
+> +#define PIN_PD8__GPIO			PINMUX_PIN(PIN_PD8, 0, 0)
+> +#define PIN_PD8__SDMMC2_DAT3		PINMUX_PIN(PIN_PD8, 1, 1)
+> +#define PIN_PD8__I2SMCC0_DIN0		PINMUX_PIN(PIN_PD8, 3, 1)
+> +#define PIN_PD8__A11_NANDCLE		PINMUX_PIN(PIN_PD8, 4, 2)
+> +#define PIN_PD8__TIOA2			PINMUX_PIN(PIN_PD8, 5, 2)
+> +#define PIN_PD8__FLEXCOM11_IO0		PINMUX_PIN(PIN_PD8, 6, 5)
+> +#define PIN_PD9				105
+> +#define PIN_PD9__GPIO			PINMUX_PIN(PIN_PD9, 0, 0)
+> +#define PIN_PD9__SDMMC2_WP		PINMUX_PIN(PIN_PD9, 1, 1)
+> +#define PIN_PD9__I2SMCC0_DIN1		PINMUX_PIN(PIN_PD9, 3, 2)
+> +#define PIN_PD9__D0			PINMUX_PIN(PIN_PD9, 4, 2)
+> +#define PIN_PD9__TIOB2			PINMUX_PIN(PIN_PD9, 5, 2)
+> +#define PIN_PD9__FLEXCOM11_IO1		PINMUX_PIN(PIN_PD9, 6, 5)
+> +#define PIN_PD10			106
+> +#define PIN_PD10__GPIO			PINMUX_PIN(PIN_PD10, 0, 0)
+> +#define PIN_PD10__SDMMC2_CD		PINMUX_PIN(PIN_PD10, 1, 1)
+> +#define PIN_PD10__PCK6			PINMUX_PIN(PIN_PD10, 2, 2)
+> +#define PIN_PD10__I2SMCC0_DIN2		PINMUX_PIN(PIN_PD10, 3, 2)
+> +#define PIN_PD10__D1			PINMUX_PIN(PIN_PD10, 4, 2)
+> +#define PIN_PD10__TCLK2			PINMUX_PIN(PIN_PD10, 5, 2)
+> +#define PIN_PD10__FLEXCOM0_IO0		PINMUX_PIN(PIN_PD10, 6, 3)
+> +#define PIN_PD11			107
+> +#define PIN_PD11__GPIO			PINMUX_PIN(PIN_PD11, 0, 0)
+> +#define PIN_PD11__SDMMC2_1V8SEL		PINMUX_PIN(PIN_PD11, 1, 1)
+> +#define PIN_PD11__PCK7			PINMUX_PIN(PIN_PD11, 2, 2)
+> +#define PIN_PD11__I2SMCC0_DIN3		PINMUX_PIN(PIN_PD11, 3, 2)
+> +#define PIN_PD11__D2			PINMUX_PIN(PIN_PD11, 4, 2)
+> +#define PIN_PD11__TIOA3			PINMUX_PIN(PIN_PD11, 5, 2)
+> +#define PIN_PD11__FLEXCOM0_IO1		PINMUX_PIN(PIN_PD11, 6, 3)
+> +#define PIN_PD12			108
+> +#define PIN_PD12__GPIO			PINMUX_PIN(PIN_PD12, 0, 0)
+> +#define PIN_PD12__PCK1			PINMUX_PIN(PIN_PD12, 1, 2)
+> +#define PIN_PD12__FLEXCOM1_IO0		PINMUX_PIN(PIN_PD12, 2, 2)
+> +#define PIN_PD12__CANTX0		PINMUX_PIN(PIN_PD12, 4, 2)
+> +#define PIN_PD12__TIOB3			PINMUX_PIN(PIN_PD12, 5, 2)
+> +#define PIN_PD13			109
+> +#define PIN_PD13__GPIO			PINMUX_PIN(PIN_PD13, 0, 0)
+> +#define PIN_PD13__I2SMCC0_CK		PINMUX_PIN(PIN_PD13, 1, 2)
+> +#define PIN_PD13__FLEXCOM1_IO1		PINMUX_PIN(PIN_PD13, 2, 2)
+> +#define PIN_PD13__PWML0			PINMUX_PIN(PIN_PD13, 3, 4)
+> +#define PIN_PD13__CANRX0		PINMUX_PIN(PIN_PD13, 4, 2)
+> +#define PIN_PD13__TCLK3			PINMUX_PIN(PIN_PD13, 5, 2)
+> +#define PIN_PD14			110
+> +#define PIN_PD14__GPIO			PINMUX_PIN(PIN_PD14, 0, 0)
+> +#define PIN_PD14__I2SMCC0_MCK		PINMUX_PIN(PIN_PD14, 1, 2)
+> +#define PIN_PD14__FLEXCOM1_IO2		PINMUX_PIN(PIN_PD14, 2, 2)
+> +#define PIN_PD14__PWMH0			PINMUX_PIN(PIN_PD14, 3, 4)
+> +#define PIN_PD14__CANTX1		PINMUX_PIN(PIN_PD14, 4, 2)
+> +#define PIN_PD14__TIOA4			PINMUX_PIN(PIN_PD14, 5, 2)
+> +#define PIN_PD14__FLEXCOM2_IO0		PINMUX_PIN(PIN_PD14, 6, 5)
+> +#define PIN_PD15			111
+> +#define PIN_PD15__GPIO			PINMUX_PIN(PIN_PD15, 0, 0)
+> +#define PIN_PD15__I2SMCC0_WS		PINMUX_PIN(PIN_PD15, 1, 2)
+> +#define PIN_PD15__FLEXCOM1_IO3		PINMUX_PIN(PIN_PD15, 2, 2)
+> +#define PIN_PD15__PWML1			PINMUX_PIN(PIN_PD15, 3, 4)
+> +#define PIN_PD15__CANRX1		PINMUX_PIN(PIN_PD15, 4, 2)
+> +#define PIN_PD15__TIOB4			PINMUX_PIN(PIN_PD15, 5, 2)
+> +#define PIN_PD15__FLEXCOM2_IO1		PINMUX_PIN(PIN_PD15, 6, 5)
+> +#define PIN_PD16			112
+> +#define PIN_PD16__GPIO			PINMUX_PIN(PIN_PD16, 0, 0)
+> +#define PIN_PD16__I2SMCC0_DOUT0		PINMUX_PIN(PIN_PD16, 1, 2)
+> +#define PIN_PD16__FLEXCOM1_IO4		PINMUX_PIN(PIN_PD16, 2, 2)
+> +#define PIN_PD16__PWMH1			PINMUX_PIN(PIN_PD16, 3, 4)
+> +#define PIN_PD16__CANTX2		PINMUX_PIN(PIN_PD16, 4, 2)
+> +#define PIN_PD16__TCLK4			PINMUX_PIN(PIN_PD16, 5, 2)
+> +#define PIN_PD16__FLEXCOM3_IO0		PINMUX_PIN(PIN_PD16, 6, 5)
+> +#define PIN_PD17			113
+> +#define PIN_PD17__GPIO			PINMUX_PIN(PIN_PD17, 0, 0)
+> +#define PIN_PD17__I2SMCC0_DOUT1		PINMUX_PIN(PIN_PD17, 1, 2)
+> +#define PIN_PD17__FLEXCOM2_IO0		PINMUX_PIN(PIN_PD17, 2, 2)
+> +#define PIN_PD17__PWML2			PINMUX_PIN(PIN_PD17, 3, 4)
+> +#define PIN_PD17__CANRX2		PINMUX_PIN(PIN_PD17, 4, 2)
+> +#define PIN_PD17__TIOA5			PINMUX_PIN(PIN_PD17, 5, 2)
+> +#define PIN_PD17__FLEXCOM3_IO1		PINMUX_PIN(PIN_PD17, 6, 5)
+> +#define PIN_PD18			114
+> +#define PIN_PD18__GPIO			PINMUX_PIN(PIN_PD18, 0, 0)
+> +#define PIN_PD18__I2SMCC0_DOUT2		PINMUX_PIN(PIN_PD18, 1, 2)
+> +#define PIN_PD18__FLEXCOM2_IO1		PINMUX_PIN(PIN_PD18, 2, 2)
+> +#define PIN_PD18__PWMH2			PINMUX_PIN(PIN_PD18, 3, 4)
+> +#define PIN_PD18__CANTX3		PINMUX_PIN(PIN_PD18, 4, 2)
+> +#define PIN_PD18__TIOB5			PINMUX_PIN(PIN_PD18, 5, 2)
+> +#define PIN_PD18__FLEXCOM4_IO0		PINMUX_PIN(PIN_PD18, 6, 5)
+> +#define PIN_PD19			115
+> +#define PIN_PD19__GPIO			PINMUX_PIN(PIN_PD19, 0, 0)
+> +#define PIN_PD19__I2SMCC0_DOUT3		PINMUX_PIN(PIN_PD19, 1, 2)
+> +#define PIN_PD19__FLEXCOM2_IO2		PINMUX_PIN(PIN_PD19, 2, 2)
+> +#define PIN_PD19__PWML3			PINMUX_PIN(PIN_PD19, 3, 4)
+> +#define PIN_PD19__CANRX3		PINMUX_PIN(PIN_PD19, 4, 2)
+> +#define PIN_PD19__TCLK5			PINMUX_PIN(PIN_PD19, 5, 2)
+> +#define PIN_PD19__FLEXCOM4_IO1		PINMUX_PIN(PIN_PD19, 6, 5)
+> +#define PIN_PD20			116
+> +#define PIN_PD20__GPIO			PINMUX_PIN(PIN_PD20, 0, 0)
+> +#define PIN_PD20__PCK0			PINMUX_PIN(PIN_PD20, 1, 3)
+> +#define PIN_PD20__FLEXCOM2_IO3		PINMUX_PIN(PIN_PD20, 2, 2)
+> +#define PIN_PD20__PWMH3			PINMUX_PIN(PIN_PD20, 3, 4)
+> +#define PIN_PD20__CANTX4		PINMUX_PIN(PIN_PD20, 5, 2)
+> +#define PIN_PD20__FLEXCOM5_IO0		PINMUX_PIN(PIN_PD20, 6, 5)
+> +#define PIN_PD21			117
+> +#define PIN_PD21__GPIO			PINMUX_PIN(PIN_PD21, 0, 0)
+> +#define PIN_PD21__PCK1			PINMUX_PIN(PIN_PD21, 1, 3)
+> +#define PIN_PD21__FLEXCOM2_IO4		PINMUX_PIN(PIN_PD21, 2, 2)
+> +#define PIN_PD21__CANRX4		PINMUX_PIN(PIN_PD21, 4, 2)
+> +#define PIN_PD21__FLEXCOM5_IO1		PINMUX_PIN(PIN_PD21, 6, 5)
+> +#define PIN_PD21__G1_TXEN		PINMUX_PIN(PIN_PD21, 7, 1)
+> +#define PIN_PD22			118
+> +#define PIN_PD22__GPIO			PINMUX_PIN(PIN_PD22, 0, 0)
+> +#define PIN_PD22__PDMC0_CLK		PINMUX_PIN(PIN_PD22, 1, 2)
+> +#define PIN_PD22__PWMEXTRG0		PINMUX_PIN(PIN_PD22, 3, 4)
+> +#define PIN_PD22__RD1			PINMUX_PIN(PIN_PD22, 4, 2)
+> +#define PIN_PD22__CANTX5		PINMUX_PIN(PIN_PD22, 6, 2)
+> +#define PIN_PD22__G1_TX0		PINMUX_PIN(PIN_PD22, 7, 1)
+> +#define PIN_PD23			119
+> +#define PIN_PD23__GPIO			PINMUX_PIN(PIN_PD23, 0, 0)
+> +#define PIN_PD23__PDMC0_DS0		PINMUX_PIN(PIN_PD23, 1, 2)
+> +#define PIN_PD23__PWMEXTRG1		PINMUX_PIN(PIN_PD23, 3, 4)
+> +#define PIN_PD23__RF1			PINMUX_PIN(PIN_PD23, 4, 2)
+> +#define PIN_PD23__ISC_MCK		PINMUX_PIN(PIN_PD23, 5, 2)
+> +#define PIN_PD23__CANRX5		PINMUX_PIN(PIN_PD23, 6, 2)
+> +#define PIN_PD23__G1_TX1		PINMUX_PIN(PIN_PD23, 7, 1)
+> +#define PIN_PD24			120
+> +#define PIN_PD24__GPIO			PINMUX_PIN(PIN_PD24, 0, 0)
+> +#define PIN_PD24__PDMC0_DS1		PINMUX_PIN(PIN_PD24, 1, 2)
+> +#define PIN_PD24__PWMFI0		PINMUX_PIN(PIN_PD24, 3, 4)
+> +#define PIN_PD24__RK1			PINMUX_PIN(PIN_PD24, 4, 2)
+> +#define PIN_PD24__ISC_D0		PINMUX_PIN(PIN_PD24, 5, 2)
+> +#define PIN_PD24__G1_RXDV		PINMUX_PIN(PIN_PD24, 7, 1)
+> +#define PIN_PD25			121
+> +#define PIN_PD25__GPIO			PINMUX_PIN(PIN_PD25, 0, 0)
+> +#define PIN_PD25__PDMC1_CLK		PINMUX_PIN(PIN_PD25, 1, 2)
+> +#define PIN_PD25__FLEXCOM5_IO0		PINMUX_PIN(PIN_PD25, 2, 2)
+> +#define PIN_PD25__PWMFI1		PINMUX_PIN(PIN_PD25, 3, 4)
+> +#define PIN_PD25__TD1			PINMUX_PIN(PIN_PD25, 4, 2)
+> +#define PIN_PD25__ISC_D1		PINMUX_PIN(PIN_PD25, 5, 2)
+> +#define PIN_PD25__G1_RX0		PINMUX_PIN(PIN_PD25, 7, 1)
+> +#define PIN_PD26			122
+> +#define PIN_PD26__GPIO			PINMUX_PIN(PIN_PD26, 0, 0)
+> +#define PIN_PD26__PDMC1_DS0		PINMUX_PIN(PIN_PD26, 1, 2)
+> +#define PIN_PD26__FLEXCOM5_IO1		PINMUX_PIN(PIN_PD26, 2, 2)
+> +#define PIN_PD26__ADTRG			PINMUX_PIN(PIN_PD26, 3, 3)
+> +#define PIN_PD26__TF1			PINMUX_PIN(PIN_PD26, 4, 2)
+> +#define PIN_PD26__ISC_D2		PINMUX_PIN(PIN_PD26, 5, 2)
+> +#define PIN_PD26__G1_RX1		PINMUX_PIN(PIN_PD26, 7, 1)
+> +#define PIN_PD27			123
+> +#define PIN_PD27__GPIO			PINMUX_PIN(PIN_PD27, 0, 0)
+> +#define PIN_PD27__PDMC1_DS1		PINMUX_PIN(PIN_PD27, 1, 2)
+> +#define PIN_PD27__FLEXCOM5_IO2		PINMUX_PIN(PIN_PD27, 2, 2)
+> +#define PIN_PD27__TIOA0			PINMUX_PIN(PIN_PD27, 3, 3)
+> +#define PIN_PD27__TK1			PINMUX_PIN(PIN_PD27, 4, 2)
+> +#define PIN_PD27__ISC_D3		PINMUX_PIN(PIN_PD27, 5, 2)
+> +#define PIN_PD27__G1_RXER		PINMUX_PIN(PIN_PD27, 7, 1)
+> +#define PIN_PD28			124
+> +#define PIN_PD28__GPIO			PINMUX_PIN(PIN_PD28, 0, 0)
+> +#define PIN_PD28__RD0			PINMUX_PIN(PIN_PD28, 1, 2)
+> +#define PIN_PD28__FLEXCOM5_IO3		PINMUX_PIN(PIN_PD28, 2, 2)
+> +#define PIN_PD28__TIOB0			PINMUX_PIN(PIN_PD28, 3, 3)
+> +#define PIN_PD28__I2SMCC1_CK		PINMUX_PIN(PIN_PD28, 4, 2)
+> +#define PIN_PD28__ISC_D4		PINMUX_PIN(PIN_PD28, 5, 2)
+> +#define PIN_PD28__PWML3			PINMUX_PIN(PIN_PD28, 6, 5)
+> +#define PIN_PD28__G1_MDC		PINMUX_PIN(PIN_PD28, 7, 1)
+> +#define PIN_PD29			125
+> +#define PIN_PD29__GPIO			PINMUX_PIN(PIN_PD29, 0, 0)
+> +#define PIN_PD29__RF0			PINMUX_PIN(PIN_PD29, 1, 2)
+> +#define PIN_PD29__FLEXCOM5_IO4		PINMUX_PIN(PIN_PD29, 2, 2)
+> +#define PIN_PD29__TCLK0			PINMUX_PIN(PIN_PD29, 3, 3)
+> +#define PIN_PD29__I2SMCC1_WS		PINMUX_PIN(PIN_PD29, 4, 2)
+> +#define PIN_PD29__ISC_D5		PINMUX_PIN(PIN_PD29, 5, 2)
+> +#define PIN_PD29__PWMH3			PINMUX_PIN(PIN_PD29, 6, 5)
+> +#define PIN_PD29__G1_MDIO		PINMUX_PIN(PIN_PD29, 7, 1)
+> +#define PIN_PD30			126
+> +#define PIN_PD30__GPIO			PINMUX_PIN(PIN_PD30, 0, 0)
+> +#define PIN_PD30__RK0			PINMUX_PIN(PIN_PD30, 1, 2)
+> +#define PIN_PD30__FLEXCOM6_IO0		PINMUX_PIN(PIN_PD30, 2, 2)
+> +#define PIN_PD30__TIOA1			PINMUX_PIN(PIN_PD30, 3, 3)
+> +#define PIN_PD30__I2SMCC1_MCK		PINMUX_PIN(PIN_PD30, 4, 2)
+> +#define PIN_PD30__ISC_D6		PINMUX_PIN(PIN_PD30, 5, 2)
+> +#define PIN_PD30__PWMEXTRG0		PINMUX_PIN(PIN_PD30, 6, 5)
+> +#define PIN_PD30__G1_TXCK		PINMUX_PIN(PIN_PD30, 7, 1)
+> +#define PIN_PD31			127
+> +#define PIN_PD31__GPIO			PINMUX_PIN(PIN_PD31, 0, 0)
+> +#define PIN_PD31__TD0			PINMUX_PIN(PIN_PD31, 1, 2)
+> +#define PIN_PD31__FLEXCOM6_IO1		PINMUX_PIN(PIN_PD31, 2, 2)
+> +#define PIN_PD31__TIOB1			PINMUX_PIN(PIN_PD31, 3, 3)
+> +#define PIN_PD31__I2SMCC1_DOUT0		PINMUX_PIN(PIN_PD31, 4, 2)
+> +#define PIN_PD31__ISC_D7		PINMUX_PIN(PIN_PD31, 5, 2)
+> +#define PIN_PD31__PWM_EXTRG1		PINMUX_PIN(PIN_PD31, 6, 5)
+> +#define PIN_PD31__G1_TX2		PINMUX_PIN(PIN_PD31, 7, 1)
+> +#define PIN_PE0				128
+> +#define PIN_PE0__GPIO			PINMUX_PIN(PIN_PE0, 0, 0)
+> +#define PIN_PE0__TF0			PINMUX_PIN(PIN_PE0, 1, 2)
+> +#define PIN_PE0__FLEXCOM6_IO2		PINMUX_PIN(PIN_PE0, 2, 2)
+> +#define PIN_PE0__TCLK1			PINMUX_PIN(PIN_PE0, 3, 3)
+> +#define PIN_PE0__I2SMCC1_DOUT1		PINMUX_PIN(PIN_PE0, 4, 2)
+> +#define PIN_PE0__ISC_HSYNC		PINMUX_PIN(PIN_PE0, 5, 2)
+> +#define PIN_PE0__PWMFI0			PINMUX_PIN(PIN_PE0, 6, 5)
+> +#define PIN_PE0__G1_TX3			PINMUX_PIN(PIN_PE0, 7, 1)
+> +#define PIN_PE1				129
+> +#define PIN_PE1__GPIO			PINMUX_PIN(PIN_PE1, 0, 0)
+> +#define PIN_PE1__TK0			PINMUX_PIN(PIN_PE1, 1, 2)
+> +#define PIN_PE1__FLEXCOM6_IO3		PINMUX_PIN(PIN_PE1, 2, 2)
+> +#define PIN_PE1__TIOA2			PINMUX_PIN(PIN_PE1, 3, 3)
+> +#define PIN_PE1__I2SMCC1_DOUT2		PINMUX_PIN(PIN_PE1, 4, 2)
+> +#define PIN_PE1__ISC_VSYNC		PINMUX_PIN(PIN_PE1, 5, 2)
+> +#define PIN_PE1__PWMFI1			PINMUX_PIN(PIN_PE1, 6, 5)
+> +#define PIN_PE1__G1_RX2			PINMUX_PIN(PIN_PE1, 7, 1)
+> +#define PIN_PE2				130
+> +#define PIN_PE2__GPIO			PINMUX_PIN(PIN_PE2, 0, 0)
+> +#define PIN_PE2__PWML0			PINMUX_PIN(PIN_PE2, 1, 5)
+> +#define PIN_PE2__FLEXCOM6_IO4		PINMUX_PIN(PIN_PE2, 2, 2)
+> +#define PIN_PE2__TIOB2			PINMUX_PIN(PIN_PE2, 3, 3)
+> +#define PIN_PE2__I2SMCC1_DOUT3		PINMUX_PIN(PIN_PE2, 4, 2)
+> +#define PIN_PE2__ISC_FIELD		PINMUX_PIN(PIN_PE2, 5, 2)
+> +#define PIN_PE2__G1_RX3			PINMUX_PIN(PIN_PE2, 7, 1)
+> +#define PIN_PE3				131
+> +#define PIN_PE3__GPIO			PINMUX_PIN(PIN_PE3, 0, 0)
+> +#define PIN_PE3__PWMH0			PINMUX_PIN(PIN_PE3, 1, 5)
+> +#define PIN_PE3__FLEXCOM0_IO0		PINMUX_PIN(PIN_PE3, 2, 4)
+> +#define PIN_PE3__TCLK2			PINMUX_PIN(PIN_PE3, 3, 3)
+> +#define PIN_PE3__I2SMCC1_DIN0		PINMUX_PIN(PIN_PE3, 4, 2)
+> +#define PIN_PE3__ISC_PCK		PINMUX_PIN(PIN_PE3, 5, 2)
+> +#define PIN_PE3__G1_RXCK		PINMUX_PIN(PIN_PE3, 7, 1)
+> +#define PIN_PE4				132
+> +#define PIN_PE4__GPIO			PINMUX_PIN(PIN_PE4, 0, 0)
+> +#define PIN_PE4__PWML1			PINMUX_PIN(PIN_PE4, 1, 5)
+> +#define PIN_PE4__FLEXCOM0_IO1		PINMUX_PIN(PIN_PE4, 2, 4)
+> +#define PIN_PE4__TIOA3			PINMUX_PIN(PIN_PE4, 3, 3)
+> +#define PIN_PE4__I2SMCC1_DIN1		PINMUX_PIN(PIN_PE4, 4, 2)
+> +#define PIN_PE4__ISC_D8			PINMUX_PIN(PIN_PE4, 5, 2)
+> +#define PIN_PE4__G1_TXER		PINMUX_PIN(PIN_PE4, 7, 1)
+> +#define PIN_PE5				133
+> +#define PIN_PE5__GPIO			PINMUX_PIN(PIN_PE5, 0, 0)
+> +#define PIN_PE5__PWMH1			PINMUX_PIN(PIN_PE5, 1, 5)
+> +#define PIN_PE5__FLEXCOM0_IO2		PINMUX_PIN(PIN_PE5, 2, 4)
+> +#define PIN_PE5__TIOB3			PINMUX_PIN(PIN_PE5, 3, 3)
+> +#define PIN_PE5__I2SMCC1_DIN2		PINMUX_PIN(PIN_PE5, 4, 2)
+> +#define PIN_PE5__ISC_D9			PINMUX_PIN(PIN_PE5, 5, 2)
+> +#define PIN_PE5__G1_COL			PINMUX_PIN(PIN_PE5, 7, 1)
+> +#define PIN_PE6				134
+> +#define PIN_PE6__GPIO			PINMUX_PIN(PIN_PE6, 0, 0)
+> +#define PIN_PE6__PWML2			PINMUX_PIN(PIN_PE6, 1, 5)
+> +#define PIN_PE6__FLEXCOM0_IO3		PINMUX_PIN(PIN_PE6, 2, 4)
+> +#define PIN_PE6__TCLK3			PINMUX_PIN(PIN_PE6, 3, 3)
+> +#define PIN_PE6__I2SMCC1_DIN3		PINMUX_PIN(PIN_PE6, 4, 2)
+> +#define PIN_PE6__ISC_D10		PINMUX_PIN(PIN_PE6, 5, 2)
+> +#define PIN_PE6__G1_CRS			PINMUX_PIN(PIN_PE6, 7, 1)
+> +#define PIN_PE7				135
+> +#define PIN_PE7__GPIO			PINMUX_PIN(PIN_PE7, 0, 0)
+> +#define PIN_PE7__PWMH2			PINMUX_PIN(PIN_PE7, 1, 5)
+> +#define PIN_PE7__FLEXCOM0_IO4		PINMUX_PIN(PIN_PE7, 2, 4)
+> +#define PIN_PE7__TIOA4			PINMUX_PIN(PIN_PE7, 3, 3)
+> +#define PIN_PE7__ISC_D11		PINMUX_PIN(PIN_PE7, 5, 2)
+> +#define PIN_PE7__G1_TSUCOMP		PINMUX_PIN(PIN_PE7, 7, 1)
+> +
+> diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
+> new file mode 100644
+> index 000000000000..03e4bb1126ae
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/sama7g5.dtsi
+> @@ -0,0 +1,555 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + *  sama7g5.dtsi - Device Tree Include file for SAMA7G5 family SoC
+> + *
+> + *  Copyright (C) 2020 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + *  Author: Eugen Hristev <eugen.hristev@microchip.com>
+> + *  Author: Claudiu Beznea <claudiu.beznea@microchip.com>
+> + *
+> + */
+> +
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/clock/at91.h>
+> +#include <dt-bindings/dma/at91.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	model = "Microchip SAMA7G5 family SoC";
+> +	compatible = "microchip,sama7g5";
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	interrupt-parent = <&gic>;
+> +
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		cpu0: cpu@0 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a7";
+> +			reg = <0x0>;
+> +			clocks = <&pmc PMC_TYPE_CORE PMC_CPU>;
+> +			clock-names = "cpu";
+> +			operating-points-v2 = <&cpu_opp_table>;
+> +		};
+> +	};
+> +
+> +	cpu_opp_table: opp-table {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp-600000000 {
+> +			opp-hz = /bits/ 64 <600000000>;
+> +			opp-microvolt = <1125000 1050000 1225000>;
+> +			clock-latency-ns = <50000>;
+> +		};
+> +
+> +		opp-800000000 {
+> +			opp-hz = /bits/ 64 <800000000>;
+> +			opp-microvolt = <1175000 1125000 1225000>;
+> +			clock-latency-ns = <50000>;
+> +		};
+> +
+> +		opp-1000000001 {
+> +			opp-hz = /bits/ 64 <1000000001>;
+> +			opp-microvolt = <1275000 1225000 1300000>;
+> +			clock-latency-ns = <50000>;
+> +		};
+> +
+> +	};
+> +
+> +	clocks {
+> +		slow_xtal: slow_xtal {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +		};
+> +
+> +		main_xtal: main_xtal {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +		};
+> +
+> +		usb_clk: usb_clk {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +			clock-frequency = <48000000>;
+> +		};
+> +	};
+> +
+> +	vddout25: fixed-regulator-vddout25 {
+> +		compatible = "regulator-fixed";
+> +
+> +		regulator-name = "VDDOUT25";
+> +		regulator-min-microvolt = <2500000>;
+> +		regulator-max-microvolt = <2500000>;
+> +		regulator-boot-on;
+> +		status = "disabled";
+> +	};
+> +
+> +	ns_sram: sram@100000 {
+> +		compatible = "mmio-sram";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		reg = <0x100000 0x20000>;
+> +		ranges;
+> +	};
+> +
+> +	soc {
+> +		compatible = "simple-bus";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		secumod: secumod@e0004000 {
+> +			compatible = "atmel,sama5d2-secumod", "syscon";
+> +			reg = <0xe0004000 0x4000>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +		};
+> +
+> +		sfrbu: sfr@e0008000 {
+> +			compatible = "atmel,sama5d2-sfrbu", "syscon";
+> +			reg = <0xe0008000 0x20>;
+> +		};
+> +
+> +		pioA: pinctrl@e0014000 {
+> +			compatible = "microchip,sama7g5-pinctrl";
+> +			reg = <0xe0014000 0x800>;
+> +			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 11>;
+> +		};
+> +
+> +		pmc: pmc@e0018000 {
+> +			compatible = "microchip,sama7g5-pmc", "syscon";
+> +			reg = <0xe0018000 0x200>;
+> +			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +			#clock-cells = <2>;
+> +			clocks = <&clk32k 1>, <&clk32k 0>, <&main_xtal>;
+> +			clock-names = "td_slck", "md_slck", "main_xtal";
+> +		};
+> +
+> +		rtt: rtt@e001d020 {
+> +			compatible = "microchip,sam9x60-rtt", "atmel,at91sam9260-rtt";
+> +			reg = <0xe001d020 0x30>;
+> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk32k 0>;
+> +		};
+> +
+> +		clk32k: clock-controller@e001d050 {
+> +			compatible = "microchip,sam9x60-sckc";
+> +			reg = <0xe001d050 0x4>;
+> +			clocks = <&slow_xtal>;
+> +			#clock-cells = <1>;
+> +		};
+> +
+> +		gpbr: gpbr@e001d060 {
+> +			compatible = "microchip,sam9x60-gpbr", "atmel,at91sam9260-gpbr", "syscon";
+> +			reg = <0xe001d060 0x48>;
+> +		};
+> +
+> +		ps_wdt: watchdog@e001d180 {
+> +			compatible = "microchip,sam9x60-wdt";
+> +			reg = <0xe001d180 0x24>;
+> +			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk32k 0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		sdmmc0: mmc@e1204000 {
+> +			compatible = "microchip,sam9x60-sdhci";
+> +			reg = <0xe1204000 0x4000>;
+> +			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 80>, <&pmc PMC_TYPE_GCK 80>;
+> +			clock-names = "hclock", "multclk";
+> +			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_SYSPLL>;
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 80>;
+> +			assigned-clock-rates = <200000000>;
+> +			microchip,sdcal-inverted;
+> +			status = "disabled";
+> +		};
+> +
+> +		sdmmc1: mmc@e1208000 {
+> +			compatible = "microchip,sam9x60-sdhci";
+> +			reg = <0xe1208000 0x4000>;
+> +			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 81>, <&pmc PMC_TYPE_GCK 81>;
+> +			clock-names = "hclock", "multclk";
+> +			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_SYSPLL>;
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 81>;
+> +			assigned-clock-rates = <200000000>;
+> +			microchip,sdcal-inverted;
+> +			status = "disabled";
+> +		};
+> +
+> +		sdmmc2: mmc@e120c000 {
+> +			compatible = "microchip,sam9x60-sdhci";
+> +			reg = <0xe120c000 0x4000>;
+> +			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 82>, <&pmc PMC_TYPE_GCK 82>;
+> +			clock-names = "hclock", "multclk";
+> +			assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_SYSPLL>;
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 82>;
+> +			assigned-clock-rates = <200000000>;
+> +			microchip,sdcal-inverted;
+> +			status = "disabled";
+> +		};
+> +
+> +		pwm: pwm@e1604000 {
+> +			compatible = "atmel,sama5d2-pwm";
+> +			reg = <0xe1604000 0x4000>;
+> +			interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
+> +			#pwm-cells = <3>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 77>;
+> +			status = "disabled";
+> +		};
+> +
+> +		spdifrx: spdifrx@e1614000 {
+> +			#sound-dai-cells = <0>;
+> +			compatible = "microchip,sama7g5-spdifrx";
+> +			reg = <0xe1614000 0x4000>;
+> +			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+> +			dmas = <&dma0 AT91_XDMAC_DT_PERID(49)>;
+> +			dma-names = "rx";
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 84>, <&pmc PMC_TYPE_GCK 84>;
+> +			clock-names = "pclk", "gclk";
+> +			status = "disabled";
+> +		};
+> +
+> +		spdiftx: spdiftx@e1618000 {
+> +			#sound-dai-cells = <0>;
+> +			compatible = "microchip,sama7g5-spdiftx";
+> +			reg = <0xe1618000 0x4000>;
+> +			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+> +			dmas = <&dma0 AT91_XDMAC_DT_PERID(50)>;
+> +			dma-names = "tx";
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 85>, <&pmc PMC_TYPE_GCK 85>;
+> +			clock-names = "pclk", "gclk";
+> +		};
+> +
+> +		i2s0: i2s@e161c000 {
+> +			compatible = "microchip,sama7g5-i2smcc";
+> +			#sound-dai-cells = <0>;
+> +			reg = <0xe161c000 0x4000>;
+> +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+> +			dmas = <&dma0 AT91_XDMAC_DT_PERID(33)>, <&dma0 AT91_XDMAC_DT_PERID(34)>;
+> +			dma-names = "rx", "tx";
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 57>, <&pmc PMC_TYPE_GCK 57>;
+> +			clock-names = "pclk", "gclk";
+> +			status = "disabled";
+> +		};
+> +
+> +		i2s1: i2s@e1620000 {
+> +			compatible = "microchip,sama7g5-i2smcc";
+> +			#sound-dai-cells = <0>;
+> +			reg = <0xe1620000 0x4000>;
+> +			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+> +			dmas = <&dma0 AT91_XDMAC_DT_PERID(35)>, <&dma0 AT91_XDMAC_DT_PERID(36)>;
+> +			dma-names = "rx", "tx";
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 58>, <&pmc PMC_TYPE_GCK 58>;
+> +			clock-names = "pclk", "gclk";
+> +			status = "disabled";
+> +		};
+> +
+> +		pit64b0: timer@e1800000 {
+> +			compatible = "microchip,sam9x60-pit64b";
+> +			reg = <0xe1800000 0x4000>;
+> +			interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 70>, <&pmc PMC_TYPE_GCK 70>;
+> +			clock-names = "pclk", "gclk";
+> +		};
+> +
+> +		pit64b1: timer@e1804000 {
+> +			compatible = "microchip,sam9x60-pit64b";
+> +			reg = <0xe1804000 0x4000>;
+> +			interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 71>, <&pmc PMC_TYPE_GCK 71>;
+> +			clock-names = "pclk", "gclk";
+> +		};
+> +
+> +		flx0: flexcom@e1818000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe1818000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 38>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe1818000 0x800>;
+> +			status = "disabled";
+> +
+> +			uart0: serial@200 {
+> +				compatible = "atmel,at91sam9260-usart";
+> +				reg = <0x200 0x200>;
+> +				interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 38>;
+> +				clock-names = "usart";
+> +				dmas = <&dma1 AT91_XDMAC_DT_PERID(6)>,
+> +					<&dma1 AT91_XDMAC_DT_PERID(5)>;
+> +				dma-names = "tx", "rx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		flx1: flexcom@e181c000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe181c000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 39>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe181c000 0x800>;
+> +			status = "disabled";
+> +
+> +			i2c1: i2c@600 {
+> +				compatible = "microchip,sam9x60-i2c";
+> +				reg = <0x600 0x200>;
+> +				interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 39>;
+> +				atmel,fifo-size = <32>;
+> +				dmas = <&dma0 AT91_XDMAC_DT_PERID(7)>,
+> +					<&dma0 AT91_XDMAC_DT_PERID(8)>;
+> +				dma-names = "rx", "tx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		flx3: flexcom@e1824000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe1824000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 41>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe1824000 0x800>;
+> +			status = "disabled";
+> +
+> +			uart3: serial@200 {
+> +				compatible = "atmel,at91sam9260-usart";
+> +				reg = <0x200 0x200>;
+> +				interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 41>;
+> +				clock-names = "usart";
+> +				dmas = <&dma1 AT91_XDMAC_DT_PERID(12)>,
+> +					<&dma1 AT91_XDMAC_DT_PERID(11)>;
+> +				dma-names = "tx", "rx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		trng: rng@e2010000 {
+> +			compatible = "atmel,at91sam9g45-trng";
+> +			reg = <0xe2010000 0x100>;
+> +			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 97>;
+> +			status = "disabled";
+> +		};
+> +
+> +		flx4: flexcom@e2018000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe2018000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 42>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe2018000 0x800>;
+> +			status = "disabled";
+> +
+> +			uart4: serial@200 {
+> +				compatible = "atmel,at91sam9260-usart";
+> +				reg = <0x200 0x200>;
+> +				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 42>;
+> +				clock-names = "usart";
+> +				dmas = <&dma1 AT91_XDMAC_DT_PERID(14)>,
+> +					<&dma1 AT91_XDMAC_DT_PERID(13)>;
+> +				dma-names = "tx", "rx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				atmel,fifo-size = <16>;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		flx7: flexcom@e2024000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe2024000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 45>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe2024000 0x800>;
+> +			status = "disabled";
+> +
+> +			uart7: serial@200 {
+> +				compatible = "atmel,at91sam9260-usart";
+> +				reg = <0x200 0x200>;
+> +				interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 45>;
+> +				clock-names = "usart";
+> +				dmas = <&dma1 AT91_XDMAC_DT_PERID(20)>,
+> +					<&dma1 AT91_XDMAC_DT_PERID(19)>;
+> +				dma-names = "tx", "rx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				atmel,fifo-size = <16>;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		gmac0: ethernet@e2800000 {
+> +			compatible = "microchip,sama7g5-gem";
+> +			reg = <0xe2800000 0x1000>;
+> +			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 51>, <&pmc PMC_TYPE_PERIPHERAL 51>, <&pmc PMC_TYPE_GCK 51>, <&pmc PMC_TYPE_GCK 53>;
+> +			clock-names = "pclk", "hclk", "tx_clk", "tsu_clk";
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 51>;
+> +			assigned-clock-rates = <125000000>;
+> +			status = "disabled";
+> +		};
+> +
+> +		gmac1: ethernet@e2804000 {
+> +			compatible = "microchip,sama7g5-emac";
+> +			reg = <0xe2804000 0x1000>;
+> +			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH
+> +				      GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 52>, <&pmc PMC_TYPE_PERIPHERAL 52>;
+> +			clock-names = "pclk", "hclk";
+> +			status = "disabled";
+> +		};
+> +
+> +		dma0: dma-controller@e2808000 {
+> +			compatible = "microchip,sama7g5-dma";
+> +			reg = <0xe2808000 0x1000>;
+> +			interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells = <1>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 22>;
+> +			clock-names = "dma_clk";
+> +			status = "disabled";
+> +		};
+> +
+> +		dma1: dma-controller@e280c000 {
+> +			compatible = "microchip,sama7g5-dma";
+> +			reg = <0xe280c000 0x1000>;
+> +			interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells = <1>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 23>;
+> +			clock-names = "dma_clk";
+> +			status = "disabled";
+> +		};
+> +
+> +		/* Place dma2 here despite it's address */
+> +		dma2: dma-controller@e1200000 {
+> +			compatible = "microchip,sama7g5-dma";
+> +			reg = <0xe1200000 0x1000>;
+> +			interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
+> +			#dma-cells = <1>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 24>;
+> +			clock-names = "dma_clk";
+> +			dma-requests = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		flx8: flexcom@e2818000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe2818000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 46>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe2818000 0x800>;
+> +			status = "disabled";
+> +
+> +			i2c8: i2c@600 {
+> +				compatible = "microchip,sam9x60-i2c";
+> +				reg = <0x600 0x200>;
+> +				interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 46>;
+> +				atmel,fifo-size = <32>;
+> +				dmas = <&dma0 AT91_XDMAC_DT_PERID(21)>,
+> +					<&dma0 AT91_XDMAC_DT_PERID(22)>;
+> +				dma-names = "rx", "tx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		flx9: flexcom@e281c000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe281c000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 47>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe281c000 0x800>;
+> +			status = "disabled";
+> +
+> +			i2c9: i2c@600 {
+> +				compatible = "microchip,sam9x60-i2c";
+> +				reg = <0x600 0x200>;
+> +				interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 47>;
+> +				atmel,fifo-size = <32>;
+> +				dmas = <&dma0 AT91_XDMAC_DT_PERID(23)>,
+> +					<&dma0 AT91_XDMAC_DT_PERID(24)>;
+> +				dma-names = "rx", "tx";
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		flx11: flexcom@e2824000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe2824000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 49>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe2824000 0x800>;
+> +			status = "disabled";
+> +
+> +			spi11: spi@400 {
+> +				compatible = "atmel,at91rm9200-spi";
+> +				reg = <0x400 0x200>;
+> +				interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 49>;
+> +				clock-names = "spi_clk";
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				atmel,fifo-size = <32>;
+> +				dmas = <&dma0 AT91_XDMAC_DT_PERID(27)>,
+> +					    <&dma0 AT91_XDMAC_DT_PERID(28)>;
+> +				dma-names = "rx", "tx";
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+> +		gic: interrupt-controller@e8c11000 {
+> +			compatible = "arm,cortex-a7-gic";
+> +			#interrupt-cells = <3>;
+> +			#address-cells = <0>;
+> +			interrupt-controller;
+> +			interrupt-parent;
+> +			reg = <0xe8c11000 0x1000>,
+> +				<0xe8c12000 0x2000>;
+> +		};
+> +	};
+> +};
+> 
+
+
 -- 
-2.31.1
-
+Nicolas Ferre
