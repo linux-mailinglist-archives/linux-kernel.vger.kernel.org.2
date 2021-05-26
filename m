@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F3F3921D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB913921DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhEZVR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:17:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhEZVR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:17:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A76261157;
-        Wed, 26 May 2021 21:16:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622063784;
-        bh=uEXIFI+L4SKigKIAweO/cjr41FgRtohujauek92fRok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hst1KNnUY9lcj3qT6j5XE+yamkkUaMR14Ud4rB+OHolTQ1bf4NxrqlqUq99GcZuw2
-         HmpIsXDBVvZpkrw0r2QFTo+pikM5CBKb+bwUqkEHE90GU78c6ohwT1Us81C5vaCahI
-         TodFvqBrlZKP0CMBkCUgS9+/2fti+S15SSo+enyp3vcYupHrfpH2Q+OKyGQZHR5hxb
-         cwk+ZIjZ7aWTZlidE39HU5Kxoo6Yo870MdqrQWsehiMplHRn8x+mSNOyc2eivUKexg
-         HqGaJAHBakhfRF3fJoTk3wUTLGkeQyWPobFq1GUWBWnqUuVtyP7iahyhLhiNN9Fbt0
-         /POv0zkmAlloA==
-Date:   Wed, 26 May 2021 14:16:24 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        joe@perches.com
-Subject: Re: [PATCH][next] xfs: Fix fall-through warnings for Clang
-Message-ID: <20210526211624.GB202121@locust>
-References: <20210420230652.GA70650@embeddedor>
- <20210420233850.GQ3122264@magnolia>
- <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
- <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
+        id S233725AbhEZVSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233241AbhEZVSh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:18:37 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A24C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:17:03 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id m190so2037831pga.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k6mJe3ISeJnwgKzjO2ePdb3h4jxlFF2xvibZQHBvtTU=;
+        b=aioJbj4TdMs8oefTrnLR/RoKtdmEYZ+pVc0W6RP1vQ1JmJM5awlKi2dp/cw6Fs0NsB
+         Y5MJHOnxj9dalfPd5aQowX0ufZwk0Y/v8eYgEr6ZiFdBvknnYWtZbqTWEaiftUgK1xFd
+         j6Qza8oh6mEh8D5AHSUZtHlJyAWd80LHSoAX46HIeJxlfXFufQyb60lGrunRAoiFiXJ6
+         dfBZ6i8xsc1h1BibDsVcN+JCdhAqqqkmO07ncQv1qjjYBzLr6iwaGH0npX3TafSllbCt
+         2/xaSiTFnIwUOJNpTqYIZGFa2SDC8gdWfi+XS523IOxo65GG1qEWbIrdtJTCZ0w1OtsO
+         X/eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k6mJe3ISeJnwgKzjO2ePdb3h4jxlFF2xvibZQHBvtTU=;
+        b=glX+UGLPZCEqRlwAGR5vF/WIEU3HPAAARNZ1qascZxYUiVwKATPoUPmT24yzBC3FKZ
+         38sokVzSMbjvDdNn7cgmf60MTNvddl3CfWvWUceAmrmI92HJ6O5lJzlNe4wAJ+jo/5SL
+         9nhRhpkfM8Y7BvnTvvyST7H7PPpjvRE2nLP0ADam5ay69/mrkvVh632QrcyeCq4F5zBZ
+         35w0OjygbYRTXSlMq4sTCr1ZweaUK8EbENpKzd++hES3CRPeDkrr286DxoPDLoDpauvw
+         C2tomjvJC5yJrf/+3NLBRuATc30Qz5J+Y+9HuUXDSDy6XU26oi0OTmrwfuoNVyIGaw+c
+         GRNA==
+X-Gm-Message-State: AOAM531mDNfXxhjGexHwtgD/h+52+L/xNZDhJjS/sAD1hUqOQy86Ueut
+        PKwIQmzuyi8QZora6/6UrYKNlg==
+X-Google-Smtp-Source: ABdhPJym48czUmP/lanrXEC0yHDmgc7Ua1qA5PFNYQidngZyPGe+k+zNRRbvZVsNw5o2jDtj3K48gA==
+X-Received: by 2002:a63:2307:: with SMTP id j7mr458220pgj.20.1622063822494;
+        Wed, 26 May 2021 14:17:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id n21sm134181pfu.99.2021.05.26.14.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 14:17:02 -0700 (PDT)
+Date:   Wed, 26 May 2021 21:16:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Subject: Re: Writable module parameters in KVM
+Message-ID: <YK66ymMQQawfgQUD@google.com>
+References: <CANgfPd_Pq2MkRUZiJynh7zkNuKE5oFGRjKeCjmgYP4vwvfMc1g@mail.gmail.com>
+ <35fe7a86-d808-00e9-a6aa-e77b731bd4bf@redhat.com>
+ <2fd417c59f40bd10a3446f9ed4be434e17e9a64f.camel@redhat.com>
+ <YK5s5SUQh69a19/F@google.com>
+ <927cbe06-7183-1153-95ea-f97eb4ff12f6@redhat.com>
+ <CANgfPd-wcyP_nNNSuXMcZ0S+fmkcOEpQaPTS_5EUmDsEVguSCw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
+In-Reply-To: <CANgfPd-wcyP_nNNSuXMcZ0S+fmkcOEpQaPTS_5EUmDsEVguSCw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 01:21:06PM -0500, Gustavo A. R. Silva wrote:
+On Wed, May 26, 2021, Ben Gardon wrote:
+> I don't know if there's a great way to formally encode this distinction, but
+> I see two major classes of writable params in terms of complexity:
+>
+> 1. parameters that are captured on VM creation and follow the life of
+> the VM e.g. the TDP MMU
+>
+> 2. parameters which have an effect on all VMs on the system when
+> changed e.g. internally we have sysctls to change NX reclaim
+> parameters
 > 
-> 
-> On 4/20/21 18:56, Gustavo A. R. Silva wrote:
-> > 
-> > 
-> > On 4/20/21 18:38, Darrick J. Wong wrote:
-> >> On Tue, Apr 20, 2021 at 06:06:52PM -0500, Gustavo A. R. Silva wrote:
-> >>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> >>> the following warnings by replacing /* fall through */ comments,
-> >>> and its variants, with the new pseudo-keyword macro fallthrough:
-> >>>
-> >>> fs/xfs/libxfs/xfs_alloc.c:3167:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/libxfs/xfs_da_btree.c:286:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/libxfs/xfs_ag_resv.c:346:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/libxfs/xfs_ag_resv.c:388:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_bmap_util.c:246:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_export.c:88:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_export.c:96:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_file.c:867:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_ioctl.c:562:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_ioctl.c:1548:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_iomap.c:1040:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_inode.c:852:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_log.c:2627:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/xfs_trans_buf.c:298:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/bmap.c:275:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/btree.c:48:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/common.c:85:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/common.c:138:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/common.c:698:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/dabtree.c:51:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>> fs/xfs/scrub/repair.c:951:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >>>
-> >>> Notice that Clang doesn't recognize /* fall through */ comments as
-> >>> implicit fall-through markings, so in order to globally enable
-> >>> -Wimplicit-fallthrough for Clang, these comments need to be
-> >>> replaced with fallthrough; in the whole codebase.
-> >>>
-> >>> Link: https://github.com/KSPP/linux/issues/115
-> >>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >>
-> >> I've already NAKd this twice, so I guess I'll NAK it a third time.
-> > 
-> > Darrick,
-> > 
-> > The adoption of fallthrough; has been already accepted and in use since Linux v5.7:
-> > 
-> > https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> > 
-> > This change is needed, and I would really prefer if this goes upstream through your tree.
-> > 
-> > Linus has taken these patches directly for a while, now.
-> > 
-> > Could you consider taking it this time? :)
-> > 
-> 
-> Hi Darrick,
-> 
-> If you don't mind, I will take this in my -next[1] branch for v5.14, so we can globally enable
-> -Wimplicit-fallthrough for Clang in that release.
-> 
-> We had thousands of these warnings and now we are down to 47 in next-20210526,
-> 22 of which are fixed with this patch.
+> I think class 1 is substantially easier to reason about from a code
+> perspective, but might be more confusing to userspace, as the current
+> value of the parameter has no bearing on the value captured by the VM.
+> Class 2 will probably be more complex to implement, require
+> synchronization, and need a better justification.
 
-I guess we're all required to kowtow to a bunch of effing bots now.
-Hooray for having to have a macro to code-switch for the sake of
-stupid compiler writers who refuse to give the rest of us a single
-workable way to signal "this switch code block should not end here":
+That assessement isn't universally true, e.g. 'npt' and 'ept' could be snapshotted
+and put into (1), but as discussed, the fallout would be spectactular.  And on
+the other side, the flush/sync on reuse flag is fully dynamic and falls into (2),
+yet is trivial to implement.
 
-/* fall through */
-__attribute__((fallthrough));
-do { } while (0) /* fall through */
-
-and soon the ISO geniuses will make it worse by adding to C2x:
-
-[[fallthrough]];
-
-Hooray!  Macros to abstractify stupidity!!!!
-
-Dave and I have told you and Miaohe several[1] times[2] to fix[3] the
-compiler, but clearly you don't care what we think and have decided to
-ram this in through Linus anyway.
-
-Since that is what you choose, do not send me email again.
-
-NAKed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-[1] https://lore.kernel.org/linux-xfs/20200820191237.GK6096@magnolia/
-[2] https://lore.kernel.org/linux-xfs/20210420230652.GA70650@embeddedor/
-[3] https://lore.kernel.org/linux-xfs/20200708065512.GN2005@dread.disaster.area/
-
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+That said, I don't think it matters because I don't think classifying params
+will change anyone's behavior.  Each param would still need to be justified and
+reviewed on a case-by-case basis.
