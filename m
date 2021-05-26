@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4973921C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5A13921CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhEZVIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        id S234048AbhEZVMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbhEZVIP (ORCPT
+        with ESMTP id S230499AbhEZVMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:08:15 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5510DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:06:42 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id q7so4655738lfr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:06:42 -0700 (PDT)
+        Wed, 26 May 2021 17:12:25 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E30C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:10:52 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id e17so1933621pfl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:10:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VLd5OXrScZXh8ykov1e7sSfF7Q/pna3Hb4gFF9BgLMI=;
-        b=Ck/H3n00G9X+o5dBtK+xs1rR6RxEax0xZqqm54XZaB9I1sNZW6rXKA0m99GVrjlpfb
-         t0KZXtwPUvQC2nJxL6i1J9AQGc0Ov7Y8iWCR/HuR2uDhqTZKg5Tj1VJH/3GlFv5J7QoE
-         NlUFgRlZZmyuFTe2Bk5CRJTRBSgJc6tqIO2+dI/C770ZMunL88YasX7pxMvgWhJ+mKwx
-         qG7PcZBrG/XTDzAksOGYWf6i3tu8OfVbNqvZMKsCygvClTDa5Uhd8RhG/jNX/6yuN9tn
-         +nVobvsfsOFDdnYHJBfzdnP9KvjRTC/y9GnpiaxGmYf6RcJWBxImy7Xtn0+T/nnKauFF
-         ZjDw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f/rbjKviRvFVX0Te8u4k8bqeiTictapTyzo3WDV9mhs=;
+        b=Memse1iJsMVqDZS5ISUSOn2BjkDNVbGZ2ReD6ANclbxOAXOX3XbY10C31X5O97HFbe
+         D2z7fgKGs44dEuKE+PB4kGr6DjpUXnajPR0vdWaTZiW87hEYN0Y+XZyb2KGUA/Hiy3hX
+         AWWoBXvpL22VtsdZ1z4Dvn0bWZp+48g7MsGEyuVdGdSTvb4vZN3JUb4V0fm5It7dFlHp
+         IlRlVf5JaL5yXltVC48qFKg5rgvIZ/Yob9p2R8j36IW6PvI2A7kCqhKxhQebVfrMSu/+
+         nSZ1Ppqy7V6fkzjvXCfj1aSgTtOLlufuXsdJ0TFgC+Vfu7PLdQd+ch5HBc1fdteiB+z2
+         /Z5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VLd5OXrScZXh8ykov1e7sSfF7Q/pna3Hb4gFF9BgLMI=;
-        b=RPXqP3h9gwKmFchBIVwxSYzX76fzepNVSXcoHmIeU8R7j+7W/4Not2bGh2lmYLaLym
-         qg3vhxoPlQgh5z1FX66bFaoXLX5t+liF8tMMYzmcYUTRmcoQUIc+2qTMFB+CS9ArD8ra
-         PDIAiKkbtgepL8WZtMy5uk/OLz2ZFoPeOvPM52J8HYlfg6E7ZHg3k4NE+it+PsKRntzF
-         WuX/DByJbAdg9P1UETjATPlignsALVTBm1sKO+xTSw6V0Q8YRb/mBT229NUk6ijnrJL5
-         x/HU6T1JT8xoYrNR4Uuuee+++UixVaTiDDdei4MH7/nw5MtWKIqc/UQwPC+lbrnoZWYQ
-         /7QQ==
-X-Gm-Message-State: AOAM530h1/24vjw5Kks02CA7vUuRNz9aNLgDst09saN0HuVnnDJjSz8a
-        i9p0JtRbvQvxuYl2i+X2h20=
-X-Google-Smtp-Source: ABdhPJwavZWnuA1g9gUQdiZMg2Dj80xDEzIKwCNc+3hki0pbQVZpHTRqMuKOjkCv69ZX4E4ffKaRSg==
-X-Received: by 2002:a05:6512:3196:: with SMTP id i22mr39784lfe.492.1622063200706;
-        Wed, 26 May 2021 14:06:40 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id r10sm16900lfe.110.2021.05.26.14.06.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f/rbjKviRvFVX0Te8u4k8bqeiTictapTyzo3WDV9mhs=;
+        b=J0kEHdl2EKw7AIPB/x5G7/503IJ/a0X8IF5T17++Em/32m2/xpQrlv6eNmHcUljgjs
+         12LZyos9nH38n9zZ0bOVlKq37GF81J17z+A6G/u2uvCzgidtMFsRCY739I7mFDMxclIo
+         CzvdR0Kvb1/iEWmjKsRm5mxq+wwXP5rpjzdgTEDE7iA3adX3eUPmAIyIu/twSM4D5mPR
+         gQXVr7jfvpELw2MAs8bishWq0cnLVMsoNtxsCKQ4t2oPbT01TK26pwS1CI1+eOBUsxMe
+         czZo/39h6JuTKLoxo/wVYGgk/25qqfNPd2XkLqmIs8TBP9KD1elQFqjTGfDvRCH8+wvp
+         HedQ==
+X-Gm-Message-State: AOAM5315brg/+acEwS2eL10rT3Ggt9M4o9Aj+Qdomh22E9tvmWhJUOJC
+        1boFKE+WamvNEXozNYjHAgGQkQ==
+X-Google-Smtp-Source: ABdhPJwEpf8QCKAcrBl9kdSuy27Ib13bkmT1ykfsRRAaonJmBmQooZBPSunJU6Yma+he3eQ1OqYBBg==
+X-Received: by 2002:a65:6a52:: with SMTP id o18mr392699pgu.177.1622063452156;
+        Wed, 26 May 2021 14:10:52 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id o7sm9219pgs.45.2021.05.26.14.10.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 14:06:40 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] dm table: Constify static struct blk_ksm_ll_ops
-Date:   Wed, 26 May 2021 23:06:37 +0200
-Message-Id: <20210526210637.21528-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 26 May 2021 14:10:51 -0700 (PDT)
+Date:   Wed, 26 May 2021 21:10:47 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Isaku Yamahata <isaku.yamahata@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, isaku.yamahata@gmail.com
+Subject: Re: [RFC PATCH 00/10] KVM: x86/mmu: simplify argument to kvm page
+ fault handler
+Message-ID: <YK65V++S2Kt1OLTu@google.com>
+References: <cover.1618914692.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618914692.git.isaku.yamahata@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of dm_ksm_ll_ops is to make a copy of it to the ksm_ll_ops
-field in the blk_keyslot_manager struct. Make it const to allow the
-compiler to put it in read-only memory.
+On Tue, Apr 20, 2021, Isaku Yamahata wrote:
+> This is a preliminary clean up for TDX which complicates KVM page fault
+> execution path.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/md/dm-table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ooh, a series to complicate the page fault path!  ;-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index ee47a332b462..7e88e5e06922 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1244,7 +1244,7 @@ static int dm_keyslot_evict(struct blk_keyslot_manager *ksm,
- 	return args.err;
- }
- 
--static struct blk_ksm_ll_ops dm_ksm_ll_ops = {
-+static const struct blk_ksm_ll_ops dm_ksm_ll_ops = {
- 	.keyslot_evict = dm_keyslot_evict,
- };
- 
--- 
-2.31.1
+Grammatical snarkiness aside, I'm all in favor of adding a struct to collect the
+page fault collateral.  Overarching feedback:
+
+  - Have kvm_mmu_do_page_fault() handle initialization of the struct.  That
+    will allow making most of the fields const, and will avoid the rather painful
+    kvm_page_fault_init().
+
+  - Pass @vcpu separately.  Yes, it's associated with the fault, but literally
+    the first line in every consumer is "struct kvm_vcpu *vcpu = kpf->vcpu;".
+
+  - Use "fault" instead of "kpf", mostly because it reads better for people that
+    aren't intimately familiar with the code, but also to avoid having to refactor
+    a huge amount of code if we decide to rename kvm_page_fault, e.g. if we decide
+    to use that name to return fault information to userspace.
+
+  - Snapshot anything that is computed in multiple places, even if it is
+    derivative of existing info.  E.g. it probably makes sense to grab
+    write/fetch (or exec).
+
+
+E.g. I'm thinking something like
+
+struct kvm_page_fault {
+	const gpa_t cr2_or_gpa;
+	const u32 error_code;
+	const bool write;
+	const bool read;
+	const bool fetch;
+	const bool prefault;
+	const bool is_tdp;
+
+	gfn_t gfn;
+	hva_t hva;
+	int max_level;
+
+	kvm_pfn_t pfn;
+	bool map_writable;
+};
+
+int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
+
+static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+					u32 err, bool prefault)
+{
+	struct kvm_page_fault fault = {
+		.cr2_or_gpa = cr2_or_gpa,
+		.error_code = err,
+		.write	    = err & PFERR_WRITE_MASK,
+		.fetch	    = err & PFERR_FETCH_MASK,
+		.perm	    = ...
+		.rsvd	    = err & PFERR_RSVD_MASK,
+
+		.is_tdp	    = vcpu->arch.mmu->page_fault == kvm_tdp_page_fault,
+
+		...
+	};
+
+#ifdef CONFIG_RETPOLINE
+	if (likely(fault.is_tdp))
+		return kvm_tdp_page_fault(vcpu, &fault);
+#endif
+	return vcpu->arch.mmu->page_fault(vcpu, &fault);
+}
 
