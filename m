@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B94391211
+	by mail.lfdr.de (Postfix) with ESMTP id E7923391213
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhEZIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbhEZIM2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:12:28 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E8BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:57 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id q5so95686wrs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bDSnzMMUsSCO/Ot3eHEEcypeAaPDKCbTf+CZBsVWvXk=;
-        b=Oj271lYyyEcFHqCvK/PvbCsiJwjzledPoePmF++Gj2MdibSjRlyL4mVcS0zoEEh8w4
-         AgX7qDMZFrTXK1A2aiygbzZ/gfxbLec5+EvClM5kcgdej1zLpAgCCVLmsa/lutNEr9WQ
-         VjZD+EZo9lycVNfyLuPe2ajCPay0mlgpMj/JwnumvyJNVYiNQiU49WaT8R70lrHQ1qpz
-         Nb3nT9jF/9X8iH8zJ+Qwi4dhxv7A/EDm1/PQprnOl+88mBQe88Cfryu6eXs1UHX2ysDZ
-         jXPpTa+CCwwqE1IeUJipVrd7Y1KW+AiMOuAzHr8JPnHQIGJbL6uWMoo6eyHW1/TlFF5G
-         8Lew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bDSnzMMUsSCO/Ot3eHEEcypeAaPDKCbTf+CZBsVWvXk=;
-        b=tr2csOHF4RfwNjJP3V3+POHShl7E3ulc+B3iznEvUb78SB7rdlp6sU8Wdc/sq3H9cT
-         tOJC5ayMl4fU+ROMivnS09mQ+8hcT1wk+Mt89vP459ZTe47YNN0KWcbBPEH4D4LaxNKK
-         INb8udTwnXtIsrHtn8jU63CqNqMv+EWb0gFgeAe1GoGdbBqP5dwFKAl6Xim1+AD4HKJS
-         F8kT8qSiCLUHujLwvNB6oq/7aPZX7bWOQCSM1i10o6fwturBUG1HsMk7LYmwEaURhht/
-         MdQB6TJVx1UEccWw5i4z9+7VLPSQwP6Fb9qSf2A3v8SDWZoCbZXX1b35cEV4zAiqS5+Q
-         4wTg==
-X-Gm-Message-State: AOAM5325ftoN24YS5ss0ai+LKUmZwh1r35uUTKpYBMKmYfQjT4ek//Ku
-        G71vvGUr557IfPNSg9MPojdZIg==
-X-Google-Smtp-Source: ABdhPJz3yjlyraF6S44Uj2mEX7ZsHUcNNRdDjrQ+Ni9JmuBFPxwkNhg9uI7hTz05bua7Af3GdTpjYw==
-X-Received: by 2002:adf:de09:: with SMTP id b9mr31879815wrm.340.1622016655832;
-        Wed, 26 May 2021 01:10:55 -0700 (PDT)
-Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:10:55 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH 10/10] bus: fsl-mc: mc-io: Correct misdocumentation of 'dpmcp_dev' param
-Date:   Wed, 26 May 2021 09:10:38 +0100
-Message-Id: <20210526081038.544942-11-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526081038.544942-1-lee.jones@linaro.org>
-References: <20210526081038.544942-1-lee.jones@linaro.org>
+        id S233400AbhEZIMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:12:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233070AbhEZIMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:12:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11DC961441;
+        Wed, 26 May 2021 08:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622016667;
+        bh=IRRZpq7Jq6eVb7k8X++aNz0iYj4Kp1VdyKG7JS2CUdw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DypxiYV4EnmWqr5/BrbqHnWa0itvvbKhLPZnOXah/J2MH9u8gzy87JqJJGXUxRYql
+         fwVHz/s+RghDND7X/6lM7uMixQdzsIErwcFklg9jTh4aXzKmMJcln5dlpgI/hLz0Hx
+         1L5usGbfKci1ZZjdSdhQydzDNwGCBV5qMUWg3o0d4C38+kV2CqaFnnMw8SWFa75JY3
+         Xre+eIFrICLFkLQ/BxlcayKk0iS20HcLQCuG79XZxV+BVhYJkLLjweUSdLSqlv3Iqs
+         m0OEHpAB+NkHijJJqfjC7ZST1Aa/xRnlKaNcwXrjcCPXqSscibitL3BS+k0nwih0L3
+         ItvvBf9Qc7zpA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        untaintableangel@hotmail.co.uk, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Date:   Wed, 26 May 2021 11:11:00 +0300
+Message-Id: <20210526081100.12239-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+From: Mike Rapoport <rppt@linux.ibm.com>
 
- drivers/bus/fsl-mc/mc-io.c:70: warning: Function parameter or member 'dpmcp_dev' not described in 'fsl_create_mc_io'
+After the consolidation of early memory reservations introduced by the
+commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+the kernel fails to boot if X86_RESERVE_LOW is set to 640K.
 
-Cc: Stuart Yoder <stuyoder@gmail.com>
-Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+The boot fails because real-time trampoline must be allocated under 1M (or
+essentially under 640K) but with X86_RESERVE_LOW set to 640K the memory is
+already reserved by the time reserve_real_mode() is called.
+
+Before the reordering of the early memory reservations it was possible to
+allocate from low memory even despite user's request to avoid using that
+memory. This lack of consistency could potentially lead to memory
+corruptions by BIOS in the areas allocated by kernel.
+
+Decrease the maximum of X86_RESERVE_LOW range to 512K to allow blocking the
+use of most of the low memory by the kernel while still leaving space for
+allocations that should be compatible with real mode.
+
+Update the Kconfig help text of X86_RESERVE_LOW to make it explicit that
+kernel requires low memory to boot properly.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213177
+Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- drivers/bus/fsl-mc/mc-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/Kconfig | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
-index 9af6b05b89d6f..95b10a6cf3073 100644
---- a/drivers/bus/fsl-mc/mc-io.c
-+++ b/drivers/bus/fsl-mc/mc-io.c
-@@ -55,7 +55,7 @@ static void fsl_mc_io_unset_dpmcp(struct fsl_mc_io *mc_io)
-  * @dev: device to be associated with the MC I/O object
-  * @mc_portal_phys_addr: physical address of the MC portal to use
-  * @mc_portal_size: size in bytes of the MC portal
-- * @dpmcp-dev: Pointer to the DPMCP object associated with this MC I/O
-+ * @dpmcp_dev: Pointer to the DPMCP object associated with this MC I/O
-  * object or NULL if none.
-  * @flags: flags for the new MC I/O object
-  * @new_mc_io: Area to return pointer to newly created MC I/O object
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0045e1b44190..7a972b77819e 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1696,7 +1696,7 @@ config X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK
+ config X86_RESERVE_LOW
+ 	int "Amount of low memory, in kilobytes, to reserve for the BIOS"
+ 	default 64
+-	range 4 640
++	range 4 512
+ 	help
+ 	  Specify the amount of low memory to reserve for the BIOS.
+ 
+@@ -1711,8 +1711,11 @@ config X86_RESERVE_LOW
+ 	  You can set this to 4 if you are absolutely sure that you
+ 	  trust the BIOS to get all its memory reservations and usages
+ 	  right.  If you know your BIOS have problems beyond the
+-	  default 64K area, you can set this to 640 to avoid using the
+-	  entire low memory range.
++	  default 64K area, you can set this to 512 to avoid using most
++	  of the low memory range.
++
++	  Note, that a part of the low memory range is still required for
++	  kernel to boot properly.
+ 
+ 	  If you have doubts about the BIOS (e.g. suspend/resume does
+ 	  not work or there's kernel crashes after certain hardware
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
-2.31.1
+2.28.0
 
