@@ -2,200 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD507391A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C0B391A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhEZOmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:42:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233371AbhEZOmp (ORCPT
+        id S234929AbhEZOn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234632AbhEZOn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:42:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622040073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=addEguLCFCfMeZSUgzkPSgkeBd39ItE0TvGuUn/CT60=;
-        b=V8qbW/PFEcj4/x57bDbg4GGc2htDlg2xMgSO5qA5tzai2jERngyTcOKCXcfVtMI7vXiyLO
-        brJRD9DivDmT7ElXj2DyXaGiNMzlkJ9h70Dwjo6RqjJyEAhi154n+WBJRk7+wh/y6lu4gt
-        XNlDv461pBG/kYA3xizDyznyGYmiJL0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-sfXyBForPxOBFjjYbMcgWA-1; Wed, 26 May 2021 10:41:10 -0400
-X-MC-Unique: sfXyBForPxOBFjjYbMcgWA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DD886D588;
-        Wed, 26 May 2021 14:41:08 +0000 (UTC)
-Received: from starship (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D63425DEF8;
-        Wed, 26 May 2021 14:41:04 +0000 (UTC)
-Message-ID: <5a6314ff3c7b9cc8e6bdf452008ad1b264c95608.camel@redhat.com>
-Subject: Re: [PATCH v2 0/7] KVM: nVMX: Fixes for nested state migration when
- eVMCS is in use
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Wed, 26 May 2021 17:41:03 +0300
-In-Reply-To: <8735uc713d.fsf@vitty.brq.redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
-         <ea9a392d018ced61478482763f7a59472110104c.camel@redhat.com>
-         <8735uc713d.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 26 May 2021 10:43:58 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261C8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:42:27 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id x7so1380875wrt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ljH9mMUDK1DM0IEaCmogZoswTqlDL79fiiwslCag8I0=;
+        b=S2mOFtu1doQsrdN4IovfMLMadWG2jFgpyD52zj/EDDoMHE3gxcOmNiinCmLK3cX99/
+         GsB9BT9hLP9MzIYRgWd7aZiG6GnOUuzZcDpdEyUcMa+hkZ9Qqq1pxPEs6dwVplYa+XX5
+         Pkm3t2Z0yGOwGt/AaDcksDvR8nu9k7kbGv77zQkZQrdhGDj7xEDmVXIqe4DZVYWL294n
+         KHWa7/RjwdgWMLlAvzDFPEm7zSkBSvGMf8ey/t2DC/IFPiKMeRd3b8zcuFowWFsjgvqy
+         INeeqMdVRibZ1uz8XBkOM2/4/7fG7CpYQBsX6ya9dA+Nq5qioghkFP0zBoaCWU9s05yf
+         a/Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ljH9mMUDK1DM0IEaCmogZoswTqlDL79fiiwslCag8I0=;
+        b=AmGPuM4ROD4uG5F3e7jdqq5B+eYD8hojnVpKZRgDVyqzXVbGKNdbUkAfBr7cGzDuFG
+         l0EfiHOdD+LENMNhhqNgr5UM30oCVZ1j1I7861+qOOTL3J9aDA4nCI7um1VpZYIYVdUi
+         JMyuguOihfy28640Mpdg0uBjhTYxlWp6l3zv50/+MKc56IfseoKZ+WMuIvdjyg6bmtA9
+         /m+XrpdEQZV5wbZToFOuosroNc31TEEKxlyCt1aumRJmttkV/bEP0ACEEmcZyCcNBn5n
+         IhOsKDlpkhpSck+/eoyvpmMcPhS1zRr1ua59aXmautNJtcG+++Q4AXmOATZpf68ScW3L
+         2ePQ==
+X-Gm-Message-State: AOAM533wst00krstUpoclV3WsaPrUvy4y1lc4zh7ElwyQprwNKOmj4Lm
+        LNTYcJ/+u70W3lpaickcUHGZNg==
+X-Google-Smtp-Source: ABdhPJxs/KCYpLyVCz9xquqVVcpJeYGqsDQ5hmGDbae7Xyo5bq0tjWb9zPaUza1EMMWsvBEF0YYIpA==
+X-Received: by 2002:a05:6000:1189:: with SMTP id g9mr32813090wrx.385.1622040145773;
+        Wed, 26 May 2021 07:42:25 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id v127sm2258071wmb.46.2021.05.26.07.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 07:42:25 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:42:23 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        David Lopo <dlopo@chipidea.mips.com>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 13/24] usb: chipidea: core: Fix incorrectly documented
+ function 'ci_usb_phy_exit()'
+Message-ID: <20210526144223.GA543307@dell>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-14-lee.jones@linaro.org>
+ <16614428-45c7-06af-547a-dba9c493de67@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <16614428-45c7-06af-547a-dba9c493de67@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-24 at 14:44 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Wed, 26 May 2021, Sergei Shtylyov wrote:
+
+> On 5/26/21 4:00 PM, Lee Jones wrote:
 > 
-> > On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
-> > > Changes since v1 (Sean):
-> > > - Drop now-unneeded curly braces in nested_sync_vmcs12_to_shadow().
-> > > - Pass 'evmcs->hv_clean_fields' instead of 'bool from_vmentry' to
-> > >   copy_enlightened_to_vmcs12().
-> > > 
-> > > Commit f5c7e8425f18 ("KVM: nVMX: Always make an attempt to map eVMCS after
-> > > migration") fixed the most obvious reason why Hyper-V on KVM (e.g. Win10
-> > >  + WSL2) was crashing immediately after migration. It was also reported
-> > > that we have more issues to fix as, while the failure rate was lowered 
-> > > signifincatly, it was still possible to observe crashes after several
-> > > dozens of migration. Turns out, the issue arises when we manage to issue
-> > > KVM_GET_NESTED_STATE right after L2->L2 VMEXIT but before L1 gets a chance
-> > > to run. This state is tracked with 'need_vmcs12_to_shadow_sync' flag but
-> > > the flag itself is not part of saved nested state. A few other less 
-> > > significant issues are fixed along the way.
-> > > 
-> > > While there's no proof this series fixes all eVMCS related problems,
-> > > Win10+WSL2 was able to survive 3333 (thanks, Max!) migrations without
-> > > crashing in testing.
-> > > 
-> > > Patches are based on the current kvm/next tree.
-> > > 
-> > > Vitaly Kuznetsov (7):
-> > >   KVM: nVMX: Introduce nested_evmcs_is_used()
-> > >   KVM: nVMX: Release enlightened VMCS on VMCLEAR
-> > >   KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS data is copied in
-> > >     vmx_get_nested_state()
-> > >   KVM: nVMX: Force enlightened VMCS sync from nested_vmx_failValid()
-> > >   KVM: nVMX: Reset eVMCS clean fields data from prepare_vmcs02()
-> > >   KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
-> > >   KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
-> > >     lost
-> > > 
-> > >  arch/x86/kvm/vmx/nested.c                     | 110 ++++++++++++------
-> > >  .../testing/selftests/kvm/x86_64/evmcs_test.c |  64 +++++-----
-> > >  2 files changed, 115 insertions(+), 59 deletions(-)
-> > > 
+> > Fixes the following W=1 kernel build warning(s):
 > > 
-> > Hi Vitaly!
+> >  drivers/usb/chipidea/core.c:343: warning: expecting prototype for _ci_usb_phy_exit(). Prototype was for ci_usb_phy_exit() instead
 > > 
-> > In addition to the review of this patch series,
+> > Cc: Peter Chen <peter.chen@kernel.org>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: David Lopo <dlopo@chipidea.mips.com>
+> > Cc: linux-usb@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/usb/chipidea/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
+> > index 3f6c21406dbd2..2b18f5088ae4a 100644
+> > --- a/drivers/usb/chipidea/core.c
+> > +++ b/drivers/usb/chipidea/core.c
+> > @@ -335,7 +335,7 @@ static int _ci_usb_phy_init(struct ci_hdrc *ci)
+> >  }
+> >  
+> >  /**
+> > - * _ci_usb_phy_exit: deinitialize phy taking in account both phy and usb_phy
+> > + * ci_usb_phy_exit: deinitialize phy taking in account both phy and usb_phy
 > 
-> Thanks by the way!
-No problem!
+>    I thought - shoiuld've been used as a separator. Is : good here as well?
 
+If I were drafting from scratch, I would *always* use '-', but
+kernel-doc seems to work okay with ':' too, so I'm letting sleeping
+dogs lie on this one.
+
+> >   * interfaces
+> >   * @ci: the controller
+> >   */
 > 
-> >  I would like
-> > to share an idea on how to avoid the hack of mapping the evmcs
-> > in nested_vmx_vmexit, because I think I found a possible generic
-> > solution to this and similar issues:
-> > 
-> > The solution is to always set nested_run_pending after 
-> > nested migration (which means that we won't really
-> > need to migrate this flag anymore).
-> > 
-> > I was thinking a lot about it and I think that there is no downside to this,
-> > other than sometimes a one extra vmexit after migration.
-> > 
-> > Otherwise there is always a risk of the following scenario:
-> > 
-> >   1. We migrate with nested_run_pending=0 (but don't restore all the state
-> >   yet, like that HV_X64_MSR_VP_ASSIST_PAGE msr,
-> >   or just the guest memory map is not up to date, guest is in smm or something
-> >   like that)
-> > 
-> >   2. Userspace calls some ioctl that causes a nested vmexit
-> > 
-> >   This can happen today if the userspace calls 
-> >   kvm_arch_vcpu_ioctl_get_mpstate -> kvm_apic_accept_events -> kvm_check_nested_events
-> > 
-> >   3. Userspace finally sets correct guest's msrs, correct guest memory map and only
-> >   then calls KVM_RUN
-> > 
-> > This means that at (2) we can't map and write the evmcs/vmcs12/vmcb12 even
-> > if KVM_REQ_GET_NESTED_STATE_PAGES is pending,
-> > but we have to do so to complete the nested vmexit.
-> 
-> Why do we need to write to eVMCS to complete vmexit? AFAICT, there's
-> only one place which calls copy_vmcs12_to_enlightened():
-> nested_sync_vmcs12_to_shadow() which, in its turn, has only 1 caller:
-> vmx_prepare_switch_to_guest() so unless userspace decided to execute
-> not-fully-restored guest this should not happen. I'm probably missing
-> something in your scenario)
-You are right! 
-The evmcs write is delayed to the next vmentry.
+> MBR, Sergei
 
-However since we are now mapping the evmcs during nested vmexit,
-and this can fail for example that HV assist msr is not up to date.
-
-For example consider this: 
-
-1. Userspace first sets nested state
-2. Userspace calls KVM_GET_MP_STATE.
-3. Nested vmexit that happened in 2 will end up not be able to map the evmcs,
-since HV_ASSIST msr is not yet loaded.
-
-
-Also the vmcb write (that is for SVM) _is_ done right away on nested vmexit 
-and conceptually has the same issue.
-(if memory map is not up to date, we might not be able to read/write the 
-vmcb12 on nested vmexit)
-
-
-> 
-> > To some extent, the entry to the nested mode after a migration is only complete
-> > when we process the KVM_REQ_GET_NESTED_STATE_PAGES, so we shoudn't interrupt it.
-> > 
-> > This will allow us to avoid dealing with KVM_REQ_GET_NESTED_STATE_PAGES on
-> > nested vmexit path at all. 
-> 
-> Remember, we have three possible states when nested state is
-> transferred:
-> 1) L2 was running
-> 2) L1 was running
-> 3) We're in beetween L2 and L1 (need_vmcs12_to_shadow_sync = true).
-
-I understand. This suggestion wasn't meant to fix the case 3, but more to fix
-case 1, where we are in L2, migrate, and then immediately decide to 
-do a nested vmexit before we processed the KVM_REQ_GET_NESTED_STATE_PAGES
-request, and also before potentially before the guest state was fully uploaded
-(see that KVM_GET_MP_STATE thing).
- 
-In a nutshell, I vote for not allowing nested vmexits from the moment
-when we set the nested state and until the moment we enter the nested
-guest once (maybe with request for immediate vmexit),
-because during this time period, the guest state is not fully consistent.
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> Is 'nested_run_pending' suitable for all of them? Could you maybe draft
-> a patch so we can see how this works (in both 'normal' and 'evmcs'
-> cases)?
-> 
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
