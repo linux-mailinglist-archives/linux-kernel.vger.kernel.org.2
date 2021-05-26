@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B106391B48
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31301391B4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbhEZPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:12:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33063 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235343AbhEZPMj (ORCPT
+        id S235399AbhEZPMy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 11:12:54 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:45032 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235367AbhEZPMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:12:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1llvBb-00034X-Bk; Wed, 26 May 2021 15:11:07 +0000
-Subject: Re: [PATCH][next] fs: dlm: Fix memory leak of object mh
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Christine Caulfield <ccaulfie@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Alexander Aring <aahringo@redhat.com>,
-        cluster-devel@redhat.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210526134039.3448305-1-colin.king@canonical.com>
- <20210526150133.GQ1955@kadam>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <c5ea0085-969a-339f-fd92-6724cb1d928e@canonical.com>
-Date:   Wed, 26 May 2021 16:11:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210526150133.GQ1955@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 26 May 2021 11:12:46 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 75FFBCED1D;
+        Wed, 26 May 2021 17:19:05 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH 10/12] Bluetooth: use inclusive language when filtering
+ devices out
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210525182900.10.I014436e29e9c804a3f7583db6264214cad746a7d@changeid>
+Date:   Wed, 26 May 2021 17:11:09 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <09973DDA-1441-4881-9B3C-55FA6F983BA8@holtmann.org>
+References: <20210525102941.3958649-1-apusaka@google.com>
+ <20210525182900.10.I014436e29e9c804a3f7583db6264214cad746a7d@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/2021 16:01, Dan Carpenter wrote:
-> On Wed, May 26, 2021 at 02:40:39PM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> There is an error return path that is not kfree'ing mh after
->> it has been successfully allocates.  Fix this by free'ing it.
->>
->> Addresses-Coverity: ("Resource leak")
->> Fixes: a070a91cf140 ("fs: dlm: add more midcomms hooks")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  fs/dlm/rcom.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/dlm/rcom.c b/fs/dlm/rcom.c
->> index 085f21966c72..19298edc1573 100644
->> --- a/fs/dlm/rcom.c
->> +++ b/fs/dlm/rcom.c
->> @@ -393,6 +393,7 @@ static void receive_rcom_lookup(struct dlm_ls *ls, struct dlm_rcom *rc_in)
->>  	if (rc_in->rc_id == 0xFFFFFFFF) {
->>  		log_error(ls, "receive_rcom_lookup dump from %d", nodeid);
->>  		dlm_dump_rsb_name(ls, rc_in->rc_buf, len);
->> +		kfree(mh);
-> 
-> Am I looking at the same code as you?  (I often am not able to review
-> your patches because you're doing development on stuff that hasn't hit
-> linux-next).  Anyway, to me this doesn't seem like the correct fix at
-> all.  There are some other things to free and the "mh" pointer is on
-> a bunch of lists so it leads to use after frees.
+Hi Archie,
 
-I've send a V2. It was indeed a brown-paper-bag bad fix.
+> Use "reject list".
+
+I really think you need to write a bit of a commit message for these patches.
 
 > 
-> regards,
-> dan carpenter
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 > 
+> ---
+> 
+> include/net/bluetooth/hci_core.h |  2 +-
+> net/bluetooth/hci_core.c         |  4 ++--
+> net/bluetooth/hci_debugfs.c      |  2 +-
+> net/bluetooth/hci_event.c        |  6 +++---
+> net/bluetooth/hci_sock.c         | 12 ++++++------
+> net/bluetooth/l2cap_core.c       |  4 ++--
+> net/bluetooth/mgmt.c             |  4 ++--
+> 7 files changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index cfe2ada49ca2..9c8cdc4fe3c5 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -522,7 +522,7 @@ struct hci_dev {
+> 	struct hci_conn_hash	conn_hash;
+> 
+> 	struct list_head	mgmt_pending;
+> -	struct list_head	blacklist;
+> +	struct list_head	reject_list;
+> 	struct list_head	whitelist;
+
+Can we change these two in the same patch please.
+
+Regards
+
+Marcel
 
