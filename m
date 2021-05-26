@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509213913D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A89D3913DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhEZJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
+        id S233250AbhEZJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbhEZJey (ORCPT
+        with ESMTP id S232693AbhEZJin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:34:54 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294A2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 02:33:22 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x188so494636pfd.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 02:33:22 -0700 (PDT)
+        Wed, 26 May 2021 05:38:43 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87A0C061574;
+        Wed, 26 May 2021 02:37:11 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id p20so763893ljj.8;
+        Wed, 26 May 2021 02:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=A4rqRTn1JtEUXra1zOwYdzFWXhA0XqgINkljPQQQrrI=;
-        b=fnGxMYegsmhYnvJd30bapzcmve4AzbiPyaRRE1SvcsFix1s7IvmRx7FHBjXxGhadlP
-         BiqQfP4ZNC4JtMy4Q9qgBHUNEAzx3pL+PSoznuiwCBw/6Jpd2YKCsLiG0/dobcBWbSCh
-         e9uAoozDOH882msGG/oTtKKltCUsoDfPrzMoheGYO49oa5xsEE6nl4xhY8cONDqEWrIm
-         iTziPU+WH+Cxbc7aPM5K2rsjDFzlLNvnA9HLQgTxfeMcfD/Z1xGz3/lJ6HoR5wdgZuGq
-         o80r1oCSXK4DK3V7bxFrTO0H5cTvR8dlmx3Vy7tjJTKF3CHM8spmLbIAKl0QcqSsajm5
-         qMKQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QY59gu/K6cv665H2L4ZF23yAlmJGNMn4nEmUmUnVoqo=;
+        b=cAuOgpVrvDU7qA6qaiwpZdBA+T24eO4LBcwMiZZuaP1l9FrjMxwtyYiC7ssSBK6Qdu
+         0pvHunSvN+jFVApPxMPovNsP/YnkryfCsF1JXT77KdDEf4rv+OE2P1z6InKpZCIWum/h
+         Hc5wwlpv8lc1i5yI2gyDho/seogANohUYVaeLbKWd5aQwrcrkwnsI7tGVnv5B7fS1XcB
+         EjBjr8k64zZpEh1hYeSZ99DR6QJIe+yvanRv7fBBt3WQTYOnAk8iOiUrajemFAYWv6+D
+         azmIDacxXNQLFzuakOnTGYIXieX9MrQhajvj9U82CRj+rjxNXE6ODTuwbUjRjW17fbpK
+         ZSBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A4rqRTn1JtEUXra1zOwYdzFWXhA0XqgINkljPQQQrrI=;
-        b=lbZ7d5ekF8aKaz2t/vIpAQiXlTUfPmkjDRfq94Wlyd67Lq8o5QgCDXlbVKllJoYHNM
-         XDScLyVQtLencnXn6Z/AQjQmjI/cvO2JHRnBJAUF+gR5D731aFiGfuyJ5pOfXFFiwrFR
-         DjYZlYtQBDzot349VGsLcOsVWKuMLLDLZ4moQ4H74gGPpx66wh+zqzIu6HxRGNbTKTQe
-         5pFQYZbo06oe6wFYhcUICVElkZCQMBGBi5ahXbppGVGhhGcWnyv0xCpnEHIlT4TYg3VH
-         /av55acD1sKO/6hGH0johwOfqohJR96Kqyn7h/K8juFpG8KEQ0WKSijZSSHiW+NVr1qG
-         sgDg==
-X-Gm-Message-State: AOAM5330gynzSa23TclrkdPe1vmbeDLwXxTWx7JWBYJEX3NvfVeLZKDT
-        X5wTQJjkBurstSVyt/1C27rX1w==
-X-Google-Smtp-Source: ABdhPJwooR2mO8WNgchnyK0kbR0L7sqjQsV9OtkD+9JxI8AxiPRZk72JGJIilck1WnXoG9P64IIuJA==
-X-Received: by 2002:a63:7e13:: with SMTP id z19mr23712448pgc.184.1622021601657;
-        Wed, 26 May 2021 02:33:21 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id b12sm3860135pjd.22.2021.05.26.02.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 02:33:20 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:03:18 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
-Message-ID: <20210526093318.cbtjkybzwdchxi5y@vireshk-i7>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
- <068fa9c4-2b55-3d75-adc7-cf5ef2174b12@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QY59gu/K6cv665H2L4ZF23yAlmJGNMn4nEmUmUnVoqo=;
+        b=InRHoAyIq+r7277JgeNxJuQBab3t63OhDqB/lC5V5awPSzCGlzfJ8rd7GCOJ4znyqV
+         MyDc3SPe51INuHWbxqXppkNxdhybKjGPNZ/rihS2mujWNC9NT5hrkPw95auhyDCr8d+2
+         KYfvqDxQ9dERDt/9oudsUg7bTgq+F46H3oUwCOUFBvNmEDgcburOvMMD7jQZM0sDOVp8
+         LBqbiX1evmxxRTZBpVBikA05/EHUMWKgJhjrQtoLIBvC0j13UHMmoguORUVYCbhTnaol
+         njhz2k1m5L88Urm2cC75yESI3JBLA6IHzBx4S+GggDqcYsZe+FmYXL8yBJQcJM6b/qpj
+         fDJQ==
+X-Gm-Message-State: AOAM530B1NfCMlcpoCN63M0tJpLaut4SrSBaxpWR35BfqzJVxknDQx2f
+        XrV+g6nODZ+DZy68nCD3vgEnZw9dtXfQJ7yWHTU=
+X-Google-Smtp-Source: ABdhPJy34On+WBqnHHGQ+ivhPXD0DjMBOaq7i2MAgIalo/Gje2sDu8zCvQgBXaQSgNLr59CQPFDOPczROtQa/oKlx9U=
+X-Received: by 2002:a05:651c:b1e:: with SMTP id b30mr1519896ljr.141.1622021829863;
+ Wed, 26 May 2021 02:37:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <068fa9c4-2b55-3d75-adc7-cf5ef2174b12@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Wed, 26 May 2021 17:36:58 +0800
+Message-ID: <CADiBU3-P_b0TtVq=JkqXap8nh52cv1BtPtRHCkB8edH05YHuCw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] This patch series add Richtek RT6245 support
+To:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cy_huang <cy_huang@richtek.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-05-21, 09:56, Lukasz Luba wrote:
-> No, these OPPs have to stay because they are used in thermal for cooling
-> states.
+Hi,
 
-This won't break the thermal tables. Thermal just sets the max-freq for a CPU,
-and it doesn't depend on the OPP table for that.
+Please forget  it.
+Not intend to send this patch series twice.
+Just test the summary and forget to add the dry-run option.
+Please use the latest mail to review.
+Very sorry about this.
 
-> DT cooling devices might have them set as a scope of possible
-> states. We don't want to break existing platforms, don't we?
+cy_huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=E6=97=A5 =
+=E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=882:08=E5=AF=AB=E9=81=93=EF=BC=9A
 
-I don't think we will end up breaking anything here.
-
-> We want to 'avoid' those OPPs when possible (no thermal pressure), but
-> we might have to use them sometimes.
-
-Why would we want to use them if they are inefficient ? Thermal or something
-else as well ?
-
-More in the other reply I am sending to Vincent.
-
--- 
-viresh
+>
+> Richtek RT6245 is a high-performance, step-down converter that can suppor=
+t
+> up to 14A output current with the wide input voltage range from 4.5V to 1=
+7V.
+>
