@@ -2,59 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E37391EDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F9C391F63
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235226AbhEZSTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:19:50 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:32915 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235092AbhEZSTp (ORCPT
+        id S235609AbhEZSqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:46:13 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.84]:23654 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234863AbhEZSqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:19:45 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 974E2100AFFE6;
-        Wed, 26 May 2021 20:18:10 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 6327B40898F; Wed, 26 May 2021 20:18:10 +0200 (CEST)
-Date:   Wed, 26 May 2021 20:18:10 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Lambert Wang <lambert.q.wang@gmail.com>
-Cc:     Krzysztof Wilczy??ski <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pci: add pci_dev_is_alive API
-Message-ID: <20210526181810.GA13052@wunner.de>
-References: <20210525125925.112306-1-lambert.q.wang@gmail.com>
- <20210525132035.GA66609@rocinante.localdomain>
- <CAATamay8WTiJnB=5OLYdFTqVUcRF9LarN6_1Eej3QUgFzWRnkA@mail.gmail.com>
+        Wed, 26 May 2021 14:46:10 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 414168630
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 13:20:18 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ly8glH1gGDedfly8glPOlH; Wed, 26 May 2021 13:20:18 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HDHHVDIABje6bABsXVUlN331Ep4noo+DQ9eLJRToQC4=; b=fkI2TXjBxKC91M9xJGgzChXoeB
+        86+oMYnOFtHXnoNMPEJp6ro4Sb3SlFFYdK7aqFoJ4nLNGt/ZNCnkhWvWTqRUWSHQmD8ZB+WIOGL/d
+        p9TDzoB9NYqFYbI0d0JYEVrES5QqF4TMLpBK9V2gAFYyG2ejhtq/eEVP+9KK6yIdmYwZ7OQD1DMaT
+        2xarFCv1JnpIRutt2M/Pe2Hm9dwhPKYLap31HY8qXIw9M9rvXQ3uGDjY9mSuYDGAQ8qVshe7e2caJ
+        wf+2khl4bC1Q27xG57jIbRkR123ezsDrN/w/dnfKMF/PNl55J3ue537s0jluqbi6Pmwm0ODVQIBEa
+        YVb9zydw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46184 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lly8d-0049sR-OZ; Wed, 26 May 2021 13:20:15 -0500
+Subject: Re: [PATCH][next] xfs: Fix fall-through warnings for Clang
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20210420230652.GA70650@embeddedor>
+ <20210420233850.GQ3122264@magnolia>
+ <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
+Message-ID: <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
+Date:   Wed, 26 May 2021 13:21:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAATamay8WTiJnB=5OLYdFTqVUcRF9LarN6_1Eej3QUgFzWRnkA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lly8d-0049sR-OZ
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46184
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 02:12:38PM +0800, Lambert Wang wrote:
-> The user is our new PCI driver under development for WWAN devices .
-> Surprise removal could happen under multiple circumstances.
-> e.g. Exception, Link Failure, etc.
+
+
+On 4/20/21 18:56, Gustavo A. R. Silva wrote:
 > 
-> We wanted this API to detect surprise removal or check device recovery
-> when AER and Hotplug are disabled.
+> 
+> On 4/20/21 18:38, Darrick J. Wong wrote:
+>> On Tue, Apr 20, 2021 at 06:06:52PM -0500, Gustavo A. R. Silva wrote:
+>>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+>>> the following warnings by replacing /* fall through */ comments,
+>>> and its variants, with the new pseudo-keyword macro fallthrough:
+>>>
+>>> fs/xfs/libxfs/xfs_alloc.c:3167:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/libxfs/xfs_da_btree.c:286:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/libxfs/xfs_ag_resv.c:346:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/libxfs/xfs_ag_resv.c:388:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_bmap_util.c:246:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_export.c:88:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_export.c:96:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_file.c:867:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_ioctl.c:562:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_ioctl.c:1548:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_iomap.c:1040:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_inode.c:852:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_log.c:2627:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/xfs_trans_buf.c:298:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/bmap.c:275:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/btree.c:48:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/common.c:85:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/common.c:138:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/common.c:698:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/dabtree.c:51:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>> fs/xfs/scrub/repair.c:951:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>>>
+>>> Notice that Clang doesn't recognize /* fall through */ comments as
+>>> implicit fall-through markings, so in order to globally enable
+>>> -Wimplicit-fallthrough for Clang, these comments need to be
+>>> replaced with fallthrough; in the whole codebase.
+>>>
+>>> Link: https://github.com/KSPP/linux/issues/115
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>
+>> I've already NAKd this twice, so I guess I'll NAK it a third time.
+> 
+> Darrick,
+> 
+> The adoption of fallthrough; has been already accepted and in use since Linux v5.7:
+> 
+> https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> This change is needed, and I would really prefer if this goes upstream through your tree.
+> 
+> Linus has taken these patches directly for a while, now.
+> 
+> Could you consider taking it this time? :)
+> 
 
-You may want to take a look at pci_dev_is_disconnected().
+Hi Darrick,
 
-Be aware of its limitations, which Bjorn has already pointed out
-and which are discussed in more detail under the following link
-in the "Surprise removal" section:
+If you don't mind, I will take this in my -next[1] branch for v5.14, so we can globally enable
+-Wimplicit-fallthrough for Clang in that release.
 
-https://lwn.net/Articles/767885/
+We had thousands of these warnings and now we are down to 47 in next-20210526,
+22 of which are fixed with this patch.
 
-Thanks,
+Thanks
+--
+Gustavo
 
-Lukas
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
