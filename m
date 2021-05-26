@@ -2,132 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1A539155F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D20D391562
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhEZKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbhEZKwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:52:22 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BD4C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:50:49 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id a2so1813009lfc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
-        b=W7ACPeZH4mHcLJAc3onzzyQBdYO+yWJLn8U4NnEbfyyrevdPs7eGiBBaBJKjpIGiQQ
-         t0UuGUteJrsDx740gUwtvZGCzAmQe+f2P9lMXvnR2pZ0CclcncvSyemLGLD818a9mmnA
-         1YVK5xLuVpMqGWyLJxbDWLw5/Y4iZYcv7T//+v9ZgBvQIoFjD7GwjZUKb6V+u5W9lv/k
-         66/euatPKQGBhPFmbWGGK2X5jSQA+02KH1FxLX10/YEkB8mqmLFcX6jsCUue+F4feyMF
-         ILDDa6oBWVRIv4d5fM99VzmwD3TF8IBA3KLCzdevDS2wcI8/3A8KAqVPliFGDNIHX1ML
-         hskw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
-        b=sjRMDzGsOW47Y/YCgqAHqVlWk59yL01dTKywaxc7yNV28bX1N3EzN4UH+Q01mNyG0T
-         u/H4G9GCkZGkcIwxOiOgL9SltO00UFAzKaImRjaeCmd23qROQ8oMR0uStSGTJQjwjSJG
-         a6zHMZw7eohTapSinUbV4sq2I+Xk0tTckbBM6+WOynLDGXgKG62dfR34DOJE9f7EbX2w
-         r0wKSYLnEZpRLA6DqB6CaCeyh6EMzbyaRwyymo3xw4L5/VYTRlCLy2z2SUzpnmaiO9OT
-         PPmNlZbOZCJTpCDPPg/1EtQhLbcoZKKvK1D4ltfvixnQsYay4zpS0XO3ICzfLhWj0vUw
-         Ky3w==
-X-Gm-Message-State: AOAM530zzVNH6N+Bva71tDGMadYQLhW+FoC4Kwc6g4HRgjo95I+kO49D
-        GykwgVlGMHvYCltggvqiJMXosRMTdRiQ418ErSqmqw==
-X-Google-Smtp-Source: ABdhPJyfv0WEyeZXk3AAT6zl1wP2o9QDP21PxMxXMSAhtuWxY3Q7MUlj6y83KPcPg+szFWk8pYl7eRAN3ITPsHyzvgw=
-X-Received: by 2002:ac2:5111:: with SMTP id q17mr1727611lfb.277.1622026246960;
- Wed, 26 May 2021 03:50:46 -0700 (PDT)
+        id S233911AbhEZKwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:52:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234215AbhEZKwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22B74613D8;
+        Wed, 26 May 2021 10:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622026266;
+        bh=S9/pAYFIAyH3CJvdhr0NwqSNGC3fJicd7BJ2pjYbvPA=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=FeiU9VWzXwgElY7tn01m8NmxVq7xFXgMpI1g2rr1o7durQr5Qncrx5luZxH8IW3Hr
+         ahkP3oBPNs8ZYKg7zFqZiGTBonEdoZln2YDV3VlzaXyPhYcrRlBoT+5ErTFnobxnw8
+         OsWMSWjuk6Jz7ACW5jvMty2bJkP3pJDwKGMJDZiws+42phGDLx7BSKk1fUZ1UhTluO
+         dF0i9+YurklDHg3AYzOEPW4EKknns4VtwbN0b98szOYfqnp2wopG2I/Kd6ZKtsZdgR
+         DrEzPJUBVwTRhp/bGLFFmIxkZ36BmtLLThDS+4pYLf+nBgn4yKjPwmOOKTEvI60xJT
+         dOyeJBrgIN3nw==
+Date:   Wed, 26 May 2021 12:51:03 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com,
+        stable@vger.kernel.org, Claudio Mettler <claudio@ponyfleisch.ch>,
+        Marek Wyborski <marek.wyborski@emwesoft.com>,
+        Sean O'Brien <seobrien@chromium.org>
+Subject: Re: [PATCH] HID: magicmouse: fix NULL-deref on disconnect
+In-Reply-To: <20210517100430.20509-1-johan@kernel.org>
+Message-ID: <nycvar.YFH.7.76.2105261250560.28378@cbobk.fhfr.pm>
+References: <20210517100430.20509-1-johan@kernel.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
- <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com> <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-In-Reply-To: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 26 May 2021 12:50:35 +0200
-Message-ID: <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 16:30, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
-> >
-> > Hi,
-> >
-> > tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
-> > > Could you give more details about how cfs_rq->avg.load_avg = 4 but
-> > > cfs_rq->avg.load_sum = 0 ?
->
-> > >
-> > > cfs_rq->avg.load_sum is decayed and can become null when crossing
-> > > period which implies an update of cfs_rq->avg.load_avg.  This means
-> > > that your case is generated by something outside the pelt formula ...
-> > > like maybe the propagation of load in the tree. If this is the case,
-> > > we should find the error and fix it
-> >
-> > Ahh, yeah, that could probably be described better.
-> >
-> > It is (as far as I have found out) because the pelt divider is changed,
-> > and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
-> > in a different value being removed than added.
->
-> ok so IIUC, it happens during the adding/removing/propagating
-> entities' load in the cfs_rq.
->
-> >
-> > Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
-> > recalculates the load_avg based on load_sum, and not the delta, afaik.
-> >
-> > And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
-> > how the pelt divider is changed, I assume it is hard to pinpoint where the issue
-> > is. I can try to find a clear path where where we can see what is added
-> > and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
-> > to better be able to pinpoint what is happening.
-> >
-> > Previously I thought this was a result of precision loss due to division and
-> > multiplication during load add/remove inside fair.c, but I am not sure that
-> > is the issue, or is it?
->
-> I don't think the precision looss is the problem because
-> adding/removing load in fair.c could truncate load_sum but it stays
-> sync with load_avg. I will have a llo to see if i can see something
-> weird
+On Mon, 17 May 2021, Johan Hovold wrote:
 
-I have added a trace in cfs_rq_is_decayed() but I'm not able to
-reproduce a situation where load_sum == 0 but not load_avg  even with
-the script in the cover letter
+> Commit 9d7b18668956 ("HID: magicmouse: add support for Apple Magic
+> Trackpad 2") added a sanity check for an Apple trackpad but returned
+> success instead of -ENODEV when the check failed. This means that the
+> remove callback will dereference the never-initialised driver data
+> pointer when the driver is later unbound (e.g. on USB disconnect).
+> 
+> Reported-by: syzbot+ee6f6e2e68886ca256a8@syzkaller.appspotmail.com
+> Fixes: 9d7b18668956 ("HID: magicmouse: add support for Apple Magic Trackpad 2")
+> Cc: stable@vger.kernel.org      # 4.20
+> Cc: Claudio Mettler <claudio@ponyfleisch.ch>
+> Cc: Marek Wyborski <marek.wyborski@emwesoft.com>
+> Cc: Sean O'Brien <seobrien@chromium.org>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
+Applied, thanks Johan.
 
->
-> >
-> > If my above line of thought makes sense, do you still view this as an error
-> > outside PELT, or do you see another possible/better solution?
-> >
-> > Will investigate further.
->
-> Thanks
->
-> >
-> > Thanks
-> > Odin
+-- 
+Jiri Kosina
+SUSE Labs
+
