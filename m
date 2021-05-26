@@ -2,128 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F946391FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA3F391FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235754AbhEZSvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:51:08 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:53942 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235810AbhEZSuu (ORCPT
+        id S234537AbhEZSwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:52:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233416AbhEZSwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:50:50 -0400
-Received: by mail-io1-f70.google.com with SMTP id u15-20020a6b490f0000b0290447d9583f14so1392803iob.20
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:49:17 -0700 (PDT)
+        Wed, 26 May 2021 14:52:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622055043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r8U8l4dAq7fCVZLWXnTICF3fjtWAoL6xPRh5BeEIsGo=;
+        b=KGGVhNuDpGN9uUoZr5w2014IaxcZBiR9rGv73b43NvTlC6+45mM0LbVXCLhXjN0IqMX15r
+        /UttM5frgytZT9QEZSx7A4s5j0Fc9eS1MFsJcNGLTN0zm+XxFR8HpiOS1b1gh5F/g56juY
+        /aJqS7kOxJ2Q3sjarh6SVryow46/DJA=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-RlPJoEMdOR2e_8PWwz5pKw-1; Wed, 26 May 2021 14:50:41 -0400
+X-MC-Unique: RlPJoEMdOR2e_8PWwz5pKw-1
+Received: by mail-il1-f199.google.com with SMTP id 15-20020a920d0f0000b02901c54acae19eso1465183iln.23
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=652Kp8Dgl1iwruEOB7rM7Jf8ccewha+XaW4j3CpKdKQ=;
-        b=Pa7ZrRA3iQoNqzAeJJ+/QuuHd4+HzUZ63FF/Jv5nHivILnhkjnMGZ9/UTNUNFLMuqc
-         vxdeY1NkGgQS8lD35VFaK/5RpYw8JCck2Re6rKOFIUS60s08KVomn5MJu4yBHNQu0cSi
-         +DoRvOUO7MlCLFIR886TbtV/5ccplmk8ki9rZoeQbnftlkmVbKELkg4Q57rweOQxWlJQ
-         fweSlHx+oJV06KGaPnST44+/fr0JoMEbx8Yq+/sbHaHr5Dp5xm9AyL2c2K5gA1vfnMsS
-         UAacDFIHur2x+zyhcI0ohRRJpYeR7PTFsVbvX5WLCf4QXM/Edx+u8zfKCp86q+ziHhwp
-         lRFQ==
-X-Gm-Message-State: AOAM5307YFeckgg2euoTemP9/QEEa0PuySrllbUz/DW9pZIScXYDgTFd
-        HHLe2dCc2zp0Eg4G5OFLTRtfg5AfoEFC7iLA05Qv7rkisbhN
-X-Google-Smtp-Source: ABdhPJzdgLuW5lW18MjMKRPoML+5lf6i7sz/44b9iYhtKkjScsulecyPwlHNXLX0sqlllPpmJA8ffYTs0U+jIrnz7lOn1IDbnB3T
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r8U8l4dAq7fCVZLWXnTICF3fjtWAoL6xPRh5BeEIsGo=;
+        b=mQUgXAMRxWtuRC9w4gy1J9QcEeHzuOAyYG+obPsGq1aAB6MtE1oUjltxsCx2OTZfME
+         GgdWL5YeNmhea672FZO7uw+hqWCoSLdIGvW1RXcf2AhOBaZSYFjAZCWJ5pxxhCXHrRS5
+         J/aDO8ZIZ56p60xSx841W+G7Q+AtmyNtQDVbbHNsXd/rk5Kfer6+v+h5D/25ycEHqT+e
+         70VefWg8kf0LgJvrq1otvLi93PRCUdoE8kX/HmttBFs1o+ky0nkF3/twuDxaegIehhmJ
+         LSHzVjtdswuycpnmV3eHSxgJ5EbWAvPibvWS83YphlotiRvSvZXYoYjjhAtnSbtfX/rs
+         GTIQ==
+X-Gm-Message-State: AOAM53189q35DXaeFgV11CXYIASWXQqSTTWFEH3pv9Cp6hNfWjVkRoYS
+        NeBE8+YIJ5YgOgXbBDhF2gOKSEVw+rjyfHIopnbNUFstTu+u/Ybjhlr8UVD2U/dkUcWycFm86om
+        fhPw/fbCoCdNygeLpBtY7oOGwwjBUOFoT8JrUZYCg
+X-Received: by 2002:a05:6e02:1d0b:: with SMTP id i11mr24946564ila.36.1622055040508;
+        Wed, 26 May 2021 11:50:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWdlVDqsrj0ZiVQfex/txYF3LhvArUsKLowNWV1GDQ0d8wQTy5HNq7BAr2OOhHvfOXOCPKSvDLYFtZMpnAVLk=
+X-Received: by 2002:a05:6e02:1d0b:: with SMTP id i11mr24946549ila.36.1622055040300;
+ Wed, 26 May 2021 11:50:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:930d:: with SMTP id k13mr26854774iom.61.1622054957235;
- Wed, 26 May 2021 11:49:17 -0700 (PDT)
-Date:   Wed, 26 May 2021 11:49:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008845ab05c34019a7@google.com>
-Subject: [syzbot] WARNING in dtv5100_probe/usb_submit_urb
-From:   syzbot <syzbot+b0b89cff78d7b7bd0278@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, syzkaller-bugs@googlegroups.com
+References: <20210526134039.3448305-1-colin.king@canonical.com>
+ <20210526150133.GQ1955@kadam> <c5ea0085-969a-339f-fd92-6724cb1d928e@canonical.com>
+ <20210526181726.GJ24442@kadam>
+In-Reply-To: <20210526181726.GJ24442@kadam>
+From:   Alexander Ahring Oder Aring <aahringo@redhat.com>
+Date:   Wed, 26 May 2021 14:50:29 -0400
+Message-ID: <CAK-6q+jEfu_bHYgHZJTase3fe9Y_mYmkKzfjEPjZw5g_PRRz8Q@mail.gmail.com>
+Subject: Re: [PATCH][next] fs: dlm: Fix memory leak of object mh
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Christine Caulfield <ccaulfie@redhat.com>,
+        David Teigland <teigland@redhat.com>, cluster-devel@redhat.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On Wed, May 26, 2021 at 2:24 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Wed, May 26, 2021 at 04:11:06PM +0100, Colin Ian King wrote:
+> > On 26/05/2021 16:01, Dan Carpenter wrote:
+> > > On Wed, May 26, 2021 at 02:40:39PM +0100, Colin King wrote:
+> > >> From: Colin Ian King <colin.king@canonical.com>
+> > >>
+> > >> There is an error return path that is not kfree'ing mh after
+> > >> it has been successfully allocates.  Fix this by free'ing it.
+> > >>
+> > >> Addresses-Coverity: ("Resource leak")
+> > >> Fixes: a070a91cf140 ("fs: dlm: add more midcomms hooks")
+> > >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > >> ---
+> > >>  fs/dlm/rcom.c | 1 +
+> > >>  1 file changed, 1 insertion(+)
+> > >>
+> > >> diff --git a/fs/dlm/rcom.c b/fs/dlm/rcom.c
+> > >> index 085f21966c72..19298edc1573 100644
+> > >> --- a/fs/dlm/rcom.c
+> > >> +++ b/fs/dlm/rcom.c
+> > >> @@ -393,6 +393,7 @@ static void receive_rcom_lookup(struct dlm_ls *ls, struct dlm_rcom *rc_in)
+> > >>    if (rc_in->rc_id == 0xFFFFFFFF) {
+> > >>            log_error(ls, "receive_rcom_lookup dump from %d", nodeid);
+> > >>            dlm_dump_rsb_name(ls, rc_in->rc_buf, len);
+> > >> +          kfree(mh);
+> > >
+> > > Am I looking at the same code as you?  (I often am not able to review
+> > > your patches because you're doing development on stuff that hasn't hit
+> > > linux-next).  Anyway, to me this doesn't seem like the correct fix at
+> > > all.  There are some other things to free and the "mh" pointer is on
+> > > a bunch of lists so it leads to use after frees.
+>       ^^^^^^^^^^^^^^
+> This is sort of impossible, of course, because the struct only has one
+> list_head so it can only be in one list and not a "bunch of lists".
+>
 
-HEAD commit:    5cc59c41 USB: core: WARN if pipe direction != setup packet..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=16742b9bd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1206ee92dd3d988d
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0b89cff78d7b7bd0278
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11911887d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16afabd7d00000
+It is a bunch of lists because mh_handle holds pointers with ref
+counters to other structures which are part of lists. :) There is a
+list_del() only if hits zero.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b0b89cff78d7b7bd0278@syzkaller.appspotmail.com
+> The dlm code seems to be going out of its way to use void pointers and
+> that makes it difficult to parse with Smatch.
+>
 
-usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 1-1: Product: syz
-usb 1-1: Manufacturer: syz
-usb 1-1: SerialNumber: syz
-usb 1-1: config 0 descriptor??
-------------[ cut here ]------------
-usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType 40
-WARNING: CPU: 0 PID: 7 at drivers/usb/core/urb.c:410 usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
-Modules linked in:
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
-Code: 84 4c 01 00 00 e8 a6 14 b3 fd 4c 89 f7 e8 4e a7 1b ff 45 89 e8 44 89 e1 48 89 ea 48 89 c6 48 c7 c7 c0 09 63 86 e8 18 f1 fb 01 <0f> 0b 49 8d 4f 5c 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 89 4c
-RSP: 0018:ffffc9000007ef48 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888118a67058 RCX: 0000000000000000
-RDX: ffff888100283680 RSI: ffffffff812a6013 RDI: fffff5200000fddb
-RBP: ffff88810f661118 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff814b996b R11: 0000000000000000 R12: 0000000080000280
-R13: 0000000000000040 R14: ffff888118a670a8 R15: ffff888108f99d00
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1967249008 CR3: 00000001104a3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- dtv5100_probe+0x184/0x2b0 drivers/media/usb/dvb-usb/dtv5100.c:144
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3320
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3320
- usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
- hub_port_connect drivers/usb/core/hub.c:5297 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5437 [inline]
- port_event drivers/usb/core/hub.c:5583 [inline]
- hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5665
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+That has been changed on dlm/next. There exists a struct mh_handle *
+and a dlm_msg * to get rid of void * handles.
 
+> But in other subsystems, we could make it a rule that list_heads are
+> "poison" "init" or "added".  If you freed a memory with an "added"
+> list_head then print a warning.  Or if you added a list_head but it was
+> already in the added state then print a warning.  Another idea is that
+> if you freed a struct mh before the mh->page allocation was freed then
+> print a warning about the leak.  This one is probably more prone to
+> false positives but there might be workarounds for those.  #IdeasToImplement
+>
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Currently if a buffer is allocated it is not possible to free it
+again. The allocated buffer of the page will be transmitted
+(kernel_sendpage()) out in a contiguous way. If somebody wants to
+release memory the page buffer needs to be reordered and it can only
+be done before commit().
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+- Alex
+
