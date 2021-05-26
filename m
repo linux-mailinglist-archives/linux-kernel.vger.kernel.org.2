@@ -2,207 +2,872 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199543918BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803EE3918C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhEZNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:25:21 -0400
-Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:15539
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233130AbhEZNZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:25:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Me7XT6BXXwIuQsCQjGtnAphjqKfimVyf93WV6W0Yqw1GrZjHzIX8s2vQCG+IrGk6NWMxig3OgBbfgZvAQp64ZfGYWm9vjME6PsCaJ7etHwyAAmxQFfi8n4HSZ+PGxE91HzOUAgazm+pDIoPCmxNqSRO7pDY0V2eRbGGlj4WsXyjoF/R6NIT1vQ+j5x5hEJBteCeMQFeVvdwSgftOtd639anrHFlLNqYOt+fWnwGEDN07U2YyFdMSEeYqgGJmh8RIcvsph6H5tEtIgPRuQHtet3trkuVpA8CGGo/ikyHT4sVFYcd8xPZOadvE6ySvmPpj5Z/1s+cL+CtISwzVcpp9PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xjp2sDNuJ898l30QtUPCykiPOrseNsZ04qjONJSxJrM=;
- b=OjC/IlOVqpixTH2v8etjgUMsOfMjxT0EqP/Pad3ACev0SXrxtIvVUuuXt9MIJY/MAsjcQ7nrS9kyPeBQoz9mX9b6ri+7NfwMhgA5vEQkoysbNPRHqVUootwXM83Dl7/NtoAgGiXLVTtxFHIJ29VN61nRO3NuDexe+hLQp+hpbPGry932gipSmb+CR47EsGxq5yeTkmBaeM5//oYcYvGOAuzWbfzshnCGtnvrcfGNlCC5b8eo6nd7K1i4G3IGPQzvi+JpoM0qTqpKz62GkPB4NAW3auDI8v1hfAT7JbBmniLVWvVm4kkY9VFwl8E6ikC5kOjWNcw2zah8xiEFG7Is7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xjp2sDNuJ898l30QtUPCykiPOrseNsZ04qjONJSxJrM=;
- b=hE3cf/KqIy1LcON4vV7SDpIwk8MyHY/Jmo2/5Ed13l65gKYbE7Kqq1hnSjTkMoiVwrqIya38WZgFI9wFrm/pcbnmaxLuOrm18bYi88cu1HXoPzr3prVfQMDyfBa3ZolaoDBy+K2dk+nE+fSr5X+yvW5dLOJ53Cx00ynX/+eVMHA=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN1PR12MB2414.namprd12.prod.outlook.com (2603:10b6:802:2e::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Wed, 26 May
- 2021 13:23:46 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4150.023; Wed, 26 May 2021
- 13:23:46 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 13/20] x86/sev: Register GHCB memory when
- SEV-SNP is active
-To:     Borislav Petkov <bp@alien8.de>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-14-brijesh.singh@amd.com> <YKzbfwD6nHL7ChcJ@zn.tnic>
- <b15cd25b-ee69-237d-9044-84fba2cf4bb2@amd.com> <YK0LFk3xMjfirG9E@zn.tnic>
- <9e7b7406-ec24-2991-3577-ce7da61a61ca@amd.com> <YK4bnQiJ6cVzCCE9@zn.tnic>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <9fada61c-274d-5348-ef1f-eb1b3bb337e5@amd.com>
-Date:   Wed, 26 May 2021 08:23:43 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
-In-Reply-To: <YK4bnQiJ6cVzCCE9@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN4PR0201CA0030.namprd02.prod.outlook.com
- (2603:10b6:803:2e::16) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S233747AbhEZN1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:27:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232139AbhEZN1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:27:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A07DB613C3;
+        Wed, 26 May 2021 13:26:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622035580;
+        bh=iN0T+7PKuRXwgqaQqgwmSPPfrRGgEtAcQte+G9utgl8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H87VTxLO1A9O9Mk9GSC1TiOppAtSI9Lg7/5JcaexphpySbLMialIUhrhdnmg/4c3y
+         PY0y5ykahynPw/8//k8t6m/IrryLIuqiU16E8cowZYylYCUlEdZPVk5FmzpBexNTqX
+         zTlk1kTUCTFf3JHZDiGNy8qTS6Jae7MqiRTUeOvk5xYP8y/xQOSeMoFacplOZo5rn4
+         WSWPE0q0Qa9bEegAm3G64bg01sxa962bBMMEWVdHCDopetHKOtrsQS5PDT81Ti8aSq
+         wFNPGzT801IfUz2ylf0r9EIrNf5F9PboZhnL94u+EEI0ZxLKnOOCqqGd/fuAGY0sD8
+         QuM0Sww6KEaYw==
+Date:   Wed, 26 May 2021 06:26:19 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v6] f2fs: compress: add compress_inode to
+ cache compressed blocks
+Message-ID: <YK5Mewfb3gMg1yGM@google.com>
+References: <20210520115150.4718-1-chao@kernel.org>
+ <c82e63e9-e626-f9a6-ddbc-b9acd026dafa@huawei.com>
+ <YKz0VJSYYBEnF75V@google.com>
+ <YKz1gGctmOJ+LjOn@google.com>
+ <2c4db877-b5e6-1139-98b5-be2d9e7872be@kernel.org>
+ <YK0DVi4aTNdXDN3L@google.com>
+ <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0201CA0030.namprd02.prod.outlook.com (2603:10b6:803:2e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 13:23:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 42f6cbc9-56bd-4a5d-00ea-08d920497d6e
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2414:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2414464CBCDE7F091D4B0BE2E5249@SN1PR12MB2414.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8D/861nY45v7Fg4LQXWaJWGAJao7Ai3na6U7J7CoLTuzLzlWCArJBc0EgYwXNp6585NSah7wblgH/T3oSZGRAkNUPuXY7UT2/nOKgnWL+6L3eFxfedxwd4AKo6I4e9TpdEyJCcA+Vjd9JWIp8d4o6ihXbil0UvIABdnZ/QQoQ+oJ3pvpDtVXRnZu8SnZBc/Q7iu6CQXWDYDh5BzwOIq3IGmAGrddGypOxK8tmTypP+rwGcWmVW9s7MnHz00kCspn/OK5cjIdehhaj1iZBivVxl68zaK7ITvbQluM9VFsI9D4P9k0F4HhZiyyK7CwXjR/IYCdukKxiiSdaH0tb0VaDkpz4veMWpbgRdK2AlI3hBoXE10x/yCBsOHpD3PSu1riCKtdZm66t0ShsQAhPIg8SjFD3lq/wgZEofFo6XD0vCFmpyUdVjP2QpbDjojUZkbBrRgU+qEWs5mbDV6lRadb6dsQ1DMaa9hAwvoQd0VZcrdA9FEG6wolHLb+FfjQfhDxik3IPML0Lsa+U6o4D8D7ctd2dRUMAstWotW6a0W8HQzNwLFp3LQQ80w/LR1bpDheYaO1fCx9rT1XDTanmdKqnzDrKiwKHeacgJogEJxRp9E51B0V+vfjdR3jZBW08b2sSXeg4blReEMfZGggdDL6VDfKHIb9uA9qvelymgLnM28cMbAGYEt/k/bNBY6QaDUnNdGNjqkD0G42ZmTvM7FXjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(8936002)(16526019)(4326008)(6916009)(31686004)(186003)(2616005)(31696002)(2906002)(38100700002)(38350700002)(66476007)(66556008)(8676002)(6512007)(26005)(316002)(5660300002)(86362001)(66946007)(53546011)(6486002)(6506007)(7416002)(36756003)(478600001)(956004)(52116002)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OElwbS9Bc3RGc3RtQ1NaOTFDZVRRRm11em1Ib0R5b2ZuZ3d6UlA1anlOWWUz?=
- =?utf-8?B?cmFxMmdoZkNFTDBGRmxReEVYVGRHRms1QTVYRlZCVVpCWWpZZFZVRDFWTXha?=
- =?utf-8?B?WlBuWUd6N3Z0aXV1bjZac2hPMVhaYUgzRjM3TytHSjBDeEhFT1BZTzU1dzZk?=
- =?utf-8?B?Y2d3Mk04SDBrTnNEVTd4NVRCTUh4UFZWUUdZdGRwNkhwdzhXVVlmRWIvVzVT?=
- =?utf-8?B?eDNQd05MN2Q3T1pZVE5WK25WSWhPZ2ROeVJjUDRkWFF1ampzNWg2WTU4dWY2?=
- =?utf-8?B?NG9oT1ZIK0I2UHFXcFFaVFBDdGpsSHlvN3RpOFJsMER0QVhPamlpcnRSTy9P?=
- =?utf-8?B?UUNsbEJtTU9GcUVIOUlFRk44QlNKL1c2UkVaeko3cWoxTGF6RG5CMXpoK0p4?=
- =?utf-8?B?RDVWejRyOXZaMUhHRHh0bDIvTjAzRktQWjhEY3NreG00SDVMK29MY05vSFll?=
- =?utf-8?B?NFc2Q2RPZW9Ja2tYc3pwdkdlYlpmN2ZhNk5jR2lSdGZ1ZDRVRm9HY1dMY0lU?=
- =?utf-8?B?N0k3R3pKZUpIUHo0dTIwdXpPQ1MxZWs5QTl4V3NvMEUrTldKU1dYN0FiRGsz?=
- =?utf-8?B?blBxRzREWk9xdFlGRktBK1lsanVwanZ0SWtWMEQzTjB5OVBDUXNpYWVtR1hY?=
- =?utf-8?B?bjVGNWY2QnlZWEpqdE5uRUIwK21OVGZlWnY3WEZ3OEMrZlBaZlg5K2V4S09h?=
- =?utf-8?B?clVFS0JYVEo2MWMra3I0MXpVeUNKSTBGV1d0bVkvblBka1ErelhnVVVteWg0?=
- =?utf-8?B?c0UrYTBsZDUxS0RzQ0ZRNkFURGZMMlN3ZVV3VVUvUVhsbklVTHNhMldqTXND?=
- =?utf-8?B?WlpvdmdVM0NrN25Pd2FTWnhxR1RZalI4MGtaVzJFTzJUVm4zMkR4Yk5nSGM5?=
- =?utf-8?B?SHZBNEZpQWEzdGQyZG1QRjNZd0RmYjNBYk15eXpTUWsyUGQzUERDVm8vN0gv?=
- =?utf-8?B?UnNUeG84cEx4d3hDQytyellWVXlDOExFV3gzcmkxRnlERGp3SDBsNHUyMXEr?=
- =?utf-8?B?ZEhKTWpjZmVvSDNRWUg1T1NQSlAwOFFxUFo0eU5Udk0xVzZlM1ZpNXY1TUgw?=
- =?utf-8?B?cVFmZ3B6SktDS09xL1BrMGdkOGttSVZINmtWUTRpbjFpazFwQlMwRDRhMjV4?=
- =?utf-8?B?ZjdVUzdYL1YrU1RZdzhadGlOZmMzOGQ4c3F4Yms0VDlwQlBBK012cTNDYy9C?=
- =?utf-8?B?Z1NnRHNieUIrU2xHc1daN0YxaU1wcW52Nk5NZVZsdlFhNW54TXhFcGFleUVQ?=
- =?utf-8?B?QlZlY2FhVmliMXdqNlpSMkRCc2NqRW5tMlhnU0ZFOFc0NEJEVno3YmFiNTlD?=
- =?utf-8?B?ZTNtTzBWRmtRUlZqcmRyYzBib2k0bC8rVzJBK1E1RWo3TE5xTmQ4eGs5VU85?=
- =?utf-8?B?b3M3K0g5VHBzT0gySzhBOVRPTTdJL2ZPRFMxRnFxZW9rQjZGMzQzbldqZFp3?=
- =?utf-8?B?WkhOTVYyMmRCSzdadXZlNndtcCtGWUFBUTlNTC84MUh4TFZ5ZG8waHFCSzhS?=
- =?utf-8?B?aEQ2Sk4rNk9ISXNxZk40a0lOaVhCMjNxbWhmNENzbWxSWTFnckxwV2k1OHNn?=
- =?utf-8?B?dWVoVFhCcExPL21GVGh0NExrU093VDJqdTNHdlpXb1ZCTVRDU0tIQ1UyMzFw?=
- =?utf-8?B?SmY4eWZrN29IWWZvaVdReUk4R1BhODh0OS9hSFBXSzBhNjByTFlkcHkwMkFO?=
- =?utf-8?B?YWkwNVNKRktQZGtyRVhsVmtKZzk1TmpSaEJlOWdlSVk2ZGlkdkZzQ3BzL1VQ?=
- =?utf-8?Q?RVlFN0g+6fngVZlozNWyySarN6Z/G/ZPlrnsCOL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42f6cbc9-56bd-4a5d-00ea-08d920497d6e
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 13:23:46.1087
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bKmAiEAi8llEU7OqPjJ45O9lfLkipUxafWOJo1X3o42R4YUyIlIO8XUj7gLWqT2MUbBVhiY+9pF/iO/5HOlqXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2414
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dda2400f-4a06-0ef6-b4f5-8aafe86bd81d@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/26/21 4:57 AM, Borislav Petkov wrote:
-> On Tue, May 25, 2021 at 09:47:24AM -0500, Brijesh Singh wrote:
->> Maybe I should have said, its not applicable in the decompressed path.
-> Aha, ok. How's that, ontop of yours:
-
-Sure, its fine with me. I will apply this change.
-
--Birjesh
-
-
+On 05/26, Chao Yu wrote:
+> On 2021/5/25 22:01, Jaegeuk Kim wrote:
+> > On 05/25, Chao Yu wrote:
+> > > On 2021/5/25 21:02, Jaegeuk Kim wrote:
+> > > > On 05/25, Jaegeuk Kim wrote:
+> > > > > On 05/25, Chao Yu wrote:
+> > > > > > Also, and queue this?
+> > > > > 
+> > > > > Easy to get this?
+> > > > 
+> > > > need GFP_NOFS?
+> > > 
+> > > Not sure, I use __GFP_IO intentionally here to avoid __GFP_RECLAIM from
+> > > GFP_NOFS, because in low memory case, I don't want to instead page cache
+> > > of normal file with page cache of sbi->compress_inode.
+> > > 
+> > > What is memory size in your vm?
+> > 
+> > 4GB. If I set GFP_NOFS, I don't see the error anymore, at least.
+> 
+> I applied below patch and don't see the warning message anymore.
+> 
 > ---
-> diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-> index 07b9529d7d95..c9dd98b9dcdf 100644
-> --- a/arch/x86/boot/compressed/sev.c
-> +++ b/arch/x86/boot/compressed/sev.c
-> @@ -208,7 +208,7 @@ static bool early_setup_sev_es(void)
->  
->  	/* SEV-SNP guest requires the GHCB GPA must be registered */
->  	if (sev_snp_enabled())
-> -		snp_register_ghcb(__pa(&boot_ghcb_page));
-> +		snp_register_ghcb_early(__pa(&boot_ghcb_page));
->  
->  	return true;
->  }
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 37a23c524f8c..7200f44d6b6b 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -81,7 +81,7 @@ static bool ghcb_get_hv_features(void)
->  	return true;
->  }
->  
-> -static void snp_register_ghcb(unsigned long paddr)
-> +static void snp_register_ghcb_early(unsigned long paddr)
->  {
->  	unsigned long pfn = paddr >> PAGE_SHIFT;
->  	u64 val;
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 5544557d9fb6..144c20479cae 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -108,7 +108,18 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
->  void do_early_exception(struct pt_regs *regs, int trapnr);
->  
->  /* Defined in sev-shared.c */
-> -static void snp_register_ghcb(unsigned long paddr);
-> +static void snp_register_ghcb_early(unsigned long paddr);
-> +
-> +static void snp_register_ghcb(struct sev_es_runtime_data *data,
-> +			      unsigned long paddr)
-> +{
-> +	if (data->snp_ghcb_registered)
-> +		return;
-> +
-> +	snp_register_ghcb_early(paddr);
-> +
-> +	data->snp_ghcb_registered = true;
-> +}
->  
->  static void __init setup_vc_stacks(int cpu)
->  {
-> @@ -239,10 +250,8 @@ static __always_inline struct ghcb *sev_es_get_ghcb(struct ghcb_state *state)
->  	}
->  
->  	/* SEV-SNP guest requires that GHCB must be registered before using it. */
-> -	if (sev_snp_active() && !data->snp_ghcb_registered) {
-> -		snp_register_ghcb(__pa(ghcb));
-> -		data->snp_ghcb_registered = true;
-> -	}
-> +	if (sev_snp_active())
-> +		snp_register_ghcb(data, __pa(ghcb));
->  
->  	return ghcb;
->  }
-> @@ -681,7 +690,7 @@ static bool __init sev_es_setup_ghcb(void)
->  
->  	/* SEV-SNP guest requires that GHCB GPA must be registered */
->  	if (sev_snp_active())
-> -		snp_register_ghcb(__pa(&boot_ghcb_page));
-> +		snp_register_ghcb_early(__pa(&boot_ghcb_page));
->  
->  	return true;
->  }
->
+>  fs/f2fs/compress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 701dd0f6f4ec..ed5b7fabc604 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1703,7 +1703,7 @@ void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+>  	avail_ram = si.totalram - si.totalhigh;
+> 
+>  	/* free memory is lower than watermark, deny caching compress page */
+> -	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+> +	if (free_ram <= avail_ram / 100 * sbi->compress_watermark)
+
+Do you mean avail_ram should be over 100? I don't think this addresses the root
+cause?
+
+>  		return;
+> 
+>  	/* cached page count exceed threshold, deny caching compress page */
+> -- 
+> 2.29.2
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > > 
+> > > > > [ 1204.287099] kworker/u17:0: page allocation failure: order:0, mode:0x40(__GFP_IO), nodemask=(null),cpuset=/,mems_allowed=0
+> > > > > [ 1204.296932] CPU: 1 PID: 158 Comm: kworker/u17:0 Tainted: G           OE     5.13.0-rc1-custom #1
+> > > > > [ 1204.300746] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> > > > > [ 1204.303458] Workqueue: f2fs_post_read_wq f2fs_post_read_work [f2fs]
+> > > > > [ 1204.305772] Call Trace:
+> > > > > [ 1204.307103]  dump_stack+0x7d/0x9c
+> > > > > [ 1204.308613]  warn_alloc.cold+0x7b/0xdf
+> > > > > [ 1204.310167]  __alloc_pages_slowpath.constprop.0+0xd57/0xd80
+> > > > > [ 1204.312214]  __alloc_pages+0x30e/0x330
+> > > > > [ 1204.313780]  alloc_pages+0x87/0x110
+> > > > > [ 1204.315265]  f2fs_cache_compressed_page+0x136/0x2d0 [f2fs]
+> > > > > [ 1204.317142]  ? dequeue_entity+0xdb/0x450
+> > > > > [ 1204.318708]  f2fs_end_read_compressed_page+0x5c/0x70 [f2fs]
+> > > > > [ 1204.320659]  f2fs_post_read_work+0x11f/0x180 [f2fs]
+> > > > > [ 1204.322442]  process_one_work+0x220/0x3c0
+> > > > > [ 1204.324091]  worker_thread+0x53/0x420
+> > > > > [ 1204.325577]  kthread+0x12f/0x150
+> > > > > 
+> > > > > > 
+> > > > > > On 2021/5/20 19:51, Chao Yu wrote:
+> > > > > > > From: Chao Yu <yuchao0@huawei.com>
+> > > > > > > 
+> > > > > > > Support to use address space of inner inode to cache compressed block,
+> > > > > > > in order to improve cache hit ratio of random read.
+> > > > > > > 
+> > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > > > ---
+> > > > > > > v6:
+> > > > > > > - fix to cover COMPRESS_MAPPING() with CONFIG_F2FS_FS_COMPRESSION
+> > > > > > >     Documentation/filesystems/f2fs.rst |   3 +
+> > > > > > >     fs/f2fs/compress.c                 | 180 ++++++++++++++++++++++++++++-
+> > > > > > >     fs/f2fs/data.c                     |  41 ++++++-
+> > > > > > >     fs/f2fs/debug.c                    |  13 +++
+> > > > > > >     fs/f2fs/f2fs.h                     |  71 +++++++++++-
+> > > > > > >     fs/f2fs/gc.c                       |   1 +
+> > > > > > >     fs/f2fs/inode.c                    |  21 +++-
+> > > > > > >     fs/f2fs/segment.c                  |   6 +-
+> > > > > > >     fs/f2fs/super.c                    |  35 +++++-
+> > > > > > >     include/linux/f2fs_fs.h            |   1 +
+> > > > > > >     10 files changed, 358 insertions(+), 14 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> > > > > > > index 992bf91eeec8..809c4d0a696f 100644
+> > > > > > > --- a/Documentation/filesystems/f2fs.rst
+> > > > > > > +++ b/Documentation/filesystems/f2fs.rst
+> > > > > > > @@ -289,6 +289,9 @@ compress_mode=%s	 Control file compression mode. This supports "fs" and "user"
+> > > > > > >     			 choosing the target file and the timing. The user can do manual
+> > > > > > >     			 compression/decompression on the compression enabled files using
+> > > > > > >     			 ioctls.
+> > > > > > > +compress_cache		 Support to use address space of a filesystem managed inode to
+> > > > > > > +			 cache compressed block, in order to improve cache hit ratio of
+> > > > > > > +			 random read.
+> > > > > > >     inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+> > > > > > >     			 files using the blk-crypto framework rather than
+> > > > > > >     			 filesystem-layer encryption. This allows the use of
+> > > > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > > > > index d4f7371fb0d8..25e785e0d9fc 100644
+> > > > > > > --- a/fs/f2fs/compress.c
+> > > > > > > +++ b/fs/f2fs/compress.c
+> > > > > > > @@ -12,9 +12,11 @@
+> > > > > > >     #include <linux/lzo.h>
+> > > > > > >     #include <linux/lz4.h>
+> > > > > > >     #include <linux/zstd.h>
+> > > > > > > +#include <linux/pagevec.h>
+> > > > > > >     #include "f2fs.h"
+> > > > > > >     #include "node.h"
+> > > > > > > +#include "segment.h"
+> > > > > > >     #include <trace/events/f2fs.h>
+> > > > > > >     static struct kmem_cache *cic_entry_slab;
+> > > > > > > @@ -736,7 +738,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+> > > > > > >     	return ret;
+> > > > > > >     }
+> > > > > > > -static void f2fs_decompress_cluster(struct decompress_io_ctx *dic)
+> > > > > > > +void f2fs_decompress_cluster(struct decompress_io_ctx *dic)
+> > > > > > >     {
+> > > > > > >     	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+> > > > > > >     	struct f2fs_inode_info *fi = F2FS_I(dic->inode);
+> > > > > > > @@ -835,7 +837,8 @@ static void f2fs_decompress_cluster(struct decompress_io_ctx *dic)
+> > > > > > >      * page being waited on in the cluster, and if so, it decompresses the cluster
+> > > > > > >      * (or in the case of a failure, cleans up without actually decompressing).
+> > > > > > >      */
+> > > > > > > -void f2fs_end_read_compressed_page(struct page *page, bool failed)
+> > > > > > > +void f2fs_end_read_compressed_page(struct page *page, bool failed,
+> > > > > > > +						block_t blkaddr)
+> > > > > > >     {
+> > > > > > >     	struct decompress_io_ctx *dic =
+> > > > > > >     			(struct decompress_io_ctx *)page_private(page);
+> > > > > > > @@ -845,6 +848,9 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed)
+> > > > > > >     	if (failed)
+> > > > > > >     		WRITE_ONCE(dic->failed, true);
+> > > > > > > +	else if (blkaddr)
+> > > > > > > +		f2fs_cache_compressed_page(sbi, page,
+> > > > > > > +					dic->inode->i_ino, blkaddr);
+> > > > > > >     	if (atomic_dec_and_test(&dic->remaining_pages))
+> > > > > > >     		f2fs_decompress_cluster(dic);
+> > > > > > > @@ -1660,6 +1666,176 @@ void f2fs_put_page_dic(struct page *page)
+> > > > > > >     	f2fs_put_dic(dic);
+> > > > > > >     }
+> > > > > > > +const struct address_space_operations f2fs_compress_aops = {
+> > > > > > > +	.releasepage = f2fs_release_page,
+> > > > > > > +	.invalidatepage = f2fs_invalidate_page,
+> > > > > > > +};
+> > > > > > > +
+> > > > > > > +struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi)
+> > > > > > > +{
+> > > > > > > +	return sbi->compress_inode->i_mapping;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr)
+> > > > > > > +{
+> > > > > > > +	if (!sbi->compress_inode)
+> > > > > > > +		return;
+> > > > > > > +	invalidate_mapping_pages(COMPRESS_MAPPING(sbi), blkaddr, blkaddr);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > > > +						nid_t ino, block_t blkaddr)
+> > > > > > > +{
+> > > > > > > +	struct page *cpage;
+> > > > > > > +	int ret;
+> > > > > > > +	struct sysinfo si;
+> > > > > > > +	unsigned long free_ram, avail_ram;
+> > > > > > > +
+> > > > > > > +	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	si_meminfo(&si);
+> > > > > > > +	free_ram = si.freeram;
+> > > > > > > +	avail_ram = si.totalram - si.totalhigh;
+> > > > > > > +
+> > > > > > > +	/* free memory is lower than watermark, deny caching compress page */
+> > > > > > > +	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	/* cached page count exceed threshold, deny caching compress page */
+> > > > > > > +	if (COMPRESS_MAPPING(sbi)->nrpages >=
+> > > > > > > +			free_ram / 100 * sbi->compress_percent)
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
+> > > > > > > +	if (cpage) {
+> > > > > > > +		f2fs_put_page(cpage, 0);
+> > > > > > > +		return;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	cpage = alloc_page(__GFP_IO);
+> > > > > > > +	if (!cpage)
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	ret = add_to_page_cache_lru(cpage, COMPRESS_MAPPING(sbi),
+> > > > > > > +						blkaddr, GFP_NOFS);
+> > > > > > > +	if (ret) {
+> > > > > > > +		f2fs_put_page(cpage, 0);
+> > > > > > > +		return;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	set_page_private_data(cpage, ino);
+> > > > > > > +
+> > > > > > > +	if (!f2fs_is_valid_blkaddr(sbi, blkaddr, DATA_GENERIC_ENHANCE_READ))
+> > > > > > > +		goto out;
+> > > > > > > +
+> > > > > > > +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
+> > > > > > > +	SetPageUptodate(cpage);
+> > > > > > > +out:
+> > > > > > > +	f2fs_put_page(cpage, 1);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > > > +								block_t blkaddr)
+> > > > > > > +{
+> > > > > > > +	struct page *cpage;
+> > > > > > > +	bool hitted = false;
+> > > > > > > +
+> > > > > > > +	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > > > > > +		return false;
+> > > > > > > +
+> > > > > > > +	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
+> > > > > > > +				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
+> > > > > > > +	if (cpage) {
+> > > > > > > +		if (PageUptodate(cpage)) {
+> > > > > > > +			atomic_inc(&sbi->compress_page_hit);
+> > > > > > > +			memcpy(page_address(page),
+> > > > > > > +				page_address(cpage), PAGE_SIZE);
+> > > > > > > +			hitted = true;
+> > > > > > > +		}
+> > > > > > > +		f2fs_put_page(cpage, 1);
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	return hitted;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
+> > > > > > > +{
+> > > > > > > +	struct address_space *mapping = sbi->compress_inode->i_mapping;
+> > > > > > > +	struct pagevec pvec;
+> > > > > > > +	pgoff_t index = 0;
+> > > > > > > +	pgoff_t end = MAX_BLKADDR(sbi);
+> > > > > > > +
+> > > > > > > +	if (!mapping->nrpages)
+> > > > > > > +		return;
+> > > > > > > +
+> > > > > > > +	pagevec_init(&pvec);
+> > > > > > > +
+> > > > > > > +	do {
+> > > > > > > +		unsigned int nr_pages;
+> > > > > > > +		int i;
+> > > > > > > +
+> > > > > > > +		nr_pages = pagevec_lookup_range(&pvec, mapping,
+> > > > > > > +						&index, end - 1);
+> > > > > > > +		if (!nr_pages)
+> > > > > > > +			break;
+> > > > > > > +
+> > > > > > > +		for (i = 0; i < nr_pages; i++) {
+> > > > > > > +			struct page *page = pvec.pages[i];
+> > > > > > > +
+> > > > > > > +			if (page->index > end)
+> > > > > > > +				break;
+> > > > > > > +
+> > > > > > > +			lock_page(page);
+> > > > > > > +			if (page->mapping != mapping) {
+> > > > > > > +				unlock_page(page);
+> > > > > > > +				continue;
+> > > > > > > +			}
+> > > > > > > +
+> > > > > > > +			if (ino != get_page_private_data(page)) {
+> > > > > > > +				unlock_page(page);
+> > > > > > > +				continue;
+> > > > > > > +			}
+> > > > > > > +
+> > > > > > > +			generic_error_remove_page(mapping, page);
+> > > > > > > +			unlock_page(page);
+> > > > > > > +		}
+> > > > > > > +		pagevec_release(&pvec);
+> > > > > > > +		cond_resched();
+> > > > > > > +	} while (index < end);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +int f2fs_init_compress_inode(struct f2fs_sb_info *sbi)
+> > > > > > > +{
+> > > > > > > +	struct inode *inode;
+> > > > > > > +
+> > > > > > > +	if (!test_opt(sbi, COMPRESS_CACHE))
+> > > > > > > +		return 0;
+> > > > > > > +
+> > > > > > > +	inode = f2fs_iget(sbi->sb, F2FS_COMPRESS_INO(sbi));
+> > > > > > > +	if (IS_ERR(inode))
+> > > > > > > +		return PTR_ERR(inode);
+> > > > > > > +	sbi->compress_inode = inode;
+> > > > > > > +
+> > > > > > > +	sbi->compress_percent = COMPRESS_PERCENT;
+> > > > > > > +	sbi->compress_watermark = COMPRESS_WATERMARK;
+> > > > > > > +
+> > > > > > > +	atomic_set(&sbi->compress_page_hit, 0);
+> > > > > > > +
+> > > > > > > +	return 0;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi)
+> > > > > > > +{
+> > > > > > > +	if (!sbi->compress_inode)
+> > > > > > > +		return;
+> > > > > > > +	iput(sbi->compress_inode);
+> > > > > > > +	sbi->compress_inode = NULL;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >     int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi)
+> > > > > > >     {
+> > > > > > >     	dev_t dev = sbi->sb->s_bdev->bd_dev;
+> > > > > > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > > > > > > index d4795eda12fa..3058c7e28b11 100644
+> > > > > > > --- a/fs/f2fs/data.c
+> > > > > > > +++ b/fs/f2fs/data.c
+> > > > > > > @@ -132,7 +132,7 @@ static void f2fs_finish_read_bio(struct bio *bio)
+> > > > > > >     		if (f2fs_is_compressed_page(page)) {
+> > > > > > >     			if (bio->bi_status)
+> > > > > > > -				f2fs_end_read_compressed_page(page, true);
+> > > > > > > +				f2fs_end_read_compressed_page(page, true, 0);
+> > > > > > >     			f2fs_put_page_dic(page);
+> > > > > > >     			continue;
+> > > > > > >     		}
+> > > > > > > @@ -228,15 +228,19 @@ static void f2fs_handle_step_decompress(struct bio_post_read_ctx *ctx)
+> > > > > > >     	struct bio_vec *bv;
+> > > > > > >     	struct bvec_iter_all iter_all;
+> > > > > > >     	bool all_compressed = true;
+> > > > > > > +	block_t blkaddr = SECTOR_TO_BLOCK(ctx->bio->bi_iter.bi_sector);
+> > > > > > >     	bio_for_each_segment_all(bv, ctx->bio, iter_all) {
+> > > > > > >     		struct page *page = bv->bv_page;
+> > > > > > >     		/* PG_error was set if decryption failed. */
+> > > > > > >     		if (f2fs_is_compressed_page(page))
+> > > > > > > -			f2fs_end_read_compressed_page(page, PageError(page));
+> > > > > > > +			f2fs_end_read_compressed_page(page, PageError(page),
+> > > > > > > +						blkaddr);
+> > > > > > >     		else
+> > > > > > >     			all_compressed = false;
+> > > > > > > +
+> > > > > > > +		blkaddr++;
+> > > > > > >     	}
+> > > > > > >     	/*
+> > > > > > > @@ -1352,9 +1356,11 @@ static int __allocate_data_block(struct dnode_of_data *dn, int seg_type)
+> > > > > > >     	old_blkaddr = dn->data_blkaddr;
+> > > > > > >     	f2fs_allocate_data_block(sbi, NULL, old_blkaddr, &dn->data_blkaddr,
+> > > > > > >     				&sum, seg_type, NULL);
+> > > > > > > -	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO)
+> > > > > > > +	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+> > > > > > >     		invalidate_mapping_pages(META_MAPPING(sbi),
+> > > > > > >     					old_blkaddr, old_blkaddr);
+> > > > > > > +		f2fs_invalidate_compress_page(sbi, old_blkaddr);
+> > > > > > > +	}
+> > > > > > >     	f2fs_update_data_blkaddr(dn, dn->data_blkaddr);
+> > > > > > >     	/*
+> > > > > > > @@ -2174,7 +2180,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > > > > > >     		goto out_put_dnode;
+> > > > > > >     	}
+> > > > > > > -	for (i = 0; i < dic->nr_cpages; i++) {
+> > > > > > > +	for (i = 0; i < cc->nr_cpages; i++) {
+> > > > > > >     		struct page *page = dic->cpages[i];
+> > > > > > >     		block_t blkaddr;
+> > > > > > >     		struct bio_post_read_ctx *ctx;
+> > > > > > > @@ -2182,6 +2188,14 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > > > > > >     		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+> > > > > > >     						dn.ofs_in_node + i + 1);
+> > > > > > > +		f2fs_wait_on_block_writeback(inode, blkaddr);
+> > > > > > > +
+> > > > > > > +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+> > > > > > > +			if (atomic_dec_and_test(&dic->remaining_pages))
+> > > > > > > +				f2fs_decompress_cluster(dic);
+> > > > > > > +			continue;
+> > > > > > > +		}
+> > > > > > > +
+> > > > > > >     		if (bio && (!page_is_mergeable(sbi, bio,
+> > > > > > >     					*last_block_in_bio, blkaddr) ||
+> > > > > > >     		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
+> > > > > > > @@ -2203,8 +2217,6 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > > > > > >     			}
+> > > > > > >     		}
+> > > > > > > -		f2fs_wait_on_block_writeback(inode, blkaddr);
+> > > > > > > -
+> > > > > > >     		if (bio_add_page(bio, page, blocksize, 0) < blocksize)
+> > > > > > >     			goto submit_and_realloc;
+> > > > > > > @@ -3618,6 +3630,13 @@ void f2fs_invalidate_page(struct page *page, unsigned int offset,
+> > > > > > >     	clear_page_private_gcing(page);
+> > > > > > > +	if (test_opt(sbi, COMPRESS_CACHE)) {
+> > > > > > > +		if (f2fs_compressed_file(inode))
+> > > > > > > +			f2fs_invalidate_compress_pages(sbi, inode->i_ino);
+> > > > > > > +		if (inode->i_ino == F2FS_COMPRESS_INO(sbi))
+> > > > > > > +			clear_page_private_data(page);
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > >     	if (page_private_atomic(page))
+> > > > > > >     		return f2fs_drop_inmem_page(inode, page);
+> > > > > > > @@ -3635,6 +3654,16 @@ int f2fs_release_page(struct page *page, gfp_t wait)
+> > > > > > >     	if (page_private_atomic(page))
+> > > > > > >     		return 0;
+> > > > > > > +	if (test_opt(F2FS_P_SB(page), COMPRESS_CACHE)) {
+> > > > > > > +		struct f2fs_sb_info *sbi = F2FS_P_SB(page);
+> > > > > > > +		struct inode *inode = page->mapping->host;
+> > > > > > > +
+> > > > > > > +		if (f2fs_compressed_file(inode))
+> > > > > > > +			f2fs_invalidate_compress_pages(sbi, inode->i_ino);
+> > > > > > > +		if (inode->i_ino == F2FS_COMPRESS_INO(sbi))
+> > > > > > > +			clear_page_private_data(page);
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > >     	clear_page_private_gcing(page);
+> > > > > > >     	detach_page_private(page);
+> > > > > > > diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+> > > > > > > index c03949a7ccff..833325038ef3 100644
+> > > > > > > --- a/fs/f2fs/debug.c
+> > > > > > > +++ b/fs/f2fs/debug.c
+> > > > > > > @@ -152,6 +152,12 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+> > > > > > >     		si->node_pages = NODE_MAPPING(sbi)->nrpages;
+> > > > > > >     	if (sbi->meta_inode)
+> > > > > > >     		si->meta_pages = META_MAPPING(sbi)->nrpages;
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +	if (sbi->compress_inode) {
+> > > > > > > +		si->compress_pages = COMPRESS_MAPPING(sbi)->nrpages;
+> > > > > > > +		si->compress_page_hit = atomic_read(&sbi->compress_page_hit);
+> > > > > > > +	}
+> > > > > > > +#endif
+> > > > > > >     	si->nats = NM_I(sbi)->nat_cnt[TOTAL_NAT];
+> > > > > > >     	si->dirty_nats = NM_I(sbi)->nat_cnt[DIRTY_NAT];
+> > > > > > >     	si->sits = MAIN_SEGS(sbi);
+> > > > > > > @@ -309,6 +315,12 @@ static void update_mem_info(struct f2fs_sb_info *sbi)
+> > > > > > >     		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
+> > > > > > >     	}
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +	if (sbi->compress_inode) {
+> > > > > > > +		unsigned npages = COMPRESS_MAPPING(sbi)->nrpages;
+> > > > > > > +		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
+> > > > > > > +	}
+> > > > > > > +#endif
+> > > > > > >     }
+> > > > > > >     static int stat_show(struct seq_file *s, void *v)
+> > > > > > > @@ -476,6 +488,7 @@ static int stat_show(struct seq_file *s, void *v)
+> > > > > > >     			"volatile IO: %4d (Max. %4d)\n",
+> > > > > > >     			   si->inmem_pages, si->aw_cnt, si->max_aw_cnt,
+> > > > > > >     			   si->vw_cnt, si->max_vw_cnt);
+> > > > > > > +		seq_printf(s, "  - compress: %4d, hit:%8d\n", si->compress_pages, si->compress_page_hit);
+> > > > > > >     		seq_printf(s, "  - nodes: %4d in %4d\n",
+> > > > > > >     			   si->ndirty_node, si->node_pages);
+> > > > > > >     		seq_printf(s, "  - dents: %4d in dirs:%4d (%4d)\n",
+> > > > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > > > > index c0bead0df66a..70c0bd563732 100644
+> > > > > > > --- a/fs/f2fs/f2fs.h
+> > > > > > > +++ b/fs/f2fs/f2fs.h
+> > > > > > > @@ -98,6 +98,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+> > > > > > >     #define F2FS_MOUNT_ATGC			0x08000000
+> > > > > > >     #define F2FS_MOUNT_MERGE_CHECKPOINT	0x10000000
+> > > > > > >     #define	F2FS_MOUNT_GC_MERGE		0x20000000
+> > > > > > > +#define F2FS_MOUNT_COMPRESS_CACHE	0x40000000
+> > > > > > >     #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+> > > > > > >     #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+> > > > > > > @@ -1371,6 +1372,37 @@ PAGE_PRIVATE_CLEAR_FUNC(gcing, ONGOING_MIGRATION);
+> > > > > > >     PAGE_PRIVATE_CLEAR_FUNC(atomic, ATOMIC_WRITE);
+> > > > > > >     PAGE_PRIVATE_CLEAR_FUNC(dummy, DUMMY_WRITE);
+> > > > > > > +static inline unsigned long get_page_private_data(struct page *page)
+> > > > > > > +{
+> > > > > > > +	unsigned long data = page_private(page);
+> > > > > > > +
+> > > > > > > +	if (!test_bit(PAGE_PRIVATE_NOT_POINTER, &data))
+> > > > > > > +		return 0;
+> > > > > > > +	return data >> PAGE_PRIVATE_MAX;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static inline void set_page_private_data(struct page *page, unsigned long data)
+> > > > > > > +{
+> > > > > > > +	if (!PagePrivate(page)) {
+> > > > > > > +		get_page(page);
+> > > > > > > +		SetPagePrivate(page);
+> > > > > > > +	}
+> > > > > > > +	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
+> > > > > > > +	page_private(page) |= data << PAGE_PRIVATE_MAX;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static inline void clear_page_private_data(struct page *page)
+> > > > > > > +{
+> > > > > > > +	page_private(page) &= (1 << PAGE_PRIVATE_MAX) - 1;
+> > > > > > > +	if (page_private(page) == 1 << PAGE_PRIVATE_NOT_POINTER) {
+> > > > > > > +		set_page_private(page, 0);
+> > > > > > > +		if (PagePrivate(page)) {
+> > > > > > > +			ClearPagePrivate(page);
+> > > > > > > +			put_page(page);
+> > > > > > > +		}
+> > > > > > > +	}
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >     /* For compression */
+> > > > > > >     enum compress_algorithm_type {
+> > > > > > >     	COMPRESS_LZO,
+> > > > > > > @@ -1385,6 +1417,9 @@ enum compress_flag {
+> > > > > > >     	COMPRESS_MAX_FLAG,
+> > > > > > >     };
+> > > > > > > +#define	COMPRESS_WATERMARK			20
+> > > > > > > +#define	COMPRESS_PERCENT			20
+> > > > > > > +
+> > > > > > >     #define COMPRESS_DATA_RESERVED_SIZE		4
+> > > > > > >     struct compress_data {
+> > > > > > >     	__le32 clen;			/* compressed data size */
+> > > > > > > @@ -1694,6 +1729,12 @@ struct f2fs_sb_info {
+> > > > > > >     	u64 compr_written_block;
+> > > > > > >     	u64 compr_saved_block;
+> > > > > > >     	u32 compr_new_inode;
+> > > > > > > +
+> > > > > > > +	/* For compressed block cache */
+> > > > > > > +	struct inode *compress_inode;		/* cache compressed blocks */
+> > > > > > > +	unsigned int compress_percent;		/* cache page percentage */
+> > > > > > > +	unsigned int compress_watermark;	/* cache page watermark */
+> > > > > > > +	atomic_t compress_page_hit;		/* cache hit count */
+> > > > > > >     #endif
+> > > > > > >     };
+> > > > > > > @@ -3660,7 +3701,8 @@ struct f2fs_stat_info {
+> > > > > > >     	unsigned int bimodal, avg_vblocks;
+> > > > > > >     	int util_free, util_valid, util_invalid;
+> > > > > > >     	int rsvd_segs, overp_segs;
+> > > > > > > -	int dirty_count, node_pages, meta_pages;
+> > > > > > > +	int dirty_count, node_pages, meta_pages, compress_pages;
+> > > > > > > +	int compress_page_hit;
+> > > > > > >     	int prefree_count, call_count, cp_count, bg_cp_count;
+> > > > > > >     	int tot_segs, node_segs, data_segs, free_segs, free_secs;
+> > > > > > >     	int bg_node_segs, bg_data_segs;
+> > > > > > > @@ -3996,7 +4038,9 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
+> > > > > > >     bool f2fs_is_compress_backend_ready(struct inode *inode);
+> > > > > > >     int f2fs_init_compress_mempool(void);
+> > > > > > >     void f2fs_destroy_compress_mempool(void);
+> > > > > > > -void f2fs_end_read_compressed_page(struct page *page, bool failed);
+> > > > > > > +void f2fs_decompress_cluster(struct decompress_io_ctx *dic);
+> > > > > > > +void f2fs_end_read_compressed_page(struct page *page, bool failed,
+> > > > > > > +							block_t blkaddr);
+> > > > > > >     bool f2fs_cluster_is_empty(struct compress_ctx *cc);
+> > > > > > >     bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
+> > > > > > >     void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
+> > > > > > > @@ -4014,10 +4058,19 @@ void f2fs_put_page_dic(struct page *page);
+> > > > > > >     int f2fs_init_compress_ctx(struct compress_ctx *cc);
+> > > > > > >     void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
+> > > > > > >     void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
+> > > > > > > +int f2fs_init_compress_inode(struct f2fs_sb_info *sbi);
+> > > > > > > +void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi);
+> > > > > > >     int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+> > > > > > >     void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+> > > > > > >     int __init f2fs_init_compress_cache(void);
+> > > > > > >     void f2fs_destroy_compress_cache(void);
+> > > > > > > +struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
+> > > > > > > +void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
+> > > > > > > +void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > > > +						nid_t ino, block_t blkaddr);
+> > > > > > > +bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
+> > > > > > > +								block_t blkaddr);
+> > > > > > > +void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+> > > > > > >     #define inc_compr_inode_stat(inode)					\
+> > > > > > >     	do {								\
+> > > > > > >     		struct f2fs_sb_info *sbi = F2FS_I_SB(inode);		\
+> > > > > > > @@ -4046,7 +4099,9 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
+> > > > > > >     }
+> > > > > > >     static inline int f2fs_init_compress_mempool(void) { return 0; }
+> > > > > > >     static inline void f2fs_destroy_compress_mempool(void) { }
+> > > > > > > -static inline void f2fs_end_read_compressed_page(struct page *page, bool failed)
+> > > > > > > +static inline void f2fs_decompress_cluster(struct decompress_io_ctx *dic) { }
+> > > > > > > +static inline void f2fs_end_read_compressed_page(struct page *page,
+> > > > > > > +						bool failed, block_t blkaddr)
+> > > > > > >     {
+> > > > > > >     	WARN_ON_ONCE(1);
+> > > > > > >     }
+> > > > > > > @@ -4054,10 +4109,20 @@ static inline void f2fs_put_page_dic(struct page *page)
+> > > > > > >     {
+> > > > > > >     	WARN_ON_ONCE(1);
+> > > > > > >     }
+> > > > > > > +static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
+> > > > > > > +static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
+> > > > > > >     static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
+> > > > > > >     static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+> > > > > > >     static inline int __init f2fs_init_compress_cache(void) { return 0; }
+> > > > > > >     static inline void f2fs_destroy_compress_cache(void) { }
+> > > > > > > +static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
+> > > > > > > +				block_t blkaddr) { }
+> > > > > > > +static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
+> > > > > > > +				struct page *page, nid_t ino, block_t blkaddr) { }
+> > > > > > > +static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+> > > > > > > +				struct page *page, block_t blkaddr) { return false; }
+> > > > > > > +static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
+> > > > > > > +							nid_t ino) { }
+> > > > > > >     #define inc_compr_inode_stat(inode)		do { } while (0)
+> > > > > > >     #endif
+> > > > > > > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> > > > > > > index bcb3b488dbca..f3d2bed746b0 100644
+> > > > > > > --- a/fs/f2fs/gc.c
+> > > > > > > +++ b/fs/f2fs/gc.c
+> > > > > > > @@ -1261,6 +1261,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
+> > > > > > >     	f2fs_put_page(mpage, 1);
+> > > > > > >     	invalidate_mapping_pages(META_MAPPING(fio.sbi),
+> > > > > > >     				fio.old_blkaddr, fio.old_blkaddr);
+> > > > > > > +	f2fs_invalidate_compress_page(fio.sbi, fio.old_blkaddr);
+> > > > > > >     	set_page_dirty(fio.encrypted_page);
+> > > > > > >     	if (clear_page_dirty_for_io(fio.encrypted_page))
+> > > > > > > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> > > > > > > index cbda7ca3b3be..9141147b5bb0 100644
+> > > > > > > --- a/fs/f2fs/inode.c
+> > > > > > > +++ b/fs/f2fs/inode.c
+> > > > > > > @@ -18,6 +18,10 @@
+> > > > > > >     #include <trace/events/f2fs.h>
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +extern const struct address_space_operations f2fs_compress_aops;
+> > > > > > > +#endif
+> > > > > > > +
+> > > > > > >     void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
+> > > > > > >     {
+> > > > > > >     	if (is_inode_flag_set(inode, FI_NEW_INODE))
+> > > > > > > @@ -494,6 +498,11 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+> > > > > > >     	if (ino == F2FS_NODE_INO(sbi) || ino == F2FS_META_INO(sbi))
+> > > > > > >     		goto make_now;
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +	if (ino == F2FS_COMPRESS_INO(sbi))
+> > > > > > > +		goto make_now;
+> > > > > > > +#endif
+> > > > > > > +
+> > > > > > >     	ret = do_read_inode(inode);
+> > > > > > >     	if (ret)
+> > > > > > >     		goto bad_inode;
+> > > > > > > @@ -504,6 +513,12 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+> > > > > > >     	} else if (ino == F2FS_META_INO(sbi)) {
+> > > > > > >     		inode->i_mapping->a_ops = &f2fs_meta_aops;
+> > > > > > >     		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
+> > > > > > > +	} else if (ino == F2FS_COMPRESS_INO(sbi)) {
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +		inode->i_mapping->a_ops = &f2fs_compress_aops;
+> > > > > > > +#endif
+> > > > > > > +		mapping_set_gfp_mask(inode->i_mapping,
+> > > > > > > +			GFP_NOFS | __GFP_HIGHMEM | __GFP_MOVABLE);
+> > > > > > >     	} else if (S_ISREG(inode->i_mode)) {
+> > > > > > >     		inode->i_op = &f2fs_file_inode_operations;
+> > > > > > >     		inode->i_fop = &f2fs_file_operations;
+> > > > > > > @@ -723,8 +738,12 @@ void f2fs_evict_inode(struct inode *inode)
+> > > > > > >     	trace_f2fs_evict_inode(inode);
+> > > > > > >     	truncate_inode_pages_final(&inode->i_data);
+> > > > > > > +	if (test_opt(sbi, COMPRESS_CACHE) && f2fs_compressed_file(inode))
+> > > > > > > +		f2fs_invalidate_compress_pages(sbi, inode->i_ino);
+> > > > > > > +
+> > > > > > >     	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
+> > > > > > > -			inode->i_ino == F2FS_META_INO(sbi))
+> > > > > > > +			inode->i_ino == F2FS_META_INO(sbi) ||
+> > > > > > > +			inode->i_ino == F2FS_COMPRESS_INO(sbi))
+> > > > > > >     		goto out_clear;
+> > > > > > >     	f2fs_bug_on(sbi, get_dirty_pages(inode));
+> > > > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > > > > index 8668df7870d0..406a6b244782 100644
+> > > > > > > --- a/fs/f2fs/segment.c
+> > > > > > > +++ b/fs/f2fs/segment.c
+> > > > > > > @@ -2322,6 +2322,7 @@ void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr)
+> > > > > > >     		return;
+> > > > > > >     	invalidate_mapping_pages(META_MAPPING(sbi), addr, addr);
+> > > > > > > +	f2fs_invalidate_compress_page(sbi, addr);
+> > > > > > >     	/* add it into sit main buffer */
+> > > > > > >     	down_write(&sit_i->sentry_lock);
+> > > > > > > @@ -3469,9 +3470,11 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
+> > > > > > >     reallocate:
+> > > > > > >     	f2fs_allocate_data_block(fio->sbi, fio->page, fio->old_blkaddr,
+> > > > > > >     			&fio->new_blkaddr, sum, type, fio);
+> > > > > > > -	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO)
+> > > > > > > +	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO) {
+> > > > > > >     		invalidate_mapping_pages(META_MAPPING(fio->sbi),
+> > > > > > >     					fio->old_blkaddr, fio->old_blkaddr);
+> > > > > > > +		f2fs_invalidate_compress_page(fio->sbi, fio->old_blkaddr);
+> > > > > > > +	}
+> > > > > > >     	/* writeout dirty page into bdev */
+> > > > > > >     	f2fs_submit_page_write(fio);
+> > > > > > > @@ -3661,6 +3664,7 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
+> > > > > > >     	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+> > > > > > >     		invalidate_mapping_pages(META_MAPPING(sbi),
+> > > > > > >     					old_blkaddr, old_blkaddr);
+> > > > > > > +		f2fs_invalidate_compress_page(sbi, old_blkaddr);
+> > > > > > >     		if (!from_gc)
+> > > > > > >     			update_segment_mtime(sbi, old_blkaddr, 0);
+> > > > > > >     		update_sit_entry(sbi, old_blkaddr, -1);
+> > > > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > > > > index 096492caaa6b..5056b8cfe919 100644
+> > > > > > > --- a/fs/f2fs/super.c
+> > > > > > > +++ b/fs/f2fs/super.c
+> > > > > > > @@ -150,6 +150,7 @@ enum {
+> > > > > > >     	Opt_compress_extension,
+> > > > > > >     	Opt_compress_chksum,
+> > > > > > >     	Opt_compress_mode,
+> > > > > > > +	Opt_compress_cache,
+> > > > > > >     	Opt_atgc,
+> > > > > > >     	Opt_gc_merge,
+> > > > > > >     	Opt_nogc_merge,
+> > > > > > > @@ -224,6 +225,7 @@ static match_table_t f2fs_tokens = {
+> > > > > > >     	{Opt_compress_extension, "compress_extension=%s"},
+> > > > > > >     	{Opt_compress_chksum, "compress_chksum"},
+> > > > > > >     	{Opt_compress_mode, "compress_mode=%s"},
+> > > > > > > +	{Opt_compress_cache, "compress_cache"},
+> > > > > > >     	{Opt_atgc, "atgc"},
+> > > > > > >     	{Opt_gc_merge, "gc_merge"},
+> > > > > > >     	{Opt_nogc_merge, "nogc_merge"},
+> > > > > > > @@ -1066,12 +1068,16 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+> > > > > > >     			}
+> > > > > > >     			kfree(name);
+> > > > > > >     			break;
+> > > > > > > +		case Opt_compress_cache:
+> > > > > > > +			set_opt(sbi, COMPRESS_CACHE);
+> > > > > > > +			break;
+> > > > > > >     #else
+> > > > > > >     		case Opt_compress_algorithm:
+> > > > > > >     		case Opt_compress_log_size:
+> > > > > > >     		case Opt_compress_extension:
+> > > > > > >     		case Opt_compress_chksum:
+> > > > > > >     		case Opt_compress_mode:
+> > > > > > > +		case Opt_compress_cache:
+> > > > > > >     			f2fs_info(sbi, "compression options not supported");
+> > > > > > >     			break;
+> > > > > > >     #endif
+> > > > > > > @@ -1403,6 +1409,8 @@ static void f2fs_put_super(struct super_block *sb)
+> > > > > > >     	f2fs_bug_on(sbi, sbi->fsync_node_num);
+> > > > > > > +	f2fs_destroy_compress_inode(sbi);
+> > > > > > > +
+> > > > > > >     	iput(sbi->node_inode);
+> > > > > > >     	sbi->node_inode = NULL;
+> > > > > > > @@ -1672,6 +1680,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+> > > > > > >     		seq_printf(seq, ",compress_mode=%s", "fs");
+> > > > > > >     	else if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_USER)
+> > > > > > >     		seq_printf(seq, ",compress_mode=%s", "user");
+> > > > > > > +
+> > > > > > > +	if (test_opt(sbi, COMPRESS_CACHE))
+> > > > > > > +		seq_puts(seq, ",compress_cache");
+> > > > > > >     }
+> > > > > > >     #endif
+> > > > > > > @@ -1949,6 +1960,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+> > > > > > >     	bool disable_checkpoint = test_opt(sbi, DISABLE_CHECKPOINT);
+> > > > > > >     	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+> > > > > > >     	bool no_atgc = !test_opt(sbi, ATGC);
+> > > > > > > +	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
+> > > > > > >     	bool checkpoint_changed;
+> > > > > > >     #ifdef CONFIG_QUOTA
+> > > > > > >     	int i, j;
+> > > > > > > @@ -2041,6 +2053,12 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+> > > > > > >     		goto restore_opts;
+> > > > > > >     	}
+> > > > > > > +	if (no_compress_cache == !!test_opt(sbi, COMPRESS_CACHE)) {
+> > > > > > > +		err = -EINVAL;
+> > > > > > > +		f2fs_warn(sbi, "switch compress_cache option is not allowed");
+> > > > > > > +		goto restore_opts;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > >     	if ((*flags & SB_RDONLY) && test_opt(sbi, DISABLE_CHECKPOINT)) {
+> > > > > > >     		err = -EINVAL;
+> > > > > > >     		f2fs_warn(sbi, "disabling checkpoint not compatible with read-only");
+> > > > > > > @@ -3940,10 +3958,14 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+> > > > > > >     		goto free_node_inode;
+> > > > > > >     	}
+> > > > > > > -	err = f2fs_register_sysfs(sbi);
+> > > > > > > +	err = f2fs_init_compress_inode(sbi);
+> > > > > > >     	if (err)
+> > > > > > >     		goto free_root_inode;
+> > > > > > > +	err = f2fs_register_sysfs(sbi);
+> > > > > > > +	if (err)
+> > > > > > > +		goto free_compress_inode;
+> > > > > > > +
+> > > > > > >     #ifdef CONFIG_QUOTA
+> > > > > > >     	/* Enable quota usage during mount */
+> > > > > > >     	if (f2fs_sb_has_quota_ino(sbi) && !f2fs_readonly(sb)) {
+> > > > > > > @@ -4084,6 +4106,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+> > > > > > >     	/* evict some inodes being cached by GC */
+> > > > > > >     	evict_inodes(sb);
+> > > > > > >     	f2fs_unregister_sysfs(sbi);
+> > > > > > > +free_compress_inode:
+> > > > > > > +	f2fs_destroy_compress_inode(sbi);
+> > > > > > >     free_root_inode:
+> > > > > > >     	dput(sb->s_root);
+> > > > > > >     	sb->s_root = NULL;
+> > > > > > > @@ -4162,6 +4186,15 @@ static void kill_f2fs_super(struct super_block *sb)
+> > > > > > >     		f2fs_stop_gc_thread(sbi);
+> > > > > > >     		f2fs_stop_discard_thread(sbi);
+> > > > > > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > > > > > +		/*
+> > > > > > > +		 * latter evict_inode() can bypass checking and invalidating
+> > > > > > > +		 * compress inode cache.
+> > > > > > > +		 */
+> > > > > > > +		if (test_opt(sbi, COMPRESS_CACHE))
+> > > > > > > +			truncate_inode_pages_final(COMPRESS_MAPPING(sbi));
+> > > > > > > +#endif
+> > > > > > > +
+> > > > > > >     		if (is_sbi_flag_set(sbi, SBI_IS_DIRTY) ||
+> > > > > > >     				!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> > > > > > >     			struct cp_control cpc = {
+> > > > > > > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> > > > > > > index 5487a80617a3..0021ea8f7c3b 100644
+> > > > > > > --- a/include/linux/f2fs_fs.h
+> > > > > > > +++ b/include/linux/f2fs_fs.h
+> > > > > > > @@ -34,6 +34,7 @@
+> > > > > > >     #define F2FS_ROOT_INO(sbi)	((sbi)->root_ino_num)
+> > > > > > >     #define F2FS_NODE_INO(sbi)	((sbi)->node_ino_num)
+> > > > > > >     #define F2FS_META_INO(sbi)	((sbi)->meta_ino_num)
+> > > > > > > +#define F2FS_COMPRESS_INO(sbi)	(NM_I(sbi)->max_nid)
+> > > > > > >     #define F2FS_MAX_QUOTAS		3
+> > > > > > > 
+> > > > > 
+> > > > > 
+> > > > > _______________________________________________
+> > > > > Linux-f2fs-devel mailing list
+> > > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > Linux-f2fs-devel mailing list
+> > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > 
+> > .
+> > 
