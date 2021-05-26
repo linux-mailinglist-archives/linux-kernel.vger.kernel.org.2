@@ -2,145 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F9C391F63
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B0C391EEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhEZSqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:46:13 -0400
-Received: from gateway24.websitewelcome.com ([192.185.50.84]:23654 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234863AbhEZSqK (ORCPT
+        id S235374AbhEZSX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:23:28 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:60954 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232976AbhEZSX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:46:10 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 414168630
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 13:20:18 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id ly8glH1gGDedfly8glPOlH; Wed, 26 May 2021 13:20:18 -0500
-X-Authority-Reason: nr=8
+        Wed, 26 May 2021 14:23:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HDHHVDIABje6bABsXVUlN331Ep4noo+DQ9eLJRToQC4=; b=fkI2TXjBxKC91M9xJGgzChXoeB
-        86+oMYnOFtHXnoNMPEJp6ro4Sb3SlFFYdK7aqFoJ4nLNGt/ZNCnkhWvWTqRUWSHQmD8ZB+WIOGL/d
-        p9TDzoB9NYqFYbI0d0JYEVrES5QqF4TMLpBK9V2gAFYyG2ejhtq/eEVP+9KK6yIdmYwZ7OQD1DMaT
-        2xarFCv1JnpIRutt2M/Pe2Hm9dwhPKYLap31HY8qXIw9M9rvXQ3uGDjY9mSuYDGAQ8qVshe7e2caJ
-        wf+2khl4bC1Q27xG57jIbRkR123ezsDrN/w/dnfKMF/PNl55J3ue537s0jluqbi6Pmwm0ODVQIBEa
-        YVb9zydw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46184 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+qaik4LTkMCA5O6w9UEiz/Pui3c6ELwDabBUnwJA9AY=; b=U/sxmDMGfNb3vsRjIqxjxs4UJs
+        HaSJ2B6/JWKszpBgyUfqdirJmPBvzxE8/IuAMHPzA/u1H+nZ/eot07ppOF7l7nWNEbKbxduQbK25R
+        fsA9OqQxVI0A5tnpH1QycAZvGPOwhvCXO95aqguRSbT8cIKzJXpm260mO8QI1+orioTw=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lly8d-0049sR-OZ; Wed, 26 May 2021 13:20:15 -0500
-Subject: Re: [PATCH][next] xfs: Fix fall-through warnings for Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20210420230652.GA70650@embeddedor>
- <20210420233850.GQ3122264@magnolia>
- <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
-Message-ID: <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
-Date:   Wed, 26 May 2021 13:21:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1llyAB-0065ak-A1; Wed, 26 May 2021 18:21:51 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 8D52FD0E9DE; Wed, 26 May 2021 19:21:48 +0100 (BST)
+Date:   Wed, 26 May 2021 19:21:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, cy_huang@richtek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] regulator: rt6245: Add support for Richtek RT6245
+Message-ID: <YK6RvBD3c38BhJZa@sirena.org.uk>
+References: <1622009578-15577-1-git-send-email-u0084500@gmail.com>
+ <1622009578-15577-2-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lly8d-0049sR-OZ
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46184
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lTwzbj1zgyOksQ3T"
+Content-Disposition: inline
+In-Reply-To: <1622009578-15577-2-git-send-email-u0084500@gmail.com>
+X-Cookie: Take an astronaut to launch.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--lTwzbj1zgyOksQ3T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 4/20/21 18:56, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 4/20/21 18:38, Darrick J. Wong wrote:
->> On Tue, Apr 20, 2021 at 06:06:52PM -0500, Gustavo A. R. Silva wrote:
->>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
->>> the following warnings by replacing /* fall through */ comments,
->>> and its variants, with the new pseudo-keyword macro fallthrough:
->>>
->>> fs/xfs/libxfs/xfs_alloc.c:3167:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/libxfs/xfs_da_btree.c:286:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/libxfs/xfs_ag_resv.c:346:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/libxfs/xfs_ag_resv.c:388:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_bmap_util.c:246:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_export.c:88:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_export.c:96:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_file.c:867:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_ioctl.c:562:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_ioctl.c:1548:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_iomap.c:1040:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_inode.c:852:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_log.c:2627:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/xfs_trans_buf.c:298:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/bmap.c:275:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/btree.c:48:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/common.c:85:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/common.c:138:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/common.c:698:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/dabtree.c:51:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>> fs/xfs/scrub/repair.c:951:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
->>>
->>> Notice that Clang doesn't recognize /* fall through */ comments as
->>> implicit fall-through markings, so in order to globally enable
->>> -Wimplicit-fallthrough for Clang, these comments need to be
->>> replaced with fallthrough; in the whole codebase.
->>>
->>> Link: https://github.com/KSPP/linux/issues/115
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>
->> I've already NAKd this twice, so I guess I'll NAK it a third time.
-> 
-> Darrick,
-> 
-> The adoption of fallthrough; has been already accepted and in use since Linux v5.7:
-> 
-> https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> This change is needed, and I would really prefer if this goes upstream through your tree.
-> 
-> Linus has taken these patches directly for a while, now.
-> 
-> Could you consider taking it this time? :)
-> 
+On Wed, May 26, 2021 at 02:12:58PM +0800, cy_huang wrote:
 
-Hi Darrick,
+> +	/* xor checksum for bit 6 to 0 */
+> +	bit_count = __sw_hweight8(code & RT6245_CODE_MASK);
 
-If you don't mind, I will take this in my -next[1] branch for v5.14, so we can globally enable
--Wimplicit-fallthrough for Clang in that release.
+This doesn't compile with an x86 allmodconfig:
 
-We had thousands of these warnings and now we are down to 47 in next-20210526,
-22 of which are fixed with this patch.
+ERROR: modpost: "__sw_hweight8" [drivers/regulator/rt6245-regulator.ko] undefined!
 
-Thanks
---
-Gustavo
+--lTwzbj1zgyOksQ3T
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCukbkACgkQJNaLcl1U
+h9ChYwf+KzmHlyb4wot9VOf5H/NKXJ/Q7MrjB7TQO3ElHQe4FrfHh28gWC0CN5OV
+o+BlFDX+tgoJUXAd9kc4dpU8wygnAgO0gcyevlx+yfDvYrU8aucLtO8rRVF4Gzd5
+RHH0HSncUGY0zexEMLSSGr2E8CwzpNhpTuierbBv4uvfjvpaVlMbMsTY7jldxL8d
+1UMGWQZSMX+r3NWVlGQ7JXdsuDYVoz0sdtpnQp8rPe5EYU5uzJ0lYsP2EJ70z+KV
+CTjaEPEqQTkVIiiPnDJx8lmnyC0N4xL4oFwbKJT90vu+kwkq3m4i9Fezwximg/AM
+CXn5zGW5jlGwf2NywYVTCOZhbuQNGA==
+=SV4H
+-----END PGP SIGNATURE-----
+
+--lTwzbj1zgyOksQ3T--
