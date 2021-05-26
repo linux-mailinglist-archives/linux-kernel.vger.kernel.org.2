@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67578390EB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C149390EB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhEZDMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:12:25 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:44307 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229750AbhEZDMC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:12:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ua7n3xB_1621998629;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua7n3xB_1621998629)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 May 2021 11:10:30 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jarkko.nikula@linux.intel.com
-Cc:     andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] i2c: designware: Fix kernel-doc
-Date:   Wed, 26 May 2021 11:10:23 +0800
-Message-Id: <1621998623-14846-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231441AbhEZDM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:12:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhEZDMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 23:12:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2685B61430;
+        Wed, 26 May 2021 03:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621998633;
+        bh=s6K29mOAmYlAEjF6BtifwnY/ffgWwJrfa7x0LxnBi4M=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=VlofHIgqu+CpFTnqU7dLe/D+0aEEInef8vswnkK7aCkWAxHUKebbyrjNP+xqWviJE
+         qH7L4iBeUwpS8jc590dChbe4y1ZJb9dqjg2CZd5QsphctxhC5LmtPjeJECwQfZkdVw
+         QbZ+RN7uN3pet29zICBjEArEeyGWxOAA7HiEk0Rb1gW8B3uDEQ6pWGXx7kogOuGh2L
+         XuWeL7AwC8vEQ9L84isx8atBw2EX5CgZQqtacRLnwXN8jKhc91JU3BYCc/fhSBd3vN
+         rinw0a5Bjqh+civM/QR9MkdNGeqI/dCYqjFKK707oezHmU3KjqodZX/bzJHru6fKxF
+         bMG6FW9ZKaarA==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210524182745.22923-4-sven@svenpeter.dev>
+References: <20210524182745.22923-1-sven@svenpeter.dev> <20210524182745.22923-4-sven@svenpeter.dev>
+Subject: Re: [PATCH 3/3] arm64: apple: add uart gate clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Sven Peter <sven@svenpeter.dev>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Arnd Bergmann <arnd@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Date:   Tue, 25 May 2021 20:10:32 -0700
+Message-ID: <162199863202.4130789.9536491283421539572@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in i2c-designware-master.c kernel-doc comment
-to remove a warning found by clang_w1.
+Quoting Sven Peter (2021-05-24 11:27:45)
+> Now that we have a driver for gate clocks add the proper topology for the
+> UART. These are already enabled by the bootloader but are part of the
+> clock topology used by devices yet to be implemented.
+>=20
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  arch/arm64/boot/dts/apple/t8103.dtsi | 36 +++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
 
-drivers/i2c/busses/i2c-designware-master.c:176: warning: expecting
-prototype for i2c_dw_init(). Prototype was for i2c_dw_init_master()
-instead.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit 21bf440ce18e ("i2c: designware: Make HW init functions
-static")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/i2c/busses/i2c-designware-master.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index 13be1d6..9b08bb5 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -165,7 +165,7 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- }
- 
- /**
-- * i2c_dw_init() - Initialize the designware I2C master hardware
-+ * i2c_dw_init_master() - Initialize the designware I2C master hardware
-  * @dev: device private data
-  *
-  * This functions configures and enables the I2C master.
--- 
-1.8.3.1
-
+Mostly an FYI; I will not pick up these dts patches in the clk tree. If
+you can send these in a different series it makes my life easier because
+then I can apply the whole thread without having to manually kick out
+the dts bits from the mbox.
