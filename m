@@ -2,137 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5556139107D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61B739107F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhEZGPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:15:12 -0400
-Received: from mout.gmx.net ([212.227.17.20]:56153 "EHLO mout.gmx.net"
+        id S232431AbhEZGQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:16:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232350AbhEZGPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:15:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622009611;
-        bh=KxgWeHfxFfUb6Gv0RYGmvh4jtC6GycYtBhkPxNEiLY0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=llZdYF9IKzwVI8TBihyK4zlZzBCkoz5pR9MVog4mJwXQVCTwEyj5+ITcCgK6T1JxY
-         HFOzMg7q3oC+4/pTVYJNEsCQjnuKrSSV7gtq0KqOBVL50k7vJqRnGBDYICtW/BFnzp
-         xH8pZcqVPkLQKg1f6g1yQfB5UmoaScXsWghaZ4xE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUGeB-1lukq91OfT-00RLqB; Wed, 26
- May 2021 08:13:30 +0200
-Subject: Re: [PATCH] btrfs: relocation: fix misplaced barrier in
- reloc_root_is_dead
-To:     Baptiste Lepers <baptiste.lepers@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210526060947.26159-1-baptiste.lepers@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <9fcd47ac-2642-88be-1bf0-7b920baefb10@gmx.com>
-Date:   Wed, 26 May 2021 14:13:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231657AbhEZGQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:16:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E48BC613C9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622009713;
+        bh=K9VDx8l9Fk35dCxg8qbp0CYu7i27EvYaYxaUjqRCaGA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QK8ptdbQMIVDkeHjRJDyCbqjz30EDJvgsnLgsSS5lXJjXoxC8t2BovkOpaHQ/YbUq
+         G9DvZ9yiXO07O+Q5tqWYC9MOZ+5W1MGWEoMnRvRnSUFHmnsxBd/W+aQwailOUC4dQ/
+         r2C7SUAr7hfdlLDtyJ4axwrY1XSd1iEqgcnyk4zmrcBMy5J5GC2PO86Gk/4zsX8HDB
+         dKxUGl1hBjG/k37CvxqecSFaCgBeYViTILUKRnTxwvjpFMOafrPJys4vsWXwbTWu6e
+         45aSbsO2q75G1Q0uN0iJ0LvcgXWl9+/X+zOtCUpB/z4WcviERkMstDbUTQ79TVoZLx
+         Gfg2k85OiRyaw==
+Received: by mail-ej1-f50.google.com with SMTP id lz27so540627ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:15:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533edKWvLJosvFXCEHFRWAjccRFK3SUgLJ2VapFFm9230aAiw3zS
+        scuOKQl3B7MPTilF/oqINhm383Zredknv/Zytg==
+X-Google-Smtp-Source: ABdhPJyabKi0LWwM/PA6CRZRJ7yKxu8Ed2vDuD7MWKFm13lniftrSzzbsQwiHZTy3W9YN6BoLRM2MlemgaJGcuSt8JU=
+X-Received: by 2002:a17:907:1ca1:: with SMTP id nb33mr31925940ejc.75.1622009712454;
+ Tue, 25 May 2021 23:15:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526060947.26159-1-baptiste.lepers@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <20210314233323.23377-1-chunkuang.hu@kernel.org> <20210314233323.23377-2-chunkuang.hu@kernel.org>
+In-Reply-To: <20210314233323.23377-2-chunkuang.hu@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 26 May 2021 14:15:02 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-SdjB5yTxwABLdrYgr+PpbbCnKhTPskBYwcQDeCCxvhQ@mail.gmail.com>
+Message-ID: <CAAOTY_-SdjB5yTxwABLdrYgr+PpbbCnKhTPskBYwcQDeCCxvhQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mailbox: mtk-cmdq: Remove cmdq_cb_status
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:faF+UzofNDGJzyvBV9ZdiJ9SvU9svIoL4IA1ZAHTd1jXRfYLaCl
- XAJRJvb7Npd190Vb1QayCDnHfdq5UDDx3KTAa7nSN4ug6L1VRszEnHJuT0k079LqhpaTm66
- wIgNaTWn9/iQlYRKh3Az0qqgiKan8Fwu1B/dJVf6ck5ed//3dctyUX7slLfliwQyxXrZUcP
- BLSFqEohqW1HaLa2AKLZg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4WC1wSO3Sf8=:u6JYmwTTyY6j8M6nsZfvfp
- jDwZYrU9eZ7eb7bnCIZ/8Qs+blHML/LlheICJA/F63rp5rCxuNFdrWYyRYiMIyx2fUWVBs0dS
- P8RpKOSeJd9oOjMd7cZ/tBmLrbjqZWykIpQTlatsMK/mtQlXN7045yDtxVdOiq7GjkLl54UiR
- PfjECtGn5XqYwsd+speVMAR6m9XDK6EUG25D+A8VLGr9BP1iIk8Er1XVyJCzWevwzpGv/zxYR
- BZvpUCiWkfJUVfcEnRRRP43eLwPLp11INcQOXzQOlq72FuQEvkeyHK5CEtDyJLYvRsW+SkHuW
- JXXfnS2v42tGCTRNPFdZ8AblrtfE8Tsh/dpJzeUSWdeik2l0CwlYyo7x+Hz/AyKzXnCMjh4Zu
- NHZsYboqwO2dpJYoBr7svDc4fjiG4q28GzM+4CZUBtaIlza+nNeTBInFph/KgLDYiUTFeSjmr
- TkRUvwJtJfg6+wmFBc9QQiTTVBWRdxkYnUNY1Xa5VAE2Hqy4h6FZesC6dgMtII/+5uFJ0x0oF
- lfl6OVOBt6G33LMuZGaEYdt/TsIjFEHmZFKvTn7flY0l3dvLmIvORL+KeZYCgm27YSR/h8qoS
- SgqQpQZQA5tmirGSXJljLt0XJYeMV3ODiRD7ivdTyq2E90bgH1D3O1EJpOmosedgT9Z6Zqj+7
- 4fz2zg4pmgY/FZ7/arkQSbUZ166kf+l+s3i2vBohl5XQWgCWZO4TaTMeqHeyic2azy8Tu84/2
- psfioQlns/1199GcAZq4/ctFKgT7yjxb9mvcmhKkQKAJOSASguY49YIUYOshzl1neplk5VYy2
- 334WfQkna8gJwW0w9dt2nqvYmKJaKhlSmSlkKE1BRx10v3725zXe/M0E33Pxo92ZeyxBYDSY8
- ZK+GQ8lhEM0UAHEf0tVO0UF0rFH3/Mt5yLZwKcXT0v+/+I3cXa2Y75dSmaGd3nOoaLxKnal/E
- xSNK7f3wFUnXsbD3/+vWwhWcEXVLfzpN4Gf3VwFIDH1wlTk6bPtvlPPySJZ9kcwqZTYvNrgzw
- wIieP9RUj8Y9CcXq6fzqqV6EICjd2IMPZUIOJoLjoYrFbntQE19ICHBFljChsrlX+Aq2sHPHB
- FRWTSy2EPNcVF7/cDo/LcsagirMJodMmICk4pGW1o8oTh55xOJao6Aivw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ Yongqiang
 
-
-On 2021/5/26 =E4=B8=8B=E5=8D=882:09, Baptiste Lepers wrote:
-> Fix a misplaced barrier in reloc_root_is_dead. The
-> BTRFS_ROOT_DEAD_RELOC_TREE bit should be checked before accessing
-> reloc_root.
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8815=
+=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:33=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
-> The fix forces the order documented in the original commit:
-> "In the cross section C-D, either caller gets the DEAD bit set, avoiding
-> access reloc_root no matter if it's safe or not.  Or caller get the DEAD
-> bit cleared, then access reloc_root, which is already NULL, nothing will
-> be wrong."
+> cmdq_cb_status is an error status. Use the standard error number
+> instead of cmdq_cb_status to prevent status duplication.
 >
-> static bool reloc_root_is_dead()
->      smp_rmb(); <--- misplaced
->      if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
->            return true;
->      return false;
-> }
-
-Exactly what I originally purposed to David, we didn't reach an
-agreement on where the barrier should be.
-
-At least I'm completely fine with this patch.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
->
-> static bool have_reloc_root(struct btrfs_root *root)
-> {
->         if (reloc_root_is_dead(root))
->                 return false;
->         <--- the barrier should happen here
->         if (!root->reloc_root)
->                 return false;
->         return true;
-> }
->
-> Fixes: 6282675e6708e ("btrfs: relocation: fix reloc_root lifespan and ac=
-cess")
-> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+> Cc: Jassi Brar <jassisinghbrar@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Houlong Wei <houlong.wei@mediatek.com>
+> Cc: Bibby Hsieh <bibby.hsieh@mediatek.com>
+> Cc: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 > ---
->   fs/btrfs/relocation.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/mailbox/mtk-cmdq-mailbox.c       | 10 +++++-----
+>  include/linux/mailbox/mtk-cmdq-mailbox.h |  7 +------
+>  2 files changed, 6 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index b70be2ac2e9e..8cddcce56bf4 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -289,15 +289,14 @@ static int update_backref_cache(struct btrfs_trans=
-_handle *trans,
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index 5665b6ea8119..3d37c1cd40f1 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -180,7 +180,7 @@ static bool cmdq_thread_is_in_wfe(struct cmdq_thread =
+*thread)
+>         return readl(thread->base + CMDQ_THR_WAIT_TOKEN) & CMDQ_THR_IS_WA=
+ITING;
+>  }
 >
->   static bool reloc_root_is_dead(struct btrfs_root *root)
->   {
-> +	bool is_dead =3D test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
->   	/*
->   	 * Pair with set_bit/clear_bit in clean_dirty_subvols and
->   	 * btrfs_update_reloc_root. We need to see the updated bit before
->   	 * trying to access reloc_root
->   	 */
->   	smp_rmb();
-> -	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-> -		return true;
-> -	return false;
-> +	return is_dead;
->   }
+> -static void cmdq_task_exec_done(struct cmdq_task *task, enum cmdq_cb_sta=
+tus sta)
+> +static void cmdq_task_exec_done(struct cmdq_task *task, int sta)
+>  {
+>         struct cmdq_task_cb *cb =3D &task->pkt->async_cb;
+>         struct cmdq_cb_data data;
+> @@ -244,10 +244,10 @@ static void cmdq_thread_irq_handler(struct cmdq *cm=
+dq,
+>                         curr_task =3D task;
 >
->   /*
+>                 if (!curr_task || curr_pa =3D=3D task_end_pa - CMDQ_INST_=
+SIZE) {
+> -                       cmdq_task_exec_done(task, CMDQ_CB_NORMAL);
+> +                       cmdq_task_exec_done(task, 0);
+>                         kfree(task);
+>                 } else if (err) {
+> -                       cmdq_task_exec_done(task, CMDQ_CB_ERROR);
+> +                       cmdq_task_exec_done(task, -ENOEXEC);
+>                         cmdq_task_handle_error(curr_task);
+>                         kfree(task);
+>                 }
+> @@ -415,7 +415,7 @@ static void cmdq_mbox_shutdown(struct mbox_chan *chan=
+)
+>
+>         list_for_each_entry_safe(task, tmp, &thread->task_busy_list,
+>                                  list_entry) {
+> -               cmdq_task_exec_done(task, CMDQ_CB_ERROR);
+> +               cmdq_task_exec_done(task, -ECONNABORTED);
+>                 kfree(task);
+>         }
+>
+> @@ -453,7 +453,7 @@ static int cmdq_mbox_flush(struct mbox_chan *chan, un=
+signed long timeout)
+>                                  list_entry) {
+>                 cb =3D &task->pkt->async_cb;
+>                 if (cb->cb) {
+> -                       data.sta =3D CMDQ_CB_ERROR;
+> +                       data.sta =3D -ECONNABORTED;
+>                         data.data =3D cb->data;
+>                         cb->cb(data);
+>                 }
+> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mai=
+lbox/mtk-cmdq-mailbox.h
+> index d5a983d65f05..2f7d9a37d611 100644
+> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
+> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
+> @@ -65,13 +65,8 @@ enum cmdq_code {
+>         CMDQ_CODE_LOGIC =3D 0xa0,
+>  };
+>
+> -enum cmdq_cb_status {
+> -       CMDQ_CB_NORMAL =3D 0,
+> -       CMDQ_CB_ERROR
+> -};
+> -
+>  struct cmdq_cb_data {
+> -       enum cmdq_cb_status     sta;
+> +       int                     sta;
+>         void                    *data;
+>  };
+>
+> --
+> 2.17.1
 >
