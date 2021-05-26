@@ -2,256 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578353920CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0063920D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbhEZT0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        id S233226AbhEZT0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhEZT0C (ORCPT
+        with ESMTP id S231321AbhEZT0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:26:02 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC927C061574;
-        Wed, 26 May 2021 12:24:29 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id y76so2624667oia.6;
-        Wed, 26 May 2021 12:24:29 -0700 (PDT)
+        Wed, 26 May 2021 15:26:47 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F77FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:25:15 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id v9so2212524ion.11
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mMr84wnW79eJ+bLd6qGzg7fkB7rh5OToBUejvhaMQJI=;
-        b=cUPHV+Io0Nsf4MIPPGV6JPdt5NqOOskBJGEx1I/WkMW0nGYdZU48WuSeJm3GamIidT
-         Sy/0/U+Xmd5+2Nk8E0uTtFoZaHHiJazee6qRwCXnx9pw9tkruqPEB4jYR6kv21aAg7VA
-         4kIGjBO+P3xnLFsH6EU4TCAU3Hu7ZjQ5jiogcx7gd8aAgw4oymBjOlOetNEvgPW+/U4X
-         902vgfb8W7OpyXhamNERFfXXbXGehDEUF96W67zxIpCEtRoUf8xW97udmHBQHjv7+VGx
-         +d93zivxGBG+zD5nn9HG7eDpXql1MdFhJdp1XR4/bIW+LAlmRiueJhdOoSFhxeFqKUma
-         qF1A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=izmyF5lXZ6T+Ih81ROoFBWGYSX359TfngCEeuMk/7tw=;
+        b=kMT8SVDJjaBto+io7zebuCCqledUf8nh4myBvhiKUjQphfgDe7/5JIOaMq3TeL2vli
+         lGZSIEPGc5X7c2WAvwLO0tfc2FNWGgydkFVNt02Ogh4fov63BJn270+3sWaPdKFGgM0Z
+         TeSGT3og1EXgFByRnd3ZSqx1UxiS33o0w7vjY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mMr84wnW79eJ+bLd6qGzg7fkB7rh5OToBUejvhaMQJI=;
-        b=QbavI4OOdFDZdH+9ZqhgSye2PmmjJvB9J9bdzwVHQl+xmDRjiwYxZAzlSvNcta22kh
-         GCZoBtXBZj89nsGt9GjxsmWUTaItArdHiCJ9tVW755uTfI41gz93i+mm0AIDF1owUm7a
-         iQ3ClkelRJfvXut855m1j9zd6NkQ3GT+R+8MwEY3llD06fFRtpEnoa2+QtNQVWQx8LVB
-         Tqd74v3+erLn7gRyNX+1kksMaXlJb/pwqX2T1WnKZsLXWnEdB9+Awr/5L/Hu7x28pT1u
-         PhG+e/dEtIUJNC7QWbkT5w/qD2i0lodpJrdIHwRK5HxVM16lzjSjFr5cgBu/UuhSapgP
-         LXWw==
-X-Gm-Message-State: AOAM5306GsR3kSahiGw9mG7wLm6o9cL6qob1ljyaJB+tOJpLgAfS2GmO
-        GFdy+MwSBQYOshXJ3SxJPN4E+V9pdrpKfq3PSpo=
-X-Google-Smtp-Source: ABdhPJxYd77i/ganESJH9u6Q39LnWFqKNrqRv+AIw77ejduNuBhTpthz6X4nRwHGYXpVAnaqohkCrCgb02MSxBnlhOU=
-X-Received: by 2002:aca:2b17:: with SMTP id i23mr3063425oik.87.1622057069090;
- Wed, 26 May 2021 12:24:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=izmyF5lXZ6T+Ih81ROoFBWGYSX359TfngCEeuMk/7tw=;
+        b=Tbi0iPKigSULmT5EYBT3ix5g5U+cdYT5dqgWsmKGlLgF3w5v07wC8EIInS4T2d+Y/N
+         GDuHbz9Us9bqUccCiB3HlQfsIcbkN5j6UQJOdK6atcdeanvX/yEqJJ7SU2EkSubo3bCY
+         Bqe82ouAgZosvBwEkuGYhC4mLwJ8Mz2KLxovJESaOYM7ZFFfitIoZQZGtqCQUXOp5Unu
+         QO4kGJCMP7ejsLq8y5t9VhSB6EfFmhyWSOtXzR6kmsyKvw+CjIRD7QCZWkVGeiN74gIV
+         evjK4wFAZ3B3txDCoQtUuS5Qf+X3+6Eyp/DVLW3duK3UYBpmwUJxkJh5R700fKnfYLDg
+         0/Og==
+X-Gm-Message-State: AOAM531E3wlsyPwPr46KilNj3TrbvluBacZ0/8Dfzvz8MhcBcp/3zaL5
+        bW57dQj8CfsDk2m2EeBezJukCw==
+X-Google-Smtp-Source: ABdhPJxCtegg75Nne7R6DXMK3EvcaNHbzYsgBnTRD663faG7Iz3QuT5u01nw0IQsC+K5QxYFkrdv2A==
+X-Received: by 2002:a02:b78c:: with SMTP id f12mr4804493jam.7.1622057114750;
+        Wed, 26 May 2021 12:25:14 -0700 (PDT)
+Received: from google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
+        by smtp.gmail.com with ESMTPSA id b189sm113428iof.48.2021.05.26.12.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 12:25:14 -0700 (PDT)
+Date:   Wed, 26 May 2021 13:25:12 -0600
+From:   Raul E Rangel <rrangel@chromium.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, kbusch@kernel.org,
+        axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        dan.j.williams@intel.com, shyjumon.n@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org
+Subject: Re: [PATCH V5] drivers/nvme: Add support for ACPI StorageD3Enable
+ property
+Message-ID: <YK6gmAWqaRmvpJXb@google.com>
+References: <20200702225011.10932-1-david.e.box@linux.intel.com>
+ <20200709184333.6241-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-References: <20210525184449.57703-1-romain.perier@gmail.com>
- <20210525184449.57703-3-romain.perier@gmail.com> <5ce3b5a5-1500-0d95-623e-299e7b1eb43b@roeck-us.net>
-In-Reply-To: <5ce3b5a5-1500-0d95-623e-299e7b1eb43b@roeck-us.net>
-From:   Romain Perier <romain.perier@gmail.com>
-Date:   Wed, 26 May 2021 21:24:16 +0200
-Message-ID: <CABgxDo+6fORohKH_VAw4ZuYVUYoGbo=a-Ckmv8Q5QkEtEZWGJQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] watchdog: Add Mstar MSC313e WDT driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709184333.6241-1-david.e.box@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 09, 2020 at 11:43:33AM -0700, David E. Box wrote:
+> +#ifdef CONFIG_ACPI
+> +static bool nvme_acpi_storage_d3(struct pci_dev *dev)
+> +{
+> +	const struct fwnode_handle *fwnode;
+> +	struct acpi_device *adev;
+> +	struct pci_dev *root;
+> +	acpi_handle handle;
+> +	acpi_status status;
+> +	u8 val;
+> +
+> +	/*
+> +	 * Look for _DSD property specifying that the storage device on
+> +	 * the port must use D3 to support deep platform power savings during
+> +	 * suspend-to-idle
+> +	 */
+> +	root = pcie_find_root_port(dev);
+> +	if (!root)
+> +		return false;
+> +
+> +	adev = ACPI_COMPANION(&root->dev);
+> +	if (!adev)
+> +		return false;
+> +
+> +	/*
+> +	 * The property is defined in the PXSX device for South complex ports
+> +	 * and in the PEGP device for North complex ports.
+> +	 */
+> +	status = acpi_get_handle(adev->handle, "PXSX", &handle);
+So I'm curious why we need to directly look at the PXSX and PEGP
+devices instead of the ACPI_COMPANION node attached to the pci device?
 
+I've looked around and I can't find any documentation that defines the
+the PXSX and PEGP device names.
 
-Le mar. 25 mai 2021 =C3=A0 21:52, Guenter Roeck <linux@roeck-us.net> a =C3=
-=A9crit :
->
-> On 5/25/21 11:44 AM, Romain Perier wrote:
-> > From: Daniel Palmer <daniel@0x0f.com>
-> >
-> > It adds a driver for the IP block handling the watchdog timer found for
-> > Mstar MSC313e SoCs and newer.
-> >
-> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> > Co-developed-by: Romain Perier <romain.perier@gmail.com>
-> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> > ---
-> >   MAINTAINERS                    |   1 +
-> >   drivers/watchdog/Kconfig       |  13 +++
-> >   drivers/watchdog/Makefile      |   1 +
-> >   drivers/watchdog/msc313e_wdt.c | 173 ++++++++++++++++++++++++++++++++=
-+
-> >   4 files changed, 188 insertions(+)
-> >   create mode 100644 drivers/watchdog/msc313e_wdt.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index a0f37adb9e64..fcc10c57298c 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -2177,6 +2177,7 @@ F:      arch/arm/mach-mstar/
-> >   F:  drivers/clk/mstar/
-> >   F:  drivers/gpio/gpio-msc313.c
-> >   F:  drivers/pinctrl/pinctrl-msc313.c
-> > +F:   drivers/watchdog/msc313e_wdt.c
-> >   F:  include/dt-bindings/clock/mstar-*
-> >   F:  include/dt-bindings/gpio/msc313-gpio.h
-> >   F:  include/soc/mstar/
-> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> > index 355100dad60a..f53634ea0de6 100644
-> > --- a/drivers/watchdog/Kconfig
-> > +++ b/drivers/watchdog/Kconfig
-> > @@ -980,6 +980,19 @@ config VISCONTI_WATCHDOG
-> >         Say Y here to include support for the watchdog timer in Toshiba
-> >         Visconti SoCs.
-> >
-> > +config MSC313E_WATCHDOG
-> > +     tristate "MStar MSC313e watchdog"
-> > +     depends on ARCH_MSTARV7 || COMPILE_TEST
-> > +     depends on OF
-> > +     select WATCHDOG_CORE
-> > +     help
-> > +       Say Y here to include support for the Watchdog timer embedded
-> > +       into MStar MSC313e chips. This will reboot your system when the
-> > +       timeout is reached.
-> > +
-> > +       To compile this driver as a module, choose M here: the
-> > +       module will be called msc313e_wdt.
-> > +
-> >   # X86 (i386 + ia64 + x86_64) Architecture
-> >
-> >   config ACQUIRE_WDT
-> > diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-> > index a7eade8b4d45..7fa392ae3000 100644
-> > --- a/drivers/watchdog/Makefile
-> > +++ b/drivers/watchdog/Makefile
-> > @@ -92,6 +92,7 @@ obj-$(CONFIG_SPRD_WATCHDOG) +=3D sprd_wdt.o
-> >   obj-$(CONFIG_PM8916_WATCHDOG) +=3D pm8916_wdt.o
-> >   obj-$(CONFIG_ARM_SMC_WATCHDOG) +=3D arm_smc_wdt.o
-> >   obj-$(CONFIG_VISCONTI_WATCHDOG) +=3D visconti_wdt.o
-> > +obj-$(CONFIG_MSC313E_WATCHDOG) +=3D msc313e_wdt.o
-> >
-> >   # X86 (i386 + ia64 + x86_64) Architecture
-> >   obj-$(CONFIG_ACQUIRE_WDT) +=3D acquirewdt.o
-> > diff --git a/drivers/watchdog/msc313e_wdt.c b/drivers/watchdog/msc313e_=
-wdt.c
-> > new file mode 100644
-> > index 000000000000..434259256967
-> > --- /dev/null
-> > +++ b/drivers/watchdog/msc313e_wdt.c
-> > @@ -0,0 +1,173 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * MStar WDT driver
-> > + *
-> > + * Copyright (C) 2019 - 2021 Daniel Palmer
-> > + * Copyright (C) 2021 Romain Perier
-> > + *
-> > + */
-> > +
-> > +#include <linux/platform_device.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_irq.h>
-> > +#include <linux/module.h>
-> > +#include <linux/watchdog.h>
-> > +#include <linux/io.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/interrupt.h>
->
-> Alphabetic order, please.
+I've dumped some ACPI from a system that uses the PXSX name and
+StorageD3Cold attribute:
 
-Ack, I will fix it.
+    Scope (\_SB.PCI0.GP14)
+    {
+        Device (PXSX)
+        {
+            Name (_ADR, 0x0000000000000000)  // _ADR: Address
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                Return (0x0F)
+            }
 
-> Also, please drop unneeded include files.
-> The driver doesn't support interrupts, so any interrupt related
-> include file is unnecessary. I also don't see any devicetree specific
-> code except for of_device_id, and that is declared in mod_devicetable.h,
-> not in an of_xxx.h include file.
+            Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
+            {
+                ToUUID ("5025030f-842f-4ab4-a561-99a5189762d0"),
+                Package (0x01)
+                {
+                    Package (0x02)
+                    {
+                        "StorageD3Enable",
+                        One
+                    }
+                }
+            })
+        }
+    }
 
-Arf, in fact an interrupt was used previously (it triggers when the
-wdt reaches a specific value
-that is not necessarily the value of the initial timeout), but I have
-decided to remove it because
-not really useful. And I have kept some headers, sorry for that. I will fix=
- it.
+It looks to me like it's just the firmware node for the NVMe device
+attached to the root port. Is that the correct assumption?
 
->
-> > +
-> > +#define REG_WDT_CLR                  0x0
-> > +#define REG_WDT_MAX_PRD_L            0x10
-> > +#define REG_WDT_MAX_PRD_H            0x14
-> > +
-> > +#define MSC313E_WDT_DEFAULT_TIMEOUT  30
-> > +/* Supports 1 - 350 sec */
->
-> Doesn't that depend on the clock freqneucy ?
-> More on that see below.
->
-> > +#define MSC313E_WDT_MIN_TIMEOUT              1
-> > +#define MSC313E_WDT_MAX_TIMEOUT              350
-> > +
-> > +static unsigned int timeout;
-> > +
-> > +module_param(timeout, int, 0);
-> > +MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds");
-> > +
-> > +struct msc313e_wdt_priv {
-> > +     void __iomem *base;
-> > +     struct device *dev;
->
-> I don't immediately see where 'dev' is used.
->
-> > +     struct watchdog_device wdev;
-> > +     struct clk *clk;
-> > +};
-> > +
-> > +static int msc313e_wdt_start(struct watchdog_device *wdev)
-> > +{
-> > +     struct msc313e_wdt_priv *priv =3D watchdog_get_drvdata(wdev);
-> > +     u32 timeout;
-> > +     int err;
-> > +
-> > +     err =3D clk_prepare_enable(priv->clk);
-> > +     if (err) {
-> > +             dev_err(priv->dev, "failed to enable clock\n");
->
-> Ah, here. I am not sure if I like that error message - it is going to be
-> persistent and may create a lot of noise if it is ever seen, and pretty m=
-uch
-> useless otherwise. Either case, if you insist on the message, I'd suggest
-> to use wdev->parent.
+I'm wondering if we can simplify the look up logic to look at the
+ACPI_COMPANION of the pci device?
 
-Honestly ? It is mostly to avoid silent errors, but I can also return
-an error directly, yep (I mean
-just return the error code). The userspace app is supposed to check
-the error code returned by ioctl. No objection
-for removing the message (and so priv->dev too).
+The reason I ask is that I'm working on enabling S0i3 on an AMD device.
+This device also defines the StorageD3Enable property, but it don't use
+the PXSX name:
 
->
-> > +             return err;
-> > +     }
-> > +     timeout =3D wdev->timeout * clk_get_rate(priv->clk);
->
-> How is it guaranteed that this won't overflow ? The maximum timeout is no=
-t
-> tied to the clock frequency. This will overflow if the clock frequency is
-> above 0xffffffff / 350 =3D 12271335 Hz and the timeout is sufficiently la=
-rge.
->
+    Scope (GPP6) {
+        Device (NVME)
+        {
+            Name (_ADR, Zero)  // _ADR: Address
 
-Ah good catch ! Mhhhhh we could compute max_timeout dynamically
-from the probe function. So, we allow  the maximum possible value just
-before the overflow. The units are different but there is something
-similar in meson_wdt.c  .
+            Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
+            {
+                ToUUID ("5025030f-842f-4ab4-a561-99a5189762d0"),
+                Package (0x01)
+                {
+                    Package (0x02)
+                    {
+                        "StorageD3Enable",
+                        One
+                    }
+                }
+            })
+        }
+    }
 
-Anyway, I will think about it and propose a fix.
+The Windows
+[documentation](https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro#d3-support)
+makes it sound like the _DSD should be defined on the PCI device.
 
+I can send one of the following patches depending on the feedback:
+1) Additionally check the pci device's ACPI_COMPANION for the _DSD.
+2) Delete the PXSX and PEGP lookups and only look at the pci device's
+   ACPI_COMPANION.
+
+> +	if (ACPI_FAILURE(status)) {
+> +		status = acpi_get_handle(adev->handle, "PEGP", &handle);
+> +		if (ACPI_FAILURE(status))
+> +			return false;
+> +	}
+> +
+> +	if (acpi_bus_get_device(handle, &adev))
+> +		return false;
+> +
+> +	fwnode = acpi_fwnode_handle(adev);
+> +
+> +	return fwnode_property_read_u8(fwnode, "StorageD3Enable", &val) ?
+> +		false : val == 1;
+> +}
 
 Thanks,
-Romain
+Raul
+
+p.s., Sorry for the second message, I somehow mangled the headers in the
+first message and dropped the Message-Id.
