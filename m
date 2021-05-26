@@ -2,127 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B828F3916E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F231E39170C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhEZMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:02:09 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33226 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbhEZMCB (ORCPT
+        id S234152AbhEZMIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:08:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48888 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232027AbhEZMIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:02:01 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QC0POv047511;
-        Wed, 26 May 2021 07:00:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622030425;
-        bh=Fk9IGG55x+JZlXlFHIC+N5jUDdCeMVpfGC8Xg0ZqEcc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=QsohrEJa8GYkI5ny8GjxvuG4uqNg9dG6mlE+glKWaU+Ucfl9yTJCTOTvDXReGVxoW
-         VjhZgUwItbvxR0hsaugq/stgxGsG1WSl+UZ1BAP7WDQaVUS57GlKbdHtOae2m3WCAs
-         Rd5hc1XCWUbm67u48MBUlyqP7DiaTxNjL4lUv6YU=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QC0PjQ093748
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 07:00:25 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 07:00:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 07:00:24 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QC0J2u108104;
-        Wed, 26 May 2021 07:00:22 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Tony Lindgren <tony@atomide.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 2/2] ARM: dts: am437x-l4: Drop ti,omap2-uart entry from UART nodes
-Date:   Wed, 26 May 2021 17:29:56 +0530
-Message-ID: <20210526115956.3065-2-vigneshr@ti.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526115956.3065-1-vigneshr@ti.com>
-References: <20210526115956.3065-1-vigneshr@ti.com>
+        Wed, 26 May 2021 08:08:17 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 08:08:16 EDT
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2D33B1FD2A;
+        Wed, 26 May 2021 12:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622030424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IjDfVNGyLqkqsPwVm25MULiJLzVWqdHHv+ncw0xAGyk=;
+        b=UeoYFvN0l10pOObHYxLSXztHiWtXmYwEV18Dfzb26DvzzZSd0DGois5lXazPBpwQSIOoS5
+        M3C2BOiJ3IRmdlVN7t61wRROiLWWheuTgPUI5vSAyFNzbyn1Izep3UAH63C+aXNf9s+bHr
+        4fP+d2Y7nJS3PTrpSkjxRy1uqfKTUj8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622030424;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IjDfVNGyLqkqsPwVm25MULiJLzVWqdHHv+ncw0xAGyk=;
+        b=tlTC+ARnM+GuMeOKQJIThyu7MqxL9cgstGXGa4v/zBZ5gfaqKA4+2C/FTzMGc+LOacp2Y2
+        MlFneooEigMAzGDw==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id D078711A98;
+        Wed, 26 May 2021 12:00:23 +0000 (UTC)
+Subject: Re: [PATCH] drm/rockchip: kick firmware-based framebuffer when
+ initializing
+To:     Icenowy Zheng <icenowy@aosc.io>, Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210526085527.155840-1-icenowy@aosc.io>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <13c50c42-4f2a-eed3-fc79-cbe6d1e7cae9@suse.de>
+Date:   Wed, 26 May 2021 14:00:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210526085527.155840-1-icenowy@aosc.io>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="8BYw6q2hiLDaE4D6t7JULaNP7Anat21W2"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ti,omap2-uart was kept around to work with legacy omap-serial driver.
-Now that we have completed move to 8250-omap.c drop legacy compatible.
-This will simplify writing YAML schema.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--8BYw6q2hiLDaE4D6t7JULaNP7Anat21W2
+Content-Type: multipart/mixed; boundary="LZzy5vKYeS6aAktdZRJoJ4RLNbvtCfZeM";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Icenowy Zheng <icenowy@aosc.io>, Sandy Huang <hjc@rock-chips.com>,
+ =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <13c50c42-4f2a-eed3-fc79-cbe6d1e7cae9@suse.de>
+Subject: Re: [PATCH] drm/rockchip: kick firmware-based framebuffer when
+ initializing
+References: <20210526085527.155840-1-icenowy@aosc.io>
+In-Reply-To: <20210526085527.155840-1-icenowy@aosc.io>
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- arch/arm/boot/dts/am437x-l4.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+--LZzy5vKYeS6aAktdZRJoJ4RLNbvtCfZeM
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/am437x-l4.dtsi b/arch/arm/boot/dts/am437x-l4.dtsi
-index e217ffc09770..d4daf2f84de9 100644
---- a/arch/arm/boot/dts/am437x-l4.dtsi
-+++ b/arch/arm/boot/dts/am437x-l4.dtsi
-@@ -194,7 +194,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0x9000 0x1000>;
- 
- 			uart0: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
- 			};
-@@ -712,7 +712,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0x22000 0x1000>;
- 
- 			uart1: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
-@@ -740,7 +740,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0x24000 0x1000>;
- 
- 			uart2: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
-@@ -1399,7 +1399,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0xa6000 0x1000>;
- 
- 			uart3: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
-@@ -1427,7 +1427,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0xa8000 0x1000>;
- 
- 			uart4: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
-@@ -1455,7 +1455,7 @@ SYSC_OMAP2_SOFTRESET |
- 			ranges = <0x0 0xaa000 0x1000>;
- 
- 			uart5: serial@0 {
--				compatible = "ti,am4372-uart","ti,omap2-uart";
-+				compatible = "ti,am4372-uart";
- 				reg = <0x0 0x2000>;
- 				interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
--- 
-2.31.1
+Hi
 
+I think we already fixed this at [1]. Apparently no on epicked it up. If =
+
+you awant to test, I'll add your Tested-by before merging the patch.
+
+Best regards
+Thomas
+
+[1]=20
+https://lore.kernel.org/dri-devel/20210516074833.451643-1-javierm@redhat.=
+com/
+
+Am 26.05.21 um 10:55 schrieb Icenowy Zheng:
+> Since U-Boot now supports EFI and FB passing via EFI GOP, when booting
+> rockchip SoCs via EFI, a EFI FB is available. However, currently when
+> re-initializing display pipeline, the EFI FB is not removed, lead to
+> fbcon not working (because the EFI FB is no longer bound to the display=
+
+> pipeline although it's still /dev/fb0 and fbcon is bound to it).
+>=20
+> Add some code for removing firmware-based FB when initializing KMS of
+> rockchipdrm.
+>=20
+> Tested on Pinebook Pro (RK3399) with U-Boot patchset for initializing
+> eDP display applied.
+>=20
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
+>   drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/=
+drm/rockchip/rockchip_drm_drv.c
+> index 212bd87c0c4a..3905fce6ce0b 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> @@ -158,6 +158,9 @@ static int rockchip_drm_bind(struct device *dev)
+>   	 */
+>   	drm_dev->irq_enabled =3D true;
+>  =20
+> +	/* Remove early framebuffers (ie. efifb) */
+> +	drm_fb_helper_remove_conflicting_framebuffers(NULL, "rockchipdrmfb", =
+false);
+> +
+>   	ret =3D rockchip_drm_fbdev_init(drm_dev);
+>   	if (ret)
+>   		goto err_unbind_all;
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--LZzy5vKYeS6aAktdZRJoJ4RLNbvtCfZeM--
+
+--8BYw6q2hiLDaE4D6t7JULaNP7Anat21W2
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCuOFcFAwAAAAAACgkQlh/E3EQov+CU
+Mg//V2gspuj9JuJo17jjUtDZxGtg0cclw4uF6RWE0TZxjSpREAsLdCEFd9WrxIqgbGTJU+nFVzE1
+wJaL1TfnACOmm/6BYr+xUm4F9ArpMDKbJcLpDzCYJmP+n0u1twXjrVBfE5xoW7ja40Vvx0LcImpb
+/dnWF2xks5dZt0KbaOXAmtySqL1N4wQZr+BKj6T00bXctekhz/Hfgc8FwwQy+gD8ToEBfb46uzuT
+wZGfXMbPPZ5BFvQFj6FwsXfORTpyevyeQGoFruqj6aTDxQpiYXWxtLS9/DzlTmHCPYHXqjxHSltM
+igkb8qVEw7yAsuThVSTPBK6lt1C0YCvFUVpZGHL2LSraDXLna7K3bYvMDqbTNgWnprB0ImaL2RVy
+9+1SYL2MDwBZFle8qsZsUbrG8w6zRZYUUO3H5EjUGC0ZG3dnFvLuH3IS5HUHhu2RPAv8dXfysvc7
+wi3lQ+lNylV6Vt7NbQELWQC5Y8fHp08Un8MCQJFpXbYnQZUr2+ALdUc6RADPcBtuWipWKTkw+HwI
+e5lBnZ9DeHsQkGDq9M0/PJu34NjeyK2vCjvqgsCsI7UrhooJ0ray9h038FNP/h5XA+NULExYIvC6
+SMSAtmLsTjyryAgMHEMpJLaADJG0nr3OE/mReUG6Kn+dsjrSR71y7NOIRMOm5dJ2Z/iiWr/BEWrD
+S84=
+=LAV6
+-----END PGP SIGNATURE-----
+
+--8BYw6q2hiLDaE4D6t7JULaNP7Anat21W2--
