@@ -2,148 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BBC3913EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8613913F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbhEZJpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:45:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32774 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhEZJpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:45:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83E15B20F;
-        Wed, 26 May 2021 09:43:40 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>
-Subject: [PATCH] Revert "MIPS: make userspace mapping young by default"
-Date:   Wed, 26 May 2021 11:43:35 +0200
-Message-Id: <20210526094335.92948-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S233527AbhEZJqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:46:08 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59154 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233459AbhEZJqH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 05:46:07 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14Q9iVUn074605;
+        Wed, 26 May 2021 04:44:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622022271;
+        bh=KB395orf3y4WJVFVLtMUrAe+eTRNHenLkAg7Teew4nE=;
+        h=From:To:CC:Subject:Date;
+        b=gOFb5ofyNw2gOKLgl6mJ0zFIuqMhYg7bqXzwcNldTevRgQCvAyDW1c2QJkS5OJfn6
+         cHupXA4Hu2D+fecl/n7AbY20+Rb+yQySwqzCa5yyiVDw9OkEle10SLiKiD9Rq0ndBm
+         OdQSSKtAGtNivzajdrnOpv7bgWOxD6VmIOxv0wHg=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14Q9iVWc021005
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 04:44:31 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 04:44:31 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 04:44:31 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14Q9iRwv102071;
+        Wed, 26 May 2021 04:44:28 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] ARM: dts: omap2/3: Drop dmas property from I2C node
+Date:   Wed, 26 May 2021 15:14:24 +0530
+Message-ID: <20210526094424.27234-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+DMA was never supported by i2c-omap driver and the bindings were never
+documented. Therefore drop the entries in preparation to moving
+bindings to YAML schema.
 
-MIPS cache flush logic needs to know whether the mapping was already
-established to decide how to flush caches. This is done by checking the
-valid bit in the PTE. The commit above breaks this logic by setting
-the valid in the PTE in new mappings, which causes kernel crashes.
-
-Reported-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- arch/mips/mm/cache.c    | 30 ++++++++++++++----------------
- include/linux/pgtable.h |  8 ++++++++
- mm/memory.c             |  4 ++++
- 3 files changed, 26 insertions(+), 16 deletions(-)
+ arch/arm/boot/dts/dm816x.dtsi | 4 ----
+ arch/arm/boot/dts/omap2.dtsi  | 4 ----
+ arch/arm/boot/dts/omap3.dtsi  | 6 ------
+ 3 files changed, 14 deletions(-)
 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index a7bf0c80371c..830ab91e574f 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -158,31 +158,29 @@ unsigned long _page_cachable_default;
- EXPORT_SYMBOL(_page_cachable_default);
+diff --git a/arch/arm/boot/dts/dm816x.dtsi b/arch/arm/boot/dts/dm816x.dtsi
+index 3551a64963f8..2d3d6906b3fb 100644
+--- a/arch/arm/boot/dts/dm816x.dtsi
++++ b/arch/arm/boot/dts/dm816x.dtsi
+@@ -314,8 +314,6 @@ i2c1: i2c@48028000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			interrupts = <70>;
+-			dmas = <&edma 58 0 &edma 59 0>;
+-			dma-names = "tx", "rx";
+ 		};
  
- #define PM(p)	__pgprot(_page_cachable_default | (p))
--#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+ 		i2c2: i2c@4802a000 {
+@@ -325,8 +323,6 @@ i2c2: i2c@4802a000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			interrupts = <71>;
+-			dmas = <&edma 60 0 &edma 61 0>;
+-			dma-names = "tx", "rx";
+ 		};
  
- static inline void setup_protection_map(void)
- {
- 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[1]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[2]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[3]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[4]  = PVA(_PAGE_PRESENT);
--	protection_map[5]  = PVA(_PAGE_PRESENT);
--	protection_map[6]  = PVA(_PAGE_PRESENT);
--	protection_map[7]  = PVA(_PAGE_PRESENT);
-+	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-+	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[4]  = PM(_PAGE_PRESENT);
-+	protection_map[5]  = PM(_PAGE_PRESENT);
-+	protection_map[6]  = PM(_PAGE_PRESENT);
-+	protection_map[7]  = PM(_PAGE_PRESENT);
+ 		intc: interrupt-controller@48200000 {
+diff --git a/arch/arm/boot/dts/omap2.dtsi b/arch/arm/boot/dts/omap2.dtsi
+index f9c2a9938898..5750ca1233cc 100644
+--- a/arch/arm/boot/dts/omap2.dtsi
++++ b/arch/arm/boot/dts/omap2.dtsi
+@@ -120,8 +120,6 @@ i2c1: i2c@48070000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			interrupts = <56>;
+-			dmas = <&sdma 27 &sdma 28>;
+-			dma-names = "tx", "rx";
+ 		};
  
- 	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[9]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
-+	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
- 				_PAGE_NO_READ);
--	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
--	protection_map[12] = PVA(_PAGE_PRESENT);
--	protection_map[13] = PVA(_PAGE_PRESENT);
--	protection_map[14] = PVA(_PAGE_PRESENT);
--	protection_map[15] = PVA(_PAGE_PRESENT);
-+	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
-+	protection_map[12] = PM(_PAGE_PRESENT);
-+	protection_map[13] = PM(_PAGE_PRESENT);
-+	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
-+	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
- }
+ 		i2c2: i2c@48072000 {
+@@ -131,8 +129,6 @@ i2c2: i2c@48072000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			interrupts = <57>;
+-			dmas = <&sdma 29 &sdma 30>;
+-			dma-names = "tx", "rx";
+ 		};
  
--#undef _PVA
- #undef PM
- 
- void cpu_cache_init(void)
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 46b13780c2c8..a43047b1030d 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -432,6 +432,14 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
-  * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-  * where software maintains page access bit.
-  */
-+#ifndef pte_sw_mkyoung
-+static inline pte_t pte_sw_mkyoung(pte_t pte)
-+{
-+	return pte;
-+}
-+#define pte_sw_mkyoung	pte_sw_mkyoung
-+#endif
-+
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
- #endif
-diff --git a/mm/memory.c b/mm/memory.c
-index 730daa00952b..f3ffab9b9e39 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2939,6 +2939,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
-+		entry = pte_sw_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 
- 		/*
-@@ -3602,6 +3603,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
- 
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3786,6 +3788,8 @@ void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
- 
- 	if (prefault && arch_wants_old_prefaulted_pte())
- 		entry = pte_mkold(entry);
-+	else
-+		entry = pte_sw_mkyoung(entry);
- 
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+ 		mcspi1: spi@48098000 {
+diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
+index c5b9da0d7e6c..eeee6c95a42e 100644
+--- a/arch/arm/boot/dts/omap3.dtsi
++++ b/arch/arm/boot/dts/omap3.dtsi
+@@ -403,8 +403,6 @@ i2c1: i2c@48070000 {
+ 			compatible = "ti,omap3-i2c";
+ 			reg = <0x48070000 0x80>;
+ 			interrupts = <56>;
+-			dmas = <&sdma 27 &sdma 28>;
+-			dma-names = "tx", "rx";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			ti,hwmods = "i2c1";
+@@ -414,8 +412,6 @@ i2c2: i2c@48072000 {
+ 			compatible = "ti,omap3-i2c";
+ 			reg = <0x48072000 0x80>;
+ 			interrupts = <57>;
+-			dmas = <&sdma 29 &sdma 30>;
+-			dma-names = "tx", "rx";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			ti,hwmods = "i2c2";
+@@ -425,8 +421,6 @@ i2c3: i2c@48060000 {
+ 			compatible = "ti,omap3-i2c";
+ 			reg = <0x48060000 0x80>;
+ 			interrupts = <61>;
+-			dmas = <&sdma 25 &sdma 26>;
+-			dma-names = "tx", "rx";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			ti,hwmods = "i2c3";
 -- 
-2.29.2
+2.31.1
 
