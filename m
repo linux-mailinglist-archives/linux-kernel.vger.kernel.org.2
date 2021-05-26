@@ -2,78 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C105B391183
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4212E391189
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhEZHwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S231993AbhEZHx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhEZHwk (ORCPT
+        with ESMTP id S231461AbhEZHxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:52:40 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF36C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:51:08 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d8ed:c948:a7ff:27e4])
-        by albert.telenet-ops.be with bizsmtp
-        id 9Kr02500D0QkFpL06Kr0os; Wed, 26 May 2021 09:51:05 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lloJf-009Z6B-Mr; Wed, 26 May 2021 09:50:59 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lloJf-005No9-7L; Wed, 26 May 2021 09:50:59 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] drm/bridge: DRM_CROS_EC_ANX7688 should depend on I2C_CROS_EC_TUNNEL
-Date:   Wed, 26 May 2021 09:50:58 +0200
-Message-Id: <d107d1840b83607baee8571cc5d88973fc32b519.1622015323.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 03:53:54 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50962C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:23 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g24so351500pji.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LcAnj+dk3wPXVKYPA66jlPJ5Hh8JRNQel8CkgoOsfTU=;
+        b=nMS/oHFizjg02ojMOCfTbIFJZEFWeGLAp001Tt8PtBwALDgXe42pByatwDiV8iD8nH
+         KeJ03WJM2O7x0OFKq7uS7rVUV6mVQ8mpSesqYHF5F+KdxciHB+3vK+uBcjXqoftXiKgY
+         YFEgAvqvM4+ykGyRU398+9UOslYorE6hgoEiUiSypTgo5oppttC9w+WLtSFaXriZ36Qj
+         wi+XEZUtsxZCmZWVFMGDEKHfKLqR25h0SI4FUQWdA1S16MgaFmcQaHmfcmRVODV+c5Wk
+         66Nblrffx4fJtlQ+NJR21PbgZtFwK8rw1+xgx7sdgvsj4yOSZGJ0vruNHvAvyJYeLLhJ
+         Utew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LcAnj+dk3wPXVKYPA66jlPJ5Hh8JRNQel8CkgoOsfTU=;
+        b=lZ/3uJ6SwxoqifaCHKEGAeV31aoGYIP7SQucPBBcPUDvi5kR9WunNOxGByRYFCfUHa
+         ifh00dDzoVIk6igw3B6xVF3XMcjjGLNZE3cvlRZZxz2r1Yscs/Rx6qRcsh5V9QYryLdv
+         LnQ2GMhY9ZwE+lCvQddZdnEYqaXNXlX8SSBqhKt2Ub3nCJ4surPIwdPn9veYNSCXKzkq
+         Np68cm03dTvUpCdTgiUY5RUka5ROFkaoNdmC8yZVlYN121djk4RhVWhccXQAo3Z5JccC
+         qXqPokMaCW51P1nIs2IYfrYH74cWDaAUskDE8U+t7vFBNxFnufVffYU220r9MNCmXXOL
+         jAnQ==
+X-Gm-Message-State: AOAM532273vUtK0F91TXdvccOapag1lp6WHUGfpBzi6HkxRzUpg24EGc
+        66wCpUkXcxVrQN1cGRqvwRSj/w==
+X-Google-Smtp-Source: ABdhPJzRVz9zbxiSoMyHVzJH5MfTeutCv076ly57mbYqsH+ldrrtiqvMkhkLjkL8IuNZ6AGRu43QeQ==
+X-Received: by 2002:a17:90b:713:: with SMTP id s19mr35415386pjz.144.1622015542873;
+        Wed, 26 May 2021 00:52:22 -0700 (PDT)
+Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.240])
+        by smtp.gmail.com with ESMTPSA id s3sm17138693pgs.62.2021.05.26.00.52.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 00:52:22 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     adobriyan@gmail.com, akpm@linux-foundation.org, rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH] fs/proc/kcore.c: add mmap interface
+Date:   Wed, 26 May 2021 15:51:42 +0800
+Message-Id: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ChromeOS EC ANX7688 bridge is connected to a ChromeOS Embedded
-Controller, and is accessed using I2C tunneling through the Embedded
-Controller.  Hence add a dependency on I2C_CROS_EC_TUNNEL, to prevent
-asking the user about this driver when configuring a kernel without
-support for the ChromeOS EC tunnel I2C bus.
+From: ZHOUFENG <zhoufeng.zf@bytedance.com>
 
-Fixes: 44602b10d7f2a5f7 ("drm/bridge: Add ChromeOS EC ANX7688 bridge driver support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+When we do the kernel monitor, use the DRGN
+(https://github.com/osandov/drgn) access to kernel data structures,
+found that the system calls a lot. DRGN is implemented by reading
+/proc/kcore. After looking at the kcore code, it is found that kcore
+does not implement mmap, resulting in frequent context switching
+triggered by read. Therefore, we want to add mmap interface to optimize
+performance. Since vmalloc and module areas will change with allocation
+and release, consistency cannot be guaranteed, so mmap interface only
+maps KCORE_TEXT and KCORE_RAM.
+
+The test results:
+1. the default version of kcore
+real 11.00
+user 8.53
+sys 3.59
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+99.64  128.578319          12  11168701           pread64
+...
+------ ----------- ----------- --------- --------- ----------------
+100.00  129.042853              11193748       966 total
+
+2. added kcore for the mmap interface
+real 6.44
+user 7.32
+sys 0.24
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+32.94    0.130120          24      5317       315 futex
+11.66    0.046077          21      2231         1 lstat
+ 9.23    0.036449         177       206           mmap
+...
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.395077                 25435       971 total
+
+The test results show that the number of system calls and time
+consumption are significantly reduced.
+
+Co-developed-by: ZHOUFENG Co-Author <zhoufeng.zf@bytedance.com>
+Signed-off-by: ZHOUFENG Co-Author <zhoufeng.zf@bytedance.com>
+Co-developed-by: CHENYING Co-Author <chenying.kernel@bytedance.com>
+Signed-off-by: CHENYING Co-Author <chenying.kernel@bytedance.com>
+Signed-off-by: ZHOUFENG <zhoufeng.zf@bytedance.com>
 ---
- drivers/gpu/drm/bridge/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ fs/proc/kcore.c | 70 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 7e7f28eb954661e2..c96e4b38d1d34ee6 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -53,6 +53,7 @@ config DRM_CHRONTEL_CH7033
- config DRM_CROS_EC_ANX7688
- 	tristate "ChromeOS EC ANX7688 bridge"
- 	depends on OF
-+	depends on I2C_CROS_EC_TUNNEL || COMPILE_TEST
- 	select DRM_KMS_HELPER
- 	select REGMAP_I2C
- 	help
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index 4d2e64e9016c..25a7a9ba2c4a 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -573,11 +573,81 @@ static int release_kcore(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
++{
++	return VM_FAULT_SIGBUS;
++}
++
++static const struct vm_operations_struct kcore_mmap_ops = {
++	.fault = mmap_kcore_fault,
++};
++
++static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
++{
++	size_t size = vma->vm_end - vma->vm_start;
++	u64 start, pfn;
++	int nphdr;
++	size_t data_offset;
++	size_t phdrs_len, notes_len;
++	struct kcore_list *m = NULL;
++	int ret = 0;
++
++	down_read(&kclist_lock);
++
++	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
++
++	start = kc_offset_to_vaddr(((u64)vma->vm_pgoff << PAGE_SHIFT) -
++		((data_offset >> PAGE_SHIFT) << PAGE_SHIFT));
++
++	list_for_each_entry(m, &kclist_head, list) {
++		if (start >= m->addr && size <= m->size)
++			break;
++	}
++
++	if (&m->list == &kclist_head) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
++		ret = -EPERM;
++		goto out;
++	}
++
++	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
++	vma->vm_flags |= VM_MIXEDMAP;
++	vma->vm_ops = &kcore_mmap_ops;
++
++	if (kern_addr_valid(start)) {
++		if (m->type == KCORE_RAM || m->type == KCORE_REMAP)
++			pfn = __pa(start) >> PAGE_SHIFT;
++		else if (m->type == KCORE_TEXT)
++			pfn = __pa_symbol(start) >> PAGE_SHIFT;
++		else {
++			ret = -EFAULT;
++			goto out;
++		}
++
++		if (remap_pfn_range(vma, vma->vm_start, pfn, size,
++				vma->vm_page_prot)) {
++			ret = -EAGAIN;
++			goto out;
++		}
++	} else {
++		ret = -EFAULT;
++	}
++
++out:
++	up_read(&kclist_lock);
++	return ret;
++}
++
+ static const struct proc_ops kcore_proc_ops = {
+ 	.proc_read	= read_kcore,
+ 	.proc_open	= open_kcore,
+ 	.proc_release	= release_kcore,
+ 	.proc_lseek	= default_llseek,
++	.proc_mmap	= mmap_kcore,
+ };
+ 
+ /* just remember that we have to update kcore */
 -- 
-2.25.1
+2.11.0
 
