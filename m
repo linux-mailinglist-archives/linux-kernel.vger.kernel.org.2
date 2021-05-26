@@ -2,140 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C63390DA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE8390DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhEZBC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 21:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbhEZBC0 (ORCPT
+        id S232743AbhEZBCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 21:02:34 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4008 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232227AbhEZBCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 21:02:26 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62285C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 18:00:54 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id f30so11880475lfj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 18:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YVD+VaC1x6mEUUpHbrv0Vf+0CSBqOy9uuOikGpUxMvg=;
-        b=oAxZJiGtciI9t/NLX66UdglzTF6S5YVGLrkNbEEq97ZK8FlZoJqA0iR5+303WI5BVt
-         17gSGV4Ktd9RRwq2NBcXLrhJb3aQb008GP0vtLdj0+b+AqzZVS/3gqeAN147/Xm+hYDQ
-         wyA75VHCv4xKN3AxB0McTmhN7PYqiLycGS1ZR7fdp6hROFumBKA4c5dyua+z1JDKXS0O
-         qg5pAevul3ddtq/JLOSGzxP+nTzgoyStxs2eAYLAgZqBwQycf2GXmMo0IAzGNwGQvqY2
-         bqfZnjFsCCV9KihaSuAcCSehZjhCN9d2BejQkofYqYugvB3sXhBSA+19F0+fGhQCKYPJ
-         LuOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YVD+VaC1x6mEUUpHbrv0Vf+0CSBqOy9uuOikGpUxMvg=;
-        b=ErVw140eilBWcO/+Mfh2s4DXtMJlczfE/mQRSEUNUiVxyICBT67jj7Wvm2rIjmJL6V
-         BsIC2xvqChjx+0oJ3R/hDq24o3BsvYkTYSQJ0ijUy4soY9LiuCYiu2QFUNoCC7Z3cM4C
-         H+OihjyJQ8IqN8H2YwruLmyb+xqIPDfalH8F+K569F+6BTI7lAE3CXPVOmhKt8I3smEX
-         q6H27o2dpA8uBqR+fM671gbzUExMI3d5mhGy+2u+wy3Bp5PmcB6Of2K45pYJj49idcBP
-         a2VerP3N8J+0I7HWeGv3LsnIc8WQo7UAbRrynQ3BlMnCcnwjZ6XzbmdnmdTZHbO1XWdM
-         Gfvg==
-X-Gm-Message-State: AOAM530XUIFkDSKWoomyInQjJ1+id8nga3mU4QSjVdtFuiJcJMey8fOU
-        GENZhn1JUVekg4y6oPkPtZyZXmFdd0Jqzw==
-X-Google-Smtp-Source: ABdhPJysf1cz6iFkNRX8YN3S7joFh5Eqs7viTEl74u3GaRRhR/c17IOQmLIcX1E8b76GLltAHvJ3sQ==
-X-Received: by 2002:a19:7012:: with SMTP id h18mr264097lfc.432.1621990852362;
-        Tue, 25 May 2021 18:00:52 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id c7sm1839140lfs.263.2021.05.25.18.00.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 18:00:51 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm/disp/dpu1/dpu_encoder: Drop unnecessary NULL
- checks after container_of
-To:     Guenter Roeck <linux@roeck-us.net>, Rob Clark <robdclark@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210525112904.1747066-1-linux@roeck-us.net>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <73c997e5-79dc-f269-f649-d5bc54c2e86c@linaro.org>
-Date:   Wed, 26 May 2021 04:00:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 25 May 2021 21:02:32 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqXdC3hXtzmYyM;
+        Wed, 26 May 2021 08:58:39 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 09:00:57 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 26 May 2021 09:00:56 +0800
+Subject: Re: [PATCH 5.10 000/104] 5.10.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210524152332.844251980@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <8c4528c2-15cb-e32e-3e21-bb49916d0e78@huawei.com>
+Date:   Wed, 26 May 2021 09:00:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210525112904.1747066-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/2021 14:29, Guenter Roeck wrote:
-> The result of container_of() operations is never NULL unless the embedded
-> element is the first element of the structure. This is not the case here.
-> The NULL checks on the result of container_of() are therefore unnecessary
-> and misleading. Remove them.
-> 
-> This change was made automatically with the following Coccinelle script.
-> 
-> @@
-> type t;
-> identifier v;
-> statement s;
-> @@
-> 
-> <+...
-> (
->    t v = container_of(...);
-> |
->    v = container_of(...);
-> )
->    ...
->    when != v
-> - if (\( !v \| v == NULL \) ) s
-> ...+>
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 10 ----------
->   1 file changed, 10 deletions(-)
+On 2021/5/24 23:24, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.40 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 8d942052db8a..a573fe211375 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -1453,11 +1453,6 @@ static void dpu_encoder_off_work(struct work_struct *work)
->   	struct dpu_encoder_virt *dpu_enc = container_of(work,
->   			struct dpu_encoder_virt, delayed_off_work.work);
->   
-> -	if (!dpu_enc) {
-> -		DPU_ERROR("invalid dpu encoder\n");
-> -		return;
-> -	}
-> -
->   	dpu_encoder_resource_control(&dpu_enc->base,
->   						DPU_ENC_RC_EVENT_ENTER_IDLE);
->   
-> @@ -1797,11 +1792,6 @@ static void dpu_encoder_vsync_event_work_handler(struct kthread_work *work)
->   			struct dpu_encoder_virt, vsync_event_work);
->   	ktime_t wakeup_time;
->   
-> -	if (!dpu_enc) {
-> -		DPU_ERROR("invalid dpu encoder\n");
-> -		return;
-> -	}
-> -
->   	if (dpu_encoder_vsync_time(&dpu_enc->base, &wakeup_time))
->   		return;
->   
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.40-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
+Tested on arm64 and x86 for 5.10.40-rc1,
 
--- 
-With best wishes
-Dmitry
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.40-rc1
+Commit: d8d2794a2bd357476a82c4d315ba323557fd5c80
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8896
+passed: 8896
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8896
+passed: 8896
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
