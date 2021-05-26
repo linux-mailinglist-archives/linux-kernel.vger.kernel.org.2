@@ -2,175 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2FD3918BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E762A3918A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhEZNYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:24:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46629 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233788AbhEZNYa (ORCPT
+        id S233238AbhEZNWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:22:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50834 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233103AbhEZNW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:24:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622035378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1Rnp0l5MHaD0Fw4/pXdlrpkv2wPYEBQ4UTjEx1GpGI=;
-        b=hIbteyFu50w1hPnokCXj/HoYbBa8YdWMIXswESEKbadyMyClTpOjllAdmr0fX8fLnHK0ll
-        YTK7SgxSbXpjchE1Q15qsuxfJsgb2svybftElpOXzhzJJsLGA1tqwgzjhdWkdvtXzRLCLe
-        GsD/15wvOFoh7caz/Bsw2lG7yB40z2c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-UGohThATPMSmo3xH9rwxIQ-1; Wed, 26 May 2021 09:22:56 -0400
-X-MC-Unique: UGohThATPMSmo3xH9rwxIQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9CB5107ACE4;
-        Wed, 26 May 2021 13:22:55 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D31675D9C6;
-        Wed, 26 May 2021 13:22:53 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 11/11] KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never lost
-Date:   Wed, 26 May 2021 15:20:26 +0200
-Message-Id: <20210526132026.270394-12-vkuznets@redhat.com>
-In-Reply-To: <20210526132026.270394-1-vkuznets@redhat.com>
-References: <20210526132026.270394-1-vkuznets@redhat.com>
+        Wed, 26 May 2021 09:22:28 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QDKnxW024125;
+        Wed, 26 May 2021 08:20:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622035249;
+        bh=P1FrkOBesN6i909vXX5+SdrU7/euBw9XUDZBquutoGU=;
+        h=From:To:CC:Subject:Date;
+        b=cjhwS9Osd8wp+w+OMa6V3I1vyicPWATQt7y0Q7floF2cfEyRZpJKdrIW2IvPvjqxV
+         4/4YdysQzrOgdaXFzFVfyFG7mSzxaeIBWba4NNbeKOJnMFv2QRbC/kt6lFPURlEe7p
+         KzOJg6MiQvXlErhsgeXR34XZAYJYU7ovcv9m414I=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QDKnDG046562
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 08:20:49 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 08:20:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 08:20:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QDKmtw031080;
+        Wed, 26 May 2021 08:20:48 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next] arm64: dts: ti: k3-am654x/j721e/j7200-common-proc-board: fix MCU_RGMII1_TXC direction
+Date:   Wed, 26 May 2021 16:20:41 +0300
+Message-ID: <20210526132041.6104-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly restored VM
-(before the first KVM_RUN) to check that KVM_STATE_NESTED_EVMCS is not
-lost.
+The MCU RGMII MCU_RGMII1_TXC pin is defined as input by mistake, although
+this does not make any difference functionality wise it's better to update
+to avoid confusion.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Hence fix MCU RGMII MCU_RGMII1_TXC pin pinmux definitions to be an output
+in K3 am654x/j721e/j7200 board files.
+
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
- .../testing/selftests/kvm/x86_64/evmcs_test.c | 64 +++++++++++--------
- 1 file changed, 38 insertions(+), 26 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts        | 2 +-
+ arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/evmcs_test.c b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-index 63096cea26c6..fcef347a681a 100644
---- a/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-@@ -121,14 +121,38 @@ void inject_nmi(struct kvm_vm *vm)
- 	vcpu_events_set(vm, VCPU_ID, &events);
- }
- 
-+static void save_restore_vm(struct kvm_vm *vm)
-+{
-+	struct kvm_regs regs1, regs2;
-+	struct kvm_x86_state *state;
-+
-+	state = vcpu_save_state(vm, VCPU_ID);
-+	memset(&regs1, 0, sizeof(regs1));
-+	vcpu_regs_get(vm, VCPU_ID, &regs1);
-+
-+	kvm_vm_release(vm);
-+
-+	/* Restore state in a new VM.  */
-+	kvm_vm_restart(vm, O_RDWR);
-+	vm_vcpu_add(vm, VCPU_ID);
-+	vcpu_set_hv_cpuid(vm, VCPU_ID);
-+	vcpu_enable_evmcs(vm, VCPU_ID);
-+	vcpu_load_state(vm, VCPU_ID, state);
-+	free(state);
-+
-+	memset(&regs2, 0, sizeof(regs2));
-+	vcpu_regs_get(vm, VCPU_ID, &regs2);
-+	TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
-+		    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
-+		    (ulong) regs2.rdi, (ulong) regs2.rsi);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	vm_vaddr_t vmx_pages_gva = 0;
- 
--	struct kvm_regs regs1, regs2;
- 	struct kvm_vm *vm;
- 	struct kvm_run *run;
--	struct kvm_x86_state *state;
- 	struct ucall uc;
- 	int stage;
- 
-@@ -145,10 +169,6 @@ int main(int argc, char *argv[])
- 	vcpu_set_hv_cpuid(vm, VCPU_ID);
- 	vcpu_enable_evmcs(vm, VCPU_ID);
- 
--	run = vcpu_state(vm, VCPU_ID);
--
--	vcpu_regs_get(vm, VCPU_ID, &regs1);
--
- 	vcpu_alloc_vmx(vm, &vmx_pages_gva);
- 	vcpu_args_set(vm, VCPU_ID, 1, vmx_pages_gva);
- 
-@@ -160,6 +180,7 @@ int main(int argc, char *argv[])
- 	pr_info("Running L1 which uses EVMCS to run L2\n");
- 
- 	for (stage = 1;; stage++) {
-+		run = vcpu_state(vm, VCPU_ID);
- 		_vcpu_run(vm, VCPU_ID);
- 		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
- 			    "Stage %d: unexpected exit reason: %u (%s),\n",
-@@ -184,32 +205,23 @@ int main(int argc, char *argv[])
- 			    uc.args[1] == stage, "Stage %d: Unexpected register values vmexit, got %lx",
- 			    stage, (ulong)uc.args[1]);
- 
--		state = vcpu_save_state(vm, VCPU_ID);
--		memset(&regs1, 0, sizeof(regs1));
--		vcpu_regs_get(vm, VCPU_ID, &regs1);
--
--		kvm_vm_release(vm);
--
--		/* Restore state in a new VM.  */
--		kvm_vm_restart(vm, O_RDWR);
--		vm_vcpu_add(vm, VCPU_ID);
--		vcpu_set_hv_cpuid(vm, VCPU_ID);
--		vcpu_enable_evmcs(vm, VCPU_ID);
--		vcpu_load_state(vm, VCPU_ID, state);
--		run = vcpu_state(vm, VCPU_ID);
--		free(state);
--
--		memset(&regs2, 0, sizeof(regs2));
--		vcpu_regs_get(vm, VCPU_ID, &regs2);
--		TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
--			    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
--			    (ulong) regs2.rdi, (ulong) regs2.rsi);
-+		save_restore_vm(vm);
- 
- 		/* Force immediate L2->L1 exit before resuming */
- 		if (stage == 8) {
- 			pr_info("Injecting NMI into L1 before L2 had a chance to run after restore\n");
- 			inject_nmi(vm);
- 		}
-+
-+		/*
-+		 * Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly
-+		 * restored VM (before the first KVM_RUN) to check that
-+		 * KVM_STATE_NESTED_EVMCS is not lost.
-+		 */
-+		if (stage == 9) {
-+			pr_info("Trying extra KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE cycle\n");
-+			save_restore_vm(vm);
-+		}
- 	}
- 
- done:
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+index eddb2ffb93ca..97c344088483 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+@@ -136,7 +136,7 @@
+ 			AM65X_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* (L5) MCU_RGMII1_RD2 */
+ 			AM65X_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* (M6) MCU_RGMII1_RD1 */
+ 			AM65X_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* (L6) MCU_RGMII1_RD0 */
+-			AM65X_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* (N1) MCU_RGMII1_TXC */
++			AM65X_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* (N1) MCU_RGMII1_TXC */
+ 			AM65X_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* (M1) MCU_RGMII1_RXC */
+ 		>;
+ 	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index bedd01b7a32c..d14f3c18b65f 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -90,7 +90,7 @@
+ 			J721E_WKUP_IOPAD(0x008c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
+ 			J721E_WKUP_IOPAD(0x0090, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
+ 			J721E_WKUP_IOPAD(0x0094, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
+-			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
++			J721E_WKUP_IOPAD(0x0080, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
+ 			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
+ 		>;
+ 	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+index 60764366e22b..351bb84db65b 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+@@ -237,7 +237,7 @@
+ 			J721E_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
+ 			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
+ 			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
+-			J721E_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
++			J721E_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
+ 			J721E_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
+ 		>;
+ 	};
 -- 
-2.31.1
+2.17.1
 
