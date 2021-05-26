@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F054391248
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE3439124E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhEZI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:28:28 -0400
-Received: from ni.piap.pl ([195.187.100.5]:34466 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhEZI21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:28:27 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 4658B444197;
-        Wed, 26 May 2021 10:26:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 4658B444197
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1622017611; bh=3LRQt2E5u2Et0YwP2CERJJ7UAiUDgL0XQ3wycJ4BWRY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MFDncosxgB1wXc2KmWoV/9r+W9SJJ2HjJbbB3Ns9fO5uBnU9ry0kYNfX4SWjK7UNk
-         RQO/CSX7YwltiuDuOnU2k5O5O7KP9rkXUyfMlotFPWFnvMgVWPh4DJm09UGn90tSkP
-         DXP03CMpbXiw25WTclU2k0oRd0cEZ1eFCSUTfhwM=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Subject: Data corruption on i.MX6 IPU in arm_copy_from_user()
-Sender: khalasa@piap.pl
-Date:   Wed, 26 May 2021 10:26:50 +0200
-Message-ID: <m3y2c1uchh.fsf@t19.piap.pl>
+        id S232358AbhEZIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:30:03 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:45458 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231410AbhEZIaC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:30:02 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:52994 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1llotx-00088p-SJ; Wed, 26 May 2021 04:28:29 -0400
+Message-ID: <fc0e08faf765b50d5f0a38b026d5ed0dfd9d1090.camel@trillion01.com>
+Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 26 May 2021 04:28:28 -0400
+In-Reply-To: <5fb15014-94ba-e0ca-fa13-f9e898824185@kernel.dk>
+References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
+         <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
+         <2236ed83-81fd-cd87-8bdb-d3173060cc7c@gmail.com>
+         <af1a868ed91466312786f11913cf06118139838e.camel@trillion01.com>
+         <6133244fb6181420b27694abdfe3f42d43df8868.camel@trillion01.com>
+         <5fb15014-94ba-e0ca-fa13-f9e898824185@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 2021-05-25 at 16:28 -0600, Jens Axboe wrote:
+> > My issue is that I haven't been able to see hashed pointers output
+> > from trace.
+> 
+> Just a quick guess, but does it rely on using %p to print the pointers?
+> 
+My very limited understanding of how the trace subsystem works is that
+by default, it doesn't use the provided TK_printk macro at all.
 
-I've encountered an interesting case of data corruption while accessing
-IPU (Image Processing Unit) on i.MX6 (rev1.2, Cortex A9). What I'm doing
-here is basically:
+the kernel trace subsystem does format internally the passed parameters
+before sending the output to a ring buffer (yes another ring!).
 
-openat(AT_FDCWD, "/dev/mem", O_RDWR|O_SYNC) =3D 3
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0x2630000) =3D ptr
-write(1, ptr, 32)                =3D 32
+You can override this method through the tracing option to use printk
+instead and when you do, this is where the TK_printk() macro is used.
 
-Normally, the write() should end up with:
- 04008A00 02FF03FF 02FF03FF 00000000 00000000 00000000 00000000 00000000
+Before I did realize that, this was making me scratch my head as to
+why, I was getting a different format output. ie:
 
-However, with current kernels, the first 32 bits (the first IPU
- register) are dropped:
- 02FF03FF 02FF03FF 00000000 00000000 00000000 00000000 00000000 00000000
+  9287.369 test/625 io_uring:io_uring_task_run(ctx: 0xffff8fbf9a834800,
+opcode: 22, user_data: 216454257090494477, result: 195)
+  9287.386 test/625 io_uring:io_uring_task_run(ctx: 0xffff8fbf9a834800,
+opcode: 22, user_data: 216454257090494477, result: 195)
 
-0x2630000 is IPU1 CSI0 address (i.e., a register block). The same
-happens with other IPU regions. Writes shorter than 8 * 32 bits are not
-affected.
+while the TK_printk macro is:
+        TP_printk("ring %p, req %p, op %d, data 0x%llx",
+                  __entry->ctx, __entry->req, __entry->opcode,
+                  (unsigned long long) __entry->user_data)
 
-write() uses arm_copy_from_user() and since commit f441882a5229:
-    ARM: 8812/1: Optimise copy_{from/to}_user for !CPU_USE_DOMAINS
+The TK_printk macro is naming the ctx variable as 'ring', yet you still
+get ctx in the trace output!
 
-    ARMv6+ processors do not use CONFIG_CPU_USE_DOMAINS and use privileged
-    ldr/str instructions in copy_{from/to}_user.  They are currently
-    unnecessarily using single ldr/str instructions and can use ldm/stm
-    instructions instead like memcpy does (but with appropriate fixup
-    tables).
+but the pointer hashing that it is supposed to do is a mystery to me...
 
-apparently uses 8 * 32-bit ldmia instruction to copy data:
-    .macro ldr8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-    USERL(\abort, ldmia \ptr!, {\reg1, \reg2, \reg3, \reg4, \reg5, \reg6, \=
-reg7, \reg8})
-    .endm
 
-Before this commit it used ldr instruction (single 32-bit value) and the
-problem didn't show up (reverting f441882a5229 on v5.11 fixes it as
-well). The i.MX6 errata doesn't seem to list this problem.
-
-I wonder what the theory says about this case. Is it at all valid to
-read 8 IPU registers at a time using LDM instruction? If so, should
-something be done with this problem, or should it be left as is?
---=20
-Krzysztof Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
