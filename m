@@ -2,81 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E244391078
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5556139107D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhEZGOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53410 "EHLO mail.kernel.org"
+        id S232425AbhEZGPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:15:12 -0400
+Received: from mout.gmx.net ([212.227.17.20]:56153 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232831AbhEZGOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:14:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7B6613C9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622009599;
-        bh=WxE/nYoBUew8cawmtyFnT6QVxlwzsMB2VH8N97o6ILU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W3wmXVbSCTKRrh02KjzmgFG4xDxdQvFsQ8BRhOvsYhx4YIhnQzhtBrtSCZ6rmupLX
-         2hPltBRfEJfTXVN096eCrGrYOSHihBuiGhQ/kEHPNNInc3nZuzbRAZK2hgMiY6YSFm
-         UjiH8J/vaygafiK9n7NKBcBiad5SLElkFFvBB7QXXAYmGvoYnLyAh0bDI1qp63qYrb
-         LkvPvJJZu+Rh7/luN4lc35naRJZii4R1NmJge+7D9LG1Z+VGFO6bUjGMAP/oVqt8V7
-         ict6/b1lko3IvMadDgXR4yYGvjPCGzHYTtIAyGOGfaElKOHBror8bpvb1wqHwbwv6C
-         Wz3xx2rv5Pa7A==
-Received: by mail-ej1-f52.google.com with SMTP id b9so528515ejc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:13:19 -0700 (PDT)
-X-Gm-Message-State: AOAM531FyEdRxGh62L3W5/zmSohZXdqhi8r3B0wDyZsQBQm1xvvW2ndk
-        sTz9xMNxPhIVoz6UbFDLYGPRRCmVCizJ2olbog==
-X-Google-Smtp-Source: ABdhPJyLkSEaneCrl0B8Uo6KH8eSMCLLi627Il/INpXPMrNKeFajtofiTGol2XS5McwtUI0QbMI+UZjmQsFpzFQne2Q=
-X-Received: by 2002:a17:906:b0cb:: with SMTP id bk11mr32693838ejb.310.1622009598186;
- Tue, 25 May 2021 23:13:18 -0700 (PDT)
+        id S232350AbhEZGPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:15:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1622009611;
+        bh=KxgWeHfxFfUb6Gv0RYGmvh4jtC6GycYtBhkPxNEiLY0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=llZdYF9IKzwVI8TBihyK4zlZzBCkoz5pR9MVog4mJwXQVCTwEyj5+ITcCgK6T1JxY
+         HFOzMg7q3oC+4/pTVYJNEsCQjnuKrSSV7gtq0KqOBVL50k7vJqRnGBDYICtW/BFnzp
+         xH8pZcqVPkLQKg1f6g1yQfB5UmoaScXsWghaZ4xE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUGeB-1lukq91OfT-00RLqB; Wed, 26
+ May 2021 08:13:30 +0200
+Subject: Re: [PATCH] btrfs: relocation: fix misplaced barrier in
+ reloc_root_is_dead
+To:     Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210526060947.26159-1-baptiste.lepers@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <9fcd47ac-2642-88be-1bf0-7b920baefb10@gmx.com>
+Date:   Wed, 26 May 2021 14:13:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210314233323.23377-1-chunkuang.hu@kernel.org>
-In-Reply-To: <20210314233323.23377-1-chunkuang.hu@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 26 May 2021 14:13:09 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9fksAnZc2pqmbHtBiPQgQhX9iX0349K8T9zCG8mH3ZSQ@mail.gmail.com>
-Message-ID: <CAAOTY_9fksAnZc2pqmbHtBiPQgQhX9iX0349K8T9zCG8mH3ZSQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Refine mtk-cmdq-mailbox callback mechanism
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210526060947.26159-1-baptiste.lepers@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:faF+UzofNDGJzyvBV9ZdiJ9SvU9svIoL4IA1ZAHTd1jXRfYLaCl
+ XAJRJvb7Npd190Vb1QayCDnHfdq5UDDx3KTAa7nSN4ug6L1VRszEnHJuT0k079LqhpaTm66
+ wIgNaTWn9/iQlYRKh3Az0qqgiKan8Fwu1B/dJVf6ck5ed//3dctyUX7slLfliwQyxXrZUcP
+ BLSFqEohqW1HaLa2AKLZg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4WC1wSO3Sf8=:u6JYmwTTyY6j8M6nsZfvfp
+ jDwZYrU9eZ7eb7bnCIZ/8Qs+blHML/LlheICJA/F63rp5rCxuNFdrWYyRYiMIyx2fUWVBs0dS
+ P8RpKOSeJd9oOjMd7cZ/tBmLrbjqZWykIpQTlatsMK/mtQlXN7045yDtxVdOiq7GjkLl54UiR
+ PfjECtGn5XqYwsd+speVMAR6m9XDK6EUG25D+A8VLGr9BP1iIk8Er1XVyJCzWevwzpGv/zxYR
+ BZvpUCiWkfJUVfcEnRRRP43eLwPLp11INcQOXzQOlq72FuQEvkeyHK5CEtDyJLYvRsW+SkHuW
+ JXXfnS2v42tGCTRNPFdZ8AblrtfE8Tsh/dpJzeUSWdeik2l0CwlYyo7x+Hz/AyKzXnCMjh4Zu
+ NHZsYboqwO2dpJYoBr7svDc4fjiG4q28GzM+4CZUBtaIlza+nNeTBInFph/KgLDYiUTFeSjmr
+ TkRUvwJtJfg6+wmFBc9QQiTTVBWRdxkYnUNY1Xa5VAE2Hqy4h6FZesC6dgMtII/+5uFJ0x0oF
+ lfl6OVOBt6G33LMuZGaEYdt/TsIjFEHmZFKvTn7flY0l3dvLmIvORL+KeZYCgm27YSR/h8qoS
+ SgqQpQZQA5tmirGSXJljLt0XJYeMV3ODiRD7ivdTyq2E90bgH1D3O1EJpOmosedgT9Z6Zqj+7
+ 4fz2zg4pmgY/FZ7/arkQSbUZ166kf+l+s3i2vBohl5XQWgCWZO4TaTMeqHeyic2azy8Tu84/2
+ psfioQlns/1199GcAZq4/ctFKgT7yjxb9mvcmhKkQKAJOSASguY49YIUYOshzl1neplk5VYy2
+ 334WfQkna8gJwW0w9dt2nqvYmKJaKhlSmSlkKE1BRx10v3725zXe/M0E33Pxo92ZeyxBYDSY8
+ ZK+GQ8lhEM0UAHEf0tVO0UF0rFH3/Mt5yLZwKcXT0v+/+I3cXa2Y75dSmaGd3nOoaLxKnal/E
+ xSNK7f3wFUnXsbD3/+vWwhWcEXVLfzpN4Gf3VwFIDH1wlTk6bPtvlPPySJZ9kcwqZTYvNrgzw
+ wIieP9RUj8Y9CcXq6fzqqV6EICjd2IMPZUIOJoLjoYrFbntQE19ICHBFljChsrlX+Aq2sHPHB
+ FRWTSy2EPNcVF7/cDo/LcsagirMJodMmICk4pGW1o8oTh55xOJao6Aivw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Yongqiang.
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8815=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:33=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+
+On 2021/5/26 =E4=B8=8B=E5=8D=882:09, Baptiste Lepers wrote:
+> Fix a misplaced barrier in reloc_root_is_dead. The
+> BTRFS_ROOT_DEAD_RELOC_TREE bit should be checked before accessing
+> reloc_root.
 >
-> mtk-cmdq-mailbox use proprietary callback mechanism and proprietary
-> error number, but these could be replaced by standard callback
-> mechanism and standard error number. In addition, use cmdq_pkt as
-> callback data to prevent redundnat assignment.
+> The fix forces the order documented in the original commit:
+> "In the cross section C-D, either caller gets the DEAD bit set, avoiding
+> access reloc_root no matter if it's safe or not.  Or caller get the DEAD
+> bit cleared, then access reloc_root, which is already NULL, nothing will
+> be wrong."
 >
-> Because client driver still use proprietary mechanism, so keep
-> proprietary mechanism until client driver use the standard one.
+> static bool reloc_root_is_dead()
+>      smp_rmb(); <--- misplaced
+>      if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+>            return true;
+>      return false;
+> }
+
+Exactly what I originally purposed to David, we didn't reach an
+agreement on where the barrier should be.
+
+At least I'm completely fine with this patch.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
 >
-> Chun-Kuang Hu (3):
->   mailbox: mtk-cmdq: Remove cmdq_cb_status
->   mailbox: mtk-cmdq: Use mailbox rx_callback
->   mailbox: mtk-cmdq: Add struct cmdq_pkt in struct cmdq_cb_data
+> static bool have_reloc_root(struct btrfs_root *root)
+> {
+>         if (reloc_root_is_dead(root))
+>                 return false;
+>         <--- the barrier should happen here
+>         if (!root->reloc_root)
+>                 return false;
+>         return true;
+> }
 >
->  drivers/mailbox/mtk-cmdq-mailbox.c       | 24 +++++++++++++++---------
->  include/linux/mailbox/mtk-cmdq-mailbox.h |  8 ++------
->  2 files changed, 17 insertions(+), 15 deletions(-)
+> Fixes: 6282675e6708e ("btrfs: relocation: fix reloc_root lifespan and ac=
+cess")
+> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+> ---
+>   fs/btrfs/relocation.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
 >
-> --
-> 2.17.1
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index b70be2ac2e9e..8cddcce56bf4 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -289,15 +289,14 @@ static int update_backref_cache(struct btrfs_trans=
+_handle *trans,
+>
+>   static bool reloc_root_is_dead(struct btrfs_root *root)
+>   {
+> +	bool is_dead =3D test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
+>   	/*
+>   	 * Pair with set_bit/clear_bit in clean_dirty_subvols and
+>   	 * btrfs_update_reloc_root. We need to see the updated bit before
+>   	 * trying to access reloc_root
+>   	 */
+>   	smp_rmb();
+> -	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+> -		return true;
+> -	return false;
+> +	return is_dead;
+>   }
+>
+>   /*
 >
