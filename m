@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395813922CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96853922CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhEZWfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:35:14 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:44085 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbhEZWfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:35:13 -0400
-Received: (Authenticated sender: josh@joshtriplett.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 5D2EDFF806;
-        Wed, 26 May 2021 22:33:26 +0000 (UTC)
-Date:   Wed, 26 May 2021 15:33:25 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
-        johan@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        masahiroy@kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        joe@perches.com, Jens Axboe <axboe@kernel.dk>, hare@suse.de,
-        Jan Kara <jack@suse.cz>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        f.fainelli@gmail.com, arnd@arndb.de,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        wangkefeng.wang@huawei.com, Barret Rhoden <brho@google.com>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
-        pmladek@suse.com, Chris Down <chris@chrisdown.name>,
-        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
-        mingo@kernel.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org
-Subject: Re: [PATCH v2 2/3] init/do_cmounts.c: introduce 'user_root' for
- initramfs
-Message-ID: <YK7MtZz8sklOMPKo@localhost>
-References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
- <20210525141524.3995-3-dong.menglong@zte.com.cn>
- <m18s42odgz.fsf@fess.ebiederm.org>
- <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
- <m11r9umb4y.fsf@fess.ebiederm.org>
- <YK3Pb/OGwWVzvDZM@localhost>
- <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com>
+        id S234558AbhEZWfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234278AbhEZWfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 18:35:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64D34613CA;
+        Wed, 26 May 2021 22:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622068415;
+        bh=Lgc2ApRO4m7E7FHqU9DmoWY4keZyJY0T6HyK7vuHDkY=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=HtKesleSte7hB3z0+wNl6epd0GgeKEzh3Q+gRZ88dSKbgwsZkREsndbQBhD8c8UBN
+         Rh/cySddD1WwD3/zF4TPhVH1pYINGzrmFUme74BKeYU4swxEV4T8p5hGZqxwvr1sCf
+         Lw4K8nb0N3JvbJsFCN+Z3ynvC+SiwSgNrY6ARuBmfG6nbAW0wjjiyl6SITlQSphAW/
+         cL38SowC1CrVp1QVjjMfAjr0+x1d7m+rFBJtCMFD3Jjnbk+l9c1GNuLJClUjP+S056
+         vMq4fP1Wh16PhszXQtyzCgEfzwJ5XyPtk5b/LecS4YuDk0ug7XEVch9N6kTHMgtTMg
+         /5yxyj1YXss7w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210526172036.183223-3-krzysztof.kozlowski@canonical.com>
+References: <20210526172036.183223-1-krzysztof.kozlowski@canonical.com> <20210526172036.183223-3-krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 2/7] mfd: max77686: Do not enforce (incorrect) interrupt trigger type
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Date:   Wed, 26 May 2021 15:33:34 -0700
+Message-ID: <162206841417.4130789.13945208806958598688@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 04:33:00PM +0800, Menglong Dong wrote:
-> On Wed, May 26, 2021 at 12:33 PM Josh Triplett <josh@joshtriplett.org> wrote:
-> >
-> > On Tue, May 25, 2021 at 10:23:09PM -0500, Eric W. Biederman wrote:
-> > > If we are going to do this something that is so small and clean it can
-> > > be done unconditionally always.
-> > [...]
-> > > The net request as I understand it: Make the filesystem the initramfs
-> > > lives in be an ordinary filesystem so it can just be used as the systems
-> > > primary filesystem.
-> >
-> > Including the ability to pivot_root it away, which seems like the main
-> > sticking point.
-> >
-> > If this can be done without any overhead, that seems fine, but if this
-> > involves mounting an extra filesystem, that may add an appreciable
-> > amount of boot time for systems trying to boot in milliseconds. (Such
-> > systems would not use an initramfs if they're going to go on and boot a
-> > separate root filesystem, but they can use an initramfs as their *only*
-> > filesystem.)
-> 
-> Compared to the time the unpacking spent, a mounting seems nothing. In the
-> scene above, this change can be disabled by kconfig, if pivot_root
-> is not needed in initramfs.
+Quoting Krzysztof Kozlowski (2021-05-26 10:20:31)
+> From: Krzysztof Kozlowski <krzk@kernel.org>
+>=20
+> Interrupt line can be configured on different hardware in different way,
+> even inverted.  Therefore driver should not enforce specific trigger
+> type - edge falling - but instead rely on Devicetree to configure it.
+>=20
+> The Maxim 77686 datasheet describes the interrupt line as active low
+> with a requirement of acknowledge from the CPU therefore the edge
+> falling is not correct.
+>=20
+> The interrupt line is shared between PMIC and RTC driver, so using level
+> sensitive interrupt is here especially important to avoid races.  With
+> an edge configuration in case if first PMIC signals interrupt followed
+> shortly after by the RTC, the interrupt might not be yet cleared/acked
+> thus the second one would not be noticed.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+>=20
+> ---
 
-The initramfs could be as small as one file.
+Acked-by: Stephen Boyd <sboyd@kernel.org> # clock binding
