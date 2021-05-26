@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58020390E69
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DB1390E6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhEZCpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbhEZCpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:45:15 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDCCC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:43:45 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id b9so15220907ejc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:43:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cyqKIBrVaRZ0+l7SzJYRtSgO5kugLUClFhe3a16fIks=;
-        b=xKidA34PKHbdo2S/y22PDRHuVMfazORIWEYHJGkmXyiAr04A+1NKfCILQLnwTFsJTw
-         lRVUQruT7CSfwCc2cJ2LKYGi325kEZ4NNyjn0UtAMMopoI0WzAE5ZrPqYsCmv/lbWb0c
-         z7ZqeM601wal6FC3dk9EhBre/t358GYPWlBkbbUdYNaKqlAK5vqVByIYmyXwX/y93vzO
-         bRNWCBb4JkU4DGAkIgbl4WTCvgU7CxcbWXya1+zo+mLJ+4sIWFlH/9XI6s69LnYlT6TH
-         Md+EyrgGTL9No0zpG2C/7ZHuO/606d+nruZSCbn/IOzSAExbb+3m94kMbAuqlPQ0irwx
-         J8oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cyqKIBrVaRZ0+l7SzJYRtSgO5kugLUClFhe3a16fIks=;
-        b=TgbmuhhHA32i6hPZGS6axg6zrDCwrXCM6n8Z0CeiWQGurLgsUfFPgSCS71e2vq0XHS
-         c0RaJdxA17Hhfy+4u7vPDQ1zJ6Afi38WKNN6ipNb6O5sv7M68FLBdwtdYO+s2TGpmFEo
-         Y0HhODZNYPyI7Can06HvdSX23RIXJx+kVCiAG/IhwE3bD2+XGSNWEpOYEpTmZ/dN0y0Z
-         jKxFVu6Hb+tKQ+mUggOPQqL/gwj2XsZQHOwAj8ajvFXbRa6rxNkxlpnoaBdlfDJE2e6y
-         cZM29UtZ8pUVqdLCVCoQR7BsJNXdc1wb9k31WdA4BT2cI1rFW0gKa8M8ka2r9yYganrV
-         1Vhw==
-X-Gm-Message-State: AOAM531LrSu+lrS8DzlQ74dmM1GhG8E5cldwOXibOZZH7QnrvQFuuK8X
-        927Fsr7pOvGa/WsDGYpln4GdxV8pM2smw4Y/wrMR
-X-Google-Smtp-Source: ABdhPJzi0wHuPmnuk+fERsSUwpHSaQvSPFz85+F584XY7DhSy3CxdOjcgz0J1YNwvp5PC9EH+9a60IN41oTUEUABAxo=
-X-Received: by 2002:a17:906:456:: with SMTP id e22mr31013766eja.427.1621997023688;
- Tue, 25 May 2021 19:43:43 -0700 (PDT)
+        id S232439AbhEZCqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:46:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230312AbhEZCqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 22:46:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B52261434;
+        Wed, 26 May 2021 02:44:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621997093;
+        bh=rsTIIgQ3nqy4Xh20GrbgV6iG0hbzpPJ4x64TSBbYFzk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aUw7bzkvwfXwXcnX0Slx6qwQ0gJAzurxTvY/6anEvxSCUgDNwo6TiL5z/qDcIiN/n
+         W8Qfhw6DQK146YWDr5wnl2Z0wcLGa/Rdr8IHiommUUeoVz55BGbNZVr6RVUS27kgJb
+         Xkci9t+L6u7TfXgsUbCuUD7ynjf9280qRvmGxinoaubF1Cl8z+i4PSCuowzzMqpcnm
+         +/Axvp/3LlZw3A0o5qG0J05BLrtmzO7RzHO+auUKaWCP954siMkCBxjOuMGqbSDq6y
+         Rc4w5RZTU1G9mxAKgETSyqh376Mrgl3pmBwexauhUGsyej6ToClSMvZC/m7vYFOZGT
+         nISKkkisEHaXg==
+Received: by mail-ed1-f51.google.com with SMTP id i13so38657501edb.9;
+        Tue, 25 May 2021 19:44:53 -0700 (PDT)
+X-Gm-Message-State: AOAM5310zGZJhLdKrTo6O7ZkINftFbeqoBOLg2erm2NG1ENCFYnOl1mm
+        wh5y+jD9mhXsmUcsdQojwrRdOR97nbi2eKgOpw==
+X-Google-Smtp-Source: ABdhPJxwO04yl5WZa0+jOnbeZ7drXGaZrOwZtr9HVj+l8GtBtUXQE1ouzcgJ7WJCend58die4B49R8xq/+6Bkf17N/E=
+X-Received: by 2002:a05:6402:4cf:: with SMTP id n15mr36336665edw.162.1621997091699;
+ Tue, 25 May 2021 19:44:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-2-xieyongji@bytedance.com>
- <6ca337fe-2c8c-95c9-672e-0d4f104f66eb@redhat.com>
-In-Reply-To: <6ca337fe-2c8c-95c9-672e-0d4f104f66eb@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Wed, 26 May 2021 10:43:33 +0800
-Message-ID: <CACycT3sA7jYr1TbBT+Q4wkiiqvk-sJppwzXvffeEUAgBMXOxfA@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 01/12] iova: Export alloc_iova_fast()
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210525121448.30075-1-rex-bc.chen@mediatek.com>
+ <20210525121448.30075-2-rex-bc.chen@mediatek.com> <CAAOTY__aasihVxC72f7b_R-=UcR85Z1G9M8TxUS9dBrad-aRxQ@mail.gmail.com>
+ <c90629c915bc1c0d2e6b1070939a443ce5f8644c.camel@mediatek.com>
+In-Reply-To: <c90629c915bc1c0d2e6b1070939a443ce5f8644c.camel@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 26 May 2021 10:44:41 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__3FWA37h5AoK_VR9LhyfHf3dGx2m-2P==2PNOpsxwyJQ@mail.gmail.com>
+Message-ID: <CAAOTY__3FWA37h5AoK_VR9LhyfHf3dGx2m-2P==2PNOpsxwyJQ@mail.gmail.com>
+Subject: Re: [v4,PATCH 1/3] drm/mediatek: dpi dual edge sample mode support
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:36 AM Jason Wang <jasowang@redhat.com> wrote:
+Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=889:51=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
+> Hello CK,
 >
-> =E5=9C=A8 2021/5/17 =E4=B8=8B=E5=8D=885:55, Xie Yongji =E5=86=99=E9=81=93=
-:
-> > Export alloc_iova_fast() so that some modules can use it
-> > to improve iova allocation efficiency.
+> Thanks for your review.
+>
+> On Wed, 2021-05-26 at 08:01 +0800, Chun-Kuang Hu wrote:
+> > Hi, Rex:
 > >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > ---
-> >   drivers/iommu/iova.c | 1 +
-> >   1 file changed, 1 insertion(+)
+> > Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=
+=8825=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:15=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> > >
+> > > DPI can sample on falling, rising or both edge.
+> > > When DPI sample the data both rising and falling edge.
+> > > It can reduce half data io pins.
+> > > Use num_output_fmts to determine whether it is dual edge mode.
+> > >
+> > > Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> > > Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
+> > > ---
+> > >  drivers/gpu/drm/mediatek/mtk_dpi.c | 17 ++++++++++++++++-
+> > >  1 file changed, 16 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > > b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > > index bea91c81626e..d3b883c97aaf 100644
+> > > --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > > +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> > > @@ -83,6 +83,7 @@ struct mtk_dpi {
+> > >         struct pinctrl *pinctrl;
+> > >         struct pinctrl_state *pins_gpio;
+> > >         struct pinctrl_state *pins_dpi;
+> > > +       bool ddr_edge_sel;
 > >
-> > diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> > index e6e2fa85271c..317eef64ffef 100644
-> > --- a/drivers/iommu/iova.c
-> > +++ b/drivers/iommu/iova.c
-> > @@ -450,6 +450,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned=
- long size,
+> > I would like to keep output_fmt instead of ddr_edge_sel.
+> > Initialize output_fmt to MEDIA_BUS_FMT_RGB888_1X24 in this patch.
 > >
-> >       return new_iova->pfn_lo;
-> >   }
-> > +EXPORT_SYMBOL_GPL(alloc_iova_fast);
-> >
-> >   /**
-> >    * free_iova_fast - free iova pfn range into rcache
->
->
-> Interesting, do we need export free_iova_fast() as well?
->
+> It means that I may initialize output_fmt in probe and set value in
+> mtk_dpi_bridge_atomic_check() of patch[3/3]?
 
-Oh, yes. I missed this commit 6e1ea50a06 ("iommu: Stop exporting
-free_iova_fast()"). Will rebase on the newest kernel tree.
+Yes.
 
-Thanks,
-Yongji
+> > >         int refcount;
+> > >  };
+> > >
