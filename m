@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A80239130D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8834639130C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhEZIyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:54:05 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40624 "EHLO
+        id S233369AbhEZIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:54:03 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40610 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233103AbhEZIx7 (ORCPT
+        with ESMTP id S232995AbhEZIx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:53:59 -0400
-X-UUID: 2bd05263fbac479287985ae67a950e6e-20210526
-X-UUID: 2bd05263fbac479287985ae67a950e6e-20210526
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        Wed, 26 May 2021 04:53:58 -0400
+X-UUID: e7ea0d5471834ebbbd8b9e366e7a6781-20210526
+X-UUID: e7ea0d5471834ebbbd8b9e366e7a6781-20210526
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
         (envelope-from <rex-bc.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 294660524; Wed, 26 May 2021 16:52:21 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 173398681; Wed, 26 May 2021 16:52:21 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Wed, 26 May 2021 16:52:20 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -33,9 +33,9 @@ CC:     <devicetree@vger.kernel.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Rex-BC Chen <rex-bc.chen@mediatek.com>,
         Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v5,PATCH 1/3] drm/mediatek: dpi dual edge sample mode support
-Date:   Wed, 26 May 2021 16:52:17 +0800
-Message-ID: <20210526085219.7582-2-rex-bc.chen@mediatek.com>
+Subject: [v5,PATCH 2/3] drm/mediatek: config driver data to support dual edge sample
+Date:   Wed, 26 May 2021 16:52:18 +0800
+Message-ID: <20210526085219.7582-3-rex-bc.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210526085219.7582-1-rex-bc.chen@mediatek.com>
 References: <20210526085219.7582-1-rex-bc.chen@mediatek.com>
@@ -46,82 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DPI can sample on falling, rising or both edge.
-When DPI sample the data both rising and falling edge.
-It can reduce half data io pins.
-Use num_output_fmts to determine whether it is dual edge mode.
+Add output_fmts and num_output_fmts value for all configuration.
 
 Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
 Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dpi.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index bea91c81626e..f034ebd12fa6 100644
+index f034ebd12fa6..a71f112e9a7a 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -83,6 +83,7 @@ struct mtk_dpi {
- 	struct pinctrl *pinctrl;
- 	struct pinctrl_state *pins_gpio;
- 	struct pinctrl_state *pins_dpi;
-+	unsigned int output_fmt;
- 	int refcount;
+@@ -123,6 +123,8 @@ struct mtk_dpi_conf {
+ 	u32 reg_h_fre_con;
+ 	u32 max_clock_khz;
+ 	bool edge_sel_en;
++	const u32 *output_fmts;
++	u32 num_output_fmts;
  };
  
-@@ -381,6 +382,20 @@ static void mtk_dpi_config_color_format(struct mtk_dpi *dpi,
- 	}
+ static void mtk_dpi_mask(struct mtk_dpi *dpi, u32 offset, u32 val, u32 mask)
+@@ -702,10 +704,21 @@ static unsigned int mt8183_calculate_factor(int clock)
+ 		return 2;
  }
  
-+static void mtk_dpi_dual_edge(struct mtk_dpi *dpi)
-+{
-+	if ((dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_LE) ||
-+		(dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_BE)) {
-+		mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE,
-+			     DDR_EN | DDR_4PHASE);
-+		mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING,
-+			     dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_LE ?
-+			     EDGE_SEL : 0, EDGE_SEL);
-+	} else {
-+		mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE, 0);
-+	}
-+}
++static const u32 mt8173_output_fmts[] = {
++	MEDIA_BUS_FMT_RGB888_1X24,
++};
 +
- static void mtk_dpi_power_off(struct mtk_dpi *dpi)
- {
- 	if (WARN_ON(dpi->refcount == 0))
-@@ -455,7 +470,13 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	pll_rate = clk_get_rate(dpi->tvd_clk);
- 
- 	vm.pixelclock = pll_rate / factor;
--	clk_set_rate(dpi->pixel_clk, vm.pixelclock);
-+	if ((dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_LE) ||
-+		(dpi->output_fmt == MEDIA_BUS_FMT_RGB888_2X12_BE))
-+		clk_set_rate(dpi->pixel_clk, vm.pixelclock * 2);
-+	else
-+		clk_set_rate(dpi->pixel_clk, vm.pixelclock);
++static const u32 mt8183_output_fmts[] = {
++	MEDIA_BUS_FMT_RGB888_2X12_LE,
++	MEDIA_BUS_FMT_RGB888_2X12_BE,
++};
 +
-+
- 	vm.pixelclock = clk_get_rate(dpi->pixel_clk);
+ static const struct mtk_dpi_conf mt8173_conf = {
+ 	.cal_factor = mt8173_calculate_factor,
+ 	.reg_h_fre_con = 0xe0,
+ 	.max_clock_khz = 300000,
++	.output_fmts = mt8173_output_fmts,
++	.num_output_fmts = ARRAY_SIZE(mt8173_output_fmts),
+ };
  
- 	dev_dbg(dpi->dev, "Got  PLL %lu Hz, pixel clock %lu Hz\n",
-@@ -519,6 +540,7 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	mtk_dpi_config_yc_map(dpi, dpi->yc_map);
- 	mtk_dpi_config_color_format(dpi, dpi->color_format);
- 	mtk_dpi_config_2n_h_fre(dpi);
-+	mtk_dpi_dual_edge(dpi);
- 	mtk_dpi_config_disable_edge(dpi);
- 	mtk_dpi_sw_reset(dpi, false);
+ static const struct mtk_dpi_conf mt2701_conf = {
+@@ -713,18 +726,24 @@ static const struct mtk_dpi_conf mt2701_conf = {
+ 	.reg_h_fre_con = 0xb0,
+ 	.edge_sel_en = true,
+ 	.max_clock_khz = 150000,
++	.output_fmts = mt8173_output_fmts,
++	.num_output_fmts = ARRAY_SIZE(mt8173_output_fmts),
+ };
  
-@@ -800,6 +822,8 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+ static const struct mtk_dpi_conf mt8183_conf = {
+ 	.cal_factor = mt8183_calculate_factor,
+ 	.reg_h_fre_con = 0xe0,
+ 	.max_clock_khz = 100000,
++	.output_fmts = mt8183_output_fmts,
++	.num_output_fmts = ARRAY_SIZE(mt8183_output_fmts),
+ };
  
-+	dpi->output_fmt = MEDIA_BUS_FMT_RGB888_1X24;
-+
- 	return 0;
- }
+ static const struct mtk_dpi_conf mt8192_conf = {
+ 	.cal_factor = mt8183_calculate_factor,
+ 	.reg_h_fre_con = 0xe0,
+ 	.max_clock_khz = 150000,
++	.output_fmts = mt8173_output_fmts,
++	.num_output_fmts = ARRAY_SIZE(mt8173_output_fmts),
+ };
  
+ static int mtk_dpi_probe(struct platform_device *pdev)
 -- 
 2.18.0
 
