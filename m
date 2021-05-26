@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E36A391899
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4175039189E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhEZNU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhEZNU1 (ORCPT
+        id S232948AbhEZNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:22:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30292 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231911AbhEZNWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:20:27 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2081EC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=AtyNGkK8eQQ4yETujkNMVRNzBw+u/5DNWTIq6k0iVNo=; b=HkQ97ZYa2u/HpSIixOgyTqLgU
-        N81a37GEKox0QE4c9Ic6y88IPgXM/Fox8WCERAlzUnE4lbIEAU1gXqqsAsSYqXMNLNpVUJUIobJmB
-        zAtOdg1Mt7Ky/4Zl6fZfY1Vzlc8nS6o/pCg1rWYvoNFGuQqAxiWSTodvcRBfRA0JLGiFBp1tM9jZa
-        PExb1/6+lchstl7fOj8CV0vELRQzW2XZKetI7qbrbIUimjRj7uuyYUWTR29nUKR5a2dhOpbKRelMr
-        umySRo0g9BaGm7iVHI1EYHa1LNIrkRcpR7mbwgSomU7EmCUo7m13QpVWMFI/U78u3qp9yAFFyvwKC
-        WHLGNsUVA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44374)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lltQz-0005e5-Mq; Wed, 26 May 2021 14:18:53 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lltQz-0002ps-Dl; Wed, 26 May 2021 14:18:53 +0100
-Date:   Wed, 26 May 2021 14:18:53 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Data corruption on i.MX6 IPU in arm_copy_from_user()
-Message-ID: <20210526131853.GE30436@shell.armlinux.org.uk>
-References: <m3y2c1uchh.fsf@t19.piap.pl>
- <20210526100843.GD30436@shell.armlinux.org.uk>
- <m3r1htu19o.fsf@t19.piap.pl>
+        Wed, 26 May 2021 09:22:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622035233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=p9p1x7BswRsuTEvRmatlOnyjD69LSl91w/XnLyyopxg=;
+        b=eKYJxdzffm4cdlMME1PbA/+08RAz6P3tBY9m6BV1xoG07ryAXwEH1NfBqs2TBnd0juVChQ
+        Xo9pssxPjcwkHWXMONbvoZv4GcPfti4SBVTldMbItANyfYqljhBqxjP0irIAWgb0Xo1ds2
+        AdX0tUiMlaasCU4Kw+PPfqWdEGcguXg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-OaFC7kshP1qDaHOMVdhRog-1; Wed, 26 May 2021 09:20:31 -0400
+X-MC-Unique: OaFC7kshP1qDaHOMVdhRog-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F7D0501EE;
+        Wed, 26 May 2021 13:20:30 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10E095D9CC;
+        Wed, 26 May 2021 13:20:27 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/11] KVM: nVMX: Fixes for nested state migration when eVMCS is in use
+Date:   Wed, 26 May 2021 15:20:15 +0200
+Message-Id: <20210526132026.270394-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3r1htu19o.fsf@t19.piap.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 02:29:07PM +0200, Krzysztof Hałasa wrote:
-> "Russell King (Oracle)" <linux@armlinux.org.uk> writes:
-> 
-> > Surely someone is not using copy_*_user() to copy data from userspace
-> > direct to MMIO space... that would be crazy.
-> 
-> No, it's the other way around: reading MMIO mapped to userspace (mmap
-> on /dev/mem) and copying it to simple kernel buffer (e.g. pipe buffer).
-> I.e., the MMIO is the userspace here (thus copy_from_user()).
+Changes since v2:
+- 'KVM: nVMX: Use '-1' in 'hv_evmcs_vmptr' to indicate that eVMCS is not in
+ use'/ 'KVM: nVMX: Introduce 'EVMPTR_MAP_PENDING' post-migration state'
+ patches instead of 'KVM: nVMX: Introduce nested_evmcs_is_used()' [Paolo]
+- 'KVM: nVMX: Don't set 'dirty_vmcs12' flag on enlightened VMPTRLD' patch
+ added [Max]
+- 'KVM: nVMX: Release eVMCS when enlightened VMENTRY was disabled' patch
+  added.
+- 'KVM: nVMX: Make copy_vmcs12_to_enlightened()/copy_enlightened_to_vmcs12()
+ return 'void'' patch added [Paolo]
+- R-b tags added [Max]
 
-Ah. I think we assume copy_from_user() will be used on memory only and
-not device mappings.
+Original description:
 
-In any case, looking at the architecture reference manual, LDM is
-permitted on device and strongly ordered mappings, and the memory
-subsystem is required to decompose it into a series of 32-bit accesses.
-So, it sounds to me like there could be a hardware bug in the buses/IPU
-causing this.
+Commit f5c7e8425f18 ("KVM: nVMX: Always make an attempt to map eVMCS after
+migration") fixed the most obvious reason why Hyper-V on KVM (e.g. Win10
+ + WSL2) was crashing immediately after migration. It was also reported
+that we have more issues to fix as, while the failure rate was lowered 
+signifincatly, it was still possible to observe crashes after several
+dozens of migration. Turns out, the issue arises when we manage to issue
+KVM_GET_NESTED_STATE right after L2->L2 VMEXIT but before L1 gets a chance
+to run. This state is tracked with 'need_vmcs12_to_shadow_sync' flag but
+the flag itself is not part of saved nested state. A few other less 
+significant issues are fixed along the way.
 
-Can you try using LDM directly inside the kernel and seeing what effect
-it has when reading the IPU? A simple test module should be sufficient.
-I suspect it'll show the same thing - basically, that using LDM to the
-IPU is broken.
+While there's no proof this series fixes all eVMCS related problems,
+Win10+WSL2 was able to survive 3333 (thanks, Max!) migrations without
+crashing in testing.
 
-Thanks.
+Patches are based on the current kvm/next tree.
+
+Vitaly Kuznetsov (11):
+  KVM: nVMX: Use '-1' in 'hv_evmcs_vmptr' to indicate that eVMCS is not
+    in use
+  KVM: nVMX: Don't set 'dirty_vmcs12' flag on enlightened VMPTRLD
+  KVM: nVMX: Release eVMCS when enlightened VMENTRY was disabled
+  KVM: nVMX: Make
+    copy_vmcs12_to_enlightened()/copy_enlightened_to_vmcs12() return
+    'void'
+  KVM: nVMX: Introduce 'EVMPTR_MAP_PENDING' post-migration state
+  KVM: nVMX: Release enlightened VMCS on VMCLEAR
+  KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS data is copied in
+    vmx_get_nested_state()
+  KVM: nVMX: Force enlightened VMCS sync from nested_vmx_failValid()
+  KVM: nVMX: Reset eVMCS clean fields data from prepare_vmcs02()
+  KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
+  KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
+    lost
+
+ arch/x86/kvm/vmx/evmcs.c                      |   3 +
+ arch/x86/kvm/vmx/evmcs.h                      |   8 +
+ arch/x86/kvm/vmx/nested.c                     | 144 +++++++++++-------
+ arch/x86/kvm/vmx/nested.h                     |  11 +-
+ arch/x86/kvm/vmx/vmx.c                        |   1 +
+ .../testing/selftests/kvm/x86_64/evmcs_test.c |  64 ++++----
+ 6 files changed, 140 insertions(+), 91 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.31.1
+
