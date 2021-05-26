@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19411391C4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B92A391C4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbhEZPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235377AbhEZPqO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:46:14 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983E1C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:44:42 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id s4so805989plg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xH9Vy/L4PH5PgZ75Lk40znIEfGow9JElmm1w/62eWLM=;
-        b=rJ8j7n0kErNXIoZSRax9qpZ+vYVs1+0fFNK8WhAJkMXZzI3a87O8oeML8U2jTFhUQx
-         e6GxZ6TX2CX8DRvtmmOEtp2gtnSnng48tCMRAFXemZPzrExO+tZ5Kwe3w7b53nj0KB6j
-         4lbHCHqdBy8oLfx94ri2u0PXhWLPQYm2yIAIYD74dCkQV3f8G+S9vo60yAv4C8+PPmnQ
-         if83H6wUx6SgYjzfhh8oRh3KPdrMBIGH5Fh9RSg4vrrNG91TifX++VTimjYemKiMHDCG
-         aJmInNZDCrpgcUBISMvXHVYAucwlH0ArNXde2sxdBPg6MZmmMHQ2H6wHk0/HSOzyI1XT
-         1HfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xH9Vy/L4PH5PgZ75Lk40znIEfGow9JElmm1w/62eWLM=;
-        b=Z6CON3CvxDcjSxst0BmHmQjuRwyiZ/anulhMXgWcgubM5sciYwxpEgoYWeAh2O3E7m
-         T2vWNUR97txkeqtSrL6BEtQA/v5HRkkJehIcNiIC0sA9kFW13eVCFVRlPhHIkNPCZl/M
-         3A7fgIoTb4NjQV2pqUH7E+pcjdpNEkUHnZHHumnbji2YDm8CXfR+M8u33J3lCHr0nQXq
-         Q4okdoqYAN0Mj9/8GZmU56/7oU9oZWYbxNHWrwiEjuh9EoFh3UrYtCNCaRbNDPwCkJpx
-         xjcZOg2yObBjM9n3Kf/6fopAYmNiO0WS6+jrsZurTdRMt1uJqPDFPs6CjMQkw82R3kv3
-         sH8g==
-X-Gm-Message-State: AOAM532VBmlOHvlo0WkB5ANvcVm0zlryAkJ8dYIWT4ytHpVU5glKD+Dd
-        9XtyTOYVxg0TquBYn0cmT7PH1A==
-X-Google-Smtp-Source: ABdhPJweAGgjDENCEg6+wJtGzTpXibg4GLJHlrqIbo/XesV0zJzhrytQ1vkPogyZie6uaBFHWRpvdQ==
-X-Received: by 2002:a17:902:6f09:b029:f9:173e:847d with SMTP id w9-20020a1709026f09b02900f9173e847dmr19275180plk.35.1622043881842;
-        Wed, 26 May 2021 08:44:41 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id q24sm17055036pgb.19.2021.05.26.08.44.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:44:41 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:44:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Subject: Re: Writable module parameters in KVM
-Message-ID: <YK5s5SUQh69a19/F@google.com>
-References: <CANgfPd_Pq2MkRUZiJynh7zkNuKE5oFGRjKeCjmgYP4vwvfMc1g@mail.gmail.com>
- <35fe7a86-d808-00e9-a6aa-e77b731bd4bf@redhat.com>
- <2fd417c59f40bd10a3446f9ed4be434e17e9a64f.camel@redhat.com>
+        id S235429AbhEZPqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:46:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235332AbhEZPqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:46:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ADD1613D3;
+        Wed, 26 May 2021 15:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622043890;
+        bh=0SRqv5DLareSxFH7yZ3agLefitGL127UPBROq2ISqVM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fzNPgeuYCJWHwI4w7TnliIrHcK39jlRekXDxL56LtQp/HLobt142p0ZQndSdDUyRZ
+         IRQeFv0S3yJQCjS5TJFd+rKIaY6nG804Rk+rSASUGaz+x/wlcCnd5gmq3ni120mENk
+         n6Q4DQ3vy5l+tqStMfTtusQ0ocaUAKsKpINuNPEeQl4KmY3ak13LHkhyBqUMzE06D3
+         QjXi5Kzf5ia2HmY2panJ2wvmiBdvSKfTSQyIuKegp+1Puwn005ycqLDeIOHsIPj6PJ
+         yWbv3i+NuBNzKQQn/7wK1dZjHb/D7V82/4ChAUNO58IoMaLI9OyxvtdqlJNAFzVLkE
+         a/y0o8nyTINew==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C862E4011C; Wed, 26 May 2021 12:44:47 -0300 (-03)
+Date:   Wed, 26 May 2021 12:44:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+Cc:     "jolsa@redhat.com" <jolsa@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [PATCH v7 1/3] perf report: compile tips.txt in perf binary
+Message-ID: <YK5s7xKIKGuJkXYr@kernel.org>
+References: <20210522062016.84677-1-dzagorui@cisco.com>
+ <YK5WO3is6EW9TNrX@kernel.org>
+ <BY5PR11MB40248ABAFED285B92AE9F01CD9249@BY5PR11MB4024.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2fd417c59f40bd10a3446f9ed4be434e17e9a64f.camel@redhat.com>
+In-Reply-To: <BY5PR11MB40248ABAFED285B92AE9F01CD9249@BY5PR11MB4024.namprd11.prod.outlook.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Maxim Levitsky wrote:
-> On Wed, 2021-05-26 at 12:49 +0200, Paolo Bonzini wrote:
-> > On 26/05/21 01:45, Ben Gardon wrote:
-> > > At Google we have an informal practice of adding sysctls to control some 
-> > > KVM features. Usually these just act as simple "chicken bits" which 
-> > > allow us to turn off a feature without having to stall a kernel rollout 
-> > > if some feature causes problems. (Sysctls were used for reasons specific 
-> > > to Google infrastructure, not because they're necessarily better.)
-> > > 
-> > > We'd like to get rid of this divergence with upstream by converting the 
-> > > sysctls to writable module parameters, but I'm not sure what the general 
-> > > guidance is on writable module parameters. Looking through KVM, it seems 
-> > > like we have several writable parameters, but they're mostly read-only.
-> > 
-> > Sure, making them writable is okay.  Most KVM parameters are read-only 
-> > because it's much simpler (the usecase for introducing them was simply 
-> > "test what would happen on old processors").  What are these features 
-> > that you'd like to control?
-
-My $0.02 is that most parameters should remain read-only, and making a param
-writable (new or existing) must come with strong justification for taking on the
-extra complexity.
-
-I absolutely agree that making select params writable adds a ton of value, e.g.
-being able to switch to/from the TDP MMU without reloading KVM saves a lot of
-time when testing, toggling forced flush/sync on PGD reuse is extremely valuable
-for triage and/or mitigation, etc...  But writable params should either bring a
-lot of value and/or add near-zero complexity.
-
-> > > I also don't see central documentation of the module parameters. They're 
-> > > mentioned in the documentation for other features, but don't have their 
-> > > own section / file. Should they?
-> > 
-> > They probably should, yes.
-> > 
-> > Paolo
-> > 
-> I vote (because I have fun with my win98 once in a while), to make 'npt'
-> writable, since that is the only way to make it run on KVM on AMD.
-
-For posterity, "that" refers to disabling NPT, not making 'npt' writable :-)
-
-Making 'npt' writable is probably feasible ('ept' would be beyond messy), but I
-strongly prefer to keep it read-only.  The direct impacts on the MMU and SVM
-aren't too bad, but NPT is required for SEV and VLS, affects kvm_cpu_caps, etc...
-And, no offense to win98, there's isn't a strong use case because outside of
-personal usage, the host admin/VMM doesn't know that the guest will be running a
-broken kernel.
-
-> My personal itch only though!
+Em Wed, May 26, 2021 at 02:50:24PM +0000, Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco) escreveu:
+> > [perfbuilder@five ~]$ export PERF_TARBALL=http://192.168.100.2/perf/perf-5.13.0-rc3.tar.xz
+> > [perfbuilder@five ~]$ time dm
+> > Wed May 26 11:04:00 AM -03 2021
+> > # export PERF_TARBALL=http://192.168.100.2/perf/perf-5.13.0-rc3.tar.xz
+> > # dm
+> >   1     9.39 alpine:3.4                    : FAIL gcc version 5.3.0 (Alpine 5.3.0)
+> >    builtin-report.c: In function 'cmd_report':
+> >    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> >       fprintf(stdout, "#\n# (%s)\n#\n", help);
+> >       ^
+> >    builtin-report.c:622:20: note: 'prev' was declared here
+> >      char *tok, *tmp, *prev;
+> > <SNIP>
+> >
+> >  10    13.35 alpine:3.13                   : FAIL gcc version 10.2.1 20201203 (Alpine 10.2.1_pre1)
+> >    builtin-report.c: In function 'cmd_report':
+> >    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> >      560 |   fprintf(stdout, "#\n# (%s)\n#\n", help);
+> >          |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    builtin-report.c:622:20: note: 'prev' was declared here
+> >      622 |  char *tok, *tmp, *prev;
+> >          |                    ^~~~
+> >    cc1: all warnings being treated as errors
+> >  11    13.77 alpine:edge                   : FAIL gcc version 10.3.1 20210424 (Alpine 10.3.1_git20210424)
+> >    builtin-report.c: In function 'cmd_report':
+> >    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> >      560 |   fprintf(stdout, "#\n# (%s)\n#\n", help);
+> >          |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >    builtin-report.c:622:20: note: 'prev' was declared here
+> >      622 |  char *tok, *tmp, *prev;
+> >          |                    ^~~~
+> >    cc1: all warnings being treated as errors
+> >
+> >
+> > I'll check later...
 > 
-> Best regards,
-> 	Maxim Levitsky
-> 
+> prev should be initialized to _binary_Documentation_tips_txt_start, i can resend 
+
+
+More problems with that patch, so I'm removing it for now, till we have
+these addressed.
+
+- Arnaldo
+
+When cross-building to Risc-V 64-bit:
+
+  LD       /tmp/build/perf/Documentation/tips.o
+riscv64-linux-gnu-ld: --relax and -r may not be used together
+Documentation/Build:7: recipe for target '/tmp/build/perf/Documentation/tips.o' failed
+make[4]: *** [/tmp/build/perf/Documentation/tips.o] Error 1
+/git/perf-5.13.0-rc3/tools/build/Makefile.build:139: recipe for target 'Documentation' failed
+make[3]: *** [Documentation] Error 2
+make[3]: *** Waiting for unfinished jobs....
+
+Ditto for m68k
+
+  LD       /tmp/build/perf/Documentation/tips.o
+m68k-linux-gnu-ld: failed to merge target specific data of file Documentation/tips.txt
+Documentation/Build:7: recipe for target '/tmp/build/perf/Documentation/tips.o' failed
+make[4]: *** [/tmp/build/perf/Documentation/tips.o] Error 1
+/git/perf-5.13.0-rc3/tools/build/Makefile.build:139: recipe for target 'Documentation' failed
+make[3]: *** [Documentation] Error 2
+make[3]: *** Waiting for unfinished jobs....
+
+
+
+That same problem, for other targets:
+
+  42     7.55 fedora:34-x-ARC-uClibc        : FAIL gcc version 8.3.1 20190225 (ARCv2 ISA Linux uClibc toolchain 2019.03-rc1)
+    builtin-report.c: In function 'cmd_report':
+    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+       fprintf(stdout, "#\n# (%s)\n#\n", help);
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    builtin-report.c:622:20: note: 'prev' was declared here
+      char *tok, *tmp, *prev;
+                        ^~~~
+
+  19     9.46 debian:8                      : FAIL gcc version 4.9.2 (Debian 4.9.2-10+deb8u2)
+    builtin-report.c: In function 'cmd_report':
+    builtin-report.c:654:7: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+       ret = evlist__tui_browse_hists(evlist, help, NULL, rep->min_percent,
+           ^
+    builtin-report.c:622:20: note: 'prev' was declared here
+      char *tok, *tmp, *prev;
+                        ^
+    cc1: all warnings being treated as errors
