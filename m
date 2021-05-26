@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6923912EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE9D3912F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbhEZIuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        id S233386AbhEZIuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhEZItY (ORCPT
+        with ESMTP id S233375AbhEZIt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:24 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45D1C061345
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:52 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id q5so215312wrs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:52 -0700 (PDT)
+        Wed, 26 May 2021 04:49:26 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0901DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:54 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id o127so239295wmo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7L06mynHw/Hvp7IRLB9pK1ya6b4whZKrsJ5rjcKPGDA=;
-        b=p6dcifpgLEh0iuGoFQK2sK66NWHym2V+MK8Mgj2Gbu/s3pxQpqNCHtulzP0eEwjZrY
-         4tLExkvLFAZ7n3wVD5ZNye6+hzn+kXamD+QGeriuWID3n3FGGixGYHkvug2JciMuvZ8W
-         5Bxhq7HvBx1KgntYp8NgJlzoyA/n79QXt2c17qR6kmkq4mxv/im0kF0i7b425G9BfDYc
-         Pe7JbaSsicLm68CiND0fuJr8KunrGw7U6+OEjwTY3RZPloUNp/PPutNRq/VcOuifCJ6u
-         LlOR/QhJkBUayFg11eW5qX/3K1QBsFiv3Qg8qkTuZSrkI57AS/nS7hRN5THRTKD4441l
-         iozA==
+        bh=qhZgrAainLjec7+hq499eXjP+VFgJtwYW3msrbGd3QA=;
+        b=e/cES6WXNf9+ZpY2D4VLQY1tDCYiL+YmBb4TxjZ2Yg7Tqivde+ECExm/VjRqhPnSwP
+         pF8Dg4H6EuHK4qbZbPO+DGRTYWw4TuhME6GXJsqxUD9gzvrooDgB5lB8x9xiKzGig67T
+         N8NBqVRkw51z8HuTtm2qK+cELNmbWunRFkBF6EJNSbgv7ANarLKuUJxEP+7/qMIYa+of
+         HFTWFAqci9XzxxOxAndpAr5puhN1ats8ehvfyxupcGhc+COIFf7zIjylco2BMp0a5E+T
+         WMrfVMcOJM1+t4t2yLfbGAPFUfRKjdwV6HG4pMnW90cWxOBzU2w//zjuoMjZbJ+iFBf5
+         /dOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7L06mynHw/Hvp7IRLB9pK1ya6b4whZKrsJ5rjcKPGDA=;
-        b=DggOQF9WhN+MyfqwbfPTOYJ2BeO1f7T8TZihzcb8Zn7pD7v/P/CRTHGyVO036ZGEzL
-         RT4nGppVeBWiwExCf2k8FPNTbsdBKGn+nuHr+K6O+BxllggTmp4NONsNwVwy2tlO63om
-         K80Bq0nlOt7YYSET6UI8XtW0VUacV6lP4+oE0xpIwD7/3XXSvhLj3LAaOF2z7LHTjrXb
-         aLfxzVUW9EYYChMRVY+/keLhnENRay0Uuc3WBpRXHRSQwTpAOC+wj2ULW4FP6hpG0yQY
-         NtJqvevb2DtxE7gbO3Rvono0tUIU2FTZqjUOkaM61gWGo5YItA0GiLvmcx9p9sQ2YB6E
-         tVZg==
-X-Gm-Message-State: AOAM5328i2k3ghaCs7v6tdBEWtIwj2GYZtV4tex5B1OkM/T4cKklkd4G
-        vQQy6R1we7UMcWUdPO3unXMIew==
-X-Google-Smtp-Source: ABdhPJztuqUrTTlF820RG/YpKIy9kbje3NTxS+Y/DPltHPd2xWY9oQPpPtmaMh8sTZnnxSSSeP3iXw==
-X-Received: by 2002:a5d:4346:: with SMTP id u6mr31619647wrr.304.1622018871538;
-        Wed, 26 May 2021 01:47:51 -0700 (PDT)
+        bh=qhZgrAainLjec7+hq499eXjP+VFgJtwYW3msrbGd3QA=;
+        b=sk1hdhmiLqolty7A5eAMF5RRdBcN8fIWnB72bOlFZZ33QPjpVphdrf1HlX76I5sWFp
+         HkOteOzpqB+4eHCEwKgww18CE72Rokv60iZ/GbjIFAkYSNBUjHMmnpmTtp9MNUYE8tin
+         X8WDJZ3v4aL7crk09T1a7QyizV2f/RRuPX9kFkm4MpYH5lA7aY6DWNWmh27SZTdBw4Ym
+         NSgKuxANK1jovYlQpVN4IKa8eIzedLLzSMm8S+jzv0/Z0qe0X19eniOM2IqPCsmDf7wH
+         8gJszr1yMHX4d5LuyqKL96ZkoZM+uR9lwKxh7AF5E7IFLFWDk4YcGq6Um/R7VFy9CKBZ
+         qnmA==
+X-Gm-Message-State: AOAM533+MSCORRajvt2WSJCBNahA2sPpb2ojhY0YUu8k3+g1qAf0GpsJ
+        hXckr1qUBIdnQp8NIuJsb2GANQ==
+X-Google-Smtp-Source: ABdhPJydthfwy6pyhiwfSi4Vw978YT5WPdxv2u67ek+4Ky6PZ2aPSphUROb7xbK91WYE7mAK79UCfQ==
+X-Received: by 2002:a1c:c911:: with SMTP id f17mr28332218wmb.45.1622018872593;
+        Wed, 26 May 2021 01:47:52 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.50
+        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:51 -0700 (PDT)
+        Wed, 26 May 2021 01:47:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 20/34] drm/amd/display/amdgpu_dm/amdgpu_dm: Fix kernel-doc formatting issue
-Date:   Wed, 26 May 2021 09:47:12 +0100
-Message-Id: <20210526084726.552052-21-lee.jones@linaro.org>
+Subject: [PATCH 21/34] drm/amd/display/dc/dce110/dce110_hw_sequencer: Include header containing our prototypes
+Date:   Wed, 26 May 2021 09:47:13 +0100
+Message-Id: <20210526084726.552052-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
 References: <20210526084726.552052-1-lee.jones@linaro.org>
@@ -73,7 +73,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:608: warning: Function parameter or member 'interrupt_params' not described in 'dm_dcn_vertical_interrupt0_high_irq'
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:929:6: warning: no previous prototype for ‘dce110_edp_wait_for_T12’ [-Wmissing-prototypes]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -85,22 +85,21 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index ae0a95c5f1d8c..0b4841f377e41 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -605,7 +605,7 @@ static void dm_crtc_high_irq(void *interrupt_params)
- /**
-  * dm_dcn_vertical_interrupt0_high_irq() - Handles OTG Vertical interrupt0 for
-  * DCN generation ASICs
-- * @interrupt params - interrupt parameters
-+ * @interrupt_params: interrupt parameters
-  *
-  * Used to set crc window/read out crc value at vertical line 0 position
-  */
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+index 9219db79f32b6..1ef1b1b33fb09 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+@@ -64,6 +64,7 @@
+ #include "atomfirmware.h"
+ 
+ #include "dce110_hw_sequencer.h"
++#include "dcn10/dcn10_hw_sequencer.h"
+ 
+ #define GAMMA_HW_POINTS_NUM 256
+ 
 -- 
 2.31.1
 
