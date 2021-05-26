@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D84B39102F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A306B391031
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhEZFws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 01:52:48 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20234 "EHLO m43-7.mailgun.net"
+        id S232298AbhEZFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 01:53:23 -0400
+Received: from mga11.intel.com ([192.55.52.93]:4954 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232197AbhEZFwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 01:52:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622008274; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=RAa9AIOyjdjzOOxbgydc+DP4eZHRUvGvKjJTEe0cJW4=; b=UIB5LxDZWRMdjtqBw7zME6yWcFzxuX+a+rLoi62QnqFXSxmI7TQQxzlFkCF2+aXP6mm+4qEn
- KpIkfc0k5iEYCS9bGsjBra1uDrobWX3kduZOyvB62pU0KGgHuOmD/43kz/CUMbvxYY8Z3tdL
- JyvU/EPi6YrworX4ywuONp8yCeU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60ade1d0c229adfeff6d2eb4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 05:51:12
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0394C43217; Wed, 26 May 2021 05:51:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6879FC433D3;
-        Wed, 26 May 2021 05:51:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6879FC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v2] Bluetooth: btusb: fix bt fiwmare downloading failure issue for qca btsoc.
-Date:   Wed, 26 May 2021 13:51:05 +0800
-Message-Id: <1622008265-18727-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229552AbhEZFxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 01:53:22 -0400
+IronPort-SDR: OHQXJokI9nLpDp+hTkBObex5XTeD8c9mJLnttLUp1pKAsXgW2nBwp6/edkiqQK2hX8LyAtkQzC
+ 3WG0LH038zqQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="199333441"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="199333441"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 22:51:48 -0700
+IronPort-SDR: x1NU05lizJzYgEHOeYdp2a3BbwQIfALeVCwpM2NHLy9iG5Exljf7iW2wNnUvAwNgkFdl63/Z9u
+ 7OwpXXDXdnag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="409071590"
+Received: from unknown (HELO [10.237.72.166]) ([10.237.72.166])
+  by fmsmga007.fm.intel.com with ESMTP; 25 May 2021 22:51:47 -0700
+Subject: Re: [PATCH] i2c: designware: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1621998623-14846-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <350759ac-bcea-77ac-f005-f227f01d88ab@linux.intel.com>
+Date:   Wed, 26 May 2021 08:51:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <1621998623-14846-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+Hi
 
-This is btsoc timing issue, after host start to downloading bt firmware,
-ep2 need time to switch from function acl to function dfu, so host add
-20ms delay as workaround.
+On 5/26/21 6:10 AM, Yang Li wrote:
+> Fix function name in i2c-designware-master.c kernel-doc comment
+> to remove a warning found by clang_w1.
+> 
+> drivers/i2c/busses/i2c-designware-master.c:176: warning: expecting
+> prototype for i2c_dw_init(). Prototype was for i2c_dw_init_master()
+> instead.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 'commit 21bf440ce18e ("i2c: designware: Make HW init functions
+> static")'
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   drivers/i2c/busses/i2c-designware-master.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+Lee Jones sent a fix for this last week:
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 1 +
- 1 file changed, 1 insertion(+)
+https://www.spinics.net/lists/linux-i2c/msg51612.html
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 5245714..b0743db 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4064,6 +4064,7 @@ static int btusb_setup_qca_download_fw(struct hci_dev *hdev,
- 
- 	sent += size;
- 	count -= size;
-+	msleep(20);
- 
- 	while (count) {
- 		size = min_t(size_t, count, QCA_DFU_PACKET_LEN);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+Jarkko
