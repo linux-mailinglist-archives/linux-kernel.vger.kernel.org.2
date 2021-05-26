@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4167B391862
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFED391867
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbhEZNDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        id S235134AbhEZNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234864AbhEZNC3 (ORCPT
+        with ESMTP id S234898AbhEZNCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:02:29 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECDEC061345
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:57 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so459125wmq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:57 -0700 (PDT)
+        Wed, 26 May 2021 09:02:33 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86442C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:58 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id p7so1021284wru.10
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:00:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8thE6pWPMC1cZ/BkZSyAo0Kom76zxaAdnKK0vRxVopk=;
-        b=l3+9+sArtJ/npKGd6maCVLyj/91WVG4+XgCQZ8lCsVfxqN9PiIf9xxGjew1wVJcAXP
-         hwN2AFlt19+wj5Dmb41WkHz7uADqmujPGU4DpgFyUIVe9DwGKRTlLvHyUmkwKtRS4O08
-         9QM6pD7kpebhn4Cr6ERpZVh3Hwt2ZtnPgMHWRC5db05UNXZMFxN6fCzBN6M0zXtRagpS
-         ihmPe35VaENaN/ZgKdftqp+Sy62B+Tbo/Bx7cVjq96NxJnrhID0Zjp3uqmoyNq4yYyyz
-         pXMF70sWENPREoD3EpPBxrbmHiiRMKq7C3uo9Nmc/OgYsJYmWXI1roKwwOuFvfPTaCnK
-         SyCw==
+        bh=KHHS+1f8u9j5b2K6D8nWWJ9Ja8sSbiW1E3dlvhtlLBY=;
+        b=YdrcsCUq4brY2yobkX1/GUAIJXjIThXIDSYtUILPMJ59oHikTJJPOJk1KVRV4C/N1/
+         iU/2WvkrVWitvghGCE/UXvluwkqQX/mu2U5XDgxqePLxUNyQnQJrcn8Mcy6xWZ47u+sW
+         pjoVRMNu4yYUclNsmy9F0WlBUKG6T4DzwKA7nkYPnakxozPnXYSDkVlUYK7f5sBwD9HF
+         IG0TgozYv6h4J2TKq8ISwJmGJjJFYo3Hk68b0rR3JS8wUS77JXjQznwxsjLAbUqhkmj+
+         Mpg7GL0/l0qJJNjXzoZc6fRJ6KZ8ZR/SKxZrH2ZDXp3UpFO14Mx+ahUBLi91Jd3Pe4eQ
+         ii5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8thE6pWPMC1cZ/BkZSyAo0Kom76zxaAdnKK0vRxVopk=;
-        b=NaIB6flhyjF3byFzW9siRd93hkncUg75bG3YNSOXawjaZacgpBPUWVXab4dXjiacpx
-         gSbqzOZyTfRJAZAofS3cbniON7uus46nRLvr9gyRJ6OI773lIyOl1OGy82A56BFExbxo
-         O+IYJTFRNqb7qyJpEZn8ihvvAcGeWivG0Xwpe5OXkzDiQk0KgLsEbESqJ22pMp8Zc71h
-         YjfV8PwNQJJWrrCne+WPv5jhNXlrDpajjGe+on+tyqF9F0SRhIJSJgbGw4zatTvI17Zf
-         vxyNgQdex9pIS/dOheZopKurx51Lp3zc6dYZ/UqJeHQyUTcYOyv2aP/zV8S9pjz45xhE
-         vsHg==
-X-Gm-Message-State: AOAM531cx2BXYETmwbiFuqIH4HOULegXUHrooRL5p+ablKCQg8zb+fJq
-        AjVaEbN1gAe2m1yyq45xiQPY4A==
-X-Google-Smtp-Source: ABdhPJzDQZva0sgjfdrbMXbrSAL33f5tBEZSMmlg1aDjhxxk7JL2scIVT78zduvBUEtv/4DFX/ZUxQ==
-X-Received: by 2002:a7b:cf09:: with SMTP id l9mr29419759wmg.184.1622034055675;
-        Wed, 26 May 2021 06:00:55 -0700 (PDT)
+        bh=KHHS+1f8u9j5b2K6D8nWWJ9Ja8sSbiW1E3dlvhtlLBY=;
+        b=FNy6fsiQ4GPwl9dfSST818zoTo8NHS+W5y+gydvJr/u/m0dcv0ryM3UYuoAMPLrD6U
+         25wj0SokDr112cpuVKcYqLjh+cqoFBrk1EH0pBUyZVN34wRz5lL6mHKe2C8MwZBIJ+Er
+         myTY9mepVeFssSvwZfq+wdcmtg9Cle2bbHqrbNnBEXBo8x0XfeJIyU68N3V8N4F/ZFW8
+         mGFavgHFZOrCexni3rGaY9wpfLNex/VP00rz11UDruVjDod8i3d46YqEkl16DMAPxc9d
+         skb1sEX5MUACLtbQ/Lpyq2mFmSGh/8fnN2+YQ6R0l0lfUT2YpxYipdsktuQ9ftynSUXz
+         I32Q==
+X-Gm-Message-State: AOAM531UxchN9qi4LeOdZbS2G56P8niwDYTnXWltmuwN5yVXlbimkgUf
+        orRPOpoAikh7Mliu597b2RVU3hc+yj45jw==
+X-Google-Smtp-Source: ABdhPJyGybci+q+lRWReYMoifHv7LQ4kvGX3EDOi8lqyZRGOjUCRogacK+Qd5xv7FX4H9dRnM5a1gQ==
+X-Received: by 2002:adf:dc88:: with SMTP id r8mr32103693wrj.277.1622034057161;
+        Wed, 26 May 2021 06:00:57 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.00.54
+        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.00.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:00:55 -0700 (PDT)
+        Wed, 26 May 2021 06:00:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
@@ -55,10 +55,15 @@ Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
         Roger Quadros <rogerq@kernel.org>,
         Aswath Govindraju <a-govindraju@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Jez <pjez@cadence.com>, linux-usb@vger.kernel.org
-Subject: [PATCH 09/24] usb: cdns3: cdns3-ep0: Fix a few kernel-doc formatting issues
-Date:   Wed, 26 May 2021 14:00:22 +0100
-Message-Id: <20210526130037.856068-10-lee.jones@linaro.org>
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 10/24] usb: cdns3: cdns3-imx: File headers are not good candidates for kernel-doc
+Date:   Wed, 26 May 2021 14:00:23 +0100
+Message-Id: <20210526130037.856068-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526130037.856068-1-lee.jones@linaro.org>
 References: <20210526130037.856068-1-lee.jones@linaro.org>
@@ -70,53 +75,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/cdns3/cdns3-ep0.c:680: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/usb/cdns3/cdns3-ep0.c:775: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/usb/cdns3/cdns3-ep0.c:868: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/usb/cdns3/cdns3-imx.c:21: warning: expecting prototype for cdns3(). Prototype was for USB3_CORE_CTRL1() instead
 
 Cc: Peter Chen <peter.chen@kernel.org>
 Cc: Pawel Laszczak <pawell@cadence.com>
 Cc: Roger Quadros <rogerq@kernel.org>
 Cc: Aswath Govindraju <a-govindraju@ti.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Pawel Jez <pjez@cadence.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
 Cc: linux-usb@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/cdns3/cdns3-ep0.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/cdns3/cdns3-imx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-ep0.c b/drivers/usb/cdns3/cdns3-ep0.c
-index 9a17802275d51..02ec7ab4bb489 100644
---- a/drivers/usb/cdns3/cdns3-ep0.c
-+++ b/drivers/usb/cdns3/cdns3-ep0.c
-@@ -677,7 +677,7 @@ static int cdns3_gadget_ep0_set_halt(struct usb_ep *ep, int value)
- }
- 
- /**
-- * cdns3_gadget_ep0_queue Transfer data on endpoint zero
-+ * cdns3_gadget_ep0_queue - Transfer data on endpoint zero
-  * @ep: pointer to endpoint zero object
-  * @request: pointer to request object
-  * @gfp_flags: gfp flags
-@@ -772,7 +772,7 @@ static int cdns3_gadget_ep0_queue(struct usb_ep *ep,
- }
- 
- /**
-- * cdns3_gadget_ep_set_wedge Set wedge on selected endpoint
-+ * cdns3_gadget_ep_set_wedge - Set wedge on selected endpoint
-  * @ep: endpoint object
+diff --git a/drivers/usb/cdns3/cdns3-imx.c b/drivers/usb/cdns3/cdns3-imx.c
+index 74e758dc08955..59860d1753fd5 100644
+--- a/drivers/usb/cdns3/cdns3-imx.c
++++ b/drivers/usb/cdns3/cdns3-imx.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/**
++/*
+  * cdns3-imx.c - NXP i.MX specific Glue layer for Cadence USB Controller
   *
-  * Returns 0
-@@ -865,7 +865,7 @@ void cdns3_ep0_config(struct cdns3_device *priv_dev)
- }
- 
- /**
-- * cdns3_init_ep0 Initializes software endpoint 0 of gadget
-+ * cdns3_init_ep0 - Initializes software endpoint 0 of gadget
-  * @priv_dev: extended gadget object
-  * @priv_ep: extended endpoint object
-  *
+  * Copyright (C) 2019 NXP
 -- 
 2.31.1
 
