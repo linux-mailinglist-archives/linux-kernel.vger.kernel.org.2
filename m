@@ -2,109 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D01E391E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAEE391E96
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235242AbhEZSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234239AbhEZSCm (ORCPT
+        id S235295AbhEZSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:03:07 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36674 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234546AbhEZSDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:02:42 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A262CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:01:10 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id r1so1598092pgk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ejN0eoIYKBN/84Zrv0CgeJaaHDuSEgwb8qud7/icrbk=;
-        b=HyowxsLM2scFnyqIhMxSOj+1Epc7shE+KUEVjC4cht5KRlJUfKCVnuq213R6Wg61SX
-         CCJFRRt2xZk7znIufJ2aqncJrmoRNBnL5K+7Fi7bDlEONEX7uYsMbnk41SLypLMNNtfS
-         cqAZ1XY/b5GO8ETbQXNwSgpbl1LHBJsRcXEEdBLWf8QX1jAD88eyB3liiO5bYb5I0q30
-         iFgY6BBsNSyvmtpkspmM6sB8+7gn/YcKXZKNHHpq4RH8GlYdSND7iebeM3sjrzAibsOF
-         Oy/bcAK9E+Kzg2Fkh4uPqBSW+MqDXWxKmZeFtpfskZsRVPT0vXPF0jiLA9RdgzB4VEGi
-         Yeww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ejN0eoIYKBN/84Zrv0CgeJaaHDuSEgwb8qud7/icrbk=;
-        b=XUpdcF1V8uIQvT1vNDLe5Lq8ad+cZhSbbVBplA8GTYR578RY5Z5fytI7yVq2EOk9Mv
-         G64DmihniMnFy2enpOO5EwHc+h+ApznchhXAkx3xagPreghYs9oK6XXK8SXbGBOvXA80
-         eD6/e29Y+4tHrYj+tYeJeXkKa7iPT1vstZeDYFsAECghyO3XF4ljNLyAYS8afRTWkke3
-         3yB1/l7JMvd0g1GhaUu6z4N3PjA273eAgz/FuiC3174jt7B0wtoISLuYZm7q9CcAdHFN
-         3F3AC0T4fL8dpSFQ2EB+LmRpYoyZSsHP0qMPNPD+S+mqQFkMxPk/p+Kl+VAzkn7HDelq
-         M+dA==
-X-Gm-Message-State: AOAM530qbqJc9Gt7P0FV4LCI2CTvN4Z8mVkxoxh/iycwLR60aK4o2lPO
-        mSfJCNBnBa/E5/k02jyN8fh2EQ==
-X-Google-Smtp-Source: ABdhPJzRGUd/HpFi11rQ4qFWoSjV9N7NM09tX6ZU72aaD7uBwGewropyY1i1khwE0k+aUsa2kx83kg==
-X-Received: by 2002:aa7:9f8f:0:b029:2dc:76bc:edce with SMTP id z15-20020aa79f8f0000b02902dc76bcedcemr36559993pfr.29.1622052069984;
-        Wed, 26 May 2021 11:01:09 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s48sm15923209pfw.205.2021.05.26.11.01.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 11:01:09 -0700 (PDT)
-Date:   Wed, 26 May 2021 18:01:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 0/6] Introduce KVM_{GET|SET}_SREGS2 and fix PDPTR
- migration
-Message-ID: <YK6M4UwNGn1Gc5Sa@google.com>
-References: <20210426111333.967729-1-mlevitsk@redhat.com>
+        Wed, 26 May 2021 14:03:05 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QI1Qmu004711;
+        Wed, 26 May 2021 13:01:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622052086;
+        bh=i3Ct7CSYrl/F+D9zgRi2YeyJzxRL5IA4z86e3obtvpk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=T2l+7/Sh5GcuGLEOiSVBYIWvSBklTQ2mDA0BV6xDqEU4WyrIIgnWJ6yWdx0VqD4TU
+         AJRXlulUOcI5lO1OPyX3oHvZ5we0bTxn8z+h1ODZaA86rBfuJJ2VfK7hKYJ4YHNYEG
+         N2QjxqhZ6vHVo8VD6IkG8774JwjdrTiVGsCKTt+c=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QI1QH7050700
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 13:01:26 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 13:01:25 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 13:01:25 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QI1P7a118987;
+        Wed, 26 May 2021 13:01:25 -0500
+Subject: Re: [PATCH v2] ARM: dts: dra7: Fix duplicate USB4 device node
+To:     Gowtham Tammana <g-tammana@ti.com>, <tony@atomide.com>,
+        <bcousson@baylibre.com>
+CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nisanth Menon <nm@ti.com>
+References: <20210526172038.17542-1-g-tammana@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <64bb0e71-dc6d-e21d-cfc0-cfeb787ca7c2@ti.com>
+Date:   Wed, 26 May 2021 13:01:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426111333.967729-1-mlevitsk@redhat.com>
+In-Reply-To: <20210526172038.17542-1-g-tammana@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021, Maxim Levitsky wrote:
-> This patch set aims to fix few flaws that were discovered
-> in KVM_{GET|SET}_SREGS on x86:
-> 
-> * There is no support for reading/writing PDPTRs although
->   these are considered to be part of the guest state.
-> 
-> * There is useless interrupt bitmap which isn't needed
-> 
-> * No support for future extensions (via flags and such)
-> 
-> Also if the user doesn't use the new SREG2 api, the PDPTR
-> load after migration is now done on KVM_REQ_GET_NESTED_STATE_PAGES
-> to at least read them correctly in cases when guest memory
-> map is not up to date when nested state is loaded.
-> 
-> This patch series was tested by doing nested migration test
-> of 32 bit PAE L1 + 32 bit PAE L2 on AMD and Intel and by
-> nested migration test of 64 bit L1 + 32 bit PAE L2 on AMD.
-> The later test currently fails on Intel (regardless of my patches).
-> 
-> Changes from V1:
->   - move only PDPTRS load to KVM_REQ_GET_NESTED_STATE_PAGES on VMX
->   - rebase on top of kvm/queue
->   - improve the KVM_GET_SREGS2 to have flag for PDPTRS
->     and remove padding
-> 
-> Patches to qemu will be send soon as well.
+Hi Gowtham,
 
-How did you want to handle integration with the removal of pdptrs_changed()?
+On 5/26/21 12:20 PM, Gowtham Tammana wrote:
+> With [1] USB4 device node got defined in dra74x.dtsi file. However,
+> there was a prior defintion of the same in [2] which didn't get removed
 
-https://lkml.kernel.org/r/68ff1249-2902-43d5-3dfd-35b1f14c4f90@redhat.com
+I like this approach and is more in line with the original move of USB4 node
+into dra74x.dtsi file.
+
+Looks like you mixed up [1] and [2] or I misunderstand your terminology. Also,
+let's be precise, it is the USB4 target-module node that got duplicated in [2],
+USB4 node always existed but outside of ti-sysc control before [2] and did not
+conflict with the target-module node added in [1].
+
+> causing boot failures. 
+
+on what boards? Is it affecting all of them?
+
+regards
+Suman
+
+USB4 node is present only in DRA74x variants so
+> keeping the entry in dra74x.dtsi and removing it from the top level
+> interconnect hierarchy dra7-l4.dtsi file.
+> 
+> Since USB4 is only included in DRA74x variants, remove its reference
+> for AM5718, DRA71x and DR72x boards.
+> 
+> [1]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
+> hierarchy and ti-sysc data")
+> [2]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
+> dra7 dwc3")
+> 
+> Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
+> Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
+> ---
+> v2:
+>   - changed reference to commit sha instead of line numbers
+>   - added Fixes: tag
+>   - moved the definition to dra74.dtsi as per Suman and Tony review comments
+> 
+>  arch/arm/boot/dts/am5718.dtsi  |  6 +-----
+>  arch/arm/boot/dts/dra7-l4.dtsi | 22 ----------------------
+>  arch/arm/boot/dts/dra71x.dtsi  |  4 ----
+>  arch/arm/boot/dts/dra72x.dtsi  |  4 ----
+>  arch/arm/boot/dts/dra74x.dtsi  |  2 +-
+>  5 files changed, 2 insertions(+), 36 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
+> index ebf4d3cc1cfb..6d7530a48c73 100644
+> --- a/arch/arm/boot/dts/am5718.dtsi
+> +++ b/arch/arm/boot/dts/am5718.dtsi
+> @@ -17,17 +17,13 @@ / {
+>   * VCP1, VCP2
+>   * MLB
+>   * ISS
+> - * USB3, USB4
+> + * USB3
+>   */
+>  
+>  &usb3_tm {
+>  	status = "disabled";
+>  };
+>  
+> -&usb4_tm {
+> -	status = "disabled";
+> -};
+> -
+>  &atl_tm {
+>  	status = "disabled";
+>  };
+> diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+> index 149144cdff35..648d23f7f748 100644
+> --- a/arch/arm/boot/dts/dra7-l4.dtsi
+> +++ b/arch/arm/boot/dts/dra7-l4.dtsi
+> @@ -4129,28 +4129,6 @@ usb3: usb@10000 {
+>  			};
+>  		};
+>  
+> -		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
+> -			compatible = "ti,sysc-omap4", "ti,sysc";
+> -			reg = <0x140000 0x4>,
+> -			      <0x140010 0x4>;
+> -			reg-names = "rev", "sysc";
+> -			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
+> -			ti,sysc-midle = <SYSC_IDLE_FORCE>,
+> -					<SYSC_IDLE_NO>,
+> -					<SYSC_IDLE_SMART>,
+> -					<SYSC_IDLE_SMART_WKUP>;
+> -			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+> -					<SYSC_IDLE_NO>,
+> -					<SYSC_IDLE_SMART>,
+> -					<SYSC_IDLE_SMART_WKUP>;
+> -			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
+> -			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
+> -			clock-names = "fck";
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			ranges = <0x0 0x140000 0x20000>;
+> -		};
+> -
+>  		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
+>  			compatible = "ti,sysc-omap4", "ti,sysc";
+>  			reg = <0x170010 0x4>;
+> diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
+> index cad0e4a2bd8d..9c270d8f75d5 100644
+> --- a/arch/arm/boot/dts/dra71x.dtsi
+> +++ b/arch/arm/boot/dts/dra71x.dtsi
+> @@ -11,7 +11,3 @@
+>  &rtctarget {
+>  	status = "disabled";
+>  };
+> -
+> -&usb4_tm {
+> -	status = "disabled";
+> -};
+> diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
+> index d403acc754b6..f3e934ef7d3e 100644
+> --- a/arch/arm/boot/dts/dra72x.dtsi
+> +++ b/arch/arm/boot/dts/dra72x.dtsi
+> @@ -108,7 +108,3 @@ &pcie1_ep {
+>  &pcie2_rc {
+>  	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
+>  };
+> -
+> -&usb4_tm {
+> -	status = "disabled";
+> -};
+> diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
+> index e1850d6c841a..60f2ab8d34d5 100644
+> --- a/arch/arm/boot/dts/dra74x.dtsi
+> +++ b/arch/arm/boot/dts/dra74x.dtsi
+> @@ -49,7 +49,7 @@ dsp2_system: dsp_system@41500000 {
+>  			reg = <0x41500000 0x100>;
+>  		};
+>  
+> -		target-module@48940000 {
+> +		usb4_tm: target-module@48940000 {
+>  			compatible = "ti,sysc-omap4", "ti,sysc";
+>  			reg = <0x48940000 0x4>,
+>  			      <0x48940010 0x4>;
+> 
+
