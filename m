@@ -2,145 +2,496 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD1B391BF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A742391C3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbhEZP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:27:46 -0400
-Received: from mail-dm6nam08on2053.outbound.protection.outlook.com ([40.107.102.53]:4928
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235417AbhEZP13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:27:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E2pwo3Us3lLlYaRuUMYtnKnwl3aLDq9ikdk/2eFK1KyetIrvOFRgMvhdRXFGP1+NUSVoCVl3wbjfLf1l15409cWg5sY4OXBaw1W996ngEE5DrARGGky4MyxOPXtQoYKwFiCXE/U5s2gZcXpUnSyCNJUGaFDW+gIsYBrh/K0K/PWmnHPBs6JD4fdqOY7fhvCieLsQQtxToDVSfcC6nnSox7ViQRHwYPNROCZ/DGWZUNiGdZbo06l32cgGytf8nHrqYGtZhXrXAucu0sWUYCa/wStHNiwfUZ24Gwkc7CYMI0WBUqWur49CrSCACAegKAbBMAZ8kBV3kFInirph/fNTeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GRI3+QhsYtyMFc09mYfKA7QtkJcG+OVjx64iTtv9hi0=;
- b=f5cQa3MGunKknQGtEY1t2BCga0qr/9vF57IBIZNHBKG4eAvk8dZQyrUF216w6dvL9xRwhWzaqXirnAW+ZNtNFX0oLAplrvWotU5Ex/vhHI4nRQa+fXatOqoBaY938dLWesgmUTqIvkc+zAaE8I4xuvW3SoZBDLGmyhLeFxjrlZhb3OR/Vg9X10Cepk1RvXh8uIAeA2I8oxnaBrlA3BAGa2gTDWQHlpV84QlYaAEEipDDlTBks/tnxVooyBlahYbTcnSjuHtVezzpJTQqoTPx68YvbuSwFztMTXbsOkvhPH/2oSr504MoEIFD6TESwtGwN7KpItkvq0nNzn22FC8LJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GRI3+QhsYtyMFc09mYfKA7QtkJcG+OVjx64iTtv9hi0=;
- b=sDiIP+3TLBwDOg2xRP3FF6JYiPPy6OpW1SwbnnpHAK2ZS1+CZSe7jXyJrS1JwIdULmMAqjpzV0fbRvNlUeEJefGgSrmAjTfcJrijYcFes3VxUKYiL2RoLXUS8YS7WbHYMznnypPW2KrPfy/SOEKTXAXbQOBVBXb1qxb2vVxvVQg=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by MWHPR12MB1549.namprd12.prod.outlook.com (2603:10b6:301:10::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Wed, 26 May
- 2021 15:25:55 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::acae:934f:8e7f:8db2]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::acae:934f:8e7f:8db2%7]) with mapi id 15.20.4173.021; Wed, 26 May 2021
- 15:25:55 +0000
-Subject: Re: x86/fpu/xsave: protection key test failures
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, shuah@kernel.org, jroedel@suse.de,
-        ubizjak@gmail.com, viro@zeniv.linux.org.uk, jpa@git.mail.kapsi.fi,
-        fenghua.yu@intel.com, kan.liang@linux.intel.com,
-        akpm@linux-foundation.org, rppt@kernel.org, Fan_Yang@sjtu.edu.cn,
-        anshuman.khandual@arm.com, b.thiel@posteo.de, jgross@suse.com,
-        keescook@chromium.org, seanjc@google.com, mh@glandium.org,
-        sashal@kernel.org, krisman@collabora.com, chang.seok.bae@intel.com,
-        0x7f454c46@gmail.com, jhubbard@nvidia.com, sandipan@linux.ibm.com,
-        ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        suxingxing@loongson.cn, harish@linux.ibm.com,
-        rong.a.chen@intel.com, linuxram@us.ibm.com, bauerman@linux.ibm.com,
-        dave.kleikamp@oracle.com
-References: <b2e0324a-9125-bb34-9e76-81817df27c48@amd.com>
- <7a407363-e074-aa84-3ca1-909b497122aa@intel.com>
- <a4f6b80d-8546-09dc-7435-25b3d890aace@amd.com>
- <e0dbd490-0209-9f74-36b7-c55992060b44@intel.com>
-From:   Babu Moger <babu.moger@amd.com>
-Message-ID: <ab564da6-1029-1dab-d54e-a266a623974f@amd.com>
-Date:   Wed, 26 May 2021 10:25:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <e0dbd490-0209-9f74-36b7-c55992060b44@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN4PR0501CA0061.namprd05.prod.outlook.com
- (2603:10b6:803:41::38) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+        id S234382AbhEZPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232537AbhEZPnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:43:25 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC88C061574;
+        Wed, 26 May 2021 08:41:52 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so553464pjb.2;
+        Wed, 26 May 2021 08:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p0vmPy2qph4r8t66VQg9wFM/CqhDEIysk+UQrr2yoP0=;
+        b=uAaYG7DbWxFKw1yNJmjxGvQ4QQCUgTJpUbCqnG1QuKiBEBjpC7k6HHXEz2TQvzm9QV
+         otXMZAN5H/YatmObE4mAswQc0xL/M5Qp9+CuC+VwejrTX103yoGMOKP6i3M2xZBNE35p
+         RpW/XL2ojRi7GUBNl0adeYqVlviQVA8KJ9K3fWxfBz8Z2xet7cIJF4ezuBqhg1DVY8xB
+         M/xjWeDFVBPGJNqkVay9DyIoxWfiwXTWbbrru1q5q7hkBZBmPQViWX23zGl3dc963KTZ
+         cHRdSE3IvCxfx7j3FjSFf9KMPWO0mGpQ0gMRveexoa4Mf//C32X6oerRvxE5fbfqDzGW
+         gTeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p0vmPy2qph4r8t66VQg9wFM/CqhDEIysk+UQrr2yoP0=;
+        b=PW+ZNKqVtX6/htsm2tBUjdoAgGYvKvJYT1oFz/ec7UTfXutsPQ4SELfIdOluQja37I
+         sLeBJxn6O6/AxI1idqmEbipiHKUAGETH4OXn16P3RK18psi2vR1l2IP4q1U62GIW4ylb
+         RU6BI7aRaU/d1vTCOs3cRzj415MiAhM2KQ/D4TuneHZQXVju9gHRQX2PxpiCEZl0fxiS
+         gKAdORqAjqcHYBp+R1jGvgi2otQCdC6PzgC1Wj4cenG/UJsvse/a6uEUPB1c6hxqf/DT
+         xG+XyDHqFbUB9BjEYwwACYGHlnOaGrT/wtdXTNaokp1OqPzZylRNEbf8EBDaAxTOU0ky
+         4BSw==
+X-Gm-Message-State: AOAM533TbyW1dp/j2aQwZ7FdGH+4qbdNKy4+RTtam4NlJ7WRq3M+hBZF
+        n0J2nj8HJQnaPPd95ne+cxg=
+X-Google-Smtp-Source: ABdhPJyGns4aFOo///DPAPO+iC4u7VBNm6X29jtSC28I5LnEpL1so4x7EiAyWeQ0zKDwsejp9UW8DA==
+X-Received: by 2002:a17:90a:e501:: with SMTP id t1mr4608935pjy.32.1622043712134;
+        Wed, 26 May 2021 08:41:52 -0700 (PDT)
+Received: from localhost.localdomain ([106.77.10.3])
+        by smtp.gmail.com with ESMTPSA id v9sm3786367pje.41.2021.05.26.08.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 08:41:51 -0700 (PDT)
+From:   Piyush Thange <pthange19@gmail.com>
+To:     mchehab@kernel.org, hverkuil@xs4all.nl, leon@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Piyush Thange <pthange19@gmail.com>
+Subject: [PATCH] media: usb: cpia2: Fixed Coding Style issues
+Date:   Wed, 26 May 2021 20:56:19 +0530
+Message-Id: <20210526152619.39069-1-pthange19@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.136] (165.204.77.1) by SN4PR0501CA0061.namprd05.prod.outlook.com (2603:10b6:803:41::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend Transport; Wed, 26 May 2021 15:25:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ef8e688-080e-4913-28e2-08d9205a8d9e
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1549:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1549DDCCA4F27382A57B735495249@MWHPR12MB1549.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tQ3HGYRK7SBmusw1ExnO9DznYvT3NeH1jvPeMPPjUIpUnT0C4Qy64OqFnzc0+VFxAXXVF6AZB0OuB5nbnH4gh+LqXVIhfoGXagzHxIHXURhh+p8UwibKLYYGCwWZYxSUjT+yYUwUOYbA9EQbFEWHjoA3IeAmjWjkzujAr292xNJv9daaSht2n5FCTKEQOey/c+dRjmzu/hEzHeoz5uZ4YZHiXosk2pdhFXBOTU4+27dVnQlGPJXCJepzYDNWzaOdv1HPSOhtNgPVxTGPaPLzsc/rUj3hoOSni2EQwXXaNZDdwhimf3MUUwOGnAXrMFBYRUfGZ8mPvPn43OHY7USgx+G05B7p7vnFC5NLvRye54P5uOA0LWIa1EOsut65t5w2TMOnU1nQlHSq7jsW/apOQHSy1JUmZNSkThM0xrqPtz6K3Fn6nMmwF+XiBPUNS7eceTQiK1+jbajVBj2F5tct4q4LJtxdekE2VPR76eYU9wTr4MuxkDDeLofavclbtv8KXxOzqlTccTtBOC4SvnyxK2ep5Ky7yUbj+KVV5RCQW3iPTkME6D/TsNvPJK90edOn9veNlrqobEbGWyeSwF1Z0mJBFvI3KYMXsL0HqnSyei3Hf9QLMBG5vPcr444hHGPy3E1PeDyMULoE8mqGJf/2C9EM52vhERGhrK8NNVllVsSNH4O2+9OO4l1XxCtRoFpYfIF7hd61mkJ992M8/1tAmATxGb4x5wHzvUINzizAkcP7Hy9oMwfYeGdIduymEJX1w63Wdle5MxSFgc3TTUgBYux1QiJqIDyRUxbzFDh19BzhjWbAUZxbFuFpr1nooG+JtFFSFHNuvo8+YFrX8BXUFtzUhwu/ZcEulA+lq+np19M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(376002)(366004)(966005)(38100700002)(5660300002)(478600001)(2906002)(38350700002)(186003)(7416002)(7406005)(36756003)(4744005)(16526019)(52116002)(26005)(44832011)(66556008)(2616005)(66946007)(66476007)(53546011)(16576012)(316002)(956004)(6486002)(86362001)(8936002)(8676002)(31686004)(31696002)(4326008)(10126625002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?GYkqnJ9ipCKGqlBLS4JOJnsykbWCmm1DUgwflTCziyNLtnuEIWxpwcja?=
- =?Windows-1252?Q?Ewneezm2HV4WA2jvV9HmelcmV/Jvs0aeOi/xQDhDkCW09KztHwQ6wa/o?=
- =?Windows-1252?Q?OeCj27mpgL2yqaN1lFoT9zPGh9qoMaMr3hsTD8LmKJUyGTXNlf9lyzeT?=
- =?Windows-1252?Q?Qaf3pdKwuqcfiA7vwGtuWGNEyiqF5pQ5P+1YlckgXemcYgTT0wWSNxG/?=
- =?Windows-1252?Q?JqQ2Y2BF4ffYGn2v978X3Fvn6yGRBX93OYKyRWVefcME9qb3EiMGHbr4?=
- =?Windows-1252?Q?IAzIbCXIZvjGAhBw5/BVeS3S9JHV7GGyQ04MvWkXDlNCsz7w0XUtXGQY?=
- =?Windows-1252?Q?4mYGobzg4MByTjCJae6omqd0UcWFm3h/l++3EapzSfSL8t5LL/pnO00K?=
- =?Windows-1252?Q?tHQRGS7t0TGIVF3jQ7ZADD29HkIuqvmJjQ7rm3nYDTI028ozl2Q7/FkM?=
- =?Windows-1252?Q?mbrt7OSKaPDfI5/Q1BX4D7ao6fgUTG+M83eaztXw4EMJwke/jd4QZeU9?=
- =?Windows-1252?Q?mZD13+BP93HqGfpw2w28fJX/Mk5QOtyFEDD8H0C/niTktE6zTgFzPmVP?=
- =?Windows-1252?Q?JsJYBU+AtkMdb50fpXCHyxAUydJ+q+vxNDx/PQwdB/Sm/MpA+cW+6cgZ?=
- =?Windows-1252?Q?aOl/fqkMFlQGJrea+aTSeKQ7ewb94yFeTbFQ/lQ2QiFP9g6G3PJmSlWn?=
- =?Windows-1252?Q?Yw2zbvfbaYI0sOBrN38elpvEc4fqV20RXastvyuQPtxx3AE5dndIAR0t?=
- =?Windows-1252?Q?wsUm5YlWDhFjFO+HzTWJP6ItDYHNWW1jF7Q01q6GCDKKcimhF5G1HlNd?=
- =?Windows-1252?Q?S+mzr58TV1GoO4kP1Np24OwhkeuCXrj02bq0l1USkOHuOU+GPCXBz9vm?=
- =?Windows-1252?Q?AP0L6qN72aPBsBjyYNX9yGbk372B+1PSlqUsgf34VSdHiDoGhRVM7R9Y?=
- =?Windows-1252?Q?F6UJTMDXeigshxzJh8uLg2QpUSr8wAu6/LeiAWxlh1ZXbJ0dNWJ/SKkS?=
- =?Windows-1252?Q?33YJsTHE+l2SuncUOPLlg0FxtuZQMeNRNTiuKJY2Z+uWIowm2xfuw9AA?=
- =?Windows-1252?Q?h/YW6di3+bGfCCTlG1Mf8v+TG4vzdZvIk81xO1m3GBXPZWOZfVbknFRl?=
- =?Windows-1252?Q?7Kio5y5FgJUktthx20DwVOh8vX3VYVSO/hN+ZFyWRMQUnnjlGAA4z8qK?=
- =?Windows-1252?Q?w/XDbiRcBxdb8srCngPgWUd/cjdnIwf+tqzHf8SKprBeZ1etSv3BbDOX?=
- =?Windows-1252?Q?xH08VxTtVKQ94EJuUa4GmNf7lvXZGE54qkZnLp3kHLua8+ubcWhj2B7e?=
- =?Windows-1252?Q?lgJiYNFT0nSwaNBhMl2HZVxDICMtl92ZYXtMrHjqWv0mChjKSPtGJAu+?=
- =?Windows-1252?Q?LDSlrTnclTzSHlDTBJq8XBGrtIDPYqvHsXzoujF82M01SFn+g3QD1pw4?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef8e688-080e-4913-28e2-08d9205a8d9e
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 15:25:54.9502
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BpByRGWvfeubza0VCogBZgKezyI5lyHnlB+b2kw/Ag3C1QVkdw2yzQGAuCKcstum
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1549
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixed all the Coding style issues generated by checkpatch.pl.
+The changes made considering the --strict option.
 
+Signed-off-by: Piyush Thange <pthange19@gmail.com>
+---
+ drivers/media/usb/cpia2/cpia2_v4l.c | 149 ++++++++++++++--------------
+ 1 file changed, 74 insertions(+), 75 deletions(-)
 
-On 5/25/21 7:20 PM, Dave Hansen wrote:
-> On 5/25/21 5:03 PM, Babu Moger wrote:
->>> What values do PKRU and the shadow have when the test fails?  Is PKRU 0?
->> It goes back to default value 0x55555554. The test is expecting it to be
->> 0. Printed them below.
->>
->> test_ptrace_of_child()::1346, pkey_reg: 0x0000000055555554 shadow:
->> 0000000000000000
->> protection_keys_64: pkey-helpers.h:127: _read_pkey_reg: Assertion
->> `pkey_reg == shadow_pkey_reg' failed.
-> 
-> That's backwards (shadow vs pkru) from what I was expecting.
-> 
-> Can you turn on all the debuging?
-> 
-> Just compile with -DDEBUG_LEVEL=5
-> 
+diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
+index 69d5c628a797..926ecfc9b64a 100644
+--- a/drivers/media/usb/cpia2/cpia2_v4l.c
++++ b/drivers/media/usb/cpia2/cpia2_v4l.c
+@@ -140,10 +140,10 @@ static ssize_t cpia2_v4l_read(struct file *file, char __user *buf, size_t count,
+ 			      loff_t *off)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+-	int noblock = file->f_flags&O_NONBLOCK;
++	int noblock = file->f_flags & O_NONBLOCK;
+ 	ssize_t ret;
+ 
+-	if(!cam)
++	if (!cam)
+ 		return -EINVAL;
+ 
+ 	if (mutex_lock_interruptible(&cam->v4l2_lock))
+@@ -153,7 +153,6 @@ static ssize_t cpia2_v4l_read(struct file *file, char __user *buf, size_t count,
+ 	return ret;
+ }
+ 
+-
+ /******************************************************************************
+  *
+  *  cpia2_v4l_poll
+@@ -170,7 +169,6 @@ static __poll_t cpia2_v4l_poll(struct file *filp, struct poll_table_struct *wait
+ 	return res;
+ }
+ 
+-
+ static int sync(struct camera_data *cam, int frame_nr)
+ {
+ 	struct framebuf *frame = &cam->buffers[frame_nr];
+@@ -247,8 +245,8 @@ static int cpia2_querycap(struct file *file, void *fh, struct v4l2_capability *v
+ 		break;
+ 	}
+ 
+-	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) <0)
+-		memset(vc->bus_info,0, sizeof(vc->bus_info));
++	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) < 0)
++		memset(vc->bus_info, 0, sizeof(vc->bus_info));
+ 	return 0;
+ }
+ 
+@@ -289,7 +287,7 @@ static int cpia2_s_input(struct file *file, void *fh, unsigned int i)
+  *****************************************************************************/
+ 
+ static int cpia2_enum_fmt_vid_cap(struct file *file, void *fh,
+-					    struct v4l2_fmtdesc *f)
++				  struct v4l2_fmtdesc *f)
+ {
+ 	if (f->index > 1)
+ 		return -EINVAL;
+@@ -310,13 +308,13 @@ static int cpia2_enum_fmt_vid_cap(struct file *file, void *fh,
+  *****************************************************************************/
+ 
+ static int cpia2_try_fmt_vid_cap(struct file *file, void *fh,
+-					  struct v4l2_format *f)
++				 struct v4l2_format *f)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+ 	if (f->fmt.pix.pixelformat != V4L2_PIX_FMT_MJPEG &&
+ 	    f->fmt.pix.pixelformat != V4L2_PIX_FMT_JPEG)
+-	       return -EINVAL;
++		return -EINVAL;
+ 
+ 	f->fmt.pix.field = V4L2_FIELD_NONE;
+ 	f->fmt.pix.bytesperline = 0;
+@@ -371,19 +369,20 @@ static int cpia2_try_fmt_vid_cap(struct file *file, void *fh,
+  *****************************************************************************/
+ 
+ static int cpia2_s_fmt_vid_cap(struct file *file, void *_fh,
+-					struct v4l2_format *f)
++			       struct v4l2_format *f)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 	int err, frame;
+ 
+ 	err = cpia2_try_fmt_vid_cap(file, _fh, f);
+-	if(err != 0)
++	if (err != 0)
+ 		return err;
+ 
+ 	cam->pixelformat = f->fmt.pix.pixelformat;
+ 
+ 	/* NOTE: This should be set to 1 for MJPEG, but some apps don't handle
+-	 * the missing Huffman table properly. */
++	 * the missing Huffman table properly.
++	 */
+ 	cam->params.compression.inhibit_htables = 0;
+ 		/*f->fmt.pix.pixelformat == V4L2_PIX_FMT_MJPEG;*/
+ 
+@@ -421,7 +420,7 @@ static int cpia2_s_fmt_vid_cap(struct file *file, void *_fh,
+  *****************************************************************************/
+ 
+ static int cpia2_g_fmt_vid_cap(struct file *file, void *fh,
+-					struct v4l2_format *f)
++			       struct v4l2_format *f)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+@@ -547,9 +546,8 @@ static const struct {
+ };
+ 
+ static int cpia2_enum_framesizes(struct file *file, void *fh,
+-					 struct v4l2_frmsizeenum *fsize)
++				 struct v4l2_frmsizeenum *fsize)
+ {
+-
+ 	if (fsize->pixel_format != V4L2_PIX_FMT_MJPEG &&
+ 	    fsize->pixel_format != V4L2_PIX_FMT_JPEG)
+ 		return -EINVAL;
+@@ -563,7 +561,7 @@ static int cpia2_enum_framesizes(struct file *file, void *fh,
+ }
+ 
+ static int cpia2_enum_frameintervals(struct file *file, void *fh,
+-					   struct v4l2_frmivalenum *fival)
++				     struct v4l2_frmivalenum *fival)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 	int max = ARRAY_SIZE(framerate_controls) - 1;
+@@ -665,19 +663,18 @@ static int cpia2_g_jpegcomp(struct file *file, void *fh, struct v4l2_jpegcompres
+ 	parms->quality = 80; // TODO: Can this be made meaningful?
+ 
+ 	parms->jpeg_markers = V4L2_JPEG_MARKER_DQT | V4L2_JPEG_MARKER_DRI;
+-	if(!cam->params.compression.inhibit_htables) {
++	if (!cam->params.compression.inhibit_htables)
+ 		parms->jpeg_markers |= V4L2_JPEG_MARKER_DHT;
+-	}
+ 
+ 	parms->APPn = cam->APPn;
+ 	parms->APP_len = cam->APP_len;
+-	if(cam->APP_len > 0) {
++	if (cam->APP_len > 0) {
+ 		memcpy(parms->APP_data, cam->APP_data, cam->APP_len);
+ 		parms->jpeg_markers |= V4L2_JPEG_MARKER_APP;
+ 	}
+ 
+ 	parms->COM_len = cam->COM_len;
+-	if(cam->COM_len > 0) {
++	if (cam->COM_len > 0) {
+ 		memcpy(parms->COM_data, cam->COM_data, cam->COM_len);
+ 		parms->jpeg_markers |= JPEG_MARKER_COM;
+ 	}
+@@ -698,7 +695,7 @@ static int cpia2_g_jpegcomp(struct file *file, void *fh, struct v4l2_jpegcompres
+  *****************************************************************************/
+ 
+ static int cpia2_s_jpegcomp(struct file *file, void *fh,
+-		const struct v4l2_jpegcompression *parms)
++			    const struct v4l2_jpegcompression *parms)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+@@ -708,9 +705,9 @@ static int cpia2_s_jpegcomp(struct file *file, void *fh,
+ 	cam->params.compression.inhibit_htables =
+ 		!(parms->jpeg_markers & V4L2_JPEG_MARKER_DHT);
+ 
+-	if(parms->APP_len != 0) {
+-		if(parms->APP_len > 0 &&
+-		   parms->APP_len <= sizeof(cam->APP_data) &&
++	if (parms->APP_len != 0) {
++		if (parms->APP_len > 0 &&
++		    parms->APP_len <= sizeof(cam->APP_data) &&
+ 		   parms->APPn >= 0 && parms->APPn <= 15) {
+ 			cam->APPn = parms->APPn;
+ 			cam->APP_len = parms->APP_len;
+@@ -724,9 +721,9 @@ static int cpia2_s_jpegcomp(struct file *file, void *fh,
+ 		cam->APP_len = 0;
+ 	}
+ 
+-	if(parms->COM_len != 0) {
+-		if(parms->COM_len > 0 &&
+-		   parms->COM_len <= sizeof(cam->COM_data)) {
++	if (parms->COM_len != 0) {
++		if (parms->COM_len > 0 &&
++		    parms->COM_len <= sizeof(cam->COM_data)) {
+ 			cam->COM_len = parms->COM_len;
+ 			memcpy(cam->COM_data, parms->COM_data, parms->COM_len);
+ 		} else {
+@@ -751,8 +748,8 @@ static int cpia2_reqbufs(struct file *file, void *fh, struct v4l2_requestbuffers
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+-	if(req->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+-	   req->memory != V4L2_MEMORY_MMAP)
++	if (req->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	    req->memory != V4L2_MEMORY_MMAP)
+ 		return -EINVAL;
+ 
+ 	DBG("REQBUFS requested:%d returning:%d\n", req->count, cam->num_frames);
+@@ -774,8 +771,8 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+-	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+-	   buf->index >= cam->num_frames)
++	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	    buf->index >= cam->num_frames)
+ 		return -EINVAL;
+ 
+ 	buf->m.offset = cam->buffers[buf->index].data - cam->frame_buffer;
+@@ -783,7 +780,7 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 
+ 	buf->memory = V4L2_MEMORY_MMAP;
+ 
+-	if(cam->mmapped)
++	if (cam->mmapped)
+ 		buf->flags = V4L2_BUF_FLAG_MAPPED;
+ 	else
+ 		buf->flags = 0;
+@@ -806,8 +803,8 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 	}
+ 
+ 	DBG("QUERYBUF index:%d offset:%d flags:%d seq:%d bytesused:%d\n",
+-	     buf->index, buf->m.offset, buf->flags, buf->sequence,
+-	     buf->bytesused);
++	    buf->index, buf->m.offset, buf->flags, buf->sequence,
++	    buf->bytesused);
+ 
+ 	return 0;
+ }
+@@ -824,14 +821,14 @@ static int cpia2_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ {
+ 	struct camera_data *cam = video_drvdata(file);
+ 
+-	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+-	   buf->memory != V4L2_MEMORY_MMAP ||
++	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	    buf->memory != V4L2_MEMORY_MMAP ||
+ 	   buf->index >= cam->num_frames)
+ 		return -EINVAL;
+ 
+ 	DBG("QBUF #%d\n", buf->index);
+ 
+-	if(cam->buffers[buf->index].status == FRAME_READY)
++	if (cam->buffers[buf->index].status == FRAME_READY)
+ 		cam->buffers[buf->index].status = FRAME_EMPTY;
+ 
+ 	return 0;
+@@ -849,9 +846,10 @@ static int find_earliest_filled_buffer(struct camera_data *cam)
+ {
+ 	int i;
+ 	int found = -1;
+-	for (i=0; i<cam->num_frames; i++) {
+-		if(cam->buffers[i].status == FRAME_READY) {
+-			if(found < 0) {
++
++	for (i = 0; i < cam->num_frames; i++) {
++		if (cam->buffers[i].status == FRAME_READY) {
++			if (found < 0) {
+ 				found = i;
+ 			} else {
+ 				/* find which buffer is earlier */
+@@ -876,22 +874,23 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 	struct camera_data *cam = video_drvdata(file);
+ 	int frame;
+ 
+-	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+-	   buf->memory != V4L2_MEMORY_MMAP)
++	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
++	    buf->memory != V4L2_MEMORY_MMAP)
+ 		return -EINVAL;
+ 
+ 	frame = find_earliest_filled_buffer(cam);
+ 
+-	if(frame < 0 && file->f_flags&O_NONBLOCK)
++	if (frame < 0 && file->f_flags & O_NONBLOCK)
+ 		return -EAGAIN;
+ 
+-	if(frame < 0) {
++	if (frame < 0) {
+ 		/* Wait for a frame to become available */
+-		struct framebuf *cb=cam->curbuff;
++		struct framebuf *cb = cam->curbuff;
++
+ 		mutex_unlock(&cam->v4l2_lock);
+ 		wait_event_interruptible(cam->wq_stream,
+ 					 !video_is_registered(&cam->vdev) ||
+-					 (cb=cam->curbuff)->status == FRAME_READY);
++					 (cb = cam->curbuff)->status == FRAME_READY);
+ 		mutex_lock(&cam->v4l2_lock);
+ 		if (signal_pending(current))
+ 			return -ERESTARTSYS;
+@@ -900,7 +899,6 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
+ 		frame = cb->num;
+ 	}
+ 
+-
+ 	buf->index = frame;
+ 	buf->bytesused = cam->buffers[buf->index].length;
+ 	buf->flags = V4L2_BUF_FLAG_MAPPED | V4L2_BUF_FLAG_DONE
+@@ -931,7 +929,7 @@ static int cpia2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+ 
+ 	if (!cam->streaming) {
+ 		ret = cpia2_usb_stream_start(cam,
+-				cam->params.camera_state.stream_mode);
++					     cam->params.camera_state.stream_mode);
+ 		if (!ret)
+ 			v4l2_ctrl_grab(cam->usb_alt, true);
+ 	}
+@@ -969,7 +967,7 @@ static int cpia2_mmap(struct file *file, struct vm_area_struct *area)
+ 		return -ERESTARTSYS;
+ 	retval = cpia2_remap_buffer(cam, area);
+ 
+-	if(!retval)
++	if (!retval)
+ 		cam->stream_fh = file->private_data;
+ 	mutex_unlock(&cam->v4l2_lock);
+ 	return retval;
+@@ -1080,39 +1078,42 @@ int cpia2_register_camera(struct camera_data *cam)
+ 
+ 	v4l2_ctrl_handler_init(hdl, 12);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_BRIGHTNESS,
+-			cam->params.pnp_id.device_type == DEVICE_STV_672 ? 1 : 0,
+-			255, 1, DEFAULT_BRIGHTNESS);
++			  V4L2_CID_BRIGHTNESS,
++			  cam->params.pnp_id.device_type == DEVICE_STV_672 ? 1 : 0,
++			  255, 1, DEFAULT_BRIGHTNESS);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_CONTRAST, 0, 255, 1, DEFAULT_CONTRAST);
++			  V4L2_CID_CONTRAST, 0, 255, 1, DEFAULT_CONTRAST);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_SATURATION, 0, 255, 1, DEFAULT_SATURATION);
++			  V4L2_CID_SATURATION, 0, 255, 1, DEFAULT_SATURATION);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_HFLIP, 0, 1, 1, 0);
++			  V4L2_CID_HFLIP, 0, 1, 1, 0);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_JPEG_ACTIVE_MARKER, 0,
+-			V4L2_JPEG_ACTIVE_MARKER_DHT, 0,
+-			V4L2_JPEG_ACTIVE_MARKER_DHT);
++			  V4L2_CID_JPEG_ACTIVE_MARKER, 0,
++			  V4L2_JPEG_ACTIVE_MARKER_DHT, 0,
++			  V4L2_JPEG_ACTIVE_MARKER_DHT);
+ 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_JPEG_COMPRESSION_QUALITY, 1,
+-			100, 1, 100);
++			  V4L2_CID_JPEG_COMPRESSION_QUALITY, 1,
++			  100, 1, 100);
+ 	cpia2_usb_alt.def = alternate;
+ 	cam->usb_alt = v4l2_ctrl_new_custom(hdl, &cpia2_usb_alt, NULL);
+ 	/* VP5 Only */
+ 	if (cam->params.pnp_id.device_type != DEVICE_STV_672)
+ 		v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_VFLIP, 0, 1, 1, 0);
++				  V4L2_CID_VFLIP, 0, 1, 1, 0);
+ 	/* Flicker control only valid for 672 */
+ 	if (cam->params.pnp_id.device_type == DEVICE_STV_672)
+ 		v4l2_ctrl_new_std_menu(hdl, &cpia2_ctrl_ops,
+-			V4L2_CID_POWER_LINE_FREQUENCY,
+-			V4L2_CID_POWER_LINE_FREQUENCY_60HZ, 0, 0);
++				       V4L2_CID_POWER_LINE_FREQUENCY,
++				       V4L2_CID_POWER_LINE_FREQUENCY_60HZ,
++				       0, 0);
+ 	/* Light control only valid for the QX5 Microscope */
+ 	if (cam->params.pnp_id.product == 0x151) {
+ 		cam->top_light = v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-				V4L2_CID_ILLUMINATORS_1, 0, 1, 1, 0);
++						   V4L2_CID_ILLUMINATORS_1,
++						   0, 1, 1, 0);
+ 		cam->bottom_light = v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
+-				V4L2_CID_ILLUMINATORS_2, 0, 1, 1, 0);
++						      V4L2_CID_ILLUMINATORS_2,
++						      0, 1, 1, 0);
+ 		v4l2_ctrl_cluster(2, &cam->top_light);
+ 	}
+ 
+@@ -1159,28 +1160,28 @@ void cpia2_unregister_camera(struct camera_data *cam)
+  *****************************************************************************/
+ static void __init check_parameters(void)
+ {
+-	if(buffer_size < PAGE_SIZE) {
++	if (buffer_size < PAGE_SIZE) {
+ 		buffer_size = PAGE_SIZE;
+ 		LOG("buffer_size too small, setting to %d\n", buffer_size);
+-	} else if(buffer_size > 1024*1024) {
++	} else if (buffer_size > 1024 * 1024) {
+ 		/* arbitrary upper limiit */
+-		buffer_size = 1024*1024;
++		buffer_size = 1024 * 1024;
+ 		LOG("buffer_size ridiculously large, setting to %d\n",
+ 		    buffer_size);
+ 	} else {
+-		buffer_size += PAGE_SIZE-1;
+-		buffer_size &= ~(PAGE_SIZE-1);
++		buffer_size += PAGE_SIZE - 1;
++		buffer_size &= ~(PAGE_SIZE - 1);
+ 	}
+ 
+-	if(num_buffers < 1) {
++	if (num_buffers < 1) {
+ 		num_buffers = 1;
+ 		LOG("num_buffers too small, setting to %d\n", num_buffers);
+-	} else if(num_buffers > VIDEO_MAX_FRAME) {
++	} else if (num_buffers > VIDEO_MAX_FRAME) {
+ 		num_buffers = VIDEO_MAX_FRAME;
+ 		LOG("num_buffers too large, setting to %d\n", num_buffers);
+ 	}
+ 
+-	if(alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
++	if (alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
+ 		alternate = DEFAULT_ALT;
+ 		LOG("alternate specified is invalid, using %d\n", alternate);
+ 	}
+@@ -1197,7 +1198,6 @@ static void __init check_parameters(void)
+ 
+ /************   Module Stuff ***************/
+ 
+-
+ /******************************************************************************
+  *
+  * cpia2_init/module_init
+@@ -1211,7 +1211,6 @@ static int __init cpia2_init(void)
+ 	return cpia2_usb_init();
+ }
+ 
+-
+ /******************************************************************************
+  *
+  * cpia2_exit/module_exit
+-- 
+2.25.1
 
-
-Copied the logs at https://pastebin.com/gtQiHg8Q
