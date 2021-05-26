@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F49391A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F63B391A8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhEZOpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:45:24 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36382 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234737AbhEZOpW (ORCPT
+        id S235013AbhEZOqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:46:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234737AbhEZOqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:45:22 -0400
-Received: by mail-oi1-f179.google.com with SMTP id t24so1726876oiw.3;
-        Wed, 26 May 2021 07:43:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bwx+7lo4SfRWj6YJZuZRRCA4lszy3g5/1sk2W/GIqG8=;
-        b=Ecc9Gj7R5DnY5s+2tOjzyHz+UqdCkYy2AcIkQwnOyCkPMtcjdxVXdN7EZiYGnYSYgr
-         QbvIiRldX+PTuUSNU00a1XFYk+/tq7gu20uZJ+RrwW5crY6/2D4L0Ky4iLQ7Y+9pupKo
-         dQ4b9KB/SapZa3pghlSZANGWtlU3upUmffDhXAlxXct2Yr7wP4Jvj8+KmP3bUt+Ji7h+
-         QDcifHOqlPEt4G8HBomBC1cYbP+oUCQY3khSzr4KDgonpikmbZ+0J4dY6YY8O5Tlsmsp
-         BidcyIMwiCE7DCHNXTUf/hAiG4nJS3NPSFHMp1dAjmdFkS1Tivfw/NF5WSj1evrclQXk
-         6PkQ==
-X-Gm-Message-State: AOAM5311Sl9qTi+X9rv+DsoOBjL9f+n6FljMTGkcB45O4znW8BI90hxh
-        A1SvmexOuLDn5huA/hlfLhEbZTvd8yrEkj5pDjF/1UdQ/68=
-X-Google-Smtp-Source: ABdhPJw/XEgY8ojhUczCLVWlMHRKDt1AP9EPzVWiqzR/icVxLT9qbv6/l4ERqIRVlZZwLbfY0O66rTlT0i4Y5niduus=
-X-Received: by 2002:aca:1910:: with SMTP id l16mr2085180oii.69.1622040231145;
- Wed, 26 May 2021 07:43:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210526141252.3750231-1-colin.king@canonical.com>
-In-Reply-To: <20210526141252.3750231-1-colin.king@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 May 2021 16:43:40 +0200
-Message-ID: <CAJZ5v0hfi9mZb-9Zb5FGUn1mC9L8hAacpmDDzbDtB+prZczt4A@mail.gmail.com>
-Subject: Re: [PATCH][next] acpi: power: remove redundant initialization of
- variable result
-To:     Colin King <colin.king@canonical.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Wed, 26 May 2021 10:46:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622040269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y4JlXUoqOIqKnobUh41tn3vEh7dafg2XJZ7ppKxkYSI=;
+        b=BkssxGINa2mqUBE5vFu/l4oD1Ng0j2RpUAYmeTjsJnow5Ksblw/nUUycTDN1d4ny1ijnBe
+        8/LOoHEh2uWtimoy1lxQ33rwC9XRxe7/o0LG5SiL+x0580d6yS2p26LWFYNswLAuW+42eW
+        6gqxRzyVAAu6Uqw5kqwdRhI4LDJkmQc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-H7Jsr9rvMuuIzGU6AgnbEQ-1; Wed, 26 May 2021 10:44:28 -0400
+X-MC-Unique: H7Jsr9rvMuuIzGU6AgnbEQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E60510CE781;
+        Wed, 26 May 2021 14:44:27 +0000 (UTC)
+Received: from starship (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0227B5C238;
+        Wed, 26 May 2021 14:44:24 +0000 (UTC)
+Message-ID: <c67f25392377819e4bb38595e58f5aa6f2e12206.camel@redhat.com>
+Subject: Re: [PATCH v2 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when
+ eVMCS data is copied in vmx_get_nested_state()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Date:   Wed, 26 May 2021 17:44:23 +0300
+In-Reply-To: <d049467a-e2a9-d888-4217-9261eec4a40b@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+         <20210517135054.1914802-4-vkuznets@redhat.com>
+         <48f7950dd6504a9ecc7a5209db264587958cafdf.camel@redhat.com>
+         <87zgwk5lqy.fsf@vitty.brq.redhat.com>
+         <d049467a-e2a9-d888-4217-9261eec4a40b@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 4:12 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable result is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and
-> can be removed.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/acpi/power.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
-> index 97c9a94a1a30..d86865c04f64 100644
-> --- a/drivers/acpi/power.c
-> +++ b/drivers/acpi/power.c
-> @@ -919,7 +919,7 @@ struct acpi_device *acpi_add_power_resource(acpi_handle handle)
->         union acpi_object acpi_object;
->         struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
->         acpi_status status;
-> -       int state, result = -ENODEV;
-> +       int state, result;
->
->         acpi_bus_get_device(handle, &device);
->         if (device)
-> --
+On Mon, 2021-05-24 at 15:58 +0200, Paolo Bonzini wrote:
+> On 24/05/21 15:01, Vitaly Kuznetsov wrote:
+> > With 'need_vmcs12_to_shadow_sync', we treat eVMCS as shadow VMCS which
+> > happens to shadow all fields and while it may not be the most optimal
+> > solution, it is at least easy to comprehend. We can try drafting
+> > something up instead, maybe it will also be good but honestly I'm afraid
+> > of incompatible changes in KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE, we
+> > can ask Paolo's opinion on that.
+> 
+> Yes, it's much easier to understand it if the eVMCS is essentially a 
+> memory-backed shadow VMCS, than if it's really the vmcs12 format.  I 
+> understand that it's bound to be a little slower, but at least the two 
+> formats are not all over the place.
+> 
+> Paolo
+> 
 
-Equivalent change is made in
+Hi!
 
-https://patchwork.kernel.org/project/linux-acpi/patch/2786380.e9J7NaK4W3@kreacher/
+Please see my other reply to this in patch 1.
+ 
+I understand this concern, but what bugs me is that we sort of 
+shouldn't read evmcs while L1 is running.
+(e.g its clean bits might be not up to date and
+such).
+ 
+Actually instead of thinking of evmcs as a shadow, I am thinking of it
+more as a vmcb12 (the SVM one), 
+which we load when we do a nested entry and which is then
+updated when we do a nested vmexit, and other than that, while
+L1 is running, we don't touch it.
+ 
+Yes there is that vm instruction error field in evmcs which I suppose we should
+write when we fail a VMX instruction (invept only practically I think) 
+while we just run L1, and even that we might just avoid doing, 
+which will allow us to avoid even keeping
+the evmcs mapped while L1 is running.
 
-Thanks!
+Just my 0.2 cents.
+
+Best regards,
+	Maxim Levitsky
+
