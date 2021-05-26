@@ -2,242 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8646390D64
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A55390D65
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhEZAij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbhEZAii (ORCPT
+        id S232533AbhEZAkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:40:00 -0400
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:36704 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhEZAj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:38:38 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708F2C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:37:06 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id u11so32045091oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wn/Pvg1jUHgqwYqfhGxkAgvTuwBtizQ4fD+JZC+WLcQ=;
-        b=ad8sxQX+fhkVtFsqXifgS7wW9djZRnxnYcB5pwFK8Wr1NCoo8axD/qVjsFQX5n4mms
-         /0oYDFL060Lskgm6HtKJ4c5+6CWnykEH8Ntwbh+vf60hbSStmOpGCKYk/l1C/bvkfZJZ
-         t7VH56Ftr36FTltaufY8p1xrqUr651yy4IsQ5V5UvmEQN6ee2DAzyKkW0soLG1G/ETIO
-         LU9WscE/PYi3Ia/O2zFQugEr7Yg9oM87LoGRKAgeR97NgnIVo+DUoVGNLKTD/SlLkL6K
-         sSzoEPAf0H/Of9PUrTWkkGAwDEZRyma82MnS4XkteiaWIcY1jxHCvimig8ybkZmoLV0c
-         KsHw==
+        Tue, 25 May 2021 20:39:59 -0400
+Received: by mail-ej1-f51.google.com with SMTP id c20so50154874ejm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:38:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wn/Pvg1jUHgqwYqfhGxkAgvTuwBtizQ4fD+JZC+WLcQ=;
-        b=TtXOb99OkIJOoI+Xs4lc9KyzqoLrk3VvHkfo8V/ccZmN/Xnk2lDWck9Tnucep4P/5c
-         drEj3q4x9BYatcafkxloIz7liThIff0iQGtCzz85ovfgb3Sor34gZasrpygutMiMQa3E
-         /TUN5eAN+2iPiwg9uP+mWfRoF0hCCMkIPtA8QzjoQI+4wOTzYt2yxrLvoYuFp78cnIgU
-         DayZb3DsbG0Ua1N9AVrdm43VA3bCxFXuHMKvgIy9T1DAX5eayQTfcnxQzhl1NjGKChrK
-         hcdopql/c6rTrmKcHJjcxNGgklK7RoixrNBXmmV+sn7z9P6rZjuI/w+tpnB2R0eMaX6C
-         S3yA==
-X-Gm-Message-State: AOAM530sBMZq7zcrCDhwQo9VoP5rPGzMbmLiD/clL4aHUjYNO+HPKHCE
-        OtUZN0iKNcBmoL6tSNLFvNuz6Q==
-X-Google-Smtp-Source: ABdhPJz0LoeEm8SD90TGZq02/iMua/DOH9VrdqQD6veWdAh6gumts5aGeSDFrZMvC81FCT8wX3lp4A==
-X-Received: by 2002:aca:498a:: with SMTP id w132mr212372oia.122.1621989425698;
-        Tue, 25 May 2021 17:37:05 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o18sm4089205otp.61.2021.05.25.17.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 17:37:05 -0700 (PDT)
-Date:   Tue, 25 May 2021 19:37:03 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org
-Subject: Re: [PATCH] remoteproc: core: Invoke subdev callbacks in list order
-Message-ID: <YK2YL7im+1RH4MmY@yoga>
-References: <1621292893-18827-1-git-send-email-sidgup@codeaurora.org>
- <YKxo5BXwEPjS5K4d@yoga>
- <02bc228b-4bd2-de5a-6cf7-5623b8048e7f@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SN1n3KmUQF/CJQe15RgbxrBoOLPLb/jSDiUbBOw0t74=;
+        b=WeLe53qbER8deddz4MwfAHoXQbuJan5JOsBbGVachLQuK+RHCn73APw01l8VBmV1Pq
+         /xPL0AXKiq+BRNU3ADmsyaG/jdNBZDKK+HGN89me7Ncq/8sCNKbpNxkH5t94aDNSexXN
+         1i9rIi6pUINwS6auNKZs7ddVK8X4n8/cr7sTtdO/0VQktVydnmFNuN2k3AX8QFN7d56c
+         sVJiiV9p122chgQzCvXzZJckbV3yYXe83zgMzaIdFu5Cnvu5+ZZXh3sjOpp0Yye13IBH
+         8N+MoX130l3ZnwdVVWIqbfRSd8B6uJYeYirSTg1zuzcwOdDzoVH4WJOFvSeunDYJbjmF
+         qtRg==
+X-Gm-Message-State: AOAM532MYvJUXP89PhlPq4a4bdZr8XuWp7Tuu2PJZoHnXtp0altkJgq8
+        y+xjxPkvLEQM8pcvlZNJ6JhE1tny41rMSJMGB/o=
+X-Google-Smtp-Source: ABdhPJxhJb/FaHTg7NMgBnNwYOutQjXmHhLof8/CcGe18d9CFjr7qb/27e+LqbcZiw5A1U9bVgrtbSlJ5eLRRtcbMmE=
+X-Received: by 2002:a17:906:2dca:: with SMTP id h10mr30719387eji.507.1621989507375;
+ Tue, 25 May 2021 17:38:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02bc228b-4bd2-de5a-6cf7-5623b8048e7f@codeaurora.org>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-16-chang.seok.bae@intel.com> <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
+In-Reply-To: <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 25 May 2021 20:38:16 -0400
+Message-ID: <CAJvTdKmzN0VMyH8VU_fdzn2UZqmR=_aNrJW01a65BhyLm6YRPg@mail.gmail.com>
+Subject: Re: [PATCH v5 15/28] x86/arch_prctl: Create ARCH_GET_XSTATE/ARCH_PUT_XSTATE
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25 May 14:48 CDT 2021, Siddharth Gupta wrote:
+After today's discussion, I believe we are close to consensus on this plan:
 
-> 
-> On 5/24/2021 8:03 PM, Bjorn Andersson wrote:
-> > On Mon 17 May 18:08 CDT 2021, Siddharth Gupta wrote:
-> > 
-> > > Subdevices at the beginning of the subdev list should have
-> > > higher priority than those at the end of the list. Reverse
-> > > traversal of the list causes priority inversion, which can
-> > > impact the performance of the device.
-> > > 
-> > The subdev lists layers of the communication onion, we bring them up
-> > inside out and we take them down outside in.
-> > 
-> > This stems from the primary idea that we want to be able to shut things
-> > down cleanly (in the case of a stop) and we pass the "crashed" flag to
-> > indicate to each recipient during "stop" that it may not rely on the
-> > response of a lower layer.
-> > 
-> > As such, I don't think it's right to say that we have a priority
-> > inversion.
-> My understanding of the topic was that each subdevice should be
-> independent of the other. In our case unfortunately the sysmon
-> subdevice depends on the glink endpoint.
-> 
+1. Kernel sets XCR0.AMX=1 at boot, and leaves it set, always.
 
-We need to care for the ordering if sysmon is to be able to use smd or
-glink to send the shutdown request.
+2. Kernel arms XFD for all tasks, by default.
 
-> However the priority inversion doesn't happen in these
-> subdevices, it happens due to the SSR notifications that we send
-> to kernel clients. In this case kernel clients also can have QMI
-> sockets that in turn depend on the glink endpoint, which means
-> when they go to release the QMI socket a broadcast will be sent
-> out to all connected clients about the closure of the connection
-> which in this case happens to be the remoteproc which died. So
-> if we peel the onion, we will be unnecessarily be waiting for a
-> dead remoteproc.
+3. New prctl() system call allows any task in a process to ask for AMX
+permission for all tasks in that process. Permission is granted for
+the lifetime of that process, and there is no interface for a process
+to "un-request" permission.
 
-I see, that is indeed a problem.
+4. If a task touches AMX without permission, #NM/signal kills the process
 
-> > 
-> > > For example a device adds the glink, sysmon and ssr subdevs
-> > > to its list. During a crash the ssr notification would go
-> > > before the glink and sysmon notifications. This can cause a
-> > > degraded response when a client driver waits for a response
-> > > from the crashed rproc.
-> > > 
-> > In general the design is such that components are not expected to
-> > communicate with the crashed remote when "crashed" is set, this avoids
-> > the single-remote crash.
-> Here the glink device on the rpmsg bus won't know about the
-> crashed remoteproc till we send glink notification first, right?
-> Since we send out sysmon and SSR notifications first, the glink
-> device will still be "alive" on the rpmsg bus.
+5. If a task touches AMX with permission, #NM handler will
+transparently allocate a context switch buffer, and disarm XFD for
+that task. (MSR_XFD is context switched per task)
 
-Yes, and this all stems from the design that everything communicating
-over glink is a child of glink, which isn't the case when you have a SSR
-event that will end up blocking the sequence in qrtr.
+6. If the #NM handler can not allocate the 8KB buffer, the task will
+receive a signal at the instruction that took the #NM fault, likely
+resulting in program exit.
 
-For sysmon this is not a problem, because sysmon is implemented to not
-attempt to communicate with the parent remoteproc upon a crash. And
-all rpmsg devices will be torn down as a result of glink being torn
-down, so glink can fail early based on this (not sure if this was
-implemented downstream though).
+7. In addition, a 2nd system call to request that buffers be
+pre-allocated is available. This is a per task system call. This
+synchronous allocate system call will return an error code if it
+fails, which will also likely result in program exit.
 
-> > 
-> > The case where this isn't holding up is when two remote processors
-> > crashes simultaneously, in which case e.g. sysmon has been seen hitting
-> > its timeout waiting for an ack from a dead remoteproc - but I was under
-> > the impression that this window shrunk dramatically as a side effect of
-> > us fixing the notification ordering.
-> You are right, the window would become smaller in the case of two
-> remoteprocs, but this issue can come up with even a single
-> remoteproc unless prioritize certain subdevices.
+8. NEW TODAY: Linux will exclude the AMX 8KB region from the XSTATE on
+the signal stack for tasks in process that do not have AMX permission.
 
-The problem that you describe where an SSR notification will directly or
-indirectly attempt to communicate over QRTR will certainly cause issues
-in the single-rproc case as well.
+9. For tasks in processes that have requested and received AMX
+permission, Linux will XSAVE/XRESTOR directly to/from the signal
+stack, and the stack will always include the 8KB space for AMX. (we do
+have a manual optimization to in place to skip writing zeros to the
+stack frame if AMX=INIT)
 
+10. Linux reserves the right to plumb the new permission syscall into
+cgroup administrative interface in the future.
 
-But is there any reason why these listeners has to do the wrong thing at
-stop(crashed=true)?
+Comments:
 
-> > 
-> > > Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> > > ---
-> > >   drivers/remoteproc/remoteproc_core.c | 24 ++++++++++++++----------
-> > >   1 file changed, 14 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > > index 626a6b90f..ac8fc42 100644
-> > > --- a/drivers/remoteproc/remoteproc_core.c
-> > > +++ b/drivers/remoteproc/remoteproc_core.c
-> > > @@ -1167,7 +1167,7 @@ static int rproc_handle_resources(struct rproc *rproc,
-> > >   static int rproc_prepare_subdevices(struct rproc *rproc)
-> > >   {
-> > > -	struct rproc_subdev *subdev;
-> > > +	struct rproc_subdev *subdev, *itr;
-> > >   	int ret;
-> > >   	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> > > @@ -1181,9 +1181,11 @@ static int rproc_prepare_subdevices(struct rproc *rproc)
-> > >   	return 0;
-> > >   unroll_preparation:
-> > > -	list_for_each_entry_continue_reverse(subdev, &rproc->subdevs, node) {
-> > > -		if (subdev->unprepare)
-> > > -			subdev->unprepare(subdev);
-> > > +	list_for_each_entry(itr, &rproc->subdevs, node) {
-> > > +		if (itr == subdev)
-> > > +			break;
-> > > +		if (itr->unprepare)
-> > > +			itr->unprepare(subdev);
-> > >   	}
-> > >   	return ret;
-> > > @@ -1191,7 +1193,7 @@ static int rproc_prepare_subdevices(struct rproc *rproc)
-> > >   static int rproc_start_subdevices(struct rproc *rproc)
-> > >   {
-> > > -	struct rproc_subdev *subdev;
-> > > +	struct rproc_subdev *subdev, *itr;
-> > >   	int ret;
-> > >   	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> > > @@ -1205,9 +1207,11 @@ static int rproc_start_subdevices(struct rproc *rproc)
-> > >   	return 0;
-> > >   unroll_registration:
-> > > -	list_for_each_entry_continue_reverse(subdev, &rproc->subdevs, node) {
-> > > -		if (subdev->stop)
-> > > -			subdev->stop(subdev, true);
-> > > +	list_for_each_entry(itr, &rproc->subdevs, node) {
-> > > +		if (itr == subdev)
-> > > +			break;
-> > > +		if (itr->stop)
-> > > +			itr->stop(itr, true);
-> > >   	}
-> > >   	return ret;
-> > > @@ -1217,7 +1221,7 @@ static void rproc_stop_subdevices(struct rproc *rproc, bool crashed)
-> > >   {
-> > >   	struct rproc_subdev *subdev;
-> > > -	list_for_each_entry_reverse(subdev, &rproc->subdevs, node) {
-> > > +	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> > I presume this is the case you actually care about, can you help me
-> > understand if you changed the others for consistence or if there's some
-> > flow of events where that might be necessary.
-> Yes you are right, I only changed the others for consistence.
-> However, I will give this more thought and see if unprepare in
-> the reverse order can make a difference.
-> 
+Legacy software will not see signal stack growth on AMX hardware.
 
-Per above argument I don't think things depend on the unrolling on error
-happening in reverse order. But it's idiomatic.
+New AMX software will see AMX state on the signal stack.
 
-Regards,
-Bjorn
+If new AMX software uses an alternative signal stack, it should be
+built using the signal.h ABI in glibc 2.34 or later, so that it can
+calculate the appropriate size for the current hardware.  Note that
+non-AMX software that is newly built will get the same answer from the
+ABI, which would handle the case if it does use AMX.
 
-> Thanks,
-> Sid
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > >   		if (subdev->stop)
-> > >   			subdev->stop(subdev, crashed);
-> > >   	}
-> > > @@ -1227,7 +1231,7 @@ static void rproc_unprepare_subdevices(struct rproc *rproc)
-> > >   {
-> > >   	struct rproc_subdev *subdev;
-> > > -	list_for_each_entry_reverse(subdev, &rproc->subdevs, node) {
-> > > +	list_for_each_entry(subdev, &rproc->subdevs, node) {
-> > >   		if (subdev->unprepare)
-> > >   			subdev->unprepare(subdev);
-> > >   	}
-> > > -- 
-> > > Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
+Today it is possible for an application to calculate the uncompressed
+XSTATE size from XCR0 and CPUID, allocate buffers of that size, and
+use XSAVE and XRESTOR on those buffers in user-space.  Applications
+can also XRESTOR from (and XSAVE back to) the signal stack, if they
+choose.  Now, this capability can break for non-AMX programs, because
+their XSAVE will be 8KB  larger than the buffer that they XRESTOR.
+Andy L questions whether such applications actually exist, and Thomas
+states that even if they do, that is a much smaller problem than 8KB
+signal stack growth would be for legacy applications.
+
+Unclear if we have consensus on the need for a synchronous allocation
+system call (#7 above).  Observe that this system call does not
+improve the likelihood of failure or the timing of failure.  An
+#NM-based allocation and be done at exactly the same spot by simply
+touching a TMM register.  The benefit of this system call is that it
+returns an error code to the caller, versus the program being
+delivered a SIGSEGV at the offending instruction pointer.  Both will
+likely result in the program exiting, and at the same point in
+execution.
+
+A future mechanism to lazy harvest not-recently-used context switchy
+buffers has been discussed.  Eg. the kernel under low memory could
+re-arm XFD for all AMX tasks, and if their buffers are clean, free
+them.  If that mechanism is implemented, and we also implement the
+synchronous allocation system call, that mechanism must respect the
+guarantee made by that system call and not harvest
+system-call-allocated buffers.
+
+Len Brown, Intel Open Source Technology Center
