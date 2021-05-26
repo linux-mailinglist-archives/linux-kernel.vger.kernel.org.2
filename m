@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA1C391164
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80AD391162
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233013AbhEZH2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:28:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14924 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232978AbhEZH2v (ORCPT
+        id S232985AbhEZH2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232617AbhEZH2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:28:51 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q730H0132087;
-        Wed, 26 May 2021 03:27:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=c9STaME5/gu1wo8vKEuUVygP/no3fdE29B/HI/RcCXU=;
- b=MQXZo2y8bfXZKnK+TjWFy0N5qv70M6TLxguPh1at21A1LF2LKrw4G3k93myERTvngWIa
- 32h/niQ/7HOHbcIxYFPg705be1HfAkK74yp0sqzJdjsAufYro1W/D8hNJU/G/ou+q8WM
- F7S8gOVajkeon4XkqiKw9EQCGG71tNB/PcS7KDMWP2HpajKi9vzgwXe+xvFHnkxSN/WC
- t1YpxVP4AZaZoEmQ/vmaJp6AGXiGPSQSfcym2MGatq1AArfxi4jw6CK9J6CYM1jIc/hi
- /bFhJtdzfuCMlRNYwzKLnwtntH+BPKS+gHfXw9Cv9HDkiusVDFERW/zC6jvKZZv59iR4 Tg== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38shad9428-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 03:27:08 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14Q7Bsvh010303;
-        Wed, 26 May 2021 07:27:07 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma01wdc.us.ibm.com with ESMTP id 38s1q6pcsg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 07:27:07 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14Q7R5Hn32375074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 May 2021 07:27:05 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A14E46A098;
-        Wed, 26 May 2021 07:27:05 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B4AC6A04D;
-        Wed, 26 May 2021 07:27:00 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.37.104])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 26 May 2021 07:26:59 +0000 (GMT)
-Subject: Re: [RFC v2 4/4] powerpc/papr_scm: Add cpu hotplug support for nvdimm
- pmu device
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-References: <20210525132216.1239259-1-kjain@linux.ibm.com>
- <20210525132216.1239259-5-kjain@linux.ibm.com>
- <YK0G1nmvhOPimRay@hirez.programming.kicks-ass.net>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <b89d1954-638b-34c0-2d79-5d1ce4e72a3a@linux.ibm.com>
-Date:   Wed, 26 May 2021 12:56:58 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 26 May 2021 03:28:41 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B1CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:27:10 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b191so117190wmd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 00:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ObaRCurLGiq7gTkLKAKr3kEfw73h6AOzHDoeYUsp2Y0=;
+        b=T5wfKDh1UNK2O7MTL704OyW6hZQCfSO1tuylHh4JSPnT877YqB1ydDB6ytMqNOUxCY
+         6kxfi2+/1gDy4MLcllXACk1Z5v8VSnKiJtrFtUFXJCvfpPDG2PrC7u5noXl1jN/MLVg2
+         5GmNoB1mV3X7wzHXWOcfkHaYPEs0QxGRQOAAEu8qIdTDjIEL2ZVjjIdxvWWk1zeLmSkJ
+         thrb5d+FFDTx5ki6+DGMJbmxfE+332vAtMjvD+DYBVR2A/DV4cm60qTFetbftP9RUaRk
+         a+XmH9Tog9yKXB2TnkVkPmRl3eqYjKRSGkua4HxCwRoEsIS0SOfZMqvYqWxuXjOK1IFz
+         1G+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ObaRCurLGiq7gTkLKAKr3kEfw73h6AOzHDoeYUsp2Y0=;
+        b=YNYxRuxzf9yoP473DGRnwr5EX6DGwIck4xICnCkEizUPCI7VCADPqi2mASDK3kse0M
+         tbGR+O9D/6nUSmX0F1GMFxbkLKfyRs77ULP3SQ2e4+O3tVioiHhIblvRoAyA9402SJHX
+         jyErBtjP+4W/nKvh9ojdg3RnKeYIJms3a8yKXZgOwCAvRHYAF4Z2xfTeWcDG+y1ZNd25
+         AgQBzFOuuOa3iCjqAGdHyGODVjPe5TyDw/9VSF9SlhrsK7usTUSvK1X0fFtcdoJ3bI9C
+         itqJGry9giKJfYOMS+hrGoBUmjqOiKkseYG96SpeciNcSJm5UJBQC6nK1wl3N4XU51d+
+         xP2w==
+X-Gm-Message-State: AOAM532BlWFeWa17pey81oxCyHJtTVJQtTQK7QChEufiwimRCqQb3/zH
+        paEr+HCXh+EldpTImOrK0m57dA==
+X-Google-Smtp-Source: ABdhPJzYn7l7izgDqJRiSF+iXahrCJQATc3NRCU+ROAee3TuBSNsuvVdyH8MND/tb7mi+q2kQEMCWQ==
+X-Received: by 2002:a7b:c041:: with SMTP id u1mr26901132wmc.95.1622014029338;
+        Wed, 26 May 2021 00:27:09 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id l188sm505402wmf.27.2021.05.26.00.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 00:27:08 -0700 (PDT)
+Date:   Wed, 26 May 2021 08:27:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     satya priya <skakit@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V5 11/11] mfd: qcom-spmi-pmic: Add support for four
+ variants
+Message-ID: <20210526072707.GF4005783@dell>
+References: <1621937466-1502-1-git-send-email-skakit@codeaurora.org>
+ <1621937466-1502-12-git-send-email-skakit@codeaurora.org>
+ <YK0udV1Wbm4Hvk72@builder.lan>
 MIME-Version: 1.0
-In-Reply-To: <YK0G1nmvhOPimRay@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -M87MocfDUmtPMjzmwQ6zYbl3o-iTrLc
-X-Proofpoint-GUID: -M87MocfDUmtPMjzmwQ6zYbl3o-iTrLc
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_04:2021-05-25,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=946
- impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105260045
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK0udV1Wbm4Hvk72@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 25 May 2021, Bjorn Andersson wrote:
 
-
-On 5/25/21 7:46 PM, Peter Zijlstra wrote:
-> On Tue, May 25, 2021 at 06:52:16PM +0530, Kajol Jain wrote:
->> Patch here adds cpu hotplug functions to nvdimm pmu.
+> On Tue 25 May 05:11 CDT 2021, satya priya wrote:
 > 
-> I'm thinking "Patch here" qualifies for "This patch", see
-> Documentation/process/submitting-patches.rst .
+> > Add support for pm8350c, pmk8350, pm7325 and pmr735a PMICS.
+> > 
 > 
-Hi Peter,
-   I will reword this commit message.
-
->> It adds cpumask to designate a cpu to make HCALL to
->> collect the counter data for the nvdimm device and
->> update ABI documentation accordingly.
->>
->> Result in power9 lpar system:
->> command:# cat /sys/devices/nmem0/cpumask
->> 0
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> Is this specific to the papr thing, or should this be in generic nvdimm
-> code?
+> @Lee, will you take this patch through the mfd tree?
 
-This code is not specific to papr device and we can move it to
-generic nvdimm interface. But do we need to add some checks on whether
-any arch/platform specific driver want that support or we can assume 
-that this will be something needed by all platforms?
+I will.
 
-Thanks,
-Kajol Jain
+Not sure if Rob would like to review it too - it's pretty simple.
+
+> > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > ---
+> > Changes in V5:
+> >  - Newly added in V5 to add documentation support for pmics of this series.
+> > 
+> >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > index 79367a4..5ef79bf 100644
+> > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > @@ -34,6 +34,10 @@ Required properties:
+> >                     "qcom,pm8998",
+> >                     "qcom,pmi8998",
+> >                     "qcom,pm8005",
+> > +                   "qcom,pm8350c",
+> > +                   "qcom,pmk8350",
+> > +                   "qcom,pm7325",
+> > +                   "qcom,pmr735a",
+> >                     or generalized "qcom,spmi-pmic".
+> >  - reg:             Specifies the SPMI USID slave address for this device.
+> >                     For more information see:
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
