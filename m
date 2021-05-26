@@ -2,496 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A742391C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0419B391BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhEZPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S235182AbhEZPaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhEZPnZ (ORCPT
+        with ESMTP id S232692AbhEZPaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:43:25 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC88C061574;
-        Wed, 26 May 2021 08:41:52 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so553464pjb.2;
-        Wed, 26 May 2021 08:41:52 -0700 (PDT)
+        Wed, 26 May 2021 11:30:10 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49354C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:28:39 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d11so1563636wrw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p0vmPy2qph4r8t66VQg9wFM/CqhDEIysk+UQrr2yoP0=;
-        b=uAaYG7DbWxFKw1yNJmjxGvQ4QQCUgTJpUbCqnG1QuKiBEBjpC7k6HHXEz2TQvzm9QV
-         otXMZAN5H/YatmObE4mAswQc0xL/M5Qp9+CuC+VwejrTX103yoGMOKP6i3M2xZBNE35p
-         RpW/XL2ojRi7GUBNl0adeYqVlviQVA8KJ9K3fWxfBz8Z2xet7cIJF4ezuBqhg1DVY8xB
-         M/xjWeDFVBPGJNqkVay9DyIoxWfiwXTWbbrru1q5q7hkBZBmPQViWX23zGl3dc963KTZ
-         cHRdSE3IvCxfx7j3FjSFf9KMPWO0mGpQ0gMRveexoa4Mf//C32X6oerRvxE5fbfqDzGW
-         gTeA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DqGWzSetuJV5yU6UPV/mQ1JntSoPe9tC6OnrezMJZ1s=;
+        b=CzjVtl2pHIqRyEzxlJBTKHFNfdZi85fSQipYLTp+y2ILFDF9Z5G5HqWmuqBLUimdDL
+         thVRnXK+n9HEUIrzIpzS6RN16nbeww4sxqDbZcsmmOY3YXA0CZ0IrzhLTgMabtPNBQHC
+         hc+2WDxXBoRvlgjjklhzEVLnf5t6DCwnjbjidqsDLUvEZ8KYQ06ifXcEw/td7GVVN/aR
+         CyonnsjanQmr5KTeTN6IzioWXZeHhH8wvCjYcYl/7rw1NepziJjbNf1JBDCw5NdG+d/J
+         qzNitKyW+Tg+DtBbAcdBlfVqH6SYHS7G7WD3wVPj/gXlDd4gMyPBqqzEWQYS4Xlyu4Kq
+         fqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p0vmPy2qph4r8t66VQg9wFM/CqhDEIysk+UQrr2yoP0=;
-        b=PW+ZNKqVtX6/htsm2tBUjdoAgGYvKvJYT1oFz/ec7UTfXutsPQ4SELfIdOluQja37I
-         sLeBJxn6O6/AxI1idqmEbipiHKUAGETH4OXn16P3RK18psi2vR1l2IP4q1U62GIW4ylb
-         RU6BI7aRaU/d1vTCOs3cRzj415MiAhM2KQ/D4TuneHZQXVju9gHRQX2PxpiCEZl0fxiS
-         gKAdORqAjqcHYBp+R1jGvgi2otQCdC6PzgC1Wj4cenG/UJsvse/a6uEUPB1c6hxqf/DT
-         xG+XyDHqFbUB9BjEYwwACYGHlnOaGrT/wtdXTNaokp1OqPzZylRNEbf8EBDaAxTOU0ky
-         4BSw==
-X-Gm-Message-State: AOAM533TbyW1dp/j2aQwZ7FdGH+4qbdNKy4+RTtam4NlJ7WRq3M+hBZF
-        n0J2nj8HJQnaPPd95ne+cxg=
-X-Google-Smtp-Source: ABdhPJyGns4aFOo///DPAPO+iC4u7VBNm6X29jtSC28I5LnEpL1so4x7EiAyWeQ0zKDwsejp9UW8DA==
-X-Received: by 2002:a17:90a:e501:: with SMTP id t1mr4608935pjy.32.1622043712134;
-        Wed, 26 May 2021 08:41:52 -0700 (PDT)
-Received: from localhost.localdomain ([106.77.10.3])
-        by smtp.gmail.com with ESMTPSA id v9sm3786367pje.41.2021.05.26.08.41.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DqGWzSetuJV5yU6UPV/mQ1JntSoPe9tC6OnrezMJZ1s=;
+        b=CPKnG73wVtnfElab4hPWpXOiNALK7wJo+C9lmVD2hcr9LHe1Tec1e2jqIOGl43siso
+         T1W6+DXUixM9KWQ4hM7IzWHCvDBDRTYUeZFEuq9ZDhDQB2J91GFFNiV80i4zlGrp4wP3
+         G3KzmrbtdCeTf/PccXLKQ9zEosGUlWuglf/7BBlN4Z7EugNh5qvH7PuA/W9DqCVGO1qZ
+         NmetAlTlGGmm97NO/7iWFu4Sy8Hlyu2gSjRBxl5FfCIQDhbX4849XbIPkVQW+OTHr3wp
+         XUEs0jSkQbfJU2Q9/5NHNjHJO+3vbfsgEKlbdC6sAqmnlwcbhjgMDU7oiPmQ13St98L6
+         QcLQ==
+X-Gm-Message-State: AOAM533IxNwf4ZGSjP58I6OXPg511DOXsfQeEH3enl31fN8ki633LqjA
+        CL5k5jtMcCEQwC5ZepqdMwMeegKPY3hXKA==
+X-Google-Smtp-Source: ABdhPJzsAR+2ItQN3p3yxI8OUH7dyFhf6pOmXZtZKiXpGfslhAKxCUlmOQmJ4AbqiBvzIWi++8f5oA==
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr33077154wrn.85.1622042917923;
+        Wed, 26 May 2021 08:28:37 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id g6sm7054803wmg.10.2021.05.26.08.28.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:41:51 -0700 (PDT)
-From:   Piyush Thange <pthange19@gmail.com>
-To:     mchehab@kernel.org, hverkuil@xs4all.nl, leon@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Piyush Thange <pthange19@gmail.com>
-Subject: [PATCH] media: usb: cpia2: Fixed Coding Style issues
-Date:   Wed, 26 May 2021 20:56:19 +0530
-Message-Id: <20210526152619.39069-1-pthange19@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 08:28:37 -0700 (PDT)
+Date:   Wed, 26 May 2021 16:28:35 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
+ stack onto the heap
+Message-ID: <20210526152835.GE543307@dell>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-22-lee.jones@linaro.org>
+ <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
+ <20210526144451.GB543307@dell>
+ <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed all the Coding style issues generated by checkpatch.pl.
-The changes made considering the --strict option.
+On Wed, 26 May 2021, Sergei Shtylyov wrote:
 
-Signed-off-by: Piyush Thange <pthange19@gmail.com>
----
- drivers/media/usb/cpia2/cpia2_v4l.c | 149 ++++++++++++++--------------
- 1 file changed, 74 insertions(+), 75 deletions(-)
+> On 5/26/21 5:44 PM, Lee Jones wrote:
+> 
+> [...]
+> >>> Fixes the following W=1 kernel build warning(s):
+> >>>
+> >>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
+> >>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> >>>
+> >>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>> Cc: linux-usb@vger.kernel.org
+> >>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >>> ---
+> >>>  drivers/usb/host/xhci.c | 8 +++++++-
+> >>>  1 file changed, 7 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> >>> index ac2a7d4288883..40ce4b4eb12ad 100644
+> >>> --- a/drivers/usb/host/xhci.c
+> >>> +++ b/drivers/usb/host/xhci.c
+> >> [...]
+> >>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+> >>>  		return -ENOMEM;
+> >>>  	}
+> >>>  
+> >>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
+> >>
+> >>    Why not kcalloc()?
+> > 
+> > No particular reason.  Muscle memory I guess.
+> > 
+> > Happy either way.
+> 
+>     kcalloc( is designed for allocatiung arrays and clearing them, like calloc(),
+> so let's stick wuth it...
 
-diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
-index 69d5c628a797..926ecfc9b64a 100644
---- a/drivers/media/usb/cpia2/cpia2_v4l.c
-+++ b/drivers/media/usb/cpia2/cpia2_v4l.c
-@@ -140,10 +140,10 @@ static ssize_t cpia2_v4l_read(struct file *file, char __user *buf, size_t count,
- 			      loff_t *off)
- {
- 	struct camera_data *cam = video_drvdata(file);
--	int noblock = file->f_flags&O_NONBLOCK;
-+	int noblock = file->f_flags & O_NONBLOCK;
- 	ssize_t ret;
- 
--	if(!cam)
-+	if (!cam)
- 		return -EINVAL;
- 
- 	if (mutex_lock_interruptible(&cam->v4l2_lock))
-@@ -153,7 +153,6 @@ static ssize_t cpia2_v4l_read(struct file *file, char __user *buf, size_t count,
- 	return ret;
- }
- 
--
- /******************************************************************************
-  *
-  *  cpia2_v4l_poll
-@@ -170,7 +169,6 @@ static __poll_t cpia2_v4l_poll(struct file *filp, struct poll_table_struct *wait
- 	return res;
- }
- 
--
- static int sync(struct camera_data *cam, int frame_nr)
- {
- 	struct framebuf *frame = &cam->buffers[frame_nr];
-@@ -247,8 +245,8 @@ static int cpia2_querycap(struct file *file, void *fh, struct v4l2_capability *v
- 		break;
- 	}
- 
--	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) <0)
--		memset(vc->bus_info,0, sizeof(vc->bus_info));
-+	if (usb_make_path(cam->dev, vc->bus_info, sizeof(vc->bus_info)) < 0)
-+		memset(vc->bus_info, 0, sizeof(vc->bus_info));
- 	return 0;
- }
- 
-@@ -289,7 +287,7 @@ static int cpia2_s_input(struct file *file, void *fh, unsigned int i)
-  *****************************************************************************/
- 
- static int cpia2_enum_fmt_vid_cap(struct file *file, void *fh,
--					    struct v4l2_fmtdesc *f)
-+				  struct v4l2_fmtdesc *f)
- {
- 	if (f->index > 1)
- 		return -EINVAL;
-@@ -310,13 +308,13 @@ static int cpia2_enum_fmt_vid_cap(struct file *file, void *fh,
-  *****************************************************************************/
- 
- static int cpia2_try_fmt_vid_cap(struct file *file, void *fh,
--					  struct v4l2_format *f)
-+				 struct v4l2_format *f)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
- 	if (f->fmt.pix.pixelformat != V4L2_PIX_FMT_MJPEG &&
- 	    f->fmt.pix.pixelformat != V4L2_PIX_FMT_JPEG)
--	       return -EINVAL;
-+		return -EINVAL;
- 
- 	f->fmt.pix.field = V4L2_FIELD_NONE;
- 	f->fmt.pix.bytesperline = 0;
-@@ -371,19 +369,20 @@ static int cpia2_try_fmt_vid_cap(struct file *file, void *fh,
-  *****************************************************************************/
- 
- static int cpia2_s_fmt_vid_cap(struct file *file, void *_fh,
--					struct v4l2_format *f)
-+			       struct v4l2_format *f)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 	int err, frame;
- 
- 	err = cpia2_try_fmt_vid_cap(file, _fh, f);
--	if(err != 0)
-+	if (err != 0)
- 		return err;
- 
- 	cam->pixelformat = f->fmt.pix.pixelformat;
- 
- 	/* NOTE: This should be set to 1 for MJPEG, but some apps don't handle
--	 * the missing Huffman table properly. */
-+	 * the missing Huffman table properly.
-+	 */
- 	cam->params.compression.inhibit_htables = 0;
- 		/*f->fmt.pix.pixelformat == V4L2_PIX_FMT_MJPEG;*/
- 
-@@ -421,7 +420,7 @@ static int cpia2_s_fmt_vid_cap(struct file *file, void *_fh,
-  *****************************************************************************/
- 
- static int cpia2_g_fmt_vid_cap(struct file *file, void *fh,
--					struct v4l2_format *f)
-+			       struct v4l2_format *f)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
-@@ -547,9 +546,8 @@ static const struct {
- };
- 
- static int cpia2_enum_framesizes(struct file *file, void *fh,
--					 struct v4l2_frmsizeenum *fsize)
-+				 struct v4l2_frmsizeenum *fsize)
- {
--
- 	if (fsize->pixel_format != V4L2_PIX_FMT_MJPEG &&
- 	    fsize->pixel_format != V4L2_PIX_FMT_JPEG)
- 		return -EINVAL;
-@@ -563,7 +561,7 @@ static int cpia2_enum_framesizes(struct file *file, void *fh,
- }
- 
- static int cpia2_enum_frameintervals(struct file *file, void *fh,
--					   struct v4l2_frmivalenum *fival)
-+				     struct v4l2_frmivalenum *fival)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 	int max = ARRAY_SIZE(framerate_controls) - 1;
-@@ -665,19 +663,18 @@ static int cpia2_g_jpegcomp(struct file *file, void *fh, struct v4l2_jpegcompres
- 	parms->quality = 80; // TODO: Can this be made meaningful?
- 
- 	parms->jpeg_markers = V4L2_JPEG_MARKER_DQT | V4L2_JPEG_MARKER_DRI;
--	if(!cam->params.compression.inhibit_htables) {
-+	if (!cam->params.compression.inhibit_htables)
- 		parms->jpeg_markers |= V4L2_JPEG_MARKER_DHT;
--	}
- 
- 	parms->APPn = cam->APPn;
- 	parms->APP_len = cam->APP_len;
--	if(cam->APP_len > 0) {
-+	if (cam->APP_len > 0) {
- 		memcpy(parms->APP_data, cam->APP_data, cam->APP_len);
- 		parms->jpeg_markers |= V4L2_JPEG_MARKER_APP;
- 	}
- 
- 	parms->COM_len = cam->COM_len;
--	if(cam->COM_len > 0) {
-+	if (cam->COM_len > 0) {
- 		memcpy(parms->COM_data, cam->COM_data, cam->COM_len);
- 		parms->jpeg_markers |= JPEG_MARKER_COM;
- 	}
-@@ -698,7 +695,7 @@ static int cpia2_g_jpegcomp(struct file *file, void *fh, struct v4l2_jpegcompres
-  *****************************************************************************/
- 
- static int cpia2_s_jpegcomp(struct file *file, void *fh,
--		const struct v4l2_jpegcompression *parms)
-+			    const struct v4l2_jpegcompression *parms)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
-@@ -708,9 +705,9 @@ static int cpia2_s_jpegcomp(struct file *file, void *fh,
- 	cam->params.compression.inhibit_htables =
- 		!(parms->jpeg_markers & V4L2_JPEG_MARKER_DHT);
- 
--	if(parms->APP_len != 0) {
--		if(parms->APP_len > 0 &&
--		   parms->APP_len <= sizeof(cam->APP_data) &&
-+	if (parms->APP_len != 0) {
-+		if (parms->APP_len > 0 &&
-+		    parms->APP_len <= sizeof(cam->APP_data) &&
- 		   parms->APPn >= 0 && parms->APPn <= 15) {
- 			cam->APPn = parms->APPn;
- 			cam->APP_len = parms->APP_len;
-@@ -724,9 +721,9 @@ static int cpia2_s_jpegcomp(struct file *file, void *fh,
- 		cam->APP_len = 0;
- 	}
- 
--	if(parms->COM_len != 0) {
--		if(parms->COM_len > 0 &&
--		   parms->COM_len <= sizeof(cam->COM_data)) {
-+	if (parms->COM_len != 0) {
-+		if (parms->COM_len > 0 &&
-+		    parms->COM_len <= sizeof(cam->COM_data)) {
- 			cam->COM_len = parms->COM_len;
- 			memcpy(cam->COM_data, parms->COM_data, parms->COM_len);
- 		} else {
-@@ -751,8 +748,8 @@ static int cpia2_reqbufs(struct file *file, void *fh, struct v4l2_requestbuffers
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
--	if(req->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
--	   req->memory != V4L2_MEMORY_MMAP)
-+	if (req->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
-+	    req->memory != V4L2_MEMORY_MMAP)
- 		return -EINVAL;
- 
- 	DBG("REQBUFS requested:%d returning:%d\n", req->count, cam->num_frames);
-@@ -774,8 +771,8 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
--	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
--	   buf->index >= cam->num_frames)
-+	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
-+	    buf->index >= cam->num_frames)
- 		return -EINVAL;
- 
- 	buf->m.offset = cam->buffers[buf->index].data - cam->frame_buffer;
-@@ -783,7 +780,7 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- 
- 	buf->memory = V4L2_MEMORY_MMAP;
- 
--	if(cam->mmapped)
-+	if (cam->mmapped)
- 		buf->flags = V4L2_BUF_FLAG_MAPPED;
- 	else
- 		buf->flags = 0;
-@@ -806,8 +803,8 @@ static int cpia2_querybuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- 	}
- 
- 	DBG("QUERYBUF index:%d offset:%d flags:%d seq:%d bytesused:%d\n",
--	     buf->index, buf->m.offset, buf->flags, buf->sequence,
--	     buf->bytesused);
-+	    buf->index, buf->m.offset, buf->flags, buf->sequence,
-+	    buf->bytesused);
- 
- 	return 0;
- }
-@@ -824,14 +821,14 @@ static int cpia2_qbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- {
- 	struct camera_data *cam = video_drvdata(file);
- 
--	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
--	   buf->memory != V4L2_MEMORY_MMAP ||
-+	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
-+	    buf->memory != V4L2_MEMORY_MMAP ||
- 	   buf->index >= cam->num_frames)
- 		return -EINVAL;
- 
- 	DBG("QBUF #%d\n", buf->index);
- 
--	if(cam->buffers[buf->index].status == FRAME_READY)
-+	if (cam->buffers[buf->index].status == FRAME_READY)
- 		cam->buffers[buf->index].status = FRAME_EMPTY;
- 
- 	return 0;
-@@ -849,9 +846,10 @@ static int find_earliest_filled_buffer(struct camera_data *cam)
- {
- 	int i;
- 	int found = -1;
--	for (i=0; i<cam->num_frames; i++) {
--		if(cam->buffers[i].status == FRAME_READY) {
--			if(found < 0) {
-+
-+	for (i = 0; i < cam->num_frames; i++) {
-+		if (cam->buffers[i].status == FRAME_READY) {
-+			if (found < 0) {
- 				found = i;
- 			} else {
- 				/* find which buffer is earlier */
-@@ -876,22 +874,23 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- 	struct camera_data *cam = video_drvdata(file);
- 	int frame;
- 
--	if(buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
--	   buf->memory != V4L2_MEMORY_MMAP)
-+	if (buf->type != V4L2_BUF_TYPE_VIDEO_CAPTURE ||
-+	    buf->memory != V4L2_MEMORY_MMAP)
- 		return -EINVAL;
- 
- 	frame = find_earliest_filled_buffer(cam);
- 
--	if(frame < 0 && file->f_flags&O_NONBLOCK)
-+	if (frame < 0 && file->f_flags & O_NONBLOCK)
- 		return -EAGAIN;
- 
--	if(frame < 0) {
-+	if (frame < 0) {
- 		/* Wait for a frame to become available */
--		struct framebuf *cb=cam->curbuff;
-+		struct framebuf *cb = cam->curbuff;
-+
- 		mutex_unlock(&cam->v4l2_lock);
- 		wait_event_interruptible(cam->wq_stream,
- 					 !video_is_registered(&cam->vdev) ||
--					 (cb=cam->curbuff)->status == FRAME_READY);
-+					 (cb = cam->curbuff)->status == FRAME_READY);
- 		mutex_lock(&cam->v4l2_lock);
- 		if (signal_pending(current))
- 			return -ERESTARTSYS;
-@@ -900,7 +899,6 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
- 		frame = cb->num;
- 	}
- 
--
- 	buf->index = frame;
- 	buf->bytesused = cam->buffers[buf->index].length;
- 	buf->flags = V4L2_BUF_FLAG_MAPPED | V4L2_BUF_FLAG_DONE
-@@ -931,7 +929,7 @@ static int cpia2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
- 
- 	if (!cam->streaming) {
- 		ret = cpia2_usb_stream_start(cam,
--				cam->params.camera_state.stream_mode);
-+					     cam->params.camera_state.stream_mode);
- 		if (!ret)
- 			v4l2_ctrl_grab(cam->usb_alt, true);
- 	}
-@@ -969,7 +967,7 @@ static int cpia2_mmap(struct file *file, struct vm_area_struct *area)
- 		return -ERESTARTSYS;
- 	retval = cpia2_remap_buffer(cam, area);
- 
--	if(!retval)
-+	if (!retval)
- 		cam->stream_fh = file->private_data;
- 	mutex_unlock(&cam->v4l2_lock);
- 	return retval;
-@@ -1080,39 +1078,42 @@ int cpia2_register_camera(struct camera_data *cam)
- 
- 	v4l2_ctrl_handler_init(hdl, 12);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_BRIGHTNESS,
--			cam->params.pnp_id.device_type == DEVICE_STV_672 ? 1 : 0,
--			255, 1, DEFAULT_BRIGHTNESS);
-+			  V4L2_CID_BRIGHTNESS,
-+			  cam->params.pnp_id.device_type == DEVICE_STV_672 ? 1 : 0,
-+			  255, 1, DEFAULT_BRIGHTNESS);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_CONTRAST, 0, 255, 1, DEFAULT_CONTRAST);
-+			  V4L2_CID_CONTRAST, 0, 255, 1, DEFAULT_CONTRAST);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_SATURATION, 0, 255, 1, DEFAULT_SATURATION);
-+			  V4L2_CID_SATURATION, 0, 255, 1, DEFAULT_SATURATION);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_HFLIP, 0, 1, 1, 0);
-+			  V4L2_CID_HFLIP, 0, 1, 1, 0);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_JPEG_ACTIVE_MARKER, 0,
--			V4L2_JPEG_ACTIVE_MARKER_DHT, 0,
--			V4L2_JPEG_ACTIVE_MARKER_DHT);
-+			  V4L2_CID_JPEG_ACTIVE_MARKER, 0,
-+			  V4L2_JPEG_ACTIVE_MARKER_DHT, 0,
-+			  V4L2_JPEG_ACTIVE_MARKER_DHT);
- 	v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_JPEG_COMPRESSION_QUALITY, 1,
--			100, 1, 100);
-+			  V4L2_CID_JPEG_COMPRESSION_QUALITY, 1,
-+			  100, 1, 100);
- 	cpia2_usb_alt.def = alternate;
- 	cam->usb_alt = v4l2_ctrl_new_custom(hdl, &cpia2_usb_alt, NULL);
- 	/* VP5 Only */
- 	if (cam->params.pnp_id.device_type != DEVICE_STV_672)
- 		v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_VFLIP, 0, 1, 1, 0);
-+				  V4L2_CID_VFLIP, 0, 1, 1, 0);
- 	/* Flicker control only valid for 672 */
- 	if (cam->params.pnp_id.device_type == DEVICE_STV_672)
- 		v4l2_ctrl_new_std_menu(hdl, &cpia2_ctrl_ops,
--			V4L2_CID_POWER_LINE_FREQUENCY,
--			V4L2_CID_POWER_LINE_FREQUENCY_60HZ, 0, 0);
-+				       V4L2_CID_POWER_LINE_FREQUENCY,
-+				       V4L2_CID_POWER_LINE_FREQUENCY_60HZ,
-+				       0, 0);
- 	/* Light control only valid for the QX5 Microscope */
- 	if (cam->params.pnp_id.product == 0x151) {
- 		cam->top_light = v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--				V4L2_CID_ILLUMINATORS_1, 0, 1, 1, 0);
-+						   V4L2_CID_ILLUMINATORS_1,
-+						   0, 1, 1, 0);
- 		cam->bottom_light = v4l2_ctrl_new_std(hdl, &cpia2_ctrl_ops,
--				V4L2_CID_ILLUMINATORS_2, 0, 1, 1, 0);
-+						      V4L2_CID_ILLUMINATORS_2,
-+						      0, 1, 1, 0);
- 		v4l2_ctrl_cluster(2, &cam->top_light);
- 	}
- 
-@@ -1159,28 +1160,28 @@ void cpia2_unregister_camera(struct camera_data *cam)
-  *****************************************************************************/
- static void __init check_parameters(void)
- {
--	if(buffer_size < PAGE_SIZE) {
-+	if (buffer_size < PAGE_SIZE) {
- 		buffer_size = PAGE_SIZE;
- 		LOG("buffer_size too small, setting to %d\n", buffer_size);
--	} else if(buffer_size > 1024*1024) {
-+	} else if (buffer_size > 1024 * 1024) {
- 		/* arbitrary upper limiit */
--		buffer_size = 1024*1024;
-+		buffer_size = 1024 * 1024;
- 		LOG("buffer_size ridiculously large, setting to %d\n",
- 		    buffer_size);
- 	} else {
--		buffer_size += PAGE_SIZE-1;
--		buffer_size &= ~(PAGE_SIZE-1);
-+		buffer_size += PAGE_SIZE - 1;
-+		buffer_size &= ~(PAGE_SIZE - 1);
- 	}
- 
--	if(num_buffers < 1) {
-+	if (num_buffers < 1) {
- 		num_buffers = 1;
- 		LOG("num_buffers too small, setting to %d\n", num_buffers);
--	} else if(num_buffers > VIDEO_MAX_FRAME) {
-+	} else if (num_buffers > VIDEO_MAX_FRAME) {
- 		num_buffers = VIDEO_MAX_FRAME;
- 		LOG("num_buffers too large, setting to %d\n", num_buffers);
- 	}
- 
--	if(alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
-+	if (alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
- 		alternate = DEFAULT_ALT;
- 		LOG("alternate specified is invalid, using %d\n", alternate);
- 	}
-@@ -1197,7 +1198,6 @@ static void __init check_parameters(void)
- 
- /************   Module Stuff ***************/
- 
--
- /******************************************************************************
-  *
-  * cpia2_init/module_init
-@@ -1211,7 +1211,6 @@ static int __init cpia2_init(void)
- 	return cpia2_usb_init();
- }
- 
--
- /******************************************************************************
-  *
-  * cpia2_exit/module_exit
+No problem.  Will fix.
+
 -- 
-2.25.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
