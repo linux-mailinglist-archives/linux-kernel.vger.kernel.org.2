@@ -2,147 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B396391052
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B80F391055
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhEZGIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:08:24 -0400
-Received: from mail-db8eur05on2074.outbound.protection.outlook.com ([40.107.20.74]:19297
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229494AbhEZGIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:08:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ekCZwxACEa2mezQyuhVrwxIfmU1fCFpDvV6cKh0h94pqRNuC13zcJf3netON178+eWt4Ewle8BwcGLtWe+DE+jB98Nt1YCKCBqSnIKW6AUNl5TPjhG810vFdy8sN40mn9i8sysB+2h2Vg1nupa2SGFhegxXDQj+aAW4QzEmAMHKNUXjrXj19pWoZ2KWK4vNqRNUVd6kJX08a1/NBHh94jrah08GlV+DF1r9qRP5qTjoHYtrUzYq9BkbtfsqXofYlZekdqnMsFy/1qOyQPd9Ync9NaY9ffqJYiPNEX9MLSqTOK5MslubHUg3TcL27wGnrJOQCsYbc575LlF1GZtgQQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/ZluYmQTBhnB7rQ4uKN5WJpm5p0J7eQjizqN7s3pGjA=;
- b=DVb6D2DbFBugT12RhEkUctvbc0Fw+DBJKFEmNhf6WnPLfSn3tY1bk3MRUNghVHjS0p0a/DzdMxJpIcQemPQJsILnVATCxtGGb3imd934nvUWPvfkiFBSS5oiKfMg0l6HcCguSqJtzIfLS6INO/8C7brt4rZ1V+f8semglUthDWeUACRL26zN5eUkuVZ12Q44n9vE5kG12YxXk0mlxZu1Wa5u9BR2pzX5enodEXvHHF+MydBzHe+v0yX983A2F6mWoA+XogxWL7PjsrI6ee7KsuRIhs3CXkcJE+POvnPYiwYsMkjl2EKvepCPzF1P55hwHohvadS6YX2yGvFCLD339Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/ZluYmQTBhnB7rQ4uKN5WJpm5p0J7eQjizqN7s3pGjA=;
- b=Xei/Sirzk4qOqRHRihz7T2oADLw69wLD+U9K4LTCkvCEagxYhfcQv5OVPo7dy0SyTJqMOZZ9uiU+xW7JKiJPoIUFJpjK5ai+54Z9AwsQkjQDlM29EIhkLJO6dThj78Gex0h9lQrKPEnqqP/EBvDDKyJ1qUmUsICaEIE7x4ADrE0=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB6860.eurprd04.prod.outlook.com (2603:10a6:10:112::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Wed, 26 May
- 2021 06:06:49 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4150.027; Wed, 26 May 2021
- 06:06:49 +0000
-Subject: Re: [PATCH 0/4] mailbox: imx: add i.MX8ULP MU support
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     jassisinghbrar@gmail.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, o.rempel@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-References: <20210507101926.25631-1-peng.fan@oss.nxp.com>
-Message-ID: <9d4e12dd-6462-5c9a-434a-0104bf943294@oss.nxp.com>
-Date:   Wed, 26 May 2021 14:06:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <20210507101926.25631-1-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR06CA0126.apcprd06.prod.outlook.com
- (2603:1096:1:1d::28) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S232470AbhEZGJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:09:44 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:36157 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229520AbhEZGJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:09:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=sUClwE3DLBodRJhcY5V9D/45cQw+W29lnq/61
+        NprIlI=; b=H3DHQ5HGQZ9OW4A8C0QQLPCz2qO6D+0V9FtGNxfnTWwW+xA9KQf8n
+        Tr92DBs1tLPc89ing/qTpMK9dowiB7eLaisR09GI4w4qr78PGZjOYIgqkc7H5JIt
+        kjSduxHT7ZS9m4GMP0sRr+czpFL9emw6hIqTI4ztrfosNc9iMNl3AM=
+Received: from [0.0.0.0] (unknown [113.204.183.194])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgCXXkHB5a1g_iA_AA--.16783S2;
+        Wed, 26 May 2021 14:08:01 +0800 (CST)
+Subject: Re: [PATCH v2 2/3] docs/zh_CN: create new translations for
+ zh_CN/dev-tools/testing-overview
+To:     "Wu X.C." <bobwxc@email.cn>
+Cc:     alexs@kernel.org, corbet@lwn.net, maskray@google.com,
+        bernard@vivo.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210523140332.GA1097@bobwxc.top>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <e043c803-9547-1c47-a63f-08f33e560043@email.cn>
+Date:   Wed, 26 May 2021 14:08:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.193.102.178] (119.31.174.71) by SG2PR06CA0126.apcprd06.prod.outlook.com (2603:1096:1:1d::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 06:06:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad8995da-3989-4a25-8250-08d9200c731a
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6860:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB686006CB4E60F6FFB44A2B99C9249@DB8PR04MB6860.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q/8XnEWJ+ILvD/d1MJ64a3McuJNCtawVg9qKrg9L5f3NpCEY2miYr3Fz53tZngJDcFfIa2B0QOSHIx9mdP766oMthN16HOReLb3mAMAUhmbkBJGvxxeuhusXQG4JYGCfKsarkz2H9HYsRPbimooYXLmM+FaYmXoOzy/JGOQqWuruAXl+DgffN0BFcNeMt/MIn47YyAAeN3uWxJf3fYVvujSgCImWP/R5WjC+xKs5URog4+qi7E6/30vyv/wClwRRzRkrUiTlurGkxfKmf7QRlA9M3HwfWu8KbJ1GQ21r0KpsG0PrNWg43Vp5YC3Byt9JXsi/BTvqI5mfrA7BSQcTL15QPIzxiQxPoF7b3dhqn7ljX+g9AfYKvSQEubkgadZl21PgcHNKyJdjeVfQCKn5VUX0mnvXLEpJ7FOqVsblrG36/o+O7o8+1uBQezn24UN3Jv0geLkJdBRdSQXZ012L1LydhUmCp+oNEam0o/um9JMHU61bIkXfub9/6OaFo8zHf7PSdebGP2e+f7Fi6tAgDGl9YoQW0tBJPZiwkOcK6V2VrIPHX+/MEdSYgtsOfkLE/8qcd4+1Tfh69TVPYu7fggfVZsmmuKnDKTpiT1S+6+WXZ1i8FOyVJ1ky5RSf+ir0E2uMEQaBu7Crtr36uZSSf/Mqq0rGuXwBnVxFqQTFpVCzp0PQ91PhfrWfkjm4nr2+bDCgm0EUlorLpQyDwRXetmUZRG/cAOjLGVMOijCgv2M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(136003)(376002)(39850400004)(478600001)(15650500001)(5660300002)(2906002)(38350700002)(38100700002)(4744005)(7416002)(186003)(16526019)(52116002)(6666004)(26005)(956004)(66556008)(2616005)(66946007)(53546011)(66476007)(16576012)(316002)(6486002)(86362001)(8936002)(31686004)(8676002)(83380400001)(4326008)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cldYZEEwSlBrZWlpYVg3RTAzY2owaThOb0x1c0lnN2FraWZCMkxOMXJkeThl?=
- =?utf-8?B?OGM2WG1SVG1oWTRuTjllZXl5SjEyRUFqTGM5NDZ0b0ZGTzAxQ0hNTHp0b0Zw?=
- =?utf-8?B?bFFDV29HcGdpOW4yOTJlNFlCSWVrZ2hMdkFDbHQrY2d5YWpNYkxjMEZYYVhz?=
- =?utf-8?B?WXVYZHVRM0Y0YUE5Y055Rmx6TXd3UndKbmc0SmxCaFFlKzlmdWFyM0RYVmpm?=
- =?utf-8?B?WU5qZS9JWTRCM1FmOUV0N091YWFCTXIwOFRBc29DZUR1N1ZMbU1sdmFMaXJ4?=
- =?utf-8?B?YTJxNGRXSEk2dFhUSjF3cVJTdjVwcmZzNjZTazBTUFhuOTljY3A0MlNEWUtm?=
- =?utf-8?B?V2FLa21WMmxpR0pKbjM1bTJ5MldoYXhUWVZRc3drRkZQTWNjU2M2V0hFcmRT?=
- =?utf-8?B?WlNqMUhZa01hTXJDblpteUY1V2ZlZjVWVUw2ZnByNkNiRTJyak5GV1BMZ3B4?=
- =?utf-8?B?M0NqeHliaDhIV2l1MExVUVM3aWJXazUvc3JhYm9VMTA3b1QxdEtpa0hCT0RL?=
- =?utf-8?B?QW5ZaHpsSFd4enV2bFcrMTAzS3VyWEhlTGlCVFZ1eU5SaHhkOHJVaktsTUM4?=
- =?utf-8?B?SW1sS1lFT1pwQ3pJSEhxV0tTL2pZMmZaRGdMTERIOEhRVitqRVp1YmFrY1BK?=
- =?utf-8?B?VUlOZjhpR0ZQTEVPT0NlZGMrRU16ejloTElYK0lyTjFXMGljSDgySlBMZUFw?=
- =?utf-8?B?TUNRSDVra2tOeGFxN0EzbHFhbU4wMk5sU0pIS0E3UnQ5Z0JJRnVrUktJR1pQ?=
- =?utf-8?B?dVRJZ1Vuek9KK2laMklTTHUrbWVqMnViR3lwRGZ5QXY5ZEE4QVUzTWJsWXEx?=
- =?utf-8?B?aGxGSk1KTHo2a29aK1RuUVljWmJvRFdUM1RKMy8xbkN1dklDTE05ZkhmV1h3?=
- =?utf-8?B?enJwVXd5K0ZBbkFhSlc3RVJKMEdHYmpvMkU5NExJOW5VMGJxVGlPdTYwdnZQ?=
- =?utf-8?B?NnJzZ1cxQXhEWGlXcmNBWUc2WXU2OE1oTUJPeWxrRHQxOTZOMVpBQk9MMndo?=
- =?utf-8?B?aUxWbEVmL2VCdG9PR2dJZVQ4Q244N2pZdW5JUFVkc21FSUlpb0tsK1QzUHNH?=
- =?utf-8?B?SW5HQ3IzVEVJSG1US3VKcTNxaHk5Y0lDOEdPM3NYaG91Mk9YeHRXdEFQWGlw?=
- =?utf-8?B?cmRocHZydUc2QnBqMzdPc0E0TUhWLzk2N3lJbFlnSU1aeXU3Q0dEK2toUmpr?=
- =?utf-8?B?TStEcGlNWWhsUVpmMllRSSsxaW1HNFRNZFQycXBNMHNMaW9OOS8rMHFhU25a?=
- =?utf-8?B?VHVqOFRuNzNPN3FrZW10RGJJTFpFUFNpK2ozTzBJNUpRRyszdWlWbnRaRnlS?=
- =?utf-8?B?dEdTV1VZcE04L1FjamlQLzMwY1V0ZE1lbnVjSldLa21UcnF6UTJoanpNNnYw?=
- =?utf-8?B?aTB1WTlERi9PTW5aRUNHc2pseEl3UTNIbSs5WjhINDVhN3BTVVFCZnhRT2lv?=
- =?utf-8?B?b1RHU3A4L0hFQlJPeVdxQ29ZQ21WajZIUmpoQ2VXUEFFdlI2NGZURkYyMlpM?=
- =?utf-8?B?SUJjQjd2Um15dUNxcGNhaW95WjhaU25FRTRqTEw1cGcxUVkvS2FmbUVoZzBG?=
- =?utf-8?B?TDAxZHFXQlc5OE1xU2VzbGg4cllFa0t5SmlaTjFaUWxkSEQxVVFESDdLU2pi?=
- =?utf-8?B?Sm12T3ZzR0NVVDR4NFV1ZVBtdDdjaEg5V0RRTWo4bTZjVTdJblN2cWt1R3hY?=
- =?utf-8?B?dDkxcS9wOWE5K1FleCs5V0Y3bkw4ZU5mOElKckJrSHBxcGJPY2V6NG1XM3lW?=
- =?utf-8?Q?5CUZxp1bMYj06OFiWKnqMPwoWgnop+4wEJnlxZs?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad8995da-3989-4a25-8250-08d9200c731a
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 06:06:49.5018
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lT15XPgaEn/MdzVw0W4WD+asqUM2mPQXzQ/p1PljdwG9adIqGi/leAmxpHJhnHtWhWuQv8PwXGin8Btw87J2LA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6860
+In-Reply-To: <20210523140332.GA1097@bobwxc.top>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: LCKnCgCXXkHB5a1g_iA_AA--.16783S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr17KFWUJw17CF47uw1xXwb_yoWftrW5pF
+        WvgF97KF4UZryUA348K3WUXF1akF97uF43tF18ta4Sqrn5AFZakrZFgFyqg34fWry8ZF98
+        Za1FgFyUuw1jyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JrC_JFWl8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28E
+        F7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWxJr1UJwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4
+        CEbIxvr21l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUv
+        cSsGvfC2KfnxnUUI43ZEXa7VU0mhF7UUUUU==
+X-Originating-IP: [113.204.183.194]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jassi, Shawn
 
-On 2021/5/7 18:19, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> i.MX8ULP generic MU is a different IP compared with previous i.MX chips.
-> It has different register layout and bit position, but the register name
-> and bit definitions are almost same with previous i.MX MU.
-> 
-> So we extend the current imx-mailbox driver to support i.MX8ULP.
+在 2021/5/23 下午10:03, Wu X.C. 写道:
+>> Create new translations for dev-tools/testing-overview.rst and link it
+>> to dev-tools/index.rst with TODOList modifications.
+>>
+>> Signed-off-by: Hu Haowen <src.res@email.cn>
+>> ---
+>>   .../translations/zh_CN/dev-tools/index.rst    |  2 +
+>>   .../zh_CN/dev-tools/testing-overview.rst      | 99 +++++++++++++++++++
+>>   2 files changed, 101 insertions(+)
+>>   create mode 100644 Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+>>
+>> diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
+>> index 7ba02fc392a6..b6b6d3b09acc 100644
+>> --- a/Documentation/translations/zh_CN/dev-tools/index.rst
+>> +++ b/Documentation/translations/zh_CN/dev-tools/index.rst
+>> @@ -22,6 +22,7 @@ Documentation/dev-tools/testing-overview.rst
+>>      :maxdepth: 2
+>>   
+>>      gcov
+>> +   testing-overview
+>>   
+>>   Todolist:
+>>   
+>> @@ -32,6 +33,7 @@ Todolist:
+>>    - ubsan
+>>    - kmemleak
+>>    - kcsan
+>> + - kfence
+>>    - gdb-kernel-debugging
+>>    - kgdb
+>>    - kselftest
+>> diff --git a/Documentation/translations/zh_CN/dev-tools/testing-overview.rst b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+>> new file mode 100644
+>> index 000000000000..6e2046ac53ff
+>> --- /dev/null
+>> +++ b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+>> @@ -0,0 +1,12 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +.. include:: ../disclaimer-zh_CN.rst
+>> +
+>> +:Original: Documentation/dev-tools/testing-overview.rst
+>> +:Translator: 胡皓文 Hu Haowen <src.res@email.cn>
+>> +
+>> +============
+>> +内核测试指南
+>> +============
+>> +
+>> +有许多不同的工具可以用于测试Linux内核，因此知道什么时候使用它们可能
+> s/知道/了解/
+>
+>> +很困难。该文档提供了它们之间区别的一个粗略概览，并阐释了它们怎样糅
+> maybe
+> 本文档粗略概述了它们之间的区别
+>
+> 是怎样
+>
+>> +合在一起的。
+>> +
+>> +编写和运行测试
+>> +==============
+>> +
+>> +大多数内核测试都是用kselftest或KUnit框架之一编写的。它们都让运行测试
+>>
+>> 都提供了让运行测试更简单的的基础设施，
+>>
+>> +更加简化，并为编写新测试提供帮助。
+>> +
+>> +如果你想验证内核的行为——尤其是内核的特定部分——那你就要使用kUnit或
+>> +kselftest。
+>> +
+>> +KUnit和kselftest的区别
+>> +----------------------
+>> +
+>> +KUnit（Documentation/zh_CN/dev-tools/kunit/index.rst）是用于“白箱”测
+> Seems we don't have this translation yet, so plese use the link point to En version.
+> So as followed paths.
 
-Gentle ping.. Except dt-bindings patch get A-b from Rob,no comments.
-Is it ok for you to pick up this patchset?
 
-Thanks,
-Peng.
+How do I add a link to the English version? Should I mark this section
+in a comment here or directly explain in the document?
 
-> 
-> Peng Fan (4):
->    dt-bindings: mailbox: imx-mu: add i.MX8ULP MU support
->    mailbox: imx: replace the xTR/xRR array with single register
->    mailbox: imx: add xSR/xCR register array
->    mailbox: imx-mailbox: support i.MX8ULP MU
-> 
->   .../devicetree/bindings/mailbox/fsl,mu.yaml   |   1 +
->   drivers/mailbox/imx-mailbox.c                 | 196 +++++++++++-------
->   2 files changed, 123 insertions(+), 74 deletions(-)
-> 
+
+>> +试的一个完整的内核内部系统：因为测试代码是内核的一部分，所以它能够访
+>> +问用户空间不能访问到的内部结构和功能。
+>> +
+>> +因此，KUnit测试最好不要写得太小，也不要有内核中本身包含的部分，以便
+> seems a translation mistake?
+>
+> against small, self-contained parts of the Kernel
+> 最好针对内核中较小的、自包含的部分，
+>
+>> +能够独立地测试。‘单元’测试的概念亦是如此。
+> ‘’ -> “” would be better
+>
+>> +
+>> +比如，一个KUnit测试可能测试一个单独的内核功能（甚至通过一个函数测试
+>> +一个单一的代码路径），而不是整个地测试一个特性。
+> missed a sentence
+>         , such as an error handling case
+>
+>> +
+>> +这也使得KUnit测试构建和运行非常地快，从而能够作为开发流程的一部分被
+> 的测试构建和运行非常快
+>
+>> +频繁地运行。
+>> +
+>> +有关更详细的介绍，请参阅KUnit测试代码风格指南
+>> +Documentation/translations/zh_CN/dev-tools/kunit/style.rst
+> ^path
+>
+>> +
+>> +kselftest（Documentation/translations/zh_CN/dev-tools/kselftest.rst），
+> ^path
+>
+>> +另一方面，大量地在用户空间被实现，并且测试通常是用户空间的脚本或程序。
+> 相对来说，大量用于用户空间，并且通常测试用户空间的脚本或程序。
+>
+>> +
+>> +这使得编写复杂的测试，或者需要操作更多全局系统状态的测试更加容易（诸
+>> +如生成进程之类）。然而，从kselftest直接调用内核函数是不行的。这也就
+>> +意味着只有通过某种方式（如系统调用、驱动设备、文件系统等）导出到了用
+>> +户空间的内核功能才能使用kselftest来测试。为此，有些测试包含了一个伴
+>> +生的内核模块用于导出更多的信息和功能。不过，对于基本上或者完全在内核
+>> +中运行的测试，KUnit可能是更佳工具。
+>> +
+> missed a paragraph
+>
+>         kselftest is therefore suited well to tests of whole features, as these will
+>         expose an interface to userspace, which can be tested, but not implementation
+>         details. This aligns well with 'system' or 'end-to-end' testing.
+>
+>
+>> +比如，一个新的系统调用应该伴随有新的kselftest测试。
+>> +
+>> +代码覆盖率工具
+>> +==============
+>> +
+>> +Linux内核支持不同代码之间的覆盖率测量工具。这能被用来验证一个测试是
+> 支持两种不同的代码覆盖率测试工具。
+>
+> 它们可以用来验证一项测试执行的确切函数或代码行。
+>
+>> +执行的特定的函数或者特定行的代码。这有助于决定内核被测试了多少，或
+>> +用来查找合适的测试中没有覆盖到的极端情况。
+>> +
+>> +:doc:`gcov` 是GCC的覆盖率测试工具，能用于获取内核的全局或每个模块的
+>> +覆盖率。与KCOV不同的是，这个工具不记录每个任务的覆盖率。覆盖率数据可
+>> +以通过debugfs读取，并通过常规的gcov工具进行解释。
+>> +
+>> +:doc:`kcov` 是能够构建在内核之中，用于在每个任务的层面捕捉覆盖率的一
+>> +个功能。因此，对于代码执行位置信息的其它情况，它是非常有用的，比如在
+> 因此，它对于模糊测试和关于代码执行期间信息的其它情况非常有用。
+>
+>> +一个单一系统调用里使用它就很有用。
+>> +
+>> +动态分析工具
+>> +============
+>> +
+>> +内核也支持许多动态分析工具，用以检测正在运行的内核中出现的多种类型的
+>> +问题。这些工具尤其用于不同类型的漏洞，比如非法内存访问，诸如数据竞争
+> 这些工具通常每个去寻找一类不同的缺陷，比如非法内存访问，数据竞争等并发问题，
+> 或整型溢出等其他未定义行为。
+>
+>> +的并发问题，或者整型溢出的其它未定义的行为。
+>> +
+>> +一些工具如下：
+> 如下所示
+>
+>> +
+>> +* kmemleak检测可能的内存泄漏。参阅
+>> +  Documentation/dev-tools/kmemleak.rst
+>> +* KASAN检测非法内存访问，如数组越界和释放内存后再使用的错误。参阅
+> 释放后重用（UAF）
+>
+>> +  Documentation/dev-tools/kasan.rst
+>> +* UBSAN检测C标准中未定义的行为，如整型溢出。参阅
+>> +  Documentation/dev-tools/ubsan.rst
+>> +* KCSAN检测数据竞争。参阅 Documentation/dev-tools/kcsan.rst
+>> +* KFENCE是一个低开销的内存问题检测器，比KASAN更快而能被用于批量构建。
+> 而 -> 且
+>
+>> +  参阅 Documentation/dev-tools/kfence.rst
+>> +* lockdep是一个锁定正确性检测器。参阅
+>> +  Documentation/locking/lockdep-design.rst
+>> +* 除此以外，在内核中还有一些其它的调试工具，大多数能在
+>> +  lib/Kconfig.debug 中找到。
+>> +
+>> +这些工具倾向于对内核进行整体测试，并且不像kselftest和KUnit一样“传递”。
+>> +它们能与kselftest和KUnit结合起来，通过激活这些工具在一个内核上运行测
+>> +试：之后你就能确保这些错误在测试过程中都不会发生了。
+> 它们可以通过在启用这些工具时运行内核测试以与kselftest或KUnit结合起来：
+>
+>> +
+>> +一些工具与KUnit和kselftest集成，并且当问题被检测时测试会自动失败。
+> 并且在检测到问题时会自动打断测试。
+>
+>> +
+>> -- 
+>> 2.25.1
+> And please re-arrange your patches in appropriate thread and remember to change
+> version each time when you send them, or may let Corbet confused.
+
+
+Other places have already fixed, waiting for a solution for the problem
+above. Btw, I'm a bit busy these days, sorry for my late reply.
+
+Thx,
+Hu Haowen
+
+
+> Thanks,
+>          Wu X.C.
+>
+
