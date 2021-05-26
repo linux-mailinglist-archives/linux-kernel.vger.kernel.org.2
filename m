@@ -2,206 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2402D391FCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41491391FD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhEZTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbhEZS7w (ORCPT
+        id S234847AbhEZTAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:00:14 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33229 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234468AbhEZTAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:59:52 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9F6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:58:19 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id d25so2160603ioe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8SDJrdOBe6ySfeILDdQr6VPuIr0LmlxVhGD8mArU7LU=;
-        b=p9yXbqGk0cvod+zrx+1bSBAhif3+gKbuRHcUglongDOLMz4EimhMJsF8bpCYgx7H5r
-         sniXu1Ax7gMidqlYWmqYj/wkA2NVqUy/QIq7M9knO8QALo8AjVfCCYagSI0qzOk3r2FE
-         3b2g9aE0xg/qBBkcYowKhwqkubXpjWTLDWN+3NRFpC8mXr7jGNUXGSYgWxC9xUKvJYwO
-         UOEyrgBbQvP/0HaMV0Vt+LRFWEqL5x7PgdL4cIiwlFlukiVXNn2tWIXzO5SNe67Il2/r
-         eN6BVW5gfxFqJ+g1Cd9r4VYx8A5SrGYqeqKlWg3sM0xXk91iFVoWgp+c14TVC9NJPWAp
-         G1jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8SDJrdOBe6ySfeILDdQr6VPuIr0LmlxVhGD8mArU7LU=;
-        b=EeFilPvnC2Z+tySrE6Z3RsVvpu+F3QmHq/bH73XOU4y+G4Nnbo0t0d8NRO/dI6gYxw
-         kXJgbEAjXlqOoxK9bh076QX3draQHma0HOmr0oqJg3gbRNHAVHHafgsZhkKR8KZG6qTX
-         TXSfjTwUo+MtZHhEzW8gITsHk4y/vxmxS52rpVwXD8xKla0Img0SCpkWVOdNpdx6i1Iy
-         bzQtP+WRK/WdA9fttGtLsl0pWYh2E2nPPWXIzFPPFTuYTUbYK8AyEmdRvpLHwGZvoyBD
-         qYmRrHCIzlcjcM3S3vNPehiw8w11oxsNxR2fB+ODR19vgjDoiW3Nfze0Qm/mlqAng9K1
-         bgzg==
-X-Gm-Message-State: AOAM5336IWcrTDRW1CGM1mTwigBlZf7UvEpUpgk9QkFYIS83YD/wxXIN
-        wuPVc2QFYxn79zlk4L0O7U/xedMeDSC32/dXb2Z8OQ==
-X-Google-Smtp-Source: ABdhPJwmChVDWgXo3Tj7mlUabezrYgoCfq+vfWtJuuc6bdJKjfkMTfaYpE6qGFzk6hRHxgyDwVAfKRiW7vVdMH44Zsg=
-X-Received: by 2002:a02:aa85:: with SMTP id u5mr4725019jai.75.1622055498359;
- Wed, 26 May 2021 11:58:18 -0700 (PDT)
+        Wed, 26 May 2021 15:00:11 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id ECB4B14AC;
+        Wed, 26 May 2021 14:58:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 26 May 2021 14:58:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=NpJ6naHFWYIcg14MtZ0okynKQF2
+        220L3LTilX7Fdt8Q=; b=R0eOAu2588DReCV3yDnjTVD/7iy/lT10ZQjlQaaqAWd
+        I1W3HuDiLTlk2dq8tAU7Om3E9ZUQAKasaOGDMKuS6D6P8ywD6ky35W86vT67IVqY
+        xYrbB/1XsO9lFOi3j3Ve71CEdOva15l6MvYmve8nAUEGkVD9ghc0+u+HIz0+d7Oo
+        22twzpmJpgq8PrRsYSD/cpMFKDZ4IOQtS5IX10JfwE7j2bMzYNkg0EKCPdp/nG26
+        3dHXDLwrtQ3BHW0+Qqz48Fdr3qPjsQKyUzuATiPy+refXKPQID666SYQn6zSqdh2
+        WomQF6sQ7GPcDLZz3X7xf4H25SLI52QPHoOdvxAJajg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=NpJ6na
+        HFWYIcg14MtZ0okynKQF2220L3LTilX7Fdt8Q=; b=KCod5VY+SFjIvXis6BiXqb
+        5JiJ0LmCxiuA8AVri7G8awU9nyLV2JYvoOjljsRLAMzrMcs/pKsmMIX/uYGqNyf8
+        cESxUGgEFQVoDx87ex2FqymwDyoUeNr+PuKI4rgVxKzXqpsIZIWIG61uBrfIgjfZ
+        DtYFAmPkudm+a7TArlU9oc/BxAp9kzR5+vj42g/6kfvl6JtuPQUEq7abCQs0nPcn
+        u7k/TRdFfhj3vH+VP117XTnVME0M4M0YkerqujiLtWdrYate6e88PWWvYVG5p2h1
+        DSq0ll1YA7qEbCf6edteCWEWm3b7IjjYEZ4GWOqMv//oyRXmSKiUHZ6utKGUWxYA
+        ==
+X-ME-Sender: <xms:XJquYLLd8OpLqnSf8uGuaMcjt2qtxtHoexgisrvSs83es1Wk5ABYbw>
+    <xme:XJquYPJsynOt4rcR_6QIULM1gkFtxzBV7-HkMFIMbflFTTE7TbMWHDlyqmMLgws0h
+    LYAa2PbY_i956SNO8k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekfedgudefvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:XJquYDsnim2Y_qES1CNl2qQ5wXSrQJ_WzMMQsAVQlVe7rWrc4tZ4RA>
+    <xmx:XJquYEYiWVx5Iqgb4e7gjQY_ryD_6m5eFKSv3h5gIWszUXmspSuUew>
+    <xmx:XJquYCZAiu-lL-CrtPMyMx91wQlvKy1hgoFO8x2bGkip_OeHs_1aog>
+    <xmx:XZquYHMT-WhuIlpBa-CxmxBpFCKqgjt_edcy98WDpPdNM8ywUwVstw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 26 May 2021 14:58:35 -0400 (EDT)
+Date:   Wed, 26 May 2021 20:58:32 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v7 0/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <20210526185832.zuyllkvzrt5shok6@gilmour>
+References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+ <95e93676-cfcf-1aed-1741-d69b72286033@sholland.org>
+ <20210525180744.24187bb1@monster.powergraphx.local>
 MIME-Version: 1.0
-References: <20210526081112.3652290-1-davidgow@google.com> <20210526081112.3652290-3-davidgow@google.com>
-In-Reply-To: <20210526081112.3652290-3-davidgow@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 26 May 2021 11:58:07 -0700
-Message-ID: <CAGS_qxpEJMM5kAMn=+5Y+c2YvOEw_aBEkTW98ncv36gu4L84tQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kunit: test: Add example_skip test suite which is
- always skipped
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="d6wsauybj7svw243"
+Content-Disposition: inline
+In-Reply-To: <20210525180744.24187bb1@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 1:11 AM 'David Gow' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> Add a new KUnit test suite which contains tests which are always
-> skipped. This is used as an example for how to write tests which are
-> skipped, and to demonstrate the difference between kunit_skip() and
-> kunit_mark_skipped().
->
-> Because these tests do not pass (they're skipped), they are not enabled
-> by default, or by the KUNIT_ALL_TESTS config option: they must be
-> enabled explicitly by setting CONFIG_KUNIT_EXAMPLE_SKIP_TEST=y in either
-> a .config or .kunitconfig file.
->
-> Signed-off-by: David Gow <davidgow@google.com>
 
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+--d6wsauybj7svw243
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-LGTM, two minor nits, and as noted elsewhere, I'd like it if we could
-have this be in the normal example test.
-But even if that doesn't happen, this seems fine to me.
+Hi,
 
-> ---
->  lib/kunit/Kconfig                   | 15 +++++++++
->  lib/kunit/Makefile                  |  2 ++
->  lib/kunit/kunit-example-skip-test.c | 52 +++++++++++++++++++++++++++++
->  3 files changed, 69 insertions(+)
->  create mode 100644 lib/kunit/kunit-example-skip-test.c
->
-> diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-> index 0b5dfb001bac..399fe5f789f7 100644
-> --- a/lib/kunit/Kconfig
-> +++ b/lib/kunit/Kconfig
-> @@ -45,6 +45,21 @@ config KUNIT_EXAMPLE_TEST
->           is intended for curious hackers who would like to understand how to
->           use KUnit for kernel development.
->
-> +config KUNIT_EXAMPLE_SKIP_TEST
-> +       tristate "Skipped test example for KUnit"
-> +       default n
-> +       help
-> +         Enables an example unit test that is always skipped.
-> +
-> +         This test only exists to help new users understand what KUnit is and
-> +         how it is used. Please refer to the example test itself,
-> +         lib/kunit/example-test.c, for more information. This option is
-> +         intended for curious hackers who would like to understand how to use
-> +         KUnit for kernel development.
-> +
-> +         Because this test does not pass, it is not enabled by
-> +         CONFIG_KUNIT_ALL_TESTS
-> +
->  config KUNIT_ALL_TESTS
->         tristate "All KUnit tests with satisfied dependencies"
->         help
-> diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
-> index c49f4ffb6273..8a99ff2f83bd 100644
-> --- a/lib/kunit/Makefile
-> +++ b/lib/kunit/Makefile
-> @@ -18,3 +18,5 @@ obj-$(CONFIG_KUNIT_TEST) +=           string-stream-test.o
->  endif
->
->  obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=    kunit-example-test.o
-> +
-> +obj-$(CONFIG_KUNIT_EXAMPLE_SKIP_TEST) +=       kunit-example-skip-test.o
-> diff --git a/lib/kunit/kunit-example-skip-test.c b/lib/kunit/kunit-example-skip-test.c
-> new file mode 100644
-> index 000000000000..5395ee0be485
-> --- /dev/null
-> +++ b/lib/kunit/kunit-example-skip-test.c
-> @@ -0,0 +1,52 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Example KUnit test which is always skipped.
-> + *
-> + * Copyright (C) 2021, Google LLC.
-> + * Author: David Gow <davidgow@google.com>
-> + */
-> +
-> +#include <kunit/test.h>
-> +
-> +/*
-> + * This test should always be skipped.
-> + */
-> +
-> +static void example_skip_test(struct kunit *test)
-> +{
-> +       /* This line should run */
-> +       kunit_log(KERN_INFO, test, "You should not see a line below.");
+On Tue, May 25, 2021 at 04:07:44PM +0000, Wilken Gottwalt wrote:
+> On Mon, 15 Mar 2021 23:33:31 -0500
+> Samuel Holland <samuel@sholland.org> wrote:
+>=20
+> > On 3/14/21 4:30 AM, Wilken Gottwalt wrote:
+> > > Wilken Gottwalt (2):
+> > >   dt-bindings: hwlock: add sun6i_hwspinlock
+> > >   hwspinlock: add sun6i hardware spinlock support
+> > >=20
+> > >  .../allwinner,sun6i-a31-hwspinlock.yaml       |  45 ++++
+> > >  MAINTAINERS                                   |   6 +
+> > >  drivers/hwspinlock/Kconfig                    |   9 +
+> > >  drivers/hwspinlock/Makefile                   |   1 +
+> > >  drivers/hwspinlock/sun6i_hwspinlock.c         | 210 ++++++++++++++++=
+++
+> > >  5 files changed, 271 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/allwinne=
+r,sun6i-a31-hwspinlock.yaml
+> > >  create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
+> > >=20
+> >=20
+> > Thanks for the very thorough testing!
+>=20
+> So when will this end up in mainstream? Or do I have to somehing to get t=
+his
+> triggered? This is not my first driver and back then it was included into
+> mainline without anything special on my side. I'm a bit confused. Did I m=
+iss
+> something?
 
-Btw, why not "kunit_info(test, ...)" ?
+No, you did nothing wrong, I'd expect Baolin, Bjorn or Ohad to merge these =
+patches.
 
-> +
-> +       /* Skip (and abort) the test */
-> +       kunit_skip(test, "this test should be skipped");
-> +
-> +       /* This line should not execute */
-> +       kunit_log(KERN_INFO, test, "You should not see this line.");
+Maxime
 
-Would it be more or less confusing to have
+--d6wsauybj7svw243
+Content-Type: application/pgp-signature; name="signature.asc"
 
-KUNIT_FAIL(test, "We should not get to this line")
+-----BEGIN PGP SIGNATURE-----
 
-maybe in addition or instead of this log?
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYK6aWAAKCRDj7w1vZxhR
+xQagAP92zLkn/Uw/LxUwJdMvFc8A0KDx0/pX3G3XMhPjmG2FJwEA84Ts+BKmpTPT
+/lhZUimvtCIrnvjWTI0J/QIUHw9Mtwg=
+=clXK
+-----END PGP SIGNATURE-----
 
-> +}
-> +
-> +static void example_mark_skipped_test(struct kunit *test)
-> +{
-> +       /* This line should run */
-> +       kunit_log(KERN_INFO, test, "You should see a line below.");
-> +
-> +       /* Skip (but do not abort) the test */
-> +       kunit_mark_skipped(test, "this test should be skipped");
-> +
-> +       /* This line should run */
-> +       kunit_log(KERN_INFO, test, "You should see this line.");
-> +}
-> +
-> +static struct kunit_case example_skip_test_cases[] = {
-> +       KUNIT_CASE(example_skip_test),
-> +       KUNIT_CASE(example_mark_skipped_test),
-> +       {}
-> +};
-> +
-> +static struct kunit_suite example_skip_test_suite = {
-> +       .name = "example_skip",
-> +       .test_cases = example_skip_test_cases,
-> +};
-> +
-> +kunit_test_suites(&example_skip_test_suite);
-> +
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.31.1.818.g46aad6cb9e-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210526081112.3652290-3-davidgow%40google.com.
+--d6wsauybj7svw243--
