@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DE33912FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7614E391305
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhEZIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbhEZIt7 (ORCPT
+        id S233277AbhEZIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:52:31 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:46894 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232617AbhEZIwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:59 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE35BC061357
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:48:10 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso2908683wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
-        b=nP2v/yOq7y++OdxD8esKUXZCbD7knxLYxvNUMGe8eczAbKtAZB0Noi4WYds+F5h4nF
-         aHEDPl4vj4f/qqvIdFUNo83sIAVBvdjTgk6IAVHC4XA9RTrRO7lUGH72cSg7RAQ/IbuZ
-         ozf7cJcgZzhq6Oo6M9Xmg1dWZV054Ha+tCTpbtll+jmQpmcuWwUxfL1eRhlaRGIVhRen
-         04os9v7VPlmlAlSZdYJO9oNMQ32kKvCo5X/PcNFikiqHPyBk6x1B5XJdzCz3Fy8zVAIU
-         /mr1dy1c4bpQ6K7zWoMUQjifoDJkObY6Xqe0TS7+2tr2IbmPkzsvr01ABIRkB1uRroVF
-         aSOg==
+        Wed, 26 May 2021 04:52:30 -0400
+Received: by mail-ua1-f42.google.com with SMTP id h26so340746uab.13;
+        Wed, 26 May 2021 01:50:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kVk/K6SiOopKBeZrOFr3ETwL2h0sUuVeJjHQIvLbemo=;
-        b=I9frwQ3KCnmn2s2FbVQD4LhVMQmmIvR1Wg6/KWptfG3C8gZJ4QTDHOcaKIlHHoY2YD
-         63ptnfkuyR8P1q6xwb2dHObyUDALLVgHmh/AzEh4CrS8Pi9sB+tu1qIFWlSCqcgCTmpe
-         P9cztadF0sct9FykDUgUqQcyB/q0Sf3TqqCGropx84RGNlony7quG8Fx/lkAFFLMCbvs
-         Tng7ESg2CCkJLSTvtPvIyBNh0rnTvGB+3ny/YuyT7GrA7/mWIaM+aDJYrBVd6nDjrq5e
-         NAqk0b7sPrrgL69njyxRswn5sHqrwFjN+ucmt4vHIL182KNeiFO1vCTc/b0ZVebdRDQq
-         Rlpg==
-X-Gm-Message-State: AOAM530ZfJGjcpIt5620UQhQJR9DgHs1ZV8Vdqn3l7fZunMXHogeru4V
-        yNRJHML8J6QZs43unHAAzbxzsQ==
-X-Google-Smtp-Source: ABdhPJwPUsJd89Hlud9WCfrbJsuLZuyhv1Vh6sXdRQBlQX/zH3fwxRZXrKlzShfCGJ2d+PE2esLA1w==
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr28151212wmp.164.1622018889518;
-        Wed, 26 May 2021 01:48:09 -0700 (PDT)
-Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:48:09 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 34/34] drm/vboxvideo/modesetting: Provide function names for prototype headers
-Date:   Wed, 26 May 2021 09:47:26 +0100
-Message-Id: <20210526084726.552052-35-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
-References: <20210526084726.552052-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ftj/o/FDlLZjvveU5gflHCydxVxy9/duOHSuWLsKuds=;
+        b=gzUBebI1WuB/5fkUx1y0oflbKBO2nJRvgKevQ/1JqUA1aPixRsQ6XgY/E+PGl8YFDb
+         v6YXbmpQFoXXfjX9RnX1PIAnnXPOlmmuqsSJMQ0/QwRjW0m6/lo/b5eEQKpLzDa+3K+G
+         CpmFqw8dQUzeJORNcWefueRBdAD6znRBePDhcBH3aECy5Qdsoyzsncmz8AsvqDGnS/AT
+         cexFtZLcaUFwLO/Fzu9ZkDc8UajoqK4yRvUiuv7XzGoalsHpBhiOTkV1rN6NxTTQcjBY
+         PvOSA7EnnucGnAY+FjyX1LD+YuYYZF2+NL0gIIOeJa6W/n6S9MBy40PCx6KAIhnLaZxq
+         mqrQ==
+X-Gm-Message-State: AOAM530/mpYKMt+3kw+JWnyAo4LXGfKlrxCVsg8sQoHi4cOYqB6jTpKD
+        jQXOFBTcNNnAT46FiffZkFUL5RaZbFHpP6bwrfU3LpM8
+X-Google-Smtp-Source: ABdhPJywUZ6Xwv+zij4MSQ000T5eibp+TpLy3YyyGoFqj+kf4ejbTke4WZLjWrCgAdHGlnISxwMlbpFtCE1QmEgp5j8=
+X-Received: by 2002:ab0:2a8b:: with SMTP id h11mr31904723uar.4.1622019058834;
+ Wed, 26 May 2021 01:50:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210330145430.996981-1-maz@kernel.org> <20210330145430.996981-8-maz@kernel.org>
+ <CAMuHMdWd5261ti-zKsroFLvWs0abaWa7G4DKefgPwFb3rEjnNw@mail.gmail.com>
+ <6c522f8116f54fa6f23a2d217d966c5a@kernel.org> <CAMuHMdWzBqLVOVn_z8S2H-x-kL+DfOsM5mDb_D8OKsyRJtKpdA@mail.gmail.com>
+ <8735u9x6sb.wl-maz@kernel.org> <CAMuHMdUBwcB-v0ugCPB3D6dbttiSbqQeHgNrr+r331ntRrfiAw@mail.gmail.com>
+ <871r9tx5dq.wl-maz@kernel.org>
+In-Reply-To: <871r9tx5dq.wl-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 May 2021 10:50:47 +0200
+Message-ID: <CAMuHMdVFE=RB5wPUi9PH5WeQPSYfcg+ugKigB4nAo9yotO+WYg@mail.gmail.com>
+Subject: Re: [PATCH v19 7/7] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     jianyong.wu@arm.com, netdev <netdev@vger.kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, KVM list <kvm@vger.kernel.org>,
+        Steve Capper <Steve.Capper@arm.com>, justin.he@arm.com,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi Marc,
 
- drivers/gpu/drm/vboxvideo/modesetting.c:11: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/modesetting.c:54: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/gpu/drm/vboxvideo/modesetting.c:87: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+On Wed, May 26, 2021 at 10:32 AM Marc Zyngier <maz@kernel.org> wrote:
+> On Wed, 26 May 2021 09:18:27 +0100,
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, May 26, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > On Wed, 26 May 2021 08:52:42 +0100,
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Tue, May 11, 2021 at 11:13 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > On 2021-05-11 10:07, Geert Uytterhoeven wrote:
+> > > > > > On Tue, Mar 30, 2021 at 4:56 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > >> From: Jianyong Wu <jianyong.wu@arm.com>
+> > > > > >
+> > > > > >> --- a/drivers/ptp/Kconfig
+> > > > > >> +++ b/drivers/ptp/Kconfig
+> > > > > >> @@ -108,7 +108,7 @@ config PTP_1588_CLOCK_PCH
+> > > > > >>  config PTP_1588_CLOCK_KVM
+> > > > > >>         tristate "KVM virtual PTP clock"
+> > > > > >>         depends on PTP_1588_CLOCK
+> > > > > >> -       depends on KVM_GUEST && X86
+> > > > > >> +       depends on (KVM_GUEST && X86) || (HAVE_ARM_SMCCC_DISCOVERY &&
+> > > > > >> ARM_ARCH_TIMER)
+> > > > > >
+> > > > > > Why does this not depend on KVM_GUEST on ARM?
+> > > > > > I.e. shouldn't the dependency be:
+> > > > > >
+> > > > > >     KVM_GUEST && (X86 || (HAVE_ARM_SMCCC_DISCOVERY && ARM_ARCH_TIMER))
+> > > > > >
+> > > > > > ?
+> > > > >
+> > > > > arm/arm64 do not select KVM_GUEST. Any kernel can be used for a guest,
+> > > > > and KVM/arm64 doesn't know about this configuration symbol.
+> > > >
+> > > > OK.
+> > > >
+> > > > Does PTP_1588_CLOCK_KVM need to default to yes?
+> > > > Perhaps only on X86, to maintain the status quo?
+> > >
+> > > I think I don't really understand the problem you are trying to
+> > > solve. Is it that 'make oldconfig' now asks you about this new driver?
+> > > Why is that an issue?
+> >
+> > My first "problem" was that it asked about this new driver on
+> > arm/arm64, while I assumed there were some missing dependencies
+> > (configuring a kernel should not ask useless questions).  That turned
+> > out to be a wrong assumption, so there is no such problem here.
+> >
+> > The second problem is "default y": code that is not critical should
+> > not be enabled by default.  Hence my last question.
+>
+> I think consistency between architectures is important. Certainly,
+> distributions depend on that, and we otherwise end-up with distro
+> kernels missing functionalities.
+>
+> The notion of "critical" is also pretty relative. defconfig contains a
 
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/vboxvideo/modesetting.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+I'm not talking about defconfig, but about "default y" in defconfig.
 
-diff --git a/drivers/gpu/drm/vboxvideo/modesetting.c b/drivers/gpu/drm/vboxvideo/modesetting.c
-index 7580b90023792..10b32d986b956 100644
---- a/drivers/gpu/drm/vboxvideo/modesetting.c
-+++ b/drivers/gpu/drm/vboxvideo/modesetting.c
-@@ -8,9 +8,11 @@
- #include "hgsmi_channels.h"
- 
- /**
-- * Set a video mode via an HGSMI request.  The views must have been
-- * initialised first using @a VBoxHGSMISendViewInfo and if the mode is being
-- * set on the first display then it must be set first using registers.
-+ * hgsmi_process_display_info - Set a video mode via an HGSMI request.
-+ *                              The views must have been initialised first
-+ *                              using @a VBoxHGSMISendViewInfo and if the mode
-+ *                              is being set on the first display then it must
-+ *                              be set first using registers.
-  * @ctx:           The context containing the heap to use.
-  * @display:       The screen number.
-  * @origin_x:      The horizontal displacement relative to the first scrn.
-@@ -51,10 +53,12 @@ void hgsmi_process_display_info(struct gen_pool *ctx, u32 display,
- }
- 
- /**
-- * Report the rectangle relative to which absolute pointer events should be
-- * expressed.  This information remains valid until the next VBVA resize event
-- * for any screen, at which time it is reset to the bounding rectangle of all
-- * virtual screens.
-+ * hgsmi_update_input_mapping - Report the rectangle relative to which absolute
-+ *                              pointer events should be expressed.  This
-+ *                              information remains valid until the next VBVA
-+ *                              resize event for any screen, at which time it is
-+ *                              reset to the bounding rectangle of all virtual
-+ *                              screens.
-  * Return: 0 or negative errno value.
-  * @ctx:       The context containing the heap to use.
-  * @origin_x:  Upper left X co-ordinate relative to the first screen.
-@@ -84,7 +88,7 @@ int hgsmi_update_input_mapping(struct gen_pool *ctx, s32 origin_x, s32 origin_y,
- }
- 
- /**
-- * Get most recent video mode hints.
-+ * hgsmi_get_mode_hints - Get most recent video mode hints.
-  * Return: 0 or negative errno value.
-  * @ctx:      The context containing the heap to use.
-  * @screens:  The number of screens to query hints for, starting at 0.
+> gazillion of things that are not critical to most people, for example,
+> and yet misses a bunch of things that are needed to boot on some of my
+> systems.
+
+Perhaps those should be added, so those systems can be tested using
+defconfig?  At least for arm64, I think that's aligned with the
+arm64 defconfig policy.
+
+> That's just to say that I find it difficult to make that choice from
+> the PoV of a kernel hacker. I'm personally more inclined to leave
+> things enabled and let people *disable* things if they want to reduce
+> the footprint of their kernel.
+
+The standard question to respond to w.r.t. "default y" is: "Why is
+your feature so special that it needs to be enabled by default?",
+which implies "default y" is the exception, not the rule.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
