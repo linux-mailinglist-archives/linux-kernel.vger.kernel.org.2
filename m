@@ -2,118 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950C6391CD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08B8391CE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhEZQUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:20:13 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:48026 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhEZQUL (ORCPT
+        id S233765AbhEZQXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232197AbhEZQXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:20:11 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:53000 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1llwEw-0002vq-SZ; Wed, 26 May 2021 12:18:38 -0400
-Message-ID: <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Stefan Metzmacher <metze@samba.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 26 May 2021 12:18:37 -0400
-In-Reply-To: <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
-         <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-         <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        Wed, 26 May 2021 12:23:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2354FC061574;
+        Wed, 26 May 2021 09:21:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IFoSjDHrMWdi2TUI6YK2jTs5l6DaG7NO6Wy5qFgfnvE=; b=be/ttzz5/pCXA47SCWWock3PTI
+        wzzZsBgMcyifPb4Hx393/YedkBG5GLwrxlLXabX+PcaP/0rSIpGkb6ux8oQZYva3dmFaNNWNqtEmU
+        9J44W1EaY3jTQVrPidw3BJNctAWEqZktD1ZoD/8Jte5WZqarslzP2Rlp86LHCdSXQB+Jk75ZpyqH9
+        cAzzTKv9DnLccHODZI7trSIrX5vi/1H5tbLIO8fVqvTTQqh+inut9YsWh64rMqpfFH53q+n41Pvsl
+        F5jj57KrXeI0eH13mr6tJmtqlwDyxlJp/vDz/Naj71P5mm62kReaeZ1xD8XEyaA9RCMXEeVOC1qb0
+        seTZGBVQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llwGg-004gxo-Vf; Wed, 26 May 2021 16:20:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A09FA300221;
+        Wed, 26 May 2021 18:20:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7B98A201D301D; Wed, 26 May 2021 18:20:25 +0200 (CEST)
+Date:   Wed, 26 May 2021 18:20:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 13/22] sched: Allow task CPU affinity to be restricted
+ on asymmetric systems
+Message-ID: <YK51SSUvL2psb3OL@hirez.programming.kicks-ass.net>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-14-will@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525151432.16875-14-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-26 at 14:38 +0200, Stefan Metzmacher wrote:
-> Hi,
-> 
-> > > @@ -333,13 +333,14 @@ TRACE_EVENT(io_uring_complete,
-> > >   */
-> > >  TRACE_EVENT(io_uring_submit_sqe,
-> > >  
-> > > -       TP_PROTO(void *ctx, u8 opcode, u64 user_data, bool
-> > > force_nonblock,
-> > > -                bool sq_thread),
-> > > +       TP_PROTO(void *ctx, void *req, u8 opcode, u64 user_data,
-> > > +                bool force_nonblock, bool sq_thread),
-> > >  
-> > > -       TP_ARGS(ctx, opcode, user_data, force_nonblock,
-> > > sq_thread),
-> > > +       TP_ARGS(ctx, req, opcode, user_data, force_nonblock,
-> > > sq_thread),
-> > >  
-> > >         TP_STRUCT__entry (
-> > >                 __field(  void *,       ctx             )
-> > > +               __field(  void *,       req             )
-> > >                 __field(  u8,           opcode          )
-> > >                 __field(  u64,          user_data       )
-> > >                 __field(  bool,         force_nonblock  )
-> > > @@ -348,26 +349,42 @@ TRACE_EVENT(io_uring_submit_sqe,
-> > >  
-> > >         TP_fast_assign(
-> > >                 __entry->ctx            = ctx;
-> > > +               __entry->req            = req;
-> > >                 __entry->opcode         = opcode;
-> > >                 __entry->user_data      = user_data;
-> > >                 __entry->force_nonblock = force_nonblock;
-> > >                 __entry->sq_thread      = sq_thread;
-> > >         ),
-> > >  
-> > > -       TP_printk("ring %p, op %d, data 0x%llx, non block %d,
-> > > sq_thread %d",
-> > > -                         __entry->ctx, __entry->opcode,
-> > > -                         (unsigned long long) __entry-
-> > > >user_data,
-> > > -                         __entry->force_nonblock, __entry-
-> > > >sq_thread)
-> > > +       TP_printk("ring %p, req %p, op %d, data 0x%llx, non block
-> > > %d, "
-> > > +                 "sq_thread %d",  __entry->ctx, __entry->req,
-> > > +                 __entry->opcode, (unsigned long long)__entry-
-> > > >user_data,
-> > > +                 __entry->force_nonblock, __entry->sq_thread)
-> > >  );
-> 
-> If that gets changed, could be also include the personality id and
-> flags here,
-> and maybe also translated the opcode and flags to human readable
-> strings?
-> 
-If Jens and Pavel agrees that they would like to see this info in the
-traces, I have no objection adding it.
+On Tue, May 25, 2021 at 04:14:23PM +0100, Will Deacon wrote:
+> +static int restrict_cpus_allowed_ptr(struct task_struct *p,
+> +				     struct cpumask *new_mask,
+> +				     const struct cpumask *subset_mask)
+> +{
+> +	struct rq_flags rf;
+> +	struct rq *rq;
+> +	int err;
+> +	struct cpumask *user_mask = NULL;
+> +
+> +	if (!p->user_cpus_ptr) {
+> +		user_mask = kmalloc(cpumask_size(), GFP_KERNEL);
 
-Still waiting input from Steven Rostedt which I believe is the trace
-system maintainer concerning the hash-ptr situation.
+		if (!user_mask)
+			return -ENOMEM;
+	}
 
-I did receive an auto-respond from him saying that he was in vacation
-until May 28th...
+?
 
-Greetings,
-
-
+> +
+> +	rq = task_rq_lock(p, &rf);
+> +
+> +	/*
+> +	 * Forcefully restricting the affinity of a deadline task is
+> +	 * likely to cause problems, so fail and noisily override the
+> +	 * mask entirely.
+> +	 */
+> +	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
+> +		err = -EPERM;
+> +		goto err_unlock;
+> +	}
+> +
+> +	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+> +		err = -EINVAL;
+> +		goto err_unlock;
+> +	}
+> +
+> +	/*
+> +	 * We're about to butcher the task affinity, so keep track of what
+> +	 * the user asked for in case we're able to restore it later on.
+> +	 */
+> +	if (user_mask) {
+> +		cpumask_copy(user_mask, p->cpus_ptr);
+> +		p->user_cpus_ptr = user_mask;
+> +	}
+> +
+> +	return __set_cpus_allowed_ptr_locked(p, new_mask, 0, rq, &rf);
+> +
+> +err_unlock:
+> +	task_rq_unlock(rq, p, &rf);
+> +	kfree(user_mask);
+> +	return err;
+> +}
