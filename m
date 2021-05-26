@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168A03917E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A853917F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhEZMwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:52:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56876 "EHLO
+        id S234905AbhEZMwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:52:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56890 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhEZMtO (ORCPT
+        with ESMTP id S234881AbhEZMtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 08:49:14 -0400
-Received: from mail-ua1-f71.google.com ([209.85.222.71])
+Received: from mail-ua1-f70.google.com ([209.85.222.70])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llswk-0000x9-Ew
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 12:47:38 +0000
-Received: by mail-ua1-f71.google.com with SMTP id f2-20020ab006020000b02902124881cdf4so724148uaf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:47:38 -0700 (PDT)
+        id 1llswm-0000xn-0N
+        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 12:47:40 +0000
+Received: by mail-ua1-f70.google.com with SMTP id b34-20020ab014250000b02901eb696c5fbaso691132uae.22
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:47:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VIi0UDETJWMz8r22ACVNYPInzss+jr7PKRHzj4F9CjI=;
-        b=hshizn1k9IL8iLyNWuuQ313XBhsw2nRwK1OFiOw5eeOJTdqP7OEvotXDI1dOod+tao
-         Ei8JccWxmdaaWWGfgHvMnvJbPfbNQm+RTJKokt8CpQJEPVgfdNVra17/2SB4+YjT3KUe
-         F9tXBUlJesKE0GRkhhp7yZ/oz7onssk/pI0s03QmUeNP2py+0PF2ybS7W8MkSPttcQ8+
-         gKTWfaD4XaGobkAcBzfv6GG7UB+tb8Ejr56ltB4UEoH7zNyTOij51WdadGKK2BgyCgU2
-         qL86nDNV+2RoQeXWgkPFpddIB/A1yI3+HIDxRxnQEA0nUf1fSqSNRsQz3lIitBxhMFO8
-         aKkg==
-X-Gm-Message-State: AOAM53330XxvsUQnyksVWRvDtA3kt873/AMNr7IOoRsUbiLJauCQHRRf
-        GBxYSQ9BpbYG5TCKliNqddD/3v2C3L3tOhhMOpqkZN86dE+YdeOF1TkdfqgPYBYnEPs40u0pkWf
-        Ib/IIke012CkrZqGI8nYZn2u2VnhXYTNY35ce6zeq+g==
-X-Received: by 2002:a05:6102:321b:: with SMTP id r27mr29696989vsf.13.1622033257578;
-        Wed, 26 May 2021 05:47:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVJ0GkIwUjj/SnT+ky43SozLjtVHQDTyQ4X8v8jZZwJZjmUrTyX1krLd+798CTd0BMRkeRUQ==
-X-Received: by 2002:a05:6102:321b:: with SMTP id r27mr29696940vsf.13.1622033257072;
-        Wed, 26 May 2021 05:47:37 -0700 (PDT)
+        bh=gi5LKjjP0bjXDjYj7Ix3Hw0qKjf6CelOHRk1zXBWnaI=;
+        b=h9nx+FSnN4WijyNTI3Szi43KBQzsXVMmePge4Um1/I2msgBPsqTMmvolhQWs6wNTOX
+         S8ka3Hse9YVJfPrlKssjxpqbdESuRJeGoM5NZKDmc6JKUM7qV3d/DPvyC+CtQsDCdvgO
+         74irCpB9vcJKAtQb9vZY6ckMI/cZ4PcSL5PHwdUR/dASlgSjHJa6xidHe+59YbbhNms+
+         05t5HIjlBMubgx/ndaGjc/g9K9ggM0JTJx+imc0wFcOSyAFjr8ytw55mhY9gNKcHFGbF
+         MlR+TyHlQsdfRiOg8613eB8/GZFWrXQ5Zcgw63lNccQ984UFwbs02zLcZCHxE2FkNTOf
+         wLgw==
+X-Gm-Message-State: AOAM5304FDDPPSEBINbtP3t3Sziv7EwJs89brw/GeHHJZ+qkaFOjsHQE
+        VEHxGOaPWRF7DIHJT162yRIkZJ4UCXaRd6K8wFenq3MKcE7t0e50gqx1ZviKgIQkZTGYpaIUtmO
+        CtNhLHlwE220tvgX0shfDs6DwdtrubO6VyOCNiUXusw==
+X-Received: by 2002:a67:1087:: with SMTP id 129mr29581343vsq.42.1622033258714;
+        Wed, 26 May 2021 05:47:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCM8BjysU8Rx+YcwLvtbPPjwicIzKBwQd2iZE/2FBz/KnmsXQzCZ4DPoAcGK75nk/My7ZDuA==
+X-Received: by 2002:a67:1087:: with SMTP id 129mr29581327vsq.42.1622033258573;
+        Wed, 26 May 2021 05:47:38 -0700 (PDT)
 Received: from localhost.localdomain ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id c126sm875817vkh.47.2021.05.26.05.47.29
+        by smtp.gmail.com with ESMTPSA id c126sm875817vkh.47.2021.05.26.05.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 05:47:36 -0700 (PDT)
+        Wed, 26 May 2021 05:47:38 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         Support Opensource <support.opensource@diasemi.com>,
@@ -51,10 +51,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
         patches@opensource.cirrus.com
-Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [RESEND PATCH v2 04/13] mfd: da9062: Simplify getting of_device_id match data
-Date:   Wed, 26 May 2021 08:47:02 -0400
-Message-Id: <20210526124711.33223-5-krzysztof.kozlowski@canonical.com>
+Subject: [RESEND PATCH v2 05/13] mfd: sec: Simplify getting of_device_id match data
+Date:   Wed, 26 May 2021 08:47:03 -0400
+Message-Id: <20210526124711.33223-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210526124711.33223-1-krzysztof.kozlowski@canonical.com>
 References: <20210526124711.33223-1-krzysztof.kozlowski@canonical.com>
@@ -64,59 +63,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use of_device_get_match_data() to make the code slightly smaller.
+Use of_device_get_match_data() to make the code slightly smaller.  There
+is also no need to wrap it in a check for CONFIG_OF, because dev.of_node
+will be set only with OF support.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 
 ---
 
 Changes since v1:
-1. Add Ack
-2. Correct subject prefix
+1. Remove check for CONFIG_OF as suggested by Marek
 ---
- drivers/mfd/da9062-core.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/mfd/sec-core.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mfd/da9062-core.c b/drivers/mfd/da9062-core.c
-index 8d913375152d..01f8e10dfa55 100644
---- a/drivers/mfd/da9062-core.c
-+++ b/drivers/mfd/da9062-core.c
-@@ -9,6 +9,7 @@
- #include <linux/init.h>
- #include <linux/device.h>
- #include <linux/interrupt.h>
+diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
+index 8d55992da19e..15dd4c579937 100644
+--- a/drivers/mfd/sec-core.c
++++ b/drivers/mfd/sec-core.c
+@@ -10,6 +10,7 @@
+ #include <linux/slab.h>
+ #include <linux/i2c.h>
+ #include <linux/of.h>
 +#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/irq.h>
- #include <linux/mfd/core.h>
-@@ -622,7 +623,6 @@ static int da9062_i2c_probe(struct i2c_client *i2c,
- 	const struct i2c_device_id *id)
+ #include <linux/of_irq.h>
+ #include <linux/interrupt.h>
+ #include <linux/pm_runtime.h>
+@@ -323,14 +324,9 @@ sec_pmic_i2c_parse_dt_pdata(struct device *dev)
+ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
+ 						const struct i2c_device_id *id)
  {
- 	struct da9062 *chip;
--	const struct of_device_id *match;
- 	unsigned int irq_base;
- 	const struct mfd_cell *cell;
- 	const struct regmap_irq_chip *irq_chip;
-@@ -635,15 +635,10 @@ static int da9062_i2c_probe(struct i2c_client *i2c,
- 	if (!chip)
- 		return -ENOMEM;
- 
+-#ifdef CONFIG_OF
 -	if (i2c->dev.of_node) {
--		match = of_match_node(da9062_dt_ids, i2c->dev.of_node);
--		if (!match)
--			return -EINVAL;
--
--		chip->chip_type = (uintptr_t)match->data;
--	} else {
+-		const struct of_device_id *match;
 +	if (i2c->dev.of_node)
-+		chip->chip_type = (uintptr_t)of_device_get_match_data(&i2c->dev);
-+	else
- 		chip->chip_type = id->driver_data;
--	}
++		return (unsigned long)of_device_get_match_data(&i2c->dev);
  
- 	i2c_set_clientdata(i2c, chip);
- 	chip->dev = &i2c->dev;
+-		match = of_match_node(sec_dt_match, i2c->dev.of_node);
+-		return (unsigned long)match->data;
+-	}
+-#endif
+ 	return id->driver_data;
+ }
+ 
 -- 
 2.27.0
 
