@@ -2,97 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A289F39125C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F7239125F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhEZIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:33:15 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:39008 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231410AbhEZIdO (ORCPT
+        id S232927AbhEZIdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:33:24 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:46299 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhEZIdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:33:14 -0400
-Received: from dread.disaster.area (pa49-180-230-185.pa.nsw.optusnet.com.au [49.180.230.185])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id CD4E1104350A;
-        Wed, 26 May 2021 18:31:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1llowz-005N7h-2k; Wed, 26 May 2021 18:31:37 +1000
-Date:   Wed, 26 May 2021 18:31:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Wu Bo <wubo40@huawei.com>, linfeilong@huawei.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, davem@davemloft.net,
-        herbert@gondor.apana.org.au, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 1/2] crypto: af_alg - use DIV_ROUND_UP helper macro for
- calculations
-Message-ID: <20210526083137.GK2817@dread.disaster.area>
-References: <1621930520-515336-1-git-send-email-wubo40@huawei.com>
- <1621930520-515336-2-git-send-email-wubo40@huawei.com>
- <20210525103744.Horde.nmFFeC3J2_-Qdu7udOYa8g1@messagerie.c-s.fr>
+        Wed, 26 May 2021 04:33:22 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0DB5710000C;
+        Wed, 26 May 2021 08:31:47 +0000 (UTC)
+Date:   Wed, 26 May 2021 10:31:46 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     <patrice.chotard@foss.st.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
+Subject: Re: [PATCH v5 2/3] mtd: spinand: use the spi-mem poll status APIs
+Message-ID: <20210526103146.5fcd8247@xps13>
+In-Reply-To: <20210518162754.15940-3-patrice.chotard@foss.st.com>
+References: <20210518162754.15940-1-patrice.chotard@foss.st.com>
+        <20210518162754.15940-3-patrice.chotard@foss.st.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210525103744.Horde.nmFFeC3J2_-Qdu7udOYa8g1@messagerie.c-s.fr>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=dUIOjvib2kB+GiIc1vUx8g==:117 a=dUIOjvib2kB+GiIc1vUx8g==:17
-        a=8nJEP1OIZ-IA:10 a=5FLXtPjwQuUA:10 a=i0EeH86SAAAA:8 a=7-415B0cAAAA:8
-        a=PjDj1IsLZaY1bt5ZHPIA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:37:44AM +0200, Christophe Leroy wrote:
-> Wu Bo <wubo40@huawei.com> a écrit :
+
+<patrice.chotard@foss.st.com> wrote on Tue, 18 May 2021 18:27:53 +0200:
+
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
 > 
-> > From: Wu Bo <wubo40@huawei.com>
-> > 
-> > Replace open coded divisor calculations with the DIV_ROUND_UP kernel
-> > macro for better readability.
-> > 
-> > Signed-off-by: Wu Bo <wubo40@huawei.com>
-> > ---
-> >  crypto/af_alg.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-> > index 18cc82d..8bd288d 100644
-> > --- a/crypto/af_alg.c
-> > +++ b/crypto/af_alg.c
-> > @@ -411,7 +411,7 @@ int af_alg_make_sg(struct af_alg_sgl *sgl, struct
-> > iov_iter *iter, int len)
-> >  	if (n < 0)
-> >  		return n;
-> > 
-> > -	npages = (off + n + PAGE_SIZE - 1) >> PAGE_SHIFT;
-> > +	npages = DIV_ROUND_UP(off + n, PAGE_SIZE);
+> Make use of spi-mem poll status APIs to let advanced controllers
+> optimize wait operations.
+> This should also fix the high CPU usage for system that don't have
+> a dedicated STATUS poll block logic.
 > 
-> You should use PFN_UP()
+> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-No. We are not using pfns here - we're converting a byte count to a
-page count.
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Besides, "PFN_UP" is a horrible, awful api. It does not decribe what
-it does and anyone who is not a mm developer will look at it and ask
-"what <the ....> does this do?" and have to go looking for it's
-definition to determine what it does. Yes, that's exactyl what I've
-just done, and I really wish I didn't because, well, it just
-reinforces how much we suck at APIs...
-
-OTOH, what DIV_ROUND_UP() does is obvious, widely understood, self
-documenting and easy to determine if the usage is correct, which
-indeed this is.
-
-The lesson: do not use whacky obscure, out of context macros when a
-simple, obvious, widely known macro will give the same result and
-make the code easier to understand.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
