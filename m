@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A927D391AC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A6C391ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbhEZOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235077AbhEZOxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:53:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 837B1613B0;
-        Wed, 26 May 2021 14:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622040693;
-        bh=q+C2OhfEzhvJRz37H2GbJ1ehvlpy634ux7zEZguaxBk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RhxCwRfd2fvBHl+15tMgD7vNuliCOJLce1otPWSZXSADVoEIa1sSAafq72+rBwsTp
-         PxyE8CXuCTErAONVMUmkGwFIQAbj336XmHJjTmEAKIQfA1AfAGRuWDYChnYX1U086n
-         J5E6DysobqoWxHNs7/j4PCdbWmqgA71/svmDr/k3IQmP5PNz6TRfnUQEU7LpIalaXA
-         rDYdlFnywBbxM4CLHymM3LmzI4R2q0LYqtkGc0A5BpdO+QFlZxU4ZoBXXF0LNdGiw/
-         rhumeBJKoxxyKjBJ+kqy3vLoEGCvubeCtenjjs/CxHypamd/rEsebcV+DtDiX9CdYK
-         x9Wm06D59cU+w==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>, acme@kernel.org
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, jolsa@redhat.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: [PATCH v2] tools/perf: doc: Add permission and sysctl notice
-Date:   Wed, 26 May 2021 23:51:29 +0900
-Message-Id: <162204068898.388434.16842705842611255787.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162201967838.287555.4257117900130102987.stgit@devnote2>
-References: <162201967838.287555.4257117900130102987.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S235156AbhEZOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:53:21 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:33567 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235077AbhEZOxU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:53:20 -0400
+Received: by mail-vs1-f53.google.com with SMTP id f11so832628vst.0;
+        Wed, 26 May 2021 07:51:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BARZY/Zm/Q9bSQpQWNCPuOu1nEYjPwLPq7uNIDXm7kk=;
+        b=huwWK/bJ/slfWm1gMZrqQ/yHWUfm3NhNXNEs/iRyH9oPUl3vkmvR3DYsxtjGjuAbdp
+         fGt1Fmv2/mzJtHvhbp2R6nBqsnhbsHY+C54aiSVLY98xOiStRLNbXxXSdpM3inev9fnV
+         sMqbXrYwI5LfMMqagTkODkoWnqWkcz+1HJPf1Frm+yvDTKilHO0HwgdZMm6JWE8ORCmK
+         L9ut/FPRGdlk0kI0IxqFqO3pXx/ePM9EeNeqiuVhr879l6mw+G3mz+Zf/OdIQz4vAAfo
+         +FwUWG3AVfBVr2PtMgRm1kh7WH17QDjI7gsOi2vwPlZrBaTrx+rElxh3tq5UaDfWTf6h
+         oFlA==
+X-Gm-Message-State: AOAM5309/jGr3Q/7pldQ/PxS/rYJc2tjuZkNFpaQmwkCwym+1LhduSir
+        XtcCjfWIYUuyEm1TdDk5WcepYGUg4YPTfzq+OofX3Iae
+X-Google-Smtp-Source: ABdhPJxHFkT/Ut4XcWcmc+uY1kwmt7LbdgIdiTRddR/Hb6SvL9PjTUS3ABPW2ezC6FfM0VGqzQ9U1tJsbBQR15GYK4w=
+X-Received: by 2002:a05:6102:392:: with SMTP id m18mr32558814vsq.40.1622040707282;
+ Wed, 26 May 2021 07:51:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210526084536.1454449-1-geert@linux-m68k.org> <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
+In-Reply-To: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 May 2021 16:51:35 +0200
+Message-ID: <CAMuHMdW9CzMMwvJKHsLLD_BT9Roor6xWxzZYhv0fkEA7LT0Z9A@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Drop duplicate "core-y += arch/m68k/" rule causing
+ link failures
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a section to notify the permission and sysctl setting
-for perf probe. And fix some indentations.
+Hi Yamada-san,
 
-Reported-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v2:
-  - Add tracefs remount option for --list command.
-  - Mention uprobe case for kptr_restrict and vmlinux/debuginfo permission.
----
- tools/perf/Documentation/perf-probe.txt |   19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+On Wed, May 26, 2021 at 4:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> On Wed, May 26, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >     Makefile:1949: target 'arch/m68k' given more than once in the same rule
+> >     [...]
+> >       LD      vmlinux.o
+> >     m68k-linux-gnu-ld: arch/m68k/kernel/entry.o: in function `system_call':
+> >     (.text+0x160): multiple definition of `system_call'; arch/m68k/kernel/entry.o:(.text+0x160): first defined here
+> >     [...]
+> >
+> > All "core-y += arch/<arch>/" rules were dropped from the corresponding
+> > arch/<arch>/Makefiles, but m68k was forgotten.
+> >
+> > Reported-by: noreply@ellerman.id.au
+> > Fixes: 7d9677835b10b5de ("kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild")
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+>
+> I will squash this.
 
-diff --git a/tools/perf/Documentation/perf-probe.txt b/tools/perf/Documentation/perf-probe.txt
-index ed3ecfa422e1..080981d38d7b 100644
---- a/tools/perf/Documentation/perf-probe.txt
-+++ b/tools/perf/Documentation/perf-probe.txt
-@@ -226,7 +226,7 @@ So, "source.c:100-120" shows lines between 100th to l20th in source.c file. And
- 
- LAZY MATCHING
- -------------
-- The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
-+The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
- 
- e.g.
-  'a=*' can matches 'a=b', 'a = b', 'a == b' and so on.
-@@ -235,8 +235,8 @@ This provides some sort of flexibility and robustness to probe point definitions
- 
- FILTER PATTERN
- --------------
-- The filter pattern is a glob matching pattern(s) to filter variables.
-- In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
-+The filter pattern is a glob matching pattern(s) to filter variables.
-+In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
- 
- e.g.
-  With --filter "foo* | bar*", perf probe -V shows variables which start with "foo" or "bar".
-@@ -295,6 +295,19 @@ Add a probe in a source file using special characters by backslash escape
-  ./perf probe -x /opt/test/a.out 'foo\+bar.c:4'
- 
- 
-+PERMISSIONS AND SYSCTL
-+----------------------
-+Since perf probe depends on ftrace (tracefs) and kallsyms (/proc/kallsyms), you have to care about the permission and some sysctl knobs.
-+
-+ - Since tracefs and kallsyms requires root or privileged user to access it, the following perf probe commands also require it; --add, --del, --list (except for --cache option)
-+
-+ - The system admin can remount the tracefs with 755 (`sudo mount -o remount,mode=755 /sys/kernel/tracing/`) to allow unprivileged user to run the perf probe --list command.
-+
-+ - /proc/sys/kernel/kptr_restrict = 2 (restrict all users) also prevents perf probe to retrieve the important information from kallsyms. You also need to set to 1 (restrict non CAP_SYSLOG users) for the above commands. Since the user-space probe doesn't need to access kallsyms, this is only for probing the kernel function (kprobes).
-+
-+ - Since the perf probe commands read the vmlinux (for kernel) and/or the debuginfo file (including user-space application), you need to ensure that you can read those files.
-+
-+
- SEE ALSO
- --------
- linkperf:perf-trace[1], linkperf:perf-record[1], linkperf:perf-buildid-cache[1]
+Fine for me. Thx!
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
