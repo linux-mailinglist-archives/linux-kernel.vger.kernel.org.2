@@ -2,253 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B239141D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE9B391416
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhEZJyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:54:10 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:36599 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233661AbhEZJyH (ORCPT
+        id S233551AbhEZJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:52:29 -0400
+Received: from smtp-1909.mail.infomaniak.ch ([185.125.25.9]:56829 "EHLO
+        smtp-1909.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233371AbhEZJw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:54:07 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id lqDDlSShGWkKblqDGlCXu0; Wed, 26 May 2021 11:52:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622022754; bh=Rdaz+LOR1+afTnAEvgUo1L0WhEts2qvul/FWPyUzdy4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=LUmQxeiRnNy+/HU6Lh1n6pz+5SUAoiZ31q0h5OCfoN8fjyxBuhWwIkamPseea4ZE0
-         BX2ulwLZx5t4vAv9reu5CgXXPzeGWN8XVMNnTnvH0Coa2srH0VHlqSRqavH2mxKRQ/
-         +9/+zDBvsbsygNLST9M23mWAobWT68e2MqopCxzxPseNgnAYwrAfGjXHTkkOEVZajX
-         OvPrJ8T5rNn/dVhEzRs5JAhZQeLEvoCDYD3c6rlQFdNaAtL5BMPTsABRN9Z/Gm8v3Z
-         a5gXzju99ZIu6oq0oU24/v0zmDtozUYBe020C4y15qygXEc5V9TnFKQZOnxQa5vNKn
-         bOboLXn4YnYNg==
-Subject: Re: [PATCH v11 9/9] media: hantro: IMX8M: add variant for G2/HEVC
- codec
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210525161238.1191168-1-benjamin.gaignard@collabora.com>
- <20210525161238.1191168-10-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <1454f153-c04b-6b90-8467-54bb33c6f3fa@xs4all.nl>
-Date:   Wed, 26 May 2021 11:52:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Wed, 26 May 2021 05:52:27 -0400
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FqmRM1fDqzMptYc;
+        Wed, 26 May 2021 11:50:55 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FqmRJ05YQzlmrrV;
+        Wed, 26 May 2021 11:50:51 +0200 (CEST)
+Subject: Re: [PATCH v26 02/25] LSM: Add the lsmblob data structure.
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20210513200807.15910-1-casey@schaufler-ca.com>
+ <20210513200807.15910-3-casey@schaufler-ca.com>
+ <206971d6-70c7-e217-299f-1884310afa15@digikod.net>
+ <1c3874c1-870a-ac60-03e6-2c16d49e185b@schaufler-ca.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <53108f3e-3297-3d8b-cba9-2b12ca30d666@digikod.net>
+Date:   Wed, 26 May 2021 11:53:00 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20210525161238.1191168-10-benjamin.gaignard@collabora.com>
+In-Reply-To: <1c3874c1-870a-ac60-03e6-2c16d49e185b@schaufler-ca.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCOfRmbgJ5kgs+pMbhJANdZd/+nNTxbFWGJqt22qSstqNiQ8h/Qxizk+Xzn3jJn9jglNdSTtwpVIY8mP81g9okeU5sM6rMQnCCSTTNFUu0xapsjioI5v
- iRXLqpKa33km3e+4hlespkwTTCjr2yBohAK5LZTw4LhjECi4dOCEFn9eVMjwCuicHM0cqN4MtQQ0SU/6be57Dd2ri8haUYhWaD5i0PHYg3cOq6qzrFLb+2mK
- BdowueuiqVxit4iQt1+DVwi2zYeL4vNqb/mjpMiTbuxxau7ktiaL6/YnLApErY55ocn4ZGhZct2kWDXoCjJ0fz5Fao4dU5WakXfSdJI94qWMnRtaSfQaA9WU
- wWinRdPeEWQWEDSnO0o3M8Y9g1nEg4k81OEaPTUENsxg+S5bZQ+z3+pkQWbk7rg9Y3qSubX4RUZVAdhB3S+f/9MnPpqzfwqRRYFyvCNoc/KMuukfnkVxSAtD
- rGElX10/ZzUOwaTlH5WY4dgNFev/iBmU2ij4zcMycktMJN7x9zT4WfnQKBmXOQ8jz5CybJTdoFmwlcWoIbocAASUAuODpuTOZXNmCFsr2b0DugJWT1DlmBuT
- lfcYJuVt6gEHt6eclDzNmDLa9Tn24q6bvMvuB0tFOnhesFFuO64/vujBaj8c478tuSRS9myZNW+ktQU0P8hg2E2uIfbkT32Z4i7r+uZXuPvZArx1tfcI3Boh
- Z3Z/05vsflmHzgy5s5T7gBRp2KW541rAUhTQXWxEGsernxnxyOFj2A/JlP0J26csrq/jDz5DDZEo42q95ASqVXlxGmru47oEU8Y0MM8PN1Y/rVSaDDQx/KHZ
- eRC8Y4zQveRqGp47ZqU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/2021 18:12, Benjamin Gaignard wrote:
-> Add variant to IMX8M to enable G2/HEVC codec.
-> Define the capabilities for the hardware up to 3840x2160.
-> G2 doesn't have a postprocessor, uses the same clocks and has it
-> own interrupt.
+
+On 26/05/2021 01:52, Casey Schaufler wrote:
+> On 5/22/2021 1:39 AM, Mickaël Salaün wrote:
+>> I like this design but there is an issue with Landlock though, see below.
+>>
+>> On 13/05/2021 22:07, Casey Schaufler wrote:
+>>> When more than one security module is exporting data to
+>>> audit and networking sub-systems a single 32 bit integer
+>>> is no longer sufficient to represent the data. Add a
+>>> structure to be used instead.
+>>>
+>>> The lsmblob structure is currently an array of
+>>> u32 "secids". There is an entry for each of the
+>>> security modules built into the system that would
+>>> use secids if active. The system assigns the module
+>>> a "slot" when it registers hooks. If modules are
+>>> compiled in but not registered there will be unused
+>>> slots.
+>>>
+>>> A new lsm_id structure, which contains the name
+>>> of the LSM and its slot number, is created. There
+>>> is an instance for each LSM, which assigns the name
+>>> and passes it to the infrastructure to set the slot.
+>>>
+>>> The audit rules data is expanded to use an array of
+>>> security module data rather than a single instance.
+>>> Because IMA uses the audit rule functions it is
+>>> affected as well.
+>>>
+>>> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+>>> Acked-by: Paul Moore <paul@paul-moore.com>
+>>> Acked-by: John Johansen <john.johansen@canonical.com>
+>>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+>>> Cc: <bpf@vger.kernel.org>
+>>> Cc: linux-audit@redhat.com
+>>> Cc: linux-security-module@vger.kernel.org
+>>> Cc: selinux@vger.kernel.org
+>>> To: Mimi Zohar <zohar@linux.ibm.com>
+>>> To: Mickaël Salaün <mic@linux.microsoft.com>
+>>> ---
+>>>  include/linux/audit.h               |  4 +-
+>>>  include/linux/lsm_hooks.h           | 12 ++++-
+>>>  include/linux/security.h            | 67 +++++++++++++++++++++++++--
+>>>  kernel/auditfilter.c                | 24 +++++-----
+>>>  kernel/auditsc.c                    | 13 +++---
+>>>  security/apparmor/lsm.c             |  7 ++-
+>>>  security/bpf/hooks.c                | 12 ++++-
+>>>  security/commoncap.c                |  7 ++-
+>>>  security/integrity/ima/ima_policy.c | 40 +++++++++++-----
+>>>  security/landlock/cred.c            |  2 +-
+>>>  security/landlock/fs.c              |  2 +-
+>>>  security/landlock/ptrace.c          |  2 +-
+>>>  security/landlock/setup.c           |  4 ++
+>>>  security/landlock/setup.h           |  1 +
+>>>  security/loadpin/loadpin.c          |  8 +++-
+>>>  security/lockdown/lockdown.c        |  7 ++-
+>>>  security/safesetid/lsm.c            |  8 +++-
+>>>  security/security.c                 | 72 ++++++++++++++++++++++++-----
+>>>  security/selinux/hooks.c            |  8 +++-
+>>>  security/smack/smack_lsm.c          |  7 ++-
+>>>  security/tomoyo/tomoyo.c            |  8 +++-
+>>>  security/yama/yama_lsm.c            |  7 ++-
+>>>  22 files changed, 262 insertions(+), 60 deletions(-)
+>>>
+>> [...]
+>>
+>>> diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+>>> index f8e8e980454c..4a12666a4090 100644
+>>> --- a/security/landlock/setup.c
+>>> +++ b/security/landlock/setup.c
+>>> @@ -23,6 +23,10 @@ struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+>>>  	.lbs_superblock = sizeof(struct landlock_superblock_security),
+>>>  };
+>>>  
+>>> +struct lsm_id landlock_lsmid __lsm_ro_after_init = {
+>>> +	.lsm = LANDLOCK_NAME,
+>> It is missing: .slot = LSMBLOB_NEEDED,
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  drivers/staging/media/hantro/hantro_drv.c   |  1 +
->  drivers/staging/media/hantro/hantro_hw.h    |  1 +
->  drivers/staging/media/hantro/imx8m_vpu_hw.c | 96 ++++++++++++++++++++-
->  3 files changed, 96 insertions(+), 2 deletions(-)
+> Sorry for the delay.
 > 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index ae8a0037706f..507cd5b454b3 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -588,6 +588,7 @@ static const struct of_device_id of_hantro_match[] = {
->  #endif
->  #ifdef CONFIG_VIDEO_HANTRO_IMX8M
->  	{ .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
-> +	{ .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
+> Landlock does not provide any of the hooks that use a struct lsmblob.
+> That would be secid_to_secctx, secctx_to_secid, inode_getsecid,
+> cred_getsecid, kernel_act_as task_getsecid_subj task_getsecid_obj and
+> ipc_getsecid. Setting .slot = LSMBLOB_NEEDED indicates that the LSM
+> uses a slot in struct lsmblob. Landlock does not need a slot.
 
-From checkpatch:
+Indeed, the (generic) "blob" name misled me. Would it make sense to use
+a name with "secid" in it instead?
 
-WARNING: DT compatible string "nxp,imx8mq-vpu-g2" appears un-documented -- check ./Documentation/devicetree/bindings/
-#29: FILE: drivers/staging/media/hantro/hantro_drv.c:591:
-+       { .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
+Shouldn't the slot field be set to LSMBLOB_NOT_NEEDED (-3) then (instead
+of the implicit 0)?
 
-Is a patch missing for bindings adding "nxp,imx8mq-vpu-g2"?
-
-Regards,
-
-	Hans
-
-
->  #endif
->  #ifdef CONFIG_VIDEO_HANTRO_SAMA5D4
->  	{ .compatible = "microchip,sama5d4-vdec", .data = &sama5d4_vdec_variant, },
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index b743b255bf32..5cc083112017 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -206,6 +206,7 @@ extern const struct hantro_variant rk3328_vpu_variant;
->  extern const struct hantro_variant rk3288_vpu_variant;
->  extern const struct hantro_variant imx8mq_vpu_variant;
->  extern const struct hantro_variant sama5d4_vdec_variant;
-> +extern const struct hantro_variant imx8mq_vpu_g2_variant;
->  
->  extern const struct hantro_postproc_regs hantro_g1_postproc_regs;
->  
-> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> index 9eb556460e52..ea152e1e6514 100644
-> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> @@ -9,6 +9,9 @@
->  #include <linux/delay.h>
->  
->  #include "hantro.h"
-> +#include "hantro_jpeg.h"
-> +#include "hantro_g1_regs.h"
-> +#include "hantro_g2_regs.h"
->  
->  #define CTRL_SOFT_RESET		0x00
->  #define RESET_G1		BIT(1)
-> @@ -128,6 +131,62 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
->  	},
->  };
->  
-> +static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
-> +	{
-> +		.fourcc = V4L2_PIX_FMT_NV12,
-> +		.codec_mode = HANTRO_MODE_NONE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_PIX_FMT_HEVC_SLICE,
-> +		.codec_mode = HANTRO_MODE_HEVC_DEC,
-> +		.max_depth = 2,
-> +		.frmsize = {
-> +			.min_width = 48,
-> +			.max_width = 3840,
-> +			.step_width = MB_DIM,
-> +			.min_height = 48,
-> +			.max_height = 2160,
-> +			.step_height = MB_DIM,
-> +		},
-> +	},
-> +};
-> +
-> +static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
-> +{
-> +	struct hantro_dev *vpu = dev_id;
-> +	enum vb2_buffer_state state;
-> +	u32 status;
-> +
-> +	status = vdpu_read(vpu, G1_REG_INTERRUPT);
-> +	state = (status & G1_REG_INTERRUPT_DEC_RDY_INT) ?
-> +		 VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
-> +
-> +	vdpu_write(vpu, 0, G1_REG_INTERRUPT);
-> +	vdpu_write(vpu, G1_REG_CONFIG_DEC_CLK_GATE_E, G1_REG_CONFIG);
-> +
-> +	hantro_irq_done(vpu, state);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
-> +{
-> +	struct hantro_dev *vpu = dev_id;
-> +	enum vb2_buffer_state state;
-> +	u32 status;
-> +
-> +	status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
-> +	state = (status & HEVC_REG_INTERRUPT_DEC_RDY_INT) ?
-> +		 VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
-> +
-> +	vdpu_write(vpu, 0, HEVC_REG_INTERRUPT);
-> +	vdpu_write(vpu, HEVC_REG_CONFIG_DEC_CLK_GATE_E, HEVC_REG_CONFIG);
-> +
-> +	hantro_irq_done(vpu, state);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
->  {
->  	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
-> @@ -142,6 +201,13 @@ static void imx8m_vpu_g1_reset(struct hantro_ctx *ctx)
->  	imx8m_soft_reset(vpu, RESET_G1);
->  }
->  
-> +static void imx8m_vpu_g2_reset(struct hantro_ctx *ctx)
-> +{
-> +	struct hantro_dev *vpu = ctx->dev;
-> +
-> +	imx8m_soft_reset(vpu, RESET_G2);
-> +}
-> +
->  /*
->   * Supported codec ops.
->   */
-> @@ -167,13 +233,25 @@ static const struct hantro_codec_ops imx8mq_vpu_codec_ops[] = {
->  	},
->  };
->  
-> +static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
-> +	[HANTRO_MODE_HEVC_DEC] = {
-> +		.run = hantro_g2_hevc_dec_run,
-> +		.reset = imx8m_vpu_g2_reset,
-> +		.init = hantro_hevc_dec_init,
-> +		.exit = hantro_hevc_dec_exit,
-> +	},
-> +};
-> +
->  /*
->   * VPU variants.
->   */
->  
->  static const struct hantro_irq imx8mq_irqs[] = {
-> -	{ "g1", hantro_g1_irq },
-> -	{ "g2", NULL /* TODO: imx8m_vpu_g2_irq */ },
-> +	{ "g1", imx8m_vpu_g1_irq },
-> +};
-> +
-> +static const struct hantro_irq imx8mq_g2_irqs[] = {
-> +	{ "g2", imx8m_vpu_g2_irq },
->  };
->  
->  static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
-> @@ -197,3 +275,17 @@ const struct hantro_variant imx8mq_vpu_variant = {
->  	.reg_names = imx8mq_reg_names,
->  	.num_regs = ARRAY_SIZE(imx8mq_reg_names)
->  };
-> +
-> +const struct hantro_variant imx8mq_vpu_g2_variant = {
-> +	.dec_offset = 0x0,
-> +	.dec_fmts = imx8m_vpu_g2_dec_fmts,
-> +	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-> +	.codec = HANTRO_HEVC_DECODER,
-> +	.codec_ops = imx8mq_vpu_g2_codec_ops,
-> +	.init = imx8mq_vpu_hw_init,
-> +	.runtime_resume = imx8mq_runtime_resume,
-> +	.irqs = imx8mq_g2_irqs,
-> +	.num_irqs = ARRAY_SIZE(imx8mq_g2_irqs),
-> +	.clk_names = imx8mq_clk_names,
-> +	.num_clocks = ARRAY_SIZE(imx8mq_clk_names),
-> +};
 > 
+>>
+>> You can run the Landlock tests please?
+>> make -C tools/testing/selftests TARGETS=landlock gen_tar
+>> tar -xf kselftest.tar.gz && ./run_kselftest.sh
+> 
+> Sure. I'll add them to my routine.
 
+Thanks.
+
+> 
+>>
+>>
+>>> +};
+>>> +
+>>>  static int __init landlock_init(void)
+>>>  {
+>>>  	landlock_add_cred_hooks();
+>> [...]
+>>
+>>> diff --git a/security/security.c b/security/security.c
+>>> index e12a7c463468..a3276deb1b8a 100644
+>>> --- a/security/security.c
+>>> +++ b/security/security.c
+>>> @@ -344,6 +344,7 @@ static void __init ordered_lsm_init(void)
+>>>  	init_debug("sock blob size       = %d\n", blob_sizes.lbs_sock);
+>>>  	init_debug("superblock blob size = %d\n", blob_sizes.lbs_superblock);
+>>>  	init_debug("task blob size       = %d\n", blob_sizes.lbs_task);
+>>> +	init_debug("lsmblob size         = %zu\n", sizeof(struct lsmblob));
+>>>  
+>>>  	/*
+>>>  	 * Create any kmem_caches needed for blobs
+>>> @@ -471,21 +472,36 @@ static int lsm_append(const char *new, char **result)
+>>>  	return 0;
+>>>  }
+>>>  
+>>> +/*
+>>> + * Current index to use while initializing the lsmblob secid list.
+>>> + */
+>>> +static int lsm_slot __lsm_ro_after_init;
+>>> +
+>>>  /**
+>>>   * security_add_hooks - Add a modules hooks to the hook lists.
+>>>   * @hooks: the hooks to add
+>>>   * @count: the number of hooks to add
+>>> - * @lsm: the name of the security module
+>>> + * @lsmid: the identification information for the security module
+>>>   *
+>>>   * Each LSM has to register its hooks with the infrastructure.
+>>> + * If the LSM is using hooks that export secids allocate a slot
+>>> + * for it in the lsmblob.
+>>>   */
+>>>  void __init security_add_hooks(struct security_hook_list *hooks, int count,
+>>> -				char *lsm)
+>>> +			       struct lsm_id *lsmid)
+>>>  {
+>>>  	int i;
+>>>  
+>> Could you add a WARN_ON(!lsmid->slot || !lsmid->name) here?
+> 
+> Yes. That's reasonable.
+
+I guess my above comment makes sense if lsmid->slot should not be zero
+but LSMBLOB_NOT_NEEDED instead, otherwise the Landlock lsmid would throw
+a warning.
+
+> 
+>>
+>>
+>>> +	if (lsmid->slot == LSMBLOB_NEEDED) {
+>>> +		if (lsm_slot >= LSMBLOB_ENTRIES)
+>>> +			panic("%s Too many LSMs registered.\n", __func__);
+>>> +		lsmid->slot = lsm_slot++;
+>>> +		init_debug("%s assigned lsmblob slot %d\n", lsmid->lsm,
+>>> +			   lsmid->slot);
+>>> +	}
+>>> +
+>>>  	for (i = 0; i < count; i++) {
+>>> -		hooks[i].lsm = lsm;
+>>> +		hooks[i].lsmid = lsmid;
+>>>  		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
+>>>  	}
+>>>  
+> 
