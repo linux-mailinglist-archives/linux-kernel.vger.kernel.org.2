@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E1C390E0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35251390E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhEZBxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 21:53:11 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29137 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231810AbhEZBxJ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 21:53:09 -0400
-IronPort-SDR: jmPDnaOafe7uR54Ocf5WPX1PYem/OTtSnhWsCeeWSQH3b5gIGJswhNVwsP8hLHMSKa9EJ478qR
- 4Vmy7e4Iuv2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182678540"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="182678540"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 18:51:39 -0700
-IronPort-SDR: WwbU4BHYu2aAGkRs47Hm5MaSArW5f+T5U5ATlNnm23l8P/MWJX87QAf2bfFgPwuxN9aRr3sCMi
- Hfr8URtk/FAg==
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="443710902"
-Received: from unknown (HELO [10.239.159.33]) ([10.239.159.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 18:51:36 -0700
-Subject: Re: [PATCH v1 4/5] perf mem: Support record for hybrid platform
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210520070040.710-1-yao.jin@linux.intel.com>
- <20210520070040.710-5-yao.jin@linux.intel.com> <YKvgFVVywalr+Owr@krava>
- <3d9e738d-b972-056b-d0bc-35ed1aaefbad@linux.intel.com>
- <aa5f0be5-c939-3c26-9d2a-3a073449bf98@linux.intel.com>
-Message-ID: <6d6f1040-6c96-7d1d-c766-5fb0057e1cc4@linux.intel.com>
-Date:   Wed, 26 May 2021 09:51:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S232915AbhEZBzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 21:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhEZBzb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 21:55:31 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5036EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 18:54:00 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id r7so23736370ybs.10
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 18:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EvrXRyjoBBrQMHRw50pC/sl/5hocosZ/le3L6XN/5G0=;
+        b=TDHeF7nt4MrYu00bq6FkzfvRaseUNm+Vb+wr4VLpSJ69fzI4MJh21m+2/XVfIhsTdv
+         rm7b19FwT5QTjcIMsK4wNOHSsKUCmLrX5Ws3FdAdN2eibOuXieqC+2/urZpyUJHoHife
+         E+JuQt217OaOoRJrJ7uuMhZ3zyaaZG2W5JTbQy9Keb98uOGI1IuOIGJojuuAOTEYoCjI
+         625GRpHftkNtrIo9mWHQgkeF+9u4pKrOpIQpr0waO66f5N71by+WnVQZyl487BllHX8P
+         4/ga6N99LdU63OIR4Lvkp/pjvaEQzcklCcUVDyqBQ1AEeEOr8OvRduI87Dgk5Ky+ZP2c
+         t+dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EvrXRyjoBBrQMHRw50pC/sl/5hocosZ/le3L6XN/5G0=;
+        b=U9jOTdFXGPForVWj7u+4BRMclZ/5cZKM0sSOHX4J/u025I0osVsuMOQ7qQcqTLIopr
+         BpZc5B/8b7+HvvELeeXrvjLOK2fY9HEcMm6kM61f4SpLkgff8wXBBNAmXFs36u2yc2i9
+         jAgbF2ClPvwLBfrSPNxy3EbokOT6xJnejPohQqXFhit2uVZ9oKRqM32B7cZSyoHCQcSg
+         ds6jk2AVVv5DY/94XO0Ty9jWFYUqX0S2T6lX1OtEBfGfR6hLyg4oWvGUPA/LrMOpQGF0
+         8FZgkKO4ZAI+2vw1hB3mE6qSEkM8vqto84X/vnOBodU/hAlb5ggPM75EEDLf2dXSKFSt
+         8wzA==
+X-Gm-Message-State: AOAM533OTwyhXiSNMOvGbU61rL9IRt7oz0TSxNTFVtApZlHH2s3zaAjh
+        wCdAfAiTJyd2MLnNArlIeo2GaIbPqOyNWveiPBY=
+X-Google-Smtp-Source: ABdhPJwcpDhbJjwreR5M4pyxCXYqs5RFMUyYAJ9SVB1xHD0yZSkhtc38rL2zNjFdhYG55Zec5dPCooZzfS82b5sNUjY=
+X-Received: by 2002:a25:a448:: with SMTP id f66mr44585807ybi.135.1621994039003;
+ Tue, 25 May 2021 18:53:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <aa5f0be5-c939-3c26-9d2a-3a073449bf98@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210525175819.699786-1-elver@google.com> <CANiq72krX9PU14wFsQyW_CJEjTS-TT8wyhBVZZbC132Gz5XO-Q@mail.gmail.com>
+ <CANpmjNPGUAv-d3yEusyF11ip0zEdht7eMGi4pSoQsRYns-MvJA@mail.gmail.com>
+In-Reply-To: <CANpmjNPGUAv-d3yEusyF11ip0zEdht7eMGi4pSoQsRYns-MvJA@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 26 May 2021 03:53:48 +0200
+Message-ID: <CANiq72kCkej_ONwSWjRHWLVrr+g0BZygAUAQVx+FQf7DEdg3cQ@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Tue, May 25, 2021 at 9:13 PM Marco Elver <elver@google.com> wrote:
+>
+> Long story short: this is not fixable without more Clang changes. The
+> only way to do it without a version check would be to introduce
+> no_sanitize_coverage attr to Clang, which we probably shouldn't do,
+> and I didn't want to fight it. ;-)
 
-On 5/25/2021 3:39 PM, Jin, Yao wrote:
-> Hi Jiri,
-> 
->>>>       rec_argv = calloc(rec_argc + 1, sizeof(char *));
->>>>       if (!rec_argv)
->>>>           return -1;
->>>> +    /*
->>>> +     * Save the allocated event name strings.
->>>> +     */
->>>> +    rec_tmp = calloc(rec_argc + 1, sizeof(char *));
->>>> +    if (!rec_tmp) {
->>>> +        free(rec_argv);
->>>> +        return -1;
->>>> +    }
->>>
->>> why not do strdup on all of them and always call free instead?
->>> that would get rid of the rec_tmp and tmp_nr
->>>
->>
->> That is also one method. Let me try it.
->>
-> 
-> If we do strdup on all of them, such as,
-> 
->      if (e->record)
->          rec_argv[i++] = strdup("-W");
-> 
->      rec_argv[i++] = strdup("-d");
-> 
->      if (mem->phys_addr)
->          rec_argv[i++] = strdup("--phys-data");
->      ....
-> 
-> That looks too much strdup used here. So I choose to use a rec_tmp[] to record the allocated string 
-> and free them before exit the function.
-> 
-> Or we record the start index and end index in rec_argv[] for the allocated event string, use strdup 
-> on them and call free before exit the function.
-> 
+I am not sure I followed why you would not want to support querying
+for the attributes (if they are intended to be used separately).
 
-This method looks also not OK.
+But regardless of that, why not the feature flag at least then, to be
+consistent with the others?
 
-The rec_argv[] is changed in cmd_record() for some complex command lines.
+Going back to version checks seems bad -- they should be reserved for
+e.g. known broken versions and things like that. New compiler features
+should come with new feature flags...
 
-For example,
+In fact, for Clang, I do not see any version checks in code at the
+moment, so this would be the first :(
 
-./perf mem record -- ./memtest -R0d -b2000 -d64 -n100
-
-Before cmd_record(), rec_argv[3] = "-e".
-After cmd_record(), rec_argv[3] = "-d64"
-
-Even we do strdup on all of rec_argv[], but the entries are probably changed in cmd_record(), so we 
-can't free the entries at the end of __cmd_record().
-
-Maybe we have to use the original way which just records the allocated event string to a temporary 
-array and free the whole array at the end of __cmd_record().
-
-What do you think?
-
-Thanks
-Jin Yao
-
-> What do you think?
-> 
-> Thanks
-> Jin Yao
+Cheers,
+Miguel
