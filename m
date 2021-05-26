@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490DF3912BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E19F3912C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhEZItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        id S233222AbhEZItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbhEZItG (ORCPT
+        with ESMTP id S233126AbhEZItH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:06 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE40CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:34 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id n4so222809wrw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:34 -0700 (PDT)
+        Wed, 26 May 2021 04:49:07 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA130C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:35 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso15025869wmm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G7iaDAB2ZuYVyZx68crg6QhzsOg2OHh06HlhEV13AEw=;
-        b=I44CIXDqN65PoObP1/rnC7UjnZafXPh+DuBi0Kq2AWIMOpWajEcw78rMhgD/TBi7oB
-         wQgH4fcGxdTk4hb1J/Z9fSCeumJdhs0xsuW5LIMQKFUtFdY6YpqGYGgty7pr46KVg5ny
-         7q7Ea6E5YIAanyRZeCH40+Ipeq7NKd9LXLVQX7/ckkNe4lhcSsJTgZleDyj3sBvKcyYo
-         X0Ssu4Uq4x6S4+g6/RC+pZsBe3yvR/6OjXnGTRdRkX9fK+pU9iexVjgDaBKyrtm/HJr/
-         t0cXJxRJSOAnFQ9RPkc78nW8/5+Y4ZSP0fA51KvYlXl2dd/6gFl+keus84Ue65vf6oO8
-         IYKw==
+        bh=Ey2XQCTHoPB7PbhRpIhhlCIFboLF4MIg90vAb+6Iw48=;
+        b=L/iJmUQ1wl4h9pSToLi6ngPyg5UA7AeSWQLOEuFjYdsGt+aIJ2JW3IZyE7TyAvl9zp
+         glIhu+aKxXtueYZgd2owFNE0ZH3GVlcEDRAUqpItp+X/sLU+ZR0QYqsLVt80CWoZJUk/
+         8d8WNwVuJvhfQqGDn92TSIpDtUNG2tSRqfbjU47JhqUsypTbNrf101/f47GA1k352++H
+         H1+XxvhmsG5nyLGBwyds2ImgQK8W/kvKF7HlRSoMRQP+UXOpqJQkYUi1HhAHi+j/Z6X3
+         TtYsAajhfILOXFoKHIGLxd1yRvhSIi+4tL6F4Et9K+iLfpi8CuxPUGxU+XqxliUJ2Jdq
+         FoyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G7iaDAB2ZuYVyZx68crg6QhzsOg2OHh06HlhEV13AEw=;
-        b=K/WEhJJMiw4vQ+C6tNDyqgTpdlNkZlkljHFG6zfG4TfnB13KAMvED59ep1GWwiA1TF
-         53whABlSTT4Tlzbjp3UuDBilhfwHxZNGE+nEDGeFpsfJb29JgamT4hr5PAXilEW8SJWW
-         Zy38XO/yyVxP+beJQiiwEN68iR+9caXkBTtQdoomZilsaUgekq3hXaVgZSuQ8zVXQyGZ
-         IHATtnPlshLxq1OuCL7NSjCIO2cRJrefTwBk8Py/eeaUOHfu9G7mN7GIZVtetVADSaDR
-         Ad4Cms6MVO7EHNqZ6hUb/WeJ4e/sK5gGNU3Pk+T+Ioftf+OVttDY1Qax7ptOhkU+dZBL
-         jEJw==
-X-Gm-Message-State: AOAM532ut8R/yzeLOhAB1bynYwX1dtse96GSgziPiVuOzsG+yAIljgZ7
-        LNJjKVxssaI68NnPpQs1I47vLA==
-X-Google-Smtp-Source: ABdhPJyISrVWreIUVorPlzyIi2UoKk92HM0mafCSCAAuFnhn6pcE2wxasr0XIJ9wDl0RbS9Aht9XuQ==
-X-Received: by 2002:a5d:52ce:: with SMTP id r14mr17258203wrv.395.1622018853569;
-        Wed, 26 May 2021 01:47:33 -0700 (PDT)
+        bh=Ey2XQCTHoPB7PbhRpIhhlCIFboLF4MIg90vAb+6Iw48=;
+        b=lGKZAyAarCGWLgodCwEE2IymVsyVANB3DhQWiajEfYUjtYgwrQbuWbCuf/QIVXSr2z
+         +H7WbfMGC2FI3PFhWTUiOGll8ztV8cP+ebgBcnWQp/m0NJGkxGpF/HvCtuaNaVxRWU+N
+         ZkUUwKRQ9Lhi6Byd3+WQmHbWpmY9KfNCvvNOf/DQHYahe4M00cqRvlwS6h74Hz0StRFi
+         U86kgO/JE2dSLbmq47LIcNEl/zvyMF+t1cOb+wmrUaekd/q9xRRJxGT/BHsadY1Fvjy3
+         +3o7pUSbk29DtzURz6YC0hXm52Due691S89eRzMzfCURLvqD5pBjYHTibIv7u33IGF/h
+         tkxg==
+X-Gm-Message-State: AOAM530/cHcI8sQvGYIADIqZ0LdbCwImCtkwke4XiDh2F+DJKnjwfMp0
+        h8raZNkAZYARk+Cht1iyrmYekWJ9Sp+h4Q==
+X-Google-Smtp-Source: ABdhPJzhoEFdv2lfo6EL3yXLQSIgGr2CwhLPmszdq9ctvreMndQ6VRfnClZOGx7KUBNH8MO6zsGhOw==
+X-Received: by 2002:a7b:c417:: with SMTP id k23mr11601416wmi.90.1622018854475;
+        Wed, 26 May 2021 01:47:34 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.32
+        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:33 -0700 (PDT)
+        Wed, 26 May 2021 01:47:34 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 03/34] drm/amd/pm/powerplay/hwmgr/smu7_thermal: Provide function name for 'smu7_fan_ctrl_set_default_mode()'
-Date:   Wed, 26 May 2021 09:46:55 +0100
-Message-Id: <20210526084726.552052-4-lee.jones@linaro.org>
+Subject: [PATCH 04/34] drm/amd/pm/powerplay/hwmgr/vega12_thermal: Provide function name
+Date:   Wed, 26 May 2021 09:46:56 +0100
+Message-Id: <20210526084726.552052-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
 References: <20210526084726.552052-1-lee.jones@linaro.org>
@@ -71,7 +71,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu7_thermal.c:132: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:171: warning: expecting prototype for Set the requested temperature range for high and low alert signals(). Prototype was for vega12_thermal_set_temperature_range() instead
 
 Cc: Evan Quan <evan.quan@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -82,28 +82,23 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
-index 0d38d4206848a..6cfe148ed45bb 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
-@@ -129,10 +129,10 @@ int smu7_fan_ctrl_set_static_mode(struct pp_hwmgr *hwmgr, uint32_t mode)
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
+index 0dc16f25a463b..ed3dff0b52d21 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
+@@ -159,7 +159,8 @@ int vega12_thermal_get_temperature(struct pp_hwmgr *hwmgr)
  }
  
  /**
--* Reset Fan Speed Control to default mode.
--* @hwmgr:  the address of the powerplay hardware manager.
--* Exception: Should always succeed.
--*/
-+ * smu7_fan_ctrl_set_default_mode - Reset Fan Speed Control to default mode.
-+ * @hwmgr:  the address of the powerplay hardware manager.
-+ * Exception: Should always succeed.
-+ */
- int smu7_fan_ctrl_set_default_mode(struct pp_hwmgr *hwmgr)
- {
- 	if (!hwmgr->fan_ctrl_is_in_default_mode) {
+- * Set the requested temperature range for high and low alert signals
++ * vega12_thermal_set_temperature_range - Set the requested temperature range
++ *                                        for high and low alert signals
+  *
+  * @hwmgr: The address of the hardware manager.
+  * @range: Temperature range to be programmed for
 -- 
 2.31.1
 
