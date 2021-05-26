@@ -2,307 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504DD39232D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D032392334
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhEZXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 19:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbhEZXXl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 19:23:41 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E29FC061574;
-        Wed, 26 May 2021 16:22:08 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id t15so3484639edr.11;
-        Wed, 26 May 2021 16:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=rnslKlGnPBQU92fjFQCpIwpzZm9Y+S8gYr50qAQ52sc=;
-        b=GhCnKlk4UAlkTySILsxJ6U/gm6JA1bVEokaNnut17QC1gwTI8RmczPAQ/Cdds6beQv
-         AorZRYNgxZ0e0h/YDy5iXWAL8aTojI9dULKAmut+0bxvmhqILOklSpgwf7A/WyhX0MX0
-         u1QKkFqwj2YxMMfWL0gSnUjKYF+IgS/C9+fQa3Hr14r9FuAkZa7YpJ1Ny2+IfxTCkA9N
-         BgZ4gFt0Xrq7RyGkktUz6UftmbiKrK5Hl+yVecHeYWjU+a7J2lFXHDdbtZn1gre5EhEn
-         3vtU2GJAzPds/IFLDOo9SrZ9al6k+KOcVx2c6w97qldT/u4MkDv0ZYpbR0T8BAqcscUB
-         NJvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rnslKlGnPBQU92fjFQCpIwpzZm9Y+S8gYr50qAQ52sc=;
-        b=uQDqMXjMZXV7IG21/ejiUQkDhFOLV+ry/bASjH+h3CwYrnFwRB7Db2w50gQ7DXRdqU
-         +f1r4akknr4emliSbJqHTM6a6f0XyRz3Wx40XFNauML7GSay0tfJqamxZwawXF+nGiLC
-         EbBsGDMuUMoiB5fXoIqdjgp7lrKqWg230FNtTb8+5EOnGQkgiy7VqscDBDJ0XGtjX7mh
-         biZOS9WUqd8DdCoN6qBuSRfdzAbuEcfqPDJkv2LUosB4Khk+UGobSxmRoq320b7OpOv9
-         nVnIX0D8bG/rf2e7BCrk28q0vvOAHpnfjyQ+yA00a/CR+6S0EQAmJ1C7nX/d4Lak34pU
-         6GDg==
-X-Gm-Message-State: AOAM531P4H7z49/1tfv7flzj1DmOhPsTwJ8LYGyHauSSu5X8/gZrPG2G
-        e21CZfxnwvZcDD8SDJ2ncJ710s6WH8NT
-X-Google-Smtp-Source: ABdhPJw/cNqOZNLrWBmlZ3XZzBxVJ/ihteS5HuAOOOSCPkR5lcXLAXc08kv9x+uIT85Dy+dpU6WMCw==
-X-Received: by 2002:a05:6402:176b:: with SMTP id da11mr736799edb.234.1622071326860;
-        Wed, 26 May 2021 16:22:06 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:e00:bdfb:c34e:3af8:76da? ([2a02:810b:f40:e00:bdfb:c34e:3af8:76da])
-        by smtp.gmail.com with ESMTPSA id gt5sm201006ejb.49.2021.05.26.16.22.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 16:22:06 -0700 (PDT)
-Subject: Re: [PATCH 04/10] media: hantro: add support for Rockchip RK3066
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>
-References: <20210525152225.154302-1-knaerzche@gmail.com>
- <20210525152225.154302-5-knaerzche@gmail.com>
- <3b9a076c1c426a14ed10da743fdb86c1bf2eb603.camel@collabora.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <fd0e0872-c661-def7-2c12-a268281bfd9b@gmail.com>
-Date:   Thu, 27 May 2021 01:22:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234871AbhEZX3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 19:29:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62897 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234832AbhEZX3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 19:29:41 -0400
+IronPort-SDR: G1hg+oBi6POGfEfCDRBmnxq8/SQwbtuMsnj8qpoPQhXB7LrglsusJFnBrDFl+06walwbtXfv7z
+ NNf+EQyOypXA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182940331"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="182940331"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 16:28:08 -0700
+IronPort-SDR: 29YLqtLr37wlv6Yu+0P6awRnvn7sRyhhUk/0jgBdVS4Kw2kiDjS2jmQmhM5y6rhyr6XYRDAobX
+ aI9/PqfLs9Jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="480316082"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 26 May 2021 16:28:07 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lm2wY-0002Sk-Eu; Wed, 26 May 2021 23:28:06 +0000
+Date:   Thu, 27 May 2021 07:27:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ bccf1ec369ac126b0997d01a6e1deae00e2cf6b3
+Message-ID: <60aed959.fybUsElEtFhZlqXV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <3b9a076c1c426a14ed10da743fdb86c1bf2eb603.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+branch HEAD: bccf1ec369ac126b0997d01a6e1deae00e2cf6b3  locking/atomics: atomic-instrumented: simplify ifdeffery
 
-thanks for your feedback.
+elapsed time: 724m
 
-Am 26.05.21 um 12:32 schrieb Ezequiel Garcia:
-> Hi Alex,
->
-> Thanks for the patch.
->
-> On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
->> RK3066's VPU IP block is the predecessor from what RK3288 has.
->> The hardware differences are:
->>    - supports decoding frame sizes up to 1920x1088 only
->>    - doesn't have the 'G1_REG_SOFT_RESET' register
->>      (requires another .reset callback for hantro_codec_ops,
->>       since writing this register will result in non-working
->>       IP block)
->>    - has one ACLK/HCLK per vdpu/vepu
->>    - ACLKs can be clocked up to 300 MHz only
->>    - no MMU
->>      (no changes required: CMA will be transparently used)
->>
->> Add a new RK3066 variant which reflect this differences. This variant
->> can be used for RK3188 as well.
->>
->> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->> ---
->>   drivers/staging/media/hantro/hantro_drv.c    |   1 +
->>   drivers/staging/media/hantro/hantro_hw.h     |   1 +
->>   drivers/staging/media/hantro/rk3288_vpu_hw.c | 116 +++++++++++++++++++
->>   3 files changed, 118 insertions(+)
->>
->> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->> index 2f6b01c7a6a0..38ea7b24036e 100644
->> --- a/drivers/staging/media/hantro/hantro_drv.c
->> +++ b/drivers/staging/media/hantro/hantro_drv.c
->> @@ -489,6 +489,7 @@ static const struct of_device_id of_hantro_match[] = {
->>          { .compatible = "rockchip,rk3399-vpu", .data = &rk3399_vpu_variant, },
->>          { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
->>          { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
->> +       { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
->>   #endif
->>   #ifdef CONFIG_VIDEO_HANTRO_IMX8M
->>          { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
->> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
->> index 3d8b53567f16..de2bc367a15a 100644
->> --- a/drivers/staging/media/hantro/hantro_hw.h
->> +++ b/drivers/staging/media/hantro/hantro_hw.h
->> @@ -163,6 +163,7 @@ enum hantro_enc_fmt {
->>   extern const struct hantro_variant rk3399_vpu_variant;
->>   extern const struct hantro_variant rk3328_vpu_variant;
->>   extern const struct hantro_variant rk3288_vpu_variant;
->> +extern const struct hantro_variant rk3066_vpu_variant;
->>   extern const struct hantro_variant imx8mq_vpu_variant;
->>   extern const struct hantro_variant sama5d4_vdec_variant;
->>   
->> diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
->> index fefd45269e52..29805c4bd92f 100644
->> --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
->> +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
->> @@ -10,8 +10,10 @@
->>   
->>   #include "hantro.h"
->>   #include "hantro_jpeg.h"
->> +#include "hantro_g1_regs.h"
->>   #include "hantro_h1_regs.h"
->>   
->> +#define RK3066_ACLK_MAX_FREQ (300 * 1000 * 1000)
->>   #define RK3288_ACLK_MAX_FREQ (400 * 1000 * 1000)
->>   
->>   /*
->> @@ -62,6 +64,52 @@ static const struct hantro_fmt rk3288_vpu_postproc_fmts[] = {
->>          },
->>   };
->>   
->> +static const struct hantro_fmt rk3066_vpu_dec_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_NV12,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
->> +               .codec_mode = HANTRO_MODE_H264_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 1920,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 1088,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
->> +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 1920,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 1088,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
->> +               .codec_mode = HANTRO_MODE_VP8_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 1920,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 1088,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +};
->> +
->>   static const struct hantro_fmt rk3288_vpu_dec_fmts[] = {
->>          {
->>                  .fourcc = V4L2_PIX_FMT_NV12,
->> @@ -126,6 +174,14 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
->>          return IRQ_HANDLED;
->>   }
->>   
->> +static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
->> +{
->> +       /* Bump ACLKs to max. possible freq. to improve performance. */
->> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
->> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
->> +       return 0;
->> +}
->> +
->>   static int rk3288_vpu_hw_init(struct hantro_dev *vpu)
->>   {
->>          /* Bump ACLK to max. possible freq. to improve performance. */
->> @@ -133,6 +189,14 @@ static int rk3288_vpu_hw_init(struct hantro_dev *vpu)
->>          return 0;
->>   }
->>   
->> +static void rk3066_vpu_dec_reset(struct hantro_ctx *ctx)
->> +{
->> +       struct hantro_dev *vpu = ctx->dev;
->> +
->> +       vdpu_write(vpu, G1_REG_INTERRUPT_DEC_IRQ_DIS, G1_REG_INTERRUPT);
->> +       vdpu_write(vpu, G1_REG_CONFIG_DEC_CLK_GATE_E, G1_REG_CONFIG);
->> +}
->> +
->>   static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
->>   {
->>          struct hantro_dev *vpu = ctx->dev;
->> @@ -145,6 +209,33 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
->>   /*
->>    * Supported codec ops.
->>    */
->> +static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
->> +       [HANTRO_MODE_JPEG_ENC] = {
->> +               .run = hantro_h1_jpeg_enc_run,
->> +               .reset = rk3288_vpu_enc_reset,
->> +               .init = hantro_jpeg_enc_init,
->> +               .done = hantro_jpeg_enc_done,
->> +               .exit = hantro_jpeg_enc_exit,
->> +       },
->> +       [HANTRO_MODE_H264_DEC] = {
->> +               .run = hantro_g1_h264_dec_run,
->> +               .reset = rk3066_vpu_dec_reset,
->> +               .init = hantro_h264_dec_init,
->> +               .exit = hantro_h264_dec_exit,
->> +       },
->> +       [HANTRO_MODE_MPEG2_DEC] = {
->> +               .run = hantro_g1_mpeg2_dec_run,
->> +               .reset = rk3066_vpu_dec_reset,
->> +               .init = hantro_mpeg2_dec_init,
->> +               .exit = hantro_mpeg2_dec_exit,
->> +       },
->> +       [HANTRO_MODE_VP8_DEC] = {
->> +               .run = hantro_g1_vp8_dec_run,
->> +               .reset = rk3066_vpu_dec_reset,
->> +               .init = hantro_vp8_dec_init,
->> +               .exit = hantro_vp8_dec_exit,
->> +       },
->> +};
->>   
->>   static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
->>          [HANTRO_MODE_JPEG_ENC] = {
->> @@ -183,10 +274,35 @@ static const struct hantro_irq rk3288_irqs[] = {
->>          { "vdpu", hantro_g1_irq },
->>   };
->>   
->> +static const char * const rk3066_clk_names[] = {
->> +       "aclk_vdpu", "hclk_vdpu",
->> +       "aclk_vepu", "hclk_vepu"
->> +};
->> +
->>   static const char * const rk3288_clk_names[] = {
->>          "aclk", "hclk"
->>   };
->>   
->> +const struct hantro_variant rk3066_vpu_variant = {
->> +       .enc_offset = 0x0,
->> +       .enc_fmts = rk3288_vpu_enc_fmts,
->> +       .num_enc_fmts = ARRAY_SIZE(rk3288_vpu_enc_fmts),
->> +       .dec_offset = 0x400,
-> Having decoder and encoder supported by a single devicetree
-> node was done for RK3288 to cope with some bug in the hardware
-> that was effectively linking the decoder and the encoder.
->
-> AFAIK, Rockchip has fixed this, so unless there's a strong
-> need, I prefer we keep them separated, with one DT node
-> for the g1 decoder and one for the h1 encoder.
->
-> Thanks!
-> Ezequiel
->
-I just checked it: despite it looks like we could use the decoder and 
-encoder separately
+configs tested: 223
+configs skipped: 4
 
-(separate clocks for decoder / encoder) the VPU block won't work (SoC 
-crashes),
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-if not all 4 clocks are enabled for neither decoding nor encoding.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                     haps_hs_smp_defconfig
+sh                           se7751_defconfig
+arm                           sunxi_defconfig
+openrisc                         alldefconfig
+arm                       imx_v6_v7_defconfig
+sh                          sdk7786_defconfig
+sh                   rts7751r2dplus_defconfig
+m68k                         amcore_defconfig
+mips                        jmr3927_defconfig
+powerpc                      ppc44x_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                  iss476-smp_defconfig
+s390                          debug_defconfig
+xtensa                    xip_kc705_defconfig
+arm                       multi_v4t_defconfig
+m68k                        m5272c3_defconfig
+arm                        oxnas_v6_defconfig
+alpha                            allyesconfig
+powerpc                  mpc866_ads_defconfig
+xtensa                         virt_defconfig
+arm                          ep93xx_defconfig
+s390                                defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     tqm8548_defconfig
+sh                           se7780_defconfig
+arm                        spear3xx_defconfig
+sh                           se7705_defconfig
+powerpc                       maple_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                             ezx_defconfig
+arm                              alldefconfig
+powerpc                     tqm5200_defconfig
+sh                            titan_defconfig
+mips                           ip22_defconfig
+m68k                             allyesconfig
+mips                         rt305x_defconfig
+arc                        vdk_hs38_defconfig
+arc                      axs103_smp_defconfig
+parisc                generic-32bit_defconfig
+um                            kunit_defconfig
+arm                          imote2_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                     skiroot_defconfig
+powerpc                           allnoconfig
+arm                      footbridge_defconfig
+um                               allyesconfig
+mips                  decstation_64_defconfig
+openrisc                 simple_smp_defconfig
+sh                          sdk7780_defconfig
+arm                          pxa168_defconfig
+sh                          lboxre2_defconfig
+powerpc                    sam440ep_defconfig
+arm                     davinci_all_defconfig
+sparc64                          alldefconfig
+arm                          pxa910_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arc                     nsimosci_hs_defconfig
+mips                           ip28_defconfig
+mips                         db1xxx_defconfig
+m68k                        mvme16x_defconfig
+arm                            xcep_defconfig
+mips                         tb0287_defconfig
+arm64                            alldefconfig
+mips                        bcm47xx_defconfig
+h8300                               defconfig
+sh                     sh7710voipgw_defconfig
+mips                  cavium_octeon_defconfig
+nios2                            alldefconfig
+arm                      jornada720_defconfig
+powerpc                    amigaone_defconfig
+mips                    maltaup_xpa_defconfig
+mips                        maltaup_defconfig
+arm                        realview_defconfig
+mips                         mpc30x_defconfig
+um                                  defconfig
+arm                          collie_defconfig
+m68k                        stmark2_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                       ebony_defconfig
+mips                        vocore2_defconfig
+arm                         cm_x300_defconfig
+mips                          rm200_defconfig
+arm                            pleb_defconfig
+sparc64                             defconfig
+arm                           omap1_defconfig
+mips                        workpad_defconfig
+arm                          moxart_defconfig
+mips                          malta_defconfig
+powerpc                     pseries_defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                            ar7_defconfig
+powerpc                      bamboo_defconfig
+arm                           u8500_defconfig
+arm                         s3c2410_defconfig
+parisc                           allyesconfig
+arm                            qcom_defconfig
+powerpc                      pasemi_defconfig
+arm                            lart_defconfig
+x86_64                            allnoconfig
+sh                          r7780mp_defconfig
+powerpc                    mvme5100_defconfig
+mips                          ath79_defconfig
+arm                          lpd270_defconfig
+sh                           se7750_defconfig
+sh                           se7206_defconfig
+arm                       cns3420vb_defconfig
+powerpc                     sequoia_defconfig
+sh                           se7619_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                        multi_v5_defconfig
+mips                            e55_defconfig
+alpha                               defconfig
+arm                         lpc18xx_defconfig
+mips                      fuloong2e_defconfig
+powerpc                      obs600_defconfig
+sparc                       sparc64_defconfig
+powerpc                      mgcoge_defconfig
+openrisc                            defconfig
+mips                     loongson1c_defconfig
+m68k                             allmodconfig
+riscv                    nommu_k210_defconfig
+alpha                            alldefconfig
+arc                    vdk_hs38_smp_defconfig
+m68k                        mvme147_defconfig
+microblaze                      mmu_defconfig
+arm                         nhk8815_defconfig
+nios2                         3c120_defconfig
+sh                          kfr2r09_defconfig
+arm                        cerfcube_defconfig
+mips                           ci20_defconfig
+xtensa                  cadence_csp_defconfig
+arm                       omap2plus_defconfig
+powerpc                     mpc83xx_defconfig
+arm                          ixp4xx_defconfig
+microblaze                          defconfig
+xtensa                           allyesconfig
+arc                        nsim_700_defconfig
+mips                        nlm_xlr_defconfig
+mips                     cu1830-neo_defconfig
+arm                           corgi_defconfig
+mips                     cu1000-neo_defconfig
+parisc                generic-64bit_defconfig
+sh                            shmin_defconfig
+arm                         hackkit_defconfig
+m68k                         apollo_defconfig
+um                             i386_defconfig
+mips                        qi_lb60_defconfig
+m68k                          hp300_defconfig
+arm                       aspeed_g5_defconfig
+arc                            hsdk_defconfig
+mips                          rb532_defconfig
+arm                        trizeps4_defconfig
+arm                        mvebu_v5_defconfig
+mips                      maltaaprp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a005-20210526
+x86_64               randconfig-a001-20210526
+x86_64               randconfig-a006-20210526
+x86_64               randconfig-a003-20210526
+x86_64               randconfig-a004-20210526
+x86_64               randconfig-a002-20210526
+i386                 randconfig-a001-20210526
+i386                 randconfig-a002-20210526
+i386                 randconfig-a005-20210526
+i386                 randconfig-a004-20210526
+i386                 randconfig-a003-20210526
+i386                 randconfig-a006-20210526
+i386                 randconfig-a011-20210526
+i386                 randconfig-a016-20210526
+i386                 randconfig-a015-20210526
+i386                 randconfig-a012-20210526
+i386                 randconfig-a014-20210526
+i386                 randconfig-a013-20210526
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-I'd prefer the other way also, but it seems not possible.
+clang tested configs:
+x86_64               randconfig-b001-20210526
+x86_64               randconfig-a013-20210526
+x86_64               randconfig-a012-20210526
+x86_64               randconfig-a014-20210526
+x86_64               randconfig-a016-20210526
+x86_64               randconfig-a015-20210526
+x86_64               randconfig-a011-20210526
 
-Alex.
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
