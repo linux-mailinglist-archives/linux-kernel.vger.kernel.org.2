@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3248391879
+	by mail.lfdr.de (Postfix) with ESMTP id 5096D391875
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbhEZNDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
+        id S234528AbhEZNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhEZNCn (ORCPT
+        with ESMTP id S234994AbhEZNCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 09:02:43 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7395CC061353
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:07 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id n2so1109818wrm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:07 -0700 (PDT)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA56C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:08 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m18so1071441wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SstsYYHlOJNFxJcFIIyoQziYm6AwfAPQpEUk2TCe0GU=;
-        b=QF82RN242X5HtKAatNgT/qgGfUpO25QtmvdltzP3FsDkyUtjq2GV86LhSpzIPW2y4N
-         Z9QP2HWF0uXip3AGH/WZfptwQAE/f1DSS7cs9jtV5xYofb9wXy/8iF9RfgFjIjxE8k8p
-         Ug9kZLmO6QzFwFVh+50D7spVdYi9omwh0HympLkeNf2LU1Qf1dy3+TzL9GDfXESuYGGj
-         UFAYZcQCZwVNNiSPHHY2b25aqxwk8RQQBVYxDnSCP0bFGumy9RfTPdAanPp/rEm/pn6d
-         zo3DOTHllQEq94N40s3KVmw+WnOq2dbEL7Itx3OZbxrJ/4NV0PNQ4j3wnPGmsb5mg0xA
-         gZiQ==
+        bh=o36LW+hTNNsqoigEuNG+wNAHEgSOlM2c2v5gTuumT6A=;
+        b=fe2q372U1NRt7LxZBrrrBiv/0gEAOAmRpODo8k5VMyG+7Xr4MOjtWdZImmZUg1V/XC
+         /2m2FX+GOzkufz6Qo1w24rzpKoUKlSdGx9fstG2I301jTVu3AIFKSWCF2v+bmkX3asMj
+         kYPUmLrcwYKMnZ0zr5XBYa7O5z5VK7WF+3Zh1tA1hlGfqWk+sfewoqGPPtYPuyDZQ3l6
+         17uUYjqAou5k7d3/ZAKRusc2BvK1gP7yhS0onSbQ1flstx71443M4wDOQL975US7ZIAL
+         YmdOLO4A379l9SyE7RtPrAAZOkkQpFqUhIFdPCrBUG63sVhtquhzlBq8XC0M2rL18dE/
+         M6LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SstsYYHlOJNFxJcFIIyoQziYm6AwfAPQpEUk2TCe0GU=;
-        b=FXtdVg4UQ1zRiXHvtLgNDJ3NXbr0Pu7Kjs24xTCus43+JJuZu+w8lT6GZecX/Vna4E
-         PvX/RJAOs5QRtmhoLt2IaCDDG9gwYk07jNviRkbLABbFyd2tQzQyhmzE7VfqUrJAS848
-         js0e77YcF+eexhp/nu6b8xXxR/SAyBcuaMu4eN0KXkvoUre0hHh8vJxsxLBiU80ew8Vy
-         Ku+FVU+nPogMi6knZ8Z8ro8WSwO9/lb6JM4JZV+3YskkHn3Z4HZe2YsPxsuXBU8e02Uj
-         xYGsE8wdJwzuz5EWEs/L0G4XROJqR2f1yRKrXEGtNyx1NxcIwplYw1M8zdRj7PxqRXOg
-         oIlw==
-X-Gm-Message-State: AOAM530RDeCF/BwrbI+P0lsDYzwnDydkRxPzjFMr5bS5rssdoEw8nOd5
-        J3/mNn5onkloduAfbEuNCHzHlg==
-X-Google-Smtp-Source: ABdhPJyRGUgs1PnvtyEBBRL+/zjH/5oq1XavlOMX2b9sgoXWYDfs4A+DlUKJpkwVVNV2rtfQlhD//g==
-X-Received: by 2002:a5d:4b08:: with SMTP id v8mr33135582wrq.122.1622034066371;
-        Wed, 26 May 2021 06:01:06 -0700 (PDT)
+        bh=o36LW+hTNNsqoigEuNG+wNAHEgSOlM2c2v5gTuumT6A=;
+        b=hCMR3mY2p9tvEw3U8569XvsNnkmMGXDYtgSvBVonzFnnj/WrGPDKPGdunSOCrlSpwx
+         4MQJ0IHuKJ3pWjl3NDrzg8sZDu/ywJr4h08B7pK3ItpYKunufAeSqoUJIfcPLPKy+hSL
+         Lblv+JiNE08km1en7R576YTtG9p5lDiasCnzKODjNLzwXC6MK1/6GDdBoGx0XSqnljdW
+         /HsXnirdxdzTRfrnpm5L42LgLTeJ4k0mrpKcXBJawtc6sy+Tup4+nlx2TESS7gaRvkev
+         Damg44rMXFkwrW98Ee9uBFpI1vGoHWRQfz6XD783MBJCtWYr4ke5pQGpbgV/yFuTB88l
+         hMog==
+X-Gm-Message-State: AOAM532WlU3D/rdgV1DTxOhkUJM+N5kjcs6kmPO4KzEKVPmdweLKR/pZ
+        4s/gjwpInifl8R+JgEaYG1JMqg==
+X-Google-Smtp-Source: ABdhPJxbGb+Q0j/7v5WuRF+0wZltMrwCJKhRTJIXKl3ptpTQ4KxLGZloC1MW7YR2CQ085BEG/JQplQ==
+X-Received: by 2002:a5d:4246:: with SMTP id s6mr29164312wrr.9.1622034067391;
+        Wed, 26 May 2021 06:01:07 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.05
+        by smtp.gmail.com with ESMTPSA id y14sm6430036wmj.37.2021.05.26.06.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:01:05 -0700 (PDT)
+        Wed, 26 May 2021 06:01:06 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 19/24] usb: gadget: udc: udc-xilinx: Place correct function names into the headers
-Date:   Wed, 26 May 2021 14:00:32 +0100
-Message-Id: <20210526130037.856068-20-lee.jones@linaro.org>
+        Pawel Jez <pjez@cadence.com>, linux-usb@vger.kernel.org
+Subject: [PATCH 20/24] usb: cdns3: cdns3-gadget: Provide correct function naming for '__cdns3_gadget_ep_queue()'
+Date:   Wed, 26 May 2021 14:00:33 +0100
+Message-Id: <20210526130037.856068-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526130037.856068-1-lee.jones@linaro.org>
 References: <20210526130037.856068-1-lee.jones@linaro.org>
@@ -68,41 +70,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/gadget/udc/udc-xilinx.c:802: warning: expecting prototype for xudc_ep_enable(). Prototype was for __xudc_ep_enable() instead
- drivers/usb/gadget/udc/udc-xilinx.c:997: warning: expecting prototype for xudc_ep0_queue(). Prototype was for __xudc_ep0_queue() instead
+ drivers/usb/cdns3/cdns3-gadget.c:2499: warning: expecting prototype for cdns3_gadget_ep_queue(). Prototype was for __cdns3_gadget_ep_queue() instead
 
-Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Peter Chen <peter.chen@kernel.org>
+Cc: Pawel Laszczak <pawell@cadence.com>
+Cc: Roger Quadros <rogerq@kernel.org>
+Cc: Aswath Govindraju <a-govindraju@ti.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Pawel Jez <pjez@cadence.com>
 Cc: linux-usb@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/gadget/udc/udc-xilinx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/cdns3/cdns3-gadget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/udc-xilinx.c b/drivers/usb/gadget/udc/udc-xilinx.c
-index 72f2ea062d554..fb4ffedd6f0dd 100644
---- a/drivers/usb/gadget/udc/udc-xilinx.c
-+++ b/drivers/usb/gadget/udc/udc-xilinx.c
-@@ -791,7 +791,7 @@ static int xudc_ep_set_halt(struct usb_ep *_ep, int value)
+diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+index 54fa429fae777..57adcdbfab5f6 100644
+--- a/drivers/usb/cdns3/cdns3-gadget.c
++++ b/drivers/usb/cdns3/cdns3-gadget.c
+@@ -2486,7 +2486,7 @@ static int cdns3_gadget_ep_disable(struct usb_ep *ep)
  }
  
  /**
-- * xudc_ep_enable - Enables the given endpoint.
-+ * __xudc_ep_enable - Enables the given endpoint.
-  * @ep: pointer to the xusb endpoint structure.
-  * @desc: pointer to usb endpoint descriptor.
-  *
-@@ -987,7 +987,7 @@ static void xudc_free_request(struct usb_ep *_ep, struct usb_request *_req)
- }
- 
- /**
-- * xudc_ep0_queue - Adds the request to endpoint 0 queue.
-+ * __xudc_ep0_queue - Adds the request to endpoint 0 queue.
-  * @ep0: pointer to the xusb endpoint 0 structure.
-  * @req: pointer to the xusb request structure.
-  *
+- * cdns3_gadget_ep_queue - Transfer data on endpoint
++ * __cdns3_gadget_ep_queue - Transfer data on endpoint
+  * @ep: endpoint object
+  * @request: request object
+  * @gfp_flags: gfp flags
 -- 
 2.31.1
 
