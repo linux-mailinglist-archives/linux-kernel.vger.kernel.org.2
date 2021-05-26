@@ -2,169 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52496391775
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC15239177A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhEZMho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:37:44 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40364 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhEZMhg (ORCPT
+        id S233613AbhEZMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:38:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45014 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233592AbhEZMhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:37:36 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QCZGMg006614;
-        Wed, 26 May 2021 07:35:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622032516;
-        bh=3bBG8BqrGtdkKHvGc5OmGFJ5N2skyD9sMRW9+N98L+o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AQQjUuHvb8tTt9TCk++YgygGukBZ1fpcROn+F1ysRMsZzDJlEX0FrdQbmad2L/qjQ
-         9juB1F7EyXkcx6CWnoRy8xUMOahaq6+yrOb77px7qAdK+hOZ3aDXIzjOkS7fdpnaCm
-         Qy8QFYLy2i6fJu4xaJfbryxViplR6b1RVXNC8pho=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QCZFBC103444
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 07:35:15 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 07:35:15 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 07:35:15 -0500
-Received: from [10.250.138.168] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QCYxVx038658;
-        Wed, 26 May 2021 07:35:01 -0500
-Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        <yoshihiro.shimoda.uh@renesas.com>, <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
-CC:     Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210517074723.10212-1-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <11f417e8-6bc5-93dd-f915-04b352bc61d1@ti.com>
-Date:   Wed, 26 May 2021 18:04:58 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 26 May 2021 08:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622032578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VmkLjtZEk0J2XYQxwhyJ+4yx5qdLAM2WWE6URsQGLe8=;
+        b=H3NWShnZdaTVyERXbVD/VESMq2jaNPGH5a8aCSf26OPByeHcpBApQ/zmZGZIWE9hxUSuOE
+        YT6z/6p0c5uE3PIQNzpXbTnNdsfL8kt5oc00dIm71JmbJpWTSUSCsX9ZIDHwNpwVCulfJC
+        uBoJxhrz9kpRDt0CUHmZicNPCtCL51c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-134-neORwOUcMwCs6hyJZTdUXw-1; Wed, 26 May 2021 08:36:16 -0400
+X-MC-Unique: neORwOUcMwCs6hyJZTdUXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 143BB108C1E4;
+        Wed, 26 May 2021 12:36:15 +0000 (UTC)
+Received: from krava (unknown [10.40.195.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CA7D160CCD;
+        Wed, 26 May 2021 12:36:08 +0000 (UTC)
+Date:   Wed, 26 May 2021 14:36:07 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, Fabian Hemmer <copy@copy.sh>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf test: iterate over shell tests in alphabetical order
+Message-ID: <YK5AtzbM7dLzwp9A@krava>
+References: <20210525230521.244553-1-rickyman7@gmail.com>
+ <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210517074723.10212-1-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Tue, May 25, 2021 at 04:25:48PM -0700, Ian Rogers wrote:
+> On Tue, May 25, 2021 at 4:08 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> >
+> > for_each_shell_test macro iterated over all shell tests in the directory
+> > using readdir, which does not guarantee any ordering, causing
+> > problems on certain fs. However, the order in which they are visited
+> > determines the id of the test, in case one wants to run a single test.
+> >
+> > This patch replaces readdir with scandir using alphabetical sorting.
+> > This guarantees that, given the same set of tests, all machines will
+> > see the tests in the same order, and, thus, that test ids are
+> > consistent.
+> >
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Ian Rogers <irogers@google.com>
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> 
+> > ---
+> >  tools/perf/tests/builtin-test.c | 38 ++++++++++++++++++---------------
+> >  1 file changed, 21 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> > index c4b888f18e9ca..cbbfe48ab8029 100644
+> > --- a/tools/perf/tests/builtin-test.c
+> > +++ b/tools/perf/tests/builtin-test.c
+> > @@ -510,8 +510,8 @@ static const char *shell_test__description(char *description, size_t size,
+> >         return description ? strim(description + 1) : NULL;
+> >  }
+> >
+> > -#define for_each_shell_test(dir, base, ent)    \
+> > -       while ((ent = readdir(dir)) != NULL)    \
+> > +#define for_each_shell_test(entlist, nr, base, ent)                    \
+> > +       for (int __i = 0; __i < nr && (ent = entlist[__i]); __i++)      \
+> 
+> I think this declaration of __i is okay as C99 allows declarations
+> here, but generally I don't see this style in the kernel.
 
-On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
-> Patch series
-> *) Adds support to add virtual functions to enable endpoint controller
->    which supports SR-IOV capability
-> *) Add support in Cadence endpoint driver to configure virtual functions
-> *) Enable pci_endpoint_test driver to create pci_device for virtual
->    functions
-> 
-> v1 of the patch series can be found at [1]
-> v2 of the patch series can be found at [2]
-> v3 of the patch series can be found at [3]
-> v4 of the patch series can be found at [4]
-> v5 of the patch series can be found at [5]
-> 
-> Here both physical functions and virtual functions use the same
-> pci_endpoint_test driver and existing pcitest utility can be used
-> to test virtual functions as well.
+I think it's ok, we have some instances of this in perf already..
+otherwise we'd need to pass extra argument to the macro
 
-I request to help test this series in your platform either with SR-IOV
-capability or without SR-IOV capability to make sure there are no
-regressions.
-
-Thanks in advance for the help!
-
-Best Regards
-Kishon
+jirka
 
 > 
-> Changes from v5:
-> *) Rebased to 5.13-rc1
+> Thanks,
+> Ian
 > 
-> Changes from v4:
-> *) Added a fix in Cadence driver which was overwriting BAR configuration
->    of physical function.
-> *) Didn't include Tom's Acked-by since Cadence driver is modified in
->    this revision.
+> >                 if (!is_directory(base, ent) && ent->d_name[0] != '.')
+> >
+> >  static const char *shell_tests__dir(char *path, size_t size)
+> > @@ -538,8 +538,9 @@ static const char *shell_tests__dir(char *path, size_t size)
+> >
+> >  static int shell_tests__max_desc_width(void)
+> >  {
+> > -       DIR *dir;
+> > +       struct dirent **entlist;
+> >         struct dirent *ent;
+> > +       int n_dirs;
+> >         char path_dir[PATH_MAX];
+> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+> >         int width = 0;
+> > @@ -547,11 +548,11 @@ static int shell_tests__max_desc_width(void)
+> >         if (path == NULL)
+> >                 return -1;
+> >
+> > -       dir = opendir(path);
+> > -       if (!dir)
+> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
+> > +       if (n_dirs == -1)
+> >                 return -1;
+> >
+> > -       for_each_shell_test(dir, path, ent) {
+> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
+> >                 char bf[256];
+> >                 const char *desc = shell_test__description(bf, sizeof(bf), path, ent->d_name);
+> >
+> > @@ -563,7 +564,8 @@ static int shell_tests__max_desc_width(void)
+> >                 }
+> >         }
+> >
+> > -       closedir(dir);
+> > +       free(entlist);
+> > +
+> >         return width;
+> >  }
+> >
+> > @@ -589,8 +591,9 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
+> >
+> >  static int run_shell_tests(int argc, const char *argv[], int i, int width)
+> >  {
+> > -       DIR *dir;
+> > +       struct dirent **entlist;
+> >         struct dirent *ent;
+> > +       int n_dirs;
+> >         char path_dir[PATH_MAX];
+> >         struct shell_test st = {
+> >                 .dir = shell_tests__dir(path_dir, sizeof(path_dir)),
+> > @@ -599,14 +602,14 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+> >         if (st.dir == NULL)
+> >                 return -1;
+> >
+> > -       dir = opendir(st.dir);
+> > -       if (!dir) {
+> > +       n_dirs = scandir(st.dir, &entlist, NULL, alphasort);
+> > +       if (n_dirs == -1) {
+> >                 pr_err("failed to open shell test directory: %s\n",
+> >                         st.dir);
+> >                 return -1;
+> >         }
+> >
+> > -       for_each_shell_test(dir, st.dir, ent) {
+> > +       for_each_shell_test(entlist, n_dirs, st.dir, ent) {
+> >                 int curr = i++;
+> >                 char desc[256];
+> >                 struct test test = {
+> > @@ -623,7 +626,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+> >                 test_and_print(&test, false, -1);
+> >         }
+> >
+> > -       closedir(dir);
+> > +       free(entlist);
+> >         return 0;
+> >  }
+> >
+> > @@ -722,19 +725,20 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+> >
+> >  static int perf_test__list_shell(int argc, const char **argv, int i)
+> >  {
+> > -       DIR *dir;
+> > +       struct dirent **entlist;
+> >         struct dirent *ent;
+> > +       int n_dirs;
+> >         char path_dir[PATH_MAX];
+> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+> >
+> >         if (path == NULL)
+> >                 return -1;
+> >
+> > -       dir = opendir(path);
+> > -       if (!dir)
+> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
+> > +       if (n_dirs == -1)
+> >                 return -1;
+> >
+> > -       for_each_shell_test(dir, path, ent) {
+> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
+> >                 int curr = i++;
+> >                 char bf[256];
+> >                 struct test t = {
+> > @@ -747,7 +751,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
+> >                 pr_info("%2d: %s\n", i, t.desc);
+> >         }
+> >
+> > -       closedir(dir);
+> > +       free(entlist);
+> >         return 0;
+> >  }
+> >
+> > --
+> > 2.31.1
+> >
 > 
-> Changes from v3:
-> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
-> 
-> Changes from v2:
-> *) Fixed DT binding documentation comment by Rob
-> *) Fixed the error check in pci-epc-core.c
-> 
-> Changes from v1:
-> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
->    binding for EP)
-> 
-> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
-> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
-> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
-> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
-> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
-> 
-> Kishon Vijay Abraham I (7):
->   dt-bindings: PCI: pci-ep: Add binding to specify virtual function
->   PCI: endpoint: Add support to add virtual function in endpoint core
->   PCI: endpoint: Add support to link a physical function to a virtual
->     function
->   PCI: endpoint: Add virtual function number in pci_epc ops
->   PCI: cadence: Add support to configure virtual functions
->   misc: pci_endpoint_test: Populate sriov_configure ops to configure
->     SR-IOV device
->   Documentation: PCI: endpoint/pci-endpoint-cfs: Guide to use SR-IOV
-> 
->  .../PCI/endpoint/pci-endpoint-cfs.rst         |  12 +-
->  .../devicetree/bindings/pci/pci-ep.yaml       |   7 +
->  drivers/misc/pci_endpoint_test.c              |   1 +
->  .../pci/controller/cadence/pcie-cadence-ep.c  | 285 ++++++++++++++----
->  drivers/pci/controller/cadence/pcie-cadence.h |   7 +
->  .../pci/controller/dwc/pcie-designware-ep.c   |  36 +--
->  drivers/pci/controller/pcie-rcar-ep.c         |  19 +-
->  drivers/pci/controller/pcie-rockchip-ep.c     |  18 +-
->  drivers/pci/endpoint/functions/pci-epf-ntb.c  |  79 +++--
->  drivers/pci/endpoint/functions/pci-epf-test.c |  66 ++--
->  drivers/pci/endpoint/pci-ep-cfs.c             |  24 ++
->  drivers/pci/endpoint/pci-epc-core.c           | 130 +++++---
->  drivers/pci/endpoint/pci-epf-core.c           | 144 ++++++++-
->  include/linux/pci-epc.h                       |  57 ++--
->  include/linux/pci-epf.h                       |  16 +-
->  15 files changed, 684 insertions(+), 217 deletions(-)
-> 
+
