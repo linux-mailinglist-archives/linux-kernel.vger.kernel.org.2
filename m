@@ -2,189 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0063920D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C313920D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhEZT0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhEZT0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:26:47 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F77FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:25:15 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id v9so2212524ion.11
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=izmyF5lXZ6T+Ih81ROoFBWGYSX359TfngCEeuMk/7tw=;
-        b=kMT8SVDJjaBto+io7zebuCCqledUf8nh4myBvhiKUjQphfgDe7/5JIOaMq3TeL2vli
-         lGZSIEPGc5X7c2WAvwLO0tfc2FNWGgydkFVNt02Ogh4fov63BJn270+3sWaPdKFGgM0Z
-         TeSGT3og1EXgFByRnd3ZSqx1UxiS33o0w7vjY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=izmyF5lXZ6T+Ih81ROoFBWGYSX359TfngCEeuMk/7tw=;
-        b=Tbi0iPKigSULmT5EYBT3ix5g5U+cdYT5dqgWsmKGlLgF3w5v07wC8EIInS4T2d+Y/N
-         GDuHbz9Us9bqUccCiB3HlQfsIcbkN5j6UQJOdK6atcdeanvX/yEqJJ7SU2EkSubo3bCY
-         Bqe82ouAgZosvBwEkuGYhC4mLwJ8Mz2KLxovJESaOYM7ZFFfitIoZQZGtqCQUXOp5Unu
-         QO4kGJCMP7ejsLq8y5t9VhSB6EfFmhyWSOtXzR6kmsyKvw+CjIRD7QCZWkVGeiN74gIV
-         evjK4wFAZ3B3txDCoQtUuS5Qf+X3+6Eyp/DVLW3duK3UYBpmwUJxkJh5R700fKnfYLDg
-         0/Og==
-X-Gm-Message-State: AOAM531E3wlsyPwPr46KilNj3TrbvluBacZ0/8Dfzvz8MhcBcp/3zaL5
-        bW57dQj8CfsDk2m2EeBezJukCw==
-X-Google-Smtp-Source: ABdhPJxCtegg75Nne7R6DXMK3EvcaNHbzYsgBnTRD663faG7Iz3QuT5u01nw0IQsC+K5QxYFkrdv2A==
-X-Received: by 2002:a02:b78c:: with SMTP id f12mr4804493jam.7.1622057114750;
-        Wed, 26 May 2021 12:25:14 -0700 (PDT)
-Received: from google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
-        by smtp.gmail.com with ESMTPSA id b189sm113428iof.48.2021.05.26.12.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 12:25:14 -0700 (PDT)
-Date:   Wed, 26 May 2021 13:25:12 -0600
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, kbusch@kernel.org,
-        axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        dan.j.williams@intel.com, shyjumon.n@intel.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Subject: Re: [PATCH V5] drivers/nvme: Add support for ACPI StorageD3Enable
- property
-Message-ID: <YK6gmAWqaRmvpJXb@google.com>
-References: <20200702225011.10932-1-david.e.box@linux.intel.com>
- <20200709184333.6241-1-david.e.box@linux.intel.com>
+        id S233980AbhEZT3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:29:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhEZT3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E65613D3;
+        Wed, 26 May 2021 19:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622057253;
+        bh=KGVp4wqzVFKRaWAJBaVrOidSt0GjvPkTAxWI+nC6N1U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dkrT6B2xUJ9PSHBypQxKFV1rymUrbguASRGozvNXtFvl2Ycw5zo3vA0MlVaZW/otM
+         XZEdInAPTWuCYDjxvxMh82ucBt1V9gxvqvR3ZoUvcIXRnPzWy9uElYZQ9x4it9yDT/
+         o9nqRNgTndac8KGeo7hsiABsWJdd9Nr2TMz5vEY3C8gP951zB5JJKAvECtGJuSa6+v
+         E4u2ikbZGVLK7U9XF91yg/dmuhr5YKhqqVyc0/sTcJjP70RfnzwpQJ5H0eB7qOcTeS
+         5IERcZZQow/CldwbWQYsf5A28k/Y4sqTeBAFRNKeDPosfhks8cAKJsUnb98uLK7izK
+         KKAs3gyRHAAIg==
+Date:   Wed, 26 May 2021 12:27:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2 0/2] fixes for yt8511 phy driver
+Message-ID: <20210526122732.5e655b9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210525203314.14681-1-pgwipeout@gmail.com>
+References: <20210525203314.14681-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709184333.6241-1-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:43:33AM -0700, David E. Box wrote:
-> +#ifdef CONFIG_ACPI
-> +static bool nvme_acpi_storage_d3(struct pci_dev *dev)
-> +{
-> +	const struct fwnode_handle *fwnode;
-> +	struct acpi_device *adev;
-> +	struct pci_dev *root;
-> +	acpi_handle handle;
-> +	acpi_status status;
-> +	u8 val;
-> +
-> +	/*
-> +	 * Look for _DSD property specifying that the storage device on
-> +	 * the port must use D3 to support deep platform power savings during
-> +	 * suspend-to-idle
-> +	 */
-> +	root = pcie_find_root_port(dev);
-> +	if (!root)
-> +		return false;
-> +
-> +	adev = ACPI_COMPANION(&root->dev);
-> +	if (!adev)
-> +		return false;
-> +
-> +	/*
-> +	 * The property is defined in the PXSX device for South complex ports
-> +	 * and in the PEGP device for North complex ports.
-> +	 */
-> +	status = acpi_get_handle(adev->handle, "PXSX", &handle);
-So I'm curious why we need to directly look at the PXSX and PEGP
-devices instead of the ACPI_COMPANION node attached to the pci device?
+On Tue, 25 May 2021 16:33:12 -0400 Peter Geis wrote:
+> The Intel clang bot caught a few uninitialized variables in the new
+> Motorcomm driver. While investigating the issue, it was found that the
+> driver would have unintended effects when used in an unsupported mode.
+> 
+> Fixed the uninitialized ret variable and abort loading the driver in
+> unsupported modes.
+> 
+> Thank you to the Intel clang bot for catching these.
 
-I've looked around and I can't find any documentation that defines the
-the PXSX and PEGP device names.
-
-I've dumped some ACPI from a system that uses the PXSX name and
-StorageD3Cold attribute:
-
-    Scope (\_SB.PCI0.GP14)
-    {
-        Device (PXSX)
-        {
-            Name (_ADR, 0x0000000000000000)  // _ADR: Address
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                Return (0x0F)
-            }
-
-            Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
-            {
-                ToUUID ("5025030f-842f-4ab4-a561-99a5189762d0"),
-                Package (0x01)
-                {
-                    Package (0x02)
-                    {
-                        "StorageD3Enable",
-                        One
-                    }
-                }
-            })
-        }
-    }
-
-It looks to me like it's just the firmware node for the NVMe device
-attached to the root port. Is that the correct assumption?
-
-I'm wondering if we can simplify the look up logic to look at the
-ACPI_COMPANION of the pci device?
-
-The reason I ask is that I'm working on enabling S0i3 on an AMD device.
-This device also defines the StorageD3Enable property, but it don't use
-the PXSX name:
-
-    Scope (GPP6) {
-        Device (NVME)
-        {
-            Name (_ADR, Zero)  // _ADR: Address
-
-            Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
-            {
-                ToUUID ("5025030f-842f-4ab4-a561-99a5189762d0"),
-                Package (0x01)
-                {
-                    Package (0x02)
-                    {
-                        "StorageD3Enable",
-                        One
-                    }
-                }
-            })
-        }
-    }
-
-The Windows
-[documentation](https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro#d3-support)
-makes it sound like the _DSD should be defined on the PCI device.
-
-I can send one of the following patches depending on the feedback:
-1) Additionally check the pci device's ACPI_COMPANION for the _DSD.
-2) Delete the PXSX and PEGP lookups and only look at the pci device's
-   ACPI_COMPANION.
-
-> +	if (ACPI_FAILURE(status)) {
-> +		status = acpi_get_handle(adev->handle, "PEGP", &handle);
-> +		if (ACPI_FAILURE(status))
-> +			return false;
-> +	}
-> +
-> +	if (acpi_bus_get_device(handle, &adev))
-> +		return false;
-> +
-> +	fwnode = acpi_fwnode_handle(adev);
-> +
-> +	return fwnode_property_read_u8(fwnode, "StorageD3Enable", &val) ?
-> +		false : val == 1;
-> +}
-
-Thanks,
-Raul
-
-p.s., Sorry for the second message, I somehow mangled the headers in the
-first message and dropped the Message-Id.
+Fixes tag need work, the hashes don't match the ones in net-next.
