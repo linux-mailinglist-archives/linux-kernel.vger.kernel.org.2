@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE4A3911A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C951A3911AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhEZH4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:56:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1698 "EHLO mga17.intel.com"
+        id S232181AbhEZH5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:57:51 -0400
+Received: from m12-12.163.com ([220.181.12.12]:36656 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231998AbhEZH4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:56:22 -0400
-IronPort-SDR: nxpnwqmksiAezhgL5EXgcKsxf47edoQYs+zF+X67YCaWAXHl7o28PNp7lbyynyI8j6Hln74Xqm
- yrmCv8GszZtQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182732023"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="182732023"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 00:54:50 -0700
-IronPort-SDR: BOWpYMucKBb3PRHow4HJKfeFxbQ+pJKhFKY5nU+pkjl7zsFefbeEHbETfh1r5dRm5uMGJqIp9W
- Suf9sRUeo7HA==
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="464672901"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 00:54:43 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lloND-00EkYe-AH; Wed, 26 May 2021 10:54:39 +0300
-Date:   Wed, 26 May 2021 10:54:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org, Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v4 7/8] platform/x86: Add intel_skl_int3472 driver
-Message-ID: <YK3+vxmWfD0mhjU0@smile.fi.intel.com>
-References: <20210520140928.3252671-1-djrscally@gmail.com>
- <20210520140928.3252671-8-djrscally@gmail.com>
- <YKeuQM/O9+jDZFpb@smile.fi.intel.com>
- <6294177b-d6e1-8bbd-d313-5cce1c498604@gmail.com>
+        id S229473AbhEZH5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:57:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uZvhg
+        Ud0lWZ9cGLKzmaG9kFpDxY0t10Ac6P5wff8Zfs=; b=N6uj8UxySb5y5QgGO81Ad
+        YjLAsMs9Ndn/HY4yvVSw2yksAjBV8dtrktUsTGGiPcg0nFtYy7D53F3Q9jGAHiCO
+        TgpqWB1RJ6LqmRmV7XNTGICD3YjPdHP3Xa1N2t/H7xYlpG1ztlydpKXmXWgUmGUP
+        nx084Ox0VG8V1bGGPxOb1o=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowADnvC33_q1gv10qGQ--.3405S2;
+        Wed, 26 May 2021 15:55:36 +0800 (CST)
+From:   13145886936@163.com
+To:     mchehab@kernel.org, sean@mess.org, arnd@arndb.de,
+        miaoqinglang@huawei.com, Julia.Lawall@inria.fr,
+        gustavoars@kernel.org, oneukum@suse.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] media: b2c2-flexcop-usb: revised use of space
+Date:   Wed, 26 May 2021 00:55:27 -0700
+Message-Id: <20210526075527.302903-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6294177b-d6e1-8bbd-d313-5cce1c498604@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowADnvC33_q1gv10qGQ--.3405S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxuF4xZFWkAw13WF4fXr45GFg_yoW5GF4kpF
+        Zav3yqyrWUJF4a93sFy3Wku3W7tFZ7KFWrKrW2k3WFgr4fC3WDZa4rG3Wvyry8JFy8u34r
+        CrWUXF17Wr4UW37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b5sqAUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhieg1aD-CezFQAAsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 11:53:21PM +0100, Daniel Scally wrote:
-> On 21/05/2021 13:57, Andy Shevchenko wrote:
+From: gushengxian <gushengxian@yulong.com>
 
-...
+The use of space should be standard.
 
-> >> +static const struct regulator_ops int3472_gpio_regulator_ops;
-> > Hmm... Can you use 'reg-fixed-voltage' platform device instead?
-> >
-> > One example, although gone from upstream, but available in the tree, I can
-> > point to is this:
-> >
-> >   git log -p -- arch/x86/platform/intel-mid/device_libs/platform_bcm43xx.c
-> >
-> > It uses constant structures, but I think you may dynamically generate the
-> > necessary ones.
-> >
-> 
-> I can experiment with this, though one thing is we have no actual idea
-> what voltages these are supplying...it doesn't look like that matters
-> from drivers/regulator/fixed.c, but I'd have to try it to be sure.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ drivers/media/usb/b2c2/flexcop-usb.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-I believe it is likely 1.8v. But I can check if I have the schematics of a
-reference design for something like this.
-
-...
-
-> >> +	if (int3472->clock.ena_gpio) {
-> >> +		ret = skl_int3472_register_clock(int3472);
-> >> +		if (ret)
-> >> +			goto out_free_res_list;
-> >> +	} else {
-> > Hmm... Have I got it correctly that we can't have ena_gpio && led_gpio together?
-> 
-> 
-> No, just that we can only have led_gpio if we also have ena_gpio (at
-> least that's the intention...)
-
-Okay, perhaps then a comment above?
-
+diff --git a/drivers/media/usb/b2c2/flexcop-usb.c b/drivers/media/usb/b2c2/flexcop-usb.c
+index 5d38171b7638..ef5d50b8a321 100644
+--- a/drivers/media/usb/b2c2/flexcop-usb.c
++++ b/drivers/media/usb/b2c2/flexcop-usb.c
+@@ -171,7 +171,7 @@ static int flexcop_usb_v8_memory_req(struct flexcop_usb *fc_usb,
+ 	return ret;
+ }
+ 
+-#define bytes_left_to_read_on_page(paddr,buflen) \
++#define bytes_left_to_read_on_page(paddr, buflen) \
+ 	((V8_MEMORY_PAGE_SIZE - (paddr & V8_MEMORY_PAGE_MASK)) > buflen \
+ 	 ? buflen : (V8_MEMORY_PAGE_SIZE - (paddr & V8_MEMORY_PAGE_MASK)))
+ 
+@@ -179,11 +179,11 @@ static int flexcop_usb_memory_req(struct flexcop_usb *fc_usb,
+ 		flexcop_usb_request_t req, flexcop_usb_mem_page_t page_start,
+ 		u32 addr, int extended, u8 *buf, u32 len)
+ {
+-	int i,ret = 0;
++	int i, ret = 0;
+ 	u16 wMax;
+ 	u32 pagechunk = 0;
+ 
+-	switch(req) {
++	switch (req) {
+ 	case B2C2_USB_READ_V8_MEM:
+ 		wMax = USB_MEM_READ_MAX;
+ 		break;
+@@ -341,8 +341,8 @@ static void flexcop_usb_process_frame(struct flexcop_usb *fc_usb,
+ 		b = fc_usb->tmp_buffer;
+ 		l = fc_usb->tmp_buffer_length;
+ 	} else {
+-		b=buffer;
+-		l=buffer_length;
++		b = buffer;
++		l = buffer_length;
+ 	}
+ 
+ 	while (l >= 190) {
+@@ -368,7 +368,7 @@ static void flexcop_usb_process_frame(struct flexcop_usb *fc_usb,
+ 		}
+ 	}
+ 
+-	if (l>0)
++	if (l > 0)
+ 		memcpy(fc_usb->tmp_buffer, b, l);
+ 	fc_usb->tmp_buffer_length = l;
+ }
+@@ -399,7 +399,7 @@ static void flexcop_usb_urb_complete(struct urb *urb)
+ 		urb->iso_frame_desc[i].status = 0;
+ 		urb->iso_frame_desc[i].actual_length = 0;
+ 	}
+-	usb_submit_urb(urb,GFP_ATOMIC);
++	usb_submit_urb(urb, GFP_ATOMIC);
+ }
+ 
+ static int flexcop_usb_stream_control(struct flexcop_device *fc, int onoff)
+@@ -413,7 +413,7 @@ static void flexcop_usb_transfer_exit(struct flexcop_usb *fc_usb)
+ 	int i;
+ 	for (i = 0; i < B2C2_USB_NUM_ISO_URB; i++)
+ 		if (fc_usb->iso_urb[i] != NULL) {
+-			deb_ts("unlinking/killing urb no. %d\n",i);
++			deb_ts("unlinking/killing urb no. %d\n", i);
+ 			usb_kill_urb(fc_usb->iso_urb[i]);
+ 			usb_free_urb(fc_usb->iso_urb[i]);
+ 		}
+@@ -483,7 +483,7 @@ static int flexcop_usb_transfer_init(struct flexcop_usb *fc_usb)
+ 			err("submitting urb %d failed with %d.", i, ret);
+ 			goto urb_error;
+ 		}
+-		deb_ts("submitted urb no. %d.\n",i);
++		deb_ts("submitted urb no. %d.\n", i);
+ 	}
+ 
+ 	/* SRAM */
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
 
 
