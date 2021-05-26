@@ -2,197 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70F4390ECD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF8E390ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhEZDXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:23:47 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:44576 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231614AbhEZDXj (ORCPT
+        id S231659AbhEZDZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:25:28 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:37108 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhEZDZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:23:39 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q3LHe9015040;
-        Wed, 26 May 2021 03:21:17 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by mx0a-0064b401.pphosted.com with ESMTP id 38re2qh8dc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 03:21:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B7pCnBzJbVi2CEMKeJEyArdR0wzSDrDef6ZnZrOcZOvA2ucT5yn1W0F31oo9l7tzeROoHfMMMbOFPLYobKzOuJQgO5zLlpcu0vu60zYChZSQ8Mdehp7YJH669cUeCgb+iyb23Jy+TkoT2md1ICauB2tcOddK3oY0ELqVvGoml4uyLHgFVs0ty2uPBKdio9/bYm7gqHoJpyE6fs84uw8EYtgpp4jY5D4Aj0S9X9URYC4Xp5rcrjb8wPXroazOJDfYYOAIFzxjP/jr1adnbddNN/AQi2Ve75NmJXwCgoYdQJVwP5u78tY2M0BxirpuexJDmjD2rXjbp3wBP+gOuFLzdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5jWlSe816fWnOwwVlp1UFwOFSapjtRJI7yuCXxP6Rjk=;
- b=JviHgscy8+dmu8rY6wKKcsL4u4C1x9FGo9JCD82e8J7ELkOAskP1epQzx3RpyZ+cM3BHmkLFin+S4DGDxr4bzQ2K7tgKU+Csm6CDFhMA4gxrJBPVxHdJWvKkSokH3sGYFNnHXI1FVFCKMIeia2OvojUeZKfycCfFg1PrIA0A9H/gC0IawEVGMboAkqYXrBLif3eMdVdtSfnPapw3758a4EutvGMSsxAy5h1lwiFTU1lIQrzKRKoQzGB3bQpNnqJsWbhheTptBN7MFN8RjoHbDRs5EnDTWl+1IwCEkJAtOPYfcepYFYo1bFzR7g3lDjQCVog1HNs7e4OuBVGytExy3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5jWlSe816fWnOwwVlp1UFwOFSapjtRJI7yuCXxP6Rjk=;
- b=GjTzDjS3k01D8e7vqO9Eu0j0msbpgnBcYWWdOCNSVoLg8TvCQr8mTFpqwnV3Cx6p1gBS48sL0QP41u9Tr0HWfx705jxqMOl3ESmIfFBprfbCUNz6LQeKy09i8NWZjGhJ56Rxi99+WovbS72/Ellf+GBsq2lNRFfyC4LzWpduLRA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BY5PR11MB4306.namprd11.prod.outlook.com (2603:10b6:a03:1bb::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Wed, 26 May
- 2021 03:21:14 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c%5]) with mapi id 15.20.4150.027; Wed, 26 May 2021
- 03:21:14 +0000
-From:   Yanfei Xu <yanfei.xu@windriver.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org,
-        syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcu-tasks: Fix an use-after-free when grace-period kthread touch the task_strcut
-Date:   Wed, 26 May 2021 11:20:55 +0800
-Message-Id: <20210526032055.2927345-1-yanfei.xu@windriver.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR0401CA0017.apcprd04.prod.outlook.com
- (2603:1096:202:2::27) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        Tue, 25 May 2021 23:25:27 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1llk8m-009FJV-6g; Tue, 25 May 2021 21:23:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1llk8l-0005ks-42; Tue, 25 May 2021 21:23:27 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
+        johan@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        masahiroy@kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
+        joe@perches.com, Jens Axboe <axboe@kernel.dk>, hare@suse.de,
+        Jan Kara <jack@suse.cz>, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        f.fainelli@gmail.com, arnd@arndb.de,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        wangkefeng.wang@huawei.com, Barret Rhoden <brho@google.com>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
+        pmladek@suse.com, Chris Down <chris@chrisdown.name>,
+        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
+        mingo@kernel.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org
+References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
+        <20210525141524.3995-3-dong.menglong@zte.com.cn>
+        <m18s42odgz.fsf@fess.ebiederm.org>
+        <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
+Date:   Tue, 25 May 2021 22:23:09 -0500
+In-Reply-To: <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
+        (Menglong Dong's message of "Wed, 26 May 2021 09:51:22 +0800")
+Message-ID: <m11r9umb4y.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR0401CA0017.apcprd04.prod.outlook.com (2603:1096:202:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 03:21:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4794280b-6082-40be-7efd-08d91ff550fd
-X-MS-TrafficTypeDiagnostic: BY5PR11MB4306:
-X-Microsoft-Antispam-PRVS: <BY5PR11MB43060E3B5A4F17F0DD23763BE4249@BY5PR11MB4306.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w2q0y9Gt9JTx9htxhwt/MpwBBlkuXOVMvmXTA3mC6IGukOYf7My50eWoegBb5l+646gywb7Sft7s4E9TVzUshlETLw7cgbj/UJSQKT1Z8Xc1aWOz124zBtRmsd9YDURUr2Y9fQAHPjwMLZLa4QdVntYMRGDkIIC+bvIgATBX3mBAx1j8OKg22BBWzmTH95ie4kHE8Fm0NJIv0dpNSLqW8pinqr6K5Pl4V4oCl+wQ/hE0+L2gioCBDyyuPPNDvG1A869j4Dehyd797U98l1T1bOx1LXMdcd8m61/kbhNIA1qoUCJxUo1mkpRu78snlRavRpqAh+i3WdqnVaMjao+9nbisp2/Q1GUN2piUEc7IzVP26kD4yjaorK+AAHXmITGIB9ac5+fDfXU7JCCIsHc7hMoyM9rqZ8PS2SqIJ2mHbVxkdX6+Qprnady6KTT2LjWdVfZMNDD9eYD/ggRjrRwV6MUJhyFm20IPPI65tN7DE8uU2b4rKWFZueztYuiQqh5M9qP+RTGdL1xX5buObS1rLJVV5baVYXkea4Gh1TdcmWWKWMlJl6CVwhGKdAy3yAD8tuKlGQZTWOxxTyDCxOhumR2/Gf7uX8B1l5+B0W2mdHCZp4WaSqOO3XTq08C39/McsFaNAZrdZ+6SjmeeBnzq4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(39850400004)(376002)(38100700002)(2616005)(83380400001)(6506007)(1076003)(66556008)(956004)(36756003)(8936002)(8676002)(38350700002)(66476007)(26005)(6666004)(2906002)(478600001)(6512007)(86362001)(4326008)(66946007)(5660300002)(52116002)(44832011)(316002)(16526019)(6486002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nxrUP3142ZikmpE7pFgAFrtagS3H6st9Zlmsc4KPh2HjrepqIxNPw2UjjPTM?=
- =?us-ascii?Q?2e6SxdLlEiSsIlW1HwMq1MhQaWakX9n6WmOOpRR+NcB0uZfMFyfY89IeR9UL?=
- =?us-ascii?Q?dlX+WABQ0Pw98dIMXzdlIU/X8pt3bw6IdoeQeziN2mTGYnRKik4WNYDVhwsf?=
- =?us-ascii?Q?CTlyEG35Tbndp30xRAS3WfXZERm0SG8bvghCQcC8lhTI/m2ratqFxezqlv0n?=
- =?us-ascii?Q?Wcwxk31WDD0GiVdjd9psAbeSx2CVB9M9/ZAV+C7gliuHVGNg28ZKiWkHE1Y0?=
- =?us-ascii?Q?lBkbmG1s42y6ZrrGjigqqTlizJBQtPn9zabN7rrCXGBn/U0KhxKcXkgixs5J?=
- =?us-ascii?Q?LQxghnwLX5JYCWQPrPUog9SAE0DRtSTf+C1vQIgOlU5sA1i7nZ/YMV4NijYi?=
- =?us-ascii?Q?PkT+u5tIvlkFTwD0FmMwRYXoY5qbtUHMnb/qAJJq6FIspWraVoEVhEJ4Myah?=
- =?us-ascii?Q?s0j7eV/Gi97tHXB06NNRX6XckCiNYjPgO/sGalLAM4jNto+SFQaJQhINWBMx?=
- =?us-ascii?Q?jxYfas2Y7bOfE16BYukn6G6D8Ll+qjQjaAYO/2tZSnyUpnIOiyP3ClC2F1Tg?=
- =?us-ascii?Q?B2hywsF2QkrILs9n3P5ALycjSoV6oWUF7r+TkJma+vhl1AaVWktkl19r5wo8?=
- =?us-ascii?Q?oZ8YnvnRepTqZp5sLAvrSdCeoBCzFwEaN4NgJaW5ILpbVI2b+w5audMtD2eg?=
- =?us-ascii?Q?dzKECfMDccPEtFdGaYyKKzJemNRnN11q3+k79P9sUx2voFs7hVEHoQmVk6fk?=
- =?us-ascii?Q?xE+yvsG2OhK7jYAJvPhMZdz3mQ/l1lGhUPElgxJVI9cvsJDpmYczp0F9BJVu?=
- =?us-ascii?Q?hZiDR0STZQ4ex9dOPV3/WU1MvAmoLXFK8gRvTdxSuU7GwIFKD5u4di7P2vsn?=
- =?us-ascii?Q?VzrWHx1/7l3xoYOI6HW/Qv8zgkkQ5kaNL/NPmFe87VEdliLfoPVVBB246Tf6?=
- =?us-ascii?Q?jyFWvjJBzJrM9WGeqrsm7bLg/VZmI/2ir4eckJZhvaNi5xp3huEZYLVK3qGq?=
- =?us-ascii?Q?tT6Q3v7SYYS8r0W8DOaXWOQHuqnoTaddQv6hc20163CW7itke3/fIbqq6leK?=
- =?us-ascii?Q?0R8vXNfvrmSatz129GE2NxEt/+HFxL+LYw8JOPVsjEXlqsYIzq/DJwoJ7SoV?=
- =?us-ascii?Q?vMItGLGsKv1PcvdTY6gpXuCVvWH+v0Pa4iRg9osk/I7MIjOh+/8qD13L89cj?=
- =?us-ascii?Q?eqLcxYU/k4WwzlHYZaEwHV5P5uLtgskw9PouBhwp+wULHxRXbxGP8Xxr575o?=
- =?us-ascii?Q?RpXljnc79Nfs0qQZZUBt6ySAJ5i1OmwjY+H9sgUbqpQvUmaYm72Rg4AV3iLh?=
- =?us-ascii?Q?NMS8FDu7Jnm2nYL59TWyhq+v?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4794280b-6082-40be-7efd-08d91ff550fd
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 03:21:14.0582
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TGRq14Bz5/WN3fZC3JrehLfWMlmo9sZ26nMIO5CWp5vJU0gc0LUIZzUs+kSV27XYs9bpO53iWNg3ClHSTKo9YA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4306
-X-Proofpoint-GUID: ZiV6zyggPEL578kf2BtZGcA2oT_griE1
-X-Proofpoint-ORIG-GUID: ZiV6zyggPEL578kf2BtZGcA2oT_griE1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_02:2021-05-25,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0 adultscore=0
- clxscore=1015 mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105260021
+Content-Type: text/plain
+X-XM-SPF: eid=1llk8l-0005ks-42;;;mid=<m11r9umb4y.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19UEqCr4Wgg2PYoJNFhlS45Ajf4X6WIQe0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_XM_PhishingBody,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,T_TooManySym_02,T_TooManySym_03,XMSubLong,XM_B_Phish66,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Menglong Dong <menglong8.dong@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 561 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 12 (2.1%), b_tie_ro: 10 (1.8%), parse: 1.27
+        (0.2%), extract_message_metadata: 14 (2.5%), get_uri_detail_list: 2.6
+        (0.5%), tests_pri_-1000: 15 (2.7%), tests_pri_-950: 1.21 (0.2%),
+        tests_pri_-900: 1.07 (0.2%), tests_pri_-90: 91 (16.2%), check_bayes:
+        90 (16.0%), b_tokenize: 13 (2.3%), b_tok_get_all: 11 (2.0%),
+        b_comp_prob: 3.5 (0.6%), b_tok_touch_all: 59 (10.5%), b_finish: 0.91
+        (0.2%), tests_pri_0: 402 (71.8%), check_dkim_signature: 0.76 (0.1%),
+        check_dkim_adsp: 2.4 (0.4%), poll_dns_idle: 0.63 (0.1%), tests_pri_10:
+        3.2 (0.6%), tests_pri_500: 16 (2.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 2/3] init/do_cmounts.c: introduce 'user_root' for initramfs
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trc_del_holdout() invokes put_task_struct() may cause the task_struct
-is freed once the task is exiting. If happened, then we shouldn't touch
-the task_strcut, or it will triger an use-after-free. Here we only mark
-it as checked, and grace-period kthread will romove it from holdout
-list.
+Menglong Dong <menglong8.dong@gmail.com> writes:
 
-        CPU0                                        CPU1
-trc_add_holdout(t, bhp)
-//t->usage==2
-......
-                                       ......
-                                       release_task
-                                         ->put_task_struct_rcu_user
-                                           ->delayed_put_task_struct
-                                             ......
-                                             ->put_task_struct(t)
-                                             //t->usage==1
+> On Wed, May 26, 2021 at 2:50 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+> ......
+>>
+>> What is the flow where docker uses an initramfs?
+>>
+>> Just thinking about this I am not being able to connect the dots.
+>>
+>> The way I imagine the world is that an initramfs will be used either
+>> when a linux system boots for the first time, or an initramfs would
+>> come from the distribution you are running inside a container.  In
+>> neither case do I see docker being in a position to add functionality
+>> to the initramfs as docker is not responsible for it.
+>>
+>> Is docker doing something creating like running a container in a VM,
+>> and running some directly out of the initramfs, and wanting that code
+>> to exactly match the non-VM case?
+>>
+>> If that is the case I think the easy solution would be to actually use
+>> an actual ramdisk where pivot_root works.
+>
+> In fact, nowadays, initramfs is widely used by embedded devices in the
+> production environment, which makes the whole system run in ram.
+>
+> That make sense. First, running in ram will speed up the system. The size
+> of the system won't be too large for embedded devices, which makes this
+> idea work. Second, this will reduce the I/O of disk devices, which can
+> extend the life of the disk. Third, RAM is getting cheaper.
+>
+> So in this scene, Docker runs directly in initramfs.
 
-check_all_holdout_tasks_trace
-  ->trc_wait_for_one_reader
-    ->get_task_struct
-    ->try_invoke_on_locked_down_task(trc_inspect_reader)
-      ->trc_del_holdout
-    ->put_task_struct(t)
-  //t->usage==0 and task_struct freed
-  ->READ_ONCE(t->trc_reader_checked)
-  //ops, t had been freed.
+That is the piece of the puzzle I was missing.  An small system
+with it's root in an initramfs.
 
-BTW, do the same thing in trc_wait_for_one_reader() when the task is a
-current running task even if it is safe.
+>> I really don't see why it makes sense for docker to be a special
+>> snowflake and require kernel features that no other distribution does.
+>>
+>> It might make sense to create a completely empty filesystem underneath
+>> an initramfs, and use that new rootfs as the unchanging root of the
+>> mount tree, if it can be done with a trivial amount of code, and
+>> generally make everything cleaner.
+>>
+>> As this change sits it looks like a lot of code to handle a problem
+>> in the implementation of docker.   Which quite frankly will be a pain
+>> to have to maintain if this is not a clean general feature that
+>> other people can also use.
+>>
+>
+> I don't think that it's all for docker, pivot_root may be used by other
+> users in the above scene. It may work to create an empty filesystem, as you
+> mentioned above. But I don't think it's a good idea to make all users,
+> who want to use pivot_root, do that. After all, it's not friendly to
+> users.
+>
+> As for the code, it may look a lot, but it's not complex. Maybe a clean
+> up for the code I add can make it better?
 
-Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
----
-v1->v2:
-1. improve the commit messages.
-2. change the comments in codes.
+If we are going to do this something that is so small and clean it can
+be done unconditionally always.
 
- kernel/rcu/tasks.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I will see if I can dig in and look at little more.  I think there is
+a reason Al Viro and H. Peter Anvin implemeted initramfs this way.
+Perhaps it was just a desire to make pivot_root unnecessary.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 36607551f966..2303cb131367 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -872,10 +872,9 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		in_qs = likely(!t->trc_reader_nesting);
- 	}
- 
--	// Mark as checked.  Because this is called from the grace-period
--	// kthread, also remove the task from the holdout list.
-+	// Mark as checked so that the grace-period kthread will
-+	// remove it from the holdout list.
- 	t->trc_reader_checked = true;
--	trc_del_holdout(t);
- 
- 	if (in_qs)
- 		return true;  // Already in quiescent state, done!!!
-@@ -899,10 +898,11 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 	if (smp_load_acquire(&t->trc_ipi_to_cpu) != -1) // Order IPI
- 		return;
- 
--	// The current task had better be in a quiescent state.
-+	// The current task had better be in a quiescent state, and
-+	// mark as checked so that the grace-period kthread will
-+	// remove it from the holdout list.
- 	if (t == current) {
- 		t->trc_reader_checked = true;
--		trc_del_holdout(t);
- 		WARN_ON_ONCE(t->trc_reader_nesting);
- 		return;
- 	}
--- 
-2.27.0
+Container filesystem setup does throw a bit of a wrench in the works as
+unlike a initramfs where you can just delete everything there is not
+a clean way to get rid of a root filesystem you don't need without
+pivot_root.
 
+
+The net request as I understand it: Make the filesystem the initramfs
+lives in be an ordinary filesystem so it can just be used as the systems
+primary filesystem.
+
+There might be technical reasons why that is a bad idea and userspace
+would be requested to move everything into another ramfs manually (which
+would have the same effect).  But it is take a good look to see if it
+can be accomplished cleanly.
+
+Eric
