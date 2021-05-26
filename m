@@ -2,207 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE92839102C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EF1391028
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhEZFwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 01:52:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232197AbhEZFvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 01:51:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E90961378;
-        Wed, 26 May 2021 05:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622008212;
-        bh=oUqQsjWk/eKlS41GlTMA5rHbD9Z00zBqEiyeD2OkOOI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFOJR0R4L8whZpMOkACO7IePTirWiWjitUw3GYvC12hzH9cpqTfWy1PeCSsP+7UVy
-         GGjlNNMNSaqJBDMZVw11lBoucnJMQPWUNb5KSPdUb1eyDIkz6ymR2H2jlt0gdwioko
-         G2QYj6X5zXTp8v0uxJSWltdfJsMyuTz+5AeHmI8z1HlFScuHkMjgLLISj/Kh9QBLF0
-         7kHkf9hCnGm5tSgsOgiSb/uYHpOSeXyS8KhxWdt4n3G4zj3hlRyIVyDqm8QXaPI4R7
-         QpWxZExXbAsOPEMiLgVTqYeV6Zb3SX1/hVl5a87ChGET+7cHURTKychDFYn5Nh+P84
-         y0N9il5PQeroA==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
-        arnd@arndb.de, hch@lst.de
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V4 2/2] riscv: Use use_asid_allocator flush TLB
-Date:   Wed, 26 May 2021 05:49:21 +0000
-Message-Id: <1622008161-41451-3-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622008161-41451-1-git-send-email-guoren@kernel.org>
-References: <1622008161-41451-1-git-send-email-guoren@kernel.org>
+        id S232214AbhEZFvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 01:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232152AbhEZFvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 01:51:50 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923FCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 22:49:59 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j6so680096lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 22:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fqSc2l5mo5sBTBZukDBZ73kRYhYKhOPc/CnIaeSpNLo=;
+        b=gwthCDi37VQYQzOr4lhRnnsp60U4qJYDQnvysWHFcPS3zYIMjFXNS4YpV3GQiYMHw/
+         7xPCo7Bd6h+divbGo0b4GkIfi9oLH4G4dvmKk4eRocafIt+B28vwzCMML3imIJ2dzgcS
+         +sfLBLgT5KI+DwC6Hs6QQboCQc3akM5QIj+GJDLLSrBXK54emwoRR6N4FcIVosAGHW5m
+         H2grtZrJiYsrYmo8S3i6l5WG1p9Fqd+4aY3RRseZvX95sh5DDCntkjaD/fxItxW9x3t9
+         TWtz9pxrAI0kRb6qEjUdL4SJIeAqtb0mInSarXa/ZEnwipwwz4I60tAFuoQQYgqn4Dcc
+         9Deg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fqSc2l5mo5sBTBZukDBZ73kRYhYKhOPc/CnIaeSpNLo=;
+        b=O4vVBIA6Pqwg5mieBUP7Owi7nfXapiwb30510lu3WSGBW1x+iXlUhY0kWsVb48muic
+         rlIQFaieS5TBWP1WslQSifT7owmNYKeb9ZRDC+zM4p/0uVUr5DvVHIRqeAso0udYH1k8
+         0UgWvcxDDA/dte/E7OKg0wOqQBf0A9Qffc0rO47SiThlTdKrQ2XrMXUQC94sTY/3vx2z
+         jmSDL5MD0W3QvrGycsifutenzTCatPNgyYTNffThF4XWQTJk+DUPi83osS1XoKWtzuMj
+         BeRSJ98jGD/Yo3UH1u4mj2Hiz816dJYo8zYgnnwnjO+EjxAe8KzX3JZztil+iVy2u8Ru
+         3TOA==
+X-Gm-Message-State: AOAM532B3s66lj7Bc4Li43cq+XO5xKzutY1OeXgk6iKtMtklCZabGKQY
+        OYwrZPGJi/0JRcOtxarRBV/bN+NVYDiMm9Or/S4Rpg==
+X-Google-Smtp-Source: ABdhPJxALtjX8kLkZsnCaY0xaO6sQnZPeTH9N7RlkPuUT/hk9yOHNHQI6QxGmOOVNlOf8+GZmngS3PWqe9QnQy/5sLg=
+X-Received: by 2002:a19:85c5:: with SMTP id h188mr975618lfd.121.1622008197482;
+ Tue, 25 May 2021 22:49:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+ <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org> <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
+ <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org> <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+ <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
+ <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org> <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
+In-Reply-To: <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
+From:   Archie Pusaka <apusaka@google.com>
+Date:   Wed, 26 May 2021 13:49:46 +0800
+Message-ID: <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Hi Marcel,
 
-Use static_branch_unlikely(&use_asid_allocator) to keep the origin
-tlb flush style, so it's no effect on the existing machine. Here
-are the optimized functions:
- - flush_tlb_mm
- - flush_tlb_page
- - flush_tlb_range
+On Fri, 21 May 2021 at 00:02, Archie Pusaka <apusaka@google.com> wrote:
+>
+> Hi Marcel,
+>
+> On Thu, 20 May 2021 at 23:18, Marcel Holtmann <marcel@holtmann.org> wrote=
+:
+> >
+> > Hi Archie,
+> >
+> > >>>>>> RTL8822 chipset supports WBS, and this information is conveyed i=
+n
+> > >>>>>> btusb.c. However, the UART driver doesn't have this information =
+just
+> > >>>>>> yet.
+> > >>>>>>
+> > >>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > >>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org=
+>
+> > >>>>>> ---
+> > >>>>>>
+> > >>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+> > >>>>>> drivers/bluetooth/btrtl.h  |  2 ++
+> > >>>>>> drivers/bluetooth/hci_h5.c |  5 +----
+> > >>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl=
+.c
+> > >>>>>> index e7fe5fb22753..988a09860c6b 100644
+> > >>>>>> --- a/drivers/bluetooth/btrtl.c
+> > >>>>>> +++ b/drivers/bluetooth/btrtl.c
+> > >>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev =
+*hdev,
+> > >>>>>> }
+> > >>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+> > >>>>>>
+> > >>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
+> > >>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device=
+_info *btrtl_dev)
+> > >>>>>> {
+> > >>>>>> -     struct btrtl_device_info *btrtl_dev;
+> > >>>>>> -     int ret;
+> > >>>>>> -
+> > >>>>>> -     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> > >>>>>> -     if (IS_ERR(btrtl_dev))
+> > >>>>>> -             return PTR_ERR(btrtl_dev);
+> > >>>>>> -
+> > >>>>>> -     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> > >>>>>> -
+> > >>>>>>     /* Enable controller to do both LE scan and BR/EDR inquiry
+> > >>>>>>      * simultaneously.
+> > >>>>>>      */
+> > >>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hde=
+v)
+> > >>>>>>             rtl_dev_dbg(hdev, "WBS supported not enabled.");
+> > >>>>>>             break;
+> > >>>>>>     }
+> > >>>>>> +}
+> > >>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
+> > >>>>>> +
+> > >>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
+> > >>>>>> +{
+> > >>>>>> +     struct btrtl_device_info *btrtl_dev;
+> > >>>>>> +     int ret;
+> > >>>>>> +
+> > >>>>>> +     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> > >>>>>> +     if (IS_ERR(btrtl_dev))
+> > >>>>>> +             return PTR_ERR(btrtl_dev);
+> > >>>>>> +
+> > >>>>>> +     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> > >>>>>> +
+> > >>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
+> > >>>>>>
+> > >>>>>>     btrtl_free(btrtl_dev);
+> > >>>>>>     return ret;
+> > >>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl=
+.h
+> > >>>>>> index 2a582682136d..260167f01b08 100644
+> > >>>>>> --- a/drivers/bluetooth/btrtl.h
+> > >>>>>> +++ b/drivers/bluetooth/btrtl.h
+> > >>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(str=
+uct hci_dev *hdev,
+> > >>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
+> > >>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
+> > >>>>>>                         struct btrtl_device_info *btrtl_dev);
+> > >>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
+> > >>>>>> +                   struct btrtl_device_info *btrtl_dev);
+> > >>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
+> > >>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
+> > >>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
+> > >>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_=
+h5.c
+> > >>>>>> index 27e96681d583..e0520639f4ba 100644
+> > >>>>>> --- a/drivers/bluetooth/hci_h5.c
+> > >>>>>> +++ b/drivers/bluetooth/hci_h5.c
+> > >>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+> > >>>>>>     /* Give the device some time before the hci-core sends it a =
+reset */
+> > >>>>>>     usleep_range(10000, 20000);
+> > >>>>>>
+> > >>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
+> > >>>>>> -      * simultaneously.
+> > >>>>>> -      */
+> > >>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->q=
+uirks);
+> > >>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+> > >>>>>
+> > >>>>> any reason why not just setting WBS quirk here?
+> > >>>>
+> > >>>> Hmm, I think WBS is the feature of the chipset and not the transpo=
+rt.
+> > >>>> Therefore isn't it better to just have it set in one place?
+> > >>>> Setting the quirks here means we need to copy paste the settings f=
+rom btrtl.c.
+> > >>>
+> > >>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY =
+right now, I don=E2=80=99t see the difference.
+> > >>
+> > >> Sorry, I don't get what you mean.
+> > >> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
+> > >> btrtl.c, so it's together with the WBS quirk.
+> > >>
+> > >>> Can we actually verify that we still need the WBS quirk. I think we=
+ fixed the broken errerrnous packet flag handling.
+> > >>
+> > >> To be honest, I am not aware about the story of the broken erroneous
+> > >> packet flag.
+> > >> Last time I checked I still needed the quirk to have RTL8822 on UART
+> > >> properly run WBS, but that was months ago...
+> > >> Let me verify whether this quirk is still needed.
+> > >
+> > > It looks like we still need the WBS quirk because otherwise the host
+> > > wouldn't know whether the controller supports WBS or not. It's used i=
+n
+> > > get_supported_settings() in mgmt.c.
+> >
+> > and why not set it unconditionally for all Realtek chips?
+>
+> Not all Realtek chips supports WBS, therefore
+> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
 
-All above are based on the below new implement functions:
- - __sbi_tlb_flush_range_asid
- - local_flush_tlb_range_asid
+Are there any other concerns you might have?
 
-These functions are based on ASID instead of previous non-ASID
-tlb_flush implementation which invalidates more useful tlb
-entries.
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Reviewed-by: Anup Patel <anup.patel@wdc.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Christoph Hellwig <hch@lst.de>
----
- arch/riscv/include/asm/mmu_context.h |  2 ++
- arch/riscv/include/asm/tlbflush.h    | 23 ++++++++++++++++++
- arch/riscv/mm/context.c              |  2 +-
- arch/riscv/mm/tlbflush.c             | 46 +++++++++++++++++++++++++++++++++---
- 4 files changed, 69 insertions(+), 4 deletions(-)
-
-diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-index b065941..7030837 100644
---- a/arch/riscv/include/asm/mmu_context.h
-+++ b/arch/riscv/include/asm/mmu_context.h
-@@ -33,6 +33,8 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
-+DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
-+
- #include <asm-generic/mmu_context.h>
- 
- #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index c84218a..cee476b 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -22,9 +22,32 @@ static inline void local_flush_tlb_page(unsigned long addr)
- {
- 	ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
- }
-+
-+static inline void local_flush_tlb_all_asid(unsigned long asid)
-+{
-+	__asm__ __volatile__ ("sfence.vma x0, %0"
-+			:
-+			: "r" (asid)
-+			: "memory");
-+}
-+
-+static inline void local_flush_tlb_range_asid(unsigned long start,
-+				unsigned long size, unsigned long asid)
-+{
-+	unsigned long tmp, end = ALIGN(start + size, PAGE_SIZE);
-+
-+	for (tmp = start & PAGE_MASK; tmp < end; tmp += PAGE_SIZE) {
-+		__asm__ __volatile__ ("sfence.vma %0, %1"
-+				:
-+				: "r" (tmp), "r" (asid)
-+				: "memory");
-+		tmp += PAGE_SIZE;
-+	}
-+}
- #else /* CONFIG_MMU */
- #define local_flush_tlb_all()			do { } while (0)
- #define local_flush_tlb_page(addr)		do { } while (0)
-+#define local_flush_tlb_range_asid(addr)	do { } while (0)
- #endif /* CONFIG_MMU */
- 
- #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 68aa312..45c1b04 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -18,7 +18,7 @@
- 
- #ifdef CONFIG_MMU
- 
--static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
-+DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- 
- static unsigned long asid_bits;
- static unsigned long num_asids;
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 720b443..87b4e52 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -4,6 +4,7 @@
- #include <linux/smp.h>
- #include <linux/sched.h>
- #include <asm/sbi.h>
-+#include <asm/mmu_context.h>
- 
- void flush_tlb_all(void)
- {
-@@ -39,18 +40,57 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
- 	put_cpu();
- }
- 
-+static void __sbi_tlb_flush_range_asid(struct cpumask *cmask,
-+				       unsigned long start,
-+				       unsigned long size,
-+				       unsigned long asid)
-+{
-+	struct cpumask hmask;
-+	unsigned int cpuid;
-+
-+	if (cpumask_empty(cmask))
-+		return;
-+
-+	cpuid = get_cpu();
-+
-+	if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
-+		if (size == -1)
-+			local_flush_tlb_all_asid(asid);
-+		else
-+			local_flush_tlb_range_asid(start, size, asid);
-+	} else {
-+		riscv_cpuid_to_hartid_mask(cmask, &hmask);
-+		sbi_remote_sfence_vma_asid(cpumask_bits(&hmask),
-+					   start, size, asid);
-+	}
-+
-+	put_cpu();
-+}
-+
- void flush_tlb_mm(struct mm_struct *mm)
- {
--	__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(mm), 0, -1,
-+					   atomic_long_read(&mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
- }
- 
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
- {
--	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE,
-+					   atomic_long_read(&vma->vm_mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
- }
- 
- void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 		     unsigned long end)
- {
--	__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), start, end - start,
-+					   atomic_long_read(&vma->vm_mm->context.id));
-+	else
-+		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
- }
--- 
-2.7.4
-
+Cheers,
+Archie
