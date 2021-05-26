@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DB039231E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D1C392327
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhEZXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 19:18:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:50656 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232367AbhEZXSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 19:18:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E0C413A1;
-        Wed, 26 May 2021 16:16:33 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6847D3F719;
-        Wed, 26 May 2021 16:16:32 -0700 (PDT)
-Date:   Thu, 27 May 2021 00:16:14 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Andreas Rehn <rehn.andreas86@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
-        rfried.dev@gmail.com, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: dts: sun8i: v3s: enable emac for zero Dock
-Message-ID: <20210527001614.2edfc630@slackpad.fritz.box>
-In-Reply-To: <20210525173159.183415-1-rehn.andreas86@gmail.com>
-References: <20210522205039.179486-1-rehn.andreas86@gmail.com>
-        <20210525173159.183415-1-rehn.andreas86@gmail.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S234781AbhEZXVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 19:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232725AbhEZXVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 19:21:22 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6707C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:19:48 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id v8so5070386lft.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SzyExkdZDJisG8pysRn2La22AvSF3A+xaAV2oKawjCY=;
+        b=K+eT3iOQL6TQoWJ9Eb91W5oaNof5B5a08Ca3OuuyLJHdVjDawZnWQpBBLcLCIazXfW
+         FufdORoNlSwGuJDXqRRWNebudGM+IQNavl0OZ3P4fKLf1ieSlWvr1f8Fp0ZKqFtRfIGE
+         8TmaX5fKsx2io0idLIpUpgvO0qnVe/Ar9GHZHSsWDQxhbCRJY17+RJpcdTCINmx4eF3o
+         5CPN4IxxU0AqPXm1PSjwHMEVCExuTzMDFcMUlkiOaDYrQaZWY0toSPNMEj4orZ6Ombb0
+         MehXr8ivP68Cs+BclNy9FQTqrAzoFeMtAjafKmHds1XaBOw5QchxnWAQB2FaXKyCNKec
+         OnoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SzyExkdZDJisG8pysRn2La22AvSF3A+xaAV2oKawjCY=;
+        b=qaF8ziomdDk6t638xJKgio81A0mynVrG22gx6cB+MpluzsHTL28JZKFE6lL/2meCIr
+         GHjvDmndqbDwfCxS24LGySMAjNa9EWkPKm8es6RAEJyJe7R4MQm+1HeCgM042tvbzxIT
+         ZUeAPaqYZKjG61v7wnUEMqo+NgzkPUOu2Oj9aFEvJDgQ8mBcA/1fE33Q6eyUX+TtSH1v
+         Ul2IoDnnWb0KwaGxkAtAs5Uawm8U01mn+CKH8dbrZy8QKHxeM7l2UHKwX30uP+GEOKwG
+         w6FvnDb8nBSke+Va6dQ4Bl1ZxGR3TrRDvMmya3rs3FRqCrqcPiHT22SjGEdNqQis4uB5
+         18mQ==
+X-Gm-Message-State: AOAM530ySf/97wZq9NTyRjGY7Wvl0EKtAzwrteDiYIlixFI8FkUekP9G
+        PLuOSJ8AFPvAZojDDGs1B/a9ly96tJpwLDdrGetskQ==
+X-Google-Smtp-Source: ABdhPJzhigcPOSlXhhCd+EdX5+HKhFg1BhywBMb15QQ7B7AC0Bv49e9jVWs2N5AuW/gjWRXWJoKiKq/qXYZWlfr5hqw=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr313552lfn.465.1622071187234;
+ Wed, 26 May 2021 16:19:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210524092605.734-1-lakshmi.sowjanya.d@intel.com> <20210524092605.734-2-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210524092605.734-2-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 27 May 2021 01:19:36 +0200
+Message-ID: <CACRpkdZ2bDDNecLc5sEe36KyJCBqAo5-vZdvwM+V2a33tr4w_g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add bindings for Intel Keembay
+ pinctrl driver
+To:     lakshmi.sowjanya.d@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>, tamal.saha@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 19:31:59 +0200
-Andreas Rehn <rehn.andreas86@gmail.com> wrote:
+On Mon, May 24, 2021 at 11:26 AM <lakshmi.sowjanya.d@intel.com> wrote:
 
-> dwmac-sun8i supports v3s and
-> Licheepi-zero Dock provides an ethernet port
-> furthermore, align nodes in alphabetical order
-> 
-> Signed-off-by: Andreas Rehn <rehn.andreas86@gmail.com>
+> From: "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
+>
+> Add Device Tree bindings documentation for Intel Keem Bay
+> SoC's pin controller.
+> Add entry for INTEL Keem Bay pinctrl driver in MAINTAINERS file
+>
+> Signed-off-by: Vineetha G. Jaya Kumaran <vineetha.g.jaya.kumaran@intel.com>
+> Signed-off-by: Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>
+> Signed-off-by: D, Lakshmi Sowjanya <lakshmi.sowjanya.d@intel.com>
+> Acked-by: Mark Gross <mgross@linux.intel.com>
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+So since this thing has device tree bindings I suppose it is one
+of those intel-but-not-x86-and-not-acpi things that Andy should
+not merge through his tree?
 
-Cheers,
-Andre
+I bet he wants to take a look though, so keep Andy posted.
 
-> ---
-> Changes in v3:
-> 	- align nodes in alphabetical order
-> Changes in v2:
-> 	- add ethernet0 alias.
->  .../boot/dts/sun8i-v3s-licheepi-zero-dock.dts   | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-> index db5cd0b8574b..752ad05c8f83 100644
-> --- a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-> +++ b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-> @@ -49,16 +49,18 @@ / {
->  	compatible = "licheepi,licheepi-zero-dock", "licheepi,licheepi-zero",
->  		     "allwinner,sun8i-v3s";
->  
-> +	aliases {
-> +		ethernet0 = &emac;
-> +	};
-> +
->  	leds {
->  		/* The LEDs use PG0~2 pins, which conflict with MMC1 */
->  		status = "disabled";
->  	};
->  };
->  
-> -&mmc1 {
-> -	broken-cd;
-> -	bus-width = <4>;
-> -	vmmc-supply = <&reg_vcc3v3>;
-> +&emac {
-> +	allwinner,leds-active-low;
->  	status = "okay";
->  };
->  
-> @@ -94,3 +96,10 @@ button-800 {
->  		voltage = <800000>;
->  	};
->  };
-> +
-> +&mmc1 {
-> +	broken-cd;
-> +	bus-width = <4>;
-> +	vmmc-supply = <&reg_vcc3v3>;
-> +	status = "okay";
-> +};
-
+Yours,
+Linus Walleij
