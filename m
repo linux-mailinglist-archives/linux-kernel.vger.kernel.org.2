@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C103917CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7FE3917D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbhEZMtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234281AbhEZMsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:48:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 790F460231;
-        Wed, 26 May 2021 12:46:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622033207;
-        bh=0a0OiJbiwyz5/cF6QjtqmloxI42zb7P774GdVsj9us0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dgxwfndJRt68PtS5hsfXyiK+EsG0Epxh5xuwmnxyONaBseZ3wMmygpSj/iwEyicdM
-         7zIQjy9M34mWxxIVnOjJ+XaeeJMOt4ZemHn3SPA9yppP5B2X/3hhy5Nt9Fd/76mdPN
-         Ua5X4TFy3a71CndNUQz+1DDrhbsTyjmWJoP7+4c936QEb5FqZmHWqRvqYdnreAEEqR
-         zJQC9migI4agIYf6uiPvnePhWD1OyP+K1MpWeCMlpXDvtV8dmUS6qCL9n156iR5qB3
-         ZHFXrhmP4MbpU2uTLPCabUFW90m2fUzeKN4il/2DfDmRY+l8bXlqdF9NIk6HSplI/9
-         qKTD8vlhKMjOg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A65BE4011C; Wed, 26 May 2021 09:46:44 -0300 (-03)
-Date:   Wed, 26 May 2021 09:46:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Denys Zagorui <dzagorui@cisco.com>, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org
-Subject: Re: [PATCH v8 1/3] perf report: compile tips.txt in perf binary
-Message-ID: <YK5DNK6IfEe65kAO@kernel.org>
-References: <20210524111514.65713-1-dzagorui@cisco.com>
- <YK428rtY1GsVFL4E@krava>
+        id S234718AbhEZMuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:50:35 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56838 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234851AbhEZMsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:48:53 -0400
+Received: from mail-vs1-f71.google.com ([209.85.217.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1llswT-0000tz-AU
+        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 12:47:21 +0000
+Received: by mail-vs1-f71.google.com with SMTP id d19-20020a0561020413b029023877d74e72so192322vsq.15
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:47:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O/UCsmH3hl4IpqKUJA4a+70Zw+Sf6AD7w/Z6UKUd60g=;
+        b=f8VEXVd7a1JMdGtNFrfmYBTv12rd3GtdPFfYFX5W249+FIBf4sdbwfNE/meaTZXlQi
+         ybGznLxLI+acujzRHFAMEw98rv/U/6UD8+68lkZYp3HanFoPnueYp9+mOhPw90gUpbud
+         mRyDYpBAzt16s36WynB4CJI0S9IVTB57zP4nN1gzgRK2e6eNv+aOgttDeCG6+MhPPIQT
+         0824gHLxpiYHDxIMYOqwrAq1eOiWk5Xljswmqqy9b/ObLCjdJNZL6ZSAUdkTyTKHCsZn
+         RsX1jEzlkzuH9w3d12WhSuoDaOK/ULrpFC9ptnitBTCjqTpPlutEcwE0inhmCviPxuPO
+         WEyw==
+X-Gm-Message-State: AOAM531jpvi6+xlYLuSU4jbKnTfue6khVeVe22iScDnmkPj8ysb9H485
+        l+ZN5Xz7oBabGInMIyvb19IRFD5PynVQv26ZFics4DNPO+5mEOX2i3tkgdluGgoGhaiTPDZ7TuX
+        LcL+bCm6xj4xfUTaCwAN4/isPGJ9SxmeniM0a1i+Ecw==
+X-Received: by 2002:a67:ea98:: with SMTP id f24mr32326328vso.58.1622033240417;
+        Wed, 26 May 2021 05:47:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzncV7KUF7nlI+xDOZ2Hh0jrvt9tlTaxUB/9/ZQ88phvVB/gpuC8OhttWrjIE2/mvfwYc6tAw==
+X-Received: by 2002:a67:ea98:: with SMTP id f24mr32326315vso.58.1622033240219;
+        Wed, 26 May 2021 05:47:20 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.3])
+        by smtp.gmail.com with ESMTPSA id c126sm875817vkh.47.2021.05.26.05.47.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 05:47:19 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: [RESEND PATCH v2 00/13] Simplify + drop board file support for Samsung PMIC
+Date:   Wed, 26 May 2021 08:46:58 -0400
+Message-Id: <20210526124711.33223-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK428rtY1GsVFL4E@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 26, 2021 at 01:54:26PM +0200, Jiri Olsa escreveu:
-> On Mon, May 24, 2021 at 04:15:12AM -0700, Denys Zagorui wrote:
-> > It seems there is some need to have an ability to invoke perf from
-> > build directory without installation
-> > (84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
-> > DOCDIR definition contains an absolute path to kernel source directory.
-> > It is build machine related info and it makes perf binary unreproducible.
-> > 
-> > This can be avoided by compiling tips.txt in perf directly.
-> > 
-> > Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
-> 
-> for patchset
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+Hi Lee,
 
-Thanks, applied.
+This is the resend of two previous series, combined together as the
+latter depends on the first:
+https://lore.kernel.org/lkml/20210420113929.278082-1-krzysztof.kozlowski@canonical.com/
+https://lore.kernel.org/lkml/20210420170118.12788-1-krzysztof.kozlowski@canonical.com/
 
-- Arnaldo
+Everything rebased on latest next.
+
+This also includes two MFD "Correct kerneldoc" patches which seems to be
+still valid, even though you mentioned they were fixed.
+
+
+The Samsung PMIC drivers since long time are used only on devicetree
+platforms (Samsung Exynos) and there are no users with board files.
+
+Drop the support for board files entirely and depend on OF for matching.
+This makes the code smaller and simpler.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (13):
+  mfd: max8997: Simplify getting of_device_id match data
+  mfd: max8998: Simplify getting of_device_id match data
+  mfd: da9052: Simplify getting of_device_id match data
+  mfd: da9062: Simplify getting of_device_id match data
+  mfd: sec: Simplify getting of_device_id match data
+  mfd: wm831x: Correct kerneldoc
+  mfd: twl: Correct kerneldoc
+  mfd: sec: Drop support for board files and require devicetree
+  mfd: sec: Remove unused cfg_pmic_irq in platform data
+  mfd: sec: Remove unused device_type in platform data
+  mfd: sec: Remove unused irq_base in platform data
+  mfd: sec: Enable wakeup from suspend via devicetree property
+  mfd: sec: Remove unused platform data members
+
+ drivers/mfd/Kconfig              |  1 +
+ drivers/mfd/da9052-i2c.c         |  9 +---
+ drivers/mfd/da9062-core.c        | 13 ++----
+ drivers/mfd/max8997.c            |  9 ++--
+ drivers/mfd/max8998.c            |  8 ++--
+ drivers/mfd/sec-core.c           | 70 +++++---------------------------
+ drivers/mfd/sec-irq.c            |  4 +-
+ drivers/mfd/twl-core.c           |  4 +-
+ drivers/mfd/wm831x-core.c        |  2 +-
+ include/linux/mfd/samsung/core.h | 33 ---------------
+ 10 files changed, 29 insertions(+), 124 deletions(-)
+
+-- 
+2.27.0
 
