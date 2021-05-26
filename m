@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C262E391D87
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5848391D91
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbhEZRH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46678 "EHLO mail.kernel.org"
+        id S234147AbhEZRKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhEZRHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:07:22 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CDBC613E5;
-        Wed, 26 May 2021 17:05:48 +0000 (UTC)
-Date:   Wed, 26 May 2021 18:07:17 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] staging: iio: cdc: ad7746: initial effort to
- move out of staging
-Message-ID: <20210526180717.23d13296@jic23-huawei>
-In-Reply-To: <cover.1621786036.git.lucas.p.stankus@gmail.com>
-References: <cover.1621786036.git.lucas.p.stankus@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233865AbhEZRKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 13:10:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1040261184;
+        Wed, 26 May 2021 17:09:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622048950;
+        bh=biO76sc5FCTa0wyLLXe84EZAo5umTos5Aaw3fIOyp3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ga8DyAAu7d5Ve5RJbz9ED6rSGBvqwlgut9+DkeOjoWvKxJdW387cDvxdXM/wGn2LS
+         0rHeiaOwBCIKXDurcfvZlDwpeW5hA+7Ov3zFGM5AAk7ZQaB6jL6EvqhA/M4O0/0Uk3
+         wXS1wbP0CVLtLWMvJ314uO4G2V8NlYCxHByKPXg8X117RapyOkED1ynjOCZ5Q8fG/q
+         /osMjFavVvDcLHW32ATZQKkzh9BduEqGZ705Tw60leIFY1h8IgpAt/l778951AITAL
+         vvA6C+VqSRQH1rz5y8SjRAR4Lo/PHRkJ8AseKaBRZAeRmxQLT7lDCFr4NRLrauvA3U
+         RI+IFtNn3MTCA==
+Date:   Wed, 26 May 2021 18:09:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Elliot Berman <eberman@quicinc.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v2] Makefile: fix GDB warning with CONFIG_RELR
+Message-ID: <20210526170904.GB19831@willie-the-truck>
+References: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
+ <20210522012626.2811297-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210522012626.2811297-1-ndesaulniers@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 May 2021 14:11:35 -0300
-Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
-
-> Tidy up driver code by removing vague comments, simplifying probe
-> return, and extracting capdac register write to a separate function.
+On Fri, May 21, 2021 at 06:26:24PM -0700, Nick Desaulniers wrote:
+> GDB produces the following warning when debugging kernels built with
+> CONFIG_RELR:
 > 
-> These small patches are a starting point for improving the ad7746 driver,
-> hopefully to a point where it's possible to get it out of staging. I'm
-> looking up to feedback on what could be improved to accomplish that.
-Usually the easiest way to get such feedback is to propose moving it out of
-staging, (with move detection turned off in git format-patch).
-Then we'll review it in a similar fashion to a new driver.
-
-Starting point though for any review is ABI.  Looks like there is some
-custom stuff in here which either needs to go away or be properly
-proposed and documented. 
-
-This series applied to the togreg branch of iio.git - initially
-pushed out as testing to let 0-day poke at it.
-
-Thanks,
-
-Jonathan
-
+> BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
 > 
-> changelog v1 -> v2:
-> - Dropped num_channels fixup patch (applied from previous series).
-> - Split general code style patch into several atomic ones.
-> - New patch to catch capdac write boilerplate into a single function.
+> when loading a kernel built with CONFIG_RELR into GDB. It can also
+> prevent debugging symbols using such relocations.
 > 
-> Lucas Stankus (3):
->   staging: iio: cdc: ad7746: remove ordinary comments
->   staging: iio: cdc: ad7746: clean up probe return
->   staging: iio: cdc: ad7746: extract capac setup to own function
+> Peter sugguests:
+>   [That flag] means that lld will use dynamic tags and section type
+>   numbers in the OS-specific range rather than the generic range. The
+>   kernel itself doesn't care about these numbers; it determines the
+>   location of the RELR section using symbols defined by a linker script.
 > 
->  drivers/staging/iio/cdc/ad7746.c | 58 +++++++++++++-------------------
->  1 file changed, 23 insertions(+), 35 deletions(-)
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1057
+> Suggested-by: Peter Collingbourne <pcc@google.com>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> Changes V1 -> V2:
+> * rebase
+> * pick up Nathan's reviewed by tag.
 > 
+>  Makefile                      | 2 +-
+>  scripts/tools-support-relr.sh | 3 ++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 
+Does lld support RELR relocations for any architectures other than arm64? If
+so, is the "--use-android-relr-tags" option supported on all of those as
+well?
+
+Will
