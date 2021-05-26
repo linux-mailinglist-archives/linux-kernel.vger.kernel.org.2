@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F2E391F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34352391F8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhEZSsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235652AbhEZSr7 (ORCPT
+        id S233595AbhEZSuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:50:15 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:38739 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232716AbhEZSuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:47:59 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E030C061574;
-        Wed, 26 May 2021 11:46:28 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id ot16so1309897pjb.3;
-        Wed, 26 May 2021 11:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9bT1ZH2VErkLjURREhlNnyvjAiTIdcoMHigd3+xuYoM=;
-        b=MZnW+StndiGq+ptCj4DXVyubgTUn812g6BnYI7MvTnu+vqRY/+YbHVGzpp1/oWikIr
-         SKQZOI+7Skw+i5ByzHySq+f7nguTwMWLS4Jhu5cfUsTHIiokJD25zlUc/IKXdHu3N3kb
-         PyslOcP/r0k9USN167V7pRyYtOkqSWoV0NtJsueMx4aqbjMnzlcV0f1DhP8QGE8JUQxZ
-         ORDtoX7QUQj7ex7HSmtt8R2UudMT4mHUIoNf3qXQiHnJMo0AxeZcEQJNGMMRiLk/El2z
-         60NQMqhq59g50QpxIYIp3NZy2kT8mmHpSm32915Ri+jdOh7f1fXNjgnwbCxgCsazkhRl
-         6qFg==
+        Wed, 26 May 2021 14:50:14 -0400
+Received: by mail-oi1-f170.google.com with SMTP id z3so2515474oib.5;
+        Wed, 26 May 2021 11:48:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9bT1ZH2VErkLjURREhlNnyvjAiTIdcoMHigd3+xuYoM=;
-        b=OZhTWo/BYgjlc1UwrwmrTqIHNSr+qwdOjsgZ0shH7B6iWmND8b+4tiFKfEm3FVV0lB
-         3GKZ69Luug4Wd5EYfAqogE/mDDaz6RxCs7frtKpgnccvwtj3BMdXk9zYq2KTnMAFl3Pt
-         tGFp59b/Zgt3HacOXZOU93QD+o7sgia5jkJV/yHudMVrQKQXZq4ryK4iGcinDAo1xiXI
-         Dyqo36CoTFSrA76iFNjsZIViHAoIJ65D1Rf7MCy3Wn9KpSI06TEyYmtJJDSnt5uGpu64
-         I3P8fcnA/TvLmhGXkJbr82c29fJh2PBWL9RUNzY9QiLg9XJCMEPt/N7zfyxnj8vo2wQn
-         2TAQ==
-X-Gm-Message-State: AOAM5303iSMdvy0TKEsrWVu5avUt5mXpnA0JsIedXoO8ewwJBnU0Cug2
-        kAaGMrUfUI7A+hQm/7kF73Zc/XIcewE=
-X-Google-Smtp-Source: ABdhPJzQjSDOdlnMN0NoWWGUqMOyWN9yoLFAKBO//PERzAHG6Dls2LxWoTGOQ2SxyAg2NwfF86qd0w==
-X-Received: by 2002:a17:90a:f593:: with SMTP id ct19mr37526110pjb.225.1622054787260;
-        Wed, 26 May 2021 11:46:27 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id ck21sm3370pjb.24.2021.05.26.11.46.23
+        bh=HlrEkNbdErQedeYk72SYd9ajDXD8/yDnUV8sRUHNIcc=;
+        b=nFJx7yTuB5pRL0r2/sTbMUfR2Y6HD+GmFiMSf2LxkWa9444prKAeh/tRVr2vjcf6XR
+         Ibrjz1zcPlJr68bTljS/O7cqrPCKU6rnjppV/jVCTDWDzYwf4054WsIK29sTwmRh/M+u
+         3oVzfvjgLvJCJdJH3aFxa2y9//ScZpQ8XplXLPiJuW81FUrJ1uygGUCfYtdq1NRrzi7V
+         M1k0ybwSKRvIcycnRGZtkXMv0JoawlroEzTquWQoJJkhloqlP8e6rj2aVplefI2vpBfj
+         sbIHN8jRQrsa5xkV3osv+E5Q2YsZDhNa71R/qFGB2leq7aXlhkY1NMxkAZkP43C3JP94
+         M/hw==
+X-Gm-Message-State: AOAM533N2bTkUzMypJDWksX1EWiLGLQE4VaOWEVIZ9LvNQu2eEn/7vaY
+        CN6W8w+Fc8NpH+VMfwZVMKuO+ty4IQ==
+X-Google-Smtp-Source: ABdhPJxUDXUCvfpFu6FAogxwQhpINYbOt8kpbltexGcdyKvHsTRvwHT/oAR3BFHN7TMB98kWkwd7Ag==
+X-Received: by 2002:aca:a852:: with SMTP id r79mr2942445oie.21.1622054921636;
+        Wed, 26 May 2021 11:48:41 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id x65sm7224otb.59.2021.05.26.11.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 11:46:26 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     olteanv@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: phy: Document phydev::dev_flags bits allocation
-Date:   Wed, 26 May 2021 11:46:17 -0700
-Message-Id: <20210526184617.3105012-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 11:48:40 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-i2c@vger.kernel.org
+Subject: [PATCH v2 0/6] dt-bindings: Convert mux bindings to schema
+Date:   Wed, 26 May 2021 13:48:33 -0500
+Message-Id: <20210526184839.2937899-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the phydev::dev_flags bit allocation to allow bits 15:0 to
-define PHY driver specific behavior, bits 23:16 to be reserved for now,
-and bits 31:24 to hold generic PHY driver flags.
+This series converts the mux-controller and some i2c mux bindings to DT
+schema. This was a rabbit hole of trying to fix undocumented (by schema)
+compatibles (enabled by setting DT_CHECKER_FLAGS=-m). So this is mux
+bindings, and then a few others that are used in the mux binding
+examples.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/linux/phy.h | 5 +++++
- 1 file changed, 5 insertions(+)
+I ended up converting the MDIO mux bindings[1], and Jonathan did the
+IIO mux[2]. (Thanks!)
 
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 60d2b26026a2..852743f07e3e 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -496,6 +496,11 @@ struct macsec_ops;
-  * @mac_managed_pm: Set true if MAC driver takes of suspending/resuming PHY
-  * @state: State of the PHY for management purposes
-  * @dev_flags: Device-specific flags used by the PHY driver.
-+ *		Bits [15:0] are free to use by the PHY driver to communicate
-+ *			    driver specific behavior.
-+ *		Bits [23:16] are currently reserved for future use.
-+ *		Bits [31:24] are reserved for defining generic
-+ *			     PHY driver behavior.
-  * @irq: IRQ number of the PHY's interrupt (-1 if none)
-  * @phy_timer: The timer for handling the state machine
-  * @phylink: Pointer to phylink instance for this PHY
+Rob
+
+[1] https://lore.kernel.org/r/20210526181411.2888516-1-robh@kernel.org/
+[2] https://lore.kernel.org/r/20210522112908.1611389-2-jic23@kernel.org/
+
+
+Rob Herring (6):
+  dt-bindings: mfd: ti,j721e-system-controller: Fix mux node errors
+  dt-bindings: rtc: nxp,pcf8563: Convert to DT schema
+  dt-bindings: mux: Convert mux controller bindings to schema
+  dt-bindings: i2c: Convert i2c-mux bindings to DT schema
+  dt-bindings: i2c: i2c-mux-pca954x: Convert to DT schema
+  dt-bindings: i2c: maxim,max9286: Use the i2c-mux.yaml schema
+
+ .../bindings/i2c/i2c-demux-pinctrl.txt        |   2 +-
+ .../devicetree/bindings/i2c/i2c-mux-gpio.txt  |   4 +-
+ .../devicetree/bindings/i2c/i2c-mux-gpmux.txt |  99 ----------
+ .../bindings/i2c/i2c-mux-gpmux.yaml           | 124 ++++++++++++
+ .../bindings/i2c/i2c-mux-ltc4306.txt          |   4 +-
+ .../bindings/i2c/i2c-mux-pca954x.txt          |  74 -------
+ .../bindings/i2c/i2c-mux-pca954x.yaml         | 110 +++++++++++
+ .../bindings/i2c/i2c-mux-pinctrl.txt          |   4 +-
+ .../devicetree/bindings/i2c/i2c-mux-reg.txt   |   4 +-
+ .../devicetree/bindings/i2c/i2c-mux.txt       |  73 -------
+ .../devicetree/bindings/i2c/i2c-mux.yaml      |  87 +++++++++
+ .../iio/multiplexer/io-channel-mux.txt        |   2 +-
+ .../bindings/media/i2c/maxim,max9286.yaml     |  23 +--
+ .../mfd/ti,j721e-system-controller.yaml       |  19 +-
+ .../devicetree/bindings/mtd/ti,am654-hbmc.txt |   2 +-
+ .../devicetree/bindings/mux/adi,adg792a.txt   |   2 +-
+ .../devicetree/bindings/mux/adi,adgs1408.txt  |   2 +-
+ .../devicetree/bindings/mux/gpio-mux.txt      |  69 -------
+ .../devicetree/bindings/mux/gpio-mux.yaml     |  92 +++++++++
+ .../devicetree/bindings/mux/mux-consumer.yaml |  46 +++++
+ .../bindings/mux/mux-controller.txt           | 157 ---------------
+ .../bindings/mux/mux-controller.yaml          | 182 ++++++++++++++++++
+ .../devicetree/bindings/mux/reg-mux.txt       | 129 -------------
+ .../devicetree/bindings/mux/reg-mux.yaml      | 143 ++++++++++++++
+ .../bindings/net/mdio-mux-multiplexer.txt     |   2 +-
+ .../devicetree/bindings/rtc/nxp,pcf8563.yaml  |  56 ++++++
+ .../devicetree/bindings/rtc/pcf8563.txt       |  29 ---
+ 27 files changed, 870 insertions(+), 670 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mux/gpio-mux.txt
+ create mode 100644 Documentation/devicetree/bindings/mux/gpio-mux.yaml
+ create mode 100644 Documentation/devicetree/bindings/mux/mux-consumer.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mux/mux-controller.txt
+ create mode 100644 Documentation/devicetree/bindings/mux/mux-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mux/reg-mux.txt
+ create mode 100644 Documentation/devicetree/bindings/mux/reg-mux.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+ delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
+
 -- 
-2.25.1
+2.27.0
 
