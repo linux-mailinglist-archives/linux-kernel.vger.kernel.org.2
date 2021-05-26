@@ -2,195 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706E739221A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476AE392226
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhEZVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:33:00 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57990 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233550AbhEZVcs (ORCPT
+        id S234067AbhEZVg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232626AbhEZVgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:32:48 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QLUjWo083494;
-        Wed, 26 May 2021 16:30:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622064645;
-        bh=FTvZVkn8ZE6UMqlEKzTShsRaAPM+cK0ORtQaLO6Zh7E=;
-        h=From:To:CC:Subject:Date;
-        b=g36iNksh8nH71yVLAFJwXpxLGKh79F50cfgR4c78hruW4KxIXWCLLwuik2iTj1TuX
-         iHksgtdK47wxYK19RonrwXu+Lc/oKXGb1YApBUTBXHRa3cLLF5jk9c5Z+G+JMuO9cT
-         sedC8lnF1Z2SVNFe+B0ECSEJfrp05TdEj9SU+iWQ=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QLUjJG097632
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 16:30:45 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 16:30:45 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 16:30:45 -0500
-Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QLUjGc118939;
-        Wed, 26 May 2021 16:30:45 -0500
-Received: from uda0271916b.dhcp.ti.com (uda0271916b.dhcp.ti.com [128.247.81.224] (may be forged))
-        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 14QLUjXE073919;
-        Wed, 26 May 2021 16:30:45 -0500
-From:   Gowtham Tammana <g-tammana@ti.com>
-To:     Suman Anna <s-anna@ti.com>, <tony@atomide.com>,
-        <bcousson@baylibre.com>
-CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nisanth Menon <nm@ti.com>, Gowtham Tammana <g-tammana@ti.com>
-Subject: [PATCH v3] ARM: dts: dra7: Fix duplicate USB4 target module node
-Date:   Wed, 26 May 2021 16:30:35 -0500
-Message-ID: <20210526213035.15448-1-g-tammana@ti.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 26 May 2021 17:36:24 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BE6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:34:51 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n8so1284042plf.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7VMYKzcvlmsaJsduijRinX5XOX/CXS23jVd0dixyLbI=;
+        b=ie4BpCnntunaA4LGbURImMIKM08qZ48fG66Dt4d1CY7m+bmY3prfw3Evt/EvOnwkOv
+         TN5wWKlaO8tHkc7V8lcvoKpwu78eWRa+5GwNc5YtIjXeBM4WM28fqhhTLvLcY6q91HOu
+         O4waTVlnqTioDn7baVA84CHP+a25fcFR9pIcrBOjFg3+rDPj4vaQfi+lJpgGMGyufy4F
+         Vq8ToRbH++LEDoYvTuxK8e7Q8sLys7NR76/vP9B9HTA9W/q+t+1lP5ohC/UPyY7+tvW1
+         rsk7nPVcKA+SFs9DjNoAqokLtmR94Sa5wOKCpgNaVYk/43e2uFiMOwCid6aEBkq47W2m
+         mNXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7VMYKzcvlmsaJsduijRinX5XOX/CXS23jVd0dixyLbI=;
+        b=hFWdxadIixu4HhnwCoAUGBipppA+7h9hhlmO/tL10cgLLaknKNHhXq+RYqKoFgQ+4W
+         ZyWaoy5h3B72Ln/WG+BpNHQwzjEtBsXF4cuyJFqNrzQiU0GwjHiZwxlgdq55jfX+DO/C
+         k0eiNeKb1MhCddzjQzbaKhcLyYlmxGntVZH0R8zjQNSCFttOj7YY4f/tEgNuR2sliOiS
+         h7QTpp5je50M6X8CE7yGzSlsG/J6W/N4mEfuIvec19iFDRzgsH6TFQMzp+w33FgDuKe+
+         vZMeMqDgKVCQoHA1SVUSCGUTY54OgkkAGlyPA5MqlWTy3FW6KgwvteaINwL8gPSRa4pl
+         Gq0g==
+X-Gm-Message-State: AOAM533xh3PiqR3kIm8kgjNDZaXDHicZKbmBW+D3qVOSP2EBWD3O6kLA
+        JMsMe+F0LWrZCfByD3wvQOYVeA==
+X-Google-Smtp-Source: ABdhPJzJ+L9n0bvK/LiHvOSETtHso7f3OjuKFCauJaw+Q+/r06x4YdSHqJ6BlK3t0LLt5XD+mbFNaQ==
+X-Received: by 2002:a17:90b:607:: with SMTP id gb7mr227800pjb.5.1622064890746;
+        Wed, 26 May 2021 14:34:50 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c130sm144294pfc.51.2021.05.26.14.34.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 14:34:50 -0700 (PDT)
+Date:   Wed, 26 May 2021 21:34:46 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 00/13] More parallel operations for the TDP MMU
+Message-ID: <YK6+9lmToiFTpvmq@google.com>
+References: <20210401233736.638171-1-bgardon@google.com>
+ <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With [1] USB4 target-module node got defined in dra74x.dtsi file.
-However, the earlier definition in [2] was not removed, and this
-duplication of the target module is causing boot failure on dra74
-variant boards - dra7-evm, beagleboard-x15, beaglebone-ai, dra76-evm,
-am574x-idk.
+On Fri, Apr 02, 2021, Paolo Bonzini wrote:
+> On 02/04/21 01:37, Ben Gardon wrote:
+> > Now that the TDP MMU is able to handle page faults in parallel, it's a
+> > relatively small change to expand to other operations. This series allows
+> > zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
+> > dirty logging), and enabling dirty logging to all happen under the MMU
+> > lock in read mode.
+> > 
+> > This is partly a cleanup + rewrite of the last few patches of the parallel
+> > page faults series. I've incorporated feedback from Sean and Paolo, but
+> > the patches have changed so much that I'm sending this as a separate
+> > series.
+> > 
+> > Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
+> > TDP MMU enabled and disabled. This series introduces no new failures or
+> > warnings.
+> > 
+> > I know this will conflict horribly with the patches from Sean's series
+> > which were just queued, and I'll send a v2 to fix those conflicts +
+> > address any feedback on this v1.
+> > 
+> > Changelog
+> > v2:
+> > --	Rebased patches on top of kvm/queue to incorporate Sean's recent
+> > 	TLB flushing changes
+> > --	Dropped patch 5: "KVM: x86/mmu: comment for_each_tdp_mmu_root
+> > 	requires MMU write lock" as the following patch to protect the roots
+> > 	list with RCU adds lockdep which makes the comment somewhat redundant.
+> > 
+> > Ben Gardon (13):
+> >    KVM: x86/mmu: Re-add const qualifier in
+> >      kvm_tdp_mmu_zap_collapsible_sptes
+> >    KVM: x86/mmu: Move kvm_mmu_(get|put)_root to TDP MMU
+> >    KVM: x86/mmu: use tdp_mmu_free_sp to free roots
+> >    KVM: x86/mmu: Merge TDP MMU put and free root
+> >    KVM: x86/mmu: Refactor yield safe root iterator
+> >    KVM: x86/mmu: Make TDP MMU root refcount atomic
+> >    KVM: x86/mmu: handle cmpxchg failure in kvm_tdp_mmu_get_root
+> >    KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
+> >    KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock
+> >    KVM: x86/mmu: Allow zapping collapsible SPTEs to use MMU read lock
+> >    KVM: x86/mmu: Allow enabling / disabling dirty logging under MMU read
+> >      lock
+> >    KVM: x86/mmu: Fast invalidation for TDP MMU
+> >    KVM: x86/mmu: Tear down roots in fast invalidation thread
+> > 
+> >   arch/x86/include/asm/kvm_host.h |  21 +-
+> >   arch/x86/kvm/mmu/mmu.c          | 115 +++++++---
+> >   arch/x86/kvm/mmu/mmu_internal.h |  27 +--
+> >   arch/x86/kvm/mmu/tdp_mmu.c      | 375 +++++++++++++++++++++++---------
+> >   arch/x86/kvm/mmu/tdp_mmu.h      |  28 ++-
+> >   include/linux/kvm_host.h        |   2 +-
+> >   6 files changed, 407 insertions(+), 161 deletions(-)
+> > 
+> 
+> Applied to kvm/mmu-notifier-queue, thanks.
 
-USB4 is only present in DRA74x variants, so keeping the entry in
-dra74x.dtsi and removing it from the top level interconnect hierarchy
-dra7-l4.dtsi file. This change makes the USB4 target module no longer
-visible to AM5718, DRA71x and DRA72x so removing references to it in
-their respective dts files.
+What's the plan for kvm/mmu-notifier-queue?  More specifically, are the hashes
+stable, i.e. will non-critical review feedback get squashed?  I was finally
+getting around to reviewing this, but what's sitting in that branch doesn't
+appear to be exactly what's posted here.  If the hashes are stable, I'll probably
+test and review functionality, but not do a thorough review.
 
-[1]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
-dra7 dwc3")
-[2]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
-hierarchy and ti-sysc data")
-
-Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
-Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
----
-v3:
-  - fixed error in references to the commits
-  - mentioned the boards that failed
-v2:
-  - https://lore.kernel.org/linux-arm-kernel/20210526172038.17542-1-g-tammana@ti.com/
-  - changed reference to commit sha instead of line numbers
-  - added Fixes: tag
-  - moved the defintion to dra74.dtsi as per Suman and Tony review comments
-v1:
-  - https://lore.kernel.org/linux-arm-kernel/20210521211851.14674-1-g-tammana@ti.com/
-
- arch/arm/boot/dts/am5718.dtsi  |  6 +-----
- arch/arm/boot/dts/dra7-l4.dtsi | 22 ----------------------
- arch/arm/boot/dts/dra71x.dtsi  |  4 ----
- arch/arm/boot/dts/dra72x.dtsi  |  4 ----
- arch/arm/boot/dts/dra74x.dtsi  |  2 +-
- 5 files changed, 2 insertions(+), 36 deletions(-)
-
-diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
-index ebf4d3cc1cfb..6d7530a48c73 100644
---- a/arch/arm/boot/dts/am5718.dtsi
-+++ b/arch/arm/boot/dts/am5718.dtsi
-@@ -17,17 +17,13 @@ / {
-  * VCP1, VCP2
-  * MLB
-  * ISS
-- * USB3, USB4
-+ * USB3
-  */
- 
- &usb3_tm {
- 	status = "disabled";
- };
- 
--&usb4_tm {
--	status = "disabled";
--};
--
- &atl_tm {
- 	status = "disabled";
- };
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
-index 149144cdff35..648d23f7f748 100644
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -4129,28 +4129,6 @@ usb3: usb@10000 {
- 			};
- 		};
- 
--		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
--			compatible = "ti,sysc-omap4", "ti,sysc";
--			reg = <0x140000 0x4>,
--			      <0x140010 0x4>;
--			reg-names = "rev", "sysc";
--			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
--			ti,sysc-midle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>,
--					<SYSC_IDLE_SMART_WKUP>;
--			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
--			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
--			clock-names = "fck";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x140000 0x20000>;
--		};
--
- 		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
- 			compatible = "ti,sysc-omap4", "ti,sysc";
- 			reg = <0x170010 0x4>;
-diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
-index cad0e4a2bd8d..9c270d8f75d5 100644
---- a/arch/arm/boot/dts/dra71x.dtsi
-+++ b/arch/arm/boot/dts/dra71x.dtsi
-@@ -11,7 +11,3 @@
- &rtctarget {
- 	status = "disabled";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
-index d403acc754b6..f3e934ef7d3e 100644
---- a/arch/arm/boot/dts/dra72x.dtsi
-+++ b/arch/arm/boot/dts/dra72x.dtsi
-@@ -108,7 +108,3 @@ &pcie1_ep {
- &pcie2_rc {
- 	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
- };
--
--&usb4_tm {
--	status = "disabled";
--};
-diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
-index e1850d6c841a..60f2ab8d34d5 100644
---- a/arch/arm/boot/dts/dra74x.dtsi
-+++ b/arch/arm/boot/dts/dra74x.dtsi
-@@ -49,7 +49,7 @@ dsp2_system: dsp_system@41500000 {
- 			reg = <0x41500000 0x100>;
- 		};
- 
--		target-module@48940000 {
-+		usb4_tm: target-module@48940000 {
- 			compatible = "ti,sysc-omap4", "ti,sysc";
- 			reg = <0x48940000 0x4>,
- 			      <0x48940010 0x4>;
--- 
-2.31.1
-
+Thanks!
