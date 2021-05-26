@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0EF39136E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192739138C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbhEZJMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:12:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5555 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbhEZJL5 (ORCPT
+        id S233207AbhEZJXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:23:11 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:54577 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232218AbhEZJXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:11:57 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqlTK1TgvzkYSH;
-        Wed, 26 May 2021 17:07:33 +0800 (CST)
-Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 17:10:24 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 26 May 2021 17:10:23 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "Masahiro Yamada" <masahiroy@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>, <ocfs2-devel@oss.oracle.com>,
-        Chen Huang <chenhuang5@huawei.com>
-Subject: [PATCH -next 3/3] ocfs2: Replaced simple_strtoull() with kstrtoull()
-Date:   Wed, 26 May 2021 09:20:20 +0000
-Message-ID: <20210526092020.554341-3-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210526092020.554341-1-chenhuang5@huawei.com>
-References: <20210526092020.554341-1-chenhuang5@huawei.com>
+        Wed, 26 May 2021 05:23:09 -0400
+Received: from [192.168.1.101] (83.6.168.54.neoplus.adsl.tpnet.pl [83.6.168.54])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id CD5873F3BC;
+        Wed, 26 May 2021 11:21:35 +0200 (CEST)
+Subject: Re: [PATCH 7/7] arm64: dts: qcom: Add support for SONY Xperia X
+ Performance / XZ / XZs (msm8996, Tone platform)
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210525200246.118323-1-konrad.dybcio@somainline.org>
+ <20210525200246.118323-7-konrad.dybcio@somainline.org>
+ <YK3CxHZELSQzz4Dp@builder.lan>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <3fbf451e-6bab-d72a-1d6b-851ece99c95b@somainline.org>
+Date:   Wed, 26 May 2021 11:21:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema756-chm.china.huawei.com (10.1.198.198)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YK3CxHZELSQzz4Dp@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simple_strtoull() function is deprecated in some situation since
-it does not check for the range overflow, use kstrtoull() instead.
+Hi,
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- fs/ocfs2/cluster/heartbeat.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
-index 1169c8dc9106..f89ffcbd585f 100644
---- a/fs/ocfs2/cluster/heartbeat.c
-+++ b/fs/ocfs2/cluster/heartbeat.c
-@@ -1596,12 +1596,13 @@ static ssize_t o2hb_region_start_block_store(struct config_item *item,
- 	struct o2hb_region *reg = to_o2hb_region(item);
- 	unsigned long long tmp;
- 	char *p = (char *)page;
-+	ssize_t ret;
- 
- 	if (reg->hr_bdev)
- 		return -EINVAL;
- 
--	tmp = simple_strtoull(p, &p, 0);
--	if (!p || (*p && (*p != '\n')))
-+	ret = kstrtoull(p, 0, &tmp);
-+	if (ret)
- 		return -EINVAL;
- 
- 	reg->hr_start_block = tmp;
--- 
-2.25.1
+> BSD license in all the files please.
+
+msm8996.dtsi is gpl2-only, so I wasn't sure I can include it..
+
+
+>> +};
+>> \ No newline at end of file
+> [..]
+
+Yikes... my mistake
+
+
+>> +#include "pmi8994.dtsi"
+>> +#include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/input/gpio-keys.h>
+> This seems to be unused for now.
+
+Right. I will add the keys in a separate patch, this one is plenty big already.
+
+
+>> +		/*
+>> +		 * Due to an unknown-for-a-few-years regression,
+>> +		 * SDHCI only works on MSM8996 in PIO (lame) mode.
+>> +		 */
+>> +		bootargs = "sdhci.debug_quirks=0x40 sdhci.debug_quirks2=0x4 maxcpus=2";
+> What's up with maxcpus=2? Is this simply because the last 2 are really
+> really slow?
+
+Yeah, I think the L2 and cci being stuck at bl clocks are to blame again.. there was a lot of msm8996 cpufreq work but I am not sure if anybody got it to *actually* work in the end, I'll try to look into this soon(tm)..
+
+
+>> +};
+>> +
+>> +&CPU0 {
+>> +	cpu-supply = <&pmi8994_s11>;
+> Isn't this the supply to the CPU-subsystem-internal LDO that actually
+> feeds the CPU? Is there a benefit to describing this here?
+
+I believe it was related to the cpufreq-dt madness, I will remove this.
+
+
+>> +
+>> +&pm8994_gpios {
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 = <&pm8994_gpio_1 &pm8994_vol_down_n &pm8994_vol_up_n
+>> +		     &pm8994_cam_snap_n &pm8994_cam_focus_n &pm8994_gpio_6
+>> +		     &pm8994_nfc_dload &pm8994_gpio_8 &pm8994_gpio_9
+>> +		     &pm8994_gpio_nfc_clk &pm8994_gpio_11 &pm8994_gpio_12
+>> +		     &pm8994_ear_en &pm8994_gpio_14 &pm8994_pm_divclk1
+>> +		     &pm8994_pmi_clk &pm8994_gpio_17 &pm8994_rome_sleep
+>> +		     &pm8994_gpio_19 &pm8994_gpio_22>;
+> Shouldn't several of these reference be done from the relevant nodes?
+
+Certainly, but not all peripherals have drivers upstream, and other ones
+
+are hardcoded to their state downstream, and knowing what shady stuff
+
+some vendors do, I'm reluctant to trust the bootloader-default state with
+
+my expensive toys..
+
+
+
+> For the ones that isn't, and that you're not going to ever change I
+> think it would look better to have a single:
+>
+> pm8994_gpios_defaults: default-state {
+> 	nc {
+> 		nc pins...
+> 	};
+>
+> 	vol-up {
+> 		...
+> 	};
+>
+> 	...
+> };
+
+That does look like a good idea, but I also think it would become a big
+
+mess if any of these pins turned out required for some obscure peripheral,
+
+and then I'd have to dig it out of there, re-create the pin definition outside
+
+and I think you know where this is going..
+
+
+> +/*
+> + * For reasons that are currently unknown
+> + * (but probably related to fusb301), USB
+> + * takes about 6 minutes to wake up (nothing
+> + * interesting in kernel logs), but then it
+> + * works as it should.
+> This is funny (but please make it ~80 chars wide).
+
+Eh, Torvalds said 100 is fine :P
+
+
+Konrad
 
