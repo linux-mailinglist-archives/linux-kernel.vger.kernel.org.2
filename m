@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8AD391ACC
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B461391AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235137AbhEZOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:54:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:46092 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235068AbhEZOyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:54:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AB9D1516;
-        Wed, 26 May 2021 07:53:22 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8F1F3F73D;
-        Wed, 26 May 2021 07:53:20 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:53:17 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH 4/4] firmware: arm_scmi: Introduce delegated xfers support
-Message-ID: <20210526145317.GQ28060@e120937-lin>
-References: <20210524231503.34924-1-cristian.marussi@arm.com>
- <20210524231503.34924-5-cristian.marussi@arm.com>
- <659c2f2c-e236-1a70-44be-c5f6871868e7@gmail.com>
+        id S235168AbhEZOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235160AbhEZOzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:55:38 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4630BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:54:06 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id e17so1111693pfl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+GScnmVdacRASdZ6acXofN+D5Tlo5vzk3Jj+0xXhnBs=;
+        b=ZYIDSNqauuNmVnIUAuIoNdVNNM2lQjPM+LT4mr3k7iqCbm2CS2JAJW2PvDpPIsNYWv
+         L1q8BX81tSCVLgMVqm6EhgDppexrZdN2KU8FY9FObpX9YpLxzxSWZfQRPtoG3KR4pmJ5
+         woKMn0hPLltjsd9+WNBmmuUlEM8S9I0Y5Vug4Le47r6H1sKH362Uekz3kEFkdMfJf/TA
+         c389q1zYA3waMXh98Ah/9taeEEF6WDpS2noTjs6QXTWtVXolJfL4LwR5jBBvvUn0tgjI
+         RNNzXLpj4Rr/zgktfpU/kuGbv+WInnNlelnRXD06e2o/CzO3J3bNMkqX5+j3PK3icKqQ
+         7JVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+GScnmVdacRASdZ6acXofN+D5Tlo5vzk3Jj+0xXhnBs=;
+        b=maFGD7KZ0zkZ2shUPGpEuKhHGfN9T7NNuZDKHSEdeV7bKxHYHXYNVZN2dEwAePbFGv
+         3hVf5XCBeYl2tCsaxyLlxYqfWr/IQMihbYRSf8iJ4h1HSplJOXrN1iNf21WUy+aaFB7C
+         o1DN+G6AUtIkNYxGMpyQA7drbhiHCej8DY2SnGAALPcBjrqA6Gz5lSgRvBoevSeMo6Cj
+         Ugqz3BIzgpDOScfB8OmwkvQqTHjILqE+DqjKYnTanN76LXgD1UCYSHrZ956pp31fYMi9
+         7gzLzLMxY1vVSdDLvzHhkjAcmwwmp3KEAfvrhsu3v3rXIPZL82BzO/vZbwRaU9xUIT+E
+         1rlQ==
+X-Gm-Message-State: AOAM531h+DdXLpOq5jPW7bk8LTEcbGXnoE7FcjegZx14a4/G9laTDLR8
+        Tf+2YujIZAkwv+EDFKCkpl68VQ==
+X-Google-Smtp-Source: ABdhPJy/4bHs4xkk+2NL5sdmo643CgS2zx60hGlhSq8WGMvUzh6ma3fHy5ASZe6EKhoY1bkqfa42aA==
+X-Received: by 2002:a62:60c4:0:b029:2ca:ebf7:cd0d with SMTP id u187-20020a6260c40000b02902caebf7cd0dmr35557829pfb.71.1622040845628;
+        Wed, 26 May 2021 07:54:05 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id e17sm12841738pfi.131.2021.05.26.07.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 07:54:05 -0700 (PDT)
+Date:   Wed, 26 May 2021 14:54:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Liu, Jing2" <jing2.liu@linux.intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+Subject: Re: [PATCH RFC 7/7] kvm: x86: AMX XCR0 support for guest
+Message-ID: <YK5hCUoPo4OJzeU0@google.com>
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-8-jing2.liu@linux.intel.com>
+ <YKwgdBTqiyuItL6b@google.com>
+ <43eb3317-4101-0786-57f4-f35e7ec094eb@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <659c2f2c-e236-1a70-44be-c5f6871868e7@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <43eb3317-4101-0786-57f4-f35e7ec094eb@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 07:20:45PM -0700, Florian Fainelli wrote:
+On Wed, May 26, 2021, Liu, Jing2 wrote:
 > 
+> On 5/25/2021 5:53 AM, Sean Christopherson wrote:
+> > On Sun, Feb 07, 2021, Jing Liu wrote:
+> > > Two XCR0 bits are defined for AMX to support XSAVE mechanism.
+> > > Bit 17 is for tilecfg and bit 18 is for tiledata.
+> > This fails to explain why they must be set in tandem.
+> The spec says, "executing the XSETBV instruction causes a general-protection
+> fault (#GP) if ECX=0 and EAX[17] ≠ EAX[18] (XTILECFG and XTILEDATA must be
+> enabled together).  This implies that the value of XCR0[17:18] is always
+> either 00b or 11b."
 > 
-> On 5/24/2021 4:15 PM, Cristian Marussi wrote:
-> > Introduce optional support for delegated xfers allocation.
-> > 
-> > An SCMI transport can optionally declare to support delegated xfers and
-> > then use a few helper functions exposed by the core SCMI transport layer to
-> > query the core for existing in-flight transfers matching a provided message
-> > header or alternatively and transparently obtain a brand new xfer to handle
-> > a freshly received notification message.
-> > In both cases the obtained xfer is uniquely mapped into a specific xfer
-> > through the means of the message header acting as key.
-> > 
-> > In this way such a transport can properly store its own transport specific
-> > payload into the xfer uniquely associated to the message header before
-> > even calling into the core scmi_rx_callback() in the usual way, so that
-> > the transport specific message envelope structures can be freed early
-> > and there is no more need to keep track of their status till the core
-> > fully processes the xfer to completion or times out.
-> > 
-> > The scmi_rx_callbak() does not need to be modified to carry additional
-> > transport-specific ancillary data related to such message envelopes since
-> > an unique natural association is established between the xfer and the
-> > related message header.
-> > 
-> > Existing transports that do not need anything of the above will continue
-> > to work as before without any change.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> 
-> It would be better to see this in the context of its planned user, but
-> that looked reasonable enough.
+> I can add more to changelog if this is reasonable.
 
-I agree, definitely better to see this in the context of usage.
+Ya, please do.  It doesn't have to be the full thing verbatim (but that's ok, too),
+but the requirement does need to be called out.
 
-Such virtio-scmi rework is still in progress indeed, but working in my
-local testing so far.
+> >  Out of curisoity, assuming they do indeed need to be set/cleared as a
+> >  pair, what's the point of having two separate bits?
+>
+> What I can see is to separate different states and mirror by XFD which can
+> set bits separately.
 
-The reworked V4 virtio-scmi series is still to be refined and posted,
-and this transitional code lives now at:
-
-https://gitlab.arm.com/linux-arm/linux-cm/-/tree/scmi_virtio_trans_V4_rework
-
-and in particular this is the patch that changes virtio-scmi transport to
-use the new delegated xfers. (hopefully simplfying it)
-
-https://gitlab.arm.com/linux-arm/linux-cm/-/commit/0b524f89ea6cfcf6204a5eaa8cf9030118805b2f
-
-...but, as said, it is highly work in progress so you may just want to
-wait for final V4 virtio-scmi rework posted and do not bother this noise
-of mine :D
-
-In any case thanks a lot for the feedback so far.
-
-Cristian
-
-> -- 
-> Florian
-
+Ah, that would make sense.  Thanks!
