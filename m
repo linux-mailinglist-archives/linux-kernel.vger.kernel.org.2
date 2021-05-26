@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF20839160D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530D5391618
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbhEZL1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:27:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234354AbhEZL0L (ORCPT
+        id S234544AbhEZL3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhEZL0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:26:11 -0400
-Date:   Wed, 26 May 2021 11:24:37 -0000
+        Wed, 26 May 2021 07:26:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC8C061342;
+        Wed, 26 May 2021 04:24:40 -0700 (PDT)
+Date:   Wed, 26 May 2021 11:24:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622028278;
+        s=2020; t=1622028279;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0tC5h934RbgcbHnOv0D1xEacwov6Sur0DCw4wAHgcvc=;
-        b=b2l7s5yIahYj1EcTs/dJPEYMfARMiJULDiGIEkYhKeqtopMXgO9bek0kdGz5COos+1L6/q
-        UqletefphAyE16UoF4s8OUXkAhf6FZ3VPy5B51DIul2HIHMD8voqamTvVL5pBfny5hVbcj
-        BKUcZkUOEq2Eagfnm4WEyQTjbhejqdlHIn1I1nfEkkvHdWgUFB8m85EDZMzG/eKQHWrNv+
-        42F5J/0HWCqx5F8VrC1CA385/6dSSTgtqfxJJyj2JfeL/Ru5W9TskyiGNIfVKx54XR+g8a
-        lsYpOL+1vSF+seR2SAXcp2cuVFPFXx3W5kB56z5vTfneQZosIMrDaf+QObpuOw==
+        bh=AAehNavPfqpGxWOrjrWMXeQvOAAx2V1T0/rcwvcfPTE=;
+        b=lY5VjfEPcjTHT5UYFquXVaBiaPZOjHxWeDTrEOVYnZZcBH2x38ZjDL0Izo8fpkSKpZTirp
+        f9nCED2SN/WfTot/ix42zLJcBZ7i9brM5gmB40cecRYKekNe/GFIoZtatpTVuISmv4cm5o
+        MqBu98qf2n8vkbycqwAwY4M2dFa6t9jmxfoJtFq8wq9aLeu1f9UhBpO2UvSHn7FaU+i25U
+        tAg43nPg2MH9fYm2BEbDeXch/Yt2+sKSm+SmjTo+jZl2TnJrML1kPx5H8+ieomyKmiuDZv
+        srFx6J0/UrF3Shnpj3c5UvNnkACrLo6I3vl2yDgxe5KqBGIPNeccOyYol6+o8A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622028278;
+        s=2020e; t=1622028279;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0tC5h934RbgcbHnOv0D1xEacwov6Sur0DCw4wAHgcvc=;
-        b=Nv8Dmxxh1lKnfOSVQk+ETgHfqwZSM3ZiNd7F9/Xr0WQeh/gVoSE6ARoFNhKkrkaiMoPS0w
-        7DYrPCmLlSU6HLCw==
+        bh=AAehNavPfqpGxWOrjrWMXeQvOAAx2V1T0/rcwvcfPTE=;
+        b=15nZsUu7rRRFv6hH2kMcuxTEnhluI9IAoaDqJgBW9/NLEa3fuPloHxvJjW5hu23XZGn39b
+        LWwAJ911rpBkP4AA==
 From:   "tip-bot2 for Mark Rutland" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/atomic: alpha: move to ARCH_ATOMIC
+Subject: [tip: locking/core] locking/atomic: cmpxchg: make `generic` a prefix
 Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
         Will Deacon <will@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210525140232.53872-14-mark.rutland@arm.com>
-References: <20210525140232.53872-14-mark.rutland@arm.com>
+In-Reply-To: <20210525140232.53872-12-mark.rutland@arm.com>
+References: <20210525140232.53872-12-mark.rutland@arm.com>
 MIME-Version: 1.0
-Message-ID: <162202827782.29796.9581539600681274775.tip-bot2@tip-bot2>
+Message-ID: <162202827863.29796.15038205386704992672.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,318 +65,231 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     96d330aff7060f0882a5440ddb281cc3ab232d96
-Gitweb:        https://git.kernel.org/tip/96d330aff7060f0882a5440ddb281cc3ab232d96
+Commit-ID:     6988631bdfddcedc1d27f83723ea36a442f00ea1
+Gitweb:        https://git.kernel.org/tip/6988631bdfddcedc1d27f83723ea36a442f00ea1
 Author:        Mark Rutland <mark.rutland@arm.com>
-AuthorDate:    Tue, 25 May 2021 15:02:12 +01:00
+AuthorDate:    Tue, 25 May 2021 15:02:10 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 26 May 2021 13:20:50 +02:00
 
-locking/atomic: alpha: move to ARCH_ATOMIC
+locking/atomic: cmpxchg: make `generic` a prefix
 
-We'd like all architectures to convert to ARCH_ATOMIC, as once all
-architectures are converted it will be possible to make significant
-cleanups to the atomics headers, and this will make it much easier to
-generically enable atomic functionality (e.g. debug logic in the
-instrumented wrappers).
+The asm-generic implementations of cmpxchg_local() and cmpxchg64_local()
+use a `_generic` suffix to distinguish themselves from arch code or
+wrappers used elsewhere.
 
-As a step towards that, this patch migrates alpha to ARCH_ATOMIC. The
-arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
-code wraps these with optional instrumentation to provide the regular
-functions.
+Subsequent patches will add ARCH_ATOMIC support to these
+implementations, and will distinguish more functions with a `generic`
+portion. To align with how ARCH_ATOMIC uses an `arch_` prefix, it would
+be helpful to use a `generic_` prefix rather than a `_generic` suffix.
 
-Note: xchg_local() is NOT currently part of the generic atomic
-arch_atomic API, and is not instrumented.
+In preparation for this, this patch renames the existing functions to
+make `generic` a prefix rather than a suffix. There should be no
+functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Richard Henderson <rth@twiddle.net>
 Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210525140232.53872-14-mark.rutland@arm.com
+Link: https://lore.kernel.org/r/20210525140232.53872-12-mark.rutland@arm.com
 ---
- arch/alpha/Kconfig               |  1 +-
- arch/alpha/include/asm/atomic.h  | 88 ++++++++++++++++---------------
- arch/alpha/include/asm/cmpxchg.h | 12 ++--
- 3 files changed, 54 insertions(+), 47 deletions(-)
+ arch/arm/include/asm/cmpxchg.h      | 6 +++---
+ arch/m68k/include/asm/cmpxchg.h     | 2 +-
+ arch/mips/include/asm/cmpxchg.h     | 2 +-
+ arch/parisc/include/asm/cmpxchg.h   | 4 ++--
+ arch/powerpc/include/asm/cmpxchg.h  | 2 +-
+ arch/sparc/include/asm/cmpxchg_32.h | 4 ++--
+ arch/sparc/include/asm/cmpxchg_64.h | 2 +-
+ arch/xtensa/include/asm/cmpxchg.h   | 6 +++---
+ include/asm-generic/cmpxchg-local.h | 4 ++--
+ include/asm-generic/cmpxchg.h       | 4 ++--
+ 10 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 5998106..7920fc2 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -2,6 +2,7 @@
- config ALPHA
- 	bool
- 	default y
-+	select ARCH_ATOMIC
- 	select ARCH_32BIT_USTAT_F_TINODE
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-diff --git a/arch/alpha/include/asm/atomic.h b/arch/alpha/include/asm/atomic.h
-index e41c113..f2861a4 100644
---- a/arch/alpha/include/asm/atomic.h
-+++ b/arch/alpha/include/asm/atomic.h
-@@ -26,11 +26,11 @@
- 
- #define ATOMIC64_INIT(i)	{ (i) }
- 
--#define atomic_read(v)		READ_ONCE((v)->counter)
--#define atomic64_read(v)	READ_ONCE((v)->counter)
-+#define arch_atomic_read(v)	READ_ONCE((v)->counter)
-+#define arch_atomic64_read(v)	READ_ONCE((v)->counter)
- 
--#define atomic_set(v,i)		WRITE_ONCE((v)->counter, (i))
--#define atomic64_set(v,i)	WRITE_ONCE((v)->counter, (i))
-+#define arch_atomic_set(v,i)	WRITE_ONCE((v)->counter, (i))
-+#define arch_atomic64_set(v,i)	WRITE_ONCE((v)->counter, (i))
- 
- /*
-  * To get proper branch prediction for the main line, we must branch
-@@ -39,7 +39,7 @@
+diff --git a/arch/arm/include/asm/cmpxchg.h b/arch/arm/include/asm/cmpxchg.h
+index 8b701f8..06bd8ce 100644
+--- a/arch/arm/include/asm/cmpxchg.h
++++ b/arch/arm/include/asm/cmpxchg.h
+@@ -135,13 +135,13 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
+  * them available.
   */
- 
- #define ATOMIC_OP(op, asm_op)						\
--static __inline__ void atomic_##op(int i, atomic_t * v)			\
-+static __inline__ void arch_atomic_##op(int i, atomic_t * v)		\
- {									\
- 	unsigned long temp;						\
- 	__asm__ __volatile__(						\
-@@ -55,7 +55,7 @@ static __inline__ void atomic_##op(int i, atomic_t * v)			\
- }									\
- 
- #define ATOMIC_OP_RETURN(op, asm_op)					\
--static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
-+static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
- {									\
- 	long temp, result;						\
- 	__asm__ __volatile__(						\
-@@ -74,7 +74,7 @@ static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
- }
- 
- #define ATOMIC_FETCH_OP(op, asm_op)					\
--static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
-+static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
- {									\
- 	long temp, result;						\
- 	__asm__ __volatile__(						\
-@@ -92,7 +92,7 @@ static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
- }
- 
- #define ATOMIC64_OP(op, asm_op)						\
--static __inline__ void atomic64_##op(s64 i, atomic64_t * v)		\
-+static __inline__ void arch_atomic64_##op(s64 i, atomic64_t * v)	\
- {									\
- 	s64 temp;							\
- 	__asm__ __volatile__(						\
-@@ -108,7 +108,8 @@ static __inline__ void atomic64_##op(s64 i, atomic64_t * v)		\
- }									\
- 
- #define ATOMIC64_OP_RETURN(op, asm_op)					\
--static __inline__ s64 atomic64_##op##_return_relaxed(s64 i, atomic64_t * v)	\
-+static __inline__ s64							\
-+arch_atomic64_##op##_return_relaxed(s64 i, atomic64_t * v)		\
- {									\
- 	s64 temp, result;						\
- 	__asm__ __volatile__(						\
-@@ -127,7 +128,8 @@ static __inline__ s64 atomic64_##op##_return_relaxed(s64 i, atomic64_t * v)	\
- }
- 
- #define ATOMIC64_FETCH_OP(op, asm_op)					\
--static __inline__ s64 atomic64_fetch_##op##_relaxed(s64 i, atomic64_t * v)	\
-+static __inline__ s64							\
-+arch_atomic64_fetch_##op##_relaxed(s64 i, atomic64_t * v)		\
- {									\
- 	s64 temp, result;						\
- 	__asm__ __volatile__(						\
-@@ -155,18 +157,18 @@ static __inline__ s64 atomic64_fetch_##op##_relaxed(s64 i, atomic64_t * v)	\
- ATOMIC_OPS(add)
- ATOMIC_OPS(sub)
- 
--#define atomic_add_return_relaxed	atomic_add_return_relaxed
--#define atomic_sub_return_relaxed	atomic_sub_return_relaxed
--#define atomic_fetch_add_relaxed	atomic_fetch_add_relaxed
--#define atomic_fetch_sub_relaxed	atomic_fetch_sub_relaxed
-+#define arch_atomic_add_return_relaxed		arch_atomic_add_return_relaxed
-+#define arch_atomic_sub_return_relaxed		arch_atomic_sub_return_relaxed
-+#define arch_atomic_fetch_add_relaxed		arch_atomic_fetch_add_relaxed
-+#define arch_atomic_fetch_sub_relaxed		arch_atomic_fetch_sub_relaxed
- 
--#define atomic64_add_return_relaxed	atomic64_add_return_relaxed
--#define atomic64_sub_return_relaxed	atomic64_sub_return_relaxed
--#define atomic64_fetch_add_relaxed	atomic64_fetch_add_relaxed
--#define atomic64_fetch_sub_relaxed	atomic64_fetch_sub_relaxed
-+#define arch_atomic64_add_return_relaxed	arch_atomic64_add_return_relaxed
-+#define arch_atomic64_sub_return_relaxed	arch_atomic64_sub_return_relaxed
-+#define arch_atomic64_fetch_add_relaxed		arch_atomic64_fetch_add_relaxed
-+#define arch_atomic64_fetch_sub_relaxed		arch_atomic64_fetch_sub_relaxed
- 
--#define atomic_andnot atomic_andnot
--#define atomic64_andnot atomic64_andnot
-+#define arch_atomic_andnot			arch_atomic_andnot
-+#define arch_atomic64_andnot			arch_atomic64_andnot
- 
- #undef ATOMIC_OPS
- #define ATOMIC_OPS(op, asm)						\
-@@ -180,15 +182,15 @@ ATOMIC_OPS(andnot, bic)
- ATOMIC_OPS(or, bis)
- ATOMIC_OPS(xor, xor)
- 
--#define atomic_fetch_and_relaxed	atomic_fetch_and_relaxed
--#define atomic_fetch_andnot_relaxed	atomic_fetch_andnot_relaxed
--#define atomic_fetch_or_relaxed		atomic_fetch_or_relaxed
--#define atomic_fetch_xor_relaxed	atomic_fetch_xor_relaxed
-+#define arch_atomic_fetch_and_relaxed		arch_atomic_fetch_and_relaxed
-+#define arch_atomic_fetch_andnot_relaxed	arch_atomic_fetch_andnot_relaxed
-+#define arch_atomic_fetch_or_relaxed		arch_atomic_fetch_or_relaxed
-+#define arch_atomic_fetch_xor_relaxed		arch_atomic_fetch_xor_relaxed
- 
--#define atomic64_fetch_and_relaxed	atomic64_fetch_and_relaxed
--#define atomic64_fetch_andnot_relaxed	atomic64_fetch_andnot_relaxed
--#define atomic64_fetch_or_relaxed	atomic64_fetch_or_relaxed
--#define atomic64_fetch_xor_relaxed	atomic64_fetch_xor_relaxed
-+#define arch_atomic64_fetch_and_relaxed		arch_atomic64_fetch_and_relaxed
-+#define arch_atomic64_fetch_andnot_relaxed	arch_atomic64_fetch_andnot_relaxed
-+#define arch_atomic64_fetch_or_relaxed		arch_atomic64_fetch_or_relaxed
-+#define arch_atomic64_fetch_xor_relaxed		arch_atomic64_fetch_xor_relaxed
- 
- #undef ATOMIC_OPS
- #undef ATOMIC64_FETCH_OP
-@@ -198,14 +200,18 @@ ATOMIC_OPS(xor, xor)
- #undef ATOMIC_OP_RETURN
- #undef ATOMIC_OP
- 
--#define atomic64_cmpxchg(v, old, new) (cmpxchg(&((v)->counter), old, new))
--#define atomic64_xchg(v, new) (xchg(&((v)->counter), new))
-+#define arch_atomic64_cmpxchg(v, old, new) \
-+	(arch_cmpxchg(&((v)->counter), old, new))
-+#define arch_atomic64_xchg(v, new) \
-+	(arch_xchg(&((v)->counter), new))
- 
--#define atomic_cmpxchg(v, old, new) (cmpxchg(&((v)->counter), old, new))
--#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
-+#define arch_atomic_cmpxchg(v, old, new) \
-+	(arch_cmpxchg(&((v)->counter), old, new))
-+#define arch_atomic_xchg(v, new) \
-+	(arch_xchg(&((v)->counter), new))
- 
- /**
-- * atomic_fetch_add_unless - add unless the number is a given value
-+ * arch_atomic_fetch_add_unless - add unless the number is a given value
-  * @v: pointer of type atomic_t
-  * @a: the amount to add to v...
-  * @u: ...unless v is equal to u.
-@@ -213,7 +219,7 @@ ATOMIC_OPS(xor, xor)
-  * Atomically adds @a to @v, so long as it was not @u.
-  * Returns the old value of @v.
-  */
--static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
-+static __inline__ int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
- {
- 	int c, new, old;
- 	smp_mb();
-@@ -234,10 +240,10 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
- 	smp_mb();
- 	return old;
- }
--#define atomic_fetch_add_unless atomic_fetch_add_unless
-+#define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
- 
- /**
-- * atomic64_fetch_add_unless - add unless the number is a given value
-+ * arch_atomic64_fetch_add_unless - add unless the number is a given value
-  * @v: pointer of type atomic64_t
-  * @a: the amount to add to v...
-  * @u: ...unless v is equal to u.
-@@ -245,7 +251,7 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
-  * Atomically adds @a to @v, so long as it was not @u.
-  * Returns the old value of @v.
-  */
--static __inline__ s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
-+static __inline__ s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
- {
- 	s64 c, new, old;
- 	smp_mb();
-@@ -266,16 +272,16 @@ static __inline__ s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
- 	smp_mb();
- 	return old;
- }
--#define atomic64_fetch_add_unless atomic64_fetch_add_unless
-+#define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
- 
- /*
-- * atomic64_dec_if_positive - decrement by 1 if old value positive
-+ * arch_atomic64_dec_if_positive - decrement by 1 if old value positive
-  * @v: pointer of type atomic_t
-  *
-  * The function returns the old value of *v minus 1, even if
-  * the atomic variable, v, was not decremented.
-  */
--static inline s64 atomic64_dec_if_positive(atomic64_t *v)
-+static inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
- {
- 	s64 old, tmp;
- 	smp_mb();
-@@ -295,6 +301,6 @@ static inline s64 atomic64_dec_if_positive(atomic64_t *v)
- 	smp_mb();
- 	return old - 1;
- }
--#define atomic64_dec_if_positive atomic64_dec_if_positive
-+#define arch_atomic64_dec_if_positive arch_atomic64_dec_if_positive
- 
- #endif /* _ALPHA_ATOMIC_H */
-diff --git a/arch/alpha/include/asm/cmpxchg.h b/arch/alpha/include/asm/cmpxchg.h
-index 6c7c394..6e0a850 100644
---- a/arch/alpha/include/asm/cmpxchg.h
-+++ b/arch/alpha/include/asm/cmpxchg.h
-@@ -17,7 +17,7 @@
- 				       sizeof(*(ptr)));			\
+ #define cmpxchg_local(ptr, o, n) ({					\
+-	(__typeof(*ptr))__cmpxchg_local_generic((ptr),			\
++	(__typeof(*ptr))__generic_cmpxchg_local((ptr),			\
+ 					        (unsigned long)(o),	\
+ 					        (unsigned long)(n),	\
+ 					        sizeof(*(ptr)));	\
  })
  
--#define cmpxchg_local(ptr, o, n)					\
-+#define arch_cmpxchg_local(ptr, o, n)					\
- ({									\
- 	__typeof__(*(ptr)) _o_ = (o);					\
- 	__typeof__(*(ptr)) _n_ = (n);					\
-@@ -26,7 +26,7 @@
- 					  sizeof(*(ptr)));		\
- })
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
  
--#define cmpxchg64_local(ptr, o, n)					\
-+#define arch_cmpxchg64_local(ptr, o, n)					\
- ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+ #include <asm-generic/cmpxchg.h>
+ 
+@@ -224,7 +224,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ #ifdef CONFIG_CPU_V6	/* min ARCH == ARMv6 */
+ 	case 1:
+ 	case 2:
+-		ret = __cmpxchg_local_generic(ptr, old, new, size);
++		ret = __generic_cmpxchg_local(ptr, old, new, size);
+ 		break;
+ #endif
+ 	default:
+diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
+index a4aa820..7629c9c 100644
+--- a/arch/m68k/include/asm/cmpxchg.h
++++ b/arch/m68k/include/asm/cmpxchg.h
+@@ -80,7 +80,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ 
+ #include <asm-generic/cmpxchg-local.h>
+ 
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ 
+ extern unsigned long __invalid_cmpxchg_size(volatile void *,
+ 					    unsigned long, unsigned long, int);
+diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
+index ed8f3f3..c7e0455 100644
+--- a/arch/mips/include/asm/cmpxchg.h
++++ b/arch/mips/include/asm/cmpxchg.h
+@@ -222,7 +222,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ #else
+ 
+ # include <asm-generic/cmpxchg-local.h>
+-# define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++# define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ 
+ # ifdef CONFIG_SMP
+ 
+diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
+index 84ee232..c201565 100644
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -98,7 +98,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ #endif
+ 	case 4:	return __cmpxchg_u32(ptr, old, new_);
+ 	default:
+-		return __cmpxchg_local_generic(ptr, old, new_, size);
++		return __generic_cmpxchg_local(ptr, old, new_, size);
+ 	}
+ }
+ 
+@@ -116,7 +116,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
  	cmpxchg_local((ptr), (o), (n));					\
-@@ -42,7 +42,7 @@
-  * The leading and the trailing memory barriers guarantee that these
-  * operations are fully ordered.
+ })
+ #else
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ #endif
+ 
+ #define cmpxchg64(ptr, o, n) __cmpxchg_u64(ptr, o, n)
+diff --git a/arch/powerpc/include/asm/cmpxchg.h b/arch/powerpc/include/asm/cmpxchg.h
+index cf091c4..69f52fd 100644
+--- a/arch/powerpc/include/asm/cmpxchg.h
++++ b/arch/powerpc/include/asm/cmpxchg.h
+@@ -524,7 +524,7 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
+ })
+ #else
+ #include <asm-generic/cmpxchg-local.h>
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ #endif
+ 
+ #endif /* __KERNEL__ */
+diff --git a/arch/sparc/include/asm/cmpxchg_32.h b/arch/sparc/include/asm/cmpxchg_32.h
+index a53d744..86e3da1 100644
+--- a/arch/sparc/include/asm/cmpxchg_32.h
++++ b/arch/sparc/include/asm/cmpxchg_32.h
+@@ -73,8 +73,8 @@ u64 __cmpxchg_u64(u64 *ptr, u64 old, u64 new);
+  * them available.
   */
--#define xchg(ptr, x)							\
-+#define arch_xchg(ptr, x)						\
- ({									\
- 	__typeof__(*(ptr)) __ret;					\
- 	__typeof__(*(ptr)) _x_ = (x);					\
-@@ -53,7 +53,7 @@
- 	__ret;								\
- })
+ #define cmpxchg_local(ptr, o, n)				  	       \
+-	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
++	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
+ 			(unsigned long)(n), sizeof(*(ptr))))
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
  
--#define cmpxchg(ptr, o, n)						\
-+#define arch_cmpxchg(ptr, o, n)						\
- ({									\
- 	__typeof__(*(ptr)) __ret;					\
- 	__typeof__(*(ptr)) _o_ = (o);					\
-@@ -65,10 +65,10 @@
- 	__ret;								\
- })
+ #endif /* __ARCH_SPARC_CMPXCHG__ */
+diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
+index 316faa0..8915b57 100644
+--- a/arch/sparc/include/asm/cmpxchg_64.h
++++ b/arch/sparc/include/asm/cmpxchg_64.h
+@@ -189,7 +189,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ 	case 4:
+ 	case 8:	return __cmpxchg(ptr, old, new, size);
+ 	default:
+-		return __cmpxchg_local_generic(ptr, old, new, size);
++		return __generic_cmpxchg_local(ptr, old, new, size);
+ 	}
  
--#define cmpxchg64(ptr, o, n)						\
-+#define arch_cmpxchg64(ptr, o, n)					\
- ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg((ptr), (o), (n));					\
-+	arch_cmpxchg((ptr), (o), (n));					\
- })
+ 	return old;
+diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/cmpxchg.h
+index a175f8a..9c4d6e5 100644
+--- a/arch/xtensa/include/asm/cmpxchg.h
++++ b/arch/xtensa/include/asm/cmpxchg.h
+@@ -97,7 +97,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ 	case 4:
+ 		return __cmpxchg_u32(ptr, old, new);
+ 	default:
+-		return __cmpxchg_local_generic(ptr, old, new, size);
++		return __generic_cmpxchg_local(ptr, old, new, size);
+ 	}
  
- #undef ____cmpxchg
+ 	return old;
+@@ -108,9 +108,9 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+  * them available.
+  */
+ #define cmpxchg_local(ptr, o, n)				  	       \
+-	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
++	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
+ 			(unsigned long)(n), sizeof(*(ptr))))
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ #define cmpxchg64(ptr, o, n)    cmpxchg64_local((ptr), (o), (n))
+ 
+ /*
+diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
+index f17f14f..380cdc8 100644
+--- a/include/asm-generic/cmpxchg-local.h
++++ b/include/asm-generic/cmpxchg-local.h
+@@ -12,7 +12,7 @@ extern unsigned long wrong_size_cmpxchg(volatile void *ptr)
+  * Generic version of __cmpxchg_local (disables interrupts). Takes an unsigned
+  * long parameter, supporting various types of architectures.
+  */
+-static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
++static inline unsigned long __generic_cmpxchg_local(volatile void *ptr,
+ 		unsigned long old, unsigned long new, int size)
+ {
+ 	unsigned long flags, prev;
+@@ -51,7 +51,7 @@ static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
+ /*
+  * Generic version of __cmpxchg64_local. Takes an u64 parameter.
+  */
+-static inline u64 __cmpxchg64_local_generic(volatile void *ptr,
++static inline u64 __generic_cmpxchg64_local(volatile void *ptr,
+ 		u64 old, u64 new)
+ {
+ 	u64 prev;
+diff --git a/include/asm-generic/cmpxchg.h b/include/asm-generic/cmpxchg.h
+index 9a24510..b9d54c7 100644
+--- a/include/asm-generic/cmpxchg.h
++++ b/include/asm-generic/cmpxchg.h
+@@ -94,13 +94,13 @@ unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
+ 
+ #ifndef cmpxchg_local
+ #define cmpxchg_local(ptr, o, n) ({					       \
+-	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
++	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
+ 			(unsigned long)(n), sizeof(*(ptr))));		       \
+ })
+ #endif
+ 
+ #ifndef cmpxchg64_local
+-#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
++#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ #endif
+ 
+ #define cmpxchg(ptr, o, n)	cmpxchg_local((ptr), (o), (n))
