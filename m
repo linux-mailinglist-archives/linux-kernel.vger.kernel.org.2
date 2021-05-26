@@ -2,68 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A306B391031
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CA4391034
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhEZFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 01:53:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4954 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229552AbhEZFxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 01:53:22 -0400
-IronPort-SDR: OHQXJokI9nLpDp+hTkBObex5XTeD8c9mJLnttLUp1pKAsXgW2nBwp6/edkiqQK2hX8LyAtkQzC
- 3WG0LH038zqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="199333441"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="199333441"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 22:51:48 -0700
-IronPort-SDR: x1NU05lizJzYgEHOeYdp2a3BbwQIfALeVCwpM2NHLy9iG5Exljf7iW2wNnUvAwNgkFdl63/Z9u
- 7OwpXXDXdnag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="409071590"
-Received: from unknown (HELO [10.237.72.166]) ([10.237.72.166])
-  by fmsmga007.fm.intel.com with ESMTP; 25 May 2021 22:51:47 -0700
-Subject: Re: [PATCH] i2c: designware: Fix kernel-doc
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1621998623-14846-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <350759ac-bcea-77ac-f005-f227f01d88ab@linux.intel.com>
-Date:   Wed, 26 May 2021 08:51:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <1621998623-14846-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S232355AbhEZFzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 01:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhEZFzf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 01:55:35 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB17C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 22:54:03 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q25so154228pfn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 22:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ijh+tKCRl102WDItU3h4MEe7FxL6Ka6hVALjPg6FVHY=;
+        b=jAm/KVZc2eb2Lz/Aiq3MeRSWldBNjkBGuPEg1u794BKh6MJJayZixF00DkobccJcmh
+         414y82ocnZFiidQgBLMFC3mUczsMWNf9sqgWalzCNIOZy2jc6bsf9S6LVxt0or2qRp1d
+         FLyVtG7N6TMXmfP0L4YEyIY5kZxpf2/sUdAG3oAiHKzr8rKf8SSqe+Xg4bA4wSsEhMYh
+         SdmLr7tvmzqP3dg0ZsdxEcNVjndBuGPNqnbGPaj/FDT2vhr1my+YXwxkErzONejqQDNy
+         Z5FK18Bafnb4oK1MSHNmC+axB8aUgfSpKKgySfJXUI4oYFz9B82jHU8Bj9OVchCkCyZf
+         wVXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ijh+tKCRl102WDItU3h4MEe7FxL6Ka6hVALjPg6FVHY=;
+        b=rX9Nu0BCYAlOn4lnGTocW7/bCMd7n5f7cduPYnHAlytXxN8ybqZfi8rqlUrdZUpIxb
+         JaP+qUfoUjFapbDOQt5A/y+9r9+zq0WV2tEcmq1wMDPGmhKWGXP47Ftb4mnVlOl3wCmI
+         gAwZcLjCVbozHzbdTJc0Ae0PLL5K7AmkkcRyfy8/X49Mujl2msg5xc1TQR0oZf2fVZSc
+         2VDqpqr6uyQcB+41ayhWxmGXcjLxOsUyNJpnMA5/X31NT/lHEaBjpGnOZGncKdNEpa38
+         YebdvPTZ9xrqz+7gToGv5qtHj65HkjShWafe54Q6o091lV1uuRym2V4Y5HL+ePen9bP0
+         xFpQ==
+X-Gm-Message-State: AOAM533dx5EnG4jp/yFT5ix1BqBPp9G5GOWb7o8fyqnCEzb81Ww2Ke/N
+        2JaDZULLcOKJhNvWQS9/2k/nUg==
+X-Google-Smtp-Source: ABdhPJwH1ZEE2kuQ/eJYr7WS2tUXhYI/t+4C3qmYnBtb0gGaf40EqWPQFxUIkiN1McqF+OrNdKnjMg==
+X-Received: by 2002:a05:6a00:16c9:b029:2df:c620:8156 with SMTP id l9-20020a056a0016c9b02902dfc6208156mr33544056pfc.40.1622008442589;
+        Tue, 25 May 2021 22:54:02 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 6sm15168328pfx.117.2021.05.25.22.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 22:54:02 -0700 (PDT)
+Date:   Tue, 25 May 2021 22:54:02 -0700 (PDT)
+X-Google-Original-Date: Tue, 25 May 2021 22:52:57 PDT (-0700)
+Subject:     Re: [PATCH -next 4/4] riscv: mm: add THP support on 64-bit
+In-Reply-To: <CAMuHMdWxQO1ik_-On3qZMN9+r8V8YMgfg2EArxiMDvoHQRo=+g@mail.gmail.com>
+CC:     sunnanyong@huawei.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        wangkefeng.wang@huawei.com, jszhang@kernel.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     geert@linux-m68k.org
+Message-ID: <mhng-187c9f60-c350-4b13-9c3b-e1afe8cb145c@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, 25 May 2021 05:14:45 PDT (-0700), geert@linux-m68k.org wrote:
+> Hi Nanyong,
+>
+> On Fri, Apr 30, 2021 at 9:58 AM Nanyong Sun <sunnanyong@huawei.com> wrote:
+>> Bring Transparent HugePage support to riscv. A
+>> transparent huge page is always represented as a pmd.
+>>
+>> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+>
+> Thanks for your patch, which is now commit e88b333142e4aba7 ("riscv:
+> mm: add THP support on 64-bit") in riscv/for-next.
+>
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>
+>> @@ -438,6 +459,141 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>>         return ptep_test_and_clear_young(vma, address, ptep);
+>>  }
+>>
+>> +/*
+>> + * THP functions
+>> + */
+>> +static inline pmd_t pte_pmd(pte_t pte)
+>> +{
+>> +       return __pmd(pte_val(pte));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkhuge(pmd_t pmd)
+>> +{
+>> +       return pmd;
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkinvalid(pmd_t pmd)
+>> +{
+>> +       return __pmd(pmd_val(pmd) & ~(_PAGE_PRESENT|_PAGE_PROT_NONE));
+>> +}
+>> +
+>> +#define __pmd_to_phys(pmd)  (pmd_val(pmd) >> _PAGE_PFN_SHIFT << PAGE_SHIFT)
+>> +
+>> +static inline unsigned long pmd_pfn(pmd_t pmd)s
+>> +{
+>> +       return ((__pmd_to_phys(pmd) & PMD_MASK) >> PAGE_SHIFT);
+>> +}
+>> +
+>> +static inline pmd_t mk_pmd(struct page *page, pgprot_t prot)
+>> +{
+>> +       return pfn_pmd(page_to_pfn(page), prot);
+>> +}
+>> +
+>> +static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
+>> +{
+>> +       return pte_pmd(pte_modify(pmd_pte(pmd), newprot));
+>> +}
+>> +
+>> +#define pmd_write pmd_write
+>> +static inline int pmd_write(pmd_t pmd)
+>> +{
+>> +       return pte_write(pmd_pte(pmd));
+>> +}
+>> +
+>> +static inline int pmd_dirty(pmd_t pmd)
+>> +{
+>> +       return pte_dirty(pmd_pte(pmd));
+>> +}
+>> +
+>> +static inline int pmd_young(pmd_t pmd)
+>> +{
+>> +       return pte_young(pmd_pte(pmd));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkold(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_mkold(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkyoung(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_mkyoung(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkwrite(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_mkwrite(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline pmd_t pmd_wrprotect(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_wrprotect(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkclean(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_mkclean(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline pmd_t pmd_mkdirty(pmd_t pmd)
+>> +{
+>> +       return pte_pmd(pte_mkdirty(pmd_pte(pmd)));
+>> +}
+>> +
+>> +static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+>> +                               pmd_t *pmdp, pmd_t pmd)
+>> +{
+>> +       return set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
+>> +}
+>
+> This conflicts with the existing definition recently added in commit
+> 756a8896b6166bba ("riscv: mremap speedup - enable HAVE_MOVE_PUD and
+> HAVE_MOVE_PMD"):
+>
+>     arch/riscv/include/asm/pgtable.h:579:20: error: redefinition of ‘set_pmd_at’
+>       579 | static inline void set_pmd_at(struct mm_struct *mm,
+> unsigned long addr,
+>           |                    ^~~~~~~~~~
+>     arch/riscv/include/asm/pgtable.h:420:20: note: previous definition
+> of ‘set_pmd_at’ was here
+>       420 | static inline void set_pmd_at(struct mm_struct *mm,
+> unsigned long addr,
+>           |                    ^~~~~~~~~~
 
-On 5/26/21 6:10 AM, Yang Li wrote:
-> Fix function name in i2c-designware-master.c kernel-doc comment
-> to remove a warning found by clang_w1.
-> 
-> drivers/i2c/busses/i2c-designware-master.c:176: warning: expecting
-> prototype for i2c_dw_init(). Prototype was for i2c_dw_init_master()
-> instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 'commit 21bf440ce18e ("i2c: designware: Make HW init functions
-> static")'
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   drivers/i2c/busses/i2c-designware-master.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-Lee Jones sent a fix for this last week:
+Sorry about that.  I was trying to re-arrange for-next to keep patch 
+sets on branches to avoid the rebasing like we had last time, but that 
+makes merges like this more of a headache and just makes the whole thing 
+a bit clunky.
 
-https://www.spinics.net/lists/linux-i2c/msg51612.html
+I've fixed this up, along with just making the history linear again.  
 
-Jarkko
+Thanks!
+
+>
+>> +
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +static inline int pmd_trans_huge(pmd_t pmd)
+>> +{
+>> +       return pmd_leaf(pmd);
+>> +}
+>> +
+>> +#define __HAVE_ARCH_PMDP_SET_ACCESS_FLAGS
+>> +static inline int pmdp_set_access_flags(struct vm_area_struct *vma,
+>> +                                       unsigned long address, pmd_t *pmdp,
+>> +                                       pmd_t entry, int dirty)
+>> +{
+>> +       return ptep_set_access_flags(vma, address, (pte_t *)pmdp, pmd_pte(entry), dirty);
+>> +}
+>> +
+>> +#define __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+>> +static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+>> +                                       unsigned long address, pmd_t *pmdp)
+>> +{
+>> +       return ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
+>> +}
+>> +
+>> +#define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
+>> +static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+>> +                                       unsigned long address, pmd_t *pmdp)
+>> +{
+>> +       return pte_pmd(ptep_get_and_clear(mm, address, (pte_t *)pmdp));
+>> +}
+>> +
+>> +#define __HAVE_ARCH_PMDP_SET_WRPROTECT
+>> +static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+>> +                                       unsigned long address, pmd_t *pmdp)
+>> +{
+>> +       ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
+>> +}
+>> +
+>> +#define pmdp_establish pmdp_establish
+>> +static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>> +                               unsigned long address, pmd_t *pmdp, pmd_t pmd)
+>> +{
+>> +       return __pmd(atomic_long_xchg((atomic_long_t *)pmdp, pmd_val(pmd)));
+>> +}
+>> +
+>> +#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+>> +void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>> +                       unsigned long end);
+>> +
+>> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>> +
+>>  /*
+>>   * Encode and decode a swap entry
+>>   *
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
