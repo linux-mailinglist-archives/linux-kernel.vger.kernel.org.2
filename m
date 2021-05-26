@@ -2,218 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D60391990
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1E5391992
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhEZOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:11:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:4015 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhEZOLz (ORCPT
+        id S234537AbhEZOMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234279AbhEZOMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:11:55 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fqt7z5r8zzmZLL;
-        Wed, 26 May 2021 22:07:59 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 22:10:20 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 22:10:20 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
-        <sstabellini@kernel.org>, <yuehaibing@huawei.com>
-CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] xen: Use DEVICE_ATTR_*() macro
-Date:   Wed, 26 May 2021 22:10:19 +0800
-Message-ID: <20210526141019.13752-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+        Wed, 26 May 2021 10:12:39 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11D0C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:11:07 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id t206so830900wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:content-transfer-encoding:date:message-id:to:cc
+         :subject:from:references:in-reply-to;
+        bh=+2FNtzevJ4qM2Fi7yCUYyh+8owZT/RfCjcCcFFpDxCo=;
+        b=kJnBFRGy2Qk3liIbBYF+s4ylrkulEO33hYBKTvb2+e4YoqH8YWyBoMWfRh3tguebht
+         jFQkqz/4c1yOV/44EWaOsk7utHt2h9fQIvKS6Rao6FQSSE8rLt1oDbpYG4Tb7t9nfa/n
+         g0xIFC9m4dlqqWM0cJWoEUUu/yw/ZSuXD0m+BWhlLRckqceZLH8IdKX7wIPhsjCsL9qa
+         VsXUpH1h14vtH7rS3I6pYnuXRdMbPB8HijoWbMP2xDGY6n3SxaAyIZCs+bqZZ3mZpvXz
+         SZu877Ha0DvTirbSdJq6s7qcwicub/ZqgEoxHdbnXAO/rEChYCO971tyBlTWTgGm3V5k
+         uFKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:to:cc:subject:from:references:in-reply-to;
+        bh=+2FNtzevJ4qM2Fi7yCUYyh+8owZT/RfCjcCcFFpDxCo=;
+        b=IEYlblxy2PGy0hfJKyXFr8j+1QxsY3QNamJyCLS9B6Y2M2Uh/WXxA8/FYQ+btizd8o
+         C11SEQ4NiqM4+qFcBq4/hI+0x7fL9qeL1EBemzSduQ2GRRcHi8RR0BzGWyEVYsTVeIgz
+         jl9hyiwWWm4zrNGwNvcs/wCsX3QsJ6glNAb8MQCguXJag0M1KmiLenBmFw8sLqkERstD
+         q9csg35qBo51akdz9kZtuasW5z3bXs67bYRn5U+M2IQwO3gYrMyOAzAwj9VHQyppBvWD
+         QrbG0racxVlqlU6XW+iWAtY6WhzqYukYpR56dCsV0cKg4O7OAcN8gGmquVWOK9dQ62G+
+         /0Fg==
+X-Gm-Message-State: AOAM533XmYBqLb5ORnupGNP/eQ0jN9bor54Hj7Hx0TBCStiaH7f2tmXn
+        TpmcsrkHRelTvdQNn0mby0o8qn43HINmpQ==
+X-Google-Smtp-Source: ABdhPJze0yp8Mpe8hzE4v/dQoiiVLfHunD7AbUa47ZMHimdS0UwcSwiH28GiE4Hv+1aBbcBbc4sdUw==
+X-Received: by 2002:a05:600c:3544:: with SMTP id i4mr3733209wmq.112.1622038266468;
+        Wed, 26 May 2021 07:11:06 -0700 (PDT)
+Received: from localhost (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id k11sm6737212wmj.1.2021.05.26.07.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 07:11:05 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 26 May 2021 15:11:04 +0100
+Message-Id: <CBN8KRXT6GKH.3TIZOGGT3RG0W@arch-thunder>
+To:     "Lee Jones" <lee.jones@linaro.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Laurent Pinchart" <laurent.pinchart@ideasonboard.com>,
+        <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 06/24] usb: isp1760: isp1760-udc: Provide missing
+ description for 'udc' param
+From:   "Rui Miguel Silva" <rui.silva@linaro.org>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-7-lee.jones@linaro.org>
+In-Reply-To: <20210526130037.856068-7-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR(),
-which makes the code a bit shorter and easier to read.
+Hi Lee,
+On Wed May 26, 2021 at 2:00 PM WEST, Lee Jones wrote:
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/xen/pcpu.c                |  6 +++---
- drivers/xen/xen-balloon.c         | 28 +++++++++++-----------------
- drivers/xen/xenbus/xenbus_probe.c | 15 +++++++--------
- 3 files changed, 21 insertions(+), 28 deletions(-)
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/usb/isp1760/isp1760-udc.c:150: warning: Function parameter or me=
+mber 'udc' not described in 'isp1760_udc_select_ep'
+>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Rui Miguel Silva <rui.silva@linaro.org>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/usb/isp1760/isp1760-udc.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/usb/isp1760/isp1760-udc.c b/drivers/usb/isp1760/isp1=
+760-udc.c
+> index 3e05e36054357..a78da59d6417b 100644
+> --- a/drivers/usb/isp1760/isp1760-udc.c
+> +++ b/drivers/usb/isp1760/isp1760-udc.c
+> @@ -137,6 +137,7 @@ static void __isp1760_udc_select_ep(struct isp1760_ud=
+c *udc,
+>  /**
+>   * isp1760_udc_select_ep - Select an endpoint for register access
+>   * @ep: The endpoint
+> + * @udc: Reference to the device controller
 
-diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
-index 1bcdd5227771..47aa3a1ccaf5 100644
---- a/drivers/xen/pcpu.c
-+++ b/drivers/xen/pcpu.c
-@@ -92,7 +92,7 @@ static int xen_pcpu_up(uint32_t cpu_id)
- 	return HYPERVISOR_platform_op(&op);
- }
- 
--static ssize_t show_online(struct device *dev,
-+static ssize_t online_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
-@@ -101,7 +101,7 @@ static ssize_t show_online(struct device *dev,
- 	return sprintf(buf, "%u\n", !!(cpu->flags & XEN_PCPU_FLAGS_ONLINE));
- }
- 
--static ssize_t __ref store_online(struct device *dev,
-+static ssize_t __ref online_store(struct device *dev,
- 				  struct device_attribute *attr,
- 				  const char *buf, size_t count)
- {
-@@ -130,7 +130,7 @@ static ssize_t __ref store_online(struct device *dev,
- 		ret = count;
- 	return ret;
- }
--static DEVICE_ATTR(online, S_IRUGO | S_IWUSR, show_online, store_online);
-+static DEVICE_ATTR_RW(online);
- 
- static struct attribute *pcpu_dev_attrs[] = {
- 	&dev_attr_online.attr,
-diff --git a/drivers/xen/xen-balloon.c b/drivers/xen/xen-balloon.c
-index a8d24433c8e9..8cd583db20b1 100644
---- a/drivers/xen/xen-balloon.c
-+++ b/drivers/xen/xen-balloon.c
-@@ -134,13 +134,13 @@ void xen_balloon_init(void)
- EXPORT_SYMBOL_GPL(xen_balloon_init);
- 
- #define BALLOON_SHOW(name, format, args...)				\
--	static ssize_t show_##name(struct device *dev,			\
-+	static ssize_t name##_show(struct device *dev,			\
- 				   struct device_attribute *attr,	\
- 				   char *buf)				\
- 	{								\
- 		return sprintf(buf, format, ##args);			\
- 	}								\
--	static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
-+	static DEVICE_ATTR_RO(name)
- 
- BALLOON_SHOW(current_kb, "%lu\n", PAGES2KB(balloon_stats.current_pages));
- BALLOON_SHOW(low_kb, "%lu\n", PAGES2KB(balloon_stats.balloon_low));
-@@ -152,16 +152,15 @@ static DEVICE_ULONG_ATTR(retry_count, 0444, balloon_stats.retry_count);
- static DEVICE_ULONG_ATTR(max_retry_count, 0644, balloon_stats.max_retry_count);
- static DEVICE_BOOL_ATTR(scrub_pages, 0644, xen_scrub_pages);
- 
--static ssize_t show_target_kb(struct device *dev, struct device_attribute *attr,
-+static ssize_t target_kb_show(struct device *dev, struct device_attribute *attr,
- 			      char *buf)
- {
- 	return sprintf(buf, "%lu\n", PAGES2KB(balloon_stats.target_pages));
- }
- 
--static ssize_t store_target_kb(struct device *dev,
-+static ssize_t target_kb_store(struct device *dev,
- 			       struct device_attribute *attr,
--			       const char *buf,
--			       size_t count)
-+			       const char *buf, size_t count)
- {
- 	char *endchar;
- 	unsigned long long target_bytes;
-@@ -176,22 +175,19 @@ static ssize_t store_target_kb(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(target_kb, S_IRUGO | S_IWUSR,
--		   show_target_kb, store_target_kb);
-+static DEVICE_ATTR_RW(target_kb);
- 
--
--static ssize_t show_target(struct device *dev, struct device_attribute *attr,
--			      char *buf)
-+static ssize_t target_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
- {
- 	return sprintf(buf, "%llu\n",
- 		       (unsigned long long)balloon_stats.target_pages
- 		       << PAGE_SHIFT);
- }
- 
--static ssize_t store_target(struct device *dev,
-+static ssize_t target_store(struct device *dev,
- 			    struct device_attribute *attr,
--			    const char *buf,
--			    size_t count)
-+			    const char *buf, size_t count)
- {
- 	char *endchar;
- 	unsigned long long target_bytes;
-@@ -206,9 +202,7 @@ static ssize_t store_target(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(target, S_IRUGO | S_IWUSR,
--		   show_target, store_target);
--
-+static DEVICE_ATTR_RW(target);
- 
- static struct attribute *balloon_attrs[] = {
- 	&dev_attr_target_kb.attr,
-diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
-index 97f0d234482d..33d09b3f6211 100644
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -207,7 +207,7 @@ void xenbus_otherend_changed(struct xenbus_watch *watch,
- EXPORT_SYMBOL_GPL(xenbus_otherend_changed);
- 
- #define XENBUS_SHOW_STAT(name)						\
--static ssize_t show_##name(struct device *_dev,				\
-+static ssize_t name##_show(struct device *_dev,				\
- 			   struct device_attribute *attr,		\
- 			   char *buf)					\
- {									\
-@@ -215,14 +215,14 @@ static ssize_t show_##name(struct device *_dev,				\
- 									\
- 	return sprintf(buf, "%d\n", atomic_read(&dev->name));		\
- }									\
--static DEVICE_ATTR(name, 0444, show_##name, NULL)
-+static DEVICE_ATTR_RO(name)
- 
- XENBUS_SHOW_STAT(event_channels);
- XENBUS_SHOW_STAT(events);
- XENBUS_SHOW_STAT(spurious_events);
- XENBUS_SHOW_STAT(jiffies_eoi_delayed);
- 
--static ssize_t show_spurious_threshold(struct device *_dev,
-+static ssize_t spurious_threshold_show(struct device *_dev,
- 				       struct device_attribute *attr,
- 				       char *buf)
- {
-@@ -231,9 +231,9 @@ static ssize_t show_spurious_threshold(struct device *_dev,
- 	return sprintf(buf, "%d\n", dev->spurious_threshold);
- }
- 
--static ssize_t set_spurious_threshold(struct device *_dev,
--				      struct device_attribute *attr,
--				      const char *buf, size_t count)
-+static ssize_t spurious_threshold_store(struct device *_dev,
-+					struct device_attribute *attr,
-+					const char *buf, size_t count)
- {
- 	struct xenbus_device *dev = to_xenbus_device(_dev);
- 	unsigned int val;
-@@ -248,8 +248,7 @@ static ssize_t set_spurious_threshold(struct device *_dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(spurious_threshold, 0644, show_spurious_threshold,
--		   set_spurious_threshold);
-+static DEVICE_ATTR_RW(spurious_threshold);
- 
- static struct attribute *xenbus_attrs[] = {
- 	&dev_attr_event_channels.attr,
--- 
-2.17.1
+I had this in my latest patch set, but got lost, thanks for fixing
+this.
+
+I'd like to ask you to swap the order to match the order in which
+the args appear in the function declaration.
+
+With this changed you can add my:
+Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+
+------
+Cheers,
+     Rui
+
+
+>   *
+>   * The ISP1761 endpoint registers are banked. This function selects the =
+target
+>   * endpoint for banked register access. The selection remains valid unti=
+l the
+> --=20
+> 2.31.1
+
+
 
