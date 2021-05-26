@@ -2,78 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A980739210D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4C1392118
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234366AbhEZTom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:44:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38650 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231924AbhEZToj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:44:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622058186; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=PDr39Ej3qpXf1ztiFP8D4NcikT1U25GcUHsEX5q8P2Q=;
-        b=WPdW5C/mFutCugh4ULAVqQeh1IXJQuKMdVt3cTawXj10HXFKTrDkv792PMVP0fAK1ojyzl
-        gG33wErSQyJV8r9Jd85lwcv9DonJRw35MvSX7rEfWuo3pGm92OdWg4fkj7B00OdNObmiOP
-        YK5VtRXqU7jSMGIvFWX5IKVsOzvd2dc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622058186;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=PDr39Ej3qpXf1ztiFP8D4NcikT1U25GcUHsEX5q8P2Q=;
-        b=Dyko30elgdOA/4/L7YoOPCqGxB6ndErjplaeRLXsmTx5HZrpcACU52cDNXzqXCUJ9a4+jD
-        lsWQvn1c3xQuRQDA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4196BAB71;
-        Wed, 26 May 2021 19:43:06 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] Input: elants_i2c - Fix NULL dereference at probing
-Date:   Wed, 26 May 2021 21:43:01 +0200
-Message-Id: <20210526194301.28780-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S234388AbhEZTsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhEZTsa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:48:30 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF789C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:46:57 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id p39so1753643pfw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hEQ3MdXmpdNmcX6sa1MKz2lUFHPHmPostz9Pp0Yt+54=;
+        b=b1ledajAYuzSP2VsYjLXXA+yLdhz9jMTPLKR8jN1BmCm06HetxB4+K+9y1UkLgPGJU
+         8FJJevRA+tNRkxZEmKTbGAEI201rzRZoz5+VL7ftvW0M84XkhdamXP09FeQBf0gDMQGU
+         0k9I1ORp07R5N8pLA1QDajOqd6fOK0a7s0zKXZ7MRZknul8dbZAVK3KNwxMHmNCQfBLY
+         jJ3jy8WK2GAgyehfuQVJdPflw5Uv2kQBba7LRL5vNSkwHjO/TeZhiuXKJEuo7EZFqXnP
+         6CqLhRB4GytEUeiguuk8nexR6qzpY5MWCLAB7GLELwSWrKeTRKKlEoIKE4X5J/7EgIkv
+         hv3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hEQ3MdXmpdNmcX6sa1MKz2lUFHPHmPostz9Pp0Yt+54=;
+        b=Gmtyd55JeBvuIB4exirdzQ5qJwYCa1mNAgTtKwx/aNg2NN0uZApGQvyqKAoDBsWwlH
+         zoS6iwOTXE6VJ7Caa1qJGDGyFXvrf2dI3lWCMk1Pq1xQvAe/w6mKeRUwXcxaFeceZwSn
+         B+TXnvFXazp+lZDqqS/mURoGNz9VxiTcAPPWajEJtViA42hxHKmhinP+UdYaUqLaC2Hm
+         XteFjm2pntdb11DFBbpU6ba49wL679ZP3UM6OTLP1rGwmmksmn2MWMxdHfUhfqib1FXS
+         R0AamccR7wqHnCZsJPs7DjEv+EQRX965GUZ7a+OlB6ALq2USgaC5JxNDJLeDmXQeGjHC
+         NCWQ==
+X-Gm-Message-State: AOAM5311K6uxjU/FVJ9PYx8x6ayx7XQX5xl9/+Q2eHvzmwy/BhWQQ6nw
+        o9G4Z4CUwpIDFbnCfNPFvWblkA==
+X-Google-Smtp-Source: ABdhPJwBXUXILPsFBDFo9CFR/JDpKVm78Qh7x+mpCE2hRYo8JoIxtQJXcXaDoL8EHmqAouWcIEOiWQ==
+X-Received: by 2002:a62:cec9:0:b029:2e3:9125:c280 with SMTP id y192-20020a62cec90000b02902e39125c280mr65079pfg.11.1622058417033;
+        Wed, 26 May 2021 12:46:57 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id f9sm46220pfc.42.2021.05.26.12.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 12:46:56 -0700 (PDT)
+Date:   Wed, 26 May 2021 19:46:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+Message-ID: <YK6lrHeaeUZvHMJC@google.com>
+References: <YHnJtvXdrZE+AfM3@google.com>
+ <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
+ <YH2pam5b837wFM3z@google.com>
+ <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
+ <YH3HWeOXFiCTZN4y@google.com>
+ <20210419185354.v3rgandtrel7bzjj@box>
+ <YH3jaf5ThzLZdY4K@google.com>
+ <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
+ <YH8L0ihIzL6UB6qD@google.com>
+ <20210521123148.a3t4uh4iezm6ax47@box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521123148.a3t4uh4iezm6ax47@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent change in elants_i2c driver to support more chips
-introduced a regression leading to Oops at probing.  The driver reads
-id->driver_data, but the id may be NULL depending on the device type
-the driver gets bound.
+On Fri, May 21, 2021, Kirill A. Shutemov wrote:
+> Hi Sean,
+> 
+> The core patch of the approach we've discussed before is below. It
+> introduce a new page type with the required semantics.
+> 
+> The full patchset can be found here:
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-guest-only
+> 
+> but only the patch below is relevant for TDX. QEMU patch is attached.
 
-Add a NULL check and falls back to the default EKTH3500.
+Can you post the whole series?  The KVM behavior and usage of FOLL_GUEST is very
+relevant to TDX.
 
-Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- drivers/input/touchscreen/elants_i2c.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> CONFIG_HAVE_KVM_PROTECTED_MEMORY has to be changed to what is appropriate
+> for TDX and FOLL_GUEST has to be used in hva_to_pfn_slow() when running
+> TDX guest.
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 17540bdb1eaf..172a6951cead 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -1396,7 +1396,10 @@ static int elants_i2c_probe(struct i2c_client *client,
- 	init_completion(&ts->cmd_done);
- 
- 	ts->client = client;
--	ts->chip_id = (enum elants_chip_id)id->driver_data;
-+	if (id)
-+		ts->chip_id = (enum elants_chip_id)id->driver_data;
-+	else
-+		ts->chip_id = EKTH3500;
- 	i2c_set_clientdata(client, ts);
- 
- 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
--- 
-2.26.2
+This behavior in particular is relevant; KVM should provide FOLL_GUEST iff the
+access is private or the VM type doesn't differentiate between private and
+shared.
 
+> When page get inserted into private sept we must make sure it is
+> PageGuest() or SIGBUS otherwise.
+
+More KVM feedback :-)
+
+Ideally, KVM will synchronously exit to userspace with detailed information on
+the bad behavior, not do SIGBUS.  Hopefully that infrastructure will be in place
+sooner than later.
+
+https://lkml.kernel.org/r/YKxJLcg/WomPE422@google.com
+
+> Inserting PageGuest() into shared is fine, but the page will not be accessible
+> from userspace.
+
+Even if it can be functionally fine, I don't think we want to allow KVM to map
+PageGuest() as shared memory.  The only reason to map memory shared is to share
+it with something, e.g. the host, that doesn't have access to private memory, so
+I can't envision a use case.
+
+On the KVM side, it's trivially easy to omit FOLL_GUEST for shared memory, while
+always passing FOLL_GUEST would require manually zapping.  Manual zapping isn't
+a big deal, but I do think it can be avoided if userspace must either remap the
+hva or define a new KVM memslot (new gpa->hva), both of which will automatically
+zap any existing translations.
+
+Aha, thought of a concrete problem.  If KVM maps PageGuest() into shared memory,
+then KVM must ensure that the page is not mapped private via a different hva/gpa,
+and is not mapped _any_ other guest because the TDX-Module's 1:1 PFN:TD+GPA
+enforcement only applies to private memory.  The explicit "VM_WRITE | VM_SHARED"
+requirement below makes me think this wouldn't be prevented.
+
+Oh, and the other nicety is that I think it would avoid having to explicitly
+handle PageGuest() memory that is being accessed from kernel/KVM, i.e. if all
+memory exposed to KVM must be !PageGuest(), then it is also eligible for
+copy_{to,from}_user().
+
+> Any feedback is welcome.
+> 
+> -------------------------------8<-------------------------------------------
+> 
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> Date: Fri, 16 Apr 2021 01:30:48 +0300
+> Subject: [PATCH] mm: Introduce guest-only pages
+> 
+> PageGuest() pages are only allowed to be used as guest memory. Userspace
+> is not allowed read from or write to such pages.
+> 
+> On page fault, PageGuest() pages produce PROT_NONE page table entries.
+> Read or write there will trigger SIGBUS. Access to such pages via
+> syscall leads to -EIO.
+> 
+> The new mprotect(2) flag PROT_GUEST translates to VM_GUEST. Any page
+> fault to VM_GUEST VMA produces PageGuest() page.
+> 
+> Only shared tmpfs/shmem mappings are supported.
+
+Is limiting this to tmpfs/shmem only for the PoC/RFC, or is it also expected to
+be the long-term behavior?
+
+> GUP normally fails on such pages. KVM will use the new FOLL_GUEST flag
+> to access them.
