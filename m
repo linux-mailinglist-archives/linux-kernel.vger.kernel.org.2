@@ -2,198 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4B1391FD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF22391FD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhEZTAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:00:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25655 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234468AbhEZTAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:00:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622055553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DoYRZh+gg2Z2kIQtfA8WYSEBkw/ZAfL87pNCe/N+cRg=;
-        b=f4KYIMqj7pbnnX08zgNtvF0we0zfwaYE0th69zItCL0oylq9a3WG8+VWjM1kuivCN6KBBF
-        58GpQ1aficjp1PuvnFHet6uLrKzFl99zVd2LXV7VBJE6aq8JdCPn+rea7DSwxpjfcOrfJ5
-        beGqOxu///hUmDiwcZu8IhpuMx4tMS8=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-6p5VPGfEMlSiTsw9gzNffA-1; Wed, 26 May 2021 14:59:12 -0400
-X-MC-Unique: 6p5VPGfEMlSiTsw9gzNffA-1
-Received: by mail-ot1-f69.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so1216946otx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:59:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DoYRZh+gg2Z2kIQtfA8WYSEBkw/ZAfL87pNCe/N+cRg=;
-        b=lVpjyb2OKd/zosmwI1WJ2F1vK6vV1oV8yat6qrc9saSsXgo99PjcembeJLkCUHvB84
-         HQfEWhDVWbYiv2PXVF0UTYD/NWForuBZ728HAEEpbC5baL4O/JYHNaPpChxCFngS2fzp
-         0HX3BeT3HE+IZsryseoqRFLi9hq+yu0fr2qVVmvQ+yTdZnp7sEOgVPHA/pfenYgAJH3/
-         ww3ms9VcoX1EnW8FtaCvd2oUxX03TXxbxr3sS6Qy6VqW6budTbFYaIDd7I7N7ipNEykx
-         Kh1T1Ki+DCoZ+XPQigdJaRhi/OO4RVKhKShi9Q2r8q9DWQywMfhU2KUeI4mqkPSk9JTl
-         ibyQ==
-X-Gm-Message-State: AOAM532f5tU0mQKGHCpo/2kMpCaOvsW940HEYVleEWYjydVE/2HifBWD
-        vOehSIchMdpcLeGbv08NxToe2ODEkUzPRBcAXHv21yLqCniB7/YAFgZlc/2m6ruFdqjAzGohjqu
-        JlKCr9OXn61byRO/R/EM6lmHX
-X-Received: by 2002:a9d:170e:: with SMTP id i14mr3484579ota.356.1622055551225;
-        Wed, 26 May 2021 11:59:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyo3tyzehBt9NJTGiTbwUqpbdhoOW/Rc6ORs95QCF1BRJHbfzK/B96RXUwLS1GYrraEl5xI2A==
-X-Received: by 2002:a9d:170e:: with SMTP id i14mr3484559ota.356.1622055550969;
-        Wed, 26 May 2021 11:59:10 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id w198sm10395oie.26.2021.05.26.11.59.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 11:59:10 -0700 (PDT)
-Date:   Wed, 26 May 2021 12:59:05 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Kirti Wankhede <kwankhede@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Li Zefan" <lizefan@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210526125905.61e00a18.alex.williamson@redhat.com>
-In-Reply-To: <6f9dad1a-4e15-1703-d6f4-1b51b7fde15a@nvidia.com>
-References: <20210422233950.GD1370958@nvidia.com>
-        <YIecXkaEGNgICePO@yekko.fritz.box>
-        <20210427171212.GD1370958@nvidia.com>
-        <YIizNdbA0+LYwQbI@yekko.fritz.box>
-        <20210428145622.GU1370958@nvidia.com>
-        <YIoiJRY3FM7xH2bH@yekko>
-        <20210503161518.GM1370958@nvidia.com>
-        <YJy9o8uEZs42/qDM@yekko>
-        <20210513135938.GG1002214@nvidia.com>
-        <YKtbWo7PwIlXjFIV@yekko>
-        <20210524233744.GT1002214@nvidia.com>
-        <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
-        <20210525165252.6959d9da.alex.williamson@redhat.com>
-        <6f9dad1a-4e15-1703-d6f4-1b51b7fde15a@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S234959AbhEZTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234938AbhEZTAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:00:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0A0613C7;
+        Wed, 26 May 2021 18:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622055555;
+        bh=WGltjEQGQmSpa0KZNMruhrwEKLk8ypzCyKbofsPqxgo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vxk/fz3Qe8ijcHZhGycuv13zj2Tf2nadeqXGtW5NLCvKPewj7F/Di3JcXN8IQlpco
+         fVmmg0sPOgXMDVs+2xEMDJpPDT+gDZzw34FJ2eiusEpmGOOxLp8tWqirTkmyaObqON
+         xxhraziuBhEoHX6whg47zCH2CwBBBkiRoENq4U9C2cvYbmq3bK7yDjWq6304dB96Io
+         5fGSeIuH6Gpptu+yVcXb+IuL1zjVcEH3rXHNkxDnkn4J8gwSLFCcN4sNNjFaRtWzFL
+         //EJLmkm1/M6bM0twIB1zyv7agPKsNBw2edeC+yhEorOFYw7Mi1/fs/vj9RcyDYvG/
+         uYwEPuxK8ImRw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 76BE14011C; Wed, 26 May 2021 15:59:10 -0300 (-03)
+Date:   Wed, 26 May 2021 15:59:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
+ the build
+Message-ID: <YK6afk8QQW/vHMuu@kernel.org>
+References: <20210518142302.1046718-1-javierm@redhat.com>
+ <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 23:40:02 +0530
-Kirti Wankhede <kwankhede@nvidia.com> wrote:
-
-> On 5/26/2021 4:22 AM, Alex Williamson wrote:
-> > On Wed, 26 May 2021 00:56:30 +0530
-> > Kirti Wankhede <kwankhede@nvidia.com> wrote:
-> >   
-> >> On 5/25/2021 5:07 AM, Jason Gunthorpe wrote:  
-> >>> On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
-> >>>      
-> >>>>>> I don't really see a semantic distinction between "always one-device
-> >>>>>> groups" and "groups don't matter".  Really the only way you can afford
-> >>>>>> to not care about groups is if they're singletons.  
-> >>>>>
-> >>>>> The kernel driver under the mdev may not be in an "always one-device"
-> >>>>> group.  
-> >>>>
-> >>>> I don't really understand what you mean by that.  
-> >>>
-> >>> I mean the group of the mdev's actual DMA device may have multiple
-> >>> things in it.
-> >>>        
-> >>>>> It is a kernel driver so the only thing we know and care about is that
-> >>>>> all devices in the HW group are bound to kernel drivers.
-> >>>>>
-> >>>>> The vfio device that spawns from this kernel driver is really a
-> >>>>> "groups don't matter" vfio device because at the IOMMU layer it should
-> >>>>> be riding on the physical group of the kernel driver.  At the VFIO
-> >>>>> layer we no longer care about the group abstraction because the system
-> >>>>> guarentees isolation in some other way.  
-> >>>>
-> >>>> Uh.. I don't really know how mdevs are isolated from each other.  I
-> >>>> thought it was because the physical device providing the mdevs
-> >>>> effectively had an internal IOMMU (or at least DMA permissioning) to
-> >>>> isolate the mdevs, even though the physical device may not be fully
-> >>>> isolated.
-> >>>>
-> >>>> In that case the virtual mdev is effectively in a singleton group,
-> >>>> which is different from the group of its parent device.  
-> >>>      
-> >>
-> >> That's correct.
-> >>  
-> >>> That is one way to view it, but it means creating a whole group
-> >>> infrastructure and abusing the IOMMU stack just to create this
-> >>> nonsense fiction.  
-> >>
-> >> I really didn't get how this abuse the IOMMU stack.
-> >> mdev can be used in 3 different ways:
-> >> 1. non-iommu backed mdev devices where mdev vendor driver takes care to
-> >> DMA map (iommu_map) and isolation is through device hardware internal
-> >> MMU. Here vfio_iommu_type1 module provides a way to validate and pin
-> >> pages required by mdev device for DMA mapping. Then IOMMU mapping is
-> >> done by mdev vendor driver which is owner driver of physical device.
-> >>
-> >> 2. iommu backed mdev devices for SRIOV where mdev device is created per
-> >> VF (mdev device == VF device) then that mdev device has same iommu
-> >> protection scope as VF associated to it. Here mdev device is virtual
-> >> device which uses features of mdev and represents underlying VF device,
-> >> same as vfio-pci but with additional mdev features.  
-> > 
-> > What features would those be?  There are no mdev specific parts of the
-> > vfio uAPI.
-> > 
-> > The mdev device is a virtual device, by why it it virtual in this case?
-> > Aren't we effectively assigning the VF itself (mdev device == VF device)
-> > with a bunch of extra support code to fill in the gaps of the VF
-> > implementing the complete device model in hardware?
-> > 
-> > We're effectively creating this virtual device, creating a fake IOMMU
-> > group, and trying to create this association of this virtual device to
-> > the real VF in order to shoehorn it into the mdev model.  What do we
-> > get from that model other than lifecycle management (ie. type selection)
-> > and re-use of a bunch of code from the driver supporting the 1) model
-> > above?
-> >   
+Em Wed, May 26, 2021 at 09:18:27AM -0700, Andrii Nakryiko escreveu:
+> On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+> >
+> > The ccache tool can be used to speed up cross-compilation, by calling the
+> > compiler and binutils through ccache. For example, following should work:
+> >
+> >     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
+> >
+> >     $ make M=drivers/gpu/drm/rockchip/
+> >
+> > but pahole fails to extract the BTF info from DWARF, breaking the build:
+> >
+> >       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+> >       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+> >       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+> >     aarch64-linux-gnu-objcopy: invalid option -- 'J'
+> >     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+> >      Copies a binary file, possibly transforming it in the process
+> >     ...
+> >     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+> >     make: *** [Makefile:1866: modules] Error 2
+> >
+> > this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+> > later pahole is executed with the following command line:
+> >
+> >     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
+> >
+> > which gets expanded to:
+> >
+> >     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
+> >
+> > instead of:
+> >
+> >     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+> >
+> > Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+> > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> > ---
+> >
 > 
-> Yes, the lifecycle management which is in mdev is not in vfio-pci variant.
+> LGTM. Masahiro, would you like us to take this through bpf tree or
+> you'll apply this to kbuild one?
 > 
-> > This specific model seems better served by a device specific peer
-> > driver to vfio-pci (ie. a "vfio-pci variant").  You effectively already
-> > have the code for this driver, it's just in the format of an mdev
-> > driver rather than a vfio "bus driver".  The work Jason references
-> > relative to Max aims to make these kinds of drivers easier to implement
-> > through re-use of vfio-pci code.
-> > 
-> > There are certainly other solutions we could come up with for selecting
-> > a specific device type for a vfio-pci variant driver to implement other
-> > than pretending this model actually belongs in mdev, right?  Thanks,
-> >   
-> 
-> Sure and would like to see type selection mechanism to be implemented in 
-> vfio-pci variant.
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+LGTM
 
-A driver provided sysfs attribute would obviously fill the short
-term gap, long term maybe this would be standardized via netlink.  It
-seems a bit analogous to setting the MAC address for a VF on an SR-IOV
-NIC or VF namespace configuration for an SR-IOV NVMe device.  Thanks,
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Alex
+- Arnaldo
 
+ 
+> >  scripts/Makefile.modfinal | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > index dd87cea9fba..a7883e45529 100644
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+> >  quiet_cmd_btf_ko = BTF [M] $@
+> >        cmd_btf_ko =                                                     \
+> >         if [ -f vmlinux ]; then                                         \
+> > -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
+> > +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+> >         else                                                            \
+> >                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+> >         fi;
+> > --
+> > 2.31.1
+> >
+
+-- 
+
+- Arnaldo
