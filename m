@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A55390D65
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371CC390D6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhEZAkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:40:00 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:36704 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhEZAj7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:39:59 -0400
-Received: by mail-ej1-f51.google.com with SMTP id c20so50154874ejm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:38:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SN1n3KmUQF/CJQe15RgbxrBoOLPLb/jSDiUbBOw0t74=;
-        b=WeLe53qbER8deddz4MwfAHoXQbuJan5JOsBbGVachLQuK+RHCn73APw01l8VBmV1Pq
-         /xPL0AXKiq+BRNU3ADmsyaG/jdNBZDKK+HGN89me7Ncq/8sCNKbpNxkH5t94aDNSexXN
-         1i9rIi6pUINwS6auNKZs7ddVK8X4n8/cr7sTtdO/0VQktVydnmFNuN2k3AX8QFN7d56c
-         sVJiiV9p122chgQzCvXzZJckbV3yYXe83zgMzaIdFu5Cnvu5+ZZXh3sjOpp0Yye13IBH
-         8N+MoX130l3ZnwdVVWIqbfRSd8B6uJYeYirSTg1zuzcwOdDzoVH4WJOFvSeunDYJbjmF
-         qtRg==
-X-Gm-Message-State: AOAM532MYvJUXP89PhlPq4a4bdZr8XuWp7Tuu2PJZoHnXtp0altkJgq8
-        y+xjxPkvLEQM8pcvlZNJ6JhE1tny41rMSJMGB/o=
-X-Google-Smtp-Source: ABdhPJxhJb/FaHTg7NMgBnNwYOutQjXmHhLof8/CcGe18d9CFjr7qb/27e+LqbcZiw5A1U9bVgrtbSlJ5eLRRtcbMmE=
-X-Received: by 2002:a17:906:2dca:: with SMTP id h10mr30719387eji.507.1621989507375;
- Tue, 25 May 2021 17:38:27 -0700 (PDT)
+        id S232543AbhEZAlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230106AbhEZAlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:41:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E86B61417;
+        Wed, 26 May 2021 00:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621989590;
+        bh=3zgyZ7zoBJ+hkeHoXCzHp9CwIXm2cdXOf80HROm53hY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=fkm9ndfDupj8s5n/4/6rrAbb+eXW8zopJv1M6OxIOCLl0dR0AJSykkdvHQxT+jJ0Z
+         ciVWVIBJURvGSJ6DNr1baOyoLzh2SwFOgpv9W7HTmsHop4Uf09bysR6SxtUyDbq2Zh
+         knYV2NZc6y94jO2lvi0j0SnP8g249qvncNbZRL+v3ajjvJo7CZbzODOixOr8kiopth
+         ghq/iBkPoGZI0ZfIldDGx3zIEtXu1vYGfwgTQDjJrJOcj2jK+SBbD1rn1xBOGV0OrM
+         rUpSUYqWnokjh1aUMK69iHloimM14dWIuG6A2wX6v71YZizpcQUF+u6ze/ww2LNGHA
+         cDc3UlqUmYe8A==
+Subject: Re: Preemption Signal Management
+To:     Sargun Dhillon <sargun@sargun.me>,
+        Linux Containers <containers@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        =?UTF-8?Q?Mauricio_V=c3=a1squez_Bernal?= <mauricio@kinvolk.io>
+References: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <f9e0126e-2bd4-eda4-0c07-9393d56d1421@kernel.org>
+Date:   Tue, 25 May 2021 17:39:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-16-chang.seok.bae@intel.com> <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
-In-Reply-To: <CAJvTdKnrFSS0fvhNz5mb9v8epEVtphUesEUV0hhNErMBK5HNHQ@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 25 May 2021 20:38:16 -0400
-Message-ID: <CAJvTdKmzN0VMyH8VU_fdzn2UZqmR=_aNrJW01a65BhyLm6YRPg@mail.gmail.com>
-Subject: Re: [PATCH v5 15/28] x86/arch_prctl: Create ARCH_GET_XSTATE/ARCH_PUT_XSTATE
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     Borislav Petkov <bp@suse.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After today's discussion, I believe we are close to consensus on this plan:
+On 5/21/21 9:23 AM, Sargun Dhillon wrote:
+> Andy pointed out that we need a mechanism to determine whether or
+> notifications are preempted. He suggested we use EPOLLPRI to indicate
+> whether or not notifications are preempted. My outstanding question is
+> whether or not we need to be able to get insight of what caused the
+> preemption, and to which notification.
+> 
+> In the past, Christian has suggested just background polling
+> notification IDs for validity, which is a fine mechanism to determine
+> that preemption has occurred. We could raise EPOLLPRI whenever a
+> notification has changed into the preempted state, but that would
+> require an O(n) operations across all outstanding notifications to
+> determine which one was preempted, and in addition, it doesn't give a
+> lot of information as to why the preemption occurred (fatal signal,
+> preemption?).
+> 
+> In order to try to break this into small parts, I suggest:
+> 1. We make it so EPOLLPRI is raised (always) on preempted notifications
+> 2. We allow the user to set a flag to "track" notifications. If they
+> specify this flag, they can then run a "stronger" ioctl -- let's say
+> SECCOMP_IOCTL_NOTIF_STATUS, which, if the flag was specified upon
+> receiving the notification will return the current state of the
+> notification and if a signal preempted it, it will always do that.
+> 
+> ---
+> Alternatively (and this is my preference), we add another filter flag,
+> like SECCOMP_FILTER_FLAG_NOTIF_PREEMPT, which changes the behaviour
+> to:
+> 1. Raise EPOLLPRI on preempted notifications
+> 2. All preemption notifications must be cleared via
+> SECCOMP_IOCTL_NOTIF_RECV_STATUS.
 
-1. Kernel sets XCR0.AMX=1 at boot, and leaves it set, always.
+This seems sensible, except I don't think "preempted" is the right word.
+ The state machine is pretty simple:
 
-2. Kernel arms XFD for all tasks, by default.
+live -> signaled -> killed
 
-3. New prctl() system call allows any task in a process to ask for AMX
-permission for all tasks in that process. Permission is granted for
-the lifetime of that process, and there is no interface for a process
-to "un-request" permission.
+(and we can go straight from live to killed, too.)  So EPOLLPRI could be
+signaled if any notification changes state, and a new ioctl could read
+the list of notifications that have changed state.
 
-4. If a task touches AMX without permission, #NM/signal kills the process
-
-5. If a task touches AMX with permission, #NM handler will
-transparently allocate a context switch buffer, and disarm XFD for
-that task. (MSR_XFD is context switched per task)
-
-6. If the #NM handler can not allocate the 8KB buffer, the task will
-receive a signal at the instruction that took the #NM fault, likely
-resulting in program exit.
-
-7. In addition, a 2nd system call to request that buffers be
-pre-allocated is available. This is a per task system call. This
-synchronous allocate system call will return an error code if it
-fails, which will also likely result in program exit.
-
-8. NEW TODAY: Linux will exclude the AMX 8KB region from the XSTATE on
-the signal stack for tasks in process that do not have AMX permission.
-
-9. For tasks in processes that have requested and received AMX
-permission, Linux will XSAVE/XRESTOR directly to/from the signal
-stack, and the stack will always include the 8KB space for AMX. (we do
-have a manual optimization to in place to skip writing zeros to the
-stack frame if AMX=INIT)
-
-10. Linux reserves the right to plumb the new permission syscall into
-cgroup administrative interface in the future.
-
-Comments:
-
-Legacy software will not see signal stack growth on AMX hardware.
-
-New AMX software will see AMX state on the signal stack.
-
-If new AMX software uses an alternative signal stack, it should be
-built using the signal.h ABI in glibc 2.34 or later, so that it can
-calculate the appropriate size for the current hardware.  Note that
-non-AMX software that is newly built will get the same answer from the
-ABI, which would handle the case if it does use AMX.
-
-Today it is possible for an application to calculate the uncompressed
-XSTATE size from XCR0 and CPUID, allocate buffers of that size, and
-use XSAVE and XRESTOR on those buffers in user-space.  Applications
-can also XRESTOR from (and XSAVE back to) the signal stack, if they
-choose.  Now, this capability can break for non-AMX programs, because
-their XSAVE will be 8KB  larger than the buffer that they XRESTOR.
-Andy L questions whether such applications actually exist, and Thomas
-states that even if they do, that is a much smaller problem than 8KB
-signal stack growth would be for legacy applications.
-
-Unclear if we have consensus on the need for a synchronous allocation
-system call (#7 above).  Observe that this system call does not
-improve the likelihood of failure or the timing of failure.  An
-#NM-based allocation and be done at exactly the same spot by simply
-touching a TMM register.  The benefit of this system call is that it
-returns an error code to the caller, versus the program being
-delivered a SIGSEGV at the offending instruction pointer.  Both will
-likely result in the program exiting, and at the same point in
-execution.
-
-A future mechanism to lazy harvest not-recently-used context switchy
-buffers has been discussed.  Eg. the kernel under low memory could
-re-arm XFD for all AMX tasks, and if their buffers are clean, free
-them.  If that mechanism is implemented, and we also implement the
-synchronous allocation system call, that mechanism must respect the
-guarantee made by that system call and not harvest
-system-call-allocated buffers.
-
-Len Brown, Intel Open Source Technology Center
+--Andy
