@@ -2,117 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F364739154C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE05391533
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbhEZKsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:48:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48180 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234068AbhEZKsT (ORCPT
+        id S234104AbhEZKnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:43:10 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:40833 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233944AbhEZKnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:48:19 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C08E91FD29;
-        Wed, 26 May 2021 10:40:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622025645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 26 May 2021 06:43:09 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C4C7422236;
+        Wed, 26 May 2021 12:41:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622025697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bkCGM14oSutPXR2oQe/Ky///EW/gzPaRnDOrBGh+z4k=;
-        b=l0dGOAizp1uH2nbWe1n/07Jv6BlZPm3AjVt/hoYCn2eu6hcQmaKVc7cX9QsCCcbWBxRiZs
-        Qo0pg6obADZXGSBVQk8vACeTEn8nxu3uYChZxx/RXEE3iziXWn/ya5Q3tRXvBlGiO5BeSa
-        gt6TfiQnRm1oj83rZHheHRaOkF3gkik=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622025645;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bkCGM14oSutPXR2oQe/Ky///EW/gzPaRnDOrBGh+z4k=;
-        b=05EZKRMu172ocC8cN5HU987P8mLty1KhACWfX2Ex2tHmynPqV277FfAxCHoi1VcP8dbdHY
-        6VUKaVREZbUmR3Bg==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id A790D11A98;
-        Wed, 26 May 2021 10:40:45 +0000 (UTC)
-Subject: Re: [PATCH v2 3/4] slub: Indicate slab_fix() uses printf formats
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        Petr Mladek <pmladek@suse.com>
-References: <20210526025625.601023-1-swboyd@chromium.org>
- <20210526025625.601023-4-swboyd@chromium.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <904b3ea3-c308-5807-4288-d6cd9109be5b@suse.cz>
-Date:   Wed, 26 May 2021 12:40:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        bh=ErwKEEinBftiXZT6dwCMASUMXD5Y2QAmtSkdKSxxN08=;
+        b=ZhmjZvPFhlGK54bGH1oN+oddaIB/Cw85IIej2dmgiSSSlv1lSNtQh4WqoY0uPbDOMFfKfd
+        onaNwNAGtRJDm45Oqyue4xROpZlR8xJ4GnhvdFsTiBXo0DRIl+9ECvkQM0IxQ7a3t/+Rpr
+        SDmLczovZLTQSgELeFfsbXTPHrNvhaA=
 MIME-Version: 1.0
-In-Reply-To: <20210526025625.601023-4-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 May 2021 12:41:36 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v4 3/4] mtd: spi-nor: otp: return -EROFS if region is
+ read-only
+In-Reply-To: <20210525193323.xdvbq3tab6oxk6yh@ti.com>
+References: <20210521194034.15249-1-michael@walle.cc>
+ <20210521194034.15249-4-michael@walle.cc>
+ <20210525193323.xdvbq3tab6oxk6yh@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <ca81f21648e55229c8d4533881566471@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 4:56 AM, Stephen Boyd wrote:
-> From: Joe Perches <joe@perches.com>
+Am 2021-05-25 21:33, schrieb Pratyush Yadav:
+> On 21/05/21 09:40PM, Michael Walle wrote:
+>> SPI NOR flashes will just ignore program commands if the OTP region is
+>> locked. Thus, a user might not notice that the intended write didn't 
+>> end
+>> up in the flash. Return -EROFS to the user in this case. From what I 
+>> can
+>> tell, chips/cfi_cmdset_0001.c also return this error code.
+>> 
+>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the 
+>> status
+>> register only once and not for every OTP region, but for that we would
+>> need some more invasive changes. Given that this is
+>> one-time-programmable memory and the normal access mode is reading, we
+>> just live with the small overhead.
 > 
-> Ideally, slab_fix() would be marked with __printf and the format here
-> would not use \n as that's emitted by the slab_fix(). Make these
-> changes.
+> Ok.
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>> 
+>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/mtd/spi-nor/otp.c | 35 +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 35 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+>> index 3898ed67ba1c..b87f96593c13 100644
+>> --- a/drivers/mtd/spi-nor/otp.c
+>> +++ b/drivers/mtd/spi-nor/otp.c
+>> @@ -249,6 +249,31 @@ static int spi_nor_mtd_otp_info(struct mtd_info 
+>> *mtd, size_t len,
+>>  	return ret;
+>>  }
+>> 
+>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor, 
+>> loff_t ofs,
+>> +					   size_t len)
+>> +{
+>> +	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>> +	unsigned int region;
+>> +	int locked;
+>> +
+>> +	if (!len)
+>> +		return 0;
+> 
+> I was inclined to say that the loop conditional below would take care 
+> of
+> this but it can cause an underflow when ofs and len are both 0.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Correct. I didn't want to put an extra check to the caller, because
+as you noticed, it is checked by the loop there later.
 
-> ---
->  mm/slub.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>> +
+>> +	/*
+>> +	 * If any of the affected OTP regions are locked the entire range is
+>> +	 * considered locked.
+>> +	 */
+>> +	for (region = spi_nor_otp_offset_to_region(nor, ofs);
+>> +	     region <= spi_nor_otp_offset_to_region(nor, ofs + len - 1);
+>> +	     region++) {
+>> +		locked = ops->is_locked(nor, region);
+>> +		if (locked)
+>> +			return locked;
+>> +	}
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6168b3ce1b3e..bf4949115412 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -672,6 +672,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
->  	va_end(args);
->  }
->  
-> +__printf(2, 3)
->  static void slab_fix(struct kmem_cache *s, char *fmt, ...)
->  {
->  	struct va_format vaf;
-> @@ -777,7 +778,7 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
->  static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
->  						void *from, void *to)
->  {
-> -	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x\n", message, from, to - 1, data);
-> +	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x", message, from, to - 1, data);
->  	memset(from, data, to - from);
->  }
->  
-> @@ -1026,13 +1027,13 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
->  		slab_err(s, page, "Wrong number of objects. Found %d but should be %d",
->  			 page->objects, max_objects);
->  		page->objects = max_objects;
-> -		slab_fix(s, "Number of objects adjusted.");
-> +		slab_fix(s, "Number of objects adjusted");
->  	}
->  	if (page->inuse != page->objects - nr) {
->  		slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
->  			 page->inuse, page->objects - nr);
->  		page->inuse = page->objects - nr;
-> -		slab_fix(s, "Object count adjusted.");
-> +		slab_fix(s, "Object count adjusted");
->  	}
->  	return search == NULL;
->  }
-> 
+> Ok.
 
+Btw I didn't know if I should put a comment here that this if () handles
+both locked state and errors. But it seems you've already found out by
+looking at the caller ;) I'm not sure if this is obvious, though.
+
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t 
+>> ofs,
+>>  				      size_t total_len, size_t *retlen,
+>>  				      const u8 *buf, bool is_write)
+>> @@ -271,6 +296,16 @@ static int spi_nor_mtd_otp_read_write(struct 
+>> mtd_info *mtd, loff_t ofs,
+>>  	/* don't access beyond the end */
+>>  	total_len = min_t(size_t, total_len, spi_nor_otp_size(nor) - ofs);
+>> 
+>> +	if (is_write) {
+>> +		ret = spi_nor_mtd_otp_range_is_locked(nor, ofs, total_len);
+>> +		if (ret < 0) {
+>> +			goto out;
+>> +		} else if (ret) {
+>> +			ret = -EROFS;
+> 
+> I wonder if we should have a dev_info() or dev_err() here. I think this
+> warrants a dev_dbg() at least.
+
+Are you sure? Reporting something to the user via an error code is
+enough IMHO. I wouldn't want my syslog to be cluttered with messages
+I already know. I mean the program tell me "hey, you aren't allowed
+to write there". Why would the kernel still need to tell me that again?
+Without any connection to the caller, I don't get much out of the kernel
+message by looking at it alone, just that someone tried to write there.
+
+So definetly no dev_info() or dev_err(). But IMHO no dev_dbg() either.
+Tudor, Vingesh, any opinions?
+
+
+>> +			goto out;
+>> +		}
+> 
+> So it returns -errno when the check for is_locked() fails and 1 or 0
+> when it is locked or not. Ok.
+> 
+> It would be nice if you add a dev_dbg or dev_err() or dev_info() above.
+> Nonetheless,
+> 
+> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+
+Thanks for reviewing!
+
+-michael
