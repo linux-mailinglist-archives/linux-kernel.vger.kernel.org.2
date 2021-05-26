@@ -2,225 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE634391C2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF5D391C30
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhEZPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:39:34 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:38484 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhEZPjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:39:31 -0400
-Received: by mail-oi1-f182.google.com with SMTP id z3so1898916oib.5;
-        Wed, 26 May 2021 08:37:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3V7OvaoqMXmN2vukgJxl15xdT6MPuq7Vv/XnykugDl0=;
-        b=Ixl+rrbCuOqaBM/3ynm/e8404PMSqnGZPUM3/9XiKimW01tF6mPqS9Lt4KEYgmvAmG
-         mQVh2RMkOhUYBKWhBrXojHkdtPTRO1VX0G3KjOiYYwPOZsXHjFD2vRY4HA9qRoMFRpC2
-         kv2CuEDJSRCnTS6itUxPlf7ScoqI7JmaSREqWWTcdeDMekUkIICAaC0d7Gy963qoUVS1
-         4lYuKCxzBEQ9rjwXBi9gFxH3ZjyoDypfUnnlSOgplPz7lUkurcRksILpBtzzE3mGyEr7
-         rBrCZYl+M8ByM1/IfwRYHsGbdDhI1azZvvtcty+ygn62baxwvW1JX5z0DidAJPQRajgb
-         9k/Q==
-X-Gm-Message-State: AOAM530UCdVbTEWOf0vl/KwqhVW7S53kB2UiYR2jI4KLafPaq65PBw99
-        LLQ46DpZjjwwNsg/IlehEQ==
-X-Google-Smtp-Source: ABdhPJw5rSamTwsWLcCBwAFrbj+IDR+9OhxFmsTMbUkCQ/CBncqAjYplNK5RkYmAlpnRkyX+oQljRA==
-X-Received: by 2002:aca:a9c6:: with SMTP id s189mr2414457oie.92.1622043479017;
-        Wed, 26 May 2021 08:37:59 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n11sm3881657oom.1.2021.05.26.08.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:37:58 -0700 (PDT)
-Received: (nullmailer pid 2611152 invoked by uid 1000);
-        Wed, 26 May 2021 15:37:57 -0000
-Date:   Wed, 26 May 2021 10:37:57 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Punit Agrawal <punitagrawal@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        leobras.c@gmail.com, PCI <linux-pci@vger.kernel.org>
-Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
- 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
- memory addresses")
-Message-ID: <20210526153757.GA2467427@robh.at.kernel.org>
-References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
- <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
- <87eedxbtkn.fsf@stealth>
- <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
- <877djnaq11.fsf@stealth>
- <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+        id S235299AbhEZPkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:40:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235132AbhEZPkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A11613D2;
+        Wed, 26 May 2021 15:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622043512;
+        bh=cLe/kNzI/2/juDZdE00NFXzEGyy4JwUh/Astr2poHyY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=U/S6sFqOey1Akib0lV23aigPKic1L1J40c92JXe9ufA/OosWIgm+N0jUwMtopgW3S
+         ZfML+I24fqHg11kR28Q7ycV0qgGVJ7cWTseKPW/TgnEgacmYWT7rRia6v+SUzhZ4Mx
+         uksnh4AuC1Wk8PoT4z9dfEU8Xc9hTwzeaGWTxXz7/C1FP1gAMM3t0zM01Y89pTkc/C
+         OLMHVIpuSRS+ioWfcVBUtKj99lP6t+jDlKx6R20EG4Sc55xaDrd4VFdg3GSKprLeSL
+         JX1uaX+ZhFVsyamgMmVPToXh3otGN1SIL9N5Akno/nRsrEitlLGw+dzR+7HjRATOww
+         uyiqyjsJ3t2sg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 761485C0381; Wed, 26 May 2021 08:38:32 -0700 (PDT)
+Date:   Wed, 26 May 2021 08:38:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [rcu:tglx-pc.2021.05.25a 1/13]
+ arch/um/include/shared/kern_util.h:54:12: error: conflicting types for
+ '__cant_sleep'
+Message-ID: <20210526153832.GC4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <202105261825.gLoy598f-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+In-Reply-To: <202105261825.gLoy598f-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 03:54:30PM +0200, Ard Biesheuvel wrote:
-> On Tue, 25 May 2021 at 15:42, Punit Agrawal <punitagrawal@gmail.com> wrote:
-> >
-> > Hi Ard,
-> >
-> > Ard Biesheuvel <ardb@kernel.org> writes:
-> >
-> > > On Sun, 23 May 2021 at 13:06, Punit Agrawal <punitagrawal@gmail.com> wrote:
-> > >>
-> > >> Robin Murphy <robin.murphy@arm.com> writes:
-> > >>
-> > >> > [ +linux-pci for visibility ]
-> > >> >
-> > >> > On 2021-05-18 10:09, Alexandru Elisei wrote:
-> > >> >> After doing a git bisect I was able to trace the following error when booting my
-> > >> >> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
-> > >> >> [..]
-> > >> >> [    0.305183] rockchip-pcie f8000000.pcie: host bridge /pcie@f8000000 ranges:
-> > >> >> [    0.305248] rockchip-pcie f8000000.pcie:      MEM 0x00fa000000..0x00fbdfffff ->
-> > >> >> 0x00fa000000
-> > >> >> [    0.305285] rockchip-pcie f8000000.pcie:       IO 0x00fbe00000..0x00fbefffff ->
-> > >> >> 0x00fbe00000
-> > >> >> [    0.306201] rockchip-pcie f8000000.pcie: supply vpcie1v8 not found, using dummy
-> > >> >> regulator
-> > >> >> [    0.306334] rockchip-pcie f8000000.pcie: supply vpcie0v9 not found, using dummy
-> > >> >> regulator
-> > >> >> [    0.373705] rockchip-pcie f8000000.pcie: PCI host bridge to bus 0000:00
-> > >> >> [    0.373730] pci_bus 0000:00: root bus resource [bus 00-1f]
-> > >> >> [    0.373751] pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
-> > >> >> [    0.373777] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus
-> > >> >> address [0xfbe00000-0xfbefffff])
-> > >> >> [    0.373839] pci 0000:00:00.0: [1d87:0100] type 01 class 0x060400
-> > >> >> [    0.373973] pci 0000:00:00.0: supports D1
-> > >> >> [    0.373992] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> > >> >> [    0.378518] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]),
-> > >> >> reconfiguring
-> > >> >> [    0.378765] pci 0000:01:00.0: [144d:a808] type 00 class 0x010802
-> > >> >> [    0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
-> > >> >> [    0.379051] pci 0000:01:00.0: Max Payload Size set to 256 (was 128, max 256)
-> > >> >> [    0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCIe bandwidth, limited by
-> > >> >> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe
-> > >> >> x4 link)
-> > >> >> [    0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end is updated to 01
-> > >> >> [    0.393311] pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
-> > >> >> [    0.393333] pci 0000:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-> > >> >> [    0.393356] pci 0000:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-> > >> >> [    0.393375] pci 0000:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-> > >> >> [    0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
-> > >> >> [    0.393839] pcieport 0000:00:00.0: PME: Signaling with IRQ 78
-> > >> >> [    0.394165] pcieport 0000:00:00.0: AER: enabled with IRQ 78
-> > >> >> [..]
-> > >> >> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
-> > >> >> resource flags for
-> > >> >> 64-bit memory addresses").
-> > >> >
-> > >> > FWFW, my hunch is that the host bridge advertising no 32-bit memory
-> > >> > resource, only only a single 64-bit non-prefetchable one (even though
-> > >> > it's entirely below 4GB) might be a bit weird and tripping something
-> > >> > up in the resource assignment code. It certainly seems like the thing
-> > >> > most directly related to the offending commit.
-> > >> >
-> > >> > I'd be tempted to try fiddling with that in the DT (i.e. changing
-> > >> > 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
-> > >> > if it makes any difference. Note that even if it helps, though, I
-> > >> > don't know whether that's the correct fix or just a bodge around a
-> > >> > corner-case bug somewhere in the resource code.
-> > >>
-> > >> From digging into this further the failure seems to be due to a mismatch
-> > >> of flags when allocating resources in pci_bus_alloc_from_region() -
-> > >>
-> > >>     if ((res->flags ^ r->flags) & type_mask)
-> > >>             continue;
-> > >>
-> > >> Though I am also not sure why the failure is only being reported on
-> > >> RK3399 - does a single 64-bit window have anything to do with it?
-> > >>
-> > >
-> > > The NVMe in the example exposes a single 64-bit non-prefetchable BAR.
-> > > Such BARs can not be allocated in a prefetchable host bridge window
-> > > (unlike the converse, i.e., allocating a prefetchable BAR in a
-> > > non-prefetchable host bridge window is fine)
-> > >
-> > > 64-bit non-prefetchable host bridge windows cannot be forwarded by PCI
-> > > to PCI bridges, they simply lack the BAR registers to describe them.
-> > > Therefore, non-prefetchable endpoint BARs (even 64-bit ones) need to
-> > > be carved out of a host bridge's non-prefetchable 32-bit window if
-> > > they need to pass through a bridge.
-> >
-> > Thank you for the explanation. I also looked at the PCI-to-PCI Bridge
-> > spec to understand where some of the limitations are coming from.
-> >
-> > > So the error seems to be here that the host bridge's 32-bit
-> > > non-prefetchable window has the 64-bit attribute set, even though it
-> > > resides below 4 GB entirely. I suppose that the resource allocation
-> > > could be made more forgiving (and it was in the past, before commit
-> > > 9d57e61bf723 was applied). However, I would strongly recommend not
-> > > deviating from common practice, and just describe the 32-bit
-> > > addressable non-prefetchable resource window as such.
-> >
-> > IIUC, the host bridge's configuration (64-bit on non-prefetchable
-> > window) is based on what the hardware advertises.
-> >
+On Wed, May 26, 2021 at 06:35:39PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tglx-pc.2021.05.25a
+> head:   3315aaeb39182958aadff39fa64d66ab241ef120
+> commit: b10e7a6023f08ff0610d24606732e85158c4eed9 [1/13] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
+> config: um-allmodconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=b10e7a6023f08ff0610d24606732e85158c4eed9
+>         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+>         git fetch --no-tags rcu tglx-pc.2021.05.25a
+>         git checkout b10e7a6023f08ff0610d24606732e85158c4eed9
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=um 
 > 
-> What do you mean by 'what the hardware advertises'? The host bridge is
-> apparently configured to decode a 32-bit addressable window as MMIO,
-> and the question is why this window has the 64-bit attribute set in
-> the DT description.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> > Can you elaborate on what you have in mind to correct the
-> > non-prefetchable resource window? Are you thinking of adding a quirk
-> > somewhere to address this?
-> >
+> All errors (new ones prefixed by >>):
+
+With this .config, um fails to build even on v5.3-rc3.  With the .config
+recommended by the um people, it builds fine both on v5.3-rc3 and with
+each and every commit of the tglx-pc.2021.05.25a patch series.
+
+Therefore, I am not yet convinced that these errors are something that
+we should be worried about.
+
+							Thanx, Paul
+
+>    In file included from arch/um/kernel/irq.c:19:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/cpumask.h:10,
+>                     from arch/um/kernel/irq.c:10:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/irq.c:620:13: warning: no previous prototype for 'init_IRQ' [-Wmissing-prototypes]
+>      620 | void __init init_IRQ(void)
+>          |             ^~~~~~~~
+> --
+>    In file included from arch/um/kernel/mem.c:18:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/list.h:9,
+>                     from include/linux/module.h:12,
+>                     from arch/um/kernel/mem.c:7:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/mem.c:184:8: warning: no previous prototype for 'pgd_alloc' [-Wmissing-prototypes]
+>      184 | pgd_t *pgd_alloc(struct mm_struct *mm)
+>          |        ^~~~~~~~~
+>    arch/um/kernel/mem.c:197:7: warning: no previous prototype for 'uml_kmalloc' [-Wmissing-prototypes]
+>      197 | void *uml_kmalloc(int size, int flags)
+>          |       ^~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/process.c:31:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/asm-generic/bug.h:20,
+>                     from ./arch/um/include/generated/asm/bug.h:1,
+>                     from include/linux/bug.h:5,
+>                     from include/linux/mmdebug.h:5,
+>                     from include/linux/percpu.h:5,
+>                     from include/linux/context_tracking_state.h:5,
+>                     from include/linux/hardirq.h:5,
+>                     from arch/um/kernel/process.c:11:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/process.c:49:5: warning: no previous prototype for 'pid_to_processor_id' [-Wmissing-prototypes]
+>       49 | int pid_to_processor_id(int pid)
+>          |     ^~~~~~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:85:7: warning: no previous prototype for '__switch_to' [-Wmissing-prototypes]
+>       85 | void *__switch_to(struct task_struct *from, struct task_struct *to)
+>          |       ^~~~~~~~~~~
+>    arch/um/kernel/process.c: In function 'new_thread_handler':
+>    arch/um/kernel/process.c:120:21: warning: variable 'n' set but not used [-Wunused-but-set-variable]
+>      120 |  int (*fn)(void *), n;
+>          |                     ^
+>    arch/um/kernel/process.c: At top level:
+>    arch/um/kernel/process.c:138:6: warning: no previous prototype for 'fork_handler' [-Wmissing-prototypes]
+>      138 | void fork_handler(void)
+>          |      ^~~~~~~~~~~~
+>    arch/um/kernel/process.c:214:6: warning: no previous prototype for 'arch_cpu_idle' [-Wmissing-prototypes]
+>      214 | void arch_cpu_idle(void)
+>          |      ^~~~~~~~~~~~~
+> >> arch/um/kernel/process.c:221:5: error: conflicting types for '__cant_sleep'
+>      221 | int __cant_sleep(void) {
+>          |     ^~~~~~~~~~~~
+>    In file included from include/asm-generic/bug.h:20,
+>                     from ./arch/um/include/generated/asm/bug.h:1,
+>                     from include/linux/bug.h:5,
+>                     from include/linux/mmdebug.h:5,
+>                     from include/linux/percpu.h:5,
+>                     from include/linux/context_tracking_state.h:5,
+>                     from include/linux/hardirq.h:5,
+>                     from arch/um/kernel/process.c:11:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/process.c:251:5: warning: no previous prototype for 'copy_to_user_proc' [-Wmissing-prototypes]
+>      251 | int copy_to_user_proc(void __user *to, void *from, int size)
+>          |     ^~~~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:261:5: warning: no previous prototype for 'clear_user_proc' [-Wmissing-prototypes]
+>      261 | int clear_user_proc(void __user *buf, int size)
+>          |     ^~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:274:6: warning: no previous prototype for 'set_using_sysemu' [-Wmissing-prototypes]
+>      274 | void set_using_sysemu(int value)
+>          |      ^~~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:281:5: warning: no previous prototype for 'get_using_sysemu' [-Wmissing-prototypes]
+>      281 | int get_using_sysemu(void)
+>          |     ^~~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:319:12: warning: no previous prototype for 'make_proc_sysemu' [-Wmissing-prototypes]
+>      319 | int __init make_proc_sysemu(void)
+>          |            ^~~~~~~~~~~~~~~~
+>    arch/um/kernel/process.c:359:15: warning: no previous prototype for 'arch_align_stack' [-Wmissing-prototypes]
+>      359 | unsigned long arch_align_stack(unsigned long sp)
+>          |               ^~~~~~~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/reboot.c:12:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/list.h:9,
+>                     from include/linux/rculist.h:10,
+>                     from include/linux/sched/signal.h:5,
+>                     from arch/um/kernel/reboot.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/reboot.c:45:6: warning: no previous prototype for 'machine_restart' [-Wmissing-prototypes]
+>       45 | void machine_restart(char * __unused)
+>          |      ^~~~~~~~~~~~~~~
+>    arch/um/kernel/reboot.c:51:6: warning: no previous prototype for 'machine_power_off' [-Wmissing-prototypes]
+>       51 | void machine_power_off(void)
+>          |      ^~~~~~~~~~~~~~~~~
+>    arch/um/kernel/reboot.c:57:6: warning: no previous prototype for 'machine_halt' [-Wmissing-prototypes]
+>       57 | void machine_halt(void)
+>          |      ^~~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/signal.c:14:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/list.h:9,
+>                     from include/linux/module.h:12,
+>                     from arch/um/kernel/signal.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/time.c:20:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/list.h:9,
+>                     from include/linux/clocksource.h:15,
+>                     from include/linux/clockchips.h:14,
+>                     from arch/um/kernel/time.c:10:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/time.c:789:13: warning: no previous prototype for 'time_init' [-Wmissing-prototypes]
+>      789 | void __init time_init(void)
+>          |             ^~~~~~~~~
+> --
+>    In file included from arch/um/kernel/tlb.c:15:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/asm-generic/bug.h:20,
+>                     from ./arch/um/include/generated/asm/bug.h:1,
+>                     from include/linux/bug.h:5,
+>                     from include/linux/mmdebug.h:5,
+>                     from include/linux/mm.h:9,
+>                     from arch/um/kernel/tlb.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/tlb.c:317:6: warning: no previous prototype for 'fix_range_common' [-Wmissing-prototypes]
+>      317 | void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+>          |      ^~~~~~~~~~~~~~~~
+>    arch/um/kernel/tlb.c:579:6: warning: no previous prototype for 'flush_tlb_mm_range' [-Wmissing-prototypes]
+>      579 | void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+>          |      ^~~~~~~~~~~~~~~~~~
+>    arch/um/kernel/tlb.c:595:6: warning: no previous prototype for 'force_flush_all' [-Wmissing-prototypes]
+>      595 | void force_flush_all(void)
+>          |      ^~~~~~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/trap.c:16:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/asm-generic/bug.h:20,
+>                     from ./arch/um/include/generated/asm/bug.h:1,
+>                     from include/linux/bug.h:5,
+>                     from include/linux/mmdebug.h:5,
+>                     from include/linux/mm.h:9,
+>                     from arch/um/kernel/trap.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/trap.c:315:6: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
+>      315 | void trap_init(void)
+>          |      ^~~~~~~~~
+> --
+>    In file included from arch/um/kernel/um_arch.c:25:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from include/linux/delay.h:22,
+>                     from arch/um/kernel/um_arch.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    arch/um/kernel/um_arch.c:359:19: warning: no previous prototype for 'read_initrd' [-Wmissing-prototypes]
+>      359 | int __init __weak read_initrd(void)
+>          |                   ^~~~~~~~~~~
+>    arch/um/kernel/um_arch.c:377:13: warning: no previous prototype for 'check_bugs' [-Wmissing-prototypes]
+>      377 | void __init check_bugs(void)
+>          |             ^~~~~~~~~~
+>    arch/um/kernel/um_arch.c:387:7: warning: no previous prototype for 'text_poke' [-Wmissing-prototypes]
+>      387 | void *text_poke(void *addr, const void *opcode, size_t len)
+>          |       ^~~~~~~~~
+>    arch/um/kernel/um_arch.c:399:6: warning: no previous prototype for 'text_poke_sync' [-Wmissing-prototypes]
+>      399 | void text_poke_sync(void)
+>          |      ^~~~~~~~~~~~~~
+> --
+>    In file included from arch/um/kernel/skas/syscall.c:9:
+> >> arch/um/include/shared/kern_util.h:54:12: error: conflicting types for '__cant_sleep'
+>       54 | extern int __cant_sleep(void);
+>          |            ^~~~~~~~~~~~
+>    In file included from arch/um/kernel/skas/syscall.c:6:
+>    include/linux/kernel.h:103:13: note: previous declaration of '__cant_sleep' was here
+>      103 | extern void __cant_sleep(const char *file, int line, int preempt_offset);
+>          |             ^~~~~~~~~~~~
+>    In file included from arch/um/include/asm/processor-generic.h:13,
+>                     from arch/x86/um/asm/processor.h:41,
+>                     from include/linux/rcupdate.h:30,
+>                     from include/linux/rculist.h:11,
+>                     from include/linux/pid.h:5,
+>                     from include/linux/sched.h:14,
+>                     from include/linux/ptrace.h:6,
+>                     from arch/um/kernel/skas/syscall.c:7:
+>    arch/um/kernel/skas/syscall.c: In function 'handle_syscall':
+>    arch/x86/um/shared/sysdep/syscalls_64.h:18:4: warning: cast between incompatible function types from 'long int (*)(void)' to 'long int (*)(long int,  long int,  long int,  long int,  long int,  long int)' [-Wcast-function-type]
+>       18 |  (((long (*)(long, long, long, long, long, long)) \
+>          |    ^
+>    arch/x86/um/asm/ptrace.h:36:62: note: in definition of macro 'PT_REGS_SET_SYSCALL_RETURN'
+>       36 | #define PT_REGS_SET_SYSCALL_RETURN(r, res) (PT_REGS_AX(r) = (res))
+>          |                                                              ^~~
+>    arch/um/kernel/skas/syscall.c:46:5: note: in expansion of macro 'EXECUTE_SYSCALL'
+>       46 |     EXECUTE_SYSCALL(syscall, regs));
+>          |     ^~~~~~~~~~~~~~~
 > 
-> No. Just fix the DT.
+> 
+> vim +/__cant_sleep +54 arch/um/include/shared/kern_util.h
+> 
+> 5cb38bc47bf370 arch/um/include/kern_util.h        Jeff Dike                      2006-06-04  49  
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  50  /*
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  51   * Are we disallowed to sleep? Used to choose between GFP_KERNEL and
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  52   * GFP_ATOMIC.
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  53   */
+> b63162939cd797 arch/um/include/kern_util.h        Paolo 'Blaisorblade' Giarrusso 2006-01-18 @54  extern int __cant_sleep(void);
+> c2220b2a124d2f arch/um/include/shared/kern_util.h Al Viro                        2012-01-30  55  extern int get_current_pid(void);
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  56  extern int copy_from_user_proc(void *to, void *from, int size);
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  57  extern int cpu(void);
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  58  extern char *uml_strdup(const char *string);
+> edea138584d758 arch/um/include/kern_util.h        Jeff Dike                      2008-02-04  59  
+> 
+> :::::: The code at line 54 was first introduced by commit
+> :::::: b63162939cd797c8269964ce856ed1f2fec5f70e [PATCH] uml: avoid malloc to sleep in atomic sections
+> 
+> :::::: TO: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> :::::: CC: Linus Torvalds <torvalds@g5.osdl.org>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-We can't only fix the DT as we shouldn't require a DT update due to a 
-kernel change. Especially for RK3399 which is pretty stable and widely 
-used.
-
-Do I understand correctly that 64-bit non-prefetchable never correct? We 
-recently gained a warning for this in commit fede8526cc48 ("PCI: of: 
-Warn if non-prefetchable memory aperture size is > 32-bit"), but that 
-only looks at addresses, not the 64-bit flag. Can't we just not set 
-the 64-bit flag if non-prefetchable?
-
-BTW, the DT schema is checking ranges hi cell:
-
-                - 0x01000000
-                - 0x02000000
-                - 0x03000000
-                - 0x42000000
-                - 0x43000000
-                - 0x81000000
-                - 0x82000000
-                - 0x83000000
-                - 0xc2000000
-                - 0xc3000000
-
-I just went with what I found in dts files. Sounds like 03 and 83 should 
-be removed. (Really, bit 31 or relocatable should probably not be set 
-either.)
-
-There's a number of other cases:
-
-Documentation/devicetree/bindings/numa.txt:             ranges = <0x03000000 0x8010 0x00000000 0x8010 0x00000000 0x70 0x00000000>;
-Documentation/devicetree/bindings/numa.txt:             ranges = <0x03000000 0x9010 0x00000000 0x9010 0x00000000 0x70 0x00000000>;
-Documentation/devicetree/bindings/pci/mediatek-pcie.txt-                          0x83000000 0 0x60000000 0 0x60000000 0 0x10000000>;   /* memory space */
-Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml:                    ranges = <0x03000000 0x0 0x78000000 0x0 0x78000000 0x0 0x04000000>;
-Documentation/devicetree/bindings/pci/mobiveil-pcie.txt:                ranges = < 0x83000000 0 0x00000000 0xa8000000 0 0x8000000>;
-Documentation/devicetree/bindings/pci/rockchip-pcie-host.txt:   ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x600000
-arch/arm/boot/dts/mt7623.dtsi-                    0x83000000 0 0x60000000 0 0x60000000 0 0x10000000>;
-arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi:               ranges = <0x83000000 0 0x00000000 0 0x00000000 0 0x20000000>;
-arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi:               ranges = <0x83000000 0 0x00000000 0 0x30000000 0 0x20000000>;
-arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi:               ranges = <0x83000000 0 0x00000000 0 0x60000000 0 0x00c00000>;
-arch/arm64/boot/dts/broadcom/stingray/stingray-pcie.dtsi:       ranges = <0x83000000 0 0x10000000 0 0x10000000 0 0x20000000>;
-arch/arm64/boot/dts/rockchip/rk3399.dtsi:               ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
-
-Rob
 
