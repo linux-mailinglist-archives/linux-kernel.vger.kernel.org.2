@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E596B3919CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251C7391A15
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhEZOTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:19:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:4016 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233656AbhEZOTT (ORCPT
+        id S234597AbhEZO01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:26:27 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:63408 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233313AbhEZO00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:19:19 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqtJW6pVCzmZ6j;
-        Wed, 26 May 2021 22:15:23 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 22:17:44 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 26 May
- 2021 22:17:44 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>
-CC:     <kvalo@codeaurora.org>, <davem@davemloft.net>
-Subject: [PATCH -next] ath10k: Fix W=1 build warning in htt_rx.c
-Date:   Wed, 26 May 2021 22:22:19 +0800
-Message-ID: <20210526142219.2542528-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 10:26:26 -0400
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 14QEOXr6005846;
+        Wed, 26 May 2021 23:24:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 14QEOXr6005846
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1622039073;
+        bh=S3cdbLKJzcvU+k2/cClSUE7D/oDU/mnDHQ9eZ1mSmYs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iuiY9bXmzgMFxyv8kuk8ZPG/qtKaNvj7NGgZFynyvOqEEffIagdAMaV8pq0sPA8zB
+         ccQO/WRcN9q2IitG7BWuLrRyUY9BekYvrWby0386PSL27qp1gwP59U+PpkrMQLSEot
+         LplMTAD13fqsefSFyzdPtScvAomZrMsthhRrPlDVBH9Jab6KNCYuQcdqb+c50IWmdY
+         AosjTwviJGig05PbTaj3muvu2KKaXF1Has7WRkZdw8EAJusQUv6wrxO0hTLEIxPMgH
+         JqjlDV6hqar3sSJdtZdtvk6hXQ3ZgBl+agVhC+kZNPzlzcyoLeX7jll/4YXvLmrl1w
+         LQGOWu/vmXTrw==
+X-Nifty-SrcIP: [209.85.210.176]
+Received: by mail-pf1-f176.google.com with SMTP id y15so1026832pfn.13;
+        Wed, 26 May 2021 07:24:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532rnVNe0fgDSUeR/JyJEpALI/NcsHDn49fHFNBrb3q1Ytg692U3
+        GIgAmLsbvYq7rBRh+fo3n78+FNeq2+CcAPpTxUA=
+X-Google-Smtp-Source: ABdhPJz2Unzkmjt4AewHB8f4XFBaX31iEQ+tyeMgiGCHUZSjTNXZ/IrQYtN5evWSxdXKCtVjmcQSj4nUUF5dqCCxBFw=
+X-Received: by 2002:a63:164f:: with SMTP id 15mr25296029pgw.175.1622039072606;
+ Wed, 26 May 2021 07:24:32 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210526084536.1454449-1-geert@linux-m68k.org>
+In-Reply-To: <20210526084536.1454449-1-geert@linux-m68k.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 26 May 2021 23:23:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
+Message-ID: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Drop duplicate "core-y += arch/m68k/" rule causing
+ link failures
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following W=1 build warning:
+On Wed, May 26, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+>     Makefile:1949: target 'arch/m68k' given more than once in the same rule
+>     [...]
+>       LD      vmlinux.o
+>     m68k-linux-gnu-ld: arch/m68k/kernel/entry.o: in function `system_call':
+>     (.text+0x160): multiple definition of `system_call'; arch/m68k/kernel/entry.o:(.text+0x160): first defined here
+>     [...]
+>
+> All "core-y += arch/<arch>/" rules were dropped from the corresponding
+> arch/<arch>/Makefiles, but m68k was forgotten.
+>
+> Reported-by: noreply@ellerman.id.au
+> Fixes: 7d9677835b10b5de ("kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
 
-  drivers/net/wireless/ath/ath10k/htt_rx.c:1790:7: warning: variable ‘more_frags’ set but not used [-Wunused-but-set-variable]
-   1790 |  bool more_frags;
-        |       ^~~~~~~~~~
+I will squash this.
+Thanks.
 
-Fixes: a1166b2653db ("ath10k: add CCMP PN replay protection for fragmented frames for PCIe")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 7ffb5d5b2a70..adbaeb67eedf 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1787,7 +1787,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
- 	struct ath10k_peer *peer;
- 	union htt_rx_pn_t *last_pn, new_pn = {0};
- 	struct ieee80211_hdr *hdr;
--	bool more_frags;
- 	u8 tid, frag_number;
- 	u32 seq;
- 
-@@ -1805,7 +1804,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
- 
- 	last_pn = &peer->frag_tids_last_pn[tid];
- 	new_pn.pn48 = ath10k_htt_rx_h_get_pn(ar, skb, offset, enctype);
--	more_frags = ieee80211_has_morefrags(hdr->frame_control);
- 	frag_number = le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_FRAG;
- 	seq = (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
- 
+>  arch/m68k/Makefile | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+> index c54055a3d28450aa..dd0c0ec67f67064d 100644
+> --- a/arch/m68k/Makefile
+> +++ b/arch/m68k/Makefile
+> @@ -97,7 +97,6 @@ head-$(CONFIG_SUN3)           := arch/m68k/kernel/sun3-head.o
+>  head-$(CONFIG_M68000)          := arch/m68k/68000/head.o
+>  head-$(CONFIG_COLDFIRE)                := arch/m68k/coldfire/head.o
+>
+> -core-y                         += arch/m68k/
+>  libs-y                         += arch/m68k/lib/
+>
+>
+> --
+> 2.25.1
+>
+
+
 -- 
-2.25.1
-
+Best Regards
+Masahiro Yamada
