@@ -2,147 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22D139175C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751D7391764
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhEZMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhEZMes (ORCPT
+        id S233344AbhEZMfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:35:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55365 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233221AbhEZMfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:34:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27367C061574;
-        Wed, 26 May 2021 05:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RzUqrNAT99P+Q/VTlGYT/bKmVQ5B0IFOwa9vVPGIyuk=; b=nI+87QSFA/Z8ANauzcCoB/LYzF
-        i+6MjAz0uIAqi7VdxQxnc5OLffT0ZejDtWb/upA79r2d3ZfCfUQyhgdwLBS8ZBrRyawsDUPwH2fPh
-        rjlDCG3XohUjg7h8Eo6dDScrnI9kvgp05Cdkz4BFJg99kOwXLENTiFTru2tOFzT3DHcKvVtqwr8FL
-        bFO1RSjQkM5EziurmA6wn4W1Gq749svk3TUkWWxO6Dfll2pkLruzyEzit9wYvP/JgqJSw36chxA7s
-        nHPXkIjgGstlUctf1UkB9BviJDR227lUWWFWyFHHk8ZPmHago7XzmuSTvVI/VLwLpZKohhBRuJ7mp
-        H0R8awoA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1llsiL-004Vn3-9h; Wed, 26 May 2021 12:32:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0891300242;
-        Wed, 26 May 2021 14:32:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9E5F7201DB6C5; Wed, 26 May 2021 14:32:43 +0200 (CEST)
-Date:   Wed, 26 May 2021 14:32:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        Wed, 26 May 2021 08:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622032444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5/M4Zi1UD0F4y7iC9n27EXxdTv0jPB/LjVTE/VRiZvQ=;
+        b=HCXsFUGcj5Jht333LzpXZwJFvw32TIBigCE9xpV8tz6q/ABisXiVnh7cUVdQYyzolHcrue
+        5DwRrl+6IX+I3hIADpR3saXkLaWR9Bt1ZbF9rUlc87gzCXw6oS+m6zNzmmW3ZppSIb2y69
+        HYH+Sq5mTmgE8XZckl1qayVlZrljhYU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-twY8WkrSOACUVVWzQT69EQ-1; Wed, 26 May 2021 08:34:02 -0400
+X-MC-Unique: twY8WkrSOACUVVWzQT69EQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7675B80ED8E;
+        Wed, 26 May 2021 12:33:59 +0000 (UTC)
+Received: from krava (unknown [10.40.195.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5AFC45044F;
+        Wed, 26 May 2021 12:33:56 +0000 (UTC)
+Date:   Wed, 26 May 2021 14:33:55 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 01/22] sched: Favour predetermined active CPU as
- migration destination
-Message-ID: <YK4/6+lX4WJxcLDw@hirez.programming.kicks-ass.net>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-2-will@kernel.org>
- <877djlhhmb.mognet@arm.com>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, Fabian Hemmer <copy@copy.sh>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf test: iterate over shell tests in alphabetical order
+Message-ID: <YK5AM07ex5/OIm7R@krava>
+References: <20210525230521.244553-1-rickyman7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <877djlhhmb.mognet@arm.com>
+In-Reply-To: <20210525230521.244553-1-rickyman7@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:14:20PM +0100, Valentin Schneider wrote:
-> On 25/05/21 16:14, Will Deacon wrote:
+On Wed, May 26, 2021 at 01:05:17AM +0200, Riccardo Mancini wrote:
+> for_each_shell_test macro iterated over all shell tests in the directory
+> using readdir, which does not guarantee any ordering, causing
+> problems on certain fs. However, the order in which they are visited
+> determines the id of the test, in case one wants to run a single test.
+> 
+> This patch replaces readdir with scandir using alphabetical sorting.
+> This guarantees that, given the same set of tests, all machines will
+> see the tests in the same order, and, thus, that test ids are
+> consistent.
+> 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Ian Rogers <irogers@google.com>
 
-> > @@ -1956,12 +1958,8 @@ static int migration_cpu_stop(void *data)
-> >                       complete = true;
-> >               }
-> >
-> > -		if (dest_cpu < 0) {
-> > -			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
-> > -				goto out;
-> > -
-> > -			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
-> > -		}
-> > +		if (dest_mask && (cpumask_test_cpu(task_cpu(p), dest_mask)))
-> > +			goto out;
-> >
-> 
-> IIRC the reason we deferred the pick to migration_cpu_stop() was because of
-> those insane races involving multiple SCA calls the likes of:
-> 
->   p->cpus_mask = [0, 1]; p on CPU0
-> 
->   CPUx                           CPUy                   CPU0
-> 
->   SCA(p, [2])
->     __do_set_cpus_allowed();
->     queue migration_cpu_stop()
->                                  SCA(p, [3])
->                                    __do_set_cpus_allowed();
->                                                         migration_cpu_stop()
-> 
-> The stopper needs to use the latest cpumask set by the second SCA despite
-> having an arg->pending set up by the first SCA. Doesn't this break here?
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Yep.
+thanks,
+jirka
 
-> I'm not sure I've paged back in all of the subtleties laying in ambush
-> here, but what about the below?
-> 
 > ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 5226cc26a095..cd447c9db61d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-
-> @@ -1954,19 +1953,15 @@ static int migration_cpu_stop(void *data)
->  		if (pending) {
->  			p->migration_pending = NULL;
->  			complete = true;
+>  tools/perf/tests/builtin-test.c | 38 ++++++++++++++++++---------------
+>  1 file changed, 21 insertions(+), 17 deletions(-)
+> 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index c4b888f18e9ca..cbbfe48ab8029 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -510,8 +510,8 @@ static const char *shell_test__description(char *description, size_t size,
+>  	return description ? strim(description + 1) : NULL;
+>  }
 >  
->  			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
->  				goto out;
->  		}
+> -#define for_each_shell_test(dir, base, ent)	\
+> -	while ((ent = readdir(dir)) != NULL)	\
+> +#define for_each_shell_test(entlist, nr, base, ent)	                \
+> +	for (int __i = 0; __i < nr && (ent = entlist[__i]); __i++)	\
+>  		if (!is_directory(base, ent) && ent->d_name[0] != '.')
 >  
->  		if (task_on_rq_queued(p))
-> +			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
-
-> @@ -2249,7 +2244,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
->  			init_completion(&my_pending.done);
->  			my_pending.arg = (struct migration_arg) {
->  				.task = p,
-> +				.dest_cpu = dest_cpu,
->  				.pending = &my_pending,
->  			};
+>  static const char *shell_tests__dir(char *path, size_t size)
+> @@ -538,8 +538,9 @@ static const char *shell_tests__dir(char *path, size_t size)
 >  
-> @@ -2257,6 +2252,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
->  		} else {
->  			pending = p->migration_pending;
->  			refcount_inc(&pending->refs);
-> +			pending->arg.dest_cpu = dest_cpu;
+>  static int shell_tests__max_desc_width(void)
+>  {
+> -	DIR *dir;
+> +	struct dirent **entlist;
+>  	struct dirent *ent;
+> +	int n_dirs;
+>  	char path_dir[PATH_MAX];
+>  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+>  	int width = 0;
+> @@ -547,11 +548,11 @@ static int shell_tests__max_desc_width(void)
+>  	if (path == NULL)
+>  		return -1;
+>  
+> -	dir = opendir(path);
+> -	if (!dir)
+> +	n_dirs = scandir(path, &entlist, NULL, alphasort);
+> +	if (n_dirs == -1)
+>  		return -1;
+>  
+> -	for_each_shell_test(dir, path, ent) {
+> +	for_each_shell_test(entlist, n_dirs, path, ent) {
+>  		char bf[256];
+>  		const char *desc = shell_test__description(bf, sizeof(bf), path, ent->d_name);
+>  
+> @@ -563,7 +564,8 @@ static int shell_tests__max_desc_width(void)
 >  		}
 >  	}
+>  
+> -	closedir(dir);
+> +	free(entlist);
+> +
+>  	return width;
+>  }
+>  
+> @@ -589,8 +591,9 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
+>  
+>  static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  {
+> -	DIR *dir;
+> +	struct dirent **entlist;
+>  	struct dirent *ent;
+> +	int n_dirs;
+>  	char path_dir[PATH_MAX];
+>  	struct shell_test st = {
+>  		.dir = shell_tests__dir(path_dir, sizeof(path_dir)),
+> @@ -599,14 +602,14 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  	if (st.dir == NULL)
+>  		return -1;
+>  
+> -	dir = opendir(st.dir);
+> -	if (!dir) {
+> +	n_dirs = scandir(st.dir, &entlist, NULL, alphasort);
+> +	if (n_dirs == -1) {
+>  		pr_err("failed to open shell test directory: %s\n",
+>  			st.dir);
+>  		return -1;
+>  	}
+>  
+> -	for_each_shell_test(dir, st.dir, ent) {
+> +	for_each_shell_test(entlist, n_dirs, st.dir, ent) {
+>  		int curr = i++;
+>  		char desc[256];
+>  		struct test test = {
+> @@ -623,7 +626,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  		test_and_print(&test, false, -1);
+>  	}
+>  
+> -	closedir(dir);
+> +	free(entlist);
+>  	return 0;
+>  }
+>  
+> @@ -722,19 +725,20 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+>  
+>  static int perf_test__list_shell(int argc, const char **argv, int i)
+>  {
+> -	DIR *dir;
+> +	struct dirent **entlist;
+>  	struct dirent *ent;
+> +	int n_dirs;
+>  	char path_dir[PATH_MAX];
+>  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+>  
+>  	if (path == NULL)
+>  		return -1;
+>  
+> -	dir = opendir(path);
+> -	if (!dir)
+> +	n_dirs = scandir(path, &entlist, NULL, alphasort);
+> +	if (n_dirs == -1)
+>  		return -1;
+>  
+> -	for_each_shell_test(dir, path, ent) {
+> +	for_each_shell_test(entlist, n_dirs, path, ent) {
+>  		int curr = i++;
+>  		char bf[256];
+>  		struct test t = {
+> @@ -747,7 +751,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
+>  		pr_info("%2d: %s\n", i, t.desc);
+>  	}
+>  
+> -	closedir(dir);
+> +	free(entlist);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.31.1
+> 
 
-Argh.. that might just work. But I'm thinking we wants comments this
-time around :-) This is even more subtle.
