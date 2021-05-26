@@ -2,348 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622FE391AD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC51391AF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbhEZO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:57:02 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32772 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbhEZO45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:56:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622040926; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=8jabQD63WRoVyMbxQOYch5fJ9JqOuL+KKrszS+VUf+o=; b=hwCpbXwZCRPRbHoN63dn+ZIvgcyoMOj3L/u6QlgGvcgWwpqDmjlGmtIe9LMqFMx1TlJksHy0
- 2tHWXm8H1RSG7JcUIj9xOMQ6AURvTFp2htURjKi55wYdjBVnVYDqcm3a2ySrEogEbGCImG3R
- 0mRxz67gLKDxSDA1tHc0txcGXzw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60ae615567d156359aa079ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 14:55:17
- GMT
-Sender: sharathv=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 47FB1C43217; Wed, 26 May 2021 14:55:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from svurukal-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sharathv)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49D38C4338A;
-        Wed, 26 May 2021 14:55:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49D38C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sharathv@codeaurora.org
-From:   Sharath Chandra Vurukala <sharathv@codeaurora.org>
-To:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, netdev@vger.kernel.org,
+        id S235128AbhEZPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:00:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:46188 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233472AbhEZPAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:00:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 957A21516;
+        Wed, 26 May 2021 07:59:22 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 963363F73D;
+        Wed, 26 May 2021 07:59:20 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Xuewen Yan <xuewen.yan94@gmail.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Quentin Perret <qperret@google.com>,
         linux-kernel@vger.kernel.org
-Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>
-Subject: [PATCH net-next v6 3/3] net: ethernet: rmnet: Add support for MAPv5 egress packets
-Date:   Wed, 26 May 2021 20:24:42 +0530
-Message-Id: <1622040882-27526-4-git-send-email-sharathv@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622040882-27526-1-git-send-email-sharathv@codeaurora.org>
-References: <1622040882-27526-1-git-send-email-sharathv@codeaurora.org>
+References: <20210514103748.737809-1-dietmar.eggemann@arm.com>
+ <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <cb72557a-6039-df95-7e25-a7f37d3f9cef@arm.com>
+Date:   Wed, 26 May 2021 16:59:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support for MAPv5 egress packets.
+On 19/05/2021 18:06, Vincent Donnefort wrote:
+> On Fri, May 14, 2021 at 12:37:48PM +0200, Dietmar Eggemann wrote:
+>> The util_est internal UTIL_AVG_UNCHANGED flag which is used to prevent
+>> unnecessary util_est updates uses the LSB of util_est.enqueued. It is
+>> exposed via _task_util_est() (and task_util_est()).
+>>
+>> Commit 92a801e5d5b7 ("sched/fair: Mask UTIL_AVG_UNCHANGED usages")
+>> mentions that the LSB is lost for util_est resolution but
+>> find_energy_efficient_cpu() checks if task_util_est() returns 0 to
+>> return prev_cpu early.
+>>
+>> _task_util_est() returns the max value of util_est.ewma and
+>> util_est.enqueued or'ed w/ UTIL_AVG_UNCHANGED.
+>> So task_util_est() returning the max of task_util() and
+>> _task_util_est() will never return 0 under the default
+>> SCHED_FEAT(UTIL_EST, true).
+>>
+>> To fix this use the MSB of util_est.enqueued instead and keep the flag
+>> util_est internal, i.e. don't export it via _task_util_est().
+>>
+>> The maximal possible util_avg value for a task is 1024 so the MSB of
+>> 'unsigned int util_est.enqueued' isn't used to store a util value.
+>>
+>> As a caveat the code behind the util_est_se trace point has to filter
+>> UTIL_AVG_UNCHANGED to see the real util_est.enqueued value which should
+>> be easy to do.
+>>
+>> This also fixes an issue report by Xuewen Yan that util_est_update()
+>> only used UTIL_AVG_UNCHANGED for the subtrahend of the equation:
+>>
+>>   last_enqueued_diff = ue.enqueued - (task_util() | UTIL_AVG_UNCHANGED)
+>>
+>> Fixes: b89997aa88f0b sched/pelt: Fix task util_est update filtering
+>> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> 
+> I don't believe this made it through our integration branch testing, so I gave a
+> try manually on my Hikey with LISA's UtilConvergence test. 20 iterations of that
+> test passed without any problem.
+> 
+>> ---
+>>  kernel/sched/fair.c |  5 +++--
+>>  kernel/sched/pelt.h | 13 +++++++------
+>>  2 files changed, 10 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 161b92aa1c79..0150d440b0a2 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -3856,7 +3856,7 @@ static inline unsigned long _task_util_est(struct task_struct *p)
+>>  {
+>>  	struct util_est ue = READ_ONCE(p->se.avg.util_est);
+>>  
+>> -	return (max(ue.ewma, ue.enqueued) | UTIL_AVG_UNCHANGED);
+>> +	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
+>>  }
+> 
+> 
+> Shall we also update proc_sched_show_task() to avoid reading this flag there?
 
-This involves adding the MAPv5 header and setting the csum_valid_required
-in the checksum header to request HW compute the checksum.
+Ah yes, forgot about this one! Thanks for the review.
 
-Corresponding stats are incremented based on whether the checksum is
-computed in software or HW.
+This can be fixed by fixed by moving UTIL_AVG_UNCHANGED from
+kernel/sched/pelt.h into include/linux/sched.h (next to the already
+existing util_est stuff there) and using it in proc_sched_show_task()
+for se.avg.util_est.enqueued.
 
-New stat has been added which represents the count of packets whose
-checksum is calculated by the HW.
+What do you think?
 
-Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+--8<--
+Subject: [PATCH] Fix proc_sched_show_task()
+
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
- .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 17 ++--
- drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
- .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 ++++++++++++++++++++--
- drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |  3 +-
- include/uapi/linux/if_link.h                       |  1 +
- 6 files changed, 111 insertions(+), 15 deletions(-)
+ include/linux/sched.h | 10 ++++++++++
+ kernel/sched/debug.c  |  3 ++-
+ kernel/sched/pelt.h   | 10 ----------
+ 3 files changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-index 8d8d469..8e64ca9 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-@@ -1,5 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All rights reserved.
-+/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
-+ * All rights reserved.
-  *
-  * RMNET Data configuration engine
-  */
-@@ -56,6 +57,7 @@ struct rmnet_priv_stats {
- 	u64 csum_fragmented_pkt;
- 	u64 csum_skipped;
- 	u64 csum_sw;
-+	u64 csum_hw;
- };
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index c7e7d50e2fdc..0a0bca694536 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -357,6 +357,16 @@ struct util_est {
+ #define UTIL_EST_WEIGHT_SHIFT		2
+ } __attribute__((__aligned__(sizeof(u64))));
  
- struct rmnet_priv {
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-index 706a225..03b3321 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-@@ -133,7 +133,7 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
- 				    struct rmnet_port *port, u8 mux_id,
- 				    struct net_device *orig_dev)
- {
--	int required_headroom, additional_header_len;
-+	int required_headroom, additional_header_len, csum_type = 0;
- 	struct rmnet_map_header *map_header;
- 
- 	additional_header_len = 0;
-@@ -141,18 +141,25 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
- 
- 	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
- 		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
--		required_headroom += additional_header_len;
-+		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
-+	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
-+		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
-+		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
- 	}
- 
-+	required_headroom += additional_header_len;
-+
- 	if (skb_headroom(skb) < required_headroom) {
- 		if (pskb_expand_head(skb, required_headroom, 0, GFP_ATOMIC))
- 			return -ENOMEM;
- 	}
- 
--	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
--		rmnet_map_checksum_uplink_packet(skb, orig_dev);
-+	if (csum_type)
-+		rmnet_map_checksum_uplink_packet(skb, port, orig_dev,
-+						 csum_type);
- 
--	map_header = rmnet_map_add_map_header(skb, additional_header_len, 0);
-+	map_header = rmnet_map_add_map_header(skb, additional_header_len,
-+					      port, 0);
- 	if (!map_header)
- 		return -ENOMEM;
- 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-index 1a399bf..e5a0b38 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-@@ -43,11 +43,15 @@ enum rmnet_map_commands {
- struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
- 				      struct rmnet_port *port);
- struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
--						  int hdrlen, int pad);
-+						  int hdrlen,
-+						  struct rmnet_port *port,
-+						  int pad);
- void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port);
- int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len);
- void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
--				      struct net_device *orig_dev);
-+				      struct rmnet_port *port,
-+				      struct net_device *orig_dev,
-+				      int csum_type);
- int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
- 
- #endif /* _RMNET_MAP_H_ */
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index 2280703..9e6efcd 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -12,6 +12,7 @@
- #include "rmnet_config.h"
- #include "rmnet_map.h"
- #include "rmnet_private.h"
-+#include <linux/bitfield.h>
- 
- #define RMNET_MAP_DEAGGR_SPACING  64
- #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
-@@ -251,12 +252,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
- }
- #endif
- 
-+static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
-+						struct rmnet_port *port,
-+						struct net_device *orig_dev)
-+{
-+	struct rmnet_priv *priv = netdev_priv(orig_dev);
-+	struct rmnet_map_v5_csum_header *ul_header;
-+
-+	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
-+		return;
-+
-+	ul_header = skb_push(skb, sizeof(*ul_header));
-+	memset(ul_header, 0, sizeof(*ul_header));
-+	ul_header->header_info = u8_encode_bits(RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD,
-+						MAPV5_HDRINFO_HDR_TYPE_FMASK);
-+
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		void *iph = (char *)ul_header + sizeof(*ul_header);
-+		__sum16 *check;
-+		void *trans;
-+		u8 proto;
-+
-+		if (skb->protocol == htons(ETH_P_IP)) {
-+			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
-+
-+			proto = ((struct iphdr *)iph)->protocol;
-+			trans = iph + ip_len;
-+		} else if (skb->protocol == htons(ETH_P_IPV6)) {
-+#if IS_ENABLED(CONFIG_IPV6)
-+			u16 ip_len = sizeof(struct ipv6hdr);
-+
-+			proto = ((struct ipv6hdr *)iph)->nexthdr;
-+			trans = iph + ip_len;
-+#else
-+			priv->stats.csum_err_invalid_ip_version++;
-+			goto sw_csum;
-+#endif /* CONFIG_IPV6 */
-+		} else {
-+			priv->stats.csum_err_invalid_ip_version++;
-+			goto sw_csum;
-+		}
-+
-+		check = rmnet_map_get_csum_field(proto, trans);
-+		if (check) {
-+			skb->ip_summed = CHECKSUM_NONE;
-+			/* Ask for checksum offloading */
-+			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
-+			priv->stats.csum_hw++;
-+			return;
-+		}
-+	}
-+
-+sw_csum:
-+	priv->stats.csum_sw++;
-+}
-+
- /* Adds MAP header to front of skb->data
-  * Padding is calculated and set appropriately in MAP header. Mux ID is
-  * initialized to 0.
-  */
- struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
--						  int hdrlen, int pad)
-+						  int hdrlen,
-+						  struct rmnet_port *port,
-+						  int pad)
- {
- 	struct rmnet_map_header *map_header;
- 	u32 padding, map_datalen;
-@@ -267,6 +325,10 @@ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
- 			skb_push(skb, sizeof(struct rmnet_map_header));
- 	memset(map_header, 0, sizeof(struct rmnet_map_header));
- 
-+	/* Set next_hdr bit for csum offload packets */
-+	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
-+		map_header->flags |= MAP_NEXT_HEADER_FLAG;
-+
- 	if (pad == RMNET_MAP_NO_PAD_BYTES) {
- 		map_header->pkt_len = htons(map_datalen);
- 		return map_header;
-@@ -393,11 +455,8 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
- 	return 0;
- }
- 
--/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-- * packets that are supported for UL checksum offload.
-- */
--void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
--				      struct net_device *orig_dev)
-+static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
-+						struct net_device *orig_dev)
- {
- 	struct rmnet_priv *priv = netdev_priv(orig_dev);
- 	struct rmnet_map_ul_csum_header *ul_header;
-@@ -416,10 +475,12 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
- 
- 		if (skb->protocol == htons(ETH_P_IP)) {
- 			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
-+			priv->stats.csum_hw++;
- 			return;
- 		} else if (skb->protocol == htons(ETH_P_IPV6)) {
- #if IS_ENABLED(CONFIG_IPV6)
- 			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
-+			priv->stats.csum_hw++;
- 			return;
- #else
- 			priv->stats.csum_err_invalid_ip_version++;
-@@ -436,6 +497,26 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
- 	priv->stats.csum_sw++;
- }
- 
-+/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-+ * packets that are supported for UL checksum offload.
++/*
++ * This flag is used to synchronize util_est with util_avg updates.
++ * When a task is dequeued, its util_est should not be updated if its util_avg
++ * has not been updated in the meantime.
++ * This information is mapped into the MSB bit of util_est.enqueued at dequeue
++ * time. Since max value of util_est.enqueued for a task is 1024 (PELT util_avg
++ * for a task) it is safe to use MSB.
 + */
-+void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-+				      struct rmnet_port *port,
-+				      struct net_device *orig_dev,
-+				      int csum_type)
-+{
-+	switch (csum_type) {
-+	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
-+		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
-+		break;
-+	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
-+		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
-+		break;
-+	default:
-+		break;
-+	}
-+}
++#define UTIL_AVG_UNCHANGED 0x80000000
 +
- /* Process a MAPv5 packet header */
- int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
- 				      u16 len)
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-index 41fbd2c..bc6d6ac 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-@@ -174,6 +174,7 @@ static const char rmnet_gstrings_stats[][ETH_GSTRING_LEN] = {
- 	"Checksum skipped on ip fragment",
- 	"Checksum skipped",
- 	"Checksum computed in software",
-+	"Checksum computed in hardware",
- };
+ /*
+  * The load/runnable/util_avg accumulates an infinite geometric series
+  * (see __update_load_avg_cfs_rq() in kernel/sched/pelt.c).
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 3bdee5fd7d29..0c5ec2776ddf 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -885,6 +885,7 @@ static const struct seq_operations sched_debug_sops = {
+ #define __PS(S, F) SEQ_printf(m, "%-45s:%21Ld\n", S, (long long)(F))
+ #define __P(F) __PS(#F, F)
+ #define   P(F) __PS(#F, p->F)
++#define   PM(F, M) __PS(#F, p->F & (M))
+ #define __PSN(S, F) SEQ_printf(m, "%-45s:%14Ld.%06ld\n", S, SPLIT_NS((long long)(F)))
+ #define __PN(F) __PSN(#F, F)
+ #define   PN(F) __PSN(#F, p->F)
+@@ -1011,7 +1012,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 	P(se.avg.util_avg);
+ 	P(se.avg.last_update_time);
+ 	P(se.avg.util_est.ewma);
+-	P(se.avg.util_est.enqueued);
++	PM(se.avg.util_est.enqueued, ~UTIL_AVG_UNCHANGED);
+ #endif
+ #ifdef CONFIG_UCLAMP_TASK
+ 	__PS("uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
+diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
+index 178290a8d150..e06071bf3472 100644
+--- a/kernel/sched/pelt.h
++++ b/kernel/sched/pelt.h
+@@ -42,16 +42,6 @@ static inline u32 get_pelt_divider(struct sched_avg *avg)
+ 	return LOAD_AVG_MAX - 1024 + avg->period_contrib;
+ }
  
- static void rmnet_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
-@@ -354,4 +355,4 @@ int rmnet_vnd_update_dev_mtu(struct rmnet_port *port,
- 	}
- 
- 	return 0;
--}
-\ No newline at end of file
-+}
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 21529b3..1691f3a 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -1236,6 +1236,7 @@ enum {
- #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
- #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
- #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
-+#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
- 
- enum {
- 	IFLA_RMNET_UNSPEC,
+-/*
+- * When a task is dequeued, its estimated utilization should not be updated if
+- * its util_avg has not been updated in the meantime.
+- * This flag is used to synchronize util_avg updates with util_est updates.
+- * We map this information into the MSB bit of util_est.enqueued at dequeue
+- * time. Since max value of util_est.enqueued for a task is 1024 (PELT
+- * util_avg for a task) it is safe to use MSB here.
+- */
+-#define UTIL_AVG_UNCHANGED 0x80000000
+-
+ static inline void cfs_se_util_change(struct sched_avg *avg)
+ {
+ 	unsigned int enqueued;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+2.25.1
