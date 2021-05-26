@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C28D39147F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E72391481
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbhEZKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:10:11 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35882 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbhEZKKI (ORCPT
+        id S233848AbhEZKKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:10:22 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:34415 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233730AbhEZKKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:10:08 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QA8Zid083338;
-        Wed, 26 May 2021 05:08:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622023715;
-        bh=vOxNhx0MBpAqy1Whz/RPrlaU5mjj6E5AS511hjl1sHk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=lHs4wUHTKY+n8bVET+ZClyIS/bQP06oRu8IJQdMcSS+nixyG2enZdFBwifhejvfjf
-         zAufL2wWsTRc4PMHRMFDJiQ+dh3VfslxDyI4TWpuU1SGQqd+kSNwjSqy4kGjiDiZbV
-         A5EOS+ET05HyfIPzXuhWSppq/7LtoSW75yFlvxFI=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QA8ZIP078628
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 05:08:35 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 05:08:35 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 05:08:35 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QA8XAv046400;
-        Wed, 26 May 2021 05:08:34 -0500
-Subject: Re: [PATCH] ARM: dts: omap2/3: Drop dmas property from I2C node
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tony Lindgren <tony@atomide.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>
-References: <20210526094424.27234-1-vigneshr@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <db266433-e97d-9786-bb1d-07d474ebcab4@ti.com>
-Date:   Wed, 26 May 2021 13:08:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 26 May 2021 06:10:20 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id lqSvlSZDFWkKblqSylCbTZ; Wed, 26 May 2021 12:08:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622023724; bh=BzmVFHMSQuu3AG7hFRs0XESZaEsUHE9O1y4qz6Gi6Ik=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=BcMPltnApAGxzCWLNrQEX1oGsal0xKYVvxe/C7G+bVSKZeZntrbB0pjZRKtiybj+G
+         5oN4F/I4V1flABrhpyXzk26EfJ1Q8RcWgCmK7scc5uYgv8txHn2b+xMo6j6K5/v6AB
+         7eJO8mx8BWzB/rSX3c3QTxgVlPg+zrfHdhHKVhio7OWRLj7nzEDl4ndiW4gl2mIivO
+         om0+pBx9sVFNW1KVLpBo7rpk4tBdwn++/qm0GPENPhTEzEGWbcYmI/QzFgf7VRxx0B
+         AK/AFfhF/fIYmHUnqti0QgEF4kY/+trTPJjD0kmQu4NB1BJyLJDKh79LT9PjQ/1VOO
+         P9r2pV/vAXHyQ==
+Subject: Re: [PATCH -next] [media] media: Replaced simple_strtol() with
+ kstrtoint()
+To:     Liu Shixin <liushixin2@huawei.com>, Mike Isely <isely@pobox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210524120836.1580468-1-liushixin2@huawei.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9d949d86-d8d0-7094-c13b-a0ed03ceaef7@xs4all.nl>
+Date:   Wed, 26 May 2021 12:08:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210526094424.27234-1-vigneshr@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210524120836.1580468-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CMAE-Envelope: MS4xfISORGEzTdymqwJW0pSInJkxpOAmpZaB2TQD2YgT1vs1RzXSzw1icwufkktModJXqJMKESSl+yrD3gLpGLcdBmMvtrtwhfo6cAgxmMGiatyz3ZtKzgGe
+ Zs/knQUdjk3WlQSULGiiahHBQHpxjXkOiaCMaZji72fG9WJr7O+gm6xp0Tg2L72XpG+yVgpNGUGybhVnYJAEqSP3SO03FbCzkjFbFNoTvsZ6XFkbmiosHi7X
+ UmjZyp2/w0qF5vCgKiqQ73iBV7hRD8Ox8itgm0J1M4ALYN4JpwEPYkD1hoZvhbHCZT0ds4QULzhLPyg3kyTALZuUkezSWwlLcKr58tZLNBo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/05/2021 14:08, Liu Shixin wrote:
+> It looks like that memcpy() is a superfluous operation in
+> parse_token()/parse_mtoken(). Simple these two functions and
+> use kstrtoint() instead of simple_strtol() to avoid data
+> overflow.
 
+Always mention which driver you are changing in the subject line.
+Just saying 'media:' suggests a subsystem-wide patch, but this is
+just for a single driver.
 
-On 26/05/2021 12:44, Vignesh Raghavendra wrote:
-> DMA was never supported by i2c-omap driver and the bindings were never
-> documented. Therefore drop the entries in preparation to moving
-> bindings to YAML schema.
+Regards,
+
+	Hans
+
 > 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 > ---
->   arch/arm/boot/dts/dm816x.dtsi | 4 ----
->   arch/arm/boot/dts/omap2.dtsi  | 4 ----
->   arch/arm/boot/dts/omap3.dtsi  | 6 ------
->   3 files changed, 14 deletions(-)
+>  drivers/media/usb/pvrusb2/pvrusb2-ctrl.c | 25 ++----------------------
+>  1 file changed, 2 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-ctrl.c b/drivers/media/usb/pvrusb2/pvrusb2-ctrl.c
+> index 9f71d8c2a3c6..8ae3ad80cccb 100644
+> --- a/drivers/media/usb/pvrusb2/pvrusb2-ctrl.c
+> +++ b/drivers/media/usb/pvrusb2/pvrusb2-ctrl.c
+> @@ -355,11 +355,8 @@ static int parse_token(const char *ptr,unsigned int len,
+>  		       int *valptr,
+>  		       const char * const *names, unsigned int namecnt)
+>  {
+> -	char buf[33];
+>  	unsigned int slen;
+>  	unsigned int idx;
+> -	int negfl;
+> -	char *p2;
+>  	*valptr = 0;
+>  	if (!names) namecnt = 0;
+>  	for (idx = 0; idx < namecnt; idx++) {
+> @@ -370,18 +367,7 @@ static int parse_token(const char *ptr,unsigned int len,
+>  		*valptr = idx;
+>  		return 0;
+>  	}
+> -	negfl = 0;
+> -	if ((*ptr == '-') || (*ptr == '+')) {
+> -		negfl = (*ptr == '-');
+> -		ptr++; len--;
+> -	}
+> -	if (len >= sizeof(buf)) return -EINVAL;
+> -	memcpy(buf,ptr,len);
+> -	buf[len] = 0;
+> -	*valptr = simple_strtol(buf,&p2,0);
+> -	if (negfl) *valptr = -(*valptr);
+> -	if (*p2) return -EINVAL;
+> -	return 1;
+> +	return kstrtoint(ptr, 0, valptr) ? -EINVAL : 1;
+>  }
+>  
+>  
+> @@ -389,10 +375,8 @@ static int parse_mtoken(const char *ptr,unsigned int len,
+>  			int *valptr,
+>  			const char **names,int valid_bits)
+>  {
+> -	char buf[33];
+>  	unsigned int slen;
+>  	unsigned int idx;
+> -	char *p2;
+>  	int msk;
+>  	*valptr = 0;
+>  	for (idx = 0, msk = 1; valid_bits; idx++, msk <<= 1) {
+> @@ -405,12 +389,7 @@ static int parse_mtoken(const char *ptr,unsigned int len,
+>  		*valptr = msk;
+>  		return 0;
+>  	}
+> -	if (len >= sizeof(buf)) return -EINVAL;
+> -	memcpy(buf,ptr,len);
+> -	buf[len] = 0;
+> -	*valptr = simple_strtol(buf,&p2,0);
+> -	if (*p2) return -EINVAL;
+> -	return 0;
+> +	return kstrtoint(ptr, 0, valptr);
+>  }
+>  
+>  
+> 
 
-Thank you.
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-
--- 
-Best regards,
-grygorii
