@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D33D390E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF0D390E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhEZCnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:43:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232310AbhEZCnX (ORCPT
+        id S232270AbhEZCoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:44:10 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3971 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232103AbhEZCoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:43:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621996912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bc/2MmUW+pgbFW2qFMtYQUjTQyUaBFo1vkB8ZkWRL6s=;
-        b=Tk9XfSFrDKoUeNyGLEH6/pHkXySqidyDvK9SDOldMYqjtqNs4uQRkL0P78GH623yxptzb1
-        eXiVKxDalEXIMRSlGma4NQn6MYfhc6cgkvX8cZ0fcl7+cdcq/8E49kX0uzPoJOYZHu5SdX
-        cX10f0BOJbSUCnfd7uAmqr/OTmK6Jbc=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-NSVPEYqWPqKOWUn4NvfNNw-1; Tue, 25 May 2021 22:41:50 -0400
-X-MC-Unique: NSVPEYqWPqKOWUn4NvfNNw-1
-Received: by mail-pg1-f199.google.com with SMTP id q64-20020a6343430000b02902164088f2f0so22239507pga.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bc/2MmUW+pgbFW2qFMtYQUjTQyUaBFo1vkB8ZkWRL6s=;
-        b=DtUylWCtk/JnAu+9aHZNth0F9PVfagIQLYd6N8BgwWY5EvTSb2e/XnFoMQNiUZegms
-         +HnYWWH7TXdh9DrB3fOXMncWxbExwWMrGYPuNREodhRipuZOXELEGLYTyme/Gl5MSCAS
-         ts8hAhwSXkER37OZeQEqmo+ypZ50gn5cp9YT90hgW7Sfm7cf8ZvN7mQeEfRm0s/sIWTt
-         Dgp2on1PQovIC3zROpqm1RQRnNzxuWVY1bxmImXWK5yWKPl1GhZhwx1WP9SfQ+EbAuwF
-         CyNwR1KG9yLHdmnOuIjfFvdDIl5gPMmOOTsROFBvUzoq+PHzokcu0rGQy+qkCn558TIz
-         kwHw==
-X-Gm-Message-State: AOAM531Xs0xBYuoB9ambgOi+g0/sj3lF4a4eP/Olc6IgLI1QY24liGkR
-        sTyEcEsNFUwW64oBtoBzxjWyARa1QzZl16Ez/ymhWDNKSDFytzfXCp7bAexxqxSSNZ0WhYQP7ii
-        aWsIkqQ1SQ7aFftXBpNHeSiv/AZpakmTUkRQv6ZuLEn9B0RmGQYAPWiBGE/GL778SGCXOtwKjtg
-        4/
-X-Received: by 2002:a62:ab10:0:b029:2e8:d5a8:d635 with SMTP id p16-20020a62ab100000b02902e8d5a8d635mr15164724pff.74.1621996909497;
-        Tue, 25 May 2021 19:41:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdM51fqapZ+TAydQBf1YBCQBeMJGeM8QJFnRIR/jK472sF6Fh8jpb1mmntXjLVehm11MPEGA==
-X-Received: by 2002:a62:ab10:0:b029:2e8:d5a8:d635 with SMTP id p16-20020a62ab100000b02902e8d5a8d635mr15164685pff.74.1621996909140;
-        Tue, 25 May 2021 19:41:49 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a8sm14716088pfk.11.2021.05.25.19.41.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 19:41:48 -0700 (PDT)
-Subject: Re: [PATCH v7 05/12] virtio_scsi: Add validation for residual bytes
- from response
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210517095513.850-1-xieyongji@bytedance.com>
- <20210517095513.850-6-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <94abb1de-921d-8bf2-4cfc-55c7fc86c5a0@redhat.com>
-Date:   Wed, 26 May 2021 10:41:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 25 May 2021 22:44:09 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqZrz5zCFzQshl;
+        Wed, 26 May 2021 10:38:59 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 10:42:33 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 26 May
+ 2021 10:42:32 +0800
+Subject: Re: [PATCH 1/1] sched/topology: Fix a spelling mistake in error
+ message
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210526021856.9060-1-thunder.leizhen@huawei.com>
+ <42d36255-c1a6-956a-b56b-0c09eee125ec@infradead.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <5571d34f-1965-8d8e-3033-6352dd0dcaee@huawei.com>
+Date:   Wed, 26 May 2021 10:42:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210517095513.850-6-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <42d36255-c1a6-956a-b56b-0c09eee125ec@infradead.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2021/5/17 ÏÂÎç5:55, Xie Yongji Ð´µÀ:
-> This ensures that the residual bytes in response (might come
-> from an untrusted device) will not exceed the data buffer length.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->   drivers/scsi/virtio_scsi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-> index efcaf0674c8d..ad7d8cecec32 100644
-> --- a/drivers/scsi/virtio_scsi.c
-> +++ b/drivers/scsi/virtio_scsi.c
-> @@ -97,7 +97,7 @@ static inline struct Scsi_Host *virtio_scsi_host(struct virtio_device *vdev)
->   static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
->   {
->   	if (resid)
-> -		scsi_set_resid(sc, resid);
-> +		scsi_set_resid(sc, min(resid, scsi_bufflen(sc)));
->   }
->   
->   /*
 
+On 2021/5/26 10:32, Randy Dunlap wrote:
+> On 5/25/21 7:18 PM, Zhen Lei wrote:
+>> The misspelled word 'borken' should be 'broken'.
+>>
+>> Fixes: 6ae72dff3759 ("sched: Robustify topology setup")
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  kernel/sched/topology.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 55a0a243e871..80295e224442 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1937,7 +1937,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
+>>  
+>>  		if (!cpumask_subset(sched_domain_span(child),
+>>  				    sched_domain_span(sd))) {
+>> -			pr_err("BUG: arch topology borken\n");
+>> +			pr_err("BUG: arch topology broken\n");
+> 
+> Would "borked" or "b0rken" be clearer?
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+These two words don't seem to exist at all. Linux is an open-source
+code for the world, so it's better to use a more common word.
 
+> 
+>>  #ifdef CONFIG_SCHED_DEBUG
+>>  			pr_err("     the %s domain not a subset of the %s domain\n",
+>>  					child->name, sd->name);
+>>
+> 
+> 
+> I.e., this is misspelt on purpose.
+> 
+> Reply to a previous version of this patch:
+>   https://lore.kernel.org/lkml/1493036801.6266.12.camel@gmx.de/
+> 
+> cheers.
+> 
 
