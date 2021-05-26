@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79393921B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D123921B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbhEZU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:59:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:49906 "EHLO foss.arm.com"
+        id S233897AbhEZVAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233726AbhEZU7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:59:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA21F1476;
-        Wed, 26 May 2021 13:58:02 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 355E33F73B;
-        Wed, 26 May 2021 13:58:01 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: [PATCH 2/2] sched: Plug race between SCA, hotplug and migration_cpu_stop()
-Date:   Wed, 26 May 2021 21:57:51 +0100
-Message-Id: <20210526205751.842360-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210526205751.842360-1-valentin.schneider@arm.com>
-References: <20210526205751.842360-1-valentin.schneider@arm.com>
+        id S233717AbhEZVAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:00:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BAD6613D3;
+        Wed, 26 May 2021 20:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622062721;
+        bh=tca5jhJa+R66QtoXGvrvfr4L4lN/+LgPF3bkHUwVN64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IqpaWP4hrBZQWfPpeX+KY4vXPCZN4tFfh2wix4raRcP8uhvW1JskteRVnDJSFw7w7
+         G9xVgaP4FSmFqG5AzxQdN7m1WapB4MVocpqD9PgP83oprYedT7dSjX4lqPk12UX3OR
+         wFY20EHtmSxlfSY6/VWO5V8qW4dtBYoO2/87TwPR2V/UrKQiFsFJVRuviPLDI+jsH3
+         AjYcAjb5auWc8GWImmHjpS0i+JCr7ioJNd6vImI1LqVbdUrKRFhOlnSwYuQrTkj7yv
+         dvp6lHMd3gT+RPmXAo8D5Md+hspw2yEPNoPLUvDeA+WLbMybmPv4H4p5ZY5+fA605/
+         EmL8gZwpaIeTw==
+Date:   Wed, 26 May 2021 21:58:36 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, lorenzo.pieralisi@arm.com,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Revert "arm64: PCI: Exclude ACPI "consumer"
+ resources from host bridge windows"
+Message-ID: <20210526205836.GA20320@willie-the-truck>
+References: <20210510234020.1330087-1-luzmaximilian@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510234020.1330087-1-luzmaximilian@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-migration_cpu_stop() is handed a CPU that was a valid pick at the time
-set_cpus_allowed_ptr() was invoked. However, hotplug may have happened
-between then and the stopper work being executed, meaning
-__move_queued_task() could fail when passed arg.dest_cpu. This could mean
-leaving a task on its current CPU (despite it being outside the task's
-affinity) up until its next wakeup, which is a big no-no.
+On Tue, May 11, 2021 at 01:40:20AM +0200, Maximilian Luz wrote:
+> The Microsoft Surface Pro X has host bridges defined as
+> 
+>     Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
+>     Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
+> 
+>     Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+>     {
+>         Name (RBUF, ResourceTemplate ()
+>         {
+>             Memory32Fixed (ReadWrite,
+>                 0x60200000,         // Address Base
+>                 0x01DF0000,         // Address Length
+>                 )
+>             WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
+>                 0x0000,             // Granularity
+>                 0x0000,             // Range Minimum
+>                 0x0001,             // Range Maximum
+>                 0x0000,             // Translation Offset
+>                 0x0002,             // Length
+>                 ,, )
+>         })
+>         Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
+>     }
+> 
+> meaning that the memory resources aren't (explicitly) defined as
+> "producers", i.e. host bridge windows.
+> 
+> Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
+> host bridge windows") introduced a check that removes such resources,
+> causing BAR allocation failures later on:
+> 
+>     [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
+>     [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
+>     [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
+>     [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
+> 
+> This eventually prevents the PCIe NVME drive from being accessible.
+> 
+> On x86 we already skip the check for producer/window due to some history
+> with negligent firmware. It seems that Microsoft is intent on continuing
+> that history on their ARM devices, so let's drop that check here too.
+> 
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> ---
+> 
+> Please note: I am not sure if this is the right way to fix that, e.g. I
+> don't know if any additional checks like on IA64 or x86 might be
+> required instead, or if this might break things on other devices. So
+> please consider this more as a bug report rather than a fix.
+> 
+> Apologies for the re-send, I seem to have unintentionally added a blank
+> line before the subject.
+> 
+> ---
+>  arch/arm64/kernel/pci.c | 14 --------------
+>  1 file changed, 14 deletions(-)
 
-Verify the validity of the pick in the stopper callback, and invoke
-select_fallback_rq() there if need be.
+Adding Lorenzo to cc, as he'll have a much better idea about this than me.
 
-Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/core.c | 36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
+This is:
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d40511c55e80..0679efb6c22d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2263,6 +2263,8 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
- 	return rq;
- }
- 
-+static int select_fallback_rq(int cpu, struct task_struct *p);
-+
- /*
-  * migration_cpu_stop - this will be executed by a highprio stopper thread
-  * and performs thread migration by bumping thread off CPU then
-@@ -2276,6 +2278,7 @@ static int migration_cpu_stop(void *data)
- 	struct rq *rq = this_rq();
- 	bool complete = false;
- 	struct rq_flags rf;
-+	int dest_cpu;
- 
- 	/*
- 	 * The original target CPU might have gone down and we might
-@@ -2315,18 +2318,27 @@ static int migration_cpu_stop(void *data)
- 				goto out;
- 		}
- 
--		if (task_on_rq_queued(p))
--			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
--		else
--			p->wake_cpu = arg->dest_cpu;
--
--		/*
--		 * XXX __migrate_task() can fail, at which point we might end
--		 * up running on a dodgy CPU, AFAICT this can only happen
--		 * during CPU hotplug, at which point we'll get pushed out
--		 * anyway, so it's probably not a big deal.
--		 */
--
-+		dest_cpu = arg->dest_cpu;
-+		if (task_on_rq_queued(p)) {
-+			/*
-+			 * A hotplug operation could have happened between
-+			 * set_cpus_allowed_ptr() and here, making dest_cpu no
-+			 * longer allowed.
-+			 */
-+			if (!is_cpu_allowed(p, dest_cpu))
-+				dest_cpu = select_fallback_rq(cpu_of(rq), p);
-+			/*
-+			 * dest_cpu can be victim of hotplug between is_cpu_allowed()
-+			 * and here. However, per the synchronize_rcu() in
-+			 * sched_cpu_deactivate(), it can't have gone lower than
-+			 * CPUHP_AP_ACTIVE, so it's safe to punt it over and let
-+			 * balance_push() route it elsewhere.
-+			 */
-+			update_rq_clock(rq);
-+			rq = move_queued_task(rq, &rf, p, dest_cpu);
-+		} else {
-+			p->wake_cpu = dest_cpu;
-+		}
- 	} else if (pending) {
- 		/*
- 		 * This happens when we get migrated between migrate_enable()'s
--- 
-2.25.1
+https://lore.kernel.org/r/20210510234020.1330087-1-luzmaximilian@gmail.com
 
+Will
