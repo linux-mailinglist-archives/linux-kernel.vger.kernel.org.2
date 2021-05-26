@@ -2,75 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422103911F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A563911F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhEZIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:08:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:38676 "EHLO mga07.intel.com"
+        id S232011AbhEZIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:08:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36452 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229594AbhEZIIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:08:12 -0400
-IronPort-SDR: YWOSOQ+s9sDXUdBXnXTz369IirxnrHwx5u8C8V1IuODkYlAVBRpgdw5CbemGxxyxr4PvS07sG7
- h/ZMSsprcKVA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="266303758"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="266303758"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 01:06:39 -0700
-IronPort-SDR: AKp4u7klHy2SEl3B4PXI4gf/JvN3+FpLkRBumcOrpPCnYyIC1HFrhqzphZRmydM/uWFzYICxID
- yKa4kE0cqHEQ==
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="436039144"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 01:06:37 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1lloYk-00Ekeu-Ic; Wed, 26 May 2021 11:06:34 +0300
-Date:   Wed, 26 May 2021 11:06:34 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, andy@kernel.org,
-        akpm@linux-foundation.org, oskar@scara.com,
-        Daniel Latypov <dlatypov@google.com>,
-        Yiyuan Guo <yguoaz@gmail.com>
-Subject: Re: [PATCH v3 1/2] lib/math/rational.c: Fix divide by zero
-Message-ID: <YK4BiteKybO2qGHq@smile.fi.intel.com>
-References: <20210525233519.343068-1-tpiepho@gmail.com>
- <YK4BDmPDuXfxEDn7@smile.fi.intel.com>
+        id S229594AbhEZIIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:08:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622016433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qXmMuXVb6tV490lrV7VKGSnEUHok9pVADTgbbHbkGj0=;
+        b=byko318foULpGG7GZ3OWDvHxPsWBem5g9+z9gGjWRMD+LptxjXyviyALYgvIV8V3Jn4jqK
+        Mf9/WFdIgipjTioENvYUaENEIyaKjthC2lozWQiykTqjbzlp7OFg1ohnpv8CwMVO7e6hMO
+        RlWRAvAcWyxWT6x7x04GrM2S+eppswI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C683BAFA9;
+        Wed, 26 May 2021 08:07:13 +0000 (UTC)
+Date:   Wed, 26 May 2021 10:07:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v1] drivers/base/memory: fix trying offlining memory
+ blocks with memory holes on aarch64
+Message-ID: <YK4BsAXQuh+QDy08@dhcp22.suse.cz>
+References: <20210526075226.5572-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK4BDmPDuXfxEDn7@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210526075226.5572-1-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:04:30AM +0300, Andy Shevchenko wrote:
-> On Tue, May 25, 2021 at 04:35:18PM -0700, Trent Piepho wrote:
-> > If the input is out of the range of the allowed values, either larger
-> > than the largest value or closer to zero than the smallest non-zero
-> > allowed value, then a division by zero would occur.
-> > 
-> > In the case of input too large, the division by zero will occur on the
-> > first iteration.  The best result (largest allowed value) will be found
-> > by always choosing the semi-convergent and excluding the denominator
-> > based limit when finding it.
-> > 
-> > In the case of the input too small, the division by zero will occur on
-> > the second iteration.  The numerator based semi-convergent should not be
-> > calculated to avoid the division by zero.  But the semi-convergent vs
-> > previous convergent test is still needed, which effectively chooses
-> > between 0 (the previous convergent) vs the smallest allowed fraction
-> > (best semi-convergent) as the result.
+On Wed 26-05-21 09:52:26, David Hildenbrand wrote:
+> offline_pages() properly checks for memory holes and bails out. However,
+> we do a page_zone(pfn_to_page(start_pfn)) before calling offline_pages()
+> when offlining a memory block. We should not unconditionally call
+> page_zone(pfn_to_page(start_pfn)) on aarch64 in offlining code, otherwise
+> we can trigger a BUG when hitting a memory hole:
 > 
-> What has been changed that you haven't applied my Rb tag?
+> [  162.327720][ T1694] kernel BUG at include/linux/mm.h:1383!
+> [  162.333695][ T1694] Internal error: Oops - BUG: 0 [#1] SMP
+> [  162.339181][ T1694] Modules linked in: loop processor efivarfs ip_tables x_tables ext4 mbcache jbd2 dm_mod igb nvme i2c_algo_bit mlx5_core i2c_core nvme_core firmware_class
+> [  162.354604][ T1694] CPU: 13 PID: 1694 Comm: ranbug Not tainted 5.12.0-next-20210524+ #4
+> [  162.362601][ T1694] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
+> [  162.371116][ T1694] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [  162.377811][ T1694] pc : memory_subsys_offline+0x1f8/0x250
+> [  162.383295][ T1694] lr : memory_subsys_offline+0x1f8/0x250
+> [  162.388773][ T1694] sp : ffff80002458f8e0
+> [  162.392773][ T1694] x29: ffff80002458f8e0 x28: ffff800010914d30 x27: 0000000000000000
+> [  162.400602][ T1694] x26: 0000000000002000 x25: 1fffe00002550401 x24: ffff000012a82008
+> [  162.408431][ T1694] x23: fffffc0000000000 x22: 0000000000008000 x21: 0000000000000001
+> [  162.416259][ T1694] x20: ffffffffffffffff x19: ffff000012a82018 x18: ffff0008527b6a70
+> [  162.424086][ T1694] x17: 0000000000000000 x16: 0000000000000007 x15: 00000000000000c8
+> [  162.431914][ T1694] x14: 0000000000000000 x13: ffff800011c6eea4 x12: ffff60136ceb8574
+> [  162.439742][ T1694] x11: 1fffe0136ceb8573 x10: ffff60136ceb8573 x9 : dfff800000000000
+> [  162.447570][ T1694] x8 : ffff009b675c2b9b x7 : 0000000000000001 x6 : ffff009b675c2b98
+> [  162.455398][ T1694] x5 : 00009fec93147a8d x4 : ffff009b675c2b98 x3 : 1fffe0010a4f6c09
+> [  162.463226][ T1694] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000034
+> [  162.471054][ T1694] Call trace:
+> [  162.474186][ T1694]  memory_subsys_offline+0x1f8/0x250
+> [  162.479318][ T1694]  device_offline+0x154/0x1d8
+> [  162.483844][ T1694]  online_store+0xa4/0x118
+> [  162.488107][ T1694]  dev_attr_store+0x44/0x78
+> [  162.492457][ T1694]  sysfs_kf_write+0xe8/0x138
+> [  162.496896][ T1694]  kernfs_fop_write_iter+0x26c/0x3d0
+> [  162.502028][ T1694]  new_sync_write+0x2bc/0x4f8
+> [  162.506552][ T1694]  vfs_write+0x718/0xc88
+> [  162.510643][ T1694]  ksys_write+0xf8/0x1e0
+> [  162.514732][ T1694]  __arm64_sys_write+0x74/0xa8
+> [  162.519342][ T1694]  invoke_syscall.constprop.0+0x78/0x1e8
+> [  162.524824][ T1694]  do_el0_svc+0xe4/0x298
+> [  162.528914][ T1694]  el0_svc+0x20/0x30
+> [  162.532658][ T1694]  el0_sync_handler+0xb0/0xb8
+> [  162.537181][ T1694]  el0_sync+0x178/0x180
+> [  162.541187][ T1694] Code: f00033e1 91318021 91090021 97e38d8b (d4210000)
+> [  162.547968][ T1694] ---[ end trace 2a1964462a219f20 ]---
+> [  162.553273][ T1694] Kernel panic - not syncing: Oops - BUG: Fatal exception
+> [  162.560250][ T1694] SMP: stopping secondary CPUs
+> [  162.564871][ T1694] Kernel Offset: disabled
+> [  162.569045][ T1694] CPU features: 0x00000251,20000846
+> [  162.574089][ T1694] Memory Limit: none
+> [  162.577849][ T1694] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal exception ]---
+> 
+> If nr_vmemmap_pages is set, we know that we are dealing with hotplugged
+> memory that doesn't have any holes. So call
+> page_zone(pfn_to_page(start_pfn)) only when really necessary -- when
+> nr_vmemmap_pages is set and we actually adjust the present pages.
+> 
+> Fixes: a08a2ae34613 ("mm,memory_hotplug: allocate memmap from the added memory range")
+> Reported-by: Qian Cai (QUIC) <quic_qiancai@quicinc.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Note, the `b4` tool can easily collect them for you from previous thread.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
+> ---
+>  drivers/base/memory.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index b31b3af5c490..d5ffaab3cb61 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -218,14 +218,14 @@ static int memory_block_offline(struct memory_block *mem)
+>  	struct zone *zone;
+>  	int ret;
+>  
+> -	zone = page_zone(pfn_to_page(start_pfn));
+> -
+>  	/*
+>  	 * Unaccount before offlining, such that unpopulated zone and kthreads
+>  	 * can properly be torn down in offline_pages().
+>  	 */
+> -	if (nr_vmemmap_pages)
+> +	if (nr_vmemmap_pages) {
+> +		zone = page_zone(pfn_to_page(start_pfn));
+>  		adjust_present_page_count(zone, -nr_vmemmap_pages);
+> +	}
+>  
+>  	ret = offline_pages(start_pfn + nr_vmemmap_pages,
+>  			    nr_pages - nr_vmemmap_pages);
+> -- 
+> 2.31.1
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Michal Hocko
+SUSE Labs
