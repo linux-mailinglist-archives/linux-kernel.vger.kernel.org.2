@@ -2,142 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEAF392234
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34672392232
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhEZVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:41:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:50156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234070AbhEZVlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:41:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69A3C11D4;
-        Wed, 26 May 2021 14:40:19 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFA4D3F73B;
+        id S234019AbhEZVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233357AbhEZVlp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:41:45 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8683C061574;
         Wed, 26 May 2021 14:40:12 -0700 (PDT)
-Date:   Wed, 26 May 2021 22:40:05 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210526214004.GA1712@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
- <87a6oj6sxo.mognet@arm.com>
- <20210525102945.GA24210@e120325.cambridge.arm.com>
- <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
- <20210526121546.GA13262@e120325.cambridge.arm.com>
- <20210526125133.GB13262@e120325.cambridge.arm.com>
- <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fr49j2j4nz9sCD;
+        Thu, 27 May 2021 07:40:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622065209;
+        bh=8x8GB8N/IBQv7ugJj9VaZJqSyrNd6NiKWkGarO5c4n4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=e0CILBpRiYUHw2ayWZ6ohpD+R1ynLwZOij4xPtW0HC9qLLdJh4nJp4P/2E2kAIaFl
+         aqnwi/sBMu742GsCuoqE/5dgaSI71zVpkg8ynWs5qFVNaM5FvfHlpFDwmwwMtac/Cc
+         91HMfwfqJRhgqIUA9wRcZAP/7c4cS0PlYgOMkuCSg9BLB/zdZIRSrBkopux7Ots75d
+         Sg7Vn6WRE+4EJKF5cImYUXnsRvwPA5Ji8jpCVNbimeaQa1i5+uN/BBOCMMAcH/id20
+         bdUshq0ZVVFBa/YJ/nKrdwtduFpEMpg+/YgDfg7kAARDGNr6fY+zD2lT4Sxj3Q2PfB
+         N/xQ7yiqCh7Sg==
+Date:   Thu, 27 May 2021 07:40:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the omap-fixes tree
+Message-ID: <20210527074007.462e1167@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/2.q5xtPiUsyGwug2aExAPi=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 08:17:41PM +0200, Dietmar Eggemann wrote:
-> On 26/05/2021 14:51, Beata Michalska wrote:
-> > On Wed, May 26, 2021 at 01:15:46PM +0100, Beata Michalska wrote:
-> >> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
-> >>> On 25/05/2021 12:29, Beata Michalska wrote:
-> >>>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
-> >>>>> On 24/05/21 23:55, Beata Michalska wrote:
-> >>>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> >>>>>>> On 24/05/21 11:16, Beata Michalska wrote:
-> 
-> [...]
-> 
-> >>> BTW, how would this mechanism behave on a system with SMT and asymmetric CPU
-> >>> capacity? Something EAS wouldn't allow but I guess asym_cap_list will be
-> >>> constructed and the SD_ASYM_CPUCAPACITY_XXX flags will be set?
-> >> Yes, the list would get created and flags set. I do not think there is
-> >> a difference with current approach (?). So EAS would be disabled (it only cares
-> >> about SD_ASYM_CPUCAPACITY_FULL flag) but the misift might still kick in.
-> >>
-> > That depends on the arch_scale_cpu_capacity. I would imagine it would
-> > return SCHED_CAPACITY_SCALE for those, which means no asymmetry will
-> > be detected ?
-> 
-> I was thinking about an erroneous dts file like:
-> 
->                 cpu-map {
->                         cluster0 {
->                                 core0 {
-> 					thread0 {
->                                         	cpu = <&A53_0>;
-> 					};
-> 					thread1 {
->                                         	cpu = <&A53_1>;
-> 					};
->                                 };
->                                 core1 {
-> 					thread0 {
->                                         	cpu = <&A53_2>;
-> 					};
-> 					thread1 {
->                                         	cpu = <&A53_3>;
-> 					};
->                                 };
->                                 core2 {
-> 					thread0 {
->                                         	cpu = <&A53_4>;
-> 					};
-> 					thread1 {
->                                         	cpu = <&A53_5>;
-> 					};
->                                 };
->                         };
-> 
->                         cluster1 {
->                                 core0 {
-> 					thread0 {
->                                         	cpu = <&A53_6>;
-> 					};
-> 					thread1 {
->                                         	cpu = <&A53_7>;
-> 					};
->                                 };
->                         };
->                 };
-> 
-> 		A53_0: cpu@0 {
-> 			capacity-dmips-mhz = <446>;
-> 	 	A53_1: cpu@1 {
-> 			capacity-dmips-mhz = <1024>;
-> 		A53_2: cpu@2 {
-> 			capacity-dmips-mhz = <871>;
-> 		A53_3: cpu@3 {
-> 			capacity-dmips-mhz = <1024>;
-> 		A53_4: cpu@4 {
-> 			capacity-dmips-mhz = <446>;
-> 		A53_5: cpu@5 {
-> 			capacity-dmips-mhz = <871>;
-> 		A53_6: cpu@6 {
-> 			capacity-dmips-mhz = <1024>;
-> 		A53_7: cpu@7 {
-> 			capacity-dmips-mhz = <1024>;
-> 
-> Here I guess SD_ASYM_CPUCAPACITY will be attached to SMT[0-5]. So this
-> 'capacity-dmips-mhz' config error won't be detected.
-> 
-> In case all CPUs (i.e. hw threads would have the correct
-> capacity-dmips-mhz = <1024> or not being set (default 1024))
-> asym_cap_list would corrcetly only have 1 entry.
-We could possibly add a warning (like in EAS) if the asymmetry is detected
-for SMT which would give some indication that there is smth ... wrong ?
+--Sig_/2.q5xtPiUsyGwug2aExAPi=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
----
-BR
-B.
+Hi all,
+
+Commit
+
+  1e195f9cef08 ("ARM: OMAP1: ams-delta: remove unused function ams_delta_ca=
+mera_power")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2.q5xtPiUsyGwug2aExAPi=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCuwDcACgkQAVBC80lX
+0Gy1+Af+IAVweh/3fPzJSSt8CItQs+lds4ga2FWPnbk9mTsYusB65Q/LQB6i1XP3
+Wgm2WVmPYFtGWvh160Qj/MasKFmKapNC+tnCSGUf9ooNf0RHuhAHLFuJ0ju/mP17
+4Hm4AUIeuRjREOYl3NCn5pHUbp5iXMtK+T033daNeiPUXMCczjLQYxAWJkV1KQBJ
+NSmhttreKu93WIBnEXZJvoOLOH9dMKu9aqhquQ6+IMThzrAJ2hcrZiyPfvk+6rNc
+rErGhAYPJpa6wexwcccMb+nm/35v2kzotXSEokOKkSd53oXm7+qdfF9QgMk25ebZ
+7yXJBuc/VYysV0KBeGI7xE0J3zaTug==
+=5I0i
+-----END PGP SIGNATURE-----
+
+--Sig_/2.q5xtPiUsyGwug2aExAPi=--
