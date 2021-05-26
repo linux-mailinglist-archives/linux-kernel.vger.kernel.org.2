@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065E13912F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5412E3912B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbhEZIub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        id S232921AbhEZIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhEZItc (ORCPT
+        with ESMTP id S232358AbhEZIs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:32 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBB1C061343
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:48:01 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id p7so180288wru.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+mad90AtNlCIQqeONJLgwNjgy3qTN43q4JqhckiOfdA=;
-        b=rDtWdIyU6k0Cu5EI0Xlh1Az0oi7vs4Rth10DNmiyY6J6hI++dGQgjhk0Ys7zL9Zffb
-         4njHjsoCQFlwcTujCSBLYl/jQKTw9l/Fc7oYmViTqq+nSag3QAXqaW1PWbx7mA724IrN
-         etOcBgE3E4D4L7jpS9zuUTeLSizvoLtiNbXFR3BYha4kSt4fXo/bc+ubcSigbUFa7J8h
-         6f0XO14rRjVWzK5KGbVgkPdQICuiMB/Eth5vyt4C3DTWBpC9u7qhl5G1/EnhNo+eNPQc
-         ahnftmb6732uEKdskUfq9+EkUKctnVZXLnSi7quTT+3ewG0j5rJqHVAt/3GZ2436Yldh
-         tbmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+mad90AtNlCIQqeONJLgwNjgy3qTN43q4JqhckiOfdA=;
-        b=hYHER5MnPqImldOFZ+irHYoAagPKei7st5P6eMNZdTGc69bXdwFsVajzPPDjFVrH5x
-         9KZrKZi6bIv3JOQX/JPX3Nyjb6WMv48Rz4SnHoWzaHVv0OTyxtPokfoZ13U8Lr6ggcUV
-         5PKqLusPfLO/SvmeNYjK9DeUwdW/zyJrSXhblPI0cV9UBnpW0/4aGMTWyOvX8jYM16H2
-         0yEV3zQ/kT4LjIbeQAKUiDms/HNLot2PhXW1lVk7hP7G0uxBOYdfN+MRwSDFw/PkPzpZ
-         k+QMUD6Gb3ngICnPnUdFV41q7X4BxwwEJR151LyDPWTPrV2wSKDGoP3ah0EwiUG1myyy
-         OABA==
-X-Gm-Message-State: AOAM530sZ7k8Q3GPiPr7e5oH41IrP9j43gxb80rBc3wGBnrgjhRQmEXn
-        y/PcJhpCKlntke6t7VShOJF4+Q==
-X-Google-Smtp-Source: ABdhPJy2slfQ3QCAf471u3XJ0KZjA6HRnV8JDSY7c/reI6yg8Wjtmsz0gglvZK/wgOQqkD9TjiZs0A==
-X-Received: by 2002:a5d:678c:: with SMTP id v12mr32334508wru.246.1622018879881;
-        Wed, 26 May 2021 01:47:59 -0700 (PDT)
-Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:59 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 28/34] drm/panel/panel-raspberrypi-touchscreen: Demote kernel-doc abuse
-Date:   Wed, 26 May 2021 09:47:20 +0100
-Message-Id: <20210526084726.552052-29-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
-References: <20210526084726.552052-1-lee.jones@linaro.org>
+        Wed, 26 May 2021 04:48:56 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC88C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:25 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d490061818bcc6f3e1c2b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4900:6181:8bcc:6f3e:1c2b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 821EF1EC01DF;
+        Wed, 26 May 2021 10:47:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622018843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=dDbqcN7yPNZ7DXqdwmtnFTmSQPgsADBgy42h99rlSic=;
+        b=FkuIyLU8R5xYoTpbaviKFDBYEBRKhT8xXPBltG6593nog/obko6w9uzCSWXqb6meAZZYTt
+        FlfZyEdUOfJ1Zy6nTEAIZKIP7isWnF5kngboWUk1Uhp7GNEcmXmruZ3fXvgi7q2k7FZmLx
+        BbwpXnoqJqLi2THEopInA4wu6SYClVQ=
+Date:   Wed, 26 May 2021 10:47:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        untaintableangel@hotmail.co.uk, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Message-ID: <YK4LGUDWXJWOp7IR@zn.tnic>
+References: <20210526081100.12239-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210526081100.12239-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Wed, May 26, 2021 at 11:11:00AM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> After the consolidation of early memory reservations introduced by the
+> commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+> the kernel fails to boot if X86_RESERVE_LOW is set to 640K.
+> 
+> The boot fails because real-time trampoline must be allocated under 1M (or
+> essentially under 640K) but with X86_RESERVE_LOW set to 640K the memory is
+> already reserved by the time reserve_real_mode() is called.
+> 
+> Before the reordering of the early memory reservations it was possible to
+> allocate from low memory even despite user's request to avoid using that
+> memory. This lack of consistency could potentially lead to memory
+> corruptions by BIOS in the areas allocated by kernel.
 
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c:33: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+Hmm, so this sounds weird to me: real-time trampoline clearly has
+precedence over X86_RESERVE_LOW because you need former to boot the
+machine, right?
 
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In that case, real-time trampoline should allocate first and *then* the
+rest of low range requested to be reserved should be reserved, no?
 
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index 5e9ccefb88f62..2229f1af2ca8c 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -29,7 +29,7 @@
-  * DEALINGS IN THE SOFTWARE.
-  */
- 
--/**
-+/*
-  * Raspberry Pi 7" touchscreen panel driver.
-  *
-  * The 7" touchscreen consists of a DPI LCD panel, a Toshiba
+Thx.
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
