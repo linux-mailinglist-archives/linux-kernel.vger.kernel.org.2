@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E55D391C41
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32604391C47
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhEZPoF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 11:44:05 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:56195 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhEZPn7 (ORCPT
+        id S235273AbhEZPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:45:52 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:38434 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232537AbhEZPpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:43:59 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id B4F50100007;
-        Wed, 26 May 2021 15:42:25 +0000 (UTC)
-Date:   Wed, 26 May 2021 17:42:24 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: mtd: spinand: add spi nand mtd resume handler
-Message-ID: <20210526174224.2b8714fc@xps13>
-In-Reply-To: <20210526153016.32653-1-patrice.chotard@foss.st.com>
-References: <20210526153016.32653-1-patrice.chotard@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 26 May 2021 11:45:51 -0400
+Received: by mail-il1-f197.google.com with SMTP id r3-20020a92cd830000b02901c085bc9f5eso1100496ilb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:44:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OdL20YqkAI7JJ2Wurl0dYHvUrhMz0DHPO3AdkhEoqS8=;
+        b=Y0S5tCTSqRJ81sPBN4hyZ7/9eSlvzLZ7WkGhkiEJYLpWDo3b9CW2GEJcVZMwX6W1PA
+         sbYZkuoG1grOYHAW7suSKCITa+Udxc2zsSqxClFBh1+zWvPQH4RkAwnNfsVfn+HwGidT
+         oFU3zfoKxoFxDES1B78MTsMEf80bEyfuHea5fRRNCSHqlED1VG9l5gZgLj3lLoEpUpps
+         ZsoNU/ot0ir+MbypntVhpK2GlU7YPgkd3TRSTNvzMPREz5JwWkw/XvQfvNlivYOzR5+6
+         m30NJJ6MGX/PrKsNJ8vPebsECnZKG61EA6/nk1p4zlQQ2wtfPKlKxeWbRt14apEWIJnS
+         vFDg==
+X-Gm-Message-State: AOAM532PO7POWMShTp7Ev3Ki7TWM03rmOU34UeAxIdBudt1z7ZqI+cTg
+        hTKvkfyTrtsuGCfDggxee1WyIvRAwg9DSSSvZJmIQSyTgYLT
+X-Google-Smtp-Source: ABdhPJwg4V/nF+IW2KqtAB+SxTtb5cqxHI95UE+eQMXQMSI9dkKSicoQOTTt0voPm8eOjbAZCCPIWP6tVVmS/NzPyGjNGw36LDAF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-Received: by 2002:a05:6e02:1ba7:: with SMTP id n7mr22093360ili.159.1622043858212;
+ Wed, 26 May 2021 08:44:18 -0700 (PDT)
+Date:   Wed, 26 May 2021 08:44:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fa9f7005c33d83b9@google.com>
+Subject: [syzbot] KCSAN: data-race in __io_uring_cancel / io_uring_try_cancel_requests
+From:   syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-<patrice.chotard@foss.st.com> wrote on Wed, 26 May 2021 17:30:16 +0200:
+syzbot found the following issue on:
 
-> From: Christophe Kerello <christophe.kerello@foss.st.com>
+HEAD commit:    a050a6d2 Merge tag 'perf-tools-fixes-for-v5.13-2021-05-24'..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13205087d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3bcc8a6b51ef8094
+dashboard link: https://syzkaller.appspot.com/bug?extid=73554e2258b7b8bf0bbf
+compiler:       Debian clang version 11.0.1-2
 
-Would you mind to use "add SPI-NAND MTD resume handler" as title? (with
-upper case letters)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> After power up, all SPI NAND's blocks are locked. Only read operations
-> are allowed, write and erase operations are forbidden.
-> The SPI NAND framework unlocks all the blocks during its initialization.
-> 
-> During a standby low power, the memory is powered down, losing its
-> configuration.
-> During the resume, the QSPI driver state is restored but the SPI NAND
-> framework does not reconfigured the memory.
-> 
-> This patch adds spi nand mtd PM handlers for resume ops.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com
 
-ditto             ^^^^^^^^^^^^
+==================================================================
+BUG: KCSAN: data-race in __io_uring_cancel / io_uring_try_cancel_requests
 
-> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 56 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 17f63f95f4a2..6abaf874eb3f 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1074,6 +1074,61 @@ static int spinand_detect(struct spinand_device *spinand)
->  	return 0;
->  }
->  
-> +static void spinand_mtd_resume(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	int ret, i;
-> +
-> +	ret = spinand_reset_op(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_init_quad_enable(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to initialize the quad part (err = %d)\n",
+write to 0xffff88811d8df330 of 8 bytes by task 3709 on cpu 1:
+ io_uring_clean_tctx fs/io_uring.c:9042 [inline]
+ __io_uring_cancel+0x261/0x3b0 fs/io_uring.c:9136
+ io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+ do_exit+0x185/0x1560 kernel/exit.c:781
+ do_group_exit+0xce/0x1a0 kernel/exit.c:923
+ get_signal+0xfc3/0x1610 kernel/signal.c:2835
+ arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:301
+ do_syscall_64+0x56/0x90 arch/x86/entry/common.c:57
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-quad part? what about "Failed to resume the quad state" or something
-alike?
+read to 0xffff88811d8df330 of 8 bytes by task 6412 on cpu 0:
+ io_uring_try_cancel_iowq fs/io_uring.c:8911 [inline]
+ io_uring_try_cancel_requests+0x1ce/0x8e0 fs/io_uring.c:8933
+ io_ring_exit_work+0x7c/0x1110 fs/io_uring.c:8736
+ process_one_work+0x3e9/0x8f0 kernel/workqueue.c:2276
+ worker_thread+0x636/0xae0 kernel/workqueue.c:2422
+ kthread+0x1d0/0x1f0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to updtae the OTP (err = %d)\n",
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 6412 Comm: kworker/u4:9 Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound io_ring_exit_work
+==================================================================
 
-update
 
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	ret = spinand_manufacturer_init(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to initialize the SPI NAND chip (err = %d)\n",
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	/* After power up, all blocks are locked, so unlock them here. */
-> +	for (i = 0; i < nand->memorg.ntargets; i++) {
-> +		ret = spinand_select_target(spinand, i);
-> +		if (ret) {
-> +			dev_err(dev,
-> +				"Failed to select the target (err = %d)\n",
-> +				ret);
-> +			return;
-> +		}
-> +
-> +		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
-> +		if (ret) {
-> +			dev_err(dev,
-> +				"Failed to unlock block (err = %d)\n",
-> +				ret);
-> +			return;
-> +		}
-> +	}
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I bet this would deserve a helper as this is the exact same peace of
-code that is being run in spinnand_init()?
-
-At the very least I think that spinand_ecc_enable(spinand, false);
-should be called.
-
-Ideally, a resume operation should be provided by ECC engines, but that
-can be added later.
-
-> +}
-> +
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1167,6 +1222,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-> +	mtd->_resume = spinand_mtd_resume;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-
-Thanks,
-Miquèl
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
