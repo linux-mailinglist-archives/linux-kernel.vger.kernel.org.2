@@ -2,97 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A9239222C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD039222F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhEZVjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:39:22 -0400
-Received: from mga02.intel.com ([134.134.136.20]:4030 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232250AbhEZVjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:39:19 -0400
-IronPort-SDR: HKKgB+h8a3yK+7R/fYCZYdbnOdk7zlWyeuBnGiH0Mtsdjrt09jAnZYQ1smtbsIkmQqyrueLmJb
- sCtaWy1ymIxQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189705637"
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
-   d="scan'208";a="189705637"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 14:37:44 -0700
-IronPort-SDR: B+C9Mk8p7JICAVQrvXzXDmFMaIO7LGs20hUpYkAejRCSFiApi7ahziZVrCEVBNRZiFbYksQhwW
- c8BHhqSY5Ghw==
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
-   d="scan'208";a="547387010"
-Received: from skgiroua-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.151.24])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 14:37:41 -0700
-Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
- <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
- <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
- <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
- <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
- <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
- <YKfPLlulaqwypNkO@zn.tnic> <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <a53cd108-8758-e153-7ae6-c508fce02003@linux.intel.com>
-Date:   Wed, 26 May 2021 14:37:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S233969AbhEZVj4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 17:39:56 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3953 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233550AbhEZVjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:39:54 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fr44G6SSFz80wY;
+        Thu, 27 May 2021 05:35:26 +0800 (CST)
+Received: from dggpeml100024.china.huawei.com (7.185.36.115) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 05:38:19 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpeml100024.china.huawei.com (7.185.36.115) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 05:38:19 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Thu, 27 May 2021 05:38:19 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        tangchengchang <tangchengchang@huawei.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
+ are already in same LLC
+Thread-Topic: [PATCH] sched: fair: don't depend on wake_wide if waker and
+ wakee are already in same LLC
+Thread-Index: AQHXUhAXdUizMfoReUmU6BSpTsz4hqr1J2iAgAEbn9A=
+Date:   Wed, 26 May 2021 21:38:19 +0000
+Message-ID: <7dd00a98d6454d5e92a7d9b936d1aa1c@hisilicon.com>
+References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
+ <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
+In-Reply-To: <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.79]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/21/21 9:19 AM, Tom Lendacky wrote:
-> In arch/x86/mm/mem_encrypt.c, sme_early_init() (should have renamed that
-> when SEV support was added), we do:
-> 	if (sev_active())
-> 		swiotlb_force = SWIOTLB_FORCE;
+> -----Original Message-----
+> From: Peter Zijlstra [mailto:peterz@infradead.org]
+> Sent: Thursday, May 27, 2021 12:16 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: vincent.guittot@linaro.org; mingo@redhat.com; dietmar.eggemann@arm.com;
+> rostedt@goodmis.org; bsegall@google.com; mgorman@suse.de;
+> valentin.schneider@arm.com; juri.lelli@redhat.com; bristot@redhat.com;
+> linux-kernel@vger.kernel.org; guodong.xu@linaro.org; yangyicong
+> <yangyicong@huawei.com>; tangchengchang <tangchengchang@huawei.com>;
+> Linuxarm <linuxarm@huawei.com>
+> Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and wakee
+> are already in same LLC
 > 
-> TDX should be able to do a similar thing without having to touch
-> arch/x86/kernel/pci-swiotlb.c.
 > 
-> That would remove any confusion over SME being part of a
-> protected_guest_has() call.
+> $subject is weird; sched/fair: is the right tag, and then start with a
+> capital letter.
+> 
+> On Wed, May 26, 2021 at 09:10:57PM +1200, Barry Song wrote:
+> > when waker and wakee are already in the same LLC, it is pointless to worry
+> > about the competition caused by pulling wakee to waker's LLC domain.
+> 
+> But there's more than LLC.
 
-You mean sme_active() check in arch/x86/kernel/pci-swiotlb.c is redundant?
+I suppose other concerns might be about the "idle" and "load" of
+waker's cpu and wakee's prev_cpu. Here even though we disable
+wake_wide(), wake_affine() still has chance to select wakee's
+prev_cpu rather than pulling to waker. So disabling wake_wide()
+doesn't mean we will 100% pull.
 
-  41 int __init pci_swiotlb_detect_4gb(void)
-  42 {
-  43         /* don't initialize swiotlb if iommu=off (no_iommu=1) */
-  44         if (!no_iommu && max_possible_pfn > MAX_DMA32_PFN)
-  45                 swiotlb = 1;
-  46
-  47         /*
-  48          * If SME is active then swiotlb will be set to 1 so that bounce
-  49          * buffers are allocated and used for devices that do not support
-  50          * the addressing range required for the encryption mask.
-  51          */
-  52         if (sme_active() || is_tdx_guest())
-  53                 swiotlb = 1;
+static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+		       int this_cpu, int prev_cpu, int sync)
+{
+	int target = nr_cpumask_bits;
 
+	if (sched_feat(WA_IDLE))
+		target = wake_affine_idle(this_cpu, prev_cpu, sync);
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
+		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
+
+	if (target == nr_cpumask_bits)
+		return prev_cpu;
+
+	..
+	return target;
+}
+
+Furthermore, select_idle_sibling() can also pick wakee's prev_cpu
+if it is idle:
+
+static int select_idle_sibling(struct task_struct *p, int prev, int target)
+{
+	...
+
+	/*
+	 * If the previous CPU is cache affine and idle, don't be stupid:
+	 */
+	if (prev != target && cpus_share_cache(prev, target) &&
+	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+	    asym_fits_capacity(task_util, prev))
+		return prev;
+	...
+}
+
+Except those, could you please give me some clue about what else
+you have concerns on?
+
+> 
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > ---
+> >  kernel/sched/fair.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 3248e24a90b0..cfb1bd47acc3 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6795,7 +6795,15 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu,
+> int wake_flags)
+> >  			new_cpu = prev_cpu;
+> >  		}
+> >
+> > -		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
+> > +		/*
+> > +		 * we use wake_wide to make smarter pull and avoid cruel
+> > +		 * competition because of jam-packed tasks in waker's LLC
+> > +		 * domain. But if waker and wakee have been already in
+> > +		 * same LLC domain, it seems it is pointless to depend
+> > +		 * on wake_wide
+> > +		 */
+> > +		want_affine = (cpus_share_cache(cpu, prev_cpu) || !wake_wide(p)) &&
+> > +				cpumask_test_cpu(cpu, p->cpus_ptr);
+> >  	}
+> 
+> And no supportive numbers...
+
+Sorry for the confusion.
+
+I actually put some supportive numbers at the below thread which
+derived this patch:
+https://lore.kernel.org/lkml/bbc339cef87e4009b6d56ee37e202daf@hisilicon.com/
+
+when I tried to give Dietmar some pgbench data in that thread,
+I found in kunpeng920, while software ran in one die/numa with
+24cores sharing LLC, disabling wake_wide() brought the best
+pgbench result.
+
+                llc_as_factor          don't_use_wake_wide
+Hmean     1     10869.27 (   0.00%)    10723.08 *  -1.34%*
+Hmean     8     19580.59 (   0.00%)    19469.34 *  -0.57%*
+Hmean     12    29643.56 (   0.00%)    29520.16 *  -0.42%*
+Hmean     24    43194.47 (   0.00%)    43774.78 *   1.34%*
+Hmean     32    40163.23 (   0.00%)    40742.93 *   1.44%*
+Hmean     48    42249.29 (   0.00%)    48329.00 *  14.39%*
+
+The test was done by https://github.com/gormanm/mmtests
+and
+./run-mmtests.sh --config ./configs/config-db-pgbench-timed-ro-medium test_tag
+
+Commit "sched: Implement smarter wake-affine logic"
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=62470419
+says pgbench can improve by wake_wide(), but I've actually
+seen the opposite result while waker and wakee are already
+in one LLC.
+
+Not quite sure if it is specific to kunpeng920, perhaps
+I need to run the same test on some x86 machines.
+
+Thanks
+Barry
