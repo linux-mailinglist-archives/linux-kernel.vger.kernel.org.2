@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D763916B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472333916BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhEZLyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:54:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:43426 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234573AbhEZLwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:52:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D54C1516;
-        Wed, 26 May 2021 04:50:49 -0700 (PDT)
-Received: from [10.57.31.7] (unknown [10.57.31.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 675A13F73B;
-        Wed, 26 May 2021 04:50:47 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        dietmar.eggemann@arm.com
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
- <20210526090141.GA408481@e120877-lin.cambridge.arm.com>
- <20210526093807.sih5y4lgltsz3r74@vireshk-i7>
- <17d88121-4809-dc31-1b57-2134ec868c8b@arm.com>
- <fb80ceef-a2af-6f70-4863-fd376a438f3e@arm.com>
-Message-ID: <4a3db514-bec5-394f-ec3f-15c23b44b8f6@arm.com>
-Date:   Wed, 26 May 2021 12:50:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <fb80ceef-a2af-6f70-4863-fd376a438f3e@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234591AbhEZL42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234172AbhEZL4M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 07:56:12 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CFFC0612A3;
+        Wed, 26 May 2021 04:52:37 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g24so640585pji.4;
+        Wed, 26 May 2021 04:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=i729nvpoejgH5we6w7xS3AV1jor9J8GyOV0EJU3jiD4=;
+        b=VPWKEccBupTFWslwHxLiFI9gwfqebaQ8M/J1wTkCKuO9P8+WMYg4frl/s3ackUPkMf
+         yf5B6E2cAODYsTEyQnEjQl7ks4e1QRgKIFb6mLaibSs4xswmQPQHp3fjL2+o+pJdIGFQ
+         lpeco+2Goc4Rbhg/SoRtftMbnQ3qna66ltJ5KNS1/p+scS4c+/xAeYlhErjp5Fq8HMNQ
+         U9Niq5swRDi2jz0+SrH2ZFl270OXALO8RJJ+JgGkoogMDeFvo9woRaQMugVIevYlQ1iS
+         zZmKtmHUe8jWc+hh50y4+duOaFZ5FOi+XQe2blcYVrJ1gs8vV72s7Mp8JQYyhHJ5pnG3
+         C8MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i729nvpoejgH5we6w7xS3AV1jor9J8GyOV0EJU3jiD4=;
+        b=Ns8Cv/QtMfPXxmjhHXsvTDwSyj+v7GC6WVp8sbpUeJrGIppvMlkFp8pVCgntS3eab2
+         cKXwX0vaGS2hGrqithDEY7tnZFIcXIEhA3OsC+60bMYACvSI+qHPIbm2vmhj9xcvhxbH
+         F9ItYdE5T6QMCJ9qaOTR83P/5K70yT2BAl+ruk8ej4b0w3K0yHRnQe8VMTs5VyN+mQIW
+         aHJ1FzhS+lsPQLjLlucuElmTpcM6FHZzIsHyvKo1mv3PHJfKergi4ZW9lCWSf8pCDu5K
+         x1IpIHUh0C9WS/bs5y7KV8UzGiR3OCWq/8qxQIS3gPfJaEg+OMCOCrp6XXkp22CJfdDF
+         7qbw==
+X-Gm-Message-State: AOAM531SKXboeUdf2NpY3GuAD0aJRqWVz/DP8xi8ayzccGVMfSf7D4q0
+        uTEWnLTAlZf4phpkfEblLu4=
+X-Google-Smtp-Source: ABdhPJwL8ArjPwktMSW5odm65pZIrmMKwRfAR2UCdSx2qb+FbONaZSQKiBm7ynXoViRjFvST/qHqkw==
+X-Received: by 2002:a17:90a:7f85:: with SMTP id m5mr36078482pjl.128.1622029957262;
+        Wed, 26 May 2021 04:52:37 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id s48sm15328843pfw.205.2021.05.26.04.52.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 04:52:36 -0700 (PDT)
+From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
+To:     mingo@kernel.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Haocheng Xie <xiehaocheng.cn@gmail.com>
+Subject: [PATCH 0/3] Fix some build warnings in perf/events subsystem.
+Date:   Wed, 26 May 2021 19:52:17 +0800
+Message-Id: <20210526115220.19134-1-xiehaocheng.cn@gmail.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I have got these warnings when building kernel with  'W=1' options:
 
+kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
+kernel/events/core.c:143: warning: Function parameter or member 'cpu' not described in 'cpu_function_call'
+kernel/events/core.c:11924: warning: Function parameter or member 'flags' not described in 'sys_perf_event_open'
+kernel/events/core.c:12382: warning: Function parameter or member 'overflow_handler' not described in 'perf_event_create_kernel_counter'
+kernel/events/core.c:12382: warning: Function parameter or member 'context' not described in 'perf_event_create_kernel_counter'
+kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
+kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
 
-On 5/26/21 11:39 AM, Lukasz Luba wrote:
-> 
+The 3-patch series will fix these warnings.
 
-[snip]
+Haocheng Xie (3):
+  perf core:  Make local function perf_pmu_snapshot_aux() static
+  perf core: Fix some kernel-doc warnings.
+  perf/hw_breakpoint: Fix kernel-doc warnings in perf hw_breakpoint
 
-To summarize:
-- we don't want to disable some OPPs
-- we want to give a 'hint' from energy perspective
-- we rely on SchedUtil 2nd stage which clamps this
-freq hint value to allowed OPPs which might set
-actually not the one what we see as 'efficient'
--- we don't harm some existing platform which might
-    needs these 'inefficient' OPPs in some use cases
-- we pay some extra cost in this SchedUtil freq
-switch path, which shouldn't harm too much.
--- we pay this cost only for arm/arm64 platforms
-    which use EM
--- this cost is balanced by the benefit that we see in
-    benchmarks and measured energy
--- the LUT might limit the impact
+ kernel/events/core.c          | 6 +++++-
+ kernel/events/hw_breakpoint.c | 2 ++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-I hope this would help to better understand the scope and
-impact of this patch set.
+-- 
+2.9.5
 
-Regards,
-Lukasz
