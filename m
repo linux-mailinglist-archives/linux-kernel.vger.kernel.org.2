@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281A43914FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3CB391502
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhEZKhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:37:19 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:34376 "EHLO
+        id S233999AbhEZKhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:37:33 -0400
+Received: from fanzine.igalia.com ([178.60.130.6]:34377 "EHLO
         fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhEZKhQ (ORCPT
+        with ESMTP id S233969AbhEZKhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:37:16 -0400
-X-Greylist: delayed 1838 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 06:37:16 EDT
+        Wed, 26 May 2021 06:37:32 -0400
+X-Greylist: delayed 1758 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 06:37:31 EDT
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=11rVPzFnJkl/p+9EOEW+pvbWPdKb5D/ypNLYBEtv/0k=;
-        b=mAXd47xPAuFxPUDV6llZq9Fc9F+lsHY9d4QicB9DBsIT3+DYV/crMl1IaaenTopvjIN+YPC9LOiZsVugUZTZQGPbwtiDNjJncMsPu6KE+hF03HRXMfOX+4qHeX1zKE4QxNas/Aslp0IuikQdOu9S7qb8nzaSKU3HTSoGdYpciaADBKOud9ic1Um5M6B7yDdDTiklkM3bi6Wf0ZAtzdzGbLicgjyvLvn2H4oRFTA9jHQTrPW+g5siKcHHMFOt+S/9mYP4XZbfXRgjQEr4IpL8ow6IyNkNjzhhPxOGhEBrhQiG0skvzFS9tRhkIKAc5PpB5N+72QTsPSo0JDNf4ZDyUg==;
+        h=MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=RTL0YUJC5bTgHB3rr9d5JzhmkX+MPRCkX3Z5f/ZfoIw=;
+        b=H/ZH+V7fPt0bFbpnORL3NeeKS1NIF7F8GL9L5BF0Up1yA1EKow1Cgxk+rPe765clKv6DWQ56QB4fFYkhrH0kIk0voXlqMHd0LOVx5UiLeh0ZbZuZHwnZn8f3nkqvp8SxNsOBDGWLN3pRZvl1pM2oMggNf4AcWDQuNWZ1hCVFNBO0FHpt5tpSI1a3rKxGGBQNcQnl8BkuYETvqYMLgHN4pZ3kkDvsFhnR68vFPZPChvMSpB+A49rjIr6aVT3EpQQ0Eu9tiu7up+J3Jd+KRRu5eouw5sZLzwoyVIHyO/5BCfk/BdVDF3sfBRS4jd9BzFCE2WK24qUd/TXv9IvzFxLByQ==;
 Received: from 1.pool85-50-22.dynamic.orange.es ([85.50.22.1] helo=[192.168.1.120])
         by fanzine.igalia.com with esmtpsa 
         (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
-        id 1llqPA-0002rB-Kj; Wed, 26 May 2021 12:04:49 +0200
-Message-ID: <c00938c1e634340663e145b51c5989bd4a20f326.camel@igalia.com>
-Subject: Re: [PATCH] ipack/carriers/tpci200: Fix a double free in
- tpci200_pci_probe
+        id 1llqQq-00035i-SG; Wed, 26 May 2021 12:06:34 +0200
+Message-ID: <bbe198f1432488d4fcbfb84c249b4e55a50b5bd3.camel@igalia.com>
+Subject: Re: [PATCH] ipac: ipoctal: fix kernel-doc syntax and remove
+ filename from file headers
 From:   Samuel Iglesias =?ISO-8859-1?Q?Gons=E1lvez?= 
         <siglesias@igalia.com>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, jens.taprogge@taprogge.org,
-        gregkh@linuxfoundation.org
-Cc:     industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 26 May 2021 12:04:28 +0200
-In-Reply-To: <20210524093205.8333-1-lyl2019@mail.ustc.edu.cn>
-References: <20210524093205.8333-1-lyl2019@mail.ustc.edu.cn>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     lukas.bulwahn@gmail.com, rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jens.taprogge@taprogge.org, gregkh@linuxfoundation.org,
+        industrypack-devel@lists.sourceforge.net
+Date:   Wed, 26 May 2021 12:05:30 +0200
+In-Reply-To: <20210522121944.11182-1-yashsri421@gmail.com>
+References: <20210522121944.11182-1-yashsri421@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-DLbZsM2hAwmpALcT3MJO"
+        protocol="application/pgp-signature"; boundary="=-f9pVxU9gW8q5Fs96aXmZ"
 User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
 Precedence: bulk
@@ -41,94 +43,102 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-DLbZsM2hAwmpALcT3MJO
+--=-f9pVxU9gW8q5Fs96aXmZ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Lv,
-
-Thanks for the patch!
-
-Patch is,
-
 Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
 
-Greg, Would you mind picking this patch series through your char-misc
-tree?
-
-Thanks!
+Thanks,
 
 Sam
 
-On Mon, 2021-05-24 at 02:32 -0700, Lv Yunlong wrote:
-> In the out_err_bus_register error branch of tpci200_pci_probe,
-> tpci200->info->cfg_regs is freed by tpci200_uninstall()->
-> tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
-> in the first time.
+On Sat, 2021-05-22 at 17:49 +0530, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning
+> of
+> kernel-doc comments.
+> The header for drivers/ipack/devices/ipoctal follows this syntax, but
+> the
+> content inside does not comply with kernel-doc.
 >=20
-> But later, iounmap() is called to free tpci200->info->cfg_regs
-> again.
+> This line was probably not meant for kernel-doc parsing, but is
+> parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'),
+> which
+> causes unexpected warning from kernel-doc.
 >=20
-> My patch sets tpci200->info->cfg_regs to NULL after
-> tpci200_uninstall()
-> to avoid the double free.
+> For e.g., running scripts/kernel-doc -none on
+> drivers/ipack/devices/ipoctal.h emits:
+> warning: This comment starts with '/**', but isn't a kernel-doc
+> comment. Refer Documentation/doc-guide/kernel-doc.rst
+> =C2=A0* ipoctal.h
 >=20
-> Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the
-> TPCI200 in big endian mode")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> Provide a simple fix by replacing this occurrence with general
+> comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+>=20
+> Also remove the redundant file name from the comment headers.
+>=20
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
-> =C2=A0drivers/ipack/carriers/tpci200.c | 5 ++++-
-> =C2=A01 file changed, 4 insertions(+), 1 deletion(-)
+> =C2=A0drivers/ipack/devices/ipoctal.c | 4 +---
+> =C2=A0drivers/ipack/devices/ipoctal.h | 6 ++----
+> =C2=A02 files changed, 3 insertions(+), 7 deletions(-)
 >=20
-> diff --git a/drivers/ipack/carriers/tpci200.c
-> b/drivers/ipack/carriers/tpci200.c
-> index ec71063fff76..e1822e87ec3d 100644
-> --- a/drivers/ipack/carriers/tpci200.c
-> +++ b/drivers/ipack/carriers/tpci200.c
-> @@ -596,8 +596,11 @@ static int tpci200_pci_probe(struct pci_dev
-> *pdev,
-> =C2=A0
-> =C2=A0out_err_bus_register:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpci200_uninstall(tpci200=
-);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* tpci200->info->cfg_regs is =
-unmapped in tpci200_uninstall
-> */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpci200->info->cfg_regs =3D NU=
-LL;
-> =C2=A0out_err_install:
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(tpci200->info->cfg_reg=
-s);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (tpci200->info->cfg_regs)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0iounmap(tpci200->info->cfg_regs);
-> =C2=A0out_err_ioremap:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_release_region(pdev, =
-TPCI200_CFG_MEM_BAR);
-> =C2=A0out_err_pci_request:
+> diff --git a/drivers/ipack/devices/ipoctal.c
+> b/drivers/ipack/devices/ipoctal.c
+> index 3940714e4397..2a3a94f72dfb 100644
+> --- a/drivers/ipack/devices/ipoctal.c
+> +++ b/drivers/ipack/devices/ipoctal.c
+> @@ -1,7 +1,5 @@
+> =C2=A0// SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> - * ipoctal.c
+> - *
+> +/*
+> =C2=A0 * driver for the GE IP-OCTAL boards
+> =C2=A0 *
+> =C2=A0 * Copyright (C) 2009-2012 CERN (www.cern.ch)
+> diff --git a/drivers/ipack/devices/ipoctal.h
+> b/drivers/ipack/devices/ipoctal.h
+> index 75f83ba774a4..773dc41bd667 100644
+> --- a/drivers/ipack/devices/ipoctal.h
+> +++ b/drivers/ipack/devices/ipoctal.h
+> @@ -1,9 +1,7 @@
+> =C2=A0/* SPDX-License-Identifier: GPL-2.0-only */
+> -/**
+> - * ipoctal.h
+> - *
+> +/*
+> =C2=A0 * driver for the IPOCTAL boards
+> -
+> + *
+> =C2=A0 * Copyright (C) 2009-2012 CERN (www.cern.ch)
+> =C2=A0 * Author: Nicolas Serafini, EIC2 SA
+> =C2=A0 * Author: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
 
 
---=-DLbZsM2hAwmpALcT3MJO
+--=-f9pVxU9gW8q5Fs96aXmZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEQP+ZAvaXWkfuKXiEf/S6MvF9w0MFAmCuHSwACgkQf/S6MvF9
-w0POUxAAn3hUK31LPLBVYo0S2O7LHtXeXErQtheZq94fgacZBX4P4zkDwneQ5pA6
-dn/913TZXl2Mw4jmjp8MjUduRNzjVSuFlu1XeHa/z35f5X3OlLrP/aePVCVyNf30
-vwohnegHeHs6Dx4Lx20Puj9YGlJ3i2OWKe9C+GRPQKnlOJEXWrbfwlGFwAFJJMrN
-wBD3PwcL0fqUqbjw6qFWl6nVTBvsNbGUh5A2SUY4VhWWJ7hrgUuAPRkL1FbragyV
-wyx6yZgAsEGNiGGmflkwle9SkiwXd/oC14ewhcz3l3Qnwle4VqvtlmIRAM3c4MPr
-GmNAPt9udg3i+R9H784GYJOjkIzTP7JoCmKr6NsstWQ16hzjHtZB6ddJk1Cui7GQ
-3N2pvxMwGZwrOJAspnhtC2s6D80JhBPPOQU+oJkZwe7KAwzSzr3N+ez0GLBRFzTp
-x+JiKogHZHlxXsO0o3Ba0uUhjFKi0ejEusjHSRQsPkh/4Vxvv6ht9LDtCJLyttLk
-I2xMQBIurNEC98NYKvKGMdJpIRd/YcxMJNgStNXUXvBLiT9CXR9mMLUsFlQdWlgT
-TlPYhpiPSWXFKC0s530smkmw+FVYHZd4YukLUK70eDJcGkxnPyBIaRz+PZCs517O
-Qnc8aTrSbYx1fAbPQvbEn0/EzzMGX5FlsjNgRkgUOB3jtN+EDqE=
-=D2sN
+iQIzBAABCgAdFiEEQP+ZAvaXWkfuKXiEf/S6MvF9w0MFAmCuHWoACgkQf/S6MvF9
+w0OLgg/+LV3KqR1htIZVhhQPi2+KnjqBI6fjsF6pm0aYa6P0zRf8kqSCM/Z9Gk2V
+ntTgqBWOgKdlN5hyRRZnkzJsPZnqRAeglyZbJ2wfbfYE8G9hrBL75ZUmUJf/Bw2T
+9HxvMHNOZM2aTG1avIHmW6J++GOiCN1ptucjHS4OEGA3cadyO8zYCO66fWH1nLtO
+ls0Wzdg60OjiMtBBISFXOCgUkJNLIs1L9ug8IZIXbenrKbOhnTwnjzyy80zX44Lc
+MuLAjABIixSFw6KDR+uGlJVqcNge6nHJmEze3A3b5QDrYE/1mQnuzwLjKfJTj5OU
+lEFLvtDr9YmnpkRICwwn2X6n0mgSIAdNnVUP2JaVE201AsUoXWdqN2AsDLqCjE+W
+6lbIt51EfRQdSI7YKm+YW2smSTe/4nKvbUDFsQmLWGjgijt6X9QSxiCdKJxlKp5L
+HsHVtH60mflOlRTyHWI3kiNUIMhP51HOt3B+DhmVaszuWhE24FAS9cj+nPPCWPDk
+JorrS6sxpzIRiuMV4maIfnZDiFpBS2UHzJeDmJAleBq+eU1qo9CU9huwtbzp2aY8
+p0+XRTPrr8bG2h2XfOWxpghwgbz8SuVB03PRdWKZN5q99u/XUyeRgqayDH9KWBrv
+ygPsw2ZvbCj9Jaa4MAjAaNz8CqfPkTz+ri+/tKpleotJMhznMGo=
+=OK0d
 -----END PGP SIGNATURE-----
 
---=-DLbZsM2hAwmpALcT3MJO--
+--=-f9pVxU9gW8q5Fs96aXmZ--
 
