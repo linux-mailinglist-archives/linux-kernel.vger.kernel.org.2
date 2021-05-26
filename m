@@ -2,171 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900D4391AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C4391AF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbhEZPBF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 11:01:05 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47950 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235188AbhEZPBC (ORCPT
+        id S235194AbhEZPBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235131AbhEZPBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:01:02 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 38623CED1B;
-        Wed, 26 May 2021 17:07:24 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
-Date:   Wed, 26 May 2021 16:59:28 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
-References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
- <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org>
- <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
- <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org>
- <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
- <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
- <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org>
- <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
- <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Wed, 26 May 2021 11:01:09 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAE0C06175F;
+        Wed, 26 May 2021 07:59:36 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id e17so2430073lfb.2;
+        Wed, 26 May 2021 07:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZY7DhgR7U8XkxVmzEn49jSM7lk9MFuhyv4pYW51zRhA=;
+        b=aDK/E9dacgoOIeG1hvE5q1kzKOilz3uUHWG1utNNC59UNB2DScz7Jl1wfbFrAjlOpP
+         5/or25q+F47pu+epN3TFvCn6hYqOW1WAZd9vnA1rARQRXe0ZiGIrJd0K2zv0SBdjLfla
+         vn4kZkZ0VhZZhBjwsFwbnO9UvjH8A0QXVt3qEwAjY/MXuGVjG77YO/LjS6myeXp1vHll
+         Rw1+Iy/umXi9uJo6MgRebxKP+bSN2Ni6n5XCMLlZFAwhEIwiNpr6l3xRhJMEJOiWajm6
+         zi/Grv1BwpHY37rc2pL5Hy2hEP8tldpObFFLM6rs1nC58R1SgAE0drtT5X9tYj3RbISC
+         qlyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZY7DhgR7U8XkxVmzEn49jSM7lk9MFuhyv4pYW51zRhA=;
+        b=EY7pp71oinudjVogwJLndiSordZ6rFWAx9zxOTy2qoIE1H1KTPffS41oCnQsJDRTM5
+         +kr9SHuxcLhbLU4iVWm/ju32CbeZTr67sJ4y78X86JfqUGSSqRfxh2PM8W4zyDw3xsvA
+         rej1nZHn7gtit/KCy9qSroDsViWH/UxMBjiIQy8A7XCtF5K5vnhAt9S0L7+8mrpcCoNr
+         P8WBP+bQu+FibocLPnIpAciNj80iZsoqPS4nCLPrJBfRZvJQipwYYWlgpleCvV1RUYXd
+         X9Nv2KzCQLX6VmHzmt9W3UJnlYMkHSfgv0pgBeNMHur6Re9ivSLMFxAJecUqRzr55Ksg
+         LV3w==
+X-Gm-Message-State: AOAM533826n/NDzTsvEaclea4zRTrDAb4MphMyoAyVmJ+dFMC9NpL4+R
+        LVZwtEtUmu9tTjA8qjEulCBsry1iknM=
+X-Google-Smtp-Source: ABdhPJyAbq4DU0NxKcpVU0EnUa9g+n2S873i3+6ey+jt2Wo/SXyGU4f9OPP/6k2M3VhVLlYRw+w5uw==
+X-Received: by 2002:a05:6512:1392:: with SMTP id p18mr723015lfa.294.1622041175071;
+        Wed, 26 May 2021 07:59:35 -0700 (PDT)
+Received: from [192.168.1.102] ([178.176.73.49])
+        by smtp.gmail.com with ESMTPSA id p6sm2057655lfr.163.2021.05.26.07.59.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 07:59:34 -0700 (PDT)
+Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
+ stack onto the heap
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-22-lee.jones@linaro.org>
+ <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
+ <20210526144451.GB543307@dell>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
+Date:   Wed, 26 May 2021 17:59:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <20210526144451.GB543307@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+On 5/26/21 5:44 PM, Lee Jones wrote:
 
->>>>>>>>> RTL8822 chipset supports WBS, and this information is conveyed in
->>>>>>>>> btusb.c. However, the UART driver doesn't have this information just
->>>>>>>>> yet.
->>>>>>>>> 
->>>>>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>>>>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->>>>>>>>> ---
->>>>>>>>> 
->>>>>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
->>>>>>>>> drivers/bluetooth/btrtl.h  |  2 ++
->>>>>>>>> drivers/bluetooth/hci_h5.c |  5 +----
->>>>>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
->>>>>>>>> 
->>>>>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
->>>>>>>>> index e7fe5fb22753..988a09860c6b 100644
->>>>>>>>> --- a/drivers/bluetooth/btrtl.c
->>>>>>>>> +++ b/drivers/bluetooth/btrtl.c
->>>>>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>>>>> }
->>>>>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
->>>>>>>>> 
->>>>>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
->>>>>>>>> {
->>>>>>>>> -     struct btrtl_device_info *btrtl_dev;
->>>>>>>>> -     int ret;
->>>>>>>>> -
->>>>>>>>> -     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>>>>> -     if (IS_ERR(btrtl_dev))
->>>>>>>>> -             return PTR_ERR(btrtl_dev);
->>>>>>>>> -
->>>>>>>>> -     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>>>>> -
->>>>>>>>>    /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>>>>>     * simultaneously.
->>>>>>>>>     */
->>>>>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>>            rtl_dev_dbg(hdev, "WBS supported not enabled.");
->>>>>>>>>            break;
->>>>>>>>>    }
->>>>>>>>> +}
->>>>>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
->>>>>>>>> +
->>>>>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>> +{
->>>>>>>>> +     struct btrtl_device_info *btrtl_dev;
->>>>>>>>> +     int ret;
->>>>>>>>> +
->>>>>>>>> +     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>>>>> +     if (IS_ERR(btrtl_dev))
->>>>>>>>> +             return PTR_ERR(btrtl_dev);
->>>>>>>>> +
->>>>>>>>> +     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>>>>> +
->>>>>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
->>>>>>>>> 
->>>>>>>>>    btrtl_free(btrtl_dev);
->>>>>>>>>    return ret;
->>>>>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
->>>>>>>>> index 2a582682136d..260167f01b08 100644
->>>>>>>>> --- a/drivers/bluetooth/btrtl.h
->>>>>>>>> +++ b/drivers/bluetooth/btrtl.h
->>>>>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
->>>>>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
->>>>>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>>>>>                        struct btrtl_device_info *btrtl_dev);
->>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
->>>>>>>>> +                   struct btrtl_device_info *btrtl_dev);
->>>>>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
->>>>>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
->>>>>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
->>>>>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
->>>>>>>>> index 27e96681d583..e0520639f4ba 100644
->>>>>>>>> --- a/drivers/bluetooth/hci_h5.c
->>>>>>>>> +++ b/drivers/bluetooth/hci_h5.c
->>>>>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
->>>>>>>>>    /* Give the device some time before the hci-core sends it a reset */
->>>>>>>>>    usleep_range(10000, 20000);
->>>>>>>>> 
->>>>>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>>>>> -      * simultaneously.
->>>>>>>>> -      */
->>>>>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
->>>>>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
->>>>>>>> 
->>>>>>>> any reason why not just setting WBS quirk here?
->>>>>>> 
->>>>>>> Hmm, I think WBS is the feature of the chipset and not the transport.
->>>>>>> Therefore isn't it better to just have it set in one place?
->>>>>>> Setting the quirks here means we need to copy paste the settings from btrtl.c.
->>>>>> 
->>>>>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY right now, I don’t see the difference.
->>>>> 
->>>>> Sorry, I don't get what you mean.
->>>>> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
->>>>> btrtl.c, so it's together with the WBS quirk.
->>>>> 
->>>>>> Can we actually verify that we still need the WBS quirk. I think we fixed the broken errerrnous packet flag handling.
->>>>> 
->>>>> To be honest, I am not aware about the story of the broken erroneous
->>>>> packet flag.
->>>>> Last time I checked I still needed the quirk to have RTL8822 on UART
->>>>> properly run WBS, but that was months ago...
->>>>> Let me verify whether this quirk is still needed.
->>>> 
->>>> It looks like we still need the WBS quirk because otherwise the host
->>>> wouldn't know whether the controller supports WBS or not. It's used in
->>>> get_supported_settings() in mgmt.c.
->>> 
->>> and why not set it unconditionally for all Realtek chips?
->> 
->> Not all Realtek chips supports WBS, therefore
->> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
+[...]
+>>> Fixes the following W=1 kernel build warning(s):
+>>>
+>>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
+>>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>>>
+>>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> Cc: linux-usb@vger.kernel.org
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>> ---
+>>>  drivers/usb/host/xhci.c | 8 +++++++-
+>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+>>> index ac2a7d4288883..40ce4b4eb12ad 100644
+>>> --- a/drivers/usb/host/xhci.c
+>>> +++ b/drivers/usb/host/xhci.c
+>> [...]
+>>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+>>>  		return -ENOMEM;
+>>>  	}
+>>>  
+>>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
+>>
+>>    Why not kcalloc()?
 > 
-> Are there any other concerns you might have?
+> No particular reason.  Muscle memory I guess.
+> 
+> Happy either way.
 
-can we do the quirk setting in btrtl_setup_realtek() instead of creating another exported function.
+    kcalloc( is designed for allocatiung arrays and clearing them, like calloc(),
+so let's stick wuth it...
 
-Regards
-
-Marcel
-
+MBR, Sergei
