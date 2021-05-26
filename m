@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915FD3910BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B33910BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhEZGde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:33:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39957 "EHLO mga02.intel.com"
+        id S232743AbhEZGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhEZGdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:33:32 -0400
-IronPort-SDR: GAgX5s0O/nx66Fvl3b/LPwlJl1pEe8Z+f4Y8Xo9dsudCO4o8bknzv+5Pxn4YDRPPB1Y8ha3hM3
- h4xi+EGY6T4A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="189512086"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="189512086"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:32:00 -0700
-IronPort-SDR: lyhjnbscqwWOtB2Ue8vR+6xPh+qHKNVBYRF+E0FVbCNPTTo3D5k8xVEJGJaUN+4Dn5KjxSUisO
- TUTImWWgD1Xw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="547077456"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 May 2021 23:31:56 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 26 May 2021 09:31:55 +0300
-Date:   Wed, 26 May 2021 09:31:55 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] usb: roles: add helper usb_role_string()
-Message-ID: <YK3rW6NjED+07IdC@kuha.fi.intel.com>
-References: <1621932786-9335-1-git-send-email-chunfeng.yun@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621932786-9335-1-git-send-email-chunfeng.yun@mediatek.com>
+        id S232514AbhEZGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD42361090;
+        Wed, 26 May 2021 06:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622010823;
+        bh=//HIC0wWxbiKsea2wsR5H038/7YI4tnT/OaBYgjVYRU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NFzYrEFHgxupPIPrHrsmPAdG3hUVS842r7TADpXHyf+ikf9M8thSLERxAQ7t9O4Rh
+         NK2WBLMSB0AhmszVlIhhxZ2xC50Mbu6xywcOdXq+52A3WsMz+1HzrOmg3VXgacweMY
+         FHE0IiT3cUySQkEwrgqzrgMzMJyeK6RYfAnKQq2Vmz65VP14cHFxMvI+TzOQA8QkzJ
+         q+Vs2azcUtNXOKa4gB0wDvd8UBHc9X4iJ1D3W121eg3ofzSXjs7eewFeE5JHVHQZVY
+         pHczQpmsccFZnVS1FCnVGKl58rYfi5ZjygYlxqiGtvl0mWWxDDQW1aAB/ADxTYSiog
+         dNX94usJ5GUDQ==
+Date:   Wed, 26 May 2021 15:33:40 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
+Message-Id: <20210526153340.a49ba8292f201493990f210c@kernel.org>
+In-Reply-To: <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
+References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
+        <20210525214858.33a66846ac09e499c3268a63@kernel.org>
+        <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 04:53:05PM +0800, Chunfeng Yun wrote:
-> Introduces usb_role_string() function, which returns a
-> human-readable name of provided usb role, it's useful to
-> make the log readable.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+On Wed, 26 May 2021 10:23:18 +0530
+Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/roles/class.c | 9 +++++++++
->  include/linux/usb/role.h  | 6 ++++++
->  2 files changed, 15 insertions(+)
 > 
-> diff --git a/drivers/usb/roles/class.c b/drivers/usb/roles/class.c
-> index 33b637d0d8d9..dfaed7eee94f 100644
-> --- a/drivers/usb/roles/class.c
-> +++ b/drivers/usb/roles/class.c
-> @@ -214,6 +214,15 @@ static const char * const usb_roles[] = {
->  	[USB_ROLE_DEVICE]	= "device",
->  };
->  
-> +const char *usb_role_string(enum usb_role role)
-> +{
-> +	if (role < 0 || role >= ARRAY_SIZE(usb_roles))
-> +		return "unknown";
-> +
-> +	return usb_roles[role];
-> +}
-> +EXPORT_SYMBOL_GPL(usb_role_string);
-> +
->  static ssize_t
->  role_show(struct device *dev, struct device_attribute *attr, char *buf)
->  {
-> diff --git a/include/linux/usb/role.h b/include/linux/usb/role.h
-> index 0164fed31b06..031f148ab373 100644
-> --- a/include/linux/usb/role.h
-> +++ b/include/linux/usb/role.h
-> @@ -65,6 +65,7 @@ void usb_role_switch_unregister(struct usb_role_switch *sw);
->  
->  void usb_role_switch_set_drvdata(struct usb_role_switch *sw, void *data);
->  void *usb_role_switch_get_drvdata(struct usb_role_switch *sw);
-> +const char *usb_role_string(enum usb_role role);
->  #else
->  static inline int usb_role_switch_set_role(struct usb_role_switch *sw,
->  		enum usb_role role)
-> @@ -109,6 +110,11 @@ static inline void *usb_role_switch_get_drvdata(struct usb_role_switch *sw)
->  	return NULL;
->  }
->  
-> +static inline const char *usb_role_string(enum usb_role role)
-> +{
-> +	return "unknown";
-> +}
-> +
->  #endif
->  
->  #endif /* __LINUX_USB_ROLE_H */
-> -- 
-> 2.18.0
+> 
+> On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
+> > On Tue, 25 May 2021 10:07:44 +0530
+> > Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+> > 
+> >> When run as normal user with default sysctl kernel.kptr_restrict=0
+> >> and kernel.perf_event_paranoid=2, perf probe fails with:
+> >>
+> >>    $ ./perf probe move_page_tables
+> >>    Relocated base symbol is not found!
+> >>
+> >> The warning message is not much informative. The reason perf fails
+> >> is because /proc/kallsyms is restricted by perf_event_paranoid=2
+> >> for normal user and thus perf fails to read relocated address of
+> >> the base symbol.
+> >>
+> >> Tweaking kptr_restrict and perf_event_paranoid can change the
+> >> behavior of perf probe. Also, running as root or privileged user
+> >> works too. Add these details in the warning message.
+> >>
+> >> Plus, kmap->ref_reloc_sym might not be always set even if
+> >> host_machine is initialized. Above is the example of the same.
+> >> Remove that comment.
+> > 
+> > Yes, those are restricted in some cases. Anyway without priviledged
+> > (super) user, perf probe can not set the probe in ftrace.
+> > 
+> > Hmm, I think it should check the effective user-id at first. If it
+> > is not super user and the action will access tracefs and kallsyms,
+> > it should warn at that point.
+> 
+> If kptr_restrict=2, perf probe fails with same error even for root user.
+> That's why I thought to just change this warning message.
+
+Ah, yes. In that case, perf probe must not use the base symbol.
+(like -D option)
+OK, then, let's merge this fix.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Different combinations of privilege, perf_event_paranoid, kptr_restrict:
+> 
+>    Normal/Root user
+>     |   perf_event_paranoid
+>     V    V   kptr_restrict        perf probe error
+>    ----------------------------------------------------------------
+>     N   -1    0     Failed to open kprobe_events: Permission denied
+>     N    0    0     Failed to open kprobe_events: Permission denied
+>     N    1    0     Failed to open kprobe_events: Permission denied
+>     N    2    0     Relocated base symbol is not found!
+>    
+>     N   -1    1     Relocated base symbol is not found!
+>     N    0    1     Relocated base symbol is not found!
+>     N    1    1     Relocated base symbol is not found!
+>     N    2    1     Relocated base symbol is not found!
+>    
+>     N   -1    2     Relocated base symbol is not found!
+>     N    0    2     Relocated base symbol is not found!
+>     N    1    2     Relocated base symbol is not found!
+>     N    2    2     Relocated base symbol is not found!
+>    
+>     R   -1    0     No error.
+>     R    0    0     No error.
+>     R    1    0     No error.
+>     R    2    0     No error.
+>    
+>     R   -1    1     No error.
+>     R    0    1     No error.
+>     R    1    1     No error.
+>     R    2    1     No error.
+>    
+>     R   -1    2     Relocated base symbol is not found!
+>     R    0    2     Relocated base symbol is not found!
+>     R    1    2     Relocated base symbol is not found!
+>     R    2    2     Relocated base symbol is not found!
+> 
+> Ravi
+
 
 -- 
-heikki
+Masami Hiramatsu <mhiramat@kernel.org>
