@@ -2,138 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476AE392226
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22321392221
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhEZVg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232626AbhEZVgY (ORCPT
+        id S233778AbhEZVgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:36:01 -0400
+Received: from gateway24.websitewelcome.com ([192.185.51.196]:31428 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232976AbhEZVgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:36:24 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BE6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:34:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n8so1284042plf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7VMYKzcvlmsaJsduijRinX5XOX/CXS23jVd0dixyLbI=;
-        b=ie4BpCnntunaA4LGbURImMIKM08qZ48fG66Dt4d1CY7m+bmY3prfw3Evt/EvOnwkOv
-         TN5wWKlaO8tHkc7V8lcvoKpwu78eWRa+5GwNc5YtIjXeBM4WM28fqhhTLvLcY6q91HOu
-         O4waTVlnqTioDn7baVA84CHP+a25fcFR9pIcrBOjFg3+rDPj4vaQfi+lJpgGMGyufy4F
-         Vq8ToRbH++LEDoYvTuxK8e7Q8sLys7NR76/vP9B9HTA9W/q+t+1lP5ohC/UPyY7+tvW1
-         rsk7nPVcKA+SFs9DjNoAqokLtmR94Sa5wOKCpgNaVYk/43e2uFiMOwCid6aEBkq47W2m
-         mNXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7VMYKzcvlmsaJsduijRinX5XOX/CXS23jVd0dixyLbI=;
-        b=hFWdxadIixu4HhnwCoAUGBipppA+7h9hhlmO/tL10cgLLaknKNHhXq+RYqKoFgQ+4W
-         ZyWaoy5h3B72Ln/WG+BpNHQwzjEtBsXF4cuyJFqNrzQiU0GwjHiZwxlgdq55jfX+DO/C
-         k0eiNeKb1MhCddzjQzbaKhcLyYlmxGntVZH0R8zjQNSCFttOj7YY4f/tEgNuR2sliOiS
-         h7QTpp5je50M6X8CE7yGzSlsG/J6W/N4mEfuIvec19iFDRzgsH6TFQMzp+w33FgDuKe+
-         vZMeMqDgKVCQoHA1SVUSCGUTY54OgkkAGlyPA5MqlWTy3FW6KgwvteaINwL8gPSRa4pl
-         Gq0g==
-X-Gm-Message-State: AOAM533xh3PiqR3kIm8kgjNDZaXDHicZKbmBW+D3qVOSP2EBWD3O6kLA
-        JMsMe+F0LWrZCfByD3wvQOYVeA==
-X-Google-Smtp-Source: ABdhPJzJ+L9n0bvK/LiHvOSETtHso7f3OjuKFCauJaw+Q+/r06x4YdSHqJ6BlK3t0LLt5XD+mbFNaQ==
-X-Received: by 2002:a17:90b:607:: with SMTP id gb7mr227800pjb.5.1622064890746;
-        Wed, 26 May 2021 14:34:50 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c130sm144294pfc.51.2021.05.26.14.34.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 14:34:50 -0700 (PDT)
-Date:   Wed, 26 May 2021 21:34:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 00/13] More parallel operations for the TDP MMU
-Message-ID: <YK6+9lmToiFTpvmq@google.com>
-References: <20210401233736.638171-1-bgardon@google.com>
- <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
+        Wed, 26 May 2021 17:36:00 -0400
+X-Greylist: delayed 11647 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 17:36:00 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 0C2A73E4A2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:34:27 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id m1AYlXAMK8ElSm1AZlwbuA; Wed, 26 May 2021 16:34:27 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AVftKSHQScIRK8be+dU0JJK0i8MExIzulGIQ7Lt68hQ=; b=hXXj4RoQgzHnVE78yp975cleDa
+        HrxSn9+oN9PI8XKXdFnJ3DoO4tePmCGV/jcjaCOvVOYnbbnUhnBL+NUNpo3Q6QFGObmNDdfjexIK8
+        7LJtxOzqIlq1UlZgn/YVpbSf1gJYJTyy26aWjZNDDi4Mh9y1tAMy5FOSPlg4O57uGjfHJOZG/ifCc
+        STvK0PHs3PcUQDE2ZgL31kpHRveisbF6w0iq2ri1Jbr2/2VLqBpQJZiaa8QOpNWjrJNWxkJG9Fm98
+        8AFk+KailfXWtTWPyOg8G7fCp/OV/dMIH1qkxqIVKiNOsLFxUAuHRVb+WJC/b1ht4kWvKhc99ptca
+        FvGIcXwA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46830 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lm1AT-003fxT-AA; Wed, 26 May 2021 16:34:21 -0500
+Subject: Re: [Intel-wired-lan] [PATCH][next] i40e: Replace one-element array
+ with flexible-array member
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210525230038.GA175516@embeddedor>
+ <bf46b428deef4e9e89b0ea1704b1f0e5@intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <79c3c00d-c364-9db1-b8de-7ed0686ca8dc@embeddedor.com>
+Date:   Wed, 26 May 2021 16:35:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
+In-Reply-To: <bf46b428deef4e9e89b0ea1704b1f0e5@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lm1AT-003fxT-AA
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46830
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 14
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021, Paolo Bonzini wrote:
-> On 02/04/21 01:37, Ben Gardon wrote:
-> > Now that the TDP MMU is able to handle page faults in parallel, it's a
-> > relatively small change to expand to other operations. This series allows
-> > zapping a range of GFNs, reclaiming collapsible SPTEs (when disabling
-> > dirty logging), and enabling dirty logging to all happen under the MMU
-> > lock in read mode.
-> > 
-> > This is partly a cleanup + rewrite of the last few patches of the parallel
-> > page faults series. I've incorporated feedback from Sean and Paolo, but
-> > the patches have changed so much that I'm sending this as a separate
-> > series.
-> > 
-> > Ran kvm-unit-tests + selftests on an SMP kernel + Intel Skylake, with the
-> > TDP MMU enabled and disabled. This series introduces no new failures or
-> > warnings.
-> > 
-> > I know this will conflict horribly with the patches from Sean's series
-> > which were just queued, and I'll send a v2 to fix those conflicts +
-> > address any feedback on this v1.
-> > 
-> > Changelog
-> > v2:
-> > --	Rebased patches on top of kvm/queue to incorporate Sean's recent
-> > 	TLB flushing changes
-> > --	Dropped patch 5: "KVM: x86/mmu: comment for_each_tdp_mmu_root
-> > 	requires MMU write lock" as the following patch to protect the roots
-> > 	list with RCU adds lockdep which makes the comment somewhat redundant.
-> > 
-> > Ben Gardon (13):
-> >    KVM: x86/mmu: Re-add const qualifier in
-> >      kvm_tdp_mmu_zap_collapsible_sptes
-> >    KVM: x86/mmu: Move kvm_mmu_(get|put)_root to TDP MMU
-> >    KVM: x86/mmu: use tdp_mmu_free_sp to free roots
-> >    KVM: x86/mmu: Merge TDP MMU put and free root
-> >    KVM: x86/mmu: Refactor yield safe root iterator
-> >    KVM: x86/mmu: Make TDP MMU root refcount atomic
-> >    KVM: x86/mmu: handle cmpxchg failure in kvm_tdp_mmu_get_root
-> >    KVM: x86/mmu: Protect the tdp_mmu_roots list with RCU
-> >    KVM: x86/mmu: Allow zap gfn range to operate under the mmu read lock
-> >    KVM: x86/mmu: Allow zapping collapsible SPTEs to use MMU read lock
-> >    KVM: x86/mmu: Allow enabling / disabling dirty logging under MMU read
-> >      lock
-> >    KVM: x86/mmu: Fast invalidation for TDP MMU
-> >    KVM: x86/mmu: Tear down roots in fast invalidation thread
-> > 
-> >   arch/x86/include/asm/kvm_host.h |  21 +-
-> >   arch/x86/kvm/mmu/mmu.c          | 115 +++++++---
-> >   arch/x86/kvm/mmu/mmu_internal.h |  27 +--
-> >   arch/x86/kvm/mmu/tdp_mmu.c      | 375 +++++++++++++++++++++++---------
-> >   arch/x86/kvm/mmu/tdp_mmu.h      |  28 ++-
-> >   include/linux/kvm_host.h        |   2 +-
-> >   6 files changed, 407 insertions(+), 161 deletions(-)
-> > 
+
+
+On 5/26/21 16:29, Saleem, Shiraz wrote:
+>> Subject: [PATCH][next] i40e: Replace one-element array with flexible-array member
+>>
+>> There is a regular need in the kernel to provide a way to declare having a
+>> dynamically sized set of trailing elements in a structure. Kernel code should always
+>> use “flexible array members”[1] for these cases. The older style of one-element or
+>> zero-length arrays should no longer be used[2].
+>>
+>> Refactor the code according to the use of a flexible-array member in struct
+>> i40e_qvlist_info instead of one-element array, and use the struct_size() helper.
+>>
+>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-
+>> and-one-element-arrays
+>>
+>> Link: https://github.com/KSPP/linux/issues/79
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> Applied to kvm/mmu-notifier-queue, thanks.
+> This looks ok to me.
+> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> 
+> It seems we should add this to the new irdma driver submission as well which replaces i40iw.
+> I will fold it into v7 of the rdma portion of the series
+> https://lore.kernel.org/linux-rdma/20210520200326.GX1096940@ziepe.ca/
 
-What's the plan for kvm/mmu-notifier-queue?  More specifically, are the hashes
-stable, i.e. will non-critical review feedback get squashed?  I was finally
-getting around to reviewing this, but what's sitting in that branch doesn't
-appear to be exactly what's posted here.  If the hashes are stable, I'll probably
-test and review functionality, but not do a thorough review.
+OK. Just please, when you fold it, add my Signed-off-by tag like this:
 
-Thanks!
+[flexible array transformation]
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+> Additionally we will add this patch when we resend this PR on iwl-next.
+> https://lore.kernel.org/linux-rdma/62555c6de641e10cb4169653731389a51d086345.camel@intel.com/
+> 
+> 
+>> ---
+>>  drivers/infiniband/hw/i40iw/i40iw_main.c      | 5 ++---
+>>  drivers/net/ethernet/intel/i40e/i40e_client.c | 2 +-
+>>  include/linux/net/intel/i40e_client.h         | 2 +-
+>>  3 files changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c
+>> b/drivers/infiniband/hw/i40iw/i40iw_main.c
+>> index b496f30ce066..364f69cd620f 100644
+>> --- a/drivers/infiniband/hw/i40iw/i40iw_main.c
+>> +++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+>> @@ -1423,7 +1423,7 @@ static enum i40iw_status_code
+>> i40iw_save_msix_info(struct i40iw_device *iwdev,
+>>  	struct i40e_qv_info *iw_qvinfo;
+>>  	u32 ceq_idx;
+>>  	u32 i;
+>> -	u32 size;
+>> +	size_t size;
+>>
+>>  	if (!ldev->msix_count) {
+>>  		i40iw_pr_err("No MSI-X vectors\n");
+>> @@ -1433,8 +1433,7 @@ static enum i40iw_status_code
+>> i40iw_save_msix_info(struct i40iw_device *iwdev,
+>>  	iwdev->msix_count = ldev->msix_count;
+>>
+>>  	size = sizeof(struct i40iw_msix_vector) * iwdev->msix_count;
+>> -	size += sizeof(struct i40e_qvlist_info);
+>> -	size +=  sizeof(struct i40e_qv_info) * iwdev->msix_count - 1;
+>> +	size += struct_size(iw_qvlist, qv_info, iwdev->msix_count);
+>>  	iwdev->iw_msixtbl = kzalloc(size, GFP_KERNEL);
+>>
+>>  	if (!iwdev->iw_msixtbl)
+>> diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c
+>> b/drivers/net/ethernet/intel/i40e/i40e_client.c
+>> index 32f3facbed1a..63eab14a26df 100644
+>> --- a/drivers/net/ethernet/intel/i40e/i40e_client.c
+>> +++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
+>> @@ -579,7 +579,7 @@ static int i40e_client_setup_qvlist(struct i40e_info *ldev,
+>>  	u32 v_idx, i, reg_idx, reg;
+>>
+>>  	ldev->qvlist_info = kzalloc(struct_size(ldev->qvlist_info, qv_info,
+>> -				    qvlist_info->num_vectors - 1), GFP_KERNEL);
+>> +				    qvlist_info->num_vectors), GFP_KERNEL);
+>>  	if (!ldev->qvlist_info)
+>>  		return -ENOMEM;
+>>  	ldev->qvlist_info->num_vectors = qvlist_info->num_vectors; diff --git
+>> a/include/linux/net/intel/i40e_client.h b/include/linux/net/intel/i40e_client.h
+>> index f41387a8969f..fd7bc860a241 100644
+>> --- a/include/linux/net/intel/i40e_client.h
+>> +++ b/include/linux/net/intel/i40e_client.h
+>> @@ -48,7 +48,7 @@ struct i40e_qv_info {
+>>
+>>  struct i40e_qvlist_info {
+>>  	u32 num_vectors;
+>> -	struct i40e_qv_info qv_info[1];
+>> +	struct i40e_qv_info qv_info[];
+>>  };
+>>
+>>
+>> --
+>> 2.27.0
+> 
+> _______________________________________________
+> Intel-wired-lan mailing list
+> Intel-wired-lan@osuosl.org
+> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+> 
