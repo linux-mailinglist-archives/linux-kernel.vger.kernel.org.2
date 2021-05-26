@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19CD391753
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0F5391755
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhEZMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:30:59 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:38805 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhEZMa6 (ORCPT
+        id S234581AbhEZMbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:31:17 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6716 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232829AbhEZMbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:30:58 -0400
-Received: by mail-ej1-f48.google.com with SMTP id ss26so1910157ejb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:29:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sKSzw4CfWQSF/RHLjmRDXp9EILu+5BuT7fV/lIAA2+o=;
-        b=qP6ONqk+LElsLcGFSHIqK7wruvskxbhsBZbhg0u3jiAQcZqlHV0Fa0V3BzBNXQN2hV
-         /fIvUHKxqzLzPhYC3JI7EES2Dacr2BTLI5HIoaCIC42jhAB4t0KJZ/k0uW9HJs5N0Mi8
-         TVZ/hdYbyTesXqDPcptBQ6CjNRBffVb8n/V0LakOcGaCf7azrjc3zTemLdlkfV1yGZ6E
-         uEZPKWrEkEj9k+HPgciKL76rjaeX4wPqCGBO9ykIodanXlG4y18gVS6mbpjm9NSUGk60
-         LJ6Hyb2MR+2Xa9ktwrBTfe1CghGPkhQPXBzAy5W5Ihhr9TLnig4BM0PKO8LmwIUxVlbo
-         iC6w==
-X-Gm-Message-State: AOAM530TiaQ36Dfuhrxwmk70RQg2gj1O/+CSsmCwzgCU0e7P37gIfVAi
-        Ti8qqcYf2tp2qGXBQ8KadNKz30lxloSmiLlfG7I=
-X-Google-Smtp-Source: ABdhPJySV9llz0Dul2qnlB0Di/o/8HImFsDUBbemjGGsd7Tsl9+mW+Tt3j7nM5H6/xkgRLoOddLZt8T413xMybU2trM=
-X-Received: by 2002:a17:906:4789:: with SMTP id cw9mr34067174ejc.325.1622032165346;
- Wed, 26 May 2021 05:29:25 -0700 (PDT)
+        Wed, 26 May 2021 08:31:14 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FqqtN1Jxkzncdg;
+        Wed, 26 May 2021 20:26:04 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 20:29:41 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 20:29:41 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <will@kernel.org>, <peterz@infradead.org>, <paulmck@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <mst@redhat.com>, <brouer@redhat.com>, <jasowang@redhat.com>
+Subject: [PATCH net-next] ptr_ring: make __ptr_ring_empty() checking more reliable
+Date:   Wed, 26 May 2021 20:29:33 +0800
+Message-ID: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210525140232.53872-1-mark.rutland@arm.com> <YK4xQ/BtB4rItRr1@hirez.programming.kicks-ass.net>
-In-Reply-To: <YK4xQ/BtB4rItRr1@hirez.programming.kicks-ass.net>
-From:   Junio C Hamano <gitster@pobox.com>
-Date:   Wed, 26 May 2021 21:29:12 +0900
-Message-ID: <CAPc5daVLg2jVEMW6eAZJQTK7YmMmReDNrNWPnLeX2nckbHhmfw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to ARCH_ATOMIC
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        will@kernel.org, boqun.feng@gmail.com, aou@eecs.berkeley.edu,
-        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
-        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
-        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
-        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@hansenpartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, May 25, 2021 at 03:01:59PM +0100, Mark Rutland wrote:
-> > Note: I've generated the patches with:
-> >
-> >   git format-patch -C -M -D
-> >
-> > ... so the preimage of include/linux/atomic-fallback.h is not included
-> > in the diff when it is deleted.
-> ...
-> Junio; can we get something like the below sorted?
+Currently r->queue[] is cleared after r->consumer_head is moved
+forward, which makes the __ptr_ring_empty() checking called in
+page_pool_refill_alloc_cache() unreliable if the checking is done
+after the r->queue clearing and before the consumer_head moving
+forward.
 
-Funny, I recently looked at "git format-patch --help" and read that "-D"
-is explicitly described as "The resulting patch is not meant to be applied
-with patch or git apply; this is solely for people who want to just
-concentrate on reviewing the text after the change."
+Move the r->queue[] clearing after consumer_head moving forward
+to make __ptr_ring_empty() checking more reliable.
 
-So, no, I think it is anti-social to send such a patch generated with -D
-unless it is purely for discussion. The side that generates the patch
-should be told to drop "-D" when running the format-patch command,
-or perhaps format-patch should be taught to error out when "-D" is
-given, perhaps?
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ include/linux/ptr_ring.h | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
+index 808f9d3..f32f052 100644
+--- a/include/linux/ptr_ring.h
++++ b/include/linux/ptr_ring.h
+@@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+ 	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
+ 	 * to work correctly.
+ 	 */
+-	int consumer_head = r->consumer_head;
+-	int head = consumer_head++;
++	int consumer_head = r->consumer_head + 1;
+ 
+ 	/* Once we have processed enough entries invalidate them in
+ 	 * the ring all at once so producer can reuse their space in the ring.
+@@ -271,19 +270,28 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+ 	 */
+ 	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
+ 		     consumer_head >= r->size)) {
++		int tail = r->consumer_tail;
++		int head = consumer_head;
++
++		if (unlikely(consumer_head >= r->size)) {
++			r->consumer_tail = 0;
++			WRITE_ONCE(r->consumer_head, 0);
++		} else {
++			r->consumer_tail = consumer_head;
++			WRITE_ONCE(r->consumer_head, consumer_head);
++		}
++
+ 		/* Zero out entries in the reverse order: this way we touch the
+ 		 * cache line that producer might currently be reading the last;
+ 		 * producer won't make progress and touch other cache lines
+ 		 * besides the first one until we write out all entries.
+ 		 */
+-		while (likely(head >= r->consumer_tail))
+-			r->queue[head--] = NULL;
+-		r->consumer_tail = consumer_head;
+-	}
+-	if (unlikely(consumer_head >= r->size)) {
+-		consumer_head = 0;
+-		r->consumer_tail = 0;
++		while (likely(--head >= tail))
++			r->queue[head] = NULL;
++
++		return;
+ 	}
++
+ 	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
+ 	WRITE_ONCE(r->consumer_head, consumer_head);
+ }
+-- 
+2.7.4
+
