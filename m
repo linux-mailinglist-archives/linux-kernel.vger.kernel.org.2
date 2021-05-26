@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B461391AD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC36391AD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbhEZOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235160AbhEZOzi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:55:38 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4630BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:54:06 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id e17so1111693pfl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+GScnmVdacRASdZ6acXofN+D5Tlo5vzk3Jj+0xXhnBs=;
-        b=ZYIDSNqauuNmVnIUAuIoNdVNNM2lQjPM+LT4mr3k7iqCbm2CS2JAJW2PvDpPIsNYWv
-         L1q8BX81tSCVLgMVqm6EhgDppexrZdN2KU8FY9FObpX9YpLxzxSWZfQRPtoG3KR4pmJ5
-         woKMn0hPLltjsd9+WNBmmuUlEM8S9I0Y5Vug4Le47r6H1sKH362Uekz3kEFkdMfJf/TA
-         c389q1zYA3waMXh98Ah/9taeEEF6WDpS2noTjs6QXTWtVXolJfL4LwR5jBBvvUn0tgjI
-         RNNzXLpj4Rr/zgktfpU/kuGbv+WInnNlelnRXD06e2o/CzO3J3bNMkqX5+j3PK3icKqQ
-         7JVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+GScnmVdacRASdZ6acXofN+D5Tlo5vzk3Jj+0xXhnBs=;
-        b=maFGD7KZ0zkZ2shUPGpEuKhHGfN9T7NNuZDKHSEdeV7bKxHYHXYNVZN2dEwAePbFGv
-         3hVf5XCBeYl2tCsaxyLlxYqfWr/IQMihbYRSf8iJ4h1HSplJOXrN1iNf21WUy+aaFB7C
-         o1DN+G6AUtIkNYxGMpyQA7drbhiHCej8DY2SnGAALPcBjrqA6Gz5lSgRvBoevSeMo6Cj
-         Ugqz3BIzgpDOScfB8OmwkvQqTHjILqE+DqjKYnTanN76LXgD1UCYSHrZ956pp31fYMi9
-         7gzLzLMxY1vVSdDLvzHhkjAcmwwmp3KEAfvrhsu3v3rXIPZL82BzO/vZbwRaU9xUIT+E
-         1rlQ==
-X-Gm-Message-State: AOAM531h+DdXLpOq5jPW7bk8LTEcbGXnoE7FcjegZx14a4/G9laTDLR8
-        Tf+2YujIZAkwv+EDFKCkpl68VQ==
-X-Google-Smtp-Source: ABdhPJy/4bHs4xkk+2NL5sdmo643CgS2zx60hGlhSq8WGMvUzh6ma3fHy5ASZe6EKhoY1bkqfa42aA==
-X-Received: by 2002:a62:60c4:0:b029:2ca:ebf7:cd0d with SMTP id u187-20020a6260c40000b02902caebf7cd0dmr35557829pfb.71.1622040845628;
-        Wed, 26 May 2021 07:54:05 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id e17sm12841738pfi.131.2021.05.26.07.54.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 07:54:05 -0700 (PDT)
-Date:   Wed, 26 May 2021 14:54:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Liu, Jing2" <jing2.liu@linux.intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com
-Subject: Re: [PATCH RFC 7/7] kvm: x86: AMX XCR0 support for guest
-Message-ID: <YK5hCUoPo4OJzeU0@google.com>
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-8-jing2.liu@linux.intel.com>
- <YKwgdBTqiyuItL6b@google.com>
- <43eb3317-4101-0786-57f4-f35e7ec094eb@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <43eb3317-4101-0786-57f4-f35e7ec094eb@linux.intel.com>
+        id S235007AbhEZO4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:56:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55950 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235077AbhEZO4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:56:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622040917; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=53KMbWrHWLmq5ylrUR1cp7KG0RzHoDEqqnfOHSApgk4=; b=OcA5yPIwoBC1DT6YS2miqdmkH28gTmuci8mhCSuMRmb023KG+P2D5DfnJOlNAr+orn77IioM
+ +H6wajv2iIkGMWAJWtXG54mzoFpwIO70k9SacWOWf/06BS1Uwkbqva+dJ3WRKrY44Vcuusmc
+ elKOzPhEa41dhvC9QKQsfwdwF/w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60ae61477b5af81b5c0f0293 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 26 May 2021 14:55:03
+ GMT
+Sender: sharathv=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEF57C4323A; Wed, 26 May 2021 14:55:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from svurukal-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sharathv)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 184C2C4338A;
+        Wed, 26 May 2021 14:54:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 184C2C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sharathv@codeaurora.org
+From:   Sharath Chandra Vurukala <sharathv@codeaurora.org>
+To:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>
+Subject: [PATCH net-next v6 0/3] net: qualcomm: rmnet: Enable Mapv5
+Date:   Wed, 26 May 2021 20:24:39 +0530
+Message-Id: <1622040882-27526-1-git-send-email-sharathv@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Liu, Jing2 wrote:
-> 
-> On 5/25/2021 5:53 AM, Sean Christopherson wrote:
-> > On Sun, Feb 07, 2021, Jing Liu wrote:
-> > > Two XCR0 bits are defined for AMX to support XSAVE mechanism.
-> > > Bit 17 is for tilecfg and bit 18 is for tiledata.
-> > This fails to explain why they must be set in tandem.
-> The spec says, "executing the XSETBV instruction causes a general-protection
-> fault (#GP) if ECX=0 and EAX[17] ≠ EAX[18] (XTILECFG and XTILEDATA must be
-> enabled together).  This implies that the value of XCR0[17:18] is always
-> either 00b or 11b."
-> 
-> I can add more to changelog if this is reasonable.
+This series introduces the MAPv5 packet format.
 
-Ya, please do.  It doesn't have to be the full thing verbatim (but that's ok, too),
-but the requirement does need to be called out.
+   Patch 0 documents the MAPv4/v5.
+   Patch 1 introduces the MAPv5 and the Inline checksum offload for RX/Ingress.
+   Patch 2 introduces the MAPv5 and the Inline checksum offload for TX/Egress.
 
-> >  Out of curisoity, assuming they do indeed need to be set/cleared as a
-> >  pair, what's the point of having two separate bits?
->
-> What I can see is to separate different states and mirror by XFD which can
-> set bits separately.
+   A new checksum header format is used as part of MAPv5.For RX checksum offload,
+   the checksum is verified by the HW and the validity is marked in the checksum
+   header of MAPv5. For TX, the required metadata is filled up so hardware can
+   compute the checksum.
 
-Ah, that would make sense.  Thanks!
+   v1->v2:
+   - Fixed the compilation errors, warnings reported by kernel test robot.
+   - Checksum header definition is expanded to support big, little endian
+           formats as mentioned by Jakub.
+
+   v2->v3:
+   - Fixed compilation errors reported by kernel bot for big endian flavor.
+
+   v3->v4:
+   - Made changes to use masks instead of C bit-fields as suggested by Jakub/Alex.
+
+   v4->v5:
+   - Corrected checkpatch errors and warnings reported by patchwork.
+
+   v5->v6:
+   - Corrected the bug identified by Alex and incorporated all his comments. 
+
+Sharath Chandra Vurukala (3):
+  docs: networking: Add documentation for MAPv5
+  net: ethernet: rmnet: Support for ingress MAPv5 checksum offload
+  net: ethernet: rmnet: Add support for MAPv5 egress packets
+
+ .../device_drivers/cellular/qualcomm/rmnet.rst     | 126 +++++++++++++++--
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |   4 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   |  34 +++--
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  11 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 152 +++++++++++++++++++--
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |   3 +-
+ include/linux/if_rmnet.h                           |  26 +++-
+ include/uapi/linux/if_link.h                       |   2 +
+ 8 files changed, 321 insertions(+), 37 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
