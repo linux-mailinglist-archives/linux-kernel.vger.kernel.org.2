@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371CC390D6C
+	by mail.lfdr.de (Postfix) with ESMTP id A2EFA390D6D
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhEZAlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230106AbhEZAlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:41:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E86B61417;
-        Wed, 26 May 2021 00:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621989590;
-        bh=3zgyZ7zoBJ+hkeHoXCzHp9CwIXm2cdXOf80HROm53hY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fkm9ndfDupj8s5n/4/6rrAbb+eXW8zopJv1M6OxIOCLl0dR0AJSykkdvHQxT+jJ0Z
-         ciVWVIBJURvGSJ6DNr1baOyoLzh2SwFOgpv9W7HTmsHop4Uf09bysR6SxtUyDbq2Zh
-         knYV2NZc6y94jO2lvi0j0SnP8g249qvncNbZRL+v3ajjvJo7CZbzODOixOr8kiopth
-         ghq/iBkPoGZI0ZfIldDGx3zIEtXu1vYGfwgTQDjJrJOcj2jK+SBbD1rn1xBOGV0OrM
-         rUpSUYqWnokjh1aUMK69iHloimM14dWIuG6A2wX6v71YZizpcQUF+u6ze/ww2LNGHA
-         cDc3UlqUmYe8A==
-Subject: Re: Preemption Signal Management
-To:     Sargun Dhillon <sargun@sargun.me>,
-        Linux Containers <containers@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        =?UTF-8?Q?Mauricio_V=c3=a1squez_Bernal?= <mauricio@kinvolk.io>
-References: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <f9e0126e-2bd4-eda4-0c07-9393d56d1421@kernel.org>
-Date:   Tue, 25 May 2021 17:39:49 -0700
+        id S232577AbhEZAlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhEZAle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:41:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9995C061574;
+        Tue, 25 May 2021 17:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=tETNDjNyS9VWp0lmkXGYY/OSTeXZstfAPKUdqUv0Z6g=; b=cuho+FlC0QiW7LCkxQwvlW2LIn
+        vdATixI4JJu6Nb5GPntqn1h36tTA2GAp4u6SqyHeh4v/U8os2HHd7AJ/qdpILv+k7W42QdTck2XWp
+        1JNEx++xFzzmG/OqOkdDRyqor7KWVOXZlaDgM5qdCCy4aTs/dbpv9AHRjiYmlFO0D6i/OWquSxpkO
+        qeUqZahCEgKwivrncyTcomGUWpOtgWIr5NwvudL22BrVdrI6GA11Ps039sQ6LcjvsUEDYGNXXWPzI
+        H9DZWM9o05gvYQiMEMB6c1Ey3T+ysWCYP18tsz3oEA7nbelPsDblH6/nnLJHpyNVnqgdwRAHAsJsK
+        6lhywPkA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1llhaa-009Y5s-Ge; Wed, 26 May 2021 00:40:00 +0000
+Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
+ enabled
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Burton <paul.burton@mips.com>,
+        John Crispin <john@phrozen.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>
+References: <20210523232556.15017-1-digetx@gmail.com>
+ <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+ <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
+ <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
+ <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
+ <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3661fdba-ad32-5d16-7714-1ebc58caf435@infradead.org>
+Date:   Tue, 25 May 2021 17:39:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
+In-Reply-To: <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 9:23 AM, Sargun Dhillon wrote:
-> Andy pointed out that we need a mechanism to determine whether or
-> notifications are preempted. He suggested we use EPOLLPRI to indicate
-> whether or not notifications are preempted. My outstanding question is
-> whether or not we need to be able to get insight of what caused the
-> preemption, and to which notification.
+On 5/25/21 2:29 PM, Dmitry Osipenko wrote:
+> 25.05.2021 15:19, Geert Uytterhoeven пишет:
+> ...
+>>>> There 3 possible solutions:
+>>>>
+>>>> 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
+>>>> 2. Build stubs universally, maybe using weak functions.
+>>>
+>>> I vote for this one - global stubs.
+>>
+>> Yep.
+>>
+>>> Or for a new one:
+>>> 4. Disable COMPILE_TEST for specific platforms (mentioned in commit
+>>> msg). Eventually could be like:
+>>> config RALINK
+>>>         depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
+>>
+>> That's a neat idea!
+>>
+>> Of course there's a fifth option:
+>>
+>> 5. Convert legacy platforms to COMMON_CLK.
+>>
+>> Which is already happening for ARM EP93XX.
 > 
-> In the past, Christian has suggested just background polling
-> notification IDs for validity, which is a fine mechanism to determine
-> that preemption has occurred. We could raise EPOLLPRI whenever a
-> notification has changed into the preempted state, but that would
-> require an O(n) operations across all outstanding notifications to
-> determine which one was preempted, and in addition, it doesn't give a
-> lot of information as to why the preemption occurred (fatal signal,
-> preemption?).
-> 
-> In order to try to break this into small parts, I suggest:
-> 1. We make it so EPOLLPRI is raised (always) on preempted notifications
-> 2. We allow the user to set a flag to "track" notifications. If they
-> specify this flag, they can then run a "stronger" ioctl -- let's say
-> SECCOMP_IOCTL_NOTIF_STATUS, which, if the flag was specified upon
-> receiving the notification will return the current state of the
-> notification and if a signal preempted it, it will always do that.
-> 
-> ---
-> Alternatively (and this is my preference), we add another filter flag,
-> like SECCOMP_FILTER_FLAG_NOTIF_PREEMPT, which changes the behaviour
-> to:
-> 1. Raise EPOLLPRI on preempted notifications
-> 2. All preemption notifications must be cleared via
-> SECCOMP_IOCTL_NOTIF_RECV_STATUS.
+> I'll try to take a closer look at alternative options, thank you for
+> yours input.
 
-This seems sensible, except I don't think "preempted" is the right word.
- The state machine is pretty simple:
+Hi,
 
-live -> signaled -> killed
+If you are messing around with HAVE_LEGACY_CLK and COMMON_CLK
+and don't mind, please have a look at this report from
+'kernel test robot':
+  https://lore.kernel.org/lkml/202103162301.oomY9NwI-lkp@intel.com/
 
-(and we can go straight from live to killed, too.)  So EPOLLPRI could be
-signaled if any notification changes state, and a new ioctl could read
-the list of notifications that have changed state.
 
---Andy
+Maybe this one is more MIPS-specific. I dunno.
+I tried to come up with a patch for it and failed.
+
+I will be happy to built-test any patches that you come up with.
+
+Maybe I have just looked at this too long...
+
+thanks.
+-- 
+~Randy
+
