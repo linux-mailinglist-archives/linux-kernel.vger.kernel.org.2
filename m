@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0F5391755
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD488391758
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhEZMbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:31:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6716 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhEZMbO (ORCPT
+        id S233665AbhEZMbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:31:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56468 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232829AbhEZMbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:31:14 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FqqtN1Jxkzncdg;
-        Wed, 26 May 2021 20:26:04 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 20:29:41 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 20:29:41 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <will@kernel.org>, <peterz@infradead.org>, <paulmck@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <mst@redhat.com>, <brouer@redhat.com>, <jasowang@redhat.com>
-Subject: [PATCH net-next] ptr_ring: make __ptr_ring_empty() checking more reliable
-Date:   Wed, 26 May 2021 20:29:33 +0800
-Message-ID: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 26 May 2021 08:31:39 -0400
+Received: from mail-vs1-f69.google.com ([209.85.217.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1llsfn-0007we-QV
+        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 12:30:07 +0000
+Received: by mail-vs1-f69.google.com with SMTP id m15-20020a05610206cfb0290248aedd0e0dso169242vsg.16
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:30:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tyXiD7bZ+aLeJtSpo9+C62NB/ifafXwXEggYhSU02ts=;
+        b=Bh1l1qkigpHoE8mG95SgDpErh2DkrePtTG5Dk1K/C8uojztIRmg2KXTEUaXkAklzLx
+         duombJsOIhEFVLe+XGmmeFOsKkwItk1CMpdMESSPTEHq/Z6UqVki5Pj/AEdk5Qbn+e4T
+         Qi29WGSCGS4xSqkAKup9f76y9avJ4D3ltvt9FhGKOk6vE5qUNR0rqn49Uxf162IxPtbL
+         5KMgdw/r9LqlnXMhrrGd8Wxk3KF223rGhZRMcq0pvvmPH4CtiJww5Xkxt4by962oh13t
+         RHaVc5hAlITWlz8u0m3vMgOoJ0+cvKu9ZwJxRwyOkg7TFmDOicx92lmdnbLcmPRyJZob
+         MF4Q==
+X-Gm-Message-State: AOAM530+56qVrm6QpejfDGYuXT6ywnSEd3BGuptjRtakced/gvJIvko5
+        0QCf6ShPmtJDDiqvSreytpfLNBanW3TBatTI3txdbsn8u1GXKjU1i7cJu/S8Ep5JpeRGPhULjzI
+        u23RbMyQLkkUgRl93y6gQ+gRjWmwPv8MS8CtUv5xT8w==
+X-Received: by 2002:a05:6102:dc9:: with SMTP id e9mr27735413vst.23.1622032206381;
+        Wed, 26 May 2021 05:30:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5a0h3XvrPTErg+z7PTz43kO0UM0jYM8LbfZF8Q6vQxRY1N4vWH2M2NXdkOSWaVH00NMgMlA==
+X-Received: by 2002:a05:6102:dc9:: with SMTP id e9mr27735393vst.23.1622032206152;
+        Wed, 26 May 2021 05:30:06 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id z8sm435074ual.1.2021.05.26.05.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 05:30:05 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [RESEND PATCH] drm/panel: ld9040: reference spi_device_id table
+Date:   Wed, 26 May 2021 08:30:02 -0400
+Message-Id: <20210526123002.12913-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently r->queue[] is cleared after r->consumer_head is moved
-forward, which makes the __ptr_ring_empty() checking called in
-page_pool_refill_alloc_cache() unreliable if the checking is done
-after the r->queue clearing and before the consumer_head moving
-forward.
+Reference the spi_device_id table to silence W=1 warning:
 
-Move the r->queue[] clearing after consumer_head moving forward
-to make __ptr_ring_empty() checking more reliable.
+  drivers/gpu/drm/panel/panel-samsung-ld9040.c:377:35:
+    warning: ‘ld9040_ids’ defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+This also would be needed for matching the driver if booted without
+CONFIG_OF (although it's not necessarily real case).
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- include/linux/ptr_ring.h | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/panel/panel-samsung-ld9040.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
-index 808f9d3..f32f052 100644
---- a/include/linux/ptr_ring.h
-+++ b/include/linux/ptr_ring.h
-@@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
- 	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
- 	 * to work correctly.
- 	 */
--	int consumer_head = r->consumer_head;
--	int head = consumer_head++;
-+	int consumer_head = r->consumer_head + 1;
- 
- 	/* Once we have processed enough entries invalidate them in
- 	 * the ring all at once so producer can reuse their space in the ring.
-@@ -271,19 +270,28 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
- 	 */
- 	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
- 		     consumer_head >= r->size)) {
-+		int tail = r->consumer_tail;
-+		int head = consumer_head;
-+
-+		if (unlikely(consumer_head >= r->size)) {
-+			r->consumer_tail = 0;
-+			WRITE_ONCE(r->consumer_head, 0);
-+		} else {
-+			r->consumer_tail = consumer_head;
-+			WRITE_ONCE(r->consumer_head, consumer_head);
-+		}
-+
- 		/* Zero out entries in the reverse order: this way we touch the
- 		 * cache line that producer might currently be reading the last;
- 		 * producer won't make progress and touch other cache lines
- 		 * besides the first one until we write out all entries.
- 		 */
--		while (likely(head >= r->consumer_tail))
--			r->queue[head--] = NULL;
--		r->consumer_tail = consumer_head;
--	}
--	if (unlikely(consumer_head >= r->size)) {
--		consumer_head = 0;
--		r->consumer_tail = 0;
-+		while (likely(--head >= tail))
-+			r->queue[head] = NULL;
-+
-+		return;
- 	}
-+
- 	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
- 	WRITE_ONCE(r->consumer_head, consumer_head);
- }
+diff --git a/drivers/gpu/drm/panel/panel-samsung-ld9040.c b/drivers/gpu/drm/panel/panel-samsung-ld9040.c
+index f484147fc3a6..c4b388850a13 100644
+--- a/drivers/gpu/drm/panel/panel-samsung-ld9040.c
++++ b/drivers/gpu/drm/panel/panel-samsung-ld9040.c
+@@ -383,6 +383,7 @@ MODULE_DEVICE_TABLE(spi, ld9040_ids);
+ static struct spi_driver ld9040_driver = {
+ 	.probe = ld9040_probe,
+ 	.remove = ld9040_remove,
++	.id_table = ld9040_ids,
+ 	.driver = {
+ 		.name = "panel-samsung-ld9040",
+ 		.of_match_table = ld9040_of_match,
 -- 
-2.7.4
+2.27.0
 
