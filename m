@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE59390E5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732FC390E5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhEZCkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:40:02 -0400
-Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:33004 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231843AbhEZCkB (ORCPT
+        id S232284AbhEZCnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhEZCnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:40:01 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 8A5E6A2D0;
-        Wed, 26 May 2021 02:38:30 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id F39FD1E04D5;
-        Wed, 26 May 2021 02:38:28 +0000 (UTC)
-Message-ID: <c017049e2abc746eec80deb0768744d5b94cd3e1.camel@perches.com>
-Subject: Re: [PATCH 3/3] slub: Actually use 'message' in restore_bytes()
-From:   Joe Perches <joe@perches.com>
-To:     Stephen Boyd <swboyd@chromium.org>,
-        David Rientjes <rientjes@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Date:   Tue, 25 May 2021 19:38:27 -0700
-In-Reply-To: <CAE-0n50NAaWNdFbsUGw==u+=X+4ZxDA=Qf_YesxXLVsyU8e8YA@mail.gmail.com>
-References: <20210520013539.3733631-1-swboyd@chromium.org>
-         <20210520013539.3733631-4-swboyd@chromium.org>
-         <f4da67db-a53b-a710-947d-474be7aad07@google.com>
-         <858b8d14673a200c3c2162fb7a9bf891ecd2a2d9.camel@perches.com>
-         <CAE-0n50NAaWNdFbsUGw==u+=X+4ZxDA=Qf_YesxXLVsyU8e8YA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 25 May 2021 22:43:20 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F993C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:48 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 27so23038038pgy.3
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ezkRjfHr/yM6BsQAIWTNP4dtaMyIXXLPkdDgkZxux3A=;
+        b=ApaC4pDll9S1kSYB5io3ifMby1Gq9g9E6KxKclhWqvN+A47B/xv8Ms5FABOkrVHJ0g
+         CZINCBiZA229upxqomoYZMpJo/264cRtH38cqUjnwOKYvWtGl+yoQ5LVSD6RoXDtO5/m
+         ZXhzZ/2HtIZOYj3m1/Ct95HWzUu5ztwVbVxQUYriEGI7vKy18ka6PEqiFzcDEm9zYzLZ
+         1gq2RRjHToIDlfi73whaNSHhyOfh6xVgxbcFe7kK77eD9SKm8bv/MPRlsIPl7qBF2A6U
+         8M2p+216yMG/tz0hafsyLMy3j8mn8pYgkzbUP5DfabxgOLqtW/lfjMWzkq4zf7Ju5dbn
+         sJYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ezkRjfHr/yM6BsQAIWTNP4dtaMyIXXLPkdDgkZxux3A=;
+        b=t2CJtFdwLg96oREJs5cQPq7Gubw7PFH5pe/g92lYcM5DXAfFOb0U9fJ7HlkFCGTebp
+         HP1rbaMz9aioWV3/XiO6m4psP8pbCmABnStET/XokszbyE4cS6BRWSe88Wjvkw47lprY
+         2Ka2XPS0pnRqjGWyloTvLwBUKzkNb6lCfrmKAMZ7xg3sZw8GwDipPh4dMUBjlK6L4VuL
+         65BrKWl5De6tpQNKjrBqt3YIPAY8qzbD1rx5OtZu2xmBtzVRIwDsaxEPKyI3WkteyQ8E
+         0puQuHQLLTpzkP0LhIwVKwO/Kj8aPpksppj/AVZR+JxKr3/HkPBB5fP+Ep75IAsoBXNS
+         6r3g==
+X-Gm-Message-State: AOAM532OgxKfhSK7WMe5odekRvbQLqMxL0To9z8uAe1aT6wPSxnloccr
+        WyLlk6ITywt/7BeL2qQUwRAI+kpxWGlIIdoBLZxnUw==
+X-Google-Smtp-Source: ABdhPJzWkiQtkLiwSGp/hJKgHn8/eehIITIU/j84gUlDHfBnZGna9Pqxrd/DSMt2knZpknME/4qEhotvxr3thaMSwU8=
+X-Received: by 2002:a05:6a00:8c7:b029:20f:1cf4:d02 with SMTP id
+ s7-20020a056a0008c7b029020f1cf40d02mr33213719pfu.49.1621996907718; Tue, 25
+ May 2021 19:41:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.89
-X-Stat-Signature: apm3jtknofu18oxwznwijb89fja8hhrq
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: F39FD1E04D5
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19tJgMR7ep1kGpvtE7bmjdOvSYV0/RJpvI=
-X-HE-Tag: 1621996708-919670
+References: <20210421070059.69361-1-songmuchun@bytedance.com>
+ <CAMZfGtUiKcM8WmP88J3K5edwLhJhsUkAUQo6rnkqx4BBOEY2SA@mail.gmail.com>
+ <34366052-8A39-4E8E-A076-8B64AB4D015D@fb.com> <CAMZfGtXC_UG9gUD58ezL02a+Gyry_d7WfEwKup6UMQjvNi3HdQ@mail.gmail.com>
+ <YK01SgD7sFeviDGv@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YK01SgD7sFeviDGv@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 26 May 2021 10:41:11 +0800
+Message-ID: <CAMZfGtWgCyK+W9PMSFzyuPBvBzeKZRE5t7vKzgUQK3bj0NVi9g@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH v3 00/12] Use obj_cgroup APIs to charge
+ the LRU pages
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "Singh, Balbir" <bsingharora@gmail.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-25 at 22:32 -0400, Stephen Boyd wrote:
-> Quoting Joe Perches (2021-05-25 00:37:45)
-> > On Sun, 2021-05-23 at 22:12 -0700, David Rientjes wrote:
-> > > On Wed, 19 May 2021, Stephen Boyd wrote:
-> > > 
-> > > > The message argument isn't used here. Let's pass the string to the
-> > > > printk message so that the developer can figure out what's happening,
-> > > > instead of guessing that a redzone is being restored, etc.
-> > > > 
-> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > 
-> > > Acked-by: David Rientjes <rientjes@google.com>
-> > 
-> > Ideally, the slab_fix function would be marked with __printf and the
-> > format here would not use \n as that's emitted by the slab_fix.
-> 
-> Thanks. I can make this into a proper patch and author it from you. Can
-> you provide a signed-off-by? The restore_bytes() hunk is slightly
-> different but I can fix that up.
+On Wed, May 26, 2021 at 1:35 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Thu, May 20, 2021 at 11:20:47AM +0800, Muchun Song wrote:
+> > On Tue, May 18, 2021 at 10:17 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > Hi Muchun!
+> > >
+> > > It looks like the writeback problem will be solved in a different way=
+, which will not require generalization of the obj_cgroup api to the cgroup=
+ level. It=E2=80=99s not fully confirmed yet though. We still might wanna d=
+o this generalization lingn-term, but as now I have no objections for conti=
+nuing the work on your patchset. I=E2=80=99m on pto this week, but will tak=
+e a deeper look at your patches early next week. Sorry for the delay.
+> >
+> > Waiting on your review. Thanks Roman.
+>
+> It looks like the mm tree went ahead and I can't clearly apply the whole =
+patchset.
+> Would you mind to rebase it and resend?
 
-If you want...
+Got it. Will do that. Thanks.
 
-Signed-off-by: Joe Perches <joe@perches.com>
-
-> 
-> > ---
-> >  mm/slub.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index ee51857d8e9bc..46f9b043089b6 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -702,6 +702,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
-> >         va_end(args);
-> >  }
-> > 
-> > +__printf(2, 3)
-> >  static void slab_fix(struct kmem_cache *s, char *fmt, ...)
-> >  {
-> >         struct va_format vaf;
-> > @@ -816,7 +817,8 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
-> >  static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
-> >                                                 void *from, void *to)
-> >  {
-> > -       slab_fix(s, "Restoring %s 0x%px-0x%px=0x%x\n", message, from, to - 1, data);
-> > +       slab_fix(s, "Restoring %s 0x%px-0x%px=0x%x",
-> > +                message, from, to - 1, data);
-> >         memset(from, data, to - from);
-> >  }
-> > 
-> > @@ -1069,13 +1071,13 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
-> >                 slab_err(s, page, "Wrong number of objects. Found %d but should be %d",
-> >                          page->objects, max_objects);
-> >                 page->objects = max_objects;
-> > -               slab_fix(s, "Number of objects adjusted.");
-> > +               slab_fix(s, "Number of objects adjusted");
-> >         }
-> >         if (page->inuse != page->objects - nr) {
-> >                 slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
-> >                          page->inuse, page->objects - nr);
-> >                 page->inuse = page->objects - nr;
-> > -               slab_fix(s, "Object count adjusted.");
-> > +               slab_fix(s, "Object count adjusted");
-> >         }
-> >         return search == NULL;
-> >  }
-> > 
-> > 
-
-
+>
+> Thank you!
