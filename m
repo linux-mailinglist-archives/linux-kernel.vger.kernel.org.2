@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278EB391525
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D462391522
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhEZKlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:41:15 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:56890 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbhEZKlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:41:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TMe0IyJS6cQ+Lq2HcNsTfT78sP/9ZGYPAk05niLZNeM=; b=ueVfX9lZTHGcN+dDDycF9mQOdz
-        iTPADjKo7qvHBeqyQkPRQjiKTc6yInxBCdzMcVMZ5IPGCSL7M/Bu5GCY0y7NBhPOcReo4cuyktI+a
-        Lr+1b3l5uwbjLFKWwUZjAVSdl+pRuKIKUO7DDHwl1NDxUoBwdo4cda5SMSnbQtSf11mw=;
-Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1llqw2-005xmf-VR; Wed, 26 May 2021 10:38:47 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 49705D05864; Wed, 26 May 2021 11:39:21 +0100 (BST)
-Date:   Wed, 26 May 2021 11:39:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Jaroslav Kysela <perex@perex.cz>, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>, linux-doc@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 05/12] ASoC: hdmi-codec: Add a prepare hook
-Message-ID: <YK4lWaB6Lx+SPjpF@sirena.org.uk>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-6-maxime@cerno.tech>
+        id S233976AbhEZKlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:41:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:42744 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234021AbhEZKlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:41:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BA641516;
+        Wed, 26 May 2021 03:39:31 -0700 (PDT)
+Received: from [10.57.31.7] (unknown [10.57.31.7])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 082F23F73B;
+        Wed, 26 May 2021 03:39:28 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        peterz@infradead.org, rjw@rjwysocki.net,
+        vincent.guittot@linaro.org, qperret@google.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        dietmar.eggemann@arm.com
+References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+ <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
+ <20210526090141.GA408481@e120877-lin.cambridge.arm.com>
+ <20210526093807.sih5y4lgltsz3r74@vireshk-i7>
+ <17d88121-4809-dc31-1b57-2134ec868c8b@arm.com>
+Message-ID: <fb80ceef-a2af-6f70-4863-fd376a438f3e@arm.com>
+Date:   Wed, 26 May 2021 11:39:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wI7EtUudqJM9+3Oj"
-Content-Disposition: inline
-In-Reply-To: <20210525132354.297468-6-maxime@cerno.tech>
-X-Cookie: Ahead warp factor one, Mr. Sulu.
+In-Reply-To: <17d88121-4809-dc31-1b57-2134ec868c8b@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---wI7EtUudqJM9+3Oj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, May 25, 2021 at 03:23:47PM +0200, Maxime Ripard wrote:
-> The IEC958 status bit is usually set by the userspace after hw_params
-> has been called, so in order to use whatever is set by the userspace, we
-> need to implement the prepare hook. Let's add it to the hdmi_codec_ops,
-> and mandate that either prepare or hw_params is implemented.
+On 5/26/21 11:24 AM, Lukasz Luba wrote:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+[snip]
 
---wI7EtUudqJM9+3Oj
-Content-Type: application/pgp-signature; name="signature.asc"
+>> What about disabling the OPP in the OPP core itself ? So every user 
+>> will get the
+>> same picture.
+> 
+> There are SoCs which have OPPs every 100MHz even at high freq. They are
+> used e.g. when thermal kicks in. We shouldn't disable them in generic
+> frameworks like OPP. They might be used to provide enough CPU capacity,
+> when temp is high. Imagine you have a board which does some work:
+> sends and received some UDP packets. The board has been tested in oven
+> that it will still be able to handle X messages/sec but using an OPP, 
+> which in our heuristic is 'inefficient'. You cannot go above, because it
+> will overheat the SoC, you might go below and find first 'efficient'
+> OPP. You might harm this board performance if e.g. the OPP is 20% slower
+> that this 'inefficient' which was tested by engineers.
+> 
+>>
+>>>>
+>>>> Since the whole thing depends on EM and OPPs, I think we can 
+>>>> actually do this.
+>>>>
+>>>> When the cpufreq driver registers with the EM core, lets find all the
+>>>> Inefficient OPPs and disable them once and for all. Of course, this 
+>>>> must be done
+>>>> on voluntarily basis, a flag from the drivers will do. With this, we 
+>>>> won't be
+>>>> required to update any thing at any of the governors end.
+>>>
+>>> We still need to keep the inefficient OPPs for thermal reason.
+>>
+>> How will that benefit us if that OPP is never going to run anyway ? We 
+>> won't be
+> 
+> This OPP still might be used, the Vincent heuristic is just a 'hint'.
+> Schedutil will check policy->max and could clamp the 'efficient'
+> returned freq to first allowed, which might be 'inefficient'
+> 
+>> cooling down the CPU then, isn't it ?
+> 
+> The 'inefficient' OPP is called from our 'energy placement' angle. For
+> other folks from automotive, industrial or IoT who are stress testing
+> SoCs and boards in various circumstances, they might call our
+> 'inefficient' perf state as 'efficient' - for they need.
+> 
+> In our internal review I pointed that we are optimizing for mobiles with
+> this and we might actually need a #ifdef, config or a switch for this
+> heuristic.
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCuJVgACgkQJNaLcl1U
-h9CRRggAhsstIqtcqC4EquItefHkzTS9v8kbwvJytct/Q8VBhXpc7T0EkxWdaCxn
-s+7PulshfFDvB24KxgJcIs+bHVkn+e0dvfDLkjSd7RO+nGcIwnccOUzCJ2CX7/qS
-++Q7uUsY8Ne55NUPIfMpubv32SIHaYeCHglZjHKaHNpsM58ANdTAN2Sl2PMJs3u6
-phAyak9G80MvU5cjMto9WmV9zyGZ6uobiGH4qjx8wzO+71RuSMwCKVF6EZ/mdg26
-8XLOMvwo44jmHGWCduFH3mdVtsPi89Tblv3wNBrLlwMjZhJ2AiEqssq67lKCbKF5
-tvl87wk9yeLVRB/BD43Vpa3DajNrrg==
-=7TgH
------END PGP SIGNATURE-----
-
---wI7EtUudqJM9+3Oj--
+But even in mobiles, we might start facing issues e.g. during high
+resolution recording, when we just disable 'inefficient' OPPs,
+which were used in such use case and higher temperature.
