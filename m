@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A83F391E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DEC391E24
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhEZR2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S234011AbhEZRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhEZR2i (ORCPT
+        with ESMTP id S232674AbhEZRa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:28:38 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92801C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:27:05 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v13so961578ple.9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:27:05 -0700 (PDT)
+        Wed, 26 May 2021 13:30:58 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72652C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:29:24 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id f22so1519860pgb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CoNplCfjrcSDFcQORSZKbieGzoFc0tVb2QaR+5+KW4o=;
-        b=R3RaDZ5pPOEcRrGF7YAc9kKiy/s8YyUZPVZigdVu56JdrWEZ5RJmXIqAm16XpdjKR0
-         RHaamhV47DtinB3cdibBoorf/HXghHZzXt8BWdNo7YmiN0xerI7l/seKjf5GGoDO802O
-         ZROzCsrvp0XjrK3ceden6UztWmQE6kGxZ8PsNpXrO1uUiSxro+Lk9jVC7gMUgwJQY5Tg
-         saSa4FplZV8oLd7y0oCsnxANWb1v8PXpi90I0ST+0zDogjRGn3gDlabhPfVHtp7IA6Ei
-         +EdC22DACWxWz+d8HTDlioNk+VRu5OcO4q+yiY/KzqQgOu4FtMbA4bnzaMv5ZOTQFNQS
-         t6OA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nftD8Ovn49TMt2VJgq8EIyq7dzikLLs6FMzeX6li7D8=;
+        b=VEXXKYydQ3YbaIKTVTGtXwiu4Dmw56ffQvv3qQ49w/K65BOT/YfnJ7v/0SoV8Im9Hc
+         2797jqlLW7VwScUMQ3Qxj0AtWygZ3XU70iHewx6Vad6ao+Yqn7DC4GdBkyZ151kvELww
+         Ch6dHGjA59ki6nhZNX3Ids477h7FzI3g0bT+tYdRTsXSR+tB540Iad1V03fTudGkGal7
+         TfKQpHtmyJAWiH2LZh3sYVEMCtt2jjSTZdu+AKK8DgqdPYVSdaalv0LghG9knzVOMQQh
+         Gd63Uq/QaBasvX3mKkHh37wb6IYmF5QFUrXD5t/IisvOEzpb8hTqRMb/HEBkSMM8VNXF
+         Oe1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CoNplCfjrcSDFcQORSZKbieGzoFc0tVb2QaR+5+KW4o=;
-        b=i0HEk1GOszTWMiMPENGRddKpbqAsIKTqsMVlXDqHfG4zShzs/A2Usav+7P06J5Os8a
-         SNyXZZhXiVLTVa2JI2h3x+zQpe0QKjsI70rAHJASSSaaB+nb0UREKsOweoDQUAU8Qnqu
-         3Ady4XKyvOfoVJUbwsKVFKmC5FiVtK8aIQvQZ6nFEz1RHAiQdaUeS1fqTYEBf6ASwhMf
-         vVjq0vLWAtXyMMWGCiTm3zl5M3apFW6/r1KlJMkfaMJ9siZCr1rwMi7kzCREIQeuXpdE
-         3x9gmmifINIAEBmMZH3uooi+RGUkA5WKdTmIKhO/GD8LC/FCylzyY0+X70t2WAa3CfKq
-         8Fyw==
-X-Gm-Message-State: AOAM533/1S7U2B+WYQnT0rrFS1td/npKCUpF/wmT6czp6neNlLdIc3zn
-        5KMmbD5LEYnYCmt3g6jgiDQVbQ==
-X-Google-Smtp-Source: ABdhPJya+m+m16xOAuZHqbYdFnytU2u2a+uxUSV+KpX0U1uXb08CAe/nSl/mBbQmPAtCbwDILB/v2g==
-X-Received: by 2002:a17:90a:9105:: with SMTP id k5mr37340618pjo.48.1622050024875;
-        Wed, 26 May 2021 10:27:04 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s3sm18479111pgs.62.2021.05.26.10.27.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nftD8Ovn49TMt2VJgq8EIyq7dzikLLs6FMzeX6li7D8=;
+        b=B8O72J8jPvkcWZkiqXq1FvYEdJ9H/mooj0FtqcWIucfP7mJ+iOqaL/GqLev9MmHCfb
+         dAId9xfAEm6rJg30QWdioUWR/D4mShVi66ieSSDvYPQhf+5agvCaArqAVlU4MXpqQ5q+
+         ceLmkTN2zy5TsKfyHx9q1MxvZjxPqTP3pbJ5OLKCcl23ChBewdl/7HZ7cdUBYHOYFWX4
+         1HHmf1DXKu0JBaYkNChBQjBn2TKtC2YwJ8xygOFNhZ4CwnNxe3gS4ueOSzuUyegBZ33J
+         zJbTH4ixZU8BynWBvVvvdVZKgcEdhigYRy49gklo7siET0kiah/Z6GCq+EI17Ji1nnfl
+         CMdw==
+X-Gm-Message-State: AOAM532bPzTsQs59eaY7yKWi+zlrOcL3FzCE3GGAA/yPEktXGxKvlqmb
+        Phsbvqpr8+0R4ioY+/dHEik=
+X-Google-Smtp-Source: ABdhPJx6V7sAr9IXgDsXzlHtizpo+MyWdxbrD4Nr8RkJU9Z/CUM1/6dvMgtn3yU0h+wuOE3N2LlHiQ==
+X-Received: by 2002:a63:6c9:: with SMTP id 192mr26453695pgg.39.1622050163749;
+        Wed, 26 May 2021 10:29:23 -0700 (PDT)
+Received: from localhost.localdomain ([106.77.36.0])
+        by smtp.gmail.com with ESMTPSA id h9sm15230876pja.42.2021.05.26.10.29.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 10:27:04 -0700 (PDT)
-Date:   Wed, 26 May 2021 17:27:00 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Pu Wen <puwen@hygon.cn>
-Cc:     x86@kernel.org, joro@8bytes.org, thomas.lendacky@amd.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@suse.de, hpa@zytor.com,
-        jroedel@suse.de, sashal@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
-Message-ID: <YK6E5NnmRpYYDMTA@google.com>
-References: <20210526072424.22453-1-puwen@hygon.cn>
+        Wed, 26 May 2021 10:29:23 -0700 (PDT)
+From:   Piyush Thange <pthange19@gmail.com>
+To:     gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        john.oldman@polehill.co.uk
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Piyush Thange <pthange19@gmail.com>
+Subject: [PATCH] staging: rtl8192u: Fixed warnings of coding style
+Date:   Wed, 26 May 2021 22:59:00 +0530
+Message-Id: <20210526172900.56093-1-pthange19@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526072424.22453-1-puwen@hygon.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Pu Wen wrote:
-> The first two bits of the CPUID leaf 0x8000001F EAX indicate whether
-> SEV or SME is supported respectively. It's better to check whether
-> SEV or SME is supported before checking the SEV MSR(0xc0010131) to
-> see whether SEV or SME is enabled.
-> 
-> This also avoid the MSR reading failure on the first generation Hygon
-> Dhyana CPU which does not support SEV or SME.
-> 
-> Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
-> Cc: <stable@vger.kernel.org> # v5.10+
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> ---
->  arch/x86/mm/mem_encrypt_identity.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-> index a9639f663d25..470b20208430 100644
-> --- a/arch/x86/mm/mem_encrypt_identity.c
-> +++ b/arch/x86/mm/mem_encrypt_identity.c
-> @@ -504,10 +504,6 @@ void __init sme_enable(struct boot_params *bp)
->  #define AMD_SME_BIT	BIT(0)
->  #define AMD_SEV_BIT	BIT(1)
->  
-> -	/* Check the SEV MSR whether SEV or SME is enabled */
-> -	sev_status   = __rdmsr(MSR_AMD64_SEV);
-> -	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-> -
->  	/*
->  	 * Check for the SME/SEV feature:
->  	 *   CPUID Fn8000_001F[EAX]
-> @@ -519,11 +515,16 @@ void __init sme_enable(struct boot_params *bp)
->  	eax = 0x8000001f;
->  	ecx = 0;
->  	native_cpuid(&eax, &ebx, &ecx, &edx);
-> -	if (!(eax & feature_mask))
-> +	/* Check whether SEV or SME is supported */
-> +	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
+Fixed coding style issues with comments.
 
-Hmm, checking CPUID at all before MSR_AMD64_SEV is flawed for SEV, e.g. the VMM
-doesn't need to pass-through CPUID to attack the guest, it can lie directly.
+Signed-off-by: Piyush Thange <pthange19@gmail.com>
+---
+ drivers/staging/rtl8192u/r8192U_dm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-SEV-ES is protected by virtue of CPUID interception being reflected as #VC, which
-effectively tells the guest that it's (probably) an SEV-ES guest and also gives
-the guest the opportunity to sanity check the emulated CPUID values provided by
-the VMM.
+diff --git a/drivers/staging/rtl8192u/r8192U_dm.c b/drivers/staging/rtl8192u/r8192U_dm.c
+index bac402b40121..725bf5ca9e34 100644
+--- a/drivers/staging/rtl8192u/r8192U_dm.c
++++ b/drivers/staging/rtl8192u/r8192U_dm.c
+@@ -2876,7 +2876,8 @@ void dm_check_fsync(struct net_device *dev)
+  *	When		Who		Remark
+  *	05/29/2008	amy		Create Version 0 porting from windows code.
+  *
+- *---------------------------------------------------------------------------*/
++ *---------------------------------------------------------------------------
++ */
+ void dm_shadow_init(struct net_device *dev)
+ {
+ 	u8	page;
+@@ -2915,7 +2916,8 @@ void dm_shadow_init(struct net_device *dev)
+  *	When		Who		Remark
+  *	03/06/2008	Jacken	Create Version 0.
+  *
+- *---------------------------------------------------------------------------*/
++ *---------------------------------------------------------------------------
++ */
+ static void dm_init_dynamic_txpower(struct net_device *dev)
+ {
+ 	struct r8192_priv *priv = ieee80211_priv(dev);
+-- 
+2.25.1
 
-In other words, this patch is flawed, but commit eab696d8e8b9 was also flawed by
-conditioning the SEV path on CPUID.0x80000000.
-
-Given that #VC can be handled cleanly, the kernel should be able to handle a #GP
-at this point.  So I think the proper fix is to change __rdmsr() to
-native_read_msr_safe(), or an open coded variant if necessary, and drop the CPUID
-checks for SEV.
-
-The other alternative is to admit that the VMM is still trusted for SEV guests
-and take this patch as is (with a reworded changelog).  This probably has my
-vote, I don't see much value in pretending that the VMM can't exfiltrate data
-from an SEV guest.  In fact, a malicious VMM is probably more likely to get
-access to interesting data by _not_ lying about SEV being enabled, because lying
-about SEV itself will hose the guest sooner than later.
-
->  		return;
->  
->  	me_mask = 1UL << (ebx & 0x3f);
->  
-> +	/* Check the SEV MSR whether SEV or SME is enabled */
-> +	sev_status   = __rdmsr(MSR_AMD64_SEV);
-> +	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-> +
->  	/* Check if memory encryption is enabled */
->  	if (feature_mask == AMD_SME_BIT) {
->  		/*
-> -- 
-> 2.23.0
-> 
