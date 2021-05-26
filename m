@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5022391E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0CE391E8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhEZR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S235144AbhEZSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhEZR6j (ORCPT
+        with ESMTP id S234437AbhEZSBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:58:39 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9C1C061574;
-        Wed, 26 May 2021 10:57:08 -0700 (PDT)
+        Wed, 26 May 2021 14:01:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD6EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dSnlplH+138nPXTWJojZCFoizY/iYF/lvcDTHARd9FQ=; b=mrbjozp92fwTw28bf3Z18/EP1s
-        n68GQr+GGZZwHHH3xRBVhBkuR6yJS/PSyEThFUCuVTf+AYVpoPITNfWkVN+8+efr02TxCTpcmM8Qq
-        Fz/pIMeZDrKhSk3kKAB5jc8B+HKUHxbMYzgDWBQR3Q2nutcRPQpwtAtmIdigGV0BKIpXE14yxthMK
-        QRBEdL7jcXtmLVa5LOZLOiY72DDfqcrUfh2C9KMTS9cnz8ISqVtYGpXj85HNaGscI5SJ4loNXtjVk
-        N6bYcKKqfQI/pV7pPmCYv3+vMTzLKIgMoxPMlQnnJZGGqV38LZal1Gse786mkSoMRaOUqPTj2AZcq
-        ADE4JmHA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llxlw-000ivJ-Dd; Wed, 26 May 2021 17:56:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0B9B130022C;
-        Wed, 26 May 2021 19:56:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E0246201D301D; Wed, 26 May 2021 19:56:51 +0200 (CEST)
-Date:   Wed, 26 May 2021 19:56:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 10/22] sched: Reject CPU affinity changes based on
- task_cpu_possible_mask()
-Message-ID: <YK6L415uk0mCi65f@hirez.programming.kicks-ass.net>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-11-will@kernel.org>
- <YK5mJxsmxosX1ciH@hirez.programming.kicks-ass.net>
- <20210526161249.GD19691@willie-the-truck>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=EhcbGn82P1aMRBzk35vUH4tsbyiGy0EL2EgdMVyTk24=; b=j/6e+LpThe9SpuWQh+EkRNrt82
+        gcVeYpQ8BOFSXMJ7kL7qofAJgHZO+93nyhMx5QKhDlKQYCJxbusI5rzS4/FBfFP4E+wxx8Qhkz4nX
+        n0A/JqOhGIhKvxX7Z0G4zzoPfdjMOUeU5MZsK7rxGuVNg6U05GL8SzQz/VGLT3ve3ste0okQVYKHB
+        GyDzJrrmartXnXcYMe7pF5A40qFbafk4zOiZtnD9jM7j1rGZDS+ABikmFQi68qtBf6bXIGdp+XopN
+        bNSNlUCLKS9cXTk6Ia/Dr3u/XEfoks1itHw08z0B4RlOYAvfB4WHWmSUVkYhcQmFz+tU2ZXnTqHkA
+        eOq56Ksg==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1llxou-00GKFL-HN; Wed, 26 May 2021 17:59:52 +0000
+Subject: Re: [PATCH] x86: fixmap: use CONFIG_NR_CPUS instead of NR_CPUS
+To:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Mel Gorman <mgorman@techsingularity.net>,
+        Tom Rix <trix@redhat.com>
+References: <20210521195918.2183-1-rdunlap@infradead.org>
+ <YK3vrIB7cWop+UIW@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <59676378-1b52-cae7-7944-adeffd27190e@infradead.org>
+Date:   Wed, 26 May 2021 10:59:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526161249.GD19691@willie-the-truck>
+In-Reply-To: <YK3vrIB7cWop+UIW@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 05:12:49PM +0100, Will Deacon wrote:
-> On Wed, May 26, 2021 at 05:15:51PM +0200, Peter Zijlstra wrote:
-> > On Tue, May 25, 2021 at 04:14:20PM +0100, Will Deacon wrote:
-> > > Reject explicit requests to change the affinity mask of a task via
-> > > set_cpus_allowed_ptr() if the requested mask is not a subset of the
-> > > mask returned by task_cpu_possible_mask(). This ensures that the
-> > > 'cpus_mask' for a given task cannot contain CPUs which are incapable of
-> > > executing it, except in cases where the affinity is forced.
-> > > 
-> > > Reviewed-by: Quentin Perret <qperret@google.com>
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > ---
-> > >  kernel/sched/core.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 00ed51528c70..8ca7854747f1 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -2346,6 +2346,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> > >  				  u32 flags)
-> > >  {
-> > >  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
-> > > +	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
-> > >  	unsigned int dest_cpu;
-> > >  	struct rq_flags rf;
-> > >  	struct rq *rq;
-> > > @@ -2366,6 +2367,9 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> > >  		 * set_cpus_allowed_common() and actually reset p->cpus_ptr.
-> > >  		 */
-> > >  		cpu_valid_mask = cpu_online_mask;
-> > > +	} else if (!cpumask_subset(new_mask, cpu_allowed_mask)) {
-> > > +		ret = -EINVAL;
-> > > +		goto out;
-> > >  	}
-> > 
-> > So what about the case where the 32bit task is in-kernel and in
-> > migrate-disable ? surely we ought to still validate the new mask against
-> > task_cpu_possible_mask.
+On 5/25/21 11:50 PM, Ingo Molnar wrote:
 > 
-> That's a good question.
+> * Randy Dunlap <rdunlap@infradead.org> wrote:
 > 
-> Given that 32-bit tasks in the kernel are running in 64-bit mode, we can
-> actually tolerate them moving around arbitrarily as long as they _never_ try
-> to return to userspace on a 64-bit-only CPU. I think this should be the case
-> as long as we don't try to return to userspace with migration disabled, no?
+>> Use CONFIG_NR_CPUS instead of NR_CPUS for an enum entry item.
+>> (Alternatively, #include <linux/threads.h> unconditionally instead of
+>> conditionally.)
+>>
+>> This fixes 100+ build errors like so:
+>>
+>> In file included from ../include/asm-generic/early_ioremap.h:6:0,
+>>                  from ./arch/x86/include/generated/asm/early_ioremap.h:1,
+>>                  from ../arch/x86/include/asm/io.h:44,
+>>                  from ../include/linux/io.h:13,
+>>                  from ../mm/early_ioremap.c:13:
+>> ../arch/x86/include/asm/fixmap.h:103:48: error: ‘NR_CPUS’ undeclared here (not in a function); did you mean ‘NR_OPEN’?
+>>   FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
+>>
+>> Fixes: e972c2511967 ("mm/early_ioremap: add prototype for early_memremap_pgprot_adjust")
+> 
+> I believe this patch is in the -mm tree, not the x86 tree.
+> 
+>> @@ -100,7 +100,7 @@ enum fixed_addresses {
+>>  #endif
+>>  #ifdef CONFIG_KMAP_LOCAL
+>>  	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
+>> -	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
+>> +	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * CONFIG_NR_CPUS) - 1,
+>>  #ifdef CONFIG_PCI_MMCONFIG
+>>  	FIX_PCIE_MCFG,
+>>  #endif
+> 
+> Please resolve this bug properly:
+> 
+>  - Don't sprinkle low level headers with random CONFIG_NR_CPUS conversions.
+> 
+>  - <asm/io.h> currently includes <asm/early_ioremap.h>, but this seems 
+>    unjustified.
 
-Consider:
+Deleting it causes build errors.
 
-	8 CPUs, lower 4 have 32bit, higher 4 do not
+>  - Once early_ioremap.h is gone from io.h, it's potentially possible to 
+>    include <linux/threads.h>. More work to resolve dependencies might be 
+>    needed though.
 
-	A - a 32 bit task		B
+Yes, my first patch for this (unsent) just included <linux/threads.h>
+in fixmap.h unconditionally instead of conditionally.
 
-	sys_foo()
-	  migrate_disable()
-	  				sys_sched_setaffinity(A, 0xf0)
-					  if (.. | migration_disabled(A))
-					    // not checking nothing
+> Frankly, I'd prefer if such a low level header dependencies change came in 
+> via the x86 tree so we can properly review it, test it, and keep it 
+> working. Right now I can only guess what is needed here...
 
-					  __do_set_cpus_allowed();
+Sure, makes sense.
 
-	  migrate_enable()
-	    __set_cpus_allowed(SCA_MIGRATE_ENABLE)
-	      // frob outselves somewhere in 0xf0
-	  sysret
-	  *BOOM*
+Mel, do you have any patch suggestions here?  re:
+
+commit e972c2511967181d955f74181d74438e26b2e797
+Author: Mel Gorman <mgorman@techsingularity.net>
+Date:   Fri May 21 10:40:56 2021 +1000
+
+    mm/early_ioremap: add prototype for early_memremap_pgprot_adjust
 
 
-That is, I'm thinking we ought to disallow that sched_setaffinity() with
--EINVAL for 0xf0 has no intersection with 0x0f.
+thanks.
+-- 
+~Randy
+
