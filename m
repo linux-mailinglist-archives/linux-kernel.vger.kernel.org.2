@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D444390DB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFE2390DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhEZBEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 21:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhEZBES (ORCPT
+        id S232742AbhEZBEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 21:04:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3970 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhEZBE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 21:04:18 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0397C061574;
-        Tue, 25 May 2021 18:02:47 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FqXjx4gnZz9sRN;
-        Wed, 26 May 2021 11:02:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1621990965;
-        bh=rx1tm0TLPgtBFnBfSkDH7Uwyg2ciXNNEGytx0IeGM+M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nJAwQcEuq3pWOkzumB+pjJtT4iRoZolBsMBlfJpv8WuZyOdDa+nPMC7Ydu+MKq2OQ
-         vUdNIt8hhT7t7zwKHH9PsDwj36hSW9ZK7mXBoC4fNFSfL33cg5MTbdtFsFJ+emqgcF
-         /AwNRvIkACY6YdDkSp+TFEYs6EkFojMe7JxcpkO7DFWwGheVGt/VHGNOsDxcL1S1Il
-         ARCF9xXCRx/DKEUmqTo/Kt9oN8A+Xz0EqTgsRkuLL+SosEEiDwjQz/QJ2CIQqBqo10
-         mrzeGh/MwckVdewII2oY5pRXo0wqgQ7Wvwtr1icTRkzarbM5OQpVQj8CWDRoGAOwju
-         1hVyI5KJotMBw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     andriy.shevchenko@linux.intel.com, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] P2040/P2041 i2c recovery erratum
-In-Reply-To: <YK1HqE+3ILtGXZ7E@kunai>
-References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
- <YK1HqE+3ILtGXZ7E@kunai>
-Date:   Wed, 26 May 2021 11:02:45 +1000
-Message-ID: <87zgwigvd6.fsf@mpe.ellerman.id.au>
+        Tue, 25 May 2021 21:04:29 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqXdz6kwyzQrcX;
+        Wed, 26 May 2021 08:59:19 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 09:02:56 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 26 May 2021 09:02:55 +0800
+Subject: Re: [PATCH 4.19 00/49] 4.19.192-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210524152324.382084875@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <26b8bb2f-e0b7-9de2-09db-5ff44e3fd7a0@huawei.com>
+Date:   Wed, 26 May 2021 09:02:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wolfram Sang <wsa@kernel.org> writes:
-> On Wed, May 12, 2021 at 09:20:48AM +1200, Chris Packham wrote:
->> The P2040/P2041 has an erratum where the i2c recovery scheme
->> documented in the reference manual (and currently implemented
->> in the i2c-mpc.c driver) does not work. The errata document
->> provides an alternative that does work. This series implements
->> that alternative and uses a property in the devicetree to
->> decide when the alternative mechanism is needed.
->
-> The series looks good to me. Usually, I don't take DTS patches. This
-> time I'd make an exception and apply all patches to for-current because
-> this is clearly a bugfix. For that, I'd need an ack from PPC
-> maintainers. Could I have those for patches 2+3?
 
-Yep, done.
 
-cheers
+On 2021/5/24 23:25, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.192 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.192-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 4.19.192-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.192-rc1
+Commit: 01268129ebb2be2b9872ed9bc56d075f438318e8
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8855
+passed: 8855
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8855
+passed: 8855
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
