@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302B33910BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DF43910C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhEZGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232514AbhEZGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD42361090;
-        Wed, 26 May 2021 06:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622010823;
-        bh=//HIC0wWxbiKsea2wsR5H038/7YI4tnT/OaBYgjVYRU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NFzYrEFHgxupPIPrHrsmPAdG3hUVS842r7TADpXHyf+ikf9M8thSLERxAQ7t9O4Rh
-         NK2WBLMSB0AhmszVlIhhxZ2xC50Mbu6xywcOdXq+52A3WsMz+1HzrOmg3VXgacweMY
-         FHE0IiT3cUySQkEwrgqzrgMzMJyeK6RYfAnKQq2Vmz65VP14cHFxMvI+TzOQA8QkzJ
-         q+Vs2azcUtNXOKa4gB0wDvd8UBHc9X4iJ1D3W121eg3ofzSXjs7eewFeE5JHVHQZVY
-         pHczQpmsccFZnVS1FCnVGKl58rYfi5ZjygYlxqiGtvl0mWWxDDQW1aAB/ADxTYSiog
-         dNX94usJ5GUDQ==
-Date:   Wed, 26 May 2021 15:33:40 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
-Message-Id: <20210526153340.a49ba8292f201493990f210c@kernel.org>
-In-Reply-To: <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
-References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
-        <20210525214858.33a66846ac09e499c3268a63@kernel.org>
-        <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232788AbhEZGgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:36:09 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:21462 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231157AbhEZGgH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:36:07 -0400
+X-UUID: a88f5658f0c543ff85260cac86ae6303-20210526
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=A2lWbDjEYuO5XXptG2fKQLFE2+iVC6CpUYAnqdCBNzo=;
+        b=MpHZDsufl7B60oxFpH2TLD+YC2K87ARNvJt2Y1BkrLUQv/macjubSempAcFfVirrLv2Spido7lAUyQLeNo1/nX9WoS9OD9r6leiHhjOOimWrEeo6kKSiHqglvjNVbotJsoy3w098Y3LcpnVZ7v/qcHguK43cgUHmkD6UPbIFeAY=;
+X-UUID: a88f5658f0c543ff85260cac86ae6303-20210526
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 901601122; Wed, 26 May 2021 14:34:32 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
+ 2021 14:34:23 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 26 May 2021 14:34:22 +0800
+Message-ID: <1622010863.21671.1.camel@mhfsdcap03>
+Subject: Re: [PATCH 0/3] Refine mtk-cmdq-mailbox callback mechanism
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        "Bibby Hsieh" <bibby.hsieh@mediatek.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 26 May 2021 14:34:23 +0800
+In-Reply-To: <CAAOTY_9fksAnZc2pqmbHtBiPQgQhX9iX0349K8T9zCG8mH3ZSQ@mail.gmail.com>
+References: <20210314233323.23377-1-chunkuang.hu@kernel.org>
+         <CAAOTY_9fksAnZc2pqmbHtBiPQgQhX9iX0349K8T9zCG8mH3ZSQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 98A81E8371B96EDF55C74FFB14F7F97F2789D73EBB01CE7FB6C19F490DD91A0D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 10:23:18 +0530
-Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
+DQpSZXZpZXdlZC1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+
+DQoNCk9uIFdlZCwgMjAyMS0wNS0yNiBhdCAxNDoxMyArMDgwMCwgQ2h1bi1LdWFuZyBIdSB3cm90
+ZToNCj4gKyBZb25ncWlhbmcuDQo+IA0KPiBDaHVuLUt1YW5nIEh1IDxjaHVua3VhbmcuaHVAa2Vy
+bmVsLm9yZz4g5pa8IDIwMjHlubQz5pyIMTXml6Ug6YCx5LiAIOS4iuWNiDc6MzPlr6vpgZPvvJoN
+Cj4gPg0KPiA+IG10ay1jbWRxLW1haWxib3ggdXNlIHByb3ByaWV0YXJ5IGNhbGxiYWNrIG1lY2hh
+bmlzbSBhbmQgcHJvcHJpZXRhcnkNCj4gPiBlcnJvciBudW1iZXIsIGJ1dCB0aGVzZSBjb3VsZCBi
+ZSByZXBsYWNlZCBieSBzdGFuZGFyZCBjYWxsYmFjaw0KPiA+IG1lY2hhbmlzbSBhbmQgc3RhbmRh
+cmQgZXJyb3IgbnVtYmVyLiBJbiBhZGRpdGlvbiwgdXNlIGNtZHFfcGt0IGFzDQo+ID4gY2FsbGJh
+Y2sgZGF0YSB0byBwcmV2ZW50IHJlZHVuZG5hdCBhc3NpZ25tZW50Lg0KPiA+DQo+ID4gQmVjYXVz
+ZSBjbGllbnQgZHJpdmVyIHN0aWxsIHVzZSBwcm9wcmlldGFyeSBtZWNoYW5pc20sIHNvIGtlZXAN
+Cj4gPiBwcm9wcmlldGFyeSBtZWNoYW5pc20gdW50aWwgY2xpZW50IGRyaXZlciB1c2UgdGhlIHN0
+YW5kYXJkIG9uZS4NCj4gPg0KPiA+IENodW4tS3VhbmcgSHUgKDMpOg0KPiA+ICAgbWFpbGJveDog
+bXRrLWNtZHE6IFJlbW92ZSBjbWRxX2NiX3N0YXR1cw0KPiA+ICAgbWFpbGJveDogbXRrLWNtZHE6
+IFVzZSBtYWlsYm94IHJ4X2NhbGxiYWNrDQo+ID4gICBtYWlsYm94OiBtdGstY21kcTogQWRkIHN0
+cnVjdCBjbWRxX3BrdCBpbiBzdHJ1Y3QgY21kcV9jYl9kYXRhDQo+ID4NCj4gPiAgZHJpdmVycy9t
+YWlsYm94L210ay1jbWRxLW1haWxib3guYyAgICAgICB8IDI0ICsrKysrKysrKysrKysrKy0tLS0t
+LS0tLQ0KPiA+ICBpbmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5oIHwgIDgg
+KystLS0tLS0NCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAxNSBkZWxl
+dGlvbnMoLSkNCj4gPg0KPiA+IC0tDQo+ID4gMi4xNy4xDQo+ID4NCg0K
 
-> 
-> 
-> On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
-> > On Tue, 25 May 2021 10:07:44 +0530
-> > Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
-> > 
-> >> When run as normal user with default sysctl kernel.kptr_restrict=0
-> >> and kernel.perf_event_paranoid=2, perf probe fails with:
-> >>
-> >>    $ ./perf probe move_page_tables
-> >>    Relocated base symbol is not found!
-> >>
-> >> The warning message is not much informative. The reason perf fails
-> >> is because /proc/kallsyms is restricted by perf_event_paranoid=2
-> >> for normal user and thus perf fails to read relocated address of
-> >> the base symbol.
-> >>
-> >> Tweaking kptr_restrict and perf_event_paranoid can change the
-> >> behavior of perf probe. Also, running as root or privileged user
-> >> works too. Add these details in the warning message.
-> >>
-> >> Plus, kmap->ref_reloc_sym might not be always set even if
-> >> host_machine is initialized. Above is the example of the same.
-> >> Remove that comment.
-> > 
-> > Yes, those are restricted in some cases. Anyway without priviledged
-> > (super) user, perf probe can not set the probe in ftrace.
-> > 
-> > Hmm, I think it should check the effective user-id at first. If it
-> > is not super user and the action will access tracefs and kallsyms,
-> > it should warn at that point.
-> 
-> If kptr_restrict=2, perf probe fails with same error even for root user.
-> That's why I thought to just change this warning message.
-
-Ah, yes. In that case, perf probe must not use the base symbol.
-(like -D option)
-OK, then, let's merge this fix.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> 
-> Different combinations of privilege, perf_event_paranoid, kptr_restrict:
-> 
->    Normal/Root user
->     |   perf_event_paranoid
->     V    V   kptr_restrict        perf probe error
->    ----------------------------------------------------------------
->     N   -1    0     Failed to open kprobe_events: Permission denied
->     N    0    0     Failed to open kprobe_events: Permission denied
->     N    1    0     Failed to open kprobe_events: Permission denied
->     N    2    0     Relocated base symbol is not found!
->    
->     N   -1    1     Relocated base symbol is not found!
->     N    0    1     Relocated base symbol is not found!
->     N    1    1     Relocated base symbol is not found!
->     N    2    1     Relocated base symbol is not found!
->    
->     N   -1    2     Relocated base symbol is not found!
->     N    0    2     Relocated base symbol is not found!
->     N    1    2     Relocated base symbol is not found!
->     N    2    2     Relocated base symbol is not found!
->    
->     R   -1    0     No error.
->     R    0    0     No error.
->     R    1    0     No error.
->     R    2    0     No error.
->    
->     R   -1    1     No error.
->     R    0    1     No error.
->     R    1    1     No error.
->     R    2    1     No error.
->    
->     R   -1    2     Relocated base symbol is not found!
->     R    0    2     Relocated base symbol is not found!
->     R    1    2     Relocated base symbol is not found!
->     R    2    2     Relocated base symbol is not found!
-> 
-> Ravi
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
