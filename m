@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5848391D91
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF65391DA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhEZRKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233865AbhEZRKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:10:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1040261184;
-        Wed, 26 May 2021 17:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622048950;
-        bh=biO76sc5FCTa0wyLLXe84EZAo5umTos5Aaw3fIOyp3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ga8DyAAu7d5Ve5RJbz9ED6rSGBvqwlgut9+DkeOjoWvKxJdW387cDvxdXM/wGn2LS
-         0rHeiaOwBCIKXDurcfvZlDwpeW5hA+7Ov3zFGM5AAk7ZQaB6jL6EvqhA/M4O0/0Uk3
-         wXS1wbP0CVLtLWMvJ314uO4G2V8NlYCxHByKPXg8X117RapyOkED1ynjOCZ5Q8fG/q
-         /osMjFavVvDcLHW32ATZQKkzh9BduEqGZ705Tw60leIFY1h8IgpAt/l778951AITAL
-         vvA6C+VqSRQH1rz5y8SjRAR4Lo/PHRkJ8AseKaBRZAeRmxQLT7lDCFr4NRLrauvA3U
-         RI+IFtNn3MTCA==
-Date:   Wed, 26 May 2021 18:09:04 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Elliot Berman <eberman@quicinc.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v2] Makefile: fix GDB warning with CONFIG_RELR
-Message-ID: <20210526170904.GB19831@willie-the-truck>
-References: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
- <20210522012626.2811297-1-ndesaulniers@google.com>
+        id S234186AbhEZROU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 13:14:20 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:35703 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234127AbhEZROQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 13:14:16 -0400
+Received: by mail-ot1-f50.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1702753otg.2;
+        Wed, 26 May 2021 10:12:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TBOemGopDfiBmIqH0OnacL3v5GkpKCDhQTWQv9aQog8=;
+        b=lQoO4ue+Imggi6nLmtN1/4wz3CyLBEDzvZQXdH6adKI2YhhW02kbXXwy67CrRRin2a
+         QtZnb7dC7dtJhKiPyk4W6edBjn6ZJh2KWjMj7cZCIIMMGXQ7v5kW/4sqxnzmFr1Z/9KP
+         fEeUTCCNrh5tUzrQ1YNfamm5aWpJdqbPtaawtzl+28mi+MaKEwBPPabECuP2jLWYbbjA
+         zmiacVZR1iG3nj7OIM3Ih0ywAisWCTAXCAhIHZSuYZIwWcp3HTf1L3qIml6UXZ6mFwAm
+         zJh9BYURHo+mf3CTDgPV5mZQ4KiN5f9Pyel6wFXOlHLxQl05LgEfiShXNHoDyCrqf3Tm
+         tRhg==
+X-Gm-Message-State: AOAM530S8oAm0xM0WAMln1Fg26jdfimrLWKB2PYGiM3ozq0EACsXdfrk
+        h0JgYKJFJ/K+9wH8cv6rBn1hk/INMp91usSszNc=
+X-Google-Smtp-Source: ABdhPJx2CfuGHBFZSKfg02/GeSLyTmj5dZLTLY59d+seNRb/QpvUHN1FK+1jkrTFalLrMzHF7mQHe/GGVUiqj1pIV/M=
+X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr3321117otc.206.1622049164811;
+ Wed, 26 May 2021 10:12:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210522012626.2811297-1-ndesaulniers@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <4337451.LvFx2qVVIh@kreacher> <4f0f3e94-d42a-a0fd-ced6-bd1edd6d471b@infradead.org>
+In-Reply-To: <4f0f3e94-d42a-a0fd-ced6-bd1edd6d471b@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 26 May 2021 19:12:33 +0200
+Message-ID: <CAJZ5v0iVS0YR67M0b6V4p6Bk9gDR_x5YPVB0JYB8jBfQj0eKUw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI unset
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:26:24PM -0700, Nick Desaulniers wrote:
-> GDB produces the following warning when debugging kernels built with
-> CONFIG_RELR:
-> 
-> BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
-> 
-> when loading a kernel built with CONFIG_RELR into GDB. It can also
-> prevent debugging symbols using such relocations.
-> 
-> Peter sugguests:
->   [That flag] means that lld will use dynamic tags and section type
->   numbers in the OS-specific range rather than the generic range. The
->   kernel itself doesn't care about these numbers; it determines the
->   location of the RELR section using symbols defined by a linker script.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1057
-> Suggested-by: Peter Collingbourne <pcc@google.com>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V1 -> V2:
-> * rebase
-> * pick up Nathan's reviewed by tag.
-> 
->  Makefile                      | 2 +-
->  scripts/tools-support-relr.sh | 3 ++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
+On Wed, May 26, 2021 at 6:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 5/26/21 8:01 AM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > One of the previous commits introducing hybrid processor support to
+> > intel_pstate broke build with CONFIG_ACPI unset.
+> >
+> > Fix that and while at it fix up empty stubs of two functions related
+> > to ACPI CPPC.
+> >
+> > Fixes: eb3693f0521e ("cpufreq: intel_pstate: hybrid: CPU-specific scaling factor")
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Hi Rafael,
+>
+> I still have this build error:
+>
+> ../drivers/cpufreq/intel_pstate.c: In function ‘show_base_frequency’:
+> ../drivers/cpufreq/intel_pstate.c:950:10: error: implicit declaration of function ‘intel_pstate_get_cppc_guranteed’; did you mean ‘intel_pstate_get_epp’? [-Werror=implicit-function-declaration]
+>   ratio = intel_pstate_get_cppc_guranteed(policy->cpu);
 
-Does lld support RELR relocations for any architectures other than arm64? If
-so, is the "--use-android-relr-tags" option supported on all of those as
-well?
+Well, I did too much in this patch, will send an update shortly.
 
-Will
+> BTW: s/guranteed/guaranteed/g
+
+Right.
