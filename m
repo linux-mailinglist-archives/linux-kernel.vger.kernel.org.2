@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00933390FDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E947E390FDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 07:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhEZE6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
+        id S230161AbhEZFDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 01:03:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50413 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhEZE6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:58:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CE33613D3;
-        Wed, 26 May 2021 04:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622005007;
-        bh=Gv/hxdauCqc76+7LQ3UPDSB9Ljk9StS1O6mcvQs6w6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CxHvjd4xK2FrNpdbX8BX0Yu/xEWT0F/0CmS+aJcGFZ4c7RATtBdjtjx9YKzG8VKzr
-         TKu4cQR1oiuYocDjQXCMwEcZ8yhAOM14zpzn6SObMFN1+iv6/p+ZpFZ0XHbECdYO67
-         S5Fw85PI1pA/sDX3SswbCmvASLvHxjrjotxBfWvKGN+h17uOISwF8+fJmDhKL7k3EX
-         MUd9Hte5MkM5jFO5K5nPk0HA3FhDCkBIq22lTfEbP/egKyA1Wex/4QfXzp0lZvMNtI
-         EDVm/5F6J5WyH/Qt4AO21ThMHA0i4AzRII2AKFItcdhBScjd1wXBOPZ/yUQOMlEYkm
-         bHgXuEM7C8cRA==
-Date:   Wed, 26 May 2021 07:56:45 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     amirmizi6@gmail.com
-Cc:     Eyal.Cohen@nuvoton.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
-Subject: Re: [PATCH v4] tpm2: add longer timeout for verify signature command
-Message-ID: <YK3VDSiZvaSlca3C@kernel.org>
-References: <20210525111325.158790-1-amirmizi6@gmail.com>
- <20210525111325.158790-2-amirmizi6@gmail.com>
- <YK3ToDAiIUQ5whAN@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK3ToDAiIUQ5whAN@kernel.org>
+        id S229685AbhEZFDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 01:03:20 -0400
+IronPort-SDR: E06Il60auSPuP6VLwrQhlrOx3zADT7eG8H/yK1CKeHBxL1FUnWIVhsxYo9NoVi79KaOsFFp7OJ
+ +WjnW+uEybkw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="189500097"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="189500097"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 22:01:47 -0700
+IronPort-SDR: 0h27wMAYK3v55YBqQB+At3rVQvoPuBvze1wykHFLgBrab2cy7/gIcvsk4hFZAx8xClj+aeRIK+
+ y/CTWwHoGDqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="479700204"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by fmsmga002.fm.intel.com with ESMTP; 25 May 2021 22:01:43 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v1 0/4] mm/mempolicy: some fix and semantics cleanup
+Date:   Wed, 26 May 2021 13:01:38 +0800
+Message-Id: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 07:50:43AM +0300, Jarkko Sakkinen wrote:
-> On Tue, May 25, 2021 at 02:13:25PM +0300, amirmizi6@gmail.com wrote:
-> > From: Amir Mizinski <amirmizi6@gmail.com>
-> > 
-> > While running a TPM2_CC_VERIFY_SIGNATURE operation with RSA 3072-bit
-> > keys the TPM driver fails with the following error:
-> > 
-> > "kernel: [ 2416.187522] tpm tpm0: Operation Timed out"
-> > 
-> > Since the TPM PC Client specification does not specify a number for
-> > verify signature operation timeout, and the duration of
-> > TPM2_CC_VERIFY_SIGNATURE with RSA 3072-bit keys exceeds the current timeout
-> > of TPM_LONG (2 seconds), it is preferable to pick the longest timeout
-> > possible.
-> > 
-> > Therefore, set the duration for TPM2_CC_VERIFY_SIGNATUE to TPM_LONG_LONG
-> > (5 minutes).
-> > 
-> > Link: https://trustedcomputinggroup.org/resource/pc-client-specific-platform-firmware-profile-specification/
-> > Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-> > ---
-> 
-> Thank you.
-> 
-> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
+Hi All,
 
-I mean @kernel.org.
+We've posted v4 patchset introducing a new "perfer-many" memory policy
+https://lore.kernel.org/lkml/1615952410-36895-1-git-send-email-feng.tang@intel.com/ ,
+for which Michal Hocko gave many comments while pointing out some
+problems, and we also found some semantics confusion about 'prefer'
+and 'local' policy, as well as some duplicated code. This patchset
+tries to address them. Please help to review, thanks!
 
-I mangled the short summary as 
+The patchset has been run with some sanity test like 'stress-ng'
+and 'ltp', and no problem found.
 
-"tpm: add longer timeout for TPM2_CC_VERIFY_SIGNATURE"
+- Feng
 
-given that 
+Changelogs:
 
-1. The subsystem tag was wrong.
-2. Always to talk about the *exact thing*. I.e. in this case it's
-   preferable to just write the command name, as"verify time signature
-   command" does not have any formal menaing.
+    v1:
+      * use helper func instead of macro for patch 2/4 (David Rientjes)
+      * fix a possible null pointer case in patch 3/4 		
+      * update commit log for 1/4
+      
+    RFC v2:
+      * add for oom check fix patch 1/4
+      * add the unification patch for mpol preprocess 2/4
 
-It's now applied, thanks.
+Feng Tang (4):
+  mm/mempolicy: skip nodemask intersect check for 'interleave' when oom
+  mm/mempolicy: unify the preprocessing for mbind and set_mempolicy
+  mm/mempolicy: don't handle MPOL_LOCAL like a fake MPOL_PREFERRED
+    policy
+  mm/mempolicy: kill MPOL_F_LOCAL bit
 
-/Jarkko
+ include/uapi/linux/mempolicy.h |   1 +
+ mm/mempolicy.c                 | 208 +++++++++++++++++++++--------------------
+ 2 files changed, 109 insertions(+), 100 deletions(-)
+
+-- 
+2.7.4
+
