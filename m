@@ -2,235 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC00B391723
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC467391729
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhEZMOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:14:34 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:44293 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbhEZMOc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:14:32 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 5A4216000A;
-        Wed, 26 May 2021 12:12:59 +0000 (UTC)
-Date:   Wed, 26 May 2021 14:12:59 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "qxj511mail@gmail.com" <qxj511mail@gmail.com>
-Cc:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        "a.zummo" <a.zummo@towertech.it>,
-        linux-rtc <linux-rtc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?6YKx5pmT6YeR?= <qiuxiaojin@cvte.com>
-Subject: Re: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal
- When reading time from an uninitialized RTC chip, The value may be illegal
-Message-ID: <YK47S4840JFacxfT@piout.net>
-References: <20210520033156.23209-1-qxj511mail@gmail.com>
- <CABMQnV+5gN_6BA4tYS+GugrA0HrQD9+_EkQk_emqsUy1YzFCOA@mail.gmail.com>
- <202105251924130320028@gmail.com>
- <YK1pmXd8ODTzw0r/@piout.net>
- <202105261935305975621@gmail.com>
+        id S234699AbhEZMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233784AbhEZMPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:15:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DB6A613D6;
+        Wed, 26 May 2021 12:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622031214;
+        bh=6cgAAAry3KXjHYICFlfgug7HP7MtfiezqAbh5vyjbAk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dD4raOXl4m/1dmUYxCXd+9Zhh/XbrtQC52Qny8ZwVBaqmrNGpiCc5ZIU1b4WjGm8H
+         uJa3jIZybN6M6kTMpAfuccsLT4/wRQbg2MVSjmE1yL01mC3lcM16NVvL5naGjFRQ57
+         RUc8/qmG6+LKY4mt6jNuAHGXfU60PflHdIRn81RXVX/L8quJSpzl4wYs9fdYRMYSyz
+         TDHUTCxqGOaTMeMxI6d2iUlniRYHOiu06+32s75wchffQ8s3cbbJwvz7Jm6fWP5KI+
+         RznUS6G8WImqfu6sIHm02R4cmQSm1/c2dk4BLfXSL89hrwovsmQduosVw5UITnC7eb
+         z+DGv0xJWhG6g==
+Date:   Wed, 26 May 2021 13:13:23 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
+Message-ID: <20210526121322.GA19313@willie-the-truck>
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-15-tientzu@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202105261935305975621@gmail.com>
+In-Reply-To: <20210518064215.2856977-15-tientzu@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/2021 19:35:31+0800, qxj511mail@gmail.com wrote:
-> > If the time on the RTC is invalid, then rtc_valid_tm has to fail, there
-> > is nothing to fix here.
-> 
-> I mean, if you try to get the time or execute hwclock command, Invalid arguments are returned when the RTC chip is not initialized
-> therefore，we need to get a valid time
-> 
+Hi Claire,
 
-Well, the time is invalid so hwclock needs to know it is invalid.
-Returning a bogus time and date doesn't make it right. hwclock needs to
-fail.
-
+On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
+> Introduce the new compatible string, restricted-dma-pool, for restricted
+> DMA. One can specify the address and length of the restricted DMA memory
+> region by restricted-dma-pool in the reserved-memory node.
 > 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>  .../reserved-memory/reserved-memory.txt       | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 > 
-> qxj511mail@gmail.com
->  
-> From: Alexandre Belloni
-> Date: 2021-05-26 05:18
-> To: qxj511mail@gmail.com
-> CC: Nobuhiro Iwamatsu; a.zummo; linux-rtc; linux-kernel; 邱晓金
-> Subject: Re: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal When reading time from an uninitialized RTC chip, The value may be illegal
-> Hi,
->  
-> On 25/05/2021 19:24:14+0800, qxj511mail@gmail.com wrote:
-> > Please briefly describe the patch contained in the email to the subject.
-> > And, please write a description of the patch in the text
-> > ---->   The legal days are 1 to 31 and the legal month is less than or equal to 12.
-> >            But for an uninitialized RTC chip, the time is random.
-> >            Days and month may be zero, leading to RTC_valid_TM failed
-> > 
->  
-> If the time on the RTC is invalid, then rtc_valid_tm has to fail, there
-> is nothing to fix here.
->  
-> > add description  && fix build error, so I modefied my code :
-> >  
-> > Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
-> > ---
-> >  drivers/rtc/rtc-rs5c372.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> > 
-> > diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> > index 3bd6eaa0dcf6..cb3f90983778 100644
-> > --- a/drivers/rtc/rtc-rs5c372.c
-> > +++ b/drivers/rtc/rtc-rs5c372.c
-> > @@ -128,6 +128,9 @@ struct rs5c372 {
-> >   char *regs;
-> >  };
-> >  
-> > +
-> > +static int rs5c372_rtc_set_time(struct device *dev, struct rtc_time *tm);
-> > +
-> >  static int rs5c_get_regs(struct rs5c372 *rs5c)
-> >  {
-> >   struct i2c_client *client = rs5c->client;
-> > @@ -212,6 +215,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> >   struct rs5c372 *rs5c = i2c_get_clientdata(client);
-> >   int status = rs5c_get_regs(rs5c);
-> >   unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
-> > + int flags_utime = 0;
-> >  
-> >   if (status < 0)
-> >   return status;
-> > @@ -239,12 +243,28 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> >   tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
-> >   tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
-> >  
-> > + /* The value read from the register may be zero, which is an illegal value */
-> > + if (tm->tm_mday < 1) {
-> > + flags_utime++;
-> > + tm->tm_mday = 1;
-> > + }
-> > +
-> >   /* tm->tm_mon is zero-based */
-> >   tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
-> >  
-> > + if (tm->tm_mon < 0) {
-> > + /* avoid illegal month */
-> > + flags_utime++;
-> > + tm->tm_mon = 0;
-> > + }
-> > +
-> >   /* year is 1900 + tm->tm_year */
-> >   tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
-> >  
-> > + /* update legal time */
-> > + if (flags_utime > 0)
-> > + rs5c372_rtc_set_time(dev, tm);
-> > +
-> >   dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
-> >   "mday=%d, mon=%d, year=%d, wday=%d\n",
-> >   __func__,
-> > -- 
-> > 2.29.0
-> > 
-> > 
-> > 
-> > qxj511mail@gmail.com
-> >  
-> > From: Nobuhiro Iwamatsu
-> > Date: 2021-05-24 12:40
-> > To: qxj511mail
-> > CC: Alessandro Zummo; Alexandre Belloni; linux-rtc; Linux Kernel Mailing List; qiuxiaojin
-> > Subject: Re: [PATCH] rtc: rs5c372: Fix read the time from RTC is illegal When reading time from an uninitialized RTC chip, The value may be illegal
-> > Hi,
-> >  
-> > 2021年5月20日(木) 12:32 <qxj511mail@gmail.com>:
-> > >
-> > > From: qiuxiaojin <qiuxiaojin@cvte.com>
-> >  
-> > Please briefly describe the patch contained in the email to the subject.
-> > And, please write a description of the patch in the text
-> >  
-> > >
-> > > Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
-> > > ---
-> > >  drivers/rtc/rtc-rs5c372.c | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-> > > index 3bd6eaa0dcf6..ce61e15d5f3a 100644
-> > > --- a/drivers/rtc/rtc-rs5c372.c
-> > > +++ b/drivers/rtc/rtc-rs5c372.c
-> > > @@ -212,6 +212,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> > >         struct rs5c372  *rs5c = i2c_get_clientdata(client);
-> > >         int             status = rs5c_get_regs(rs5c);
-> > >         unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
-> > > +       int flags_utime = 0;
-> > >
-> > >         if (status < 0)
-> > >                 return status;
-> > > @@ -239,12 +240,27 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> > >         tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
-> > >         tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
-> > >
-> > > +       if (tm->tm_mday < 1) {
-> > > +               // The value read from the register may be zero, which is an illegal value
-> >  
-> > Please use C89 style commet (/* */).
-> >  
-> > > +               flags_utime = flags_utime + 1;
-> >  
-> > I like using ++ (flags_utime++).
-> >  
-> > > +               tm->tm_mday = 1;
-> > > +       }
-> > > +
-> > >         /* tm->tm_mon is zero-based */
-> > >         tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
-> > >
-> > > +       if (tm->tm_mon < 0) {
-> > > +               flags_utime = flags_utime + 1;
-> > > +               tm->tm_mday = 0;
-> > > +       }
-> > > +
-> > >         /* year is 1900 + tm->tm_year */
-> > >         tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
-> > >
-> > > +       if (flags_utime > 0) {
-> >  
-> > {} is unnecessary.
-> >  
-> > > +               rs5c372_rtc_set_time(dev, tm);
-> >  
-> > A build error will occur because there is no declaration of
-> > rs5c372_rtc_set_time.
-> > Please make sure this can be compiled.
-> >  
-> > > +       }
-> > > +
-> > >         dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
-> > >                 "mday=%d, mon=%d, year=%d, wday=%d\n",
-> > >                 __func__,
-> > > --
-> > > 2.29.0
-> > >
-> >  
-> >  
-> > -- 
-> > Nobuhiro Iwamatsu
-> >    iwamatsu at {nigauri.org / debian.org}
-> >    GPG ID: 40AD1FA6
->  
->  
->  
-> -- 
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> index e8d3096d922c..284aea659015 100644
+> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+> @@ -51,6 +51,23 @@ compatible (optional) - standard definition
+>            used as a shared pool of DMA buffers for a set of devices. It can
+>            be used by an operating system to instantiate the necessary pool
+>            management subsystem if necessary.
+> +        - restricted-dma-pool: This indicates a region of memory meant to be
+> +          used as a pool of restricted DMA buffers for a set of devices. The
+> +          memory region would be the only region accessible to those devices.
+> +          When using this, the no-map and reusable properties must not be set,
+> +          so the operating system can create a virtual mapping that will be used
+> +          for synchronization. The main purpose for restricted DMA is to
+> +          mitigate the lack of DMA access control on systems without an IOMMU,
+> +          which could result in the DMA accessing the system memory at
+> +          unexpected times and/or unexpected addresses, possibly leading to data
+> +          leakage or corruption. The feature on its own provides a basic level
+> +          of protection against the DMA overwriting buffer contents at
+> +          unexpected times. However, to protect against general data leakage and
+> +          system memory corruption, the system needs to provide way to lock down
+> +          the memory access, e.g., MPU. Note that since coherent allocation
+> +          needs remapping, one must set up another device coherent pool by
+> +          shared-dma-pool and use dma_alloc_from_dev_coherent instead for atomic
+> +          coherent allocation.
+>          - vendor specific string in the form <vendor>,[<device>-]<usage>
+>  no-map (optional) - empty property
+>      - Indicates the operating system must not create a virtual mapping
+> @@ -120,6 +137,11 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+>  			compatible = "acme,multimedia-memory";
+>  			reg = <0x77000000 0x4000000>;
+>  		};
+> +
+> +		restricted_dma_mem_reserved: restricted_dma_mem_reserved {
+> +			compatible = "restricted-dma-pool";
+> +			reg = <0x50000000 0x400000>;
+> +		};
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+nit: You need to update the old text that states "This example defines 3
+contiguous regions ...".
+
+>  	};
+>  
+>  	/* ... */
+> @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+>  		memory-region = <&multimedia_reserved>;
+>  		/* ... */
+>  	};
+> +
+> +	pcie_device: pcie_device@0,0 {
+> +		memory-region = <&restricted_dma_mem_reserved>;
+> +		/* ... */
+> +	};
+
+I still don't understand how this works for individual PCIe devices -- how
+is dev->of_node set to point at the node you have above?
+
+I tried adding the memory-region to the host controller instead, and then
+I see it crop up in dmesg:
+
+  | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
+
+but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
+so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
+
+What am I missing to make this work with PCIe devices?
+
+Thanks,
+
+Will
