@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A133921AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE6D392194
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhEZUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:54:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:49830 "EHLO foss.arm.com"
+        id S232975AbhEZUpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 16:45:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233669AbhEZUyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:54:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D1F511D4;
-        Wed, 26 May 2021 13:43:23 -0700 (PDT)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ED4A23F73B;
-        Wed, 26 May 2021 13:43:02 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH] coresight: Propagate symlink failure
-Date:   Wed, 26 May 2021 15:40:42 -0500
-Message-Id: <20210526204042.2681700-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S231321AbhEZUpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 16:45:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD4EA613C7;
+        Wed, 26 May 2021 20:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622061802;
+        bh=Wc0VpiNTofyWs1k/w7vX8Lh3TnH80xRCPirGtLFyVPI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RyuWUuz9Wqha7WDVAel0HwsYR+YjnUkiTHQ+CA3lL0pH90SXDsGQYssU3bqAAmuPf
+         GC199lyAGoWTlfwC4P3vddNREIR+y8QrjvVuIjzWkrxwW7YbtgkT8bxAPjON4pwXWI
+         TB1H3Y0KdYu/CHYNaF+lt3nafVuovwyPpQLIotV0=
+Date:   Wed, 26 May 2021 13:43:21 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH-next] mm/memcontrol.c: Fix potential uninitialized
+ variable warning
+Message-Id: <20210526134321.42bbd4a9dcbcf53e855c5b1b@linux-foundation.org>
+In-Reply-To: <20210526193602.8742-1-longman@redhat.com>
+References: <20210526193602.8742-1-longman@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the symlink is unable to be created, the driver goes
-ahead and continues device creation. Instead lets propagate
-the failure, and fail the probe.
+On Wed, 26 May 2021 15:36:02 -0400 Waiman Long <longman@redhat.com> wrote:
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/hwtracing/coresight/coresight-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> If the -Wno-maybe-uninitialized gcc option is not specified, compilation
+> of memcontrol.c may generate the following warnings:
+> 
+> mm/memcontrol.c: In function ‘refill_obj_stock’:
+> ./arch/x86/include/asm/irqflags.h:127:17: warning: ‘flags’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>   return !(flags & X86_EFLAGS_IF);
+>           ~~~~~~~^~~~~~~~~~~~~~~~
+> mm/memcontrol.c:3216:16: note: ‘flags’ was declared here
+>   unsigned long flags;
+>                 ^~~~~
+> In file included from mm/memcontrol.c:29:
+> mm/memcontrol.c: In function ‘uncharge_page’:
+> ./include/linux/memcontrol.h:797:2: warning: ‘objcg’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>   percpu_ref_put(&objcg->refcnt);
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Fix that by properly initializing *pflags in get_obj_stock() and
+> introducing a use_objcg bool variable in uncharge_page() to avoid
+> potentially accessing the struct page data twice.
+> 
 
-diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-index 6c68d34d956e..2dc4b0110442 100644
---- a/drivers/hwtracing/coresight/coresight-core.c
-+++ b/drivers/hwtracing/coresight/coresight-core.c
-@@ -1392,7 +1392,7 @@ static int coresight_fixup_device_conns(struct coresight_device *csdev)
- 		}
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static int coresight_remove_match(struct device *dev, void *data)
--- 
-2.31.1
+Thanks.  I'll queue this as a fix against your "mm/memcg: optimize user
+context object stock access".
 
