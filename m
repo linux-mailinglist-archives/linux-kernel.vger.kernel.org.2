@@ -2,108 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9501A391269
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFD139126F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhEZIet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbhEZIeq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:34:46 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFCEC061574;
-        Wed, 26 May 2021 01:33:14 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e2so563621ljk.4;
-        Wed, 26 May 2021 01:33:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RIDZ06jndbCoInmR0ANM92ad6K9XlyXkeP1SRnmZcmc=;
-        b=oBl3rccG9MRxe9Y2RMnwifVlE7e965esj7+OeoKb4ak7uHSjLuBUquJIK8FpygeQQX
-         nLMu8a4BEtIsURdDzThku8WxA1K11y3H4cXP0OBA6UXxhcJfj/VZHLfNtE/ultIbWc6Y
-         2Y9pnRBtpit+AtiNpcbpI/Awhtd0NH//0/FyJa+wIHQIoAbEOBd7X+YUpzi87f6CQQWz
-         wwZvNI/ah20BSau+sQzjIgyrNBtRd4bJpurLXv7uoIQq6lqt0uoEYzAAHQyT1OjjPF3X
-         tutl2pEAaLJ3wlLsyHOiFggXHlhPSV6l78oH46L57GN450dgK1oH9Wa4IY2avPgYoKzw
-         j10A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RIDZ06jndbCoInmR0ANM92ad6K9XlyXkeP1SRnmZcmc=;
-        b=VRJXGyGxE31DObt9fyggL+5deSvMUYUNHoBw4mmQ8joYaRctkvz/MYXLUAWJMlfFsV
-         b54X4HrEgM7SHrQx7CBt9Si9fnbSQTgWBK53uZqzULMUuTfuey6LXGSB+nd0jemr1NiU
-         fLvaPEFNyab7e//WURjMQxnJzrPmqJRdAq9hLJaZnmVkn1K88Ap/EkuiVuFH8Ot2GAtd
-         i0eAuYDF8OGguIr8UBaMRdr79CEz7zju+oebEByrB6ECqhCPO/RY2HKWAoamJYqHvaYI
-         XMg7MRe/iJzJlV+WWM1uPa3iWDVKGEOZCCDppBsygNApoWIDM3bwd5Uy5Mwd0jKVym/E
-         a0sQ==
-X-Gm-Message-State: AOAM533tSawriDd39RqR1AekmHfZ6WiAWtRh9zU5FZwsPaYgJg72SMhI
-        TWCX8wS/9rwt9BgGCBVrpzDww/63JtDnpGs8edI=
-X-Google-Smtp-Source: ABdhPJz1Y4k0QbOkkq7w1NmO1s9FVTULUKFaD2KGPyhRBK9Tko7lVnITZKV4YKgY2Gav1lequ3jqhsjwWfDSj4vxLLs=
-X-Received: by 2002:a2e:7a06:: with SMTP id v6mr1327638ljc.219.1622017992692;
- Wed, 26 May 2021 01:33:12 -0700 (PDT)
+        id S233118AbhEZIfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:35:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59006 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232166AbhEZIfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:35:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622018024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=quXrDQlOSLz6Yv/UVqeWT5TzgHoxc/pLtloJUqFjj3I=;
+        b=HRapTYjcWBejGMvNlWoR8Q9VWFnJiZAO8ATuXSK9dSBolvIgNgaAV2Br6sLsmf4YtOtLwR
+        rv7G9Xx9XIil3L5B/Zh2LDhEAvQCoCsnq4yUxDR+5qvAZat1gjl8B+fQbCM5udhKgqwvL4
+        bqG1dEQopOJ/gMk0Eh/tFoR4wNH8KHo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622018024;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=quXrDQlOSLz6Yv/UVqeWT5TzgHoxc/pLtloJUqFjj3I=;
+        b=H6lfZmDynh9DNqZuySsYPsmWZqrrfbe3I8S14jAkeoUQ63Dgyn7moVjFhULePItqddlGDy
+        WHDd6+aN9Tce6IAA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED2B5B124;
+        Wed, 26 May 2021 08:33:43 +0000 (UTC)
+Date:   Wed, 26 May 2021 10:33:42 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        linux-kbuild@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: (BTF) [PATCH] mm/page_alloc: Work around a pahole limitation
+ with zero-sized struct pagesets
+Message-ID: <20210526083342.GY8544@kitsune.suse.cz>
+References: <20210526080741.GW30378@techsingularity.net>
 MIME-Version: 1.0
-References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
- <20210525141524.3995-3-dong.menglong@zte.com.cn> <m18s42odgz.fsf@fess.ebiederm.org>
- <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
- <m11r9umb4y.fsf@fess.ebiederm.org> <YK3Pb/OGwWVzvDZM@localhost>
-In-Reply-To: <YK3Pb/OGwWVzvDZM@localhost>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 26 May 2021 16:33:00 +0800
-Message-ID: <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] init/do_cmounts.c: introduce 'user_root' for initramfs
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
-        johan@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        masahiroy@kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        joe@perches.com, Jens Axboe <axboe@kernel.dk>, hare@suse.de,
-        Jan Kara <jack@suse.cz>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        f.fainelli@gmail.com, arnd@arndb.de,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        wangkefeng.wang@huawei.com, Barret Rhoden <brho@google.com>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
-        pmladek@suse.com, Chris Down <chris@chrisdown.name>,
-        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
-        mingo@kernel.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526080741.GW30378@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:33 PM Josh Triplett <josh@joshtriplett.org> wrote:
->
-> On Tue, May 25, 2021 at 10:23:09PM -0500, Eric W. Biederman wrote:
-> > If we are going to do this something that is so small and clean it can
-> > be done unconditionally always.
-> [...]
-> > The net request as I understand it: Make the filesystem the initramfs
-> > lives in be an ordinary filesystem so it can just be used as the systems
-> > primary filesystem.
->
-> Including the ability to pivot_root it away, which seems like the main
-> sticking point.
->
-> If this can be done without any overhead, that seems fine, but if this
-> involves mounting an extra filesystem, that may add an appreciable
-> amount of boot time for systems trying to boot in milliseconds. (Such
-> systems would not use an initramfs if they're going to go on and boot a
-> separate root filesystem, but they can use an initramfs as their *only*
-> filesystem.)
+On Wed, May 26, 2021 at 09:07:41AM +0100, Mel Gorman wrote:
+> Michal Suchanek reported the following problem with linux-next
+> 
+>   [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
+>   [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
+> ...
+>   [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+>   [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
+>   [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
+>   [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
+>   [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+>   [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
+>   [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+>   [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
+>   [   26.147816] Freeing unused decrypted memory: 2036K
+>   [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+>   [   26.165776] Write protecting the kernel read-only data: 26624k
+>   [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
+>   [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
+>   [   26.187031] Run /init as init process
+>   [   26.190693]   with arguments:
+>   [   26.193661]     /init
+>   [   26.195933]   with environment:
+>   [   26.199079]     HOME=/
+>   [   26.201444]     TERM=linux
+>   [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
+>   [   26.254154] BPF:      type_id=35503 offset=178440 size=4
+>   [   26.259125] BPF:
+>   [   26.261054] BPF:Invalid offset
+>   [   26.264119] BPF:
+>   [   26.264119]
+>   [   26.267437] failed to validate module [efivarfs] BTF: -22
+> 
+> Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
+> per-cpu list protection to local_lock" currently staged in mmotm. In his
+> own words
+> 
+>   The immediate problem is two different definitions of numa_node per-cpu
+>   variable. They both are at the same offset within .data..percpu ELF
+>   section, they both have the same name, but one of them is marked as
+>   static and another as global. And one is int variable, while another
+>   is struct pagesets. I'll look some more tomorrow, but adding Jiri and
+>   Arnaldo for visibility.
+> 
+>   [110907] DATASEC '.data..percpu' size=178904 vlen=303
+>   ...
+>         type_id=27753 offset=163976 size=4 (VAR 'numa_node')
+>         type_id=27754 offset=163976 size=4 (VAR 'numa_node')
+> 
+>   [27753] VAR 'numa_node' type_id=27556, linkage=static
+>   [27754] VAR 'numa_node' type_id=20, linkage=global
+> 
+>   [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> 
+>   [27556] STRUCT 'pagesets' size=0 vlen=1
+>         'lock' type_id=507 bits_offset=0
+> 
+>   [506] STRUCT '(anon)' size=0 vlen=0
+>   [507] TYPEDEF 'local_lock_t' type_id=506
+> 
+> The patch in question introduces a zero-sized per-cpu struct and while
+> this is not wrong, versions of pahole prior to 1.22 (unreleased) get
+> confused during BTF generation with two separate variables occupying the
+> same address.
+> 
+> This patch checks for older versions of pahole and forces struct pagesets
+> to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+> warning is omitted so that distributions can update pahole when 1.22
+> is released.
+> 
+> Reported-by: Michal Suchanek <msuchanek@suse.de>
+> Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+> Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  lib/Kconfig.debug |  3 +++
+>  mm/page_alloc.c   | 11 +++++++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 678c13967580..f88a155b80a9 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
+>  config PAHOLE_HAS_SPLIT_BTF
+>  	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+>  
+> +config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
+> +	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
+> +
 
-Compared to the time the unpacking spent, a mounting seems nothing. In the
-scene above, this change can be disabled by kconfig, if pivot_root
-is not needed in initramfs.
+This does not seem workable with dummy-tools.
 
-Thanks!
-Menglong Dong
+Do we even have dummy pahole?
+
+Thanks
+
+Michal
+
+>  config DEBUG_INFO_BTF_MODULES
+>  	def_bool y
+>  	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index ff8f706839ea..1d56d3de8e08 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -124,6 +124,17 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
+>  
+>  struct pagesets {
+>  	local_lock_t lock;
+> +#if defined(CONFIG_DEBUG_INFO_BTF) &&			\
+> +    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
+> +    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
+> +	/*
+> +	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
+> +	 * variables and produces invalid BTF. Ensure that
+> +	 * sizeof(struct pagesets) != 0 for older versions of pahole.
+> +	 */
+> +	char __pahole_hack;
+> +	#warning "pahole too old to support zero-sized struct pagesets"
+> +#endif
+>  };
+>  static DEFINE_PER_CPU(struct pagesets, pagesets) = {
+>  	.lock = INIT_LOCAL_LOCK(lock),
