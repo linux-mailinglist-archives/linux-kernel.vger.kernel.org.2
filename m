@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2610E391ABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77786391AC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhEZOvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S235123AbhEZOwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbhEZOva (ORCPT
+        with ESMTP id S235013AbhEZOwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:51:30 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EE1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:49:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so3499670wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gcMCAthuFh62A6JYOWw0YWI1O6qLr+rKFrqkC6c0AMk=;
-        b=Qa43uI7LnoStSZI9viG4grGPSEhQcUN8zgCbxNB6zg4rPnNXk2lAvXGX7ve6qpK/0H
-         zUp9BrNY+86JRj+VZlZXZ2+Iy4UjUc84trCxQhoJhIjXBsU8XoIwKC+nhXrTXVBq4acN
-         IxJmG/n3CLG0drs5dpprf54k05NaNDMcvu0YuPCTh1m11Htjf05zhNDVA1slesPOU/2f
-         EzXp6JQ4lZhrUj70tTI3ErEZJ2L9h89c5fZkUGWSJ/QCjQMRHjmmSlboQHjkUG+vkSXy
-         uj1RJt6REp0XsyOn5LV6GcBhqtsQYExuABsGHx3Z1kINe2R1yd2f362Pywhjk1HaKLw2
-         Skpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gcMCAthuFh62A6JYOWw0YWI1O6qLr+rKFrqkC6c0AMk=;
-        b=mtpGLLqSekxdRrLsID4qNboMVuD2wwVoSvWfgkGPB5x6ni9ZBsOv6dHYxyK99e8SC1
-         y9weoIn7Eh4d/qKSir/8fTRA02ES/qZ4SfuTf1H5ZnVujz7ny327UBbDqLkzHyDXiVTr
-         lBWfUYegD6OSvqZP2w4EKGhP1D++iAM+UV/yi032JkgBYrIM2M4F1RYGMAUaRKjifwy8
-         lx3v/A8BwexVI6QxUG9Za5+9MukiEjWwudVv34/Fp1Hl+JagXB5eRMHNI+MIcNugxjRv
-         LmudPOGyKTct2xTsjAts2bwISYZLpV/NrfGQFuhgCrK07cEH18CE1fqMCAcJd681PZ8f
-         EuzA==
-X-Gm-Message-State: AOAM533rmfI5TMfYwMN5DJfL+QypEXrtsDWcLSpYzuoa7VObdLzuVZbX
-        zBCsTORenL9j3YjlOfHnof7oXc6O/ZinDg==
-X-Google-Smtp-Source: ABdhPJzReZ4i69M5bjQdNoUNLgaUJfw2dEG4GS9p4HgjlKexmYMimNG44GaES+uW6pV/9Di4wo3aiw==
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr29441004wmq.180.1622040596660;
-        Wed, 26 May 2021 07:49:56 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id q27sm20658094wrz.79.2021.05.26.07.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 07:49:56 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:49:54 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [RESEND PATCH v2 07/13] mfd: twl: Correct kerneldoc
-Message-ID: <20210526144954.GD543307@dell>
-References: <20210526124711.33223-1-krzysztof.kozlowski@canonical.com>
- <20210526124711.33223-8-krzysztof.kozlowski@canonical.com>
+        Wed, 26 May 2021 10:52:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717E4C061574;
+        Wed, 26 May 2021 07:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y2b6LYToSP2jOUuXErFvITeptB1u26Aild4RYzgeNDg=; b=ddgVZpFKUCMUwZTwSHb1GEgpPx
+        0gTa9EGy/PW1zblUNZaZc6x4NrqipUEgDumPrPiJltIxAlZmiSdBX6ea9mf8zx/ZOHpJnMhJwLADo
+        VLqy4kCgGHbeX9Sg+dF22L/uuLReYH73zo/LX60kPMwXUemH1X+M7K1QK2YFmflieN9YK1hNwXy2V
+        kLtlhbD4Gfg76xQMSXP2leIOMioeaH9XYQWb49gL7zvV/EUvXzOHVbRq9vC3L/pnZV0/deLSLVzH2
+        0TQ71dInxf5XF+gnsHS5AopBKuSCjgqWr7Fr3d/Ah4Lp0vyqar+Hkeev23gLoZztFgnaI4c+IR60o
+        f6a9rQzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llur7-004cWX-Ij; Wed, 26 May 2021 14:50:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2CCA930022C;
+        Wed, 26 May 2021 16:49:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 14E3A2C42F07A; Wed, 26 May 2021 16:49:57 +0200 (CEST)
+Date:   Wed, 26 May 2021 16:49:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masanori Misono <m.misono760@gmail.com>
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Rohit Jain <rohit.k.jain@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/1] Make vCPUs that are HLT state candidates for
+ load balancing
+Message-ID: <YK5gFUjh6MX6+vx3@hirez.programming.kicks-ass.net>
+References: <20210526133727.42339-1-m.misono760@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526124711.33223-8-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210526133727.42339-1-m.misono760@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021, Krzysztof Kozlowski wrote:
-
-> Correct kerneldoc function name to fix W=1 warning:
+On Wed, May 26, 2021 at 10:37:26PM +0900, Masanori Misono wrote:
+> Hi,
 > 
->   drivers/mfd/twl-core.c:496: warning:
->     expecting prototype for twl_regcache_bypass(). Prototype was for twl_set_regcache_bypass() instead
+> I observed performance degradation when running some parallel programs on a
+> VM that has (1) KVM_FEATURE_PV_UNHALT, (2) KVM_FEATURE_STEAL_TIME, and (3)
+> multi-core architecture. The benchmark results are shown at the bottom. An
+> example of libvirt XML for creating such VM is
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/mfd/twl-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> ```
+> [...]
+>   <vcpu placement='static'>8</vcpu>
+>   <cpu mode='host-model'>
+>     <topology sockets='1' cores='8' threads='1'/>
+>   </cpu>
+>   <qemu:commandline>
+>     <qemu:arg value='-cpu'/>
+>     <qemu:arg value='host,l3-cache=on,+kvm-pv-unhalt,+kvm-steal-time'/>
+>   </qemu:commandline>
+> [...]
+> ```
+> 
+> I investigate the cause and found that the problem occurs in the following
+> ways:
+> 
+> - vCPU1 schedules thread A, and vCPU2 schedules thread B. vCPU1 and vCPU2
+>   share LLC.
+> - Thread A tries to acquire a lock but fails, resulting in a sleep state
+>   (via futex.)
+> - vCPU1 becomes idle because there are no runnable threads and does HLT,
+>   which leads to HLT VMEXIT (if idle=halt, and KVM doesn't disable HLT
+>   VMEXIT using KVM_CAP_X86_DISABLE_EXITS).
+> - KVM sets vCPU1's st->preempted as 1 in kvm_steal_time_set_preempted().
+> - Thread C wakes on vCPU2. vCPU2 tries to do load balancing in
+>   select_idle_core(). Although vCPU1 is idle, vCPU1 is not a candidate for
+>   load balancing because is_vcpu_preempted(vCPU1) is true, hence
+>   available_idle_cpu(vPCU1) is false.
+> - As a result, both thread B and thread C stay in the vCPU2's runqueue, and
+>   vCPU1 is not utilized.
+> 
+> The patch changes kvm_arch_cpu_put() so that it does not set st->preempted
+> as 1 when a vCPU does HLT VMEXIT. As a result, is_vcpu_preempted(vCPU)
+> becomes 0, and the vCPU becomes a candidate for CFS load balancing.
 
-And this:
+I'm conficted on this; the vcpu stops running, the pcpu can go do
+anything, it might start the next task. There is no saying how quickly
+the vcpu task can return to running.
 
-https://lore.kernel.org/lkml/20210520120820.3465562-3-lee.jones@linaro.org/
+I'm guessing your setup doesn't actually overload the system; and when
+it doesn't have the vcpu thread to run, the pcpu actually goes idle too.
+But for those 1:1 cases we already have knobs to disable much of this
+IIRC.
 
-> diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-> index 20cf8cfe4f3b..24b77b18b725 100644
-> --- a/drivers/mfd/twl-core.c
-> +++ b/drivers/mfd/twl-core.c
-> @@ -485,8 +485,8 @@ int twl_i2c_read(u8 mod_no, u8 *value, u8 reg, unsigned num_bytes)
->  EXPORT_SYMBOL(twl_i2c_read);
->  
->  /**
-> - * twl_regcache_bypass - Configure the regcache bypass for the regmap associated
-> - *			 with the module
-> + * twl_set_regcache_bypass - Configure the regcache bypass for the regmap
-> + *			     associated with the module
->   * @mod_no: module number
->   * @enable: Regcache bypass state
->   *
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+So I'm tempted to say things are working as expected and you're just not
+configured right.
