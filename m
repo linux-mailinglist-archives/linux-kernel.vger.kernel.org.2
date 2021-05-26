@@ -2,85 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF8D391A1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6448F391A20
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234674AbhEZO2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:28:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51644 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbhEZO2V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:28:21 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B4A92218C1;
-        Wed, 26 May 2021 14:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622039208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xlBw810CtHPmcgP8WpT8r3LgMwxxwOgbO4Q73mta+GY=;
-        b=b56LQQ6YjOdy9NwVSTnpNM0rdhqf3tK35hqG8gNpc1BntrjjL1Jwu6ZVvoOhig52ozHOV2
-        lwZnw3aIM0hwHv2GeT/7KHWOVwk2ZAydBl5ubxOXL8TlL9QNPPc0BaW3nVroA6lljLM6z+
-        ebKbimPA6sjyKI8hIm82yZrHwSKRw4c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622039208;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xlBw810CtHPmcgP8WpT8r3LgMwxxwOgbO4Q73mta+GY=;
-        b=mIX+pg9bxDNrLH2xfB5GjnrV1tbIubqOeT2K3bvyXd6Sgt1i1/pqNEpRLahoCS1xgQhKE6
-        y/yxz8Yr+NbbSRCQ==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id 8F19F11A98;
-        Wed, 26 May 2021 14:26:48 +0000 (UTC)
-Subject: Re: [RFC 3/3] mm/slub: add all_objects implementation in debugfs
-To:     glittao@gmail.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        faiyazm@codeaurora.org
-References: <20210521121127.24653-1-glittao@gmail.com>
- <20210521121127.24653-3-glittao@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <48b461c6-0221-5f8c-fb53-08a1f299b048@suse.cz>
-Date:   Wed, 26 May 2021 16:26:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S234604AbhEZO3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:29:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:35171 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233217AbhEZO3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:29:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6DCCA67373; Wed, 26 May 2021 16:28:09 +0200 (CEST)
+Date:   Wed, 26 May 2021 16:28:09 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+        Koba Ko <koba.ko@canonical.com>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme <linux-nvme@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Henrik Juul Hansen <hjhansen2020@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
+ npss.
+Message-ID: <20210526142809.GA32077@lst.de>
+References: <20210520033315.490584-1-koba.ko@canonical.com> <20210525074426.GA14916@lst.de> <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com> <20210526024934.GB3704949@dhcp-10-100-145-180.wdc.com> <CAAd53p7xabD2t__=t67uRLrrFOB7YGgr_GMhi6L48PFGhNe80w@mail.gmail.com> <20210526125942.GA25080@lst.de> <CAAd53p4f2ZFsVRv-Q9maPBSD_uGjj7FoYKYy9MGjBPc6chk_1Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521121127.24653-3-glittao@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAd53p4f2ZFsVRv-Q9maPBSD_uGjj7FoYKYy9MGjBPc6chk_1Q@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 2:11 PM, glittao@gmail.com wrote:
-> From: Oliver Glitta <glittao@gmail.com>
-> 
-> Add all_objects implementation to debugfs to print information
-> about all objects in slub cache.
+On Wed, May 26, 2021 at 10:21:59PM +0800, Kai-Heng Feng wrote:
+> To be fair, resuming the NVMe from D3hot is much slower than keep it
+> at D0, which gives us a faster s2idle resume time. And now AMD also
+> requires s2idle on their latest laptops.
 
-An example listing of 1-2 objects would be useful in the changelog.
+We'd much prefer to use it, but due to the broken platforms we can't
+unfortunately.
 
-Also can you describe what are the guarantees (or limitations) of observing
-really all objects if the cache is modified by concurrent allocation and free
-operations?
+> And it's more like NVMe controllers don't respect PCI D3hot.
 
-...
+What do you mean with that?
 
-> +static void *debugfs_all_objects_start(struct seq_file *m, loff_t *ppos)
-> +{
-> +	struct slab_debug_private *priv = m->private;
-> +	struct kmem_cache *s = priv->inode->i_private;
-> +	struct page *page;
-> +
-> +	priv->map = kmalloc(BITS_TO_LONGS(MAX_OBJS_PER_PAGE), GFP_KERNEL);
+> Because the NVMe continues to work after s2idle and the symbol is
+> rather subtle, so I suspect this is not platform or vendor specific.
+> Is it possible to disable DMA for HMB NVMe on suspend?
 
-We can use bitmap_alloc/bitmap_free wrappers and allocate according to objects
-per page in the actual kmem_cache, not the theoretical maximum, see:
-https://lore.kernel.org/linux-mm/20210524233946.20352-2-vbabka@suse.cz/
-
+Not in shipping products.  The NVMe technical working group is working
+on a way to do that, but it will take a while until that shows up in
+products.
