@@ -2,256 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56120391987
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB18239198D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhEZOJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:09:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232948AbhEZOJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:09:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4328261026;
-        Wed, 26 May 2021 14:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622038078;
-        bh=J02+pU3JIEq0JtoXBzc9BMBOEA013guqaGeCpZBVkks=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cUfbfxqWeV0hI0SdN+sAGWTk48RT4sqdzfZ9/Ho2qDZQCzCy9omxpmu+QmlTES2KE
-         l3HrEyR4TWUgXeCGwhu3iJqLgTkp8LgQq4n1iSJlGopBkZrtJdRZ1PW2d1BEkbjtJ6
-         Z3iuofFFw9qB/6d/o7uRjxrhMfOvmZn2glrXi3AYt6txdoCzelbPt5gbeOFcoxr/1W
-         D0WP2Uzp6dFJ7ZEgiHTby1WW9TuihSI2qhFBxjPDtPOmUsRWj6UWgNWMh8+Uxce8r3
-         59mXcxgVr1sgBbL0qzrUQFSBivPQ+1anhFFeD9W6Y7ub8EjrG8g/v3oUhYNVaVfIBM
-         Ikc06PIayvgRA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4DCE04011C; Wed, 26 May 2021 11:07:55 -0300 (-03)
-Date:   Wed, 26 May 2021 11:07:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Denys Zagorui <dzagorui@cisco.com>
-Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org
-Subject: Re: [PATCH v7 1/3] perf report: compile tips.txt in perf binary
-Message-ID: <YK5WO3is6EW9TNrX@kernel.org>
-References: <20210522062016.84677-1-dzagorui@cisco.com>
+        id S234507AbhEZOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:10:42 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34448 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232948AbhEZOKl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:10:41 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QE93ss043533;
+        Wed, 26 May 2021 09:09:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622038143;
+        bh=vEBga0t3qzngzYqUbWJAGuom3PVx+7aw7ixeVFU50RQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=uA9+Nj7SUYepheLee3Z6eeliDqCHW3dIG9ss7BAc/fZhFiWPwfIKk0hRo3gCEI8h2
+         fOhntTV0xyzP31qxJhgZi3+SisV9Bv+CwudnY3hVx9/eI8SW+SfR9Kpo8YIjPZ1TQP
+         9PX9PXVM7akV9A9GKGcJROhVts6Wua8K4Xo8hi58=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QE92TP119995
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 09:09:03 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 09:09:02 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 09:09:02 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QE92Mf055817;
+        Wed, 26 May 2021 09:09:02 -0500
+Date:   Wed, 26 May 2021 09:09:02 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH] dt-bindings: PCI: ti,am65: Convert PCIe host/endpoint
+ mode dt-bindings to YAML
+Message-ID: <20210526140902.lnk5du5k3b4sny3m@handheld>
+References: <20210526134708.27887-1-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210522062016.84677-1-dzagorui@cisco.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210526134708.27887-1-kishon@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 21, 2021 at 11:20:14PM -0700, Denys Zagorui escreveu:
-> It seems there is some need to have an ability to invoke perf from
-> build directory without installation
-> (84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
-> DOCDIR definition contains an absolute path to kernel source directory.
-> It is build machine related info and it makes perf binary unreproducible.
+On 19:17-20210526, Kishon Vijay Abraham I wrote:
+> Convert PCIe host/endpoint mode dt-bindings for TI's AM65/Keystone SoC
+> to YAML binding.
 > 
-> This can be avoided by compiling tips.txt in perf directly.
-> 
-> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
-> ---
->  tools/perf/Build               |  2 +-
->  tools/perf/Documentation/Build |  9 +++++++++
->  tools/perf/builtin-report.c    | 34 +++++++++++++++++++++++++---------
->  tools/perf/util/util.c         | 28 ----------------------------
->  tools/perf/util/util.h         |  2 --
->  5 files changed, 35 insertions(+), 40 deletions(-)
->  create mode 100644 tools/perf/Documentation/Build
-> 
-> diff --git a/tools/perf/Build b/tools/perf/Build
-> index db61dbe2b543..3a2e768d7576 100644
-> --- a/tools/perf/Build
-> +++ b/tools/perf/Build
-> @@ -45,12 +45,12 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
->  			      -DPREFIX="BUILD_STR($(prefix_SQ))"
->  CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
->  CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
-> -CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
->  
->  perf-y += util/
->  perf-y += arch/
->  perf-y += ui/
->  perf-y += scripts/
->  perf-$(CONFIG_TRACE) += trace/beauty/
-> +perf-y += Documentation/
->  
->  gtk-y += ui/gtk/
-> diff --git a/tools/perf/Documentation/Build b/tools/perf/Documentation/Build
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+
+[...]
+> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
 > new file mode 100644
-> index 000000000000..83e16764caa4
+> index 000000000000..419d48528105
 > --- /dev/null
-> +++ b/tools/perf/Documentation/Build
-> @@ -0,0 +1,9 @@
-> +perf-y += tips.o
-> +
-> +quiet_cmd_ld_tips = LD       $@
-> +      cmd_ld_tips = $(LD) -r -b binary -o $@ $<
-> +
-> +$(OUTPUT)Documentation/tips.o: Documentation/tips.txt FORCE
-> +	$(call rule_mkdir)
-> +	$(call if_changed,ld_tips)
-> +
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 36f9ccfeb38a..4f2c7ee8fea1 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -47,7 +47,6 @@
->  #include "util/time-utils.h"
->  #include "util/auxtrace.h"
->  #include "util/units.h"
-> -#include "util/util.h" // perf_tip()
->  #include "ui/ui.h"
->  #include "ui/progress.h"
->  #include "util/block-info.h"
-> @@ -109,6 +108,9 @@ struct report {
->  	int			nr_block_reports;
->  };
->  
-> +extern char _binary_Documentation_tips_txt_start[];
-> +extern char _binary_Documentation_tips_txt_end[];
-> +
->  static int report__config(const char *var, const char *value, void *cb)
->  {
->  	struct report *rep = cb;
-> @@ -614,19 +616,33 @@ static int report__gtk_browse_hists(struct report *rep, const char *help)
->  	return hist_browser(rep->session->evlist, help, NULL, rep->min_percent);
->  }
->  
-> +static const char *perf_tip(void)
-> +{
-> +	char *start = _binary_Documentation_tips_txt_start;
-> +	char *tok, *tmp, *prev;
-> +	int pick, size;
-> +
-> +	size = _binary_Documentation_tips_txt_end - start;
-> +	pick = random() % size;
-> +
-> +	_binary_Documentation_tips_txt_start[size - 1] = 0;
-> +
-> +	for (tok = strtok_r(start, "\n", &tmp); tok;
-> +	     tok = strtok_r(NULL, "\n", &tmp)) {
-> +		if (pick < (tok - start))
-> +			return prev;
-> +		prev = tok;
-> +	}
-> +
-> +	return prev;
-> +}
+> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-ep.yaml#"
 
+drop the '"'?
 
-[perfbuilder@five ~]$ export PERF_TARBALL=http://192.168.100.2/perf/perf-5.13.0-rc3.tar.xz
-[perfbuilder@five ~]$ time dm
-Wed May 26 11:04:00 AM -03 2021
-# export PERF_TARBALL=http://192.168.100.2/perf/perf-5.13.0-rc3.tar.xz
-# dm
-   1     9.39 alpine:3.4                    : FAIL gcc version 5.3.0 (Alpine 5.3.0)
-    builtin-report.c: In function 'cmd_report':
-    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-       fprintf(stdout, "#\n# (%s)\n#\n", help);
-       ^
-    builtin-report.c:622:20: note: 'prev' was declared here
-      char *tok, *tmp, *prev;
-<SNIP>
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 
-  10    13.35 alpine:3.13                   : FAIL gcc version 10.2.1 20201203 (Alpine 10.2.1_pre1)
-    builtin-report.c: In function 'cmd_report':
-    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-      560 |   fprintf(stdout, "#\n# (%s)\n#\n", help);
-          |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    builtin-report.c:622:20: note: 'prev' was declared here
-      622 |  char *tok, *tmp, *prev;
-          |                    ^~~~
-    cc1: all warnings being treated as errors
-  11    13.77 alpine:edge                   : FAIL gcc version 10.3.1 20210424 (Alpine 10.3.1_git20210424)
-    builtin-report.c: In function 'cmd_report':
-    builtin-report.c:560:3: error: 'prev' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-      560 |   fprintf(stdout, "#\n# (%s)\n#\n", help);
-          |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    builtin-report.c:622:20: note: 'prev' was declared here
-      622 |  char *tok, *tmp, *prev;
-          |                    ^~~~
-    cc1: all warnings being treated as errors
+drop the '"'?
+> +
+> +title: TI AM65 PCI Endpoint
+> +
+> +maintainers:
+> +  - Kishon Vijay Abraham I <kishon@ti.com>
+> +
+> +allOf:
+> +  - $ref: "pci-ep.yaml#"
 
+drop the '"' ?
 
-I'll check later...
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,am654-pcie-ep
+> +
+> +  reg:
+> +    maxItems: 4
+> +
+> +  reg-names:
+> +    items:
+> +      - const: app
+> +      - const: dbics
+> +      - const: addr_space
+> +      - const: atu
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ti,syscon-pcie-mode:
+> +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  interrupts:
+> +    minItems: 1
+> +
+> +  dma-coherent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - max-link-speed
+> +  - power-domains
+> +  - ti,syscon-pcie-mode
+> +  - dma-coherent
+> +
+> +unevaluatedProperties: false
 
->  static int report__browse_hists(struct report *rep)
->  {
->  	int ret;
->  	struct perf_session *session = rep->session;
->  	struct evlist *evlist = session->evlist;
-> -	const char *help = perf_tip(system_path(TIPDIR));
-> -
-> -	if (help == NULL) {
-> -		/* fallback for people who don't install perf ;-) */
-> -		help = perf_tip(DOCDIR);
-> -		if (help == NULL)
-> -			help = "Cannot load tips.txt file, please install perf!";
-> -	}
-> +	const char *help = perf_tip();
->  
->  	switch (use_browser) {
->  	case 1:
-> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-> index 37a9492edb3e..3bba74e431ed 100644
-> --- a/tools/perf/util/util.c
-> +++ b/tools/perf/util/util.c
-> @@ -379,34 +379,6 @@ fetch_kernel_version(unsigned int *puint, char *str,
->  	return 0;
->  }
->  
-> -const char *perf_tip(const char *dirpath)
-> -{
-> -	struct strlist *tips;
-> -	struct str_node *node;
-> -	char *tip = NULL;
-> -	struct strlist_config conf = {
-> -		.dirname = dirpath,
-> -		.file_only = true,
-> -	};
-> -
-> -	tips = strlist__new("tips.txt", &conf);
-> -	if (tips == NULL)
-> -		return errno == ENOENT ? NULL :
-> -			"Tip: check path of tips.txt or get more memory! ;-p";
-> -
-> -	if (strlist__nr_entries(tips) == 0)
-> -		goto out;
-> -
-> -	node = strlist__entry(tips, random() % strlist__nr_entries(tips));
-> -	if (asprintf(&tip, "Tip: %s", node->s) < 0)
-> -		tip = (char *)"Tip: get more memory! ;-)";
-> -
-> -out:
-> -	strlist__delete(tips);
-> -
-> -	return tip;
-> -}
-> -
->  char *perf_exe(char *buf, int len)
->  {
->  	int n = readlink("/proc/self/exe", buf, len);
-> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-> index ad737052e597..80b194ee6c7d 100644
-> --- a/tools/perf/util/util.h
-> +++ b/tools/perf/util/util.h
-> @@ -39,8 +39,6 @@ int fetch_kernel_version(unsigned int *puint,
->  #define KVER_FMT	"%d.%d.%d"
->  #define KVER_PARAM(x)	KVER_VERSION(x), KVER_PATCHLEVEL(x), KVER_SUBLEVEL(x)
->  
-> -const char *perf_tip(const char *dirpath);
-> -
->  #ifndef HAVE_SCHED_GETCPU_SUPPORT
->  int sched_getcpu(void);
->  #endif
+Is it possible to lock this down further with additionalProperties: false?
+
+I could add some ridiculous property like system-controller; to the
+example and the checks wont catch it.
+
+same with the host as well.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+you could drop this (unused)
+> +
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+We dont really need this, right? this is an example.. see below
+
+> +
+> +        pcie0_ep: pcie-ep@5500000 {
+> +                compatible = "ti,am654-pcie-ep";
+> +                reg =  <0x0 0x5500000 0x0 0x1000>,
+> +                       <0x0 0x5501000 0x0 0x1000>,
+> +                       <0x0 0x10000000 0x0 0x8000000>,
+> +                       <0x0 0x5506000 0x0 0x1000>;
+^^ just change this to
+reg =  <0x5500000 0x1000>,
+       <0x5501000 0x1000>,
+       <0x10000000 0x8000000>
+       <0x5506000 0x1000>;
+> +                reg-names = "app", "dbics", "addr_space", "atu";
+> +                power-domains = <&k3_pds 120 TI_SCI_PD_EXCLUSIVE>;
+> +                ti,syscon-pcie-mode = <&pcie0_mode>;
+> +                num-ib-windows = <16>;
+> +                num-ob-windows = <16>;
+> +                max-link-speed = <2>;
+> +                dma-coherent;
+> +                interrupts = <GIC_SPI 340 IRQ_TYPE_EDGE_RISING>;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> new file mode 100644
+> index 000000000000..3764ce01ee5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> @@ -0,0 +1,105 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-host.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+Drop the '"' ?
+> +
+> +title: TI AM65 PCI Host
+> +
+> +maintainers:
+> +  - Kishon Vijay Abraham I <kishon@ti.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: ti,am654-pcie-rc
+> +      - description: PCIe controller in Keystone
+> +        items:
+> +          - const: ti,keystone-pcie
+> +          - const: snps,dw-pcie
+> +
+> +  reg:
+> +    maxItems: 4
+> +
+> +  reg-names:
+> +    items:
+> +      - const: app
+> +      - const: dbics
+> +      - const: config
+> +      - const: atu
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ti,syscon-pcie-id:
+> +    description: Phandle to the SYSCON entry required for getting PCIe device/vendor ID
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  ti,syscon-pcie-mode:
+> +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  msi-map: true
+> +
+> +  dma-coherent: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - max-link-speed
+> +  - ti,syscon-pcie-id
+> +  - ti,syscon-pcie-mode
+> +  - ranges
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      enum:
+> +        - ti,am654-pcie-rc
+> +then:
+> +  required:
+> +    - dma-coherent
+> +    - power-domains
+> +    - msi-map
+> +
+> +unevaluatedProperties: false
+
+Is it possible to lock this down further with additionalProperties: false?
+
+Same rationale as above.
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+
+We dont really need this, right? this is an example.. see below
+> +
+> +        pcie0_rc: pcie@5500000 {
+> +                compatible = "ti,am654-pcie-rc";
+> +                reg =  <0x0 0x5500000 0x0 0x1000>,
+> +                       <0x0 0x5501000 0x0 0x1000>,
+> +                       <0x0 0x10000000 0x0 0x2000>,
+> +                       <0x0 0x5506000 0x0 0x1000>;
+^^ just change this to
+reg =  <0x5500000 0x1000>,
+       <0x5501000 0x1000>,
+       <0x10000000 0x8000000>
+       <0x5506000 0x1000>;
+> +                reg-names = "app", "dbics", "config", "atu";
+> +                power-domains = <&k3_pds 120 TI_SCI_PD_EXCLUSIVE>;
+> +                #address-cells = <3>;
+> +                #size-cells = <2>;
+> +                ranges = <0x81000000 0 0          0x0 0x10020000 0 0x00010000>,
+> +                         <0x82000000 0 0x10030000 0x0 0x10030000 0 0x07FD0000>;
+> +                ti,syscon-pcie-id = <&pcie_devid>;
+> +                ti,syscon-pcie-mode = <&pcie0_mode>;
+> +                bus-range = <0x0 0xff>;
+> +                num-viewport = <16>;
+> +                max-link-speed = <2>;
+> +                dma-coherent;
+> +                interrupts = <GIC_SPI 340 IRQ_TYPE_EDGE_RISING>;
+> +                msi-map = <0x0 &gic_its 0x0 0x10000>;
+> +                device_type = "pci";
+> +        };
+> +    };
 > -- 
-> 2.26.2.Cisco
+> 2.17.1
 > 
 
 -- 
-
-- Arnaldo
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
