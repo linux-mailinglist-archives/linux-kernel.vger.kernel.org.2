@@ -2,138 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C3390E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A786390E95
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhEZC6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbhEZC6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:58:06 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7262AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:56:32 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 22so24744368pfv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bid5eWeyAf/EDHZJqBvx8IkfWVIQDlnQOV7qBWhlldY=;
-        b=YHUqpCGUaU3XGiG1Ugi9+sX324g45J0nlIN8TArCl5WEd2PdLVGMIeH6G1Yt996sq+
-         UJdg6ioHLzksl8pw795D9Vb6zf2cEXOM8B4go2oDXjRxZQAcFMdwH2zvNqmizJrxZZa6
-         9si9+9pgvOZWHvgTHo5bnyOExv1q/Y1kLfGPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bid5eWeyAf/EDHZJqBvx8IkfWVIQDlnQOV7qBWhlldY=;
-        b=LQLGGtVM05ZVwg95TKwOFw4i9eNBEc80JFlxJbyYPUE03l4zMLWVGIZd+8WO/JRYw3
-         BrgeWvXYXusWpeMftCrr/AG7APDY1lm/LpyUA695F77Qcq9KYYq9zX3CMwu2HFM0dm7X
-         h1XS0xrkrUy2vCFURQwMbu52xRLab9JqAzcj3MyeelmosPgYtE7XNJz4z4w3AeprbzWW
-         AmxzGrLgRrZQsiWLJJdcOFqjump/uo9vvEvhp8P/E2f0TTu/kbvagVV3rWJPfYoKGAoo
-         M5s+HDBfmqbqfHagBpnE7hnGysrcLJwHmLLNuqaXfDXmZBB3/nAAWh5HEljiWCsispAi
-         44vg==
-X-Gm-Message-State: AOAM5320VY9F0nP5u24wQc8FoAtpFFEw9jqy1/HptAIgzmTk8KAAVYFm
-        c4cCHpBbpi6J8mPQthX63pIbCQ==
-X-Google-Smtp-Source: ABdhPJyv2XEnYPCYkiPG/atAIHMxyIZSy2O0IOFxWNkuHMQUjnM1/Z8UFarQXTAHQUcrudUKJj6e5A==
-X-Received: by 2002:a63:fd46:: with SMTP id m6mr5658896pgj.403.1621997792024;
-        Tue, 25 May 2021 19:56:32 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:5a1b:e4e5:eb10:8870])
-        by smtp.gmail.com with ESMTPSA id 5sm2966295pjo.17.2021.05.25.19.56.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 19:56:31 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
-Subject: [PATCH v2 4/4] slub: Force on no_hash_pointers when slub_debug is enabled
-Date:   Tue, 25 May 2021 19:56:25 -0700
-Message-Id: <20210526025625.601023-5-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210526025625.601023-1-swboyd@chromium.org>
-References: <20210526025625.601023-1-swboyd@chromium.org>
+        id S231548AbhEZDAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:00:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231348AbhEZDAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 23:00:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4400161432;
+        Wed, 26 May 2021 02:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621997961;
+        bh=1Vi1ujoloi31h2fuTBqvWFO8m+MME1+FdhmIe/4hQ+Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rKedvANRVrz37/9gpYWlfiBK7yVOGeM0429Ejkiwleu2mHk+u6mehxhp+HP47ai6o
+         Jcb08As80Q5nwvnuzXIW0dqV1U/A48EoRCzmZzWvUA66GZ4Hfbhp1VYJE49TqTuFUL
+         +vZzZCP55y1p8IFnuKQNENTXelhvL7bD3bl39smTpD78nMypnQokwFVq0il+GXUNDz
+         TjRO0xBrHlQjXDzw7nxx2k0yBravJNuAirYM/tw5mpTu/8UuokV+7QsKNo3CXmZgZd
+         BCIpYBBASb/a/tQsnx32eIafMDgNYp2ecC9g59eAAv+qMMVHab7O/NVXa8M/ED0RsY
+         jhJcKM2Fl1fcA==
+Received: by mail-ej1-f51.google.com with SMTP id s22so38842ejv.12;
+        Tue, 25 May 2021 19:59:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532RD42wAAEqh1FL6aycEujaczBtkvUuJtnfPP/R0826KNhIg7jI
+        2Fzu3Tg3IZsFTDB6APoZpaO3jg7mtpqRTaaMPw==
+X-Google-Smtp-Source: ABdhPJxTpRaVAcS1iQ8JUak5Isj5SZ8WTpbasCnC3NVQg5nTUIZ8my96cmr6BjhE3jH3wnSKPus1KvnkztIiaHs+46Q=
+X-Received: by 2002:a17:907:1ca1:: with SMTP id nb33mr31304670ejc.75.1621997959809;
+ Tue, 25 May 2021 19:59:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210525121448.30075-1-rex-bc.chen@mediatek.com> <20210525121448.30075-4-rex-bc.chen@mediatek.com>
+In-Reply-To: <20210525121448.30075-4-rex-bc.chen@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 26 May 2021 10:59:09 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__9Emac0Lc=afZMcJzCuO-myJDS--rshMkkrVZr9imSog@mail.gmail.com>
+Message-ID: <CAAOTY__9Emac0Lc=afZMcJzCuO-myJDS--rshMkkrVZr9imSog@mail.gmail.com>
+Subject: Re: [v4,PATCH 3/3] drm/mediatek: dpi: add bus format negotiation
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obscuring the pointers that slub shows when debugging makes for some
-confusing slub debug messages:
+Hi, Rex:
 
- Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
+Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8825=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:15=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Add the atomic_get_output_bus_fmts, atomic_get_input_bus_fmts to negotiat=
+e
+> the possible output and input formats for the current mode and monitor,
+> and use the negotiated formats in a basic atomic_check callback.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dpi.c | 78 ++++++++++++++++++++++++++++--
+>  1 file changed, 73 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
+k/mtk_dpi.c
+> index d6a422986efc..667a97470389 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -540,6 +540,73 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *=
+dpi,
+>         return 0;
+>  }
+>
+> +static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge =
+*bridge,
+> +                                       struct drm_bridge_state *bridge_s=
+tate,
+> +                                       struct drm_crtc_state *crtc_state=
+,
+> +                                       struct drm_connector_state *conn_=
+state,
+> +                                       unsigned int *num_output_fmts)
+> +{
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+> +
+> +       *num_output_fmts =3D 0;
+> +
+> +       if (!dpi->conf->output_fmts)
 
-Those addresses are hashed for kernel security reasons. If we're trying
-to be secure with slub_debug on the commandline we have some big
-problems given that we dump whole chunks of kernel memory to the kernel
-logs. Let's force on the no_hash_pointers commandline flag when
-slub_debug is on the commandline. This makes slub debug messages more
-meaningful and if by chance a kernel address is in some slub debug
-object dump we will have a better chance of figuring out what went
-wrong.
+print error here because this should not happen.
 
-Note that we don't use %px in the slub code because we want to reduce
-the number of places that %px is used in the kernel. This also nicely
-prints a big fat warning at kernel boot if slub_debug is on the
-commandline so that we know that this kernel shouldn't be used on
-production systems.
+> +               return NULL;
+> +
+> +       *num_output_fmts =3D dpi->conf->num_output_fmts;
+> +
+> +       return (u32 *)dpi->conf->output_fmts;
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
+I think you should allocate new buffer for output_fmts because the
+caller would free it.
 
-I opted for extern because I guess we don't want to advertise
-no_hash_pointers_enable() in some sort of header file? It can be put in
-a header file but I see that the no_hash_pointers variable is also not 
-in a header file but exported as symbol.
+> +}
+> +
+> +#define MAX_INPUT_SEL_FORMATS  1
+> +
+> +static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *=
+bridge,
+> +                                       struct drm_bridge_state *bridge_s=
+tate,
+> +                                       struct drm_crtc_state *crtc_state=
+,
+> +                                       struct drm_connector_state *conn_=
+state,
+> +                                       u32 output_fmt,
+> +                                       unsigned int *num_input_fmts)
+> +{
+> +       u32 *input_fmts;
+> +
+> +       *num_input_fmts =3D 0;
+> +
+> +       input_fmts =3D kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts)=
+,
+> +                            GFP_KERNEL);
+> +       if (!input_fmts)
+> +               return NULL;
+> +
+> +       *num_input_fmts =3D 1;
+> +       input_fmts[0] =3D MEDIA_BUS_FMT_RGB888_1X24;
 
- lib/vsprintf.c | 2 +-
- mm/slub.c      | 6 ++++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+it seems that MAX_INPUT_SEL_FORMATS has no influence here. Maybe just
+remove MAX_INPUT_SEL_FORMATS, or you should have flexibility here for
+different MAX_INPUT_SEL_FORMATS value.
 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index f0c35d9b65bf..cc281f5895f9 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -2186,7 +2186,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
- bool no_hash_pointers __ro_after_init;
- EXPORT_SYMBOL_GPL(no_hash_pointers);
- 
--static int __init no_hash_pointers_enable(char *str)
-+int __init no_hash_pointers_enable(char *str)
- {
- 	if (no_hash_pointers)
- 		return 0;
-diff --git a/mm/slub.c b/mm/slub.c
-index bf4949115412..1c30436d3e6c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4451,6 +4451,8 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
- 	return s;
- }
- 
-+extern int no_hash_pointers_enable(char *str);
-+
- void __init kmem_cache_init(void)
- {
- 	static __initdata struct kmem_cache boot_kmem_cache,
-@@ -4470,6 +4472,10 @@ void __init kmem_cache_init(void)
- 	for_each_node_state(node, N_NORMAL_MEMORY)
- 		node_set(node, slab_nodes);
- 
-+	/* Print slub debugging pointers without hashing */
-+	if (static_branch_unlikely(&slub_debug_enabled))
-+		no_hash_pointers_enable(NULL);
-+
- 	create_boot_cache(kmem_cache_node, "kmem_cache_node",
- 		sizeof(struct kmem_cache_node), SLAB_HWCACHE_ALIGN, 0, 0);
- 
--- 
-https://chromeos.dev
+> +
+> +       return input_fmts;
+> +}
+> +
+> +static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
+> +                                      struct drm_bridge_state *bridge_st=
+ate,
+> +                                      struct drm_crtc_state *crtc_state,
+> +                                      struct drm_connector_state *conn_s=
+tate)
+> +{
+> +       struct mtk_dpi *dpi =3D bridge->driver_private;
+> +       unsigned int out_bus_format;
+> +
+> +       out_bus_format =3D bridge_state->output_bus_cfg.format;
+> +
+> +       dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
+> +               bridge_state->input_bus_cfg.format,
+> +               bridge_state->output_bus_cfg.format);
+> +
+> +       dpi->ddr_edge_sel =3D (out_bus_format =3D=3D MEDIA_BUS_FMT_RGB888=
+_2X12_LE) ?
+> +                          true : false;
 
+dpi->output_fmt =3D out_bus_format;
+
+Regards,
+Chun-Kuang.
+
+> +
+> +       dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
+> +       dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
+> +       dpi->yc_map =3D MTK_DPI_OUT_YC_MAP_RGB;
+> +       dpi->color_format =3D MTK_DPI_COLOR_FORMAT_RGB;
+> +
+> +       return 0;
+> +}
+> +
+>  static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
+>                                  enum drm_bridge_attach_flags flags)
+>  {
+> @@ -592,6 +659,12 @@ static const struct drm_bridge_funcs mtk_dpi_bridge_=
+funcs =3D {
+>         .mode_valid =3D mtk_dpi_bridge_mode_valid,
+>         .disable =3D mtk_dpi_bridge_disable,
+>         .enable =3D mtk_dpi_bridge_enable,
+> +       .atomic_check =3D mtk_dpi_bridge_atomic_check,
+> +       .atomic_get_output_bus_fmts =3D mtk_dpi_bridge_atomic_get_output_=
+bus_fmts,
+> +       .atomic_get_input_bus_fmts =3D mtk_dpi_bridge_atomic_get_input_bu=
+s_fmts,
+> +       .atomic_duplicate_state =3D drm_atomic_helper_bridge_duplicate_st=
+ate,
+> +       .atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> +       .atomic_reset =3D drm_atomic_helper_bridge_reset,
+>  };
+>
+>  void mtk_dpi_start(struct device *dev)
+> @@ -638,11 +711,6 @@ static int mtk_dpi_bind(struct device *dev, struct d=
+evice *master, void *data)
+>         }
+>         drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
+>
+> -       dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
+> -       dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
+> -       dpi->yc_map =3D MTK_DPI_OUT_YC_MAP_RGB;
+> -       dpi->color_format =3D MTK_DPI_COLOR_FORMAT_RGB;
+> -
+>         return 0;
+>
+>  err_cleanup:
+> --
+> 2.18.0
+>
