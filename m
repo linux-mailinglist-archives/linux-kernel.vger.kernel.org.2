@@ -2,87 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEF6390EA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA98390EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhEZDGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhEZDGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:06:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 323BE61059;
-        Wed, 26 May 2021 03:04:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1621998272;
-        bh=V4OpdXOQ49FmWgr/xUUxYOmoUsWXjcuopfW08hMrjv8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kSfWwaZ/I/MUjqP8ClC5NFBBhtbtwTtUV5fuaH+f597H5ZPRBtKz5JzjREaFInqZN
-         FF4Kp0lT5LeFOBHGqlx8A6hjo0/JRkSpISjVFlOo2PsY5bfR57DXmbJt/Ngf/fyA/H
-         YBq8GQ0THZbtXlJib70TNVVst5pdpdbC8jp65eTQ=
-Date:   Tue, 25 May 2021 20:04:31 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>
-Subject: Re: [PATCH 2/6] mm/userfaultfd: Fix uffd-wp special cases for
- fork()
-Message-Id: <20210525200431.41eb48106ba681151f320afb@linux-foundation.org>
-In-Reply-To: <YK2YArvcaabj8GHi@t490s>
-References: <20210428225030.9708-1-peterx@redhat.com>
-        <20210428225030.9708-3-peterx@redhat.com>
-        <20210525171558.3b223a89c16bdf002f3e83cf@linux-foundation.org>
-        <YK2YArvcaabj8GHi@t490s>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230428AbhEZDIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhEZDIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 23:08:45 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E26C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:07:13 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 6so24363817pgk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 20:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OVaWv7rah9ME2kXB5zbarT4yDB4K5xEKSyGiKfO3Qq8=;
+        b=mEjfgml+NNKprzdyyyUzWkkBkUx4YNuwQIBsfKg1QPsaAreU21vnEO0NG8TE1/FTP5
+         AJFDbPQSvglWfWq9NkfblP5QYUqnupPkqucR+Mn6uRaeyYIH6GmwEbUjPIFqhEbdLGf9
+         syzEHVJKhN8qrrisbY4Zp6haKA71UUp7+0xXJc9KmgiCz17uhuzsWW4GJ3O8CZXpMEYT
+         TAxvZi0oN2iOWnGsFKObrMJ8Swg4w0y0O5zIV2SO+h+oxGqsgt4DjvWDZtiAIGvqDi5u
+         ptXS2oqMwdJb5EXaP8NSka4J2yQnSwsYQZm51p2Yy17JHAtSSL6XrURCheevGgm/r6m8
+         Op3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OVaWv7rah9ME2kXB5zbarT4yDB4K5xEKSyGiKfO3Qq8=;
+        b=hhJiQMJwtLEJlAamCocZ5AOMzQK3FLrFU0qBIj+SNQoPIzn70i2C4rZcCHCE8XfTUN
+         IfjE8BxE3QicD9pgU/xEhH5jVrY7mkTQHuL5GivTDsLkV60RezjlVXW5TIbgKnKweZa2
+         4Ii90WTNCb8/mBLn/K0/DJ87s3HFb5VP5dEjZaNctlf56kAmS5ljsHHLZo+xOh3OEgYO
+         cN1k+Zb2lbU9BcI67LNejV32Yn2EmBvZgwV9FQiJvn67eGpMl5Fdn6AoFtu2caowmDUV
+         GEEHrzZLdRene2HNvlW6soF1fhYLSSlIMDEk1akaMLRLBr3QDNlvmDNWYQNxv5K9IwmL
+         Td1w==
+X-Gm-Message-State: AOAM53089qYG0LxuAwBmSfkiSXnumyceuKiu9cbuBpxEEN59cHU59p66
+        sx/R5B3KhpS7xYb3QzGxhX9fDA==
+X-Google-Smtp-Source: ABdhPJwPIUdQAfIrUprU6C1NzHtqnTl7YGli1bhK3pyoAVCmW43IYoRr47JFqbzwSMaLnUtgNiejxA==
+X-Received: by 2002:a63:e114:: with SMTP id z20mr22365187pgh.207.1621998432900;
+        Tue, 25 May 2021 20:07:12 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:47b:3de6:ff1b:1098:9398:7094])
+        by smtp.gmail.com with ESMTPSA id o7sm16099266pgs.45.2021.05.25.20.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 20:07:12 -0700 (PDT)
+From:   "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+X-Google-Original-From: "simba.hsu" <simba.hsu@rad-ic.com>
+To:     dmitry.torokhov@gmail.com, simba.hsu@rad-ic.com,
+        furquan@google.com, seanpaul@chromium.org, rrangle@chromium.org,
+        adurbin@chromium.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        KP.li@rad-ic.com, jeffrey.lin@rad-ic.com
+Subject: [PATCH] Input:raydium_i2c_ts - improve the mechanism of auto-update
+Date:   Wed, 26 May 2021 11:06:51 +0800
+Message-Id: <20210526030651.22760-1-simba.hsu@rad-ic.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 20:36:18 -0400 Peter Xu <peterx@redhat.com> wrote:
+Once auto-update has been interrupted, touch IC will be stuck in
+recovery mode forever and it will lead to touch malfunction.
+This patch maskes auto-update available when touch IC is in
+recovery mode to avoid touch malfunction.
 
-> On Tue, May 25, 2021 at 05:15:58PM -0700, Andrew Morton wrote:
-> > This run afoul of Alistair's "mm: Device exclusive memory access",
-> > https://lkml.kernel.org/r/20210524132725.12697-8-apopple@nvidia.com
-> > 
-> > `vma' is now undeclared.  I think this?
-> > 
-> > --- a/mm/memory.c~mm-userfaultfd-fix-uffd-wp-special-cases-for-fork-fix
-> > +++ a/mm/memory.c
-> > @@ -850,8 +850,8 @@ copy_nonpresent_pte(struct mm_struct *ds
-> >  		 * exclusive entries currently only support private writable
-> >  		 * (ie. COW) mappings.
-> >  		 */
-> > -		VM_BUG_ON(!is_cow_mapping(vma->vm_flags));
-> > -		if (try_restore_exclusive_pte(src_mm, src_pte, vma, addr))
-> > +		VM_BUG_ON(!is_cow_mapping(dst_vma->vm_flags));
-> 
-> This one looks good, as both src_vma/dst_vma should have the same flags related
-> to is_cow.
-> 
-> > +		if (try_restore_exclusive_pte(src_mm, src_pte, dst_vma, addr))
-> 
-> Should this be s/dst_vma/src_vma/ perhaps?  Alistairs please correct me
-> otherwise, as it tries to restore the pte for src mm not dst (the child).
-> 
-> I haven't yet got time to look at the new series, planning to do it tomorrow
-> maybe.. but I see that it's already queued in -mm.  Andrew, we do have chance
-> to go back if necessary, right?
+Signed-off-by: simba.hsu <simba.hsu@rad-ic.com>
+---
+ drivers/input/touchscreen/raydium_i2c_ts.c | 53 ++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 8 deletions(-)
 
-Sure.
-
-> I haven't looked at the rest, but I think try_restore_exclusive_pte() can at
-> least drop the *mm pointer as it's never used (even if we need, we've got
-> vma->vm_mm too)..
-
-OK, thanks.  I just released a tree into linux-next (hopefully this
-blooper won't cause too much damage).  Please send a suitable fixup.
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index 4d2d22a86977..50f6fbbe4775 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -36,7 +36,8 @@
+ #define RM_CMD_BOOT_CHK		0x33		/* send data check */
+ #define RM_CMD_BOOT_READ	0x44		/* send wait bl data ready*/
+ 
+-#define RM_BOOT_RDY		0xFF		/* bl data ready */
++#define RM_BOOT_RDY		0xFF			/* bl data ready */
++#define RM_BOOT_CMD_READHWID	0x0E	/* read hwid */
+ 
+ /* I2C main commands */
+ #define RM_CMD_QUERY_BANK	0x2B
+@@ -155,6 +156,7 @@ static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
+ 	 * sent first. Else, skip the header i.e. xfer[0].
+ 	 */
+ 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
++
+ 	xfer_count -= xfer_start_idx;
+ 
+ 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
+@@ -289,6 +291,44 @@ static int raydium_i2c_sw_reset(struct i2c_client *client)
+ 
+ 	return 0;
+ }
++static int raydium_i2c_query_ts_BL_info(struct raydium_data *ts)
++{
++	struct i2c_client *client = ts->client;
++	static const u8 get_hwid[7] = {RM_BOOT_CMD_READHWID,
++					 0x10, 0xc0, 0x01, 0x00, 0x04, 0x00};
++	int error;
++	u8 rbuf[5] = {0, 0, 0, 0, 0};
++	u32 tmpdata = 0;
++
++	error = raydium_i2c_send(client,
++				 RM_CMD_BOOT_WRT, get_hwid, sizeof(get_hwid));
++	if (error) {
++		dev_err(&client->dev, "WRT HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, rbuf, 1);
++	if (error) {
++		dev_err(&client->dev, "Ack HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_read(client,
++				 RM_CMD_BOOT_CHK, rbuf, sizeof(rbuf));
++	if (!error) {
++		tmpdata = (rbuf[1]<<24|rbuf[2]<<16|rbuf[3]<<8|rbuf[4]);
++		ts->info.hw_ver = tmpdata;
++		dev_err(&client->dev, "HWID %08X\n", ts->info.hw_ver);
++	} else {
++		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
++		dev_err(&client->dev, "raydium_i2c_read HWID failed, %X, %X, %X, %X\n",
++					 rbuf[1], rbuf[2], rbuf[3], rbuf[4]);
++	}
++	ts->info.main_ver = 0xff;
++	ts->info.sub_ver = 0xff;
++
++	return error;
++}
+ 
+ static int raydium_i2c_query_ts_info(struct raydium_data *ts)
+ {
+@@ -388,13 +428,10 @@ static int raydium_i2c_initialize(struct raydium_data *ts)
+ 	if (error)
+ 		ts->boot_mode = RAYDIUM_TS_BLDR;
+ 
+-	if (ts->boot_mode == RAYDIUM_TS_BLDR) {
+-		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
+-		ts->info.main_ver = 0xff;
+-		ts->info.sub_ver = 0xff;
+-	} else {
++	if (ts->boot_mode == RAYDIUM_TS_BLDR)
++		raydium_i2c_query_ts_BL_info(ts);
++	else
+ 		raydium_i2c_query_ts_info(ts);
+-	}
+ 
+ 	return error;
+ }
+@@ -1218,7 +1255,7 @@ static SIMPLE_DEV_PM_OPS(raydium_i2c_pm_ops,
+ 			 raydium_i2c_suspend, raydium_i2c_resume);
+ 
+ static const struct i2c_device_id raydium_i2c_id[] = {
+-	{ "raydium_i2c" , 0 },
++	{ "raydium_i2c", 0 },
+ 	{ "rm32380", 0 },
+ 	{ /* sentinel */ }
+ };
+-- 
+2.25.1
 
