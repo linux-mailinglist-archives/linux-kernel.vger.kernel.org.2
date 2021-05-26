@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF61B39105A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDC639105C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhEZGK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
+        id S229520AbhEZGKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhEZGKX (ORCPT
+        with ESMTP id S232570AbhEZGK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:10:23 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9A0C061574;
-        Tue, 25 May 2021 23:08:51 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id 69so94223plc.5;
-        Tue, 25 May 2021 23:08:51 -0700 (PDT)
+        Wed, 26 May 2021 02:10:26 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620BCC061756;
+        Tue, 25 May 2021 23:08:54 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q67so171837pfb.4;
+        Tue, 25 May 2021 23:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=69dcfTu5Rod0MWZh6A/dLucdJd56m6mON5Jg30AVkEw=;
-        b=fdPLe3tOK3w22cmU+MYHsdGF93lhq4iTe4kCT6dVltpvkkWv15shn1v4m7LviCWjHT
-         WOdhbl1Lx8PH54MWa9vBEACwhIr6aNjKtdK7iughruD0glz/VU+oQBiEeaiSF/beOxIi
-         6rXYX9sU1OqcH/DVbnL/Mud/vc9DOFTZuPd8PBMJSsCFLTsiujJnSZYr295NNRMU38vX
-         Xz8+ZIMHQBp9Nddzogb8CsEO4x5yg3LFfkom9bITPUR5JWGYJkBbuzKEu5JCqqwin1JT
-         oq4Wk/FUfGvpBfV5iRyfV8c2aHjy42h26uH992ZVb4wiwx/rpb9HHgu64W9aJuqdJ9Je
-         NS2A==
+        bh=3oEvu/vEeGXEGhFztOTZfSuonVeUq2+ZisRypjEiwg4=;
+        b=anrC7rk1TBGZDvtGgPS2GPTcl0fJznij/Rg22HkG1H+4BoAwmgsyqlsXT4lbfh/Y/c
+         tfkMPI13W90dNIcJH0lvQlPR6YHR8Vi2p+bFoP5m0OHXxqKFlH5ANiSckWEq2Cw6AZVx
+         SKYN6HKnSSBfgj/bit2D0baJmciHhKetCEqYzWhPdgxkDQPrLV3P45/uCdS+d0hlz8T9
+         s6WQL42jw2WE5izD3qc64oisHaK6sXIer7KFL/gaaMi65zPw44C5SKWotbQfDcV1Cvd5
+         n2aNzzVBXWUB/oTt3pFA1F6mib40oQXD/35dL9WT+PbxDmVsOYaplosjaxjklsBxBd22
+         8llA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=69dcfTu5Rod0MWZh6A/dLucdJd56m6mON5Jg30AVkEw=;
-        b=tOHEp+NGf8ze3zkUJX1zQ20l7rOOjrM7J8ps2crcppnO1hYKVSHifqVmFDpmbgYKdr
-         0WBNSaKwKCul47L9mb/GC2Vj7SaDupofyCVzCnOqacC4hU/GbSCDBp+32rryDGFwIM1c
-         zXKjlpxj0WvW0U/ruhXf0yz8BJYjYEHcOe7R7AVWGeQOIJSKR6tJkskwbd2qm9LbBkZl
-         L6PULlVjIyyHNiR3E6PsL8LfEojdc++UDa5F8lpmnc1kT55PQq4AKcBwyYg/Tzs65HFf
-         KoHUnea+sb0Uq/jx9FVpqqyjYnh4hfF/3NzPm+/uEj5YEjn7td/T6LTUeSa8kHicRLAi
-         eGwg==
-X-Gm-Message-State: AOAM533bPoP+PjS1ox3etgy7FkjyclRb4G3eBpfbtxwILEhlZff5f0yC
-        yz0o/CVYJZTYZEE7LaheDdnNKEbAxHs=
-X-Google-Smtp-Source: ABdhPJzd0fT5UdmZNdQpyxPjccEMhqPfoDamF8Wtd8976wNsdw3nCKtCFnQ6PXJYxFkWnynfzgN3nQ==
-X-Received: by 2002:a17:90a:4205:: with SMTP id o5mr27908436pjg.140.1622009331220;
-        Tue, 25 May 2021 23:08:51 -0700 (PDT)
+        bh=3oEvu/vEeGXEGhFztOTZfSuonVeUq2+ZisRypjEiwg4=;
+        b=i5dJKaMuwRf+RY2aN1IsDUtY6qtHRULDMpzpDRc+2ObRWkYuV2YP58v8ioN2MRilr3
+         mJUUGkJd1zvTNlni+udS9zZvv+usQS/VrVAy5ZuKjy0fqKRIs2hyWHT1825fxivDI4GW
+         eCvMKU2mnFoFgIIUuNfpw69Vm36RpByWSPbcmDpCY2Y8HNeifMPadOK/wA5tkABk7wGk
+         Phc0ERoYAIB/Zc22fiyA4Uy7aRxmwWJKBQEwHJt5t2epFZ74THBoVO8zZrpl4cYKz54l
+         dWyeeCEGCLqMypml8iX3MbC/ZyuEauzVbT2unDA1j0br7j6I4iSPxhdAJ7imFYb0EVEu
+         B8ZQ==
+X-Gm-Message-State: AOAM532672YEU/yDE9dqKW16i5F32Q3/UApWLCVWZYiO0gIymaN8H2z8
+        rbq5K0J4SD+18vnnY7WO/EQ=
+X-Google-Smtp-Source: ABdhPJwjdoROwYhBcgsVzVjagQd9lnn8hmltireJLeKhJgp8a2y+chikYDTIEYQIJXLvXK9RChhqqA==
+X-Received: by 2002:a62:1796:0:b029:2d5:91b4:642d with SMTP id 144-20020a6217960000b02902d591b4642dmr33240770pfx.7.1622009333773;
+        Tue, 25 May 2021 23:08:53 -0700 (PDT)
 Received: from localhost.localdomain (1-171-3-30.dynamic-ip.hinet.net. [1.171.3.30])
-        by smtp.gmail.com with ESMTPSA id n12sm14098915pjk.48.2021.05.25.23.08.48
+        by smtp.gmail.com with ESMTPSA id n12sm14098915pjk.48.2021.05.25.23.08.51
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 May 2021 23:08:50 -0700 (PDT)
+        Tue, 25 May 2021 23:08:53 -0700 (PDT)
 From:   cy_huang <u0084500@gmail.com>
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         cy_huang@richtek.com
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v1 1/2] regulator: rt6245: Add the binding document for Richtek RT6245
-Date:   Wed, 26 May 2021 14:08:40 +0800
-Message-Id: <1622009321-15157-2-git-send-email-u0084500@gmail.com>
+Subject: [PATCH v1 2/2] regulator: rt6245: Add support for Richtek RT6245
+Date:   Wed, 26 May 2021 14:08:41 +0800
+Message-Id: <1622009321-15157-3-git-send-email-u0084500@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
 References: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
@@ -63,109 +63,316 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: ChiYuan Huang <cy_huang@richtek.com>
 
-Add the binding document for Richtek RT6245.
+Richtek RT6245 is a high-performance, synchronous step-down converter
+that can deliver up to 14A output current with an input supply voltage
+range of 4.5V to 17V.
 
 Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 ---
- .../regulator/richtek,rt6245-regulator.yaml        | 89 ++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
+ drivers/regulator/Kconfig            |   9 ++
+ drivers/regulator/Makefile           |   1 +
+ drivers/regulator/rt6245-regulator.c | 260 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 270 insertions(+)
+ create mode 100644 drivers/regulator/rt6245-regulator.c
 
-diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 9d84d92..cdec434 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -1030,6 +1030,15 @@ config REGULATOR_RT5033
+ 	  RT5033 PMIC. The device supports multiple regulators like
+ 	  current source, LDO and Buck.
+ 
++config REGULATOR_RT6245
++	tristate "Richtek RT6245 voltage regulator"
++	depends on I2C
++	select REGMAP_I2C
++	help
++	  This adds supprot for Richtek RT6245 voltage regulator.
++	  It can support up to 14A output current and adjustable output voltage
++	  from 0.4375V to 1.3875V, per step 12.5mV.
++
+ config REGULATOR_RTMV20
+ 	tristate "RTMV20 Laser Diode Regulator"
+ 	depends on I2C
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 580b015..69668bf 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -124,6 +124,7 @@ obj-$(CONFIG_REGULATOR_ROHM)	+= rohm-regulator.o
+ obj-$(CONFIG_REGULATOR_RT4801)	+= rt4801-regulator.o
+ obj-$(CONFIG_REGULATOR_RT4831)	+= rt4831-regulator.o
+ obj-$(CONFIG_REGULATOR_RT5033)	+= rt5033-regulator.o
++obj-$(CONFIG_REGULATOR_RT6245)	+= rt6245-regulator.o
+ obj-$(CONFIG_REGULATOR_RTMV20)	+= rtmv20-regulator.o
+ obj-$(CONFIG_REGULATOR_S2MPA01) += s2mpa01.o
+ obj-$(CONFIG_REGULATOR_S2MPS11) += s2mps11.o
+diff --git a/drivers/regulator/rt6245-regulator.c b/drivers/regulator/rt6245-regulator.c
 new file mode 100644
-index 00000000..796ceac
+index 00000000..bd676f8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-@@ -0,0 +1,89 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/richtek,rt6245-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/regulator/rt6245-regulator.c
+@@ -0,0 +1,260 @@
++// SPDX-License-Identifier: GPL-2.0+
 +
-+title: Richtek RT6245 High Current Voltage Regulator
++#include <linux/bitops.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/of_regulator.h>
 +
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
++#define RT6245_VIRT_OCLIMIT	0x00
++#define RT6245_VIRT_OTLEVEL	0x01
++#define RT6245_VIRT_PGDLYTIME	0x02
++#define RT6245_VIRT_SLEWRATE	0x03
++#define RT6245_VIRT_SWFREQ	0x04
++#define RT6245_VIRT_VOUT	0x05
 +
-+description: |
-+  The RT6245 is a high-performance, synchronous step-down converter
-+  that can deliver up to 14A output current with an input supply
-+  voltage range of 4.5V to 17V.
++#define RT6245_VOUT_MASK	GENMASK(6, 0)
++#define RT6245_CHKSUM_MASK	BIT(7)
++#define RT6245_CODE_MASK	GENMASK(6, 0)
 +
-+allOf:
-+  - $ref: regulator.yaml#
++/* HW Enable + Soft start time */
++#define RT6245_ENTIME_IN_US	5000
 +
-+properties:
-+  compatible:
-+    enum:
-+      - richtek,rt6245
++#define RT6245_RAMPT_UNIT_0P1UV	15625
++#define RT6245_RAMPT_MAXUV	12500
++#define RT6245_RAMPT_BASESEL	1
 +
-+  reg:
-+    maxItems: 1
++#define RT6245_VOUT_MINUV	437500
++#define RT6245_VOUT_MAXUV	1387500
++#define RT6245_VOUT_STEPUV	12500
++#define RT6245_NUM_VOUT		((RT6245_VOUT_MAXUV - RT6245_VOUT_MINUV) / RT6245_VOUT_STEPUV + 1)
 +
-+  enable-gpios:
-+    description: |
-+      A connection of the chip 'enable' gpio line. If not provided,
-+      it will be treat as a default-on power.
-+    maxItems: 1
++struct rt6245_priv {
++	struct gpio_desc *enable_gpio;
++	bool enable_state;
++};
 +
-+  richtek,oc-level-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2, 3]
-+    description: |
-+      Over current level selection. Each respective value means the current
-+      limit 8A, 14A, 12A, 10A. If this property is missing then keep in
-+      in chip default.
++static int rt6245_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
++{
++	struct regmap *regmap  = rdev_get_regmap(rdev);
++	unsigned int ramp_time_scale;
 +
-+  richtek,ot-level-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2]
-+    description: |
-+      Over temperature level selection. Each respective value means the degree
-+      150'c, 130'c, 170'c. If this property is missing then keep in chip
-+      default.
++	if (ramp_delay == 0 || ramp_delay > RT6245_RAMPT_MAXUV) {
++		dev_warn(&rdev->dev, "Not in ramp time range %d, set to fastest\n", ramp_delay);
++		ramp_delay = RT6245_RAMPT_MAXUV;
++	}
 +
-+  richtek,pgdly-time-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2, 3]
-+    description: |
-+      Power good signal delay time selection. Each respective value means the
-+      delay time 0us, 10us, 20us, 40us. If this property is missing then keep
-+      in chip default.
++	/* ramp_time = max_ramp_time / ramp_time_scale, scale from 1 to 8 */
++	ramp_delay = max(ramp_delay * 10, RT6245_RAMPT_UNIT_0P1UV);
++	ramp_time_scale = (RT6245_RAMPT_MAXUV * 10) / ramp_delay;
++	ramp_time_scale -= RT6245_RAMPT_BASESEL;
 +
++	return regmap_write(regmap, RT6245_VIRT_SLEWRATE, ramp_time_scale);
++}
 +
-+  richtek,switch-freq-select:
-+    $ref: "/schemas/types.yaml#/definitions/uint8"
-+    enum: [0, 1, 2]
-+    description: |
-+      Buck switch frequency selection. Each respective value means 400KHz,
-+      800KHz, 1200KHz. If this property is missing then keep in chip default.
++static int rt6245_enable(struct regulator_dev *rdev)
++{
++	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
++	struct regmap *regmap = rdev_get_regmap(rdev);
 +
-+required:
-+  - compatible
-+  - reg
++	if (!priv->enable_gpio)
++		return 0;
 +
-+unevaluatedProperties: false
++	priv->enable_state = true;
++	gpiod_direction_output(priv->enable_gpio, 1);
++	usleep_range(RT6245_ENTIME_IN_US, RT6245_ENTIME_IN_US + 1000);
 +
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
++	regcache_cache_only(regmap, false);
++	return regcache_sync(regmap);
++}
 +
-+      rt6245@34 {
-+        compatible = "richtek,rt6245";
-+        status = "okay";
-+        reg = <0x34>;
-+        enable-gpios = <&gpio26 2 0>;
++static int rt6245_disable(struct regulator_dev *rdev)
++{
++	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
++	struct regmap *regmap = rdev_get_regmap(rdev);
 +
-+        regulator-name = "rt6245-regulator";
-+        regulator-min-microvolt = <437500>;
-+        regulator-max-microvolt = <1387500>;
-+        regulator-boot-on;
-+      };
-+    };
++	if (!priv->enable_gpio)
++		return -ENOTSUPP;
++
++	priv->enable_state = false;
++	gpiod_direction_output(priv->enable_gpio, 0);
++
++	regcache_cache_only(regmap, true);
++	regcache_mark_dirty(regmap);
++
++	return 0;
++}
++
++static int rt6245_is_enabled(struct regulator_dev *rdev)
++{
++	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
++
++	return priv->enable_state ? 1 : 0;
++}
++
++static const struct regulator_ops rt6245_regulator_ops = {
++	.list_voltage = regulator_list_voltage_linear,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.set_ramp_delay = rt6245_set_ramp_delay,
++	.enable = rt6245_enable,
++	.disable = rt6245_disable,
++	.is_enabled = rt6245_is_enabled,
++};
++
++static const struct regulator_desc rt6245_regulator_desc = {
++	.name = "rt6245-regulator",
++	.ops = &rt6245_regulator_ops,
++	.type = REGULATOR_VOLTAGE,
++	.min_uV = RT6245_VOUT_MINUV,
++	.uV_step = RT6245_VOUT_STEPUV,
++	.n_voltages = RT6245_NUM_VOUT,
++	.owner = THIS_MODULE,
++	.vsel_reg = RT6245_VIRT_VOUT,
++	.vsel_mask = RT6245_VOUT_MASK,
++};
++
++static int rt6245_init_device_properties(struct device *dev)
++{
++	struct {
++		const char *name;
++		unsigned int reg;
++	} rt6245_props[] = {
++		{ "richtek,oc-level-select",  RT6245_VIRT_OCLIMIT },
++		{ "richtek,ot-level-select", RT6245_VIRT_OTLEVEL },
++		{ "richtek,pgdly-time-select", RT6245_VIRT_PGDLYTIME },
++		{ "richtek,switch-freq-select", RT6245_VIRT_SWFREQ }
++	};
++	struct regmap *regmap = dev_get_regmap(dev, NULL);
++	u8 propval;
++	int i, ret;
++
++	for (i = 0; i < ARRAY_SIZE(rt6245_props); i++) {
++		ret = device_property_read_u8(dev, rt6245_props[i].name, &propval);
++		if (ret)
++			continue;
++
++		ret = regmap_write(regmap, rt6245_props[i].reg, propval);
++		if (ret) {
++			dev_err(dev, "Fail to apply [%s:%d]\n", rt6245_props[i].name, propval);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int rt6245_reg_write(void *context, unsigned int reg, unsigned int val)
++{
++	struct i2c_client *i2c = context;
++	const u8 func_base[] = { 0x6F, 0x73, 0x78, 0x61, 0x7C, 0 };
++	unsigned int code, bit_count;
++
++	code = func_base[reg];
++	code += val;
++
++	/* xor checksum for bit 6 to 0 */
++	bit_count = __sw_hweight8(code & RT6245_CODE_MASK);
++	if (bit_count % 2)
++		code |= RT6245_CHKSUM_MASK;
++	else
++		code &= ~RT6245_CHKSUM_MASK;
++
++	return i2c_smbus_write_byte(i2c, code);
++}
++
++static const struct reg_default rt6245_reg_defaults[] = {
++	/* Default over current 14A */
++	{ RT6245_VIRT_OCLIMIT, 2 },
++	/* Default over temperature 150'c */
++	{ RT6245_VIRT_OTLEVEL, 0 },
++	/* Default power good delay time 10us */
++	{ RT6245_VIRT_PGDLYTIME, 1 },
++	/* Default slewrate 12.5mV/uS */
++	{ RT6245_VIRT_SLEWRATE, 0 },
++	/* Default switch frequency 800KHz */
++	{ RT6245_VIRT_SWFREQ, 1 },
++	/* Default voltage 750mV */
++	{ RT6245_VIRT_VOUT, 0x19 }
++};
++
++static const struct regmap_config rt6245_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = RT6245_VIRT_VOUT,
++	.cache_type = REGCACHE_FLAT,
++	.reg_defaults = rt6245_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(rt6245_reg_defaults),
++	.reg_write = rt6245_reg_write,
++};
++
++static int rt6245_probe(struct i2c_client *i2c)
++{
++	struct rt6245_priv *priv;
++	struct regmap *regmap;
++	struct regulator_config regulator_cfg = {};
++	struct regulator_dev *rdev;
++	int ret;
++
++	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->enable_state = true;
++
++	priv->enable_gpio = devm_gpiod_get_optional(&i2c->dev, "enable", GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->enable_gpio)) {
++		dev_err(&i2c->dev, "Failed to get 'enable' gpio\n");
++		return PTR_ERR(priv->enable_gpio);
++	}
++	usleep_range(RT6245_ENTIME_IN_US, RT6245_ENTIME_IN_US + 1000);
++
++	regmap = devm_regmap_init(&i2c->dev, NULL, i2c, &rt6245_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&i2c->dev, "Failed to initialize the regmap\n");
++		return PTR_ERR(regmap);
++	}
++
++	ret = rt6245_init_device_properties(&i2c->dev);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to initialize device properties\n");
++		return ret;
++	}
++
++	regulator_cfg.dev = &i2c->dev;
++	regulator_cfg.of_node = i2c->dev.of_node;
++	regulator_cfg.regmap = regmap;
++	regulator_cfg.driver_data = priv;
++	regulator_cfg.init_data = of_get_regulator_init_data(&i2c->dev, i2c->dev.of_node,
++							     &rt6245_regulator_desc);
++	rdev = devm_regulator_register(&i2c->dev, &rt6245_regulator_desc, &regulator_cfg);
++	if (IS_ERR(rdev)) {
++		dev_err(&i2c->dev, "Failed to register regulator\n");
++		return PTR_ERR(rdev);
++	}
++
++	return 0;
++}
++
++static const struct of_device_id __maybe_unused rt6245_of_match_table[] = {
++	{ .compatible = "richtek,rt6245", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rt6245_of_match_table);
++
++static struct i2c_driver rt6245_driver = {
++	.driver = {
++		.name = "rt6245",
++		.of_match_table = rt6245_of_match_table,
++	},
++	.probe_new = rt6245_probe,
++};
++module_i2c_driver(rt6245_driver);
++
++MODULE_AUTHOR("ChiYuan Hwang <cy_huang@richtek.com>");
++MODULE_DESCRIPTION("Richtek RT6245 Regulator Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.7.4
 
