@@ -2,59 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D286390EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B75390EBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 05:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhEZDNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 23:13:51 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:43735 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230075AbhEZDNu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 23:13:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ua7zx7d_1621998736;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua7zx7d_1621998736)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 May 2021 11:12:18 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     mst@redhat.com
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] virtio_ring: Fix kernel-doc
-Date:   Wed, 26 May 2021 11:12:11 +0800
-Message-Id: <1621998731-17445-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231685AbhEZDO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 23:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230075AbhEZDOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 23:14:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AA9A6113D;
+        Wed, 26 May 2021 03:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621998773;
+        bh=MXpvYaTxrBbMYL5TsCq9ZgmO4Fjlx82C4mGQi4aVHMQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RDS16tZOAnUn3k9cCdeS2YltDG71HjGjF6DshnjdQerRxKvMbluLiTGgeKMxti/HG
+         7aKfQDnvbRY3cSrRZK+yXr6iuD8WR5/SRnfFqMSe44afXIsBS2Z1t6xEXTYCDPBATs
+         E87XsLrS8I6B0/n3jVVRThZrNOUSRVY3D/qk2yfygT2s7KZpyKz9VDAKsBZTLZ7Aoo
+         +3xGTx54NhFKpj3TJdNXy3znpnsv8gv6jYMUh+Owo7BDQfeHqo1LpBAgKoCTvfddYy
+         6EhEnBQaMhzLO5EfCyV9KgzVCtYPjHNWJ1lPNjwbaVRqJUAXpbjwkTLUbJd303vhgd
+         V5ksjA8Rh0m6g==
+Received: by mail-lf1-f51.google.com with SMTP id i9so249783lfe.13;
+        Tue, 25 May 2021 20:12:52 -0700 (PDT)
+X-Gm-Message-State: AOAM532hlIGlshwFJ+CMiVID0z+98Fenj6g8IBslvaCpYOyW/+oVAkQQ
+        lpZNQ5CeQPYdWqnrTX8ERvzpeImVieamVgTsk+U=
+X-Google-Smtp-Source: ABdhPJxKd0AZEQrvaUMDv5kZQPzNDqbPCo1Mhq9I+ttONfouWDsr+H6nCx4ue2MWBb0o0jMYAc3c4zelSHKaO+tByNU=
+X-Received: by 2002:a19:c49:: with SMTP id 70mr579450lfm.555.1621998771385;
+ Tue, 25 May 2021 20:12:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <1621945447-38820-1-git-send-email-guoren@kernel.org>
+ <1621945447-38820-3-git-send-email-guoren@kernel.org> <20210525123556.GB4842@lst.de>
+In-Reply-To: <20210525123556.GB4842@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 26 May 2021 11:12:40 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSa3LJKTRBv6NOvg0HtoKPL-5YyP6wY2=AJhQtAZwBBzg@mail.gmail.com>
+Message-ID: <CAJF2gTSa3LJKTRBv6NOvg0HtoKPL-5YyP6wY2=AJhQtAZwBBzg@mail.gmail.com>
+Subject: Re: [PATCH V3 2/2] riscv: Use use_asid_allocator flush TLB
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in virtio_ring.c kernel-doc comment
-to remove a warning found by clang_w1.
+On Tue, May 25, 2021 at 8:35 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, May 25, 2021 at 12:24:07PM +0000, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Use static_branch_unlikely(&use_asid_allocator) to keep the origin
+> > tlb flush style, so it's no effect on the existing machine. Here
+> > are the optimized functions:
+> >  - flush_tlb_mm
+> >  - flush_tlb_page
+> >  - flush_tlb_range
+> >
+> > All above are based on the below new implement functions:
+> >  - __sbi_tlb_flush_range_asid
+> >  - local_flush_tlb_range_asid
+>
+>
+> This mentiones what functions you're changing, but not what the
+> substantial change is, and more importantly why you change it.
+>
+> > +static inline void local_flush_tlb_range_asid(unsigned long start, unsigned long size,
+> > +                                           unsigned long asid)
+>
+> Crazy long line.  Should be:
+>
+> static inline void local_flush_tlb_range_asid(unsigned long start,
+>                 unsigned long size, unsigned long asid)
+>
+> > +{
+> > +     unsigned long tmp = start & PAGE_MASK;
+> > +     unsigned long end = ALIGN(start + size, PAGE_SIZE);
+> > +
+> > +     if (size == -1) {
+> > +             __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+> > +             return;
+>
+> Please split the global (size == -1) case into separate helpers.
+Do you mean:
+        if (size == -1) {
+                __asm__ __volatile__ ("sfence.vma x0, %0"
+                                :
+                                : "r" (asid)
+                                : "memory");
+        } else {
+                for (tmp = start & PAGE_MASK; tmp < end; tmp += PAGE_SIZE) {
+                        __asm__ __volatile__ ("sfence.vma %0, %1"
+                                        :
+                                        : "r" (tmp), "r" (asid)
+                                        : "memory");
+                        tmp += PAGE_SIZE;
+                }
+        }
 
-drivers/virtio/virtio_ring.c:1903: warning: expecting prototype for
-virtqueue_get_buf(). Prototype was for virtqueue_get_buf_ctx() instead
+>
+> > +     while(tmp < end) {
+>
+> Missing whitespace befre the (.
+>
+> Also I think this would read nicer as:
+>
+>         for (tmp = start & PAGE_MASK; tmp < end; tmp += PAGE_SIZE)
+>
+> > +static void __sbi_tlb_flush_range_asid(struct cpumask *cmask, unsigned long start,
+> > +                                    unsigned long size, unsigned long asid)
+>
+> Another overly long line.
+>
+> Also for all thee __sbi_* functions, why the __ prefix?
+I just follow the previous coding convention by __sbi_tlb_flush_range.
+If you don't like it, I think it should be another coding convention
+patchset.
+This patchset is only to add the functions of tlb_flush_with_asid.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit e593bf975156 ("virtio_ring: put split ring fields in a
-sub struct")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> > +     if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
+> > +             local_flush_tlb_range_asid(start, size, asid);
+> > +     } else {
+> > +             riscv_cpuid_to_hartid_mask(cmask, &hmask);
+> > +             sbi_remote_sfence_vma_asid(cpumask_bits(&hmask), start, size, asid);
+>
+> Another long line (and a few more later).
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 71e16b5..095a9a3 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1875,7 +1875,7 @@ bool virtqueue_kick(struct virtqueue *vq)
- EXPORT_SYMBOL_GPL(virtqueue_kick);
- 
- /**
-- * virtqueue_get_buf - get the next used buffer
-+ * virtqueue_get_buf_ctx - get the next used buffer
-  * @_vq: the struct virtqueue we're talking about.
-  * @len: the length written into the buffer
-  * @ctx: extra context for the token
+
+
 -- 
-1.8.3.1
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
