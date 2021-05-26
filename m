@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47240391D0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14783391D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhEZQbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:31:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232985AbhEZQbo (ORCPT
+        id S234144AbhEZQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhEZQdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:31:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622046612;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mKseMqEyU9vMlSVhMpCe0qu9Lfmtxe6btXv0lsnEZ5E=;
-        b=iw88gnSuAjUDmG1Z2+XNK4c1ZPCQy6rMKp3cZCb6aBKskFOkP8OMKP5gqE20VXVjLsd+6a
-        tpt/YbQRvBar0OaunlOIf1+9hkibFGZOyao1wIXU01wwv/OhPZXI0QkrEoqASVzBRwz+k/
-        PHm7n7V7diowhQw8TVMxOGgolnIkqPw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-NrgsYob4P5m6USp1KGKnZA-1; Wed, 26 May 2021 12:30:08 -0400
-X-MC-Unique: NrgsYob4P5m6USp1KGKnZA-1
-Received: by mail-ed1-f71.google.com with SMTP id y17-20020a0564023591b02903886c26ada4so894228edc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:30:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mKseMqEyU9vMlSVhMpCe0qu9Lfmtxe6btXv0lsnEZ5E=;
-        b=CHRgXi3y4mT70vNfi+VNMFVeYF+UsoKxWiWTSFAe/RNq60KUp3U7eCImVvzxXY555h
-         AaJDTiB77O3DmM9L4+tw+iIpWGTTuHz2zxmdycQdw4BFD3FVIP3Kw7ODy2NeNXQVdT4/
-         1F43F60lFbCxmksEEUzzZSJ+a9W6otxf2+p0/XaCKvtb/j2JmJ7pme5LLiEP1KQUZm56
-         Rf0t7dEdL0+ai+GM1yr9xvUSNYYnbB7j44g59U2IjA/AeNYtM2cLe6SqyRjavJqPm0xM
-         rOs9lpkyS3rLzhAJvRsLAZYe6yTsRWAHkckzusT4eIVbJ1TnSUFNJRv716W2DpP02IkF
-         5tyg==
-X-Gm-Message-State: AOAM530IUq4yYEty/sq/FM9z3cQ6pxm8be7uR6uv+te3E+StH/SPCtZl
-        OCXXhIKNaF+FAPof0NTtMHmRARyb/MSVFsf6LUANzkY6ZHglZlkOBFPpj+d+P65XVP9OOplF+sC
-        QrgXt3z61I2uUsFuwPLhW91B/
-X-Received: by 2002:a17:906:1444:: with SMTP id q4mr34703936ejc.459.1622046605699;
-        Wed, 26 May 2021 09:30:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfjTd0ATZ28BI6ZQRvwlDRMIHePtiPaN95IKdIhB2z+UP+qRArZCituwXQiXtiMFZ4p00YBA==
-X-Received: by 2002:a17:906:1444:: with SMTP id q4mr34703818ejc.459.1622046604662;
-        Wed, 26 May 2021 09:30:04 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x10sm12735679edd.30.2021.05.26.09.30.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 09:30:03 -0700 (PDT)
-Subject: Re: Writable module parameters in KVM
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-References: <CANgfPd_Pq2MkRUZiJynh7zkNuKE5oFGRjKeCjmgYP4vwvfMc1g@mail.gmail.com>
- <35fe7a86-d808-00e9-a6aa-e77b731bd4bf@redhat.com>
- <2fd417c59f40bd10a3446f9ed4be434e17e9a64f.camel@redhat.com>
- <YK5s5SUQh69a19/F@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <927cbe06-7183-1153-95ea-f97eb4ff12f6@redhat.com>
-Date:   Wed, 26 May 2021 18:30:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 26 May 2021 12:33:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92887C061574;
+        Wed, 26 May 2021 09:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sOL3BvHKeXuTa8i7Byc9prFY//hqK/wPv2ycrlvaUAM=; b=ZYJ8C3RxiGEPbWFtIXjRPkM59W
+        sru2KByW3HIzP2hQPaAyW4Cw6bKx2JjtYevRI7O+wrSriourpVabI7o2eSa5miBvEGeZuX15BkUC2
+        omEq4h1sV5ayhhk2SBAN+MJFZKhao90FjW/wyW3Z9DsuaFMHR4Ai28EHerkMQoi4WYXJ1lQSl+iN7
+        UAvoqI/ZQ0JpAPRCD8tE/8hKYgtTRjSVdA5Yy1PIT+Va9pfJoTPqpIHO8BNUGs8k8wrfM7ff02/tJ
+        0ze/wAL9+MPwmPcI1rac1i4GaqYSFDoUuPWRBXYRRXfUJM4E0rvl6SWQ85PCtAK9hRe6cNOpS1lUF
+        jSd/7+Ig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llwQ5-004hNf-HH; Wed, 26 May 2021 16:30:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E071430022A;
+        Wed, 26 May 2021 18:30:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C6453201D301D; Wed, 26 May 2021 18:30:08 +0200 (CEST)
+Date:   Wed, 26 May 2021 18:30:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 13/22] sched: Allow task CPU affinity to be restricted
+ on asymmetric systems
+Message-ID: <YK53kDtczHIYumDC@hirez.programming.kicks-ass.net>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-14-will@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YK5s5SUQh69a19/F@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525151432.16875-14-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/21 17:44, Sean Christopherson wrote:
->> Sure, making them writable is okay.
->
-> making a param writable (new or existing) must come with strong
-> justification for taking on the extra complexity.
+On Tue, May 25, 2021 at 04:14:23PM +0100, Will Deacon wrote:
+> @@ -2426,20 +2421,166 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>  
+>  	__do_set_cpus_allowed(p, new_mask, flags);
+>  
+> -	return affine_move_task(rq, p, &rf, dest_cpu, flags);
+> +	if (flags & SCA_USER)
+> +		release_user_cpus_ptr(p);
+> +
+> +	return affine_move_task(rq, p, rf, dest_cpu, flags);
+>  
+>  out:
+> -	task_rq_unlock(rq, p, &rf);
+> +	task_rq_unlock(rq, p, rf);
+>  
+>  	return ret;
+>  }
 
-I agree.  It's the same for every change, and it's the reason why most 
-parameters are read-only: no justification for the extra complexity. 
-But if somebody has a usecase, it can be considered.
+So sys_sched_setaffinity() releases the user_cpus_ptr thingy ?! How does
+that work?
 
-> Making 'npt' writable is probably feasible ('ept' would be beyond messy), but I
-> strongly prefer to keep it read-only.  The direct impacts on the MMU and SVM
-> aren't too bad, but NPT is required for SEV and VLS, affects kvm_cpu_caps, etc...
-> And, no offense to win98, there's isn't a strong use case because outside of
-> personal usage, the host admin/VMM doesn't know that the guest will be running a
-> broken kernel.
+I thought the intended semantics were somethings like:
 
-Making 'npt' writable would be beyond messy too; allowing select VMs to 
-disable EPT/NPT might be simpler, but not that much.  I can't say 
-offhand if the code would be ugly or not.
+	A - 0xff			B
 
-Paolo
+	restrict(0xf) // user: 0xff eff: 0xf
+
+					sched_setaffinity(A, 0x3c) // user: 0x3c eff: 0xc
+
+	relax() // user: NULL, eff: 0x3c
+
 
