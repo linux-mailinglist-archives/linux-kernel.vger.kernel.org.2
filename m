@@ -2,63 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D3339156B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9703C391571
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhEZKyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:54:40 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33522 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233980AbhEZKyi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:54:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ua9sKBq_1622026381;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ua9sKBq_1622026381)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 May 2021 18:53:05 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     kvalo@codeaurora.org
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] ath6kl: Fix inconsistent indenting
-Date:   Wed, 26 May 2021 18:52:56 +0800
-Message-Id: <1622026376-68524-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234306AbhEZKzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:55:18 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1593 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234273AbhEZKzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:55:01 -0400
+IronPort-SDR: nu8TuupwOdLqFpZKLh3lc0d2pffiGwxAX26jjdguagknYrdFVBtXZVWvt5Zmxveg7NIRY5g0RB
+ G1GaFoMq8Y8A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="189556414"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="189556414"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 03:53:29 -0700
+IronPort-SDR: 0XYFYr3CVloHG9r2cwknKWt6yjhugJqDcGEqqY0noM/m8X19N83TbBzPWlC9y4qcOtNGT+K8Kb
+ dA8nu8Lijgvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="436079167"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by orsmga007.jf.intel.com with ESMTP; 26 May 2021 03:53:27 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCH v6 04/20] perf record: Stop threads in the end of trace streaming
+Date:   Wed, 26 May 2021 13:52:57 +0300
+Message-Id: <e1bb4ba6c3786a569faabce3521dbf1efd6c76c1.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
+In-Reply-To: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the follow smatch warning:
+Signal thread to terminate by closing write fd of msg pipe.
+Receive THREAD_MSG__READY message as the confirmation of the
+thread's termination. Stop threads created for parallel trace
+streaming prior their stats processing.
 
-drivers/net/wireless/ath/ath6kl/cfg80211.c:3308
-ath6kl_cfg80211_sscan_start() warn: inconsistent indenting.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
-Changes in v2:
-  -For the follow advice: https://lore.kernel.org/patchwork/patch/1435973/
+ tools/perf/builtin-record.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
- drivers/net/wireless/ath/ath6kl/cfg80211.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath6kl/cfg80211.c b/drivers/net/wireless/ath/ath6kl/cfg80211.c
-index 29527e8..fefdc67 100644
---- a/drivers/net/wireless/ath/ath6kl/cfg80211.c
-+++ b/drivers/net/wireless/ath/ath6kl/cfg80211.c
-@@ -3303,8 +3303,8 @@ static int ath6kl_cfg80211_sscan_start(struct wiphy *wiphy,
- 		if (ret < 0)
- 			return ret;
- 	} else {
--		 ret = ath6kl_wmi_bssfilter_cmd(ar->wmi, vif->fw_vif_idx,
--						MATCHED_SSID_FILTER, 0);
-+		ret = ath6kl_wmi_bssfilter_cmd(ar->wmi, vif->fw_vif_idx,
-+					       MATCHED_SSID_FILTER, 0);
- 		if (ret < 0)
- 			return ret;
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 2027334d70bc..838c1f779849 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -112,6 +112,16 @@ struct thread_data {
+ 
+ static __thread struct thread_data *thread;
+ 
++enum thread_msg {
++	THREAD_MSG__UNDEFINED = 0,
++	THREAD_MSG__READY,
++	THREAD_MSG__MAX,
++};
++
++static const char *thread_msg_tags[THREAD_MSG__MAX] = {
++	"UNDEFINED", "READY"
++};
++
+ struct record {
+ 	struct perf_tool	tool;
+ 	struct record_opts	opts;
+@@ -1857,6 +1867,23 @@ static void record__uniquify_name(struct record *rec)
  	}
+ }
+ 
++static int record__terminate_thread(struct thread_data *thread_data)
++{
++	int res;
++	enum thread_msg ack = THREAD_MSG__UNDEFINED;
++	pid_t tid = thread_data->tid;
++
++	close(thread_data->pipes.msg[1]);
++	res = read(thread_data->pipes.ack[0], &ack, sizeof(ack));
++	if (res != -1)
++		pr_debug2("threads[%d]: sent %s\n", tid, thread_msg_tags[ack]);
++	else
++		pr_err("threads[%d]: failed to recv msg=%s from tid=%d\n",
++		       thread->tid, thread_msg_tags[ack], tid);
++
++	return 0;
++}
++
+ static int record__start_threads(struct record *rec)
+ {
+ 	struct thread_data *thread_data = rec->thread_data;
+@@ -1873,6 +1900,9 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ 	int t;
+ 	struct thread_data *thread_data = rec->thread_data;
+ 
++	for (t = 1; t < rec->nr_threads; t++)
++		record__terminate_thread(&thread_data[t]);
++
+ 	for (t = 0; t < rec->nr_threads; t++) {
+ 		rec->samples += thread_data[t].samples;
+ 		*waking += thread_data[t].waking;
 -- 
-1.8.3.1
+2.19.0
 
