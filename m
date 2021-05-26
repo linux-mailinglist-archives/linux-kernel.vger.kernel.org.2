@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732FC390E5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D33D390E5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbhEZCnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhEZCnU (ORCPT
+        id S232421AbhEZCnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:43:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232310AbhEZCnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:43:20 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F993C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:48 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 27so23038038pgy.3
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ezkRjfHr/yM6BsQAIWTNP4dtaMyIXXLPkdDgkZxux3A=;
-        b=ApaC4pDll9S1kSYB5io3ifMby1Gq9g9E6KxKclhWqvN+A47B/xv8Ms5FABOkrVHJ0g
-         CZINCBiZA229upxqomoYZMpJo/264cRtH38cqUjnwOKYvWtGl+yoQ5LVSD6RoXDtO5/m
-         ZXhzZ/2HtIZOYj3m1/Ct95HWzUu5ztwVbVxQUYriEGI7vKy18ka6PEqiFzcDEm9zYzLZ
-         1gq2RRjHToIDlfi73whaNSHhyOfh6xVgxbcFe7kK77eD9SKm8bv/MPRlsIPl7qBF2A6U
-         8M2p+216yMG/tz0hafsyLMy3j8mn8pYgkzbUP5DfabxgOLqtW/lfjMWzkq4zf7Ju5dbn
-         sJYA==
+        Tue, 25 May 2021 22:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621996912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bc/2MmUW+pgbFW2qFMtYQUjTQyUaBFo1vkB8ZkWRL6s=;
+        b=Tk9XfSFrDKoUeNyGLEH6/pHkXySqidyDvK9SDOldMYqjtqNs4uQRkL0P78GH623yxptzb1
+        eXiVKxDalEXIMRSlGma4NQn6MYfhc6cgkvX8cZ0fcl7+cdcq/8E49kX0uzPoJOYZHu5SdX
+        cX10f0BOJbSUCnfd7uAmqr/OTmK6Jbc=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-NSVPEYqWPqKOWUn4NvfNNw-1; Tue, 25 May 2021 22:41:50 -0400
+X-MC-Unique: NSVPEYqWPqKOWUn4NvfNNw-1
+Received: by mail-pg1-f199.google.com with SMTP id q64-20020a6343430000b02902164088f2f0so22239507pga.5
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:41:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ezkRjfHr/yM6BsQAIWTNP4dtaMyIXXLPkdDgkZxux3A=;
-        b=t2CJtFdwLg96oREJs5cQPq7Gubw7PFH5pe/g92lYcM5DXAfFOb0U9fJ7HlkFCGTebp
-         HP1rbaMz9aioWV3/XiO6m4psP8pbCmABnStET/XokszbyE4cS6BRWSe88Wjvkw47lprY
-         2Ka2XPS0pnRqjGWyloTvLwBUKzkNb6lCfrmKAMZ7xg3sZw8GwDipPh4dMUBjlK6L4VuL
-         65BrKWl5De6tpQNKjrBqt3YIPAY8qzbD1rx5OtZu2xmBtzVRIwDsaxEPKyI3WkteyQ8E
-         0puQuHQLLTpzkP0LhIwVKwO/Kj8aPpksppj/AVZR+JxKr3/HkPBB5fP+Ep75IAsoBXNS
-         6r3g==
-X-Gm-Message-State: AOAM532OgxKfhSK7WMe5odekRvbQLqMxL0To9z8uAe1aT6wPSxnloccr
-        WyLlk6ITywt/7BeL2qQUwRAI+kpxWGlIIdoBLZxnUw==
-X-Google-Smtp-Source: ABdhPJzWkiQtkLiwSGp/hJKgHn8/eehIITIU/j84gUlDHfBnZGna9Pqxrd/DSMt2knZpknME/4qEhotvxr3thaMSwU8=
-X-Received: by 2002:a05:6a00:8c7:b029:20f:1cf4:d02 with SMTP id
- s7-20020a056a0008c7b029020f1cf40d02mr33213719pfu.49.1621996907718; Tue, 25
- May 2021 19:41:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=bc/2MmUW+pgbFW2qFMtYQUjTQyUaBFo1vkB8ZkWRL6s=;
+        b=DtUylWCtk/JnAu+9aHZNth0F9PVfagIQLYd6N8BgwWY5EvTSb2e/XnFoMQNiUZegms
+         +HnYWWH7TXdh9DrB3fOXMncWxbExwWMrGYPuNREodhRipuZOXELEGLYTyme/Gl5MSCAS
+         ts8hAhwSXkER37OZeQEqmo+ypZ50gn5cp9YT90hgW7Sfm7cf8ZvN7mQeEfRm0s/sIWTt
+         Dgp2on1PQovIC3zROpqm1RQRnNzxuWVY1bxmImXWK5yWKPl1GhZhwx1WP9SfQ+EbAuwF
+         CyNwR1KG9yLHdmnOuIjfFvdDIl5gPMmOOTsROFBvUzoq+PHzokcu0rGQy+qkCn558TIz
+         kwHw==
+X-Gm-Message-State: AOAM531Xs0xBYuoB9ambgOi+g0/sj3lF4a4eP/Olc6IgLI1QY24liGkR
+        sTyEcEsNFUwW64oBtoBzxjWyARa1QzZl16Ez/ymhWDNKSDFytzfXCp7bAexxqxSSNZ0WhYQP7ii
+        aWsIkqQ1SQ7aFftXBpNHeSiv/AZpakmTUkRQv6ZuLEn9B0RmGQYAPWiBGE/GL778SGCXOtwKjtg
+        4/
+X-Received: by 2002:a62:ab10:0:b029:2e8:d5a8:d635 with SMTP id p16-20020a62ab100000b02902e8d5a8d635mr15164724pff.74.1621996909497;
+        Tue, 25 May 2021 19:41:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdM51fqapZ+TAydQBf1YBCQBeMJGeM8QJFnRIR/jK472sF6Fh8jpb1mmntXjLVehm11MPEGA==
+X-Received: by 2002:a62:ab10:0:b029:2e8:d5a8:d635 with SMTP id p16-20020a62ab100000b02902e8d5a8d635mr15164685pff.74.1621996909140;
+        Tue, 25 May 2021 19:41:49 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id a8sm14716088pfk.11.2021.05.25.19.41.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 19:41:48 -0700 (PDT)
+Subject: Re: [PATCH v7 05/12] virtio_scsi: Add validation for residual bytes
+ from response
+To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
+        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
+        hch@infradead.org, christian.brauner@canonical.com,
+        rdunlap@infradead.org, willy@infradead.org,
+        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
+        corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-6-xieyongji@bytedance.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <94abb1de-921d-8bf2-4cfc-55c7fc86c5a0@redhat.com>
+Date:   Wed, 26 May 2021 10:41:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210421070059.69361-1-songmuchun@bytedance.com>
- <CAMZfGtUiKcM8WmP88J3K5edwLhJhsUkAUQo6rnkqx4BBOEY2SA@mail.gmail.com>
- <34366052-8A39-4E8E-A076-8B64AB4D015D@fb.com> <CAMZfGtXC_UG9gUD58ezL02a+Gyry_d7WfEwKup6UMQjvNi3HdQ@mail.gmail.com>
- <YK01SgD7sFeviDGv@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YK01SgD7sFeviDGv@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 26 May 2021 10:41:11 +0800
-Message-ID: <CAMZfGtWgCyK+W9PMSFzyuPBvBzeKZRE5t7vKzgUQK3bj0NVi9g@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH v3 00/12] Use obj_cgroup APIs to charge
- the LRU pages
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
-        "Singh, Balbir" <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210517095513.850-6-xieyongji@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 1:35 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Thu, May 20, 2021 at 11:20:47AM +0800, Muchun Song wrote:
-> > On Tue, May 18, 2021 at 10:17 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > Hi Muchun!
-> > >
-> > > It looks like the writeback problem will be solved in a different way=
-, which will not require generalization of the obj_cgroup api to the cgroup=
- level. It=E2=80=99s not fully confirmed yet though. We still might wanna d=
-o this generalization lingn-term, but as now I have no objections for conti=
-nuing the work on your patchset. I=E2=80=99m on pto this week, but will tak=
-e a deeper look at your patches early next week. Sorry for the delay.
-> >
-> > Waiting on your review. Thanks Roman.
->
-> It looks like the mm tree went ahead and I can't clearly apply the whole =
-patchset.
-> Would you mind to rebase it and resend?
 
-Got it. Will do that. Thanks.
-
+ÔÚ 2021/5/17 ÏÂÎç5:55, Xie Yongji Ð´µÀ:
+> This ensures that the residual bytes in response (might come
+> from an untrusted device) will not exceed the data buffer length.
 >
-> Thank you!
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> ---
+>   drivers/scsi/virtio_scsi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+> index efcaf0674c8d..ad7d8cecec32 100644
+> --- a/drivers/scsi/virtio_scsi.c
+> +++ b/drivers/scsi/virtio_scsi.c
+> @@ -97,7 +97,7 @@ static inline struct Scsi_Host *virtio_scsi_host(struct virtio_device *vdev)
+>   static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
+>   {
+>   	if (resid)
+> -		scsi_set_resid(sc, resid);
+> +		scsi_set_resid(sc, min(resid, scsi_bufflen(sc)));
+>   }
+>   
+>   /*
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
