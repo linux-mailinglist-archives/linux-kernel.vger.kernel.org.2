@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52D039135E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882B639135F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhEZJJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:09:27 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:50537 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhEZJJZ (ORCPT
+        id S233587AbhEZJKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:10:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38812 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233264AbhEZJKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:09:25 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 2A4E5221E6;
-        Wed, 26 May 2021 11:07:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622020071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kuVX0EwFHRdzvCBkWg0tk/7hpgmavGGOvX+eVtdhON8=;
-        b=pkJNP85yCQI5tC6fyhHAjzAcvcryRDIJqKelW3XVGwRXLvTDoBbqFB2NYZd2n18RiGjaoR
-        TAcANc4s4f1Hib1slhyHeMxUG7qxr4+P9XsQT+a3T/Qm7K2igcb1nfDV+OsThCLVqjaBLY
-        XV6vp2sA6/+geCgypOd8U2bKxMzI4X8=
+        Wed, 26 May 2021 05:10:18 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q92olY044719;
+        Wed, 26 May 2021 05:08:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ceeVXdZOY+8HA9nM/G4FCbmI62E1ORuJonpAr0+pMhM=;
+ b=WpjtLDaAkAxS9ihqCAiJYQYJLzDzQI8yXF7nR82b9xIb2MNqM24Qkf+pOOxvst2ZJKtT
+ /2qKnJVkUchDq/SqNDRfZ1TQV0L2Rr/BliNioOcsySzy2M9XyESN0H4Wiom4+5ORYCoh
+ JNlK9dKFmM/KOJkFPUQnHO40+naCFV7QfkBB9ehQcpDN0LbttTWfCe3eMwS4D04q2ZZL
+ SxBjlahvSYWgmEWLqFf+UvjUGAngQHxkKEYYKJpOhsXgjyxbPXbyfiNbBVSs05efgAmJ
+ tC4PzGo1g5qe1wf8FsfrTOiOfFeTPatiYTFfFo7xNG0H/Pat+heoTK17OgJy8qCSCcU1 pg== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38sf9sq98v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 05:08:31 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14Q92Qst022731;
+        Wed, 26 May 2021 09:08:30 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03wdc.us.ibm.com with ESMTP id 38s1qd6ykh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 09:08:30 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14Q98TdB32964872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 May 2021 09:08:29 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75DF26A04D;
+        Wed, 26 May 2021 09:08:29 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C8736A054;
+        Wed, 26 May 2021 09:08:24 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.37.104])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 26 May 2021 09:08:23 +0000 (GMT)
+Subject: Re: [RFC v2 4/4] powerpc/papr_scm: Add cpu hotplug support for nvdimm
+ pmu device
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        vaibhav@linux.ibm.com, dan.j.williams@intel.com,
+        ira.weiny@intel.com, atrajeev@linux.vnet.ibm.com,
+        tglx@linutronix.de, rnsastry@linux.ibm.com
+References: <20210525132216.1239259-1-kjain@linux.ibm.com>
+ <20210525132216.1239259-5-kjain@linux.ibm.com>
+ <YK0G1nmvhOPimRay@hirez.programming.kicks-ass.net>
+ <b89d1954-638b-34c0-2d79-5d1ce4e72a3a@linux.ibm.com>
+ <569ee30d-29c0-37c4-6f3e-9dd1345f837e@linux.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <0849ba2a-9ff3-f3e7-4a27-28c598ba45f9@linux.ibm.com>
+Date:   Wed, 26 May 2021 14:38:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 26 May 2021 11:07:51 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
-In-Reply-To: <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
-References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <2e201aabd9b42da9a2bdcb2f7504ec12@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <569ee30d-29c0-37c4-6f3e-9dd1345f837e@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CoQpnaid5nMyNONm1mmtFQXx6M_AyCXd
+X-Proofpoint-ORIG-GUID: CoQpnaid5nMyNONm1mmtFQXx6M_AyCXd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_06:2021-05-25,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 spamscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105260060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-26 10:42, schrieb Andy Shevchenko:
-> On Wed, May 26, 2021 at 9:02 AM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
->> 
->> Support providing some IC specific operations at gpio_regmap 
->> registration.
->> 
->> Implementation of few GPIO related functionalities are likely to be
->> very IC specific. For example the pin-configuration registers and the
->> pin validity checks. Allow IC driver to provide IC specific functions
->> which gpio-regmap can utilize for these IC specific configurations.
->> This should help broaden the gpio-regmap IC coverage without the need
->> of exposing the registered gpio_chip or struct gpio_regmap to IC 
->> drivers.
->> 
->> The set_config and init_valid_mask are used by ROHM BD71815 GPIO 
->> driver.
->> Convert the BD71815 GPIO driver to use gpio-regmap and get rid of some
->> code. Rest of the ROHM GPIO drivers are to be reworked after the
->> mechanism of adding IC specific functions is settled.
->> 
->> Some preliminary discussion can be seen here:
->> https://lore.kernel.org/linux-gpio/c4faac648d3e0c7f3dcb50f7e24c8b322e8c6974.camel@fi.rohmeurope.com/
->> 
->> I did also prepare change where the getters for drvdata and regmap
->> are used. It can also work - but it does not scale quite as well
->> if (when) IC drivers need some register information to do custom
->> operations. Interested people can see the:
->> https://github.com/M-Vaittinen/linux/commits/gpio-regmap-getters
->> for comparison.
+
+
+On 5/26/21 2:15 PM, Aneesh Kumar K.V wrote:
+> On 5/26/21 12:56 PM, kajoljain wrote:
+>>
+>>
+>> On 5/25/21 7:46 PM, Peter Zijlstra wrote:
+>>> On Tue, May 25, 2021 at 06:52:16PM +0530, Kajol Jain wrote:
+>>>> Patch here adds cpu hotplug functions to nvdimm pmu.
+>>>
+>>> I'm thinking "Patch here" qualifies for "This patch", see
+>>> Documentation/process/submitting-patches.rst .
+>>>
+>> Hi Peter,
+>>     I will reword this commit message.
+>>
+>>>> It adds cpumask to designate a cpu to make HCALL to
+>>>> collect the counter data for the nvdimm device and
+>>>> update ABI documentation accordingly.
+>>>>
+>>>> Result in power9 lpar system:
+>>>> command:# cat /sys/devices/nmem0/cpumask
+>>>> 0
+>>>
+>>> Is this specific to the papr thing, or should this be in generic nvdimm
+>>> code?
+>>
+>> This code is not specific to papr device and we can move it to
+>> generic nvdimm interface. But do we need to add some checks on whether
+>> any arch/platform specific driver want that support or we can assume
+>> that this will be something needed by all platforms?
+>>
 > 
-> Entire series looks good to me,
+> It says the cpu that should be used to make the hcall. That makes it PAPR specific.
 
-Sorry, for being late to this. I got sidetracked.
+Hi Aneesh,
+  The hcall in the commit message basically pointing to the method we used to get
+counter data. But adding cpumask to a PMU is not specific to powerpc.
+So, Incase other platform/arch want to enable hotplug feature, they can use same code for
+that and hence we can move it to generic nvdimm interface.
 
-TBH, I don't like the we have the config struct in the callbacks. Why
-would you need all this information in the callback? And it doesn't
-help you to call back into gpio-regmap once there are further methods
-provided by gpio-regmap.
+Our concerned it mainly about is it right to assume from the common code point of view, if
+the cpumask attr is null, common code can add the cpumask support to it, or 
+do we need to have explicit flag for the device to request for it.
 
-Either we hide away the internals completely (which I still prefer!) or
-we open up the gpio_regmap struct. But this is somewhere in between. As
-the user, you could already attach the config to the opaque data pointer
-and get the same result.
-
-I don't see how the following is an overhead:
-
-int gpio_regmap_callback(struct gpio_regmap *gpio, ..)
-{
-     struct regmap *regmap = gpio_regmap_get_regmap(gpio);
-     struct driver_priv *data = gpio_regmap_get_drvdata(gpio);
-     ...
-}
-
-It doesn't clutter anything, there is just a small runtime overhead (is
-it?). Again this let you keep adding stuff in the future without
-changing any users. So what are the drawbacks of this?
-
-Also I'd like to keep the duplication of the "struct gpio_regmap" 
-members
-and the config members. The gpio_regmap_config is just a struct so
-the _register won't get cluttered with arguments.
-
-I'm still not opposed to convert gpio-regmap into helpers as mentioned
-earlier. But until then, I'd really keep the "struct gpio_regmap *gpio"
-opaque pointer.
-
--michael
+Thanks,
+Kajol Jain
+> 
+> -aneesh
+> 
