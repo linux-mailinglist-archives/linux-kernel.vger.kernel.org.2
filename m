@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F17E3912E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224F53912E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhEZItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        id S233528AbhEZIts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhEZItR (ORCPT
+        with ESMTP id S233319AbhEZItT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:17 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A7CC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:46 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o127so239069wmo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:46 -0700 (PDT)
+        Wed, 26 May 2021 04:49:19 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA3DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:47 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so34516wmf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y4rHhgO5kc8Uj3Lmp2tl7QIeeh0JqKynJlHlJf9HHsE=;
-        b=pTKy7PwPYMsEXaJH7oJfEPlkKYTVzDOWLgysWs0lli66m1+1b9YZwKwKje1Y0AtAwS
-         ua2YswIkDmK/6J5vymRUjqigKGrVmrx1BBlzlFjv1w9naTfx2iR2TVZvavFrVVgYj2NF
-         p3wpU4dx+LyBifeZLRvnkkS3jlHEkeOyv9wKC7pAsi1jNzzzbH2kaflP0eULkRGHPwrO
-         hWM5uSFAKWo+b7Eond1ho04GldbKOIP/ayNZubYoU4QXrOwHTY19FMoigoAk1nAwrm58
-         JyiyOEjN+aAU0GiufMh6JFioygCs2IAbnM/T1taDb/VmHq2IfD4ZiKnC55QdQgE+YrrT
-         8wdQ==
+        bh=lH0QiIv9GplFfw8+sE0Oz9qNWUTXoSa9cJ3TV4liCwY=;
+        b=RB/7ogGfRKR/H7xbMg6lQNSx4WrXK0TQZTmShXZ6vEsfWcdJt9mpwfOSaOSL1ocabF
+         /L+NmojU7HiAsSEG+onzR8iw/jSwxAwiZvxxqQyIh2jDsOsHAv+ydEDMELlHuh+aoT/g
+         wpOlNrw7F5oyIq8Weqcxg396wPPR2XTefQA029ZoYa2V3AFlbiST21TRICtIVUMwcLLD
+         Uo5g2JUO6sWhLAmjiX8yx4YZrpjAmi5mrFL+Ue9nh/8iBuYPdLZEerF1WKq0TdqvD82T
+         V0R0QuLlc77v1p3bR65MevvgCbC0PfDSSyJ2Qsd6JNxadfxJ6XpGRtK6u1DqxeuhxICk
+         HxPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y4rHhgO5kc8Uj3Lmp2tl7QIeeh0JqKynJlHlJf9HHsE=;
-        b=RCXu2F+DYH/lMWNOVfLozdzZxD9F3+zIH7ob/85o7ZXYmXL0heOg9CJj4kXQuRNl9n
-         YNu3FEmNqKATzP+mtmNPhgkWigRGfxov4gJCtFNDzzPm2RV1EK2WNrghwk4EIpRW60uU
-         EFTOOQJtxi63GCzngOImrtb6tdnCzcQ8hCnevLAKAyVjixJ6P14apiodBmXpRlwXeZ/d
-         aJfIvKzht1L0QyWLe7v6/uR/s4itjlpt1xgAvxpNcsJFuj9ErhZX1NqOkUc8AreH6fQT
-         YEs8kCqDsD4THWOGL5bugoBpggCcZX2V6A/ZBdxAa4KRNHSjQ5g0PK2cQGS6TMFzJ7ia
-         sNdA==
-X-Gm-Message-State: AOAM5338RIfhq3uJ18/YBo7i+Kt/tUi8ngIxskb17nYMtaWOVbzX4ZBH
-        l/Im0RikMg22JA+ceDWwQKBCbA==
-X-Google-Smtp-Source: ABdhPJwmWlATieeB+cyUTNVhAlZSX2mheWuMR+R5VDc+yQmXYSlx5mLFXqmUAz2zy0vAKuMkWpotOw==
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr28149778wmp.164.1622018864815;
-        Wed, 26 May 2021 01:47:44 -0700 (PDT)
+        bh=lH0QiIv9GplFfw8+sE0Oz9qNWUTXoSa9cJ3TV4liCwY=;
+        b=T6NN6zV+K43O+FVlIgzA3XMLy4mTOIuSunvZKd7S04g+G5kHuFpMkMd2/LbqthwJRx
+         PvtUElT4kr/b7CVsLtt+Sa2iZTUyMB0jumusGBgAZQN2ShWZadPRLo9tQ8Ye0sQairRf
+         4F716/4aNq2h8Ue2BWPh408AD06akZMJ2DagxC6IwKmE8W0prk6jw83ouEg8G3Ho5aos
+         3sjkg1fIX7oI9b1r2NrY4y714a6eZVaQBmBWSG1qDLFfyDibIdf3pfR7m4sQxCwMq7tT
+         GW+KnjNqqfYJcX7jA/7jlnGSqnz7JT3V/VqsWM4149PI2sASXz9mEMUprYpIs8icAvoi
+         ZATw==
+X-Gm-Message-State: AOAM530WCXSeuZT2/j1L0yxHrLtYlxPJf/WDEfzGQ6P6I5DPtil7R/Lc
+        mAg7dg82DhTnGKDJeGmRxgmChA==
+X-Google-Smtp-Source: ABdhPJxtgNzpcQUJUz+PEveawDKv5XlwuQ3p/fcDcouhayhnN7/EaDgJ8QeVnCBVRTFNMYQbAi+g0Q==
+X-Received: by 2002:a1c:5454:: with SMTP id p20mr2263933wmi.160.1622018865874;
+        Wed, 26 May 2021 01:47:45 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.43
+        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:44 -0700 (PDT)
+        Wed, 26 May 2021 01:47:45 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 14/34] drm/amd/display/dc/gpio/gpio_service: Pass around correct dce_{version,environment} types
-Date:   Wed, 26 May 2021 09:47:06 +0100
-Message-Id: <20210526084726.552052-15-lee.jones@linaro.org>
+Subject: [PATCH 15/34] drm/amd/display/dc/dce110/dce110_hw_sequencer: Include our own header
+Date:   Wed, 26 May 2021 09:47:07 +0100
+Message-Id: <20210526084726.552052-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
 References: <20210526084726.552052-1-lee.jones@linaro.org>
@@ -73,9 +73,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/gpio_service.c: In function ‘dal_gpio_service_create’:
- drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/gpio_service.c:71:4: warning: implicit conversion from ‘enum dce_version’ to ‘enum dce_environment’ [-Wenum-conversion]
- drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/gpio_service.c:77:4: warning: implicit conversion from ‘enum dce_version’ to ‘enum dce_environment’ [-Wenum-conversion]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:927:6: warning: no previous prototype for ‘dce110_edp_wait_for_T12’ [-Wmissing-prototypes]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -87,59 +85,22 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c   | 12 ++++++------
- .../drm/amd/display/include/gpio_service_interface.h |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
-index 92280cc05e2db..dae8e489c8cf4 100644
---- a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
-+++ b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
-@@ -53,8 +53,8 @@
-  */
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+index 5ddeee96bf235..9219db79f32b6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+@@ -63,6 +63,8 @@
  
- struct gpio_service *dal_gpio_service_create(
--	enum dce_version dce_version_major,
--	enum dce_version dce_version_minor,
-+	enum dce_version dce_version,
-+	enum dce_environment dce_environment,
- 	struct dc_context *ctx)
- {
- 	struct gpio_service *service;
-@@ -67,14 +67,14 @@ struct gpio_service *dal_gpio_service_create(
- 		return NULL;
- 	}
+ #include "atomfirmware.h"
  
--	if (!dal_hw_translate_init(&service->translate, dce_version_major,
--			dce_version_minor)) {
-+	if (!dal_hw_translate_init(&service->translate, dce_version,
-+			dce_environment)) {
- 		BREAK_TO_DEBUGGER();
- 		goto failure_1;
- 	}
++#include "dce110_hw_sequencer.h"
++
+ #define GAMMA_HW_POINTS_NUM 256
  
--	if (!dal_hw_factory_init(&service->factory, dce_version_major,
--			dce_version_minor)) {
-+	if (!dal_hw_factory_init(&service->factory, dce_version,
-+			dce_environment)) {
- 		BREAK_TO_DEBUGGER();
- 		goto failure_1;
- 	}
-diff --git a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
-index 9c55d247227ea..7e3240e73c1fc 100644
---- a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
-+++ b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
-@@ -42,8 +42,8 @@ void dal_gpio_destroy(
- 	struct gpio **ptr);
- 
- struct gpio_service *dal_gpio_service_create(
--	enum dce_version dce_version_major,
--	enum dce_version dce_version_minor,
-+	enum dce_version dce_version,
-+	enum dce_environment dce_environment,
- 	struct dc_context *ctx);
- 
- struct gpio *dal_gpio_service_create_irq(
+ /*
 -- 
 2.31.1
 
