@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79530391F3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAF3391F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhEZSh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        id S235574AbhEZSmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233845AbhEZSh2 (ORCPT
+        with ESMTP id S235564AbhEZSmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:37:28 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA346C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:35:55 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so1079782wmf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:35:55 -0700 (PDT)
+        Wed, 26 May 2021 14:42:45 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE707C061574;
+        Wed, 26 May 2021 11:41:12 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id o18so3442744ybc.8;
+        Wed, 26 May 2021 11:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vuU9uxld5nybVEuq54B8tCkV+pAQVJ8LqfwpbN9ssnI=;
-        b=heAyaGdCvp3mMqZB2Kc8WJb2O2x5cbxLKQHEn+vo/nEIIgV2DsObPDSo7ammdypyhI
-         zXRogNNmo/YXBrctMUND1xiaaTrZKTamN+xrenzv30uNYWFsdWK2p0ARL64k4JDYY0YV
-         fJg+Z1IyF7RmqvvgCperjmWFzxc66+HJ5fBaAwV1CQVfm+0bX9WmgKD+mGSbfdmT0E/v
-         WV2w4eHShBFneFwCwjxaFL+ELVrytLh0S9QCDnTNoeH9cJ0nhiNh7QCU4e91Iq2UCmZg
-         YQDYH+ImchezeFeBknlmzbzVgbqfMNugLvp2RwQ2TQQRKwidQTzX6ylyVmIpgWkv3VtH
-         3ahQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XFPiHuMmgB1diVIK7dUPVf8VcVw6JsgY/PRpvldEVQ0=;
+        b=qaSvn6PI+8BoBElLj/aK5GPJlL6f774Y24z0S6KncRf915wNgynqgtLORZyoSDVquM
+         SpOjVNqBDwkEZ2pxfIRMa7bMNtMXBCAhSb58WtU1nsfrAT3XIxRjnmVpPjrSzcNSPb7g
+         z5BVFBGZ2KuVuliw9g4hAoOnFHPQ3REKaiRClFkO6tPNNAk89cyfePVQpCAFoUniS/kY
+         qBkTpVtuPjfcLaBWOn0SfYMKBxxlE457FedrsxXevhi0w3n+k4iSGSjSZXPt0npjSAdK
+         agdh4otT1bi2+sYrYgK2WbafJ0hGlfOEO7Mnh3y7O0fxWY9g3RUbW6jIIOMzZysLqpVn
+         a+iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vuU9uxld5nybVEuq54B8tCkV+pAQVJ8LqfwpbN9ssnI=;
-        b=X/lD65VoiXliGQunepEcdLP0fwSVuDyjVNfmcdXc+IvjReku1ljZ4+BZox1txvww9p
-         560DwL2oE+hCTe4CH23+qDVk7YxFgi+V+3SRIzJQ7ShsqpX9BR2uzfNPjAkDIToOYDBW
-         Q2/eZATIizcLFA/VPDx509kZnX3QxC9lBGhMUpeU6ykP/KR0lIIaC79LaLkwbeIPfNxy
-         3s2kXdTGjgXmOSjTwEQNir8+iO1Gg3b47knQXk6cDwC1qAYoiwloFN4Tl2AQHyriK9eU
-         0iYXnHM2IoGjkONON8WPrL/v+UPaARILubxlV53ChgynIHOYLV9Qt/KDJB0TIRYPQNl0
-         Atig==
-X-Gm-Message-State: AOAM530gmX32uBlkOv7H/CHkFnZ66hp6pCMjI8G/s5rjcikTlW3FCXQi
-        P2qvXSYSR9L0AEitxexQUPVgOw==
-X-Google-Smtp-Source: ABdhPJyQY225rKyYNsyDEonRZZWTlFhAm5I+xmisJQw10qIevpIIa4O4M+3Dkkhl5nMycL7W8AgpJw==
-X-Received: by 2002:a7b:c92e:: with SMTP id h14mr30129864wml.179.1622054154106;
-        Wed, 26 May 2021 11:35:54 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:74ba:ff42:8494:7f35])
-        by smtp.gmail.com with ESMTPSA id t14sm4914507wra.60.2021.05.26.11.35.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 11:35:53 -0700 (PDT)
-Date:   Wed, 26 May 2021 20:35:47 +0200
-From:   Marco Elver <elver@google.com>
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] kunit: test: Add example_skip test suite which is
- always skipped
-Message-ID: <YK6VA8mHSg4aU1Ts@elver.google.com>
-References: <20210526081112.3652290-1-davidgow@google.com>
- <20210526081112.3652290-3-davidgow@google.com>
- <YK4NRlyrYJ8ktsWQ@elver.google.com>
- <CAGS_qxp=EV1iy5tCs+YpxH-Pug=MDTBXo3jSc13-h7HJnzBnDA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XFPiHuMmgB1diVIK7dUPVf8VcVw6JsgY/PRpvldEVQ0=;
+        b=F7NJCHRJhu4Wvb346pIKdi+yJb8nf1Ox3W+ezfj+l/vAhO7HAjnAOcXHlIvH/LEpHj
+         rif6CHemliJQMCcnoSPaHHNO6NMr9nMLamJa8YjwkHnew+rPlzE670uHQGa8AZF/Ohui
+         2ljW0wcKb3XgqGMgvuBdn0jjkze+mTWD92Xxyo5RuGVuPtHkEOXZ74RB/SCkV0a7kXsZ
+         TDuQVsAtadiQVkEcifzgyKWDzVZ2EcrH0RnWThhWxdyCXSmQeP8va0BeUdJzvQJegGit
+         OHzW0NV3fzGYqi0vTqvsK6PR3tWZG9JYuPhCCvyPlKWWYaGLbS6O+FaeYKX9mNS4bsWl
+         GiMg==
+X-Gm-Message-State: AOAM533711Pe8H1r2ZuF8g8NHmKZEMGQZEAwc9JPcWcqNUlxCMIiJct0
+        xSApm5hy3lVKC1AiO3+nJR+4p+gVJA6AewZBaAk=
+X-Google-Smtp-Source: ABdhPJwT4k6DNHfY5t+fcuHUkZTxoJn64AyHFKIC91gNYP2lNln/V0r4OROotjDGt6+BPUuDXwodmF+VI6cgRZ3t6Zw=
+X-Received: by 2002:a25:3c87:: with SMTP id j129mr53760696yba.141.1622054471905;
+ Wed, 26 May 2021 11:41:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGS_qxp=EV1iy5tCs+YpxH-Pug=MDTBXo3jSc13-h7HJnzBnDA@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <20210526162342.GA20@8bbba9ba63a4>
+In-Reply-To: <20210526162342.GA20@8bbba9ba63a4>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Wed, 26 May 2021 14:41:00 -0400
+Message-ID: <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
+Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
+To:     Rudi Heitbaum <rudi@heitbaum.com>
+Cc:     devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>, chenjh@rock-chips.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:29AM -0700, Daniel Latypov wrote:
-> On Wed, May 26, 2021 at 1:56 AM 'Marco Elver' via KUnit Development
-> <kunit-dev@googlegroups.com> wrote:
-> >
-> > On Wed, May 26, 2021 at 01:11AM -0700, David Gow wrote:
-> > > Add a new KUnit test suite which contains tests which are always
-> > > skipped. This is used as an example for how to write tests which are
-> > > skipped, and to demonstrate the difference between kunit_skip() and
-> > > kunit_mark_skipped().
-> > >
-> > > Because these tests do not pass (they're skipped), they are not enabled
-> > > by default, or by the KUNIT_ALL_TESTS config option: they must be
-> > > enabled explicitly by setting CONFIG_KUNIT_EXAMPLE_SKIP_TEST=y in either
-> > > a .config or .kunitconfig file.
-> > >
-> > > Signed-off-by: David Gow <davidgow@google.com>
-> > > ---
-> > >  lib/kunit/Kconfig                   | 15 +++++++++
-> > >  lib/kunit/Makefile                  |  2 ++
-> > >  lib/kunit/kunit-example-skip-test.c | 52 +++++++++++++++++++++++++++++
-> > >  3 files changed, 69 insertions(+)
-> > >  create mode 100644 lib/kunit/kunit-example-skip-test.c
-> >
-> > I don't know if this test is useful for a user of KUnit. Given it's not
-> > testing KUnit functionality (I see you added tests that the feature
-> > works in patch 1/3), but rather a demonstration and therefore dead code.
-> > I don't think the feature is difficult to understand from the API doc
-> > text.
-> >
-> > Instead, would it be more helpful to add something to
-> > Documentation/dev-tools/kunit? Or perhaps just add something to
-> > lib/kunit/kunit-example-test.c? It'd avoid introducing more Kconfig
-> 
-> I'm in favor of putting it in kunit-example-test.c as well.
-> 
-> But I hear there was pushback to have a non-passing test in the example?
-> I guess the fear is that someone will see something that doesn't say
-> "passed" in the example output and think something has gone wrong?
-> 
-> Hence this more conservative change.
-> But I hope that in the absence of any replies in opposition, we can
-> just keep one example-test.c
+On Wed, May 26, 2021 at 12:23 PM Rudi Heitbaum <rudi@heitbaum.com> wrote:
+>
+>
+> For rk3399pro boards the tcs4526 regulator supports the vdd_gpu
+> regulator. The tcs4526 regulator has a chip id of <0>.
+> Add the compatibile tcs,tcs4526
+>
+> without this patch, the dmesg output is:
+>   fan53555-regulator 0-0010: Chip ID 0 not supported!
+>   fan53555-regulator 0-0010: Failed to setup device!
+>   fan53555-regulator: probe of 0-0010 failed with error -22
+> with this patch, the dmesg output is:
+>   vdd_gpu: supplied by vcc5v0_sys
+>
+> The regulators are described as:
+> - Dedicated power management IC TCS4525
+> - Lithium battery protection chip TCS4526
+>
+> This has been tested with a Radxa Rock Pi N10.
+>
+> Fixes: f9028dcdf589 ("regulator: fan53555: only bind tcs4525 to correct chip id")
+> Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
 
-Maybe I misunderstood, but kunit_skip*() isn't supposed to change the
-test ok/fail state, right?
+Considering the TCS4525 wasn't supported prior to its recent addition,
+and the TCS4526 wasn't supported by the driver at all, this isn't a
+fix but a feature addition.
+Binding only to the correct device ID exists for this reason, to
+prevent unsafe voltage setting.
 
-That's the behaviour I'd expect at least.
+I also don't see the TCS4525/TCS4526 regulators in the current
+linux-next device tree for the N10.
 
-So if the test case deliberately doesn't change the state, but just
-skips, it should be fine in example-test.c.
+> ---
+>  drivers/regulator/fan53555.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+> index 2695be617373..ddab9359ea20 100644
+> --- a/drivers/regulator/fan53555.c
+> +++ b/drivers/regulator/fan53555.c
+> @@ -90,6 +90,7 @@ enum {
+>  };
+>
+>  enum {
+> +       TCS4525_CHIP_ID_00 = 0,
+>         TCS4525_CHIP_ID_12 = 12,
 
-Thanks,
--- Marco
+This isn't a TCS4525, but a TCS4526.
+
+>  };
+>
+> @@ -373,6 +374,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
+>  static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
+>  {
+>         switch (di->chip_id) {
+> +       case TCS4525_CHIP_ID_00:
+>         case TCS4525_CHIP_ID_12:
+>                 di->slew_reg = TCS4525_TIME;
+>                 di->slew_mask = TCS_SLEW_MASK;
+> @@ -564,6 +566,9 @@ static const struct of_device_id __maybe_unused fan53555_dt_ids[] = {
+>         }, {
+>                 .compatible = "tcs,tcs4525",
+>                 .data = (void *)FAN53526_VENDOR_TCS
+> +       }, {
+> +               .compatible = "tcs,tcs4526",
+> +               .data = (void *)FAN53526_VENDOR_TCS
+
+Since you aren't adding any functional code, is there a particular
+reason you can't just add the chip id and simply use the tcs4525
+compatible?
+This will prevent you from needing to modify the dt-bindings as well.
+
+>         },
+>         { }
+>  };
+> @@ -672,6 +677,9 @@ static const struct i2c_device_id fan53555_id[] = {
+>         }, {
+>                 .name = "tcs4525",
+>                 .driver_data = FAN53526_VENDOR_TCS
+> +       }, {
+> +               .name = "tcs4526",
+> +               .driver_data = FAN53526_VENDOR_TCS
+>         },
+>         { },
+>  };
+> --
+> 2.29.2
+>
