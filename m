@@ -2,1376 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A230391B9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55C6391B9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbhEZPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbhEZPY2 (ORCPT
+        id S235428AbhEZPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:24:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57146 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232692AbhEZPYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:24:28 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D73C061574;
-        Wed, 26 May 2021 08:22:56 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 26C281F431D5
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id D84534800E1; Wed, 26 May 2021 17:22:51 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: [PATCHv3 3/3] ARM: dts: imx6: Add GE B1x5v2
-Date:   Wed, 26 May 2021 17:22:43 +0200
-Message-Id: <20210526152243.51059-4-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210526152243.51059-1-sebastian.reichel@collabora.com>
-References: <20210526152243.51059-1-sebastian.reichel@collabora.com>
+        Wed, 26 May 2021 11:24:55 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QFNEAV076732;
+        Wed, 26 May 2021 10:23:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622042594;
+        bh=e7aNPnbx8t5mD4FscmZAo6nmG6Wi1zU/gmOIkIkpqQI=;
+        h=From:To:CC:Subject:Date;
+        b=m6dBZDP0YEtq6gLDOkK4Y8FfONIG8/vbBu8SL8IVGpAtVuYQAvG3osjqtSUTmMJmr
+         6tW7E++SH1DfPmHcn2ojpXtCjJZmvyiGYB+TKooCy7FbIRXtsGv0Grzg/eSy7pVs8O
+         nZ3Ar22Yl6ps4JWVDYvFHw5bPPqFMncMFuNG7JgE=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QFNE6N078106
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 10:23:14 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 10:23:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 10:23:14 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QFN9JY056314;
+        Wed, 26 May 2021 10:23:09 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v2 00/18] CSI2RX support on J721E
+Date:   Wed, 26 May 2021 20:52:50 +0530
+Message-ID: <20210526152308.16525-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds device tree files for the General Electric Healthcare
-(GEHC) B1x5v2 series. All models make use of Congatec's QMX6
-system on module, which is described in its own device tree include,
-so that it can also be used by other boards.
+Hi,
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm/boot/dts/Makefile            |   5 +
- arch/arm/boot/dts/imx6dl-b105pv2.dts  |  32 ++
- arch/arm/boot/dts/imx6dl-b105v2.dts   |  32 ++
- arch/arm/boot/dts/imx6dl-b125pv2.dts  |  30 ++
- arch/arm/boot/dts/imx6dl-b125v2.dts   |  30 ++
- arch/arm/boot/dts/imx6dl-b155v2.dts   |  32 ++
- arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi | 413 +++++++++++++++++
- arch/arm/boot/dts/imx6dl-b1x5v2.dtsi  |  58 +++
- arch/arm/boot/dts/imx6dl-qmx6.dtsi    | 612 ++++++++++++++++++++++++++
- 9 files changed, 1244 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-b105pv2.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-b105v2.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-b125pv2.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-b125v2.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-b155v2.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi
- create mode 100644 arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
- create mode 100644 arch/arm/boot/dts/imx6dl-qmx6.dtsi
+This series adds support for CSI2 capture on J721E. It includes some
+fixes to the Cadence CSI2RX driver, adds Rx support to Cadence DPHY
+driver, and finally adds the TI CSI2RX wrapper driver.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index f8f09c5066e7..2b8810f29b27 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -515,6 +515,11 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6q-dms-ba16.dtb \
- 	imx6q-emcon-avari.dtb \
- 	imx6q-evi.dtb \
-+	imx6dl-b105pv2.dtb \
-+	imx6dl-b105v2.dtb \
-+	imx6dl-b125v2.dtb \
-+	imx6dl-b125pv2.dtb \
-+	imx6dl-b155v2.dtb \
- 	imx6q-gk802.dtb \
- 	imx6q-gw51xx.dtb \
- 	imx6q-gw52xx.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-b105pv2.dts b/arch/arm/boot/dts/imx6dl-b105pv2.dts
-new file mode 100644
-index 000000000000..411aa72d344b
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b105pv2.dts
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B105Pv2
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+/dts-v1/;
-+#include "imx6dl-b1x5pv2.dtsi"
-+
-+/ {
-+	model = "General Electric B105Pv2";
-+	compatible = "ge,imx6dl-b105pv2", "congatec,qmx6", "fsl,imx6dl";
-+
-+	panel {
-+		compatible = "auo,g101evn010";
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@41 {
-+		compatible = "ilitek,ili251x";
-+		reg = <0x41>;
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&pinctrl_q7_gpio0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-+		reset-gpios = <&tca6424a 21 GPIO_ACTIVE_LOW>;
-+		touchscreen-size-x = <1280>;
-+		touchscreen-size-y = <800>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b105v2.dts b/arch/arm/boot/dts/imx6dl-b105v2.dts
-new file mode 100644
-index 000000000000..d011127c635b
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b105v2.dts
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B105v2
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+/dts-v1/;
-+#include "imx6dl-b1x5v2.dtsi"
-+
-+/ {
-+	model = "General Electric B105v2";
-+	compatible = "ge,imx6dl-b105v2", "congatec,qmx6", "fsl,imx6dl";
-+
-+	panel {
-+		compatible = "auo,g101evn010";
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@41 {
-+		compatible = "ilitek,ili251x";
-+		reg = <0x41>;
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&pinctrl_q7_gpio0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-+		reset-gpios = <&tca6424a 21 GPIO_ACTIVE_LOW>;
-+		touchscreen-size-x = <1280>;
-+		touchscreen-size-y = <800>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b125pv2.dts b/arch/arm/boot/dts/imx6dl-b125pv2.dts
-new file mode 100644
-index 000000000000..ca840fa84052
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b125pv2.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B125Pv2
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+/dts-v1/;
-+#include "imx6dl-b1x5pv2.dtsi"
-+
-+/ {
-+	model = "General Electric B125Pv2";
-+	compatible = "ge,imx6dl-b125pv2", "congatec,qmx6", "fsl,imx6dl";
-+
-+	panel {
-+		compatible = "auo,g121ean01";
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@2a {
-+		compatible = "eeti,exc80h60";
-+		reg = <0x2a>;
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&pinctrl_q7_gpio0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&tca6424a 21 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b125v2.dts b/arch/arm/boot/dts/imx6dl-b125v2.dts
-new file mode 100644
-index 000000000000..81e5a9cb8900
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b125v2.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B125v2
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+/dts-v1/;
-+#include "imx6dl-b1x5v2.dtsi"
-+
-+/ {
-+	model = "General Electric B125v2";
-+	compatible = "ge,imx6dl-b125v2", "congatec,qmx6", "fsl,imx6dl";
-+
-+	panel {
-+		compatible = "auo,g121ean01";
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@2a {
-+		compatible = "eeti,exc80h60";
-+		reg = <0x2a>;
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&pinctrl_q7_gpio0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-+		reset-gpios = <&tca6424a 21 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b155v2.dts b/arch/arm/boot/dts/imx6dl-b155v2.dts
-new file mode 100644
-index 000000000000..c861937b30f6
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b155v2.dts
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B155v2
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+/dts-v1/;
-+#include "imx6dl-b1x5v2.dtsi"
-+
-+/ {
-+	model = "General Electric B155v2";
-+	compatible = "ge,imx6dl-b155v2", "congatec,qmx6", "fsl,imx6dl";
-+
-+	panel {
-+		compatible = "auo,g156xtn01";
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@2a {
-+		compatible = "eeti,exc80h84";
-+		reg = <0x2a>;
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&pinctrl_q7_gpio0>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-+		touchscreen-inverted-x;
-+		touchscreen-inverted-y;
-+		reset-gpios = <&tca6424a 21 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi b/arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi
-new file mode 100644
-index 000000000000..ec5b66453156
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi
-@@ -0,0 +1,413 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B1x5Pv2
-+// patient monitor series
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+#include <dt-bindings/input/input.h>
-+#include "imx6dl-qmx6.dtsi"
-+
-+/ {
-+	chosen {
-+		stdout-path = &uart3;
-+	};
-+
-+	/* Do not allow frequencies above 800MHz */
-+	cpus {
-+		cpu@0 {
-+			operating-points = <
-+				/* kHz    uV */
-+				792000  1175000
-+				396000  1150000
-+			>;
-+			fsl,soc-operating-points = <
-+				/* ARM kHz	SOC-PU uV */
-+				792000	1175000
-+				396000	1175000
-+			>;
-+		};
-+
-+		cpu@1 {
-+			operating-points = <
-+				/* kHz    uV */
-+				792000  1175000
-+				396000  1150000
-+			>;
-+			fsl,soc-operating-points = <
-+				/* ARM kHz	SOC-PU uV */
-+				792000	1175000
-+				396000	1175000
-+			>;
-+		};
-+	};
-+
-+	reg_syspwr: regulator-12v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "SYS_PWR";
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+	};
-+
-+	reg_5v_pmc: regulator-5v-pmc {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V PMC";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_syspwr>;
-+	};
-+
-+	reg_5v: regulator-5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_syspwr>;
-+	};
-+
-+	reg_3v3: regulator-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&reg_syspwr>;
-+	};
-+
-+	reg_5v0_audio: regulator-5v0-audio {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V0_AUDIO";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_5v>;
-+		gpio = <&tca6424a 16 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		/*
-+		 * This must be always-on for da7212, which has some not
-+		 * properly documented dependencies for it's speaker supply
-+		 * pin. The issue manifests as speaker volume being very low.
-+		 */
-+		regulator-always-on;
-+	};
-+
-+
-+	reg_3v3_audio: regulator-3v3-audio {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3V3_AUDIO";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&reg_3v3>;
-+		pinctrl-0 = <&pinctrl_q7_hda_reset>;
-+		pinctrl-names = "default";
-+		gpio = <&gpio6 8 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_2v5_audio: regulator-2v5-audio {
-+		compatible = "regulator-fixed";
-+		regulator-name = "2V5_AUDIO";
-+		regulator-min-microvolt = <2500000>;
-+		regulator-max-microvolt = <2500000>;
-+		regulator-always-on;
-+		vin-supply = <&reg_3v3_audio>;
-+
-+	};
-+
-+	reg_wlan: regulator-wlan {
-+		compatible = "regulator-fixed";
-+		regulator-name = "WLAN";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&reg_3v3>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_sdio_power>;
-+		gpio = <&gpio4 30 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <70000>;
-+	};
-+
-+	reg_bl: regulator-backlight {
-+		compatible = "regulator-fixed";
-+		regulator-name = "LED_VCC";
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+		vin-supply = <&reg_syspwr>;
-+		pinctrl-0 = <&pinctrl_q7_lcd_power>;
-+		pinctrl-names = "default";
-+		gpio = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_lcd: regulator-lcd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "LCD_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_5v>;
-+	};
-+
-+	usb_power: regulator-usb-power {
-+		compatible = "regulator-fixed";
-+		regulator-name = "USB POWER";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_5v>;
-+	};
-+
-+	charger: battery-charger {
-+		compatible = "gpio-charger"; /* ti,bq24172 */
-+		charger-type = "mains";
-+		gpios = <&tca6424a 3 GPIO_ACTIVE_LOW>;
-+		charge-current-limit-gpios = <&tca6424a 11 GPIO_ACTIVE_HIGH>,
-+					     <&tca6424a 12 GPIO_ACTIVE_HIGH>;
-+		charge-current-limit-mapping = <1300000 0x0>,
-+					       <700000 0x1>,
-+					       <0 0x2>;
-+		charge-status-gpios = <&tca6424a 6 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	poweroff {
-+		compatible = "gpio-poweroff";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_spi_cs1>;
-+		gpios = <&gpio4 25 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	power-button-key {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_sleep_button>;
-+
-+		power-button {
-+			label = "power button";
-+			gpios = <&gpio4 7 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_POWER>;
-+		};
-+	};
-+
-+	rotary-encoder-key {
-+		compatible = "gpio-keys";
-+
-+		rotary-encoder-press {
-+			label = "rotary-encoder press";
-+			gpios = <&tca6424a 0 GPIO_ACTIVE_HIGH>;
-+			linux,code = <KEY_ENTER>;
-+			linux,can-disable;
-+		};
-+	};
-+
-+	rotary-encoder {
-+		compatible = "rotary-encoder";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_gpio2 &pinctrl_q7_gpio4>;
-+		gpios = <&gpio4 26 GPIO_ACTIVE_LOW>, <&gpio1 0 GPIO_ACTIVE_LOW>;
-+		rotary-encoder,relative-axis;
-+		rotary-encoder,steps-per-period = <2>;
-+		wakeup-source;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_gpio1 &pinctrl_q7_gpio3 &pinctrl_q7_gpio5>;
-+
-+		alarm1 {
-+			label = "alarm:red";
-+			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm2 {
-+			label = "alarm:yellow";
-+			gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm3 {
-+			label = "alarm:blue";
-+			gpios = <&gpio4 15 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_backlight_enable>;
-+		power-supply = <&reg_bl>;
-+		pwms = <&pwm4 0 5000000 0>;
-+		brightness-levels = <0 255>;
-+		num-interpolated-steps = <255>;
-+		default-brightness-level = <179>;
-+		enable-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	panel {
-+		backlight = <&backlight>;
-+		power-supply = <&reg_lcd>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&lvds0_out>;
-+			};
-+		};
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&dailink_master>;
-+		simple-audio-card,frame-master = <&dailink_master>;
-+		simple-audio-card,widgets = "Speaker", "Ext Spk";
-+		simple-audio-card,audio-routing = "Ext Spk", "LINE";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&ssi1>;
-+		};
-+
-+		dailink_master: simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+		};
-+	};
-+
-+	clk_ext_audio_codec: clock-codec {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <12288000>;
-+	};
-+};
-+
-+&audmux {
-+	status = "okay";
-+};
-+
-+&fec {
-+	status = "okay";
-+};
-+
-+&hdmi {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	battery: battery@b {
-+		compatible = "ti,bq20z65", "sbs,sbs-battery";
-+		reg = <0x0b>;
-+		sbs,battery-detect-gpios = <&tca6424a 5 GPIO_ACTIVE_LOW>;
-+		sbs,i2c-retry-count = <5>;
-+		power-supplies = <&charger>;
-+	};
-+
-+	codec: audio-codec@1a {
-+		compatible = "dlg,da7212";
-+		reg = <0x1a>;
-+		#sound-dai-cells = <0>;
-+		VDDA-supply = <&reg_2v5_audio>;
-+		VDDSP-supply = <&reg_5v0_audio>;
-+		VDDMIC-supply = <&reg_3v3_audio>;
-+		VDDIO-supply = <&reg_3v3_audio>;
-+		clocks = <&clk_ext_audio_codec>;
-+		clock-names = "mclk";
-+	};
-+};
-+
-+&i2c5 {
-+	tca6424a: gpio-controller@22 {
-+		compatible = "ti,tca6424";
-+		reg = <0x22>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		vcc-supply = <&reg_3v3>;
-+		interrupt-parent = <&gpio7>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_gpio6>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		gpio-line-names = "GPIO_ROTOR#", "ACM_IO_INT", "TMP_SENSOR_IRQ", "AC_IN",
-+				  "TF_S", "BATT_T", "LED_INC_CHAR", "ACM1_OCF",
-+				  "ACM2_OCF", "ACM_IO_RST", "USB1_POWER_EN", "EGPIO_CC_CTL0",
-+				  "EGPIO_CC_CTL1", "12V_OEMNBP_EN", "CP2105_RST", "",
-+				  "SPEAKER_PA_EN", "ARM7_UPI_RESET", "ARM7_PWR_RST", "NURSE_CALL",
-+				  "MARKER_EN", "EGPIO_TOUCH_RST", "PRESSURE_INT1", "PRESSURE_INT2";
-+
-+	};
-+
-+	tmp75: temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+		vs-supply = <&reg_3v3>;
-+		interrupt-parent = <&tca6424a>;
-+		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-+	};
-+};
-+
-+&ldb {
-+	status = "okay";
-+
-+	lvds0: lvds-channel@0 {
-+		status = "okay";
-+		fsl,data-mapping = "spwg";
-+		fsl,data-width = <24>;
-+
-+		port@4 {
-+			reg = <4>;
-+
-+			lvds0_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&pwm4 {
-+	status = "okay";
-+};
-+
-+&ssi1 {
-+	fsl,mode = "i2s-slave";
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&usb_power>;
-+	disable-over-current;
-+	dr_mode = "host";
-+	status = "okay";
-+
-+	/*
-+	 * TPS2051BDGN fault-gpio is connected to Q7[86] USB_0_1_OC_N.
-+	 * On QMX6 this is not connceted to the i.MX6, but to the USB Hub
-+	 * from &usbh1. This means, that we cannot easily detect and handle
-+	 * over-current events. Fortunately the regulator limits the current
-+	 * automatically, so the hardware is still protected.
-+	 */
-+};
-+
-+&usdhc4 {
-+	/* WiFi module */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc4>;
-+	bus-width = <4>;
-+	no-1-8-v;
-+	non-removable;
-+	wakeup-source;
-+	keep-power-in-suspend;
-+	cap-power-off-card;
-+	max-frequency = <25000000>;
-+	vmmc-supply = <&reg_wlan>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	wlcore: wlcore@2 {
-+		compatible = "ti,wl1837";
-+		reg = <2>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_q7_gpio7>;
-+
-+		interrupt-parent = <&gpio4>;
-+		interrupts = <14 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		tcxo-clock-frequency = <26000000>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi b/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
-new file mode 100644
-index 000000000000..a326a331508e
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for General Electric B1x5v2
-+// patient monitor series
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+
-+#include <dt-bindings/input/input.h>
-+#include "imx6dl-b1x5pv2.dtsi"
-+
-+/ {
-+	reg_3v3_acm: regulator-3v3-acm {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3V3 ACM";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		vin-supply = <&reg_3v3>;
-+	};
-+};
-+
-+&i2c1 {
-+	tca6416: gpio-controller@21 {
-+		compatible = "ti,tca6416";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		reset-gpios = <&tca6424a 9 GPIO_ACTIVE_LOW>;
-+		vcc-supply = <&reg_3v3_acm>;
-+		gpio-line-names = "ACM1_EN", "ACM1_CL0", "ACM1_CL1", "ACM1_CL2",
-+				  "", "ACM2_EN", "ACM2_CL0", "ACM2_CL1",
-+				  "ACM2_CL2", "", "", "",
-+				  "", "", "", "";
-+
-+		/*
-+		 * The interrupt pin is connected to &tca6424a pin 1, but the Linux
-+		 * TCA6424 driver cannot handle low type interrupts at the moment
-+		 * (and support cannot be added without some ugly hacks). Since this
-+		 * controller does not have any input type GPIOs, just pretend
-+		 * that the interrupt pin is unconnected.
-+		 */
-+	};
-+};
-+
-+&i2c5 {
-+	mpl3115a2: pressure-sensor@60 {
-+		compatible = "fsl,mpl3115";
-+		reg = <0x60>;
-+		vcc-supply = <&reg_3v3_acm>;
-+
-+		/*
-+		 * The MPL3115 interrupts are connected to pin 22 and 23
-+		 * of &tca6424a, but the binding does not yet support
-+		 * interrupts.
-+		 */
-+	};
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-qmx6.dtsi b/arch/arm/boot/dts/imx6dl-qmx6.dtsi
-new file mode 100644
-index 000000000000..150d69858255
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-qmx6.dtsi
-@@ -0,0 +1,612 @@
-+// SPDX-License-Identifier: GPL-2.0 or MIT
-+//
-+// Device Tree Source for i.MX6DL based congatec QMX6
-+// System on Module
-+//
-+// Copyright 2018-2021 General Electric Company
-+// Copyright 2018-2021 Collabora
-+// Copyright 2016 congatec AG
-+
-+#include "imx6dl.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/sound/fsl-imx-audmux.h>
-+
-+/ {
-+	memory@10000000 {
-+		reg = <0x10000000 0x40000000>;
-+	};
-+
-+	reg_3p3v: 3p3v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3P3V";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	i2cmux {
-+		compatible = "i2c-mux-gpio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		mux-gpios = <&gpio6 9 GPIO_ACTIVE_HIGH>;
-+		i2c-parent = <&i2c2>;
-+
-+		i2c5: i2c@0 {
-+			reg = <0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
-+
-+		i2c6: i2c@1 {
-+			reg = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
-+	};
-+};
-+
-+&audmux {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_audmux>;
-+
-+	audmux_ssi1 {
-+		fsl,audmux-port = <MX51_AUDMUX_PORT1_SSI0>;
-+		fsl,port-config = <
-+			(IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(MX51_AUDMUX_PORT6) |
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(MX51_AUDMUX_PORT6) |
-+			IMX_AUDMUX_V2_PTCR_SYN)
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(MX51_AUDMUX_PORT6)
-+		>;
-+	};
-+
-+	audmux_aud6 {
-+		fsl,audmux-port = <MX51_AUDMUX_PORT6>;
-+		fsl,port-config = <
-+			IMX_AUDMUX_V2_PTCR_SYN
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(MX51_AUDMUX_PORT1_SSI0)
-+		>;
-+	};
-+};
-+
-+&clks {
-+	clocks = <&rtc_sqw>;
-+	clock-names = "ckil";
-+	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
-+			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
-+	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
-+				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "sst,sst25vf032b", "jedec,spi-nor";
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+
-+		partition@0 {
-+			label = "bootloader";
-+			reg = <0x0000000 0x100000>;
-+		};
-+
-+		partition@100000 {
-+			label = "user";
-+			reg = <0x0100000 0x2fc000>;
-+		};
-+
-+		partition@3fc000 {
-+			label = "reserved";
-+			reg = <0x03fc000 0x4000>;
-+			read-only;
-+		};
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet &pinctrl_phy_reset>;
-+	phy-mode = "rgmii-id";
-+	phy-reset-gpios = <&gpio3 23 GPIO_ACTIVE_LOW>;
-+	fsl,magic-packet;
-+	phy-handle = <&phy0>;
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		phy0: ethernet-phy@6 {
-+			reg = <6>;
-+			qca,clk-out-frequency = <125000000>;
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio3 21 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio3 28 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	pinctrl-1 = <&pinctrl_i2c2_gpio>;
-+	scl-gpios = <&gpio4 12 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio4 13 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	pinctrl-1 = <&pinctrl_i2c3_gpio>;
-+	scl-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	status = "okay";
-+
-+	rtc: m41t62@68 {
-+		compatible = "st,m41t62";
-+		reg = <0x68>;
-+
-+		rtc_sqw: clock {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <32768>;
-+		};
-+	};
-+};
-+
-+&i2c6 {
-+	pmic@8 {
-+		compatible = "fsl,pfuze100";
-+		reg = <0x08>;
-+
-+		regulators {
-+			sw1a_reg: sw1ab {
-+				regulator-min-microvolt = <300000>;
-+				regulator-max-microvolt = <1875000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <6250>;
-+			};
-+
-+			sw1c_reg: sw1c {
-+				regulator-min-microvolt = <300000>;
-+				regulator-max-microvolt = <1875000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <6250>;
-+			};
-+
-+			sw2_reg: sw2 {
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw3a_reg: sw3a {
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1975000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw3b_reg: sw3b {
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1975000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			sw4_reg: sw4 {
-+				regulator-min-microvolt = <675000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			swbst_reg: swbst {
-+				regulator-min-microvolt = <5000000>;
-+				regulator-max-microvolt = <5150000>;
-+			};
-+
-+			snvs_reg: vsnvs {
-+				regulator-min-microvolt = <1000000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			vref_reg: vrefddr {
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			/*
-+			 * keep VGEN3, VGEN4 and VGEN5 enabled in order to
-+			 * maintain backward compatibility with hw-rev. A.0
-+			 */
-+			vgen3_reg: vgen3 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vgen4_reg: vgen4 {
-+				regulator-min-microvolt = <2500000>;
-+				regulator-max-microvolt = <2500000>;
-+				regulator-always-on;
-+			};
-+
-+			vgen5_reg: vgen5 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			/* supply voltage for eMMC */
-+			vgen6_reg: vgen6 {
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+};
-+
-+&pcie {
-+	reset-gpio = <&gpio1 20 0>;
-+};
-+
-+&pwm4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm4>;
-+};
-+
-+&reg_arm {
-+	vin-supply = <&sw1a_reg>;
-+};
-+
-+&reg_pu {
-+	vin-supply = <&sw1c_reg>;
-+};
-+
-+&reg_soc {
-+	vin-supply = <&sw1c_reg>;
-+};
-+
-+&snvs_poweroff {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	status = "okay";
-+};
-+
-+&usbh1 {
-+	/* Connected to USB-Hub SMSC USB2514, provides P0, P2, P3, P4 on Qseven connector */
-+	vbus-supply = <&reg_5v>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+};
-+
-+&usdhc2 {
-+	/* MicroSD card slot */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	cd-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
-+	no-1-8-v;
-+	keep-power-in-suspend;
-+	wakeup-source;
-+	vmmc-supply = <&reg_3p3v>;
-+	status = "okay";
-+};
-+
-+&usdhc3 {
-+	/* eMMC module */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	non-removable;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	keep-power-in-suspend;
-+	wakeup-source;
-+	vmmc-supply = <&reg_3p3v>;
-+	status = "okay";
-+};
-+
-+&wdog1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdog>;
-+	fsl,ext-reset-output;
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	qmx6mux: imx6qdl-qmx6 {
-+		pinctrl_audmux: audmuxgrp {
-+			fsl,pins = <
-+				MX6QDL_PAD_DI0_PIN2__AUD6_TXD		0x110b0 /* Q7[67] HDA_SDO */
-+				MX6QDL_PAD_DI0_PIN3__AUD6_TXFS		0x30b0 /* Q7[59] HDA_SYNC */
-+				MX6QDL_PAD_DI0_PIN4__AUD6_RXD		0x30b0 /* Q7[65] HDA_SDI */
-+				MX6QDL_PAD_DI0_PIN15__AUD6_TXC		0x30b0 /* Q7[63] HDA_BITCLK */
-+			>;
-+		};
-+
-+		/* PHY is on System on Module, Q7[3-15] have Ethernet lines */
-+		pinctrl_enet: enet {
-+			fsl,pins = <
-+				MX6QDL_PAD_ENET_MDIO__ENET_MDIO		0x1b0b0
-+				MX6QDL_PAD_ENET_MDC__ENET_MDC		0x1b0b0
-+				MX6QDL_PAD_RGMII_TXC__RGMII_TXC		0x1b030
-+				MX6QDL_PAD_RGMII_TD0__RGMII_TD0		0x1b030
-+				MX6QDL_PAD_RGMII_TD1__RGMII_TD1		0x1b030
-+				MX6QDL_PAD_RGMII_TD2__RGMII_TD2		0x1b030
-+				MX6QDL_PAD_RGMII_TD3__RGMII_TD3		0x1b030
-+				MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL	0x1b030
-+				MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK	0x1b0b0
-+				MX6QDL_PAD_RGMII_RXC__RGMII_RXC		0x1b030
-+				MX6QDL_PAD_RGMII_RD0__RGMII_RD0		0x1b030
-+				MX6QDL_PAD_RGMII_RD1__RGMII_RD1		0x1b030
-+				MX6QDL_PAD_RGMII_RD2__RGMII_RD2		0x1b030
-+				MX6QDL_PAD_RGMII_RD3__RGMII_RD3		0x1b030
-+				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL	0x1b030
-+				MX6QDL_PAD_ENET_TX_EN__ENET_TX_EN	0x1b0b0
-+			>;
-+		};
-+
-+		pinctrl_hog: hoggrp {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_2__GPIO1_IO02		0x80000000 /* PCIE_WAKE_B */
-+				MX6QDL_PAD_NANDF_WP_B__GPIO6_IO09	0x80000000 /* I2C multiplexer */
-+				MX6QDL_PAD_NANDF_D6__GPIO2_IO06		0x80000000 /* SD4_CD# */
-+				MX6QDL_PAD_NANDF_D7__GPIO2_IO07		0x80000000 /* SD4_WP */
-+				MX6QDL_PAD_CSI0_MCLK__CCM_CLKO1		0x80000000 /* Camera MCLK */
-+			>;
-+		};
-+
-+		pinctrl_i2c1: i2c1 {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D21__I2C1_SCL		0x4001b8b1 /* Q7[66] I2C_CLK */
-+				MX6QDL_PAD_EIM_D28__I2C1_SDA		0x4001b8b1 /* Q7[68] I2C_DAT */
-+			>;
-+		};
-+
-+		pinctrl_i2c1_gpio: i2c1-gpio {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D21__GPIO3_IO21		0x1b0b0 /* Q7[66] I2C_CLK */
-+				MX6QDL_PAD_EIM_D28__GPIO3_IO28		0x1b0b0 /* Q7[68] I2C_DAT */
-+			>;
-+		};
-+
-+		pinctrl_i2c2: i2c2 {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_COL3__I2C2_SCL		0x4001b8b1 /* Q7[152] SDVO_CTRL_CLK */
-+				MX6QDL_PAD_KEY_ROW3__I2C2_SDA		0x4001b8b1 /* Q7[150] SDVO_CTRL_DAT */
-+			>;
-+		};
-+
-+		pinctrl_i2c2_gpio: i2c2-gpio {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_COL3__GPIO4_IO12		0x1b0b0 /* Q7[152] SDVO_CTRL_CLK */
-+				MX6QDL_PAD_KEY_ROW3__GPIO4_IO13		0x1b0b0 /* Q7[150] SDVO_CTRL_DAT */
-+			>;
-+		};
-+
-+		pinctrl_i2c3: i2c3 {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_3__I2C3_SCL		0x4001b8b1 /* Q7[60] SMB_CLK */
-+				MX6QDL_PAD_GPIO_6__I2C3_SDA		0x4001b8b1 /* Q7[62] SMB_DAT */
-+			>;
-+		};
-+
-+		pinctrl_i2c3_gpio: i2c3-gpio {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_3__GPIO1_IO03		0x1b0b0 /* Q7[60] SMB_CLK */
-+				MX6QDL_PAD_GPIO_6__GPIO1_IO06		0x1b0b0 /* Q7[62] SMB_DAT */
-+			>;
-+		};
-+
-+		pinctrl_phy_reset: phy-reset {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D23__GPIO3_IO23		0x1b0b0 /* RGMII Phy Reset */
-+			>;
-+		};
-+
-+		pinctrl_pwm4: pwm4 {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD1_CMD__PWM4_OUT		0x1b0b1 /* Q7[123] LVDS_BLT_CTRL */
-+			>;
-+		};
-+
-+		pinctrl_q7_backlight_enable: q7-backlight-enable {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_9__GPIO1_IO09		0x1b0b0 /* Q7[112] LVDS_BLEN */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio0: q7-gpio0 {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_A25__GPIO5_IO02		0x1b0b0 /* Q7[185] GPIO0 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio1: q7-gpio1 {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_8__GPIO1_IO08		0x1b0b0 /* Q7[186] GPIO1 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio2: q7-gpio2 {
-+			fsl,pins = <
-+				MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26	0x1b0b0 /* Q7[187] GPIO2 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio3: q7-gpio3 {
-+			fsl,pins = <
-+				MX6QDL_PAD_DISP0_DAT6__GPIO4_IO27	0x1b0b0 /* Q7[188] GPIO3 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio4: q7-gpio4 {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_0__GPIO1_IO00		0x1b0b0 /* Q7[189] GPIO4 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio5: q7-gpio5 {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_ROW4__GPIO4_IO15		0x1b0b0 /* Q7[190] GPIO5 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio6: q7-gpio6 {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_16__GPIO7_IO11		0x1b0b0 /* Q7[191] GPIO6 */
-+			>;
-+		};
-+
-+		pinctrl_q7_gpio7: q7-gpio7 {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_COL4__GPIO4_IO14		0x1b0b0 /* Q7[192] GPIO7 */
-+			>;
-+		};
-+
-+		pinctrl_q7_hda_reset: q7-hda-reset {
-+			fsl,pins = <
-+				MX6QDL_PAD_NANDF_ALE__GPIO6_IO08	0x1b0b0 /* Q7[61] HDA_RST_N */
-+			>;
-+		};
-+
-+		pinctrl_q7_lcd_power: lcd-power {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_7__GPIO1_IO07		0x1b0b0 /* Q7[111] LVDS_PPEN */
-+			>;
-+		};
-+
-+		pinctrl_q7_sdio_power: q7-sdio-power {
-+			fsl,pins = <
-+				MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30	0x1b0b0 /* Q7[47] SDIO_PWR# */
-+			>;
-+		};
-+
-+		pinctrl_q7_sleep_button: q7-sleep-button {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_ROW0__GPIO4_IO07		0x1b0b0 /* Q7[21] SLP_BTN# */
-+			>;
-+		};
-+
-+		pinctrl_q7_spi_cs1: spi-cs1 {
-+			fsl,pins = <
-+				MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25	0x1b0b0 /* Q7[202] SPI_CS1# */
-+			>;
-+		};
-+
-+		/* SPI1 bus does not leave System on Module */
-+		pinctrl_spi1: spi1 {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D16__ECSPI1_SCLK		0x100b1
-+				MX6QDL_PAD_EIM_D17__ECSPI1_MISO		0x100b1
-+				MX6QDL_PAD_EIM_D18__ECSPI1_MOSI		0x100b1
-+				MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x1b0b0
-+			>;
-+		};
-+
-+		/* Debug connector on Q7 module */
-+		pinctrl_uart2: uart2 {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D26__UART2_TX_DATA	0x1b0b1
-+				MX6QDL_PAD_EIM_D27__UART2_RX_DATA	0x1b0b1
-+			>;
-+		};
-+
-+		pinctrl_uart3: uart3 {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1 /* Q7[177] UART0_RX */
-+				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1 /* Q7[171] UART0_TX */
-+			>;
-+		};
-+
-+		pinctrl_usbotg: usbotg {
-+			fsl,pins = <
-+				MX6QDL_PAD_GPIO_1__USB_OTG_ID		0x17059 /* Q7[92] USB_ID */
-+			>;
-+		};
-+
-+		/* µSD card slot on Q7 module */
-+		pinctrl_usdhc2: usdhc2 {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17059
-+				MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10059
-+				MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17059
-+				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
-+				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
-+				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
-+				MX6QDL_PAD_GPIO_4__GPIO1_IO04		0x1b0b0 /* SD2_CD */
-+			>;
-+		};
-+
-+		/* eMMC module on Q7 module */
-+		pinctrl_usdhc3: usdhc3 {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD3_CMD__SD3_CMD		0x17059
-+				MX6QDL_PAD_SD3_CLK__SD3_CLK		0x10059
-+				MX6QDL_PAD_SD3_DAT0__SD3_DATA0		0x17059
-+				MX6QDL_PAD_SD3_DAT1__SD3_DATA1		0x17059
-+				MX6QDL_PAD_SD3_DAT2__SD3_DATA2		0x17059
-+				MX6QDL_PAD_SD3_DAT3__SD3_DATA3		0x17059
-+				MX6QDL_PAD_SD3_DAT4__SD3_DATA4		0x17059
-+				MX6QDL_PAD_SD3_DAT5__SD3_DATA5		0x17059
-+				MX6QDL_PAD_SD3_DAT6__SD3_DATA6		0x17059
-+				MX6QDL_PAD_SD3_DAT7__SD3_DATA7		0x17059
-+			>;
-+		};
-+
-+		pinctrl_usdhc4: usdhc4 {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD4_CMD__SD4_CMD		0x17059 /* Q7[45] SDIO_CMD */
-+				MX6QDL_PAD_SD4_CLK__SD4_CLK		0x17059 /* Q7[42] SDIO_CLK */
-+				MX6QDL_PAD_SD4_DAT1__SD4_DATA1		0x17059 /* Q7[48] SDIO_DAT1 */
-+				MX6QDL_PAD_SD4_DAT0__SD4_DATA0		0x17059 /* Q7[49] SDIO_DAT0 */
-+				MX6QDL_PAD_SD4_DAT3__SD4_DATA3		0x17059 /* Q7[50] SDIO_DAT3 */
-+				MX6QDL_PAD_SD4_DAT2__SD4_DATA2		0x17059 /* Q7[51] SDIO_DAT2 */
-+			>;
-+		};
-+
-+		pinctrl_wdog: wdog {
-+			fsl,pins = <
-+				MX6QDL_PAD_DISP0_DAT8__WDOG1_B		0x1b0b0 /* Watchdog output signal */
-+			>;
-+		};
-+	};
-+};
+Tested on TI's J721E with OV5640 sensor.
+
+Changes in v2:
+- Use phy_pm_runtime_get_sync() and phy_pm_runtime_put() before making
+  calls to set PHY mode, etc. to make sure it is ready.
+- Add all 64 threads, instead of having only the one thread being
+  currently used by the driver.
+- Use dmaengine_get_dma_device() instead of directly accessing
+  dma->device->dev.
+- Do not set dst_addr_width when configuring slave DMA.
+- Move to a separate subdir and rename to j721e-csi2rx.c
+- Convert compatible to ti,j721e-csi2rx.
+- Move to use Media Controller centric APIs.
+- Improve cleanup in probe when one of the steps fails.
+- Add colorspace to formats database.
+- Set hw_revision on media_device.
+- Move video device initialization to probe time instead of register time.
+- Rename to ti,j721e-csi2rx.yaml
+- Add an entry in MAINTAINERS.
+- Add a description for the binding.
+- Change compatible to ti,j721e-csi2rx to make it SoC specific.
+- Remove description from dmas, reg, power-domains.
+- Remove a limit of 2 from #address-cells and #size-cells.
+- Fix add ^ to csi-bridge subnode regex.
+- Make ranges mandatory.
+- Add unit address in example.
+- Add a reference to cdns,csi2rx in csi-bridge subnode.
+- Expand the example to include the csi-bridge subnode as well.
+- Re-order subject prefixes.
+- Drop reg description.
+- Add a description for each DPHY clock.
+- Rename dphy@... to phy@... in example.
+- Add Laurent's R-by.
+- Re-order subject prefixes.
+- Re-order subject prefixes.
+- Add power-domain to the example.
+- Add Laurent's R-by.
+- Re-order subject prefixes.
+- Convert OV5640 to use runtime PM and drop Cadence CSI2RX s_power patch.
+- Drop subdev call wrappers from cdns-csi2rx.
+- Move VPE and CAL to a separate subdir.
+- Rename ti-csi2rx.c to j721e-csi2rx.c
+
+Paul Kocialkowski (1):
+  phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+
+Pratyush Yadav (17):
+  phy: cdns-dphy: Prepare for Rx support
+  phy: cdns-dphy: Allow setting mode
+  phy: cdns-dphy: Add Rx support
+  media: ov5640: Use runtime PM to control sensor power
+  media: cadence: csi2rx: Add external DPHY support
+  media: cadence: csi2rx: Soft reset the streams before starting capture
+  media: cadence: csi2rx: Set the STOP bit when stopping a stream
+  media: cadence: csi2rx: Fix stream data configuration
+  media: cadence: csi2rx: Populate subdev devnode
+  dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+  media: Re-structure TI platform drivers
+  media: ti: Add CSI2RX support for J721E
+  media: dt-bindings: Add DT bindings for TI J721E CSI2RX driver
+  media: dt-bindings: Convert Cadence CSI2RX binding to YAML
+  phy: dt-bindings: Convert Cadence DPHY binding to YAML
+  phy: dt-bindings: cdns,dphy: make clocks optional
+  phy: dt-bindings: cdns,dphy: add power-domains property
+
+ .../devicetree/bindings/media/cdns,csi2rx.txt | 100 --
+ .../bindings/media/cdns,csi2rx.yaml           | 164 ++++
+ .../bindings/media/ti,j721e-csi2rx.yaml       | 101 ++
+ .../devicetree/bindings/phy/cdns,dphy.txt     |  20 -
+ .../devicetree/bindings/phy/cdns,dphy.yaml    |  54 ++
+ MAINTAINERS                                   |  10 +-
+ drivers/dma/ti/k3-psil-j721e.c                |  73 ++
+ drivers/media/i2c/Kconfig                     |   2 +-
+ drivers/media/i2c/ov5640.c                    | 124 ++-
+ drivers/media/platform/Kconfig                |  12 +
+ drivers/media/platform/Makefile               |   2 +-
+ drivers/media/platform/cadence/cdns-csi2rx.c  | 196 +++-
+ drivers/media/platform/ti/Makefile            |   4 +
+ drivers/media/platform/ti/cal/Makefile        |   3 +
+ .../{ti-vpe => ti/cal}/cal-camerarx.c         |   0
+ .../platform/{ti-vpe => ti/cal}/cal-video.c   |   0
+ .../media/platform/{ti-vpe => ti/cal}/cal.c   |   0
+ .../media/platform/{ti-vpe => ti/cal}/cal.h   |   0
+ .../platform/{ti-vpe => ti/cal}/cal_regs.h    |   0
+ .../media/platform/ti/j721e-csi2rx/Makefile   |   2 +
+ .../platform/ti/j721e-csi2rx/j721e-csi2rx.c   | 884 ++++++++++++++++++
+ .../platform/{ti-vpe => ti/vpe}/Makefile      |   4 -
+ .../media/platform/{ti-vpe => ti/vpe}/csc.c   |   0
+ .../media/platform/{ti-vpe => ti/vpe}/csc.h   |   0
+ .../media/platform/{ti-vpe => ti/vpe}/sc.c    |   0
+ .../media/platform/{ti-vpe => ti/vpe}/sc.h    |   0
+ .../platform/{ti-vpe => ti/vpe}/sc_coeff.h    |   0
+ .../media/platform/{ti-vpe => ti/vpe}/vpdma.c |   0
+ .../media/platform/{ti-vpe => ti/vpe}/vpdma.h |   0
+ .../platform/{ti-vpe => ti/vpe}/vpdma_priv.h  |   0
+ .../media/platform/{ti-vpe => ti/vpe}/vpe.c   |   0
+ .../platform/{ti-vpe => ti/vpe}/vpe_regs.h    |   0
+ drivers/phy/cadence/cdns-dphy.c               | 407 +++++++-
+ include/linux/phy/phy-mipi-dphy.h             |  13 +
+ 34 files changed, 1950 insertions(+), 225 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
+ create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/ti,j721e-csi2rx.yaml
+ delete mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+ create mode 100644 drivers/media/platform/ti/Makefile
+ create mode 100644 drivers/media/platform/ti/cal/Makefile
+ rename drivers/media/platform/{ti-vpe => ti/cal}/cal-camerarx.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/cal}/cal-video.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/cal}/cal.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/cal}/cal.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/cal}/cal_regs.h (100%)
+ create mode 100644 drivers/media/platform/ti/j721e-csi2rx/Makefile
+ create mode 100644 drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/Makefile (78%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/csc.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/csc.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/sc.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/sc.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/sc_coeff.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/vpdma.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/vpdma.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/vpdma_priv.h (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/vpe.c (100%)
+ rename drivers/media/platform/{ti-vpe => ti/vpe}/vpe_regs.h (100%)
+
 -- 
-2.30.2
+2.30.0
 
