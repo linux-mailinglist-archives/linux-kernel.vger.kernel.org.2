@@ -2,171 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E1F3918D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04F83918DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhEZNcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:32:52 -0400
-Received: from mail-dm6nam10on2071.outbound.protection.outlook.com ([40.107.93.71]:38592
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233872AbhEZNcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:32:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZB6o8mFJAUPIc5h23BlWsWWQsyXXwNjKu4ZG9HLWgj+Ujzvcqm3A7Gn1LN1T99FMNx+RLzQm4qb1gskYWeZJRfYMJ4W73IoKgWV/2dBMzapuCVJA176rJOf7kzfkr9YQOOSfhAnBcJgiFR1nRoYxM8kyBsJ0VHy8XnBGX9NvBExt9oClXG3gsGWhU+FsI1r6K0tmcYQTUM/bcEKY/nmp2mabmOK0gMMwYx0TgAoiV/mFVGTRow5pFs7XJ4O7kyaSWxUBwtImBLXygPT6wyhUUlF1Pe/xMRYgpaLj+dT3nkSeyz1yde3GbEPdy31+KiCozdk6AF1p4pS6Vm/NImWi7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qXZ7nVZreomlWJgXxkw1HoGMAC5o8Vi6LPHQcMubhDw=;
- b=HGZ6rc6BM7riF7dGpsE5vM+uZJOcdp9TliQRAVaGDCmcwLfKX1y8toqTb/5tXO6KkjbrxH9UvLWlsgiisHDudMrEq6fGRu+K1XU7mb1gOQbH5ZIjr7zm/rkYcHglFgh+nWx7VPqVyUubWUZ689vBs+2vloy7otW48fUwPnAZaA4WZUc5oIinO9RMtiU+/jh20ziJyfWsnxH3BHWXKtintEN/4OfNDok0Sqc3kXN23k3YjL6+PdINnqaTfzjf8+18885l9JYxaDTaFCx6EVLYFyZK979DRVsp56loUEcJUzC6FeW874GmwBNYjuZk1fA/skJTERVnAgn7YIcE8olgYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qXZ7nVZreomlWJgXxkw1HoGMAC5o8Vi6LPHQcMubhDw=;
- b=HGs5YnT2JVSLvUonnho38j/bN9uCxc8Y7ca6kMvotDGxMpYR62HV5dBkYuPxLlu8UGcQR/CKvkEU8TX8GRK3yJX64SZWCCxIscFcm4ygS7rspZhi2LXFE9YrZFSWwkGjkujbZPXtasUjkD2X0b+msz7Lr26vtblObLbaZOO53HzJ7LjISGgQSQ7YKUS0ImWhLy5l3+ap/8wbX1OX6eSZHB59NrAY02377nVMudKZVRP89Wzd8dsJENPr7mXy0NuSFvHmkQ6XQF16L2ake0ruRhMqvu0q487hIUdyr4q/sIfQizvG75yyerqF8AXlO5esCWvTBLXQPn7UN5fZGXFdeQ==
-Received: from BN9P220CA0019.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:13e::24)
- by SN1PR12MB2558.namprd12.prod.outlook.com (2603:10b6:802:2b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Wed, 26 May
- 2021 13:31:14 +0000
-Received: from BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:13e:cafe::c8) by BN9P220CA0019.outlook.office365.com
- (2603:10b6:408:13e::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Wed, 26 May 2021 13:31:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT046.mail.protection.outlook.com (10.13.177.127) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Wed, 26 May 2021 13:31:14 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
- 2021 13:30:09 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-CC:     Balbir Singh <bsingharora@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <rcampbell@nvidia.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@infradead.org>,
-        <jglisse@redhat.com>, <willy@infradead.org>, <jgg@nvidia.com>,
-        <peterx@redhat.com>, <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
-Date:   Wed, 26 May 2021 23:30:06 +1000
-Message-ID: <1743144.c4ng0vEeQp@nvdebian>
-In-Reply-To: <8844f8c1-d78c-e0f9-c046-592bd75d4c07@nvidia.com>
-References: <20210524132725.12697-1-apopple@nvidia.com> <YKzk0ILRsyazMs2W@balbir-desktop> <8844f8c1-d78c-e0f9-c046-592bd75d4c07@nvidia.com>
+        id S234014AbhEZNdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233872AbhEZNdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:33:17 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3ED1C061574;
+        Wed, 26 May 2021 06:31:44 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so324217pjb.5;
+        Wed, 26 May 2021 06:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AxxONJls2WeKipXE4u+uXlbzc7jh2SR2a8MqzSenr2w=;
+        b=odTkBA574G8cyDw0IfXr0CWEEoN2Ixg3FhLU4rVfwLuNjXhCjq0TOYTkS2utZ1CzPz
+         94c8FRbK26Q/I4u+42xih1Wes3J02xEl0KCjkgUQJhqh9KxG14mUmObOAsII3f5T4jy7
+         gqaKTVtpZK96nfuEmVPzZm+35rTkD8qHp+Q7TwUFx8kwmTSJLdiS0LcJTJFdAvFmrDYe
+         CRhsytP0UtBwk6fGVroVvJzc2K05S118DsI7Cynu2MqSeEtwcCA0lwx9lFcAXHi+5j9/
+         YJ+3xVcu7j7/t5UOnVWslfIQSPg+y8s181It90N9sHRsEyOwovrVrwVTohKELEPeqhjD
+         ai+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AxxONJls2WeKipXE4u+uXlbzc7jh2SR2a8MqzSenr2w=;
+        b=PGP+y0ac8/2+aWloBVrbeDcHxZqpg2tmITkGZjaBdQck1fJzxPvKMnOZmGYB5uLdh8
+         BYToKa/DzsrTxK0AgEybZwNJTC2bAI5q6OtE4E7DNPns5/3HV4FvTK/EXBtEKtNebTjY
+         j6cVZ4isMuGNtYZQIJYPOkdUUwvndAuKfJTDQYE3VtkCOMNOZ5L67cZVliXeUSEmTw32
+         4hS5SQGS9Yq0UR61cj4iDZMzL/Ye6k28gXPjcJUKN/7D61G09kvaLwTyI+CVF4MFM0Sh
+         l/76ajNDWW7AGVpeP0V5sOT/VqXvb4Vs8uRvMEFrFrf/xPNS51p3iMXB0uz4PQI0mXeG
+         ncgw==
+X-Gm-Message-State: AOAM530asyWXshEQXw8Wcl59Hs+oLWYVs1Xco8i1Uw/ozLgKN1h74PZi
+        3gZu7ejpO6npyHJA+Atij4LkYvJd5lxWEg==
+X-Google-Smtp-Source: ABdhPJzBEcqrVxFyzaxjyYzZ+5MTyYBehG5Q8ShwpounCtutiWZv5dWFUuA46DnkNeFOL5RV3TAv4w==
+X-Received: by 2002:a17:90a:d24f:: with SMTP id o15mr4024511pjw.83.1622035903864;
+        Wed, 26 May 2021 06:31:43 -0700 (PDT)
+Received: from kelvin-System-Product-Name.lan ([112.45.97.46])
+        by smtp.gmail.com with ESMTPSA id a15sm15223088pff.128.2021.05.26.06.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 06:31:43 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kelvin Cheung <keguang.zhang@gmail.com>
+Subject: [PATCH V1 0/4] MIPS: Loongson1B: Add dmaengine and NAND device
+Date:   Wed, 26 May 2021 21:30:56 +0800
+Message-Id: <20210526133100.436048-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed443741-482a-4799-df78-08d9204a88b7
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2558:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2558DECF0C3D61C13378E927DF249@SN1PR12MB2558.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: foRqUTFWo0dI7eIchjpM3IfFGtr5m8WNQVh0y9rHJAsT0PfOjCS4iihKRTZ0FkJBHWfcpiqOQ4a1oEuNnVQ1F6pfpaPRP3/5qqGJijHMDZgRrwj8Gx/XVrvXCjzRZULf9Dq9B2G47brMsi3lG4O7TbOQ4z+70rxElHdhhi2XclFzvKfqF3Zysi0BlttKlc1qSkSexmohI6irh5JkE1UDhrrXctSqRNAnMqKb1fEi483wlsao0/LxIFa6BycZXEP08EupYSlnOEDL2+gj+OssDxPDrOcH9eeup6VveI3JZgzSMnlDil6kc3IaDkNIWdth+JtTlG9auEHpfYEH0aRAwHV9smI2xMSnYQuwl2kd6kZPfDBL75d35w8TAc0lyBGtOG/s3llB6Yupx5wxlZc4kl+DpQ0fU5p4Uhmhcfx5kJiBTlxtf/us6vKLm7by83TEg5bCn/KJRw7oWrYGsQrRHB/jweqOxpousH+gtoKXDRWB2B3V3GkbM7ZvPuIC34jyDdYLt57Bvuwx0dcgj8xkM38b3oW63O5xje+/BAYVpY0NIVlsvjR9oFkC2+U6UJ9q/XPFy2QYDfbRJndspn/B67/G3kbE8sMujkxJCGolOXBaM/7C6Eat5hr52unXaOhWp5bP4YBsoaKJS9jcmbUbTIPPaMUsaCMsZ7jIYFevrp4eFb39kh2bIVC+oOKJTjr+y390cWD/uvL7fsi89f9dt2XLSEHwONJYQnxzlqtTZm591p8S/xbuYCtygoUSnDtOTAgsd/7UgFWih2iqs9Koe1QcYnqU86phmMSzdXbsu/M=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(36840700001)(46966006)(53546011)(5660300002)(7636003)(426003)(36860700001)(6666004)(54906003)(83380400001)(70206006)(8936002)(9686003)(8676002)(336012)(478600001)(33716001)(356005)(16526019)(186003)(26005)(36906005)(7416002)(316002)(6636002)(70586007)(86362001)(9576002)(6862004)(966005)(2906002)(82740400003)(47076005)(82310400003)(4326008)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 13:31:14.0367
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed443741-482a-4799-df78-08d9204a88b7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2558
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 26 May 2021 5:17:18 PM AEST John Hubbard wrote:
-> On 5/25/21 4:51 AM, Balbir Singh wrote:
-> ...
-> 
-> >> How beneficial is this code to nouveau users?  I see that it permits a
-> >> part of OpenCL to be implemented, but how useful/important is this in
-> >> the real world?
-> > 
-> > That is a very good question! I've not reviewed the code, but a sample
-> > program with the described use case would make things easy to parse.
-> > I suspect that is not easy to build at the moment?
-> 
-> The cover letter says this:
-> 
-> This has been tested with upstream Mesa 21.1.0 and a simple OpenCL program
-> which checks that GPU atomic accesses to system memory are atomic. Without
-> this series the test fails as there is no way of write-protecting the page
-> mapping which results in the device clobbering CPU writes. For reference
-> the test is available at https://ozlabs.org/~apopple/opencl_svm_atomics/
-> 
-> Further testing has been performed by adding support for testing exclusive
-> access to the hmm-tests kselftests.
-> 
-> ...so that seems to cover the "sample program" request, at least.
+From: Kelvin Cheung <keguang.zhang@gmail.com>
 
-It is also sufficiently easy to build, assuming of course you have the 
-appropriate Mesa/LLVM/OpenCL libraries installed :-)
+This patchset is to add dmaengine and NAND device
+for Loongson1B.
 
-If you are interested I have some scripts which may help with building Mesa, 
-etc. Not that that is especially hard either, it's just there are a couple of 
-different dependencies required.
+Kelvin Cheung (4):
+  MIPS: Loongson1B: Add dma_slave_map to DMA platform data
+  MIPS: Loongson1B: Add Loongson1 dmaengine device
+  MIPS: Loongson1B: Add Loongson1 NAND device
+  MIPS: Loongson1B: Enable NAND by default
 
-> > I wonder how we co-ordinate all the work the mm is doing, page migration,
-> > reclaim with device exclusive access? Do we have any numbers for the worst
-> > case page fault latency when something is marked away for exclusive
-> > access?
->
-> CPU page fault latency is approximately "terrible", if a page is resident on
-> the GPU. We have to spin up a DMA engine on the GPU and have it copy the
-> page over the PCIe bus, after all.
-
-Although for clarity that describes latency for CPU faults to device private 
-pages which are always resident on the GPU. A CPU fault to a page being 
-exclusively accessed will be slightly less terrible as it only requires the 
-GPU MMU/TLB mappings to be taken down in much the same as for any other MMU 
-notifier callback as the page is mapped by the GPU rather than resident there.
-
-> > I presume for now this is anonymous memory only? SWP_DEVICE_EXCLUSIVE
-> > would
-> 
-> Yes, for now.
-> 
-> > only impact the address space of programs using the GPU. Should the
-> > exclusively marked range live in the unreclaimable list and recycled back
-> > to active/in-active to account for the fact that
-> > 
-> > 1. It is not reclaimable and reclaim will only hurt via page faults?
-> > 2. It ages the page correctly or at-least allows for that possibility when
-> > the> 
-> >     page is used by the GPU.
-> 
-> I'm not sure that that is *necessarily* something we can conclude. It
-> depends upon access patterns of each program. For example, a "reduction"
-> parallel program sends over lots of data to the GPU, and only a tiny bit of
-> (reduced!) data comes back to the CPU. In that case, freeing the physical
-> page on the CPU is actually the best decision for the OS to make (if the OS
-> is sufficiently prescient).
-> 
-> thanks,
+ arch/mips/configs/loongson1b_defconfig        | 13 ++--
+ arch/mips/include/asm/mach-loongson32/dma.h   |  7 ++-
+ arch/mips/include/asm/mach-loongson32/nand.h  |  4 --
+ .../include/asm/mach-loongson32/platform.h    |  4 ++
+ arch/mips/loongson32/common/platform.c        | 63 +++++++++++++++++++
+ arch/mips/loongson32/ls1b/board.c             | 37 ++++++++++-
+ 6 files changed, 113 insertions(+), 15 deletions(-)
 
 
-
+base-commit: 33ae8f801ad8bec48e886d368739feb2816478f2
+-- 
+2.30.2
 
