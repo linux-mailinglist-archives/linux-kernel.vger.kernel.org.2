@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529C939122A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC6739122C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhEZIUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:20:13 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:44981 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbhEZIUL (ORCPT
+        id S232209AbhEZIVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhEZIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:20:11 -0400
-Received: by mail-vs1-f53.google.com with SMTP id i29so269451vsr.11;
-        Wed, 26 May 2021 01:18:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cwJrjJPn4XdJtdaNHc/uwJ41Erytueup9SA7gWbLwLc=;
-        b=TknXp62Tjdb47E3sod/c1NOiYYHO++PTLTTWUJX+idsZnBM6TlK+rPjtrMshFThGOM
-         abPpAvRNdbOyIaX2o+bUmETZIhzLzePKfK9DHMgihVnqHE/Bb5hJUCmkde6ssKEX1pBA
-         Cj8ex/3+TI9m5p7nUHTN6calnOWMoJJfMTdIIyLjwKKsohApGRgi8KFk3t75/A6wzLZ3
-         tIa8KT5xjnC8XZrAjX9B1EHC6Gy5qJMvpz/hD5ak9zLqiRG6QC/d2KSrA04/ipMh4VPa
-         Qbcbw2bmk+1cgUAQKE+rzWa0tFGoeMNF5qJK8lQwwgUetVMvZYa/3/EnR/S1+xFaht26
-         tZRw==
-X-Gm-Message-State: AOAM5327cB3tMOp6D02b/MAH/9MGXjv6b2095JOT+5UBgxfpuesmEYZX
-        OjidG/3HDJqhAh+HBX/96JqEtI1gNaHpR4HjQvI=
-X-Google-Smtp-Source: ABdhPJyBP43fy0z/xLr24CBnaFxqMibw4+PtPqA/CPHen7oIzefuWsMGVqm5mGd8u6JPJ0dQP9MmoI2MjgM94cpGp3U=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr30138437vsd.42.1622017119229;
- Wed, 26 May 2021 01:18:39 -0700 (PDT)
+        Wed, 26 May 2021 04:21:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1B7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aIG/lxZzNJNz2zKk7jYKdhX5Sw8rrTPiZTs6Kmx1w0A=; b=uNCYV7F/LGYhqb2Yq3tH5aQmjb
+        wdK0js6ixyrzKKI8uUxg7Qm3oGH+8V72dCQsHjwJFJyAKMonz8lfGfRgaEARIcWTsfFyNuE462dJD
+        cffN7gHIB7lOi0PVV5xkOa9Ns3mW02GT5domLFCyaSY82LlFIXgrrE6SJL2UBgd7JrJ+SBSvdExY0
+        t2x2SfOkDQMSk7D1CPYPloGpHNM4y0TF8Ks1v9StCEBZYEc4VYGRJ/QiD9XkkVv77RRqQhlBox4Qu
+        KCfC9/S6g/vG0lrAn1Z9kBtOogmcVMVLDUxU6Q1YM20tX1lHJuQBlQ8n+k4vXcyPkkFwOISpQWJnK
+        JG+tpuDA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lloks-004JaZ-QZ; Wed, 26 May 2021 08:19:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4DA7300242;
+        Wed, 26 May 2021 10:19:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C2BA8202492E9; Wed, 26 May 2021 10:19:04 +0200 (CEST)
+Date:   Wed, 26 May 2021 10:19:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, ojeda@kernel.org, keescook@chromium.org,
+        akpm@linux-foundation.org, will@kernel.org, ardb@kernel.org,
+        luc.vanoostenryck@gmail.com, nivedita@alum.mit.edu,
+        masahiroy@kernel.org, samitolvanen@google.com, arnd@arndb.de,
+        clang-built-linux@googlegroups.com,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all
+ architectures
+Message-ID: <YK4EeMhKUWQ9E92H@hirez.programming.kicks-ass.net>
+References: <20210525175819.699786-1-elver@google.com>
 MIME-Version: 1.0
-References: <20210330145430.996981-1-maz@kernel.org> <20210330145430.996981-8-maz@kernel.org>
- <CAMuHMdWd5261ti-zKsroFLvWs0abaWa7G4DKefgPwFb3rEjnNw@mail.gmail.com>
- <6c522f8116f54fa6f23a2d217d966c5a@kernel.org> <CAMuHMdWzBqLVOVn_z8S2H-x-kL+DfOsM5mDb_D8OKsyRJtKpdA@mail.gmail.com>
- <8735u9x6sb.wl-maz@kernel.org>
-In-Reply-To: <8735u9x6sb.wl-maz@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 May 2021 10:18:27 +0200
-Message-ID: <CAMuHMdUBwcB-v0ugCPB3D6dbttiSbqQeHgNrr+r331ntRrfiAw@mail.gmail.com>
-Subject: Re: [PATCH v19 7/7] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     jianyong.wu@arm.com, netdev <netdev@vger.kernel.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Andre Przywara <Andre.Przywara@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, KVM list <kvm@vger.kernel.org>,
-        Steve Capper <Steve.Capper@arm.com>, justin.he@arm.com,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525175819.699786-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Tue, May 25, 2021 at 07:58:19PM +0200, Marco Elver wrote:
+> Until now no compiler supported an attribute to disable coverage
+> instrumentation as used by KCOV.
+> 
+> To work around this limitation on x86, noinstr functions have their
+> coverage instrumentation turned into nops by objtool. However, this
+> solution doesn't scale automatically to other architectures, such as
+> arm64, which are migrating to use the generic entry code.
+> 
+> Clang [1] and GCC [2] have added support for the attribute recently.
+> [1] https://github.com/llvm/llvm-project/commit/280333021e9550d80f5c1152a34e33e81df1e178
+> [2] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cec4d4a6782c9bd8d071839c50a239c49caca689
+> 
+> Add __no_sanitize_coverage for both compilers, and add it to noinstr.
+> 
+> Signed-off-by: Marco Elver <elver@google.com>
 
-On Wed, May 26, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
-> On Wed, 26 May 2021 08:52:42 +0100,
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, May 11, 2021 at 11:13 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > On 2021-05-11 10:07, Geert Uytterhoeven wrote:
-> > > > On Tue, Mar 30, 2021 at 4:56 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > >> From: Jianyong Wu <jianyong.wu@arm.com>
-> > > >
-> > > >> --- a/drivers/ptp/Kconfig
-> > > >> +++ b/drivers/ptp/Kconfig
-> > > >> @@ -108,7 +108,7 @@ config PTP_1588_CLOCK_PCH
-> > > >>  config PTP_1588_CLOCK_KVM
-> > > >>         tristate "KVM virtual PTP clock"
-> > > >>         depends on PTP_1588_CLOCK
-> > > >> -       depends on KVM_GUEST && X86
-> > > >> +       depends on (KVM_GUEST && X86) || (HAVE_ARM_SMCCC_DISCOVERY &&
-> > > >> ARM_ARCH_TIMER)
-> > > >
-> > > > Why does this not depend on KVM_GUEST on ARM?
-> > > > I.e. shouldn't the dependency be:
-> > > >
-> > > >     KVM_GUEST && (X86 || (HAVE_ARM_SMCCC_DISCOVERY && ARM_ARCH_TIMER))
-> > > >
-> > > > ?
-> > >
-> > > arm/arm64 do not select KVM_GUEST. Any kernel can be used for a guest,
-> > > and KVM/arm64 doesn't know about this configuration symbol.
-> >
-> > OK.
-> >
-> > Does PTP_1588_CLOCK_KVM need to default to yes?
-> > Perhaps only on X86, to maintain the status quo?
->
-> I think I don't really understand the problem you are trying to
-> solve. Is it that 'make oldconfig' now asks you about this new driver?
-> Why is that an issue?
+W00t! Thanks guys!
 
-My first "problem" was that it asked about this new driver on
-arm/arm64, while I assumed there were some missing dependencies
-(configuring a kernel should not ask useless questions).  That turned
-out to be a wrong assumption, so there is no such problem here.
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-The second problem is "default y": code that is not critical should
-not be enabled by default.  Hence my last question.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
