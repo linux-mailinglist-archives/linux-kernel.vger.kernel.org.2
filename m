@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27BE39114F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF82391149
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhEZHTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:19:50 -0400
-Received: from muru.com ([72.249.23.125]:60568 "EHLO muru.com"
+        id S232965AbhEZHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:19:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:40684 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233030AbhEZHTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:19:46 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 581CE80AE;
-        Wed, 26 May 2021 07:18:19 +0000 (UTC)
-Date:   Wed, 26 May 2021 10:18:10 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Sven Peter <sven@svenpeter.dev>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 0/3] Apple M1 clock gate driver
-Message-ID: <YK32Mmiq9QXGkELF@atomide.com>
-References: <20210524182745.22923-1-sven@svenpeter.dev>
- <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
+        id S232617AbhEZHTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:19:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5E57168F;
+        Wed, 26 May 2021 00:17:46 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.81.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1FE193F73D;
+        Wed, 26 May 2021 00:17:42 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on PGTABLE_LEVELS > 2
+Date:   Wed, 26 May 2021 12:48:21 +0530
+Message-Id: <1622013501-20409-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are more than two
+page table levels including PMD (also per
+Documentation/vm/split_page_table_lock.rst). Make this dependency explicit
+on remaining platforms i.e x86 and s390 where ARCH_ENABLE_SPLIT_PMD_PTLOCK
+is subscribed.
 
-* Rob Herring <robh+dt@kernel.org> [210525 18:09]:
-> I would do a single node per mmio region with the register offset (or
-> offset / 4) being the clock id. This can still support new SoCs easily
-> if you have a fallback compatible. If you want/need to get all the
-> clocks, just walk the DT 'clocks' properties and extract all the IDs.
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: x86@kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com> # s390
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Changes in V2:
 
-I mostly agree.. Except I'd also leave out the artificial clock ID and
-just use real register offsets from the clock controller base instead.
+- Updated the commit message per Gerald
 
-So a single clock controller node for each MMIO range, then set
-#clock=cells = <1>. Then the binding follows what we have for the
-interrupts-extended binding for example.
+Changes in V1:
 
-If the clock controller optionally needs some data in the dts,
-that can be added to the clock controller node. Or it can be driver
-internal built-in data. If the data for dts can be described in a
-generic way, even better :)
+https://lore.kernel.org/linux-mm/1620621345-29176-1-git-send-email-anshuman.khandual@arm.com/
 
-This would make the consumer interface look like below with a
-clock controller node and register offset from it:
+ arch/s390/Kconfig | 2 +-
+ arch/x86/Kconfig  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-clocks = <&clock_controller1 0x1234>;
-
-Regards,
-
-Tony
-
-
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index b4c7c34069f8..fcc1ea339a9d 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -62,7 +62,7 @@ config S390
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE
+-	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
++	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+ 	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAS_DEVMEM_IS_ALLOWED
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0045e1b44190..ec9e9d3d7e3f 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -63,7 +63,7 @@ config X86
+ 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
+-	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
++	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
+ 	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
+ 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
+ 	select ARCH_HAS_CACHE_LINE_SIZE
+-- 
+2.20.1
 
