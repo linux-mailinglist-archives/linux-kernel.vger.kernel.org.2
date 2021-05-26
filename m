@@ -2,98 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089C63916C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AA23916C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhEZL4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234283AbhEZL4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:56:13 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735DEC06138D;
-        Wed, 26 May 2021 04:52:48 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso217327pji.0;
-        Wed, 26 May 2021 04:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jG9XU2eeNR1ehF2kR/N0/vaVpfMY3ZfXw7N9zluBZsA=;
-        b=DpNN6VC1bs3fqeKj96ALvgwREECNRQSVfgS0EkRGjMpX1hCxXq90a1UlVM2ETveII7
-         DSyzJbJTwX4HMTYA3NndXbhr2DRBeY0Xes4GicljeMu1B1J78o3S9+WOsJaqmhmwN2h6
-         Bnsns5aeYkocMbp8VcFJ2cgyIvS+oFS2X6HLvaOIDwYK8mNfl2GdV5IeD5wEPKeXT0pa
-         g+0c8kFE7FxKY6iJCVuI2LA2m45EU1H+ffRP1LruD17rTAe1PAGbk1RtXtGvRx8krRa4
-         n3LqegNBZVPlyTa1iEoyxHrWU5An8cU1qg2LjO5/0NOLxHDne1i4kLfO24SGeCaeDJH8
-         33WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=jG9XU2eeNR1ehF2kR/N0/vaVpfMY3ZfXw7N9zluBZsA=;
-        b=gA0WJ6TpJpfVi/Dg6RYYzsQv4aJdx4l2GlTAZWW7LUfhwSMavISZsSNkrGo3oahOMc
-         ujmtG5H3Jg1OdZ9WVcboAbp3ymHYZlGLbuf+1CXUpFcUxdijoyi2xfHoonmEt2O3mq4o
-         a53wMhTACDmZP4CLEXUw7qqn+788+Muhj82f2e7m9zC20uTIHl2rbRNyAyedFoxOVxXi
-         lfTWodraSl3KQNDNH+ogf43ue6T0TWCz7mLXhSaEbrl0NtLkWH8nBUzFWTVd1my8G8Q1
-         LVqv7rFguoyLMAZi2WK9ZBOibP5lAiXHvUqlWyN2VPd7uAnKXv/ykiCjnk7qUSVr0nQ7
-         mAWw==
-X-Gm-Message-State: AOAM532NGUIFr7Jk1VDxfDUgbdacdcmJebi8GQ6ekaBUMGHxrQygBOSq
-        Xhs+iD1PU6+7hq2AERnw9cQ=
-X-Google-Smtp-Source: ABdhPJyV0WrPvxkmnWzMWkmPWk8JZ7w026Z3WsoWC9tdB+aQkDi09witV7LF23YvqkqFITP2WhZrXQ==
-X-Received: by 2002:a17:90a:f0d2:: with SMTP id fa18mr3579345pjb.126.1622029968116;
-        Wed, 26 May 2021 04:52:48 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id s48sm15328843pfw.205.2021.05.26.04.52.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 04:52:47 -0700 (PDT)
-From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
-To:     mingo@kernel.org, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Haocheng Xie <xiehaocheng.cn@gmail.com>
-Subject: [PATCH 3/3] perf/hw_breakpoint: Fix kernel-doc warnings in perf hw_breakpoint
-Date:   Wed, 26 May 2021 19:52:20 +0800
-Message-Id: <20210526115220.19134-4-xiehaocheng.cn@gmail.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210526115220.19134-1-xiehaocheng.cn@gmail.com>
-References: <20210526115220.19134-1-xiehaocheng.cn@gmail.com>
+        id S234692AbhEZL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:57:05 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43056 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234562AbhEZL4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 07:56:24 -0400
+IronPort-SDR: BOvCTY8qFBbJbrX2+fd/iOrUl+bdusUtzdk3tdbmHGw3XSYGBxsvX0NuypMwJmgDjV1ICW5PX/
+ SEkGvoPrK90w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202200818"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="202200818"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 04:54:01 -0700
+IronPort-SDR: YM/p155tk0deTvBFGMg8m8K/l55zEd5Cwudek8iMOlJ0fUePokqn2t/4e3Fg/n9UULk5g7/iZl
+ lDyG4sG+yp2w==
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="547165940"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 04:53:59 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lls6n-00EmzC-9r; Wed, 26 May 2021 14:53:57 +0300
+Date:   Wed, 26 May 2021 14:53:57 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v4 1/4] devres: Make locking straight forward in
+ release_nodes()
+Message-ID: <YK421dBVoXLElvKB@smile.fi.intel.com>
+References: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following W=1 kernel build warning(s):
+On Mon, May 17, 2021 at 03:29:43PM +0300, Andy Shevchenko wrote:
+> It seems for the sake of saving stack memory of couple of pointers,
+> the locking in release_nodes() callers becomes interesting.
+> 
+> Replace this logic with a straight forward locking and unlocking scheme.
 
-  kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
-  kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
+Any comments on the series?
 
-Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
----
- kernel/events/hw_breakpoint.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/events/hw_breakpoint.c b/kernel/events/hw_breakpoint.c
-index b48d703..8359734 100644
---- a/kernel/events/hw_breakpoint.c
-+++ b/kernel/events/hw_breakpoint.c
-@@ -451,6 +451,7 @@ int register_perf_hw_breakpoint(struct perf_event *bp)
-  * register_user_hw_breakpoint - register a hardware breakpoint for user space
-  * @attr: breakpoint attributes
-  * @triggered: callback to trigger when we hit the breakpoint
-+ * @context: context data could be used in the triggered callback
-  * @tsk: pointer to 'task_struct' of the process to which the address belongs
-  */
- struct perf_event *
-@@ -550,6 +551,7 @@ EXPORT_SYMBOL_GPL(unregister_hw_breakpoint);
-  * register_wide_hw_breakpoint - register a wide breakpoint in the kernel
-  * @attr: breakpoint attributes
-  * @triggered: callback to trigger when we hit the breakpoint
-+ * @context: context data could be used in the triggered callback
-  *
-  * @return a set of per_cpu pointers to perf events
-  */
 -- 
-2.9.5
+With Best Regards,
+Andy Shevchenko
+
 
