@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B990392181
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64DB39218D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhEZUdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S233333AbhEZUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 16:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbhEZUdG (ORCPT
+        with ESMTP id S231377AbhEZUhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:33:06 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88FFC061574;
-        Wed, 26 May 2021 13:31:30 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id r12so2466809wrp.1;
-        Wed, 26 May 2021 13:31:30 -0700 (PDT)
+        Wed, 26 May 2021 16:37:42 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A30BC061574;
+        Wed, 26 May 2021 13:36:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id q7so4545604lfr.6;
+        Wed, 26 May 2021 13:36:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:references:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cjX8sees6Hr6nm/jvfGu7kvMMVE0uao6tIcZ4xenbrs=;
-        b=bpx9cKfSC4PRUxTewR7k4PbQekER2MvLpiW07SGz+TL0+kGeoLQKwL7aDvVpUQ+EDV
-         DmObvHwfPJERo3u99jEHOM4SL0S9sUJkgYNdjVkowqNPCdKIXtskbQaEBl5CPZmYWDy3
-         wuvdL4Ue3CnKKlIUxDIp1SpET9nrOAMmlLwjd/raxN0GODMhrl0QSVB6YBn/OGmi2Vsd
-         0fZVRz2R1rtbGVp5K9QLdQDpxDsX5wpbtG++4Z1o14JvC6njskYsxFaOwqD217ByNglH
-         Ny9Lt/LP7336CneF+p0PaEfvJrnkxwy3kz2+CGNW469CjUZZfUeAz1FnPCNy7RXvwQCW
-         5YPw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlfHDai4ONn60e6TNReFwPChDr2UAYYMQAwfbWWymqo=;
+        b=BiinMcC1tfG7D9B/MpBArh8RezrXAapNkwzZvVu9gpy8O0veUTGhyyYdosbVKvSPkZ
+         1TOxiyh9nKQ8lrkja+Vaq8SRebFOoJdYUd1YlqG6lRwe1VzbuZ6Hds2N8t8shzZX9bLL
+         qwkAat3gCIKqQVJixG0svWA7Sj/43V8Xpx4chL0g3gmKvSzpuHu6yagUSruINFFcuGfw
+         +GKz5n3V7wALXRcCmlt7E+e4K+kuf0veLOGj8yVUTkfjUd7MFfIhMfjL3jXRo6bxjcEr
+         5Ox72GCiJm6E0YvTQ6V6eXs3ItfqidR/3Y3eIGABzJ/9FFCPDxX/FVa0Hys2jcNQUqOr
+         MQgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cjX8sees6Hr6nm/jvfGu7kvMMVE0uao6tIcZ4xenbrs=;
-        b=SPb6qtcqDQocdkXmQHndaFKhFFWwvDAe0sUxJwGc/ViRIrqtzTolj4M4wE4+vlH3r2
-         Vf1P8S6WkRl+wWV1/6fw6dccjwwNOSofXTfCuTNEQXHFLmi0XBm0/Qzdd0bgHNsFBazN
-         HsziFanIeDO6N3YLAfu7eiUCxOMJZrWbKVv3CuW/sEP4cT1XZbmr3rFqYGYGlUsHJhzc
-         kRlRSWq58sDezn/5Xw9GmjNrP9zYW+tgUI23ui5sdg1pabFrCQWj7TmizYDchKTj9szy
-         4aSu1HIyw/CvUcszhabbECUtLkzS8zxKVpVgiZXqeOi3pR4L4Fva0M+CespZMSPCEvE2
-         8BoQ==
-X-Gm-Message-State: AOAM5330FoViiCj1MOCIxEwIkUw7eSZRJaR4kLaYLAlLnQ1oz/Fjf0xk
-        RVGqo3325HHwYtb7Epj7UOc=
-X-Google-Smtp-Source: ABdhPJy2e885zIwfZiu/bsp6LU3fuEXb9ew4HbB7SB6aBjc49+OHlS/71524ZRiLVxVpUJptfztp/A==
-X-Received: by 2002:a05:6000:104a:: with SMTP id c10mr34780464wrx.45.1622061089518;
-        Wed, 26 May 2021 13:31:29 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.10])
-        by smtp.gmail.com with ESMTPSA id y20sm8795463wmi.0.2021.05.26.13.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 13:31:28 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <000000000000fa9f7005c33d83b9@google.com>
- <YK5tyZNAFc8dh6ke@elver.google.com> <YK5uygiCGlmgQLKE@elver.google.com>
- <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
- <CANpmjNP1CKuoK82HCRYpDxDrvy4DgN9yVknfsxHSwfojx5Ttug@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in __io_uring_cancel /
- io_uring_try_cancel_requests
-Message-ID: <5cf2250a-c580-4dbf-5997-e987c7b71086@gmail.com>
-Date:   Wed, 26 May 2021 21:31:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=GlfHDai4ONn60e6TNReFwPChDr2UAYYMQAwfbWWymqo=;
+        b=N2AFIploHGp9ew/PEffd/5nkw1HH2FgV1zd+h89C6YVF8pyxXUoC02iKuuNIwdtXT9
+         naWoFrPY0ups5LoMXSsjkAQGujalwXfu7N4mK2EacCfi9U5Tji+k4I0oWzrO6rsmHjX5
+         QHm1t7kpwsJcZML6N9bsXRvN8MjKbUafo8G9J3eE48j2yLRMXD1qcRf0fumNLnosS053
+         Oh+6nZ+p1z2K+dvNxk8sJ2g21ph3RxrGvy11H8+1whyqFwVr9GGax+aJCGnZRJjqmqIV
+         Uh6OHeMBoY12oHVwP4K/G/G/iJ/QBgmh8VR5Ne8xwEl23TxnVcR156s0qc5jazTtCbjG
+         G+mA==
+X-Gm-Message-State: AOAM531rPNxUECr2P00SZqEw9NJWLo673UEdnwvXTN+NcnjJKCbcMnhu
+        K1KQDTyRXDpE0ugZ/HdNWaE=
+X-Google-Smtp-Source: ABdhPJwZjC/TUOd8aDc/+Ao3iaOCp7q1cSGq8xzn3GGkUc2a8mh2GEnzNZH2vXXl1rQ+iOhClTL3Lg==
+X-Received: by 2002:a05:6512:ac8:: with SMTP id n8mr3324320lfu.100.1622061367812;
+        Wed, 26 May 2021 13:36:07 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id c4sm7721lfc.258.2021.05.26.13.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 13:36:07 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Steve French <sfrench@samba.org>
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] cifs: Constify static struct genl_ops
+Date:   Wed, 26 May 2021 22:35:45 +0200
+Message-Id: <20210526203545.13160-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNP1CKuoK82HCRYpDxDrvy4DgN9yVknfsxHSwfojx5Ttug@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 5:36 PM, Marco Elver wrote:
-> On Wed, 26 May 2021 at 18:29, Pavel Begunkov <asml.silence@gmail.com> wrote:
->> On 5/26/21 4:52 PM, Marco Elver wrote:
->>> Due to some moving around of code, the patch lost the actual fix (using
->>> atomically read io_wq) -- so here it is again ... hopefully as intended.
->>> :-)
->>
->> "fortify" damn it... It was synchronised with &ctx->uring_lock
->> before, see io_uring_try_cancel_iowq() and io_uring_del_tctx_node(),
->> so should not clear before *del_tctx_node()
-> 
-> Ah, so if I understand right, the property stated by the comment in
-> io_uring_try_cancel_iowq() was broken, and your patch below would fix
-> that, right?
+The only usage of cifs_genl_ops[] is to assign its address to the ops
+field in the genl_family struct, which is a pointer to const. Make it
+const to allow the compiler to put it in read-only memory.
 
-"io_uring: fortify tctx/io_wq cleanup" broke it and the diff
-should fix it.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ fs/cifs/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> The fix should just move it after this sync point. Will you send
->> it out as a patch?
-> 
-> Do you mean your move of write to io_wq goes on top of the patch I
-> proposed? (If so, please also leave your Signed-of-by so I can squash
-> it.)
-
-No, only my diff, but you hinted on what has happened, so I would
-prefer you to take care of patching. If you want of course.
-
-To be entirely fair, assuming that aligned ptr
-reads can't be torn, I don't see any _real_ problem. But surely
-the report is very helpful and the current state is too wonky, so
-should be patched.
-
-TL;DR;
-The synchronisation goes as this: it's usually used by the owner
-task, and the owner task deletes it, so is mostly naturally
-synchronised. An exception is a worker (not only) that accesses
-it for cancellation purpose, but it uses it only under ->uring_lock,
-so if removal is also taking the lock it should be fine. see
-io_uring_del_tctx_node() locking.
-
-> 
-> So if I understand right, we do in fact have 2 problems:
-> 1. the data race as I noted in my patch, and
-
-Yes, and it deals with it
-
-> 2. the fact that io_wq does not live long enough.
-
-Nope, io_wq outlives them fine. 
-
-> Did I get it right?
-> 
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 7db6aaf31080..b76ba26b4c6c 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -9075,11 +9075,12 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
->>         struct io_tctx_node *node;
->>         unsigned long index;
->>
->> -       tctx->io_wq = NULL;
->>         xa_for_each(&tctx->xa, index, node)
->>                 io_uring_del_tctx_node(index);
->> -       if (wq)
->> +       if (wq) {
->> +               tctx->io_wq = NULL;
->>                 io_wq_put_and_exit(wq);
->> +       }
->>  }
->>
->>  static s64 tctx_inflight(struct io_uring_task *tctx, bool tracked)
-
+diff --git a/fs/cifs/netlink.c b/fs/cifs/netlink.c
+index 5aaabe4cc0a7..291cb606f149 100644
+--- a/fs/cifs/netlink.c
++++ b/fs/cifs/netlink.c
+@@ -30,7 +30,7 @@ static const struct nla_policy cifs_genl_policy[CIFS_GENL_ATTR_MAX + 1] = {
+ 	[CIFS_GENL_ATTR_SWN_RESOURCE_NAME]	= { .type = NLA_STRING},
+ };
+ 
+-static struct genl_ops cifs_genl_ops[] = {
++static const struct genl_ops cifs_genl_ops[] = {
+ 	{
+ 		.cmd = CIFS_GENL_CMD_SWN_NOTIFY,
+ 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
 -- 
-Pavel Begunkov
-
+2.31.1
 
