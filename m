@@ -2,126 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D490E391672
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA4E39168F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhEZLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:46:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33697 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232303AbhEZLqs (ORCPT
+        id S233168AbhEZLu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:50:57 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:58659 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234176AbhEZLty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:46:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622029516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
-        b=KZW7SBXegZu/wpZtz8zD3v+c+Tfn24w8Eh3QahoBAYv0mpHdy6NN90Pi9eTOR4ih+SkyEC
-        Jf0bJbiqlXJ21kPasLIbijiQ9LPvSbiQI8LWQ2eukOZjfTtYzxlONsPX/yCSUf1N4nyABf
-        PSighAa3eR5ZZsVoX0qyYHzpK1vuiOQ=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-grsnJUM7Oq2zQud-VMIJxA-1; Wed, 26 May 2021 07:45:15 -0400
-X-MC-Unique: grsnJUM7Oq2zQud-VMIJxA-1
-Received: by mail-yb1-f200.google.com with SMTP id s8-20020a5b04480000b029049fb35700b9so1389013ybp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 04:45:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
-        b=SlydC2Yl46WTS/c5hOweg7U3dKbi20GCbsqCqiZR9bT4rwgKBUCubhre1b+465kuIP
-         kfo1m7FI1abHjQruknjqY8I4DhO6nzuG+anGVAug/CJPrIef2VMvOAVYboWZNW1m5sNZ
-         ReSqpLf4ndlZMty6+Z0kbd+wtA7qh7qkcPg+6EcIFCHoVvmIbXBkv5z8b/s91bgIC2tP
-         ZwJqehxbqCcwaxBehjIy8kJBUS/Jx4y/93fIvGwupw9fg0yv47hEsvvWNQV9xe2NPMDl
-         +x1nMjgBCgNceJzSfnH36bhwhnyvGAQCebE5m6MD/z3pu5l4zV/wGwAQ0kdf275ZBJcL
-         Sf5Q==
-X-Gm-Message-State: AOAM533wzRSmrWc1/h8UQqRv3aog5/CE/9KyiSOVNA7ryE0O14OSBrfu
-        5sjK2UVSbqWri9kZ9y4aBOSZPuCqlGYylrhjb5xAEUZkjLzND10x0Aak1k80CwYsbWzazYPQ9/b
-        pC8l1yx/4okP0knYUvjQmrd/PrZVMcd14MnBcKjnj
-X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352365ybe.172.1622029514564;
-        Wed, 26 May 2021 04:45:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7JX0t9Q+MjZUdNuGYqNNwFWjv7mwlUzB5zjT5J9a7c3DzGoUhB3CdgL/OZI5wwTVrJZE9FoOnkmowu6kRXnk=
-X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352333ybe.172.1622029514339;
- Wed, 26 May 2021 04:45:14 -0700 (PDT)
+        Wed, 26 May 2021 07:49:54 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B1BFD5808F7;
+        Wed, 26 May 2021 07:48:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 26 May 2021 07:48:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=NVrV83ylHo/JpBsLwqDIkQDDRA6
+        5xWvrqb+9zDgBt9M=; b=izB/NiqdB3D7Z0I6K65Ys263RI7tlRdBPoB1qX2qqsx
+        ongptN9Q/PLHHo4sup96VaNh5S3HjSCP882F1xU5bTDX7UYG26yQzCSPKxUDTRC0
+        6qcii7WdMs9Hav/wLXKDGox3iUTkbEz1gcEOJ/fAMcK4iu7da6SU8DKL2UU5Yr4g
+        yk2psoQh2RNDv8EHF6GSPWzVFwjKzpMtvz53OWbOB+Wrg0OlrW5nP0qWkN4fD6YQ
+        8fA3+vm0Vbhvv1GHqmnfW77O5EAJuFQyDWp79+F6tXbyv2kZkuc/CfpIrDc3rdB7
+        tyP16Ra1r74nVnPefNVPkybfGqQ+isV8+TPgF5+3dww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=NVrV83
+        ylHo/JpBsLwqDIkQDDRA65xWvrqb+9zDgBt9M=; b=k3RJMsGHthf0w3lkjiIGCI
+        RsVScrta7FzxE1P2bq9qYT03ia7qxsGGOb2owCZbxtmeAbbdcGxPHK3O3gbeNk4X
+        +e4LLCk4Px1Mh+7YoIcAlm6KAjAwqZwRzj3xNzZaT7H01jWU1qyKi+IOPLuqcZaj
+        xH6zdCV+tdUEFhwP00Fjl10AEmdJXLQj5sdJAtQjyxVuWKUIpW9zKDHyWE3F/X6L
+        +KaS7wzb6Vis3oUWwYeIYb5tg5VUVuQyilFbN7xg78OXEPnVLRciI7zgZ/RiixRH
+        n4kdQqgkMfZQQ97TIexlLpU1U/a6kmwjhV/MC1e09d27eYk4A177NPkhmpWajTaA
+        ==
+X-ME-Sender: <xms:ezWuYGgUvm4hQjFnwVU5yRyoGuz22J1J6bBBrC9Admf34Uj14uSxdg>
+    <xme:ezWuYHA8GjXADqj2DR02Q2gZ_bGAcPGZLCuwpIRMbX5FMcF8bjVV6jddyFmVAqi1j
+    cRGMPdFfuSOUA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekfedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:ezWuYOGzGP3di7aQIUkXkTyKKjv8KsrOAJp6L6WDgRTGRaoIbSRDXw>
+    <xmx:ezWuYPQocCst6HHZTrSUpN6URn-yIuPSAowoWao3vVxAVx711pAU8A>
+    <xmx:ezWuYDxswNi7M66YepnZSjBqAF07b3OKjZFcVVUI1rAxXfP8n4CGAw>
+    <xmx:fTWuYEFXqNS6mJueIgQRtCj3M67OP7No1zVV6tWiwQpsuLD5DcxMYw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 26 May 2021 07:48:10 -0400 (EDT)
+Date:   Wed, 26 May 2021 13:48:08 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, glittao@gmail.com,
+        vinmenon@codeaurora.org
+Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+Message-ID: <YK41eFeL5j4qqSnV@kroah.com>
+References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+ <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz>
 MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com> <87o8d9k4ln.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87o8d9k4ln.fsf@mpe.ellerman.id.au>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Wed, 26 May 2021 13:44:59 +0200
-Message-ID: <CAFqZXNtUvrGxT6UMy81WfMsfZsydGN5k-VGFBq8yjDWN5ARAWw@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Ondrej Mosnacek <omosnace@redhat.com> writes:
-> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> > lockdown") added an implementation of the locked_down LSM hook to
-> > SELinux, with the aim to restrict which domains are allowed to perform
-> > operations that would breach lockdown.
-> >
-> > However, in several places the security_locked_down() hook is called in
-> > situations where the current task isn't doing any action that would
-> > directly breach lockdown, leading to SELinux checks that are basically
-> > bogus.
-> >
-> > Since in most of these situations converting the callers such that
-> > security_locked_down() is called in a context where the current task
-> > would be meaningful for SELinux is impossible or very non-trivial (and
-> > could lead to TOCTOU issues for the classic Lockdown LSM
-> > implementation), fix this by modifying the hook to accept a struct cred
-> > pointer as argument, where NULL will be interpreted as a request for a
-> > "global", task-independent lockdown decision only. Then modify SELinux
-> > to ignore calls with cred == NULL.
-> >
-> > Since most callers will just want to pass current_cred() as the cred
-> > parameter, rename the hook to security_cred_locked_down() and provide
-> > the original security_locked_down() function as a simple wrapper around
-> > the new hook.
-> >
-> > The callers migrated to the new hook, passing NULL as cred:
-> > 1. arch/powerpc/xmon/xmon.c
-> >      Here the hook seems to be called from non-task context and is only
-> >      used for redacting some sensitive values from output sent to
-> >      userspace.
->
-> It's hard to follow but it actually disables interactive use of xmon
-> entirely if lockdown is in confidentiality mode, and disables
-> modifications of the kernel in integrity mode.
->
-> But that's not really that important, the patch looks fine.
->
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+On Wed, May 26, 2021 at 01:38:55PM +0200, Vlastimil Babka wrote:
+> On 5/25/21 9:38 AM, Faiyaz Mohammed wrote:
+> > alloc_calls and free_calls implementation in sysfs have two issues,
+> > one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+> > to "one value per file" rule.
+> > 
+> > To overcome this issues, move the alloc_calls and free_calls implemeation
+> > to debugfs.
+> > 
+> > Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> > to be inline with what it does.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> These were IIRC bot reports for some bugs in the previous versions, so keeping
+> the Reported-by: for the whole patch is misleading - these were not reports for
+> the sysfs issues this patch fixes by moving the files to debugfs.
+> 
+> > Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> > ---
+> > changes in V7:
+> >         - Drop the older alloc_calls and free_calls interface.
+> > changes in v6:
+> >         - https://lore.kernel.org/linux-mm/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+> > 
+> > changes in v5:
+> >         - https://lore.kernel.org/linux-mm/1620296523-21922-1-git-send-email-faiyazm@codeaurora.org/
+> > 
+> > changes in v4:
+> >         - https://lore.kernel.org/linux-mm/1618583239-18124-1-git-send-email-faiyazm@codeaurora.org/
+> > 
+> > changes in v3:
+> >         - https://lore.kernel.org/linux-mm/1617712064-12264-1-git-send-email-faiyazm@codeaurora.org/
+> > 
+> > changes in v2:
+> >         - https://lore.kernel.org/linux-mm/3ac1d3e6-6207-96ad-16a1-0f5139d8b2b5@codeaurora.org/
+> > 
+> > changes in v1:
+> >         - https://lore.kernel.org/linux-mm/1610443287-23933-1-git-send-email-faiyazm@codeaurora.org/
+> > 
+> >  include/linux/slub_def.h |   8 ++
+> >  mm/slab_common.c         |   9 ++
+> >  mm/slub.c                | 353 ++++++++++++++++++++++++++++++++++-------------
+> >  3 files changed, 276 insertions(+), 94 deletions(-)
+> 
+> I don't see any of the symlinks under /sys/kernel/debug/slab/, so I think the
+> aliases handling code is wrong, and I can see at least two reasons why it could be:
+> 
+> > @@ -4525,6 +4535,8 @@ __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
+> >  			s->refcount--;
+> >  			s = NULL;
+> >  		}
+> > +
+> > +		debugfs_slab_alias(s, name);
+> 
+> Here you might be calling debugfs_slab_alias() with NULL if the
+> sysfs_slab_alias() above returned true.
+> 
+> >  	}
+> >  
+> >  	return s;
+> 
+> ...
+> 
+> > +static int __init slab_debugfs_init(void)
+> > +{
+> > +	struct kmem_cache *s;
+> > +
+> > +	slab_debugfs_root = debugfs_create_dir("slab", NULL);
+> > +
+> > +	slab_state = FULL;
+> > +
+> > +	list_for_each_entry(s, &slab_caches, list)
+> > +		debugfs_slab_add(s);
+> > +
+> > +	while (alias_list) {
+> > +		struct saved_alias *al = alias_list;
+> 
+> alias_list a single list and both slab_sysfs_init() and slab_debugfs_init()
+> flush it. So only the init call that happens to be called first, does actually
+> find an unflushed list. I think you
+> need to use a separate list for debugfs (simpler) or a shared list with both
+> sysfs and debugfs processing (probably more complicated).
+> 
+> And finally a question, perhaps also for Greg. With sysfs, we hand out the
+> lifecycle of struct kmem_cache to sysfs, to ensure we are not reading sysfs
+> files of a cache that has been removed.
+> 
+> But with debugfs, what are the guarantees that things won't blow up when a
+> debugfs file is being read while somebody calls kmem_cache_destroy() on the cache?
 
-Thanks, Michael!
+It's much harder, but usually the default debugfs_file_create() will
+handle this for you.  See the debugfs_file_create_unsafe() for the
+"other" variant where you know you can tear things down "safely".
 
-James/Paul, is there anything blocking this patch from being merged?
-Especially the BPF case is causing real trouble for people and the
-only workaround is to broadly allow lockdown::confidentiality in the
-policy.
+That being said, yes there are still issues in this area, be careful
+about what tools you expect to be constantly hitting debugfs files.
 
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+thanks,
 
+greg k-h
