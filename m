@@ -2,187 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089CD39152E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812D2391532
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhEZKmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:42:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234142AbhEZKmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622025629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XF/BazKXiXNlgziMQgx/Dti3zDbwJ16butXV+pnXF2s=;
-        b=U13pTRVphmp+b1PupPNUPbaPaHEGywjn5PSBhRGaZU/lLYBWBuPxlwpu1OeV/MJb6vjA5s
-        tZrg5cI0T7WGebscfDfTsPbWuolUaJczh9uMT5f48EcrjnILaKXzDgzUJFIsp1cDXQjdXs
-        zWsG0xe6E1pYyQsF0NMH3iqL5pC+P3U=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-nhK3Ke4YPveONLcArrvjCQ-1; Wed, 26 May 2021 06:40:27 -0400
-X-MC-Unique: nhK3Ke4YPveONLcArrvjCQ-1
-Received: by mail-wr1-f70.google.com with SMTP id h22-20020adfa4d60000b029011244156c68so195106wrb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:40:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=XF/BazKXiXNlgziMQgx/Dti3zDbwJ16butXV+pnXF2s=;
-        b=M1viC4D/p+oHBOJUCBPCZsSWW5CMbOrHSDmx23ClyH2vEaM4kRLffBo7P1YD/ymCMs
-         u52Ty/mOMNu+vwk48TEx7vxabM4r2OIza+fx0UBNTwF3xtjCKV+Idj/FUDuZjpAc6U0B
-         lFolIpDRYr31vp5MJubpP0DGqeVWD+PFdnKe4t+E+tCk4dWWkgLKrT9aqjNQ7uGoElTO
-         vlCe9Q45IP4y/FWJaJhfT2NkMjvpqDqEVNpyrShkVQOoKaiJheMyCfm8Or0qMDxr9rjQ
-         dAaquOfzSgExDQmGJNe9g6wpmQVxyQYvv5PRiGPzGPyLbLclkEy7LdHKSCrvUjpIK8Qv
-         9LeA==
-X-Gm-Message-State: AOAM533FTIHIhWp8ytOtH+VDvvdqNDITmSgn+Z/ngRd8uOUEVRooLnW1
-        J8bFpBjpe9kOwkvQeciRaCtyE4CPB5ZFm6Iw+bBAYgwUd9EmETC4QJR3nRNcZsgV4aCbg+8GfIP
-        65H86qmEo+TX2GeLk8nKaFWMGiHOblHWbz+JUuuzCBYHJ8LfDwcUqCS26fP4Bc7+RpTxunRfJCf
-        YS
-X-Received: by 2002:a7b:c459:: with SMTP id l25mr27400217wmi.15.1622025626613;
-        Wed, 26 May 2021 03:40:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJRDY+7pBJWWZ+LhgHL1/a13+iXUSEXsQRMJ2uzJBWgC0yaDRORJtPQbbw49SP0TH8qWwo8w==
-X-Received: by 2002:a7b:c459:: with SMTP id l25mr27400191wmi.15.1622025626343;
-        Wed, 26 May 2021 03:40:26 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id v18sm23469437wro.18.2021.05.26.03.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 03:40:25 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] KVM: x86: Invert APICv/AVIC enablement check
-In-Reply-To: <69697643ea2b5756fac99e7d87ef09c32c76f930.camel@redhat.com>
-References: <20210518144339.1987982-1-vkuznets@redhat.com>
- <20210518144339.1987982-5-vkuznets@redhat.com>
- <69697643ea2b5756fac99e7d87ef09c32c76f930.camel@redhat.com>
-Date:   Wed, 26 May 2021 12:40:24 +0200
-Message-ID: <87zgwh7p7r.fsf@vitty.brq.redhat.com>
+        id S234155AbhEZKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233946AbhEZKmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 356DF613D3;
+        Wed, 26 May 2021 10:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622025641;
+        bh=fgxtvK+VLmElnGTJt7fJtJ+g5hluXnrJ9ugzu78I4T8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=F7mffP8tCx5ArjCKqddjKqLgQ8A4agdIqWtTcrcJMywyjJNwJk29+NaKCN9sWdD6L
+         6IFyHYzgoE9xUotWBjOqqhXwPyfeIKM2CZigNHYy6+aNxIW3559XWdhfJL7TOJmmrQ
+         ykIm7cbvrhe5VMSps8I8I6e89doYxZs2HBOv5DkXGWCTAOBmXJH9THr1sFfeRnsAKZ
+         piWmD32EBgnNhdRKXaNS0N7VTHY1c7fNlJFE6nMQHqWov5zEiaGN70cYOXcY8W/N4X
+         OJ9HpcmN+g3U0x26RPwM5kpbKb7a5V+rQoVXP6bVXu8JGNbrCw+ByqdbOinb6o312T
+         yuOOfvHfGFr1w==
+Date:   Wed, 26 May 2021 12:40:38 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Anssi Hannula <anssi.hannula@gmail.com>,
+        Dmitry Torokhov <dtor@mail.ru>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] HID: pidff: fix error return code in
+ hid_pidff_init()
+In-Reply-To: <20210508024737.1927-1-thunder.leizhen@huawei.com>
+Message-ID: <nycvar.YFH.7.76.2105261240280.28378@cbobk.fhfr.pm>
+References: <20210508024737.1927-1-thunder.leizhen@huawei.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Sat, 8 May 2021, Zhen Lei wrote:
 
-> On Tue, 2021-05-18 at 16:43 +0200, Vitaly Kuznetsov wrote:
->> Now that APICv/AVIC enablement is kept in common 'enable_apicv' variable,
->> there's no need to call kvm_apicv_init() from vendor specific code.
->> 
->> No functional change intended.
->
-> Minor nitpick: I don't see any invert here, but rather
-> a unification of SVM/VMX virtual apic enablement code.
-> Maybe update the subject a bit?
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: 224ee88fe395 ("Input: add force feedback driver for PID devices")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/hid/usbhid/hid-pidff.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
+> index ea126c50acc3..3b4ee21cd811 100644
+> --- a/drivers/hid/usbhid/hid-pidff.c
+> +++ b/drivers/hid/usbhid/hid-pidff.c
+> @@ -1292,6 +1292,7 @@ int hid_pidff_init(struct hid_device *hid)
+>  
+>  	if (pidff->pool[PID_DEVICE_MANAGED_POOL].value &&
+>  	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
+> +		error = -EPERM;
+>  		hid_notice(hid,
+>  			   "device does not support device managed pool\n");
+>  		goto fail;
 
-It is a bit umbiguous in v2, I agree (v1 used hooks in vendor-specific
-code so instead of calling to vendor-neutral kvm_apicv_init() from
-vendor-specific svm_vm_init()/vmx_vm_init(), we were calling
-vendor-specific hooks from vendor-neutral kvm_apicv_init(), thus
-'invert'. We can update the subject to something like
-
-"KVM: x86: Drop vendor specific functions for APICv/AVIC enablement"
-
-or something like that.
-
->
-> For the code:
->
-> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->
-
-Thanks!
-
-> Best regards,
-> 	Maxim Levitsky
->
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/include/asm/kvm_host.h | 1 -
->>  arch/x86/kvm/svm/svm.c          | 1 -
->>  arch/x86/kvm/vmx/vmx.c          | 1 -
->>  arch/x86/kvm/x86.c              | 6 +++---
->>  4 files changed, 3 insertions(+), 6 deletions(-)
->> 
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index a2197fcf0e7c..bf5807d35339 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -1662,7 +1662,6 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
->>  				struct x86_exception *exception);
->>  
->>  bool kvm_apicv_activated(struct kvm *kvm);
->> -void kvm_apicv_init(struct kvm *kvm, bool enable);
->>  void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
->>  void kvm_request_apicv_update(struct kvm *kvm, bool activate,
->>  			      unsigned long bit);
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index 0d6ec34d1e4b..84f58e8b2f49 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -4438,7 +4438,6 @@ static int svm_vm_init(struct kvm *kvm)
->>  			return ret;
->>  	}
->>  
->> -	kvm_apicv_init(kvm, enable_apicv);
->>  	return 0;
->>  }
->>  
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 5e9ba10e9c2d..697dd54c7df8 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7000,7 +7000,6 @@ static int vmx_vm_init(struct kvm *kvm)
->>  			break;
->>  		}
->>  	}
->> -	kvm_apicv_init(kvm, enable_apicv);
->>  	return 0;
->>  }
->>  
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 23fdbba6b394..22a1e2b438c3 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -8345,16 +8345,15 @@ bool kvm_apicv_activated(struct kvm *kvm)
->>  }
->>  EXPORT_SYMBOL_GPL(kvm_apicv_activated);
->>  
->> -void kvm_apicv_init(struct kvm *kvm, bool enable)
->> +static void kvm_apicv_init(struct kvm *kvm)
->>  {
->> -	if (enable)
->> +	if (enable_apicv)
->>  		clear_bit(APICV_INHIBIT_REASON_DISABLE,
->>  			  &kvm->arch.apicv_inhibit_reasons);
->>  	else
->>  		set_bit(APICV_INHIBIT_REASON_DISABLE,
->>  			&kvm->arch.apicv_inhibit_reasons);
->>  }
->> -EXPORT_SYMBOL_GPL(kvm_apicv_init);
->>  
->>  static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
->>  {
->> @@ -10739,6 +10738,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->>  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
->>  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
->>  
->> +	kvm_apicv_init(kvm);
->>  	kvm_hv_init_vm(kvm);
->>  	kvm_page_track_init(kvm);
->>  	kvm_mmu_init_vm(kvm);
->
->
+Good catch, applied, thank you.
 
 -- 
-Vitaly
+Jiri Kosina
+SUSE Labs
 
