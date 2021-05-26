@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16373391206
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DBD391205
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhEZIMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S232218AbhEZIMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhEZIMT (ORCPT
+        with ESMTP id S229450AbhEZIMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 04:12:19 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D6DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:47 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so2877259wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:47 -0700 (PDT)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6EAC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:48 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id t206so201283wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UJg9CGE0giXGSf2E49zfwV6qxHAc7VZeILYMwHitWSk=;
-        b=U25/0Z8aTRKIdQSransQLuQbgg/MytPSyikoseoD42jD4WVfHWX6C8rfQ9SG0eK8JK
-         bQDFgGSo4QqCj2nhCj/RnmFhNo6jB5e0FSmhjUBqpsawPzXSURDTDvOsmV2mltzjKtZn
-         cVqM51PDILda5Yt/Hhgzv84/3VbnqSE6tEcMA47JSvqeNlVMVVrY8tD/70SNDR2PLdeK
-         Y7XHDlR4c/DsdrV4n5iEqbN2Pf9YpOtd6pUyMdH55HTO9EKSzIKEm1XTqzrNVYsFuBdA
-         P3tmqk5DRStn0BIHyyPNvKTfzNzN05aK2yBLuDEnirSAGl9D9+x7wuEFftqDYP2ebh9J
-         kpzQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dFQkF96uoOmXNTrSzR/ePqfUTd4xGlWbaxlJsr2MtKE=;
+        b=qRa7GnzgtRsbbqhHHWYhyOJb7EzvL93QWpm8nMErca1eTzaI6Fn1l3vM8G76a5mgfV
+         lXfkz2Wje3plnFz5c+KoboopWeWCKyK8DNgWiJhKjfJjAU6lBJL1Ktqpo00WodYPXL0G
+         ++unosXXb0bmd0CSRlhE7W6atBSbg/8y2TKiWD9zXDxOWnpDraXmhVIBPWOvc+x8exOb
+         2Gqw3b+QMoVnwKixgpo6yPk65j8n/dmYQVu9qloFdZRxwuISCrDYfdWOogfyZZIO1ri1
+         m8Kq6+7mVlxv9fs1/BegpQ5XHoQvz+eVj4CZ+HgGfUTa3D4ROSKLWSqnl+Mg9sZfLcvr
+         wHBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UJg9CGE0giXGSf2E49zfwV6qxHAc7VZeILYMwHitWSk=;
-        b=hwuKvJg2Pz3RXukp9HWJMepS096z+eoBpDB6KqqCb7BZPOraWN2jGjKtRRwLo4jrIe
-         iBocOBt2CCbOY7HiR12o4zwS1dYCMgBJmkgORyq7fq74pyCDsnM7YgyoXiXL3/4jHYZH
-         MTQCfhQtD3y7R/kYr4/hGBMXGI4Lbf1Bf+SQlyPGxwP7t7mmx3VgCp/l9Zyqd3nCi2dc
-         bvsuLP5AlzTchicnPn3K2mZw/2+VEV+jzIQtc5gqRjK0gQItv75qI98WTRaLvH3M2ZLt
-         hbqBTX1d4Fhg1HldZS8ylFt4lsiDpDDeIfPjkjgLpvBa5o5ZfFkOtVLJLmk9uujZlQen
-         Ckaw==
-X-Gm-Message-State: AOAM5334fDl7wYO2hMj49+ubFli+ZirNGOVtuaZMz5IBuaAs+qx6LXg+
-        i2hgxI6mtSCphP5k9neLVQ/q8g==
-X-Google-Smtp-Source: ABdhPJzHeiHwzrpPIesnuXoCNKDK0E+NEgbljO8flxEoNftTXuDjMo3L2OmRjzb7E2q6lTMU6cIg8g==
-X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr8563871wmq.145.1622016646119;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dFQkF96uoOmXNTrSzR/ePqfUTd4xGlWbaxlJsr2MtKE=;
+        b=ZeEALQ7oqgX4N7pG328gYTeIINyNBojLtvseNdbtyeOwzqZ5n0ggQAlzYOtcAM9Sjw
+         +rCprv38fZJyK23LcDYdQW15+eemKxnGAsIlDy7ZqbEqK/8btYaVCQbF2x2stKHg1Yeq
+         I95hdoypQpjHRSomAix04T3auAMvYbctO/AlQBJqlFbiyCxn0chZ/Igayrmupn8ntxg+
+         UFvWLpRxrTGtsOs6Sy2uRfgaFPkbhiEysVmB+fmh+9ttElm7xT2UjLsGMfB4uIck9yoY
+         8wUJt4dyEGHQW5PSZRqrN36iAlIft5FtZ2I52HH62jDRVr+ZI9N26KwvN5phV6U5Gf+z
+         2J5w==
+X-Gm-Message-State: AOAM533Yjyqsztzoa0Yg9owk3xxdgU2Fgu/osS15/MnC1NNhgLv7umJO
+        hceWHMte4HMNutuGyiQ8in1r6w==
+X-Google-Smtp-Source: ABdhPJxtwkGLYcP8g4KXQFrvzGdggp08dNZVHy2beCfSD6XlUI6n1nItuRS5a5ADDA+29miNl+hK1w==
+X-Received: by 2002:a05:600c:22cf:: with SMTP id 15mr2108584wmg.81.1622016646984;
         Wed, 26 May 2021 01:10:46 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.45
+        by smtp.gmail.com with ESMTPSA id v11sm22628319wrs.9.2021.05.26.01.10.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:10:45 -0700 (PDT)
+        Wed, 26 May 2021 01:10:46 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        German Rivera <German.Rivera@freescale.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 00/10] Rid W=1 warnings from Bus
-Date:   Wed, 26 May 2021 09:10:28 +0100
-Message-Id: <20210526081038.544942-1-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH 01/10] bus: fsl-mc: mc-io: Supply function names for 'fsl_create_mc_io()' and 'fsl_destroy_mc_io()'
+Date:   Wed, 26 May 2021 09:10:29 +0100
+Message-Id: <20210526081038.544942-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210526081038.544942-1-lee.jones@linaro.org>
+References: <20210526081038.544942-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-Lee Jones (10):
-  bus: fsl-mc: mc-io: Supply function names for 'fsl_create_mc_io()' and
-    'fsl_destroy_mc_io()'
-  bus: fsl-mc: mc-sys: Supply missing function names in kernel-doc
-    headers
-  bus: fsl-mc: fsl-mc-bus: Demote a bunch of non-conformant kernel-doc
-    headers and help others
-  bus: fsl-mc: dprc: Fix a couple of misspelling and formatting issues
-  bus: fsl-mc: dprc-driver: Fix some missing/incorrect function
-    parameter descriptions
-  bus: fsl-mc: fsl-mc-allocator: Fix misspelling of 'new_mc_adev' and
-    demote non-kernel-doc headers
-  bus: qcom-ebi2: Fix incorrect documentation for '{slow,fast}_cfg'
-  bus: fsl-mc-msi: Fix a little doc-rot pertaining to 'np' to 'fwnode'
-    conversion
-  bus: ti-sysc: Correct misdocumentation of 'sysc_ioremap()'
-  bus: fsl-mc: mc-io: Correct misdocumentation of 'dpmcp_dev' param
+ drivers/bus/fsl-mc/mc-io.c:53: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/bus/fsl-mc/mc-io.c:126: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
- drivers/bus/fsl-mc/dprc-driver.c      |  8 +++++---
- drivers/bus/fsl-mc/dprc.c             |  4 ++--
- drivers/bus/fsl-mc/fsl-mc-allocator.c | 10 +++++-----
- drivers/bus/fsl-mc/fsl-mc-bus.c       | 19 ++++++++++---------
- drivers/bus/fsl-mc/fsl-mc-msi.c       |  2 +-
- drivers/bus/fsl-mc/mc-io.c            |  6 +++---
- drivers/bus/fsl-mc/mc-sys.c           | 19 ++++++++++---------
- drivers/bus/qcom-ebi2.c               |  4 ++--
- drivers/bus/ti-sysc.c                 |  2 +-
- 9 files changed, 39 insertions(+), 35 deletions(-)
-
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: German Rivera <German.Rivera@freescale.com>
-Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: linux-omap@vger.kernel.org
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: Stuart Yoder <stuyoder@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>
+Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/bus/fsl-mc/mc-io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
+index 305015486b91c..9af6b05b89d6f 100644
+--- a/drivers/bus/fsl-mc/mc-io.c
++++ b/drivers/bus/fsl-mc/mc-io.c
+@@ -50,7 +50,7 @@ static void fsl_mc_io_unset_dpmcp(struct fsl_mc_io *mc_io)
+ }
+ 
+ /**
+- * Creates an MC I/O object
++ * fsl_create_mc_io() - Creates an MC I/O object
+  *
+  * @dev: device to be associated with the MC I/O object
+  * @mc_portal_phys_addr: physical address of the MC portal to use
+@@ -123,7 +123,7 @@ int __must_check fsl_create_mc_io(struct device *dev,
+ }
+ 
+ /**
+- * Destroys an MC I/O object
++ * fsl_destroy_mc_io() - Destroys an MC I/O object
+  *
+  * @mc_io: MC I/O object to destroy
+  */
 -- 
 2.31.1
 
