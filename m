@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C963920B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6663920BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhEZTSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232696AbhEZTR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:17:58 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5A6C061574;
-        Wed, 26 May 2021 12:16:25 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso918158pjb.5;
-        Wed, 26 May 2021 12:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=lmnkLjzK/JbRrZ85h2/Oaot1KsIjWqq+/RKIMUx5aaU=;
-        b=EwaEhuNvSUrjiDB+n5d5E0luNIoihEH7O1+n2FYb9WywNMGPvzNdtfTMyEAtG2a3ZB
-         uCXKKqLvJ6P+nxTc7p9/BRggRgeaFrCgCM4XOl5Aos8F9i1Omd+5PtNfq1AX0efkvfDn
-         fCrZ2IjAY0zfm8Yf+XOlqmRczrtfMMWMuJNQ4aWcRxJBc3bhmdZvaWgFGIJpEidnoZX3
-         3E7fWTq2RpNw0NCC0Ve4P07Y90vsP9YUNdWTIER0Gt/1Nv6apraPx711kBSJ+mNlNK+k
-         ihO/TmO4x1lGzjCe3L0rvdYDMU+6d4okyIjKH7ytG8i0telgv4LcGG9QYZGHZa1JsYYZ
-         h5ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lmnkLjzK/JbRrZ85h2/Oaot1KsIjWqq+/RKIMUx5aaU=;
-        b=dOWOIlQQHwlh0I/RNQu8x/Ouhq2DUlmQxIGOY58/bsTkPiJR6TUgLwYM0NFGddCIoJ
-         VCnExNUjnsUWBt3dFQm2zMwZqsCyqXgHYrSnN0BzL7uXz5nUsgb6GDzvmtePBNrPQq5f
-         xi0K5QzmigKeyr2zl3iEFeseZw+OE1dbpYrzz9h5RKYfrXfLIKhcZObJb0Gh7PeYcJjv
-         Ft7eZmre9gUh5HDegrE8UMusAQvYe2I6gnACnNdRm+svQZ1pWTgxuXasGsbhGUd7itcl
-         jifdXQsDZrDy6xTQnOFfFuvsTArYbL47WMQ6FtqDZbnkREEtzZSZkG1hf9hWW5UKvSXZ
-         1p/w==
-X-Gm-Message-State: AOAM5313mDGFQehdZij+XIwKy6J22FWNXcY8gySbvFVP35NiRlW/5z9A
-        bKIoUrOptT11BFKPrKCDm/BpecYY24s=
-X-Google-Smtp-Source: ABdhPJzluiegAaZdsK1CnyKwh5S3OzYmcO6JztdsGAouGGDaemY2eupq30RWhUFmOTdmGZQsvP4KTg==
-X-Received: by 2002:a17:90a:17e7:: with SMTP id q94mr36946273pja.117.1622056584534;
-        Wed, 26 May 2021 12:16:24 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:c104:b5ae:a3c1:6470? ([2001:df0:0:200c:c104:b5ae:a3c1:6470])
-        by smtp.gmail.com with ESMTPSA id y13sm128878pgp.16.2021.05.26.12.16.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 12:16:23 -0700 (PDT)
-Subject: Re: [PATCH] MOUSE_ATARI: fix kconfig unmet dependency warning
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Michael Schmitz <schmitz@debian.org>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-References: <20210526070345.31114-1-rdunlap@infradead.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <662f3b08-0f28-eda8-82a3-7d29b6474a47@gmail.com>
-Date:   Thu, 27 May 2021 07:16:18 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233886AbhEZTT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:19:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5017 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232696AbhEZTTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:19:18 -0400
+IronPort-SDR: Z8WW6AK2QkJZMsO4KxpExZiRr4Z11k978WzCitZK/e3/bTFn8sb5t5F5IR8Qqj9L8rpQz/Us5T
+ SI8FzZcN/C7w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202560751"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="202560751"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 12:17:46 -0700
+IronPort-SDR: RUkXDg4JwcXoap5tPoA1V0dnrNPRdVufW6Pcyqq5dU5/Xfj7lFXZ3wi96arduUVvBOmwbea2K4
+ AkQUpiStTRRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="464929251"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 26 May 2021 12:17:43 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3B8B0B7; Wed, 26 May 2021 22:18:05 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] can: mcp251xfd: Fix header block to clarify independence from OF
+Date:   Wed, 26 May 2021 22:18:01 +0300
+Message-Id: <20210526191801.70012-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210526070345.31114-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy,
+The driver is neither dependent on OF, nor it requires any OF headers.
+Fix header block to clarify independence from OF.
 
-On 26/05/21 7:03 pm, Randy Dunlap wrote:
-> MOUSE_ATARI should depend on INPUT_KEYBOARD since ATARI_KBD_CORE
-> depends on INPUT_KEYBOARD. This prevents MOUSE_ATARI from
-> selecting ATARI_KBD_CORE when INPUT_KEYBOARD is not set/enabled.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Right you are! Thanks for spotting this.
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index e0ae00e34c7b..81d0e5c2dd5c 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -15,9 +15,8 @@
+ #include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/pm_runtime.h>
+ 
+ #include <asm/unaligned.h>
+-- 
+2.30.2
 
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-
->
-> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
->    Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
->    Selected by [y]:
->    - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
->
-> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Michael Schmitz <schmitz@debian.org>
-> Cc: Roman Zippel <zippel@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> ---
->   drivers/input/mouse/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
->
-> --- linux-next-20210525.orig/drivers/input/mouse/Kconfig
-> +++ linux-next-20210525/drivers/input/mouse/Kconfig
-> @@ -348,6 +348,7 @@ config MOUSE_AMIGA
->   
->   config MOUSE_ATARI
->   	tristate "Atari mouse"
-> +	depends on INPUT_KEYBOARD
->   	depends on ATARI
->   	select ATARI_KBD_CORE
->   	help
