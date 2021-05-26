@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AD639105E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F515391065
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhEZGK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:10:58 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9834 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231573AbhEZGK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:10:57 -0400
-IronPort-SDR: fJ51qK/kXeUw55tJoZ5CGhQT8+bv6qdHEWxG5jJLAw2bGyvGQExlB3Pac8dqCzsFJjH8oz474s
- Bup+3HFtyw3w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202427615"
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="202427615"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:09:26 -0700
-IronPort-SDR: D6ePKFlh8DlgJp4lXdFPgR+RLGvecW1w7fEWB3xxqEnhw7uEZNrdy/c+cpt6uKc/h1jF0j9uSM
- bnEBWrzSLWGw==
-X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
-   d="scan'208";a="476775930"
-Received: from unknown (HELO [10.238.130.158]) ([10.238.130.158])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:09:23 -0700
-Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-5-jing2.liu@linux.intel.com>
- <YKwfsIT5DuE+L+4M@google.com>
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-Message-ID: <920df897-56d8-1f81-7ce2-0050fb744bd7@linux.intel.com>
-Date:   Wed, 26 May 2021 14:09:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <YKwfsIT5DuE+L+4M@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S232659AbhEZGLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhEZGLu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:11:50 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAE8C061574;
+        Tue, 25 May 2021 23:10:19 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m190so70275pga.2;
+        Tue, 25 May 2021 23:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HmLaQWhJqHPnSlCjFaBhRZNGbkeDs33ImoQZxW9wzeI=;
+        b=f13p3RacrOUXkixVzVVDKsVIpgyYT7GjO5EOC1i2OQs05H93f/FyTiAA1uIaUbAsUZ
+         Mi1zCJuDwmMPabWAzIsmDzexxLSIwppdPBkTSMxOx1tTiKHGYIPKtY5vP8qpU033jGV1
+         3oecxyUa65cQWMn9qMj2sx0QYUrEENcymvoijYSNmCZBsxwqHZ6Yj3DoQI7fI7TLQ4S5
+         o+VqYvVfriycWzsk+IfMqXojGW9+WwYH85Rd2Hz4G0p+UbaWuazyZvmlsv+kKsN4NtY8
+         naXHr3nWrqtGirW2x89EfnHiU2CMrVQNwlPv907LHgpRUW6jkRP6dHvyBDBmi8xPhT6w
+         nwmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HmLaQWhJqHPnSlCjFaBhRZNGbkeDs33ImoQZxW9wzeI=;
+        b=Sjg4YE0J7BadlqN2cQziBS9sTeaWTE8x7kyKEnqJyZGlliYzoyWYIBbqgpPxyMYOP3
+         rA86J+SWSGTSw6GI4gYL6mjALobWR8senaMTf2TGl2Es0bvWkZGJPeQIM9gnJtqdT/OV
+         S2yBFeUJ3kBb0CJzLUm9oeAwZHFUiIFQ5jqkvPF1ffcfWGo0ZBqg7lo/nk0b0HPJZ81T
+         soZtAH10uIhrelJeUz4goUZ2A0VAQ9W8Z8XoO53prFis+DjzgJ5EWDdb2Zrl4kAADG9B
+         iBdp0tk02B4HK+lOeEfBHCZglep1VZWFoAhR1WVO4l7ZSdULbvLvonsmVgtTzF+rq2+O
+         j1Zg==
+X-Gm-Message-State: AOAM530CBPTdGZbQxIkmqKD5Q5SdQI4GwY9Z3Ipo2p9s5mOMFSieUsy/
+        yELQgNOI/SMCtbIj8KuQo8w=
+X-Google-Smtp-Source: ABdhPJxcwNyvk3IMg+GkkWYAS8xI5m93Fg+lGgyk+kIG++wRKFDqhZHyaTdPTfw8dUvJ/NsTWb43Tw==
+X-Received: by 2002:a05:6a00:813:b029:27f:fb6a:24b5 with SMTP id m19-20020a056a000813b029027ffb6a24b5mr29908326pfk.18.1622009418804;
+        Tue, 25 May 2021 23:10:18 -0700 (PDT)
+Received: from localhost (natp-s01-129-78-56-229.gw.usyd.edu.au. [129.78.56.229])
+        by smtp.gmail.com with ESMTPSA id 185sm15499572pfb.184.2021.05.25.23.10.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 May 2021 23:10:17 -0700 (PDT)
+From:   Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     Baptiste Lepers <baptiste.lepers@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: relocation: fix misplaced barrier in reloc_root_is_dead
+Date:   Wed, 26 May 2021 16:09:47 +1000
+Message-Id: <20210526060947.26159-1-baptiste.lepers@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix a misplaced barrier in reloc_root_is_dead. The
+BTRFS_ROOT_DEAD_RELOC_TREE bit should be checked before accessing
+reloc_root.
 
+The fix forces the order documented in the original commit:
+"In the cross section C-D, either caller gets the DEAD bit set, avoiding
+access reloc_root no matter if it's safe or not.  Or caller get the DEAD
+bit cleared, then access reloc_root, which is already NULL, nothing will
+be wrong."
 
-On 5/25/2021 5:50 AM, Sean Christopherson wrote:
-> On Sun, Feb 07, 2021, Jing Liu wrote:
->> The static xstate buffer kvm_xsave contains the extended register
->> states, but it is not enough for dynamic features with large state.
->>
->> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
->> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
->> new ioctl interfaces to get/set the whole xstate using struct
->> kvm_xsave_extension buffer containing both static and dynamic
->> xfeatures. Reuse fill_xsave and load_xsave for both cases.
->>
->> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
->> ---
->>   arch/x86/include/uapi/asm/kvm.h |  5 +++
->>   arch/x86/kvm/x86.c              | 70 +++++++++++++++++++++++++--------
->>   include/uapi/linux/kvm.h        |  8 ++++
->>   3 files changed, 66 insertions(+), 17 deletions(-)
->>
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 89e5f3d1bba8..bf785e89a728 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -362,6 +362,11 @@ struct kvm_xsave {
->>   	__u32 region[1024];
->>   };
->>   
->> +/* for KVM_CAP_XSAVE_EXTENSION */
->> +struct kvm_xsave_extension {
->> +	__u32 region[3072];
-> Fool me once, shame on you (Intel).  Fool me twice, shame on me (KVM).
->
-> As amusing as kvm_xsave_really_extended would be, the required size should be
-> discoverable, not hardcoded.
-Thanks for reviewing the patch.
-When looking at current kvm_xsave structure, I felt confusing about the 
-static
-hardcoding of 1024 bytes, but failed to find clue for its final decision 
-in 2010[1].
-So we'd prefer to changing the way right? Please correct me if I 
-misunderstood.
-
-> Nothing prevents a hardware vendor from inventing
-> a newfangled feature that requires yet more space.
-> As an alternative to adding a dedicated capability, can we leverage
-> GET_SUPPORTED_CPUID, leaf CPUID.0xD,
-Yes, this is a good way to avoid a dedicated capability. Thanks for the
-suggestion.
-Use 0xD.1.EBX for size of enabled xcr0|xss if supposing kvm_xsave cares 
-both.
-> to enumerate the minimum required size and
-> state
-For the state, an extreme case is using an old qemu as follows, but a
-new kvm with more future_featureZ supported. If hardware vendor arranges
-one by one, it's OK to use static state like X86XSaveArea(2) and
-get/set between userspace and kvm because it's non-compacted. If not,
-the state will not correct.
-So far it is OK, so I'm wondering if this would be an issue for now?
-
-X86XSaveArea2 {
-     ...
-     XSaveAVX
-     ...
-     AMX_XTILE;
-     future_featureX;
-     future_featureY;
+static bool reloc_root_is_dead()
+    smp_rmb(); <--- misplaced
+    if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+          return true;
+    return false;
 }
 
->   that the new ioctl() is available if the min size is greater than 1024?
-> Or is that unnecessarily convoluted...
-To enable a dynamic size kvm_xsave2(Thanks Jim's name suggestion), if 
-things as
-follows are what we might want.
-/* for xstate large than 1024 */
-struct kvm_xsave2 {
-     int size; // size of the whole xstate
-     void *ptr; // xstate pointer
+static bool have_reloc_root(struct btrfs_root *root)
+{
+       if (reloc_root_is_dead(root))
+               return false;
+       <--- the barrier should happen here
+       if (!root->reloc_root)
+               return false;
+       return true;
 }
-#define KVM_GET_XSAVE2   _IOW(KVMIO,  0xa4, struct kvm_xsave2)
 
-Take @size together, so KVM need not fetch 0xd.1.ebx each time or a 
-dedicated
-variable.
+Fixes: 6282675e6708e ("btrfs: relocation: fix reloc_root lifespan and access")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+---
+ fs/btrfs/relocation.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-For Userspace(Qemu):
-struct X86XSaveArea2 {...}// new struct holding all features
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index b70be2ac2e9e..8cddcce56bf4 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -289,15 +289,14 @@ static int update_backref_cache(struct btrfs_trans_handle *trans,
+ 
+ static bool reloc_root_is_dead(struct btrfs_root *root)
+ {
++	bool is_dead = test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
+ 	/*
+ 	 * Pair with set_bit/clear_bit in clean_dirty_subvols and
+ 	 * btrfs_update_reloc_root. We need to see the updated bit before
+ 	 * trying to access reloc_root
+ 	 */
+ 	smp_rmb();
+-	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+-		return true;
+-	return false;
++	return is_dead;
+ }
+ 
+ /*
+-- 
+2.17.1
 
-if 0xd.1.ebx <= sizeof(kvm_xsave)
-     env->xsave_buf = alloc(sizeof(kvm_xsave))
-     ...
-     ioctl(KVM_GET/SET_XSAVE, X86XSaveArea *)
-else
-     env->xsave_buf = alloc(0xd.1.ebx + sizeof(int))
-     ...
-     xsave2 = env->xsave_buf
-     xsave2->size = ...
-X86XSaveArea2 *area2 = xsave2->ptr
-ioctl(KVM_GET/SET_XSAVE2, xsave2)
-endif
-
-[1] https://lore.kernel.org/kvm/4C10AE1D.40604@redhat.com/
-
-Thanks,
-Jing
