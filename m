@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0C1391467
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3D7391473
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhEZKIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:08:35 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:46763 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233773AbhEZKId (ORCPT
+        id S233824AbhEZKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:09:08 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:37608 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233767AbhEZKJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:08:33 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id lqRFlSYYrWkKblqRIlCbAY; Wed, 26 May 2021 12:07:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622023621; bh=QP7uSUzeBedOP/1n1Z/ut19kYR8grdlDG6nSrUb3goY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=jCJGhOSlNv0ZqqcCtMfrA8FQ74EymfZ3K4H0jRY2Ecx3dDKwMlRLA2ucRALVEx27I
-         akevdPb03pv57nVfiksE6L/fye1UvCvppfaq/hIs9RBtoxSt4UTuKSx8pSOeq0Koc+
-         JJFsAlX3eP8r4SEKJRNK6VrMRqLKYKhwBo3+vGGkjSYGBsRQy4AOmBY3c+hsqRb+XY
-         wHk6tWZXUYxxjtFuNHehqiRTrzsWGrvcf2KK02OgK6j3L04HlOFpYP5B4FRZbYlc4L
-         kauydH2camm7vnhbBDL+JNO/6MUt7bilALzC7Q5X00CZZAMJlRly6FN4KkzT/ApzFy
-         bidrHrmtbEUtQ==
-Subject: Re: [PATCH] drivers: media: Simplify the return expression of
- interpolate_value()
-To:     zuoqilin1@163.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-References: <20210524124754.1491-1-zuoqilin1@163.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <f80d155f-42f3-1a7c-bf42-1b9ebb1e3889@xs4all.nl>
-Date:   Wed, 26 May 2021 12:06:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Wed, 26 May 2021 06:09:05 -0400
+Received: by mail-wm1-f47.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so141185wmq.2;
+        Wed, 26 May 2021 03:07:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zn2ffr8JYxoteRgfDN2DPfLGmOa7PHRalgcesR+84wk=;
+        b=FBQswfXEvhcIPu6qtq1G30fehiRhU7qTR7FioWQKRPcItSITZlXr9VmE9StIWrL1uY
+         XA35HflYt3m/Un4l1hJ/gyqpLYVUvPxENyTRph0T71Ok2tP4+i6s4g6Lzrf79uyZ2vQn
+         1QGPAHk7HfSHqvktCTN/WRrGZwEvTJmhagbWOgomxEU9Ga9nKgdAo11qVNcIIjN7e4UA
+         y+/fRlm//yV072iHGa7Z7QlZKue/uReT2DTe6sOMHkQmNSnNqZRhrUO+l9QSrx/vu1FS
+         q9F0lVuvh39Fg9hIBUCNoUPiZ+ZwXIQXw6L7e8Xij4FFADk5M1AMu7EfOuk0aCGArRj/
+         StPg==
+X-Gm-Message-State: AOAM530GIoujEw1CaE4BB2tu9O1B8xQo0umP+VVF5QCVn/UOI8cJnjY1
+        WxjcAv0q/r51oTfx+akdHlM=
+X-Google-Smtp-Source: ABdhPJxPaM7KVevhYV2qeLsfVfVCCezJ/Fd6bhCABfmcYvL1i91n62q4G0bpOukUTdpNvhpJMehZTQ==
+X-Received: by 2002:a05:600c:1551:: with SMTP id f17mr2489743wmg.17.1622023653000;
+        Wed, 26 May 2021 03:07:33 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id v3sm19745861wrr.19.2021.05.26.03.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 03:07:32 -0700 (PDT)
+Date:   Wed, 26 May 2021 10:07:30 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: hv: Fix missing error code in vmbus_connect()
+Message-ID: <20210526100730.fsk3khdqmpbbuljf@liuwe-devbox-debian-v2>
+References: <1621940321-72353-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+ <MWHPR21MB1593D8362CD8FBA6E0E3612CD7259@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524124754.1491-1-zuoqilin1@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfEIZc8FjKISpTvbf2DIVIS9NtYVSdR+1K5SQQMWD1/EwgYFOl+7yTkm6EMU8esoaLyaehDzCx6uQSSoSyhiCol8FkP4DHSq4zcLWD0bj8B6z7RIjJMLV
- CZ+RibIKBeIHLQH9VPWF4yt4Op1HBH1CCuNGqYxSzHXFtRUrutgvd/Pb3rrUQIF8fVh84vGxxmf6XcrkDAq2d7GyLxjwz/rVjcN0gpBXFS1Hd1LQ58U03UVg
- YzO6Jqz2MTy1tWK55MIFANU1kfRlm3Jrirok6OVbqCCab7cWlNgOSopvYXZFsH6AT70GkiZVIjHQBAM0OmpYXZcfRyBGkUTaNJIJe2qkaQ0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB1593D8362CD8FBA6E0E3612CD7259@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please include the driver you are changing in the subject line. I asked for that
-before. Just saying 'drivers: media:' suggests it is a media-subsystem wide change.
-
-Rejecting this and the other patch you posted on the same day with the same problem.
-
-Regards,
-
-	Hans
-
-On 24/05/2021 14:47, zuoqilin1@163.com wrote:
-> From: zuoqilin <zuoqilin@yulong.com>
+On Tue, May 25, 2021 at 03:30:22PM +0000, Michael Kelley wrote:
+> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com> Sent: Tuesday, May 25, 2021 3:59 AM
+> > 
+> > Eliminate the follow smatch warning:
+> > 
+> > drivers/hv/connection.c:236 vmbus_connect() warn: missing error code
+> > 'ret'.
+> > 
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> > ---
+> >  drivers/hv/connection.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+> > index 311cd00..5e479d5 100644
+> > --- a/drivers/hv/connection.c
+> > +++ b/drivers/hv/connection.c
+> > @@ -232,8 +232,10 @@ int vmbus_connect(void)
+> >  	 */
+> > 
+> >  	for (i = 0; ; i++) {
+> > -		if (i == ARRAY_SIZE(vmbus_versions))
+> > +		if (i == ARRAY_SIZE(vmbus_versions)) {
+> > +			ret = -EDOM;
+> >  			goto cleanup;
+> > +		}
+> > 
+> >  		version = vmbus_versions[i];
+> >  		if (version > max_version)
+> > --
+> > 1.8.3.1
 > 
-> Simplify the return expression.
+> I might have used -EINVAL instead of -EDOM as the error
+> return value, but it really doesn't matter, and having a 
+> return value that is unique in the function might be helpful.
 > 
-> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
-> ---
->  drivers/media/dvb-frontends/mb86a20s.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/dvb-frontends/mb86a20s.c b/drivers/media/dvb-frontends/mb86a20s.c
-> index a7faf0c..fc80391 100644
-> --- a/drivers/media/dvb-frontends/mb86a20s.c
-> +++ b/drivers/media/dvb-frontends/mb86a20s.c
-> @@ -1346,7 +1346,7 @@ static u32 interpolate_value(u32 value, const struct linear_segments *segments,
->  {
->  	u64 tmp64;
->  	u32 dx, dy;
-> -	int i, ret;
-> +	int i;
->  
->  	if (value >= segments[0].x)
->  		return segments[0].y;
-> @@ -1367,9 +1367,7 @@ static u32 interpolate_value(u32 value, const struct linear_segments *segments,
->  	tmp64 = value - segments[i].x;
->  	tmp64 *= dy;
->  	do_div(tmp64, dx);
-> -	ret = segments[i].y - tmp64;
-> -
-> -	return ret;
-> +	return segments[i].y - tmp64;
->  }
->  
->  static int mb86a20s_get_main_CNR(struct dvb_frontend *fe)
-> 
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
+Applied to hyperv-fixes. Thanks.
