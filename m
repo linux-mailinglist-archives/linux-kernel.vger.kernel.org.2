@@ -2,178 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02803920CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578353920CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhEZTZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:25:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52434 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhEZTZq (ORCPT
+        id S234007AbhEZT0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhEZT0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:25:46 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 649451FD29;
-        Wed, 26 May 2021 19:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622057053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VfIzmKVHtGMuGMaPHkUtWywgtu4ZApE+V8z8c4nj+Fo=;
-        b=kWjL+FFm1lOsJFS0FjvVOr+mT6Z/rIjLgzpKULbTamg1NXxAjJzNPdnHezJ+3//9tfKC/Q
-        MnfwRtKoFz0WsL7QoumIElA9rVkN9CUwwpeV4/CnNXUS6YopKLkYJxmk37/I3B5Lort3ni
-        8WaN9J+b9FUh1faUN+sh+l6IlDZt7AM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622057053;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VfIzmKVHtGMuGMaPHkUtWywgtu4ZApE+V8z8c4nj+Fo=;
-        b=TJ+hlLRyqiZQPU0o/2ojcyWjo1qQa7Tuf3Qa1KuLopAh6NetEgOr8h/10P6TIKdEo1IidV
-        JDyNLlJNhIa04ZBA==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id 4664311A98;
-        Wed, 26 May 2021 19:24:13 +0000 (UTC)
-Subject: Re: [PATCH v2] drm/fb-helper: improve DRM fbdev emulation device
- names
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
-References: <20210525151313.3379622-1-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <89bec7e1-135a-71b6-8d87-ebca19443d3d@suse.de>
-Date:   Wed, 26 May 2021 21:24:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Wed, 26 May 2021 15:26:02 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC927C061574;
+        Wed, 26 May 2021 12:24:29 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id y76so2624667oia.6;
+        Wed, 26 May 2021 12:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mMr84wnW79eJ+bLd6qGzg7fkB7rh5OToBUejvhaMQJI=;
+        b=cUPHV+Io0Nsf4MIPPGV6JPdt5NqOOskBJGEx1I/WkMW0nGYdZU48WuSeJm3GamIidT
+         Sy/0/U+Xmd5+2Nk8E0uTtFoZaHHiJazee6qRwCXnx9pw9tkruqPEB4jYR6kv21aAg7VA
+         4kIGjBO+P3xnLFsH6EU4TCAU3Hu7ZjQ5jiogcx7gd8aAgw4oymBjOlOetNEvgPW+/U4X
+         902vgfb8W7OpyXhamNERFfXXbXGehDEUF96W67zxIpCEtRoUf8xW97udmHBQHjv7+VGx
+         +d93zivxGBG+zD5nn9HG7eDpXql1MdFhJdp1XR4/bIW+LAlmRiueJhdOoSFhxeFqKUma
+         qF1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mMr84wnW79eJ+bLd6qGzg7fkB7rh5OToBUejvhaMQJI=;
+        b=QbavI4OOdFDZdH+9ZqhgSye2PmmjJvB9J9bdzwVHQl+xmDRjiwYxZAzlSvNcta22kh
+         GCZoBtXBZj89nsGt9GjxsmWUTaItArdHiCJ9tVW755uTfI41gz93i+mm0AIDF1owUm7a
+         iQ3ClkelRJfvXut855m1j9zd6NkQ3GT+R+8MwEY3llD06fFRtpEnoa2+QtNQVWQx8LVB
+         Tqd74v3+erLn7gRyNX+1kksMaXlJb/pwqX2T1WnKZsLXWnEdB9+Awr/5L/Hu7x28pT1u
+         PhG+e/dEtIUJNC7QWbkT5w/qD2i0lodpJrdIHwRK5HxVM16lzjSjFr5cgBu/UuhSapgP
+         LXWw==
+X-Gm-Message-State: AOAM5306GsR3kSahiGw9mG7wLm6o9cL6qob1ljyaJB+tOJpLgAfS2GmO
+        GFdy+MwSBQYOshXJ3SxJPN4E+V9pdrpKfq3PSpo=
+X-Google-Smtp-Source: ABdhPJxYd77i/ganESJH9u6Q39LnWFqKNrqRv+AIw77ejduNuBhTpthz6X4nRwHGYXpVAnaqohkCrCgb02MSxBnlhOU=
+X-Received: by 2002:aca:2b17:: with SMTP id i23mr3063425oik.87.1622057069090;
+ Wed, 26 May 2021 12:24:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525151313.3379622-1-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="a8eqX8K04hs871qWOtEcWBpxq6Os19aSA"
+References: <20210525184449.57703-1-romain.perier@gmail.com>
+ <20210525184449.57703-3-romain.perier@gmail.com> <5ce3b5a5-1500-0d95-623e-299e7b1eb43b@roeck-us.net>
+In-Reply-To: <5ce3b5a5-1500-0d95-623e-299e7b1eb43b@roeck-us.net>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Wed, 26 May 2021 21:24:16 +0200
+Message-ID: <CABgxDo+6fORohKH_VAw4ZuYVUYoGbo=a-Ckmv8Q5QkEtEZWGJQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] watchdog: Add Mstar MSC313e WDT driver
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---a8eqX8K04hs871qWOtEcWBpxq6Os19aSA
-Content-Type: multipart/mixed; boundary="V4kh2Ko020rS0aWXrYcbwenevlsZptesz";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
-Message-ID: <89bec7e1-135a-71b6-8d87-ebca19443d3d@suse.de>
-Subject: Re: [PATCH v2] drm/fb-helper: improve DRM fbdev emulation device
- names
-References: <20210525151313.3379622-1-javierm@redhat.com>
-In-Reply-To: <20210525151313.3379622-1-javierm@redhat.com>
-
---V4kh2Ko020rS0aWXrYcbwenevlsZptesz
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
 
+Le mar. 25 mai 2021 =C3=A0 21:52, Guenter Roeck <linux@roeck-us.net> a =C3=
+=A9crit :
+>
+> On 5/25/21 11:44 AM, Romain Perier wrote:
+> > From: Daniel Palmer <daniel@0x0f.com>
+> >
+> > It adds a driver for the IP block handling the watchdog timer found for
+> > Mstar MSC313e SoCs and newer.
+> >
+> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> > Co-developed-by: Romain Perier <romain.perier@gmail.com>
+> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> > ---
+> >   MAINTAINERS                    |   1 +
+> >   drivers/watchdog/Kconfig       |  13 +++
+> >   drivers/watchdog/Makefile      |   1 +
+> >   drivers/watchdog/msc313e_wdt.c | 173 ++++++++++++++++++++++++++++++++=
++
+> >   4 files changed, 188 insertions(+)
+> >   create mode 100644 drivers/watchdog/msc313e_wdt.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index a0f37adb9e64..fcc10c57298c 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2177,6 +2177,7 @@ F:      arch/arm/mach-mstar/
+> >   F:  drivers/clk/mstar/
+> >   F:  drivers/gpio/gpio-msc313.c
+> >   F:  drivers/pinctrl/pinctrl-msc313.c
+> > +F:   drivers/watchdog/msc313e_wdt.c
+> >   F:  include/dt-bindings/clock/mstar-*
+> >   F:  include/dt-bindings/gpio/msc313-gpio.h
+> >   F:  include/soc/mstar/
+> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> > index 355100dad60a..f53634ea0de6 100644
+> > --- a/drivers/watchdog/Kconfig
+> > +++ b/drivers/watchdog/Kconfig
+> > @@ -980,6 +980,19 @@ config VISCONTI_WATCHDOG
+> >         Say Y here to include support for the watchdog timer in Toshiba
+> >         Visconti SoCs.
+> >
+> > +config MSC313E_WATCHDOG
+> > +     tristate "MStar MSC313e watchdog"
+> > +     depends on ARCH_MSTARV7 || COMPILE_TEST
+> > +     depends on OF
+> > +     select WATCHDOG_CORE
+> > +     help
+> > +       Say Y here to include support for the Watchdog timer embedded
+> > +       into MStar MSC313e chips. This will reboot your system when the
+> > +       timeout is reached.
+> > +
+> > +       To compile this driver as a module, choose M here: the
+> > +       module will be called msc313e_wdt.
+> > +
+> >   # X86 (i386 + ia64 + x86_64) Architecture
+> >
+> >   config ACQUIRE_WDT
+> > diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> > index a7eade8b4d45..7fa392ae3000 100644
+> > --- a/drivers/watchdog/Makefile
+> > +++ b/drivers/watchdog/Makefile
+> > @@ -92,6 +92,7 @@ obj-$(CONFIG_SPRD_WATCHDOG) +=3D sprd_wdt.o
+> >   obj-$(CONFIG_PM8916_WATCHDOG) +=3D pm8916_wdt.o
+> >   obj-$(CONFIG_ARM_SMC_WATCHDOG) +=3D arm_smc_wdt.o
+> >   obj-$(CONFIG_VISCONTI_WATCHDOG) +=3D visconti_wdt.o
+> > +obj-$(CONFIG_MSC313E_WATCHDOG) +=3D msc313e_wdt.o
+> >
+> >   # X86 (i386 + ia64 + x86_64) Architecture
+> >   obj-$(CONFIG_ACQUIRE_WDT) +=3D acquirewdt.o
+> > diff --git a/drivers/watchdog/msc313e_wdt.c b/drivers/watchdog/msc313e_=
+wdt.c
+> > new file mode 100644
+> > index 000000000000..434259256967
+> > --- /dev/null
+> > +++ b/drivers/watchdog/msc313e_wdt.c
+> > @@ -0,0 +1,173 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * MStar WDT driver
+> > + *
+> > + * Copyright (C) 2019 - 2021 Daniel Palmer
+> > + * Copyright (C) 2021 Romain Perier
+> > + *
+> > + */
+> > +
+> > +#include <linux/platform_device.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_irq.h>
+> > +#include <linux/module.h>
+> > +#include <linux/watchdog.h>
+> > +#include <linux/io.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/interrupt.h>
+>
+> Alphabetic order, please.
 
-Am 25.05.21 um 17:13 schrieb Javier Martinez Canillas:
-> Framebuffer devices that are registered by DRM drivers for fbdev emulat=
-ion
-> have a "drmfb" suffix in their name. But makes them to be quite confusi=
-ng
-> for drivers that already have "drm" in their name:
->=20
-> $ cat /proc/fb
-> 0 rockchipdrmdrmfb
->=20
-> $ cat /proc/fb
-> 0 simpledrmdrmfb
->=20
-> Also, there isn't a lot of value in adding these "drmfb" suffices to th=
-eir
-> names, since users shouldn't really care if the FB devices were registe=
-red
-> by a real fbdev driver or a DRM driver using the fbdev emulation.
->=20
-> What programs should be interested about is if there's a DRM device, an=
-d
-> there are better ways to query that info than reading this procfs entry=
-=2E
->=20
-> So let's just remove the suffix, which leads to much better device name=
-s:
->=20
-> $ cat /proc/fb
-> 0 rockchipdrm
->=20
-> $ cat /proc/fb
-> 0 simpledrm
->=20
-> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Ack, I will fix it.
 
-Added to drm-misc-next. Thank you.
+> Also, please drop unneeded include files.
+> The driver doesn't support interrupts, so any interrupt related
+> include file is unnecessary. I also don't see any devicetree specific
+> code except for of_device_id, and that is declared in mod_devicetable.h,
+> not in an of_xxx.h include file.
 
-Best regards
-Thomas
+Arf, in fact an interrupt was used previously (it triggers when the
+wdt reaches a specific value
+that is not necessarily the value of the initial timeout), but I have
+decided to remove it because
+not really useful. And I have kept some headers, sorry for that. I will fix=
+ it.
 
-> ---
->=20
-> Changes in v2:
-> - Just remove the "drmfb" suffix instead of using a different one (tzim=
-mermann).
->=20
->   drivers/gpu/drm/drm_fb_helper.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_h=
-elper.c
-> index f6baa204612..d77a24507d3 100644
-> --- a/drivers/gpu/drm/drm_fb_helper.c
-> +++ b/drivers/gpu/drm/drm_fb_helper.c
-> @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info=
-,
->   			       sizes->fb_width, sizes->fb_height);
->  =20
->   	info->par =3D fb_helper;
-> -	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
-> +	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
->   		 fb_helper->dev->driver->name);
->  =20
->   }
->=20
+>
+> > +
+> > +#define REG_WDT_CLR                  0x0
+> > +#define REG_WDT_MAX_PRD_L            0x10
+> > +#define REG_WDT_MAX_PRD_H            0x14
+> > +
+> > +#define MSC313E_WDT_DEFAULT_TIMEOUT  30
+> > +/* Supports 1 - 350 sec */
+>
+> Doesn't that depend on the clock freqneucy ?
+> More on that see below.
+>
+> > +#define MSC313E_WDT_MIN_TIMEOUT              1
+> > +#define MSC313E_WDT_MAX_TIMEOUT              350
+> > +
+> > +static unsigned int timeout;
+> > +
+> > +module_param(timeout, int, 0);
+> > +MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds");
+> > +
+> > +struct msc313e_wdt_priv {
+> > +     void __iomem *base;
+> > +     struct device *dev;
+>
+> I don't immediately see where 'dev' is used.
+>
+> > +     struct watchdog_device wdev;
+> > +     struct clk *clk;
+> > +};
+> > +
+> > +static int msc313e_wdt_start(struct watchdog_device *wdev)
+> > +{
+> > +     struct msc313e_wdt_priv *priv =3D watchdog_get_drvdata(wdev);
+> > +     u32 timeout;
+> > +     int err;
+> > +
+> > +     err =3D clk_prepare_enable(priv->clk);
+> > +     if (err) {
+> > +             dev_err(priv->dev, "failed to enable clock\n");
+>
+> Ah, here. I am not sure if I like that error message - it is going to be
+> persistent and may create a lot of noise if it is ever seen, and pretty m=
+uch
+> useless otherwise. Either case, if you insist on the message, I'd suggest
+> to use wdev->parent.
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Honestly ? It is mostly to avoid silent errors, but I can also return
+an error directly, yep (I mean
+just return the error code). The userspace app is supposed to check
+the error code returned by ioctl. No objection
+for removing the message (and so priv->dev too).
+
+>
+> > +             return err;
+> > +     }
+> > +     timeout =3D wdev->timeout * clk_get_rate(priv->clk);
+>
+> How is it guaranteed that this won't overflow ? The maximum timeout is no=
+t
+> tied to the clock frequency. This will overflow if the clock frequency is
+> above 0xffffffff / 350 =3D 12271335 Hz and the timeout is sufficiently la=
+rge.
+>
+
+Ah good catch ! Mhhhhh we could compute max_timeout dynamically
+from the probe function. So, we allow  the maximum possible value just
+before the overflow. The units are different but there is something
+similar in meson_wdt.c  .
+
+Anyway, I will think about it and propose a fix.
 
 
---V4kh2Ko020rS0aWXrYcbwenevlsZptesz--
-
---a8eqX8K04hs871qWOtEcWBpxq6Os19aSA
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCuoFwFAwAAAAAACgkQlh/E3EQov+BW
-QA//dCY5nLj7FoVjeLjeTu3l8bOIlbdSQZ2Wrm7o0KL6JhL4AmhwCwRXaTNqzB0EnbO+8e8V+Nc0
-ux4ds1NKFmPc32DkLouuTvz4tB6CNX8Hp20lLkldVgaThfv4IYeIzQ69+Hq6ZLrVY278C3gesDak
-RWM/EqeZBuZ+biJemc9zyH+2pFwilR6/wrtOGPni1EQGEaYsxrSTxjCnZHJlgLFy+n6L2N7+M9Dt
-ptZ7mNanThryr388jOWNofAjVqZfTT15YLmR+NYODB/aY0mUKkpA2Fmfp2JqeaiCVQ2M6M1puLnC
-i+Of4H/7YMMYcX9oJRGJZfxTuGugJlahNjDUJe/Fd8oXf3STmkj46mTw0VXC4J/R/nPhL5Ml12eI
-Jb8KoJiv6YkwXuFv8itrKOwDWc60aDjBqYRpd4LlLStvzajbGcqt1sZNOE2kdvDfqKOgXPy7oOML
-fB9qcKlTSyA0vkTYw/5Hex7Gigl/VgUB6rMxx6Azv9fRv4ThK0hKEqCsosC0u6jaNegM1H5W0lu8
-lk22S82RLXQa4j0LuimnbtHFshCUoztXnby6dwbUhvYef8XZbeYtfUlx7mtDF5kUgI/kC0QfcMZl
-k4Z51TxRUU3NAPSE4tiLvzzbS9L1oHzI9KSUo3007Kh8dM8Wl9Ju6wdfBQZGys/B9vtJJZ21XosF
-Rws=
-=f0SG
------END PGP SIGNATURE-----
-
---a8eqX8K04hs871qWOtEcWBpxq6Os19aSA--
+Thanks,
+Romain
