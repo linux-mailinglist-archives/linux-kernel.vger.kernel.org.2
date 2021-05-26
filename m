@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185EE391406
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5AB39140F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhEZJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbhEZJs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:48:26 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304A9C06138A;
-        Wed, 26 May 2021 02:46:54 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id e15so347371plh.1;
-        Wed, 26 May 2021 02:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zDvvvwoqfQvYWmKc028Jp9K1qZ09FScRwPlW+6bVp/o=;
-        b=A0ygh7lvV2Ydcn8B1xGJgcOzAJpbASE5IpheAVAIrPYALaZIT+VTUne9U9SFZbGvwv
-         mbsHQqQuFhT7sEEGg1fAe0qi7sUIFLKWBnEwnZDUWlfvqpT+cqkephAo09NSnaqzhBKw
-         ngApBasi1JRzrKX0DRiqmOr+zZcxQU8YKYxp3NQxemG+nT84bDCIMv2hqL+2bU1HMrVe
-         xvUQUbn+c8+7EG9WcDCujeOokFbYh2GiWVj+/Sf+WBulJw9xD6fTGT4A9M/Izl4Bcxvp
-         sreJUOtqa3/0bHgXTjchSoguJDhmNyGzCett3c5U+86F3wJo1+1Jr0OLjbe5rsk3BGug
-         KLjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zDvvvwoqfQvYWmKc028Jp9K1qZ09FScRwPlW+6bVp/o=;
-        b=YXgYpVLOhvQ2beN1tZy8cCWPfcEOC/AO+tr/jsDZhT4nt1D8Ptjn3AdpkBxJNbtL3T
-         rczgorV9oiQMk+pUNbIwdsUg6rbCJiuvzX/BTG0VYz0vTQ7p8mADlvV1cisDF/OuKtOP
-         5wvjYILXo0dHgu3BaGtMlKJsxWRmybudBzS+WUOD8KJcleN2Ogzbi9xAvvnZULqldFL3
-         9Jr7D3d/e3CXY4wgxiyNY5Ny5vcympCO16dSdYpbzSviYeMOJBk7Jx3CDPfOF/26foeC
-         MN4n1tQjnChF2qdKN3Ctu2k2z43S2puCuvtgNFVMiUfxaR2erQvt9dLc5a3EykgXtX4J
-         6Hew==
-X-Gm-Message-State: AOAM533bgZWAinncu8PEd+7BTFRdDO8XyCA1OLjd3g6/qN/4mwjuxNan
-        CT5XoCKYtxPryYOggwQnX5M4TPqRstM1AQ==
-X-Google-Smtp-Source: ABdhPJxiBe7vms+t7rGUo8i6E7Wmw0BcpiZszBF1p+7mQ1P/7X2Bw6Ujmy6UzveU0gUB/v0UGt8p4Q==
-X-Received: by 2002:a17:90a:5b17:: with SMTP id o23mr20634260pji.14.1622022413669;
-        Wed, 26 May 2021 02:46:53 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id b1sm18248708pgf.84.2021.05.26.02.46.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 02:46:53 -0700 (PDT)
-From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
-To:     mingo@kernel.org
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        xiehaocheng.cn@gmail.com
-Subject: Re:[PATCH] perf core: Fix some kernel-doc warnings.
-Date:   Wed, 26 May 2021 17:46:42 +0800
-Message-Id: <20210526094642.16119-1-xiehaocheng.cn@gmail.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <YK3zHAdIQZ9GPhfg@gmail.com>
-References: <YK3zHAdIQZ9GPhfg@gmail.com>
+        id S233651AbhEZJuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:50:08 -0400
+Received: from m12-12.163.com ([220.181.12.12]:37409 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233348AbhEZJuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 05:50:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=YxOm6
+        DHuFZFQ0I2jcKEP4n+Ouc0/6ud2y9Z9N7Lct7s=; b=oklor4E/3RzqD7t5Jy9yB
+        mOgBMPohaZb15dYVN16z+rfVnkXEEqn3xrhSSbweRL6R0BloCb84P6VrA6z+HmR1
+        jlyHnwGUAZjUe7YtuIQ16BIVzNSs94j0KwJnQBK/qk15WAIWptrqMfTxgER0mU4/
+        MFtp1jiyaUlnGuUM+N+p2g=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowACXExFdGa5gNPo4GQ--.4454S2;
+        Wed, 26 May 2021 17:48:15 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     mchehab@kernel.org, akpm@linux-foundation.org,
+        daniel.m.jordan@oracle.com, rppt@kernel.org, walken@google.com,
+        vbabka@suse.cz
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] media: videobuf-dma-sg: void function return statements are not generally useful
+Date:   Wed, 26 May 2021 17:47:12 +0800
+Message-Id: <20210526094712.95681-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowACXExFdGa5gNPo4GQ--.4454S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gw18Zr1fXryxtF4xXr47Jwb_yoW3JFc_Z3
+        4kua4xXrWDtw4jyw1UK3y3A34jy3yxuFn7KF97t3y3JrWUJayYyr1UZr10grn2vFnFvas8
+        WFs8WF18CayfCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5j-e7UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBLBOdUF++L6NhUAACss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ingo Molnar <mingo@kernel.org> wrote：
->
->
-> * Haocheng Xie <xiehaocheng.cn@gmail.com> wrote:
->
-> > Fix the following W=1 kernel build warning(s):
-> > kernel/events/core.c:143: warning: Function parameter or member 'cpu' not described in 'cpu_function_call'
-> > kernel/events/core.c:11924: warning: Function parameter or member 'flags' not described in 'sys_perf_event_open'
-> > kernel/events/core.c:12382: warning: Function parameter or member 'overflow_handler' not described in 'perf_event_create_kernel_counter'
-> > kernel/events/core.c:12382: warning: Function parameter or member 'context' not described in 'perf_event_create_kernel_counter'
-> >
-> > Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
->
-> Even with your two patches there's still W=1 warnings remaining in
-> kernel/events/:
->
->   kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
->   kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
->
-> Could you please fix all of them, and send them as a 3-patch series?
+From: lijian <lijian@yulong.com>
 
-OK, I will fix these warnings and resend the 3-patch series later.
+void function videobuf_vm_close return statements are not generally useful,
+so deleted the return in function videobuf_vm_close().
 
->
-> Doesn't make much sense to just partially fix W=1 warnings in a subsystem.
->
-> Thanks,
->
->         Ingo
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/media/v4l2-core/videobuf-dma-sg.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks for your kind advice.
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index 8dd0562de287..f75e5eedeee0 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -423,7 +423,6 @@ static void videobuf_vm_close(struct vm_area_struct *vma)
+ 		videobuf_queue_unlock(q);
+ 		kfree(map);
+ 	}
+-	return;
+ }
+ 
+ /*
+-- 
+2.25.1
 
-Best regards,
 
-Haocheng Xie
