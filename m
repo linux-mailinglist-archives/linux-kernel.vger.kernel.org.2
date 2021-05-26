@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF82391149
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC09391156
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhEZHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:19:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:40684 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232617AbhEZHTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:19:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5E57168F;
-        Wed, 26 May 2021 00:17:46 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.81.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1FE193F73D;
-        Wed, 26 May 2021 00:17:42 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on PGTABLE_LEVELS > 2
-Date:   Wed, 26 May 2021 12:48:21 +0530
-Message-Id: <1622013501-20409-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S233040AbhEZHWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:22:05 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:37502 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232974AbhEZHWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:22:02 -0400
+Received: by mail-ua1-f41.google.com with SMTP id w28so243960uae.4;
+        Wed, 26 May 2021 00:20:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mfyNClndHUNcIv3x/5sWBhrH6KgenkR88tjR35EvNYU=;
+        b=HrEhP41rl7HC2suyTXmUqNDjCUQqTJPP/vBDDq++ido4SJYWCi4+vqhzm6pXUaAicZ
+         EHpqOK/QnAvXECuhCRpw5/vaD4vg7MkFvKdNSihaPSt4epsp2hPxe9KDjb/80qHctJke
+         i6yyXTJRqvxLcT1Snep32PZM41ulTSVjm71OPkj3kLxQQFdecQvruSVkNGqINBLGTm/I
+         Zbw0LBjA6H/+gCgk4OQHQlaqMtuLroyBqAmr5k9ivE/KF+0Fe5tmUgoI6Q19gOeEmDn2
+         WUMgcjM4CdaR9W6rESCIOxwbz0wJRy3MYmMh06SNvKPRvsRZpeevschz+tcrHNLhDgUn
+         eJsA==
+X-Gm-Message-State: AOAM530ekZYNX6tSy/7BG4YISpRQYi0w68AfUFSPBa4dQIVTE1BYlONQ
+        Qbo5fAfYT8wqwLzxfVBrCUmmwej0Tqr2M6KDcmy/FU5g1Hw=
+X-Google-Smtp-Source: ABdhPJxF+qtPXKWBS1ATx0OB8NSVaKioeEzf3uGa4Whzc6rDzo7AkL3e1u+kHO4TtFK5BkjfqOjJo9rP8okfur+vUSQ=
+X-Received: by 2002:ab0:7705:: with SMTP id z5mr30510980uaq.2.1622013630064;
+ Wed, 26 May 2021 00:20:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210526070345.31114-1-rdunlap@infradead.org>
+In-Reply-To: <20210526070345.31114-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 May 2021 09:20:18 +0200
+Message-ID: <CAMuHMdXdpzmFMSmM+8z9csZ094O5UG6nmAyTYYb=4TAmyUiSnw@mail.gmail.com>
+Subject: Re: [PATCH] MOUSE_ATARI: fix kconfig unmet dependency warning
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are more than two
-page table levels including PMD (also per
-Documentation/vm/split_page_table_lock.rst). Make this dependency explicit
-on remaining platforms i.e x86 and s390 where ARCH_ENABLE_SPLIT_PMD_PTLOCK
-is subscribed.
+Hi Randy,
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: x86@kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com> # s390
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Changes in V2:
+On Wed, May 26, 2021 at 9:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> MOUSE_ATARI should depend on INPUT_KEYBOARD since ATARI_KBD_CORE
+> depends on INPUT_KEYBOARD. This prevents MOUSE_ATARI from
+> selecting ATARI_KBD_CORE when INPUT_KEYBOARD is not set/enabled.
+>
+> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+>   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+>   Selected by [y]:
+>   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+>
+> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-- Updated the commit message per Gerald
+Thanks for your patch!
 
-Changes in V1:
+> --- linux-next-20210525.orig/drivers/input/mouse/Kconfig
+> +++ linux-next-20210525/drivers/input/mouse/Kconfig
+> @@ -348,6 +348,7 @@ config MOUSE_AMIGA
+>
+>  config MOUSE_ATARI
+>         tristate "Atari mouse"
+> +       depends on INPUT_KEYBOARD
+>         depends on ATARI
+>         select ATARI_KBD_CORE
+>         help
 
-https://lore.kernel.org/linux-mm/1620621345-29176-1-git-send-email-anshuman.khandual@arm.com/
+It looks like arch/m68k/atari/atakeyb.c doesn't use anything from the
+input subsystem, so I think you can move the ATARI_KBD_CORE symbol
+outside the "if INPUT_KEYBOARD" section instead.
 
- arch/s390/Kconfig | 2 +-
- arch/x86/Kconfig  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b4c7c34069f8..fcc1ea339a9d 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -62,7 +62,7 @@ config S390
- 	select ARCH_BINFMT_ELF_STATE
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE
--	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0045e1b44190..ec9e9d3d7e3f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -63,7 +63,7 @@ config X86
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
--	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
- 	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_CACHE_LINE_SIZE
+                        Geert
+
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
