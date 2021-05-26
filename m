@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07802391AA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCFB391AAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbhEZOtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:49:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60479 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234893AbhEZOs6 (ORCPT
+        id S235059AbhEZOtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:49:25 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33846 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234893AbhEZOtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:48:58 -0400
-Received: from mail-lj1-f200.google.com ([209.85.208.200])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lluog-0001OZ-Bi
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 14:47:26 +0000
-Received: by mail-lj1-f200.google.com with SMTP id j2-20020a2e6e020000b02900f2f75a122aso587051ljc.19
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:47:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tKkeDIyfg5tbUDNJPi4NgjfV5qFGc/eyNl9E9obon3I=;
-        b=W8b1lzTcmyax31aBjjsfN6xjsSCfy5D5Uk6xClbUwJQrAzn4+8Suwu5UmPdK1p1r1x
-         0cNFrOZIy1Kj5Rg+yIifusNso6lea/SUnxbX7biMlvFz7Qem2eFqUae7aaGV6Em2gOGl
-         6PPheDQdo1Dk7eqqeFQm6iWJfl4n3nWFSGMLfNOVPDz3UUfjmRs3DAyMOd7Gd2mM5U3m
-         s6PlsKxqnxHOpYSA9DkiB+0cf3lqCoh+N7RXPOsuf9AuEszFP0ofITUZY4lVt2wDTvGf
-         otr5XcWu/RimtpUAKwr++GwiLr/BkMu5ZkiRTb1NrpWWsKyXGJDjliP4KB9LhAcQH5cr
-         Q/vA==
-X-Gm-Message-State: AOAM530n8ATrQQa5Ihw2FnSWurl1wwmnKezSc6tUlbfU59ixZB9Xsqt1
-        3u3aHPedEZk70gVMoBasRaa1AyfECGIbf6CrrPK4R8Hon+DWMzsLbIVlSEQ1hmevpEexCfmz/4g
-        hQLH/wM2mpKpu5qdPygT8QoCuMz140HB4Pilf0VEHMJqnkwlp9tB4lK+Jsw==
-X-Received: by 2002:a2e:b892:: with SMTP id r18mr2494553ljp.402.1622040445849;
-        Wed, 26 May 2021 07:47:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLrPOwOay/G7viPPeObhmAqhusdasfgLFHKjudG5zu7fmIP7duHluGrol4HR6UOtuCA0uo4/HyjqUPvqVsicI=
-X-Received: by 2002:a2e:b892:: with SMTP id r18mr2494540ljp.402.1622040445600;
- Wed, 26 May 2021 07:47:25 -0700 (PDT)
+        Wed, 26 May 2021 10:49:24 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D64891C0B80; Wed, 26 May 2021 16:47:51 +0200 (CEST)
+Date:   Wed, 26 May 2021 16:47:51 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
+ ethernet type indicator
+Message-ID: <20210526144751.GA2141@amd>
+References: <20210519100253.49b155e9@thinkpad>
+ <20210519121812.4285b3ea@coco.lan>
+ <20210519141102.0161a9d9@thinkpad>
+ <20210519162413.4feeab02@coco.lan>
+ <20210519175503.567e6ecc@thinkpad>
+ <20210519203014.1838de3a@coco.lan>
+ <20210520130014.7189a315@dellmb>
+ <20210520180028.495f94e4@coco.lan>
+ <20210520183633.084a8c3f@thinkpad>
+ <20210520205933.3cfc57a9@coco.lan>
 MIME-Version: 1.0
-References: <20210520033315.490584-1-koba.ko@canonical.com>
- <20210525074426.GA14916@lst.de> <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
- <20210526024934.GB3704949@dhcp-10-100-145-180.wdc.com> <CAAd53p7xabD2t__=t67uRLrrFOB7YGgr_GMhi6L48PFGhNe80w@mail.gmail.com>
- <20210526125942.GA25080@lst.de> <CAAd53p4f2ZFsVRv-Q9maPBSD_uGjj7FoYKYy9MGjBPc6chk_1Q@mail.gmail.com>
- <20210526142809.GA32077@lst.de>
-In-Reply-To: <20210526142809.GA32077@lst.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 26 May 2021 22:47:13 +0800
-Message-ID: <CAAd53p6TJev=LgdvGxC92A9HOy3B6jbPLymAqeB5bDe2=5Fdsw@mail.gmail.com>
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <kbusch@kernel.org>, Koba Ko <koba.ko@canonical.com>,
-        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <20210520205933.3cfc57a9@coco.lan>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:28 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, May 26, 2021 at 10:21:59PM +0800, Kai-Heng Feng wrote:
-> > To be fair, resuming the NVMe from D3hot is much slower than keep it
-> > at D0, which gives us a faster s2idle resume time. And now AMD also
-> > requires s2idle on their latest laptops.
->
-> We'd much prefer to use it, but due to the broken platforms we can't
-> unfortunately.
->
-> > And it's more like NVMe controllers don't respect PCI D3hot.
->
-> What do you mean with that?
 
-Originally, we found that under s2idle, most NVMe controllers caused
-substantially more power if D3hot was used.
-We were told by all the major NVMe vendors that D3hot is not
-supported. It may also disable APST.
-And that's the reason why we have the host-managed power control for s2idle.
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-IIRC only Samsung NVMes respect D3hot and keeps the power consumption low.
+Hi!
 
->
-> > Because the NVMe continues to work after s2idle and the symbol is
-> > rather subtle, so I suspect this is not platform or vendor specific.
-> > Is it possible to disable DMA for HMB NVMe on suspend?
->
-> Not in shipping products.  The NVMe technical working group is working
-> on a way to do that, but it will take a while until that shows up in
-> products.
+> > > See, there's nothing that the driver can possible do with
+> > > rx, tx, link, interval, device_name/device, as the the BIOS allows
+> > > to set to "LAN1", "LAN2" or "LAN1+LAN2". the WMI interface doesn't
+> > > provide *any* information about what LAN1 means. =20
+> >=20
+> > On the contrary, there is something the driver can do with these
+> > attributes. If the specific combination is not supported, the driver
+> > should return -EOPNOTSUPP in the trigger_offload method and let the
+> > netdev trigger do the work in software.=20
+>=20
+> Letting netdev to trigger is something we don't want to allow, as this
+> can cause side effects, making it doing slow the system due to BIOS calls
+> for no good reason.
 
-Hmm, then what else can we do? Because D3hot isn't support by the
-vendor, does it really stop HMB?
+I'm with Marek here. Please listen to him.
 
-Kai-Heng
+Yes, operating LEDs can cost some CPU cycles. That's the case on most
+hardware. Yet we want to support most triggers on most hardware.
+
+Best regards,
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCuX5cACgkQMOfwapXb+vLAcwCbBzgQIYwh4JUJsSgQSrO7xbUU
+IioAmwX8mKnpRmC1qRAlJIiv382x+Z1Z
+=5jjI
+-----END PGP SIGNATURE-----
+
+--5mCyUwZo2JvN/JJP--
