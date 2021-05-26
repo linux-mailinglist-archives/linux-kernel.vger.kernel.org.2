@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDA239173F
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9C0391746
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhEZMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:21:18 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60932 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233864AbhEZMVQ (ORCPT
+        id S234721AbhEZMXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233168AbhEZMXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:21:16 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 590581F42D14
-Subject: Re: [PATCH] mfd: cros_ec_dev: Load lightbar module only present
-To:     Gwendal Grignou <gwendal@chromium.org>, lee.jones@linaro.org,
-        bleung@chromium.org, groeck@chromium.org, swboyd@chromium.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20210526034500.954219-1-gwendal@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <0d113ad0-2f99-8f07-8e8a-86453a285fc8@collabora.com>
-Date:   Wed, 26 May 2021 14:19:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 26 May 2021 08:23:50 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B919C061574;
+        Wed, 26 May 2021 05:22:15 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id f12so1379284ljp.2;
+        Wed, 26 May 2021 05:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zhDNs1OvrLLRHp01VJsRDHjv3DfbHGL4iLUwl466cC0=;
+        b=rHZZ3w3PlqpSbLALcERtloPxfgr52ZeAz39H4XufVjhhBR7VnmNmMbt5pAlOZPn+B8
+         jvBNG1pDTLG0A1b82u/0gZzSvy7o9MBie11WLmWImJ290NUcdWiJfVO1hMD2g67b2e4P
+         DWNTpMfy42TFLtFWjKeKOTBHNEYNCgV/4qXtO9k6oJC3GVWczmxxDMYNBXL8ieCY7iRy
+         O1PSfmCVBdkQrAcAtRNumkSyP/KAafWYGWVRyXY9AR6OGTALVtqIjKnaaJUlnsTua/hC
+         cPe0gg9Hcr1HZVsQwavlhYtAtm4KKOdldO/NC4AEleDsePXNIifUzWOk4yyy41vJyKSW
+         uHzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zhDNs1OvrLLRHp01VJsRDHjv3DfbHGL4iLUwl466cC0=;
+        b=dNtKjGz61pqPAuEW2FiPCUZtb8zB/wY5HlbRbVX0QO6ZbfQXi9gsKJD24wpMn+bNE6
+         Yg0uBGj9r8/YrOExo4wyNjm3pgOV73nkDrLqW5zSnTmjKGLdeIpMWRwmJUzVCwXGyNYX
+         UH6yUzOWNA2Ef/1Oh+Kep0eaYeJgzSNvh8cCdkKeCSnAIty950A0ucY9SRJjknZj0oZT
+         snrmYgRMV2bSZuxWcoIg9EagrI4NYUXPvMUO81LyY+0cPW8l+Z6xODWw0i17Fk4/mB+7
+         a7xn4t4wd/JyI0n2+DUUKK5YbiNVB1Odz7YgCS2ztCYvvMcnvUOS64iNfnD/wyA5W13o
+         w2/w==
+X-Gm-Message-State: AOAM5326geFrR+aj2Lxg+ubJdbgLByy6TldKUriB1M04D3s422i1HGN8
+        DwB76xhqvkbuqL9/fV49rVu0PgcoeqPGsd10Vx8=
+X-Google-Smtp-Source: ABdhPJz+UwFaB+HIhfZwYF/YvCY0Fi2m8Tsoyq2FE1GmkwajoauUMxc5/eG5xLmWDagdy1BsVAieXaQwTiR6ivWyG78=
+X-Received: by 2002:a2e:240e:: with SMTP id k14mr2032686ljk.423.1622031733666;
+ Wed, 26 May 2021 05:22:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526034500.954219-1-gwendal@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309151834.58675-1-dong.menglong@zte.com.cn> <6d59bf25-2e1e-5bd7-07f1-dff2e73c7a7e@linaro.org>
+In-Reply-To: <6d59bf25-2e1e-5bd7-07f1-dff2e73c7a7e@linaro.org>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Wed, 26 May 2021 20:22:02 +0800
+Message-ID: <CADxym3Ycq=H74N7MLak-kub_qWeFCJLhZFgnjKKPPARXktJO2w@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: netlink: remove netlink_broadcast_filtered
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, mkubecek@suse.cz,
+        dsahern@kernel.org, zhudi21@huawei.com, johannes.berg@intel.com,
+        marcelo.leitner@gmail.com,
+        Menglong Dong <dong.menglong@zte.com.cn>, ast@kernel.org,
+        yhs@fb.com, rdunlap@infradead.org, yangyingliang@huawei.com,
+        0x7f454c46@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gwendal,
+On Wed, May 26, 2021 at 5:28 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+[...]
+>
+> I was trying to figure out if the function could be useful to filter out
+> some netlink messages when sending them to userspace.
+>
+> Still looking for examples :/
+>
+> On the other side, this function was put there as part of the network
+> namespace infrastructure. Even there is no user, it may be needed.
+>
 
-Thank you for your patch.
+I noticed that the function has not been used since it was added over
+ten years ago, and thought that it may not be used in the future.
 
-On 26/5/21 5:45, Gwendal Grignou wrote:
-> The pixel lightbar is only present on chromebook pixel (link), pixel 2
-> and pixel C. For the latter two, the EC reports its presence.
-> Instead of always loading the lightbar driver on all chromebook, only
-> load it when reported by the EC or Link device.
-> 
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+If you think it may be needed, let's just keep it!
 
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-> ---
->  drivers/mfd/cros_ec_dev.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-> index d07b43d7c761a..a9700436e5e51 100644
-> --- a/drivers/mfd/cros_ec_dev.c
-> +++ b/drivers/mfd/cros_ec_dev.c
-> @@ -5,6 +5,7 @@
->   * Copyright (C) 2014 Google, Inc.
->   */
->  
-> +#include <linux/dmi.h>
->  #include <linux/kconfig.h>
->  #include <linux/mfd/core.h>
->  #include <linux/module.h>
-> @@ -112,10 +113,13 @@ static const struct cros_feature_to_cells cros_subdevices[] = {
->  static const struct mfd_cell cros_ec_platform_cells[] = {
->  	{ .name = "cros-ec-chardev", },
->  	{ .name = "cros-ec-debugfs", },
-> -	{ .name = "cros-ec-lightbar", },
->  	{ .name = "cros-ec-sysfs", },
->  };
->  
-> +static const struct mfd_cell cros_ec_lightbar_cells[] = {
-> +	{ .name = "cros-ec-lightbar", }
-> +};
-> +
->  static const struct mfd_cell cros_ec_vbc_cells[] = {
->  	{ .name = "cros-ec-vbc", }
->  };
-> @@ -206,6 +210,20 @@ static int ec_device_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	/*
-> +	 * Lightbar is a special case. Newer devices support autodetection,
-> +	 * but older ones do not.
-> +	 */
-> +	if (cros_ec_check_features(ec, EC_FEATURE_LIGHTBAR) ||
-> +	    dmi_match(DMI_PRODUCT_NAME, "Link")) {
-> +		retval = mfd_add_hotplug_devices(ec->dev,
-> +					cros_ec_lightbar_cells,
-> +					ARRAY_SIZE(cros_ec_lightbar_cells));
-> +		if (retval)
-> +			dev_warn(ec->dev, "failed to add lightbar: %d\n",
-> +				 retval);
-> +	}
-> +
->  	/*
->  	 * The PD notifier driver cell is separate since it only needs to be
->  	 * explicitly added on platforms that don't have the PD notifier ACPI
-> 
+Thanks!
+Menglong Dong
