@@ -2,172 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4C1392118
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16E539211C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhEZTsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbhEZTsa (ORCPT
+        id S234419AbhEZTuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:50:05 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33176 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231924AbhEZTuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:48:30 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF789C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:46:57 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id p39so1753643pfw.8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hEQ3MdXmpdNmcX6sa1MKz2lUFHPHmPostz9Pp0Yt+54=;
-        b=b1ledajAYuzSP2VsYjLXXA+yLdhz9jMTPLKR8jN1BmCm06HetxB4+K+9y1UkLgPGJU
-         8FJJevRA+tNRkxZEmKTbGAEI201rzRZoz5+VL7ftvW0M84XkhdamXP09FeQBf0gDMQGU
-         0k9I1ORp07R5N8pLA1QDajOqd6fOK0a7s0zKXZ7MRZknul8dbZAVK3KNwxMHmNCQfBLY
-         jJ3jy8WK2GAgyehfuQVJdPflw5Uv2kQBba7LRL5vNSkwHjO/TeZhiuXKJEuo7EZFqXnP
-         6CqLhRB4GytEUeiguuk8nexR6qzpY5MWCLAB7GLELwSWrKeTRKKlEoIKE4X5J/7EgIkv
-         hv3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hEQ3MdXmpdNmcX6sa1MKz2lUFHPHmPostz9Pp0Yt+54=;
-        b=Gmtyd55JeBvuIB4exirdzQ5qJwYCa1mNAgTtKwx/aNg2NN0uZApGQvyqKAoDBsWwlH
-         zoS6iwOTXE6VJ7Caa1qJGDGyFXvrf2dI3lWCMk1Pq1xQvAe/w6mKeRUwXcxaFeceZwSn
-         B+TXnvFXazp+lZDqqS/mURoGNz9VxiTcAPPWajEJtViA42hxHKmhinP+UdYaUqLaC2Hm
-         XteFjm2pntdb11DFBbpU6ba49wL679ZP3UM6OTLP1rGwmmksmn2MWMxdHfUhfqib1FXS
-         R0AamccR7wqHnCZsJPs7DjEv+EQRX965GUZ7a+OlB6ALq2USgaC5JxNDJLeDmXQeGjHC
-         NCWQ==
-X-Gm-Message-State: AOAM5311K6uxjU/FVJ9PYx8x6ayx7XQX5xl9/+Q2eHvzmwy/BhWQQ6nw
-        o9G4Z4CUwpIDFbnCfNPFvWblkA==
-X-Google-Smtp-Source: ABdhPJwBXUXILPsFBDFo9CFR/JDpKVm78Qh7x+mpCE2hRYo8JoIxtQJXcXaDoL8EHmqAouWcIEOiWQ==
-X-Received: by 2002:a62:cec9:0:b029:2e3:9125:c280 with SMTP id y192-20020a62cec90000b02902e39125c280mr65079pfg.11.1622058417033;
-        Wed, 26 May 2021 12:46:57 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id f9sm46220pfc.42.2021.05.26.12.46.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 12:46:56 -0700 (PDT)
-Date:   Wed, 26 May 2021 19:46:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <YK6lrHeaeUZvHMJC@google.com>
-References: <YHnJtvXdrZE+AfM3@google.com>
- <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
- <YH2pam5b837wFM3z@google.com>
- <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
- <YH3HWeOXFiCTZN4y@google.com>
- <20210419185354.v3rgandtrel7bzjj@box>
- <YH3jaf5ThzLZdY4K@google.com>
- <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
- <YH8L0ihIzL6UB6qD@google.com>
- <20210521123148.a3t4uh4iezm6ax47@box>
+        Wed, 26 May 2021 15:50:00 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QJmNEi098993;
+        Wed, 26 May 2021 14:48:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622058503;
+        bh=jmGUOiH5Kh5C55VfKeVNPLm81ACiT20v+T/oKoj/f74=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=Ja/RAjoOSeiNG3rPH4u+iH3Pt3VA5OC4eiWFHsX+e3JUcb5k0A478zAvu7t0ygKO9
+         0d7XTHHejXa52GnxLOVxquWdjwcr+9nrq+CBqe8FBgOyLWuskuJfRxHfnFh4yrKiBh
+         ApZGtZ8+bBF4xJydSRHcwu4kl7dwBnSvHja5QODk=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QJmN1v031454
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 14:48:23 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 14:48:23 -0500
+Received: from DLEE111.ent.ti.com ([fe80::a4a2:21d4:3321:ad11]) by
+ DLEE111.ent.ti.com ([fe80::a4a2:21d4:3321:ad11%17]) with mapi id
+ 15.01.2176.012; Wed, 26 May 2021 14:48:23 -0500
+From:   "Tammana, Gowtham" <g-tammana@ti.com>
+To:     "Anna, Suman" <s-anna@ti.com>,
+        "tony@atomide.com" <tony@atomide.com>,
+        "bcousson@baylibre.com" <bcousson@baylibre.com>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Strashko, Grygorii" <grygorii.strashko@ti.com>,
+        "Menon, Nishanth" <nm@ti.com>
+Subject: RE: [PATCH v2] ARM: dts: dra7: Fix duplicate USB4 device node
+Thread-Topic: [PATCH v2] ARM: dts: dra7: Fix duplicate USB4 device node
+Thread-Index: AQHXUlN5Jk6XvXlbc0C/UV9VMQLecKr2YXOA///ASFA=
+Date:   Wed, 26 May 2021 19:48:23 +0000
+Message-ID: <555c768263cc48499b299c0b595fcb94@ti.com>
+References: <20210526172038.17542-1-g-tammana@ti.com>
+ <64bb0e71-dc6d-e21d-cfc0-cfeb787ca7c2@ti.com>
+In-Reply-To: <64bb0e71-dc6d-e21d-cfc0-cfeb787ca7c2@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.250.43.171]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521123148.a3t4uh4iezm6ax47@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021, Kirill A. Shutemov wrote:
-> Hi Sean,
-> 
-> The core patch of the approach we've discussed before is below. It
-> introduce a new page type with the required semantics.
-> 
-> The full patchset can be found here:
-> 
->  git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-guest-only
-> 
-> but only the patch below is relevant for TDX. QEMU patch is attached.
-
-Can you post the whole series?  The KVM behavior and usage of FOLL_GUEST is very
-relevant to TDX.
-
-> CONFIG_HAVE_KVM_PROTECTED_MEMORY has to be changed to what is appropriate
-> for TDX and FOLL_GUEST has to be used in hva_to_pfn_slow() when running
-> TDX guest.
-
-This behavior in particular is relevant; KVM should provide FOLL_GUEST iff the
-access is private or the VM type doesn't differentiate between private and
-shared.
-
-> When page get inserted into private sept we must make sure it is
-> PageGuest() or SIGBUS otherwise.
-
-More KVM feedback :-)
-
-Ideally, KVM will synchronously exit to userspace with detailed information on
-the bad behavior, not do SIGBUS.  Hopefully that infrastructure will be in place
-sooner than later.
-
-https://lkml.kernel.org/r/YKxJLcg/WomPE422@google.com
-
-> Inserting PageGuest() into shared is fine, but the page will not be accessible
-> from userspace.
-
-Even if it can be functionally fine, I don't think we want to allow KVM to map
-PageGuest() as shared memory.  The only reason to map memory shared is to share
-it with something, e.g. the host, that doesn't have access to private memory, so
-I can't envision a use case.
-
-On the KVM side, it's trivially easy to omit FOLL_GUEST for shared memory, while
-always passing FOLL_GUEST would require manually zapping.  Manual zapping isn't
-a big deal, but I do think it can be avoided if userspace must either remap the
-hva or define a new KVM memslot (new gpa->hva), both of which will automatically
-zap any existing translations.
-
-Aha, thought of a concrete problem.  If KVM maps PageGuest() into shared memory,
-then KVM must ensure that the page is not mapped private via a different hva/gpa,
-and is not mapped _any_ other guest because the TDX-Module's 1:1 PFN:TD+GPA
-enforcement only applies to private memory.  The explicit "VM_WRITE | VM_SHARED"
-requirement below makes me think this wouldn't be prevented.
-
-Oh, and the other nicety is that I think it would avoid having to explicitly
-handle PageGuest() memory that is being accessed from kernel/KVM, i.e. if all
-memory exposed to KVM must be !PageGuest(), then it is also eligible for
-copy_{to,from}_user().
-
-> Any feedback is welcome.
-> 
-> -------------------------------8<-------------------------------------------
-> 
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> Date: Fri, 16 Apr 2021 01:30:48 +0300
-> Subject: [PATCH] mm: Introduce guest-only pages
-> 
-> PageGuest() pages are only allowed to be used as guest memory. Userspace
-> is not allowed read from or write to such pages.
-> 
-> On page fault, PageGuest() pages produce PROT_NONE page table entries.
-> Read or write there will trigger SIGBUS. Access to such pages via
-> syscall leads to -EIO.
-> 
-> The new mprotect(2) flag PROT_GUEST translates to VM_GUEST. Any page
-> fault to VM_GUEST VMA produces PageGuest() page.
-> 
-> Only shared tmpfs/shmem mappings are supported.
-
-Is limiting this to tmpfs/shmem only for the PoC/RFC, or is it also expected to
-be the long-term behavior?
-
-> GUP normally fails on such pages. KVM will use the new FOLL_GUEST flag
-> to access them.
+DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IEFubmEsIFN1bWFuDQo+U2Vu
+dDogV2VkbmVzZGF5LCBNYXkgMjYsIDIwMjEgMTowMSBQTQ0KPg0KPkhpIEdvd3RoYW0sDQo+DQo+
+T24gNS8yNi8yMSAxMjoyMCBQTSwgR293dGhhbSBUYW1tYW5hIHdyb3RlOg0KPj4gV2l0aCBbMV0g
+VVNCNCBkZXZpY2Ugbm9kZSBnb3QgZGVmaW5lZCBpbiBkcmE3NHguZHRzaSBmaWxlLiBIb3dldmVy
+LA0KPj4gdGhlcmUgd2FzIGEgcHJpb3IgZGVmaW50aW9uIG9mIHRoZSBzYW1lIGluIFsyXSB3aGlj
+aCBkaWRuJ3QgZ2V0IHJlbW92ZWQNCj4NCj5JIGxpa2UgdGhpcyBhcHByb2FjaCBhbmQgaXMgbW9y
+ZSBpbiBsaW5lIHdpdGggdGhlIG9yaWdpbmFsIG1vdmUgb2YgVVNCNA0KPm5vZGUNCj5pbnRvIGRy
+YTc0eC5kdHNpIGZpbGUuDQo+DQo+TG9va3MgbGlrZSB5b3UgbWl4ZWQgdXAgWzFdIGFuZCBbMl0g
+b3IgSSBtaXN1bmRlcnN0YW5kIHlvdXIgdGVybWlub2xvZ3kuDQoNClllcywgMSBhbmQgMiBnb3Qg
+bWl4ZWQgdXAgaGVyZS4gV2lsbCBwb3N0IGEgdjMuDQoNCj5BbHNvLA0KPmxldCdzIGJlIHByZWNp
+c2UsIGl0IGlzIHRoZSBVU0I0IHRhcmdldC1tb2R1bGUgbm9kZSB0aGF0IGdvdCBkdXBsaWNhdGVk
+IGluDQo+WzJdLA0KPlVTQjQgbm9kZSBhbHdheXMgZXhpc3RlZCBidXQgb3V0c2lkZSBvZiB0aS1z
+eXNjIGNvbnRyb2wgYmVmb3JlIFsyXSBhbmQgZGlkDQo+bm90DQo+Y29uZmxpY3Qgd2l0aCB0aGUg
+dGFyZ2V0LW1vZHVsZSBub2RlIGFkZGVkIGluIFsxXS4NCj4NCj4+IGNhdXNpbmcgYm9vdCBmYWls
+dXJlcy4NCj4NCj5vbiB3aGF0IGJvYXJkcz8gSXMgaXQgYWZmZWN0aW5nIGFsbCBvZiB0aGVtPw0K
+DQpJIGhhdmUgYSBkcmE3LWV2bSBib2FyZCBhbmQgc2VlIGZhaWx1cmUgb24gaXQuIFRoaXMgc2hv
+dWxkIGFsc28gYWZmZWN0DQpEcmE3Ni1ldm0sIGFtNTcyeCBiZWFnbGUgYm9hcmRzLCBhbTU3NHgg
+YXMgdGhleSBhbGwgcHVsbCBpbiBkcmE3NHguZHRzaS4NCldpbGwgbWVudGlvbiB0aGVzZSBpbiB0
+aGUgdjMgdXBkYXRlLg0KDQpUaGFua3MsDQpHb3d0aGFtIA0KDQo+IFVTQjQgbm9kZSBpcyBwcmVz
+ZW50IG9ubHkgaW4gRFJBNzR4IHZhcmlhbnRzIHNvDQo+PiBrZWVwaW5nIHRoZSBlbnRyeSBpbiBk
+cmE3NHguZHRzaSBhbmQgcmVtb3ZpbmcgaXQgZnJvbSB0aGUgdG9wIGxldmVsDQo+PiBpbnRlcmNv
+bm5lY3QgaGllcmFyY2h5IGRyYTctbDQuZHRzaSBmaWxlLg0KPj4NCj4+IFNpbmNlIFVTQjQgaXMg
+b25seSBpbmNsdWRlZCBpbiBEUkE3NHggdmFyaWFudHMsIHJlbW92ZSBpdHMgcmVmZXJlbmNlDQo+
+PiBmb3IgQU01NzE4LCBEUkE3MXggYW5kIERSNzJ4IGJvYXJkcy4NCj4+DQo+PiBbMV06IGNvbW1p
+dCA1NDlmY2UwNjhhMzExICgiQVJNOiBkdHM6IGRyYTc6IEFkZCBsNCBpbnRlcmNvbm5lY3QNCj4+
+IGhpZXJhcmNoeSBhbmQgdGktc3lzYyBkYXRhIikNCj4+IFsyXTogY29tbWl0IGM3YjcyYWJjYTYx
+ZWMgKCJBUk06IE9NQVAyKzogRHJvcCBsZWdhY3kgcGxhdGZvcm0gZGF0YSBmb3INCj4+IGRyYTcg
+ZHdjMyIpDQo+Pg0KPj4gRml4ZXM6IGM3YjcyYWJjYTYxZWMgKCJBUk06IE9NQVAyKzogRHJvcCBs
+ZWdhY3kgcGxhdGZvcm0gZGF0YSBmb3IgZHJhNw0KPmR3YzMiKQ0KPj4gU2lnbmVkLW9mZi1ieTog
+R293dGhhbSBUYW1tYW5hIDxnLXRhbW1hbmFAdGkuY29tPg0KPj4gLS0tDQo+PiB2MjoNCg==
