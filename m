@@ -2,146 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A563911F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0B43911F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhEZIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:08:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229594AbhEZIIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:08:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622016433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qXmMuXVb6tV490lrV7VKGSnEUHok9pVADTgbbHbkGj0=;
-        b=byko318foULpGG7GZ3OWDvHxPsWBem5g9+z9gGjWRMD+LptxjXyviyALYgvIV8V3Jn4jqK
-        Mf9/WFdIgipjTioENvYUaENEIyaKjthC2lozWQiykTqjbzlp7OFg1ohnpv8CwMVO7e6hMO
-        RlWRAvAcWyxWT6x7x04GrM2S+eppswI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C683BAFA9;
-        Wed, 26 May 2021 08:07:13 +0000 (UTC)
-Date:   Wed, 26 May 2021 10:07:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v1] drivers/base/memory: fix trying offlining memory
- blocks with memory holes on aarch64
-Message-ID: <YK4BsAXQuh+QDy08@dhcp22.suse.cz>
-References: <20210526075226.5572-1-david@redhat.com>
+        id S232473AbhEZIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:09:18 -0400
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:38163 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229594AbhEZIJR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:09:17 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 4A7B41C3FDB
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:07:45 +0100 (IST)
+Received: (qmail 9993 invoked from network); 26 May 2021 08:07:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 May 2021 08:07:45 -0000
+Date:   Wed, 26 May 2021 09:07:41 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <20210526080741.GW30378@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210526075226.5572-1-david@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26-05-21 09:52:26, David Hildenbrand wrote:
-> offline_pages() properly checks for memory holes and bails out. However,
-> we do a page_zone(pfn_to_page(start_pfn)) before calling offline_pages()
-> when offlining a memory block. We should not unconditionally call
-> page_zone(pfn_to_page(start_pfn)) on aarch64 in offlining code, otherwise
-> we can trigger a BUG when hitting a memory hole:
-> 
-> [  162.327720][ T1694] kernel BUG at include/linux/mm.h:1383!
-> [  162.333695][ T1694] Internal error: Oops - BUG: 0 [#1] SMP
-> [  162.339181][ T1694] Modules linked in: loop processor efivarfs ip_tables x_tables ext4 mbcache jbd2 dm_mod igb nvme i2c_algo_bit mlx5_core i2c_core nvme_core firmware_class
-> [  162.354604][ T1694] CPU: 13 PID: 1694 Comm: ranbug Not tainted 5.12.0-next-20210524+ #4
-> [  162.362601][ T1694] Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 1.6 06/28/2020
-> [  162.371116][ T1694] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [  162.377811][ T1694] pc : memory_subsys_offline+0x1f8/0x250
-> [  162.383295][ T1694] lr : memory_subsys_offline+0x1f8/0x250
-> [  162.388773][ T1694] sp : ffff80002458f8e0
-> [  162.392773][ T1694] x29: ffff80002458f8e0 x28: ffff800010914d30 x27: 0000000000000000
-> [  162.400602][ T1694] x26: 0000000000002000 x25: 1fffe00002550401 x24: ffff000012a82008
-> [  162.408431][ T1694] x23: fffffc0000000000 x22: 0000000000008000 x21: 0000000000000001
-> [  162.416259][ T1694] x20: ffffffffffffffff x19: ffff000012a82018 x18: ffff0008527b6a70
-> [  162.424086][ T1694] x17: 0000000000000000 x16: 0000000000000007 x15: 00000000000000c8
-> [  162.431914][ T1694] x14: 0000000000000000 x13: ffff800011c6eea4 x12: ffff60136ceb8574
-> [  162.439742][ T1694] x11: 1fffe0136ceb8573 x10: ffff60136ceb8573 x9 : dfff800000000000
-> [  162.447570][ T1694] x8 : ffff009b675c2b9b x7 : 0000000000000001 x6 : ffff009b675c2b98
-> [  162.455398][ T1694] x5 : 00009fec93147a8d x4 : ffff009b675c2b98 x3 : 1fffe0010a4f6c09
-> [  162.463226][ T1694] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000034
-> [  162.471054][ T1694] Call trace:
-> [  162.474186][ T1694]  memory_subsys_offline+0x1f8/0x250
-> [  162.479318][ T1694]  device_offline+0x154/0x1d8
-> [  162.483844][ T1694]  online_store+0xa4/0x118
-> [  162.488107][ T1694]  dev_attr_store+0x44/0x78
-> [  162.492457][ T1694]  sysfs_kf_write+0xe8/0x138
-> [  162.496896][ T1694]  kernfs_fop_write_iter+0x26c/0x3d0
-> [  162.502028][ T1694]  new_sync_write+0x2bc/0x4f8
-> [  162.506552][ T1694]  vfs_write+0x718/0xc88
-> [  162.510643][ T1694]  ksys_write+0xf8/0x1e0
-> [  162.514732][ T1694]  __arm64_sys_write+0x74/0xa8
-> [  162.519342][ T1694]  invoke_syscall.constprop.0+0x78/0x1e8
-> [  162.524824][ T1694]  do_el0_svc+0xe4/0x298
-> [  162.528914][ T1694]  el0_svc+0x20/0x30
-> [  162.532658][ T1694]  el0_sync_handler+0xb0/0xb8
-> [  162.537181][ T1694]  el0_sync+0x178/0x180
-> [  162.541187][ T1694] Code: f00033e1 91318021 91090021 97e38d8b (d4210000)
-> [  162.547968][ T1694] ---[ end trace 2a1964462a219f20 ]---
-> [  162.553273][ T1694] Kernel panic - not syncing: Oops - BUG: Fatal exception
-> [  162.560250][ T1694] SMP: stopping secondary CPUs
-> [  162.564871][ T1694] Kernel Offset: disabled
-> [  162.569045][ T1694] CPU features: 0x00000251,20000846
-> [  162.574089][ T1694] Memory Limit: none
-> [  162.577849][ T1694] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal exception ]---
-> 
-> If nr_vmemmap_pages is set, we know that we are dealing with hotplugged
-> memory that doesn't have any holes. So call
-> page_zone(pfn_to_page(start_pfn)) only when really necessary -- when
-> nr_vmemmap_pages is set and we actually adjust the present pages.
-> 
-> Fixes: a08a2ae34613 ("mm,memory_hotplug: allocate memmap from the added memory range")
-> Reported-by: Qian Cai (QUIC) <quic_qiancai@quicinc.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Michal Suchanek reported the following problem with linux-next
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+  [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
+  [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
+...
+  [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+  [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
+  [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
+  [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
+  [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+  [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
+  [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+  [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
+  [   26.147816] Freeing unused decrypted memory: 2036K
+  [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+  [   26.165776] Write protecting the kernel read-only data: 26624k
+  [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
+  [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
+  [   26.187031] Run /init as init process
+  [   26.190693]   with arguments:
+  [   26.193661]     /init
+  [   26.195933]   with environment:
+  [   26.199079]     HOME=/
+  [   26.201444]     TERM=linux
+  [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
+  [   26.254154] BPF:      type_id=35503 offset=178440 size=4
+  [   26.259125] BPF:
+  [   26.261054] BPF:Invalid offset
+  [   26.264119] BPF:
+  [   26.264119]
+  [   26.267437] failed to validate module [efivarfs] BTF: -22
 
-Thanks!
+Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
+per-cpu list protection to local_lock" currently staged in mmotm. In his
+own words
 
-> ---
->  drivers/base/memory.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-> index b31b3af5c490..d5ffaab3cb61 100644
-> --- a/drivers/base/memory.c
-> +++ b/drivers/base/memory.c
-> @@ -218,14 +218,14 @@ static int memory_block_offline(struct memory_block *mem)
->  	struct zone *zone;
->  	int ret;
->  
-> -	zone = page_zone(pfn_to_page(start_pfn));
-> -
->  	/*
->  	 * Unaccount before offlining, such that unpopulated zone and kthreads
->  	 * can properly be torn down in offline_pages().
->  	 */
-> -	if (nr_vmemmap_pages)
-> +	if (nr_vmemmap_pages) {
-> +		zone = page_zone(pfn_to_page(start_pfn));
->  		adjust_present_page_count(zone, -nr_vmemmap_pages);
-> +	}
->  
->  	ret = offline_pages(start_pfn + nr_vmemmap_pages,
->  			    nr_pages - nr_vmemmap_pages);
-> -- 
-> 2.31.1
+  The immediate problem is two different definitions of numa_node per-cpu
+  variable. They both are at the same offset within .data..percpu ELF
+  section, they both have the same name, but one of them is marked as
+  static and another as global. And one is int variable, while another
+  is struct pagesets. I'll look some more tomorrow, but adding Jiri and
+  Arnaldo for visibility.
 
--- 
-Michal Hocko
-SUSE Labs
+  [110907] DATASEC '.data..percpu' size=178904 vlen=303
+  ...
+        type_id=27753 offset=163976 size=4 (VAR 'numa_node')
+        type_id=27754 offset=163976 size=4 (VAR 'numa_node')
+
+  [27753] VAR 'numa_node' type_id=27556, linkage=static
+  [27754] VAR 'numa_node' type_id=20, linkage=global
+
+  [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+
+  [27556] STRUCT 'pagesets' size=0 vlen=1
+        'lock' type_id=507 bits_offset=0
+
+  [506] STRUCT '(anon)' size=0 vlen=0
+  [507] TYPEDEF 'local_lock_t' type_id=506
+
+The patch in question introduces a zero-sized per-cpu struct and while
+this is not wrong, versions of pahole prior to 1.22 (unreleased) get
+confused during BTF generation with two separate variables occupying the
+same address.
+
+This patch checks for older versions of pahole and forces struct pagesets
+to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+warning is omitted so that distributions can update pahole when 1.22
+is released.
+
+Reported-by: Michal Suchanek <msuchanek@suse.de>
+Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ lib/Kconfig.debug |  3 +++
+ mm/page_alloc.c   | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 678c13967580..f88a155b80a9 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
+ config PAHOLE_HAS_SPLIT_BTF
+ 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+ 
++config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
++	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
++
+ config DEBUG_INFO_BTF_MODULES
+ 	def_bool y
+ 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index ff8f706839ea..1d56d3de8e08 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -124,6 +124,17 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
+ 
+ struct pagesets {
+ 	local_lock_t lock;
++#if defined(CONFIG_DEBUG_INFO_BTF) &&			\
++    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
++    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
++	/*
++	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
++	 * variables and produces invalid BTF. Ensure that
++	 * sizeof(struct pagesets) != 0 for older versions of pahole.
++	 */
++	char __pahole_hack;
++	#warning "pahole too old to support zero-sized struct pagesets"
++#endif
+ };
+ static DEFINE_PER_CPU(struct pagesets, pagesets) = {
+ 	.lock = INIT_LOCAL_LOCK(lock),
