@@ -2,178 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DB3391451
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08888391453
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhEZKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:04:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28345 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233592AbhEZKEQ (ORCPT
+        id S233761AbhEZKFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233486AbhEZKFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:04:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622023365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BMCDyJ751N8hnlsCOUH+lAy3d3kC1AGxZCaqwRQmLu4=;
-        b=YugpLJ5saMSnsgtq4b5l6QQ1wH/6I0QaxkvdzC15R4mC9cjMcVGHaGnvkuH0c8LYdZ0agp
-        WpbwTbK5e830Csh4qYybJZscyzqEnKVOEmMJMUKSragLqhPsspMYl+74BF0wiPmc1oAaon
-        YF9act7kTdIq3N2Gfu/7YYSikriQVuk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-GijBgnq_Nn2oBQZCDfftCw-1; Wed, 26 May 2021 06:02:42 -0400
-X-MC-Unique: GijBgnq_Nn2oBQZCDfftCw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 914F319251CC;
-        Wed, 26 May 2021 10:02:27 +0000 (UTC)
-Received: from starship (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 358295C230;
-        Wed, 26 May 2021 10:02:24 +0000 (UTC)
-Message-ID: <572a0dbf8f656f49dfcf49596f2b6e10236ba7a9.camel@redhat.com>
-Subject: Re: [PATCH v2 5/5] KVM: x86: hyper-v: Deactivate APICv only when
- AutoEOI feature is in use
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 26 May 2021 13:02:23 +0300
-In-Reply-To: <82e2a6a0-337a-4b92-2271-493344a38960@redhat.com>
-References: <20210518144339.1987982-1-vkuznets@redhat.com>
-         <20210518144339.1987982-6-vkuznets@redhat.com>
-         <82e2a6a0-337a-4b92-2271-493344a38960@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Wed, 26 May 2021 06:05:41 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F621C061574;
+        Wed, 26 May 2021 03:04:09 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id z12so1548582ejw.0;
+        Wed, 26 May 2021 03:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=sWYmaexz2luPiKMpfqCnX/580CB+tPzQNwZHR9+Ogyo=;
+        b=PdbB8DY4k/TIB0lwvZoPwsZXAbtN4XwPmx/v+USX1E4Py+DgVAoRf3xcaHcCSHhMau
+         gVSPGH6YtDAq1LT0ABO6dQJs2thvCFX6x7Xm9+Zkf/K++a+F1x/Gw7Y1l2wZUbTthyxK
+         lD1sHhE34BOG0246w/blcwwyxIZozag17Zv4GLDcErrVvegYhMyOzeUILIdcrMq3QCGk
+         qg1GEwqfxwoo2gmQlZZ028J6+/mNLlW4deEZJlAJPBaWuKAdCZL1yAVSId2w0Ksjv8/i
+         mOreASb17a9p/61MTP0NnrIiZR4BPIxnXagYSYMIsSn3/SCwBt06W31evnrfbDh8OeUK
+         6+dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sWYmaexz2luPiKMpfqCnX/580CB+tPzQNwZHR9+Ogyo=;
+        b=FaAUVT94YM9gyIJl8BRCxpt8MRKsEdKFT3anGE2h/Ok9Zm09pmuEs49/qVT+TdwaTk
+         nBaI/1wZTKdCH7yOkhmSGt7RTr4Fq+defXiRjLR5oHyT0+Mydb6V2AJ5vpR/EqqdH5Lu
+         WkL49NgPp4LokxCfqv4AtAd4Tt+9BFODdnx5JuMh9yAY7WWaFwH0YG3Jz2Ou29wE051v
+         Q9hrajADnSe7ZHQDXKSRc3Y0UDsSiq1EqQfG6HnWtsveF/okb2DaRMYsxQIR+pjA5REy
+         UCuFuFSJuVmZS+TWiuhpSdAOwQnW4keW6kyQrVlqq9L4C+wxJos8YrjGnAxMtpKP/lr2
+         2zBQ==
+X-Gm-Message-State: AOAM533g/u8m6sAhGraiMQPkWkw3Kcc+B39zIq7hhTrsgl/iHYYfJMJc
+        hODmkO9aucFpshAawCD+CRg=
+X-Google-Smtp-Source: ABdhPJxLi+0tXUMC7tUvF08xl7sU5rZjegiy72puaZhglc4nYXlKG0C85+WdkIGxq8dkBNx7sHn36g==
+X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr32950705eja.275.1622023448116;
+        Wed, 26 May 2021 03:04:08 -0700 (PDT)
+Received: from ruhe.localdomain (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
+        by smtp.gmail.com with ESMTPSA id x9sm10611599eje.64.2021.05.26.03.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 03:04:07 -0700 (PDT)
+From:   eli.billauer@gmail.com
+To:     gregkh@linuxfoundation.org, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Eli Billauer <eli.billauer@gmail.com>
+Subject: [PATCH v5 0/2] Submission of XillyUSB driver
+Date:   Wed, 26 May 2021 13:03:09 +0300
+Message-Id: <20210526100311.56327-1-eli.billauer@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-24 at 18:21 +0200, Paolo Bonzini wrote:
-> On 18/05/21 16:43, Vitaly Kuznetsov wrote:
-> > APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
-> > SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
-> > however, possible to track whether the feature was actually used by the
-> > guest and only inhibit APICv/AVIC when needed.
-> > 
-> > TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
-> > Windows know that AutoEOI feature should be avoided. While it's up to
-> > KVM userspace to set the flag, KVM can help a bit by exposing global
-> > APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
-> > is still preferred.
-> > 
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> 
-> Should it also disable APICv unconditionally if 
-> HV_DEPRECATING_AEOI_RECOMMENDED is not in the guest CPUID?  That should 
-> avoid ping-pong between enabled and disabled APICv even in pathological 
-> cases that we cannot think about.
+From: Eli Billauer <eli.billauer@gmail.com>
 
-Probably not worth it, as the guest might still not use it.
-We already disable/enable AVIC at the rate of a few iterations
-per second when PIC sends its interrupts via ExtINT,
-and we need an interrupt window.
+This is a resubmission of the XillyUSB driver, which is the USB
+variant of the existing Xillybus driver.
 
-This is sadly something that windows still does use and
-it seems to work.
+Because these driver share some API related functions, this submission
+consists of two patches:
 
-Best regards,
-	Maxim Levitsky
+(1) A patch moving away Xillybus' class related functions to a
+    separate module file.
+(2) A patch adding the new XillyUSB driver, based upon this new
+    separate module.
 
-> 
-> Paolo
-> 
-> > ---
-> >   arch/x86/include/asm/kvm_host.h |  3 +++
-> >   arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
-> >   2 files changed, 24 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index bf5807d35339..5e03ab4c0e4f 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -936,6 +936,9 @@ struct kvm_hv {
-> >   	/* How many vCPUs have VP index != vCPU index */
-> >   	atomic_t num_mismatched_vp_indexes;
-> >   
-> > +	/* How many SynICs use 'AutoEOI' feature */
-> > +	atomic_t synic_auto_eoi_used;
-> > +
-> >   	struct hv_partition_assist_pg *hv_pa_pg;
-> >   	struct kvm_hv_syndbg hv_syndbg;
-> >   };
-> > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> > index f98370a39936..89e7d5b99279 100644
-> > --- a/arch/x86/kvm/hyperv.c
-> > +++ b/arch/x86/kvm/hyperv.c
-> > @@ -87,6 +87,10 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
-> >   static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
-> >   				int vector)
-> >   {
-> > +	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
-> > +	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
-> > +	int auto_eoi_old, auto_eoi_new;
-> > +
-> >   	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
-> >   		return;
-> >   
-> > @@ -95,10 +99,25 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
-> >   	else
-> >   		__clear_bit(vector, synic->vec_bitmap);
-> >   
-> > +	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
-> > +
-> >   	if (synic_has_vector_auto_eoi(synic, vector))
-> >   		__set_bit(vector, synic->auto_eoi_bitmap);
-> >   	else
-> >   		__clear_bit(vector, synic->auto_eoi_bitmap);
-> > +
-> > +	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
-> > +
-> > +	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
-> > +	if (!auto_eoi_old && auto_eoi_new) {
-> > +		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
-> > +			kvm_request_apicv_update(vcpu->kvm, false,
-> > +						 APICV_INHIBIT_REASON_HYPERV);
-> > +	} else if (!auto_eoi_new && auto_eoi_old) {
-> > +		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
-> > +			kvm_request_apicv_update(vcpu->kvm, true,
-> > +						 APICV_INHIBIT_REASON_HYPERV);
-> > +	}
-> >   }
-> >   
-> >   static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
-> > @@ -931,12 +950,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
-> >   
-> >   	synic = to_hv_synic(vcpu);
-> >   
-> > -	/*
-> > -	 * Hyper-V SynIC auto EOI SINT's are
-> > -	 * not compatible with APICV, so request
-> > -	 * to deactivate APICV permanently.
-> > -	 */
-> > -	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
-> >   	synic->active = true;
-> >   	synic->dont_zero_synic_pages = dont_zero_synic_pages;
-> >   	synic->control = HV_SYNIC_CONTROL_ENABLE;
-> > @@ -2198,6 +2211,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
-> >   				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
-> >   			if (!cpu_smt_possible())
-> >   				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
-> > +			if (enable_apicv)
-> > +				ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
-> >   			/*
-> >   			 * Default number of spinlock retry attempts, matches
-> >   			 * HyperV 2016.
-> > 
+Thanks,
+   Eli
 
+Eli Billauer (2):
+  char: xillybus: Move class-related functions to new xillybus_class.c
+  char: xillybus: Add driver for XillyUSB (Xillybus variant for USB)
+
+ drivers/char/xillybus/Kconfig          |   22 +-
+ drivers/char/xillybus/Makefile         |    2 +
+ drivers/char/xillybus/xillybus.h       |   10 +-
+ drivers/char/xillybus/xillybus_class.c |  263 +++
+ drivers/char/xillybus/xillybus_class.h |   30 +
+ drivers/char/xillybus/xillybus_core.c  |  181 +-
+ drivers/char/xillybus/xillyusb.c       | 2260 ++++++++++++++++++++++++
+ 7 files changed, 2599 insertions(+), 169 deletions(-)
+ create mode 100644 drivers/char/xillybus/xillybus_class.c
+ create mode 100644 drivers/char/xillybus/xillybus_class.h
+ create mode 100644 drivers/char/xillybus/xillyusb.c
+
+-- 
+2.17.1
 
