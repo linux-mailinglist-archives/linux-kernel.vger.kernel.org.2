@@ -2,202 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2B0391B06
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06FF391B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhEZPCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:02:40 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42472 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhEZPCj (ORCPT
+        id S235260AbhEZPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235007AbhEZPDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:02:39 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id 85484518f3fbafac; Wed, 26 May 2021 17:01:05 +0200
-Received: from kreacher.localnet (89-64-80-240.dynamic.chello.pl [89.64.80.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 3E7CA66971B;
-        Wed, 26 May 2021 17:01:05 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI unset
-Date:   Wed, 26 May 2021 17:01:04 +0200
-Message-ID: <4337451.LvFx2qVVIh@kreacher>
+        Wed, 26 May 2021 11:03:07 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5583C061574;
+        Wed, 26 May 2021 08:01:34 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id k14so2980016eji.2;
+        Wed, 26 May 2021 08:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3TsWKPNdt5LoO7ABzE313qIQTyyt2VgAPGd6lpsge2o=;
+        b=QasaBuqgJAviAxWemLUq3tt9sSPaR4L8Fl7du+XRFI5CWqkBkwlWLUjZxyNNFm2tAf
+         qj87iQPZKwwNf0iJ5MGm3f1nN08vK788ktlFByVA4HciNJn11C6+2NZvxWlWmjrFUEDl
+         IlRIM7Qk9NYwjeJEZg6nOgIP0qUe6+91Mi8+1C6QdhlQOR/lrupLedBIDYRj4YFuBCAm
+         HhN1GO6lJ4buAyzgdqbOtUkdYpCgQK/Oj5dEhL+qo3KACReDVytiTRwJS1pahqOJ+hGa
+         5QfYp5wx0Xxhr738LOml6BVh/2yHgdwCT/vqqlb/351ynDprJa576zgJ3wSu9V0z7ebJ
+         izwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3TsWKPNdt5LoO7ABzE313qIQTyyt2VgAPGd6lpsge2o=;
+        b=mmC1Fd0Zc38RvNxvZtKegAblpEC7VxFOep6rlcxSHmeHy5ntdyPF5tcD8xmZBKjMla
+         oC7IhYAMe+Rcjzu4cDfIX6tGfVJnOgfEOZlsvTsPinew9qdRElUbiTEp3fvtMneXCV2V
+         ZyhLGkkMFo13clH5C8V3Sytk7jqI8zPjCLYlzlyemBAt4LBcxo0kFAHiv0za9EGRFDzP
+         DEQaTWA+J/ju+mxrCggfhC+ZhNRpDV8nG66dVkiwWRi5Yaef/tbkHWNCdbcFYxdZ6ONu
+         oKozfuaU604HkgkNoP6SI8w4M6Z7FOVJbtV7qlMVTfvdzgUcswE9njvCZrp0ZmDa6rAR
+         O5ig==
+X-Gm-Message-State: AOAM531ObBDNmuFqjyyRH21y3cpHpzGephQ4XUPKVyDqIRtpgUUfQW+A
+        e5EXOmU8qTCuUKTosyzrHqc=
+X-Google-Smtp-Source: ABdhPJw1YXbIQG2PzZoC8F6kWo0NyDwmh3pZ/qDARSKKTklpPFuxXkmoob+CnsW8MeXkG4G7wpAWBQ==
+X-Received: by 2002:a17:906:c30b:: with SMTP id s11mr33876742ejz.486.1622041293205;
+        Wed, 26 May 2021 08:01:33 -0700 (PDT)
+Received: from localhost.localdomain ([188.252.220.224])
+        by smtp.googlemail.com with ESMTPSA id p10sm2045381ejc.14.2021.05.26.08.01.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 08:01:32 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH] arm64: dts: ipq8074: disable USB phy by default
+Date:   Wed, 26 May 2021 17:01:25 +0200
+Message-Id: <20210526150125.1816335-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.240
-X-CLIENT-HOSTNAME: 89-64-80-240.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdekfedgkeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdeigedrkedtrddvgedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvgedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopeihuhdrtgdrtghhvghnsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhguuhhnlhgrphesihhn
- fhhrrgguvggrugdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+One of the QUSB USB PHY-s has been left enabled by
+default, this is probably just a mistake as other
+USB PHY-s are disabled by default.
 
-One of the previous commits introducing hybrid processor support to
-intel_pstate broke build with CONFIG_ACPI unset.
+It makes no sense to have it enabled by default as
+not all board implement USB ports, so disable it.
 
-Fix that and while at it fix up empty stubs of two functions related
-to ACPI CPPC.
-
-Fixes: eb3693f0521e ("cpufreq: intel_pstate: hybrid: CPU-specific scaling factor")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Robert Marko <robimarko@gmail.com>
 ---
- drivers/cpufreq/intel_pstate.c |   97 +++++++++++++++++++++--------------------
- 1 file changed, 50 insertions(+), 47 deletions(-)
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -385,9 +385,14 @@ static int intel_pstate_get_cppc_gurante
- }
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index 555a107959831..20059d0f7d714 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -286,6 +286,7 @@ qusb_phy_0: phy@79000 {
+ 			clock-names = "cfg_ahb", "ref";
  
- #else /* CONFIG_ACPI_CPPC_LIB */
--static void intel_pstate_set_itmt_prio(int cpu)
-+static inline void intel_pstate_set_itmt_prio(int cpu)
- {
- }
-+
-+static inline int intel_pstate_get_cppc_guranteed(int cpu)
-+{
-+	return -ENOTSUPP;
-+}
- #endif /* CONFIG_ACPI_CPPC_LIB */
+ 			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
++			status = "disabled";
+ 		};
  
- static void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
-@@ -470,27 +475,6 @@ static void intel_pstate_exit_perf_limit
- 
- 	acpi_processor_unregister_performance(policy->cpu);
- }
--#else /* CONFIG_ACPI */
--static inline void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
--{
--}
--
--static inline void intel_pstate_exit_perf_limits(struct cpufreq_policy *policy)
--{
--}
--
--static inline bool intel_pstate_acpi_pm_profile_server(void)
--{
--	return false;
--}
--#endif /* CONFIG_ACPI */
--
--#ifndef CONFIG_ACPI_CPPC_LIB
--static int intel_pstate_get_cppc_guranteed(int cpu)
--{
--	return -ENOTSUPP;
--}
--#endif /* CONFIG_ACPI_CPPC_LIB */
- 
- static bool intel_pstate_cppc_perf_valid(u32 perf, struct cppc_perf_caps *caps)
- {
-@@ -505,6 +489,20 @@ static bool intel_pstate_cppc_perf_caps(
- 
- 	return caps->highest_perf && caps->lowest_perf <= caps->highest_perf;
- }
-+#else /* CONFIG_ACPI */
-+static inline void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
-+{
-+}
-+
-+static inline void intel_pstate_exit_perf_limits(struct cpufreq_policy *policy)
-+{
-+}
-+
-+static inline bool intel_pstate_acpi_pm_profile_server(void)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_ACPI */
- 
- static void intel_pstate_hybrid_hwp_perf_ctl_parity(struct cpudata *cpu)
- {
-@@ -530,7 +528,6 @@ static void intel_pstate_hybrid_hwp_perf
-  */
- static void intel_pstate_hybrid_hwp_calibrate(struct cpudata *cpu)
- {
--	struct cppc_perf_caps caps;
- 	int perf_ctl_max_phys = cpu->pstate.max_pstate_physical;
- 	int perf_ctl_scaling = cpu->pstate.perf_ctl_scaling;
- 	int perf_ctl_turbo = pstate_funcs.get_turbo();
-@@ -548,33 +545,39 @@ static void intel_pstate_hybrid_hwp_cali
- 	pr_debug("CPU%d: HWP_CAP guaranteed = %d\n", cpu->cpu, cpu->pstate.max_pstate);
- 	pr_debug("CPU%d: HWP_CAP highest = %d\n", cpu->cpu, cpu->pstate.turbo_pstate);
- 
--	if (intel_pstate_cppc_perf_caps(cpu, &caps)) {
--		if (intel_pstate_cppc_perf_valid(caps.nominal_perf, &caps)) {
--			pr_debug("CPU%d: Using CPPC nominal\n", cpu->cpu);
--
--			/*
--			 * If the CPPC nominal performance is valid, it can be
--			 * assumed to correspond to cpu_khz.
--			 */
--			if (caps.nominal_perf == perf_ctl_max_phys) {
--				intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--				return;
--			}
--			scaling = DIV_ROUND_UP(cpu_khz, caps.nominal_perf);
--		} else if (intel_pstate_cppc_perf_valid(caps.guaranteed_perf, &caps)) {
--			pr_debug("CPU%d: Using CPPC guaranteed\n", cpu->cpu);
--
--			/*
--			 * If the CPPC guaranteed performance is valid, it can
--			 * be assumed to correspond to max_freq.
--			 */
--			if (caps.guaranteed_perf == perf_ctl_max) {
--				intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--				return;
-+#ifdef CONFIG_ACPI
-+	if (IS_ENABLED(CONFIG_ACPI_CPPC_LIB)) {
-+		struct cppc_perf_caps caps;
-+
-+		if (intel_pstate_cppc_perf_caps(cpu, &caps)) {
-+			if (intel_pstate_cppc_perf_valid(caps.nominal_perf, &caps)) {
-+				pr_debug("CPU%d: Using CPPC nominal\n", cpu->cpu);
-+
-+				/*
-+				 * If the CPPC nominal performance is valid, it
-+				 * can be assumed to correspond to cpu_khz.
-+				 */
-+				if (caps.nominal_perf == perf_ctl_max_phys) {
-+					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
-+					return;
-+				}
-+				scaling = DIV_ROUND_UP(cpu_khz, caps.nominal_perf);
-+			} else if (intel_pstate_cppc_perf_valid(caps.guaranteed_perf, &caps)) {
-+				pr_debug("CPU%d: Using CPPC guaranteed\n", cpu->cpu);
-+
-+				/*
-+				 * If the CPPC guaranteed performance is valid,
-+				 * it can be assumed to correspond to max_freq.
-+				 */
-+				if (caps.guaranteed_perf == perf_ctl_max) {
-+					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
-+					return;
-+				}
-+				scaling = DIV_ROUND_UP(max_freq, caps.guaranteed_perf);
- 			}
--			scaling = DIV_ROUND_UP(max_freq, caps.guaranteed_perf);
- 		}
- 	}
-+#endif
- 	/*
- 	 * If using the CPPC data to compute the HWP-to-frequency scaling factor
- 	 * doesn't work, use the HWP_CAP gauranteed perf for this purpose with
-
-
+ 		qmp_pcie_phy0: phy@84000 {
+-- 
+2.31.1
 
