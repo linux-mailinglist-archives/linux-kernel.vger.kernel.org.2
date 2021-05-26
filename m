@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB953912CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7A63912CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhEZIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S233416AbhEZItb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbhEZItM (ORCPT
+        with ESMTP id S233125AbhEZItO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:49:12 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EE3C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:41 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so8109686wmq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:41 -0700 (PDT)
+        Wed, 26 May 2021 04:49:14 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325BCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:42 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id j14so207305wrq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:47:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hSDS0B4fQp47KmNI4VulVH8wz4wQl27Y7BX42nP21sg=;
-        b=dcN/WRihIO90bHiQ9m0MJt0eKZLdYaTMCHRtA5oqLwEwYpsQgez2GUQcn71i3ih0jW
-         plNUmFHspKhJO2iQGHv17+YcEIRq4fiTrfQWA4ghswtFulk+FsfsAv831pv8xyB2c6cG
-         owohKi5lh4ZipKQPkVyvihqIPKWE8AoypYbSepOd+/l8UozrVuWyHTfYYmlUD7EQHqgh
-         GwstL/JKm2DpxzzEzwW+FqvbzAxso9w8qJcpSNqPW1TEJ1oRqhaGLvsQWsR+yqoCTV9C
-         1/iEm0F+7DwR2FNLxuVifk5iaWQWisncmcnNFZCooBlssHa10v7lifobDNHrux6bNLiq
-         3Wcg==
+        bh=S7Vhy55irc0KIRnoY1AtIhd7OdR89vjnmNeVszJAECQ=;
+        b=eOgEFPmvC30HjVNA4Cq3235ugvwODQjfTMEVmYHNrTdvhnuoAsJejtxVRd3f8oj5Wi
+         oRQQEFGbC4NXCz0QMPmwIR9qxYU8DlpvdkfUMHtBfcdLhB4yMFUMnzwNIY9CtmqCJTHl
+         O+HbpzWWWcraBqJj1gRG9fQMp6wrPlO13d0Bi4B96ycuqw9dL+o0N7dsrc6tiDzncxrL
+         HsIEr8NJ/tttK8hTKWsYTDcPjNF/E2lrmYRacRhA6AgqtomdIxPuOSSeTso+7plsZXSX
+         OwoSpcUV7EtXkzV5ljXXYXBGzsjWUHAErFwWrwqJ44PkNDBRO9w9EIZjfw5teG+aul48
+         hnlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hSDS0B4fQp47KmNI4VulVH8wz4wQl27Y7BX42nP21sg=;
-        b=fU8iSZz3qb5SPf7TDS/OdNEXDmnrBNPRGxEZfIxoybMmnRJI/wZ9o71Zl5/whhWKl9
-         jHZGkOiPumjF7LDb/PrE8viyRSDQOqPKJzqz1eq7RI6503OKKDktfEBT6nJb7UDJTjEb
-         F1pXA6k7Z543OFr4rUO7BGP2O4Rsl2A8MDVio0a+TL6D6E0jleE6Fn8p1RthWOsUZR3f
-         ErmhyhHz1ag1I3fQHizQGgRULgjqBt9ixxc/4+CfOBxJu1YXFutwOjDZCfpHg83rzAji
-         xzKXRp37NXXovLvGNRZNU+QjYL62cE5qKzoe48RPrMf3mhWi3xOrcX7SCye6WfTlnsXY
-         U0CA==
-X-Gm-Message-State: AOAM5314fyd3Ox/Sgl7inzFy92KmrxLrH9BXRP+qEOXwxYi/p1ww3eWZ
-        6r22WCukjPHrKS1RDFntVf+4Ag==
-X-Google-Smtp-Source: ABdhPJzqDrnjoRziv6JoSt76RUtBnwKhDOJNyexrZdLJodTCazVGqrbE34zIibURPetmptwFMYs0jA==
-X-Received: by 2002:a05:600c:2289:: with SMTP id 9mr2320654wmf.29.1622018859683;
-        Wed, 26 May 2021 01:47:39 -0700 (PDT)
+        bh=S7Vhy55irc0KIRnoY1AtIhd7OdR89vjnmNeVszJAECQ=;
+        b=pN311T0u+sDjO5HeIKe3aRBdL1bY+sF5NE0loNwo752RNUKxeVbMsiUNLLESgjLTUl
+         WbyWjS5d8HzB8sI8fLEEyVybKWlph7zuFVnHyH6yX8+4oOf2f7+8vcF20UtHG5cC//SF
+         EOGo7/fCHqxmCeXKrqdajHpRFZYXAquKYQceE7IpIvW+IawESwADkuz90SsWbZaSJW7j
+         KGFwoOksVFEst879eG1Nx9juxyaiF3yjaSDbOYZ8zZLyF9XEgXtHaqhjjQp4KTrODyGr
+         BE7HgWzEZ70xkjUVQVBgCzMrFGUqKhPlSyASYlCLtt1jV7RAdR5C/n9fq+ehj40TJv9g
+         2f1w==
+X-Gm-Message-State: AOAM530SvSwJSV+eeS68NisSK0l2krXOcSWjpSW7o/hRndHpDpqUes4D
+        6socD4CC0pbe1GoXfWCu5eDkHA==
+X-Google-Smtp-Source: ABdhPJxE0BtwOIYQjuYn6Y7+Q6ACbzICk5aAr0XXdSoA3yVkfOmmF2TnwfLbYcp+4PimxnS4+0XwlA==
+X-Received: by 2002:adf:a2de:: with SMTP id t30mr16243809wra.104.1622018860628;
+        Wed, 26 May 2021 01:47:40 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.38
+        by smtp.gmail.com with ESMTPSA id l18sm18911918wrt.97.2021.05.26.01.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:47:39 -0700 (PDT)
+        Wed, 26 May 2021 01:47:40 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 09/34] drm/amd/display/dc/bios/command_table_helper2: Fix function name 'dal_cmd_table_helper_transmitter_bp_to_atom2()'
-Date:   Wed, 26 May 2021 09:47:01 +0100
-Message-Id: <20210526084726.552052-10-lee.jones@linaro.org>
+Subject: [PATCH 10/34] drm/amd/display/dc/bios/bios_parser: Fix formatting and misnaming issues
+Date:   Wed, 26 May 2021 09:47:02 +0100
+Message-Id: <20210526084726.552052-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526084726.552052-1-lee.jones@linaro.org>
 References: <20210526084726.552052-1-lee.jones@linaro.org>
@@ -73,7 +73,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table_helper2.c:141: warning: expecting prototype for translate_transmitter_bp_to_atom2(). Prototype was for dal_cmd_table_helper_transmitter_bp_to_atom2() instead
+ drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser.c:997: warning: expecting prototype for get_ss_info_from_table(). Prototype was for get_ss_info_from_tbl() instead
+ drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser.c:1562: warning: expecting prototype for BiosParserObject(). Prototype was for bios_parser_get_ss_entry_number() instead
+ drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser.c:1739: warning: expecting prototype for get_ss_entry_number_from_internal_ss_info_table_V3_1(). Prototype was for get_ss_entry_number_from_internal_ss_info_tbl_V3_1() instead
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -81,26 +83,45 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Lee Jones <lee.jones@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
-index 00706b072b5f8..6d2fb112ad9f9 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
-@@ -129,7 +129,7 @@ bool dal_cmd_table_helper_controller_id_to_atom2(
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
+index c67d21a5ee52f..9b8ea6e9a2b96 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
+@@ -979,7 +979,7 @@ static enum bp_result get_ss_info_from_internal_ss_info_tbl_V2_1(
+ 	struct spread_spectrum_info *info);
  
  /**
-- * translate_transmitter_bp_to_atom2 - Translate the Transmitter to the
-+ * dal_cmd_table_helper_transmitter_bp_to_atom2 - Translate the Transmitter to the
-  *                                     corresponding ATOM BIOS value
-  *  @t: transmitter
-  *  returns: digitalTransmitter
+- * get_ss_info_from_table
++ * get_ss_info_from_tbl
+  * Get spread sprectrum information from the ASIC_InternalSS_Info Ver 2.1 or
+  * SS_Info table from the VBIOS
+  * There can not be more than 1 entry for  ASIC_InternalSS_Info Ver 2.1 or
+@@ -1548,7 +1548,7 @@ static uint32_t get_ss_entry_number_from_ss_info_tbl(
+ 	uint32_t id);
+ 
+ /**
+- * BiosParserObject::GetNumberofSpreadSpectrumEntry
++ * bios_parser_get_ss_entry_number
+  * Get Number of SpreadSpectrum Entry from the ASIC_InternalSS_Info table from
+  * the VBIOS that match the SSid (to be converted from signal)
+  *
+@@ -1725,7 +1725,7 @@ static uint32_t get_ss_entry_number_from_internal_ss_info_tbl_v2_1(
+ 	return 0;
+ }
+ /**
+- * get_ss_entry_number_from_internal_ss_info_table_V3_1
++ * get_ss_entry_number_from_internal_ss_info_tbl_V3_1
+  * Get Number of SpreadSpectrum Entry from the ASIC_InternalSS_Info table of
+  * the VBIOS that matches id
+  *
 -- 
 2.31.1
 
