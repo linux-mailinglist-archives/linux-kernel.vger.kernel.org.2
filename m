@@ -2,150 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259FC390D22
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23B4390D29
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbhEZACM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhEZACL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:02:11 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409A8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:00:40 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id z38so15912249ybh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=OgPBD9RTWV/+yocErwSjNvY03ozhb/ZIhTE4mqMzglY=;
-        b=QogSuupoLXyFIrvXgPMsgbgsuthJBIo84vbP7rB/tLuurhhp0LcJhmarHPFsNoryFQ
-         42mnkolSR6ahg8rnHPK7IkBB/PZ7XVexz7cXHhe6MPzIcr0K0ghejT3KaYxX6JjEwiD8
-         rcV9yhnjcexreaKFtyVgCQiR5QRtvjVp7DmRlOL6bciS4PXa/OMLFNUsHkuirNNwrmVv
-         Bn2MMmK+vA+GzatXKF77ROeAap3hyKk7k8KanrJJkO/ewFZ7pioPXV4ogBQzIvpDScgV
-         YoV0qKzlmyrV88MphFr/qxsbCgtE+XRKgxZ9gOnlgIqCCt/sXQxD9VeiElItLALzOSAW
-         Y4SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=OgPBD9RTWV/+yocErwSjNvY03ozhb/ZIhTE4mqMzglY=;
-        b=eHHVqeylex/IBODDk7DmtHObjttkxelgYj5U6kW+qGvQcj1dwlMwyYgzii+yHNMHQY
-         xhxaDdXq3q7nZOEYIp1CUQg06xas9QK1PRmzClXP+1ltnWBudPK9gMVOxU0Gfl4qnVFu
-         BQ+YyJMvV6tR/W2ptammWSKbY/amo+4XVpob/tZ5r5E6QKrDCc6zKV5XnmCJBjDC4eto
-         6MaHh1xZxKDefFOIwkPiimG+irDjZ1Zu+0GM7zeO1hfNBkBIdr9g0gPEzW1BrRoAqTcN
-         VORUIJXUh9NziU7HoKdtgg1JWGLqn3G4eQOfgaAspB702dj0SDUWC7vkztgnOjekuTI2
-         La2A==
-X-Gm-Message-State: AOAM530JZ8RATxQTCe/ZhNFav5aWhv2Ws+VrqXIIAOreIX0+hgK8Ebp4
-        5zLk5cAHwGZNUCE6vCyMleoiOHln+XtOjYpTR8XJGQ==
-X-Google-Smtp-Source: ABdhPJzW+b+0ootIVJRT77W2OC01Wf6i3sBEfv820bajSe2qGZxWR2AQvY0EkjkdZvGr1uiz45DraOa6tGKNTWwbSjU=
-X-Received: by 2002:a25:734b:: with SMTP id o72mr24441243ybc.412.1621987239181;
- Tue, 25 May 2021 17:00:39 -0700 (PDT)
+        id S232296AbhEZADA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:03:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229685AbhEZACy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:02:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C34F061420;
+        Wed, 26 May 2021 00:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621987283;
+        bh=cMM7Bk50oz+P2FRsUKDbD7UktmnSmO7vUpLohfS5wTI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hDpQBCLj+QP9gqGVupCLadKq5svYg3I4rmWyMW7TxUaSHQ78Y7UWwGBra3RQvUl0r
+         joGOn/Q2fHAhfFy/BS3KGwz959mnCOySCLMfhjeItWZmltokLa9n9qOsj9bfq6bAEh
+         7NwR7C7Pfdx82TF4rd687hR2/rSlthcAheqSW9bI0tn3HP36G9kvuFxJMSgrMZSRWB
+         c1Zz0+Ze9tyYBE6KkIL55QxgbmJUo0fT2GCzkseLOzhABZhaD3mqkzYyIxUm256w8a
+         6lBFDegViAn5GEkazAN5c5H2NIUjO0+dhRZyaUmSWlKOT9CZjwOF7PdzljqzN5H4bO
+         szodhiBh/7XXA==
+Received: by mail-ed1-f49.google.com with SMTP id t15so38346174edr.11;
+        Tue, 25 May 2021 17:01:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533LhP7kU7QnIIuJJzuU0JjDD8sFQsnmn3CtuyvhhuagFJwcU3mR
+        wFRxlWLOl/JyqJyD97LPQ6impOAUf+80lg/TrA==
+X-Google-Smtp-Source: ABdhPJy1oDnaYpLU8X/cl7NIOPaEIw45IshBooChnuh12l1QRQ8hL/Z2puieZJQRDPdggduT1yMK61LXcza2N49AtaQ=
+X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr34605470edc.38.1621987282361;
+ Tue, 25 May 2021 17:01:22 -0700 (PDT)
 MIME-Version: 1.0
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 25 May 2021 17:00:03 -0700
-Message-ID: <CAGETcx_N-+7e0hgnmtuqavce0qgk7Ertf=9P-0kNZ01SOnFq_w@mail.gmail.com>
-Subject: Re: [PATCH] remoteproc: core: Invoke subdev callbacks in list order
-To:     sidgup@codeaurora.org
-Cc:     bjorn.andersson@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        psodagud@codeaurora.org, Saravana Kannan <saravanak@google.com>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20210525121448.30075-1-rex-bc.chen@mediatek.com> <20210525121448.30075-2-rex-bc.chen@mediatek.com>
+In-Reply-To: <20210525121448.30075-2-rex-bc.chen@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 26 May 2021 08:01:11 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__aasihVxC72f7b_R-=UcR85Z1G9M8TxUS9dBrad-aRxQ@mail.gmail.com>
+Message-ID: <CAAOTY__aasihVxC72f7b_R-=UcR85Z1G9M8TxUS9dBrad-aRxQ@mail.gmail.com>
+Subject: Re: [v4,PATCH 1/3] drm/mediatek: dpi dual edge sample mode support
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sending again due to accidental HTML.
+Hi, Rex:
 
-On XXXXX, Siddharth Gupta wrote:
-> On 5/24/2021 8:03 PM, Bjorn Andersson wrote:
-> > On Mon 17 May 18:08 CDT 2021, Siddharth Gupta wrote:
-> >
-> >> Subdevices at the beginning of the subdev list should have
-> >> higher priority than those at the end of the list. Reverse
-> >> traversal of the list causes priority inversion, which can
-> >> impact the performance of the device.
-> >>
-> > The subdev lists layers of the communication onion, we bring them up
-> > inside out and we take them down outside in.
-> >
-> > This stems from the primary idea that we want to be able to shut things
-> > down cleanly (in the case of a stop) and we pass the "crashed" flag to
-> > indicate to each recipient during "stop" that it may not rely on the
-> > response of a lower layer.
-> >
-> > As such, I don't think it's right to say that we have a priority
-> > inversion.
-> My understanding of the topic was that each subdevice should be
-> independent of the other. In our case unfortunately the sysmon
-> subdevice depends on the glink endpoint.
-
-In that case, the glink has to be prepared/started before sysmon, right?
-
+Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8825=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:15=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
-> However the priority inversion doesn't happen in these
-> subdevices, it happens due to the SSR notifications that we send
-> to kernel clients. In this case kernel clients also can have QMI
-> sockets that in turn depend on the glink endpoint, which means
-> when they go to release the QMI socket a broadcast will be sent
-> out to all connected clients about the closure of the connection
-> which in this case happens to be the remoteproc which died. So
-> if we peel the onion, we will be unnecessarily be waiting for a
-> dead remoteproc.
+> DPI can sample on falling, rising or both edge.
+> When DPI sample the data both rising and falling edge.
+> It can reduce half data io pins.
+> Use num_output_fmts to determine whether it is dual edge mode.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dpi.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
+k/mtk_dpi.c
+> index bea91c81626e..d3b883c97aaf 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -83,6 +83,7 @@ struct mtk_dpi {
+>         struct pinctrl *pinctrl;
+>         struct pinctrl_state *pins_gpio;
+>         struct pinctrl_state *pins_dpi;
+> +       bool ddr_edge_sel;
 
-So why can't the QMI layer be smart about this and check that the
-remoteproc hasn't crashed before you try to communicate with it? Or if
-the glink is torn down before QMI gets to broadcast, then it's a
-pretty clear indication of failure and just notify all the kernel side
-QMI clients?
+I would like to keep output_fmt instead of ddr_edge_sel.
+Initialize output_fmt to MEDIA_BUS_FMT_RGB888_1X24 in this patch.
 
-> >
-> >> For example a device adds the glink, sysmon and ssr subdevs
-> >> to its list. During a crash the ssr notification would go
-> >> before the glink and sysmon notifications. This can cause a
-> >> degraded response when a client driver waits for a response
-> >> from the crashed rproc.
-> >>
-> > In general the design is such that components are not expected to
-> > communicate with the crashed remote when "crashed" is set, this avoids
-> > the single-remote crash.
-> Here the glink device on the rpmsg bus won't know about the
-> crashed remoteproc till we send glink notification first, right?
+>         int refcount;
+>  };
+>
+> @@ -122,6 +123,8 @@ struct mtk_dpi_conf {
+>         u32 reg_h_fre_con;
+>         u32 max_clock_khz;
+>         bool edge_sel_en;
+> +       const u32 *output_fmts;
+> +       u32 num_output_fmts;
 
-Why not just query the current state of the remote proc before trying
-to talk to it? It should be a quick check.
+Move these to next patch.
 
-> Since we send out sysmon and SSR notifications first, the glink
-> device will still be "alive" on the rpmsg bus.
-> >
-> > The case where this isn't holding up is when two remote processors
-> > crashes simultaneously, in which case e.g. sysmon has been seen hitting
-> > its timeout waiting for an ack from a dead remoteproc - but I was under
-> > the impression that this window shrunk dramatically as a side effect of
-> > us fixing the notification ordering.
-> You are right, the window would become smaller in the case of two
-> remoteprocs, but this issue can come up with even a single
-> remoteproc unless prioritize certain subdevices.
+>  };
+>
+>  static void mtk_dpi_mask(struct mtk_dpi *dpi, u32 offset, u32 val, u32 m=
+ask)
+> @@ -381,6 +384,16 @@ static void mtk_dpi_config_color_format(struct mtk_d=
+pi *dpi,
+>         }
+>  }
+>
+> +static void mtk_dpi_dual_edge(struct mtk_dpi *dpi)
+> +{
+> +       if (dpi->conf->num_output_fmts > 1) {
+> +               mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE,
+> +                            DDR_EN | DDR_4PHASE);
+> +               mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING,
+> +                            dpi->ddr_edge_sel ? EDGE_SEL : 0, EDGE_SEL);
+> +       }
 
-I think the main problem you have here is rproc sub devices that
-depend on other rproc sub devices. But there's no dependency tracking
-here. Your change just happens to work for your specific case because
-the order of the sub devices in the list happens to work for your
-inter-subdevice dependencies. But this is definitely not going to work
-for all users of subdevices.
+if (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_LE) ||
+   (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_BE) {
+    mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE, DDR_EN |
+DDR_4PHASE);
+    mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING,
+                             dpi->output_fmt =3D=3D
+MEDIA_BUS_FMT_RGB888_2X12_LE ? EDGE_SEL : 0, EDGE_SEL);
+} else {
+    mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE, 0);
+}
 
-If keeping track of dependency is too much complexity (I haven't read
-enough rproc code to comment on that), at the least, it looks like you
-need another ops instead of changing the order of stop() callbacks. Or
-at a minimum pick the ordering based on the "crashed" flag. A blanket,
-I'll just switch the ordering of stop() for everyone for all cases is
-wrong.
+> +}
+> +
+>  static void mtk_dpi_power_off(struct mtk_dpi *dpi)
+>  {
+>         if (WARN_ON(dpi->refcount =3D=3D 0))
+> @@ -455,7 +468,8 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *d=
+pi,
+>         pll_rate =3D clk_get_rate(dpi->tvd_clk);
+>
+>         vm.pixelclock =3D pll_rate / factor;
+> -       clk_set_rate(dpi->pixel_clk, vm.pixelclock);
+> +       clk_set_rate(dpi->pixel_clk,
+> +                    vm.pixelclock * ((dpi->conf->num_output_fmts > 1) ? =
+2 : 1));
 
-In fact, in the normal/clean shutdown case, I'd think you'll want to
-stop the subdevices in reverse initialization order so that you can
-cleanly stop QMI/sysmon first before shutting down glink.
+if (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_LE) ||
+   (dpi->output_fmt =3D=3D MEDIA_BUS_FMT_RGB888_2X12_BE)
+    clk_set_rate(dpi->pixel_clk, vm.pixelclock * 2);
+else
+    clk_set_rate(dpi->pixel_clk, vm.pixelclock);
 
--Saravana
+>         vm.pixelclock =3D clk_get_rate(dpi->pixel_clk);
+>
+>         dev_dbg(dpi->dev, "Got  PLL %lu Hz, pixel clock %lu Hz\n",
+> @@ -519,6 +533,7 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *d=
+pi,
+>         mtk_dpi_config_yc_map(dpi, dpi->yc_map);
+>         mtk_dpi_config_color_format(dpi, dpi->color_format);
+>         mtk_dpi_config_2n_h_fre(dpi);
+> +       mtk_dpi_dual_edge(dpi);
+>         mtk_dpi_config_disable_edge(dpi);
+>         mtk_dpi_sw_reset(dpi, false);
+>
+> --
+> 2.18.0
+>
