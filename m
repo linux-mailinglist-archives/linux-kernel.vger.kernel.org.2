@@ -2,159 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993CA390FD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713B8390FD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhEZEzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:55:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49338 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230419AbhEZEzA (ORCPT
+        id S230478AbhEZE4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 00:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhEZE4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:55:00 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q4WiCI042371;
-        Wed, 26 May 2021 00:53:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7pP7CxtCt1O/THb/5YJznPuB0UF+WIAlLEPOj/s7eSw=;
- b=eFGaQfD78Z5eypmVTAEZh33A3wPaj4qdIJjAlyslxpG9m1VoZQp37oOJ0KVDO5FaCHxh
- WhaeD+Ytgov3rNfJGs7UCFKANKtdzQALtqONTiUdY/KVtdecVlBrxhAIlBUyt8G4IdBG
- 6AsQbH/skj0CrbIkIy7sye57HA6bU1KSV4sSm4vJd7MHzo1vHxLpOHb7n1mwY4vCcRaD
- Di/W5xshFKVSK4Kk+cZ++M/iNUjgmNmGtaox4tettZ/pQkU4b8reZYYue2bCZiYye1/C
- Cqam14XF8BX7goPqwdBKnKtrZ0+KzIhmLb18sNMYDBve9NnASGR8dv5J4G4vU0Xse1Tf 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38sb5jdd23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 00:53:25 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14Q4XnK1044985;
-        Wed, 26 May 2021 00:53:25 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38sb5jdd1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 00:53:25 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14Q4rN2N014268;
-        Wed, 26 May 2021 04:53:23 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 38s1r505ny-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 04:53:23 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14Q4rKO527263310
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 May 2021 04:53:20 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 78BFEAE055;
-        Wed, 26 May 2021 04:53:20 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F40D9AE045;
-        Wed, 26 May 2021 04:53:18 +0000 (GMT)
-Received: from [9.199.44.68] (unknown [9.199.44.68])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 May 2021 04:53:18 +0000 (GMT)
-Subject: Re: [PATCH] perf probe: Provide more detail with relocation warning
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
- <20210525214858.33a66846ac09e499c3268a63@kernel.org>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <05e32c82-1009-03ba-d973-8b1bc0582ce2@linux.ibm.com>
-Date:   Wed, 26 May 2021 10:23:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 26 May 2021 00:56:22 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E42CC061574;
+        Tue, 25 May 2021 21:54:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fqdsj0Jx5z9s1l;
+        Wed, 26 May 2021 14:54:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622004889;
+        bh=mky7HqGKTeYNHK+D2DYXfLXJPoLv2WLg+Sik6dMH+s0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kHZHgzRnizvbFQgE+E4o0I6I6UKtOVEVX+Q1gTIQZPIYWw/Xe6cExL6B7euTWM0GA
+         oppOGyJLyq5KyYWQoW8cwqZRL88UMR6B+9zeFY3KRbwUwKqcHwyuZMdOBq/xcL3eQY
+         qamgLWZvIzLp8VMnTOI9CL2NZTB9gBzLr9ce06BlK3GrPxP8XKx31d4rYtkEtg3RfW
+         d1FC2YvsT1l8zBh2oRv1J0VMz8c2I3nDCdyI00Se/8ibvJ8UXWIQYU6Sw8YP32OTUz
+         WtZ8OSOCTyijGcUHPvp12WrP8/fqNKsyjT6lM87geP++nRk6pqfQW5V2qZWs8ofW0o
+         yObgd0i22122A==
+Date:   Wed, 26 May 2021 14:54:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the userns tree with the origin tree
+Message-ID: <20210526145448.38544cd6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210525214858.33a66846ac09e499c3268a63@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jcXjU2DxqWhtS7Vscir9hqHWI6cJ_UIJ
-X-Proofpoint-ORIG-GUID: Byv_vLfWZbCDsBDvdzgYHT-O_FRWBwBV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_02:2021-05-25,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105260028
+Content-Type: multipart/signed; boundary="Sig_/VjAvu3bSBnh5D5=Qxdd1qE/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/VjAvu3bSBnh5D5=Qxdd1qE/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 5/25/21 6:18 PM, Masami Hiramatsu wrote:
-> On Tue, 25 May 2021 10:07:44 +0530
-> Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
-> 
->> When run as normal user with default sysctl kernel.kptr_restrict=0
->> and kernel.perf_event_paranoid=2, perf probe fails with:
->>
->>    $ ./perf probe move_page_tables
->>    Relocated base symbol is not found!
->>
->> The warning message is not much informative. The reason perf fails
->> is because /proc/kallsyms is restricted by perf_event_paranoid=2
->> for normal user and thus perf fails to read relocated address of
->> the base symbol.
->>
->> Tweaking kptr_restrict and perf_event_paranoid can change the
->> behavior of perf probe. Also, running as root or privileged user
->> works too. Add these details in the warning message.
->>
->> Plus, kmap->ref_reloc_sym might not be always set even if
->> host_machine is initialized. Above is the example of the same.
->> Remove that comment.
-> 
-> Yes, those are restricted in some cases. Anyway without priviledged
-> (super) user, perf probe can not set the probe in ftrace.
-> 
-> Hmm, I think it should check the effective user-id at first. If it
-> is not super user and the action will access tracefs and kallsyms,
-> it should warn at that point.
+Today's linux-next merge of the userns tree got a conflict in:
 
-If kptr_restrict=2, perf probe fails with same error even for root user.
-That's why I thought to just change this warning message.
+  kernel/ucount.c
 
-Different combinations of privilege, perf_event_paranoid, kptr_restrict:
+between commit:
 
-   Normal/Root user
-    |   perf_event_paranoid
-    V    V   kptr_restrict        perf probe error
-   ----------------------------------------------------------------
-    N   -1    0     Failed to open kprobe_events: Permission denied
-    N    0    0     Failed to open kprobe_events: Permission denied
-    N    1    0     Failed to open kprobe_events: Permission denied
-    N    2    0     Relocated base symbol is not found!
-   
-    N   -1    1     Relocated base symbol is not found!
-    N    0    1     Relocated base symbol is not found!
-    N    1    1     Relocated base symbol is not found!
-    N    2    1     Relocated base symbol is not found!
-   
-    N   -1    2     Relocated base symbol is not found!
-    N    0    2     Relocated base symbol is not found!
-    N    1    2     Relocated base symbol is not found!
-    N    2    2     Relocated base symbol is not found!
-   
-    R   -1    0     No error.
-    R    0    0     No error.
-    R    1    0     No error.
-    R    2    0     No error.
-   
-    R   -1    1     No error.
-    R    0    1     No error.
-    R    1    1     No error.
-    R    2    1     No error.
-   
-    R   -1    2     Relocated base symbol is not found!
-    R    0    2     Relocated base symbol is not found!
-    R    1    2     Relocated base symbol is not found!
-    R    2    2     Relocated base symbol is not found!
+  5b8fea65d197 ("fanotify: configurable limits via sysfs")
 
-Ravi
+from the origin tree and commits:
+
+  21d1c5e386bc ("Reimplement RLIMIT_NPROC on top of ucounts")
+  6e52a9f0532f ("Reimplement RLIMIT_MSGQUEUE on top of ucounts")
+  d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
+  d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
+
+from the userns tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/ucount.c
+index 8d8874f1c35e,df84a2a63926..000000000000
+--- a/kernel/ucount.c
++++ b/kernel/ucount.c
+@@@ -73,11 -79,11 +79,15 @@@ static struct ctl_table user_table[] =3D=20
+  #ifdef CONFIG_INOTIFY_USER
+  	UCOUNT_ENTRY("max_inotify_instances"),
+  	UCOUNT_ENTRY("max_inotify_watches"),
+ +#endif
+ +#ifdef CONFIG_FANOTIFY
+ +	UCOUNT_ENTRY("max_fanotify_groups"),
+ +	UCOUNT_ENTRY("max_fanotify_marks"),
+  #endif
++ 	{ },
++ 	{ },
++ 	{ },
++ 	{ },
+  	{ }
+  };
+  #endif /* CONFIG_SYSCTL */
+
+--Sig_/VjAvu3bSBnh5D5=Qxdd1qE/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCt1JgACgkQAVBC80lX
+0GwRcwf/SHLS4BHl1YFFvhkEdp6p/daDOvfOss+kz9cXJywjIsRfmMSaL1N5ECZS
+q5qmGr1jRgRzCqb5r4jYqU01/v2Pj3g7oAR4R+SudXwWYhZoRNe1d/39nHRxE1LI
+KbEAtre09GcXsGpao2VMewTRWinXHmvZMUDYtg5IutWOpUJAcca+Rden6yBNiECI
+6WTSGbv+o9Cdv3hOJRKO3vk+ag0KHLCKR1F1dk4E2LI8fKymM+mc1SV/WS1mTAUa
+mFs1UANUa1gBuasNjExJXnqKoeTio3IgVWAGeWtyLfFJSB/wdKfqXkHDSzhYR+UC
+2AU7b0hAQc7o8ArTAW4W9vEVyrllnQ==
+=WGCP
+-----END PGP SIGNATURE-----
+
+--Sig_/VjAvu3bSBnh5D5=Qxdd1qE/--
