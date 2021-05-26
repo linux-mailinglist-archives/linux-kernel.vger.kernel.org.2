@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4E83920C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A973920C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhEZTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S233595AbhEZTYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbhEZTW7 (ORCPT
+        with ESMTP id S232227AbhEZTYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:22:59 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C22FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:21:26 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id t20so1748642qtx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wI7tCNlcaTZmqH6g95a10WXByiu3PTAxzCVAG5uZNco=;
-        b=SM3f/vu2XiZrKAcI7L4W7BwbiSvj1ehZ0sxFk5BfEzmHNgjVe7BHFB9U6lkCE01h52
-         kWEj+xQnqO7fceVIc2CwmBHvDYJ536FMFmcdKNZhH/szoBmrBsS6sLB5dhe67VtEQKbn
-         ST0HkTO80trrnBilylR/5H7rQWiV/D4neNsVX08dKvlmnSM5n9ILkC1OsbKyJEHy+nt0
-         Iju4cArPuwH2Jn/2vznanYAbqSchzzPwXeQPyRid9E4ckMXp8xMY/WUBaWy2kEBavbX6
-         kOhCdvm98E6NzV8ZdCN2VpIvQ+jeilVyKIm5X4kZ0xl87sngJOcVnbb6bzVSPNz0rwj1
-         hSEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wI7tCNlcaTZmqH6g95a10WXByiu3PTAxzCVAG5uZNco=;
-        b=S3FGxHHLDy+v575OoeVIObKETZt0wqoaJOBuY3LYkN9oz0b4jTsibH04rT/bAyrXMF
-         AF2Fv/kfTMdVHamNOp/QD8367on4s5xB/yR9OKKLsNRjtV42l8ZifhBbH+eakaBGfRM6
-         r5xr/3X+PWNtamPtq+z10G22VByYnttqCllJ8qFKcIFDQbkS5f8qHNxdATIX+mI23wje
-         wNoGdHCYM4zsCTAeVtltQVBOmCmPR1CFYiu01U95vPOl/2pNnqdOVD5JcBaQ9XOYFM+D
-         2Pm3jK81N2PE+6pO2vXkGDnl3e4zh0ra22bF7AC8t6Q6HMB3Jo/oq6fUotu/1q8MkQwi
-         ecXQ==
-X-Gm-Message-State: AOAM532ofIrO7a4gNv9p2Th/xes1ObmSGnPJbjcaR+G/nRpgt9E+wdlz
-        Hu2l5vHNRujJ/nkrFWOLbU2RKg==
-X-Google-Smtp-Source: ABdhPJx3twK2Z0UVhtntwGDvGoua/9nmaJnAFQUJsqgCit0fyMZoTch2+UM/cuyHcYXCcGgh630hfw==
-X-Received: by 2002:ac8:4a0a:: with SMTP id x10mr17715979qtq.201.1622056885353;
-        Wed, 26 May 2021 12:21:25 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 127sm2172724qkl.116.2021.05.26.12.21.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 12:21:24 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1llz5n-00FI2b-Re; Wed, 26 May 2021 16:21:23 -0300
-Date:   Wed, 26 May 2021 16:21:23 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Colin King <colin.king@canonical.com>
-Cc:     =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][V2][next] mm: selftests: fix potential integer overflow
- on shift of a int
-Message-ID: <20210526192123.GE1096940@ziepe.ca>
-References: <20210526170530.3766167-1-colin.king@canonical.com>
+        Wed, 26 May 2021 15:24:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAA5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:22:31 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1llz6f-00033s-Vn; Wed, 26 May 2021 21:22:18 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:405c:46a2:a678:b7b3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9E1E762CD86;
+        Wed, 26 May 2021 19:22:15 +0000 (UTC)
+Date:   Wed, 26 May 2021 21:22:14 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v1 1/1] can: mcp251xfd: Fix header block to clarify
+ independence from OF
+Message-ID: <20210526192214.ksgyjescrtnhg5yq@pengutronix.de>
+References: <20210526191801.70012-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="35obomvnpd3qtcqc"
 Content-Disposition: inline
-In-Reply-To: <20210526170530.3766167-1-colin.king@canonical.com>
+In-Reply-To: <20210526191801.70012-1-andriy.shevchenko@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 06:05:30PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The left shift of the int mapped is evaluated using 32 bit arithmetic
-> and then assigned to an unsigned long. In the case where mapped is
-> 0x80000 when PAGE_SHIFT is 12 will lead to the upper bits being
-> sign extended in the unsigned long. Larger values can lead to an
-> int overflow. Avoid this by making mapped an unsigned long.
-> 
-> Addresses-Coverity: ("Uninitentional integer overflow")
-> Fixes: 8b2a105c3794 ("mm: selftests for exclusive device memory")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> 
-> V2: Make mapped an unsigned long rather than casting it to unsigned long
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+--35obomvnpd3qtcqc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Jason
+On 26.05.2021 22:18:01, Andy Shevchenko wrote:
+> The driver is neither dependent on OF, nor it requires any OF headers.
+> Fix header block to clarify independence from OF.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Does it already work on ACPI?
+
+Applied to linux-can-next/testing.=20
+
+thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--35obomvnpd3qtcqc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCun+QACgkQqclaivrt
+76kfAwf/aK8QV0Ce/jJmkynoxALJjqE6oQDIJvq7XXLvDqfMlfk72C/bhXrL5VFq
+28bknJrFjlOPuCrU/a4RIzbCocpIOE4EaL58HhnJ0uBGsOtNNzLP6Xsk+nm/gMio
+Fy2KSetxowpmiYQaMJNFnBfn1a+L3Gu6P0MDpYENWG+W/fdvlaxLbjd5xe5zSPFN
+wfCWyCMkhPsJVqm1eA3kO2yGE2nMMfecYAWWDSeZ8fuc+lR9xqb/5/TYXym/Tq4D
++irzNBKMR26mq2fPNumqMpXAlqnsc9euu3VufvGGV/TiIYOmxb76pXajmtJE5OgE
+vpsInk2VvqJ4VDJKmGYgzVTRWM3bBA==
+=KlTk
+-----END PGP SIGNATURE-----
+
+--35obomvnpd3qtcqc--
