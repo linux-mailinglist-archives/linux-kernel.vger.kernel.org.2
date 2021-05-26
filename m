@@ -2,159 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD556391281
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8D4391284
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhEZIoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        id S232801AbhEZIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhEZIoC (ORCPT
+        with ESMTP id S231519AbhEZIo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:44:02 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5D4C061574;
-        Wed, 26 May 2021 01:42:29 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso7167pjb.5;
-        Wed, 26 May 2021 01:42:29 -0700 (PDT)
+        Wed, 26 May 2021 04:44:27 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1328FC061574;
+        Wed, 26 May 2021 01:42:57 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id a7so267653plh.3;
+        Wed, 26 May 2021 01:42:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OUwq2bgUtD2vFnjhA9RtxuArSTkiXWylCRiYJbyEpxw=;
-        b=lYQGcQ98eSYfG8QYN1o0ZBVQAKc6Fion6TCO7Bn7+0WF+MucqwoPvBY2QdgkNrkL3p
-         om6YUNib7W7IUvzVW0Zck2u5+UoTbarKarfN+4m+xBn/u1WtIYDYFPoC4SDkrNI55GWT
-         P3T5fke3h6m7lKX/S9BbNoY3v0TP9TkhDzkJ5PoE72Y3vHLrij7PjV1fkee4HK2U5Gyn
-         V6BvR9inOQjwOhyQb8BubLm/cblJHzPh2mQ/GcydxtdJPTQAapfNjkXXAWGl23MDqJ5r
-         O7grwJ4VVK6WvwRC0sC1EXhpfsJ0DjkOi61bQo3oK9yEjeGlkxnUA6BDNPg2YzKECl0u
-         7WCA==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5RwlVOYSug509Gc2kX91BzKkmEP4KOrbTpcGxbCLpLE=;
+        b=tEOtbEnzP+JICK+N7zH7511zB6UwkgugYwApCq3TelLIE9hrcmF6aomjk6+/u6XkrG
+         6Jp5uuOhHvrqlBhcPHAMJEv1OdVXxv1A9GjcDOKHtQHZ1BN1nRD8qNGFWNrfcrV6hwF5
+         7f6hn0iqPycFewZR6tw7py+RMSoOe6QipJkDo4EoEDSQn/phPbAaCinGvPm/MhQEMxQl
+         YnEfM7Uz5M/hzUb4yDVuEuKNibNVxr8lRf3zOt21NHwgTIgmFr4OAdqPkm3WKZeXTpuO
+         z36eHVqF5RoYfb4Q9b+Z7rkv4yClYO2UZjkUacQKv9FF8a9osbx4wW0X4iUnnfs8BmiK
+         1jwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OUwq2bgUtD2vFnjhA9RtxuArSTkiXWylCRiYJbyEpxw=;
-        b=FQrdr4VOzdHn2VCr2XzQPRnIluwXU45mS8gKjvqoz4Z2K8AHz6+P1V2CahlW+TcgCK
-         75ug6pp7pqA84JFHEEtMHLodLQMLltjjsT40L70x1NH2HW76DdhvRCKsByjUtR6KPSnI
-         jFwi+OWe5EsDfQsF8fQGHO/Jd8U/Gx2qNfV+MCIg94RSb0K5x/9moxRhVogmNP9kTDUb
-         +p4HkkYCAcCzCBA19M1hMIWCXmn25nz2nk6HQ8WmHN8wsQZGEnJkaboGy0Pomh0hRcPi
-         fp9qH7KO+dW6GQEuaX5QVyflnVoD4qU8fnT2oESwPckW2MFfbOWHDyNx3KSZmQn82v6F
-         zErw==
-X-Gm-Message-State: AOAM531yx6FS1nF9K0e+MOI1CF2pH6MN/DEKbPb6da4L0mgf1YlcykbW
-        GeyHSnUlJatGielnjxVqmoAbQ4QrXtY+pDM3tKRfgMro5LY=
-X-Google-Smtp-Source: ABdhPJwMmsvrPqCqHrvrvFCPUCPiaNObxiZ1bZNQkE6kHp22zBYHB7yM1+gJCMbsf607/SMSw+vHYG7HwGxXl5bSYfE=
-X-Received: by 2002:a17:902:b18c:b029:f4:67e6:67af with SMTP id
- s12-20020a170902b18cb02900f467e667afmr34814920plr.17.1622018547863; Wed, 26
- May 2021 01:42:27 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5RwlVOYSug509Gc2kX91BzKkmEP4KOrbTpcGxbCLpLE=;
+        b=noH06DKTmqPnD6zVzub/rI0Env4Pa6N6A/7qrwTY2cteVc0JPjjPjT7pSBeoTdZsmZ
+         mUyCSdz1fP2U+wK1cyejz5D/sA7jtoNXHPKY8vcSG7GMg2vDhdtRrphPALS41B/qcQRs
+         DB2BVkc2V8sFLvpqu9l1KSfYz9Q2P6r/YtLs4+4vR1XaCZOjY+RzflzlgdAJ+2x6NE90
+         0/S9szoeu//ijLCAi+fg3s+pVm+CDXERzCykFVogRqj8BcpH5FBm5dqVh5qo9zbioBjZ
+         bsbG+QLWBXDf3MqJn0lNiKdowA9AoDItl1v6jhMkUqF5nzkjTuDCsg3H78GeBwizEBEK
+         id0w==
+X-Gm-Message-State: AOAM530wYu2qj3N4btm+ckcfZrybaJL42RWx98rWmBlt8noB5BZnaqnX
+        ZVhCdqV9wae9C+fZuJl1c1etYWExmi8=
+X-Google-Smtp-Source: ABdhPJxB2a1HvSyJn5znRWmhf5aOLrDu2VRWB2cRMzAOUPnfGYbLAAx4+qdpPffKLbJ0HAh0k/bE9w==
+X-Received: by 2002:a17:90b:81:: with SMTP id bb1mr34570730pjb.167.1622018576567;
+        Wed, 26 May 2021 01:42:56 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([154.48.252.66])
+        by smtp.gmail.com with ESMTPSA id x184sm16801191pgb.36.2021.05.26.01.42.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 01:42:56 -0700 (PDT)
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Subject: [PATCH V2 1/7] ext4: remove the 'group' parameter of ext4_trim_extent
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lishujin@kuaishou.com
+References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+Message-ID: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+Date:   Wed, 26 May 2021 16:42:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 26 May 2021 11:42:11 +0300
-Message-ID: <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 9:02 AM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
->
-> Support providing some IC specific operations at gpio_regmap registration.
->
-> Implementation of few GPIO related functionalities are likely to be
-> very IC specific. For example the pin-configuration registers and the
-> pin validity checks. Allow IC driver to provide IC specific functions
-> which gpio-regmap can utilize for these IC specific configurations.
-> This should help broaden the gpio-regmap IC coverage without the need
-> of exposing the registered gpio_chip or struct gpio_regmap to IC drivers.
->
-> The set_config and init_valid_mask are used by ROHM BD71815 GPIO driver.
-> Convert the BD71815 GPIO driver to use gpio-regmap and get rid of some
-> code. Rest of the ROHM GPIO drivers are to be reworked after the
-> mechanism of adding IC specific functions is settled.
->
-> Some preliminary discussion can be seen here:
-> https://lore.kernel.org/linux-gpio/c4faac648d3e0c7f3dcb50f7e24c8b322e8c6974.camel@fi.rohmeurope.com/
->
-> I did also prepare change where the getters for drvdata and regmap
-> are used. It can also work - but it does not scale quite as well
-> if (when) IC drivers need some register information to do custom
-> operations. Interested people can see the:
-> https://github.com/M-Vaittinen/linux/commits/gpio-regmap-getters
-> for comparison.
+Get rid of the 'group' parameter of ext4_trim_extent as we can get
+it from the 'e4b'.
 
-Entire series looks good to me,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+---
+ fs/ext4/mballoc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-> Changelog v4:
->  - Convert also the existing users.
->
-> Changelog v3:
->  - divide gpio_regmap into private part and part which contains
->    user-visible configurations. This should allow keeping the internal
->    data internal to gpio_regmap - while allowing the IC driver to re-use
->    configurations it has provided to gpio-regmap without a need of
->    storing them to private-data. Furthermore avoid implementing dummy
->    'getter-functions' for regmap, driver-data, register details,
->    firmware node etc.
->  - change devm_add_action() to devm_add_action_or_reset()
->  - the bd71815 GPIO driver, completely drop private-data.
->
-> Changelog v2:
->  - Add cover-letter
->  - Drop unnecessary checks for callback function validity
->  - drop driver_data setting function as it is likely to be a
->    race-condition-by-design
->
-> ---
->
-> Matti Vaittinen (3):
->   gpio: regmap: Support few IC specific operations
->   gpio: gpio-regmap: Use devm_add_action_or_reset()
->   gpio: bd71815: Use gpio-regmap
->
->  drivers/gpio/Kconfig                  |   1 +
->  drivers/gpio/gpio-bd71815.c           | 121 ++++-----------
->  drivers/gpio/gpio-regmap.c            | 212 +++++++++++++++-----------
->  drivers/gpio/gpio-sl28cpld.c          |   3 +-
->  drivers/pinctrl/bcm/pinctrl-bcm63xx.c |   8 +-
->  include/linux/gpio/regmap.h           |  51 +++++--
->  6 files changed, 194 insertions(+), 202 deletions(-)
->
->
-> base-commit: c4681547bcce777daf576925a966ffa824edd09d
-> --
-> 2.25.4
->
->
-> --
-> Matti Vaittinen, Linux device drivers
-> ROHM Semiconductors, Finland SWDC
-> Kiviharjunlenkki 1E
-> 90220 OULU
-> FINLAND
->
-> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-> Simon says - in Latin please.
-> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> Thanks to Simon Glass for the translation =]
-
-
-
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a02fadf..d81f1fd22 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5650,19 +5650,19 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
+  * @sb:		super block for the file system
+  * @start:	starting block of the free extent in the alloc. group
+  * @count:	number of blocks to TRIM
+- * @group:	alloc. group we are working with
+  * @e4b:	ext4 buddy for the group
+  *
+  * Trim "count" blocks starting at "start" in the "group". To assure that no
+  * one will allocate those blocks, mark it as used in buddy bitmap. This must
+  * be called with under the group lock.
+  */
+-static int ext4_trim_extent(struct super_block *sb, int start, int count,
+-			     ext4_group_t group, struct ext4_buddy *e4b)
++static int ext4_trim_extent(struct super_block *sb,
++		int start, int count, struct ext4_buddy *e4b)
+ __releases(bitlock)
+ __acquires(bitlock)
+ {
+ 	struct ext4_free_extent ex;
++	ext4_group_t group = e4b->bd_group;
+ 	int ret = 0;
+ 
+ 	trace_ext4_trim_extent(sb, group, start, count);
+@@ -5738,8 +5738,7 @@ static int ext4_trim_extent(struct super_block *sb, int start, int count,
+ 		next = mb_find_next_bit(bitmap, max + 1, start);
+ 
+ 		if ((next - start) >= minblocks) {
+-			ret = ext4_trim_extent(sb, start,
+-					       next - start, group, &e4b);
++			ret = ext4_trim_extent(sb, start, next - start, &e4b);
+ 			if (ret && ret != -EOPNOTSUPP)
+ 				break;
+ 			ret = 0;
 -- 
-With Best Regards,
-Andy Shevchenko
+1.8.3.1
