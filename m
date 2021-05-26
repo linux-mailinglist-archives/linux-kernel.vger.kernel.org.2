@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D144F391907
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CC3391929
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhEZNnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:43:10 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:55337 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233304AbhEZNnI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:43:08 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id ltmrlTu1XWkKbltmulDNIB; Wed, 26 May 2021 15:41:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622036493; bh=pbfotMPo+JMAllo3pDgMOiJij6DQTsGzbfoMYCwF3Ls=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=rk7K+ueZFEkNBksOSUjoAybneO+Rq0LeHfd/xKkT/9QveiWHWlH+win0nY+rtUMtO
-         XcUQMHrRdEmRkUIng94PerMBbrU8S+DSxHqBP83w74yn6pGASe1ZlbU8HbEyjCTiRw
-         EfG63XxjK7HLUZ7Ig5jABucImglfCa2njldHU7OZJ3oIO91LLISEoVKu6Kxe5nMqkl
-         pBF09nfw1vfUCvhdE8xX4nbYIU7DoxYFcKZ+b2pmmq/QXOIEOz2lgs7cOi/wr/IA27
-         Y1u0Ak8pj+cCItaqXVi8DY31VZ1bn4Z+XT36zrJDCYlI7+ZNkHGQEY0gczA5O7N0Jc
-         +VYtDNKTPVDFQ==
-Subject: Re: [PATCH] media: s5p-g2d: Fix a memory leak on ctx->fh.m2m_ctx
-To:     dillon.minfei@gmail.com, mchehab+huawei@kernel.org,
-        a.hajda@samsung.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1620706164-28856-1-git-send-email-dillon.minfei@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <2193bb5c-89c3-cb1a-f2ef-1389ccfb7d61@xs4all.nl>
-Date:   Wed, 26 May 2021 15:41:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S233298AbhEZNrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:47:21 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25615 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231911AbhEZNrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:47:18 -0400
+IronPort-SDR: HAHd4OXYZGQZzsrlU5qfOetqzrxPObhNYPMr/+0GtvGL74/i0iOlrqxeJjPkjRvtqqQjW2oh1L
+ bMcH+IvUivzw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="223652118"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="223652118"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 06:45:45 -0700
+IronPort-SDR: Zq9E37eXXTtYgMWB1vskizc9BgvpiWuRfQIxI5rM4wQxDbZCvWfrE9h8Od1kp6N9HNL0hzazVM
+ Vokq9syBnfIA==
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="547196605"
+Received: from gnaderi-mobl.amr.corp.intel.com ([10.209.149.159])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 06:45:29 -0700
+Message-ID: <e41df7ef5ae5f1e18e2fd6b641c8c7def52bc34e.camel@linux.intel.com>
+Subject: Re: [PATCH v2] HID: intel_ish-hid: HBM: Use connected standby state
+ bit during suspend/resume
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
+Date:   Wed, 26 May 2021 06:45:28 -0700
+In-Reply-To: <nycvar.YFH.7.76.2103191435260.12405@cbobk.fhfr.pm>
+References: <20210316202334.655760-1-srinivas.pandruvada@linux.intel.com>
+         <nycvar.YFH.7.76.2103191435260.12405@cbobk.fhfr.pm>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <1620706164-28856-1-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMxCTRiyuTgwtVFqwRQpu+18Vo3y2/UVXkddCLUmD6pyNesvtDJ5MkHefKYpjQwihlAjajaJFXuAuWwmTPkgx6KJy717o1c6d6wR4GljrlKc7jIBv7AW
- yV5M1Mv4IhpOhgFpBC1KMPJie5gl9har1+i8uRna6klut14SRKnENPzBzGXuA5gcVRT7xz5ru/2IkyDzcjzP+x0G6F4M649ysV0XQQU1r5LOhvG4LUlwIGpp
- fDaNlDjHH2R19uKC6DvtW5YajSosO9Jt5CFtmqTaO3TGIoVTGZzUXBjTMSC+MSiI1nHtNijwJXOZw1QG351SWXYGy04fu/95SByIcXfVAOz4OvRPcJelbvrE
- fqHMu3rYuEhhlgN0rYMsUQn8rfawX+27LSY7nrq4EscuJEYHheM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/2021 06:09, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
-> 
-> The m2m_ctx resources was allocated by v4l2_m2m_ctx_init() in g2d_open()
-> should be freed from g2d_release() when it's not used.
-> 
-> Fix it
-> 
-> Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
->  drivers/media/platform/s5p-g2d/g2d.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
-> index 15bcb7f6e113..0818fdd3e984 100644
-> --- a/drivers/media/platform/s5p-g2d/g2d.c
-> +++ b/drivers/media/platform/s5p-g2d/g2d.c
-> @@ -279,6 +279,9 @@ static int g2d_release(struct file *file)
->  	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
->  	v4l2_fh_del(&ctx->fh);
->  	v4l2_fh_exit(&ctx->fh);
-> +	mutex_lock(&dev->mutex);
-> +	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-> +	mutex_unlock(&dev->mutex);
+Hi Jiri,
 
-This should be moved up to just before the v4l2_ctrl_handler_free() call.
+On Fri, 2021-03-19 at 14:35 +0100, Jiri Kosina wrote:
+> On Tue, 16 Mar 2021, Srinivas Pandruvada wrote:
+> 
+> > From: Ye Xiang <xiang.ye@intel.com>
+> > 
+> > The individual sensor drivers implemented in the ISH firmware needs
+> > capability to take special actions when there is a change in the
+> > system
+> > standby state. The ISH core firmware passes this notification to
+> > individual sensor drivers in response to the OS request via
+> > connected
+> > standby bit in the SYSTEM_STATE_STATUS command.
+> > 
+> > This change sets CONNECTED_STANDBY_STATE_BIT bit to 1 during
+> > suspend
+> > callback and clears during resume callback.
+> > 
+> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> > [srinivas.pandruvada@linux.intel.com: changelog rewrite]
+> > Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > ---
+> > v2:
+> > 	changed changelog to be more clear
+> > 	Changed the name in the signed-off to match "From"
+> > 
+> >  drivers/hid/intel-ish-hid/ishtp/hbm.c | 6 +++---
+> >  drivers/hid/intel-ish-hid/ishtp/hbm.h | 1 +
+> >  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> Applied, thanks.
 
-Regards,
+I don't see this patch in 5.13-rc3. But I see in linux-next. There are
+other patches here which didn't make to 5.13-rc.
 
-	Hans
+I see them in
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/hid/hid/+/refs/heads/for-5.13/intel-ish
 
->  	kfree(ctx);
->  	v4l2_info(&dev->v4l2_dev, "instance closed\n");
->  	return 0;
+Did you decide to postpone for 5.14? It will be fine to postpone.
+
+
+Thanks,
+Srinivas
+ 
 > 
 
