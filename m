@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC33391C6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256CD391C6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 17:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbhEZPvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:51:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34076 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235264AbhEZPvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:51:19 -0400
-Received: from mail-ua1-f71.google.com ([209.85.222.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llvml-0005fx-R2
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 15:49:31 +0000
-Received: by mail-ua1-f71.google.com with SMTP id t19-20020ab021530000b029020bc458f62fso939165ual.20
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 08:49:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUY/OX0+pta5kTvyLKotdE7y+h+efskwB6GqpwrAtbE=;
-        b=tdGT/81E3gIrbyoP/7xRDVM/bfhhFgdKxSRLBeLrBw1gOA9EXob3JnqJMokA9Ig0Q6
-         bAYlAWnmcp9M19bTK3ybMldxn+BW/AkdsVsEqr8oh9GYd4YWh7YF7twa8DLWDez/zksn
-         79on+oV/PukMIkMSqBWd/8CDgGsPlzvkcgjfBohq5SDcbzRSR/BOD5byQwB5vsOM6CNx
-         B/oNNBdKwkunNKbV1qW7lITtTc1bwkZEWSPj5xt638/W8ub/FT4QFJkyrI6YNf6XTpkD
-         MGIi3LeXmd/kJUxIifC54gSeAo4Cvghnp2Ysg3latCuuAyWos9jnkun/EP6NUgUOIfaV
-         rjIA==
-X-Gm-Message-State: AOAM530t20ppi6EBHT722FWLrOeYsFc/ecwKPll+L+eDTgUT+njfLgou
-        CLlXEUwBQ2FXYB24tid7pykJ96vMVWD5xkrzLn5CBJ+9tmN7OckF6T1QUPngqyDUAxVTKqlGz+Z
-        K2qX1bSwGbfhGeRUttPEH1aJuhYe4+JMt8VB41EQZOg==
-X-Received: by 2002:a05:6102:c2:: with SMTP id u2mr31702923vsp.33.1622044170965;
-        Wed, 26 May 2021 08:49:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvefn6kxtU4lD+c0/LmjrXRf549ePApFZ2JMocX7btTNnsZ72vHEsRMfGiA3/hAMPICFaOMQ==
-X-Received: by 2002:a05:6102:c2:: with SMTP id u2mr31702889vsp.33.1622044170743;
-        Wed, 26 May 2021 08:49:30 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id o2sm2258084vsq.30.2021.05.26.08.49.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 08:49:29 -0700 (PDT)
-Subject: Re: [PATCH -next] ASoC: samsung: midas_wm1811: Fix build error when
- CONFIG_GPIOLIB is not set
-To:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Simon Shields <simon@lineageos.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-References: <20210526144339.2392592-1-weiyongjun1@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d1aad7a0-a27e-286f-1bcf-51b035d1d8ae@canonical.com>
-Date:   Wed, 26 May 2021 11:49:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233352AbhEZPvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 11:51:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235370AbhEZPvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:51:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF93161184;
+        Wed, 26 May 2021 15:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622044178;
+        bh=uyJM6RmL4VFOIpdrgSUrinaAJ058EDjZ1XMhpJ0RipY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dUE8zMqAXEPdRvMBVtCaDDomtwIkS8UIos2Vn2ggDOzI/gUAhah5INMyy7aya8QqM
+         HCbdOp6JRcQKBvw1x4BnScLAESoZEsHBW5n3VBfgBneBehi14KtfrEBo1clXAhCt7C
+         CpvUh1hf2Lz1Xfu2tKbSZwg0+L96lQxa14FY+up8=
+Date:   Wed, 26 May 2021 17:49:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linma <linma@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hao Xiong <mart1n@zju.edu.cn>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] Bluetooth: fix the erroneous flush_work() order
+Message-ID: <YK5uD/z8oQqyle3w@kroah.com>
+References: <20210525114215.141988-1-gregkh@linuxfoundation.org>
+ <87CD8C35-C7D2-4CF7-B9F9-266B3498DB94@holtmann.org>
 MIME-Version: 1.0
-In-Reply-To: <20210526144339.2392592-1-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87CD8C35-C7D2-4CF7-B9F9-266B3498DB94@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/2021 10:43, Wei Yongjun wrote:
-> Fix build error when CONFIG_GPIOLIB is not set:
+On Wed, May 26, 2021 at 05:05:50PM +0200, Marcel Holtmann wrote:
+> Hi Greg,
 > 
-> sound/soc/samsung/midas_wm1811.c: In function 'midas_fm_set':
-> sound/soc/samsung/midas_wm1811.c:205:3: error:
->  implicit declaration of function 'gpiod_set_value_cansleep';
->  did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
->   205 |   gpiod_set_value_cansleep(priv->gpio_fm_sel, 1);
->       |   ^~~~~~~~~~~~~~~~~~~~~~~~
->       |   gpio_set_value_cansleep
-> sound/soc/samsung/midas_wm1811.c: In function 'midas_probe':
-> sound/soc/samsung/midas_wm1811.c:445:22: error:
->  implicit declaration of function 'devm_gpiod_get_optional';
->  did you mean 'devm_clk_get_optional'? [-Werror=implicit-function-declaration]
->   445 |  priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
->       |                      ^~~~~~~~~~~~~~~~~~~~~~~
->       |                      devm_clk_get_optional
-
-The fix does not match the error. The consumer.h has necessary stubs for
-!GPIOLIB case.
-
-To fix this error, you do not depend on GPIOLIB, but include proper
-header (consumer.h). The dependency (with compile test) is still nice,
-but for runtime fix, not build time, which is a separate patch.
-
-
-Best regards,
-Krzysztof
-
-> sound/soc/samsung/midas_wm1811.c:445:61:
->  error: 'GPIOD_OUT_HIGH' undeclared (first use in this function);
->  did you mean 'GPIOF_INIT_HIGH'?
->   445 |  priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
->       |                                                             ^~~~~~~~~~~~~~
->       |                                                             GPIOF_INIT_HIGH
+> > From: linma <linma@zju.edu.cn>
 > 
-> Fixes: fd0ea9cd9698 ("ASoC: samsung: Add sound support for Midas boards")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  sound/soc/samsung/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> this needs a real name, but I could fix that on git am as well.
+
+"Lin Ma"
+
+> > In the cleanup routine for failed initialization of HCI device,
+> > the flush_work(&hdev->rx_work) need to be finished before the
+> > flush_work(&hdev->cmd_work). Otherwise, the hci_rx_work() can
+> > possibly invoke new cmd_work and cause a bug, like double free,
+> > in late processings.
+> > 
+> > This was assigned CVE-2021-3564.
+> > 
+> > This patch reorder the flush_work() to fix this bug.
+> > 
+> > Cc: Marcel Holtmann <marcel@holtmann.org>
+> > Cc: Johan Hedberg <johan.hedberg@gmail.com>
+> > Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: linux-bluetooth@vger.kernel.org
+> > Cc: netdev@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Lin Ma <linma@zju.edu.cn>
+> > Signed-off-by: Hao Xiong <mart1n@zju.edu.cn>
+> > Cc: stable <stable@vger.kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> > net/bluetooth/hci_core.c | 7 ++++++-
+> > 1 file changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> > index fd12f1652bdf..88aa32f44e68 100644
+> > --- a/net/bluetooth/hci_core.c
+> > +++ b/net/bluetooth/hci_core.c
+> > @@ -1610,8 +1610,13 @@ static int hci_dev_do_open(struct hci_dev *hdev)
+> > 	} else {
+> > 		/* Init failed, cleanup */
+> > 		flush_work(&hdev->tx_work);
+> > -		flush_work(&hdev->cmd_work);
+> > +		/*
+> > +		 * Since hci_rx_work() is possible to awake new cmd_work
+> > +		 * it should be flushed first to avoid unexpected call of
+> > +		 * hci_cmd_work()
+> > +		 */
 > 
-> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-> index a2221ebb1b6a..22be597b1dd9 100644
-> --- a/sound/soc/samsung/Kconfig
-> +++ b/sound/soc/samsung/Kconfig
-> @@ -228,6 +228,7 @@ config SND_SOC_SAMSUNG_ARIES_WM8994
->  config SND_SOC_SAMSUNG_MIDAS_WM1811
->  	tristate "SoC I2S Audio support for Midas boards"
->  	depends on SND_SOC_SAMSUNG
-> +	depends on GPIOLIB
->  	select SND_SAMSUNG_I2S
->  	select SND_SOC_WM8994
->  	help
-> 
+> So everything in net/ uses the comment coding style enforced with --strict.
+
+See v2 please.
+
+thanks,
+
+greg k-h
