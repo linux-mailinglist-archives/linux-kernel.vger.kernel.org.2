@@ -2,83 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF65391CB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D32391CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhEZQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235159AbhEZQJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5806613D4;
-        Wed, 26 May 2021 16:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622045261;
-        bh=j6Odz9vOMSnIs4wWXntwTwZIr6CshcRW2BHOShPDJPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rUgCR+uaaXALcZoWRgnnPpHPi975FoacDvb1MOnemnXtnzIJw6OoodjAJogz+f5Hr
-         LCGMkt0nePk8Xg4xhmvlzLQuPhuTKQM9nKSUn5tk1XvRbfM20V9tFNWQiS30yKmN0v
-         Qs0sM8xsdz0Y697b2/XcH+a/MuIqb7pDKNgNU3Oa9SKJREzdifQfQLrFV6bmUKXh8h
-         4UaVu3v1+B+ii8daplbddOL8mGcXICalVn17kYd0tbISr2zvid2Oerh51XYFu6mPk/
-         zB3UehjCy0WLcUY63OG/VbtG5QJ6eQx+iauqd6obdjMUBNnBVEkrK7MK1kIVxFhHM+
-         /VhhB7JDtKP8g==
-Date:   Wed, 26 May 2021 17:07:31 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com, Li Zefan <lizefan@huawei.com>
-Subject: Re: [PATCH v7 08/22] cpuset: Don't use the cpu_possible_mask as a
- last resort for cgroup v1
-Message-ID: <20210526160730.GC19691@willie-the-truck>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-9-will@kernel.org>
- <YK5i/GQ/30hSsYBU@hirez.programming.kicks-ass.net>
+        id S235430AbhEZQMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233502AbhEZQMI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:12:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08D2C061574;
+        Wed, 26 May 2021 09:10:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=6mUbRP+k/ElQT2NSLhhkCbG5TRmWL7xyAE+qYjqwqUI=; b=vboce95T2IrWbEooOATvKq7aYl
+        h7/8w2txIo/eztoCCL+NWWyqpztCL7qv5Rc2yvRYpP7eI34EPsTN0WFPT9pjyuQ4lNuk3KxhUeHXy
+        lo+GWFUu+AaOOMzPQ83AHGWdYk7ccRMxvGk0lVwg7NElFtEXYNtb0CRCLhN0zzWwQcHwKEuo8t3gX
+        mMpd4q3/wWMOLudD8d/14OuWG3zT2OWRzxbp8Y2VVNXG4egHge/4zTN8xF+0wnh4d59Yz7F74SUQg
+        YIreOYBnTSqnI9R/iYbbwT/RTJK9FOFEfQ3PYQMPhvw6vXVhE1/1gTohvecqurQPpXJ4GIkCK0umn
+        sHfaLpaw==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1llw71-00Fcq9-RQ; Wed, 26 May 2021 16:10:27 +0000
+Subject: Re: [PATCH] cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI
+ unset
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Chen Yu <yu.c.chen@intel.com>
+References: <4337451.LvFx2qVVIh@kreacher>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4f0f3e94-d42a-a0fd-ced6-bd1edd6d471b@infradead.org>
+Date:   Wed, 26 May 2021 09:10:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK5i/GQ/30hSsYBU@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4337451.LvFx2qVVIh@kreacher>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 05:02:20PM +0200, Peter Zijlstra wrote:
-> On Tue, May 25, 2021 at 04:14:18PM +0100, Will Deacon wrote:
-> >  void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
-> >  {
-> > +	const struct cpumask *cs_mask;
-> > +	const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
-> > +
-> >  	rcu_read_lock();
-> > +	cs_mask = task_cs(tsk)->cpus_allowed;
-> > +
-> > +	if (!is_in_v2_mode() || !cpumask_subset(cs_mask, possible_mask))
-> > +		goto unlock; /* select_fallback_rq will try harder */
-> > +
-> > +	do_set_cpus_allowed(tsk, cs_mask);
-> > +unlock:
+On 5/26/21 8:01 AM, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> 	if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask))
-> 		do_set_cpus_allowed(tsk, cs_mask);
+> One of the previous commits introducing hybrid processor support to
+> intel_pstate broke build with CONFIG_ACPI unset.
 > 
-> perhaps?
+> Fix that and while at it fix up empty stubs of two functions related
+> to ACPI CPPC.
+> 
+> Fixes: eb3693f0521e ("cpufreq: intel_pstate: hybrid: CPU-specific scaling factor")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Absolutely.
+Hi Rafael,
 
-Will
+I still have this build error:
+
+../drivers/cpufreq/intel_pstate.c: In function ‘show_base_frequency’:
+../drivers/cpufreq/intel_pstate.c:950:10: error: implicit declaration of function ‘intel_pstate_get_cppc_guranteed’; did you mean ‘intel_pstate_get_epp’? [-Werror=implicit-function-declaration]
+  ratio = intel_pstate_get_cppc_guranteed(policy->cpu);
+
+
+BTW: s/guranteed/guaranteed/g
+
+Thanks.
+
+> ---
+>  drivers/cpufreq/intel_pstate.c |   97 +++++++++++++++++++++--------------------
+>  1 file changed, 50 insertions(+), 47 deletions(-)
+> 
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -385,9 +385,14 @@ static int intel_pstate_get_cppc_gurante
+>  }
+>  
+>  #else /* CONFIG_ACPI_CPPC_LIB */
+> -static void intel_pstate_set_itmt_prio(int cpu)
+> +static inline void intel_pstate_set_itmt_prio(int cpu)
+>  {
+>  }
+> +
+> +static inline int intel_pstate_get_cppc_guranteed(int cpu)
+> +{
+> +	return -ENOTSUPP;
+> +}
+>  #endif /* CONFIG_ACPI_CPPC_LIB */
+>  
+>  static void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
+> @@ -470,27 +475,6 @@ static void intel_pstate_exit_perf_limit
+>  
+>  	acpi_processor_unregister_performance(policy->cpu);
+>  }
+> -#else /* CONFIG_ACPI */
+> -static inline void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
+> -{
+> -}
+> -
+> -static inline void intel_pstate_exit_perf_limits(struct cpufreq_policy *policy)
+> -{
+> -}
+> -
+> -static inline bool intel_pstate_acpi_pm_profile_server(void)
+> -{
+> -	return false;
+> -}
+> -#endif /* CONFIG_ACPI */
+> -
+> -#ifndef CONFIG_ACPI_CPPC_LIB
+> -static int intel_pstate_get_cppc_guranteed(int cpu)
+> -{
+> -	return -ENOTSUPP;
+> -}
+> -#endif /* CONFIG_ACPI_CPPC_LIB */
+>  
+>  static bool intel_pstate_cppc_perf_valid(u32 perf, struct cppc_perf_caps *caps)
+>  {
+> @@ -505,6 +489,20 @@ static bool intel_pstate_cppc_perf_caps(
+>  
+>  	return caps->highest_perf && caps->lowest_perf <= caps->highest_perf;
+>  }
+> +#else /* CONFIG_ACPI */
+> +static inline void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
+> +{
+> +}
+> +
+> +static inline void intel_pstate_exit_perf_limits(struct cpufreq_policy *policy)
+> +{
+> +}
+> +
+> +static inline bool intel_pstate_acpi_pm_profile_server(void)
+> +{
+> +	return false;
+> +}
+> +#endif /* CONFIG_ACPI */
+>  
+>  static void intel_pstate_hybrid_hwp_perf_ctl_parity(struct cpudata *cpu)
+>  {
+> @@ -530,7 +528,6 @@ static void intel_pstate_hybrid_hwp_perf
+>   */
+>  static void intel_pstate_hybrid_hwp_calibrate(struct cpudata *cpu)
+>  {
+> -	struct cppc_perf_caps caps;
+>  	int perf_ctl_max_phys = cpu->pstate.max_pstate_physical;
+>  	int perf_ctl_scaling = cpu->pstate.perf_ctl_scaling;
+>  	int perf_ctl_turbo = pstate_funcs.get_turbo();
+> @@ -548,33 +545,39 @@ static void intel_pstate_hybrid_hwp_cali
+>  	pr_debug("CPU%d: HWP_CAP guaranteed = %d\n", cpu->cpu, cpu->pstate.max_pstate);
+>  	pr_debug("CPU%d: HWP_CAP highest = %d\n", cpu->cpu, cpu->pstate.turbo_pstate);
+>  
+> -	if (intel_pstate_cppc_perf_caps(cpu, &caps)) {
+> -		if (intel_pstate_cppc_perf_valid(caps.nominal_perf, &caps)) {
+> -			pr_debug("CPU%d: Using CPPC nominal\n", cpu->cpu);
+> -
+> -			/*
+> -			 * If the CPPC nominal performance is valid, it can be
+> -			 * assumed to correspond to cpu_khz.
+> -			 */
+> -			if (caps.nominal_perf == perf_ctl_max_phys) {
+> -				intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
+> -				return;
+> -			}
+> -			scaling = DIV_ROUND_UP(cpu_khz, caps.nominal_perf);
+> -		} else if (intel_pstate_cppc_perf_valid(caps.guaranteed_perf, &caps)) {
+> -			pr_debug("CPU%d: Using CPPC guaranteed\n", cpu->cpu);
+> -
+> -			/*
+> -			 * If the CPPC guaranteed performance is valid, it can
+> -			 * be assumed to correspond to max_freq.
+> -			 */
+> -			if (caps.guaranteed_perf == perf_ctl_max) {
+> -				intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
+> -				return;
+> +#ifdef CONFIG_ACPI
+> +	if (IS_ENABLED(CONFIG_ACPI_CPPC_LIB)) {
+> +		struct cppc_perf_caps caps;
+> +
+> +		if (intel_pstate_cppc_perf_caps(cpu, &caps)) {
+> +			if (intel_pstate_cppc_perf_valid(caps.nominal_perf, &caps)) {
+> +				pr_debug("CPU%d: Using CPPC nominal\n", cpu->cpu);
+> +
+> +				/*
+> +				 * If the CPPC nominal performance is valid, it
+> +				 * can be assumed to correspond to cpu_khz.
+> +				 */
+> +				if (caps.nominal_perf == perf_ctl_max_phys) {
+> +					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
+> +					return;
+> +				}
+> +				scaling = DIV_ROUND_UP(cpu_khz, caps.nominal_perf);
+> +			} else if (intel_pstate_cppc_perf_valid(caps.guaranteed_perf, &caps)) {
+> +				pr_debug("CPU%d: Using CPPC guaranteed\n", cpu->cpu);
+> +
+> +				/*
+> +				 * If the CPPC guaranteed performance is valid,
+> +				 * it can be assumed to correspond to max_freq.
+> +				 */
+> +				if (caps.guaranteed_perf == perf_ctl_max) {
+> +					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
+> +					return;
+> +				}
+> +				scaling = DIV_ROUND_UP(max_freq, caps.guaranteed_perf);
+>  			}
+> -			scaling = DIV_ROUND_UP(max_freq, caps.guaranteed_perf);
+>  		}
+>  	}
+> +#endif
+>  	/*
+>  	 * If using the CPPC data to compute the HWP-to-frequency scaling factor
+>  	 * doesn't work, use the HWP_CAP gauranteed perf for this purpose with
+> 
+> 
+> 
+
+
+-- 
+~Randy
+
