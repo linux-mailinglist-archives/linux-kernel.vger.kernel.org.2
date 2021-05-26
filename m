@@ -2,227 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC15239177A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7863239176D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233613AbhEZMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:38:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45014 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233592AbhEZMhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:37:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622032578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmkLjtZEk0J2XYQxwhyJ+4yx5qdLAM2WWE6URsQGLe8=;
-        b=H3NWShnZdaTVyERXbVD/VESMq2jaNPGH5a8aCSf26OPByeHcpBApQ/zmZGZIWE9hxUSuOE
-        YT6z/6p0c5uE3PIQNzpXbTnNdsfL8kt5oc00dIm71JmbJpWTSUSCsX9ZIDHwNpwVCulfJC
-        uBoJxhrz9kpRDt0CUHmZicNPCtCL51c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-neORwOUcMwCs6hyJZTdUXw-1; Wed, 26 May 2021 08:36:16 -0400
-X-MC-Unique: neORwOUcMwCs6hyJZTdUXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 143BB108C1E4;
-        Wed, 26 May 2021 12:36:15 +0000 (UTC)
-Received: from krava (unknown [10.40.195.164])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CA7D160CCD;
-        Wed, 26 May 2021 12:36:08 +0000 (UTC)
-Date:   Wed, 26 May 2021 14:36:07 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Riccardo Mancini <rickyman7@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, Fabian Hemmer <copy@copy.sh>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Stephane Eranian <eranian@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf test: iterate over shell tests in alphabetical order
-Message-ID: <YK5AtzbM7dLzwp9A@krava>
-References: <20210525230521.244553-1-rickyman7@gmail.com>
- <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
+        id S233460AbhEZMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:37:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:43918 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233221AbhEZMhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:37:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2C7D1516;
+        Wed, 26 May 2021 05:35:45 -0700 (PDT)
+Received: from [10.163.81.152] (unknown [10.163.81.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 429983F73B;
+        Wed, 26 May 2021 05:35:43 -0700 (PDT)
+Subject: Re: [PATCH 1/1] mm/debug_vm_pgtable: fix alignment for
+ pmd/pud_advanced_tests()
+To:     Anatoly Pugachev <matorola@gmail.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>, stable@vger.kernel.org
+References: <20210525130043.186290-1-gerald.schaefer@linux.ibm.com>
+ <20210525130043.186290-2-gerald.schaefer@linux.ibm.com>
+ <CADxRZqxdPodO8y+u=R4HB_727pjmXZFt8M5PPhg_qSsT1S-saQ@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <3aadc76c-3a8c-d5d6-5ad2-e83c09f08213@arm.com>
+Date:   Wed, 26 May 2021 18:06:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUMeTC8za5wMy4syb4e_Kng9KMm2xUahm=zYkR4vb6Dfw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CADxRZqxdPodO8y+u=R4HB_727pjmXZFt8M5PPhg_qSsT1S-saQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 04:25:48PM -0700, Ian Rogers wrote:
-> On Tue, May 25, 2021 at 4:08 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> >
-> > for_each_shell_test macro iterated over all shell tests in the directory
-> > using readdir, which does not guarantee any ordering, causing
-> > problems on certain fs. However, the order in which they are visited
-> > determines the id of the test, in case one wants to run a single test.
-> >
-> > This patch replaces readdir with scandir using alphabetical sorting.
-> > This guarantees that, given the same set of tests, all machines will
-> > see the tests in the same order, and, thus, that test ids are
-> > consistent.
-> >
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
-> 
-> > ---
-> >  tools/perf/tests/builtin-test.c | 38 ++++++++++++++++++---------------
-> >  1 file changed, 21 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index c4b888f18e9ca..cbbfe48ab8029 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -510,8 +510,8 @@ static const char *shell_test__description(char *description, size_t size,
-> >         return description ? strim(description + 1) : NULL;
-> >  }
-> >
-> > -#define for_each_shell_test(dir, base, ent)    \
-> > -       while ((ent = readdir(dir)) != NULL)    \
-> > +#define for_each_shell_test(entlist, nr, base, ent)                    \
-> > +       for (int __i = 0; __i < nr && (ent = entlist[__i]); __i++)      \
-> 
-> I think this declaration of __i is okay as C99 allows declarations
-> here, but generally I don't see this style in the kernel.
 
-I think it's ok, we have some instances of this in perf already..
-otherwise we'd need to pass extra argument to the macro
 
-jirka
-
+On 5/26/21 4:57 PM, Anatoly Pugachev wrote:
+> On Tue, May 25, 2021 at 4:03 PM Gerald Schaefer
+> <gerald.schaefer@linux.ibm.com> wrote:
+>>
+>> In pmd/pud_advanced_tests(), the vaddr is aligned up to the next pmd/pud
+>> entry, and so it does not match the given pmdp/pudp and (aligned down) pfn
+>> any more.
+>>
+>> For s390, this results in memory corruption, because the IDTE instruction
+>> used e.g. in xxx_get_and_clear() will take the vaddr for some calculations,
+>> in combination with the given pmdp. It will then end up with a wrong table
+>> origin, ending on ...ff8, and some of those wrongly set low-order bits will
+>> also select a wrong pagetable level for the index addition. IDTE could
+>> therefore invalidate (or 0x20) something outside of the page tables,
+>> depending on the wrongly picked index, which in turn depends on the random
+>> vaddr.
+>>
+>> As result, we sometimes see "BUG task_struct (Not tainted): Padding
+>> overwritten" on s390, where one 0x5a padding value got overwritten with
+>> 0x7a.
+>>
+>> Fix this by aligning down, similar to how the pmd/pud_aligned pfns are
+>> calculated.
+>>
+>> Fixes: a5c3b9ffb0f40 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
+>> Cc: <stable@vger.kernel.org> # v5.9+
+>> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 > 
-> Thanks,
-> Ian
+> boot tested on sparc64 with quick run of stress-ng ( --class memory
+> --sequential -1 --timeout 10s -v --pathological --oomable
+> --metrics-brief )
+> stress-ng: debug: [371408] system: Linux ttip
+> 5.13.0-rc3-00043-gad9f25d33860-dirty #218 SMP Wed May 26 11:55:54 MSK
+> 2021 sparc64
 > 
-> >                 if (!is_directory(base, ent) && ent->d_name[0] != '.')
-> >
-> >  static const char *shell_tests__dir(char *path, size_t size)
-> > @@ -538,8 +538,9 @@ static const char *shell_tests__dir(char *path, size_t size)
-> >
-> >  static int shell_tests__max_desc_width(void)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
-> >         int width = 0;
-> > @@ -547,11 +548,11 @@ static int shell_tests__max_desc_width(void)
-> >         if (path == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(path);
-> > -       if (!dir)
-> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1)
-> >                 return -1;
-> >
-> > -       for_each_shell_test(dir, path, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
-> >                 char bf[256];
-> >                 const char *desc = shell_test__description(bf, sizeof(bf), path, ent->d_name);
-> >
-> > @@ -563,7 +564,8 @@ static int shell_tests__max_desc_width(void)
-> >                 }
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> > +
-> >         return width;
-> >  }
-> >
-> > @@ -589,8 +591,9 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
-> >
-> >  static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         struct shell_test st = {
-> >                 .dir = shell_tests__dir(path_dir, sizeof(path_dir)),
-> > @@ -599,14 +602,14 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >         if (st.dir == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(st.dir);
-> > -       if (!dir) {
-> > +       n_dirs = scandir(st.dir, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1) {
-> >                 pr_err("failed to open shell test directory: %s\n",
-> >                         st.dir);
-> >                 return -1;
-> >         }
-> >
-> > -       for_each_shell_test(dir, st.dir, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, st.dir, ent) {
-> >                 int curr = i++;
-> >                 char desc[256];
-> >                 struct test test = {
-> > @@ -623,7 +626,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
-> >                 test_and_print(&test, false, -1);
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> >         return 0;
-> >  }
-> >
-> > @@ -722,19 +725,20 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
-> >
-> >  static int perf_test__list_shell(int argc, const char **argv, int i)
-> >  {
-> > -       DIR *dir;
-> > +       struct dirent **entlist;
-> >         struct dirent *ent;
-> > +       int n_dirs;
-> >         char path_dir[PATH_MAX];
-> >         const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
-> >
-> >         if (path == NULL)
-> >                 return -1;
-> >
-> > -       dir = opendir(path);
-> > -       if (!dir)
-> > +       n_dirs = scandir(path, &entlist, NULL, alphasort);
-> > +       if (n_dirs == -1)
-> >                 return -1;
-> >
-> > -       for_each_shell_test(dir, path, ent) {
-> > +       for_each_shell_test(entlist, n_dirs, path, ent) {
-> >                 int curr = i++;
-> >                 char bf[256];
-> >                 struct test t = {
-> > @@ -747,7 +751,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
-> >                 pr_info("%2d: %s\n", i, t.desc);
-> >         }
-> >
-> > -       closedir(dir);
-> > +       free(entlist);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.31.1
-> >
+> Tested-by: Anatoly Pugachev <matorola@gmail.com>
 > 
 
+spac64 does not enable ARCH_HAS_DEBUG_VM_PGTABLE, did you enable it
+before running the test ? Did the entire test debug_vm_pgtable() run
+successfully on sparc64 ?
