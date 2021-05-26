@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD34391724
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C83139172A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbhEZMPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:15:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50878 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbhEZMPB (ORCPT
+        id S234675AbhEZMPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:15:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23443 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233710AbhEZMPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:15:01 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D94A3218C8;
-        Wed, 26 May 2021 12:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622031205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 26 May 2021 08:15:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622031230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=OWYxOJflFG1uSB7U04nw20Q2EPzaSUW/18EMjnBHn1A=;
-        b=gOaVL66Aq3P2aUlbEeQW+wEVlUc1BXanRMehHFdMLOK39J4N5WAqkeSIvg0u7E8P/ppNNQ
-        /zN68cmoBtkQq3Xj/GoTnCMAQfwJqC1VEGES5gHYUx3C5405GHCav/iUgqL0kpdnodqdJf
-        sY86/wDEnMzDE8OSrf7ytnPWhEktZyE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622031205;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWYxOJflFG1uSB7U04nw20Q2EPzaSUW/18EMjnBHn1A=;
-        b=Ne14iacTkhEN/Pil8RGLPNGrqj+yL9Q9xZ2Zov5LtLIds+pF0g3EkGLAAxXnE5ectxb+sN
-        iM75pznJLEf5P2Ag==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id BD35711A98;
-        Wed, 26 May 2021 12:13:25 +0000 (UTC)
-To:     Greg KH <greg@kroah.com>
-Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, glittao@gmail.com,
-        vinmenon@codeaurora.org
-References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
- <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz> <YK41eFeL5j4qqSnV@kroah.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <0b0e5e43-2ccf-a8a4-1e3b-ab2326c55321@suse.cz>
-Date:   Wed, 26 May 2021 14:13:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        bh=qNoFfELvFXOBowDpVqibU/BlprkUeXr57Mpcat9u3YU=;
+        b=F5/XpDsgahmNcD5P77LvPGBrW1zHkWz4mNsxqvW2fxhB4uKLOyhAiGB1QFNyhHfRUeiCb7
+        +M+vDFodF0HlxiAt2WrKjlyxeQ2BBjgb26qd6wVXNZ1nP9IfxF20DdDGb2afdVXNgnrPNB
+        WmeytgVO6t7nU77vFpROmygQjPZ+A+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-SdqgycL_Mj2z5qvUf15kRw-1; Wed, 26 May 2021 08:13:48 -0400
+X-MC-Unique: SdqgycL_Mj2z5qvUf15kRw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8629A1854E4B;
+        Wed, 26 May 2021 12:13:46 +0000 (UTC)
+Received: from krava (unknown [10.40.195.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 93EBB5D9D3;
+        Wed, 26 May 2021 12:13:44 +0000 (UTC)
+Date:   Wed, 26 May 2021 14:13:43 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/2] perf inject: Call dso__put() even if dso->hit is set
+Message-ID: <YK47d3S4wGIr3lu6@krava>
+References: <20210524225051.1190486-1-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YK41eFeL5j4qqSnV@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524225051.1190486-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 1:48 PM, Greg KH wrote:
-> On Wed, May 26, 2021 at 01:38:55PM +0200, Vlastimil Babka wrote:
->> 
->> alias_list a single list and both slab_sysfs_init() and slab_debugfs_init()
->> flush it. So only the init call that happens to be called first, does actually
->> find an unflushed list. I think you
->> need to use a separate list for debugfs (simpler) or a shared list with both
->> sysfs and debugfs processing (probably more complicated).
->> 
->> And finally a question, perhaps also for Greg. With sysfs, we hand out the
->> lifecycle of struct kmem_cache to sysfs, to ensure we are not reading sysfs
->> files of a cache that has been removed.
->> 
->> But with debugfs, what are the guarantees that things won't blow up when a
->> debugfs file is being read while somebody calls kmem_cache_destroy() on the cache?
+On Mon, May 24, 2021 at 03:50:50PM -0700, Namhyung Kim wrote:
+> Otherwise it'll leak the refcount for the DSO.  As dso__put() can
+> handle a NULL dso pointer, we can just call it unconditionally.
 > 
-> It's much harder, but usually the default debugfs_file_create() will
-> handle this for you.  See the debugfs_file_create_unsafe() for the
-> "other" variant where you know you can tear things down "safely".
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Right, so IIUC debugfs will guarantee that while somebody reads the files, the
-debugfs cleanup will block, as debugfs_file_get() comment explains.
+for the patchset
 
-In that case I think we have the cleanup order wrong in this patch:
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-shutdown_cache() should first do debugfs_slab_release() (which would block) and
-only then proceed with slab_kmem_cache_release() which destroys the fundamental
-structures such as kmem_cache_node, which are also accessed by the debugfs file
-handlers.
+thanks,
+jirka
 
-> That being said, yes there are still issues in this area, be careful
-> about what tools you expect to be constantly hitting debugfs files.
-
-FWIW, the files are accessible only to root.
-
-> thanks,
+> ---
+>  tools/perf/builtin-inject.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> greg k-h
+> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> index 102cafb0c0b3..8bbaa46eb7e6 100644
+> --- a/tools/perf/builtin-inject.c
+> +++ b/tools/perf/builtin-inject.c
+> @@ -383,8 +383,8 @@ static int perf_event__repipe_buildid_mmap(struct perf_tool *tool,
+>  	if (dso && !dso->hit) {
+>  		dso->hit = 1;
+>  		dso__inject_build_id(dso, tool, machine, sample->cpumode, 0);
+> -		dso__put(dso);
+>  	}
+> +	dso__put(dso);
+>  
+>  	return perf_event__repipe(tool, event, sample, machine);
+>  }
+> @@ -447,8 +447,8 @@ static int perf_event__repipe_buildid_mmap2(struct perf_tool *tool,
+>  		dso->hit = 1;
+>  		dso__inject_build_id(dso, tool, machine, sample->cpumode,
+>  				     event->mmap2.flags);
+> -		dso__put(dso);
+>  	}
+> +	dso__put(dso);
+>  
+>  	perf_event__repipe(tool, event, sample, machine);
+>  
+> -- 
+> 2.31.1.818.g46aad6cb9e-goog
 > 
 
