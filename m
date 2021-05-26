@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C13D39223B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9A2392242
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbhEZVoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:44:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:50186 "EHLO foss.arm.com"
+        id S234160AbhEZVqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:46:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49904 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232976AbhEZVoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:44:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69F2F6D;
-        Wed, 26 May 2021 14:43:12 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCA213F73B;
-        Wed, 26 May 2021 14:43:10 -0700 (PDT)
-Date:   Wed, 26 May 2021 22:43:08 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-Message-ID: <20210526214308.GB1712@e120325.cambridge.arm.com>
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com>
- <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
- <87a6oj6sxo.mognet@arm.com>
- <20210525102945.GA24210@e120325.cambridge.arm.com>
- <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
- <20210526121546.GA13262@e120325.cambridge.arm.com>
- <1cae4fcc-d276-f66d-c094-35571233d923@arm.com>
+        id S232976AbhEZVqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 17:46:08 -0400
+IronPort-SDR: 2f5mtRAFp1Ci+PoFeo6kb2BskPfdyryZHUfTtDy0OuWIQ2ioUTjjD2aH6zYTqTo7DGA/y2pqn4
+ OUdLiyTSXwWA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182919623"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="182919623"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 14:44:36 -0700
+IronPort-SDR: GH11bSp8S/cra3Q9SJWk0U7zPh/U2jh/8L7+L0fYi1JEqVaRcM4nEUPILQLkuDrHh/SzZq/m8f
+ Tfw8nuLWGuRQ==
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="547391651"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 14:44:34 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 0BE542031C;
+        Thu, 27 May 2021 00:44:32 +0300 (EEST)
+Date:   Thu, 27 May 2021 00:44:32 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiabing Wan <kael_w@yeah.net>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] staging: media: atomisp: Align block comments
+Message-ID: <20210526214431.GJ3@paasikivi.fi.intel.com>
+References: <20210518112938.88240-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1cae4fcc-d276-f66d-c094-35571233d923@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210518112938.88240-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 08:17:25PM +0200, Dietmar Eggemann wrote:
-> On 26/05/2021 14:15, Beata Michalska wrote:
-> > On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
-> >> On 25/05/2021 12:29, Beata Michalska wrote:
-> >>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
-> >>>> On 24/05/21 23:55, Beata Michalska wrote:
-> >>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
-> >>>>>> On 24/05/21 11:16, Beata Michalska wrote:
-> 
-> [...]
-> 
-> >> static inline int
-> >> asym_cpu_capacity_classify(struct sched_domain *sd, 
-> >>                            const struct cpumask *cpu_map)
-> >> {
-> >>         int sd_span_match = 0, cpu_map_match = 0, flags = 0; 
-> >>         struct asym_cap_data *entry;
-> >>
-> >>         list_for_each_entry(entry, &asym_cap_list, link) {
-> >>                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask))
-> >>                         ++sd_span_match;
-> >>                 else if (cpumask_intersects(cpu_map, entry->cpu_mask))
-> >>                         ++cpu_map_match;
-> >>         }
-> >>
-> >>         WARN_ON_ONCE(!sd_span_match);
-> >>
-> >>         if (sd_span_match > 1) { 
-> >>                 flags |= SD_ASYM_CPUCAPACITY;
-> >>                 if (!cpu_map_match)
-> >>                         flags |= SD_ASYM_CPUCAPACITY_FULL;
-> >>         }
-> >>
-> >>         return flags;
-> >> }
-> > So I planned to drop the list_is_singular check as it is needless really.
-> > Otherwise, I am not really convinced by the suggestion. I could add comments
-> > around current version to make it more ..... 'digestible' but I'd rather
-> > stay with it as it seems more compact to me (subjective).
-> 
-> You could pass in `const struct cpumask *sd_span` instead of `struct
-> sched_domain *sd` though. To make it clear that both masks are used to
-> compare against the cpumasks of the asym_cap_list entries.
->
-I could definitely do that, though if I switch to arrays for CPUs masks,
-it might get a bit confusing again.
-No strong preferences here though. Can do either or both.
+Hi Jiabing,
 
-Thanks.
+On Tue, May 18, 2021 at 07:29:35PM +0800, Wan Jiabing wrote:
+> From: Jiabing Wan <kael_w@yeah.net>
+> 
+> Fixing the following checkpatch warning:
+> WARNING: Block comments should align the * on each line
+> 
+> Signed-off-by: Jiabing Wan <kael_w@yeah.net>
+> ---
+> Changelog:
+> v2:
+> - Fix the author style in patch.
+> ---
+>  .../atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h    | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h b/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
+> index be3534e46c15..9b22f2da45d5 100644
+> --- a/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
+> +++ b/drivers/staging/media/atomisp/pci/isp/kernels/anr/anr_1.0/ia_css_anr_types.h
+> @@ -17,8 +17,8 @@
+>  #define __IA_CSS_ANR_TYPES_H
+>  
+>  /* @file
 
----
-BR
-B.
->  static inline int
-> -asym_cpu_capacity_classify(struct sched_domain *sd,
-> +asym_cpu_capacity_classify(const struct cpumask *sd_span,
->  			   const struct cpumask *cpu_map)
->  {
->  	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> @@ -1377,14 +1378,14 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
->  		goto leave;
+Could you fix the first line, too, i.e.:
+
+/*
+ * ...
+
+> -* CSS-API header file for Advanced Noise Reduction kernel v1
+> -*/
+> + * CSS-API header file for Advanced Noise Reduction kernel v1
+> + */
 >  
->  	list_for_each_entry(entry, &asym_cap_list, link) {
-> -		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
-> +		if (cpumask_intersects(sd_span, entry->cpu_mask)) {
->  			++asym_cap_count;
->  		} else {
->  			/*
->  			 * CPUs with given capacity might be offline
->  			 * so make sure this is not the case
->  			 */
-> -			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
-> +			if (cpumask_intersects(cpu_map, entry->cpu_mask)) {
->  				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
->  				if (asym_cap_count > 1)
->  					break;
-> @@ -1395,7 +1396,6 @@ asym_cpu_capacity_classify(struct sched_domain *sd,
->  leave:
->  	return asym_cap_count > 1 ? sd_asym_flags : 0;
->  }
-> -#endif
->  
->  static inline struct asym_cap_data *
->  asym_cpu_capacity_get_data(unsigned long capacity)
-> @@ -1589,6 +1589,7 @@ sd_init(struct sched_domain_topology_level *tl,
->  	struct sd_data *sdd = &tl->data;
->  	struct sched_domain *sd = *per_cpu_ptr(sdd->sd, cpu);
->  	int sd_id, sd_weight, sd_flags = 0;
-> +	struct cpumask *sd_span;
->  
->  #ifdef CONFIG_NUMA
->  	/*
-> @@ -1636,10 +1637,11 @@ sd_init(struct sched_domain_topology_level *tl,
->  #endif
->  	};
->  
-> -	cpumask_and(sched_domain_span(sd), cpu_map, tl->mask(cpu));
-> -	sd_id = cpumask_first(sched_domain_span(sd));
-> +	sd_span = sched_domain_span(sd);
-> +	cpumask_and(sd_span, cpu_map, tl->mask(cpu));
-> +	sd_id = cpumask_first(sd_span);
->  
-> -	sd->flags |= asym_cpu_capacity_classify(sd, cpu_map);
-> +	sd->flags |= asym_cpu_capacity_classify(sd_span, cpu_map);
->  	/*
->  	 * Convert topological properties into behaviour.
->  	 */
+>  /* Application specific DMA settings  */
+>  #define ANR_BPP                 10
+
+-- 
+Kind regards,
+
+Sakari Ailus
