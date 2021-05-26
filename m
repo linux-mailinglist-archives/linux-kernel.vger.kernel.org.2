@@ -2,145 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C09390D97
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F65390D9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbhEZA4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhEZA4f (ORCPT
+        id S232656AbhEZA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:57:52 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:53162 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231373AbhEZA5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:56:35 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047F7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:55:03 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s25so40539230ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 17:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=++3NER/8q2jl+9nnQ5/5WI2wqMfqwPJ99Tc3glHslUM=;
-        b=VjgkLIxrlysMYoMxfxguP6+fPz3+tzoyDxW+tLGKvM4Y65vuxmWclT+z1Zhn1P4d8f
-         rvsA5BMANFVKhcv6feEHwSMpQfJDveH1s/tq0+02ODMg/HBhtF1pjOisvnbny+ZfpPHG
-         MfcHNTl3KK4muf9yDEnyx4bUQJEN2UxB1iybLM/H84/EqypNBUy7lTrj+l5WcKuwP4xL
-         V40H832nGd97tXYQ0qVGRGwMLqRzKv2pZhXzMGwWv8TAxbA5PXLWtC6PY7xBsHMkmEp/
-         PatYxR9wUnL+okoP3w+ZY5pcayZR6e1Y6c/5bUKTT9tWvMlDogdW6S7N1v6x+Wi8WR1+
-         Ygew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=++3NER/8q2jl+9nnQ5/5WI2wqMfqwPJ99Tc3glHslUM=;
-        b=LE8OvHjXFrxeKkhLdSe62vOfetfQR1GwqE6KTDwGJ+mBTCqqnwvwObXMvAZTxmBF5/
-         8mVkcC0G+bOK5E7LJu7YKIbkZlzrhEshAFDmLj1YuaAdWPFyTwVI48RqKuB52VeYUUWg
-         39YG7sgosf9JnUFP6nfv3eSdTk0wd/SPWPh4nj8RUM6KZIbndUlOdsatA+vQH5ke18aU
-         ITPpmJP/Mvr62YqgNjDTvR2ogfnkFQPw2IL/Nr81M+ip3IPJhZIwSw/qZhrKsY2D+k3g
-         HFZ6DhZRq72QRZSiiSHoVuMsb2Wu4hSs4VuUqOtjLBeTeLx/drE8/CF04b1A1Kab25Qi
-         fdDQ==
-X-Gm-Message-State: AOAM5303IZZwgAZP+nxdxILDyIO8znD1rfvrcNrbuD7tmEsQ94jfSzDA
-        fR7mtxHFIwV46i1thEa4yHcPTN9YtEtozg==
-X-Google-Smtp-Source: ABdhPJzMJesdN5t9gO5cn8xDGUoBVDqumulGav19HFVyEoN4ZFEsOGLQ4WBt2mpUvAwcj87zidYCWw==
-X-Received: by 2002:a2e:95cb:: with SMTP id y11mr214930ljh.461.1621990502032;
-        Tue, 25 May 2021 17:55:02 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d15sm1873714lfa.137.2021.05.25.17.55.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 17:55:01 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm: remove unneeded variable ret
-To:     Bernard Zhao <bernard@vivo.com>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210407130654.3387-1-bernard@vivo.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <dcd91b6a-7115-5018-c75c-436f20f6a63c@linaro.org>
-Date:   Wed, 26 May 2021 03:55:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 25 May 2021 20:57:47 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q0shDR029693;
+        Tue, 25 May 2021 17:56:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=pfpt0220; bh=wxenAkV1tMw7M32aV7mK5sIBBg3iM4RtcUwB2rhMyYw=;
+ b=iPYqma4pZnxxteEhy5kh2/LMvsQlaYs7igICK0SWebb9Lk6EDRSgVrpnAWXgrAKl8Nle
+ FQqODYTzGcOjAY/1VXJ+gfXeF0hVgD7g6M+txqHBTV/6szmL5UthqQRv65uCHN+L91rd
+ Ot389rfH5s27cW5DJhXa1LWxZiWs34JkNsxjLOYaWR9uN82qMPrWO0N6n5LV81+bhXYp
+ /I3DZOhcMgvdkgQIEcWsql2UKOOCJ/L2xHphq/L30uPWs252vKZJTMAQxHN3bVjtwj1O
+ I99i9qR2TZoGW9i2QYvP3IrK0kHLkdeAHxO6gP7Zf79Bg6kp27snf6bag7+xnT3udw7S RA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 38s0fetu2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 17:56:14 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
+ 2021 17:56:12 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 25 May 2021 17:56:12 -0700
+Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
+        by maili.marvell.com (Postfix) with ESMTP id 0A8F73F703F;
+        Tue, 25 May 2021 17:56:13 -0700 (PDT)
+Received: from localhost (aeasi@localhost)
+        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 14Q0uCiH027284;
+        Tue, 25 May 2021 17:56:12 -0700
+X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
+Date:   Tue, 25 May 2021 17:56:12 -0700
+From:   Arun Easi <aeasi@marvell.com>
+X-X-Sender: aeasi@irv1user01.caveonetworks.com
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     <linux-scsi@vger.kernel.org>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        <linux-kernel@vger.kernel.org>, Nilesh Javali <njavali@marvell.com>
+Subject: Re: [EXT] Re: [RFC 0/2] Serialize timeout handling and done
+ callback.
+In-Reply-To: <20210525132604.dpn56mga2otyaxwl@beryllium.lan>
+Message-ID: <alpine.LRH.2.21.9999.2105251755360.24132@irv1user01.caveonetworks.com>
+References: <20210507123103.10265-1-dwagner@suse.de>
+ <20210525132604.dpn56mga2otyaxwl@beryllium.lan>
+User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
 MIME-Version: 1.0
-In-Reply-To: <20210407130654.3387-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+X-Proofpoint-ORIG-GUID: W1yMh3XG33BL328smcIfhzp4tdaLXBbI
+X-Proofpoint-GUID: W1yMh3XG33BL328smcIfhzp4tdaLXBbI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_09:2021-05-25,2021-05-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/04/2021 16:06, Bernard Zhao wrote:
-> This patch fix coccicheck warning:
-> drivers/gpu/drm/msm/dp/dp_link.c:848:5-8: Unneeded variable: "ret". Return "0" on line 880
-> Also remove unneeded function return value check.
+On Tue, 25 May 2021, 6:26am, Daniel Wagner wrote:
+
+> External Email
 > 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-
-> ---
->   drivers/gpu/drm/msm/dp/dp_link.c | 15 +++------------
->   1 file changed, 3 insertions(+), 12 deletions(-)
+> ----------------------------------------------------------------------
+> Hi,
 > 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-> index be986da78c4a..3395b08155a6 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_link.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
-> @@ -843,10 +843,8 @@ bool dp_link_send_edid_checksum(struct dp_link *dp_link, u8 checksum)
->   	return ret == 1;
->   }
->   
-> -static int dp_link_parse_vx_px(struct dp_link_private *link)
-> +static void dp_link_parse_vx_px(struct dp_link_private *link)
->   {
-> -	int ret = 0;
-> -
->   	DRM_DEBUG_DP("vx: 0=%d, 1=%d, 2=%d, 3=%d\n",
->   		drm_dp_get_adjust_request_voltage(link->link_status, 0),
->   		drm_dp_get_adjust_request_voltage(link->link_status, 1),
-> @@ -876,8 +874,6 @@ static int dp_link_parse_vx_px(struct dp_link_private *link)
->   	DRM_DEBUG_DP("Requested: v_level = 0x%x, p_level = 0x%x\n",
->   			link->dp_link.phy_params.v_level,
->   			link->dp_link.phy_params.p_level);
-> -
-> -	return ret;
->   }
->   
->   /**
-> @@ -891,8 +887,6 @@ static int dp_link_parse_vx_px(struct dp_link_private *link)
->   static int dp_link_process_phy_test_pattern_request(
->   		struct dp_link_private *link)
->   {
-> -	int ret = 0;
-> -
->   	if (!(link->request.test_requested & DP_TEST_LINK_PHY_TEST_PATTERN)) {
->   		DRM_DEBUG_DP("no phy test\n");
->   		return -EINVAL;
-> @@ -918,12 +912,9 @@ static int dp_link_process_phy_test_pattern_request(
->   	link->dp_link.link_params.rate =
->   		drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
->   
-> -	ret = dp_link_parse_vx_px(link);
-> -
-> -	if (ret)
-> -		DRM_ERROR("parse_vx_px failed. ret=%d\n", ret);
-> +	dp_link_parse_vx_px(link);
->   
-> -	return ret;
-> +	return 0;
->   }
->   
->   static u8 get_link_status(const u8 link_status[DP_LINK_STATUS_SIZE], int r)
+> On Fri, May 07, 2021 at 02:31:00PM +0200, Daniel Wagner wrote:
+> > Maybe they make sense to add the driver even if I don't have prove it
+> > really address the mentioned bug hence this is marked as RFC.
+> 
+> Any feedback?
 > 
 
+Apologies for the delay, Daniel. I will review this by end of this week.
 
--- 
-With best wishes
-Dmitry
+Regards,
+-Arun
