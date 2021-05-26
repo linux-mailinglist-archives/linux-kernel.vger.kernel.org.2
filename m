@@ -2,190 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67153915C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39B03915C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhEZLP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:15:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:43016 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234060AbhEZLP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:15:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF62B1516;
-        Wed, 26 May 2021 04:14:24 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E0463F73B;
-        Wed, 26 May 2021 04:14:22 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 01/22] sched: Favour predetermined active CPU as migration destination
-In-Reply-To: <20210525151432.16875-2-will@kernel.org>
-References: <20210525151432.16875-1-will@kernel.org> <20210525151432.16875-2-will@kernel.org>
-Date:   Wed, 26 May 2021 12:14:20 +0100
-Message-ID: <877djlhhmb.mognet@arm.com>
+        id S234278AbhEZLRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234060AbhEZLRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 07:17:39 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF71C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 04:16:08 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d20so427631pls.13
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 04:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PzgzBohWrJMIpaalYi9wVNZWYy1JIhwVUerboOtOB4k=;
+        b=CEt5v+SorJdfAraGqPb7yeOlNlcL3Vxj6rfFOO/zd8M4DjQhOQC/smBIqUEvb07VHJ
+         h2R/tb0tWyY+eIybisTBXZdds1M6hyW9GQNYB6VkV4mXsqdb8hDQeZOde64ybjNEpBOX
+         VwEQDCHRXzL9NMABlqC2QppDKJFXv/MPwE9Ho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PzgzBohWrJMIpaalYi9wVNZWYy1JIhwVUerboOtOB4k=;
+        b=rVcnyQy9wV6bZ41NqJ6xBoSU+nv7HkErSleHEyYEryI0Etl9yBwf/xMxUAyBb5kCu2
+         13Cp6kk4Ycyd6BipBn4DN6jXnRVXFdrOPi3K8vd87J9hAfbN+Pq0KYO6jwTcI28L+YRY
+         XK6xo/a9Ff/PVU0Wr5PcSsDOzexk6cc6z8y6UBYZ6Q5om9qhzyb68WQT7vwwN42wOq4X
+         pUlE4PePSu3CBfXjoAbgmdIw4xkXjgB/eCfvhjOo32mTJYrvcb76GB03fTnNfy8yxYIe
+         dZXzcLRIWpWafONVsWH0dRy5NEl0DzcgzGMXO7PtpMhhkMRzZ+Meoa+03M1AjF63rZjP
+         idWw==
+X-Gm-Message-State: AOAM531ymezjxbDCliVYdtbwZ0gam8K7eNtXXBWBL4pjn+WcKjJ9J2Kt
+        52jOkuFHEeeooAZKVKgXvJ6UHA==
+X-Google-Smtp-Source: ABdhPJyvdqD5ohTkONc85sToaubCGGQ9T5nt6Zvm+gr08l+qhMki364te3f9RlxGeN0dbrs/qGe2Jw==
+X-Received: by 2002:a17:90a:1d0c:: with SMTP id c12mr16865372pjd.122.1622027767733;
+        Wed, 26 May 2021 04:16:07 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:37d6:8e9f:c791:4d9])
+        by smtp.gmail.com with ESMTPSA id v2sm15398362pfm.134.2021.05.26.04.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 04:16:07 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>
+Cc:     Hsinyi Wang <hsinyi@chromium.org>, Ikjoon Jang <ikjn@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] power: supply: sbs-battery: cache constant string properties
+Date:   Wed, 26 May 2021 19:16:04 +0800
+Message-Id: <20210526191600.v4.1.I446881dabe094fff375847593be87ec2624f587f@changeid>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently sbs-battery supports three string properties -
+manufacturer, model_name, and chemistry. Buffers for those
+properties are currently defined as global variables.
 
-On 25/05/21 16:14, Will Deacon wrote:
-> Since commit 6d337eab041d ("sched: Fix migrate_disable() vs
-> set_cpus_allowed_ptr()"), the migration stopper thread is left to
-> determine the destination CPU of the running task being migrated, even
-> though set_cpus_allowed_ptr() already identified a candidate target
-> earlier on.
->
-> Unfortunately, the stopper doesn't check whether or not the new
-> destination CPU is active or not, so __migrate_task() can leave the task
-> sitting on a CPU that is outside of its affinity mask, even if the CPU
-> originally chosen by SCA is still active.
->
-> For example, with CONFIG_CPUSET=n:
->
->  $ taskset -pc 0-2 $PID
->  # offline CPUs 3-4
->  $ taskset -pc 3-5 $PID
->
-> Then $PID remains on its current CPU (one of 0-2) and does not get
-> migrated to CPU 5.
->
-> Rework 'struct migration_arg' so that an optional pointer to an affinity
-> mask can be provided to the stopper, allowing us to respect the
-> original choice of destination CPU when migrating. Note that there is
-> still the potential to race with a concurrent CPU hot-unplug of the
-> destination CPU if the caller does not hold the hotplug lock.
->
-> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  kernel/sched/core.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 5226cc26a095..1702a60d178d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1869,6 +1869,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
->  struct migration_arg {
->       struct task_struct		*task;
->       int				dest_cpu;
-> +	const struct cpumask		*dest_mask;
->       struct set_affinity_pending	*pending;
->  };
->
-> @@ -1917,6 +1918,7 @@ static int migration_cpu_stop(void *data)
->       struct set_affinity_pending *pending = arg->pending;
->       struct task_struct *p = arg->task;
->       int dest_cpu = arg->dest_cpu;
-> +	const struct cpumask *dest_mask = arg->dest_mask;
->       struct rq *rq = this_rq();
->       bool complete = false;
->       struct rq_flags rf;
-> @@ -1956,12 +1958,8 @@ static int migration_cpu_stop(void *data)
->                       complete = true;
->               }
->
-> -		if (dest_cpu < 0) {
-> -			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
-> -				goto out;
-> -
-> -			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
-> -		}
-> +		if (dest_mask && (cpumask_test_cpu(task_cpu(p), dest_mask)))
-> +			goto out;
->
+This patch moves those global variables into struct sbs_info
+and cache/reuse them as they are all constant values.
 
-IIRC the reason we deferred the pick to migration_cpu_stop() was because of
-those insane races involving multiple SCA calls the likes of:
-
-  p->cpus_mask = [0, 1]; p on CPU0
-
-  CPUx                           CPUy                   CPU0
-
-  SCA(p, [2])
-    __do_set_cpus_allowed();
-    queue migration_cpu_stop()
-                                 SCA(p, [3])
-                                   __do_set_cpus_allowed();
-                                                        migration_cpu_stop()
-
-The stopper needs to use the latest cpumask set by the second SCA despite
-having an arg->pending set up by the first SCA. Doesn't this break here?
-
-I'm not sure I've paged back in all of the subtleties laying in ambush
-here, but what about the below?
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
 ---
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5226cc26a095..cd447c9db61d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1916,7 +1916,6 @@ static int migration_cpu_stop(void *data)
- 	struct migration_arg *arg = data;
- 	struct set_affinity_pending *pending = arg->pending;
- 	struct task_struct *p = arg->task;
--	int dest_cpu = arg->dest_cpu;
- 	struct rq *rq = this_rq();
- 	bool complete = false;
- 	struct rq_flags rf;
-@@ -1954,19 +1953,15 @@ static int migration_cpu_stop(void *data)
- 		if (pending) {
- 			p->migration_pending = NULL;
- 			complete = true;
--		}
+
+Changes in v4:
+- Fix a build error from patch manipulation
+
+Changes in v3:
+- Invalidate cached properties upon update_presence(!present)
+- Fix a bug in reading chemistry
+
+Changes in v2:
+- change function name of sbs_get_battery_string_property()
+  to sbs_get_constant_string()
+- use cached string properties
+- use cached technology value in sbs_get_chemistry()
+
+ drivers/power/supply/sbs-battery.c | 153 ++++++++++++++++++-----------
+ 1 file changed, 95 insertions(+), 58 deletions(-)
+
+diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
+index b6a538ebb378..b6ee3a14576f 100644
+--- a/drivers/power/supply/sbs-battery.c
++++ b/drivers/power/supply/sbs-battery.c
+@@ -188,6 +188,14 @@ static const enum power_supply_property sbs_properties[] = {
+ /* Supports special manufacturer commands from TI BQ20Z65 and BQ20Z75 IC. */
+ #define SBS_FLAGS_TI_BQ20ZX5		BIT(0)
  
--		if (dest_cpu < 0) {
- 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
- 				goto out;
--
--			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
- 		}
++static const enum power_supply_property string_properties[] = {
++	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_MANUFACTURER,
++	POWER_SUPPLY_PROP_MODEL_NAME,
++};
++
++#define NR_STRING_BUFFERS	ARRAY_SIZE(string_properties)
++
+ struct sbs_info {
+ 	struct i2c_client		*client;
+ 	struct power_supply		*power_supply;
+@@ -201,11 +209,32 @@ struct sbs_info {
+ 	struct delayed_work		work;
+ 	struct mutex			mode_lock;
+ 	u32				flags;
++	int				technology;
++	char				strings[NR_STRING_BUFFERS][I2C_SMBUS_BLOCK_MAX + 1];
+ };
  
- 		if (task_on_rq_queued(p))
--			rq = __migrate_task(rq, &rf, p, dest_cpu);
-+			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
- 		else
--			p->wake_cpu = dest_cpu;
-+			p->wake_cpu = arg->dest_cpu;
+-static char model_name[I2C_SMBUS_BLOCK_MAX + 1];
+-static char manufacturer[I2C_SMBUS_BLOCK_MAX + 1];
+-static char chemistry[I2C_SMBUS_BLOCK_MAX + 1];
++static char *sbs_get_string_buf(struct sbs_info *chip,
++				enum power_supply_property psp)
++{
++	int i = 0;
++
++	for (i = 0; i < NR_STRING_BUFFERS; i++)
++		if (string_properties[i] == psp)
++			return chip->strings[i];
++
++	return ERR_PTR(-EINVAL);
++}
++
++static void sbs_invalidate_cached_props(struct sbs_info *chip)
++{
++	int i = 0;
++
++	chip->technology = -1;
++
++	for (i = 0; i < NR_STRING_BUFFERS; i++)
++		chip->strings[i][0] = 0;
++}
++
+ static bool force_load;
  
- 		/*
- 		 * XXX __migrate_task() can fail, at which point we might end
-@@ -2249,7 +2244,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			init_completion(&my_pending.done);
- 			my_pending.arg = (struct migration_arg) {
- 				.task = p,
--				.dest_cpu = -1,		/* any */
-+				.dest_cpu = dest_cpu,
- 				.pending = &my_pending,
- 			};
- 
-@@ -2257,6 +2252,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		} else {
- 			pending = p->migration_pending;
- 			refcount_inc(&pending->refs);
-+			pending->arg.dest_cpu = dest_cpu;
- 		}
+ static int sbs_read_word_data(struct i2c_client *client, u8 address);
+@@ -243,6 +272,7 @@ static int sbs_update_presence(struct sbs_info *chip, bool is_present)
+ 		chip->is_present = false;
+ 		/* Disable PEC when no device is present */
+ 		client->flags &= ~I2C_CLIENT_PEC;
++		sbs_invalidate_cached_props(chip);
+ 		return 0;
  	}
- 	pending = p->migration_pending;
+ 
+@@ -639,17 +669,45 @@ static int sbs_get_battery_property(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int sbs_get_battery_string_property(struct i2c_client *client,
+-	int reg_offset, enum power_supply_property psp, char *val)
++static int sbs_get_property_index(struct i2c_client *client,
++	enum power_supply_property psp)
+ {
+-	s32 ret;
++	int count;
+ 
+-	ret = sbs_read_string_data(client, sbs_data[reg_offset].addr, val);
++	for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
++		if (psp == sbs_data[count].psp)
++			return count;
+ 
+-	if (ret < 0)
+-		return ret;
++	dev_warn(&client->dev,
++		"%s: Invalid Property - %d\n", __func__, psp);
+ 
+-	return 0;
++	return -EINVAL;
++}
++
++static const char *sbs_get_constant_string(struct sbs_info *chip,
++			enum power_supply_property psp)
++{
++	int ret;
++	char *buf;
++	u8 addr;
++
++	buf = sbs_get_string_buf(chip, psp);
++	if (IS_ERR(buf))
++		return buf;
++
++	if (!buf[0]) {
++		ret = sbs_get_property_index(chip->client, psp);
++		if (ret < 0)
++			return ERR_PTR(ret);
++
++		addr = sbs_data[ret].addr;
++
++		ret = sbs_read_string_data(chip->client, addr, buf);
++		if (ret < 0)
++			return ERR_PTR(ret);
++	}
++
++	return buf;
+ }
+ 
+ static void  sbs_unit_adjustment(struct i2c_client *client,
+@@ -772,48 +830,36 @@ static int sbs_get_battery_serial_number(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int sbs_get_property_index(struct i2c_client *client,
+-	enum power_supply_property psp)
+-{
+-	int count;
+-	for (count = 0; count < ARRAY_SIZE(sbs_data); count++)
+-		if (psp == sbs_data[count].psp)
+-			return count;
+-
+-	dev_warn(&client->dev,
+-		"%s: Invalid Property - %d\n", __func__, psp);
+-
+-	return -EINVAL;
+-}
+-
+-static int sbs_get_chemistry(struct i2c_client *client,
++static int sbs_get_chemistry(struct sbs_info *chip,
+ 		union power_supply_propval *val)
+ {
+-	enum power_supply_property psp = POWER_SUPPLY_PROP_TECHNOLOGY;
+-	int ret;
++	const char *chemistry;
+ 
+-	ret = sbs_get_property_index(client, psp);
+-	if (ret < 0)
+-		return ret;
++	if (chip->technology != -1) {
++		val->intval = chip->technology;
++		return 0;
++	}
+ 
+-	ret = sbs_get_battery_string_property(client, ret, psp,
+-					      chemistry);
+-	if (ret < 0)
+-		return ret;
++	chemistry = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_TECHNOLOGY);
++
++	if (IS_ERR(chemistry))
++		return PTR_ERR(chemistry);
+ 
+ 	if (!strncasecmp(chemistry, "LION", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_LION;
+ 	else if (!strncasecmp(chemistry, "LiP", 3))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LIPO;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_LIPO;
+ 	else if (!strncasecmp(chemistry, "NiCd", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_NiCd;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_NiCd;
+ 	else if (!strncasecmp(chemistry, "NiMH", 4))
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_NiMH;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_NiMH;
+ 	else
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
++		chip->technology = POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
++
++	if (chip->technology == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
++		dev_warn(&chip->client->dev, "Unknown chemistry: %s\n", chemistry);
+ 
+-	if (val->intval == POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
+-		dev_warn(&client->dev, "Unknown chemistry: %s\n", chemistry);
++	val->intval = chip->technology;
+ 
+ 	return 0;
+ }
+@@ -857,6 +903,7 @@ static int sbs_get_property(struct power_supply *psy,
+ 	int ret = 0;
+ 	struct sbs_info *chip = power_supply_get_drvdata(psy);
+ 	struct i2c_client *client = chip->client;
++	const char *str;
+ 
+ 	if (chip->gpio_detect) {
+ 		ret = gpiod_get_value_cansleep(chip->gpio_detect);
+@@ -882,7 +929,7 @@ static int sbs_get_property(struct power_supply *psy,
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_TECHNOLOGY:
+-		ret = sbs_get_chemistry(client, val);
++		ret = sbs_get_chemistry(chip, val);
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -934,23 +981,12 @@ static int sbs_get_property(struct power_supply *psy,
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_MODEL_NAME:
+-		ret = sbs_get_property_index(client, psp);
+-		if (ret < 0)
+-			break;
+-
+-		ret = sbs_get_battery_string_property(client, ret, psp,
+-						      model_name);
+-		val->strval = model_name;
+-		break;
+-
+ 	case POWER_SUPPLY_PROP_MANUFACTURER:
+-		ret = sbs_get_property_index(client, psp);
+-		if (ret < 0)
+-			break;
+-
+-		ret = sbs_get_battery_string_property(client, ret, psp,
+-						      manufacturer);
+-		val->strval = manufacturer;
++		str = sbs_get_constant_string(chip, psp);
++		if (IS_ERR(str))
++			ret = PTR_ERR(str);
++		else
++			val->strval = str;
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_MANUFACTURE_YEAR:
+@@ -1097,6 +1133,7 @@ static int sbs_probe(struct i2c_client *client)
+ 	psy_cfg.of_node = client->dev.of_node;
+ 	psy_cfg.drv_data = chip;
+ 	chip->last_state = POWER_SUPPLY_STATUS_UNKNOWN;
++	sbs_invalidate_cached_props(chip);
+ 	mutex_init(&chip->mode_lock);
+ 
+ 	/* use pdata if available, fall back to DT properties,
+-- 
+2.31.1.818.g46aad6cb9e-goog
+
