@@ -2,180 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A1C39121A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F0C39121D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhEZINN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbhEZIMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:12:55 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFD7C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:11:23 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id u16-20020ad448700000b0290212abee977cso581246qvy.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=TccYnAk92fbSMDbrufKidZyWvSdAcbuvQv0kTQ1sGd8=;
-        b=VheGPqmZczRMJo0WtEivSffIheup6wkGynTDJekzs8b5Tt8q08spRx9OtZFPaBHs5q
-         RswMXFjNfYUKwGlKaGcehJFMAoRn1g/Kp7FPSZU3WBPr7gqE7RNkG2umXsIQ0VOHKqFP
-         ecCEpcltPV8uxwGa/eZpl3DCRQoH+zlrhD9vJeMyIQqvfxdZj6kjtEcQyxojLcmGj/14
-         UwaumwBFlCFja5Kbkpbet17r6Zzx5pD4xcobnhcx8wRSJEFHXWaiWEYUkYgjMJB9SD9G
-         RXtdLvzV6Lb1m0w7FWu3c5oCC/YRdIfvdgURP4nzbPO8QhwrZOJjTJwzcVNk4sxEwi4h
-         me0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=TccYnAk92fbSMDbrufKidZyWvSdAcbuvQv0kTQ1sGd8=;
-        b=N884Q4ekZrJ7SSB96Kk5V7vR+4LN1Uo8kx1YgpuUnCeMcG98utD6NARjS9mrzar+gQ
-         NJ8H8OAjM2VIw3VP5L5rQW1Wo/V3khHM5pcmNnhiucPqf/SxOKuEEXgc6dCAasP8lYqZ
-         2yfwMxZdC7OximS8D0c1x3tQKLYrdAYlV4rB1cNfDx3E4iXZAOiD3hyuv/Gh7Vbg8YuV
-         27PRGJbW53YkVd87x7ckNN0Zxuv1MJmLueDW54An8lbNty33pvJLVA36jyUsJDyxjFVn
-         ig+gnhJz/bMS4AhYH3G3vaqP8AlrKutI7odXUxQoWRv6407PWCJbHkgv5QTvM056Kmoo
-         uG+g==
-X-Gm-Message-State: AOAM531XLs/QKxoOc2bYpRsKPVrPmSAWbfR3BRC0qxrKBNQ/dcZxqz6n
-        2Jee6YzpLSRleTzVfeWpZUd/NDCFnQcn+g==
-X-Google-Smtp-Source: ABdhPJzKkc7JGP0aLpTZCrFpaH9wmzrc4ve+tjeCGjrAE2LRaTwUEwBe+4IKUbl+Mq6J1pHmq1zCHAqpqGW1rA==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:90cb:eafc:a44d:da3d])
- (user=davidgow job=sendgmr) by 2002:a0c:edcf:: with SMTP id
- i15mr42224753qvr.10.1622016682848; Wed, 26 May 2021 01:11:22 -0700 (PDT)
-Date:   Wed, 26 May 2021 01:11:12 -0700
-In-Reply-To: <20210526081112.3652290-1-davidgow@google.com>
-Message-Id: <20210526081112.3652290-3-davidgow@google.com>
-Mime-Version: 1.0
-References: <20210526081112.3652290-1-davidgow@google.com>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH 3/3] kunit: test: Add example_skip test suite which is always skipped
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S232431AbhEZIOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:14:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15164 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231410AbhEZIOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 04:14:44 -0400
+IronPort-SDR: hFYgFMg+XGPVlIpw3GfnBeoli4+Y+mJwOkyZ3KA99sdXW6RWvuFTIqCXRtcolKebGDmcSzXHBG
+ SPoaDB6Lcr3w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="199356802"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="199356802"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 01:13:09 -0700
+IronPort-SDR: zr2kQKDzF9wdSZcCuhXI6/J+hEJWyKn4o5NLKO9pSytsxONkOdzjZEqbcjDkhpK5pxypxVDco9
+ IYGranyz7VuQ==
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="476823976"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 01:13:05 -0700
+Subject: Re: [kbuild-all] Re: [PATCH] kcov: add __no_sanitize_coverage to fix
+ noinstr for all architectures
+To:     Marco Elver <elver@google.com>, kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+References: <20210525175819.699786-1-elver@google.com>
+ <202105260629.X6n5yc4D-lkp@intel.com>
+ <CANpmjNMT=HQQpK9U4bnoGb-=+KJC246dSZ3u2VB0TXw4itsB-w@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <f213338f-a98d-27a2-a785-821f60c4d708@intel.com>
+Date:   Wed, 26 May 2021 16:11:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <CANpmjNMT=HQQpK9U4bnoGb-=+KJC246dSZ3u2VB0TXw4itsB-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new KUnit test suite which contains tests which are always
-skipped. This is used as an example for how to write tests which are
-skipped, and to demonstrate the difference between kunit_skip() and
-kunit_mark_skipped().
 
-Because these tests do not pass (they're skipped), they are not enabled
-by default, or by the KUNIT_ALL_TESTS config option: they must be
-enabled explicitly by setting CONFIG_KUNIT_EXAMPLE_SKIP_TEST=y in either
-a .config or .kunitconfig file.
 
-Signed-off-by: David Gow <davidgow@google.com>
----
- lib/kunit/Kconfig                   | 15 +++++++++
- lib/kunit/Makefile                  |  2 ++
- lib/kunit/kunit-example-skip-test.c | 52 +++++++++++++++++++++++++++++
- 3 files changed, 69 insertions(+)
- create mode 100644 lib/kunit/kunit-example-skip-test.c
+On 5/26/21 6:29 AM, Marco Elver wrote:
+> On Wed, 26 May 2021 at 00:23, kernel test robot <lkp@intel.com> wrote:
+> [...]
+>> [auto build test WARNING on linux/master]
+>> [also build test WARNING on kees/for-next/pstore linus/master v5.13-rc3 next-20210525]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Marco-Elver/kcov-add-__no_sanitize_coverage-to-fix-noinstr-for-all-architectures/20210526-020046
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd860052c99b1e088352bdd4fb7aef46f8d2ef47
+>> config: s390-randconfig-r002-20210525 (attached as .config)
+>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 99155e913e9bad5f7f8a247f8bb3a3ff3da74af1)
+> ^^^ you're using a Clang pre-release, breakages are expected until
+> Clang 13 is final.
 
-diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-index 0b5dfb001bac..399fe5f789f7 100644
---- a/lib/kunit/Kconfig
-+++ b/lib/kunit/Kconfig
-@@ -45,6 +45,21 @@ config KUNIT_EXAMPLE_TEST
- 	  is intended for curious hackers who would like to understand how to
- 	  use KUnit for kernel development.
- 
-+config KUNIT_EXAMPLE_SKIP_TEST
-+	tristate "Skipped test example for KUnit"
-+	default n
-+	help
-+	  Enables an example unit test that is always skipped.
-+
-+	  This test only exists to help new users understand what KUnit is and
-+	  how it is used. Please refer to the example test itself,
-+	  lib/kunit/example-test.c, for more information. This option is
-+	  intended for curious hackers who would like to understand how to use
-+	  KUnit for kernel development.
-+
-+	  Because this test does not pass, it is not enabled by
-+	  CONFIG_KUNIT_ALL_TESTS
-+
- config KUNIT_ALL_TESTS
- 	tristate "All KUnit tests with satisfied dependencies"
- 	help
-diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
-index c49f4ffb6273..8a99ff2f83bd 100644
---- a/lib/kunit/Makefile
-+++ b/lib/kunit/Makefile
-@@ -18,3 +18,5 @@ obj-$(CONFIG_KUNIT_TEST) +=		string-stream-test.o
- endif
- 
- obj-$(CONFIG_KUNIT_EXAMPLE_TEST) +=	kunit-example-test.o
-+
-+obj-$(CONFIG_KUNIT_EXAMPLE_SKIP_TEST) +=	kunit-example-skip-test.o
-diff --git a/lib/kunit/kunit-example-skip-test.c b/lib/kunit/kunit-example-skip-test.c
-new file mode 100644
-index 000000000000..5395ee0be485
---- /dev/null
-+++ b/lib/kunit/kunit-example-skip-test.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Example KUnit test which is always skipped.
-+ *
-+ * Copyright (C) 2021, Google LLC.
-+ * Author: David Gow <davidgow@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * This test should always be skipped.
-+ */
-+
-+static void example_skip_test(struct kunit *test)
-+{
-+	/* This line should run */
-+	kunit_log(KERN_INFO, test, "You should not see a line below.");
-+
-+	/* Skip (and abort) the test */
-+	kunit_skip(test, "this test should be skipped");
-+
-+	/* This line should not execute */
-+	kunit_log(KERN_INFO, test, "You should not see this line.");
-+}
-+
-+static void example_mark_skipped_test(struct kunit *test)
-+{
-+	/* This line should run */
-+	kunit_log(KERN_INFO, test, "You should see a line below.");
-+
-+	/* Skip (but do not abort) the test */
-+	kunit_mark_skipped(test, "this test should be skipped");
-+
-+	/* This line should run */
-+	kunit_log(KERN_INFO, test, "You should see this line.");
-+}
-+
-+static struct kunit_case example_skip_test_cases[] = {
-+	KUNIT_CASE(example_skip_test),
-+	KUNIT_CASE(example_mark_skipped_test),
-+	{}
-+};
-+
-+static struct kunit_suite example_skip_test_suite = {
-+	.name = "example_skip",
-+	.test_cases = example_skip_test_cases,
-+};
-+
-+kunit_test_suites(&example_skip_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.1.818.g46aad6cb9e-goog
+Hi Marco,
+
+I really appreciate for your comment, we'll update clang to the latest 
+version.
+
+Best Regards,
+Rong Chen
+
+>
+> I think there was a thread about this at some point. I guess LKP has
+> decided that testing Clang pre-releases is fair game? I guess it's
+> useful, but this warning here needs to be ignored. It'll go away when
+> you rebuild your pre-release Clang 13 from the latest LLVM main
+> branch.
+>
+> [...]
+>>>> arch/s390/kernel/nmi.c:182:6: warning: unknown sanitizer 'coverage' ignored [-Wunknown-sanitizers]
+>>     void noinstr s390_handle_mcck(void)
+>>          ^
+>>     include/linux/compiler_types.h:213:35: note: expanded from macro 'noinstr'
+>>             __no_kcsan __no_sanitize_address __no_sanitize_coverage
+>>                                              ^
+>>     include/linux/compiler-clang.h:49:59: note: expanded from macro '__no_sanitize_coverage'
+>>     #define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
+>>                                                               ^
+> Clang 13 will support the attribute, but this is a pre-release Clang
+> 13 -- so please ignore the report. FWIW, I tested my patch of course
+> with a version of Clang 13 that supports the attribute. :-)
+>
+> Thanks,
+> -- Marco
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
