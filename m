@@ -2,77 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2D8390E7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E675F390E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhEZCup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:50:45 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:55969 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231128AbhEZCuo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:50:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ua7n0eQ_1621997351;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua7n0eQ_1621997351)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 May 2021 10:49:12 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     tj@kernel.org
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] cgroup: Fix kernel-doc
-Date:   Wed, 26 May 2021 10:49:09 +0800
-Message-Id: <1621997349-118999-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232395AbhEZCvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230250AbhEZCvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 22:51:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B281561090;
+        Wed, 26 May 2021 02:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621997377;
+        bh=SfbOqGxm7X5NXp//WakdnkTjJ211zswh8Q9jf4zImwM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hBkCtj5oeFMQdGLiiql6K5nxAJf/2GbOcEwMXlkxOpHuG/0vYdRRE6+YDuRTLYuhe
+         qcbWOv27/Vz/RsHDdeI2Vkzw8hdtDZ55sN0jBz3DXFNMSwCXBRwtThP134XNf8ZB0M
+         bmf+ViKxg5PujFcgiQMIbz93FjKrJQpVwoKW+B66wfU3sIUf/vVqLRVx7e+0HmJJ9x
+         JPc+oStU4FFT0pUd/Bh372QnzIkLejEx7JfY3MYABzKH+kS53nNmxiD/h1fv9Y0Rr4
+         xllWKT2DDMDkIEIf67H8KILgIDpri4d1O8/gDuJ0VfUOuMHcZ44R0pGB/TtcMUjNnr
+         DAQhbpbVzNcGQ==
+Date:   Tue, 25 May 2021 19:49:34 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Koba Ko <koba.ko@canonical.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Henrik Juul Hansen <hjhansen2020@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
+ npss.
+Message-ID: <20210526024934.GB3704949@dhcp-10-100-145-180.wdc.com>
+References: <20210520033315.490584-1-koba.ko@canonical.com>
+ <20210525074426.GA14916@lst.de>
+ <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix function name in cgroup.c and rstat.c kernel-doc comment
-to remove these warnings found by clang_w1.
+On Wed, May 26, 2021 at 10:02:27AM +0800, Koba Ko wrote:
+> On Tue, May 25, 2021 at 3:44 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
+> > > After resume, host can't change power state of the closed controller
+> > > from D3cold to D0.
+> >
+> > Why?
+> As per Kai-Heng said, it's a regression introduced by commit
+> b97120b15ebd ("nvme-pci:
+> use simple suspend when a HMB is enabled"). The affected NVMe is using HMB.
 
-kernel/cgroup/cgroup.c:2401: warning: expecting prototype for
-cgroup_taskset_migrate(). Prototype was for cgroup_migrate_execute()
-instead.
-kernel/cgroup/rstat.c:233: warning: expecting prototype for
-cgroup_rstat_flush_begin(). Prototype was for cgroup_rstat_flush_hold()
-instead.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit e595cd706982 ("cgroup: track migration context in cgroup_mgctx")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- kernel/cgroup/cgroup.c | 2 +-
- kernel/cgroup/rstat.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 21ecc6e..fc344f4 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2389,7 +2389,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
- }
- 
- /**
-- * cgroup_taskset_migrate - migrate a taskset
-+ * cgroup_migrate_execute - migrate a taskset
-  * @mgctx: migration context
-  *
-  * Migrate tasks in @mgctx as setup by migration preparation functions.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index cee265c..7f0e589 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -220,7 +220,7 @@ void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp)
- }
- 
- /**
-- * cgroup_rstat_flush_begin - flush stats in @cgrp's subtree and hold
-+ * cgroup_rstat_flush_hold - flush stats in @cgrp's subtree and hold
-  * @cgrp: target cgroup
-  *
-  * Flush stats in @cgrp's subtree and prevent further flushes.  Must be
--- 
-1.8.3.1
-
+That really doesn't add up. The mentioned commit restores the driver
+behavior for HMB drives that existed prior to d916b1be94b6d from kernel
+5.3. Is that NVMe device broken in pre-5.3 kernels, too?
