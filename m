@@ -2,377 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDC639105C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AD639105E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbhEZGKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232570AbhEZGK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:10:26 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620BCC061756;
-        Tue, 25 May 2021 23:08:54 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id q67so171837pfb.4;
-        Tue, 25 May 2021 23:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3oEvu/vEeGXEGhFztOTZfSuonVeUq2+ZisRypjEiwg4=;
-        b=anrC7rk1TBGZDvtGgPS2GPTcl0fJznij/Rg22HkG1H+4BoAwmgsyqlsXT4lbfh/Y/c
-         tfkMPI13W90dNIcJH0lvQlPR6YHR8Vi2p+bFoP5m0OHXxqKFlH5ANiSckWEq2Cw6AZVx
-         SKYN6HKnSSBfgj/bit2D0baJmciHhKetCEqYzWhPdgxkDQPrLV3P45/uCdS+d0hlz8T9
-         s6WQL42jw2WE5izD3qc64oisHaK6sXIer7KFL/gaaMi65zPw44C5SKWotbQfDcV1Cvd5
-         n2aNzzVBXWUB/oTt3pFA1F6mib40oQXD/35dL9WT+PbxDmVsOYaplosjaxjklsBxBd22
-         8llA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3oEvu/vEeGXEGhFztOTZfSuonVeUq2+ZisRypjEiwg4=;
-        b=i5dJKaMuwRf+RY2aN1IsDUtY6qtHRULDMpzpDRc+2ObRWkYuV2YP58v8ioN2MRilr3
-         mJUUGkJd1zvTNlni+udS9zZvv+usQS/VrVAy5ZuKjy0fqKRIs2hyWHT1825fxivDI4GW
-         eCvMKU2mnFoFgIIUuNfpw69Vm36RpByWSPbcmDpCY2Y8HNeifMPadOK/wA5tkABk7wGk
-         Phc0ERoYAIB/Zc22fiyA4Uy7aRxmwWJKBQEwHJt5t2epFZ74THBoVO8zZrpl4cYKz54l
-         dWyeeCEGCLqMypml8iX3MbC/ZyuEauzVbT2unDA1j0br7j6I4iSPxhdAJ7imFYb0EVEu
-         B8ZQ==
-X-Gm-Message-State: AOAM532672YEU/yDE9dqKW16i5F32Q3/UApWLCVWZYiO0gIymaN8H2z8
-        rbq5K0J4SD+18vnnY7WO/EQ=
-X-Google-Smtp-Source: ABdhPJwjdoROwYhBcgsVzVjagQd9lnn8hmltireJLeKhJgp8a2y+chikYDTIEYQIJXLvXK9RChhqqA==
-X-Received: by 2002:a62:1796:0:b029:2d5:91b4:642d with SMTP id 144-20020a6217960000b02902d591b4642dmr33240770pfx.7.1622009333773;
-        Tue, 25 May 2021 23:08:53 -0700 (PDT)
-Received: from localhost.localdomain (1-171-3-30.dynamic-ip.hinet.net. [1.171.3.30])
-        by smtp.gmail.com with ESMTPSA id n12sm14098915pjk.48.2021.05.25.23.08.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 May 2021 23:08:53 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        cy_huang@richtek.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v1 2/2] regulator: rt6245: Add support for Richtek RT6245
-Date:   Wed, 26 May 2021 14:08:41 +0800
-Message-Id: <1622009321-15157-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
-References: <1622009321-15157-1-git-send-email-u0084500@gmail.com>
+        id S232614AbhEZGK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:10:58 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9834 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231573AbhEZGK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 02:10:57 -0400
+IronPort-SDR: fJ51qK/kXeUw55tJoZ5CGhQT8+bv6qdHEWxG5jJLAw2bGyvGQExlB3Pac8dqCzsFJjH8oz474s
+ Bup+3HFtyw3w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="202427615"
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="202427615"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:09:26 -0700
+IronPort-SDR: D6ePKFlh8DlgJp4lXdFPgR+RLGvecW1w7fEWB3xxqEnhw7uEZNrdy/c+cpt6uKc/h1jF0j9uSM
+ bnEBWrzSLWGw==
+X-IronPort-AV: E=Sophos;i="5.82,330,1613462400"; 
+   d="scan'208";a="476775930"
+Received: from unknown (HELO [10.238.130.158]) ([10.238.130.158])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 23:09:23 -0700
+Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-5-jing2.liu@linux.intel.com>
+ <YKwfsIT5DuE+L+4M@google.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <920df897-56d8-1f81-7ce2-0050fb744bd7@linux.intel.com>
+Date:   Wed, 26 May 2021 14:09:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <YKwfsIT5DuE+L+4M@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
 
-Richtek RT6245 is a high-performance, synchronous step-down converter
-that can deliver up to 14A output current with an input supply voltage
-range of 4.5V to 17V.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- drivers/regulator/Kconfig            |   9 ++
- drivers/regulator/Makefile           |   1 +
- drivers/regulator/rt6245-regulator.c | 260 +++++++++++++++++++++++++++++++++++
- 3 files changed, 270 insertions(+)
- create mode 100644 drivers/regulator/rt6245-regulator.c
+On 5/25/2021 5:50 AM, Sean Christopherson wrote:
+> On Sun, Feb 07, 2021, Jing Liu wrote:
+>> The static xstate buffer kvm_xsave contains the extended register
+>> states, but it is not enough for dynamic features with large state.
+>>
+>> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
+>> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
+>> new ioctl interfaces to get/set the whole xstate using struct
+>> kvm_xsave_extension buffer containing both static and dynamic
+>> xfeatures. Reuse fill_xsave and load_xsave for both cases.
+>>
+>> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+>> ---
+>>   arch/x86/include/uapi/asm/kvm.h |  5 +++
+>>   arch/x86/kvm/x86.c              | 70 +++++++++++++++++++++++++--------
+>>   include/uapi/linux/kvm.h        |  8 ++++
+>>   3 files changed, 66 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+>> index 89e5f3d1bba8..bf785e89a728 100644
+>> --- a/arch/x86/include/uapi/asm/kvm.h
+>> +++ b/arch/x86/include/uapi/asm/kvm.h
+>> @@ -362,6 +362,11 @@ struct kvm_xsave {
+>>   	__u32 region[1024];
+>>   };
+>>   
+>> +/* for KVM_CAP_XSAVE_EXTENSION */
+>> +struct kvm_xsave_extension {
+>> +	__u32 region[3072];
+> Fool me once, shame on you (Intel).  Fool me twice, shame on me (KVM).
+>
+> As amusing as kvm_xsave_really_extended would be, the required size should be
+> discoverable, not hardcoded.
+Thanks for reviewing the patch.
+When looking at current kvm_xsave structure, I felt confusing about the 
+static
+hardcoding of 1024 bytes, but failed to find clue for its final decision 
+in 2010[1].
+So we'd prefer to changing the way right? Please correct me if I 
+misunderstood.
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 9d84d92..cdec434 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -1030,6 +1030,15 @@ config REGULATOR_RT5033
- 	  RT5033 PMIC. The device supports multiple regulators like
- 	  current source, LDO and Buck.
- 
-+config REGULATOR_RT6245
-+	tristate "Richtek RT6245 voltage regulator"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  This adds supprot for Richtek RT6245 voltage regulator.
-+	  It can support up to 14A output current and adjustable output voltage
-+	  from 0.4375V to 1.3875V, per step 12.5mV.
-+
- config REGULATOR_RTMV20
- 	tristate "RTMV20 Laser Diode Regulator"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 580b015..69668bf 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -124,6 +124,7 @@ obj-$(CONFIG_REGULATOR_ROHM)	+= rohm-regulator.o
- obj-$(CONFIG_REGULATOR_RT4801)	+= rt4801-regulator.o
- obj-$(CONFIG_REGULATOR_RT4831)	+= rt4831-regulator.o
- obj-$(CONFIG_REGULATOR_RT5033)	+= rt5033-regulator.o
-+obj-$(CONFIG_REGULATOR_RT6245)	+= rt6245-regulator.o
- obj-$(CONFIG_REGULATOR_RTMV20)	+= rtmv20-regulator.o
- obj-$(CONFIG_REGULATOR_S2MPA01) += s2mpa01.o
- obj-$(CONFIG_REGULATOR_S2MPS11) += s2mps11.o
-diff --git a/drivers/regulator/rt6245-regulator.c b/drivers/regulator/rt6245-regulator.c
-new file mode 100644
-index 00000000..bd676f8
---- /dev/null
-+++ b/drivers/regulator/rt6245-regulator.c
-@@ -0,0 +1,260 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/of_regulator.h>
-+
-+#define RT6245_VIRT_OCLIMIT	0x00
-+#define RT6245_VIRT_OTLEVEL	0x01
-+#define RT6245_VIRT_PGDLYTIME	0x02
-+#define RT6245_VIRT_SLEWRATE	0x03
-+#define RT6245_VIRT_SWFREQ	0x04
-+#define RT6245_VIRT_VOUT	0x05
-+
-+#define RT6245_VOUT_MASK	GENMASK(6, 0)
-+#define RT6245_CHKSUM_MASK	BIT(7)
-+#define RT6245_CODE_MASK	GENMASK(6, 0)
-+
-+/* HW Enable + Soft start time */
-+#define RT6245_ENTIME_IN_US	5000
-+
-+#define RT6245_RAMPT_UNIT_0P1UV	15625
-+#define RT6245_RAMPT_MAXUV	12500
-+#define RT6245_RAMPT_BASESEL	1
-+
-+#define RT6245_VOUT_MINUV	437500
-+#define RT6245_VOUT_MAXUV	1387500
-+#define RT6245_VOUT_STEPUV	12500
-+#define RT6245_NUM_VOUT		((RT6245_VOUT_MAXUV - RT6245_VOUT_MINUV) / RT6245_VOUT_STEPUV + 1)
-+
-+struct rt6245_priv {
-+	struct gpio_desc *enable_gpio;
-+	bool enable_state;
-+};
-+
-+static int rt6245_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
-+{
-+	struct regmap *regmap  = rdev_get_regmap(rdev);
-+	unsigned int ramp_time_scale;
-+
-+	if (ramp_delay == 0 || ramp_delay > RT6245_RAMPT_MAXUV) {
-+		dev_warn(&rdev->dev, "Not in ramp time range %d, set to fastest\n", ramp_delay);
-+		ramp_delay = RT6245_RAMPT_MAXUV;
-+	}
-+
-+	/* ramp_time = max_ramp_time / ramp_time_scale, scale from 1 to 8 */
-+	ramp_delay = max(ramp_delay * 10, RT6245_RAMPT_UNIT_0P1UV);
-+	ramp_time_scale = (RT6245_RAMPT_MAXUV * 10) / ramp_delay;
-+	ramp_time_scale -= RT6245_RAMPT_BASESEL;
-+
-+	return regmap_write(regmap, RT6245_VIRT_SLEWRATE, ramp_time_scale);
-+}
-+
-+static int rt6245_enable(struct regulator_dev *rdev)
-+{
-+	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+
-+	if (!priv->enable_gpio)
-+		return 0;
-+
-+	priv->enable_state = true;
-+	gpiod_direction_output(priv->enable_gpio, 1);
-+	usleep_range(RT6245_ENTIME_IN_US, RT6245_ENTIME_IN_US + 1000);
-+
-+	regcache_cache_only(regmap, false);
-+	return regcache_sync(regmap);
-+}
-+
-+static int rt6245_disable(struct regulator_dev *rdev)
-+{
-+	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
-+	struct regmap *regmap = rdev_get_regmap(rdev);
-+
-+	if (!priv->enable_gpio)
-+		return -ENOTSUPP;
-+
-+	priv->enable_state = false;
-+	gpiod_direction_output(priv->enable_gpio, 0);
-+
-+	regcache_cache_only(regmap, true);
-+	regcache_mark_dirty(regmap);
-+
-+	return 0;
-+}
-+
-+static int rt6245_is_enabled(struct regulator_dev *rdev)
-+{
-+	struct rt6245_priv *priv = rdev_get_drvdata(rdev);
-+
-+	return priv->enable_state ? 1 : 0;
-+}
-+
-+static const struct regulator_ops rt6245_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_ramp_delay = rt6245_set_ramp_delay,
-+	.enable = rt6245_enable,
-+	.disable = rt6245_disable,
-+	.is_enabled = rt6245_is_enabled,
-+};
-+
-+static const struct regulator_desc rt6245_regulator_desc = {
-+	.name = "rt6245-regulator",
-+	.ops = &rt6245_regulator_ops,
-+	.type = REGULATOR_VOLTAGE,
-+	.min_uV = RT6245_VOUT_MINUV,
-+	.uV_step = RT6245_VOUT_STEPUV,
-+	.n_voltages = RT6245_NUM_VOUT,
-+	.owner = THIS_MODULE,
-+	.vsel_reg = RT6245_VIRT_VOUT,
-+	.vsel_mask = RT6245_VOUT_MASK,
-+};
-+
-+static int rt6245_init_device_properties(struct device *dev)
-+{
-+	struct {
-+		const char *name;
-+		unsigned int reg;
-+	} rt6245_props[] = {
-+		{ "richtek,oc-level-select",  RT6245_VIRT_OCLIMIT },
-+		{ "richtek,ot-level-select", RT6245_VIRT_OTLEVEL },
-+		{ "richtek,pgdly-time-select", RT6245_VIRT_PGDLYTIME },
-+		{ "richtek,switch-freq-select", RT6245_VIRT_SWFREQ }
-+	};
-+	struct regmap *regmap = dev_get_regmap(dev, NULL);
-+	u8 propval;
-+	int i, ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(rt6245_props); i++) {
-+		ret = device_property_read_u8(dev, rt6245_props[i].name, &propval);
-+		if (ret)
-+			continue;
-+
-+		ret = regmap_write(regmap, rt6245_props[i].reg, propval);
-+		if (ret) {
-+			dev_err(dev, "Fail to apply [%s:%d]\n", rt6245_props[i].name, propval);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt6245_reg_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct i2c_client *i2c = context;
-+	const u8 func_base[] = { 0x6F, 0x73, 0x78, 0x61, 0x7C, 0 };
-+	unsigned int code, bit_count;
-+
-+	code = func_base[reg];
-+	code += val;
-+
-+	/* xor checksum for bit 6 to 0 */
-+	bit_count = __sw_hweight8(code & RT6245_CODE_MASK);
-+	if (bit_count % 2)
-+		code |= RT6245_CHKSUM_MASK;
-+	else
-+		code &= ~RT6245_CHKSUM_MASK;
-+
-+	return i2c_smbus_write_byte(i2c, code);
-+}
-+
-+static const struct reg_default rt6245_reg_defaults[] = {
-+	/* Default over current 14A */
-+	{ RT6245_VIRT_OCLIMIT, 2 },
-+	/* Default over temperature 150'c */
-+	{ RT6245_VIRT_OTLEVEL, 0 },
-+	/* Default power good delay time 10us */
-+	{ RT6245_VIRT_PGDLYTIME, 1 },
-+	/* Default slewrate 12.5mV/uS */
-+	{ RT6245_VIRT_SLEWRATE, 0 },
-+	/* Default switch frequency 800KHz */
-+	{ RT6245_VIRT_SWFREQ, 1 },
-+	/* Default voltage 750mV */
-+	{ RT6245_VIRT_VOUT, 0x19 }
-+};
-+
-+static const struct regmap_config rt6245_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = RT6245_VIRT_VOUT,
-+	.cache_type = REGCACHE_FLAT,
-+	.reg_defaults = rt6245_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(rt6245_reg_defaults),
-+	.reg_write = rt6245_reg_write,
-+};
-+
-+static int rt6245_probe(struct i2c_client *i2c)
-+{
-+	struct rt6245_priv *priv;
-+	struct regmap *regmap;
-+	struct regulator_config regulator_cfg = {};
-+	struct regulator_dev *rdev;
-+	int ret;
-+
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->enable_state = true;
-+
-+	priv->enable_gpio = devm_gpiod_get_optional(&i2c->dev, "enable", GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->enable_gpio)) {
-+		dev_err(&i2c->dev, "Failed to get 'enable' gpio\n");
-+		return PTR_ERR(priv->enable_gpio);
-+	}
-+	usleep_range(RT6245_ENTIME_IN_US, RT6245_ENTIME_IN_US + 1000);
-+
-+	regmap = devm_regmap_init(&i2c->dev, NULL, i2c, &rt6245_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&i2c->dev, "Failed to initialize the regmap\n");
-+		return PTR_ERR(regmap);
-+	}
-+
-+	ret = rt6245_init_device_properties(&i2c->dev);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to initialize device properties\n");
-+		return ret;
-+	}
-+
-+	regulator_cfg.dev = &i2c->dev;
-+	regulator_cfg.of_node = i2c->dev.of_node;
-+	regulator_cfg.regmap = regmap;
-+	regulator_cfg.driver_data = priv;
-+	regulator_cfg.init_data = of_get_regulator_init_data(&i2c->dev, i2c->dev.of_node,
-+							     &rt6245_regulator_desc);
-+	rdev = devm_regulator_register(&i2c->dev, &rt6245_regulator_desc, &regulator_cfg);
-+	if (IS_ERR(rdev)) {
-+		dev_err(&i2c->dev, "Failed to register regulator\n");
-+		return PTR_ERR(rdev);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id __maybe_unused rt6245_of_match_table[] = {
-+	{ .compatible = "richtek,rt6245", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, rt6245_of_match_table);
-+
-+static struct i2c_driver rt6245_driver = {
-+	.driver = {
-+		.name = "rt6245",
-+		.of_match_table = rt6245_of_match_table,
-+	},
-+	.probe_new = rt6245_probe,
-+};
-+module_i2c_driver(rt6245_driver);
-+
-+MODULE_AUTHOR("ChiYuan Hwang <cy_huang@richtek.com>");
-+MODULE_DESCRIPTION("Richtek RT6245 Regulator Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+> Nothing prevents a hardware vendor from inventing
+> a newfangled feature that requires yet more space.
+> As an alternative to adding a dedicated capability, can we leverage
+> GET_SUPPORTED_CPUID, leaf CPUID.0xD,
+Yes, this is a good way to avoid a dedicated capability. Thanks for the
+suggestion.
+Use 0xD.1.EBX for size of enabled xcr0|xss if supposing kvm_xsave cares 
+both.
+> to enumerate the minimum required size and
+> state
+For the state, an extreme case is using an old qemu as follows, but a
+new kvm with more future_featureZ supported. If hardware vendor arranges
+one by one, it's OK to use static state like X86XSaveArea(2) and
+get/set between userspace and kvm because it's non-compacted. If not,
+the state will not correct.
+So far it is OK, so I'm wondering if this would be an issue for now?
 
+X86XSaveArea2 {
+     ...
+     XSaveAVX
+     ...
+     AMX_XTILE;
+     future_featureX;
+     future_featureY;
+}
+
+>   that the new ioctl() is available if the min size is greater than 1024?
+> Or is that unnecessarily convoluted...
+To enable a dynamic size kvm_xsave2(Thanks Jim's name suggestion), if 
+things as
+follows are what we might want.
+/* for xstate large than 1024 */
+struct kvm_xsave2 {
+     int size; // size of the whole xstate
+     void *ptr; // xstate pointer
+}
+#define KVM_GET_XSAVE2   _IOW(KVMIO,  0xa4, struct kvm_xsave2)
+
+Take @size together, so KVM need not fetch 0xd.1.ebx each time or a 
+dedicated
+variable.
+
+For Userspace(Qemu):
+struct X86XSaveArea2 {...}// new struct holding all features
+
+if 0xd.1.ebx <= sizeof(kvm_xsave)
+     env->xsave_buf = alloc(sizeof(kvm_xsave))
+     ...
+     ioctl(KVM_GET/SET_XSAVE, X86XSaveArea *)
+else
+     env->xsave_buf = alloc(0xd.1.ebx + sizeof(int))
+     ...
+     xsave2 = env->xsave_buf
+     xsave2->size = ...
+X86XSaveArea2 *area2 = xsave2->ptr
+ioctl(KVM_GET/SET_XSAVE2, xsave2)
+endif
+
+[1] https://lore.kernel.org/kvm/4C10AE1D.40604@redhat.com/
+
+Thanks,
+Jing
