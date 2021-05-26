@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6280A391933
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5DB391937
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhEZNwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233462AbhEZNwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:52:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22562610A6;
-        Wed, 26 May 2021 13:51:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622037075;
-        bh=hijXBetczd8X+Zgt80YzJ2knOCvsPukmZp4yi+jziAw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QHFHcZLvGUYtR5QVT3uAD2jxZDfh6h3wfC3KjiCD+4vBgfqdBW4Gkpqg1J1c3x4Ce
-         /OurulEdx99p9CJMQlxnq2EemhsbBXSpzSNHdxXIIMoDpzg0Ku7gJ14GiIu8rfa7Pr
-         I5NTVuaOPWY+DATq0NXppFzyCjxn3j+tcQuk8hBypWXkxNV8sHKjsf+NI40SUdF3x5
-         tvJoxJJGtryeaEmMXTHz427+R+bSipxlr7vzV4ci/l8/sh3Go3w5535/304KPGZ9Xb
-         kQXxHlQBJQ+6qirkdJxPdqMKm+/g4MiKuPTpoUKec/7Ye8CllxxREHHDfKpShz6UEu
-         WYX5tPk0vICFg==
-Date:   Wed, 26 May 2021 22:51:11 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     mhiramat@kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        ananth@linux.ibm.com, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [PATCH 1/2] kprobes: Remove kprobe::fault_handler
-Message-Id: <20210526225111.216cb37d0c5bb606fcc305f1@kernel.org>
-In-Reply-To: <1622025445.6q8nl3t4ap.naveen@linux.ibm.com>
-References: <20210525072518.791889911@infradead.org>
-        <20210525073213.561116662@infradead.org>
-        <1622025445.6q8nl3t4ap.naveen@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233883AbhEZNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:53:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57648 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232932AbhEZNxa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:53:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622037118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DCcVaBxhcbgaehz8vTuBVb/8+1PT3tCpcBtJLuUH4T8=;
+        b=bbzkdU/p18t8YvBiNu9ICstcOFJxxUAoRWgHP/BJv9mZPWdm1Ksd3rJo4LuEoAbuoLHNQb
+        W8ju8vmF7yAt1l0UwgK83GjBBiwNI4Q2nCVPAZes93Z+28uan3wBQlYg/Qqv0y2/Qpii9F
+        Ipz30j9GuXudxO2qSTVTrJ7eG7uywWE=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-1WZpxX-_N7-DQWzvJV1m_A-1; Wed, 26 May 2021 09:51:56 -0400
+X-MC-Unique: 1WZpxX-_N7-DQWzvJV1m_A-1
+Received: by mail-ot1-f71.google.com with SMTP id i25-20020a9d4a990000b0290304f00e3e3aso693610otf.15
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:51:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DCcVaBxhcbgaehz8vTuBVb/8+1PT3tCpcBtJLuUH4T8=;
+        b=dI5Wy25EDA21+udZd7+Owg5Im/R57pcXyf1EZBmZpQchDdJV9BD+C8IQe9ZEqHApFC
+         /hITVCSe2D1k4pk0IZrZG8DkcHc2DVBdI0pOhY8B7iFg8PdpG1xAiO7P1FNLcb4hQEF1
+         RLtIrk98wq1VJ8OB8fP9pi0fvSM8w+wSo1o1OgquvuIkw1IevAbjc7L6mMoOBSKdqlvQ
+         HYNoSOTYxvCJM9lo5lc4A60eZFLZ8QR6fTAUKM5RkvN3QjBkxZyNOsDf0enXYw/e1Ngg
+         M0sPwNWsDjPyxRtPjS828VN1h2uNaQhLZ+sIoN/2fDYoO0wSF1pLtzSkibllixRwLxvQ
+         K25g==
+X-Gm-Message-State: AOAM531tS0vpouxpJtj7TtSCsszUVw/cO285Jvv18whBNkZVm38WKSZJ
+        ghMh2RALlLOo8+3fw87DRBARqO52QGV44nr6/j2kmGMCPtkIIpEri4sYt3qQIWGLmPswPvf+zKR
+        imfFeFT7lkDROCn2dj7/SlVTP
+X-Received: by 2002:a05:6808:13c9:: with SMTP id d9mr2017465oiw.142.1622037115428;
+        Wed, 26 May 2021 06:51:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQe5R+wkwIYkUyw04XU6nhnkV9UEzK9e2/fc8SlwYh3zvakrFwC97ESECe1Zy6d5NtnJa9bQ==
+X-Received: by 2002:a05:6808:13c9:: with SMTP id d9mr2017444oiw.142.1622037115277;
+        Wed, 26 May 2021 06:51:55 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w6sm4467633otj.5.2021.05.26.06.51.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 06:51:54 -0700 (PDT)
+From:   trix@redhat.com
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        peterz@infradead.org, ira.weiny@intel.com,
+        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
+        jgross@suse.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] x86/mm/fixmap: rename NR_CPUS to CONFIG_NR_CPUS
+Date:   Wed, 26 May 2021 06:51:50 -0700
+Message-Id: <20210526135150.2332379-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 16:20:25 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+From: Tom Rix <trix@redhat.com>
 
-> Peter Zijlstra wrote:
-> > The reason for kprobe::fault_handler(), as given by their comment:
-> > 
-> >  * We come here because instructions in the pre/post
-> >  * handler caused the page_fault, this could happen
-> >  * if handler tries to access user space by
-> >  * copy_from_user(), get_user() etc. Let the
-> >  * user-specified handler try to fix it first.
-> > 
-> > Is just plain bad. Those other handlers are ran from non-preemptible
-> > context and had better use _nofault() functions. Also, there is no
-> > upstream usage of this.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  Documentation/trace/kprobes.rst    |   24 +++++-------------------
-> >  arch/arc/kernel/kprobes.c          |   10 ----------
-> >  arch/arm/probes/kprobes/core.c     |    9 ---------
-> >  arch/arm64/kernel/probes/kprobes.c |   10 ----------
-> >  arch/csky/kernel/probes/kprobes.c  |   10 ----------
-> >  arch/ia64/kernel/kprobes.c         |    9 ---------
-> >  arch/mips/kernel/kprobes.c         |    3 ---
-> >  arch/powerpc/kernel/kprobes.c      |   10 ----------
-> >  arch/riscv/kernel/probes/kprobes.c |   10 ----------
-> >  arch/s390/kernel/kprobes.c         |   10 ----------
-> >  arch/sh/kernel/kprobes.c           |   10 ----------
-> >  arch/sparc/kernel/kprobes.c        |   10 ----------
-> >  arch/x86/kernel/kprobes/core.c     |   10 ----------
-> >  include/linux/kprobes.h            |    8 --------
-> >  kernel/kprobes.c                   |   19 -------------------
-> >  samples/kprobes/kprobe_example.c   |   15 ---------------
-> >  16 files changed, 5 insertions(+), 172 deletions(-)
-> > 
-> 
-> <snip>
-> 
-> > --- a/arch/x86/kernel/kprobes/core.c
-> > +++ b/arch/x86/kernel/kprobes/core.c
-> > @@ -947,16 +947,6 @@ int kprobe_fault_handler(struct pt_regs
-> >  		 * these specific fault cases.
-> >  		 */
-> >  		kprobes_inc_nmissed_count(cur);
-> 
-> Not necessarily related, but I'm wondering why we're incrementing the 
-> probe miss count here. Unlike what the comment above indicates, this is 
-> not a 'fault' counter, but just a count of the number of times the probe 
-> handler wasn't called.
+Fixes this build error
+from arch/x86/xen/platform-pci-unplug.c:11:
+...
+fixmap.h:103:48: error: ‘NR_CPUS’ undeclared here (not in a function)
+  103 |  FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
 
-Good catch! Indeed, we have no ned to count these fault because
-it anyway gets back to the user handler. (so no user_handler is skipped)
-Hmm, we need to clean up these countings too.
+This block used to be conditional on CONFIG_X86_32 which also
+included linux/threads.h which defines NR_CPUS as CONFIG_NR_CPUS.
 
-Thank you,
+Since CONFIG_NR_CPUS is already used fixmap.h, instead of including
+linux/threads.h again, rename NR_CPUS to CONFIG_NR_CPUS.
 
-> 
-> > -
-> > -		/*
-> > -		 * We come here because instructions in the pre/post
-> > -		 * handler caused the page_fault, this could happen
-> > -		 * if handler tries to access user space by
-> > -		 * copy_from_user(), get_user() etc. Let the
-> > -		 * user-specified handler try to fix it first.
-> > -		 */
-> > -		if (cur->fault_handler && cur->fault_handler(cur, regs, trapnr))
-> > -			return 1;
-> >  	}
-> 
-> 
-> - Naveen
-> 
+Fixes: 14df32670291 ("x86: Support kmap_local() forced debugging")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ arch/x86/include/asm/fixmap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
+index d0dcefb5cc59d..4d1f5cc448b98 100644
+--- a/arch/x86/include/asm/fixmap.h
++++ b/arch/x86/include/asm/fixmap.h
+@@ -100,7 +100,7 @@ enum fixed_addresses {
+ #endif
+ #ifdef CONFIG_KMAP_LOCAL
+ 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
+-	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
++	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * CONFIG_NR_CPUS) - 1,
+ #ifdef CONFIG_PCI_MMCONFIG
+ 	FIX_PCIE_MCFG,
+ #endif
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.3
+
