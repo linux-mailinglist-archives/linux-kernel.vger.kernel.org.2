@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396FF391A0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E596B3919CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhEZOXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:23:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59824 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234670AbhEZOXp (ORCPT
+        id S234572AbhEZOTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:19:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4016 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233656AbhEZOTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:23:45 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lluQH-00082n-9Q
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 14:22:13 +0000
-Received: by mail-lj1-f198.google.com with SMTP id b35-20020a2ebc230000b02900e586a5ceaeso556383ljf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 07:22:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KRO+7j/5yLVMVQTeKppilXzCeyP1PjLQ0t5VspLhv9A=;
-        b=hZJtRn5eLqHI7RgXQgzsNswhXO8fhDm/cOXTGo6Ac2Swr2FAGbQEa95UBg/91SifYL
-         wwsZlMVGh4WMdAy4xhrMMHQzsW9Xmi4vKTfltZJgCpUQJ1zy8ryAK2L9JBU3bAh5h0/j
-         cYn5ghG/4H6Gdlx0k51rNGpEreVMTiMkJkXaVxgC++VZCAOCe8knkzpWyzCFSncFwri/
-         7SJhF7iNSEP4b3bv36my77lwqrzUeWJV3kqDfwxpocOkTq4g270ox4uKZlW9ByWM8tT8
-         LLiv7NzhIovuZmcZGSF69LQsQpn2oi84k7uo91lWHJGO8+73AKDQEW8/FSGDAjDkcgYE
-         xbOg==
-X-Gm-Message-State: AOAM533xQCuEXNaOrJghKnpn1coh047g+Gf4NVVPvC/Jxe2Bw1uAR4oN
-        ZnQd8jZYxTHPckq/atOY73ntUYWi54AWEyCg33btw57ou5ITNwAu0JJb7R93Sp0BDeLh2j6mo/Q
-        MdnpttfIEl7byQzBSelxKlPNfZdhNrhAWPlCDqBoP6GZwGNIfE+PyA5stBg==
-X-Received: by 2002:a05:6512:3488:: with SMTP id v8mr2271803lfr.622.1622038932740;
-        Wed, 26 May 2021 07:22:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9Ncbz7tk+afIZiBiaVQaJ7SPjwGt7E11q4JRhgLfAPg8wtMkeKE7zuYtCMaSiZwT2FQxkbslAA1z6L4dgG5o=
-X-Received: by 2002:a05:6512:3488:: with SMTP id v8mr2271787lfr.622.1622038932348;
- Wed, 26 May 2021 07:22:12 -0700 (PDT)
+        Wed, 26 May 2021 10:19:19 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FqtJW6pVCzmZ6j;
+        Wed, 26 May 2021 22:15:23 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 22:17:44 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 26 May
+ 2021 22:17:44 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>
+CC:     <kvalo@codeaurora.org>, <davem@davemloft.net>
+Subject: [PATCH -next] ath10k: Fix W=1 build warning in htt_rx.c
+Date:   Wed, 26 May 2021 22:22:19 +0800
+Message-ID: <20210526142219.2542528-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210520033315.490584-1-koba.ko@canonical.com>
- <20210525074426.GA14916@lst.de> <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
- <20210526024934.GB3704949@dhcp-10-100-145-180.wdc.com> <CAAd53p7xabD2t__=t67uRLrrFOB7YGgr_GMhi6L48PFGhNe80w@mail.gmail.com>
- <20210526125942.GA25080@lst.de>
-In-Reply-To: <20210526125942.GA25080@lst.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 26 May 2021 22:21:59 +0800
-Message-ID: <CAAd53p4f2ZFsVRv-Q9maPBSD_uGjj7FoYKYy9MGjBPc6chk_1Q@mail.gmail.com>
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <kbusch@kernel.org>, Koba Ko <koba.ko@canonical.com>,
-        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 8:59 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, May 26, 2021 at 08:11:41PM +0800, Kai-Heng Feng wrote:
-> > On Wed, May 26, 2021 at 10:49 AM Keith Busch <kbusch@kernel.org> wrote:
-> > >
-> > > On Wed, May 26, 2021 at 10:02:27AM +0800, Koba Ko wrote:
-> > > > On Tue, May 25, 2021 at 3:44 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > > >
-> > > > > On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
-> > > > > > After resume, host can't change power state of the closed controller
-> > > > > > from D3cold to D0.
-> > > > >
-> > > > > Why?
-> > > > As per Kai-Heng said, it's a regression introduced by commit
-> > > > b97120b15ebd ("nvme-pci:
-> > > > use simple suspend when a HMB is enabled"). The affected NVMe is using HMB.
-> > >
-> > > That really doesn't add up. The mentioned commit restores the driver
-> > > behavior for HMB drives that existed prior to d916b1be94b6d from kernel
-> > > 5.3. Is that NVMe device broken in pre-5.3 kernels, too?
-> >
-> > Quite likely. The system in question is a late 2020 Ice Lake laptop,
-> > so it was released after 5.3 kernel.
->
-> This is just a mess.  We had to disable the sensible power state based
-> suspend on these systems because Intel broke it by just cutting the power
-> off.  And now the shutdown based one doesn't work either because it can't
-> handle d3cold.  Someone we need to stop Intel and the integrators from
-> doing stupid things, and I'm not sure how.
+Fix the following W=1 build warning:
 
-To be fair, resuming the NVMe from D3hot is much slower than keep it
-at D0, which gives us a faster s2idle resume time. And now AMD also
-requires s2idle on their latest laptops.
+  drivers/net/wireless/ath/ath10k/htt_rx.c:1790:7: warning: variable ‘more_frags’ set but not used [-Wunused-but-set-variable]
+   1790 |  bool more_frags;
+        |       ^~~~~~~~~~
 
-And it's more like NVMe controllers don't respect PCI D3hot.
+Fixes: a1166b2653db ("ath10k: add CCMP PN replay protection for fragmented frames for PCIe")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
->
-> But degrading all systems even more is just a bad idea, so I fear we'll
-> need a quirk again.  Can you figure out by switching the cards if this
-> is the fault of the platform or the nvme device?
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 7ffb5d5b2a70..adbaeb67eedf 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1787,7 +1787,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
+ 	struct ath10k_peer *peer;
+ 	union htt_rx_pn_t *last_pn, new_pn = {0};
+ 	struct ieee80211_hdr *hdr;
+-	bool more_frags;
+ 	u8 tid, frag_number;
+ 	u32 seq;
+ 
+@@ -1805,7 +1804,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
+ 
+ 	last_pn = &peer->frag_tids_last_pn[tid];
+ 	new_pn.pn48 = ath10k_htt_rx_h_get_pn(ar, skb, offset, enctype);
+-	more_frags = ieee80211_has_morefrags(hdr->frame_control);
+ 	frag_number = le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_FRAG;
+ 	seq = (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
+ 
+-- 
+2.25.1
 
-Here's the original bug report:
-https://bugs.launchpad.net/bugs/1912057
-
-Because the NVMe continues to work after s2idle and the symbol is
-rather subtle, so I suspect this is not platform or vendor specific.
-Is it possible to disable DMA for HMB NVMe on suspend?
-
-Kai-Heng
-
->
-> >
-> > Kai-Heng
-> ---end quoted text---
