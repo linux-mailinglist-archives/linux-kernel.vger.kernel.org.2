@@ -2,142 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D759439212B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A11C392131
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhEZTz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:55:28 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:61001 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbhEZTz0 (ORCPT
+        id S234534AbhEZT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:58:14 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:63453 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233845AbhEZT6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:55:26 -0400
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 14QJrgrY029737;
-        Thu, 27 May 2021 04:53:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 14QJrgrY029737
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622058822;
-        bh=tVRT+PcjR97t4IuJpi2X0n+OU2xQfbFz9htkRteh/Zw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rzRsso6fu75kwKTYRS4m0zqZDQHJb8SksKZxd6HVkE+fRVlQL2K7Qc/Jc5AOzAIZo
-         RtH2oPK5zWP/4Q/9G5F+eoFnTNvD0MnbEHGQdf5PAmBO1ePZo/jlFDp7ZUJ6lFPKkn
-         dwRXxObx/3jUBuF05E5RJh4lEYWjjNL6mnLkZXAVKRCQWyKhaS/h8hKGTZrP6B2cHg
-         z2cCb0yJC9rBwIdNdZ403UP3bL82DX8U6D+LCjV77E45dWWlFCYJvm6JeMvuVsj5qE
-         GohV1tBzu2GU5RxNYxOWZs/r0vZoN0yAC5LmiBVVvo1ckkR12yNUZFUHsN3CoZyFrA
-         nKWVy0XuEISvw==
-X-Nifty-SrcIP: [209.85.210.174]
-Received: by mail-pf1-f174.google.com with SMTP id x18so1762271pfi.9;
-        Wed, 26 May 2021 12:53:42 -0700 (PDT)
-X-Gm-Message-State: AOAM5317NzMstCcINa/5tFsj8X4Dvvg8P8x0nqlWYK5K0pbfcREnWYDa
-        FqQDj294NYod4W9HiRJu3/hvcLPLcjSlMV2Mfug=
-X-Google-Smtp-Source: ABdhPJwPdcbJYRCzv9TTg6tbBgQi4zgbr3hqQvq5iLiweSvE/8M8sDpsa67zQ0pszqZRACbU+p5+av+G34LL0CJrND0=
-X-Received: by 2002:a63:164f:: with SMTP id 15mr86651pgw.175.1622058821401;
- Wed, 26 May 2021 12:53:41 -0700 (PDT)
+        Wed, 26 May 2021 15:58:08 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 690ED40004;
+        Wed, 26 May 2021 19:56:33 +0000 (UTC)
+Date:   Wed, 26 May 2021 21:56:33 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: rtc: nxp,pcf8563: Convert to DT
+ schema
+Message-ID: <YK6n8W2G4/I8+DXP@piout.net>
+References: <20210526184839.2937899-1-robh@kernel.org>
+ <20210526184839.2937899-3-robh@kernel.org>
 MIME-Version: 1.0
-References: <20210518142302.1046718-1-javierm@redhat.com> <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 27 May 2021 04:53:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
-Message-ID: <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
- the build
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526184839.2937899-3-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 1:18 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
-> >
-> > The ccache tool can be used to speed up cross-compilation, by calling the
-> > compiler and binutils through ccache. For example, following should work:
-> >
-> >     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
+On 26/05/2021 13:48:35-0500, Rob Herring wrote:
+> Convert the Philips PCF8563/Epson RTC8564 binding to DT schema format.
+> 
+> Add 'interrupts' and 'wakeup-source' as this device has an interrupt
+> which was not documented, but in use. Add 'start-year' as well.
+> 
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Actually, I did not know this...
-
-> >
-> >     $ make M=drivers/gpu/drm/rockchip/
-> >
-> > but pahole fails to extract the BTF info from DWARF, breaking the build:
-> >
-> >       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
-> >       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
-> >       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
-> >     aarch64-linux-gnu-objcopy: invalid option -- 'J'
-> >     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
-> >      Copies a binary file, possibly transforming it in the process
-> >     ...
-> >     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
-> >     make: *** [Makefile:1866: modules] Error 2
-> >
-> > this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
-> > later pahole is executed with the following command line:
-> >
-> >     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
-> >
-> > which gets expanded to:
-> >
-> >     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
-> >
-> > instead of:
-> >
-> >     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
-> >
-> > Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> > ---
-> >
->
-> LGTM. Masahiro, would you like us to take this through bpf tree or
-> you'll apply this to kbuild one?
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
-> >  scripts/Makefile.modfinal | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index dd87cea9fba..a7883e45529 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
-> >  quiet_cmd_btf_ko = BTF [M] $@
-> >        cmd_btf_ko =                                                     \
-> >         if [ -f vmlinux ]; then                                         \
-> > -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
-> > +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
-> >         else                                                            \
-> >                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
-> >         fi;
-> > --
-> > 2.31.1
-> >
-
-
-Please feel free to pick it up.
-I do not know 5f9ae91f7c0.
-
-BTW, I see similar code in scripts/link-vmlinux.sh too.
-
-     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
-
-Is it OK to leave it unquoted?
-
+> ---
+> v2:
+>  - Add reference to rtc.yaml and wakeup-source and start-year properties
+> ---
+>  .../devicetree/bindings/rtc/nxp,pcf8563.yaml  | 56 +++++++++++++++++++
+>  .../devicetree/bindings/rtc/pcf8563.txt       | 29 ----------
+>  2 files changed, 56 insertions(+), 29 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+> new file mode 100644
+> index 000000000000..a542b6c7ff44
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Philips PCF8563/Epson RTC8564 Real Time Clock
+> +
+> +maintainers:
+> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> +
+> +allOf:
+> +  - $ref: rtc.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - epson,rtc8564
+> +      - microcrystal,rv8564
+> +      - nxp,pcf8563
+> +      - nxp,pca8565
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#clock-cells":
+> +    const: 0
+> +
+> +  clock-output-names:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  start-year: true
+> +  wakeup-source: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        rtc@51 {
+> +            compatible = "nxp,pcf8563";
+> +            reg = <0x51>;
+> +            #clock-cells = <0>;
+> +        };
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/rtc/pcf8563.txt b/Documentation/devicetree/bindings/rtc/pcf8563.txt
+> deleted file mode 100644
+> index 0a900f7c8977..000000000000
+> --- a/Documentation/devicetree/bindings/rtc/pcf8563.txt
+> +++ /dev/null
+> @@ -1,29 +0,0 @@
+> -* Philips PCF8563/Epson RTC8564 Real Time Clock
+> -
+> -Philips PCF8563/Epson RTC8564 Real Time Clock
+> -
+> -Required properties:
+> -- compatible: Should contain "nxp,pcf8563",
+> -	"epson,rtc8564" or
+> -	"microcrystal,rv8564" or
+> -	"nxp,pca8565"
+> -- reg: I2C address for chip.
+> -
+> -Optional property:
+> -- #clock-cells: Should be 0.
+> -- clock-output-names:
+> -  overwrite the default clock name "pcf8563-clkout"
+> -
+> -Example:
+> -
+> -pcf8563: pcf8563@51 {
+> -	compatible = "nxp,pcf8563";
+> -	reg = <0x51>;
+> -	#clock-cells = <0>;
+> -};
+> -
+> -device {
+> -...
+> -	clocks = <&pcf8563>;
+> -...
+> -};
+> -- 
+> 2.27.0
+> 
 
 -- 
-Best Regards
-Masahiro Yamada
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
