@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD3539166B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D490E391672
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhEZLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:46:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26052 "EHLO
+        id S233086AbhEZLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:46:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33697 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229799AbhEZLqe (ORCPT
+        by vger.kernel.org with ESMTP id S232303AbhEZLqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:46:34 -0400
+        Wed, 26 May 2021 07:46:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622029502;
+        s=mimecast20190719; t=1622029516;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4/lN1LWPVHF8DMARxXibJHBzKvJjfwqch7aoJljZd6o=;
-        b=dXu/O9nJoj4R/V3XZiYFV8wmnIAbq+qDeRWPiHoz9u7nxSdQxOxQIFi5/8VYha6Ftu4SiN
-        5FoTMtTQ+y1DS0BZ/Qld2mTCsi1T3dgvM4bpws1bgUFaKb7rBYy9osHGQZ8yTYN1s0ymgA
-        4DS2nPIlWjHi1igPWDefhNRaT37k2O0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-9XuZL9oGPjSC1ovMexHrCw-1; Wed, 26 May 2021 07:45:00 -0400
-X-MC-Unique: 9XuZL9oGPjSC1ovMexHrCw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38A11803620;
-        Wed, 26 May 2021 11:44:59 +0000 (UTC)
-Received: from krava (unknown [10.40.195.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B90910074E0;
-        Wed, 26 May 2021 11:44:56 +0000 (UTC)
-Date:   Wed, 26 May 2021 13:44:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v1 4/5] perf mem: Support record for hybrid platform
-Message-ID: <YK40uLOZC+4qGMl3@krava>
-References: <20210520070040.710-1-yao.jin@linux.intel.com>
- <20210520070040.710-5-yao.jin@linux.intel.com>
- <YKvgFVVywalr+Owr@krava>
- <3d9e738d-b972-056b-d0bc-35ed1aaefbad@linux.intel.com>
- <aa5f0be5-c939-3c26-9d2a-3a073449bf98@linux.intel.com>
- <6d6f1040-6c96-7d1d-c766-5fb0057e1cc4@linux.intel.com>
+        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
+        b=KZW7SBXegZu/wpZtz8zD3v+c+Tfn24w8Eh3QahoBAYv0mpHdy6NN90Pi9eTOR4ih+SkyEC
+        Jf0bJbiqlXJ21kPasLIbijiQ9LPvSbiQI8LWQ2eukOZjfTtYzxlONsPX/yCSUf1N4nyABf
+        PSighAa3eR5ZZsVoX0qyYHzpK1vuiOQ=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-grsnJUM7Oq2zQud-VMIJxA-1; Wed, 26 May 2021 07:45:15 -0400
+X-MC-Unique: grsnJUM7Oq2zQud-VMIJxA-1
+Received: by mail-yb1-f200.google.com with SMTP id s8-20020a5b04480000b029049fb35700b9so1389013ybp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 04:45:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
+        b=SlydC2Yl46WTS/c5hOweg7U3dKbi20GCbsqCqiZR9bT4rwgKBUCubhre1b+465kuIP
+         kfo1m7FI1abHjQruknjqY8I4DhO6nzuG+anGVAug/CJPrIef2VMvOAVYboWZNW1m5sNZ
+         ReSqpLf4ndlZMty6+Z0kbd+wtA7qh7qkcPg+6EcIFCHoVvmIbXBkv5z8b/s91bgIC2tP
+         ZwJqehxbqCcwaxBehjIy8kJBUS/Jx4y/93fIvGwupw9fg0yv47hEsvvWNQV9xe2NPMDl
+         +x1nMjgBCgNceJzSfnH36bhwhnyvGAQCebE5m6MD/z3pu5l4zV/wGwAQ0kdf275ZBJcL
+         Sf5Q==
+X-Gm-Message-State: AOAM533wzRSmrWc1/h8UQqRv3aog5/CE/9KyiSOVNA7ryE0O14OSBrfu
+        5sjK2UVSbqWri9kZ9y4aBOSZPuCqlGYylrhjb5xAEUZkjLzND10x0Aak1k80CwYsbWzazYPQ9/b
+        pC8l1yx/4okP0knYUvjQmrd/PrZVMcd14MnBcKjnj
+X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352365ybe.172.1622029514564;
+        Wed, 26 May 2021 04:45:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7JX0t9Q+MjZUdNuGYqNNwFWjv7mwlUzB5zjT5J9a7c3DzGoUhB3CdgL/OZI5wwTVrJZE9FoOnkmowu6kRXnk=
+X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352333ybe.172.1622029514339;
+ Wed, 26 May 2021 04:45:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d6f1040-6c96-7d1d-c766-5fb0057e1cc4@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210517092006.803332-1-omosnace@redhat.com> <87o8d9k4ln.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87o8d9k4ln.fsf@mpe.ellerman.id.au>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Wed, 26 May 2021 13:44:59 +0200
+Message-ID: <CAFqZXNtUvrGxT6UMy81WfMsfZsydGN5k-VGFBq8yjDWN5ARAWw@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Paul Moore <paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:51:34AM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 5/25/2021 3:39 PM, Jin, Yao wrote:
-> > Hi Jiri,
-> > 
-> > > > >       rec_argv = calloc(rec_argc + 1, sizeof(char *));
-> > > > >       if (!rec_argv)
-> > > > >           return -1;
-> > > > > +    /*
-> > > > > +     * Save the allocated event name strings.
-> > > > > +     */
-> > > > > +    rec_tmp = calloc(rec_argc + 1, sizeof(char *));
-> > > > > +    if (!rec_tmp) {
-> > > > > +        free(rec_argv);
-> > > > > +        return -1;
-> > > > > +    }
-> > > > 
-> > > > why not do strdup on all of them and always call free instead?
-> > > > that would get rid of the rec_tmp and tmp_nr
-> > > > 
-> > > 
-> > > That is also one method. Let me try it.
-> > > 
-> > 
-> > If we do strdup on all of them, such as,
-> > 
-> >      if (e->record)
-> >          rec_argv[i++] = strdup("-W");
-> > 
-> >      rec_argv[i++] = strdup("-d");
-> > 
-> >      if (mem->phys_addr)
-> >          rec_argv[i++] = strdup("--phys-data");
-> >      ....
-> > 
-> > That looks too much strdup used here. So I choose to use a rec_tmp[] to
-> > record the allocated string and free them before exit the function.
-> > 
-> > Or we record the start index and end index in rec_argv[] for the
-> > allocated event string, use strdup on them and call free before exit the
-> > function.
-> > 
-> 
-> This method looks also not OK.
-> 
-> The rec_argv[] is changed in cmd_record() for some complex command lines.
-> 
-> For example,
-> 
-> ./perf mem record -- ./memtest -R0d -b2000 -d64 -n100
-> 
-> Before cmd_record(), rec_argv[3] = "-e".
-> After cmd_record(), rec_argv[3] = "-d64"
-> 
-> Even we do strdup on all of rec_argv[], but the entries are probably changed
-> in cmd_record(), so we can't free the entries at the end of __cmd_record().
-> 
-> Maybe we have to use the original way which just records the allocated event
-> string to a temporary array and free the whole array at the end of
-> __cmd_record().
-> 
-> What do you think?
+On Mon, May 17, 2021 at 1:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> Ondrej Mosnacek <omosnace@redhat.com> writes:
+> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > lockdown") added an implementation of the locked_down LSM hook to
+> > SELinux, with the aim to restrict which domains are allowed to perform
+> > operations that would breach lockdown.
+> >
+> > However, in several places the security_locked_down() hook is called in
+> > situations where the current task isn't doing any action that would
+> > directly breach lockdown, leading to SELinux checks that are basically
+> > bogus.
+> >
+> > Since in most of these situations converting the callers such that
+> > security_locked_down() is called in a context where the current task
+> > would be meaningful for SELinux is impossible or very non-trivial (and
+> > could lead to TOCTOU issues for the classic Lockdown LSM
+> > implementation), fix this by modifying the hook to accept a struct cred
+> > pointer as argument, where NULL will be interpreted as a request for a
+> > "global", task-independent lockdown decision only. Then modify SELinux
+> > to ignore calls with cred == NULL.
+> >
+> > Since most callers will just want to pass current_cred() as the cred
+> > parameter, rename the hook to security_cred_locked_down() and provide
+> > the original security_locked_down() function as a simple wrapper around
+> > the new hook.
+> >
+> > The callers migrated to the new hook, passing NULL as cred:
+> > 1. arch/powerpc/xmon/xmon.c
+> >      Here the hook seems to be called from non-task context and is only
+> >      used for redacting some sensitive values from output sent to
+> >      userspace.
+>
+> It's hard to follow but it actually disables interactive use of xmon
+> entirely if lockdown is in confidentiality mode, and disables
+> modifications of the kernel in integrity mode.
+>
+> But that's not really that important, the patch looks fine.
+>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-ok, it was worth to try ;-)
+Thanks, Michael!
 
-thanks,
-jirka
+James/Paul, is there anything blocking this patch from being merged?
+Especially the BPF case is causing real trouble for people and the
+only workaround is to broadly allow lockdown::confidentiality in the
+policy.
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
