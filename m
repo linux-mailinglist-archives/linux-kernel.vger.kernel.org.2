@@ -2,169 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A11C392131
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD268392133
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhEZT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234621AbhEZT6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:58:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:36808 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234536AbhEZT6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 15:58:14 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:63453 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233845AbhEZT6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:58:08 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 690ED40004;
-        Wed, 26 May 2021 19:56:33 +0000 (UTC)
-Date:   Wed, 26 May 2021 21:56:33 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: rtc: nxp,pcf8563: Convert to DT
- schema
-Message-ID: <YK6n8W2G4/I8+DXP@piout.net>
-References: <20210526184839.2937899-1-robh@kernel.org>
- <20210526184839.2937899-3-robh@kernel.org>
+IronPort-SDR: qed7LRwO9bFbXSkjOHSrMXozEWvfDX11tq5zEsm2lK1o6qesW3LJnYtkCbyMSvLbHqxDQSdm45
+ RasEVsPPELVA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189935989"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="189935989"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 12:56:40 -0700
+IronPort-SDR: bpm0GlhV4bhP+fdfHjdQHE2gVsHST2fTFx3Y+CE3ghyauTjNzLtzalb7HDWO44ls2vlX6YoWB7
+ MAaDKKzSEz5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="443207393"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 26 May 2021 12:56:38 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 48FCEB7; Wed, 26 May 2021 22:57:00 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH v1 1/1] spi: Enable tracing of the SPI setup CS selection
+Date:   Wed, 26 May 2021 22:56:55 +0300
+Message-Id: <20210526195655.75691-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526184839.2937899-3-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/2021 13:48:35-0500, Rob Herring wrote:
-> Convert the Philips PCF8563/Epson RTC8564 binding to DT schema format.
-> 
-> Add 'interrupts' and 'wakeup-source' as this device has an interrupt
-> which was not documented, but in use. Add 'start-year' as well.
-> 
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+It is helpful to see what state of CS signal was during one
+or another SPI operation. All the same for SPI setup.
 
-> ---
-> v2:
->  - Add reference to rtc.yaml and wakeup-source and start-year properties
-> ---
->  .../devicetree/bindings/rtc/nxp,pcf8563.yaml  | 56 +++++++++++++++++++
->  .../devicetree/bindings/rtc/pcf8563.txt       | 29 ----------
->  2 files changed, 56 insertions(+), 29 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
->  delete mode 100644 Documentation/devicetree/bindings/rtc/pcf8563.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> new file mode 100644
-> index 000000000000..a542b6c7ff44
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8563.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/nxp,pcf8563.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Philips PCF8563/Epson RTC8564 Real Time Clock
-> +
-> +maintainers:
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +
-> +allOf:
-> +  - $ref: rtc.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - epson,rtc8564
-> +      - microcrystal,rv8564
-> +      - nxp,pcf8563
-> +      - nxp,pca8565
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#clock-cells":
-> +    const: 0
-> +
-> +  clock-output-names:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  start-year: true
-> +  wakeup-source: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        rtc@51 {
-> +            compatible = "nxp,pcf8563";
-> +            reg = <0x51>;
-> +            #clock-cells = <0>;
-> +        };
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/rtc/pcf8563.txt b/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> deleted file mode 100644
-> index 0a900f7c8977..000000000000
-> --- a/Documentation/devicetree/bindings/rtc/pcf8563.txt
-> +++ /dev/null
-> @@ -1,29 +0,0 @@
-> -* Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Philips PCF8563/Epson RTC8564 Real Time Clock
-> -
-> -Required properties:
-> -- compatible: Should contain "nxp,pcf8563",
-> -	"epson,rtc8564" or
-> -	"microcrystal,rv8564" or
-> -	"nxp,pca8565"
-> -- reg: I2C address for chip.
-> -
-> -Optional property:
-> -- #clock-cells: Should be 0.
-> -- clock-output-names:
-> -  overwrite the default clock name "pcf8563-clkout"
-> -
-> -Example:
-> -
-> -pcf8563: pcf8563@51 {
-> -	compatible = "nxp,pcf8563";
-> -	reg = <0x51>;
-> -	#clock-cells = <0>;
-> -};
-> -
-> -device {
-> -...
-> -	clocks = <&pcf8563>;
-> -...
-> -};
-> -- 
-> 2.27.0
-> 
+Enable tracing of the SPI setup and CS selection.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi.c          |  4 +++
+ include/trace/events/spi.h | 57 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 57120dea3273..ff719c1d93f5 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -804,6 +804,8 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
+ 	    (spi->controller->last_cs_mode_high == (spi->mode & SPI_CS_HIGH)))
+ 		return;
+ 
++	trace_spi_set_cs(spi, activate);
++
+ 	spi->controller->last_cs_enable = enable;
+ 	spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
+ 
+@@ -3457,6 +3459,8 @@ int spi_setup(struct spi_device *spi)
+ 		spi_set_thread_rt(spi->controller);
+ 	}
+ 
++	trace_spi_setup(spi, status);
++
+ 	dev_dbg(&spi->dev, "setup mode %lu, %s%s%s%s%u bits/w, %u Hz max --> %d\n",
+ 			spi->mode & SPI_MODE_X_MASK,
+ 			(spi->mode & SPI_CS_HIGH) ? "cs_high, " : "",
+diff --git a/include/trace/events/spi.h b/include/trace/events/spi.h
+index 0dd9171d2ad8..c0d9844befd7 100644
+--- a/include/trace/events/spi.h
++++ b/include/trace/events/spi.h
+@@ -42,6 +42,63 @@ DEFINE_EVENT(spi_controller, spi_controller_busy,
+ 
+ );
+ 
++TRACE_EVENT(spi_setup,
++	TP_PROTO(struct spi_device *spi, int status),
++	TP_ARGS(spi, status),
++
++	TP_STRUCT__entry(
++		__field(int, bus_num)
++		__field(int, chip_select)
++		__field(unsigned long, mode)
++		__field(unsigned int, bits_per_word)
++		__field(unsigned int, max_speed_hz)
++		__field(int, status)
++	),
++
++	TP_fast_assign(
++		__entry->bus_num = spi->controller->bus_num;
++		__entry->chip_select = spi->chip_select;
++		__entry->mode = spi->mode;
++		__entry->bits_per_word = spi->bits_per_word;
++		__entry->max_speed_hz = spi->max_speed_hz;
++		__entry->status = status;
++	),
++
++	TP_printk("spi%d.%d setup mode %lu, %s%s%s%s%u bits/w, %u Hz max --> %d",
++		  __entry->bus_num, __entry->chip_select,
++		  (__entry->mode & SPI_MODE_X_MASK),
++		  (__entry->mode & SPI_CS_HIGH) ? "cs_high, " : "",
++		  (__entry->mode & SPI_LSB_FIRST) ? "lsb, " : "",
++		  (__entry->mode & SPI_3WIRE) ? "3wire, " : "",
++		  (__entry->mode & SPI_LOOP) ? "loopback, " : "",
++		  __entry->bits_per_word, __entry->max_speed_hz,
++		  __entry->status)
++);
++
++TRACE_EVENT(spi_set_cs,
++	TP_PROTO(struct spi_device *spi, bool enable),
++	TP_ARGS(spi, enable),
++
++	TP_STRUCT__entry(
++		__field(int, bus_num)
++		__field(int, chip_select)
++		__field(unsigned long, mode)
++		__field(bool, enable)
++	),
++
++	TP_fast_assign(
++		__entry->bus_num = spi->controller->bus_num;
++		__entry->chip_select = spi->chip_select;
++		__entry->mode = spi->mode;
++		__entry->enable = enable;
++	),
++
++	TP_printk("spi%d.%d %s%s",
++		  __entry->bus_num, __entry->chip_select,
++		  __entry->enable ? "activate" : "deactivate",
++		  (__entry->mode & SPI_CS_HIGH) ? ", cs_high" : "")
++);
++
+ DECLARE_EVENT_CLASS(spi_message,
+ 
+ 	TP_PROTO(struct spi_message *msg),
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.30.2
+
