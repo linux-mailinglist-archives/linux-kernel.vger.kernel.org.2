@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8447339178A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7807739178B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhEZMk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbhEZMkS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:40:18 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3285C06175F;
-        Wed, 26 May 2021 05:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:To:CC;
-        bh=u+cVihHkOw2JYBmrSa3iVTOrMPHerSfjBr9BH2LrFDM=; b=Zhzfs4zHx5cRDHdq97XN3X0WZt
-        7Dd/A3SoKuHRiA0MXS7P1sBDpy5Y62/aaNdbVfMUqRMHWwhEa7HCR2/VXbafx2pNPZNNzYDx2OAKX
-        yntlHubAD4QUD5aC7eYtWE37N7jm/zrgt3qPP/00RpWQhi06QbknfP7QaVYL7QGRuvky9/gAPjZYZ
-        RD1tq+OdjBuKI9xAr/8hKRl+iougRaI19Te9P4ZBtBwje7nXw2EW0wwTVjx+f/aYdvJXZTnkqoC3L
-        W547euwLjo9zQ/ol9D/P+mvahXMlXAIzHtMqteZuk4bKCZtcXukYhktODCVTgQRxYozWazKfv9RDb
-        qlMIOkGNx2bcMMD716VMgCnvb9DSpBtuVVK3nmQnDHwQe/wy7JtUUyCqFSBCOqAZS7mFwX6vF/7Yi
-        jrP6P2MbjxTVV6cNYhO/ZLhR0BVP7QJz7605WcPS6FAwhYBpBz7jLgpwkRgC2nfuLcIMa1Tj/W7G4
-        NtHu8lQ5sgML918RHGSddlyQ;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1llso3-0007Xc-BL; Wed, 26 May 2021 12:38:39 +0000
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
- <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-Message-ID: <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
-Date:   Wed, 26 May 2021 14:38:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234281AbhEZMlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232367AbhEZMkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:40:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A46D613D6;
+        Wed, 26 May 2021 12:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622032756;
+        bh=oQ8Y88NUgW++dwoJ0hBFVHS7FsRdti+xRnyGs2vEAuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZDF+bttZVYcsRfoFRiX6jSCwT1LzjmFJGrJNZ/moJ6KkXfgMTH1fSex4DaEFIa9d8
+         wiIrnuuSvNfXoIl606dGskA/AT26l2vraY1No+BgyYnhMIlluAR+0WnjJpVawSJ9xE
+         6Iy+k6Xb2PJRT83w+ANB3thr1UGobJPfreyup5lGqIZZx6pVwsFoOk741lUGlUKYpL
+         rf8ZjNkbeOaaN+t/8pwHzrkhHhSIbQWUejN9/Q5QTti/GPp6JyYWzGTmO65ZWDhVSs
+         1u+6EQfbwcLGibPfoPftZTB1NBNtvesF8LsAw7htwPmoSjZJuG2C4aGzNy2uZTZuHY
+         8sbVEXh15iIrA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1A3074011C; Wed, 26 May 2021 09:39:13 -0300 (-03)
+Date:   Wed, 26 May 2021 09:39:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/2] perf inject: Call dso__put() even if dso->hit is set
+Message-ID: <YK5BcQ32CoYLaM7v@kernel.org>
+References: <20210524225051.1190486-1-namhyung@kernel.org>
+ <YK47d3S4wGIr3lu6@krava>
 MIME-Version: 1.0
-In-Reply-To: <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK47d3S4wGIr3lu6@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Wed, May 26, 2021 at 02:13:43PM +0200, Jiri Olsa escreveu:
+> On Mon, May 24, 2021 at 03:50:50PM -0700, Namhyung Kim wrote:
+> > Otherwise it'll leak the refcount for the DSO.  As dso__put() can
+> > handle a NULL dso pointer, we can just call it unconditionally.
+> > 
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> for the patchset
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
->> @@ -333,13 +333,14 @@ TRACE_EVENT(io_uring_complete,
->>   */
->>  TRACE_EVENT(io_uring_submit_sqe,
->>  
->> -	TP_PROTO(void *ctx, u8 opcode, u64 user_data, bool force_nonblock,
->> -		 bool sq_thread),
->> +	TP_PROTO(void *ctx, void *req, u8 opcode, u64 user_data,
->> +		 bool force_nonblock, bool sq_thread),
->>  
->> -	TP_ARGS(ctx, opcode, user_data, force_nonblock, sq_thread),
->> +	TP_ARGS(ctx, req, opcode, user_data, force_nonblock, sq_thread),
->>  
->>  	TP_STRUCT__entry (
->>  		__field(  void *,	ctx		)
->> +		__field(  void *,	req		)
->>  		__field(  u8,		opcode		)
->>  		__field(  u64,		user_data	)
->>  		__field(  bool,		force_nonblock	)
->> @@ -348,26 +349,42 @@ TRACE_EVENT(io_uring_submit_sqe,
->>  
->>  	TP_fast_assign(
->>  		__entry->ctx		= ctx;
->> +		__entry->req		= req;
->>  		__entry->opcode		= opcode;
->>  		__entry->user_data	= user_data;
->>  		__entry->force_nonblock	= force_nonblock;
->>  		__entry->sq_thread	= sq_thread;
->>  	),
->>  
->> -	TP_printk("ring %p, op %d, data 0x%llx, non block %d, sq_thread %d",
->> -			  __entry->ctx, __entry->opcode,
->> -			  (unsigned long long) __entry->user_data,
->> -			  __entry->force_nonblock, __entry->sq_thread)
->> +	TP_printk("ring %p, req %p, op %d, data 0x%llx, non block %d, "
->> +		  "sq_thread %d",  __entry->ctx, __entry->req,
->> +		  __entry->opcode, (unsigned long long)__entry->user_data,
->> +		  __entry->force_nonblock, __entry->sq_thread)
->>  );
+Thanks, applied.
 
-If that gets changed, could be also include the personality id and flags here,
-and maybe also translated the opcode and flags to human readable strings?
+- Arnaldo
 
-metze
+ 
+> thanks,
+> jirka
+> 
+> > ---
+> >  tools/perf/builtin-inject.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> > index 102cafb0c0b3..8bbaa46eb7e6 100644
+> > --- a/tools/perf/builtin-inject.c
+> > +++ b/tools/perf/builtin-inject.c
+> > @@ -383,8 +383,8 @@ static int perf_event__repipe_buildid_mmap(struct perf_tool *tool,
+> >  	if (dso && !dso->hit) {
+> >  		dso->hit = 1;
+> >  		dso__inject_build_id(dso, tool, machine, sample->cpumode, 0);
+> > -		dso__put(dso);
+> >  	}
+> > +	dso__put(dso);
+> >  
+> >  	return perf_event__repipe(tool, event, sample, machine);
+> >  }
+> > @@ -447,8 +447,8 @@ static int perf_event__repipe_buildid_mmap2(struct perf_tool *tool,
+> >  		dso->hit = 1;
+> >  		dso__inject_build_id(dso, tool, machine, sample->cpumode,
+> >  				     event->mmap2.flags);
+> > -		dso__put(dso);
+> >  	}
+> > +	dso__put(dso);
+> >  
+> >  	perf_event__repipe(tool, event, sample, machine);
+> >  
+> > -- 
+> > 2.31.1.818.g46aad6cb9e-goog
+> > 
+> 
+
+-- 
+
+- Arnaldo
