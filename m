@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF22391FD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11873391FDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234959AbhEZTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234938AbhEZTAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:00:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0A0613C7;
-        Wed, 26 May 2021 18:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622055555;
-        bh=WGltjEQGQmSpa0KZNMruhrwEKLk8ypzCyKbofsPqxgo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vxk/fz3Qe8ijcHZhGycuv13zj2Tf2nadeqXGtW5NLCvKPewj7F/Di3JcXN8IQlpco
-         fVmmg0sPOgXMDVs+2xEMDJpPDT+gDZzw34FJ2eiusEpmGOOxLp8tWqirTkmyaObqON
-         xxhraziuBhEoHX6whg47zCH2CwBBBkiRoENq4U9C2cvYbmq3bK7yDjWq6304dB96Io
-         5fGSeIuH6Gpptu+yVcXb+IuL1zjVcEH3rXHNkxDnkn4J8gwSLFCcN4sNNjFaRtWzFL
-         //EJLmkm1/M6bM0twIB1zyv7agPKsNBw2edeC+yhEorOFYw7Mi1/fs/vj9RcyDYvG/
-         uYwEPuxK8ImRw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 76BE14011C; Wed, 26 May 2021 15:59:10 -0300 (-03)
-Date:   Wed, 26 May 2021 15:59:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
- the build
-Message-ID: <YK6afk8QQW/vHMuu@kernel.org>
-References: <20210518142302.1046718-1-javierm@redhat.com>
- <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
+        id S235108AbhEZTBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:01:02 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50962 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235002AbhEZTAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 15:00:54 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QIxI8L081348;
+        Wed, 26 May 2021 13:59:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622055558;
+        bh=JLcWqo1gmuLZYUBwMCf24rWQmk458CRJORnK4CRGahE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ZQAnaxnyoVwawvoO/mgYv6PGDSOSEGYLVtHvWZIXSKMRzTaQYhGE7FYaRlL+LxCgw
+         0Svj3UJHKOVBtLka4u4058mFXOKyAFTYaFhB9nPYSfwS38lprEEY4qqdgYx+ckQAyx
+         K1ywcUIsmHZj7bf/CZwM47LZv6a6jGWSNa3VshGY=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QIxICo097251
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 13:59:18 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 13:59:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 13:59:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QIxHAM078148;
+        Wed, 26 May 2021 13:59:17 -0500
+Date:   Wed, 26 May 2021 13:59:17 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        PCI <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH] dt-bindings: PCI: ti,am65: Convert PCIe host/endpoint
+ mode dt-bindings to YAML
+Message-ID: <20210526185917.23icpjsuc37x3pae@slashing>
+References: <20210526134708.27887-1-kishon@ti.com>
+ <20210526140902.lnk5du5k3b4sny3m@handheld>
+ <CAL_Jsq+7AD4WXggRrVVb=HKVmuomda3KVXuC1mcjYwbgnWRUkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAL_Jsq+7AD4WXggRrVVb=HKVmuomda3KVXuC1mcjYwbgnWRUkg@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 26, 2021 at 09:18:27AM -0700, Andrii Nakryiko escreveu:
-> On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
+On 11:04-20210526, Rob Herring wrote:
+
+[...]
+
+> > > +unevaluatedProperties: false
 > >
-> > The ccache tool can be used to speed up cross-compilation, by calling the
-> > compiler and binutils through ccache. For example, following should work:
-> >
-> >     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
-> >
-> >     $ make M=drivers/gpu/drm/rockchip/
-> >
-> > but pahole fails to extract the BTF info from DWARF, breaking the build:
-> >
-> >       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
-> >       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
-> >       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
-> >     aarch64-linux-gnu-objcopy: invalid option -- 'J'
-> >     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
-> >      Copies a binary file, possibly transforming it in the process
-> >     ...
-> >     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
-> >     make: *** [Makefile:1866: modules] Error 2
-> >
-> > this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
-> > later pahole is executed with the following command line:
-> >
-> >     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
-> >
-> > which gets expanded to:
-> >
-> >     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
-> >
-> > instead of:
-> >
-> >     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
-> >
-> > Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> > ---
-> >
+> > Is it possible to lock this down further with additionalProperties: false?
 > 
-> LGTM. Masahiro, would you like us to take this through bpf tree or
-> you'll apply this to kbuild one?
+> unevaluatedProperties is what we want here.
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > I could add some ridiculous property like system-controller; to the
+> > example and the checks wont catch it.
+> 
+> Yes, because unevaluatedProperties is currently unimplemented. Once
+> the upstream jsonschema tool supports it[1], there will be warnings.
+> The other way we could address this is there are $ref resolving tools
+> that flatten schemas.
+> 
+> [1] https://github.com/Julian/jsonschema/issues/613#issuecomment-636026577
 
-LGTM
 
-Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-- Arnaldo
-
- 
-> >  scripts/Makefile.modfinal | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index dd87cea9fba..a7883e45529 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
-> >  quiet_cmd_btf_ko = BTF [M] $@
-> >        cmd_btf_ko =                                                     \
-> >         if [ -f vmlinux ]; then                                         \
-> > -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
-> > +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
-> >         else                                                            \
-> >                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
-> >         fi;
-> > --
-> > 2.31.1
-> >
+Aha.. Thanks.
 
 -- 
-
-- Arnaldo
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
