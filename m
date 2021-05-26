@@ -2,188 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC51391AF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900D4391AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhEZPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 11:00:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:46188 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233472AbhEZPAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 11:00:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 957A21516;
-        Wed, 26 May 2021 07:59:22 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 963363F73D;
-        Wed, 26 May 2021 07:59:20 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Xuewen Yan <xuewen.yan94@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20210514103748.737809-1-dietmar.eggemann@arm.com>
- <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <cb72557a-6039-df95-7e25-a7f37d3f9cef@arm.com>
-Date:   Wed, 26 May 2021 16:59:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235198AbhEZPBF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 11:01:05 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:47950 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235188AbhEZPBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 11:01:02 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 38623CED1B;
+        Wed, 26 May 2021 17:07:24 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
+Date:   Wed, 26 May 2021 16:59:28 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
+References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+ <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org>
+ <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
+ <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org>
+ <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+ <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
+ <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org>
+ <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
+ <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/2021 18:06, Vincent Donnefort wrote:
-> On Fri, May 14, 2021 at 12:37:48PM +0200, Dietmar Eggemann wrote:
->> The util_est internal UTIL_AVG_UNCHANGED flag which is used to prevent
->> unnecessary util_est updates uses the LSB of util_est.enqueued. It is
->> exposed via _task_util_est() (and task_util_est()).
->>
->> Commit 92a801e5d5b7 ("sched/fair: Mask UTIL_AVG_UNCHANGED usages")
->> mentions that the LSB is lost for util_est resolution but
->> find_energy_efficient_cpu() checks if task_util_est() returns 0 to
->> return prev_cpu early.
->>
->> _task_util_est() returns the max value of util_est.ewma and
->> util_est.enqueued or'ed w/ UTIL_AVG_UNCHANGED.
->> So task_util_est() returning the max of task_util() and
->> _task_util_est() will never return 0 under the default
->> SCHED_FEAT(UTIL_EST, true).
->>
->> To fix this use the MSB of util_est.enqueued instead and keep the flag
->> util_est internal, i.e. don't export it via _task_util_est().
->>
->> The maximal possible util_avg value for a task is 1024 so the MSB of
->> 'unsigned int util_est.enqueued' isn't used to store a util value.
->>
->> As a caveat the code behind the util_est_se trace point has to filter
->> UTIL_AVG_UNCHANGED to see the real util_est.enqueued value which should
->> be easy to do.
->>
->> This also fixes an issue report by Xuewen Yan that util_est_update()
->> only used UTIL_AVG_UNCHANGED for the subtrahend of the equation:
->>
->>   last_enqueued_diff = ue.enqueued - (task_util() | UTIL_AVG_UNCHANGED)
->>
->> Fixes: b89997aa88f0b sched/pelt: Fix task util_est update filtering
->> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Hi Archie,
+
+>>>>>>>>> RTL8822 chipset supports WBS, and this information is conveyed in
+>>>>>>>>> btusb.c. However, the UART driver doesn't have this information just
+>>>>>>>>> yet.
+>>>>>>>>> 
+>>>>>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>>>>>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>>>>>>>>> ---
+>>>>>>>>> 
+>>>>>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+>>>>>>>>> drivers/bluetooth/btrtl.h  |  2 ++
+>>>>>>>>> drivers/bluetooth/hci_h5.c |  5 +----
+>>>>>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
+>>>>>>>>> 
+>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+>>>>>>>>> index e7fe5fb22753..988a09860c6b 100644
+>>>>>>>>> --- a/drivers/bluetooth/btrtl.c
+>>>>>>>>> +++ b/drivers/bluetooth/btrtl.c
+>>>>>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
+>>>>>>>>> }
+>>>>>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+>>>>>>>>> 
+>>>>>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
+>>>>>>>>> {
+>>>>>>>>> -     struct btrtl_device_info *btrtl_dev;
+>>>>>>>>> -     int ret;
+>>>>>>>>> -
+>>>>>>>>> -     btrtl_dev = btrtl_initialize(hdev, NULL);
+>>>>>>>>> -     if (IS_ERR(btrtl_dev))
+>>>>>>>>> -             return PTR_ERR(btrtl_dev);
+>>>>>>>>> -
+>>>>>>>>> -     ret = btrtl_download_firmware(hdev, btrtl_dev);
+>>>>>>>>> -
+>>>>>>>>>    /* Enable controller to do both LE scan and BR/EDR inquiry
+>>>>>>>>>     * simultaneously.
+>>>>>>>>>     */
+>>>>>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>>            rtl_dev_dbg(hdev, "WBS supported not enabled.");
+>>>>>>>>>            break;
+>>>>>>>>>    }
+>>>>>>>>> +}
+>>>>>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
+>>>>>>>>> +
+>>>>>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>> +{
+>>>>>>>>> +     struct btrtl_device_info *btrtl_dev;
+>>>>>>>>> +     int ret;
+>>>>>>>>> +
+>>>>>>>>> +     btrtl_dev = btrtl_initialize(hdev, NULL);
+>>>>>>>>> +     if (IS_ERR(btrtl_dev))
+>>>>>>>>> +             return PTR_ERR(btrtl_dev);
+>>>>>>>>> +
+>>>>>>>>> +     ret = btrtl_download_firmware(hdev, btrtl_dev);
+>>>>>>>>> +
+>>>>>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
+>>>>>>>>> 
+>>>>>>>>>    btrtl_free(btrtl_dev);
+>>>>>>>>>    return ret;
+>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+>>>>>>>>> index 2a582682136d..260167f01b08 100644
+>>>>>>>>> --- a/drivers/bluetooth/btrtl.h
+>>>>>>>>> +++ b/drivers/bluetooth/btrtl.h
+>>>>>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+>>>>>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
+>>>>>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
+>>>>>>>>>                        struct btrtl_device_info *btrtl_dev);
+>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
+>>>>>>>>> +                   struct btrtl_device_info *btrtl_dev);
+>>>>>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
+>>>>>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
+>>>>>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
+>>>>>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+>>>>>>>>> index 27e96681d583..e0520639f4ba 100644
+>>>>>>>>> --- a/drivers/bluetooth/hci_h5.c
+>>>>>>>>> +++ b/drivers/bluetooth/hci_h5.c
+>>>>>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+>>>>>>>>>    /* Give the device some time before the hci-core sends it a reset */
+>>>>>>>>>    usleep_range(10000, 20000);
+>>>>>>>>> 
+>>>>>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
+>>>>>>>>> -      * simultaneously.
+>>>>>>>>> -      */
+>>>>>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
+>>>>>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+>>>>>>>> 
+>>>>>>>> any reason why not just setting WBS quirk here?
+>>>>>>> 
+>>>>>>> Hmm, I think WBS is the feature of the chipset and not the transport.
+>>>>>>> Therefore isn't it better to just have it set in one place?
+>>>>>>> Setting the quirks here means we need to copy paste the settings from btrtl.c.
+>>>>>> 
+>>>>>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY right now, I don’t see the difference.
+>>>>> 
+>>>>> Sorry, I don't get what you mean.
+>>>>> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
+>>>>> btrtl.c, so it's together with the WBS quirk.
+>>>>> 
+>>>>>> Can we actually verify that we still need the WBS quirk. I think we fixed the broken errerrnous packet flag handling.
+>>>>> 
+>>>>> To be honest, I am not aware about the story of the broken erroneous
+>>>>> packet flag.
+>>>>> Last time I checked I still needed the quirk to have RTL8822 on UART
+>>>>> properly run WBS, but that was months ago...
+>>>>> Let me verify whether this quirk is still needed.
+>>>> 
+>>>> It looks like we still need the WBS quirk because otherwise the host
+>>>> wouldn't know whether the controller supports WBS or not. It's used in
+>>>> get_supported_settings() in mgmt.c.
+>>> 
+>>> and why not set it unconditionally for all Realtek chips?
+>> 
+>> Not all Realtek chips supports WBS, therefore
+>> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
 > 
-> I don't believe this made it through our integration branch testing, so I gave a
-> try manually on my Hikey with LISA's UtilConvergence test. 20 iterations of that
-> test passed without any problem.
-> 
->> ---
->>  kernel/sched/fair.c |  5 +++--
->>  kernel/sched/pelt.h | 13 +++++++------
->>  2 files changed, 10 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 161b92aa1c79..0150d440b0a2 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -3856,7 +3856,7 @@ static inline unsigned long _task_util_est(struct task_struct *p)
->>  {
->>  	struct util_est ue = READ_ONCE(p->se.avg.util_est);
->>  
->> -	return (max(ue.ewma, ue.enqueued) | UTIL_AVG_UNCHANGED);
->> +	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
->>  }
-> 
-> 
-> Shall we also update proc_sched_show_task() to avoid reading this flag there?
+> Are there any other concerns you might have?
 
-Ah yes, forgot about this one! Thanks for the review.
+can we do the quirk setting in btrtl_setup_realtek() instead of creating another exported function.
 
-This can be fixed by fixed by moving UTIL_AVG_UNCHANGED from
-kernel/sched/pelt.h into include/linux/sched.h (next to the already
-existing util_est stuff there) and using it in proc_sched_show_task()
-for se.avg.util_est.enqueued.
+Regards
 
-What do you think?
+Marcel
 
---8<--
-Subject: [PATCH] Fix proc_sched_show_task()
-
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- include/linux/sched.h | 10 ++++++++++
- kernel/sched/debug.c  |  3 ++-
- kernel/sched/pelt.h   | 10 ----------
- 3 files changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index c7e7d50e2fdc..0a0bca694536 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -357,6 +357,16 @@ struct util_est {
- #define UTIL_EST_WEIGHT_SHIFT		2
- } __attribute__((__aligned__(sizeof(u64))));
- 
-+/*
-+ * This flag is used to synchronize util_est with util_avg updates.
-+ * When a task is dequeued, its util_est should not be updated if its util_avg
-+ * has not been updated in the meantime.
-+ * This information is mapped into the MSB bit of util_est.enqueued at dequeue
-+ * time. Since max value of util_est.enqueued for a task is 1024 (PELT util_avg
-+ * for a task) it is safe to use MSB.
-+ */
-+#define UTIL_AVG_UNCHANGED 0x80000000
-+
- /*
-  * The load/runnable/util_avg accumulates an infinite geometric series
-  * (see __update_load_avg_cfs_rq() in kernel/sched/pelt.c).
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 3bdee5fd7d29..0c5ec2776ddf 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -885,6 +885,7 @@ static const struct seq_operations sched_debug_sops = {
- #define __PS(S, F) SEQ_printf(m, "%-45s:%21Ld\n", S, (long long)(F))
- #define __P(F) __PS(#F, F)
- #define   P(F) __PS(#F, p->F)
-+#define   PM(F, M) __PS(#F, p->F & (M))
- #define __PSN(S, F) SEQ_printf(m, "%-45s:%14Ld.%06ld\n", S, SPLIT_NS((long long)(F)))
- #define __PN(F) __PSN(#F, F)
- #define   PN(F) __PSN(#F, p->F)
-@@ -1011,7 +1012,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
- 	P(se.avg.util_avg);
- 	P(se.avg.last_update_time);
- 	P(se.avg.util_est.ewma);
--	P(se.avg.util_est.enqueued);
-+	PM(se.avg.util_est.enqueued, ~UTIL_AVG_UNCHANGED);
- #endif
- #ifdef CONFIG_UCLAMP_TASK
- 	__PS("uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
-diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-index 178290a8d150..e06071bf3472 100644
---- a/kernel/sched/pelt.h
-+++ b/kernel/sched/pelt.h
-@@ -42,16 +42,6 @@ static inline u32 get_pelt_divider(struct sched_avg *avg)
- 	return LOAD_AVG_MAX - 1024 + avg->period_contrib;
- }
- 
--/*
-- * When a task is dequeued, its estimated utilization should not be updated if
-- * its util_avg has not been updated in the meantime.
-- * This flag is used to synchronize util_avg updates with util_est updates.
-- * We map this information into the MSB bit of util_est.enqueued at dequeue
-- * time. Since max value of util_est.enqueued for a task is 1024 (PELT
-- * util_avg for a task) it is safe to use MSB here.
-- */
--#define UTIL_AVG_UNCHANGED 0x80000000
--
- static inline void cfs_se_util_change(struct sched_avg *avg)
- {
- 	unsigned int enqueued;
--- 
-2.25.1
