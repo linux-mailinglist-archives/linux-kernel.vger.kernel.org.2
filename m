@@ -2,210 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ED9391D80
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83837391D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhEZRF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbhEZRFZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:05:25 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE61BC061574;
-        Wed, 26 May 2021 10:03:53 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so694856pjt.1;
-        Wed, 26 May 2021 10:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xT+yhDMO6OD6PyrpGSwTBHhXXY+UFBqPmmqeyFpyYak=;
-        b=XJRfztxxVsOlkyAJsKviYFdmXuRK4CLEV1kX1I6wzGFHz3/rtW5wMJUoFAACteRS6c
-         4XEM9mV03TjZo9VyZY853wc/kFVxfLK6KRmjb/M0wBWISEjiEVlqLiqUZpzaPUVmFqyK
-         N4cfog47voF2fwohl93PtkX1OVz7/rdvsfUYV9zaSMBUsqnbre2rcDWaW7is4f54eWbv
-         1jGPceZFrJqxs40KNLvcU2QJqUexjqH8BYj3Wbx+gQKnkP0vwtPjXgy8MXsNCmh3Oz2B
-         LM0k5nkYijB4sKihCzrtEenXu6kgqLuaIfAsIaPA/DfhlD9a7G05jwNjds/UOl/hpW2s
-         2b0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xT+yhDMO6OD6PyrpGSwTBHhXXY+UFBqPmmqeyFpyYak=;
-        b=Xbr30mL3SkGQfiU9FdzzL8v1mHwRfVEgtpnvCByaIrOD3GIsSouOqXqRUskq/0lTLT
-         19PjTkY5Cu2jtcPvGmYK6WMNU4zZZN+AM6+8eXEcEEDFwpwYyu1dpfexOv4T/McSQx7q
-         0h9vk7muzgEzOPySLjfuSUsx40eQg+olnFsv5zc+GbgotkTuZFLSwhnwMzzF14liUMeA
-         tm8gDIs7lQxmfLrMkWkSeIvhu+hbuae34gnmLMRYP4SueUk5krnBYhK+2cNvFD73qotm
-         eek5W2wzsvi+tfkv41Yh5X0ZXzde2ylX9fJ14Am+ufmfdxQ6EdWOxzm8gy8lgr/j1n60
-         uUiQ==
-X-Gm-Message-State: AOAM530091Isuiw0GA8RHdr2lWI88wAVlMK9+o8ncFkIhUDVtQwawcnm
-        suh5a8m5WLuKOCgQ+9QfRnfTG214K6g=
-X-Google-Smtp-Source: ABdhPJwTPAVoqHyyRBhaGpswHWLCYFQw/HReGBKI1/R2IICZj3SH/lx9JoyooOjE/tIWQAHwdwmvlQ==
-X-Received: by 2002:a17:90a:4fc2:: with SMTP id q60mr2999927pjh.64.1622048632845;
-        Wed, 26 May 2021 10:03:52 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id t7sm14916711pju.4.2021.05.26.10.03.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 10:03:52 -0700 (PDT)
-Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210525211804.GA1228022@bjorn-Precision-5520>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2c046f34-8bf1-97ff-3440-7351c7b2d528@gmail.com>
-Date:   Wed, 26 May 2021 10:03:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210525211804.GA1228022@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
+        id S233995AbhEZRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:05:34 -0400
+Received: from mail-co1nam11on2067.outbound.protection.outlook.com ([40.107.220.67]:41697
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233929AbhEZRFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 13:05:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDu5OkxW/th65reUeywl6swCR7TY4SgirlNu5uSstYiGKPUvaSCtgxi7LIV59U2vF/HWh9XGcv/EG5mT0RKasGHPOzb12iffallDqVuB8U1dUUVB7kzznHp4qfoUq2TTmPl1FYg7oZw8OLpRFI6ZWsAApXr2d3DYUTJTj9vbCSsq0XsVj5h32mQVREkfu4wa4UqE9ZcPOOTl/hrvuygXitam3L2gCEuw/NaNE+HPy/fNkwnZTcVnAeU71DDXC9L5Af5u6J4k59FaazaTT/8dOq9PQ5va0p8r96gk5Hg7YHfYuWDeeziptbIlkZvDqKWBm3SEbTj67vW9itszrHPf/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hi7p7J4LN2/x/pnPKnWIcfGyQTlSt27tTsSVnGF41/Y=;
+ b=KdD763dRa01ntVd5K4rByGdpzYxXEeBnIPJkyro93DkmbitsLmuVQzzR84R8Wl15lZzVGmTDnNfNe8xegn3vdZf4wu9jWeG5BSwKEP+L5hSqDGRgDRjrJzU1uHWMW5ffFqWyXLN9z2ARYWmGQcMvLM2+Ekju0JUBCD6huLrVB5iq2iC1aYJHIGGNvxv7UfPdS6pVBtmox/ujudwG0xgAW49e+BuJKqNws5Im4mnl8iOg2nK9vuTXZVv6w7wJg0xOvLxqTV81ordLT0iEXfB65yK1unsdEKfC9aX/EPa6UnQToE6GowiBlXRQoLwL7HpgN053gJqPJ/YYbkb0f69lhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hi7p7J4LN2/x/pnPKnWIcfGyQTlSt27tTsSVnGF41/Y=;
+ b=Tgxy/FmWX+/HxR40Ymv6x2J/NdbjpfFuq5SCJ+jeJSpO+Z1mVD3Kvi3eiiFbQmQIGb8J3TTar7gaT5YiUs+Hl4DdF/Hd05DXiWtsOBGkP36TmBMb124lawjbfebP/tS6+x+85HFG+InXQWnoLDwRzmrd5mzPiz2zeDG456N4uGc=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MW2PR12MB2538.namprd12.prod.outlook.com (2603:10b6:907:5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Wed, 26 May
+ 2021 17:03:58 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::acae:934f:8e7f:8db2]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::acae:934f:8e7f:8db2%7]) with mapi id 15.20.4173.021; Wed, 26 May 2021
+ 17:03:58 +0000
+Subject: Re: x86/fpu/xsave: protection key test failures
+To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, shuah@kernel.org, jroedel@suse.de,
+        ubizjak@gmail.com, viro@zeniv.linux.org.uk, jpa@git.mail.kapsi.fi,
+        fenghua.yu@intel.com, kan.liang@linux.intel.com,
+        akpm@linux-foundation.org, rppt@kernel.org, Fan_Yang@sjtu.edu.cn,
+        anshuman.khandual@arm.com, b.thiel@posteo.de, jgross@suse.com,
+        keescook@chromium.org, seanjc@google.com, mh@glandium.org,
+        sashal@kernel.org, krisman@collabora.com, chang.seok.bae@intel.com,
+        0x7f454c46@gmail.com, jhubbard@nvidia.com, sandipan@linux.ibm.com,
+        ziy@nvidia.com, kirill.shutemov@linux.intel.com,
+        suxingxing@loongson.cn, harish@linux.ibm.com,
+        rong.a.chen@intel.com, linuxram@us.ibm.com, bauerman@linux.ibm.com,
+        dave.kleikamp@oracle.com
+References: <b2e0324a-9125-bb34-9e76-81817df27c48@amd.com>
+ <7a407363-e074-aa84-3ca1-909b497122aa@intel.com>
+ <a4f6b80d-8546-09dc-7435-25b3d890aace@amd.com>
+ <e0dbd490-0209-9f74-36b7-c55992060b44@intel.com>
+ <ab564da6-1029-1dab-d54e-a266a623974f@amd.com>
+ <f4205ac9-5988-3b03-6b6a-b877335d19c9@intel.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <56bcbef0-dca3-7306-d7b4-b0f6d7c382a8@amd.com>
+Date:   Wed, 26 May 2021 12:03:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <f4205ac9-5988-3b03-6b6a-b877335d19c9@intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN4PR0201CA0058.namprd02.prod.outlook.com
+ (2603:10b6:803:20::20) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by SN4PR0201CA0058.namprd02.prod.outlook.com (2603:10b6:803:20::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 17:03:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2c984584-4ef4-4327-1a81-08d92068406d
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2538:
+X-Microsoft-Antispam-PRVS: <MW2PR12MB25382F3514309ADC0F990D3B95249@MW2PR12MB2538.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lYerANoN8l8wv2lU/z3sDbu0uDhZKNkKwX1JOAcEdZLxzGjqR24pZ4yZZai4uwa3KwPoAjR9uWd5h/sSaKw8mxVlLXwZbfQI3HEaLAl3p/uFUPcT3uKFaSIW0xen2MucraZkYEWQrXqHkIvL4tAp87F54j7JsXMIVXeZUxKcnRorUAuPRLdATXTTEtchPBUnXZ3R92GHK1QlT03oJjbWNAANHqzSGcelmiqBYg7wt4Jjjop0+wSKgc1demgfD8vgPCwEzaT50H6QWp0EOtG/Yv5a/FGZxE2SBudZ3BLksyEE0uuqwQlw3X32ViYPxZ3jxMzh6wcNDFX/E42sJ8p1KaVFr81twHZ13QofCC/6X/3cgMsElIoniypJk0t8V+qs6OFfER8Rl7eaP/SX7lemumgwz+GJ/OwEgZg93f9zv3Nw1jMCoPNgwQQMCXThmSB9VvMtZ4GvRvtlRP42lZbA6AIi6d6Ku3uYPMZ5Py4tomx7IK9DuRnrDjogooyCThpDUblSL54bP2EfCZaTKXV345xuVmEZoKOPKD+MPaiefPwKwh0IP1zVMKl8mJjNxmSlEtB7EsA8070051M85BCjbESH7raK7cNrk9iZ0J5DTEe6Zv+Ep34jHy4QSJ3hmU4AWGUYYlgSKT3FZJy0SSFeG+GTTzRV8/fml/u38ZprT/ngwYriYxQsjoHLYay0jNKcMd6DElbzpjqQNi1RdF58divSAzM+5wcro1rH9WAePiQlAjLhyRQGRC1k9zD7TV4H9HAWuIKI9Q65vJB5V69Ga48eh4vgjrztQy9JX8ljBBvngFac54/PzH7tX4WPgAic
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39860400002)(2616005)(7416002)(956004)(7406005)(44832011)(38350700002)(36756003)(26005)(52116002)(16576012)(86362001)(6486002)(45080400002)(2906002)(83380400001)(186003)(38100700002)(53546011)(4326008)(8936002)(5660300002)(966005)(16526019)(8676002)(31696002)(66946007)(66476007)(31686004)(66556008)(478600001)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?4clp9HYCfVEAinfrBg2Fj/eAT+WIToUb+Ofu2dWWEGVmzNtmpeUckF/k?=
+ =?Windows-1252?Q?/UNkxwbZlRGoitaxG51e00HlB8VW8VSrugPeYguaHF1PoYMR89u7HQjl?=
+ =?Windows-1252?Q?ndfit8QHILP7d9OYp3c0V2qnGUFz+ersto52dZZl8zpOUnyOYCMd7miO?=
+ =?Windows-1252?Q?mRzemT+2mlI5Iv9CCbtgyqTsErJYqe2BXGOHz1KEjseop1/9pfXJVMK7?=
+ =?Windows-1252?Q?ggvuSeyPfS9npeXLIrhyV8eu4sdRA0s2OPGlrr/EEOlR/n1R0/My54FO?=
+ =?Windows-1252?Q?FcuttQp51Ui5vUNuwuGhpqMXzBjxsa8ZJbadmk5Hs+KL9NMN4qLRWPjF?=
+ =?Windows-1252?Q?+Dp7S6PvmMDJtj5+25qc57gKq2w3qXCbO+LPsR6yKs8WijcE1YFLleD2?=
+ =?Windows-1252?Q?4yq/FSappqfiERt6Djv4GSEI18qj0Y0r+RSbPV9/vxuxbzlISG90F++V?=
+ =?Windows-1252?Q?hdvKl1u+Mk7wknXMLEwVP/UIjA+mYXEj1pnK+HqTXRdwoBRQ61osSeq+?=
+ =?Windows-1252?Q?5IvmTuL79g7Tp8R0iXRlSdGXiHOs5SUX5TTYcu6UQY4VD2vaNb06kD15?=
+ =?Windows-1252?Q?VwjZWQzzFDA14/HANyPpJFh7sgnN56RzG7oxEjhkGhoMPOp7pWCEuOGI?=
+ =?Windows-1252?Q?wjY+zOF+NAJ+uYaJMz8+qNSweR8GalLNmrI3tF62QXyFiFVnvaKAC8L/?=
+ =?Windows-1252?Q?O6yD4diLp6PwIB8DF6444X5tucET5nKKQjISlNP3sO1sZ5NG3Nq2hVAI?=
+ =?Windows-1252?Q?JoZ17dyAzPlfW4v91DqZVv3QXfkCIzT6RNysXSmI1XGOQw4FHuPFDlrm?=
+ =?Windows-1252?Q?Mi8lU/TqA8qgn2TWFDPRFBSTP/cno3RRtSwSgyz6OCaMt+8iB99AXh/F?=
+ =?Windows-1252?Q?jFjy1KUEkNIJaiBbw9fCJs3cns65JhINvVzRMmJ9VKFtldiq5Bhj17eM?=
+ =?Windows-1252?Q?Jr2tBJ+ZN06GAeiiz9rwMaWvQyQQKcF1kfHrdljlXbNfkpFZDZAlLesC?=
+ =?Windows-1252?Q?QPkhHHAlqfF80IqIN9DOZhcx91tDBF3HITVVqcmFSEg01OQXZk4Ooclg?=
+ =?Windows-1252?Q?xCiAXo7ggGvqvJ04rnljOYkHB5cXsd4LZaSx6djuUEHZPkna1DYnu6JP?=
+ =?Windows-1252?Q?bzmnZ5HJGHqviqLMVJDifMGXtyeySqBybxKnFZ7Y4NU3qXGx6dnbUDtM?=
+ =?Windows-1252?Q?NmSE9xE47PQTNPrpWIozMU1+XDDiLzcTXPAgNz4fEgqOdW6kkHb9vNDF?=
+ =?Windows-1252?Q?Yc3/qrUE5I3pA7WCMcSScpPtgmbZgBH78Jp9ddorvYrnrWdyDHSYCp7c?=
+ =?Windows-1252?Q?iSvk+9ZHUiVFYQTaYlXgEFUgIOUxzDsKF1xSHX/gB+FewYe9o7XD+ePX?=
+ =?Windows-1252?Q?r07WwERLsWOY0YyoKaZm19uQIxoVysWWZAEY61V3jpanN4pbvTLpuBFR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c984584-4ef4-4327-1a81-08d92068406d
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 17:03:58.1794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: URSebT8mPyN69SMnP3oL6M92WYo8UuPB/pdxqHcHtpEZy5Xr7OWFCuemYn6kV3sl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 2:18 PM, Bjorn Helgaas wrote:
-> Capitalize "Add" in the subject.
-> 
-> On Tue, Apr 27, 2021 at 01:51:39PM -0400, Jim Quinlan wrote:
->> The shutdown() call is similar to the remove() call except the former does
->> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
->> if it does.
-> 
-> This doesn't explain why shutdown() is necessary.  "errors occur"
-> might be a hint, except that AFAICT, many similar drivers do invoke
-> pci_stop_root_bus() and pci_remove_root_bus() (several of them while
-> holding pci_lock_rescan_remove()), without implementing .shutdown().
-
-We have to implement .shutdown() in order to meet a certain power budget
-while the chip is being put into S5 (soft off) state and still support
-Wake-on-WLAN, for our latest chips this translates into roughly 200mW of
-power savings at the wall. We could probably add a word or two in a v2
-that indicates this is done for power savings.
-
-As far as the crash goes, if we call brcm_pcie_remove() directly from
-brcm_pcie_shutdown() we see the following (this is in 5.4, but I have no
-reason to believe mainline is different):
-
-# lspci
-0001:00:00.0 PCI bridge: Broadcom Inc. and subsidiaries Device 7216 (rev 10)
-0001:01:00.0 Network controller: Qualcomm Atheros AR9285 Wireless
-Network Adapter (PCI-Express) (rev 01)
-# reboot -f
-[    8.465111] ------------[ cut here ]------------
-[    8.469771] pcieport 0001:00:00.0: disabling already-disabled device
-[    8.469817] WARNING: CPU: 3 PID: 1656 at drivers/pci/pci.c:1945
-pci_disable_device+0x78/0xd0
-[    8.484631] Modules linked in:
-[    8.487695] CPU: 3 PID: 1656 Comm: reboot Not tainted
-5.4.120-1.1pre-g231f2cfa989a #4
-[    8.495537] Hardware name: BCX972160DV (DT)
-[    8.499728] pstate: 60000005 (nZCv daif -PAN -UAO)
-[    8.504527] pc : pci_disable_device+0x78/0xd0
-[    8.508891] lr : pci_disable_device+0x78/0xd0
-[    8.513254] sp : ffffffc014d33aa0
-[    8.516572] x29: ffffffc014d33aa0 x28: ffffff809deac800
-[    8.521894] x27: ffffff809e23a5b0 x26: ffffff809e23a490
-[    8.527214] x25: 0000000000000000 x24: ffffff809cf9f000
-[    8.532535] x23: ffffffc011d13090 x22: 0000000000000000
-[    8.537856] x21: 0000000000000000 x20: ffffff809cf9f0b0
-[    8.543175] x19: ffffff809cf9f000 x18: 000000000000000a
-[    8.548495] x17: 0000000000000000 x16: 0000000000000000
-[    8.553816] x15: 00000000000718d7 x14: 0720072007200720
-[    8.559138] x13: 0720072007200720 x12: 0720072007200720
-[    8.564458] x11: 0720072007200720 x10: 0720072007200720
-[    8.569777] x9 : 0720072007200720 x8 : 656c62617369642d
-[    8.575098] x7 : 79646165726c6120 x6 : ffffffc011dc3630
-[    8.580417] x5 : 0000000000000038 x4 : 0000000000000000
-[    8.585737] x3 : 0000000000000000 x2 : 0000000000000000
-[    8.591058] x1 : 73b2329426297100 x0 : 0000000000000000
-[    8.596379] Call trace:
-[    8.598832]  pci_disable_device+0x78/0xd0
-[    8.602852]  pcie_port_device_remove+0x3c/0x48
-[    8.607304]  pcie_portdrv_remove+0x5c/0x8c
-[    8.611408]  pci_device_remove+0x98/0xe8
-[    8.615341]  device_release_driver_internal+0xb0/0x188
-[    8.620487]  device_release_driver+0x28/0x34
-[    8.624765]  pci_stop_bus_device+0x40/0xa8
-[    8.628867]  pci_stop_root_bus+0x58/0x64
-[    8.632797]  brcm_pcie_remove+0x24/0x70
-[    8.636640]  brcm_pcie_shutdown+0x20/0x2c
-[    8.640655]  platform_drv_shutdown+0x2c/0x38
-[    8.644934]  device_shutdown+0x16c/0x1e0
-[    8.648865]  kernel_restart_prepare+0x44/0x50
-[    8.653229]  kernel_restart+0x20/0x68
-[    8.656896]  __do_sys_reboot+0x158/0x200
-[    8.660816]  __arm64_sys_reboot+0x2c/0x38
-[    8.664833]  el0_svc_common.constprop.2+0xe8/0x168
-[    8.669631]  el0_svc_handler+0x34/0x80
-[    8.673388]  el0_svc+0x8/0x1fc
-[    8.676447] ---[ end trace 778d7966a5ef8213 ]---
-[    8.694539] pci_bus 0001:01: busn_res: [bus 01] is released
-[    8.700279] pci_bus 0001:00: busn_res: [bus 00-ff] is released
-[    8.710206] reboot: Restarting system
 
 
-> 
-> It is ... unfortunate that there's such a variety of implementations
-> here.  I don't believe these driver differences are all necessary
-> consequences of hardware differences.
-
-Yes, that is a bit unfortunate, Rob's idea to consolidate the
-implementation sounds good and we can definitively test that.
-
-> 
->> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
->> ---
->>  drivers/pci/controller/pcie-brcmstb.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
+On 5/26/21 11:06 AM, Dave Hansen wrote:
+> On 5/26/21 8:25 AM, Babu Moger wrote:
+>> On 5/25/21 7:20 PM, Dave Hansen wrote:
+>>> On 5/25/21 5:03 PM, Babu Moger wrote:
+>>>>> What values do PKRU and the shadow have when the test fails?  Is PKRU 0?
+>>>> It goes back to default value 0x55555554. The test is expecting it to be
+>>>> 0. Printed them below.
+>>>>
+>>>> test_ptrace_of_child()::1346, pkey_reg: 0x0000000055555554 shadow:
+>>>> 0000000000000000
+>>>> protection_keys_64: pkey-helpers.h:127: _read_pkey_reg: Assertion
+>>>> `pkey_reg == shadow_pkey_reg' failed.
+>>> That's backwards (shadow vs pkru) from what I was expecting.
+>>>
+>>> Can you turn on all the debuging?
+>>>
+>>> Just compile with -DDEBUG_LEVEL=5
 >>
->> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
->> index d3af8d84f0d6..a1fe1a2ada48 100644
->> --- a/drivers/pci/controller/pcie-brcmstb.c
->> +++ b/drivers/pci/controller/pcie-brcmstb.c
->> @@ -1340,6 +1340,15 @@ static int brcm_pcie_remove(struct platform_device *pdev)
->>  	return 0;
->>  }
->>  
->> +static void brcm_pcie_shutdown(struct platform_device *pdev)
->> +{
->> +	struct brcm_pcie *pcie = platform_get_drvdata(pdev);
->> +
->> +	if (pcie->has_err_report)
->> +		brcm_unregister_die_notifiers(pcie);
->> +	__brcm_pcie_remove(pcie);
->> +}
->> +
->>  static const struct of_device_id brcm_pcie_match[] = {
->>  	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
->>  	{ .compatible = "brcm,bcm4908-pcie", .data = &bcm4908_cfg },
->> @@ -1460,6 +1469,7 @@ static const struct dev_pm_ops brcm_pcie_pm_ops = {
->>  static struct platform_driver brcm_pcie_driver = {
->>  	.probe = brcm_pcie_probe,
->>  	.remove = brcm_pcie_remove,
->> +	.shutdown = brcm_pcie_shutdown,
->>  	.driver = {
->>  		.name = "brcm-pcie",
->>  		.of_match_table = brcm_pcie_match,
->> -- 
->> 2.17.1
->>
+>> Copied the logs at https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpastebin.com%2FgtQiHg8Q&amp;data=04%7C01%7Cbabu.moger%40amd.com%7Cf35e0082b0f44650045408d920602c08%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637576419688153335%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=lkJrEo9EJFhfQcOvS%2Be8gLf0GuqZSWGQw2omPZ2Ehb0%3D&amp;reserved=0
+> 
+> Well, it's a bit backwards from what I'm expecting.  The PKRU=0 value
+> *WAS* legitimate because all of the pkeys got allocated and their
+> disable bits cleared.
+> 
+> I think Andy was close when he was blaming:
+> 
+>> static inline void write_pkru(u32 pkru)
+>> {
+> ...
+>>         pk = get_xsave_addr(&current->thread.fpu.state.xsave, XFEATURE_PKRU);
+> ...
+>>         if (pk)
+>>                 pk->pkru = pkru;
+>>         __write_pkru(pkru);
+>> }
+> 
+> But that can't be it because PKRU ended up with 0x55555554.  Something
+> must have been writing 'init_pkru_value'.
+> 
+> switch_fpu_finish() does that:
 
+Yes, I have noticed switch_fpu_finish writing init_pkru_value sometimes.
+But, I was not sure why that was happening..
+> 
+>> static inline void switch_fpu_finish(struct fpu *new_fpu)
+>> {
+>>         u32 pkru_val = init_pkru_value;
+> ...
+>>         if (current->mm) {
+>>                 pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+>>                 if (pk)
+>>                         pkru_val = pk->pkru;
+>>         }
+>>         __write_pkru(pkru_val);
+> ...
+>> }
+> 
+> If 'new_fpu' had XSTATE_BV[PKRU]=0 then we'd have pk=NULL and 'pkru_val'
+> would still have 'init_pkru_value'.  *Then*, we'd have a shadow=0x0 and
+> pkru=0x55555554.  It would also only trigger if the hardware has an init
+> tracker that fires when wrpkru(0).  Intel doesn't do that.  AMD must.
 
--- 
-Florian
+Ok. I will check with hardware guys here about this behavior.
+> 
+> Anyway, I need to think about this a bit more.  But, an entirely
+> guaranteed to be 100% untested patch is attached.  I'm *NOT* confident
+> this is the right fix.
+> 
+> I don't have much AMD hardware laying around, so testing would be
+> appreciated.
+> 
+
+Yes. Patch fixes problem on AMD. Also tested on Intel box to make sure it
+does not cause any regression there. It does work fine there as well.
+Thanks for the patch.
