@@ -2,194 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98FB3915C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67153915C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 13:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhEZLPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 07:15:23 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49338 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234060AbhEZLPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 07:15:21 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QBDakQ106453;
-        Wed, 26 May 2021 06:13:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622027616;
-        bh=pkpy5vS1CMdOrnrcbFOZKe7b5M6sZdb+h+9h4pGCWLk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=eC1vcZUVNuLToFVk4BZXRvQrtlEPxnf44ThLsYbK036/eQ0oBOC5utpI7udRbVKwJ
-         Hw/+79bPQiY+cyz9NC2R5piRPZk8u5zFpq4kGmLGXzcy7WVitV1FIYey6szQ37LNzu
-         +xfKrVq7ugLmK4vyhP0y8diFbRZuDWpn0ESaZHMU=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QBDakc001847
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 06:13:36 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 06:13:36 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 06:13:36 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QBDZat034249;
-        Wed, 26 May 2021 06:13:36 -0500
-Date:   Wed, 26 May 2021 16:43:35 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v4 3/4] mtd: spi-nor: otp: return -EROFS if region is
- read-only
-Message-ID: <20210526111333.suxmmtkngqeyuz62@ti.com>
-References: <20210521194034.15249-1-michael@walle.cc>
- <20210521194034.15249-4-michael@walle.cc>
- <20210525193323.xdvbq3tab6oxk6yh@ti.com>
- <ca81f21648e55229c8d4533881566471@walle.cc>
+        id S234262AbhEZLP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 07:15:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:43016 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234060AbhEZLP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 07:15:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF62B1516;
+        Wed, 26 May 2021 04:14:24 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E0463F73B;
+        Wed, 26 May 2021 04:14:22 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 01/22] sched: Favour predetermined active CPU as migration destination
+In-Reply-To: <20210525151432.16875-2-will@kernel.org>
+References: <20210525151432.16875-1-will@kernel.org> <20210525151432.16875-2-will@kernel.org>
+Date:   Wed, 26 May 2021 12:14:20 +0100
+Message-ID: <877djlhhmb.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ca81f21648e55229c8d4533881566471@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/21 12:41PM, Michael Walle wrote:
-> Am 2021-05-25 21:33, schrieb Pratyush Yadav:
-> > On 21/05/21 09:40PM, Michael Walle wrote:
-> > > SPI NOR flashes will just ignore program commands if the OTP region is
-> > > locked. Thus, a user might not notice that the intended write didn't
-> > > end
-> > > up in the flash. Return -EROFS to the user in this case. From what I
-> > > can
-> > > tell, chips/cfi_cmdset_0001.c also return this error code.
-> > > 
-> > > One could optimize spi_nor_mtd_otp_range_is_locked() to read the
-> > > status
-> > > register only once and not for every OTP region, but for that we would
-> > > need some more invasive changes. Given that this is
-> > > one-time-programmable memory and the normal access mode is reading, we
-> > > just live with the small overhead.
-> > 
-> > Ok.
-> > 
-> > > 
-> > > Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
-> > > Signed-off-by: Michael Walle <michael@walle.cc>
-> > > ---
-> > >  drivers/mtd/spi-nor/otp.c | 35 +++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 35 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-> > > index 3898ed67ba1c..b87f96593c13 100644
-> > > --- a/drivers/mtd/spi-nor/otp.c
-> > > +++ b/drivers/mtd/spi-nor/otp.c
-> > > @@ -249,6 +249,31 @@ static int spi_nor_mtd_otp_info(struct mtd_info
-> > > *mtd, size_t len,
-> > >  	return ret;
-> > >  }
-> > > 
-> > > +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
-> > > loff_t ofs,
-> > > +					   size_t len)
-> > > +{
-> > > +	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
-> > > +	unsigned int region;
-> > > +	int locked;
-> > > +
-> > > +	if (!len)
-> > > +		return 0;
-> > 
-> > I was inclined to say that the loop conditional below would take care of
-> > this but it can cause an underflow when ofs and len are both 0.
-> 
-> Correct. I didn't want to put an extra check to the caller, because
-> as you noticed, it is checked by the loop there later.
-> 
-> > > +
-> > > +	/*
-> > > +	 * If any of the affected OTP regions are locked the entire range is
-> > > +	 * considered locked.
-> > > +	 */
-> > > +	for (region = spi_nor_otp_offset_to_region(nor, ofs);
-> > > +	     region <= spi_nor_otp_offset_to_region(nor, ofs + len - 1);
-> > > +	     region++) {
-> > > +		locked = ops->is_locked(nor, region);
-> > > +		if (locked)
-> > > +			return locked;
-> > > +	}
-> > 
-> > Ok.
-> 
-> Btw I didn't know if I should put a comment here that this if () handles
-> both locked state and errors. But it seems you've already found out by
-> looking at the caller ;) I'm not sure if this is obvious, though.
+Hi,
 
-I didn't catch this on the first read. I only figured it out when I 
-looked at the return check below. So it is certainly not obvious.
+On 25/05/21 16:14, Will Deacon wrote:
+> Since commit 6d337eab041d ("sched: Fix migrate_disable() vs
+> set_cpus_allowed_ptr()"), the migration stopper thread is left to
+> determine the destination CPU of the running task being migrated, even
+> though set_cpus_allowed_ptr() already identified a candidate target
+> earlier on.
+>
+> Unfortunately, the stopper doesn't check whether or not the new
+> destination CPU is active or not, so __migrate_task() can leave the task
+> sitting on a CPU that is outside of its affinity mask, even if the CPU
+> originally chosen by SCA is still active.
+>
+> For example, with CONFIG_CPUSET=n:
+>
+>  $ taskset -pc 0-2 $PID
+>  # offline CPUs 3-4
+>  $ taskset -pc 3-5 $PID
+>
+> Then $PID remains on its current CPU (one of 0-2) and does not get
+> migrated to CPU 5.
+>
+> Rework 'struct migration_arg' so that an optional pointer to an affinity
+> mask can be provided to the stopper, allowing us to respect the
+> original choice of destination CPU when migrating. Note that there is
+> still the potential to race with a concurrent CPU hot-unplug of the
+> destination CPU if the caller does not hold the hotplug lock.
+>
+> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  kernel/sched/core.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 5226cc26a095..1702a60d178d 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1869,6 +1869,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
+>  struct migration_arg {
+>       struct task_struct		*task;
+>       int				dest_cpu;
+> +	const struct cpumask		*dest_mask;
+>       struct set_affinity_pending	*pending;
+>  };
+>
+> @@ -1917,6 +1918,7 @@ static int migration_cpu_stop(void *data)
+>       struct set_affinity_pending *pending = arg->pending;
+>       struct task_struct *p = arg->task;
+>       int dest_cpu = arg->dest_cpu;
+> +	const struct cpumask *dest_mask = arg->dest_mask;
+>       struct rq *rq = this_rq();
+>       bool complete = false;
+>       struct rq_flags rf;
+> @@ -1956,12 +1958,8 @@ static int migration_cpu_stop(void *data)
+>                       complete = true;
+>               }
+>
+> -		if (dest_cpu < 0) {
+> -			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+> -				goto out;
+> -
+> -			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
+> -		}
+> +		if (dest_mask && (cpumask_test_cpu(task_cpu(p), dest_mask)))
+> +			goto out;
+>
 
-> 
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t
-> > > ofs,
-> > >  				      size_t total_len, size_t *retlen,
-> > >  				      const u8 *buf, bool is_write)
-> > > @@ -271,6 +296,16 @@ static int spi_nor_mtd_otp_read_write(struct
-> > > mtd_info *mtd, loff_t ofs,
-> > >  	/* don't access beyond the end */
-> > >  	total_len = min_t(size_t, total_len, spi_nor_otp_size(nor) - ofs);
-> > > 
-> > > +	if (is_write) {
-> > > +		ret = spi_nor_mtd_otp_range_is_locked(nor, ofs, total_len);
-> > > +		if (ret < 0) {
-> > > +			goto out;
-> > > +		} else if (ret) {
-> > > +			ret = -EROFS;
-> > 
-> > I wonder if we should have a dev_info() or dev_err() here. I think this
-> > warrants a dev_dbg() at least.
-> 
-> Are you sure? Reporting something to the user via an error code is
-> enough IMHO. I wouldn't want my syslog to be cluttered with messages
-> I already know. I mean the program tell me "hey, you aren't allowed
-> to write there". Why would the kernel still need to tell me that again?
-> Without any connection to the caller, I don't get much out of the kernel
-> message by looking at it alone, just that someone tried to write there.
-> 
-> So definetly no dev_info() or dev_err(). But IMHO no dev_dbg() either.
-> Tudor, Vingesh, any opinions?
+IIRC the reason we deferred the pick to migration_cpu_stop() was because of
+those insane races involving multiple SCA calls the likes of:
 
-Either is fine by me.
+  p->cpus_mask = [0, 1]; p on CPU0
 
-> 
-> 
-> > > +			goto out;
-> > > +		}
-> > 
-> > So it returns -errno when the check for is_locked() fails and 1 or 0
-> > when it is locked or not. Ok.
-> > 
-> > It would be nice if you add a dev_dbg or dev_err() or dev_info() above.
-> > Nonetheless,
-> > 
-> > Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> Thanks for reviewing!
-> 
-> -michael
+  CPUx                           CPUy                   CPU0
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+  SCA(p, [2])
+    __do_set_cpus_allowed();
+    queue migration_cpu_stop()
+                                 SCA(p, [3])
+                                   __do_set_cpus_allowed();
+                                                        migration_cpu_stop()
+
+The stopper needs to use the latest cpumask set by the second SCA despite
+having an arg->pending set up by the first SCA. Doesn't this break here?
+
+I'm not sure I've paged back in all of the subtleties laying in ambush
+here, but what about the below?
+
+---
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..cd447c9db61d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1916,7 +1916,6 @@ static int migration_cpu_stop(void *data)
+ 	struct migration_arg *arg = data;
+ 	struct set_affinity_pending *pending = arg->pending;
+ 	struct task_struct *p = arg->task;
+-	int dest_cpu = arg->dest_cpu;
+ 	struct rq *rq = this_rq();
+ 	bool complete = false;
+ 	struct rq_flags rf;
+@@ -1954,19 +1953,15 @@ static int migration_cpu_stop(void *data)
+ 		if (pending) {
+ 			p->migration_pending = NULL;
+ 			complete = true;
+-		}
+ 
+-		if (dest_cpu < 0) {
+ 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+ 				goto out;
+-
+-			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
+ 		}
+ 
+ 		if (task_on_rq_queued(p))
+-			rq = __migrate_task(rq, &rf, p, dest_cpu);
++			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+ 		else
+-			p->wake_cpu = dest_cpu;
++			p->wake_cpu = arg->dest_cpu;
+ 
+ 		/*
+ 		 * XXX __migrate_task() can fail, at which point we might end
+@@ -2249,7 +2244,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 			init_completion(&my_pending.done);
+ 			my_pending.arg = (struct migration_arg) {
+ 				.task = p,
+-				.dest_cpu = -1,		/* any */
++				.dest_cpu = dest_cpu,
+ 				.pending = &my_pending,
+ 			};
+ 
+@@ -2257,6 +2252,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		} else {
+ 			pending = p->migration_pending;
+ 			refcount_inc(&pending->refs);
++			pending->arg.dest_cpu = dest_cpu;
+ 		}
+ 	}
+ 	pending = p->migration_pending;
