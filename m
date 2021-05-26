@@ -2,113 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A873914D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ACC3914D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhEZKZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:25:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:42602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233847AbhEZKZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:25:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D63E21516;
-        Wed, 26 May 2021 03:24:20 -0700 (PDT)
-Received: from [10.57.31.7] (unknown [10.57.31.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1CF83F73B;
-        Wed, 26 May 2021 03:24:18 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        dietmar.eggemann@arm.com
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
- <20210526090141.GA408481@e120877-lin.cambridge.arm.com>
- <20210526093807.sih5y4lgltsz3r74@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <17d88121-4809-dc31-1b57-2134ec868c8b@arm.com>
-Date:   Wed, 26 May 2021 11:24:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210526093807.sih5y4lgltsz3r74@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233901AbhEZK11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:27:27 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52801 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233827AbhEZK10 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:27:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ua9loNU_1622024748;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ua9loNU_1622024748)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 26 May 2021 18:25:53 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     satishkh@cisco.com
+Cc:     sebaddel@cisco.com, kartilak@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: cxgbi: cxgb3: Fix inconsistent indenting
+Date:   Wed, 26 May 2021 18:25:41 +0800
+Message-Id: <1622024742-35655-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Eliminate the follow smatch warning:
 
+drivers/scsi/fnic/fnic_fcs.c:164 fnic_handle_link() warn: inconsistent
+indenting.
 
-On 5/26/21 10:38 AM, Viresh Kumar wrote:
-> On 26-05-21, 10:01, Vincent Donnefort wrote:
->> I originally considered to add the inefficient knowledge into the CPUFreq table.
-> 
-> I wasn't talking about the cpufreq table here in the beginning, but calling
-> dev_pm_opp_disable(), which will eventually reflect in cpufreq table as well.
-> 
->> But I then gave up the idea for two reasons:
->>
->>    * The EM depends on having schedutil enabled. I don't think that any
->>      other governor would then manage to rely on the inefficient OPPs. (also I
->>      believe Peter had a plan to keep schedutil as the one and only governor)
-> 
-> Right, that EM is only there for schedutil.
-> 
-> I would encourage if this can be done even without the EM dependency, if
-> possible. It would be a good thing to do generally for any driver that wants to
-> do that.
-> 
->>    * The CPUfreq driver doesn't have to rely on the CPUfreq table, if the
->>      knowledge about inefficient OPPs is into the latter, some drivers might not
->>      be able to rely on the feature (you might say 'their loss' though :))
->>
->> For those reasons, I thought that adding inefficient support into the
->> CPUfreq table would complexify a lot the patchset for no functional gain.
-> 
-> What about disabling the OPP in the OPP core itself ? So every user will get the
-> same picture.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/cxgbi/cxgb3i/cxgb3i.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-There are SoCs which have OPPs every 100MHz even at high freq. They are
-used e.g. when thermal kicks in. We shouldn't disable them in generic
-frameworks like OPP. They might be used to provide enough CPU capacity,
-when temp is high. Imagine you have a board which does some work:
-sends and received some UDP packets. The board has been tested in oven
-that it will still be able to handle X messages/sec but using an OPP, 
-which in our heuristic is 'inefficient'. You cannot go above, because it
-will overheat the SoC, you might go below and find first 'efficient'
-OPP. You might harm this board performance if e.g. the OPP is 20% slower
-that this 'inefficient' which was tested by engineers.
-
-> 
->>>
->>> Since the whole thing depends on EM and OPPs, I think we can actually do this.
->>>
->>> When the cpufreq driver registers with the EM core, lets find all the
->>> Inefficient OPPs and disable them once and for all. Of course, this must be done
->>> on voluntarily basis, a flag from the drivers will do. With this, we won't be
->>> required to update any thing at any of the governors end.
->>
->> We still need to keep the inefficient OPPs for thermal reason.
-> 
-> How will that benefit us if that OPP is never going to run anyway ? We won't be
-
-This OPP still might be used, the Vincent heuristic is just a 'hint'.
-Schedutil will check policy->max and could clamp the 'efficient'
-returned freq to first allowed, which might be 'inefficient'
-
-> cooling down the CPU then, isn't it ?
-
-The 'inefficient' OPP is called from our 'energy placement' angle. For
-other folks from automotive, industrial or IoT who are stress testing
-SoCs and boards in various circumstances, they might call our
-'inefficient' perf state as 'efficient' - for they need.
-
-In our internal review I pointed that we are optimizing for mobiles with
-this and we might actually need a #ifdef, config or a switch for this
-heuristic.
+diff --git a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
+index 203f938..0fb42a4 100644
+--- a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
++++ b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
+@@ -395,10 +395,11 @@ static int push_tx_frames(struct cxgbi_sock *csk, int req_completion)
+ 	struct sk_buff *skb;
+ 
+ 	if (unlikely(csk->state < CTP_ESTABLISHED ||
+-		csk->state == CTP_CLOSE_WAIT_1 || csk->state >= CTP_ABORTING)) {
+-			log_debug(1 << CXGBI_DBG_TOE | 1 << CXGBI_DBG_PDU_TX,
+-				"csk 0x%p,%u,0x%lx,%u, in closing state.\n",
+-				csk, csk->state, csk->flags, csk->tid);
++		     csk->state == CTP_CLOSE_WAIT_1 ||
++		     csk->state >= CTP_ABORTING)) {
++		log_debug(1 << CXGBI_DBG_TOE | 1 << CXGBI_DBG_PDU_TX,
++			  "csk 0x%p,%u,0x%lx,%u, in closing state.\n",
++			  csk, csk->state, csk->flags, csk->tid);
+ 		return 0;
+ 	}
+ 
+-- 
+1.8.3.1
 
