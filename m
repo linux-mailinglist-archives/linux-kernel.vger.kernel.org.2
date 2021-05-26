@@ -2,231 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4073914E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D153914E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhEZK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:29:14 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:40391 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233922AbhEZK3K (ORCPT
+        id S233949AbhEZKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:30:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59666 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233830AbhEZKaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:29:10 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 30F4122236;
-        Wed, 26 May 2021 12:27:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622024856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IMptzfD/7HMBlBnPThHG8bmNRoM4i+y5Z3YoC55r0yg=;
-        b=pQfpPJ8QAES2cOjvsewj3gFadnfebUgqRhn8P3beGzi3Y2XTM58QQ6YzZKtIkFPoPpgr5q
-        GlE0e5UFCy4m2yQprjFRscMAOu9ZNH1GP0J7y2rNYhOUKrPoeHSJ2q13SleoJDEUoaoC3N
-        F7pfel1yo9w2cO787oGiOI4OWowNgUw=
+        Wed, 26 May 2021 06:30:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id B8FF31F40B01
+Message-ID: <b65236f3b8bbf35411b536df8b260d9f8a9dbd80.camel@collabora.com>
+Subject: Re: [PATCH 05/10] media: hantro: add support for Rockchip RK3036
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Alex Bee <knaerzche@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Date:   Wed, 26 May 2021 07:28:23 -0300
+In-Reply-To: <20210525152225.154302-6-knaerzche@gmail.com>
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+         <20210525152225.154302-6-knaerzche@gmail.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 26 May 2021 12:27:36 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     matti.vaittinen@fi.rohmeurope.com
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
-In-Reply-To: <a3b770f49d8e55dbda56a7c32a2667f669c362bc.camel@fi.rohmeurope.com>
-References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
- <2e201aabd9b42da9a2bdcb2f7504ec12@walle.cc>
- <a3b770f49d8e55dbda56a7c32a2667f669c362bc.camel@fi.rohmeurope.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <836b633b5cfaec4c01bd75a21369ac39@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-26 11:44, schrieb Matti Vaittinen:
-> On Wed, 2021-05-26 at 11:07 +0200, Michael Walle wrote:
->> Am 2021-05-26 10:42, schrieb Andy Shevchenko:
->> > On Wed, May 26, 2021 at 9:02 AM Matti Vaittinen
->> > <matti.vaittinen@fi.rohmeurope.com> wrote:
->> > > Support providing some IC specific operations at gpio_regmap
->> > > registration.
->> > >
->> > > Implementation of few GPIO related functionalities are likely to
->> > > be
->> > > very IC specific. For example the pin-configuration registers and
->> > > the
->> > > pin validity checks. Allow IC driver to provide IC specific
->> > > functions
->> > > which gpio-regmap can utilize for these IC specific
->> > > configurations.
->> > > This should help broaden the gpio-regmap IC coverage without the
->> > > need
->> > > of exposing the registered gpio_chip or struct gpio_regmap to IC
->> > > drivers.
->> > >
->> > > The set_config and init_valid_mask are used by ROHM BD71815 GPIO
->> > > driver.
->> > > Convert the BD71815 GPIO driver to use gpio-regmap and get rid of
->> > > some
->> > > code. Rest of the ROHM GPIO drivers are to be reworked after the
->> > > mechanism of adding IC specific functions is settled.
->> > >
->> > > Some preliminary discussion can be seen here:
->> > > https://lore.kernel.org/linux-gpio/c4faac648d3e0c7f3dcb50f7e24c8b322e8c6974.camel@fi.rohmeurope.com/
->> > >
->> > > I did also prepare change where the getters for drvdata and
->> > > regmap
->> > > are used. It can also work - but it does not scale quite as well
->> > > if (when) IC drivers need some register information to do custom
->> > > operations. Interested people can see the:
->> > > https://github.com/M-Vaittinen/linux/commits/gpio-regmap-getters
->> > > for comparison.
->> >
->> > Entire series looks good to me,
->> 
->> Sorry, for being late to this. I got sidetracked.
->> 
->> TBH, I don't like the we have the config struct in the callbacks. Why
->> would you need all this information in the callback?
+Hi Alex,
+
+Thanks a lot for the patch.
+
+On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
+> RK3036's VPU IP block is the same as RK3288 has, except that it doesn't
+> have an encoder, decoding is supported up to 1920x1088 only and the axi
+> clock can be set to 300 MHz max.
 > 
-> I believe there will be cases when the register information is needed
-> in callbacks. I don't know the GPIO controllers in details so that I
-> could give you an real-word example. I guess other people on the list
-> know the usual GPIO quirks far better than I do. I however have seen
-> bunch of hardware - and usually each IC has _some_ strange stuff. I
-> would be surprized if there weren't any cases where the one operation
-> "toggle X" would not require access to another register which is used
-> to control "feature Y" - and usually only once in a blue moon. Purely
-> imaginatory example could be that in order to change direction to
-> input, one would need to ensure some bit in a output configuration
-> register is cleared. Then it would be beneficial to have the register
-> description in call-back.
-
-Doing something depening on the offsets of some registers sounds like
-a hack to me.
-
-> Or, if we look at the pinctrl-bcm63xx.c - another imaginatory case - we
-> would get another HW variant with different BCM63XX_BANK_GPIOS value.
-> Now the IC would not need to store the correct BCM63XX_BANK_GPIOS in
-> driver data for the xlate-callback - it could directly read the
-> ngpio_per_reg from config.
-
-which also sounds like a hack, where one really should provide a
-driver priv to distiguish between different variant.
-
-> As I said, these cases are imaginatory - I don't know the GPIO
-> controllers well enough to give real-world examples - but I am positive
-> there are such.
+> Add a new RK3036 variant which reflect this differences.
 > 
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
+>  drivers/staging/media/hantro/hantro_drv.c    |  1 +
+>  drivers/staging/media/hantro/hantro_hw.h     |  1 +
+>  drivers/staging/media/hantro/rk3288_vpu_hw.c | 49 ++++++++++++++++++++
+>  3 files changed, 51 insertions(+)
 > 
->>  And it doesn't
->> help you to call back into gpio-regmap once there are further methods
->> provided by gpio-regmap.
-> 
-> If we later need this we can use container_of(), right?
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 38ea7b24036e..4f3c08e85bb8 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -490,6 +490,7 @@ static const struct of_device_id of_hantro_match[] = {
+>         { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
+>         { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
+>         { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
+> +       { .compatible = "rockchip,rk3036-vpu", .data = &rk3036_vpu_variant, },
+>  #endif
+>  #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+>         { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> index de2bc367a15a..d8d6b0d3c3b3 100644
+> --- a/drivers/staging/media/hantro/hantro_hw.h
+> +++ b/drivers/staging/media/hantro/hantro_hw.h
+> @@ -164,6 +164,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+>  extern const struct hantro_variant rk3328_vpu_variant;
+>  extern const struct hantro_variant rk3288_vpu_variant;
+>  extern const struct hantro_variant rk3066_vpu_variant;
+> +extern const struct hantro_variant rk3036_vpu_variant;
+>  extern const struct hantro_variant imx8mq_vpu_variant;
+>  extern const struct hantro_variant sama5d4_vdec_variant;
+>  
+> diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> index 29805c4bd92f..c4684df4e012 100644
+> --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> @@ -174,6 +174,13 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
+>         return IRQ_HANDLED;
+>  }
+>  
+> +static int rk3036_vpu_hw_init(struct hantro_dev *vpu)
+> +{
+> +       /* Bump ACLKs to max. possible freq. to improve performance. */
+> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+> +       return 0;
+> +}
+> +
+>  static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
+>  {
+>         /* Bump ACLKs to max. possible freq. to improve performance. */
+> @@ -209,6 +216,27 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+>  /*
+>   * Supported codec ops.
+>   */
+> +static const struct hantro_codec_ops rk3036_vpu_codec_ops[] = {
+> +       [HANTRO_MODE_H264_DEC] = {
+> +               .run = hantro_g1_h264_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_h264_dec_init,
+> +               .exit = hantro_h264_dec_exit,
+> +       },
+> +       [HANTRO_MODE_MPEG2_DEC] = {
+> +               .run = hantro_g1_mpeg2_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_mpeg2_dec_init,
+> +               .exit = hantro_mpeg2_dec_exit,
+> +       },
+> +       [HANTRO_MODE_VP8_DEC] = {
+> +               .run = hantro_g1_vp8_dec_run,
+> +               .reset = hantro_g1_reset,
+> +               .init = hantro_vp8_dec_init,
+> +               .exit = hantro_vp8_dec_exit,
+> +       },
+> +};
+> +
+>  static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+>         [HANTRO_MODE_JPEG_ENC] = {
+>                 .run = hantro_h1_jpeg_enc_run,
+> @@ -269,6 +297,10 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+>   * VPU variant.
+>   */
+>  
+> +static const struct hantro_irq rk3036_irqs[] = {
+> +       { "vdpu", hantro_g1_irq },
+> +};
+> +
+>  static const struct hantro_irq rk3288_irqs[] = {
+>         { "vepu", rk3288_vepu_irq },
+>         { "vdpu", hantro_g1_irq },
+> @@ -283,6 +315,23 @@ static const char * const rk3288_clk_names[] = {
+>         "aclk", "hclk"
+>  };
+>  
+> +const struct hantro_variant rk3036_vpu_variant = {
+> +       .dec_offset = 0x400,
 
-Of course, but isn't your argument to have less boilerplate? ;) And
-again, I don't thing the config is the correct first parameter here
-for the callback. And it would be different from all the other
-subsystems in linux (as far as I know, please correct me if I'm wrong),
-which have "their" (sometimes opaque, sometimes not) pointer as the
-first argument.
+If it doesn't have an encoder, then you should just
+use dec_offset = 0x0.
 
->> Either we hide away the internals completely (which I still prefer!)
->> or
->> we open up the gpio_regmap struct. But this is somewhere in between.
-> 
-> Yes. And I think this is the simplest and cleanest solution which still
-> provides decent amount of protection, while cuts off the boilerplate.
+Thanks,
+Ezequiel
 
-I really don't find this solution "clean".
-
-> Additionally this does not add any extra structures because IC drivers
-> already know the config. Some gpio_regmap internals (like gpio_chip)
-> can still be kept internal - while config (which in any case is
-> populated by the IC driver) is public.
-> 
->> As
->> the user, you could already attach the config to the opaque data
->> pointer
->> and get the same result.
-> 
-> Actually no. This would require user to permanently store the config in
-> memory which would either duplicate the config or give IC driver a
-> pointer to gpio_regmap internals. This solution still gives pointer to
-> gpio_regmap config - but at least we can set it const in function
-> parameters.
-
-Of course, your caller has to make sure it will allocate the memory
-and doesn't just allocate it on the stack. You're doing the same,
-just in gpio-regmap.
-
->> I don't see how the following is an overhead:
->> 
->> int gpio_regmap_callback(struct gpio_regmap *gpio, ..)
->> {
->>      struct regmap *regmap = gpio_regmap_get_regmap(gpio);
->>      struct driver_priv *data = gpio_regmap_get_drvdata(gpio);
->>      ...
->> }
-> 
->> It doesn't clutter anything, there is just a small runtime overhead
->> (is
->> it?). Again this let you keep adding stuff in the future without
->> changing any users. So what are the drawbacks of this?
->> 
-> 
-> It still is overhead. Additionally, I dislike mixing function calls
-> with declarations - I know that's probably just my personal preference
-> though.
-
-Well yes, thats just a matter of taste. Everyone is doing
-platform_get_drvdata(), for example. If you want to keep something
-internal you'd need accessor methods.
-
-> And what is not shown here is the need to declare, define and
-> export these functions from gpio_regmap. And this is really just
-> unnecessary boilerplate to me.
-
-Exporting the functions is just adding two lines in gpio/regmap.h. How 
-can
-this be an argument for an overhead on the users?
-
->> Also I'd like to keep the duplication of the "struct gpio_regmap"
->> members
->> and the config members. The gpio_regmap_config is just a struct so
->> the _register won't get cluttered with arguments.
-> 
-> The config (as passed from IC driver at register) is dublication. We
-> do:
-> gpio->config = *config;
-
-Yes and I actually had that during my initial development, but decided
-against it, to decouple the information you'll need later and some
-you might just discard after probe.
-
-I'm afraid, but I really don't like having the gpio_regmap_config as
-the first parameter on callbacks, just because I think this is the
-wrong approach, so I vote against this change. I guess it is up
-to Linus to decide on this.
-
-Don't get me wrong, I'm all open for change, but there seems to be two
-equal approaches to your problem, which just depends on personal
-taste.
-
--michael
