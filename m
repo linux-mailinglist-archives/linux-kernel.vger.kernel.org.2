@@ -2,217 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0620D390F3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF0F390F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 06:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhEZEQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 00:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhEZEQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 00:16:40 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA881C061574;
-        Tue, 25 May 2021 21:15:09 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id b25so320824oic.0;
-        Tue, 25 May 2021 21:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LR/t0Vt7qvFIvvy6uNALsvjkfSl1ofhhwPuv6EYwxew=;
-        b=gnmmOVwZQhAwv2besNqrPZWelhd0s3AdWLPImDKRi4sWthJrzKbbWZl0QiiEYosS0j
-         9DJVRGh/2tFePuL1zoZuqr64BMexFLsoLqczxyDON7H1wdJS9ZRHYxFN326qlQqkATct
-         v9+UpdJa0Lf/+FNbsylIhDXLYuCam/kehl4dZTQAOshhg07gw4MRdn/6c1l3HrJdJc0k
-         Ibi9dqGsl9ZDdkrCvHd/UIIfsf64arvOVedYW/YfGKoRo2lNkwTocSEDe50hYAB4uiG6
-         5SMLSEzlIN9XIYZDzIsfmiFeue11BTHXVfoNeo7Q8DgbdD08/p1qI72FrJkycD7fQadC
-         +0DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LR/t0Vt7qvFIvvy6uNALsvjkfSl1ofhhwPuv6EYwxew=;
-        b=geUEztTpQ7RfoIygNqGiGylsnM4zrAGvM9UEq5TTtRxJF48IfybD30yJVudtAWZe67
-         m6HHtBUoZpjB/y2/I1Op1oOREL3IEnD7ovOx80rYi1yL21BqXUEywQ/IMa01hAeoND1L
-         nAf0R4CkAFJnIHWfUYfGefdt4/3r5CAeZWT/7Le0Ss+Nztv21ECENJmbJy7I8PYoAQi7
-         EAaCu5cBs9Koyxe6AIm1Kc49XLWBNOxfCvDn/+StpZyuCs0yUzohXaN6Y862x8FK7/MC
-         uzPY1VoqWUtleDQXarRa6TxCbTsDCMXbnMfsXNyEvIN7Z5QjkcjQOKkuPHYG909MuxUA
-         ZYvA==
-X-Gm-Message-State: AOAM532z9IH5BYOozuoG0Az+rG+n5DYWRU5HsfAMdIs01QAdzKjCY7uz
-        o9s31KWDhl8IcUCysmgbkHtEyKpEzq8=
-X-Google-Smtp-Source: ABdhPJzgabL5J6fnK4qvcI0NV2swQsM8iDzjdiW32rJ5O/CRoiTATdoP5Ol3oG8vawPv7GjYPCE/DQ==
-X-Received: by 2002:a05:6808:d47:: with SMTP id w7mr617183oik.104.1622002508582;
-        Tue, 25 May 2021 21:15:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o20sm3936076oos.19.2021.05.25.21.15.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 21:15:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Erik Rosen <erik.rosen@metormote.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210524150246.90546-1-erik.rosen@metormote.com>
- <20210524150246.90546-4-erik.rosen@metormote.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v3 3/6] hwmon: (pmbus/pim4328) Add support for reading
- direct format coefficients
-Message-ID: <edf5c762-16c0-f6a7-a4f5-90065bc9781a@roeck-us.net>
-Date:   Tue, 25 May 2021 21:15:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231477AbhEZEWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 00:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231136AbhEZEWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 00:22:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40B576142D;
+        Wed, 26 May 2021 04:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622002865;
+        bh=NZKWIN28iWuMtjx6BwvjImZPFZySO0UG0/he/MAoOis=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dTZCvWMWWIsvt8irM23V9io/StaXDR1Cdseku9Lxh04kO0vPna4PjGXjE6Bo+I2z8
+         mdv/xlk6MJ4QuPqVQa4GH5w+REaAbbmURy+JDEBapRHSTJ78aFEGDSjNbTxQ0EnIIF
+         8Ie2aJF9XvS/twNVN3GFMb8mBC58BspP4tQyCmVXn1apMM4zHtiK0X8+icgynZHb+M
+         8PDlQKJEMVHTgP/I7ks8ohUSxrGKTiOYpSRcXno5c/Nj2KRHJ7mU2EY2AsSB8r+ZU1
+         XADd/lLOeVNPwNZcuolGkrlfzb4VtDiUYEXODhGylUXB64gMwO/hlMd3+rtGjbSDg+
+         ahQM+ac+wo5Dg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 04DE85C0395; Tue, 25 May 2021 21:21:05 -0700 (PDT)
+Date:   Tue, 25 May 2021 21:21:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ check_all_holdout_tasks_trace
+Message-ID: <20210526042104.GZ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000f034fc05c2da6617@google.com>
+ <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+ <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
+ <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
+ <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+ <4b98d598-8044-0254-9ee2-0c9814b0245a@windriver.com>
+ <20210525142835.GO4441@paulmck-ThinkPad-P17-Gen-1>
+ <62d52830-e422-d08d-fbb8-9e0984672ffe@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <20210524150246.90546-4-erik.rosen@metormote.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <62d52830-e422-d08d-fbb8-9e0984672ffe@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 8:02 AM, Erik Rosen wrote:
-> Add support for reading and decoding direct format coefficients to
-> the PMBus core driver. If the new flag PMBUS_USE_COEFFICIENTS_CMD
-> is set, the driver will use the COEFFICIENTS register together with
-> the information in the pmbus_sensor_attr structs to initialize
-> relevant coefficients for the direct mode format.
+On Wed, May 26, 2021 at 10:22:59AM +0800, Xu, Yanfei wrote:
+> On 5/25/21 10:28 PM, Paul E. McKenney wrote:
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Tue, May 25, 2021 at 06:24:10PM +0800, Xu, Yanfei wrote:
+> > > 
+> > > 
+> > > On 5/25/21 11:33 AM, Paul E. McKenney wrote:
+> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > 
+> > > > On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
+> > > > > 
+> > > > > 
+> > > > > On 5/25/21 6:46 AM, Paul E. McKenney wrote:
+> > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > > > 
+> > > > > > On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
+> > > > > > > On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
+> > > > > > > > On Fri, May 21, 2021 at 7:29 PM syzbot
+> > > > > > > > <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+> > > > > > > > > 
+> > > > > > > > > Hello,
+> > > > > > > > > 
+> > > > > > > > > syzbot found the following issue on:
+> > > > > > > > > 
+> > > > > > > > > HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> > > > > > > > > git tree:       bpf-next
+> > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+> > > > > > > > > 
+> > > > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > > > > 
+> > > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > > > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+> > > > > > > > 
+> > > > > > > > This looks rcu-related. +rcu mailing list
+> > > > > > > 
+> > > > > > > I think I see a possible cause for this, and will say more after some
+> > > > > > > testing and after becoming more awake Monday morning, Pacific time.
+> > > > > > 
+> > > > > > No joy.  From what I can see, within RCU Tasks Trace, the calls to
+> > > > > > get_task_struct() are properly protected (either by RCU or by an earlier
+> > > > > > get_task_struct()), and the calls to put_task_struct() are balanced by
+> > > > > > those to get_task_struct().
+> > > > > > 
+> > > > > > I could of course have missed something, but at this point I am suspecting
+> > > > > > an unbalanced put_task_struct() has been added elsewhere.
+> > > > > > 
+> > > > > > As always, extra eyes on this code would be a good thing.
+> > > > > > 
+> > > > > > If it were reproducible, I would of course suggest bisection.  :-/
+> > > > > > 
+> > > > > >                                                            Thanx, Paul
+> > > > > > 
+> > > > > Hi Paul,
+> > > > > 
+> > > > > Could it be?
+> > > > > 
+> > > > >          CPU1                                        CPU2
+> > > > > trc_add_holdout(t, bhp)
+> > > > > //t->usage==2
+> > > > >                                         release_task
+> > > > >                                           put_task_struct_rcu_user
+> > > > >                                             delayed_put_task_struct
+> > > > >                                               ......
+> > > > >                                               put_task_struct(t)
+> > > > >                                               //t->usage==1
+> > > > > 
+> > > > > check_all_holdout_tasks_trace
+> > > > >     ->trc_wait_for_one_reader
+> > > > >       ->trc_del_holdout
+> > > > >         ->put_task_struct(t)
+> > > > >         //t->usage==0 and task_struct freed
+> > > > >     READ_ONCE(t->trc_reader_checked)
+> > > > >     //ops， t had been freed.
+> > > > > 
+> > > > > So, after excuting trc_wait_for_one_reader（）, task might had been removed
+> > > > > from holdout list and the corresponding task_struct was freed.
+> > > > > And we shouldn't do READ_ONCE(t->trc_reader_checked).
+> > > > 
+> > > > I was suspicious of that call to trc_del_holdout() from within
+> > > > trc_wait_for_one_reader(), but the only time it executes is in the
+> > > > context of the current running task, which means that CPU 2 had better
+> > > > not be invoking release_task() on it just yet.
+> > > > 
+> > > > Or am I missing your point?
+> > > 
+> > > Two times.
+> > > 1. the task is current.
+> > > 
+> > >                 trc_wait_for_one_reader
+> > >                   ->trc_del_holdout
+> > 
+> > This one should be fine because the task cannot be freed until it
+> > actually exits, and the grace-period kthread never exits.  But it
+> > could also be removed without any problem that I see. >
 > 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
-> ---
->   drivers/hwmon/pmbus/pmbus_core.c | 82 ++++++++++++++++++++++++++++++++
->   include/linux/pmbus.h            |  8 ++++
->   2 files changed, 90 insertions(+)
+> Agree, current task's task_struct should be high probably safe.  If you
+> think it is safe to remove, I prefer to remove it. Because it can make
+> trc_wait_for_one_reader's behavior about deleting task from holdout more
+> unified. And there should be a very small racy that the task is checked as a
+> current and then turn into a exiting task before its task_struct is accessed
+> in trc_wait_for_one_reader or check_all_holdout_tasks_trace.（or I
+> misunderstand something about rcu tasks）
 > 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index 460cbfd716e4..32e29f6dee38 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2177,6 +2177,77 @@ static int pmbus_find_attributes(struct i2c_client *client,
->   	return ret;
->   }
->   
-> +/*
-> + * The pmbus_class_attr_map structure maps one sensor class to
-> + * it's corresponding sensor attributes array.
-> + */
-> +struct pmbus_class_attr_map {
-> +	enum pmbus_sensor_classes class;
-> +	u8 nattr;
-
-u8 doesn't save anything and on most architectures makes the code more
-complicated. Just use int.
-
-> +	const struct pmbus_sensor_attr *attr;
-> +};
-> +
-> +static const struct pmbus_class_attr_map class_attr_map[] = {
-> +	{
-> +		.class = PSC_VOLTAGE_IN,
-> +		.attr = voltage_attributes,
-> +		.nattr = ARRAY_SIZE(voltage_attributes),
-> +	}, {
-> +		.class = PSC_VOLTAGE_OUT,
-> +		.attr = voltage_attributes,
-> +		.nattr = ARRAY_SIZE(voltage_attributes),
-> +	}, {
-> +		.class = PSC_CURRENT_IN,
-> +		.attr = current_attributes,
-> +		.nattr = ARRAY_SIZE(current_attributes),
-> +	}, {
-> +		.class = PSC_CURRENT_OUT,
-> +		.attr = current_attributes,
-> +		.nattr = ARRAY_SIZE(current_attributes),
-> +	}, {
-> +		.class = PSC_POWER,
-> +		.attr = power_attributes,
-> +		.nattr = ARRAY_SIZE(power_attributes),
-> +	}, {
-> +		.class = PSC_TEMPERATURE,
-> +		.attr = temp_attributes,
-> +		.nattr = ARRAY_SIZE(temp_attributes),
-> +	}
-> +};
-> +
-> +static int pmbus_init_coefficients(struct i2c_client *client,
-> +				   struct pmbus_data *data)
-> +{
-> +	int i, n;
-> +	int ret = 0;
-
-Unnecessary initialization
-
-> +	const struct pmbus_class_attr_map *map;
-> +	const struct pmbus_sensor_attr *attr;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(class_attr_map); i++) {
-> +		map = &class_attr_map[i];
-> +		if (data->info->format[map->class] != direct)
-> +			continue;
-> +		for (n = 0; n < map->nattr; n++) {
-> +			attr = &map->attr[n];
-> +			if (map->class != attr->class)
-> +				continue;
-> +			ret = pmbus_read_coefficients(client,
-> +						      (struct pmbus_driver_info *)data->info,
-
-This is not a good idea. data->info points to a constant. Is there a reason
-to pass data instead of info as argument to this function ?
-
-> +						      attr->class,
-> +						      attr->reg);
-> +			if (ret >= 0)
-> +				break;
-> +		}
-> +		if (ret < 0) {
-> +			dev_err(&client->dev, "No coefficients found for sensor class %d\n",
-> +				map->class); > +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * Identify chip parameters.
->    * This function is called for all chips.
-> @@ -2296,6 +2367,17 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
->   			return ret;
->   		}
->   	}
-> +
-> +	if (data->flags & PMBUS_USE_COEFFICIENTS_CMD) {
-> +		if (!i2c_check_functionality(client->adapter,
-> +					     I2C_FUNC_SMBUS_BLOCK_PROC_CALL))
-> +			return -ENODEV;
-> +
-> +		ret = pmbus_init_coefficients(client, data);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
->   	return 0;
->   }
->   
-> diff --git a/include/linux/pmbus.h b/include/linux/pmbus.h
-> index f720470b1bab..7fdc282dab5a 100644
-> --- a/include/linux/pmbus.h
-> +++ b/include/linux/pmbus.h
-> @@ -52,6 +52,14 @@
->    */
->   #define PMBUS_NO_WRITE_PROTECT			BIT(4)
->   
-> +/*
-> + * PMBUS_USE_COEFFICIENTS_CMD
-> + *
-> + * When this flag is set the PMBus core driver will use the COEFFICIENTS
-> + * register to initialize the coefficients for the direct mode format.
-> + */
-> +#define PMBUS_USE_COEFFICIENTS_CMD		BIT(5)
-> +
->   struct pmbus_platform_data {
->   	u32 flags;		/* Device specific flags */
->   
+> > > 2. task isn't current.
+> > > 
+> > >                 trc_wait_for_one_reader
+> > >                   ->get_task_struct
+> > >                   ->try_invoke_on_locked_down_task（trc_inspect_reader）
+> > >                     ->trc_del_holdout
+> > >                   ->put_task_struct
+> > 
+> > Ah, this one is more interesting, thank you!
+> > 
+> > Yes, it is safe from the list's viewpoint to do the removal in the
+> > trc_inspect_reader() callback, but you are right that the grace-period
+> > kthread may touch the task structure after return, and there might not
+> > be anything else holding that task structure in place.
+> > 
+> > > > Of course, if you can reproduce it, the following patch might be
+> > > 
+> > > Sorry...I can't reproduce it, just analyse syzbot's log. :(
+> > 
+> > Well, if it could be reproduced, that would mean that it was too easy,
+> > wouldn't it?  ;-)
 > 
+> Ha ;-)
 
+But it should be possible to make this happen...  Is it possible to
+add lots of short-lived tasks to the test that failed?
+
+> > How about the (untested) patch below, just to make sure that we are
+> > talking about the same thing?  I have started testing, but then
+> > again, I have not yet been able to reproduce this, either.
+> > 
+> >                                                          Thanx, Paul
+> 
+> Yes! we are talking the same thing, Should I send a new patch?
+
+Or look at these commits that I queued this past morning (Pacific Time)
+on the "dev" branch of the -rcu tree:
+
+aac385ea2494 rcu-tasks: Don't delete holdouts within trc_inspect_reader()
+bf30dc63947c rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()
+
+They pass initial testing, but then again, such tests passed before
+these patches were queued.  :-/
+
+							Thanx, Paul
