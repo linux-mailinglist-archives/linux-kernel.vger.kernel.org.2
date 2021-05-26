@@ -2,164 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B430A3922A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8726C3922B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhEZW0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233535AbhEZW0Y (ORCPT
+        id S234404AbhEZW1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 18:27:42 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54906 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234297AbhEZW1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:26:24 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20235C061574;
-        Wed, 26 May 2021 15:24:52 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id c20so4914134ejm.3;
-        Wed, 26 May 2021 15:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=upYwLtGa9fOyLSjVETQLNgUNJczN5tq2tRjvlYCAYGo=;
-        b=ZxCGQpH6nBkwCGw0G4aCBFMjzk6ac/TrsxDKPTF8gcok0oyFO9QHIItZVUtoJVqrkP
-         e58Ei6pd1eeRO0vAB5QB2QU/b9hOD911wnRbLHs0GVJMvB96pY0T40AT2RvrzDHaTIuw
-         +aFeo89JSTl8EhFoM4cxvIXCVFCDArjm2J70+rihLntLAxcTPOXITRajVBKCHST9skXe
-         6NL5dI/iuhG4gKFUUG9qtUs9XWU1kFwAWUJn5opbu0BPuKgvr+0u7oPIRXTNjMCRQvVr
-         sGOsEpIZeoQEfYQw3aQMayz5QV9+BJGEkA5Uu7TgmCy5YFIzCEmrh66/apSllo7MJ4PS
-         af/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=upYwLtGa9fOyLSjVETQLNgUNJczN5tq2tRjvlYCAYGo=;
-        b=SPzD5XPgcB9N6KH4gncOnZoPAZAwATazFLO4nNaBVX+cj+DHxPlER6JPSrPOR6Ibn8
-         fuTxCDzbZv3XSmGNe3PIBoSELtzLpuGbp4lJl5ZAxN7VU4UUiJ9mcqMyrhAX5tXfH1C1
-         BmY7rP3ockzJqM3qRDgHYdt1jykambt0c0aex9q5ASeh0Nr30aRHDI8RXJ5orZrnANhZ
-         jw281wp/kDjRu7SmGbD+DM3f+rDGLp+PpgGnEWZHq46dHaBc4MP0yzkIqVc6WDMGTxQR
-         RXmNOdGcisBX0ozihzQoaz2MOBhisspkTOcCutJsqgTiEyMHQUl+GTEWR7HIGd8uKUPd
-         ye8w==
-X-Gm-Message-State: AOAM531zMNto4+7LOW0BQghxWmsQUh7w1K6m3mWAI3eg0wdzCSzKKxFq
-        DSZh0L1FE/iqomGIX9G34rX9mPzp6kw=
-X-Google-Smtp-Source: ABdhPJy7sCVIG2MoRN2VwdG/8PWQxOR7DuRxFzmXimafN2bG+97hAqkIVi2cKKwSsjaCg0nhzx1qfg==
-X-Received: by 2002:a17:906:40d1:: with SMTP id a17mr495038ejk.43.1622067890603;
-        Wed, 26 May 2021 15:24:50 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id r25sm92203edc.55.2021.05.26.15.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 15:24:50 -0700 (PDT)
-Date:   Thu, 27 May 2021 01:24:48 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH net-next v3 3/9] net: phy: micrel: use consistent
- indention after define
-Message-ID: <20210526222448.zjpw3olck75332px@skbuf>
-References: <20210526043037.9830-1-o.rempel@pengutronix.de>
- <20210526043037.9830-4-o.rempel@pengutronix.de>
+        Wed, 26 May 2021 18:27:36 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QMF7gs019599
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:26:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=m2Usb8pBnaJ5JSG5ZmqsO2PX6YX/Fcc3JtrbDbrn2J0=;
+ b=KdozIGjxtdV16VDlebccLJllHB/zniP9jY3DhAld5mU9GLWGdhf3kZaoO5kOGPJRY8kh
+ jNbnoEJrtEhRXaPGxoMaan0dLQiIpnFSPcI6Lfh/2PqW+J4sKIdSBlGt9OfUtcsKDWoA
+ aSqcZSNH0A4aJQB/Vdp+AG/T94NDmp7SzKY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 38shgsmygb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 15:26:04 -0700
+Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 15:26:03 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id A2E5A7B6ABB3; Wed, 26 May 2021 15:25:58 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v5 0/2] cgroup, blkcg: prevent dirty inodes to pin dying memory cgroups
+Date:   Wed, 26 May 2021 15:25:55 -0700
+Message-ID: <20210526222557.3118114-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526043037.9830-4-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ZXqF47kB3XlHOkBRWBztLRBjy5cvspGL
+X-Proofpoint-ORIG-GUID: ZXqF47kB3XlHOkBRWBztLRBjy5cvspGL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_12:2021-05-26,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=528 impostorscore=0 malwarescore=0 clxscore=1015 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105260151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 06:30:31AM +0200, Oleksij Rempel wrote:
-> This patch changes the indention to one space between "#define" and the
+When an inode is getting dirty for the first time it's associated
+with a wb structure (see __inode_attach_wb()). It can later be
+switched to another wb (if e.g. some other cgroup is writing a lot of
+data to the same inode), but otherwise stays attached to the original
+wb until being reclaimed.
 
-indention
-/ɪnˈdɛnʃ(ə)n/
-noun
-noun: indention; plural noun: indentions
+The problem is that the wb structure holds a reference to the original
+memory and blkcg cgroups. So if an inode has been dirty once and later
+is actively used in read-only mode, it has a good chance to pin down
+the original memory and blkcg cgroups forewer. This is often the case wit=
+h
+services bringing data for other services, e.g. updating some rpm
+packages.
 
-    archaic term for indentation.
+In the real life it becomes a problem due to a large size of the memcg
+structure, which can easily be 1000x larger than an inode. Also a
+really large number of dying cgroups can raise different scalability
+issues, e.g. making the memory reclaim costly and less effective.
 
-Interesting, I learned something new.
+To solve the problem inodes should be eventually detached from the
+corresponding writeback structure. It's inefficient to do it after
+every writeback completion. Instead it can be done whenever the
+original memory cgroup is offlined and writeback structure is getting
+killed. Scanning over a (potentially long) list of inodes and detach
+them from the writeback structure can take quite some time. To avoid
+scanning all inodes, attached inodes are kept on a new list (b_attached).
+To make it less noticeable to a user, the scanning is performed from a
+work context.
 
-Also, technically it's alignment not indentation.
+Big thanks to Jan Kara and Dennis Zhou for their ideas and
+contribution to the previous iterations of this patch.
 
-> macro.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/micrel.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index a14a00328fa3..227d88db7d27 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -38,15 +38,15 @@
->  
->  /* general Interrupt control/status reg in vendor specific block. */
->  #define MII_KSZPHY_INTCS			0x1B
-> -#define	KSZPHY_INTCS_JABBER			BIT(15)
-> -#define	KSZPHY_INTCS_RECEIVE_ERR		BIT(14)
-> -#define	KSZPHY_INTCS_PAGE_RECEIVE		BIT(13)
-> -#define	KSZPHY_INTCS_PARELLEL			BIT(12)
-> -#define	KSZPHY_INTCS_LINK_PARTNER_ACK		BIT(11)
-> -#define	KSZPHY_INTCS_LINK_DOWN			BIT(10)
-> -#define	KSZPHY_INTCS_REMOTE_FAULT		BIT(9)
-> -#define	KSZPHY_INTCS_LINK_UP			BIT(8)
-> -#define	KSZPHY_INTCS_ALL			(KSZPHY_INTCS_LINK_UP |\
-> +#define KSZPHY_INTCS_JABBER			BIT(15)
-> +#define KSZPHY_INTCS_RECEIVE_ERR		BIT(14)
-> +#define KSZPHY_INTCS_PAGE_RECEIVE		BIT(13)
-> +#define KSZPHY_INTCS_PARELLEL			BIT(12)
-> +#define KSZPHY_INTCS_LINK_PARTNER_ACK		BIT(11)
-> +#define KSZPHY_INTCS_LINK_DOWN			BIT(10)
-> +#define KSZPHY_INTCS_REMOTE_FAULT		BIT(9)
-> +#define KSZPHY_INTCS_LINK_UP			BIT(8)
-> +#define KSZPHY_INTCS_ALL			(KSZPHY_INTCS_LINK_UP |\
->  						KSZPHY_INTCS_LINK_DOWN)
->  #define	KSZPHY_INTCS_LINK_DOWN_STATUS		BIT(2)
->  #define	KSZPHY_INTCS_LINK_UP_STATUS		BIT(0)
+v5:
+  - switch inodes to bdi->wb instead of zeroing inode->i_wb
+  - split the single patch into two
+  - only cgwbs maintain lists of attached inodes
+  - added cond_resched()
+  - fixed !CONFIG_CGROUP_WRITEBACK handling
+  - extended list of prohibited inodes flag
+  - other small fixes
 
-You left these aligned using tabs.
 
-> @@ -54,11 +54,11 @@
->  						 KSZPHY_INTCS_LINK_UP_STATUS)
->  
->  /* PHY Control 1 */
-> -#define	MII_KSZPHY_CTRL_1			0x1e
-> +#define MII_KSZPHY_CTRL_1			0x1e
->  
->  /* PHY Control 2 / PHY Control (if no PHY Control 1) */
-> -#define	MII_KSZPHY_CTRL_2			0x1f
-> -#define	MII_KSZPHY_CTRL				MII_KSZPHY_CTRL_2
-> +#define MII_KSZPHY_CTRL_2			0x1f
-> +#define MII_KSZPHY_CTRL				MII_KSZPHY_CTRL_2
->  /* bitmap of PHY register to set interrupt mode */
->  #define KSZPHY_CTRL_INT_ACTIVE_HIGH		BIT(9)
->  #define KSZPHY_RMII_REF_CLK_SEL			BIT(7)
-> -- 
-> 2.29.2
-> 
+Roman Gushchin (2):
+  writeback, cgroup: keep list of inodes attached to bdi_writeback
+  writeback, cgroup: release dying cgwbs by switching attached inodes
 
-And the last column of these macros at the end is aligned with spaces
-unlike everything else:
+ fs/fs-writeback.c                | 101 +++++++++++++++++++++++++------
+ include/linux/backing-dev-defs.h |   2 +
+ include/linux/backing-dev.h      |   7 +++
+ include/linux/writeback.h        |   2 +
+ mm/backing-dev.c                 |  63 ++++++++++++++++++-
+ 5 files changed, 156 insertions(+), 19 deletions(-)
 
-/* Write/read to/from extended registers */
-#define MII_KSZPHY_EXTREG                       0x0b
-#define KSZPHY_EXTREG_WRITE                     0x8000
+--=20
+2.31.1
 
-#define MII_KSZPHY_EXTREG_WRITE                 0x0c
-#define MII_KSZPHY_EXTREG_READ                  0x0d
-
-/* Extended registers */
-#define MII_KSZPHY_CLK_CONTROL_PAD_SKEW         0x104
-#define MII_KSZPHY_RX_DATA_PAD_SKEW             0x105
-#define MII_KSZPHY_TX_DATA_PAD_SKEW             0x106
-
-I guess if you're going to send this patch you might as well refactor it all.
