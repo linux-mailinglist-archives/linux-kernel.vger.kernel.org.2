@@ -2,135 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BDC390E70
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B93390E79
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhEZCsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:48:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230312AbhEZCsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:48:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47AB361432;
-        Wed, 26 May 2021 02:47:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621997241;
-        bh=sKcmWhJmVsIPdkX6fdFoAIC9r4N6jPGMkT7L2NUL4Sw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Pgk9dH1ZD5Vu8B97z4WJqYgpSwz2kzsBILrAGP4aNFWDu4IFYkHtsZIjUzunj6R0K
-         6S1FoiFpLFYMO+fFxfj4JwAW34UlBxslC5d5p/uVCp3ZCH9qZN3add3eOyiar5S3mR
-         AMo/SJqdpTgVGDArMwefDxbIF6+4uaIjvIw5dXCzyOBzn5zyJIgihs1xXYUhgDKKsl
-         MT1Z022sEHnX3kaxMMK9ArW4LAXqgP+ggyjp4Savpd3OZMSKdrCPzwFbpTjLNUGWxf
-         ON/tkUoCb2JyTILn0eT5jzEvFsZs3yaUPgX8qqYAEk0xbG0DW+IUfIuJ6ubTP2pWeI
-         vHKcCPIwcl07Q==
-Received: by mail-ed1-f45.google.com with SMTP id g7so26492320edm.4;
-        Tue, 25 May 2021 19:47:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530grqEMh853ovuTGrFcps+Q3kq3FDsQYrTrcIDRLvIpQX3hO+l9
-        Cs2IjT0iW+4fe+xim8gv9mkJEEDD1g1jMog0SA==
-X-Google-Smtp-Source: ABdhPJwZ9qhKoR/4aN1yXlD5plSJwQb48VNfGpy4rh2cgs/Z+gzv3xIUzO+FkXgz28nH6QdNiD2ByhbTu7W1IKIoSuY=
-X-Received: by 2002:aa7:ccc6:: with SMTP id y6mr35286163edt.303.1621997239928;
- Tue, 25 May 2021 19:47:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210525121448.30075-1-rex-bc.chen@mediatek.com> <20210525121448.30075-3-rex-bc.chen@mediatek.com>
-In-Reply-To: <20210525121448.30075-3-rex-bc.chen@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 26 May 2021 10:47:10 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__0EU5Sjo2ygj2tXHk3VTRuyEf+q4cGh3nGN1K1vMkFMw@mail.gmail.com>
-Message-ID: <CAAOTY__0EU5Sjo2ygj2tXHk3VTRuyEf+q4cGh3nGN1K1vMkFMw@mail.gmail.com>
-Subject: Re: [v4,PATCH 2/3] drm/mediatek: config driver data to support dual
- edge sample
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
+        id S232270AbhEZCue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:50:34 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:17289 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232558AbhEZCuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 22:50:32 -0400
+X-UUID: 14cf6aa0b36f44fa9deb587f394fc97a-20210526
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=IvFU8sypoO0O+6V1djFvlbjXmsP30PJ1htIWDI3JDUM=;
+        b=chK1UaGfG72a789g1KHfC7FOaVZq8FW4lr/ZtIbArV3gH69/XxiHCe5mmkF1r1VE4Ou6BfwfeRJ1NzL8JktFUhDMf2Pr4zcgF66q9ntYCRGqjIMfAP4pBTCACSQpkfQh8LLj1aaSSHzejfrKX0O+mhwHxzz6nx7Op6ZW1mo+LGU=;
+X-UUID: 14cf6aa0b36f44fa9deb587f394fc97a-20210526
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1346147304; Wed, 26 May 2021 10:48:56 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
+ 2021 10:48:48 +0800
+Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Wed, 26 May 2021 10:48:47 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-pwm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jitao Shi <jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
+        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
+        <ck.hu@mediatek.com>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH v3 0/3] Convert the mtk_disp driver to aotmic API
+Date:   Wed, 26 May 2021 10:48:43 +0800
+Message-ID: <20210526024846.120838-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: AF1C3E7F7F6D04596C943736E5FC00377541B87B3AB3C359648FC3C94E07AAF62000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rex:
+Q2hhbmdlIHNpbmNlIHYyOg0KIC0gQ2hhbmdlIGNvbW1pdCBtZXNzYWdlcyB0byByZW1vdmUgdGhl
+IGNsb2NrIG9wZXJhdGlvbnMgZm9yIGF0b21pYyBBUElzLg0KIC0gUmViYXNlIHRvIHY1LjEzIHJj
+MQ0KDQpDaGFuZ2VzIHNpbmNlIHYxOg0KIC0gU2VwZXJhdGUgY2xvY2sgb3BlcmF0aW9uIGFzIHNp
+bmdsZSBwYXRjaC4NCiAtIFNlcGVyYXRlIGFwcGx5KCkgYXMgc2luZ2xlIHBhdGNoLg0KIC0gU2Vw
+ZXJhdGUgZ2V0X3N0YXRlKCkgb3BlcmF0aW9uIGFzIHNpbmdsZSBwYXRjaC4NCg0KSml0YW8gU2hp
+ICgzKToNCiAgcHdtOiBtdGtfZGlzcDogcmVtb3ZlIHRoZSBjbG9jayBvcGVyYXRpb25zIGZvciBh
+dG9taWMgQVBJcy4NCiAgcHdtOiBtdGtfZGlzcDogaW1wbGVtZW50IGF0b21pYyBBUEkgLmFwcGx5
+KCkNCiAgcHdtOiBtdGtfZGlzcDogaW1wbGVtZW50IGF0b21pYyBBUEkgLmdldF9zdGF0ZSgpDQoN
+CiBkcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYyB8IDE3NyArKysrKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDEwMiBpbnNlcnRpb25zKCspLCA3NSBk
+ZWxldGlvbnMoLSkNCg0KLS0gDQoyLjI1LjENCg==
 
-Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8825=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:15=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Add output_fmts and num_output_fmts value for all configuration.
->
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index d3b883c97aaf..d6a422986efc 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -695,10 +695,21 @@ static unsigned int mt8183_calculate_factor(int clo=
-ck)
->                 return 2;
->  }
->
-> +static const u32 mt8173_output_fmts[] =3D {
-> +MEDIA_BUS_FMT_RGB888_1X24,
-
-indent.
-
-> +};
-> +
-> +static const u32 mt8183_output_fmts[] =3D {
-> +MEDIA_BUS_FMT_RGB888_2X12_LE,
-> +MEDIA_BUS_FMT_RGB888_2X12_BE,
-
-ditto.
-
-Regards,
-Chun-Kuang.
-
-> +};
-> +
->  static const struct mtk_dpi_conf mt8173_conf =3D {
->         .cal_factor =3D mt8173_calculate_factor,
->         .reg_h_fre_con =3D 0xe0,
->         .max_clock_khz =3D 300000,
-> +       .output_fmts =3D mt8173_output_fmts,
-> +       .num_output_fmts =3D ARRAY_SIZE(mt8173_output_fmts),
->  };
->
->  static const struct mtk_dpi_conf mt2701_conf =3D {
-> @@ -706,18 +717,24 @@ static const struct mtk_dpi_conf mt2701_conf =3D {
->         .reg_h_fre_con =3D 0xb0,
->         .edge_sel_en =3D true,
->         .max_clock_khz =3D 150000,
-> +       .output_fmts =3D mt8173_output_fmts,
-> +       .num_output_fmts =3D ARRAY_SIZE(mt8173_output_fmts),
->  };
->
->  static const struct mtk_dpi_conf mt8183_conf =3D {
->         .cal_factor =3D mt8183_calculate_factor,
->         .reg_h_fre_con =3D 0xe0,
->         .max_clock_khz =3D 100000,
-> +       .output_fmts =3D mt8183_output_fmts,
-> +       .num_output_fmts =3D ARRAY_SIZE(mt8183_output_fmts),
->  };
->
->  static const struct mtk_dpi_conf mt8192_conf =3D {
->         .cal_factor =3D mt8183_calculate_factor,
->         .reg_h_fre_con =3D 0xe0,
->         .max_clock_khz =3D 150000,
-> +       .output_fmts =3D mt8173_output_fmts,
-> +       .num_output_fmts =3D ARRAY_SIZE(mt8173_output_fmts),
->  };
->
->  static int mtk_dpi_probe(struct platform_device *pdev)
-> --
-> 2.18.0
->
