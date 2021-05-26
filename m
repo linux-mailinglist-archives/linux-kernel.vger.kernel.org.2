@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12406391896
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9C23918C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhEZNSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:18:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
+        id S233683AbhEZN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:26:20 -0400
+Received: from mail.bugwerft.de ([46.23.86.59]:37012 "EHLO mail.bugwerft.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhEZNSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:18:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAB0E613B9;
-        Wed, 26 May 2021 13:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622035011;
-        bh=LXobja8LB8VO3c7Zu/EJvpMV/chTpzUwIFAvo7VkUo4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o8+8KqKHcCohw74SaIRiCSvUii4D11QGetAyKuAJo5lpXWEF5Q17G0GUseaKPFAW0
-         uendXzieCizlb510GuvCFxNPX72cPRjhZKi4SFY1U2E909xbbpw/klvhk9TauBc73l
-         rJ5889/HMZPlLOcobHkEt8g4vUX76XDuwsv7+xmqFVc9EjqcQ3YETxzYfp+XlMm2xO
-         DNJXFP5FU2j0ENO7eIgIvshS07YKt4UgepfEn0eoVTyGhjhlMuvzbKj6cNPvlnwd1b
-         Wa1s8whBOkXFN0RWeJjvDQ7ssMai8kdteBWBey8bmiIZBMwIczBzvOyeBwlpHL1h5n
-         kk0CxKTZ5C9VQ==
-Date:   Wed, 26 May 2021 22:16:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, jolsa@redhat.com,
-        linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>, acme@kernel.org
-Subject: Re: [PATCH] tools/perf: doc: Add permission and sysctl notice
-Message-Id: <20210526221647.972ffffddc88c1b08c19a024@kernel.org>
-In-Reply-To: <ebaefebf-76d0-790a-2062-6f451b683be8@linux.ibm.com>
-References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
-        <162201967838.287555.4257117900130102987.stgit@devnote2>
-        <ebaefebf-76d0-790a-2062-6f451b683be8@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231779AbhEZN0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:26:18 -0400
+X-Greylist: delayed 355 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 09:26:18 EDT
+Received: from [10.100.244.107] (unknown [176.126.217.202])
+        by mail.bugwerft.de (Postfix) with ESMTPSA id 388A54CC777;
+        Wed, 26 May 2021 13:18:51 +0000 (UTC)
+Subject: Re: [PATCH 18/24] usb: gadget: udc: pxa27x_udc: Fix documentation for
+ 'pxa27x_udc_start()'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-19-lee.jones@linaro.org>
+From:   Daniel Mack <daniel@zonque.org>
+Message-ID: <e3dc3a08-ffab-e145-2777-34d310c20ef7@zonque.org>
+Date:   Wed, 26 May 2021 15:18:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210526130037.856068-19-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 15:20:58 +0530
-Ravi Bangoria <ravi.bangoria@linux.ibm.com> wrote:
-
+On 5/26/21 3:00 PM, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
+>  drivers/usb/gadget/udc/pxa27x_udc.c:1749: warning: expecting prototype for pxa27x_start(). Prototype was for pxa27x_udc_start() instead
 > 
-> On 5/26/21 2:31 PM, Masami Hiramatsu wrote:
-> > Add a section to notify the permission and sysctl setting
-> > for perf probe. And fix some indentations.
+
+Acked-by: Daniel Mack <daniel@zonque.org>
+
+
+Thanks!
+
+
+> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/usb/gadget/udc/pxa27x_udc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Yes, it makes sense to have this detail in man page.
+> diff --git a/drivers/usb/gadget/udc/pxa27x_udc.c b/drivers/usb/gadget/udc/pxa27x_udc.c
+> index ce57961dfd2d6..b2759b04b8e94 100644
+> --- a/drivers/usb/gadget/udc/pxa27x_udc.c
+> +++ b/drivers/usb/gadget/udc/pxa27x_udc.c
+> @@ -1730,7 +1730,7 @@ static void udc_enable(struct pxa_udc *udc)
+>  }
+>  
+>  /**
+> - * pxa27x_start - Register gadget driver
+> + * pxa27x_udc_start - Register gadget driver
+>   * @g: gadget
+>   * @driver: gadget driver
+>   *
 > 
-> Few minor points below ...
-> 
-> >   
-> > +PERMISSIONS AND SYSCTL
-> > +----------------------
-> > +Since perf probe depends on ftrace (tracefs) and kallsyms (/proc/kallsyms), you have to care about the permission and some sysctl knobs.
-> > +
-> > + - Since tracefs and kallsyms requires root or privileged user to access it, the following perf probe commands also require it; --add, --del, --list (except for --cache option)
-> > +
-> > + - /proc/sys/kernel/kptr_restrict = 2 (restrict all users) also prevents perf probe to retrieve the important information from kallsyms. You also need to set to 1 (restrict non CAP_SYSLOG users) for the above commands.
-> > +
-> > + - Since the perf probe commands read the vmlinux and/or the debuginfo file, you need to ensure that you can read those files.
-> 
-> 1) Last two points are applicable to kprobes only, not uprobes. Would
->     it make sense to clarify that?
 
-Ah, right. And the last one may be also related to uprobes.
-
-> 2) For 3rd point, simple perf probe on function entry will work without
->     vmlinux/debuginfo (by using kallsyms). Should we mention that?
-
-Hmm, that depends on the options. If we use -k option, it will get the symbols from the given vmlinux.
-
-> 
-> In any case,
-> 
-> Acked-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-
-Thanks! I'll update it for uprobe.
-
-
-> 
-> Ravi
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
