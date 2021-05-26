@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD51B391479
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B8239147C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhEZKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233764AbhEZKJ2 (ORCPT
+        id S233813AbhEZKJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:09:52 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:33638 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233787AbhEZKJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:09:28 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD8BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:07:57 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k5so525960pjj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iPLF4+a0+7osNgqIih0t63HrK/7cIyUQjVdMCaByTx4=;
-        b=McT6WvIIhYAITiYiVmvf9diDdxUIeXVUj80svSmWGZkKzERBTUuSJICT+1aesu0rp6
-         lr80GxhsP2CYf5+Lw6jVHyvsQFNY8zWtYKk8qr+J2a08R8+xAAAhuyNthUrYDEUHSLar
-         bZK+isSOTBLoqPBpXTUSRBlE4gZRemVynfwxuq7PqcQ6EqzMDe+0asg3YL5NbA3tHVAw
-         AK/trgfEAqzrGO5b68L32EIpaomzB2jSVCI1OFzs5WBBx/zAOb+DdAk9itkr711JC7eP
-         4EVN6K6LceUbBdPd7hJMMCIuVTRgEF5sUXjwoS113it4WpU2qgqCokQ4cO60j/aT0bce
-         lzug==
+        Wed, 26 May 2021 06:09:40 -0400
+Received: by mail-wr1-f42.google.com with SMTP id n2so540206wrm.0;
+        Wed, 26 May 2021 03:08:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iPLF4+a0+7osNgqIih0t63HrK/7cIyUQjVdMCaByTx4=;
-        b=akGP11jUTzdKwDZHDW70h+AEzH+wLT8vRpJnuRPM5IdUx5bVYPytbTQBW4Yn1TW+55
-         W1WvOcLlrifWf7dM3smwC66UnwPwoeKOWoYewXHZnx1oBCEx5KISv/naIYwY7rp82acP
-         xTwUfIVR9hdcwoVkixYV7+JPxMLRdmaTdMCOD8/J4fAtphty3oda4UFGT64ZhA66mh/B
-         +e3em5AZfl8MO+XLFOaLVw00GuZV9S0MMPDi/52euhD4M+Hs8SPqK36kHvqXJabD7png
-         xxQE9pbVygVxRCUGs/PCDUra5fOitrPHZ4y6NxAy0qRYk85QzsHjkR6XIEd82zEmKeAv
-         wShQ==
-X-Gm-Message-State: AOAM532G45sb8WwdWR4MLuiOzpZsO6dsg3AAkU/XN99XlYsssr2uBMJj
-        cQtZGqcpFivCcaBA0GcO+MDm
-X-Google-Smtp-Source: ABdhPJxzbNRZCM/TUHJmvxFI6Zega3duBzCjyNdGs7pP8S8t49WpLEQQCp9uUr72qRdzGtzi1G/axA==
-X-Received: by 2002:a17:90a:8902:: with SMTP id u2mr35505244pjn.143.1622023676967;
-        Wed, 26 May 2021 03:07:56 -0700 (PDT)
-Received: from work ([120.138.12.4])
-        by smtp.gmail.com with ESMTPSA id 184sm14858556pfv.38.2021.05.26.03.07.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 May 2021 03:07:55 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:37:43 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/6] clk: actions: Fix SD clocks factor table on Owl S500
- SoC
-Message-ID: <20210526100719.GC10723@work>
-References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
- <973b08fe414321ba4ade096a4917cadc2013426e.1615221459.git.cristian.ciocaltea@gmail.com>
- <20210316035845.GB1798@thinkpad>
- <20210316181437.GB1111731@BV030612LT>
+         :mime-version:content-disposition:in-reply-to;
+        bh=3bo+c3S5QKp7gdHebx8LdhAWUc/HOzQNqyiFqhVHljE=;
+        b=Nokw/GcI40kiAgn9bR+XmcEgIytbeQ9lkyqLwtknX4cImDKORZELPgR/UtDRc9a1EG
+         Zg9KH4oL+TaZn+eFctTpi9zwFbBHkYeNTE9pKaAKeNiWsikK0TL28caT4pB6Y3k0ofjr
+         LqwJIzzSknbU9YzkoLd/6mEcK3LPFIHe2EhrVNkuKDsBQv34ikQ9ZI1+zfdNSTe36mKr
+         cujmhg0vD8Og0WwVkhecaB6Lo6CVThH0CL1/D9V1r/VV+vHYsRI75KdL4zDh23kOQt8B
+         fJOIrNQXwmP10fnuBO35oxZlQMXWi7HDMxI8oNYjXjwBkO/ITzJpZcdtj1H5pcbPcSl0
+         +qVA==
+X-Gm-Message-State: AOAM530Z/WGuVFc4Isqd8D7XD520pikYayZAMi5UHFwtiSGaGMZHxlUg
+        Edw/SW9hVQ2ZXu3Gh/w0+s8=
+X-Google-Smtp-Source: ABdhPJziSRsXB9sJDjgqH8qbMWPhdLxWYa+hc6oCcPa0qqVjdQIl6Nq3piyW+u6w0WVlc1k8AMtgWw==
+X-Received: by 2002:adf:fd81:: with SMTP id d1mr32269275wrr.37.1622023687273;
+        Wed, 26 May 2021 03:08:07 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id v18sm23315208wro.18.2021.05.26.03.08.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 03:08:06 -0700 (PDT)
+Date:   Wed, 26 May 2021 10:08:05 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        kys@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pci-hyperv: Add check for hyperv_initialized in
+ init_hv_pci_drv()
+Message-ID: <20210526100805.xpeen7td45cswqsw@liuwe-devbox-debian-v2>
+References: <1621984653-1210-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316181437.GB1111731@BV030612LT>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1621984653-1210-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:14:37PM +0200, Cristian Ciocaltea wrote:
-> Hi Mani,
+On Tue, May 25, 2021 at 04:17:33PM -0700, Haiyang Zhang wrote:
+> Add check for hv_is_hyperv_initialized() at the top of init_hv_pci_drv(),
+> so if the pci-hyperv driver is force-loaded on non Hyper-V platforms, the
+> init_hv_pci_drv() will exit immediately, without any side effects, like
+> assignments to hvpci_block_ops, etc.
 > 
-> Thanks for reviewing this patch series!
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
+
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
+
+> ---
+>  drivers/pci/controller/pci-hyperv.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> On Tue, Mar 16, 2021 at 09:28:45AM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Mar 08, 2021 at 07:18:27PM +0200, Cristian Ciocaltea wrote:
-> > > Drop the unsupported entries in the factor table used for the SD[0-2]
-> > > clocks definitions on the Actions Semi Owl S500 SoC.
-> > > 
-> > > Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
-> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > ---
-> > >  drivers/clk/actions/owl-s500.c | 4 ----
-> > >  1 file changed, 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-> > > index 75b7186185b0..69cd959205f5 100644
-> > > --- a/drivers/clk/actions/owl-s500.c
-> > > +++ b/drivers/clk/actions/owl-s500.c
-> > > @@ -127,8 +127,6 @@ static struct clk_factor_table sd_factor_table[] = {
-> > >  	{ 12, 1, 13 }, { 13, 1, 14 }, { 14, 1, 15 }, { 15, 1, 16 },
-> > >  	{ 16, 1, 17 }, { 17, 1, 18 }, { 18, 1, 19 }, { 19, 1, 20 },
-> > >  	{ 20, 1, 21 }, { 21, 1, 22 }, { 22, 1, 23 }, { 23, 1, 24 },
-> > > -	{ 24, 1, 25 }, { 25, 1, 26 }, { 26, 1, 27 }, { 27, 1, 28 },
-> > > -	{ 28, 1, 29 }, { 29, 1, 30 }, { 30, 1, 31 }, { 31, 1, 32 },
-> > 
-
-[...]
-
-> This is basically what gets translated to sd_factor_table and I removed
-> the extra entries 25..31. Actually I also dropped the 24th one, since
-> that would give us an odd number of items, although I'm not quite sure
-> this is a bug in the xapp-le code or the HW is really supposed to work
-> like that.
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index 6511648271b2..bebe3eeebc4e 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3476,6 +3476,9 @@ static void __exit exit_hv_pci_drv(void)
+>  
+>  static int __init init_hv_pci_drv(void)
+>  {
+> +	if (!hv_is_hyperv_initialized())
+> +		return -ENODEV;
+> +
+>  	/* Set the invalid domain number's bit, so it will not be used */
+>  	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+>  
+> -- 
+> 2.25.1
 > 
-
-In my datasheet I can see the factor values till 24. So let's remove the
-entries from 25-31.
-
-Thanks,
-Mani
-
-> Kind regards,
-> Cristi
-> 
-> > Thanks,
-> > Mani
-> > 
-> > >  
-> > >  	/* bit8: /128 */
-> > >  	{ 256, 1, 1 * 128 }, { 257, 1, 2 * 128 }, { 258, 1, 3 * 128 }, { 259, 1, 4 * 128 },
-> > > @@ -137,8 +135,6 @@ static struct clk_factor_table sd_factor_table[] = {
-> > >  	{ 268, 1, 13 * 128 }, { 269, 1, 14 * 128 }, { 270, 1, 15 * 128 }, { 271, 1, 16 * 128 },
-> > >  	{ 272, 1, 17 * 128 }, { 273, 1, 18 * 128 }, { 274, 1, 19 * 128 }, { 275, 1, 20 * 128 },
-> > >  	{ 276, 1, 21 * 128 }, { 277, 1, 22 * 128 }, { 278, 1, 23 * 128 }, { 279, 1, 24 * 128 },
-> > > -	{ 280, 1, 25 * 128 }, { 281, 1, 26 * 128 }, { 282, 1, 27 * 128 }, { 283, 1, 28 * 128 },
-> > > -	{ 284, 1, 29 * 128 }, { 285, 1, 30 * 128 }, { 286, 1, 31 * 128 }, { 287, 1, 32 * 128 },
-> > >  	{ 0, 0, 0 },
-> > >  };
-> > >  
-> > > -- 
-> > > 2.30.1
-> > > 
