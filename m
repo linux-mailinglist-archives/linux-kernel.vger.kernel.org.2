@@ -2,220 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE9B391416
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C65139141F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233551AbhEZJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:52:29 -0400
-Received: from smtp-1909.mail.infomaniak.ch ([185.125.25.9]:56829 "EHLO
-        smtp-1909.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233371AbhEZJw1 (ORCPT
+        id S233632AbhEZJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:55:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24267 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233207AbhEZJz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:52:27 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FqmRM1fDqzMptYc;
-        Wed, 26 May 2021 11:50:55 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FqmRJ05YQzlmrrV;
-        Wed, 26 May 2021 11:50:51 +0200 (CEST)
-Subject: Re: [PATCH v26 02/25] LSM: Add the lsmblob data structure.
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20210513200807.15910-1-casey@schaufler-ca.com>
- <20210513200807.15910-3-casey@schaufler-ca.com>
- <206971d6-70c7-e217-299f-1884310afa15@digikod.net>
- <1c3874c1-870a-ac60-03e6-2c16d49e185b@schaufler-ca.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <53108f3e-3297-3d8b-cba9-2b12ca30d666@digikod.net>
-Date:   Wed, 26 May 2021 11:53:00 +0200
-User-Agent: 
+        Wed, 26 May 2021 05:55:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622022865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mnuvu4co2BY5mdQTK1o0OB5Zu/eHYl39GSuGwurEgmk=;
+        b=cUU90ImmtbnmrJQaBXEkXdz1W2wv2Pe0npqmnUjIde2KYJuypmQ2mPXZRpoojYob8xwdE9
+        u6sum5xo8a//3uIhMiDPb3pMqo+yYErxam5l/qI+cyikNHsjfSe6nbOCzmFWDgett1kc7h
+        OZgm/UOfSAfwxNHYKSf0PEiNv8NfrwE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-lfITmb-7M_eoaAFcGRPGOA-1; Wed, 26 May 2021 05:54:18 -0400
+X-MC-Unique: lfITmb-7M_eoaAFcGRPGOA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEDBA801107;
+        Wed, 26 May 2021 09:54:16 +0000 (UTC)
+Received: from starship (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52F8769FB5;
+        Wed, 26 May 2021 09:54:14 +0000 (UTC)
+Message-ID: <2409eb8593804eb879ae6fb961a709ca8c20f329.camel@redhat.com>
+Subject: Re: [PATCH v2 0/5] KVM: x86: hyper-v: Conditionally allow SynIC
+ with APICv/AVIC
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Kechen Lu <kechenl@nvidia.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 26 May 2021 12:54:13 +0300
+In-Reply-To: <20210518144339.1987982-1-vkuznets@redhat.com>
+References: <20210518144339.1987982-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <1c3874c1-870a-ac60-03e6-2c16d49e185b@schaufler-ca.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 26/05/2021 01:52, Casey Schaufler wrote:
-> On 5/22/2021 1:39 AM, Mickaël Salaün wrote:
->> I like this design but there is an issue with Landlock though, see below.
->>
->> On 13/05/2021 22:07, Casey Schaufler wrote:
->>> When more than one security module is exporting data to
->>> audit and networking sub-systems a single 32 bit integer
->>> is no longer sufficient to represent the data. Add a
->>> structure to be used instead.
->>>
->>> The lsmblob structure is currently an array of
->>> u32 "secids". There is an entry for each of the
->>> security modules built into the system that would
->>> use secids if active. The system assigns the module
->>> a "slot" when it registers hooks. If modules are
->>> compiled in but not registered there will be unused
->>> slots.
->>>
->>> A new lsm_id structure, which contains the name
->>> of the LSM and its slot number, is created. There
->>> is an instance for each LSM, which assigns the name
->>> and passes it to the infrastructure to set the slot.
->>>
->>> The audit rules data is expanded to use an array of
->>> security module data rather than a single instance.
->>> Because IMA uses the audit rule functions it is
->>> affected as well.
->>>
->>> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
->>> Acked-by: Paul Moore <paul@paul-moore.com>
->>> Acked-by: John Johansen <john.johansen@canonical.com>
->>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->>> Cc: <bpf@vger.kernel.org>
->>> Cc: linux-audit@redhat.com
->>> Cc: linux-security-module@vger.kernel.org
->>> Cc: selinux@vger.kernel.org
->>> To: Mimi Zohar <zohar@linux.ibm.com>
->>> To: Mickaël Salaün <mic@linux.microsoft.com>
->>> ---
->>>  include/linux/audit.h               |  4 +-
->>>  include/linux/lsm_hooks.h           | 12 ++++-
->>>  include/linux/security.h            | 67 +++++++++++++++++++++++++--
->>>  kernel/auditfilter.c                | 24 +++++-----
->>>  kernel/auditsc.c                    | 13 +++---
->>>  security/apparmor/lsm.c             |  7 ++-
->>>  security/bpf/hooks.c                | 12 ++++-
->>>  security/commoncap.c                |  7 ++-
->>>  security/integrity/ima/ima_policy.c | 40 +++++++++++-----
->>>  security/landlock/cred.c            |  2 +-
->>>  security/landlock/fs.c              |  2 +-
->>>  security/landlock/ptrace.c          |  2 +-
->>>  security/landlock/setup.c           |  4 ++
->>>  security/landlock/setup.h           |  1 +
->>>  security/loadpin/loadpin.c          |  8 +++-
->>>  security/lockdown/lockdown.c        |  7 ++-
->>>  security/safesetid/lsm.c            |  8 +++-
->>>  security/security.c                 | 72 ++++++++++++++++++++++++-----
->>>  security/selinux/hooks.c            |  8 +++-
->>>  security/smack/smack_lsm.c          |  7 ++-
->>>  security/tomoyo/tomoyo.c            |  8 +++-
->>>  security/yama/yama_lsm.c            |  7 ++-
->>>  22 files changed, 262 insertions(+), 60 deletions(-)
->>>
->> [...]
->>
->>> diff --git a/security/landlock/setup.c b/security/landlock/setup.c
->>> index f8e8e980454c..4a12666a4090 100644
->>> --- a/security/landlock/setup.c
->>> +++ b/security/landlock/setup.c
->>> @@ -23,6 +23,10 @@ struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
->>>  	.lbs_superblock = sizeof(struct landlock_superblock_security),
->>>  };
->>>  
->>> +struct lsm_id landlock_lsmid __lsm_ro_after_init = {
->>> +	.lsm = LANDLOCK_NAME,
->> It is missing: .slot = LSMBLOB_NEEDED,
+On Tue, 2021-05-18 at 16:43 +0200, Vitaly Kuznetsov wrote:
+> Changes since v1 (Sean):
+> - Use common 'enable_apicv' variable for both APICv and AVIC instead of 
+>  adding a new hook to 'struct kvm_x86_ops'.
+> - Drop unneded CONFIG_X86_LOCAL_APIC checks from VMX/SVM code along the
+>  way.
 > 
-> Sorry for the delay.
+> Original description:
 > 
-> Landlock does not provide any of the hooks that use a struct lsmblob.
-> That would be secid_to_secctx, secctx_to_secid, inode_getsecid,
-> cred_getsecid, kernel_act_as task_getsecid_subj task_getsecid_obj and
-> ipc_getsecid. Setting .slot = LSMBLOB_NEEDED indicates that the LSM
-> uses a slot in struct lsmblob. Landlock does not need a slot.
-
-Indeed, the (generic) "blob" name misled me. Would it make sense to use
-a name with "secid" in it instead?
-
-Shouldn't the slot field be set to LSMBLOB_NOT_NEEDED (-3) then (instead
-of the implicit 0)?
-
+> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+> however, possible to track whether the feature was actually used by the
+> guest and only inhibit APICv/AVIC when needed.
 > 
->>
->> You can run the Landlock tests please?
->> make -C tools/testing/selftests TARGETS=landlock gen_tar
->> tar -xf kselftest.tar.gz && ./run_kselftest.sh
+> The feature can be tested with QEMU's 'hv-passthrough' debug mode.
 > 
-> Sure. I'll add them to my routine.
+> Note, 'avic' kvm-amd module parameter is '0' by default and thus needs to
+> be explicitly enabled.
+> 
+> Vitaly Kuznetsov (5):
+>   KVM: SVM: Drop unneeded CONFIG_X86_LOCAL_APIC check for AVIC
+>   KVM: VMX: Drop unneeded CONFIG_X86_LOCAL_APIC check from
+>     cpu_has_vmx_posted_intr()
+>   KVM: x86: Use common 'enable_apicv' variable for both APICv and AVIC
+>   KVM: x86: Invert APICv/AVIC enablement check
+>   KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
+>     use
+> 
+>  arch/x86/include/asm/kvm_host.h |  5 ++++-
+>  arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
+>  arch/x86/kvm/svm/avic.c         | 16 +++++-----------
+>  arch/x86/kvm/svm/svm.c          | 24 +++++++++++++-----------
+>  arch/x86/kvm/svm/svm.h          |  2 --
+>  arch/x86/kvm/vmx/capabilities.h |  4 +---
+>  arch/x86/kvm/vmx/vmx.c          |  2 --
+>  arch/x86/kvm/x86.c              |  9 ++++++---
+>  8 files changed, 50 insertions(+), 39 deletions(-)
+> 
 
-Thanks.
+I tested this patch set and this is what I found.
 
-> 
->>
->>
->>> +};
->>> +
->>>  static int __init landlock_init(void)
->>>  {
->>>  	landlock_add_cred_hooks();
->> [...]
->>
->>> diff --git a/security/security.c b/security/security.c
->>> index e12a7c463468..a3276deb1b8a 100644
->>> --- a/security/security.c
->>> +++ b/security/security.c
->>> @@ -344,6 +344,7 @@ static void __init ordered_lsm_init(void)
->>>  	init_debug("sock blob size       = %d\n", blob_sizes.lbs_sock);
->>>  	init_debug("superblock blob size = %d\n", blob_sizes.lbs_superblock);
->>>  	init_debug("task blob size       = %d\n", blob_sizes.lbs_task);
->>> +	init_debug("lsmblob size         = %zu\n", sizeof(struct lsmblob));
->>>  
->>>  	/*
->>>  	 * Create any kmem_caches needed for blobs
->>> @@ -471,21 +472,36 @@ static int lsm_append(const char *new, char **result)
->>>  	return 0;
->>>  }
->>>  
->>> +/*
->>> + * Current index to use while initializing the lsmblob secid list.
->>> + */
->>> +static int lsm_slot __lsm_ro_after_init;
->>> +
->>>  /**
->>>   * security_add_hooks - Add a modules hooks to the hook lists.
->>>   * @hooks: the hooks to add
->>>   * @count: the number of hooks to add
->>> - * @lsm: the name of the security module
->>> + * @lsmid: the identification information for the security module
->>>   *
->>>   * Each LSM has to register its hooks with the infrastructure.
->>> + * If the LSM is using hooks that export secids allocate a slot
->>> + * for it in the lsmblob.
->>>   */
->>>  void __init security_add_hooks(struct security_hook_list *hooks, int count,
->>> -				char *lsm)
->>> +			       struct lsm_id *lsmid)
->>>  {
->>>  	int i;
->>>  
->> Could you add a WARN_ON(!lsmid->slot || !lsmid->name) here?
-> 
-> Yes. That's reasonable.
+For reference,
+First of all, indeed to make AVIC work I need to:
+ 
+1. Disable SVM - I wonder if I can make this on demand
+too when the guest actually uses a nested guest or at least
+enables nesting in IA32_FEATURE_CONTROL.
+I naturally run most of my VMs with nesting enabled,
+thus I tend to not have avic enabled due to this.
+I'll prepare a patch soon for this.
+ 
+2. Disable x2apic, naturally x2apic can't be used with avic.
+In theory we can also disable avic when the guest switches on
+the x2apic mode, but in practice the guest will likely to pick the x2apic
+when it can.
+ 
+3. (for hyperv) Disable 'hv_vapic', because otherwise hyper-v
+uses its own PV APIC msrs which AVIC doesn't support.
 
-I guess my above comment makes sense if lsmid->slot should not be zero
-but LSMBLOB_NOT_NEEDED instead, otherwise the Landlock lsmid would throw
-a warning.
+This HV enlightment turns on in the CPUID both the 
+HV_APIC_ACCESS_AVAILABLE which isn't that bad 
+(it only tells that we have the VP assist page),
+and HV_APIC_ACCESS_RECOMMENDED which hints the guest
+to use HyperV PV APIC MSRS and use PV EOI field in 
+the APIC access page, which means that the guest 
+won't use the real apic at all.
 
-> 
->>
->>
->>> +	if (lsmid->slot == LSMBLOB_NEEDED) {
->>> +		if (lsm_slot >= LSMBLOB_ENTRIES)
->>> +			panic("%s Too many LSMs registered.\n", __func__);
->>> +		lsmid->slot = lsm_slot++;
->>> +		init_debug("%s assigned lsmblob slot %d\n", lsmid->lsm,
->>> +			   lsmid->slot);
->>> +	}
->>> +
->>>  	for (i = 0; i < count; i++) {
->>> -		hooks[i].lsm = lsm;
->>> +		hooks[i].lsmid = lsmid;
->>>  		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
->>>  	}
->>>  
-> 
+4. and of course enable SynIC autoeoi deprecation.
+
+Otherwise indeed windows enables autoeoi.
+
+hv-passthrough indeed can't be used to test this
+as it both enables autoeoi depreciation and *hv-vapic*. 
+I had to use the patch that you posted
+in 'About the performance of hyper-v' thread.
+ 
+In addition to that when I don't use the autoeoi depreciation patch,
+then the guest indeed enables autoeoi, and this triggers a deadlock.
+ 
+The reason is that kvm_request_apicv_update must not be called with
+srcu lock held vcpu->kvm->srcu (there is a warning about that
+in kvm_request_apicv_update), but guest msr writes which come
+from vcpu thread do hold it.
+ 
+The other place where we disable AVIC on demand is svm_toggle_avic_for_irq_window.
+And that code has a hack to drop this lock and take 
+it back around the call to kvm_request_apicv_update.
+This hack is safe as this code is called only from the vcpu thread.
+ 
+Also for reference the reason for the fact that we need to
+disable AVIC on the interrupt window request, or more correctly
+why we still need to request interrupt windows with AVIC,
+is that the local apic can act sadly as a pass-through device 
+for legacy PIC, when one of its LINTn pins is configured in ExtINT mode.
+In this mode when such pin is raised, the local apic asks the PIC for
+the interrupt vector and then delivers it to the APIC
+without touching the IRR/ISR.
+
+The later means that if guest's interrupts are disabled,
+such interrupt can't be queued via IRR to VAPIC
+but instead the regular interrupt window has to be requested, 
+but on AMD, the only way to request interrupt window
+is to queue a VIRQ, and intercept its delivery,
+a feature that is disabled when AVIC is active.
+ 
+Finally for SynIC this srcu lock drop hack can be extended to this gross hack:
+It seems to work though:
+
+
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index bedd9b6cc26a..925b76e7b45e 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -85,7 +85,7 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
+ }
+ 
+ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+-				int vector)
++				int vector, bool host)
+ {
+ 	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
+ 	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
+@@ -109,6 +109,9 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+ 
+ 	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
+ 
++	if (!host)
++		srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
++
+ 	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
+ 	if (!auto_eoi_old && auto_eoi_new) {
+ 		printk("Synic: inhibiting avic %d %d\n", auto_eoi_old, auto_eoi_new);
+@@ -121,6 +124,10 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+ 			kvm_request_apicv_update(vcpu->kvm, true,
+ 						 APICV_INHIBIT_REASON_HYPERV);
+ 	}
++
++	if (!host)
++		vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
++
+ }
+ 
+ static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
+@@ -149,9 +156,9 @@ static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
+ 
+ 	atomic64_set(&synic->sint[sint], data);
+ 
+-	synic_update_vector(synic, old_vector);
++	synic_update_vector(synic, old_vector, host);
+ 
+-	synic_update_vector(synic, vector);
++	synic_update_vector(synic, vector, host);
+ 
+ 	/* Load SynIC vectors into EOI exit bitmap */
+ 	kvm_make_request(KVM_REQ_SCAN_IOAPIC, hv_synic_to_vcpu(synic));
+
+
+Assuming that we don't want this gross hack,  
+I wonder if we can avoid full blown memslot 
+update when we disable avic, but rather have some 
+smaller hack like only manually patching its
+NPT mapping to have RW permissions instead 
+of reserved bits which we use for MMIO. 
+
+The AVIC spec says that NPT is only used to check that
+guest has RW permission to the page, 
+while the HVA in the NPT entry itself is ignored.
+
+Best regards,
+	Maxim Levitsky
+
+
+
+
+
