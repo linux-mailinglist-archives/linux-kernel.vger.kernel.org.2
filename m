@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C572391191
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B58391195
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhEZHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:54:32 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:34546 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhEZHyZ (ORCPT
+        id S233100AbhEZHyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:54:52 -0400
+Received: from mail-m121142.qiye.163.com ([115.236.121.142]:44884 "EHLO
+        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhEZHyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:54:25 -0400
-Received: by mail-ua1-f52.google.com with SMTP id x1so287942uau.1;
-        Wed, 26 May 2021 00:52:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DF4Qym5vi5urmQVozT7x89feYVqRBLX860c1iUhsLiU=;
-        b=YzPVqcY1EPZbaSCvOFGIgiiu8fiZbg23q0itrX0saQgR0RC2NdOe5weYcHR2TC1WUJ
-         tj/RqrjAY0a6KwH5mM0ge2ust62kc9dqk6VTt7lgY7WJdBRcjzTnqV1FpkzvSnZ9eqiD
-         Emgt/9b+ss1NCdhhnD4ZjNJ09d5pa7uuCZVOoLJziJMUBkwxW63KoYD+u3O5LosX/NaK
-         Pwo1oh4Lm9Rj+GJ2GvWtWJWE8NXaQHF6ffRl5VaEzohtx0VOqXHh7KSt6pAgauYvdJSH
-         tJlRD/4seN1HvODGVKrCm5zU6PTZmEVdfa3OxlwlTKtRwkddsrmAemtmeTaF1yGP0bf5
-         eK5A==
-X-Gm-Message-State: AOAM5324tQN9FLCLU9Z5CHomQvW2a/TzMdG8DOkLdnQCaYFN/khIz3tK
-        veEJqwooJkfHglTTPgcH3tSUYvWrl7LzytuVDMk=
-X-Google-Smtp-Source: ABdhPJxZSU7OcT6+Xw6agQLX8qT6DqdHwFEcdKKd93N3mCPT/ubOM0JdG4oGvbsyUb2+YK1Dc2xb1IMQ8nAWxqjy1SU=
-X-Received: by 2002:a1f:9505:: with SMTP id x5mr26222492vkd.6.1622015574205;
- Wed, 26 May 2021 00:52:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330145430.996981-1-maz@kernel.org> <20210330145430.996981-8-maz@kernel.org>
- <CAMuHMdWd5261ti-zKsroFLvWs0abaWa7G4DKefgPwFb3rEjnNw@mail.gmail.com> <6c522f8116f54fa6f23a2d217d966c5a@kernel.org>
-In-Reply-To: <6c522f8116f54fa6f23a2d217d966c5a@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 May 2021 09:52:42 +0200
-Message-ID: <CAMuHMdWzBqLVOVn_z8S2H-x-kL+DfOsM5mDb_D8OKsyRJtKpdA@mail.gmail.com>
-Subject: Re: [PATCH v19 7/7] ptp: arm/arm64: Enable ptp_kvm for arm/arm64
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     jianyong.wu@arm.com, netdev <netdev@vger.kernel.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Andre Przywara <Andre.Przywara@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, KVM list <kvm@vger.kernel.org>,
-        Steve Capper <Steve.Capper@arm.com>, justin.he@arm.com,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 26 May 2021 03:54:45 -0400
+Received: from localhost.localdomain (unknown [14.154.30.253])
+        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id D9F0980288;
+        Wed, 26 May 2021 15:53:11 +0800 (CST)
+From:   Ding Hui <dinghui@sangfor.com.cn>
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        osalvador@suse.de, david@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ding Hui <dinghui@sangfor.com.cn>
+Subject: [PATCH v3] mm/page_alloc: fix counting of free pages after take off from buddy
+Date:   Wed, 26 May 2021 15:52:47 +0800
+Message-Id: <20210526075247.11130-1-dinghui@sangfor.com.cn>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQksZQlZMGExLHU4eT0hKSEJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OFE6UTo*FT8UThkSFStJGCwr
+        GTUwCwNVSlVKTUlJS0pOTkJJT0hPVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKT1VKTk9VSEtVSU5IWVdZCAFZQUhLT0k3Bg++
+X-HM-Tid: 0a79a7a9c6aab037kuuud9f0980288
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Recently we found that there is a lot MemFree left in /proc/meminfo
+after do a lot of pages soft offline, it's not quite correct.
 
-On Tue, May 11, 2021 at 11:13 AM Marc Zyngier <maz@kernel.org> wrote:
-> On 2021-05-11 10:07, Geert Uytterhoeven wrote:
-> > On Tue, Mar 30, 2021 at 4:56 PM Marc Zyngier <maz@kernel.org> wrote:
-> >> From: Jianyong Wu <jianyong.wu@arm.com>
-> >>
-> >> Currently, there is no mechanism to keep time sync between guest and
-> >> host
-> >> in arm/arm64 virtualization environment. Time in guest will drift
-> >> compared
-> >> with host after boot up as they may both use third party time sources
-> >> to correct their time respectively. The time deviation will be in
-> >> order
-> >> of milliseconds. But in some scenarios,like in cloud environment, we
-> >> ask
-> >> for higher time precision.
-> >>
-> >> kvm ptp clock, which chooses the host clock source as a reference
-> >> clock to sync time between guest and host, has been adopted by x86
-> >> which takes the time sync order from milliseconds to nanoseconds.
-> >>
-> >> This patch enables kvm ptp clock for arm/arm64 and improves clock sync
-> >> precision
-> >> significantly.
-> >
-> >> --- a/drivers/ptp/Kconfig
-> >> +++ b/drivers/ptp/Kconfig
-> >> @@ -108,7 +108,7 @@ config PTP_1588_CLOCK_PCH
-> >>  config PTP_1588_CLOCK_KVM
-> >>         tristate "KVM virtual PTP clock"
-> >>         depends on PTP_1588_CLOCK
-> >> -       depends on KVM_GUEST && X86
-> >> +       depends on (KVM_GUEST && X86) || (HAVE_ARM_SMCCC_DISCOVERY &&
-> >> ARM_ARCH_TIMER)
-> >
-> > Why does this not depend on KVM_GUEST on ARM?
-> > I.e. shouldn't the dependency be:
-> >
-> >     KVM_GUEST && (X86 || (HAVE_ARM_SMCCC_DISCOVERY && ARM_ARCH_TIMER))
-> >
-> > ?
->
-> arm/arm64 do not select KVM_GUEST. Any kernel can be used for a guest,
-> and KVM/arm64 doesn't know about this configuration symbol.
+Before Oscar rework soft offline for free pages [1], if we soft
+offline free pages, these pages are left in buddy with HWPoison
+flag, and NR_FREE_PAGES is not updated immediately. So the difference
+between NR_FREE_PAGES and real number of available free pages is
+also even big at the beginning.
 
-OK.
+However, with the workload running, when we catch HWPoison page in
+any alloc functions subsequently, we will remove it from buddy,
+meanwhile update the NR_FREE_PAGES and try again, so the NR_FREE_PAGES
+will get more and more closer to the real number of available free pages.
+(regardless of unpoison_memory())
 
-Does PTP_1588_CLOCK_KVM need to default to yes?
-Perhaps only on X86, to maintain the status quo?
+Now, for offline free pages, after a successful call take_page_off_buddy(),
+the page is no longer belong to buddy allocator, and will not be
+used any more, but we missed accounting NR_FREE_PAGES in this situation,
+and there is no chance to be updated later.
 
-Gr{oetje,eeting}s,
+Do update in take_page_off_buddy() like rmqueue() does, but avoid
+double counting if some one already set_migratetype_isolate() on the
+page.
 
-                        Geert
+[1]: commit 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
 
+Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+---
+v3:
+- as Naoya Horiguchi suggested, do update only when
+  is_migrate_isolate(migratetype)) is false
+- updated patch description
+
+v2:
+- https://lore.kernel.org/linux-mm/20210508035533.23222-1-dinghui@sangfor.com.cn/
+- use __mod_zone_freepage_state instead of __mod_zone_page_state 
+
+ mm/page_alloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index aaa1655cf682..d1f5de1c1283 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -9158,6 +9158,8 @@ bool take_page_off_buddy(struct page *page)
+ 			del_page_from_free_list(page_head, zone, page_order);
+ 			break_down_buddy_pages(zone, page_head, page, 0,
+ 						page_order, migratetype);
++			if (!is_migrate_isolate(migratetype))
++				__mod_zone_freepage_state(zone, -1, migratetype);
+ 			ret = true;
+ 			break;
+ 		}
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
