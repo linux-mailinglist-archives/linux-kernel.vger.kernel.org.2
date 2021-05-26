@@ -2,224 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A48E3920C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4E83920C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 21:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhEZTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 15:21:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52384 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbhEZTVb (ORCPT
+        id S233726AbhEZTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 15:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhEZTW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 15:21:31 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 74A841FD29;
-        Wed, 26 May 2021 19:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622056798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hqbhriqmCcciHIB7mk5FuXde0piQc0mRXAnLSLPVv6w=;
-        b=H/NQ1j7Mbd7Pfu1qFah0SN4EMsw2uS03jnAuR5KmVT/5eR/XUYFgJaCrArw5XXz8PhXLM2
-        bPjiljd1xj/+EHCb5J5nMh3tCpqEV5CR5PKJDQ7r4f1YmbQO23LCt3QTPQdjb94se7fEmD
-        RpyGH496dbO8ra/Qn/B/R0RGbsxZNZk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622056798;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hqbhriqmCcciHIB7mk5FuXde0piQc0mRXAnLSLPVv6w=;
-        b=5+X7sEAuKlfnbIyB5qwXUeMsxTdtStWn0d/Znh5waJ0Mu+ZGDPmIpQ7tkaJTj+Z78GPPUH
-        7SNjtjpAD+NZYnAw==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id 3D63511A98;
-        Wed, 26 May 2021 19:19:58 +0000 (UTC)
-Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
- copyright
-To:     Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org
-Cc:     xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
-        kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
-        tiantao6@hisilicon.com
-References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <eaf3cf6e-15a2-d4e7-ef20-feccbd05f4f8@suse.de>
-Date:   Wed, 26 May 2021 21:19:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Wed, 26 May 2021 15:22:59 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C22FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:21:26 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id t20so1748642qtx.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 12:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wI7tCNlcaTZmqH6g95a10WXByiu3PTAxzCVAG5uZNco=;
+        b=SM3f/vu2XiZrKAcI7L4W7BwbiSvj1ehZ0sxFk5BfEzmHNgjVe7BHFB9U6lkCE01h52
+         kWEj+xQnqO7fceVIc2CwmBHvDYJ536FMFmcdKNZhH/szoBmrBsS6sLB5dhe67VtEQKbn
+         ST0HkTO80trrnBilylR/5H7rQWiV/D4neNsVX08dKvlmnSM5n9ILkC1OsbKyJEHy+nt0
+         Iju4cArPuwH2Jn/2vznanYAbqSchzzPwXeQPyRid9E4ckMXp8xMY/WUBaWy2kEBavbX6
+         kOhCdvm98E6NzV8ZdCN2VpIvQ+jeilVyKIm5X4kZ0xl87sngJOcVnbb6bzVSPNz0rwj1
+         hSEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wI7tCNlcaTZmqH6g95a10WXByiu3PTAxzCVAG5uZNco=;
+        b=S3FGxHHLDy+v575OoeVIObKETZt0wqoaJOBuY3LYkN9oz0b4jTsibH04rT/bAyrXMF
+         AF2Fv/kfTMdVHamNOp/QD8367on4s5xB/yR9OKKLsNRjtV42l8ZifhBbH+eakaBGfRM6
+         r5xr/3X+PWNtamPtq+z10G22VByYnttqCllJ8qFKcIFDQbkS5f8qHNxdATIX+mI23wje
+         wNoGdHCYM4zsCTAeVtltQVBOmCmPR1CFYiu01U95vPOl/2pNnqdOVD5JcBaQ9XOYFM+D
+         2Pm3jK81N2PE+6pO2vXkGDnl3e4zh0ra22bF7AC8t6Q6HMB3Jo/oq6fUotu/1q8MkQwi
+         ecXQ==
+X-Gm-Message-State: AOAM532ofIrO7a4gNv9p2Th/xes1ObmSGnPJbjcaR+G/nRpgt9E+wdlz
+        Hu2l5vHNRujJ/nkrFWOLbU2RKg==
+X-Google-Smtp-Source: ABdhPJx3twK2Z0UVhtntwGDvGoua/9nmaJnAFQUJsqgCit0fyMZoTch2+UM/cuyHcYXCcGgh630hfw==
+X-Received: by 2002:ac8:4a0a:: with SMTP id x10mr17715979qtq.201.1622056885353;
+        Wed, 26 May 2021 12:21:25 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id 127sm2172724qkl.116.2021.05.26.12.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 12:21:24 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1llz5n-00FI2b-Re; Wed, 26 May 2021 16:21:23 -0300
+Date:   Wed, 26 May 2021 16:21:23 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][V2][next] mm: selftests: fix potential integer overflow
+ on shift of a int
+Message-ID: <20210526192123.GE1096940@ziepe.ca>
+References: <20210526170530.3766167-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="2dEXEAO91CKbftB1NjHLrof9OR84KyGkF"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526170530.3766167-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2dEXEAO91CKbftB1NjHLrof9OR84KyGkF
-Content-Type: multipart/mixed; boundary="sRdyYcMUuDjLfe42TPoLhEtJpdwXD0wXa";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
- dri-devel@lists.freedesktop.org
-Cc: xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
- kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
- tiantao6@hisilicon.com
-Message-ID: <eaf3cf6e-15a2-d4e7-ef20-feccbd05f4f8@suse.de>
-Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
- copyright
-References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-
---sRdyYcMUuDjLfe42TPoLhEtJpdwXD0wXa
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-Am 22.05.21 um 12:15 schrieb Hao Fang:
-> s/Hisilicon/HiSilicon/.
-> It should use capital S, according to
-> https://www.hisilicon.com/en.
->=20
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
-> Acked-by: Tian Tao <tiantao6@hisilicon.com>
-
-Applied to drm-misc-next. Thanks a lot.
-
-Best regards
-Thomas
-
+On Wed, May 26, 2021 at 06:05:30PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The left shift of the int mapped is evaluated using 32 bit arithmetic
+> and then assigned to an unsigned long. In the case where mapped is
+> 0x80000 when PAGE_SHIFT is 12 will lead to the upper bits being
+> sign extended in the unsigned long. Larger values can lead to an
+> int overflow. Avoid this by making mapped an unsigned long.
+> 
+> Addresses-Coverity: ("Uninitentional integer overflow")
+> Fixes: 8b2a105c3794 ("mm: selftests for exclusive device memory")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->   drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c    | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h    | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h | 2 +-
->   6 files changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c b/drivers/gpu=
-/drm/hisilicon/kirin/dw_drm_dsi.c
-> index 00e87c2..9b565a0 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-> @@ -3,7 +3,7 @@
->    * DesignWare MIPI DSI Host Controller v1.02 driver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h b/drivers/gpu=
-/drm/hisilicon/kirin/dw_dsi_reg.h
-> index 19e81ff..d79fc03 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __DW_DSI_REG_H__
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> index e2ac098..be9e789 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __KIRIN_ADE_REG_H__
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> index 6dcf9ec..1ab9462 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> @@ -3,7 +3,7 @@
->    * Hisilicon Hi6220 SoC ADE(Advanced Display Engine)'s crtc&plane dri=
-ver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> index 4349da3..e590e19 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> @@ -3,7 +3,7 @@
->    * Hisilicon Kirin SoCs drm master driver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> index 386d137..db0dc7b 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __KIRIN_DRM_DRV_H__
->=20
+> 
+> V2: Make mapped an unsigned long rather than casting it to unsigned long
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-
---sRdyYcMUuDjLfe42TPoLhEtJpdwXD0wXa--
-
---2dEXEAO91CKbftB1NjHLrof9OR84KyGkF
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCun10FAwAAAAAACgkQlh/E3EQov+DE
-4hAAw9jaAQtmGnJcUZboDUwjz599vqNZPLNwpLXv9ZF62dkgn8b7knmQw/wjUw3kfmcBNcK4Xdm0
-wLSuo2GcOny/R1Q+IgHNLbk4ja1m9lCODb0oScN3WlWwarCsapETJGi+KEnBayG3+wMyrMCfD6Xx
-WEd6NyG6hRO9Y5wtxYfpm+LFEJQ1zXHOR7DQV5ZSUc+p7vktA4adJ/nbmVHWN+59mhftBWgqJgLa
-nFueUU1JC/Uc6YJ8duN10yz4JJSUJWkzv88A1w8gDGi/ef9NyrAfspmERk1l1qOjhP2+59fTKLwQ
-W6RClQZ+JV+8x2VX+pYoxOrq14RERXgVryCCL3PeDoPfjYqYWTBbXEWp95VVA+umvIw4IXJsawlP
-mb81LBu4xF4uFe8ktCL+RBkWurXqCKTuszqMols/Y4OQEH13DkKsKhVyvpQ5eprRh2xb4vvFSoyr
-ZjqlHPbu6GWq12tLFyVph7zvRp90Ez2ZMDozCFTv1P8Rn8aiCDgDEYkoODVnn3h/vT4UJBv+9k55
-JtjxRba1y/XS1TCaD+9bYz8Gcp3ohsp7yalx7VH94emFnuz+9elsk8SiBHcCKr05z2gwxQjF/fjN
-LMm4dsmXIS1sBIwu7zaj9j6Mg/O/WatSJ27bzhA1Hr8/9POA0A7CFoV/wxfr3Evz4EMlPDM8GgUi
-i2c=
-=B125
------END PGP SIGNATURE-----
-
---2dEXEAO91CKbftB1NjHLrof9OR84KyGkF--
+Jason
