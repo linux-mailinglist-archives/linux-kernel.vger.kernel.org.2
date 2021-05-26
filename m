@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060F2391CCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089A4391CD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhEZQRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S233711AbhEZQUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhEZQRl (ORCPT
+        with ESMTP id S233109AbhEZQUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:17:41 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F0BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:16:08 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id k19so1292196qta.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:16:08 -0700 (PDT)
+        Wed, 26 May 2021 12:20:12 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E6EC061574;
+        Wed, 26 May 2021 09:18:39 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z38so2833191ybh.5;
+        Wed, 26 May 2021 09:18:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jYNRg1GwIA2Rxdl8Zes8M188bB2u7RUg8i/4EX7B4yQ=;
-        b=KDxB8Jr14ykcOGOG+aWj/pn+Xm6i1yUJde1D4jIFbHXeqR0kUrFDnwMWIHkL3b41T8
-         HsSA/U3ynS1oVy4LyFs1TwpmYH0YbZ+OA9E3Zl4jZ8A3xqAwWc1va4h92bV3UOo/EZwR
-         1BcA64FxwNvAsclkVYjhjOoXGYkzCKF5XAYw9ZE6smfHbNxNz/b4YbpXfc3FCvG0/IUU
-         ud+08HXjlq5kpQTAtiux2KgZEsPtsGzja/koHlvAWZp1d3ZMEYcBUP2VVWy7R+DIzRZi
-         Iju5P5f/hijzoLM3H4XFOUASLrSvpTMDP8/KiDMhs3bViY/o83UiLaZ2lPA8cK5X5TrH
-         vJdA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j9+U4zzMSY1RadPEggsDzC3pcoNOFBiHJ55OHUPkriQ=;
+        b=i7OhssDathCe8u+V0I0yR8otfcJYCr85x+G3AEnOHWilKWzUSOFd2VJDAZGexdrmpu
+         QgdRuuXrjB5H/Q5IBfoPjn8f21wkFLHRSG84vlBefRM5zE42hpRB48KbVqUhiztot5O6
+         QnaKwRszjEZCvfpSNKuNmIKScWeyuoP8D96MaYavHmJ4iMqMyNYF1DLqF5Vra9rAu5VG
+         LONef8o3WhHpRvLnIp3iPs8citf+1L5Oi5GQ426ZLS1hvMvGr8aEyVDZnd54+847vcjF
+         AvHkW7IlT3cyB/jiq7daD8iYMNe18EFcaqcXtM4dsz0Wr3eyfnO8Kl+QI1bVxyQEskIa
+         M2Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jYNRg1GwIA2Rxdl8Zes8M188bB2u7RUg8i/4EX7B4yQ=;
-        b=FjjWgl/aeNJ9m/k+TzQphJhvepcKFSgXzVjHYz4XGG4rZmp69qD1+6chP3rVaogr01
-         ALrJZ5P8X9JEyM1HsVeiJKOO3tuMyrT4XqvilI0XLJvhkKqHLn9T3RPgamiEVMk1eFxs
-         BVJd7c2rQM3rAKkYtxM5RW6yI+DihreDAKveT+47iPvubBBsC7Rl7zL8ZAHEWTkp4Ljt
-         ueR2LKMrIITyMiTZOO3YSqJYPjMyDzGElu3erW/c+L8tOssPWBBAWF7PgkVxniPQs8/M
-         H5KpTPwDdZvmYTfsR1JjfXnDBXQb9+tsi4mCLNhEVOWpAuvWCsfyLQR0YB9XImP+ouwv
-         i6pg==
-X-Gm-Message-State: AOAM5336fP9+/Pn70ti23M6e5BeofJiP9BhI/TPlExXnB94yITrW+bYd
-        4X38f0XaEcxe75iP+V89ymoB6Q==
-X-Google-Smtp-Source: ABdhPJzx2Ro9C2OTjzb1OPWCtbYPJDXDYha8XrqUduhJfu9BXD8jlj0oTzR1n2HbJlO1azOq931TGQ==
-X-Received: by 2002:ac8:4e21:: with SMTP id d1mr37218963qtw.290.1622045768063;
-        Wed, 26 May 2021 09:16:08 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id c20sm1793485qtm.52.2021.05.26.09.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 09:16:07 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1llwCU-00FDYi-BH; Wed, 26 May 2021 13:16:06 -0300
-Date:   Wed, 26 May 2021 13:16:06 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next v3 8/8] IB/cm: Protect cm_dev, cm_ports and
- mad_agent with kref and lock
-Message-ID: <20210526161606.GC1096940@ziepe.ca>
-References: <cover.1620720467.git.leonro@nvidia.com>
- <7ca9e316890a3755abadefdd7fe3fc1dc4a1e79f.1620720467.git.leonro@nvidia.com>
- <20210525200057.GA3469742@nvidia.com>
- <3bea531d-ab6d-3990-2014-02c7a4a1679c@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j9+U4zzMSY1RadPEggsDzC3pcoNOFBiHJ55OHUPkriQ=;
+        b=nBiKv40+9TnRA048pvzR7Vj4q29BucdvbdagDC1eHooCuyenB4rNpUjR7Hx8ILM9+h
+         vUw02LRdoHR4U7UzlDcwAM6MYrfedKCIVZ5jjOon6Ubi7GnggTiA6tERKZsBI5KoN3X4
+         YmjAtRy0sAzgqlaRarfSpNENFjXgQPxNrU7eu3DwE4kbfTQ/CmGfxdgKB6MOZopUZLRA
+         6toOoWnItRypSYNnL9dnN2VWDBj+2IsH0BJJLEz3xG/EIKw8ei+XC3wRtzAxlSg8zhzL
+         U0uKoM61gIlk/zl6U7kbwF/Z7xwD3W4lQ/Hj+dMQpmzoRMu/Xros5/9+5g1tMt28FlD4
+         0+eg==
+X-Gm-Message-State: AOAM532i3SY+fQZYRTM95fr4AqbbO1SjRSfhOpGEqt9Gyn4yIDsJKLrh
+        Tcow6ZwdlbpXO2VvKT+KV6So1EWvHRYpBPg/KrU=
+X-Google-Smtp-Source: ABdhPJy8DXZKjSTHT5kJfAYsvUaN7xEVzURqGqdgOYUAUx/+mgpUvcDl/mEwGLlAg6iLgAyDiW2T7GbI/qeNneClPMg=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr51162695ybc.510.1622045918363;
+ Wed, 26 May 2021 09:18:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bea531d-ab6d-3990-2014-02c7a4a1679c@nvidia.com>
+References: <20210518142302.1046718-1-javierm@redhat.com>
+In-Reply-To: <20210518142302.1046718-1-javierm@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 09:18:27 -0700
+Message-ID: <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
+ the build
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:46:47AM +0800, Mark Zhang wrote:
-> On 5/26/2021 4:00 AM, Jason Gunthorpe wrote:
-> > On Tue, May 11, 2021 at 11:22:12AM +0300, Leon Romanovsky wrote:
-> > > @@ -2139,6 +2197,8 @@ static int cm_req_handler(struct cm_work *work)
-> > >   		sa_path_set_dmac(&work->path[0],
-> > >   				 cm_id_priv->av.ah_attr.roce.dmac);
-> > >   	work->path[0].hop_limit = grh->hop_limit;
-> > > +
-> > > +	cm_destroy_av(&cm_id_priv->av);
-> > >   	ret = cm_init_av_by_path(&work->path[0], gid_attr, &cm_id_priv->av);
-> > >   	if (ret) {
-> > >   		int err;
-> > 
-> > Why add cm_destroy_av() here? The cm_id_priv was freshly created at
-> > the top of this function and hasn't left the stack frame yet?
-> > 
-> Because it was initialized by cm_init_av_for_response() previously, so
-> destroy it here as cm_init_av_by_path() will re-initialize it.
+On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+>
+> The ccache tool can be used to speed up cross-compilation, by calling the
+> compiler and binutils through ccache. For example, following should work:
+>
+>     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
+>
+>     $ make M=drivers/gpu/drm/rockchip/
+>
+> but pahole fails to extract the BTF info from DWARF, breaking the build:
+>
+>       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+>       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+>       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+>     aarch64-linux-gnu-objcopy: invalid option -- 'J'
+>     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+>      Copies a binary file, possibly transforming it in the process
+>     ...
+>     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+>     make: *** [Makefile:1866: modules] Error 2
+>
+> this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+> later pahole is executed with the following command line:
+>
+>     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
+>
+> which gets expanded to:
+>
+>     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
+>
+> instead of:
+>
+>     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+>
+> Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+>
 
-Oh.. ouch, I once tried to re-order this so it wasn't doing such crazy
-stuff, but it was too hard.
+LGTM. Masahiro, would you like us to take this through bpf tree or
+you'll apply this to kbuild one?
 
-Please just add a comment the destroy is for the
-cm_init_av_for_response
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Jason
+>  scripts/Makefile.modfinal | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index dd87cea9fba..a7883e45529 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+>  quiet_cmd_btf_ko = BTF [M] $@
+>        cmd_btf_ko =                                                     \
+>         if [ -f vmlinux ]; then                                         \
+> -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
+> +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+>         else                                                            \
+>                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+>         fi;
+> --
+> 2.31.1
+>
