@@ -2,309 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB18239198D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D60391990
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhEZOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:10:42 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34448 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbhEZOKl (ORCPT
+        id S233897AbhEZOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:11:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:4015 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhEZOLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:10:41 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QE93ss043533;
-        Wed, 26 May 2021 09:09:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622038143;
-        bh=vEBga0t3qzngzYqUbWJAGuom3PVx+7aw7ixeVFU50RQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=uA9+Nj7SUYepheLee3Z6eeliDqCHW3dIG9ss7BAc/fZhFiWPwfIKk0hRo3gCEI8h2
-         fOhntTV0xyzP31qxJhgZi3+SisV9Bv+CwudnY3hVx9/eI8SW+SfR9Kpo8YIjPZ1TQP
-         9PX9PXVM7akV9A9GKGcJROhVts6Wua8K4Xo8hi58=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QE92TP119995
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 May 2021 09:09:03 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 26 May 2021 10:11:55 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fqt7z5r8zzmZLL;
+        Wed, 26 May 2021 22:07:59 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 26 May 2021 22:10:20 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
- May 2021 09:09:02 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 26 May 2021 09:09:02 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QE92Mf055817;
-        Wed, 26 May 2021 09:09:02 -0500
-Date:   Wed, 26 May 2021 09:09:02 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH] dt-bindings: PCI: ti,am65: Convert PCIe host/endpoint
- mode dt-bindings to YAML
-Message-ID: <20210526140902.lnk5du5k3b4sny3m@handheld>
-References: <20210526134708.27887-1-kishon@ti.com>
+ May 2021 22:10:20 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        <sstabellini@kernel.org>, <yuehaibing@huawei.com>
+CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] xen: Use DEVICE_ATTR_*() macro
+Date:   Wed, 26 May 2021 22:10:19 +0800
+Message-ID: <20210526141019.13752-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210526134708.27887-1-kishon@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19:17-20210526, Kishon Vijay Abraham I wrote:
-> Convert PCIe host/endpoint mode dt-bindings for TI's AM65/Keystone SoC
-> to YAML binding.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR(),
+which makes the code a bit shorter and easier to read.
 
-[...]
-> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
-> new file mode 100644
-> index 000000000000..419d48528105
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-ep.yaml#"
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/xen/pcpu.c                |  6 +++---
+ drivers/xen/xen-balloon.c         | 28 +++++++++++-----------------
+ drivers/xen/xenbus/xenbus_probe.c | 15 +++++++--------
+ 3 files changed, 21 insertions(+), 28 deletions(-)
 
-drop the '"'?
-
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-
-drop the '"'?
-> +
-> +title: TI AM65 PCI Endpoint
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +allOf:
-> +  - $ref: "pci-ep.yaml#"
-
-drop the '"' ?
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,am654-pcie-ep
-> +
-> +  reg:
-> +    maxItems: 4
-> +
-> +  reg-names:
-> +    items:
-> +      - const: app
-> +      - const: dbics
-> +      - const: addr_space
-> +      - const: atu
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  ti,syscon-pcie-mode:
-> +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  interrupts:
-> +    minItems: 1
-> +
-> +  dma-coherent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - max-link-speed
-> +  - power-domains
-> +  - ti,syscon-pcie-mode
-> +  - dma-coherent
-> +
-> +unevaluatedProperties: false
-
-Is it possible to lock this down further with additionalProperties: false?
-
-I could add some ridiculous property like system-controller; to the
-example and the checks wont catch it.
-
-same with the host as well.
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-you could drop this (unused)
-> +
-> +    bus {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-We dont really need this, right? this is an example.. see below
-
-> +
-> +        pcie0_ep: pcie-ep@5500000 {
-> +                compatible = "ti,am654-pcie-ep";
-> +                reg =  <0x0 0x5500000 0x0 0x1000>,
-> +                       <0x0 0x5501000 0x0 0x1000>,
-> +                       <0x0 0x10000000 0x0 0x8000000>,
-> +                       <0x0 0x5506000 0x0 0x1000>;
-^^ just change this to
-reg =  <0x5500000 0x1000>,
-       <0x5501000 0x1000>,
-       <0x10000000 0x8000000>
-       <0x5506000 0x1000>;
-> +                reg-names = "app", "dbics", "addr_space", "atu";
-> +                power-domains = <&k3_pds 120 TI_SCI_PD_EXCLUSIVE>;
-> +                ti,syscon-pcie-mode = <&pcie0_mode>;
-> +                num-ib-windows = <16>;
-> +                num-ob-windows = <16>;
-> +                max-link-speed = <2>;
-> +                dma-coherent;
-> +                interrupts = <GIC_SPI 340 IRQ_TYPE_EDGE_RISING>;
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
-> new file mode 100644
-> index 000000000000..3764ce01ee5c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-host.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-
-Drop the '"' ?
-> +
-> +title: TI AM65 PCI Host
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: ti,am654-pcie-rc
-> +      - description: PCIe controller in Keystone
-> +        items:
-> +          - const: ti,keystone-pcie
-> +          - const: snps,dw-pcie
-> +
-> +  reg:
-> +    maxItems: 4
-> +
-> +  reg-names:
-> +    items:
-> +      - const: app
-> +      - const: dbics
-> +      - const: config
-> +      - const: atu
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  ti,syscon-pcie-id:
-> +    description: Phandle to the SYSCON entry required for getting PCIe device/vendor ID
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,syscon-pcie-mode:
-> +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  msi-map: true
-> +
-> +  dma-coherent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - max-link-speed
-> +  - ti,syscon-pcie-id
-> +  - ti,syscon-pcie-mode
-> +  - ranges
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      enum:
-> +        - ti,am654-pcie-rc
-> +then:
-> +  required:
-> +    - dma-coherent
-> +    - power-domains
-> +    - msi-map
-> +
-> +unevaluatedProperties: false
-
-Is it possible to lock this down further with additionalProperties: false?
-
-Same rationale as above.
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    bus {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-
-We dont really need this, right? this is an example.. see below
-> +
-> +        pcie0_rc: pcie@5500000 {
-> +                compatible = "ti,am654-pcie-rc";
-> +                reg =  <0x0 0x5500000 0x0 0x1000>,
-> +                       <0x0 0x5501000 0x0 0x1000>,
-> +                       <0x0 0x10000000 0x0 0x2000>,
-> +                       <0x0 0x5506000 0x0 0x1000>;
-^^ just change this to
-reg =  <0x5500000 0x1000>,
-       <0x5501000 0x1000>,
-       <0x10000000 0x8000000>
-       <0x5506000 0x1000>;
-> +                reg-names = "app", "dbics", "config", "atu";
-> +                power-domains = <&k3_pds 120 TI_SCI_PD_EXCLUSIVE>;
-> +                #address-cells = <3>;
-> +                #size-cells = <2>;
-> +                ranges = <0x81000000 0 0          0x0 0x10020000 0 0x00010000>,
-> +                         <0x82000000 0 0x10030000 0x0 0x10030000 0 0x07FD0000>;
-> +                ti,syscon-pcie-id = <&pcie_devid>;
-> +                ti,syscon-pcie-mode = <&pcie0_mode>;
-> +                bus-range = <0x0 0xff>;
-> +                num-viewport = <16>;
-> +                max-link-speed = <2>;
-> +                dma-coherent;
-> +                interrupts = <GIC_SPI 340 IRQ_TYPE_EDGE_RISING>;
-> +                msi-map = <0x0 &gic_its 0x0 0x10000>;
-> +                device_type = "pci";
-> +        };
-> +    };
-> -- 
-> 2.17.1
-> 
-
+diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
+index 1bcdd5227771..47aa3a1ccaf5 100644
+--- a/drivers/xen/pcpu.c
++++ b/drivers/xen/pcpu.c
+@@ -92,7 +92,7 @@ static int xen_pcpu_up(uint32_t cpu_id)
+ 	return HYPERVISOR_platform_op(&op);
+ }
+ 
+-static ssize_t show_online(struct device *dev,
++static ssize_t online_show(struct device *dev,
+ 			   struct device_attribute *attr,
+ 			   char *buf)
+ {
+@@ -101,7 +101,7 @@ static ssize_t show_online(struct device *dev,
+ 	return sprintf(buf, "%u\n", !!(cpu->flags & XEN_PCPU_FLAGS_ONLINE));
+ }
+ 
+-static ssize_t __ref store_online(struct device *dev,
++static ssize_t __ref online_store(struct device *dev,
+ 				  struct device_attribute *attr,
+ 				  const char *buf, size_t count)
+ {
+@@ -130,7 +130,7 @@ static ssize_t __ref store_online(struct device *dev,
+ 		ret = count;
+ 	return ret;
+ }
+-static DEVICE_ATTR(online, S_IRUGO | S_IWUSR, show_online, store_online);
++static DEVICE_ATTR_RW(online);
+ 
+ static struct attribute *pcpu_dev_attrs[] = {
+ 	&dev_attr_online.attr,
+diff --git a/drivers/xen/xen-balloon.c b/drivers/xen/xen-balloon.c
+index a8d24433c8e9..8cd583db20b1 100644
+--- a/drivers/xen/xen-balloon.c
++++ b/drivers/xen/xen-balloon.c
+@@ -134,13 +134,13 @@ void xen_balloon_init(void)
+ EXPORT_SYMBOL_GPL(xen_balloon_init);
+ 
+ #define BALLOON_SHOW(name, format, args...)				\
+-	static ssize_t show_##name(struct device *dev,			\
++	static ssize_t name##_show(struct device *dev,			\
+ 				   struct device_attribute *attr,	\
+ 				   char *buf)				\
+ 	{								\
+ 		return sprintf(buf, format, ##args);			\
+ 	}								\
+-	static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
++	static DEVICE_ATTR_RO(name)
+ 
+ BALLOON_SHOW(current_kb, "%lu\n", PAGES2KB(balloon_stats.current_pages));
+ BALLOON_SHOW(low_kb, "%lu\n", PAGES2KB(balloon_stats.balloon_low));
+@@ -152,16 +152,15 @@ static DEVICE_ULONG_ATTR(retry_count, 0444, balloon_stats.retry_count);
+ static DEVICE_ULONG_ATTR(max_retry_count, 0644, balloon_stats.max_retry_count);
+ static DEVICE_BOOL_ATTR(scrub_pages, 0644, xen_scrub_pages);
+ 
+-static ssize_t show_target_kb(struct device *dev, struct device_attribute *attr,
++static ssize_t target_kb_show(struct device *dev, struct device_attribute *attr,
+ 			      char *buf)
+ {
+ 	return sprintf(buf, "%lu\n", PAGES2KB(balloon_stats.target_pages));
+ }
+ 
+-static ssize_t store_target_kb(struct device *dev,
++static ssize_t target_kb_store(struct device *dev,
+ 			       struct device_attribute *attr,
+-			       const char *buf,
+-			       size_t count)
++			       const char *buf, size_t count)
+ {
+ 	char *endchar;
+ 	unsigned long long target_bytes;
+@@ -176,22 +175,19 @@ static ssize_t store_target_kb(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(target_kb, S_IRUGO | S_IWUSR,
+-		   show_target_kb, store_target_kb);
++static DEVICE_ATTR_RW(target_kb);
+ 
+-
+-static ssize_t show_target(struct device *dev, struct device_attribute *attr,
+-			      char *buf)
++static ssize_t target_show(struct device *dev, struct device_attribute *attr,
++			   char *buf)
+ {
+ 	return sprintf(buf, "%llu\n",
+ 		       (unsigned long long)balloon_stats.target_pages
+ 		       << PAGE_SHIFT);
+ }
+ 
+-static ssize_t store_target(struct device *dev,
++static ssize_t target_store(struct device *dev,
+ 			    struct device_attribute *attr,
+-			    const char *buf,
+-			    size_t count)
++			    const char *buf, size_t count)
+ {
+ 	char *endchar;
+ 	unsigned long long target_bytes;
+@@ -206,9 +202,7 @@ static ssize_t store_target(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(target, S_IRUGO | S_IWUSR,
+-		   show_target, store_target);
+-
++static DEVICE_ATTR_RW(target);
+ 
+ static struct attribute *balloon_attrs[] = {
+ 	&dev_attr_target_kb.attr,
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index 97f0d234482d..33d09b3f6211 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -207,7 +207,7 @@ void xenbus_otherend_changed(struct xenbus_watch *watch,
+ EXPORT_SYMBOL_GPL(xenbus_otherend_changed);
+ 
+ #define XENBUS_SHOW_STAT(name)						\
+-static ssize_t show_##name(struct device *_dev,				\
++static ssize_t name##_show(struct device *_dev,				\
+ 			   struct device_attribute *attr,		\
+ 			   char *buf)					\
+ {									\
+@@ -215,14 +215,14 @@ static ssize_t show_##name(struct device *_dev,				\
+ 									\
+ 	return sprintf(buf, "%d\n", atomic_read(&dev->name));		\
+ }									\
+-static DEVICE_ATTR(name, 0444, show_##name, NULL)
++static DEVICE_ATTR_RO(name)
+ 
+ XENBUS_SHOW_STAT(event_channels);
+ XENBUS_SHOW_STAT(events);
+ XENBUS_SHOW_STAT(spurious_events);
+ XENBUS_SHOW_STAT(jiffies_eoi_delayed);
+ 
+-static ssize_t show_spurious_threshold(struct device *_dev,
++static ssize_t spurious_threshold_show(struct device *_dev,
+ 				       struct device_attribute *attr,
+ 				       char *buf)
+ {
+@@ -231,9 +231,9 @@ static ssize_t show_spurious_threshold(struct device *_dev,
+ 	return sprintf(buf, "%d\n", dev->spurious_threshold);
+ }
+ 
+-static ssize_t set_spurious_threshold(struct device *_dev,
+-				      struct device_attribute *attr,
+-				      const char *buf, size_t count)
++static ssize_t spurious_threshold_store(struct device *_dev,
++					struct device_attribute *attr,
++					const char *buf, size_t count)
+ {
+ 	struct xenbus_device *dev = to_xenbus_device(_dev);
+ 	unsigned int val;
+@@ -248,8 +248,7 @@ static ssize_t set_spurious_threshold(struct device *_dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(spurious_threshold, 0644, show_spurious_threshold,
+-		   set_spurious_threshold);
++static DEVICE_ATTR_RW(spurious_threshold);
+ 
+ static struct attribute *xenbus_attrs[] = {
+ 	&dev_attr_event_channels.attr,
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.17.1
+
