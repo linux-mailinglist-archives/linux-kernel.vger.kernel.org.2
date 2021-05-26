@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC2B391563
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1A539155F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhEZKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:52:46 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46144 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234226AbhEZKwo (ORCPT
+        id S234217AbhEZKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233911AbhEZKwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:52:44 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QAXn54081451;
-        Wed, 26 May 2021 06:50:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=MgNkRyycYgE65dwI2cYr82Q4ztIirZScjByaZO3nsWk=;
- b=p5J7vAdpsHDdRBWdkPprcvO60S1i/MluuO9BjrAbiAcCtfYvCLgAbeTnypADacdtpdB0
- MD0c0b1solK/4iWnnIoO8LGbKk6FFH5zs1RClrVZrEFbGsUxSBFR/qBqkZfoJO6kK0B3
- ln5w+i5Ayp3Srio9jvTK2+fyBamJdTqrpXY7C5pEGqIbJjuIEEzkznvU2WZ0PIDTgWZq
- s4zL8uCDfrOTD5Ljz0y3/HLragBYUG8v+qP/SWX2MKngzFvN5XnWykJTsm0yg391lKXn
- KUdfpRtxZqyn/Bmx/TQq2SxV1tWdpDBkfB7V3guWSk86ECrQqZXwuaLUBt1alEpXgrth Zw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38sewma58q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 06:50:31 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14QAm2su014237;
-        Wed, 26 May 2021 10:50:30 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 38sba2r84j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 10:50:30 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14QAoS1F28901822
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 May 2021 10:50:28 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEAF7AE051;
-        Wed, 26 May 2021 10:50:27 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74280AE053;
-        Wed, 26 May 2021 10:50:27 +0000 (GMT)
-Received: from localhost (unknown [9.85.75.241])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 May 2021 10:50:27 +0000 (GMT)
-Date:   Wed, 26 May 2021 16:20:25 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 1/2] kprobes: Remove kprobe::fault_handler
-To:     mhiramat@kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     ananth@linux.ibm.com, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-References: <20210525072518.791889911@infradead.org>
-        <20210525073213.561116662@infradead.org>
-In-Reply-To: <20210525073213.561116662@infradead.org>
+        Wed, 26 May 2021 06:52:22 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BD4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:50:49 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a2so1813009lfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 03:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
+        b=W7ACPeZH4mHcLJAc3onzzyQBdYO+yWJLn8U4NnEbfyyrevdPs7eGiBBaBJKjpIGiQQ
+         t0UuGUteJrsDx740gUwtvZGCzAmQe+f2P9lMXvnR2pZ0CclcncvSyemLGLD818a9mmnA
+         1YVK5xLuVpMqGWyLJxbDWLw5/Y4iZYcv7T//+v9ZgBvQIoFjD7GwjZUKb6V+u5W9lv/k
+         66/euatPKQGBhPFmbWGGK2X5jSQA+02KH1FxLX10/YEkB8mqmLFcX6jsCUue+F4feyMF
+         ILDDa6oBWVRIv4d5fM99VzmwD3TF8IBA3KLCzdevDS2wcI8/3A8KAqVPliFGDNIHX1ML
+         hskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
+        b=sjRMDzGsOW47Y/YCgqAHqVlWk59yL01dTKywaxc7yNV28bX1N3EzN4UH+Q01mNyG0T
+         u/H4G9GCkZGkcIwxOiOgL9SltO00UFAzKaImRjaeCmd23qROQ8oMR0uStSGTJQjwjSJG
+         a6zHMZw7eohTapSinUbV4sq2I+Xk0tTckbBM6+WOynLDGXgKG62dfR34DOJE9f7EbX2w
+         r0wKSYLnEZpRLA6DqB6CaCeyh6EMzbyaRwyymo3xw4L5/VYTRlCLy2z2SUzpnmaiO9OT
+         PPmNlZbOZCJTpCDPPg/1EtQhLbcoZKKvK1D4ltfvixnQsYay4zpS0XO3ICzfLhWj0vUw
+         Ky3w==
+X-Gm-Message-State: AOAM530zzVNH6N+Bva71tDGMadYQLhW+FoC4Kwc6g4HRgjo95I+kO49D
+        GykwgVlGMHvYCltggvqiJMXosRMTdRiQ418ErSqmqw==
+X-Google-Smtp-Source: ABdhPJyfv0WEyeZXk3AAT6zl1wP2o9QDP21PxMxXMSAhtuWxY3Q7MUlj6y83KPcPg+szFWk8pYl7eRAN3ITPsHyzvgw=
+X-Received: by 2002:ac2:5111:: with SMTP id q17mr1727611lfb.277.1622026246960;
+ Wed, 26 May 2021 03:50:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1622025445.6q8nl3t4ap.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: LN2HX_Wg0WKAcYIOdfS208OoAILAQtgT
-X-Proofpoint-ORIG-GUID: LN2HX_Wg0WKAcYIOdfS208OoAILAQtgT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_06:2021-05-26,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105260070
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com> <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+In-Reply-To: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 26 May 2021 12:50:35 +0200
+Message-ID: <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra wrote:
-> The reason for kprobe::fault_handler(), as given by their comment:
->=20
->  * We come here because instructions in the pre/post
->  * handler caused the page_fault, this could happen
->  * if handler tries to access user space by
->  * copy_from_user(), get_user() etc. Let the
->  * user-specified handler try to fix it first.
->=20
-> Is just plain bad. Those other handlers are ran from non-preemptible
-> context and had better use _nofault() functions. Also, there is no
-> upstream usage of this.
->=20
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  Documentation/trace/kprobes.rst    |   24 +++++-------------------
->  arch/arc/kernel/kprobes.c          |   10 ----------
->  arch/arm/probes/kprobes/core.c     |    9 ---------
->  arch/arm64/kernel/probes/kprobes.c |   10 ----------
->  arch/csky/kernel/probes/kprobes.c  |   10 ----------
->  arch/ia64/kernel/kprobes.c         |    9 ---------
->  arch/mips/kernel/kprobes.c         |    3 ---
->  arch/powerpc/kernel/kprobes.c      |   10 ----------
->  arch/riscv/kernel/probes/kprobes.c |   10 ----------
->  arch/s390/kernel/kprobes.c         |   10 ----------
->  arch/sh/kernel/kprobes.c           |   10 ----------
->  arch/sparc/kernel/kprobes.c        |   10 ----------
->  arch/x86/kernel/kprobes/core.c     |   10 ----------
->  include/linux/kprobes.h            |    8 --------
->  kernel/kprobes.c                   |   19 -------------------
->  samples/kprobes/kprobe_example.c   |   15 ---------------
->  16 files changed, 5 insertions(+), 172 deletions(-)
->=20
+On Tue, 25 May 2021 at 16:30, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
+> >
+> > Hi,
+> >
+> > tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> > > Could you give more details about how cfs_rq->avg.load_avg = 4 but
+> > > cfs_rq->avg.load_sum = 0 ?
+>
+> > >
+> > > cfs_rq->avg.load_sum is decayed and can become null when crossing
+> > > period which implies an update of cfs_rq->avg.load_avg.  This means
+> > > that your case is generated by something outside the pelt formula ...
+> > > like maybe the propagation of load in the tree. If this is the case,
+> > > we should find the error and fix it
+> >
+> > Ahh, yeah, that could probably be described better.
+> >
+> > It is (as far as I have found out) because the pelt divider is changed,
+> > and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
+> > in a different value being removed than added.
+>
+> ok so IIUC, it happens during the adding/removing/propagating
+> entities' load in the cfs_rq.
+>
+> >
+> > Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
+> > recalculates the load_avg based on load_sum, and not the delta, afaik.
+> >
+> > And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
+> > how the pelt divider is changed, I assume it is hard to pinpoint where the issue
+> > is. I can try to find a clear path where where we can see what is added
+> > and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
+> > to better be able to pinpoint what is happening.
+> >
+> > Previously I thought this was a result of precision loss due to division and
+> > multiplication during load add/remove inside fair.c, but I am not sure that
+> > is the issue, or is it?
+>
+> I don't think the precision looss is the problem because
+> adding/removing load in fair.c could truncate load_sum but it stays
+> sync with load_avg. I will have a llo to see if i can see something
+> weird
 
-<snip>
-
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -947,16 +947,6 @@ int kprobe_fault_handler(struct pt_regs
->  		 * these specific fault cases.
->  		 */
->  		kprobes_inc_nmissed_count(cur);
-
-Not necessarily related, but I'm wondering why we're incrementing the=20
-probe miss count here. Unlike what the comment above indicates, this is=20
-not a 'fault' counter, but just a count of the number of times the probe=20
-handler wasn't called.
-
-> -
-> -		/*
-> -		 * We come here because instructions in the pre/post
-> -		 * handler caused the page_fault, this could happen
-> -		 * if handler tries to access user space by
-> -		 * copy_from_user(), get_user() etc. Let the
-> -		 * user-specified handler try to fix it first.
-> -		 */
-> -		if (cur->fault_handler && cur->fault_handler(cur, regs, trapnr))
-> -			return 1;
->  	}
+I have added a trace in cfs_rq_is_decayed() but I'm not able to
+reproduce a situation where load_sum == 0 but not load_avg  even with
+the script in the cover letter
 
 
-- Naveen
-
+>
+> >
+> > If my above line of thought makes sense, do you still view this as an error
+> > outside PELT, or do you see another possible/better solution?
+> >
+> > Will investigate further.
+>
+> Thanks
+>
+> >
+> > Thanks
+> > Odin
