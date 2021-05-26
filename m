@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CF0391735
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05199391730
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhEZMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233889AbhEZMR4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:17:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F006EC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E3xmH7qSYyi3hV73rc2x1wNehlEhuf3efAfgA0/Hbw8=; b=BGNJ1Qwazv6vVbt4FmD6tNlfNC
-        6pTn5N/oqp17QPS2Ix8oduopj1QpX/8aR3NgvWPjKuPm+6nJFIVrf9+b2lBv/JnXqOIx00L9ho4Tl
-        UDHR7SJDPaFE+QLbxUM6d7tsBT9ApohrCfGWkNkdgmeRMytguHMYlszRlk3Aai52lQS+OMjc1smV9
-        b7n/vyJfTot7TZlSKUw874QJLxR/waqr7H1iT3QjcZ0Q/HzHn30g1BZIOxZZtgyaslwSoCk3i1TD1
-        L+mv1XHyq2jPzmU4pgKKmxdsHy6JVu1SR64f9XK8ey5l7yqQLhSxsTicWzLRPjGKoROWkKIYejglC
-        pERWbfqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llsRb-000dfV-7b; Wed, 26 May 2021 12:15:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F070830022C;
-        Wed, 26 May 2021 14:15:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A872C20567627; Wed, 26 May 2021 14:15:31 +0200 (CEST)
-Date:   Wed, 26 May 2021 14:15:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     vincent.guittot@linaro.org, mingo@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, valentin.schneider@arm.com, juri.lelli@redhat.com,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        guodong.xu@linaro.org, yangyicong@huawei.com,
-        tangchengchang@huawei.com, linuxarm@huawei.com
-Subject: Re: [PATCH] sched: fair: don't depend on wake_wide if waker and
- wakee are already in same LLC
-Message-ID: <YK474+4xpYlAha+2@hirez.programming.kicks-ass.net>
-References: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
+        id S233731AbhEZMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:17:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:43706 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232546AbhEZMRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 08:17:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FEDB1516;
+        Wed, 26 May 2021 05:15:59 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB1743F73B;
+        Wed, 26 May 2021 05:15:57 -0700 (PDT)
+Date:   Wed, 26 May 2021 13:15:49 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210526121546.GA13262@e120325.cambridge.arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com>
+ <20210524101617.8965-3-beata.michalska@arm.com>
+ <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+ <87a6oj6sxo.mognet@arm.com>
+ <20210525102945.GA24210@e120325.cambridge.arm.com>
+ <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526091057.1800-1-song.bao.hua@hisilicon.com>
+In-Reply-To: <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-$subject is weird; sched/fair: is the right tag, and then start with a
-capital letter.
-
-On Wed, May 26, 2021 at 09:10:57PM +1200, Barry Song wrote:
-> when waker and wakee are already in the same LLC, it is pointless to worry
-> about the competition caused by pulling wakee to waker's LLC domain.
-
-But there's more than LLC.
-
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  kernel/sched/fair.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
+> On 25/05/2021 12:29, Beata Michalska wrote:
+> > On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
+> >> On 24/05/21 23:55, Beata Michalska wrote:
+> >>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+> >>>> On 24/05/21 11:16, Beata Michalska wrote:
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3248e24a90b0..cfb1bd47acc3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6795,7 +6795,15 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->  			new_cpu = prev_cpu;
->  		}
->  
-> -		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
-> +		/*
-> +		 * we use wake_wide to make smarter pull and avoid cruel
-> +		 * competition because of jam-packed tasks in waker's LLC
-> +		 * domain. But if waker and wakee have been already in
-> +		 * same LLC domain, it seems it is pointless to depend
-> +		 * on wake_wide
-> +		 */
-> +		want_affine = (cpus_share_cache(cpu, prev_cpu) || !wake_wide(p)) &&
-> +				cpumask_test_cpu(cpu, p->cpus_ptr);
->  	}
+> [...]
+> 
+> >>>>> +static inline int
+> >>>>> +asym_cpu_capacity_classify(struct sched_domain *sd,
+> >>>>> +			   const struct cpumask *cpu_map)
+> >>>>> +{
+> >>>>> +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+> >>>>> +	struct asym_cap_data *entry;
+> >>>>> +	int asym_cap_count = 0;
+> >>>>> +
+> >>>>> +	if (list_is_singular(&asym_cap_list))
+> >>>>> +		goto leave;
+> >>>>> +
+> >>>>> +	list_for_each_entry(entry, &asym_cap_list, link) {
+> >>>>> +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+> >>>>> +			++asym_cap_count;
+> >>>>> +		} else {
+> >>>>> +			/*
+> >>>>> +			 * CPUs with given capacity might be offline
+> >>>>> +			 * so make sure this is not the case
+> >>>>> +			 */
+> >>>>> +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+> >>>>> +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+> >>>>> +				if (asym_cap_count > 1)
+> >>>>> +					break;
+> >>>>> +			}
+> >>>>
+> >>>> Readability nit: That could be made into an else if ().
+> >>> It could but then this way the -comment- gets more exposed.
+> >>> But that might be my personal perception so I can change that.
+> >>
+> >> As always those are quite subjective! Methink something like this would
+> >> still draw attention to the offline case:
+> >>
+> >>                /*
+> >>                 * Count how many unique capacities this domain covers. If a
+> >>                 * capacity isn't covered, we need to check if any CPU with
+> >>                 * that capacity is actually online, otherwise it can be
+> >>                 * ignored.
+> >>                 */
+> >>                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+> >>                         ++asym_cap_count;
+> >>                 } else if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+> >>                         sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+> >>                         if (asym_cap_count > 1)
+> >>                                 break;
+> >>                 }
+> > Noted.
+> > Will wait for some more comments before sending out 'polished' version.
+> 
+> For me asym_cpu_capacity_classify() is pretty hard to digest ;-) But I
+> wasn't able to break it. It also performs correctly on (non-existing SMT)
+> layer (with sd span eq. single CPU).
+> 
+> Something like this (separating asym_cap_list iteration and flags
+> construction would be easier for me. But like already said here,
+> it's subjective.
+> I left the two optimizations (list_is_singular(), break on asym_cap_count
+> > 1) out for now. asym_cap_list shouldn't have > 4 entries (;-)).
+> 
+> static inline int
+> asym_cpu_capacity_classify(struct sched_domain *sd, 
+>                            const struct cpumask *cpu_map)
+> {
+>         int sd_span_match = 0, cpu_map_match = 0, flags = 0; 
+>         struct asym_cap_data *entry;
+> 
+>         list_for_each_entry(entry, &asym_cap_list, link) {
+>                 if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask))
+>                         ++sd_span_match;
+>                 else if (cpumask_intersects(cpu_map, entry->cpu_mask))
+>                         ++cpu_map_match;
+>         }
+> 
+>         WARN_ON_ONCE(!sd_span_match);
+> 
+>         if (sd_span_match > 1) { 
+>                 flags |= SD_ASYM_CPUCAPACITY;
+>                 if (!cpu_map_match)
+>                         flags |= SD_ASYM_CPUCAPACITY_FULL;
+>         }
+> 
+>         return flags;
+> }
+So I planned to drop the list_is_singular check as it is needless really.
+Otherwise, I am not really convinced by the suggestion. I could add comments
+around current version to make it more ..... 'digestible' but I'd rather
+stay with it as it seems more compact to me (subjective).
 
-And no supportive numbers...
+> 
+> BTW, how would this mechanism behave on a system with SMT and asymmetric CPU
+> capacity? Something EAS wouldn't allow but I guess asym_cap_list will be
+> constructed and the SD_ASYM_CPUCAPACITY_XXX flags will be set?
+Yes, the list would get created and flags set. I do not think there is
+a difference with current approach (?). So EAS would be disabled (it only cares
+about SD_ASYM_CPUCAPACITY_FULL flag) but the misift might still kick in.
+
+---
+BR
+B.
