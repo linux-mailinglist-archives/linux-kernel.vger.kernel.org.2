@@ -2,162 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2283921BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4973921C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 23:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhEZVEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 17:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        id S233512AbhEZVIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 17:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbhEZVEi (ORCPT
+        with ESMTP id S232386AbhEZVIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 17:04:38 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A728EC061574;
-        Wed, 26 May 2021 14:03:04 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id y197so3988375ybe.11;
-        Wed, 26 May 2021 14:03:04 -0700 (PDT)
+        Wed, 26 May 2021 17:08:15 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5510DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:06:42 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id q7so4655738lfr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 14:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fjggmNXP8aJJIe5LARZOetddJKB665gZqov3k0rARmE=;
-        b=oIshPE/fiYe7+ESpjqOYMCMYMV58cBEEthVeSftX73A3wP12A8wiQ+su72g7mM2vQq
-         mAa04QudN1IuRCoUtJj2BylIZx0rXdPmXYWJOiHv3WE+kKVffRVL2ppoOYHcsRP/WG3i
-         Dq2RGxcTv3G7lMaExu56gbKgeSFUTDANYZfhcUgDO2bf/IwGhQye1U0ES3YSOYFxGXXj
-         4qrojsSLFSgvI5U2KTDSpQV+CxBo/KCbxhfQiu5mZniLOU9/xZqFwYPj/2ljKjyqtwez
-         VKubTRx//LZQ2NmV2PUW4iyl0uXbncMaYqdRUMNTnnxS4udzZRNWTLUzfblVtafa348q
-         LzLQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLd5OXrScZXh8ykov1e7sSfF7Q/pna3Hb4gFF9BgLMI=;
+        b=Ck/H3n00G9X+o5dBtK+xs1rR6RxEax0xZqqm54XZaB9I1sNZW6rXKA0m99GVrjlpfb
+         t0KZXtwPUvQC2nJxL6i1J9AQGc0Ov7Y8iWCR/HuR2uDhqTZKg5Tj1VJH/3GlFv5J7QoE
+         NlUFgRlZZmyuFTe2Bk5CRJTRBSgJc6tqIO2+dI/C770ZMunL88YasX7pxMvgWhJ+mKwx
+         qG7PcZBrG/XTDzAksOGYWf6i3tu8OfVbNqvZMKsCygvClTDa5Uhd8RhG/jNX/6yuN9tn
+         +nVobvsfsOFDdnYHJBfzdnP9KvjRTC/y9GnpiaxGmYf6RcJWBxImy7Xtn0+T/nnKauFF
+         ZjDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fjggmNXP8aJJIe5LARZOetddJKB665gZqov3k0rARmE=;
-        b=DPPSpim6T1XBe/qgvIJNgCq5rN7bEvCTMSRgzAQSqNMXg20KAF0Y7kwIkR4sbqgXcI
-         0+QY9MxdpYcTh8bu9i5lOyNBlfsLJmgWGngRDlN7nf1COLLVBGWMaIyT7zlW3UWBwAqw
-         06jiFgzP+J9gkA9vi8MS8MBAdq1rxGHci/sIqgEXFEbLziN5fF8P4oGH0xWYbvwBE/ph
-         wjyujOXdUxLgk7iZr059n4BuQaqCJ6UtPErhiyRc3PsMaAGvWxDjhfehJRyk3v7lnSiD
-         92Bz5pKC56fNDfRtmq4ihbtc8azFwcaD6c/pLW3+eqkaYu/RECZYejhz/EL0UMDYXsZr
-         Dfyg==
-X-Gm-Message-State: AOAM530+ffwTXK437GdHz9S4PvGWktpqFSErln8ROqqw8b+MWcDaDHIt
-        25K5A0ViD4ar5lxoMQHUvqOHYlRnYSvGyTSf0czzoh2zxMo=
-X-Google-Smtp-Source: ABdhPJz4+zhebIxWn7F4gfKP/NFsVuyboDr7JVj62TVrVWpMRjTAmq7cT8f6GsYU05z4bq0578DxNbKgFVOr2ZjIgS4=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr53013528ybz.260.1622062983834;
- Wed, 26 May 2021 14:03:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLd5OXrScZXh8ykov1e7sSfF7Q/pna3Hb4gFF9BgLMI=;
+        b=RPXqP3h9gwKmFchBIVwxSYzX76fzepNVSXcoHmIeU8R7j+7W/4Not2bGh2lmYLaLym
+         qg3vhxoPlQgh5z1FX66bFaoXLX5t+liF8tMMYzmcYUTRmcoQUIc+2qTMFB+CS9ArD8ra
+         PDIAiKkbtgepL8WZtMy5uk/OLz2ZFoPeOvPM52J8HYlfg6E7ZHg3k4NE+it+PsKRntzF
+         WuX/DByJbAdg9P1UETjATPlignsALVTBm1sKO+xTSw6V0Q8YRb/mBT229NUk6ijnrJL5
+         x/HU6T1JT8xoYrNR4Uuuee+++UixVaTiDDdei4MH7/nw5MtWKIqc/UQwPC+lbrnoZWYQ
+         /7QQ==
+X-Gm-Message-State: AOAM530h1/24vjw5Kks02CA7vUuRNz9aNLgDst09saN0HuVnnDJjSz8a
+        i9p0JtRbvQvxuYl2i+X2h20=
+X-Google-Smtp-Source: ABdhPJwavZWnuA1g9gUQdiZMg2Dj80xDEzIKwCNc+3hki0pbQVZpHTRqMuKOjkCv69ZX4E4ffKaRSg==
+X-Received: by 2002:a05:6512:3196:: with SMTP id i22mr39784lfe.492.1622063200706;
+        Wed, 26 May 2021 14:06:40 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id r10sm16900lfe.110.2021.05.26.14.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 14:06:40 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] dm table: Constify static struct blk_ksm_ll_ops
+Date:   Wed, 26 May 2021 23:06:37 +0200
+Message-Id: <20210526210637.21528-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210518142302.1046718-1-javierm@redhat.com> <CAEf4BzYqA1Upbm75aW-Rs-WCqQ6KRnSje-uTis2fw749_f8tRw@mail.gmail.com>
- <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
-In-Reply-To: <CAK7LNAQZNkdQTtGHmrE0dcbeirBZb1O++A4b2oaAvu6+1Jupbw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 May 2021 14:02:52 -0700
-Message-ID: <CAEf4BzaV0y51EY5JAYZ0dueC2NQihwy+4pTtidSj4KXxGm+fwA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: quote OBJCOPY var to avoid a pahole call break
- the build
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:53 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Thu, May 27, 2021 at 1:18 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, May 18, 2021 at 7:23 AM Javier Martinez Canillas
-> > <javierm@redhat.com> wrote:
-> > >
-> > > The ccache tool can be used to speed up cross-compilation, by calling the
-> > > compiler and binutils through ccache. For example, following should work:
-> > >
-> > >     $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
->
-> Actually, I did not know this...
->
-> > >
-> > >     $ make M=drivers/gpu/drm/rockchip/
-> > >
-> > > but pahole fails to extract the BTF info from DWARF, breaking the build:
-> > >
-> > >       CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
-> > >       LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
-> > >       BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
-> > >     aarch64-linux-gnu-objcopy: invalid option -- 'J'
-> > >     Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
-> > >      Copies a binary file, possibly transforming it in the process
-> > >     ...
-> > >     make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
-> > >     make: *** [Makefile:1866: modules] Error 2
-> > >
-> > > this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
-> > > later pahole is executed with the following command line:
-> > >
-> > >     LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
-> > >
-> > > which gets expanded to:
-> > >
-> > >     LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
-> > >
-> > > instead of:
-> > >
-> > >     LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
-> > >
-> > > Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> > > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> > > ---
-> > >
-> >
-> > LGTM. Masahiro, would you like us to take this through bpf tree or
-> > you'll apply this to kbuild one?
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > >  scripts/Makefile.modfinal | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > > index dd87cea9fba..a7883e45529 100644
-> > > --- a/scripts/Makefile.modfinal
-> > > +++ b/scripts/Makefile.modfinal
-> > > @@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
-> > >  quiet_cmd_btf_ko = BTF [M] $@
-> > >        cmd_btf_ko =                                                     \
-> > >         if [ -f vmlinux ]; then                                         \
-> > > -               LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
-> > > +               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
-> > >         else                                                            \
-> > >                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
-> > >         fi;
-> > > --
-> > > 2.31.1
-> > >
->
->
-> Please feel free to pick it up.
+The only usage of dm_ksm_ll_ops is to make a copy of it to the ksm_ll_ops
+field in the blk_keyslot_manager struct. Make it const to allow the
+compiler to put it in read-only memory.
 
-Ok, sounds good.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/md/dm-table.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I do not know 5f9ae91f7c0.
->
-> BTW, I see similar code in scripts/link-vmlinux.sh too.
->
->      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
->
-> Is it OK to leave it unquoted?
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index ee47a332b462..7e88e5e06922 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1244,7 +1244,7 @@ static int dm_keyslot_evict(struct blk_keyslot_manager *ksm,
+ 	return args.err;
+ }
+ 
+-static struct blk_ksm_ll_ops dm_ksm_ll_ops = {
++static const struct blk_ksm_ll_ops dm_ksm_ll_ops = {
+ 	.keyslot_evict = dm_keyslot_evict,
+ };
+ 
+-- 
+2.31.1
 
-You are right, link-vmlinux.sh should be updated accordingly.
-
-Javier, can you please send v2 and cc bpf@vger.kernel.org? Thanks!
-
->
->
-> --
-> Best Regards
-> Masahiro Yamada
