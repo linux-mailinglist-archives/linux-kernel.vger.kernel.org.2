@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B4E391A3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F49391A8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbhEZOeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:34:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5561 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhEZOeY (ORCPT
+        id S235001AbhEZOpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:45:24 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:36382 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234737AbhEZOpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:34:24 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FqtdK0lHNzmV6V;
-        Wed, 26 May 2021 22:29:57 +0800 (CST)
-Received: from dggeml759-chm.china.huawei.com (10.1.199.138) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 22:32:48 +0800
-Received: from localhost.localdomain (10.175.102.38) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 26 May 2021 22:32:48 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>, Simon Shields <simon@lineageos.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] ASoC: samsung: midas_wm1811: Fix build error when CONFIG_GPIOLIB is not set
-Date:   Wed, 26 May 2021 14:43:39 +0000
-Message-ID: <20210526144339.2392592-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 26 May 2021 10:45:22 -0400
+Received: by mail-oi1-f179.google.com with SMTP id t24so1726876oiw.3;
+        Wed, 26 May 2021 07:43:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bwx+7lo4SfRWj6YJZuZRRCA4lszy3g5/1sk2W/GIqG8=;
+        b=Ecc9Gj7R5DnY5s+2tOjzyHz+UqdCkYy2AcIkQwnOyCkPMtcjdxVXdN7EZiYGnYSYgr
+         QbvIiRldX+PTuUSNU00a1XFYk+/tq7gu20uZJ+RrwW5crY6/2D4L0Ky4iLQ7Y+9pupKo
+         dQ4b9KB/SapZa3pghlSZANGWtlU3upUmffDhXAlxXct2Yr7wP4Jvj8+KmP3bUt+Ji7h+
+         QDcifHOqlPEt4G8HBomBC1cYbP+oUCQY3khSzr4KDgonpikmbZ+0J4dY6YY8O5Tlsmsp
+         BidcyIMwiCE7DCHNXTUf/hAiG4nJS3NPSFHMp1dAjmdFkS1Tivfw/NF5WSj1evrclQXk
+         6PkQ==
+X-Gm-Message-State: AOAM5311Sl9qTi+X9rv+DsoOBjL9f+n6FljMTGkcB45O4znW8BI90hxh
+        A1SvmexOuLDn5huA/hlfLhEbZTvd8yrEkj5pDjF/1UdQ/68=
+X-Google-Smtp-Source: ABdhPJw/XEgY8ojhUczCLVWlMHRKDt1AP9EPzVWiqzR/icVxLT9qbv6/l4ERqIRVlZZwLbfY0O66rTlT0i4Y5niduus=
+X-Received: by 2002:aca:1910:: with SMTP id l16mr2085180oii.69.1622040231145;
+ Wed, 26 May 2021 07:43:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml759-chm.china.huawei.com (10.1.199.138)
-X-CFilter-Loop: Reflected
+References: <20210526141252.3750231-1-colin.king@canonical.com>
+In-Reply-To: <20210526141252.3750231-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 26 May 2021 16:43:40 +0200
+Message-ID: <CAJZ5v0hfi9mZb-9Zb5FGUn1mC9L8hAacpmDDzbDtB+prZczt4A@mail.gmail.com>
+Subject: Re: [PATCH][next] acpi: power: remove redundant initialization of
+ variable result
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build error when CONFIG_GPIOLIB is not set:
+On Wed, May 26, 2021 at 4:12 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable result is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/acpi/power.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c
+> index 97c9a94a1a30..d86865c04f64 100644
+> --- a/drivers/acpi/power.c
+> +++ b/drivers/acpi/power.c
+> @@ -919,7 +919,7 @@ struct acpi_device *acpi_add_power_resource(acpi_handle handle)
+>         union acpi_object acpi_object;
+>         struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
+>         acpi_status status;
+> -       int state, result = -ENODEV;
+> +       int state, result;
+>
+>         acpi_bus_get_device(handle, &device);
+>         if (device)
+> --
 
-sound/soc/samsung/midas_wm1811.c: In function 'midas_fm_set':
-sound/soc/samsung/midas_wm1811.c:205:3: error:
- implicit declaration of function 'gpiod_set_value_cansleep';
- did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
-  205 |   gpiod_set_value_cansleep(priv->gpio_fm_sel, 1);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~
-      |   gpio_set_value_cansleep
-sound/soc/samsung/midas_wm1811.c: In function 'midas_probe':
-sound/soc/samsung/midas_wm1811.c:445:22: error:
- implicit declaration of function 'devm_gpiod_get_optional';
- did you mean 'devm_clk_get_optional'? [-Werror=implicit-function-declaration]
-  445 |  priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~
-      |                      devm_clk_get_optional
-sound/soc/samsung/midas_wm1811.c:445:61:
- error: 'GPIOD_OUT_HIGH' undeclared (first use in this function);
- did you mean 'GPIOF_INIT_HIGH'?
-  445 |  priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
-      |                                                             ^~~~~~~~~~~~~~
-      |                                                             GPIOF_INIT_HIGH
+Equivalent change is made in
 
-Fixes: fd0ea9cd9698 ("ASoC: samsung: Add sound support for Midas boards")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/samsung/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+https://patchwork.kernel.org/project/linux-acpi/patch/2786380.e9J7NaK4W3@kreacher/
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index a2221ebb1b6a..22be597b1dd9 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -228,6 +228,7 @@ config SND_SOC_SAMSUNG_ARIES_WM8994
- config SND_SOC_SAMSUNG_MIDAS_WM1811
- 	tristate "SoC I2S Audio support for Midas boards"
- 	depends on SND_SOC_SAMSUNG
-+	depends on GPIOLIB
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8994
- 	help
-
+Thanks!
