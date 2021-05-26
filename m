@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD7539112C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FD1391131
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 09:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhEZHHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 03:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbhEZHG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 03:06:58 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9724C061574;
-        Wed, 26 May 2021 00:05:03 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id p7so30952671wru.10;
-        Wed, 26 May 2021 00:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eGAqNQ4+oIfeyWH34ul2O0oaopqnEZsSkjATZeXV824=;
-        b=ivQ6EuNXRiKIUyIUgGs7x2SRgNkPbqOET6KdIuHLjbT9zv8teYOirGiz1+g5oDaDWc
-         AtyKEZOCrORGb/fn+AdQPW1JXJg4spBf8DRq+fhcDt4Ay3S3wC+LSwfRRQ3sSbddbfnr
-         6C6e0965XZzUSwSu7oRB+MWcBHD+Vhd2KmUbxdL11rOb8f5k0cV7DmawAJxIqImS96nS
-         gMlXX+EeUr/Bd7wA4QtMgAfi3jxtxYMwI+9IfmRQNczK9ViOdfNIVG7oaaKLkhN1OSMM
-         P4GuEF3E8iTSOzBG2wasx2QeE/GCHxhMd6ei4A/6sTWIFgzO8Ia1FipSVQ3Hg7kO9i5O
-         bB7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=eGAqNQ4+oIfeyWH34ul2O0oaopqnEZsSkjATZeXV824=;
-        b=hSeLHNAeV8pHX9/LJAaJhDvkyzIRvGrfmv5wweLzaP6b5mkQRf4oFxm956+0TQTgGf
-         Ve/uBeYxZFLhRChWlTXI8DYO6wNXd7Stw6J6UfGV0iJpxHw+EQenT8V0XuLXUOKarSDK
-         yzerbtEd5HIutifZ8beIqZjdsr5sa7Gz98yNKqLBhiIdL/QMKGSGgk5Y04UO61gZ83MR
-         Bg7VlMLeBUqVuXdVrYTbYGvYiGg+brcBFLYgytRhE9ArQ7OWA7J6J27G9O6cbsE7Dc2s
-         EzsISr0s2wFEJpUSGBDxqUGPqCArHAXTOwyV9s86koHi3lDXYqnlpQhcsRvH1QdSe2ku
-         fCpQ==
-X-Gm-Message-State: AOAM533GLDfn25jfREdmFmwINuxH8MDvCOM3rl8A2L1CBVMVV7Art5dP
-        25JFH0iYV0kQ1No0GUETqtg=
-X-Google-Smtp-Source: ABdhPJz2bvhrP1qZ/Qxypuy8WGX+eMj+o0ceWII92tzUzM21wcztnfU0hXr3vza4NJSuLUtHQcRxsg==
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr31853645wru.348.1622012702431;
-        Wed, 26 May 2021 00:05:02 -0700 (PDT)
-Received: from gmail.com (0526ECF1.unconfigured.pool.telekom.hu. [5.38.236.241])
-        by smtp.gmail.com with ESMTPSA id r5sm18709791wrw.96.2021.05.26.00.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 00:05:02 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 26 May 2021 09:05:00 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Haocheng Xie <xiehaocheng.cn@gmail.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf core: Fix some kernel-doc warnings.
-Message-ID: <YK3zHAdIQZ9GPhfg@gmail.com>
-References: <20210526033438.23640-1-xiehaocheng.cn@gmail.com>
+        id S232867AbhEZHKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 03:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232336AbhEZHKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 03:10:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 119C9610A8;
+        Wed, 26 May 2021 07:08:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622012919;
+        bh=sMPNH6FYN0JDqdjj3L/ygquBaugIlYCDJrWZD6ZAQVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eGhmZPvT12I372fHieA+oAxwEf4ikMsUCl6z3A2OChebH7Xau4wSlpwaqorVMIiiJ
+         qCKyNjSPRxEfxgWWP8BN+97B988MBq0CsYOmKBYrVdce82bx2bf2WmfVsjWnk90XwJ
+         fpnSynct93vbwU5lnHo/Azf0owWCEzF7HiDoz71Q=
+Date:   Wed, 26 May 2021 09:08:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/71] 5.4.122-rc1 review
+Message-ID: <YK3z9MJxSeYC/nJZ@kroah.com>
+References: <20210524152326.447759938@linuxfoundation.org>
+ <20210525182836.GA236211@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526033438.23640-1-xiehaocheng.cn@gmail.com>
+In-Reply-To: <20210525182836.GA236211@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 11:28:36AM -0700, Guenter Roeck wrote:
+> On Mon, May 24, 2021 at 05:25:06PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.122 release.
+> > There are 71 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 26 May 2021 15:23:11 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > greg k-h
+> > 
+> > Christoph Hellwig <hch@lst.de>
+> >     nvme-multipath: fix double initialization of ANA state
+> > 
+> This patch was later fixed with commit commit e181811bd04d ("nvmet: use
+> new ana_log_size instead the old one").
 
-* Haocheng Xie <xiehaocheng.cn@gmail.com> wrote:
+Argh, I thought I ran my script to catch these, I wonder what went
+wrong.
 
-> Fix the following W=1 kernel build warning(s):
-> kernel/events/core.c:143: warning: Function parameter or member 'cpu' not described in 'cpu_function_call'
-> kernel/events/core.c:11924: warning: Function parameter or member 'flags' not described in 'sys_perf_event_open'
-> kernel/events/core.c:12382: warning: Function parameter or member 'overflow_handler' not described in 'perf_event_create_kernel_counter'
-> kernel/events/core.c:12382: warning: Function parameter or member 'context' not described in 'perf_event_create_kernel_counter'
-> 
-> Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+Hm, my script caught it, no idea how I missed it on my end, my fault.
+Thanks for pointing this out, now queued up.
 
-Even with your two patches there's still W=1 warnings remaining in 
-kernel/events/:
-
-  kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
-  kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
-
-Could you please fix all of them, and send them as a 3-patch series? 
-
-Doesn't make much sense to just partially fix W=1 warnings in a subsystem.
-
-Thanks,
-
-	Ingo
+greg k-h
