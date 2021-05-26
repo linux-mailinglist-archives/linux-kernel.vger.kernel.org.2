@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE70E390E12
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 03:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4753B390E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhEZBzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 21:55:43 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:17593 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231707AbhEZBzl (ORCPT
+        id S231946AbhEZCEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:04:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40537 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhEZCEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 21:55:41 -0400
-X-UUID: fdfacc859694470b90309409b7444d80-20210526
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=OL48yFH+2xYnJfSiWPGce5BsZriz5riusFvvUVxlXRA=;
-        b=Hg8WFYY70UW92/2ZHEGcE9V/MEOHgjeV6RRGnirxm6pGpYhoulBOk0oUp/f8Ilm44p7vwYF2MyC6U4o8CkMJ0UC9EGB1+1WPpS3BLx4RY/GRjYQXvefWEPF7gcx0XJqHcWkj8kxAcskv/hBShyKq6I1LHMZa9lmLrIk+jmJDUZU=;
-X-UUID: fdfacc859694470b90309409b7444d80-20210526
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 389015561; Wed, 26 May 2021 09:54:08 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
- 2021 09:54:04 +0800
-Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 26 May 2021 09:54:03 +0800
-Message-ID: <1621994043.32080.9.camel@mszsdaap41>
-Subject: Re: [PATCH v2 1/3] pwm: mtk_disp: clear the clock operations
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
-        <Yingjoe.Chen@mediatek.com>,
-        Eddie Huang =?UTF-8?Q?=28=E9=BB=83=E6=99=BA=E5=82=91=29?= 
-        <eddie.huang@mediatek.com>,
-        Cawa Cheng =?UTF-8?Q?=28=E9=84=AD=E6=9B=84=E7=A6=A7=29?= 
-        <cawa.cheng@mediatek.com>,
-        Bibby Hsieh =?UTF-8?Q?=28=E8=AC=9D=E6=BF=9F=E9=81=A0=29?= 
-        <Bibby.Hsieh@mediatek.com>,
-        CK Hu =?UTF-8?Q?=28=E8=83=A1=E4=BF=8A=E5=85=89=29?= 
-        <ck.hu@mediatek.com>, "stonea168@163.com" <stonea168@163.com>,
-        Huijuan Xie =?UTF-8?Q?=28=E8=B0=A2=E6=85=A7=E5=A8=9F=29?= 
-        <Huijuan.Xie@mediatek.com>
-Date:   Wed, 26 May 2021 09:54:03 +0800
-In-Reply-To: <YDO/0Onf6a09YRsP@ulmo.localdomain>
-References: <20210130141226.25357-1-jitao.shi@mediatek.com>
-         <20210130141226.25357-2-jitao.shi@mediatek.com>
-         <YDO/0Onf6a09YRsP@ulmo.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 25 May 2021 22:04:11 -0400
+Received: from mail-ot1-f72.google.com ([209.85.210.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1llisa-0007Q6-5N
+        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 02:02:40 +0000
+Received: by mail-ot1-f72.google.com with SMTP id k7-20020a9d4b870000b02902a5bfbbbd3bso23052766otf.18
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:02:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80Q9luL+LwQCDuf3BgkOvtEc2OIfkbeDzIrwJ3hVNYg=;
+        b=Auz+5esBRHPt703A6MrHheqyU8Z9uqjb/OI/0YMPuJMaLGDsiff2PJ8IZtZQ7+Eukj
+         QDS+Sng1Hfje3VIUDtM49XD/KJYB4mtYcSLC3u4R4HJbqph+W22SprI6WJVLBfLxVl+H
+         mVIbLo66/jF8awk94Mb7kr4enjn/8mYEZVJhIZ7yi9buMyDHwMoblR60IvFe62CmFxx0
+         n5RhHv11VNcMqXIQ8yyaRGKVpCLssO0ZLxXZ1uwz2TS6ZsEDe1ITwcVWT4lD6Eg0riyT
+         XbdS2rRyR7tP+/LXQAwwkDxj31ckv42hJQVKsnsCE2QMITyuy9KfoDV5q8D6VI2NRYpU
+         yGbQ==
+X-Gm-Message-State: AOAM5325Zx4YYwz9R74xkCen6+1dHZEUrZ5IF1qJWwEIpFxqKkX5+HCL
+        Hh82mt3rIkYLqA5eYLKixPsy2vBqWNPCjyfadwF9iouZ4hUl9zc8hivk4ee56lV6cV/gKAJ2xVy
+        LEXL2dMDIrghTZK3n8B8tRegzEqQNb9gVSCah8uRMT10WMBTma4kjwXVjVA==
+X-Received: by 2002:aca:b3d5:: with SMTP id c204mr353839oif.17.1621994559114;
+        Tue, 25 May 2021 19:02:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVyQJj1wQcjhyCbkjhZWLHzSkdMbj1UW7fzQW9m2Wo4G/waP+Gb8xrdYJnlCIdJUeKJb5TO7XDHgGKxBL1qrs=
+X-Received: by 2002:aca:b3d5:: with SMTP id c204mr353825oif.17.1621994558803;
+ Tue, 25 May 2021 19:02:38 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: EAF69C26BC8B6484722F8C014C612CE0297C6B427E74CF4A88B0DBC3B5786F2F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210520033315.490584-1-koba.ko@canonical.com> <20210525074426.GA14916@lst.de>
+In-Reply-To: <20210525074426.GA14916@lst.de>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Wed, 26 May 2021 10:02:27 +0800
+Message-ID: <CAJB-X+UFi-iAkRBZQUsd6B_P+Bi-TAa_sQjnhJagD0S91WoFUQ@mail.gmail.com>
+Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use npss.
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Henrik Juul Hansen <hjhansen2020@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTAyLTIyIGF0IDIyOjI5ICswODAwLCBUaGllcnJ5IFJlZGluZyB3cm90ZToN
-Cj4gT24gU2F0LCBKYW4gMzAsIDIwMjEgYXQgMTA6MTI6MjRQTSArMDgwMCwgSml0YW8gU2hpIHdy
-b3RlOg0KPiA+IFJlbW92ZSB0aGUgY2xrX3ByZXBhcmUgZnJvbSBtdGtfZGlzcF9wd21fcHJvYmUu
-DQo+ID4gUmVtb3ZlIHRoZSBjbGtfdW5wcmVwYXJlIGZyb20gbXRrX2Rpc3BfcHdtX3JlbW92ZS4N
-Cj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5j
-b20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvcHdtL3B3bS1tdGstZGlzcC5jIHwgMjMgKystLS0t
-LS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwg
-MjEgZGVsZXRpb25zKC0pDQo+IA0KPiBJdCdzIG5vdCBjbGVhciAqd2h5KiB5b3UncmUgZG9pbmcg
-dGhpcyBjaGFuZ2UuIEl0J3MgYWxyZWFkeSBvYnZpb3VzIGZyb20NCj4gdGhlIGNoYW5nZXMgaW4g
-dGhpcyBwYXRjaCB0aGF0IHlvdSdyZSByZW1vdmluZyB0aGUgY2FsbHMgdG8NCj4gY2xrX3ByZXBh
-cmUoKSBhbmQgY2xrX3VucHJlcGFyZSgpLCBzbyBpbnN0ZWFkIG9mIGR1cGxpY2F0aW5nIHRoYXQN
-Cj4gaW5mb3JtYXRpb24gaW4gdGhlIGNvbW1pdCBtZXNzYWdlLCB0YWtlIHRoaXMgb3Bwb3J0dW5p
-dHkgdG8gZGVzY3JpYmUgd2h5DQo+IHRoaXMgY2hhbmdlIGlzIG5lZWRlZC4gV2l0aG91dCBhbnkg
-ZnVydGhlciBjb250ZXh0LCB0aGlzIHdvdWxkIHNlZW0gdG8NCj4ganVzdCBicmVhayBvcGVyYXRp
-b24gb2YgdGhpcyBjaGlwIGJlY2F1c2Ugbm93IHRoZXNlIGNsb2NrcyBhcmUgbmV2ZXINCj4gZW5h
-YmxlZCBpbiB0aGUgZmlyc3QgcGxhY2UuDQo+IA0KPiBUaGllcnJ5DQoNClRoYW5rcyBmb3IgeW91
-ciByZXZpZXcuDQoNCkknbGwgdXBkYXRlIHRoZSBjb21taXQgbWVzc2FnZSBuZXh0IHZlcnNpb24u
-DQoNClRoZSBvcmlnaW5hbCBpc3N1ZSBpcyB0aGUgY2xvY2tzIGRvZXNuJ3QgYmUgZGlzYWJsZWQg
-d2hlbiBzeXN0ZW0gZW50ZXINCnN0YW5kYnkuDQoNClRoZW4gSSBhZGp1c3QgdGhlIHRoZSBjbG9j
-ayBzZXF1ZW5jZS4gYW5kIFV3ZSBzdWJqZWN0IGNvbnZlcnQgdGhlbGVnYWN5DQpBUElzIG9mIC5h
-cHBseSgpLg0K
+On Tue, May 25, 2021 at 3:44 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, May 20, 2021 at 11:33:15AM +0800, Koba Ko wrote:
+> > After resume, host can't change power state of the closed controller
+> > from D3cold to D0.
+>
+> Why?
+As per Kai-Heng said, it's a regression introduced by commit
+b97120b15ebd ("nvme-pci:
+use simple suspend when a HMB is enabled"). The affected NVMe is using HMB.
+the target nvme ssd uses HMB and the target machine would put nvme to d3cold.
+During suspend, nvme driver would shutdown the nvme controller caused by
+commit b97120b15ebd ("nvme-pci: use simple suspend when a HMB is enabled").
+During resuming, the nvme controller can't change the power state from
+d3cold to d0.
+    # nvme 0000:58:00.0: can't change power state from D3cold to D0
+(config space inaccessible)
+Tried some machines, they only put nvme to d3hot so even if nvme is
+forced to shutdown,
+it could be resumed correctly.
 
+As per commit b97120b15ebd , the TP spec would allow nvme to access
+the host memory in any power state in S3.
+but the Host would fail to manage. I agree with Kai-Heng's suggestion
+but this TP would be broken.
+
+>
+> > For these devices, just avoid to go deeper than d3hot.
+>
+> What are "these devices"?
+
+It's a Samsung ssd using HMB.
+
+> > @@ -2958,6 +2959,15 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >
+> >       dev_info(dev->ctrl.device, "pci function %s\n", dev_name(&pdev->dev));
+> >
+> > +     if (pm_suspend_via_firmware() || !dev->ctrl.npss ||
+> > +         !pcie_aspm_enabled(pdev) ||
+> > +         dev->nr_host_mem_descs ||
+> > +         (dev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND)) {
+>
+> Before we start open coding this in even more places we really want a
+> little helper function for these checks, which should be accomodated with
+> the comment near the existing copy of the checks.
+
+Thanks, I will refine this.
+
+>
+> > +             pdev->d3cold_allowed = false;
+> > +             pci_d3cold_disable(pdev);
+> > +             pm_runtime_resume(&pdev->dev);
+>
+> Why do we need to both set d3cold_allowed and call pci_d3cold_disable?
+>
+> What is the pm_runtime_resume doing here?
+I referenced the codes of d3cold_allowed_store@d3cold_allowed_store fun,
+As per Bjorn and search in multiple drivers, only pci_d3cold_disable is enough.
