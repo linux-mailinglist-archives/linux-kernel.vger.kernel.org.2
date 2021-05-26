@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB39F391CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060F2391CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhEZQQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
+        id S233410AbhEZQRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhEZQQr (ORCPT
+        with ESMTP id S231622AbhEZQRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:16:47 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F4DC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:15:15 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso627793pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:15:15 -0700 (PDT)
+        Wed, 26 May 2021 12:17:41 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F0BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:16:08 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id k19so1292196qta.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:16:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=LsTUhRIzMiGOPzu0wFBll6Sat6SdwoouWOQTfFNCCKs=;
-        b=p33nyeJc82PGLNl739Gh4fhMojxiK0bsEN2zqawr7ymRxW2hxaeAkS8oJmt/tsT6cr
-         4ivme2D3PV8ypCy78qOGLFVChmiRD3W02Y80AezHnDakj39ONJxs6zOftjnalxe6tDfZ
-         PNgcVysUZ34l16KJ8RhXIzntn6jePdduSyYWUUlSPL/fj79tE/6IfJNEf4+/EsyOUw22
-         EiQSAfOe03HamheqsEPXl1Gah/SnmYXGiS6HL3ouoyDA8foIr+LhvILcpcUq5BD8jEvR
-         1nJaUua8iCAFnIA4Esba6kEkLBIanDeEkCJ2U6UF+WgzKFnupjCFq8Jv46HTUGwLVqEf
-         e1nw==
+        bh=jYNRg1GwIA2Rxdl8Zes8M188bB2u7RUg8i/4EX7B4yQ=;
+        b=KDxB8Jr14ykcOGOG+aWj/pn+Xm6i1yUJde1D4jIFbHXeqR0kUrFDnwMWIHkL3b41T8
+         HsSA/U3ynS1oVy4LyFs1TwpmYH0YbZ+OA9E3Zl4jZ8A3xqAwWc1va4h92bV3UOo/EZwR
+         1BcA64FxwNvAsclkVYjhjOoXGYkzCKF5XAYw9ZE6smfHbNxNz/b4YbpXfc3FCvG0/IUU
+         ud+08HXjlq5kpQTAtiux2KgZEsPtsGzja/koHlvAWZp1d3ZMEYcBUP2VVWy7R+DIzRZi
+         Iju5P5f/hijzoLM3H4XFOUASLrSvpTMDP8/KiDMhs3bViY/o83UiLaZ2lPA8cK5X5TrH
+         vJdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LsTUhRIzMiGOPzu0wFBll6Sat6SdwoouWOQTfFNCCKs=;
-        b=rLuHDSlBst5vVhrepZYOO/OdnZB3n3KbB2DIN16t5+ZbmGhmdPFbN+4elPq2zV4VmH
-         7r+P4+Lwa3QYb2DmWa8K8cbVprh/wtIc5Syg1cDaLXGyyLxOVupZisvE1Tik7DTLTqzk
-         am9evN02Y3QyAIPm+R2CjyQT080QHbqWQXGKV7XLl3qEV37KYWPCixi8W8cc3tHC8CW1
-         uOafjfdrr9UJjsuEUqMdsztpGHmQpVtQde/elqC8x7hYbbjjjyw6optiwyRHkmx+eRDK
-         i4cr1ucenWbQdV5dI5hIW04SuR9jqTRL9C0llggYPyL6nA1vMmXLxaszp1X6QeZJJWUR
-         xjDg==
-X-Gm-Message-State: AOAM531EW7ICUFGzsSBiktkebknJEw2h9A+tomBfJRPV4y4L8O6neU80
-        izmJ6s2c2EteegyjMPZMqG6UYw==
-X-Google-Smtp-Source: ABdhPJzj3FFsZjfje8nItMsxch1wg8M2VHKC44nbewwE2q+8XaVXKKJ6poNvfcuhRfoPX6yPJkhyFQ==
-X-Received: by 2002:a17:90a:542:: with SMTP id h2mr4604354pjf.82.1622045714986;
-        Wed, 26 May 2021 09:15:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id mp21sm4736323pjb.50.2021.05.26.09.15.14
+        bh=jYNRg1GwIA2Rxdl8Zes8M188bB2u7RUg8i/4EX7B4yQ=;
+        b=FjjWgl/aeNJ9m/k+TzQphJhvepcKFSgXzVjHYz4XGG4rZmp69qD1+6chP3rVaogr01
+         ALrJZ5P8X9JEyM1HsVeiJKOO3tuMyrT4XqvilI0XLJvhkKqHLn9T3RPgamiEVMk1eFxs
+         BVJd7c2rQM3rAKkYtxM5RW6yI+DihreDAKveT+47iPvubBBsC7Rl7zL8ZAHEWTkp4Ljt
+         ueR2LKMrIITyMiTZOO3YSqJYPjMyDzGElu3erW/c+L8tOssPWBBAWF7PgkVxniPQs8/M
+         H5KpTPwDdZvmYTfsR1JjfXnDBXQb9+tsi4mCLNhEVOWpAuvWCsfyLQR0YB9XImP+ouwv
+         i6pg==
+X-Gm-Message-State: AOAM5336fP9+/Pn70ti23M6e5BeofJiP9BhI/TPlExXnB94yITrW+bYd
+        4X38f0XaEcxe75iP+V89ymoB6Q==
+X-Google-Smtp-Source: ABdhPJzx2Ro9C2OTjzb1OPWCtbYPJDXDYha8XrqUduhJfu9BXD8jlj0oTzR1n2HbJlO1azOq931TGQ==
+X-Received: by 2002:ac8:4e21:: with SMTP id d1mr37218963qtw.290.1622045768063;
+        Wed, 26 May 2021 09:16:08 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id c20sm1793485qtm.52.2021.05.26.09.16.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 09:15:14 -0700 (PDT)
-Date:   Wed, 26 May 2021 16:15:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Masanori Misono <m.misono760@gmail.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Rohit Jain <rohit.k.jain@oracle.com>,
-        Ingo Molnar <mingo@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/1] Make vCPUs that are HLT state candidates for
- load balancing
-Message-ID: <YK50DvnogyiMTjhn@google.com>
-References: <20210526133727.42339-1-m.misono760@gmail.com>
- <YK5gFUjh6MX6+vx3@hirez.programming.kicks-ass.net>
+        Wed, 26 May 2021 09:16:07 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1llwCU-00FDYi-BH; Wed, 26 May 2021 13:16:06 -0300
+Date:   Wed, 26 May 2021 13:16:06 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: Re: [PATCH rdma-next v3 8/8] IB/cm: Protect cm_dev, cm_ports and
+ mad_agent with kref and lock
+Message-ID: <20210526161606.GC1096940@ziepe.ca>
+References: <cover.1620720467.git.leonro@nvidia.com>
+ <7ca9e316890a3755abadefdd7fe3fc1dc4a1e79f.1620720467.git.leonro@nvidia.com>
+ <20210525200057.GA3469742@nvidia.com>
+ <3bea531d-ab6d-3990-2014-02c7a4a1679c@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK5gFUjh6MX6+vx3@hirez.programming.kicks-ass.net>
+In-Reply-To: <3bea531d-ab6d-3990-2014-02c7a4a1679c@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Peter Zijlstra wrote:
-> On Wed, May 26, 2021 at 10:37:26PM +0900, Masanori Misono wrote:
-> > Hi,
+On Wed, May 26, 2021 at 10:46:47AM +0800, Mark Zhang wrote:
+> On 5/26/2021 4:00 AM, Jason Gunthorpe wrote:
+> > On Tue, May 11, 2021 at 11:22:12AM +0300, Leon Romanovsky wrote:
+> > > @@ -2139,6 +2197,8 @@ static int cm_req_handler(struct cm_work *work)
+> > >   		sa_path_set_dmac(&work->path[0],
+> > >   				 cm_id_priv->av.ah_attr.roce.dmac);
+> > >   	work->path[0].hop_limit = grh->hop_limit;
+> > > +
+> > > +	cm_destroy_av(&cm_id_priv->av);
+> > >   	ret = cm_init_av_by_path(&work->path[0], gid_attr, &cm_id_priv->av);
+> > >   	if (ret) {
+> > >   		int err;
 > > 
-> > I observed performance degradation when running some parallel programs on a
-> > VM that has (1) KVM_FEATURE_PV_UNHALT, (2) KVM_FEATURE_STEAL_TIME, and (3)
-> > multi-core architecture. The benchmark results are shown at the bottom. An
-> > example of libvirt XML for creating such VM is
+> > Why add cm_destroy_av() here? The cm_id_priv was freshly created at
+> > the top of this function and hasn't left the stack frame yet?
 > > 
-> > ```
-> > [...]
-> >   <vcpu placement='static'>8</vcpu>
-> >   <cpu mode='host-model'>
-> >     <topology sockets='1' cores='8' threads='1'/>
-> >   </cpu>
-> >   <qemu:commandline>
-> >     <qemu:arg value='-cpu'/>
-> >     <qemu:arg value='host,l3-cache=on,+kvm-pv-unhalt,+kvm-steal-time'/>
-> >   </qemu:commandline>
-> > [...]
-> > ```
-> > 
-> > I investigate the cause and found that the problem occurs in the following
-> > ways:
-> > 
-> > - vCPU1 schedules thread A, and vCPU2 schedules thread B. vCPU1 and vCPU2
-> >   share LLC.
-> > - Thread A tries to acquire a lock but fails, resulting in a sleep state
-> >   (via futex.)
-> > - vCPU1 becomes idle because there are no runnable threads and does HLT,
-> >   which leads to HLT VMEXIT (if idle=halt, and KVM doesn't disable HLT
-> >   VMEXIT using KVM_CAP_X86_DISABLE_EXITS).
-> > - KVM sets vCPU1's st->preempted as 1 in kvm_steal_time_set_preempted().
-> > - Thread C wakes on vCPU2. vCPU2 tries to do load balancing in
-> >   select_idle_core(). Although vCPU1 is idle, vCPU1 is not a candidate for
-> >   load balancing because is_vcpu_preempted(vCPU1) is true, hence
-> >   available_idle_cpu(vPCU1) is false.
-> > - As a result, both thread B and thread C stay in the vCPU2's runqueue, and
-> >   vCPU1 is not utilized.
+> Because it was initialized by cm_init_av_for_response() previously, so
+> destroy it here as cm_init_av_by_path() will re-initialize it.
 
-If a patch ever gets merged, please put this analysis (or at least a summary of
-the problem) in the changelog.  From the patch itself, I thought "and the vCPU
-becomes a candidate for CFS load balancing" was referring to CFS in the host,
-which was obviously confusing.
+Oh.. ouch, I once tried to re-order this so it wasn't doing such crazy
+stuff, but it was too hard.
 
-> > The patch changes kvm_arch_cpu_put() so that it does not set st->preempted
-> > as 1 when a vCPU does HLT VMEXIT. As a result, is_vcpu_preempted(vCPU)
-> > becomes 0, and the vCPU becomes a candidate for CFS load balancing.
-> 
-> I'm conficted on this; the vcpu stops running, the pcpu can go do
-> anything, it might start the next task. There is no saying how quickly
-> the vcpu task can return to running.
+Please just add a comment the destroy is for the
+cm_init_av_for_response
 
-Ya, the vCPU _is_ preempted after all.
-
-> I'm guessing your setup doesn't actually overload the system; and when
-> it doesn't have the vcpu thread to run, the pcpu actually goes idle too.
-> But for those 1:1 cases we already have knobs to disable much of this
-> IIRC.
-> 
-> So I'm tempted to say things are working as expected and you're just not
-> configured right.
-
-That does seem to be the case.  
-
-> > I created a VM with 48 vCPU, and each vCPU is pinned to the corresponding pCPU.
-
-If vCPUs are pinned and you want to eke out performance, then I think the correct
-answer is to ensure nothing else can run on those pCPUs, and/or configure KVM to
-not intercept HLT.
+Jason
