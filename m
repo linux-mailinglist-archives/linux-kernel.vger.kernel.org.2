@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE614390E59
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE59390E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhEZCh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:37:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59151 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232030AbhEZChz (ORCPT
+        id S232277AbhEZCkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:40:02 -0400
+Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:33004 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231843AbhEZCkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:37:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621996584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJC3K6l6gJPi4CUzLhheMs0LRbWxiui4b9xku04/3mg=;
-        b=FLTML3az9GlmnIZWqYMuqNDvbo0kAbcKdtWA/qQOtP61hXvjCRvJbYxmobEYwQDKmY6umM
-        CMe6gi/fjyBY5zthf+zP1YJl0HGmBeB1IAY7/x9edoBsTt7D8QmHGLw7N91wm00e1nbpex
-        dp1rdxIvq45sG53RU8N+vKjVcPTav40=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-S4a40yWbMPiZonjIr0Shtg-1; Tue, 25 May 2021 22:36:23 -0400
-X-MC-Unique: S4a40yWbMPiZonjIr0Shtg-1
-Received: by mail-pl1-f200.google.com with SMTP id d3-20020a1709026543b02900ef00d14127so15751139pln.23
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:36:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=IJC3K6l6gJPi4CUzLhheMs0LRbWxiui4b9xku04/3mg=;
-        b=CZHxOpaZRGaxiWRWOx2dwIzrxZvosL0Le8OlTEzDw8A8LulwjyUOPkN8YfF7sg2Q8T
-         a7e0SvVX5jYeiL/wgOZhWH2amt00cYNomkQKBMcwN0L0gdKu9X0mX9DDmQC2Ulnj0DJH
-         NYNm5uZ6wXkfglxeKJGsFLcEjWx5lIkgEvL6MSm0ZmTwercnOj6e3vg4xLunlluh4oVX
-         rPswnD5a5YNx804cPsuNfVVW43gGFw9rkGOI91oil8V5sT9dOaiMJ3TxK0KtgyRPvK8z
-         btxqkbyfmF9FFlwVfkeiCKabJUDSn1xx2SwJzeeh8QNfE1lJo7tw92l5qXugcnFpz6+G
-         O5FQ==
-X-Gm-Message-State: AOAM532G+mdk8tgUXTMwX9de2v8exfweX+7JuSGCkiZJT/Q7yJAzSxp8
-        OGKnaOP28V9AQpHeIFUbFgrRxoabJ6ql3wgMAUqIe0Rkdp4JUfnkd3JQsvTjcblZ2SwJ6yWtvWM
-        EPPlitlq1l2AzD0bXaGWvxPAydH1Zyj07xlZwwlxZ98DESBEE75+wpB+Z3rO088uS7SP6nSHpjU
-        gy
-X-Received: by 2002:a17:902:f281:b029:f0:bdf2:2fe5 with SMTP id k1-20020a170902f281b02900f0bdf22fe5mr32724351plc.68.1621996581964;
-        Tue, 25 May 2021 19:36:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylcchXGFUiLMl0CERc9pjyfUvd7s5BV6gdMSkLdsrvpEyh07CtgmlI9vttP0fXdJsLVzRn5Q==
-X-Received: by 2002:a17:902:f281:b029:f0:bdf2:2fe5 with SMTP id k1-20020a170902f281b02900f0bdf22fe5mr32724300plc.68.1621996581246;
-        Tue, 25 May 2021 19:36:21 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b12sm2984392pjd.22.2021.05.25.19.36.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 May 2021 19:36:20 -0700 (PDT)
-Subject: Re: [PATCH v7 01/12] iova: Export alloc_iova_fast()
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210517095513.850-1-xieyongji@bytedance.com>
- <20210517095513.850-2-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6ca337fe-2c8c-95c9-672e-0d4f104f66eb@redhat.com>
-Date:   Wed, 26 May 2021 10:36:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Tue, 25 May 2021 22:40:01 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 8A5E6A2D0;
+        Wed, 26 May 2021 02:38:30 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id F39FD1E04D5;
+        Wed, 26 May 2021 02:38:28 +0000 (UTC)
+Message-ID: <c017049e2abc746eec80deb0768744d5b94cd3e1.camel@perches.com>
+Subject: Re: [PATCH 3/3] slub: Actually use 'message' in restore_bytes()
+From:   Joe Perches <joe@perches.com>
+To:     Stephen Boyd <swboyd@chromium.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
+Date:   Tue, 25 May 2021 19:38:27 -0700
+In-Reply-To: <CAE-0n50NAaWNdFbsUGw==u+=X+4ZxDA=Qf_YesxXLVsyU8e8YA@mail.gmail.com>
+References: <20210520013539.3733631-1-swboyd@chromium.org>
+         <20210520013539.3733631-4-swboyd@chromium.org>
+         <f4da67db-a53b-a710-947d-474be7aad07@google.com>
+         <858b8d14673a200c3c2162fb7a9bf891ecd2a2d9.camel@perches.com>
+         <CAE-0n50NAaWNdFbsUGw==u+=X+4ZxDA=Qf_YesxXLVsyU8e8YA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210517095513.850-2-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Spam-Status: No, score=-2.89
+X-Stat-Signature: apm3jtknofu18oxwznwijb89fja8hhrq
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: F39FD1E04D5
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19tJgMR7ep1kGpvtE7bmjdOvSYV0/RJpvI=
+X-HE-Tag: 1621996708-919670
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-05-25 at 22:32 -0400, Stephen Boyd wrote:
+> Quoting Joe Perches (2021-05-25 00:37:45)
+> > On Sun, 2021-05-23 at 22:12 -0700, David Rientjes wrote:
+> > > On Wed, 19 May 2021, Stephen Boyd wrote:
+> > > 
+> > > > The message argument isn't used here. Let's pass the string to the
+> > > > printk message so that the developer can figure out what's happening,
+> > > > instead of guessing that a redzone is being restored, etc.
+> > > > 
+> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > 
+> > > Acked-by: David Rientjes <rientjes@google.com>
+> > 
+> > Ideally, the slab_fix function would be marked with __printf and the
+> > format here would not use \n as that's emitted by the slab_fix.
+> 
+> Thanks. I can make this into a proper patch and author it from you. Can
+> you provide a signed-off-by? The restore_bytes() hunk is slightly
+> different but I can fix that up.
 
-ÔÚ 2021/5/17 ÏÂÎç5:55, Xie Yongji Ð´µÀ:
-> Export alloc_iova_fast() so that some modules can use it
-> to improve iova allocation efficiency.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->   drivers/iommu/iova.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index e6e2fa85271c..317eef64ffef 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -450,6 +450,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
->   
->   	return new_iova->pfn_lo;
->   }
-> +EXPORT_SYMBOL_GPL(alloc_iova_fast);
->   
->   /**
->    * free_iova_fast - free iova pfn range into rcache
+If you want...
 
+Signed-off-by: Joe Perches <joe@perches.com>
 
-Interesting, do we need export free_iova_fast() as well?
-
-Thanks
+> 
+> > ---
+> >  mm/slub.c | 8 +++++---
+> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index ee51857d8e9bc..46f9b043089b6 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -702,6 +702,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
+> >         va_end(args);
+> >  }
+> > 
+> > +__printf(2, 3)
+> >  static void slab_fix(struct kmem_cache *s, char *fmt, ...)
+> >  {
+> >         struct va_format vaf;
+> > @@ -816,7 +817,8 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
+> >  static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
+> >                                                 void *from, void *to)
+> >  {
+> > -       slab_fix(s, "Restoring %s 0x%px-0x%px=0x%x\n", message, from, to - 1, data);
+> > +       slab_fix(s, "Restoring %s 0x%px-0x%px=0x%x",
+> > +                message, from, to - 1, data);
+> >         memset(from, data, to - from);
+> >  }
+> > 
+> > @@ -1069,13 +1071,13 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
+> >                 slab_err(s, page, "Wrong number of objects. Found %d but should be %d",
+> >                          page->objects, max_objects);
+> >                 page->objects = max_objects;
+> > -               slab_fix(s, "Number of objects adjusted.");
+> > +               slab_fix(s, "Number of objects adjusted");
+> >         }
+> >         if (page->inuse != page->objects - nr) {
+> >                 slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
+> >                          page->inuse, page->objects - nr);
+> >                 page->inuse = page->objects - nr;
+> > -               slab_fix(s, "Object count adjusted.");
+> > +               slab_fix(s, "Object count adjusted");
+> >         }
+> >         return search == NULL;
+> >  }
+> > 
+> > 
 
 
