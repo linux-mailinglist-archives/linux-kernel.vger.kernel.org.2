@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C63391233
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6684039123A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhEZI0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:26:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51814 "EHLO
+        id S232664AbhEZI0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:26:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30090 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230384AbhEZI0J (ORCPT
+        by vger.kernel.org with ESMTP id S232412AbhEZI0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:26:09 -0400
+        Wed, 26 May 2021 04:26:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622017478;
+        s=mimecast20190719; t=1622017482;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=h/IiZdevU24C6iPRKe1yVzH4pkUf/4vRqKB2RZ+6Gak=;
-        b=Nz7Rw64aif5FDY11yYPihwCX4PndsiCxoJBwOY8sa4w31mlZhBizusv7UXvrVELxcUqkpq
-        wjYYYJmJYreDlR2tnHMsVe8rBEr44ovY+y9D5FnmPvs/ofmRt29PsmbUHgWaozKPkm+WHF
-        iHU0m1FkMdbcrLIXjPlM7j+bM1FOC2w=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7hXo1aGEjC6ReUwtGmib1qGT2W6hQwxMtry8MQ3+Q5s=;
+        b=hTx6rfxs2wewpZMYJhbtJuAYKzGMhgGGFzTMeLoTJ3rDD5OyKAsTc1jqbNJ9nw6BcYTgAG
+        j/BWDZTwoTkAyCgjczrORk8nosJ4syUhcpFbWfOGHt155KU12YUlk89ZKtJn+0MJM8odMa
+        yveD2wIPfYA2mYrieN2seDfExymYM6M=
 Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
  [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-hdtZVpT6NZOO0-2VaH0MaA-1; Wed, 26 May 2021 04:24:36 -0400
-X-MC-Unique: hdtZVpT6NZOO0-2VaH0MaA-1
-Received: by mail-wr1-f72.google.com with SMTP id f19-20020adfb6130000b02901121afc9a31so39843wre.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:24:36 -0700 (PDT)
+ us-mta-576-qAdkXDz5OHa-GfJQoysMug-1; Wed, 26 May 2021 04:24:40 -0400
+X-MC-Unique: qAdkXDz5OHa-GfJQoysMug-1
+Received: by mail-wr1-f72.google.com with SMTP id g3-20020adfd1e30000b02901122a4b850aso22797wrd.20
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:24:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=h/IiZdevU24C6iPRKe1yVzH4pkUf/4vRqKB2RZ+6Gak=;
-        b=kgY3LXY92ak+FeNOHeeTLf6+repxszXmcCIYy3BpLuvO4HRbc00H+lNA0vpfxZx225
-         iolWIefH4tx1PvwZrOmSW6Xb835e88LUQxOb0uhfiDxmcQu5i358Zqlv2RPRCkYQiAXf
-         oVG4jkXfr7sz+MNPKThItzVzOinfclua9a0Vq3kl1Xw03v7H8S2tuiBNYDNTHAfIlcDa
-         9J8y/kixSIiEM2hIby9oHKND7S7vosP6nTBuWbe3+lH+ErdcicDZP3oojdJNPZCep6bd
-         RarurwLOxb50rWR3jLRHLFoH/y1xVNc/jB8zh3tbVKuS9NyLXRhTQHoc+EWZW8zgLNcl
-         5yLA==
-X-Gm-Message-State: AOAM5312VtLyho1n4V9DbfT/tHzvwYiqLj5VRbXQnpJoSmSR1ztxR2wm
-        hGY27m+rX4FhroQqg1KLYn5oS+GUW+H8HU1Z9f7sEzEZy1sPs9kZzS8/uKbcERCOKGFRq0/bVUQ
-        0rZ9DhMubdcISj2dPLe7kMeufbHBSvWseUH0rlUUWj+7Kjz0MqVON4kgPH47v8HCEhaehow==
-X-Received: by 2002:a05:6000:22f:: with SMTP id l15mr31043319wrz.316.1622017475024;
-        Wed, 26 May 2021 01:24:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCiZwAZaoPLnVZeYjw1jGMxvTHDr/fij7cEsvVkrjAJeTC0ZTaZikGLvMscL1b2PuHa1A7HA==
-X-Received: by 2002:a05:6000:22f:: with SMTP id l15mr31043301wrz.316.1622017474846;
-        Wed, 26 May 2021 01:24:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7hXo1aGEjC6ReUwtGmib1qGT2W6hQwxMtry8MQ3+Q5s=;
+        b=qIe1OGK+Xglrg27K41FT/yrk8wSKpRTBmgQ5GJOc9v/cMIKALGvg0YisSV6FFMDgLk
+         xXfgnGq9be1PADm4tRCqaBqiNA1/t7VvTkd2miyxbRsvkuNUXsCth2mUQLxM3MsotNiE
+         Wm8EXMpeZAPga6Qy0W83nR3ph/owcyFUkLY5gYcybdXa0IOwVv0UoCweCIh/JOY85KVG
+         Zog9F2N60B7tJZfnp2G5BC0vwpJnphZltSvVAJgB6Z1nH5QhznzZUgqZzi6kzaMLWrfx
+         NXtQLkuSvlEp9sOP4DbfpiDdHHbeyP6O2f8RYRZNaNPmEx5HMpKmGWTfDd1bWnwEXBpP
+         sytQ==
+X-Gm-Message-State: AOAM5326xk1YoeTWcNElT/h7Rl0JqxDc41Kub3pPhKmwsx5iKwhaQGEI
+        bfAJtrnT1OTKJbZWCH0AHFHQYCTIIsh7GJUbTARUps1VUTK1dXeWhfBuPMWKiA+n5xxfLbTABGF
+        wRG6WHC9SaKPUvf/UzEQdFTDGXTfFFJqXoKGBQs2HXFvODVJPgqNIIf6YeT/gxKoZk6P5kA==
+X-Received: by 2002:a1c:3d05:: with SMTP id k5mr1578843wma.9.1622017477951;
+        Wed, 26 May 2021 01:24:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxU85p8gyLrf0vuWCAB2u049QkVe1v5Zh6lkfS/y/mIz9iaRTlYd6RVbAfTvvyvkld+1u+lAw==
+X-Received: by 2002:a1c:3d05:: with SMTP id k5mr1578819wma.9.1622017477718;
+        Wed, 26 May 2021 01:24:37 -0700 (PDT)
 Received: from redhat.com ([2a10:8006:fcda:0:90d:c7e7:9e26:b297])
-        by smtp.gmail.com with ESMTPSA id n2sm17372318wmb.32.2021.05.26.01.24.32
+        by smtp.gmail.com with ESMTPSA id g6sm5469484wmg.10.2021.05.26.01.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:24:34 -0700 (PDT)
-Date:   Wed, 26 May 2021 04:24:31 -0400
+        Wed, 26 May 2021 01:24:37 -0700 (PDT)
+Date:   Wed, 26 May 2021 04:24:35 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         Willem de Bruijn <willemb@google.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 0/4] virtio net: spurious interrupt related fixes
-Message-ID: <20210526082423.47837-1-mst@redhat.com>
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH v3 1/4] virtio_net: move tx vq operation under tx queue lock
+Message-ID: <20210526082423.47837-2-mst@redhat.com>
+References: <20210526082423.47837-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210526082423.47837-1-mst@redhat.com>
 X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
 X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's unsafe to operate a vq from multiple threads.
+Unfortunately this is exactly what we do when invoking
+clean tx poll from rx napi.
+Same happens with napi-tx even without the
+opportunistic cleaning from the receive interrupt: that races
+with processing the vq in start_xmit.
 
-With the implementation of napi-tx in virtio driver, we clean tx
-descriptors from rx napi handler, for the purpose of reducing tx
-complete interrupts. But this introduces a race where tx complete
-interrupt has been raised, but the handler finds there is no work to do
-because we have done the work in the previous rx interrupt handler.
-A similar issue exists with polling from start_xmit, it is however
-less common because of the delayed cb optimization of the split ring -
-but will likely affect the packed ring once that is more common.
+As a fix move everything that deals with the vq to under tx lock.
 
-In particular, this was reported to lead to the following warning msg:
-[ 3588.010778] irq 38: nobody cared (try booting with the
-"irqpoll" option)
-[ 3588.017938] CPU: 4 PID: 0 Comm: swapper/4 Not tainted
-5.3.0-19-generic #20~18.04.2-Ubuntu
-[ 3588.017940] Call Trace:
-[ 3588.017942]  <IRQ>
-[ 3588.017951]  dump_stack+0x63/0x85
-[ 3588.017953]  __report_bad_irq+0x35/0xc0
-[ 3588.017955]  note_interrupt+0x24b/0x2a0
-[ 3588.017956]  handle_irq_event_percpu+0x54/0x80
-[ 3588.017957]  handle_irq_event+0x3b/0x60
-[ 3588.017958]  handle_edge_irq+0x83/0x1a0
-[ 3588.017961]  handle_irq+0x20/0x30
-[ 3588.017964]  do_IRQ+0x50/0xe0
-[ 3588.017966]  common_interrupt+0xf/0xf
-[ 3588.017966]  </IRQ>
-[ 3588.017989] handlers:
-[ 3588.020374] [<000000001b9f1da8>] vring_interrupt
-[ 3588.025099] Disabling IRQ #38
+Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-This patchset attempts to fix this by cleaning up a bunch of races
-related to the handling of sq callbacks (aka tx interrupts).
-Somewhat tested but I couldn't reproduce the original issues
-reported, sending out for help with testing.
-
-Wei, does this address the spurious interrupt issue you are
-observing? Could you confirm please?
-
-Thanks!
-
-changes from v2:
-	Fixed a race condition in start_xmit: enable_cb_delayed was
-	done as an optimization (to push out event index for
-	split ring) so we did not have to care about it
-	returning false (recheck). Now that we actually disable the cb
-	we have to do test the return value and do the actual recheck.
-
-
-Michael S. Tsirkin (4):
-  virtio_net: move tx vq operation under tx queue lock
-  virtio_net: move txq wakeups under tx q lock
-  virtio: fix up virtio_disable_cb
-  virtio_net: disable cb aggressively
-
- drivers/net/virtio_net.c     | 49 ++++++++++++++++++++++++++++--------
- drivers/virtio/virtio_ring.c | 26 ++++++++++++++++++-
- 2 files changed, 64 insertions(+), 11 deletions(-)
-
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ac0c143f97b4..12512d1002ec 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1508,6 +1508,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+ 	unsigned int index = vq2txq(sq->vq);
+ 	struct netdev_queue *txq;
++	int opaque;
++	bool done;
+ 
+ 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+ 		/* We don't need to enable cb for XDP */
+@@ -1517,10 +1519,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 
+ 	txq = netdev_get_tx_queue(vi->dev, index);
+ 	__netif_tx_lock(txq, raw_smp_processor_id());
++	virtqueue_disable_cb(sq->vq);
+ 	free_old_xmit_skbs(sq, true);
++
++	opaque = virtqueue_enable_cb_prepare(sq->vq);
++
++	done = napi_complete_done(napi, 0);
++
++	if (!done)
++		virtqueue_disable_cb(sq->vq);
++
+ 	__netif_tx_unlock(txq);
+ 
+-	virtqueue_napi_complete(napi, sq->vq, 0);
++	if (done) {
++		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
++			if (napi_schedule_prep(napi)) {
++				__netif_tx_lock(txq, raw_smp_processor_id());
++				virtqueue_disable_cb(sq->vq);
++				__netif_tx_unlock(txq);
++				__napi_schedule(napi);
++			}
++		}
++	}
+ 
+ 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+ 		netif_tx_wake_queue(txq);
 -- 
 MST
 
