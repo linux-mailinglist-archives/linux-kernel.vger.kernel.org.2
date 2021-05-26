@@ -2,151 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAF3391F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030C1391F54
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhEZSmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S235593AbhEZSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235564AbhEZSmp (ORCPT
+        with ESMTP id S235564AbhEZSn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:42:45 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE707C061574;
-        Wed, 26 May 2021 11:41:12 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id o18so3442744ybc.8;
-        Wed, 26 May 2021 11:41:12 -0700 (PDT)
+        Wed, 26 May 2021 14:43:26 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940E8C061574;
+        Wed, 26 May 2021 11:41:53 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id w1so3479939ybt.1;
+        Wed, 26 May 2021 11:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XFPiHuMmgB1diVIK7dUPVf8VcVw6JsgY/PRpvldEVQ0=;
-        b=qaSvn6PI+8BoBElLj/aK5GPJlL6f774Y24z0S6KncRf915wNgynqgtLORZyoSDVquM
-         SpOjVNqBDwkEZ2pxfIRMa7bMNtMXBCAhSb58WtU1nsfrAT3XIxRjnmVpPjrSzcNSPb7g
-         z5BVFBGZ2KuVuliw9g4hAoOnFHPQ3REKaiRClFkO6tPNNAk89cyfePVQpCAFoUniS/kY
-         qBkTpVtuPjfcLaBWOn0SfYMKBxxlE457FedrsxXevhi0w3n+k4iSGSjSZXPt0npjSAdK
-         agdh4otT1bi2+sYrYgK2WbafJ0hGlfOEO7Mnh3y7O0fxWY9g3RUbW6jIIOMzZysLqpVn
-         a+iw==
+        bh=id6F4lgfjQNsJ+3S/VgOIlQEjaPpg+ReNaNL6KgFZYE=;
+        b=G9uWbmyGB9td6lW4+3dQWDxA8jE3yVCUGPZVKZ3BNl/ItZ9wkOEFuPvKCUDOkfZybL
+         pqcRcytG65avmCD6ISAc/snTplX8rQuy66SQntPnr2Q9xkSFIxZByus6UlojrPmt3HJ9
+         BVPGJlUu09DHIhxgiUvztft51RHE1wV5oGdlPQ0PIVMEpOmZ8r6oAh/oS076fGKS916c
+         1CynmiLCVu+TsfQbqSB2H0IlPRKNMXjYb1FMrxr0pFeajfHDGStgifmpcA7fxGx13q5J
+         h2hwNvlI4stoN+RCC49jEZ1X79Ux0OcmI4RNAC5NagNZtGwQlpDC/WmTP98oz9YvGark
+         IvyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XFPiHuMmgB1diVIK7dUPVf8VcVw6JsgY/PRpvldEVQ0=;
-        b=F7NJCHRJhu4Wvb346pIKdi+yJb8nf1Ox3W+ezfj+l/vAhO7HAjnAOcXHlIvH/LEpHj
-         rif6CHemliJQMCcnoSPaHHNO6NMr9nMLamJa8YjwkHnew+rPlzE670uHQGa8AZF/Ohui
-         2ljW0wcKb3XgqGMgvuBdn0jjkze+mTWD92Xxyo5RuGVuPtHkEOXZ74RB/SCkV0a7kXsZ
-         TDuQVsAtadiQVkEcifzgyKWDzVZ2EcrH0RnWThhWxdyCXSmQeP8va0BeUdJzvQJegGit
-         OHzW0NV3fzGYqi0vTqvsK6PR3tWZG9JYuPhCCvyPlKWWYaGLbS6O+FaeYKX9mNS4bsWl
-         GiMg==
-X-Gm-Message-State: AOAM533711Pe8H1r2ZuF8g8NHmKZEMGQZEAwc9JPcWcqNUlxCMIiJct0
-        xSApm5hy3lVKC1AiO3+nJR+4p+gVJA6AewZBaAk=
-X-Google-Smtp-Source: ABdhPJwT4k6DNHfY5t+fcuHUkZTxoJn64AyHFKIC91gNYP2lNln/V0r4OROotjDGt6+BPUuDXwodmF+VI6cgRZ3t6Zw=
-X-Received: by 2002:a25:3c87:: with SMTP id j129mr53760696yba.141.1622054471905;
- Wed, 26 May 2021 11:41:11 -0700 (PDT)
+        bh=id6F4lgfjQNsJ+3S/VgOIlQEjaPpg+ReNaNL6KgFZYE=;
+        b=B230yREWRT8tz2VL6YeZoI9kEg2sMjG/yfFzVlF4LPysYtkBuygXEXG2TPenArs27V
+         hv4j8GkE8Q3l9UxVUP9Si2vziaPcubBc1EDllP8oziKmX1gmchqKpDkMLF6XkIZKhlzI
+         9p5kozA2atpWDYbQvNpLV8WgXGubiKRIPCEJjZYhon+qD3waFq3lSgJfRzQKJ9uxS+Bj
+         uveIvUu0aU/nnkxCNv/q1FLLKkFjDbcEd74vnee4z1FT3kFV0/J0/f0DOBQwC3P0ORDR
+         idEu2qMHetlAmKPWZtuIBDFRF1FkfyVWTo5Q7xoolLrs3adqIaFfVnB0x0wU2NHaVqcI
+         Dm/Q==
+X-Gm-Message-State: AOAM532Q/efuDyId/TYJ/0Kaip5LjBgnnXn+hNUSSvLM+6Yq3gynj5Sl
+        V102HDytkHttmyiN4YBA6V7m6k/xK7Pz2I5LEZM=
+X-Google-Smtp-Source: ABdhPJyY046+/p0uD+0FKN1t+G408mKyXLq4Kt2YkFXGHopZCRpbiqn4uVwu41LCkFbVhvWXJNTMcwoeFdR2Ozjag4g=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr51691332ybu.403.1622054512897;
+ Wed, 26 May 2021 11:41:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526162342.GA20@8bbba9ba63a4>
-In-Reply-To: <20210526162342.GA20@8bbba9ba63a4>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 26 May 2021 14:41:00 -0400
-Message-ID: <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
-Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
-To:     Rudi Heitbaum <rudi@heitbaum.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>, chenjh@rock-chips.com
+References: <20210526080741.GW30378@techsingularity.net> <CAEf4BzZOQnBgYXSR71HgsqhYcaFk5M5mre+6do+hnuxgWx5aNg@mail.gmail.com>
+ <20210526181306.GZ30378@techsingularity.net>
+In-Reply-To: <20210526181306.GZ30378@techsingularity.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 11:41:41 -0700
+Message-ID: <CAEf4BzbbQfwUERObV4EQ4fTx3auKZm_CyoidWK7hWAK32wFZ3A@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:23 PM Rudi Heitbaum <rudi@heitbaum.com> wrote:
+On Wed, May 26, 2021 at 11:13 AM Mel Gorman <mgorman@techsingularity.net> wrote:
 >
+> On Wed, May 26, 2021 at 09:57:31AM -0700, Andrii Nakryiko wrote:
+> > > This patch checks for older versions of pahole and forces struct pagesets
+> > > to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+> > > warning is omitted so that distributions can update pahole when 1.22
+> >
+> > s/omitted/emitted/ ?
+> >
 >
-> For rk3399pro boards the tcs4526 regulator supports the vdd_gpu
-> regulator. The tcs4526 regulator has a chip id of <0>.
-> Add the compatibile tcs,tcs4526
+> Yes.
 >
-> without this patch, the dmesg output is:
->   fan53555-regulator 0-0010: Chip ID 0 not supported!
->   fan53555-regulator 0-0010: Failed to setup device!
->   fan53555-regulator: probe of 0-0010 failed with error -22
-> with this patch, the dmesg output is:
->   vdd_gpu: supplied by vcc5v0_sys
+> > > is released.
+> > >
+> > > Reported-by: Michal Suchanek <msuchanek@suse.de>
+> > > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+> > > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > > ---
+> >
+> > Looks good! I verified that this does fix the issue on the latest
+> > linux-next tree, thanks!
+> >
 >
-> The regulators are described as:
-> - Dedicated power management IC TCS4525
-> - Lithium battery protection chip TCS4526
+> Excellent
 >
-> This has been tested with a Radxa Rock Pi N10.
+> > One question, should
+> >
+> > Fixes: 5716a627517d ("mm/page_alloc: convert per-cpu list protection
+> > to local_lock")
+> >
+> > be added to facilitate backporting?
+> >
 >
-> Fixes: f9028dcdf589 ("regulator: fan53555: only bind tcs4525 to correct chip id")
-> Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+> The git commit is not stable because the patch "mm/page_alloc: convert
+> per-cpu list protection to local_lock" is in Andrew's mmotm tree which is
 
-Considering the TCS4525 wasn't supported prior to its recent addition,
-and the TCS4526 wasn't supported by the driver at all, this isn't a
-fix but a feature addition.
-Binding only to the correct device ID exists for this reason, to
-prevent unsafe voltage setting.
+Oh, I didn't know about this instability.
 
-I also don't see the TCS4525/TCS4526 regulators in the current
-linux-next device tree for the N10.
+> quilt based. I decided not to treat the patch as a fix because the patch is
+> not wrong as such, it's a limitation of an external tool.  However, I would
+> expect both the problematic patch and the BTF workaround to go in during
+> the same merge window so backports to -stable should not be required.
 
-> ---
->  drivers/regulator/fan53555.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+Yep, makes sense.
+
 >
-> diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
-> index 2695be617373..ddab9359ea20 100644
-> --- a/drivers/regulator/fan53555.c
-> +++ b/drivers/regulator/fan53555.c
-> @@ -90,6 +90,7 @@ enum {
->  };
+> > Either way:
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Tested-by: Andrii Nakryiko <andrii@kernel.org>
+> >
 >
->  enum {
-> +       TCS4525_CHIP_ID_00 = 0,
->         TCS4525_CHIP_ID_12 = 12,
-
-This isn't a TCS4525, but a TCS4526.
-
->  };
+> Thanks!
 >
-> @@ -373,6 +374,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
->  static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
->  {
->         switch (di->chip_id) {
-> +       case TCS4525_CHIP_ID_00:
->         case TCS4525_CHIP_ID_12:
->                 di->slew_reg = TCS4525_TIME;
->                 di->slew_mask = TCS_SLEW_MASK;
-> @@ -564,6 +566,9 @@ static const struct of_device_id __maybe_unused fan53555_dt_ids[] = {
->         }, {
->                 .compatible = "tcs,tcs4525",
->                 .data = (void *)FAN53526_VENDOR_TCS
-> +       }, {
-> +               .compatible = "tcs,tcs4526",
-> +               .data = (void *)FAN53526_VENDOR_TCS
-
-Since you aren't adding any functional code, is there a particular
-reason you can't just add the chip id and simply use the tcs4525
-compatible?
-This will prevent you from needing to modify the dt-bindings as well.
-
->         },
->         { }
->  };
-> @@ -672,6 +677,9 @@ static const struct i2c_device_id fan53555_id[] = {
->         }, {
->                 .name = "tcs4525",
->                 .driver_data = FAN53526_VENDOR_TCS
-> +       }, {
-> +               .name = "tcs4526",
-> +               .driver_data = FAN53526_VENDOR_TCS
->         },
->         { },
->  };
 > --
-> 2.29.2
->
+> Mel Gorman
+> SUSE Labs
