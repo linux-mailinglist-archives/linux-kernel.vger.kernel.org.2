@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A65391EC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7BF391EC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 20:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhEZSOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 14:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbhEZSOi (ORCPT
+        id S234925AbhEZSOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 14:14:43 -0400
+Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:43313 "EHLO
+        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234855AbhEZSOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 14:14:38 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CC7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:13:06 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id w1so3357522ybt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 11:13:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AJRgrV/KJZf7Av1Ux4awu6D8rhGGLmpRYzc2gHJYb5k=;
-        b=Rita3KRraMMJefSQSpHQqg4Hyonwa9oLZQbWWQf6KznsO6NpYMqNs9kMfREvKyohYn
-         sj+0yQhdGG4Nc45xO/v6rCEI+RriEeTebpg8tCfx9ENyUX4u21W0hg91oWJL8oM/Kow6
-         ZycSoOe4hN2TvV0lKUjOXGijbH6llIDW1K7HxgRdrnan55b2sTEtyJUIn97vA2+C8oOy
-         dKEwjlYyFFM5u6quHokbrSTmnTcUBJYpewUwpKwuZyBdWdABOwtpG9ysGzSzfkkkzqYT
-         1Re2KCAkBZ6/miB7bdmRswZR8w/cndVIpUuGWQa7f7l3uTSltMDnr8tvesYCEFe6fh1K
-         aT7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AJRgrV/KJZf7Av1Ux4awu6D8rhGGLmpRYzc2gHJYb5k=;
-        b=ZNpj4+g0FbiWdQmcIqYozoeILqUWA/XkODz+0z2QoPQi+Ii1n3rjCDIja/67GiMMRA
-         RjFfohLc1Ih8kXJ1IVL3fpwg6V9uaObDfG6D96Hr9MtEKgCPq/jWMrAxjKpyiuEDaOD1
-         7UxujmmSUsqInz+7H2qiGIZP/utVmuRT30BgRJ6koy3IS1VMllXhG9yuvzew6iwhFKtn
-         ym2Is9hyd4GI0G+/8PcicbkgVkitmnpya5jBU74xQDIwwyl2aYIGTSLSHaXC6LoAJcmd
-         sfUCJa4i31sR0xpv/26Qm3jhYFyPNV0B7iX1aGv9uZtj51mZ6W+U/OiAapJ+9aTsBWoR
-         mlkg==
-X-Gm-Message-State: AOAM530itVeEairJtXZF/C+XGbDZevtVwY+bcW+wc2ggbQWwMKnp5rr/
-        +c160aWn1QXuZKf2lSlNbW/0bXKAMPYDJUwnJc0=
-X-Google-Smtp-Source: ABdhPJzMBZmfpH/hi9D9tLbnZ8qTIZkUvAQ/Kt+cy8fJ3fPH1OsYH5DG59J8c6w0kxBwv6TqQ6IZ2cxl+czue0XaCSc=
-X-Received: by 2002:a25:9112:: with SMTP id v18mr19094203ybl.26.1622052785437;
- Wed, 26 May 2021 11:13:05 -0700 (PDT)
+        Wed, 26 May 2021 14:14:41 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id E0AC382016
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:13:08 +0100 (IST)
+Received: (qmail 4224 invoked from network); 26 May 2021 18:13:08 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 May 2021 18:13:08 -0000
+Date:   Wed, 26 May 2021 19:13:07 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <20210526181306.GZ30378@techsingularity.net>
+References: <20210526080741.GW30378@techsingularity.net>
+ <CAEf4BzZOQnBgYXSR71HgsqhYcaFk5M5mre+6do+hnuxgWx5aNg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210525175819.699786-1-elver@google.com> <CANiq72krX9PU14wFsQyW_CJEjTS-TT8wyhBVZZbC132Gz5XO-Q@mail.gmail.com>
- <CANpmjNPGUAv-d3yEusyF11ip0zEdht7eMGi4pSoQsRYns-MvJA@mail.gmail.com>
- <CANiq72kCkej_ONwSWjRHWLVrr+g0BZygAUAQVx+FQf7DEdg3cQ@mail.gmail.com>
- <CANpmjNM_fP-ziy204=1rd52hOO4WfCsxAwQgJ-t1WF_yFo=UzA@mail.gmail.com> <CANpmjNOkX5NFFekezDSntjVBp2mVgxTprjV1QK56DsE2fv-w3A@mail.gmail.com>
-In-Reply-To: <CANpmjNOkX5NFFekezDSntjVBp2mVgxTprjV1QK56DsE2fv-w3A@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 26 May 2021 20:12:54 +0200
-Message-ID: <CANiq72n8OT7mw0comw+mJtr_+Zzz+kv8Pd_eR0H6Ccqrd3T+ew@mail.gmail.com>
-Subject: Re: [PATCH] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZOQnBgYXSR71HgsqhYcaFk5M5mre+6do+hnuxgWx5aNg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 2:38 PM Marco Elver <elver@google.com> wrote:
->
-> Ok, let's wait for response to: https://reviews.llvm.org/D103159
-> If that lands in the LLVM repo I'll change to use
-> __has_feature(coverage_sanitizer), and send a v2. That __has_feature()
-> is a bit of a lie though, because fsanitize-coverage has long been
-> supported, but it just so happens that if we get it, then its
-> availability implies availability of the no_sanitize("coverage")
-> attribute.
+On Wed, May 26, 2021 at 09:57:31AM -0700, Andrii Nakryiko wrote:
+> > This patch checks for older versions of pahole and forces struct pagesets
+> > to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+> > warning is omitted so that distributions can update pahole when 1.22
+> 
+> s/omitted/emitted/ ?
+> 
 
-Thanks a lot for that! Appreciated :)
+Yes.
 
-Cheers,
-Miguel
+> > is released.
+> >
+> > Reported-by: Michal Suchanek <msuchanek@suse.de>
+> > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+> > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > ---
+> 
+> Looks good! I verified that this does fix the issue on the latest
+> linux-next tree, thanks!
+> 
+
+Excellent
+
+> One question, should
+> 
+> Fixes: 5716a627517d ("mm/page_alloc: convert per-cpu list protection
+> to local_lock")
+> 
+> be added to facilitate backporting?
+> 
+
+The git commit is not stable because the patch "mm/page_alloc: convert
+per-cpu list protection to local_lock" is in Andrew's mmotm tree which is
+quilt based. I decided not to treat the patch as a fix because the patch is
+not wrong as such, it's a limitation of an external tool.  However, I would
+expect both the problematic patch and the BTF workaround to go in during
+the same merge window so backports to -stable should not be required.
+
+> Either way:
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Tested-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+
+Thanks!
+
+-- 
+Mel Gorman
+SUSE Labs
