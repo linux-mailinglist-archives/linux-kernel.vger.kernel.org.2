@@ -2,97 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251C7391A15
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2D6391A13
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhEZO01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:26:27 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:63408 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbhEZO00 (ORCPT
+        id S234695AbhEZOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:25:39 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:37501 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233883AbhEZOZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:26:26 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 14QEOXr6005846;
-        Wed, 26 May 2021 23:24:33 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 14QEOXr6005846
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622039073;
-        bh=S3cdbLKJzcvU+k2/cClSUE7D/oDU/mnDHQ9eZ1mSmYs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iuiY9bXmzgMFxyv8kuk8ZPG/qtKaNvj7NGgZFynyvOqEEffIagdAMaV8pq0sPA8zB
-         ccQO/WRcN9q2IitG7BWuLrRyUY9BekYvrWby0386PSL27qp1gwP59U+PpkrMQLSEot
-         LplMTAD13fqsefSFyzdPtScvAomZrMsthhRrPlDVBH9Jab6KNCYuQcdqb+c50IWmdY
-         AosjTwviJGig05PbTaj3muvu2KKaXF1Has7WRkZdw8EAJusQUv6wrxO0hTLEIxPMgH
-         JqjlDV6hqar3sSJdtZdtvk6hXQ3ZgBl+agVhC+kZNPzlzcyoLeX7jll/4YXvLmrl1w
-         LQGOWu/vmXTrw==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id y15so1026832pfn.13;
-        Wed, 26 May 2021 07:24:33 -0700 (PDT)
-X-Gm-Message-State: AOAM532rnVNe0fgDSUeR/JyJEpALI/NcsHDn49fHFNBrb3q1Ytg692U3
-        GIgAmLsbvYq7rBRh+fo3n78+FNeq2+CcAPpTxUA=
-X-Google-Smtp-Source: ABdhPJz2Unzkmjt4AewHB8f4XFBaX31iEQ+tyeMgiGCHUZSjTNXZ/IrQYtN5evWSxdXKCtVjmcQSj4nUUF5dqCCxBFw=
-X-Received: by 2002:a63:164f:: with SMTP id 15mr25296029pgw.175.1622039072606;
- Wed, 26 May 2021 07:24:32 -0700 (PDT)
+        Wed, 26 May 2021 10:25:37 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 743A61BF210;
+        Wed, 26 May 2021 14:24:00 +0000 (UTC)
+Date:   Wed, 26 May 2021 16:24:00 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com
+Cc:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5 02/16] phy: Distinguish between Rx and Tx for MIPI
+ D-PHY with submodes
+Message-ID: <YK5aAL6ciI92ruHs@aptenodytes>
+References: <20210115200141.1397785-1-paul.kocialkowski@bootlin.com>
+ <20210115200141.1397785-3-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-References: <20210526084536.1454449-1-geert@linux-m68k.org>
-In-Reply-To: <20210526084536.1454449-1-geert@linux-m68k.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 26 May 2021 23:23:55 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
-Message-ID: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Drop duplicate "core-y += arch/m68k/" rule causing
- link failures
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7zgmf44zur7folx5"
+Content-Disposition: inline
+In-Reply-To: <20210115200141.1397785-3-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->     Makefile:1949: target 'arch/m68k' given more than once in the same rule
->     [...]
->       LD      vmlinux.o
->     m68k-linux-gnu-ld: arch/m68k/kernel/entry.o: in function `system_call':
->     (.text+0x160): multiple definition of `system_call'; arch/m68k/kernel/entry.o:(.text+0x160): first defined here
->     [...]
->
-> All "core-y += arch/<arch>/" rules were dropped from the corresponding
-> arch/<arch>/Makefiles, but m68k was forgotten.
->
-> Reported-by: noreply@ellerman.id.au
-> Fixes: 7d9677835b10b5de ("kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+--7zgmf44zur7folx5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi everyone,
+
+On Fri 15 Jan 21, 21:01, Paul Kocialkowski wrote:
+> As some D-PHY controllers support both Rx and Tx mode, we need a way for
+> users to explicitly request one or the other. For instance, Rx mode can
+> be used along with MIPI CSI-2 while Tx mode can be used with MIPI DSI.
+>=20
+> Introduce new MIPI D-PHY PHY submodes to use with PHY_MODE_MIPI_DPHY.
+> The default (zero value) is kept to Tx so only the rkisp1 driver, which
+> uses D-PHY in Rx mode, needs to be adapted.
+
+I think it was Laurent who brought up on IRC that using a submode is probab=
+ly
+not a correct way to distinguish between Rx and Tx modes.
+
+Thinking about it again, it feels like selecting the direction at run-time
+would only be relevant if there's D-PHY hardware than can do both Tx and Rx
+*and* that can be muxed to either a MIPI DSI and a CSI-2 controller at
+run-time.
+
+For the Allwinner case, the D-PHY is the same hardware for both but there w=
+ill
+be one instance attached to each controller, not a single shared instance.
+It feels rather unlikely that a device with both MIPI DSI and CSI-2 would o=
+nly
+have one PHY for the two as this wouldn't allow concurrent use of the two
+controllers. Even in a case where there'd be n controllers and m < n
+bi-directional PHYs, it feels safe to assume that a static attribution would
+be sufficient.
+=20
+As a result it feels more relevant to have this distinction in device-tree
+rather than via the PHY API.
+
+What do you think?
+Any suggestion on how this should be represented in device-tree?
+
+Cheers,
+
+Paul
+
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Acked-by: Helen Koike <helen.koike@collabora.com>
 > ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c |  3 ++-
+>  include/linux/phy/phy-mipi-dphy.h                   | 13 +++++++++++++
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/driver=
+s/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> index 2e5b57e3aedc..cab261644102 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> @@ -948,7 +948,8 @@ static int rkisp1_mipi_csi2_start(struct rkisp1_isp *=
+isp,
+> =20
+>  	phy_mipi_dphy_get_default_config(pixel_clock, isp->sink_fmt->bus_width,
+>  					 sensor->lanes, cfg);
+> -	phy_set_mode(sensor->dphy, PHY_MODE_MIPI_DPHY);
+> +	phy_set_mode_ext(cdev->dphy, PHY_MODE_MIPI_DPHY,
+> +			 PHY_MIPI_DPHY_SUBMODE_RX);
+>  	phy_configure(sensor->dphy, &opts);
+>  	phy_power_on(sensor->dphy);
+> =20
+> diff --git a/include/linux/phy/phy-mipi-dphy.h b/include/linux/phy/phy-mi=
+pi-dphy.h
+> index a877ffee845d..0f57ef46a8b5 100644
+> --- a/include/linux/phy/phy-mipi-dphy.h
+> +++ b/include/linux/phy/phy-mipi-dphy.h
+> @@ -6,6 +6,19 @@
+>  #ifndef __PHY_MIPI_DPHY_H_
+>  #define __PHY_MIPI_DPHY_H_
+> =20
+> +/**
+> + * enum phy_mipi_dphy_submode - MIPI D-PHY sub-mode
+> + *
+> + * A MIPI D-PHY can be used to transmit or receive data.
+> + * Since some controllers can support both, the direction to enable is s=
+pecified
+> + * with the PHY sub-mode. Transmit is assumed by default with phy_set_mo=
+de.
+> + */
+> +
+> +enum phy_mipi_dphy_submode {
+> +	PHY_MIPI_DPHY_SUBMODE_TX =3D 0,
+> +	PHY_MIPI_DPHY_SUBMODE_RX,
+> +};
+> +
+>  /**
+>   * struct phy_configure_opts_mipi_dphy - MIPI D-PHY configuration set
+>   *
+> --=20
+> 2.30.0
+>=20
 
-I will squash this.
-Thanks.
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
+--7zgmf44zur7folx5
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  arch/m68k/Makefile | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-> index c54055a3d28450aa..dd0c0ec67f67064d 100644
-> --- a/arch/m68k/Makefile
-> +++ b/arch/m68k/Makefile
-> @@ -97,7 +97,6 @@ head-$(CONFIG_SUN3)           := arch/m68k/kernel/sun3-head.o
->  head-$(CONFIG_M68000)          := arch/m68k/68000/head.o
->  head-$(CONFIG_COLDFIRE)                := arch/m68k/coldfire/head.o
->
-> -core-y                         += arch/m68k/
->  libs-y                         += arch/m68k/lib/
->
->
-> --
-> 2.25.1
->
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmCuWgAACgkQ3cLmz3+f
+v9FhsAf+LCjDsXEPBS3IEa3r1GuNV4LBCN/X+lLIeNTjDh6K2INIlcpTAQKOFukJ
+SpuPbpbstXPTy9/vCtFP/DlZL1Oh2LO0HtXUlcb3rGEFO+1I4HUlOemAjl4TLbIv
+E0b9iFY1splxVIehgB1+IGh0+OeiFr/d5GegzOggbhxTN9Et1Ag43WAWglT86XcY
+MClLNUG8uVl86H83cFVP2AVzPj4GSmgiydKVcH8mLG6PE7DD3PfH5VzkDb2fAmMg
+uXJGP2qJCEXMAHwz6GFxEDArK22vzR7kzw3VAZWIwnBYP58QW/ifeL4D0Ak1aDbD
+wlmzQmgw2dpbHuESesA/00xaqumugA==
+=/RYX
+-----END PGP SIGNATURE-----
 
--- 
-Best Regards
-Masahiro Yamada
+--7zgmf44zur7folx5--
