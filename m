@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39167391CA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D403391CA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235339AbhEZQE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
+        id S235414AbhEZQGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234690AbhEZQEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:04:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E8B861284;
-        Wed, 26 May 2021 16:03:20 +0000 (UTC)
+        id S233593AbhEZQGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28770613B9;
+        Wed, 26 May 2021 16:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622045004;
-        bh=brygyaZMme8W1VhWpvcS9FsnOYnmb8rPHENNvFQRLRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uqwacT1bgi2y30ruYAfzKsbxd36BLQcdd8NtUaxp4vsDMZhKAXSNYD8hzBUiT9deM
-         O5vDX7PehPAUYthTGZHHtPMKpFWDBFWSww927muxE1oMWy0gwaSbaSaoNFDlILbLNl
-         DFQLmjrH5vnxE1MZTmxhI7944zkKGYAqqIE+m4aCKSkxyfp5Q2X0h5wVCtDZ7jV08i
-         HKP5Ci2LLqi+j5xt7IOEVt2GfhBrQYtxwdz/aqK89L4VaBGfJ1VWa2bJ1mUjHxU6JK
-         bbR0YIWG65rQ6MHBDeCJrz9YMHSI7oOwXryoWmvYGQQBHQh57S3hqLGCuDS5GU9Ei/
-         vytVMeqpVskbA==
-Date:   Wed, 26 May 2021 17:03:18 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 01/22] sched: Favour predetermined active CPU as
- migration destination
-Message-ID: <20210526160317.GB19691@willie-the-truck>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-2-will@kernel.org>
- <877djlhhmb.mognet@arm.com>
+        s=k20201202; t=1622045110;
+        bh=uYJjN7xB0FXI63Ro7dOj439Kdyus8vjfWCTStMVab1s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sOj2ZCRlI8FbGQ/cY2Gj+jxxH6wx4c5vf4uoYmQYqAOZMU5L6X0DmD/OfZaahLp2v
+         yibEyyBA14mroKLeXftIF38fUZ6UZ8Od/FKkIiulS+npqXu3eGq4QC97xBtJ1ZL1tk
+         EFbQvQFY40CEKjqJapS82XS1H1MaSHvQexKEehHY8CPlRP0zlEY49xjdk+KrViIV/9
+         +4vUlyWUoUsf1gAk45F04Fp4S7rArTG/wJ1C9/rLbWGw80B0bvtDsBYdtVkfRSVVLE
+         LqhTyVAAvuhZDdGhWIE13NYuW/vZ93nq2E7mIMhWMCD6Q0EB9F23AyCyQMOv3SmDkX
+         F9VmoZxnJHhDg==
+Received: by mail-ej1-f54.google.com with SMTP id jt22so3283769ejb.7;
+        Wed, 26 May 2021 09:05:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532nAmzctbyD3yPJozOo3q/cTYBzNFI2/59HhTH+7Zm05DEMZqxP
+        uXKwqW08WmeQo6EJotinRc9KgZ+WZeD0Um/C0w==
+X-Google-Smtp-Source: ABdhPJzFG2Z0vSdtgJr3rMjrWewRzotRZARdBVPmtJ4gyUPXO8LbQcnfSVZIHCVRTg29pGODhbB5m4JDgR8anbTtOnc=
+X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr33811865ejc.360.1622045108736;
+ Wed, 26 May 2021 09:05:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877djlhhmb.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210526134708.27887-1-kishon@ti.com> <20210526140902.lnk5du5k3b4sny3m@handheld>
+In-Reply-To: <20210526140902.lnk5du5k3b4sny3m@handheld>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 26 May 2021 11:04:56 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+7AD4WXggRrVVb=HKVmuomda3KVXuC1mcjYwbgnWRUkg@mail.gmail.com>
+Message-ID: <CAL_Jsq+7AD4WXggRrVVb=HKVmuomda3KVXuC1mcjYwbgnWRUkg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: PCI: ti,am65: Convert PCIe host/endpoint
+ mode dt-bindings to YAML
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:14:20PM +0100, Valentin Schneider wrote:
-> On 25/05/21 16:14, Will Deacon wrote:
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 5226cc26a095..1702a60d178d 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1869,6 +1869,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
-> >  struct migration_arg {
-> >       struct task_struct		*task;
-> >       int				dest_cpu;
-> > +	const struct cpumask		*dest_mask;
-> >       struct set_affinity_pending	*pending;
-> >  };
+On Wed, May 26, 2021 at 9:09 AM Nishanth Menon <nm@ti.com> wrote:
+>
+> On 19:17-20210526, Kishon Vijay Abraham I wrote:
+> > Convert PCIe host/endpoint mode dt-bindings for TI's AM65/Keystone SoC
+> > to YAML binding.
 > >
-> > @@ -1917,6 +1918,7 @@ static int migration_cpu_stop(void *data)
-> >       struct set_affinity_pending *pending = arg->pending;
-> >       struct task_struct *p = arg->task;
-> >       int dest_cpu = arg->dest_cpu;
-> > +	const struct cpumask *dest_mask = arg->dest_mask;
-> >       struct rq *rq = this_rq();
-> >       bool complete = false;
-> >       struct rq_flags rf;
-> > @@ -1956,12 +1958,8 @@ static int migration_cpu_stop(void *data)
-> >                       complete = true;
-> >               }
-> >
-> > -		if (dest_cpu < 0) {
-> > -			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
-> > -				goto out;
-> > -
-> > -			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
-> > -		}
-> > +		if (dest_mask && (cpumask_test_cpu(task_cpu(p), dest_mask)))
-> > +			goto out;
-> >
-> 
-> IIRC the reason we deferred the pick to migration_cpu_stop() was because of
-> those insane races involving multiple SCA calls the likes of:
-> 
->   p->cpus_mask = [0, 1]; p on CPU0
-> 
->   CPUx                           CPUy                   CPU0
-> 
->   SCA(p, [2])
->     __do_set_cpus_allowed();
->     queue migration_cpu_stop()
->                                  SCA(p, [3])
->                                    __do_set_cpus_allowed();
->                                                         migration_cpu_stop()
-> 
-> The stopper needs to use the latest cpumask set by the second SCA despite
-> having an arg->pending set up by the first SCA. Doesn't this break here?
+> > Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>
+> [...]
+> > diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
+> > new file mode 100644
+> > index 000000000000..419d48528105
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
+> > @@ -0,0 +1,80 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-ep.yaml#"
+>
+> drop the '"'?
 
-Yes, well spotted. I was so caught up with the hotplug race that I didn't
-even consider a straightforward SCA race. Hurumph.
+Yes, though we haven't been consistent here...
 
-> I'm not sure I've paged back in all of the subtleties laying in ambush
-> here, but what about the below?
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>
+> drop the '"'?
+> > +
+> > +title: TI AM65 PCI Endpoint
+> > +
+> > +maintainers:
+> > +  - Kishon Vijay Abraham I <kishon@ti.com>
+> > +
+> > +allOf:
+> > +  - $ref: "pci-ep.yaml#"
+>
+> drop the '"' ?
+>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,am654-pcie-ep
+> > +
+> > +  reg:
+> > +    maxItems: 4
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: app
+> > +      - const: dbics
+> > +      - const: addr_space
+> > +      - const: atu
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +  ti,syscon-pcie-mode:
+> > +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +
+> > +  dma-coherent: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - max-link-speed
+> > +  - power-domains
+> > +  - ti,syscon-pcie-mode
+> > +  - dma-coherent
+> > +
+> > +unevaluatedProperties: false
+>
+> Is it possible to lock this down further with additionalProperties: false?
 
-I can't break it, but I'm also not very familiar with this code. Please can
-you post it as a proper patch so that I drop this from my series?
+unevaluatedProperties is what we want here.
 
-Thanks,
+> I could add some ridiculous property like system-controller; to the
+> example and the checks wont catch it.
 
-Will
+Yes, because unevaluatedProperties is currently unimplemented. Once
+the upstream jsonschema tool supports it[1], there will be warnings.
+The other way we could address this is there are $ref resolving tools
+that flatten schemas.
+
+Rob
+
+[1] https://github.com/Julian/jsonschema/issues/613#issuecomment-636026577
