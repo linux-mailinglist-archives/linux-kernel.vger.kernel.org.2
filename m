@@ -2,315 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5823A391069
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3B339106B
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhEZGMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:12:25 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:37715 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232023AbhEZGMX (ORCPT
+        id S232725AbhEZGMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231597AbhEZGMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:12:23 -0400
-Received: by mail-lf1-f53.google.com with SMTP id b26so780892lfq.4;
-        Tue, 25 May 2021 23:10:51 -0700 (PDT)
+        Wed, 26 May 2021 02:12:51 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB42C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:11:19 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y202so170115pfc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=v7Dvuk2eyN1w2xr7Yg+2LylS1T7LKLL3Gf15/McPjK0=;
+        b=BbaiMC6O8FoSriRn+GZTzmR11PVKHrbpDD0UHVXL4R54le+FpjEZS24y8S7xp8yo83
+         anuw1lRrQpsRQGwa75V2rnCDiyBa8pseHvJk0UnNFQIYKnZ3cBhazTlCVph+zJECGBda
+         FKXPbFGZz6n+DiBf+uLohxSYtUIZjMJwBZZl3KGewuJ65yggkzJRzTSKaJwQd0enoXY/
+         zi3pAeBoqrndp7yq2v7PkbxquyjpDspcOGsSuzmoEolLUwjeuENy9QnnmLriuRQl/S67
+         QeaKSP8FV9ifydU5ab4aAYQDdQyUofqG8Z7EHcgdQIFXqwiPWiwq1DyHfiML75Vm6/QZ
+         RKyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7XFftguTcFQmlVkEMCNxVmipWHmtjK7hc0l8K1kFIUo=;
-        b=S+bsdX712UB9197bYH8VFnWE7yLOdE4vTlfQoWc5LYAms3jMbMdT416elMUGooOWEp
-         UI2CM5pZ0nBd76zoBjMtsAxWyyBEObjh8Wn2fLlVl8pJPJWUwx9AxHy5IRVaHwmop5Ll
-         uZwXnWt9tKH+7LEb6FtI5IyfeXVexgSz1WGsLznocg6BP2X/g1wvxTcaeKyFfQJJBaWd
-         yJZs+34ySqbI/nTpMlvrscvZbO6ASWv2L7rvKPdkghXMZm4vejQoBB9VjVSEEeKVad40
-         4Y4W2kP4efjJo9HQM5dyplq4QEvsKXTrF03E4SNoduN55sxYJYk/+wX25PH19rDIuJst
-         /RQw==
-X-Gm-Message-State: AOAM532buXGlciZG4fxC8+Z1GP+eTwv+R+ezXnJYgizSL6wpOBu0GZ6e
-        +NnBkDz8lEnqYANZWyiKawk=
-X-Google-Smtp-Source: ABdhPJxapYgCnSiU10EAGd5tm0TnaHp1gKF0IF4Qk7XditaD2JZZTrGgZbGH9PeqaTPuPVDgi2OsAA==
-X-Received: by 2002:a05:6512:3456:: with SMTP id j22mr1089312lfr.532.1622009451277;
-        Tue, 25 May 2021 23:10:51 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id v21sm361009lfe.255.2021.05.25.23.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 23:10:50 -0700 (PDT)
-Date:   Wed, 26 May 2021 09:10:45 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Walle <michael@walle.cc>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com,
-        linux-arm-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v4 3/3] gpio: bd71815: Use gpio-regmap
-Message-ID: <a576fcc102063f2ae79d06b14ced2c6f2a491f4c.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v7Dvuk2eyN1w2xr7Yg+2LylS1T7LKLL3Gf15/McPjK0=;
+        b=oLzbwDvCMw9+0wbOD1X2muWgNEBzRGdOHSeQA2/jGgONBemc5yna4tV3a4ASVxqrCi
+         aHxmi0tZ/IcaazsSQ+OOPgQjlBp3JjjFScpSDeMF9sZca585zvB27wA75Pm0hogJY/s/
+         wsfJzWsy0ZvJPS0wvHRPThPlHhahtWod+mBPTctOycgazqYHv57QEzMqnwpIbl/auKrA
+         5KePYeBGz2DYEr4hW9hvlj2lNaZOgrRQKT3YVc9T23wwXLW9mNbWF5jnAm8+gXqRXSj9
+         K7pkEwwVWqiFz+FmRHYmxJS8bzKaoe1we7/jEtDmvHu1t9Rhzy+fOHCuqpLV5uj6iTWW
+         HLaA==
+X-Gm-Message-State: AOAM532aXX3R1HE9143b4TIEqdu3ym43lriC9NnfyP4eNacVq0F+He+G
+        2WEy3zpR1bSGJxCVsk6rbMdp
+X-Google-Smtp-Source: ABdhPJx1jM2yl97MMEZd5xN+aTgJDj7YEYjLQDNHAqxhF+Cbq6756tjiRIv5wW+5X4n56XnP1f/7Gw==
+X-Received: by 2002:a62:2987:0:b029:2de:b564:648d with SMTP id p129-20020a6229870000b02902deb564648dmr34373359pfp.48.1622009479146;
+        Tue, 25 May 2021 23:11:19 -0700 (PDT)
+Received: from work ([120.138.12.4])
+        by smtp.gmail.com with ESMTPSA id a2sm14156122pfv.156.2021.05.25.23.11.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 25 May 2021 23:11:18 -0700 (PDT)
+Date:   Wed, 26 May 2021 11:41:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>, Pavel Machek <pavel@denx.de>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
+ channel context during reset
+Message-ID: <20210526061114.GB10723@work>
+References: <20210510102004.821838356@linuxfoundation.org>
+ <20210510102004.900838842@linuxfoundation.org>
+ <20210510205650.GA17966@amd>
+ <20210511061623.GA8651@thinkpad>
+ <64a8ebbdc9fc7de48b25b9e2bc896d47@codeaurora.org>
+ <20210524041947.GB8823@work>
+ <011231f6-f6be-8bf4-f4f0-5e52764101e6@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <011231f6-f6be-8bf4-f4f0-5e52764101e6@quicinc.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 10:23:49AM -0600, Jeffrey Hugo wrote:
+> On 5/23/2021 10:19 PM, Manivannan Sadhasivam wrote:
+> > On Fri, May 21, 2021 at 10:50:33AM -0700, Bhaumik Bhatt wrote:
+> > > On 2021-05-10 11:17 PM, Manivannan Sadhasivam wrote:
+> > > > Hi Pavel,
+> > > > 
+> > > > On Mon, May 10, 2021 at 10:56:50PM +0200, Pavel Machek wrote:
+> > > > > Hi!
+> > > > > 
+> > > > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > > > 
+> > > > > > commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
+> > > > > > 
+> > > > > > When clearing up the channel context after client drivers are
+> > > > > > done using channels, the configuration is currently not being
+> > > > > > reset entirely. Ensure this is done to appropriately handle
+> > > > > > issues where clients unaware of the context state end up calling
+> > > > > > functions which expect a context.
+> > > > > 
+> > > > > > +++ b/drivers/bus/mhi/core/init.c
+> > > > > > @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
+> > > > > > +	u32 tmp;
+> > > > > > @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
+> > > > > ...
+> > > > > > +	tmp = chan_ctxt->chcfg;
+> > > > > > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
+> > > > > > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
+> > > > > > +	chan_ctxt->chcfg = tmp;
+> > > > > > +
+> > > > > > +	/* Update to all cores */
+> > > > > > +	smp_wmb();
+> > > > > >   }
+> > > > > 
+> > > > > This is really interesting code; author was careful to make sure chcfg
+> > > > > is updated atomically, but C compiler is free to undo that. Plus, this
+> > > > > will make all kinds of checkers angry.
+> > > > > 
+> > > > > Does the file need to use READ_ONCE and WRITE_ONCE?
+> > > > > 
+> > > > 
+> > > > Thanks for looking into this.
+> > > > 
+> > > > I agree that the order could be mangled between chcfg read & write and
+> > > > using READ_ONCE & WRITE_ONCE seems to be a good option.
+> > > > 
+> > > > Bhaumik, can you please submit a patch and tag stable?
+> > > > 
+> > > > Thanks,
+> > > > Mani
+> > > > 
+> > > > > Best regards,
+> > > > > 								Pavel
+> > > > > --
+> > > > > DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> > > > > HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> > > 
+> > > Hi Pavel/Mani,
+> > > 
+> > > Hemant and I went over this patch and we noticed this particular function is
+> > > already being called with the channel mutex lock held. This would take care
+> > > of
+> > > the atomicity and we also probably don't need the smp_wmb() barrier as the
+> > > mutex
+> > > unlock will implicitly take care of it.
+> > > 
+> > 
+> > okay
+> > 
+> > > To the point of compiler re-ordering, we would need some help to understand
+> > > the
+> > > purpose of READ_ONCE()/WRITE_ONCE() for these dependent statements:
+> > > 
+> > > > +	tmp = chan_ctxt->chcfg;
+> > > > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
+> > > > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
+> > > > +	chan_ctxt->chcfg = tmp;
+> > > 
+> > > Since RMW operation means that the chan_ctxt->chcfg is copied to a local
+> > > variable (tmp) and the _same_ is being written back to chan_ctxt->chcfg, can
+> > > compiler reorder these dependent statements and cause a different result?
+> > > 
+> > 
+> > Well, I agree that there is a minimal guarantee with modern day CPUs on
+> > not breaking the order of dependent memory accesses (like here tmp
+> > variable is the one which gets read and written) but we want to make
+> > sure that this won't break on future CPUs as well. So IMO using
+> > READ_ONCE and WRITE_ONCE adds extra level of safety.
+> 
+> ?
+> 
+> I'm sorry, but this argument is non-sense to me, and so I want to understand
+> more.
+> 
+> I've talked to our CPU designers from time to time, but cannot speak for
+> other vendors.  A modern CPU can easily reorder accesses all it wants, so
+> long as it does not change the end result.  This is typically identified via
+> "data dependencies", where the CPU identifies that the result of a previous
+> instruction is required to be known before processing the current
+> instruction (or any instructions in flight in the pipeline, the instructions
+> don't need to be adjacent).  These data dependencies can be "read" or
+> "write".
+> 
+> The typical reason barriers are needed is because the CPU cannot detect
+> these dependencies when we are talking about different "memory".  For
+> example, a write to a register in some hardware block to program some mode,
+> and then a write to another register to activate the hardware block based on
+> that mode.  In this example, there is no data dependency that the CPU can
+> detect, although you and I as the software writer knows there is a specific
+> order to these operations.  Thus, a barrier is required.
+> 
+> Your argument is that we need to protect against some hypothetical future
+> CPU where these data dependencies are ignored, and so the CPU reorders
+> things.  Except that means that the end result is (possibly) changed,
+> meaning the contract between software and hardware is no longer valid.  It
+> breaks the entire memory model for the C language.
+> 
 
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jeff, I do understand your point here and I completely agree. I just
+went with the question raised by Pavel and was trying to be on the safe
+side (which might not be a valid thing as you said).
 
-Utilize the gpio-regmap helper and drop the custom functions
+Let's hear from Pavel on what exactly his concern is! Maybe I went in
+the wrong direction.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Thanks for your views.
 
----
-Changelog v3:
-  - gpio: Adapt to changes in gpio_regmap
----
- drivers/gpio/Kconfig        |   1 +
- drivers/gpio/gpio-bd71815.c | 121 +++++++++---------------------------
- 2 files changed, 32 insertions(+), 90 deletions(-)
+Thanks,
+Mani
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 1dd0ec6727fd..97e1348cd410 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1120,6 +1120,7 @@ config GPIO_BD70528
- config GPIO_BD71815
- 	tristate "ROHM BD71815 PMIC GPIO support"
- 	depends on MFD_ROHM_BD71828
-+	select GPIO_REGMAP
- 	help
- 	  Support for GPO(s) on ROHM BD71815 PMIC. There are two GPOs
- 	  available on the ROHM PMIC.
-diff --git a/drivers/gpio/gpio-bd71815.c b/drivers/gpio/gpio-bd71815.c
-index 08ff2857256f..45782d376b3d 100644
---- a/drivers/gpio/gpio-bd71815.c
-+++ b/drivers/gpio/gpio-bd71815.c
-@@ -9,6 +9,7 @@
-  */
-=20
- #include <linux/gpio/driver.h>
-+#include <linux/gpio/regmap.h>
- #include <linux/init.h>
- #include <linux/irq.h>
- #include <linux/module.h>
-@@ -17,82 +18,30 @@
- /* For the BD71815 register definitions */
- #include <linux/mfd/rohm-bd71815.h>
-=20
--struct bd71815_gpio {
--	/* chip.parent points the MFD which provides DT node and regmap */
--	struct gpio_chip chip;
--	/* dev points to the platform device for devm and prints */
--	struct device *dev;
--	struct regmap *regmap;
--};
--
--static int bd71815gpo_get(struct gpio_chip *chip, unsigned int offset)
-+static int bd71815_gpio_set_config(const struct gpio_regmap_config *gr_con=
-fig,
-+				   unsigned int offset, unsigned long config)
- {
--	struct bd71815_gpio *bd71815 =3D gpiochip_get_data(chip);
--	int ret, val;
--
--	ret =3D regmap_read(bd71815->regmap, BD71815_REG_GPO, &val);
--	if (ret)
--		return ret;
--
--	return (val >> offset) & 1;
--}
--
--static void bd71815gpo_set(struct gpio_chip *chip, unsigned int offset,
--			   int value)
--{
--	struct bd71815_gpio *bd71815 =3D gpiochip_get_data(chip);
--	int ret, bit;
--
--	bit =3D BIT(offset);
--
--	if (value)
--		ret =3D regmap_set_bits(bd71815->regmap, BD71815_REG_GPO, bit);
--	else
--		ret =3D regmap_clear_bits(bd71815->regmap, BD71815_REG_GPO, bit);
--
--	if (ret)
--		dev_warn(bd71815->dev, "failed to toggle GPO\n");
--}
--
--static int bd71815_gpio_set_config(struct gpio_chip *chip, unsigned int of=
-fset,
--				   unsigned long config)
--{
--	struct bd71815_gpio *bdgpio =3D gpiochip_get_data(chip);
-+	struct regmap *regmap =3D gr_config->regmap;
-=20
- 	switch (pinconf_to_config_param(config)) {
- 	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
--		return regmap_update_bits(bdgpio->regmap,
-+		return regmap_update_bits(regmap,
- 					  BD71815_REG_GPO,
- 					  BD71815_GPIO_DRIVE_MASK << offset,
- 					  BD71815_GPIO_OPEN_DRAIN << offset);
- 	case PIN_CONFIG_DRIVE_PUSH_PULL:
--		return regmap_update_bits(bdgpio->regmap,
-+		return regmap_update_bits(regmap,
- 					  BD71815_REG_GPO,
- 					  BD71815_GPIO_DRIVE_MASK << offset,
- 					  BD71815_GPIO_CMOS << offset);
- 	default:
-+		dev_err(gr_config->parent, "Unsupported config (0x%lx)\n",
-+			config);
- 		break;
- 	}
- 	return -ENOTSUPP;
- }
-=20
--/* BD71815 GPIO is actually GPO */
--static int bd71815gpo_direction_get(struct gpio_chip *gc, unsigned int off=
-set)
--{
--	return GPIO_LINE_DIRECTION_OUT;
--}
--
--/* Template for GPIO chip */
--static const struct gpio_chip bd71815gpo_chip =3D {
--	.label			=3D "bd71815",
--	.owner			=3D THIS_MODULE,
--	.get			=3D bd71815gpo_get,
--	.get_direction		=3D bd71815gpo_direction_get,
--	.set			=3D bd71815gpo_set,
--	.set_config		=3D bd71815_gpio_set_config,
--	.can_sleep		=3D true,
--};
--
- #define BD71815_TWO_GPIOS	GENMASK(1, 0)
- #define BD71815_ONE_GPIO	BIT(0)
-=20
-@@ -111,15 +60,17 @@ static const struct gpio_chip bd71815gpo_chip =3D {
-  * but allows using it by providing the DT property
-  * "rohm,enable-hidden-gpo".
-  */
--static int bd71815_init_valid_mask(struct gpio_chip *gc,
-+static int bd71815_init_valid_mask(const struct gpio_regmap_config *c,
- 				   unsigned long *valid_mask,
- 				   unsigned int ngpios)
- {
-+
- 	if (ngpios !=3D 2)
- 		return 0;
-=20
--	if (gc->parent && device_property_present(gc->parent,
--						  "rohm,enable-hidden-gpo"))
-+	/* The property should be in MFD DT node */
-+	if (c->parent && fwnode_property_present(c->fwnode,
-+						 "rohm,enable-hidden-gpo"))
- 		*valid_mask =3D BD71815_TWO_GPIOS;
- 	else
- 		*valid_mask =3D BD71815_ONE_GPIO;
-@@ -127,9 +78,21 @@ static int bd71815_init_valid_mask(struct gpio_chip *gc,
- 	return 0;
- }
-=20
-+/* Template for regmap gpio config */
-+static const struct gpio_regmap_config gpio_cfg_template =3D {
-+	.label			=3D "bd71815",
-+	.reg_set_base		=3D BD71815_REG_GPO,
-+	.ngpio			=3D 2,
-+};
-+
-+static const struct gpio_regmap_ops ops =3D {
-+	.set_config		=3D bd71815_gpio_set_config,
-+	.init_valid_mask	=3D bd71815_init_valid_mask,
-+};
-+
- static int gpo_bd71815_probe(struct platform_device *pdev)
- {
--	struct bd71815_gpio *g;
-+	struct gpio_regmap_config cfg;
- 	struct device *parent, *dev;
-=20
- 	/*
-@@ -140,34 +103,12 @@ static int gpo_bd71815_probe(struct platform_device *=
-pdev)
- 	/* The device-tree and regmap come from MFD =3D> use parent for that */
- 	parent =3D dev->parent;
-=20
--	g =3D devm_kzalloc(dev, sizeof(*g), GFP_KERNEL);
--	if (!g)
--		return -ENOMEM;
--
--	g->chip =3D bd71815gpo_chip;
--
--	/*
--	 * FIXME: As writing of this the sysfs interface for GPIO control does
--	 * not respect the valid_mask. Do not trust it but rather set the ngpios
--	 * to 1 if "rohm,enable-hidden-gpo" is not given.
--	 *
--	 * This check can be removed later if the sysfs export is fixed and
--	 * if the fix is backported.
--	 *
--	 * For now it is safest to just set the ngpios though.
--	 */
--	if (device_property_present(parent, "rohm,enable-hidden-gpo"))
--		g->chip.ngpio =3D 2;
--	else
--		g->chip.ngpio =3D 1;
--
--	g->chip.init_valid_mask =3D bd71815_init_valid_mask;
--	g->chip.base =3D -1;
--	g->chip.parent =3D parent;
--	g->regmap =3D dev_get_regmap(parent, NULL);
--	g->dev =3D dev;
-+	cfg =3D gpio_cfg_template;
-+	cfg.parent =3D parent;
-+	cfg.regmap =3D dev_get_regmap(parent, NULL);
-+	cfg.fwnode =3D dev_fwnode(dev);
-=20
--	return devm_gpiochip_add_data(dev, &g->chip, g);
-+	return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &cfg, &ops));
- }
-=20
- static struct platform_driver gpo_bd71815_driver =3D {
---=20
-2.25.4
+> In the above code snippet, you are saying this is valid for some future CPU
+> to do:
+> 
+> tmp = chan_ctxt->chcfg;
+> chan_ctxt->chcfg = tmp; //probably optimized out because this now obviously
+> has no effect
+> tmp &= ~CHAN_CTX_CHSTATE_MASK;
+> tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
+> 
+> That is clearly wrong (I seriously hope you agree), and while I've seen
+> hardware designers do some boneheaded things to the point where I don't
+> trust them a lot of the time, I have a hard time believing they would think
+> that is acceptable.
+> 
+> That fundamentally breaks all of software to the point where the only
+> recourse is to have a literal barrier between every line of code.  That
+> doubles the line count of Linux and kills all performance.  Its plainly not
+> tenable.
+> 
+> So, seriously, please explain your view in great detail because it feels
+> like we are talking past each-other and not coming to common ground.  As I
+> understand it, adding an explicit barrier in a patch cannot be done "just
+> because" and requires a good documented reason (in a comment next to the
+> barrier) for why the barrier is required.  It seems like the same level of
+> scrutiny should be applied for READ_ONCE/WRITE_ONCE, but your reason for
+> adding them, "using READ_ONCE and WRITE_ONCE adds extra level of safety",
+> reads like the reason to use them is "just because" to me.
 
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---ew6BAiZeqk4r7MaW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCt5mUACgkQeFA3/03a
-ocXVBgf9GdiWECyIlqske9r/Ea+M8rrnfY51zKsEDDThUtOFtJAnmj8gGt7SBgvd
-MavCgxKedmhkv6sJLgZe0KmyiCWB1x767bpVptDFSpALB+yflHygOPfvkGsjIPHD
-rLQPsIm6HAebf9ffah33jRgS91fu+RgX2HCl5I3iDlQqc1lPlSTsKSsm45v/vX6N
-AEO7nQuJAT1atW37AqHvqABZHnhuntCgitS+dxZgpNoXVm9GJK1T3sFS2zilojNw
-7IhtGN8y7IQUN2rj26pJohJBdgysjy0DE2qz1ljcQXNuhybubiP+yyss/fnO6T4I
-KJuKXkB1/yCtGE0daxxvm5dmoIiFBg==
-=v4on
------END PGP SIGNATURE-----
-
---ew6BAiZeqk4r7MaW--
