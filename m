@@ -2,124 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F4B39188C
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACDD391895
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhEZNLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhEZNLv (ORCPT
+        id S232769AbhEZNRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:17:13 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:33309 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232211AbhEZNRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:11:51 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FCDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:10:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id z12so2416802ejw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AUsJLuID9e1pol3RiOS0EQTXGuh7p/LFKL5pMET/qdM=;
-        b=k8NO22C2JVeN3oYYB8/wYFehRe8VyAND1XHAGRWMTU5Mn52IfMEUo4TKhcziTjSiol
-         ajMle9cmfQkn5UtI0zuJQKEg7T0BR53wh8MTYQevUGRY0oLgw8tgB9THtAkw/d71ByPA
-         k5CQUTjOSd0eCD/aUy0PznHO9215g4bfZeixU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=AUsJLuID9e1pol3RiOS0EQTXGuh7p/LFKL5pMET/qdM=;
-        b=kg2iel1z4+jchHUjCW+R6LPjafJXllAxE4LlPbpX0T7J56gLiEoz76uX6oQuE1VAhI
-         6+TXCYXpAqPP45pAC8gUanV1GPw4rd8YEvUACk/6+htOf9eH9Up4IIgd6Y28TVrqhDSM
-         pdn8nAHgoQkNuVEmgJ5mM97ZiY/YaIJMvuidSmSAxXdkKbHaWb8ToqUb7P57VfRfMGLE
-         yHHjLXwhtuFZBY/zQvSNKgp0Gt84JLEGwXIWmHSyQxzTHQIjXaopCOD+tl7OkASeiCvo
-         8o4r4sZZtt+fKYVtJK9nzUrSYECe43Rb91E80c6TJKPaPa1LPbUs+G0zUz0XMfs0cngx
-         UlIw==
-X-Gm-Message-State: AOAM533eH+LmQWkpJaHhRDQPZVkfNGJJ3+B+NhWInl9QyRp110Btj8Xu
-        igB3EnG9EPdEnbjK844pk8BtvQ==
-X-Google-Smtp-Source: ABdhPJwmdkY+oqxRRVXVQLIVhW6ISfuuutzmkODEclidb9s6n/KAGKJYcmP63SeNqDK4yFSFc1wLbQ==
-X-Received: by 2002:a17:907:9612:: with SMTP id gb18mr7857293ejc.408.1622034618327;
-        Wed, 26 May 2021 06:10:18 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id j17sm484768ejb.123.2021.05.26.06.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:10:17 -0700 (PDT)
-Date:   Wed, 26 May 2021 15:10:16 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Adam Jackson <ajax@redhat.com>,
-        Ben Widawsky <ben@bwidawsk.net>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 30/34] drm/vgem/vgem_drv: Standard comment blocks should
- not use kernel-doc format
-Message-ID: <YK5IuNcHtPySAfoz@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Adam Jackson <ajax@redhat.com>, Ben Widawsky <ben@bwidawsk.net>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20210526084726.552052-1-lee.jones@linaro.org>
- <20210526084726.552052-31-lee.jones@linaro.org>
+        Wed, 26 May 2021 09:17:10 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id ltNmlTk1ZWkKbltNplDI5H; Wed, 26 May 2021 15:15:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1622034937; bh=EI3B+LNMCYgFK30T4XcTo3CVB8C276/abB7V41iMB3k=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=sO2IfvdxyOjAvsIVwHy0zaAXAIh8Met5e24EntS5BTrlvuOOA8vb3dS45qvlsU3lp
+         JKtaHml5WpDfM40VwPD5WficCqfcCAvrC2hzkPZyoxok3I+ihytK+2h5wC1z3HeYqX
+         Z3dCA8kP255ta6XDYcECVY6IyFyTV30INFOLGTa+EIjFBWRXoEc1lTc/ZwYTdWvFgz
+         FQJ9hUOYCKRsybmXYyle6uLiSdD+C9UMdB4JPgVRo2l3mq0/Wbjoq2KdqNe/sm4MRf
+         OzRtrkv0LGpjGaLl3ES+liMuN8m271bVw15iBG83Hpc/Uy8HeTv0LSWNXDyXxBNpr1
+         TgjWVyoukoDeA==
+Subject: Re: [PATCH 4/4] media: usb: cpia2: Fixed coding style issues
+To:     Piyush Thange <pthange19@gmail.com>, mchehab@kernel.org,
+        leon@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210430154314.3152-1-pthange19@gmail.com>
+ <20210430154314.3152-4-pthange19@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <7a3e11b0-272c-bef0-2256-ddd54797bfbf@xs4all.nl>
+Date:   Wed, 26 May 2021 15:15:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526084726.552052-31-lee.jones@linaro.org>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <20210430154314.3152-4-pthange19@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKrFY56gBYdLpAzdDDdZJTAMbTi/4MEO/2ii+2hvw+mAyuRKyfL2C3yVWSPY5Od42o6dJGrbKYBsHZD7oQYXyXkLsEHnMyTA1gQoSTG7GkAqDidhkEnz
+ dRHI+zSoT8hsCyHV0Mp/VYU3RQVUUSDAbbD6mTcV2DxjDt9WpKYWMZjrRR64E6ly65DwaIcY9D9g0K063TnVQRychTLq5fSqnp5Z4h/dxhYxW2+7xQbHpPb5
+ ROQ2k9P8lDuFMwiFKTSzUV/waXEqLbOyEI1xo2Y8C+S+fv+z07ucwOHxyumMdd/58f8EAe2fvEaRmaH5bdppSZytdOk4iDxzYKlDpsqHv5g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:47:22AM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On 30/04/2021 17:43, Piyush Thange wrote:
+> Addition of more fixes on coding style.
 > 
->  drivers/gpu/drm/vgem/vgem_drv.c:47: warning: expecting prototype for This is vgem, a (non-hardware(). Prototype was for DRIVER_NAME() instead
-> 
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: Adam Jackson <ajax@redhat.com>
-> Cc: Ben Widawsky <ben@bwidawsk.net>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Merged this one to drm-misc-next, thanks!
--Daniel
+> Signed-off-by: Piyush Thange <pthange19@gmail.com>
 > ---
->  drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/media/usb/cpia2/cpia2_v4l.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-> index a0e75f1d5d016..bf38a7e319d14 100644
-> --- a/drivers/gpu/drm/vgem/vgem_drv.c
-> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
-> @@ -25,7 +25,7 @@
->   *	Ben Widawsky <ben@bwidawsk.net>
->   */
+> diff --git a/drivers/media/usb/cpia2/cpia2_v4l.c b/drivers/media/usb/cpia2/cpia2_v4l.c
+> index 261ced144793..d950f9171208 100644
+> --- a/drivers/media/usb/cpia2/cpia2_v4l.c
+> +++ b/drivers/media/usb/cpia2/cpia2_v4l.c
+> @@ -883,12 +883,12 @@ static int cpia2_dqbuf(struct file *file, void *fh, struct v4l2_buffer *buf)
 >  
-> -/**
-> +/*
->   * This is vgem, a (non-hardware-backed) GEM service.  This is used by Mesa's
->   * software renderer and the X server for efficient buffer sharing.
->   */
-> -- 
-> 2.31.1
+>  	frame = find_earliest_filled_buffer(cam);
+>  
+> -	if(frame < 0 && file->f_flags&O_NONBLOCK)
+> +	if (frame < 0 && file->f_flags&O_NONBLOCK)
+
+Add spaces around & as well.
+
+There is no need to split this up into four patches. Just post a single patch
+for all these changes.
+
+>  		return -EAGAIN;
+>  
+> -	if(frame < 0) {
+> +	if (frame < 0) {
+>  		/* Wait for a frame to become available */
+> -		struct framebuf *cb=cam->curbuff;
+> +		struct framebuf *cb = cam->curbuff;
+>  		mutex_unlock(&cam->v4l2_lock);
+>  		wait_event_interruptible(cam->wq_stream,
+>  					 !video_is_registered(&cam->vdev) ||
+> @@ -970,7 +970,7 @@ static int cpia2_mmap(struct file *file, struct vm_area_struct *area)
+>  		return -ERESTARTSYS;
+>  	retval = cpia2_remap_buffer(cam, area);
+>  
+> -	if(!retval)
+> +	if (!retval)
+>  		cam->stream_fh = file->private_data;
+>  	mutex_unlock(&cam->v4l2_lock);
+>  	return retval;
+> @@ -1160,10 +1160,10 @@ void cpia2_unregister_camera(struct camera_data *cam)
+>   *****************************************************************************/
+>  static void __init check_parameters(void)
+>  {
+> -	if(buffer_size < PAGE_SIZE) {
+> +	if (buffer_size < PAGE_SIZE) {
+>  		buffer_size = PAGE_SIZE;
+>  		LOG("buffer_size too small, setting to %d\n", buffer_size);
+> -	} else if(buffer_size > 1024*1024) {
+> +	} else if (buffer_size > 1024*1024) {
+
+Add spaces around * as well. checkpatch.pl --strict warns about that!
+
+Regards,
+
+	Hans
+
+>  		/* arbitrary upper limiit */
+>  		buffer_size = 1024*1024;
+>  		LOG("buffer_size ridiculously large, setting to %d\n",
+> @@ -1173,15 +1173,15 @@ static void __init check_parameters(void)
+>  		buffer_size &= ~(PAGE_SIZE-1);
+>  	}
+>  
+> -	if(num_buffers < 1) {
+> +	if (num_buffers < 1) {
+>  		num_buffers = 1;
+>  		LOG("num_buffers too small, setting to %d\n", num_buffers);
+> -	} else if(num_buffers > VIDEO_MAX_FRAME) {
+> +	} else if (num_buffers > VIDEO_MAX_FRAME) {
+>  		num_buffers = VIDEO_MAX_FRAME;
+>  		LOG("num_buffers too large, setting to %d\n", num_buffers);
+>  	}
+>  
+> -	if(alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
+> +	if (alternate < USBIF_ISO_1 || alternate > USBIF_ISO_6) {
+>  		alternate = DEFAULT_ALT;
+>  		LOG("alternate specified is invalid, using %d\n", alternate);
+>  	}
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
