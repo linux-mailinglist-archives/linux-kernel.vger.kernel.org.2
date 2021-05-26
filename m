@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6D8391340
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34339391341
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhEZJC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:02:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
+        id S233486AbhEZJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:03:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:41914 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233509AbhEZJCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:02:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0F36139A;
-        Wed, 26 May 2021 09:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622019682;
-        bh=4LkSpJL9u2Z/Gci2t2dDE6z+Mqs7NkRLNRbp9A49lfc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2TWdVg8Olt7pG61zwGIxs3HbdWT+0AstfVISWxj+I08+5zJyiEpLg9yT+Pg1ykqN
-         k6tSwyc+0g/h+UxXTXSDTJTLvq8R44t4+Jwqc+0VGW63pr23ld4ltvyMAwrEr92qVV
-         urw5vYu4JqFeJ3cJG2oUorUZTApZaQy2Vs0niaAqaFEMUUnatAM6flnxiQuw1h2BYm
-         4eBTudXuY1FTNdV8XlgvjTb4hbpCHo9fbeKmXMu07IBchNX+sDbf2ZWIj2ZnIQmOoI
-         eaBrepWbJsZZhmHIwDy/2+wVMUYGbnDdLHu/R4Xm5UTqJJfAKk+KTYSt/g0F924l4R
-         0y7Lk0K+TxH4g==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>, acme@kernel.org
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, jolsa@redhat.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: [PATCH] tools/perf: doc: Add permission and sysctl notice
-Date:   Wed, 26 May 2021 18:01:18 +0900
-Message-Id: <162201967838.287555.4257117900130102987.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
-References: <20210525043744.193297-1-ravi.bangoria@linux.ibm.com>
-User-Agent: StGit/0.19
+        id S233245AbhEZJDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 05:03:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD43D1516;
+        Wed, 26 May 2021 02:01:49 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A51293F73D;
+        Wed, 26 May 2021 02:01:48 -0700 (PDT)
+Date:   Wed, 26 May 2021 10:01:42 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net,
+        vincent.guittot@linaro.org, qperret@google.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        lukasz.luba@arm.com, dietmar.eggemann@arm.com
+Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
+Message-ID: <20210526090141.GA408481@e120877-lin.cambridge.arm.com>
+References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+ <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a section to notify the permission and sysctl setting
-for perf probe. And fix some indentations.
+On Wed, May 26, 2021 at 09:17:51AM +0530, Viresh Kumar wrote:
+> On 21-05-21, 17:54, Vincent Donnefort wrote:
+> > We (Power team in Arm) are working with an experimental kernel for the
+> > Google's Pixel4 to evaluate and improve the current mainline performance
+> > and energy consumption on a real life device with Android.
+> > 
+> > The SD855 SoC found in this phone has several OPPs that are inefficient.
+> > I.e. despite a lower frequency, they have a greater cost. (That cost being 
+> > fmax * OPP power / OPP freq). This issue is twofold. First of course,
+> > running a specific workload at an inefficient OPP is counterproductive
+> > since it wastes wasting energy. But also, inefficient OPPs make a
+> > performance domain less appealing for task placement than it really is.
+> > 
+> > We evaluated the change presented here by running 30 iterations of Android 
+> > PCMark "Work 2.0 Performance". While we did not see any statistically
+> > significant performance impact, this change allowed to drastically improve 
+> > the idle time residency.   
+> >  
+> > 
+> >                            |   Running   |  WFI [1]  |    Idle   |
+> >    ------------------------+-------------+-----------+-----------+
+> >    Little cluster (4 CPUs) |    -0.35%   |   +0.35%  |   +0.79%  |
+> >    ------------------------+-------------+-----------+-----------+
+> >    Medium cluster (3 CPUs) |    -6.3%    |    -18%   |    +12%   |
+> >    ------------------------+-------------+-----------+-----------+
+> >    Big cluster    (1 CPU)  |    -6.4%    |    -6.5%  |    +2.8%  |
+> >    ------------------------+-------------+-----------+-----------+
+> > 
+> > On the SD855, the inefficient OPPs are found on the little cluster. By
+> > removing them from the Energy Model, we make the most efficient CPUs more
+> > appealing for task placement, helping to reduce the running time for the
+> > medium and big CPUs. Increasing idle time is crucial for this platform due 
+> > to the substantial energy cost differences among the clusters. Also,
+> > despite not appearing in the statistics (the idle driver used here doesn't 
+> > report it), we can speculate that we also improve the cluster idle time.
+> 
+> First of all, sorry about not replying earlier. I have seen this earlier and was
+> shying away to receive some feedback from Rafael/Peter instead :(
 
-Reported-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/perf/Documentation/perf-probe.txt |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+No worries at all, thanks for your comments!
 
-diff --git a/tools/perf/Documentation/perf-probe.txt b/tools/perf/Documentation/perf-probe.txt
-index ed3ecfa422e1..38f60ac58a8e 100644
---- a/tools/perf/Documentation/perf-probe.txt
-+++ b/tools/perf/Documentation/perf-probe.txt
-@@ -226,7 +226,7 @@ So, "source.c:100-120" shows lines between 100th to l20th in source.c file. And
- 
- LAZY MATCHING
- -------------
-- The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
-+The lazy line matching is similar to glob matching but ignoring spaces in both of pattern and target. So this accepts wildcards('*', '?') and character classes(e.g. [a-z], [!A-Z]).
- 
- e.g.
-  'a=*' can matches 'a=b', 'a = b', 'a == b' and so on.
-@@ -235,8 +235,8 @@ This provides some sort of flexibility and robustness to probe point definitions
- 
- FILTER PATTERN
- --------------
-- The filter pattern is a glob matching pattern(s) to filter variables.
-- In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
-+The filter pattern is a glob matching pattern(s) to filter variables.
-+In addition, you can use "!" for specifying filter-out rule. You also can give several rules combined with "&" or "|", and fold those rules as one rule by using "(" ")".
- 
- e.g.
-  With --filter "foo* | bar*", perf probe -V shows variables which start with "foo" or "bar".
-@@ -295,6 +295,17 @@ Add a probe in a source file using special characters by backslash escape
-  ./perf probe -x /opt/test/a.out 'foo\+bar.c:4'
- 
- 
-+PERMISSIONS AND SYSCTL
-+----------------------
-+Since perf probe depends on ftrace (tracefs) and kallsyms (/proc/kallsyms), you have to care about the permission and some sysctl knobs.
-+
-+ - Since tracefs and kallsyms requires root or privileged user to access it, the following perf probe commands also require it; --add, --del, --list (except for --cache option)
-+
-+ - /proc/sys/kernel/kptr_restrict = 2 (restrict all users) also prevents perf probe to retrieve the important information from kallsyms. You also need to set to 1 (restrict non CAP_SYSLOG users) for the above commands.
-+
-+ - Since the perf probe commands read the vmlinux and/or the debuginfo file, you need to ensure that you can read those files.
-+
-+
- SEE ALSO
- --------
- linkperf:perf-trace[1], linkperf:perf-record[1], linkperf:perf-buildid-cache[1]
+> 
+> I think the problem you mention is genuine, I have realized it in the past,
+> discussed with Vincent Guittot (cc'd) but never was able to get to a proper
+> solution as the EM model wasn't there then.
+> 
+> I have seen your approach (from top level) and I feel maybe we can improve upon
+> the whole idea a bit, lemme know what you think. The problem I see with this
+> approach is the unnecessary updates to schedutil that this series makes, which
+> IMHO is the wrong thing to do. Schedutil isn't the only governor and such
+> changes will end up making the performance delta between ondemand and schedutil
+> even more (difference based on their core design philosophy is fine, but these
+> are improvements which each of them should enjoy). And if another governor wants
+> these smart decisions to be added there, then it is trouble again.
+
+I originally considered to add the inefficient knowledge into the CPUFreq table.
+But I then gave up the idea for two reasons:
+
+  * The EM depends on having schedutil enabled. I don't think that any
+    other governor would then manage to rely on the inefficient OPPs. (also I
+    believe Peter had a plan to keep schedutil as the one and only governor)
+
+  * The CPUfreq driver doesn't have to rely on the CPUfreq table, if the
+    knowledge about inefficient OPPs is into the latter, some drivers might not
+    be able to rely on the feature (you might say 'their loss' though :)) 
+
+For those reasons, I thought that adding inefficient support into the
+CPUfreq table would complexify a lot the patchset for no functional gain. 
+
+> 
+> Since the whole thing depends on EM and OPPs, I think we can actually do this.
+> 
+> When the cpufreq driver registers with the EM core, lets find all the
+> Inefficient OPPs and disable them once and for all. Of course, this must be done
+> on voluntarily basis, a flag from the drivers will do. With this, we won't be
+> required to update any thing at any of the governors end.
+
+We still need to keep the inefficient OPPs for thermal reason. But if we go with
+the inefficiency support into the CPUfreq table, we could enable or disable
+them, depending on the thermal pressure. Or add a flag to read the table with or
+without inefficient OPPs?
+
+
+> 
+> Will that work ?
+> 
+> -- 
+> viresh
 
