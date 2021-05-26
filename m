@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A6C391ACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8AD391ACC
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 16:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhEZOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 10:53:21 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:33567 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235077AbhEZOxU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 10:53:20 -0400
-Received: by mail-vs1-f53.google.com with SMTP id f11so832628vst.0;
-        Wed, 26 May 2021 07:51:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BARZY/Zm/Q9bSQpQWNCPuOu1nEYjPwLPq7uNIDXm7kk=;
-        b=huwWK/bJ/slfWm1gMZrqQ/yHWUfm3NhNXNEs/iRyH9oPUl3vkmvR3DYsxtjGjuAbdp
-         fGt1Fmv2/mzJtHvhbp2R6nBqsnhbsHY+C54aiSVLY98xOiStRLNbXxXSdpM3inev9fnV
-         sMqbXrYwI5LfMMqagTkODkoWnqWkcz+1HJPf1Frm+yvDTKilHO0HwgdZMm6JWE8ORCmK
-         L9ut/FPRGdlk0kI0IxqFqO3pXx/ePM9EeNeqiuVhr879l6mw+G3mz+Zf/OdIQz4vAAfo
-         +FwUWG3AVfBVr2PtMgRm1kh7WH17QDjI7gsOi2vwPlZrBaTrx+rElxh3tq5UaDfWTf6h
-         oFlA==
-X-Gm-Message-State: AOAM5309/jGr3Q/7pldQ/PxS/rYJc2tjuZkNFpaQmwkCwym+1LhduSir
-        XtcCjfWIYUuyEm1TdDk5WcepYGUg4YPTfzq+OofX3Iae
-X-Google-Smtp-Source: ABdhPJxHFkT/Ut4XcWcmc+uY1kwmt7LbdgIdiTRddR/Hb6SvL9PjTUS3ABPW2ezC6FfM0VGqzQ9U1tJsbBQR15GYK4w=
-X-Received: by 2002:a05:6102:392:: with SMTP id m18mr32558814vsq.40.1622040707282;
- Wed, 26 May 2021 07:51:47 -0700 (PDT)
+        id S235137AbhEZOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 10:54:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:46092 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235068AbhEZOyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 10:54:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AB9D1516;
+        Wed, 26 May 2021 07:53:22 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8F1F3F73D;
+        Wed, 26 May 2021 07:53:20 -0700 (PDT)
+Date:   Wed, 26 May 2021 15:53:17 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH 4/4] firmware: arm_scmi: Introduce delegated xfers support
+Message-ID: <20210526145317.GQ28060@e120937-lin>
+References: <20210524231503.34924-1-cristian.marussi@arm.com>
+ <20210524231503.34924-5-cristian.marussi@arm.com>
+ <659c2f2c-e236-1a70-44be-c5f6871868e7@gmail.com>
 MIME-Version: 1.0
-References: <20210526084536.1454449-1-geert@linux-m68k.org> <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
-In-Reply-To: <CAK7LNARq87zoD9-r4YfY5rewwieBOBJYETs4MLwBz9vddxMsRA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 May 2021 16:51:35 +0200
-Message-ID: <CAMuHMdW9CzMMwvJKHsLLD_BT9Roor6xWxzZYhv0fkEA7LT0Z9A@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Drop duplicate "core-y += arch/m68k/" rule causing
- link failures
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <659c2f2c-e236-1a70-44be-c5f6871868e7@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yamada-san,
+On Mon, May 24, 2021 at 07:20:45PM -0700, Florian Fainelli wrote:
+> 
+> 
+> On 5/24/2021 4:15 PM, Cristian Marussi wrote:
+> > Introduce optional support for delegated xfers allocation.
+> > 
+> > An SCMI transport can optionally declare to support delegated xfers and
+> > then use a few helper functions exposed by the core SCMI transport layer to
+> > query the core for existing in-flight transfers matching a provided message
+> > header or alternatively and transparently obtain a brand new xfer to handle
+> > a freshly received notification message.
+> > In both cases the obtained xfer is uniquely mapped into a specific xfer
+> > through the means of the message header acting as key.
+> > 
+> > In this way such a transport can properly store its own transport specific
+> > payload into the xfer uniquely associated to the message header before
+> > even calling into the core scmi_rx_callback() in the usual way, so that
+> > the transport specific message envelope structures can be freed early
+> > and there is no more need to keep track of their status till the core
+> > fully processes the xfer to completion or times out.
+> > 
+> > The scmi_rx_callbak() does not need to be modified to carry additional
+> > transport-specific ancillary data related to such message envelopes since
+> > an unique natural association is established between the xfer and the
+> > related message header.
+> > 
+> > Existing transports that do not need anything of the above will continue
+> > to work as before without any change.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> 
+> It would be better to see this in the context of its planned user, but
+> that looked reasonable enough.
 
-On Wed, May 26, 2021 at 4:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> On Wed, May 26, 2021 at 5:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >     Makefile:1949: target 'arch/m68k' given more than once in the same rule
-> >     [...]
-> >       LD      vmlinux.o
-> >     m68k-linux-gnu-ld: arch/m68k/kernel/entry.o: in function `system_call':
-> >     (.text+0x160): multiple definition of `system_call'; arch/m68k/kernel/entry.o:(.text+0x160): first defined here
-> >     [...]
-> >
-> > All "core-y += arch/<arch>/" rules were dropped from the corresponding
-> > arch/<arch>/Makefiles, but m68k was forgotten.
-> >
-> > Reported-by: noreply@ellerman.id.au
-> > Fixes: 7d9677835b10b5de ("kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
->
-> I will squash this.
+I agree, definitely better to see this in the context of usage.
 
-Fine for me. Thx!
+Such virtio-scmi rework is still in progress indeed, but working in my
+local testing so far.
 
-Gr{oetje,eeting}s,
+The reworked V4 virtio-scmi series is still to be refined and posted,
+and this transitional code lives now at:
 
-                        Geert
+https://gitlab.arm.com/linux-arm/linux-cm/-/tree/scmi_virtio_trans_V4_rework
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+and in particular this is the patch that changes virtio-scmi transport to
+use the new delegated xfers. (hopefully simplfying it)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://gitlab.arm.com/linux-arm/linux-cm/-/commit/0b524f89ea6cfcf6204a5eaa8cf9030118805b2f
+
+...but, as said, it is highly work in progress so you may just want to
+wait for final V4 virtio-scmi rework posted and do not bother this noise
+of mine :D
+
+In any case thanks a lot for the feedback so far.
+
+Cristian
+
+> -- 
+> Florian
+
