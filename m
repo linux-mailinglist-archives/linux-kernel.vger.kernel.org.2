@@ -2,117 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD71391D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF11391D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbhEZQiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S235179AbhEZQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234997AbhEZQiR (ORCPT
+        with ESMTP id S234997AbhEZQiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:38:17 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F44C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:36:46 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso1562304otu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:36:46 -0700 (PDT)
+        Wed, 26 May 2021 12:38:54 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F1BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:37:20 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id o10so1429151ilm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PqiiB2G3pVfVu3uT5QnRvz4iGCt2i0rxruRa8X05O5A=;
-        b=AIMczX2yp7RTipMdxkCl+Y/HpljemIuaEY6JBpbtxDIFufKjOkMt7Az9akxHPBlRrF
-         tv5THCfwxaArndbv36+qeYJ3AL4CuIfPs4SpXW6HFTPsWpSZCq+Xd/x5z2u/IADP7pX8
-         E9I3kby1gka6PAXCHMleSaOk/lvn2+P9ORVzEqG9R8/UZcIVIHPUaEvMqWSrTaJ5GsyH
-         lt1r2/k17Ht/VrZL0Q68620TUD2FAbpa3Rknm6sKc4oLYymxiC09tCQ7L5hG8hoF4587
-         s7Gmr92x1Dra8L0a4mbvdlwqufQN4FUkY3L+Mbr67iuZhwDdYI7ZkKQcTZ5rPXOws5jd
-         hz2A==
+        bh=qTd05BB9u83g9Rw1TR7BTuNQ98y93oaBclDpda30Nz4=;
+        b=G4yR6k+tl95mFcr1sMEmd3PD2OAkaWyNW+VPhShlhzmuhfgGbnr41IapWtGPOhk0Vo
+         +o4IGM7k3eKtoHuWeKlBw1oUp5P1DlBJXcKDkG2jIlK/ydAr4zfKmZD3CcLCbjAyudrE
+         MQWdV2jojDkeRnQeloln9JaLJwfWvTelca2rY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PqiiB2G3pVfVu3uT5QnRvz4iGCt2i0rxruRa8X05O5A=;
-        b=jWNvLVYSdb19XXttP7nFJmmYgCswGKo2JFq9YzwWkPXC3qBIZxvVz6PYWirsZIPEFx
-         WETKqPHi/c6FUR5C4Msmo9m8CTFN+ckNaLcgFeBZBNli+a6gQvBqT+HElW+aZvwmEpOO
-         IKd4NdPuLYTT+UCGNSeROO/BSH5mZWkiEieGhoQnbKJcK5n0T6cq02UAx179lS4LUVlR
-         eJOdV7kr1hn4YLkgNPykq2xlb8DCcIGixwipdaN8QQHrIE9Q309eItvqNYTBEmWnqAOQ
-         v1EESmBSr/GuP6pbD49mjO/P+6E7s+3N/+MrpTjWnO5qlwqO8uOmyMsdjrf51G8GyrOd
-         be9g==
-X-Gm-Message-State: AOAM532PdcNcW/57LLLse3Q54IqmjYWAKgm8a2jnIn6g+ZtXKhYEMo7y
-        FBC6SG1vm8j4NeoKssKeVwd33cNKdP4lNa9OV+FRpe0SY2f0Ag==
-X-Google-Smtp-Source: ABdhPJwRU8B/LoV6InTDOFtujtBx8Z2ldAmR4Mgo+9YcsIWTisl/DZn4f3BLX3/kcqduXoKFe7dWHTs2QFoxBLf51Jg=
-X-Received: by 2002:a05:6830:3154:: with SMTP id c20mr3125482ots.233.1622047005273;
- Wed, 26 May 2021 09:36:45 -0700 (PDT)
+        bh=qTd05BB9u83g9Rw1TR7BTuNQ98y93oaBclDpda30Nz4=;
+        b=tgd8aIMwInv+b/4QyCKVgege9EdzZW5g2fMynU3AiEtF0TrUAw6+OBqOI7cJiA4Mjc
+         hCu3PV4VcEVQZie5ApXppgNi/MNV7Q1nFOoBjdUNrNNyXImWW9i7upR6gi8kg+cn8xcr
+         aXpP8JFoXEuvMF5qAg54UY8h/fJMI15KnayU1bnZHPn0Eo7yXdP4ATzFUcwMcTnUJUeT
+         Kto1fMBvSyDtnq4bu1j+VQXB6c2bqZ+c62l8h/+3c/qnhKdAJEYLqs9NK6sU8JO73IbW
+         FzZJvop1WAW+mlUnWFrLb114TqWJc8zof9GQx8mefeVY+mzY9DKBPGaegHNPdBGUsdwE
+         u3Aw==
+X-Gm-Message-State: AOAM532dsgsm29xJOu4/9U1AR0TtBc0/a/D0wTTehNXsE0aqtvYuCUXK
+        26f6Q+EYJBDMYBMUIcYYimfInLmOvIyt/YzuZW/YYw==
+X-Google-Smtp-Source: ABdhPJwuosw3UvSM97y5j1YtMs2JtNqDj+RDTCQ/Xl3hdVes6AOPnF2xP6pRQDQUWm3oNhC/kwYdQbC0/6p/Wq++LpI=
+X-Received: by 2002:a05:6e02:1b05:: with SMTP id i5mr30226678ilv.204.1622047039981;
+ Wed, 26 May 2021 09:37:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000fa9f7005c33d83b9@google.com> <YK5tyZNAFc8dh6ke@elver.google.com>
- <YK5uygiCGlmgQLKE@elver.google.com> <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
-In-Reply-To: <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 26 May 2021 18:36:33 +0200
-Message-ID: <CANpmjNP1CKuoK82HCRYpDxDrvy4DgN9yVknfsxHSwfojx5Ttug@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in __io_uring_cancel / io_uring_try_cancel_requests
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>
+References: <20210525201825.2729018-1-revest@chromium.org> <f3e6c21e-8d6e-2665-770c-65f9b98ccf93@iogearbox.net>
+ <CABRcYmKhmxUXgDa-Mr5_fNB7R-U11h4bGwFdj1pKx3hxB_mW2g@mail.gmail.com> <CAEf4BzZpRL-n0V_JaHrkrOyPgNx+_RR9cQ2fiOfVuQ=Qew11kQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZpRL-n0V_JaHrkrOyPgNx+_RR9cQ2fiOfVuQ=Qew11kQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 26 May 2021 18:37:09 +0200
+Message-ID: <CABRcYmL3t=KkSai4RYPp7vH3tmS+FoVqxGYZ3rh=BReRwFouGg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 at 18:29, Pavel Begunkov <asml.silence@gmail.com> wrote:
-> On 5/26/21 4:52 PM, Marco Elver wrote:
-> > Due to some moving around of code, the patch lost the actual fix (using
-> > atomically read io_wq) -- so here it is again ... hopefully as intended.
-> > :-)
+On Wed, May 26, 2021 at 6:35 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> "fortify" damn it... It was synchronised with &ctx->uring_lock
-> before, see io_uring_try_cancel_iowq() and io_uring_del_tctx_node(),
-> so should not clear before *del_tctx_node()
-
-Ah, so if I understand right, the property stated by the comment in
-io_uring_try_cancel_iowq() was broken, and your patch below would fix
-that, right?
-
-> The fix should just move it after this sync point. Will you send
-> it out as a patch?
-
-Do you mean your move of write to io_wq goes on top of the patch I
-proposed? (If so, please also leave your Signed-of-by so I can squash
-it.)
-
-So if I understand right, we do in fact have 2 problems:
-1. the data race as I noted in my patch, and
-2. the fact that io_wq does not live long enough.
-
-Did I get it right?
-
-Thanks,
--- Marco
-
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 7db6aaf31080..b76ba26b4c6c 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -9075,11 +9075,12 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
->         struct io_tctx_node *node;
->         unsigned long index;
+> On Wed, May 26, 2021 at 8:01 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > On Wed, May 26, 2021 at 8:35 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > On 5/25/21 10:18 PM, Florent Revest wrote:
+> > > > These macros are convenient wrappers around the bpf_seq_printf and
+> > > > bpf_snprintf helpers. They are currently provided by bpf_tracing.h which
+> > > > targets low level tracing primitives. bpf_helpers.h is a better fit.
+> > > >
+> > > > The __bpf_narg and __bpf_apply macros are needed in both files so
+> > > > provided twice and guarded by ifndefs.
+> > > >
+> > > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > Signed-off-by: Florent Revest <revest@chromium.org>
+> > >
+> > > Given v1/v2 both target bpf tree in the subject, do you really mean bpf or
+> > > rather bpf-next?
+> >
+> > I don't have a preference, it's up to you :)
+> >
+> > On one hand, I see no urgency in fixing this: BPF_SEQ_PRINTF has been
+> > in bpf_tracing.h for a while already so it can wait for another kernel
+> > release. Applying this to bpf-next would do.
+> > On the other hand, BPF_SNPRINTF hasn't made it to a kernel release yet
+> > so we still have a chance to do it right before users start including
+> > bpf_tracing.h and we'd break them in the next release. That's why I
+> > tagged it as bpf.
+> >
+> > The patch applies cleanly on both trees so if you prefer landing it in
+> > bpf-next it's fine by me.
 >
-> -       tctx->io_wq = NULL;
->         xa_for_each(&tctx->xa, index, node)
->                 io_uring_del_tctx_node(index);
-> -       if (wq)
-> +       if (wq) {
-> +               tctx->io_wq = NULL;
->                 io_wq_put_and_exit(wq);
-> +       }
->  }
->
->  static s64 tctx_inflight(struct io_uring_task *tctx, bool tracked)
->
->
-> --
-> Pavel Begunkov
+> I think it should go through bpf-next. It's not really a bug fix. And
+> we are not going to break anyone with this move. And libbpf 0.4 is
+> officially released without this change anyway. So, bpf-next.
+
+Sounds good, I'll send a v3 tagged with bpf-next ;)
