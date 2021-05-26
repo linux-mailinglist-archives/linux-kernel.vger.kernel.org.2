@@ -2,124 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB2239135A
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52D039135E
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 11:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbhEZJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 05:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhEZJHs (ORCPT
+        id S233436AbhEZJJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 05:09:27 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:50537 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229594AbhEZJJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 05:07:48 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71579C061574;
-        Wed, 26 May 2021 02:06:16 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id v14so406568pgi.6;
-        Wed, 26 May 2021 02:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b5uH/VwkogIgYy1AoASz2+F5naQxa7VLItYJqjkkYEE=;
-        b=Bbe32YaQQqpd34qA7KrcSCraLsBgfm1M/WrZ8jVNnopgpPfYpbJ5WjDD2t52KRUcbJ
-         Oa6AahwnuIx28ePXztRcSkctb13zoxhP+n9XEXde4IVyMXbfgy84LuVtXJRQAhQcM0PI
-         pZ02I7jePMCX1S5OtY3TGQZcIbSJn14CTDMNdwv8yqvRj3LSIS1F0LJWgsUJ8aHzeGhF
-         0yyLfrJMBoiHSI7QpYRQ/caGcpsaiWzoQ5BW8NrrzeXAT1FMarMNMq8e9C7kd8p+NSkf
-         Y0nTecLQHP80Oy1P7DZ8vu62HLzfrQ6hJfHkgx8e7p5ROY3xaqwVLcCutz6hmWhrkOct
-         LWNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b5uH/VwkogIgYy1AoASz2+F5naQxa7VLItYJqjkkYEE=;
-        b=KIXvaXaoOC3ec/7zctRsaQ617H84cv1Wi+mu4YFZana8RnuMay8ekv21PQpyxxdFd8
-         ciwSesVJwm9vKgyf47cCyYmnX0s67m18/RAT9Phv0B0pd8AF7tcrD2AiTT8HvhUElV2F
-         E0gqpNLTNbBqnlPqeEgfBWBhdESuzzub/BtRykxDWI1+U0EeCppsqBftE4VTgs2hovge
-         WhCqX5dkzwB1FBg7AHZTT270EH4H+1U+DFiA8Y76yzH61xO7EtTk36WGefFCO61UB7tz
-         gwufWunygoXSQpskOK6krn+GrOZuk6PZh00IbDOc30XRq/bzrEwTWgu1tSN2ihgaBqQK
-         oYnA==
-X-Gm-Message-State: AOAM5321FxbLc1YUuBdZuTETIxqgH0YVXVJrDL7nUvIS9BC9MLoiAiH5
-        KDyU6ah/r+b4mIzDHxMac4M=
-X-Google-Smtp-Source: ABdhPJwzm9HP0tFzvNkzjY1hjIhq4hqYty7Tg0vKbsL8SbqY+cBboCcYoEphZuH1xJF5c/TmndLPng==
-X-Received: by 2002:a63:ff25:: with SMTP id k37mr23609751pgi.360.1622019976074;
-        Wed, 26 May 2021 02:06:16 -0700 (PDT)
-Received: from localhost ([103.248.31.164])
-        by smtp.gmail.com with ESMTPSA id y17sm15150465pfb.183.2021.05.26.02.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 02:06:15 -0700 (PDT)
-Date:   Wed, 26 May 2021 14:36:12 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH v2] PCI: Check value of resource alignment before using
- __ffs
-Message-ID: <20210526090612.a6i66ugimoxvyomg@archlinux>
-References: <20210422105538.76057-1-ameynarkhede03@gmail.com>
- <20210525220115.GA1233963@bjorn-Precision-5520>
+        Wed, 26 May 2021 05:09:25 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2A4E5221E6;
+        Wed, 26 May 2021 11:07:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622020071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kuVX0EwFHRdzvCBkWg0tk/7hpgmavGGOvX+eVtdhON8=;
+        b=pkJNP85yCQI5tC6fyhHAjzAcvcryRDIJqKelW3XVGwRXLvTDoBbqFB2NYZd2n18RiGjaoR
+        TAcANc4s4f1Hib1slhyHeMxUG7qxr4+P9XsQT+a3T/Qm7K2igcb1nfDV+OsThCLVqjaBLY
+        XV6vp2sA6/+geCgypOd8U2bKxMzI4X8=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525220115.GA1233963@bjorn-Precision-5520>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 26 May 2021 11:07:51 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
+In-Reply-To: <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
+References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VeHZg1DC76sg1F-=49SfVLNhf4pG7ArcXHxjU0nXZOpWw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <2e201aabd9b42da9a2bdcb2f7504ec12@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/25 05:01PM, Bjorn Helgaas wrote:
-> On Thu, Apr 22, 2021 at 04:25:38PM +0530, Amey Narkhede wrote:
-> > Return value of __ffs is undefined if no set bit exists in
-> > its argument. This indicates that the associated BAR has
-> > invalid alignment.
-> >
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > ---
-> >  drivers/pci/setup-bus.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
-> > index 2ce636937c6e..ce5380bdd2fd 100644
-> > --- a/drivers/pci/setup-bus.c
-> > +++ b/drivers/pci/setup-bus.c
-> > @@ -1044,10 +1044,11 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
-> >  			 * resources.
-> >  			 */
-> >  			align = pci_resource_alignment(dev, r);
-> > -			order = __ffs(align) - 20;
-> > -			if (order < 0)
-> > -				order = 0;
-> > -			if (order >= ARRAY_SIZE(aligns)) {
-> > +			if (align) {
-> > +				order = __ffs(align) - 20;
-> > +				order = (order < 0) ? 0 : order;
-> > +			}
-> > +			if (!align || order >= ARRAY_SIZE(aligns)) {
-> >  				pci_warn(dev, "disabling BAR %d: %pR (bad alignment %#llx)\n",
-> >  					 i, r, (unsigned long long) align);
-> >  				r->flags = 0;
->
-> I know this is solving a theoretical problem.  Is it also solving a
-> *real* problem?
->
-> I dislike the way it complicates the code and the usage of "align" and
-> "order".  I know that when "!align", we don't evaluate the
-> "order >= ARRAY_SIZE()" (which would involve an uninitialized value),
-> but it just seems ugly, and I'm not sure how much we benefit.
->
-> And the "disabling BAR" part is gross.  I know you're not changing
-> that part, but it's just wrong.  Setting r->flags = 0 certainly does
-> not disable the BAR.  It might make Linux ignore it, but that doesn't
-> mean the hardware ignores it.  When we turn on PCI_COMMAND_MEMORY, the
-> BAR is enabled along with all the other memory BARs.
->
-> Bjorn
+Am 2021-05-26 10:42, schrieb Andy Shevchenko:
+> On Wed, May 26, 2021 at 9:02 AM Matti Vaittinen
+> <matti.vaittinen@fi.rohmeurope.com> wrote:
+>> 
+>> Support providing some IC specific operations at gpio_regmap 
+>> registration.
+>> 
+>> Implementation of few GPIO related functionalities are likely to be
+>> very IC specific. For example the pin-configuration registers and the
+>> pin validity checks. Allow IC driver to provide IC specific functions
+>> which gpio-regmap can utilize for these IC specific configurations.
+>> This should help broaden the gpio-regmap IC coverage without the need
+>> of exposing the registered gpio_chip or struct gpio_regmap to IC 
+>> drivers.
+>> 
+>> The set_config and init_valid_mask are used by ROHM BD71815 GPIO 
+>> driver.
+>> Convert the BD71815 GPIO driver to use gpio-regmap and get rid of some
+>> code. Rest of the ROHM GPIO drivers are to be reworked after the
+>> mechanism of adding IC specific functions is settled.
+>> 
+>> Some preliminary discussion can be seen here:
+>> https://lore.kernel.org/linux-gpio/c4faac648d3e0c7f3dcb50f7e24c8b322e8c6974.camel@fi.rohmeurope.com/
+>> 
+>> I did also prepare change where the getters for drvdata and regmap
+>> are used. It can also work - but it does not scale quite as well
+>> if (when) IC drivers need some register information to do custom
+>> operations. Interested people can see the:
+>> https://github.com/M-Vaittinen/linux/commits/gpio-regmap-getters
+>> for comparison.
+> 
+> Entire series looks good to me,
 
-Thanks for the detailed explanation. Is there any way to properly
-disable the BAR?
-On the side note do you think this problem is
-worth solving? I came across this during code inspection.
-I mean if practically there aren't chances of
-this bug occuring I'm okay with dropping this patch.
+Sorry, for being late to this. I got sidetracked.
 
-Thanks,
-Amey
+TBH, I don't like the we have the config struct in the callbacks. Why
+would you need all this information in the callback? And it doesn't
+help you to call back into gpio-regmap once there are further methods
+provided by gpio-regmap.
+
+Either we hide away the internals completely (which I still prefer!) or
+we open up the gpio_regmap struct. But this is somewhere in between. As
+the user, you could already attach the config to the opaque data pointer
+and get the same result.
+
+I don't see how the following is an overhead:
+
+int gpio_regmap_callback(struct gpio_regmap *gpio, ..)
+{
+     struct regmap *regmap = gpio_regmap_get_regmap(gpio);
+     struct driver_priv *data = gpio_regmap_get_drvdata(gpio);
+     ...
+}
+
+It doesn't clutter anything, there is just a small runtime overhead (is
+it?). Again this let you keep adding stuff in the future without
+changing any users. So what are the drawbacks of this?
+
+Also I'd like to keep the duplication of the "struct gpio_regmap" 
+members
+and the config members. The gpio_regmap_config is just a struct so
+the _register won't get cluttered with arguments.
+
+I'm still not opposed to convert gpio-regmap into helpers as mentioned
+earlier. But until then, I'd really keep the "struct gpio_regmap *gpio"
+opaque pointer.
+
+-michael
