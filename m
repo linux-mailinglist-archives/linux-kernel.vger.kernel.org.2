@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085CD391D05
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD039391D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbhEZQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:30:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35361 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233212AbhEZQaK (ORCPT
+        id S234205AbhEZQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232985AbhEZQb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:30:10 -0400
-Received: from mail-ua1-f72.google.com ([209.85.222.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llwOb-0008Uq-Rk
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 16:28:37 +0000
-Received: by mail-ua1-f72.google.com with SMTP id j17-20020ab018510000b029020db76022bbso1006581uag.12
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:28:37 -0700 (PDT)
+        Wed, 26 May 2021 12:31:27 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664E1C061574;
+        Wed, 26 May 2021 09:29:55 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id g17so1555870wrs.13;
+        Wed, 26 May 2021 09:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2BR2CpRv5HUtxyF1HEzJXZYtJUUJGLsBTSqdUuHN7zA=;
+        b=gf/XOSZVYbCOim1OET+mYLpTrqZ76gUyQqjCbZN/qlFwFtlzvuaZl61FdQEADmWaA0
+         TSAOGHv7/1Xy3c0e5CbBfqlJN9/x3VxAx7wm+5ER5sA9MBkANhIkiAJJfeRuzE5TIIxD
+         8SQtf6CPnIHV96nehAE01lGzq67TQ4ZHvEpdWPsht4syTldGlKewWOUHbbVtK4Ej/VOp
+         0nUKLj4HlVx7X38Uo0vT9bO/PnEIMm77uxE8Xq16aD/RMpVtokWc1rYITI8lKKBotfPd
+         LHWf+dga3w54rU3XXlDl6mKTSrfdxF/KB0vseClIjXnliKr97U7zCSUjSY/1Y9NsqPaZ
+         lEBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bQeJhP3LhWWV67sOTmMVHHUEhXA/LCrkujbqLnATauc=;
-        b=nYZEPqPddZYXj1WuVyjB6mU7szcGCFrol8HEnANMcl+ozKgZMmc6w7C9HApv1sUCBF
-         mEGBcMen7aiTx725sudI5o6sRKImxvza/Rq9tu4JfMjjBrWxNzloQAg0CZRrJBASukRU
-         PwvLBHQ29D06m/PYo9EfgKKtwL4nQ6cL+nkVc1jXE4txtYhgUYLMmyJrvET91MbIVPZ+
-         HtHUKxww7ME7xEkalPoqYmsRpKBQXNmE7ZoowAvTTzlIaUAX0YH5CiWxWL67XLOWS3se
-         nLNTQJRojW+lW0CfT9hibVSXTghCqEvh1k7Ly4qQCehQ25fX+b9GTy6lBqPTAFJTU5iM
-         Y+IQ==
-X-Gm-Message-State: AOAM5336Q+ENodRrwoMJDumR6sFrWsUjoGfQio38ABgmL6JK226bSeSf
-        JXisJcGO3OZ9WqDv9IEgLiiCpJcCol6NLgkqceYEkSwcnF0I6KmE+d7GQEt7+hIHbKsPgcqGlv9
-        VYeYKEF2lk4RCorImrZ1Kzg9cWxQO1lpvtTPLnQyEhg==
-X-Received: by 2002:ab0:2008:: with SMTP id v8mr33692484uak.30.1622046517045;
-        Wed, 26 May 2021 09:28:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwbwHEmqJ3RtAMjz4cmpXCr7XJaqLUoEOa3vIaau1dME7xxVObNNEU5kb2sy0Ls9J44Fg11OA==
-X-Received: by 2002:ab0:2008:: with SMTP id v8mr33692458uak.30.1622046516867;
-        Wed, 26 May 2021 09:28:36 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id y26sm2114147vkl.39.2021.05.26.09.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 09:28:36 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RESEND PATCH] arm64: dts: intel: socfpga_agilex_socdk: align LED node names with dtschema
-Date:   Wed, 26 May 2021 12:28:27 -0400
-Message-Id: <20210526162827.135276-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        bh=2BR2CpRv5HUtxyF1HEzJXZYtJUUJGLsBTSqdUuHN7zA=;
+        b=QZjyhu4VU1l6WAiBJvmj/KisCjrPV/KCzaZmEKegKbjp2xOwPkVpq/fVHcmdacgkC9
+         oS1AXZv+n3h3HQVgOUfBG2ShC1eEBrkUQjQlZD8XlzJIh1vMVHzaPSEW/3ZAZ+ViCVSK
+         zCdmcy4CgU2uIq/KEquYolW/WmAm1ThLcHckpmpbW5dHaYg9qhF5bJ3s9ivycikXj7n6
+         Rhf9P2OoFuCk8vy8jMiQV9+qgHPRYBYVjQzyh2H5SnYYSnjxzR7JU1TaoNEWbqb6iklP
+         kuf7gwtwDxRs4qxvaBHcO0mPzKCRqLEKpep/wMwQqhd8miMDEY3dxJQnVjXcTXqaTZJg
+         2PMQ==
+X-Gm-Message-State: AOAM533kdSRgoUzHxxY1UJFsgZT9J24Jzp+j8EJlxTHTsBr/ch7f1QZU
+        +2ksSAY/y9EKBaEKsEloNQk=
+X-Google-Smtp-Source: ABdhPJyOSJ3dplHGyVVRAngVGaxH8j406gBMGci9x8u/90yiXrPEDkoJqHB+H0PMlJGwXCnQkSXF9Q==
+X-Received: by 2002:a5d:4a4f:: with SMTP id v15mr34464625wrs.154.1622046594006;
+        Wed, 26 May 2021 09:29:54 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.236.10])
+        by smtp.gmail.com with ESMTPSA id z203sm3561450wmg.9.2021.05.26.09.29.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 09:29:53 -0700 (PDT)
+To:     Marco Elver <elver@google.com>, axboe@kernel.dk
+Cc:     syzbot <syzbot+73554e2258b7b8bf0bbf@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, dvyukov@google.com
+References: <000000000000fa9f7005c33d83b9@google.com>
+ <YK5tyZNAFc8dh6ke@elver.google.com> <YK5uygiCGlmgQLKE@elver.google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [syzbot] KCSAN: data-race in __io_uring_cancel /
+ io_uring_try_cancel_requests
+Message-ID: <b5cff8b6-bd9c-9cbe-4f5f-52552d19ca48@gmail.com>
+Date:   Wed, 26 May 2021 17:29:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <YK5uygiCGlmgQLKE@elver.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+On 5/26/21 4:52 PM, Marco Elver wrote:
+> Due to some moving around of code, the patch lost the actual fix (using
+> atomically read io_wq) -- so here it is again ... hopefully as intended.
+> :-)
 
-Align the LED node names with dtschema to silence dtbs_check warnings
-like:
+"fortify" damn it... It was synchronised with &ctx->uring_lock
+before, see io_uring_try_cancel_iowq() and io_uring_del_tctx_node(),
+so should not clear before *del_tctx_node()
 
-    leds: 'hps0', 'hps1', 'hps2' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+The fix should just move it after this sync point. Will you send
+it out as a patch?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-index 0f7a0ba344be..39de93c370b4 100644
---- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-+++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-@@ -20,17 +20,17 @@ chosen {
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7db6aaf31080..b76ba26b4c6c 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -9075,11 +9075,12 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
+ 	struct io_tctx_node *node;
+ 	unsigned long index;
  
- 	leds {
- 		compatible = "gpio-leds";
--		hps0 {
-+		led0 {
- 			label = "hps_led0";
- 			gpios = <&portb 20 GPIO_ACTIVE_HIGH>;
- 		};
+-	tctx->io_wq = NULL;
+ 	xa_for_each(&tctx->xa, index, node)
+ 		io_uring_del_tctx_node(index);
+-	if (wq)
++	if (wq) {
++		tctx->io_wq = NULL;
+ 		io_wq_put_and_exit(wq);
++	}
+ }
  
--		hps1 {
-+		led1 {
- 			label = "hps_led1";
- 			gpios = <&portb 19 GPIO_ACTIVE_HIGH>;
- 		};
+ static s64 tctx_inflight(struct io_uring_task *tctx, bool tracked)
+
  
--		hps2 {
-+		led2 {
- 			label = "hps_led2";
- 			gpios = <&portb 21 GPIO_ACTIVE_HIGH>;
- 		};
 -- 
-2.27.0
-
+Pavel Begunkov
