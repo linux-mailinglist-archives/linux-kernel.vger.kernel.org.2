@@ -2,743 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E4A3918E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913D53918ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234225AbhEZNeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:34:19 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:32985 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234096AbhEZNeS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:34:18 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id lteLlTqf4WkKbltePlDLYt; Wed, 26 May 2021 15:32:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622035965; bh=dDo8WJcl2J5YM5K0F3lgr0L3poad9ccDlBve0FDM9Eg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RgtMux/Rlzlo1htpY3Tql1/pCVwOnuRLfT0MCxWU+rVYZ2RJYSIqrRyimxoRjTVUA
-         dVBJq3wEpoYwbWODdh4Pr5H02SweLe90188mfqB7GxspBjsBaDpEATZM3TTta6yT4E
-         rTl8DzFJNsgHl11WU4qv65bwr/zOkML1Nx39SQ47zvm7WDAeVJtMA0JDd9xbJcR/Tk
-         JAGg0PMlfu8JeuabAYRxdtcaQZtg4h7uN7UPuVFVuihIWIMRAWIOX0gpNuIRyvnYxm
-         bv66VAwJ3VTwrgjmuPLUy4Urz/88I/PDZiJ4YslYYasVjRr2bzabYVxbHqEe5CNjHv
-         bVUJ4xjictkvQ==
-Subject: Re: [PATCH v5] media: em28xx: Fix race condition between open and
- init function
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        mchehab@kernel.org, skhan@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
-References: <20210507193457.14819-1-igormtorrente@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <4aa4c796-cdd5-8a1c-3b74-369dd339c540@xs4all.nl>
-Date:   Wed, 26 May 2021 15:32:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210507193457.14819-1-igormtorrente@gmail.com>
+        id S234262AbhEZNgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:36:17 -0400
+Received: from mail-mw2nam08on2072.outbound.protection.outlook.com ([40.107.101.72]:62688
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234096AbhEZNgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 09:36:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gj9w1MlnXtPTogp86VIg5FA80+zmntiZMdMJxlfhKDbmlVZrLSbYIa5npdUzi28x42EPgj2yWIckDTV1zRWsA7iVqTwadRB2N0zINpqTM2yCJW/SM/N7Og58NVHP9NORULk2s4X0MH1oF7q2oqNur4FH/yBVxeG+pOncF6XZUyZVPsQGWhg6EDvMdpsRaFCIYKHIKrtUl74mGkSd+ToQzCAoMt/uoABc2HD1xTH7POxDratV/Nlr42rGmihSqO5/+S5+OZEWSahxFj8fUARaF7WwXvbmTkkSHrMux4Vq/Sn8TxQEtt3mbWN5Y1PXmBIWCihkDh6za/zNU6dMgX+O0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zzNyPzoRmIrd4W+4cNvOqkt2UTEWm503AoFNnMZBytw=;
+ b=PfdJReFfQpqSYHLb7Y6f/R0HuaVrLGvA3FYpIVCue28CGkopXxDK5d6TtwwcJzyVH8QsFpsG9ZPk0G0ZZc2QuEQJk+AapTK+K656DUksEx//N+SlI3Zj0F+7kqgAeZoFwN69U8g4lya+OUDzfCCGUNJfIaHmoMFTtzw/iA8atv02LwZADu66UNvZbQk167oBFB2mSIin3ulNZicM+tP2+zPT1piHik5lLb5qZx/eZsYz6KDOy4ATFU22oMtyWo+OBTr0spclLyhrWrWwEUNC96vI0fGtBSihej29HWetS7jSfYpojy3GBJh1ThWgVWwsuequzXG4rtfBXbNP9OB/4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zzNyPzoRmIrd4W+4cNvOqkt2UTEWm503AoFNnMZBytw=;
+ b=E/+JNo+UUnq2SvJsh0zJqyRHeuCQ90QtP9U04DaVb4o7ndGisMzwTu+KOMCOnhUM9kDZOTI9qFdw0wu7xnWfY8TfbOqU+zJYuJSlkXWlVW2tor682wh0fOsWClb6QrR1jOqyA7UtFSpiYSpWpQbPgus9cCmxaZeaPetTkltljNI=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Wed, 26 May
+ 2021 13:34:39 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4150.023; Wed, 26 May 2021
+ 13:34:39 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 14/20] x86/sev: Add helper for validating
+ pages in early enc attribute changes
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-15-brijesh.singh@amd.com> <YK4lTP+bHBzUxAOZ@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <5177b468-c05b-a286-7042-88a64f063ff3@amd.com>
+Date:   Wed, 26 May 2021 08:34:37 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
+In-Reply-To: <YK4lTP+bHBzUxAOZ@zn.tnic>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfPk5ibZGSeTCQ3YZ4BkIGI40BEJf6GYSjNlMXQ6GVvbnjr4MRNWzQSG6+lwvp5UAI+HvV4AFyk7+VL7XZucDHEllrMdfcTJm2IAN3Mden6aSwbiNTgOo
- VNjyrprGL8M98sQ5Vo1R4/PYaiwQgNMi0QlDzSTK/iGN8hZVvbGp93aQLqRh9Y6gcEGSo+O+BwEWQESpbYuOuTUX0W7tH4gaL1gUnIqI4AfY/x0q4Z5hkqPs
- 9+7mxgWrIuN0qu2tW528pIYs8nanhaE39PpyIer9TEMMYAFQ+SErsJbXWhHRGPljzKKLbCjhArf+QtXCIuPLjNu60dcVVNULs7m1Ji3ULa4SVVZcskRexU9f
- G/IDkb8rlNG71zR3XGnbBkdMTopxOuGRjk8Ea6dcWjfWeyaqGNjvc0tAuGjO/nE0tu1D/YmV22gZSrDUi4kbcAcf7VxVtg==
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN1PR12CA0044.namprd12.prod.outlook.com
+ (2603:10b6:802:20::15) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN1PR12CA0044.namprd12.prod.outlook.com (2603:10b6:802:20::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Wed, 26 May 2021 13:34:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eed96b32-04f4-4148-8819-08d9204b02ed
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4510:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB451058D0A1976C39FDD8E1F6E5249@SA0PR12MB4510.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 923cgw1miYk635ZYxtJfU/BHcAheLiULj7ITQBoQqq+kXo68gBn5L9ZyfUFK3HtC9cyLLypMgMSXpt+1M9fAVkDUpDIJ6K0zRTUovsz+2quJb2cfOgr861Q4jlxaBJ+OEYuN7VmjqPN6XzgcJxgoBrql+1toHMvdEvxaajM6x69yLptIAewlru5Xg2ZrmshtW9hut/ypYgLXu5JhZSMEgo1jYFKo+Z03P5sA4JzG4XxUwjExkX/93OdM/vz5bY7H2jdYedeAj1Z8hThcKS0Oh+HD/hZ8KmpPV0FrAvCnEazLZXaxUdWuEB9LYIBYDoLIYKUhsPCUy9i7ve1TM1addzugtNrW+HeTUaAmaF8nVb/TaPkLwsga9hl9PMwAtBA1IIL/porXwrenY3xj/ItD/hJNTBzPwIVaBnxx6/rRcAN3NyqdtvIV4JkEKccqXcQzhKbX77bkssAtaJO1S8lkzangCELXyuUWYG1LZ62M3NcSkFWxwD37nPdN0nfgKwv8jeWKLNoJ0vKZXjXsOYKrs0uf/04NjkTZlcOWAZA6s7VSM6yiANM221JMkclEyPAle+0XTg558v8sWtfULmJRLQhr/ekzzQ16kgg1fY5+Ukn0/HksI4zdqUcItUfnKfIsOLXave3D0qFQsHP5QM6yeq56MAedI3Dd6uuG4tdewob4fEOPCp0udamYoxvhaDK3luhB4NRyr/FOhqo6FZx46crZcUlzEqUrj6ME7z9am8M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39860400002)(66476007)(66556008)(2906002)(8676002)(83380400001)(6916009)(86362001)(26005)(36756003)(52116002)(53546011)(6506007)(66946007)(4326008)(38350700002)(31686004)(6486002)(38100700002)(8936002)(478600001)(5660300002)(6512007)(7416002)(16526019)(44832011)(186003)(316002)(31696002)(956004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a0VqWnVFejZjdjZGUksrazJVa1pBTnlFdm1VM3NpSnZHbVZtTFd2RDY5QnRF?=
+ =?utf-8?B?Sk1oRmJFcDlmZ2VPcWpGZk5KSHl1dEMrdUxzeHB2c29YKzYybWRhdHFaRWdS?=
+ =?utf-8?B?aFgzMzZvWEc5U3UweVYwbDVvMDU1MURKQWttM1RxRG1OZ3NaYUtKM09XVU9v?=
+ =?utf-8?B?STNoNnVIby9QMzM4Tm52NzJDL0xvUmlTWVRydzVGNGpMU2dEVzBZa0VqT2xN?=
+ =?utf-8?B?b3Z2RTNzRkhXbXVrRGV3ODQ2NkhtODhIYjJ6YVJJZFp3VGJkWGxUeHZCbmJn?=
+ =?utf-8?B?WFdqQmROenphcUNTRU8yZDV4czNnRkJ4R2xLTmlHMmh4eU02UHdnaW5nUUZJ?=
+ =?utf-8?B?K283alVnUHVPTjNEeEt2S0U3dTBmdEp6ZnRibXJqZnVNVStYazVyY1lsZlFW?=
+ =?utf-8?B?QXdsUW9rcWlPWk9sUGxGK2xpbTBuVTZEL1VFQndPdzl4VHg0ZlhESjVGbEpF?=
+ =?utf-8?B?RWFkQmpyM1YxUVV4amRVVEpvdmxsNFd2c0U0NnNUZENvTnYxLzBuWWVlV1cr?=
+ =?utf-8?B?NHV3QWcxMXZJd3pYVzBMcGtDb042Qy9DaDFxNzFKckZ5ZnBKd0oxU0FRaDR6?=
+ =?utf-8?B?dDQ5a2hWdU5oOEx0TXFIeW1sRWZ3QTg4UGhPaGJyTGJRcklORE1ncTNnV3F1?=
+ =?utf-8?B?aU5zanZBTWdySEVRdkRyMzFqbzF2NzBISmtyZzRTejA2dHBvYXlZT3FmYnhK?=
+ =?utf-8?B?YjV6WTZyVDJLQ2dmTGdEUzZhWEEyVGxwYmtUbSt2RVFzdHlZQ3BUUUhlblB3?=
+ =?utf-8?B?U0VUeGFuNG5DOUg5ZDIybFNnWnhONk1acE1PamR3QmRKaVBlMHBWOU9ja1J3?=
+ =?utf-8?B?U2QxMFE1R29nc2F1b1lnT2EvTlprRmFaMVEyRTdtZUcrZG5hNWdzQTg0TzY4?=
+ =?utf-8?B?VzM2OWJFUzA4VWgzTmtXZGhsNlBJR2pMTEZXVWZXQWN6cTJWcUNrWmg1b1Jk?=
+ =?utf-8?B?MXpJZnhDdStCaDZoNlFuUzdTdnZzY1g3TGREVUJCRlYxaEdOTXpNeTc2bmRp?=
+ =?utf-8?B?anZ6SlhhTFJ3RjlJcURhdHdnRm9xZzh4VHRaLzR4OVJCZ3ZaRHM2dk9HQ1ZI?=
+ =?utf-8?B?cEQ0UTc3eEdGcTcwdXBZU0E2TU9HN0k1bCtYL2JodFdHSWxpdUtDcUlhazJJ?=
+ =?utf-8?B?cDFoZXpQMjhNdERwVU53d3BjUnVxdHN2NVdkTVJaVHN5NTR6WDBIcFYzbmlO?=
+ =?utf-8?B?M1YyYU8zd3NMcXlSY05YeEFTQ21naDgrbUF0ZmVyZU5jTUNEbWNLOUZMRlp0?=
+ =?utf-8?B?YVpOSjlVRnpiZjkvcS8vMEwydzhHNDN1ckkxaWY4WjNuZ2sxbG1ENkgzWDc3?=
+ =?utf-8?B?Zk1QRkV2dGUzbll0WkhrZUNmUGNRd1lTcExXUEVUQjZ0NVRrSkJjMURlVmtJ?=
+ =?utf-8?B?WUl5K1hML2QybG9EdEVJMm1Oa2M1UXJGNTJGVzk1NnVjdEJSNklwK1JGTy8w?=
+ =?utf-8?B?UlNOV0hOTFhaakxkMkxoS3QrdXJ4eDE0ODdMWStVbEE4UktkQURLSEgvZVY5?=
+ =?utf-8?B?YlgweCsrMndUcmN3TnF2OStYR2o0T0FQN1J1RmlmTDRWL054Z3Z2M2p5blpn?=
+ =?utf-8?B?N0FHaS9YWWcvNUFNUnVneUtyM0c1NG8vaEdOdERLazhSQlJiaWFSRW5Kcy9m?=
+ =?utf-8?B?K2JPWUtmSzVWZmltMlJWTFdMcmNDS1Fxc3BNQ080Tm5Gc2c2V3FxNGVkNCsy?=
+ =?utf-8?B?aHNqdjUvNTE2Y2xLWE9LVGR0UU9PNjFENmw4M3h2VFdZZEc2ODV4YjVHSkdD?=
+ =?utf-8?Q?Og3+TC5UCPGeI/Ls5Xcsr5h4yyKjCsNjydqf3V0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eed96b32-04f4-4148-8819-08d9204b02ed
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2021 13:34:39.6011
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9H5cv7FFL4NkHbfaM1MtzvXE/e2lErVAEFdhSg+xStuPDnBliUQIatBMMTd8nHrA4fYDfPaBHI73aM/cnLOBsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4510
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2021 21:34, Igor Matheus Andrade Torrente wrote:
-> Fixes a race condition - for lack of a more precise term - between
-> em28xx_v4l2_open and em28xx_v4l2_init, by detaching the v4l2_dev
-> struct from the em28xx_v4l2, and managing the em28xx_v4l2 and v4l2_dev
-> life-time with the v4l2_dev->release() callback.
-> 
-> The race happens when a thread[1] - containing the em28xx_v4l2_init()
-> code - calls the v4l2_mc_create_media_graph(), and it return a error,
-> if a thread[2] - running v4l2_open() - pass the verification point
-> and reaches the em28xx_v4l2_open() before the thread[1] finishes
-> the deregistration of v4l2 subsystem, the thread[1] will free all
-> resources before the em28xx_v4l2_open() can process their things,
-> because the em28xx_v4l2_init() has the dev->lock. And all this lead
-> the thread[2] to cause a user-after-free.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-and-tested-by: syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
-> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-> ---
-> 
-> V2: Add v4l2_i2c_new_subdev null check
->     Deal with v4l2 subdevs dependencies
-> 
-> V3: Fix link error when compiled as a module
-> 
-> V4: Remove duplicated v4l2_device_disconnect
->     in the em28xx_v4l2_fini
-> 
-> V5: Move all the v4l2 resources management
->     to the v4l2_dev->release() callback.
-> 
-> ---
->  drivers/media/usb/em28xx/em28xx-camera.c |   4 +-
->  drivers/media/usb/em28xx/em28xx-cards.c  |   3 +-
->  drivers/media/usb/em28xx/em28xx-video.c  | 310 +++++++++++++----------
->  drivers/media/usb/em28xx/em28xx.h        |   3 +-
->  4 files changed, 181 insertions(+), 139 deletions(-)
-> 
-> diff --git a/drivers/media/usb/em28xx/em28xx-camera.c b/drivers/media/usb/em28xx/em28xx-camera.c
-> index d1e66b503f4d..436c5a8cbbb6 100644
-> --- a/drivers/media/usb/em28xx/em28xx-camera.c
-> +++ b/drivers/media/usb/em28xx/em28xx-camera.c
-> @@ -340,7 +340,7 @@ int em28xx_init_camera(struct em28xx *dev)
->  		v4l2->sensor_xtal = 4300000;
->  		pdata.xtal = v4l2->sensor_xtal;
->  		if (NULL ==
-> -		    v4l2_i2c_new_subdev_board(&v4l2->v4l2_dev, adap,
-> +		    v4l2_i2c_new_subdev_board(v4l2->v4l2_dev, adap,
->  					      &mt9v011_info, NULL))
->  			return -ENODEV;
->  		v4l2->vinmode = EM28XX_VINMODE_RGB8_GRBG;
-> @@ -394,7 +394,7 @@ int em28xx_init_camera(struct em28xx *dev)
->  		v4l2->sensor_yres = 480;
->  
->  		subdev =
-> -		     v4l2_i2c_new_subdev_board(&v4l2->v4l2_dev, adap,
-> +		     v4l2_i2c_new_subdev_board(v4l2->v4l2_dev, adap,
->  					       &ov2640_info, NULL);
->  		if (!subdev)
->  			return -ENODEV;
-> diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-> index ba9292e2a587..6e67cf0a1e04 100644
-> --- a/drivers/media/usb/em28xx/em28xx-cards.c
-> +++ b/drivers/media/usb/em28xx/em28xx-cards.c
-> @@ -4120,7 +4120,6 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
->  	struct em28xx *dev;
->  
->  	dev = usb_get_intfdata(intf);
-> -	usb_set_intfdata(intf, NULL);
->  
->  	if (!dev)
->  		return;
-> @@ -4148,6 +4147,8 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
->  		dev->dev_next = NULL;
->  	}
->  	kref_put(&dev->ref, em28xx_free_device);
-> +
-> +	usb_set_intfdata(intf, NULL);
->  }
->  
->  static int em28xx_usb_suspend(struct usb_interface *intf,
-> diff --git a/drivers/media/usb/em28xx/em28xx-video.c b/drivers/media/usb/em28xx/em28xx-video.c
-> index 6b84c3413e83..519bbd458b06 100644
-> --- a/drivers/media/usb/em28xx/em28xx-video.c
-> +++ b/drivers/media/usb/em28xx/em28xx-video.c
-> @@ -184,7 +184,7 @@ static int em28xx_vbi_supported(struct em28xx *dev)
->   */
->  static void em28xx_wake_i2c(struct em28xx *dev)
->  {
-> -	struct v4l2_device *v4l2_dev = &dev->v4l2->v4l2_dev;
-> +	struct v4l2_device *v4l2_dev = dev->v4l2->v4l2_dev;
->  
->  	v4l2_device_call_all(v4l2_dev, 0, core,  reset, 0);
->  	v4l2_device_call_all(v4l2_dev, 0, video, s_routing,
-> @@ -1132,11 +1132,11 @@ int em28xx_start_analog_streaming(struct vb2_queue *vq, unsigned int count)
->  			f.type = V4L2_TUNER_RADIO;
->  		else
->  			f.type = V4L2_TUNER_ANALOG_TV;
-> -		v4l2_device_call_all(&v4l2->v4l2_dev,
-> +		v4l2_device_call_all(v4l2->v4l2_dev,
->  				     0, tuner, s_frequency, &f);
->  
->  		/* Enable video stream at TV decoder */
-> -		v4l2_device_call_all(&v4l2->v4l2_dev, 0, video, s_stream, 1);
-> +		v4l2_device_call_all(v4l2->v4l2_dev, 0, video, s_stream, 1);
->  	}
->  
->  	v4l2->streaming_users++;
-> @@ -1157,7 +1157,7 @@ static void em28xx_stop_streaming(struct vb2_queue *vq)
->  
->  	if (v4l2->streaming_users-- == 1) {
->  		/* Disable video stream at TV decoder */
-> -		v4l2_device_call_all(&v4l2->v4l2_dev, 0, video, s_stream, 0);
-> +		v4l2_device_call_all(v4l2->v4l2_dev, 0, video, s_stream, 0);
->  
->  		/* Last active user, so shutdown all the URBS */
->  		em28xx_uninit_usb_xfer(dev, EM28XX_ANALOG_MODE);
-> @@ -1192,7 +1192,7 @@ void em28xx_stop_vbi_streaming(struct vb2_queue *vq)
->  
->  	if (v4l2->streaming_users-- == 1) {
->  		/* Disable video stream at TV decoder */
-> -		v4l2_device_call_all(&v4l2->v4l2_dev, 0, video, s_stream, 0);
-> +		v4l2_device_call_all(v4l2->v4l2_dev, 0, video, s_stream, 0);
->  
->  		/* Last active user, so shutdown all the URBS */
->  		em28xx_uninit_usb_xfer(dev, EM28XX_ANALOG_MODE);
-> @@ -1286,7 +1286,7 @@ static int em28xx_vb2_setup(struct em28xx *dev)
->  
->  static void video_mux(struct em28xx *dev, int index)
->  {
-> -	struct v4l2_device *v4l2_dev = &dev->v4l2->v4l2_dev;
-> +	struct v4l2_device *v4l2_dev = dev->v4l2->v4l2_dev;
->  
->  	dev->ctl_input = index;
->  	dev->ctl_ainput = INPUT(index)->amux;
-> @@ -1565,7 +1565,7 @@ static int vidioc_querystd(struct file *file, void *priv, v4l2_std_id *norm)
->  {
->  	struct em28xx *dev = video_drvdata(file);
->  
-> -	v4l2_device_call_all(&dev->v4l2->v4l2_dev, 0, video, querystd, norm);
-> +	v4l2_device_call_all(dev->v4l2->v4l2_dev, 0, video, querystd, norm);
->  
->  	return 0;
->  }
-> @@ -1596,7 +1596,7 @@ static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id norm)
->  		      &v4l2->hscale, &v4l2->vscale);
->  
->  	em28xx_resolution_set(dev);
-> -	v4l2_device_call_all(&v4l2->v4l2_dev, 0, video, s_std, v4l2->norm);
-> +	v4l2_device_call_all(v4l2->v4l2_dev, 0, video, s_std, v4l2->norm);
->  
->  	return 0;
->  }
-> @@ -1616,7 +1616,7 @@ static int vidioc_g_parm(struct file *file, void *priv,
->  	p->parm.capture.readbuffers = EM28XX_MIN_BUF;
->  	p->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
->  	if (dev->is_webcam) {
-> -		rc = v4l2_device_call_until_err(&v4l2->v4l2_dev, 0,
-> +		rc = v4l2_device_call_until_err(v4l2->v4l2_dev, 0,
->  						video, g_frame_interval, &ival);
->  		if (!rc)
->  			p->parm.capture.timeperframe = ival.interval;
-> @@ -1648,7 +1648,7 @@ static int vidioc_s_parm(struct file *file, void *priv,
->  	memset(&p->parm, 0, sizeof(p->parm));
->  	p->parm.capture.readbuffers = EM28XX_MIN_BUF;
->  	p->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
-> -	rc = v4l2_device_call_until_err(&dev->v4l2->v4l2_dev, 0,
-> +	rc = v4l2_device_call_until_err(dev->v4l2->v4l2_dev, 0,
->  					video, s_frame_interval, &ival);
->  	if (!rc)
->  		p->parm.capture.timeperframe = ival.interval;
-> @@ -1839,7 +1839,7 @@ static int vidioc_g_tuner(struct file *file, void *priv,
->  
->  	strscpy(t->name, "Tuner", sizeof(t->name));
->  
-> -	v4l2_device_call_all(&dev->v4l2->v4l2_dev, 0, tuner, g_tuner, t);
-> +	v4l2_device_call_all(dev->v4l2->v4l2_dev, 0, tuner, g_tuner, t);
->  	return 0;
->  }
->  
-> @@ -1851,7 +1851,7 @@ static int vidioc_s_tuner(struct file *file, void *priv,
->  	if (t->index != 0)
->  		return -EINVAL;
->  
-> -	v4l2_device_call_all(&dev->v4l2->v4l2_dev, 0, tuner, s_tuner, t);
-> +	v4l2_device_call_all(dev->v4l2->v4l2_dev, 0, tuner, s_tuner, t);
->  	return 0;
->  }
->  
-> @@ -1878,8 +1878,8 @@ static int vidioc_s_frequency(struct file *file, void *priv,
->  	if (f->tuner != 0)
->  		return -EINVAL;
->  
-> -	v4l2_device_call_all(&v4l2->v4l2_dev, 0, tuner, s_frequency, f);
-> -	v4l2_device_call_all(&v4l2->v4l2_dev, 0, tuner, g_frequency, &new_freq);
-> +	v4l2_device_call_all(v4l2->v4l2_dev, 0, tuner, s_frequency, f);
-> +	v4l2_device_call_all(v4l2->v4l2_dev, 0, tuner, g_frequency, &new_freq);
->  	v4l2->frequency = new_freq.frequency;
->  
->  	return 0;
-> @@ -1897,7 +1897,7 @@ static int vidioc_g_chip_info(struct file *file, void *priv,
->  		strscpy(chip->name, "ac97", sizeof(chip->name));
->  	else
->  		strscpy(chip->name,
-> -			dev->v4l2->v4l2_dev.name, sizeof(chip->name));
-> +			dev->v4l2->v4l2_dev->name, sizeof(chip->name));
->  	return 0;
->  }
->  
-> @@ -2095,7 +2095,7 @@ static int radio_g_tuner(struct file *file, void *priv,
->  
->  	strscpy(t->name, "Radio", sizeof(t->name));
->  
-> -	v4l2_device_call_all(&dev->v4l2->v4l2_dev, 0, tuner, g_tuner, t);
-> +	v4l2_device_call_all(dev->v4l2->v4l2_dev, 0, tuner, g_tuner, t);
->  
->  	return 0;
->  }
-> @@ -2108,26 +2108,11 @@ static int radio_s_tuner(struct file *file, void *priv,
->  	if (t->index != 0)
->  		return -EINVAL;
->  
-> -	v4l2_device_call_all(&dev->v4l2->v4l2_dev, 0, tuner, s_tuner, t);
-> +	v4l2_device_call_all(dev->v4l2->v4l2_dev, 0, tuner, s_tuner, t);
->  
->  	return 0;
->  }
->  
-> -/*
-> - * em28xx_free_v4l2() - Free struct em28xx_v4l2
-> - *
-> - * @ref: struct kref for struct em28xx_v4l2
-> - *
-> - * Called when all users of struct em28xx_v4l2 are gone
-> - */
-> -static void em28xx_free_v4l2(struct kref *ref)
-> -{
-> -	struct em28xx_v4l2 *v4l2 = container_of(ref, struct em28xx_v4l2, ref);
-> -
-> -	v4l2->dev->v4l2 = NULL;
-> -	kfree(v4l2);
-> -}
-> -
->  /*
->   * em28xx_v4l2_open()
->   * inits the device and starts isoc transfer
-> @@ -2160,6 +2145,11 @@ static int em28xx_v4l2_open(struct file *filp)
->  	if (mutex_lock_interruptible(&dev->lock))
->  		return -ERESTARTSYS;
->  
-> +	if (!dev->v4l2) {
-> +		mutex_unlock(&dev->lock);
-> +		return -ENODEV;
-> +	}
-> +
->  	ret = v4l2_fh_open(filp);
->  	if (ret) {
->  		dev_err(&dev->intf->dev,
-> @@ -2184,11 +2174,10 @@ static int em28xx_v4l2_open(struct file *filp)
->  
->  	if (vdev->vfl_type == VFL_TYPE_RADIO) {
->  		em28xx_videodbg("video_open: setting radio device\n");
-> -		v4l2_device_call_all(&v4l2->v4l2_dev, 0, tuner, s_radio);
-> +		v4l2_device_call_all(v4l2->v4l2_dev, 0, tuner, s_radio);
->  	}
->  
-> -	kref_get(&dev->ref);
-> -	kref_get(&v4l2->ref);
-> +	v4l2_device_get(v4l2->v4l2_dev);
->  	v4l2->users++;
->  
->  	mutex_unlock(&dev->lock);
-> @@ -2221,34 +2210,8 @@ static int em28xx_v4l2_fini(struct em28xx *dev)
->  	dev_info(&dev->intf->dev, "Closing video extension\n");
->  
->  	mutex_lock(&dev->lock);
-> -
-> -	v4l2_device_disconnect(&v4l2->v4l2_dev);
-> -
->  	em28xx_uninit_usb_xfer(dev, EM28XX_ANALOG_MODE);
-> -
-> -	em28xx_v4l2_media_release(dev);
-> -
-> -	if (video_is_registered(&v4l2->radio_dev)) {
-> -		dev_info(&dev->intf->dev, "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->radio_dev));
-> -		video_unregister_device(&v4l2->radio_dev);
-> -	}
-> -	if (video_is_registered(&v4l2->vbi_dev)) {
-> -		dev_info(&dev->intf->dev, "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->vbi_dev));
-> -		video_unregister_device(&v4l2->vbi_dev);
-> -	}
-> -	if (video_is_registered(&v4l2->vdev)) {
-> -		dev_info(&dev->intf->dev, "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->vdev));
-> -		video_unregister_device(&v4l2->vdev);
-> -	}
 
-Don't remove this. If a disconnect happens you still need to unregister the
-video nodes here. The video_unregister_device call will call v4l2_device_put(),
-so if you move this to the v4l2_device release() callback, then the refcount
-will never reach 0 and the release() callback will never be called.
+On 5/26/21 5:39 AM, Borislav Petkov wrote:
+> On Fri, Apr 30, 2021 at 07:16:10AM -0500, Brijesh Singh wrote:
+>> +static void pvalidate_pages(unsigned long vaddr, unsigned int npages, bool validate)
+>> +{
+>> +	unsigned long vaddr_end;
+>> +	int rc;
+>> +
+>> +	vaddr = vaddr & PAGE_MASK;
+>> +	vaddr_end = vaddr + (npages << PAGE_SHIFT);
+>> +
+>> +	while (vaddr < vaddr_end) {
+>> +		rc = pvalidate(vaddr, RMP_PG_SIZE_4K, validate);
+>> +		if (rc) {
+>> +			WARN(rc, "Failed to validate address 0x%lx ret %d", vaddr, rc);
+> WARN does return the condition it warned on, look at its definition.
+>
+> IOW, you can do (and btw e_fail is not needed either):
+>
+>                 rc = pvalidate(vaddr, RMP_PG_SIZE_4K, validate);
+>                 if (WARN(rc, "Failed to validate address 0x%lx ret %d", vaddr, rc))
+> 			sev_es_terminate(1, GHCB_TERM_PVALIDATE);
+>
+> Ditto for the other WARN.
 
-> -
-> -	v4l2_ctrl_handler_free(&v4l2->ctrl_handler);
-> -	v4l2_device_unregister(&v4l2->v4l2_dev);
-> -
-> -	kref_put(&v4l2->ref, em28xx_free_v4l2);
-> -
-> +	v4l2_device_put(v4l2->v4l2_dev);
->  	mutex_unlock(&dev->lock);
->  
->  	kref_put(&dev->ref, em28xx_free_device);
-> @@ -2305,7 +2268,7 @@ static int em28xx_v4l2_close(struct file *filp)
->  			goto exit;
->  
->  		/* Save some power by putting tuner to sleep */
-> -		v4l2_device_call_all(&v4l2->v4l2_dev, 0, tuner, standby);
-> +		v4l2_device_call_all(v4l2->v4l2_dev, 0, tuner, standby);
->  
->  		/* do this before setting alternate! */
->  		em28xx_set_mode(dev, EM28XX_SUSPEND);
-> @@ -2322,10 +2285,9 @@ static int em28xx_v4l2_close(struct file *filp)
->  	}
->  
->  exit:
-> +	v4l2_device_put(v4l2->v4l2_dev);
->  	v4l2->users--;
-> -	kref_put(&v4l2->ref, em28xx_free_v4l2);
->  	mutex_unlock(&dev->lock);
-> -	kref_put(&dev->ref, em28xx_free_device);
->  
->  	return 0;
->  }
-> @@ -2445,7 +2407,7 @@ static void em28xx_vdev_init(struct em28xx *dev,
->  			     const char *type_name)
->  {
->  	*vfd		= *template;
-> -	vfd->v4l2_dev	= &dev->v4l2->v4l2_dev;
-> +	vfd->v4l2_dev	= dev->v4l2->v4l2_dev;
->  	vfd->lock	= &dev->lock;
->  	if (dev->is_webcam)
->  		vfd->tvnorms = 0;
-> @@ -2459,7 +2421,7 @@ static void em28xx_vdev_init(struct em28xx *dev,
->  static void em28xx_tuner_setup(struct em28xx *dev, unsigned short tuner_addr)
->  {
->  	struct em28xx_v4l2      *v4l2 = dev->v4l2;
-> -	struct v4l2_device      *v4l2_dev = &v4l2->v4l2_dev;
-> +	struct v4l2_device      *v4l2_dev = v4l2->v4l2_dev;
->  	struct tuner_setup      tun_setup;
->  	struct v4l2_frequency   f;
->  
-> @@ -2517,6 +2479,40 @@ static void em28xx_tuner_setup(struct em28xx *dev, unsigned short tuner_addr)
->  	v4l2_device_call_all(v4l2_dev, 0, tuner, s_frequency, &f);
->  }
->  
-> +static void em28xx_v4l2_dev_release(struct v4l2_device *v4l2_dev)
-> +{
-> +	struct em28xx *dev = v4l2_dev->dev->driver_data;
-> +	struct em28xx_v4l2 *v4l2 = dev->v4l2;
-> +
-> +	v4l2_device_unregister(v4l2->v4l2_dev);
-> +	em28xx_v4l2_media_release(dev);
-> +
-> +	if (video_is_registered(&v4l2->radio_dev)) {
-> +		dev_info(&dev->intf->dev,
-> +			 "V4L2 device %s deregistered\n",
-> +			 video_device_node_name(&v4l2->radio_dev));
-> +		vb2_video_unregister_device(&v4l2->radio_dev);
-> +	}
-> +	if (video_is_registered(&v4l2->vbi_dev)) {
-> +		dev_info(&dev->intf->dev,
-> +			 "V4L2 device %s deregistered\n",
-> +			 video_device_node_name(&v4l2->vbi_dev));
-> +		vb2_video_unregister_device(&v4l2->vbi_dev);
-> +	}
-> +	if (video_is_registered(&v4l2->vdev)) {
-> +		dev_info(&dev->intf->dev,
-> +			 "V4L2 device %s deregistered\n",
-> +			 video_device_node_name(&v4l2->vdev));
-> +		vb2_video_unregister_device(&v4l2->vdev);
-> +	}
-> +
-> +	v4l2_ctrl_handler_free(&v4l2->ctrl_handler);
-> +
-> +	kfree(v4l2_dev);
-> +	kfree(v4l2);
-> +	dev->v4l2 = NULL;
-> +}
-> +
->  static int em28xx_v4l2_init(struct em28xx *dev)
->  {
->  	u8 val;
-> @@ -2524,6 +2520,7 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  	unsigned int maxw;
->  	struct v4l2_ctrl_handler *hdl;
->  	struct em28xx_v4l2 *v4l2;
-> +	struct v4l2_subdev *sd;
->  
->  	if (dev->is_audio_only) {
->  		/* Shouldn't initialize IR for this interface */
-> @@ -2541,26 +2538,37 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  
->  	v4l2 = kzalloc(sizeof(*v4l2), GFP_KERNEL);
->  	if (!v4l2) {
-> -		mutex_unlock(&dev->lock);
-> -		return -ENOMEM;
-> +		ret = -ENOMEM;
-> +		goto err;
->  	}
-> -	kref_init(&v4l2->ref);
-> +
->  	v4l2->dev = dev;
->  	dev->v4l2 = v4l2;
->  
-> +	v4l2->v4l2_dev = kzalloc(sizeof(*v4l2->v4l2_dev), GFP_KERNEL);
-> +	if (!v4l2->v4l2_dev) {
-> +		ret = -ENOMEM;
-> +		kfree(v4l2);
-> +		goto err;
-> +	}
-> +
-> +	v4l2->v4l2_dev->release = em28xx_v4l2_dev_release;
-> +
->  #ifdef CONFIG_MEDIA_CONTROLLER
-> -	v4l2->v4l2_dev.mdev = dev->media_dev;
-> +	v4l2->v4l2_dev->mdev = dev->media_dev;
->  #endif
-> -	ret = v4l2_device_register(&dev->intf->dev, &v4l2->v4l2_dev);
-> +	ret = v4l2_device_register(&dev->intf->dev, v4l2->v4l2_dev);
->  	if (ret < 0) {
->  		dev_err(&dev->intf->dev,
->  			"Call to v4l2_device_register() failed!\n");
-> +		kfree(v4l2->v4l2_dev);
-> +		kfree(v4l2);
->  		goto err;
->  	}
->  
->  	hdl = &v4l2->ctrl_handler;
->  	v4l2_ctrl_handler_init(hdl, 8);
-> -	v4l2->v4l2_dev.ctrl_handler = hdl;
-> +	v4l2->v4l2_dev->ctrl_handler = hdl;
->  
->  	if (dev->is_webcam)
->  		v4l2->progressive = true;
-> @@ -2574,25 +2582,53 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  
->  	/* request some modules */
->  
-> -	if (dev->has_msp34xx)
-> -		v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -				    &dev->i2c_adap[dev->def_i2c_bus],
-> -				    "msp3400", 0, msp3400_addrs);
-> +	if (dev->has_msp34xx) {
-> +		sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +					 &dev->i2c_adap[dev->def_i2c_bus],
-> +					 "msp3400", 0, msp3400_addrs);
-> +		if (!sd) {
-> +			dev_err(&dev->intf->dev,
-> +				"Error while registering 'msp34xx' v4l2 subdevice!\n");
-> +			ret = -EINVAL;
-> +			goto unregister_dev;
-> +		}
-> +	}
->  
-> -	if (dev->board.decoder == EM28XX_SAA711X)
-> -		v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -				    &dev->i2c_adap[dev->def_i2c_bus],
-> -				    "saa7115_auto", 0, saa711x_addrs);
-> +	if (dev->board.decoder == EM28XX_SAA711X) {
-> +		sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +					 &dev->i2c_adap[dev->def_i2c_bus],
-> +					 "saa7115_auto", 0, saa711x_addrs);
-> +		if (!sd) {
-> +			dev_err(&dev->intf->dev,
-> +				"Error while registering 'EM28XX_SAA711X' v4l2 subdevice!\n");
-> +			ret = -EINVAL;
-> +			goto unregister_dev;
-> +		}
-> +	}
->  
-> -	if (dev->board.decoder == EM28XX_TVP5150)
-> -		v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -				    &dev->i2c_adap[dev->def_i2c_bus],
-> -				    "tvp5150", 0, tvp5150_addrs);
-> +	if (dev->board.decoder == EM28XX_TVP5150) {
-> +		sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +					 &dev->i2c_adap[dev->def_i2c_bus],
-> +					 "tvp5150", 0, tvp5150_addrs);
-> +		if (!sd) {
-> +			dev_err(&dev->intf->dev,
-> +				"Error while registering 'EM28XX_TVP5150' v4l2 subdevice!\n");
-> +			ret = -EINVAL;
-> +			goto unregister_dev;
-> +		}
-> +	}
->  
-> -	if (dev->board.adecoder == EM28XX_TVAUDIO)
-> -		v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -				    &dev->i2c_adap[dev->def_i2c_bus],
-> -				    "tvaudio", dev->board.tvaudio_addr, NULL);
-> +	if (dev->board.adecoder == EM28XX_TVAUDIO) {
-> +		sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +					 &dev->i2c_adap[dev->def_i2c_bus],
-> +					 "tvaudio", dev->board.tvaudio_addr, NULL);
-> +		if (!sd) {
-> +			dev_err(&dev->intf->dev,
-> +				"Error while registering 'EM28XX_TVAUDIO' v4l2 subdevice!\n");
-> +			ret = -EINVAL;
-> +			goto unregister_dev;
-> +		}
-> +	}
->  
->  	/* Initialize tuner and camera */
->  
-> @@ -2600,33 +2636,63 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  		unsigned short tuner_addr = dev->board.tuner_addr;
->  		int has_demod = (dev->board.tda9887_conf & TDA9887_PRESENT);
->  
-> -		if (dev->board.radio.type)
-> -			v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -					    &dev->i2c_adap[dev->def_i2c_bus],
-> -					    "tuner", dev->board.radio_addr,
-> -					    NULL);
-> -
-> -		if (has_demod)
-> -			v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -					    &dev->i2c_adap[dev->def_i2c_bus],
-> -					    "tuner", 0,
-> -					    v4l2_i2c_tuner_addrs(ADDRS_DEMOD));
-> +		if (dev->board.radio.type) {
-> +			sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +						 &dev->i2c_adap[dev->def_i2c_bus],
-> +						 "tuner", dev->board.radio_addr,
-> +						 NULL);
-> +			if (!sd) {
-> +				dev_err(&dev->intf->dev,
-> +					"Error while registering '%s' v4l2 subdevice!\n",
-> +					 dev->board.name);
-> +				ret = -EINVAL;
-> +				goto unregister_dev;
-> +			}
-> +		}
-> +
-> +		if (has_demod) {
-> +			sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +						 &dev->i2c_adap[dev->def_i2c_bus],
-> +						 "tuner", 0,
-> +						 v4l2_i2c_tuner_addrs(ADDRS_DEMOD));
-> +			if (!sd) {
-> +				dev_err(&dev->intf->dev,
-> +					"Error while registering '%s' v4l2 subdevice!\n",
-> +					 dev->i2c_adap[dev->def_i2c_bus].name);
-> +				ret = -EINVAL;
-> +				goto unregister_dev;
-> +			}
-> +		}
-> +
->  		if (tuner_addr == 0) {
->  			enum v4l2_i2c_tuner_type type =
->  				has_demod ? ADDRS_TV_WITH_DEMOD : ADDRS_TV;
-> -			struct v4l2_subdev *sd;
->  
-> -			sd = v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> +			sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
->  						 &dev->i2c_adap[dev->def_i2c_bus],
->  						 "tuner", 0,
->  						 v4l2_i2c_tuner_addrs(type));
-> -
-> -			if (sd)
-> +			if (sd) {
->  				tuner_addr = v4l2_i2c_subdev_addr(sd);
-> +			} else {
-> +				dev_err(&dev->intf->dev,
-> +					"Error while registering '%s' v4l2 subdevice!\n",
-> +					 dev->i2c_adap[dev->def_i2c_bus].name);
-> +				ret = -EINVAL;
-> +				goto unregister_dev;
-> +			}
-> +
->  		} else {
-> -			v4l2_i2c_new_subdev(&v4l2->v4l2_dev,
-> -					    &dev->i2c_adap[dev->def_i2c_bus],
-> -					    "tuner", tuner_addr, NULL);
-> +			sd = v4l2_i2c_new_subdev(v4l2->v4l2_dev,
-> +						 &dev->i2c_adap[dev->def_i2c_bus],
-> +						 "tuner", tuner_addr, NULL);
-> +			if (!sd) {
-> +				dev_err(&dev->intf->dev,
-> +					"Error while registering '%s' v4l2 subdevice!\n",
-> +					 dev->i2c_adap[dev->def_i2c_bus].name);
-> +				ret = -EINVAL;
-> +				goto unregister_dev;
-> +			}
->  		}
->  
->  		em28xx_tuner_setup(dev, tuner_addr);
-> @@ -2686,7 +2752,7 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  
->  	/* set default norm */
->  	v4l2->norm = V4L2_STD_PAL;
-> -	v4l2_device_call_all(&v4l2->v4l2_dev, 0, video, s_std, v4l2->norm);
-> +	v4l2_device_call_all(v4l2->v4l2_dev, 0, video, s_std, v4l2->norm);
->  	v4l2->interlaced_fieldmode = EM28XX_INTERLACED_DEFAULT;
->  
->  	/* Analog specific initialization */
-> @@ -2755,7 +2821,6 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  	if (ret)
->  		goto unregister_dev;
->  
-> -	/* allocate and fill video video_device struct */
->  	em28xx_vdev_init(dev, &v4l2->vdev, &em28xx_video_template, "video");
->  	mutex_init(&v4l2->vb_queue_lock);
->  	mutex_init(&v4l2->vb_vbi_queue_lock);
-> @@ -2768,7 +2833,6 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  	if (dev->tuner_type != TUNER_ABSENT)
->  		v4l2->vdev.device_caps |= V4L2_CAP_TUNER;
->  
-> -
->  	/* disable inapplicable ioctls */
->  	if (dev->is_webcam) {
->  		v4l2_disable_ioctl(&v4l2->vdev, VIDIOC_QUERYSTD);
-> @@ -2871,7 +2935,7 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  			 video_device_node_name(&v4l2->vbi_dev));
->  
->  	/* Save some power by putting tuner to sleep */
-> -	v4l2_device_call_all(&v4l2->v4l2_dev, 0, tuner, standby);
-> +	v4l2_device_call_all(v4l2->v4l2_dev, 0, tuner, standby);
->  
->  	/* initialize videobuf2 stuff */
->  	em28xx_vb2_setup(dev);
-> @@ -2885,30 +2949,8 @@ static int em28xx_v4l2_init(struct em28xx *dev)
->  	return 0;
->  
->  unregister_dev:
-> -	if (video_is_registered(&v4l2->radio_dev)) {
-> -		dev_info(&dev->intf->dev,
-> -			 "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->radio_dev));
-> -		video_unregister_device(&v4l2->radio_dev);
-> -	}
-> -	if (video_is_registered(&v4l2->vbi_dev)) {
-> -		dev_info(&dev->intf->dev,
-> -			 "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->vbi_dev));
-> -		video_unregister_device(&v4l2->vbi_dev);
-> -	}
-> -	if (video_is_registered(&v4l2->vdev)) {
-> -		dev_info(&dev->intf->dev,
-> -			 "V4L2 device %s deregistered\n",
-> -			 video_device_node_name(&v4l2->vdev));
-> -		video_unregister_device(&v4l2->vdev);
-> -	}
-> -
-> -	v4l2_ctrl_handler_free(&v4l2->ctrl_handler);
-> -	v4l2_device_unregister(&v4l2->v4l2_dev);
-> +	v4l2_device_put(v4l2->v4l2_dev);
->  err:
-> -	dev->v4l2 = NULL;
-> -	kref_put(&v4l2->ref, em28xx_free_v4l2);
->  	mutex_unlock(&dev->lock);
->  	return ret;
->  }
-> diff --git a/drivers/media/usb/em28xx/em28xx.h b/drivers/media/usb/em28xx/em28xx.h
-> index ab167cd1f400..e300a9f7936a 100644
-> --- a/drivers/media/usb/em28xx/em28xx.h
-> +++ b/drivers/media/usb/em28xx/em28xx.h
-> @@ -549,10 +549,9 @@ struct em28xx_eeprom {
->  #define EM28XX_RESOURCE_VBI   0x02
->  
->  struct em28xx_v4l2 {
-> -	struct kref ref;
->  	struct em28xx *dev;
->  
-> -	struct v4l2_device v4l2_dev;
-> +	struct v4l2_device *v4l2_dev;
+Okay, I agree with comment, I will go through each code block and use
+the return value from the WARN().
 
-Is this change really needed? As I mentioned in my v4 review, this
-shouldn't be needed if the freeing of all the memory is done in the right
-place.
+..
+>> +	unsigned long npages = PAGE_ALIGN(sz) >> PAGE_SHIFT;
+>> +
+>> +	if (dec) {
+>> +		/* If the paddr needs to be accessed decrypted, make the page shared before memcpy. */
+>> +		early_snp_set_memory_shared((unsigned long)__va(paddr), paddr, npages);
+>> +
+>> +		memcpy(dst, src, sz);
+>> +
+>> +		/* Restore the page state after the memcpy. */
+>> +		early_snp_set_memory_private((unsigned long)__va(paddr), paddr, npages);
+>> +	} else {
+>> +		memcpy(dst, src, sz);
+>> +	}
+> Hmm, this function needs reorg. How about this:
 
-Regards,
+I think with your edits its looking similar to what I had in v1. In v1
+early_snp_set_memory_shared() was not doing sev_snp_active()  check
+whereas it does now.I didn't check the sev_snp_active() in this function
+but I agree that it can be reorg. I am good with your changes. thanks
 
-	Hans
 
->  	struct v4l2_ctrl_handler ctrl_handler;
->  
->  	struct video_device vdev;
-> 
-
+>
+> /*
+>  * When SNP is active, change the page state from private to shared before
+>  * copying the data from the source to destination and restore after the copy.
+>  * This is required because the source address is mapped as decrypted by the
+>  * caller of the routine.
+>  */
+> static inline void __init snp_memcpy(void *dst, void *src, size_t sz,
+>                                      unsigned long paddr, bool decrypt)
+> {
+>         unsigned long npages = PAGE_ALIGN(sz) >> PAGE_SHIFT;
+>
+>         if (!sev_snp_active() || !decrypt) {
+>                 memcpy(dst, src, sz);
+>                 return;
+> 	}
+>
+>         /*
+>          * If the paddr needs to be accessed decrypted, mark the page
+>          * shared in the RMP table before copying it.
+>          */
+>         early_snp_set_memory_shared((unsigned long)__va(paddr), paddr, npages);
+>
+>         memcpy(dst, src, sz);
+>
+>         /* Restore the page state after the memcpy. */
+>         early_snp_set_memory_private((unsigned long)__va(paddr), paddr, npages);
+> }
+>
+>
