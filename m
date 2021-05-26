@@ -2,431 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED754391D47
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4D5391D4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbhEZQsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S233459AbhEZQvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbhEZQsb (ORCPT
+        with ESMTP id S233324AbhEZQvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:48:31 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EA9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:47:00 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso3664652wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:47:00 -0700 (PDT)
+        Wed, 26 May 2021 12:51:09 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4052CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:49:37 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id h20so1623711qko.11
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 09:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s9T7kB/4xsZojsHos+JlIHomT+VfHYRLasgOPGcnQKM=;
-        b=dLlVD7mH/La1fyulYhBqxDbuI9M9AN04II1gFWaM4v0eTJelx/fdlq/7J9VxhajcDX
-         /nMYrDPpkqQxqZdKe8N1O0smQTvAmsz+zuECsedzojw32MUpxXQl0EowQCWKBq0JhPNv
-         5z35+yPJnINzjnMidUoU9TxV5EGhxwjy45frs=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C+1GNfV1+wpE6FJNpUedBO+JQbCvS5qLbCtmsgVd4dM=;
+        b=EDhzTJ5PmnLhjw6osyX4ttpz30oEIlfRO7d3u6PcYUemIcz6UCFFzp3RKbXcij1Wzi
+         2d8Oc3zOVEhMZhcfu8hnUShBsh3sxbl0EKkbuRPPbKs2pG+BWjDLisUNMQ6W/Ts/cDed
+         SG/pcN016zS0iBksnGHZMZ4HloTZG6BwUQUpxL2xA0WKfbh+m0fPXzP6t5noeye+Cmuw
+         2hm/orXeB0fOx6twPm2DnQyhVnsCEE0S9cRtrRSv+ZNTMY4l+m5sgxpiZrhetkFKeYGB
+         1q9WcHJWgXFwNh4g70I08kq92mPyetXOcmUPNvwC5cMPuKxgRYvTgOVv/hSPTUZ97k00
+         WK9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s9T7kB/4xsZojsHos+JlIHomT+VfHYRLasgOPGcnQKM=;
-        b=WqYctsK8hMcIfe41icQotqt5nq5ldr+9yDjzWn2Mqk/kRGwgyasA1b+gkiQY4opU8k
-         NllCVDnjpIkumRimueH/dPSU3dmliW/csCcaRVE+odN0kz8zdFYzB//5XxFgYW3VZrIh
-         7U6IEaPYYDPsR/lZUmxQ4CvJGVLP+WuRJYOxU04Mb3ZwaigZ62aXN+dEzTE5F/n33V37
-         VC511TZGJs5HvihReXt2rRw+ukKN5j3ibNwC4fxGX27kNB71VC/301aVgk2FgLuNAFQt
-         Slz7xdgcqsPGrLnFRU2/u4mZt3ww8yxoCulBz+XXMh2xZT9FjNMaOiyW+xtroTMdgoFX
-         es6Q==
-X-Gm-Message-State: AOAM532Lv7DN3Sf+RQESJg83otF/wMS7CZJUZjnoMNByGn++NSU6sO5u
-        /F+d6Dtmsj8Rro0txEpWheGEnw==
-X-Google-Smtp-Source: ABdhPJyaOvMwjd2j0TDszFaCuF8Vsfpw4aVs3m940sM67/YD6uXAIY9dhhROuZuVyz9YLl87+p3xmw==
-X-Received: by 2002:a1c:f705:: with SMTP id v5mr4387202wmh.69.1622047618755;
-        Wed, 26 May 2021 09:46:58 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:5204:ceed:e340:def7])
-        by smtp.gmail.com with ESMTPSA id y6sm7200089wmy.23.2021.05.26.09.46.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C+1GNfV1+wpE6FJNpUedBO+JQbCvS5qLbCtmsgVd4dM=;
+        b=Bb7vIzm6OOsIJHl5H99gclsK4IXLjWh/GFoNZQMexQLJgZiWc2iIq9j3XbA3CFMxWX
+         XN59T3ZT93NfKnBXmPKQpLTPtEbhXoZ5XDQaAgULpAfoL5T+kNcKnq0d/6ARJRFmkjIu
+         4+dW7phmZEnSM87fY+CX4BSWDbKz3P2QT0A/WmrWQLph7TARHN1VCKkjtkVBT4EZJXtg
+         cpDIqNnUOMVas86oNpWiK4S16Q+Y/VqenV2bfXhD2tssaZIaJvt6jVxicanN0Wz8fK49
+         gvTXH6qdzFlcwwKorGEBplumr0NJ+3HaJHN4sanWCliOkDKhCB0+7/xxL3BiUFdF8MeG
+         /FoQ==
+X-Gm-Message-State: AOAM530u9aYnClmFMOpVuPENy7NeCnJboe/WDl4t5+jbBZklWcM3pKeC
+        N7ye+zawqAkvoy55ikGqcaR3xA==
+X-Google-Smtp-Source: ABdhPJy3JhTUaYioJDxIsNhfjw5ZVnKtNIvVYD9hwieO3TzuuAH5M4nce2RL8cr4SoIlIvIicyE0Dw==
+X-Received: by 2002:ae9:e41a:: with SMTP id q26mr42764502qkc.78.1622047776397;
+        Wed, 26 May 2021 09:49:36 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d11sm1912764qkj.24.2021.05.26.09.49.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 09:46:58 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v3] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
-Date:   Wed, 26 May 2021 18:46:43 +0200
-Message-Id: <20210526164643.2881368-1-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+        Wed, 26 May 2021 09:49:35 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1llwis-00FEKy-GU; Wed, 26 May 2021 13:49:34 -0300
+Date:   Wed, 26 May 2021 13:49:34 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Colin King <colin.king@canonical.com>
+Cc:     =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mm: selftests: fix potential integer overflow on
+ shift of a int
+Message-ID: <20210526164934.GD1096940@ziepe.ca>
+References: <20210526150947.3751728-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526150947.3751728-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These macros are convenient wrappers around the bpf_seq_printf and
-bpf_snprintf helpers. They are currently provided by bpf_tracing.h which
-targets low level tracing primitives. bpf_helpers.h is a better fit.
+On Wed, May 26, 2021 at 04:09:47PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The left shift of the int mapped is evaluated using 32 bit arithmetic
+> and then assigned to an unsigned long. In the case where mapped is
+> 0x80000 when PAGE_SHIFT is 12 will lead to the upper bits being
+> sign extended in the unsigned long. Larger values can lead to an
+> int overflow. Avoid this by casting mapped to unsigned long before
+> shifting.
+> 
+> Addresses-Coverity: ("Uninitentional integer overflow")
+> Fixes: 8b2a105c3794 ("mm: selftests for exclusive device memory")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>  lib/test_hmm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+> index 74d69f87691e..b54657701b3a 100644
+> +++ b/lib/test_hmm.c
+> @@ -749,7 +749,7 @@ static int dmirror_exclusive(struct dmirror *dmirror,
+>  			}
+>  		}
+>  
+> -		if (addr + (mapped << PAGE_SHIFT) < next) {
+> +		if (addr + ((unsigned int)mapped << PAGE_SHIFT) < next) {
 
-The __bpf_narg and __bpf_apply are needed in both files and provided
-twice. __bpf_empty isn't used anywhere and is removed from bpf_tracing.h
+Just fix the type for mapped. It started out as an unsigned long in
+dmirror_atomic_map() and wrongly became an int here
 
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- kernel/bpf/preload/iterators/iterators.bpf.c  |  1 -
- tools/lib/bpf/bpf_helpers.h                   | 66 +++++++++++++++++++
- tools/lib/bpf/bpf_tracing.h                   | 62 +++--------------
- .../bpf/progs/bpf_iter_bpf_hash_map.c         |  1 -
- .../selftests/bpf/progs/bpf_iter_bpf_map.c    |  1 -
- .../selftests/bpf/progs/bpf_iter_ipv6_route.c |  1 -
- .../selftests/bpf/progs/bpf_iter_netlink.c    |  1 -
- .../selftests/bpf/progs/bpf_iter_task.c       |  1 -
- .../selftests/bpf/progs/bpf_iter_task_btf.c   |  1 -
- .../selftests/bpf/progs/bpf_iter_task_file.c  |  1 -
- .../selftests/bpf/progs/bpf_iter_task_stack.c |  1 -
- .../selftests/bpf/progs/bpf_iter_task_vma.c   |  1 -
- .../selftests/bpf/progs/bpf_iter_tcp4.c       |  1 -
- .../selftests/bpf/progs/bpf_iter_tcp6.c       |  1 -
- .../selftests/bpf/progs/bpf_iter_udp4.c       |  1 -
- .../selftests/bpf/progs/bpf_iter_udp6.c       |  1 -
- .../selftests/bpf/progs/test_snprintf.c       |  1 -
- 17 files changed, 74 insertions(+), 69 deletions(-)
-
-diff --git a/kernel/bpf/preload/iterators/iterators.bpf.c b/kernel/bpf/preload/iterators/iterators.bpf.c
-index 52aa7b38e8b8..03af863314ea 100644
---- a/kernel/bpf/preload/iterators/iterators.bpf.c
-+++ b/kernel/bpf/preload/iterators/iterators.bpf.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
- 
- #pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 9720dc0b4605..b9987c3efa3c 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -158,4 +158,70 @@ enum libbpf_tristate {
- #define __kconfig __attribute__((section(".kconfig")))
- #define __ksym __attribute__((section(".ksyms")))
- 
-+#ifndef ___bpf_concat
-+#define ___bpf_concat(a, b) a ## b
-+#endif
-+#ifndef ___bpf_apply
-+#define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
-+#endif
-+#ifndef ___bpf_nth
-+#define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
-+#endif
-+#ifndef ___bpf_narg
-+#define ___bpf_narg(...) \
-+	___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-+#endif
-+
-+#define ___bpf_fill0(arr, p, x) do {} while (0)
-+#define ___bpf_fill1(arr, p, x) arr[p] = x
-+#define ___bpf_fill2(arr, p, x, args...) arr[p] = x; ___bpf_fill1(arr, p + 1, args)
-+#define ___bpf_fill3(arr, p, x, args...) arr[p] = x; ___bpf_fill2(arr, p + 1, args)
-+#define ___bpf_fill4(arr, p, x, args...) arr[p] = x; ___bpf_fill3(arr, p + 1, args)
-+#define ___bpf_fill5(arr, p, x, args...) arr[p] = x; ___bpf_fill4(arr, p + 1, args)
-+#define ___bpf_fill6(arr, p, x, args...) arr[p] = x; ___bpf_fill5(arr, p + 1, args)
-+#define ___bpf_fill7(arr, p, x, args...) arr[p] = x; ___bpf_fill6(arr, p + 1, args)
-+#define ___bpf_fill8(arr, p, x, args...) arr[p] = x; ___bpf_fill7(arr, p + 1, args)
-+#define ___bpf_fill9(arr, p, x, args...) arr[p] = x; ___bpf_fill8(arr, p + 1, args)
-+#define ___bpf_fill10(arr, p, x, args...) arr[p] = x; ___bpf_fill9(arr, p + 1, args)
-+#define ___bpf_fill11(arr, p, x, args...) arr[p] = x; ___bpf_fill10(arr, p + 1, args)
-+#define ___bpf_fill12(arr, p, x, args...) arr[p] = x; ___bpf_fill11(arr, p + 1, args)
-+#define ___bpf_fill(arr, args...) \
-+	___bpf_apply(___bpf_fill, ___bpf_narg(args))(arr, 0, args)
-+
-+/*
-+ * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
-+ * in a structure.
-+ */
-+#define BPF_SEQ_PRINTF(seq, fmt, args...)			\
-+({								\
-+	static const char ___fmt[] = fmt;			\
-+	unsigned long long ___param[___bpf_narg(args)];		\
-+								\
-+	_Pragma("GCC diagnostic push")				\
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	\
-+	___bpf_fill(___param, args);				\
-+	_Pragma("GCC diagnostic pop")				\
-+								\
-+	bpf_seq_printf(seq, ___fmt, sizeof(___fmt),		\
-+		       ___param, sizeof(___param));		\
-+})
-+
-+/*
-+ * BPF_SNPRINTF wraps the bpf_snprintf helper with variadic arguments instead of
-+ * an array of u64.
-+ */
-+#define BPF_SNPRINTF(out, out_size, fmt, args...)		\
-+({								\
-+	static const char ___fmt[] = fmt;			\
-+	unsigned long long ___param[___bpf_narg(args)];		\
-+								\
-+	_Pragma("GCC diagnostic push")				\
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	\
-+	___bpf_fill(___param, args);				\
-+	_Pragma("GCC diagnostic pop")				\
-+								\
-+	bpf_snprintf(out, out_size, ___fmt,			\
-+		     ___param, sizeof(___param));		\
-+})
-+
- #endif
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 8c954ebc0c7c..c0f3a26aa582 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -295,13 +295,19 @@ struct pt_regs;
- 			  (void *)(PT_REGS_FP(ctx) + sizeof(ip))); })
- #endif
- 
-+#ifndef ___bpf_concat
- #define ___bpf_concat(a, b) a ## b
-+#endif
-+#ifndef ___bpf_apply
- #define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
-+#endif
-+#ifndef ___bpf_nth
- #define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
-+#endif
-+#ifndef ___bpf_narg
- #define ___bpf_narg(...) \
- 	___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
--#define ___bpf_empty(...) \
--	___bpf_nth(_, ##__VA_ARGS__, N, N, N, N, N, N, N, N, N, N, 0)
-+#endif
- 
- #define ___bpf_ctx_cast0() ctx
- #define ___bpf_ctx_cast1(x) ___bpf_ctx_cast0(), (void *)ctx[0]
-@@ -413,56 +419,4 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
- }									    \
- static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
- 
--#define ___bpf_fill0(arr, p, x) do {} while (0)
--#define ___bpf_fill1(arr, p, x) arr[p] = x
--#define ___bpf_fill2(arr, p, x, args...) arr[p] = x; ___bpf_fill1(arr, p + 1, args)
--#define ___bpf_fill3(arr, p, x, args...) arr[p] = x; ___bpf_fill2(arr, p + 1, args)
--#define ___bpf_fill4(arr, p, x, args...) arr[p] = x; ___bpf_fill3(arr, p + 1, args)
--#define ___bpf_fill5(arr, p, x, args...) arr[p] = x; ___bpf_fill4(arr, p + 1, args)
--#define ___bpf_fill6(arr, p, x, args...) arr[p] = x; ___bpf_fill5(arr, p + 1, args)
--#define ___bpf_fill7(arr, p, x, args...) arr[p] = x; ___bpf_fill6(arr, p + 1, args)
--#define ___bpf_fill8(arr, p, x, args...) arr[p] = x; ___bpf_fill7(arr, p + 1, args)
--#define ___bpf_fill9(arr, p, x, args...) arr[p] = x; ___bpf_fill8(arr, p + 1, args)
--#define ___bpf_fill10(arr, p, x, args...) arr[p] = x; ___bpf_fill9(arr, p + 1, args)
--#define ___bpf_fill11(arr, p, x, args...) arr[p] = x; ___bpf_fill10(arr, p + 1, args)
--#define ___bpf_fill12(arr, p, x, args...) arr[p] = x; ___bpf_fill11(arr, p + 1, args)
--#define ___bpf_fill(arr, args...) \
--	___bpf_apply(___bpf_fill, ___bpf_narg(args))(arr, 0, args)
--
--/*
-- * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
-- * in a structure.
-- */
--#define BPF_SEQ_PRINTF(seq, fmt, args...)			\
--({								\
--	static const char ___fmt[] = fmt;			\
--	unsigned long long ___param[___bpf_narg(args)];		\
--								\
--	_Pragma("GCC diagnostic push")				\
--	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	\
--	___bpf_fill(___param, args);				\
--	_Pragma("GCC diagnostic pop")				\
--								\
--	bpf_seq_printf(seq, ___fmt, sizeof(___fmt),		\
--		       ___param, sizeof(___param));		\
--})
--
--/*
-- * BPF_SNPRINTF wraps the bpf_snprintf helper with variadic arguments instead of
-- * an array of u64.
-- */
--#define BPF_SNPRINTF(out, out_size, fmt, args...)		\
--({								\
--	static const char ___fmt[] = fmt;			\
--	unsigned long long ___param[___bpf_narg(args)];		\
--								\
--	_Pragma("GCC diagnostic push")				\
--	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")	\
--	___bpf_fill(___param, args);				\
--	_Pragma("GCC diagnostic pop")				\
--								\
--	bpf_snprintf(out, out_size, ___fmt,			\
--		     ___param, sizeof(___param));		\
--})
--
- #endif
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-index 6dfce3fd68bc..0aa3cd34cbe3 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-index b83b5d2e17dc..6c39e86b666f 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-index d58d9f1642b5..784a610ce039 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-index 95989f4c99b5..a28e51e2dcee 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-index b7f32c160f4e..c86b93f33b32 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-index a1ddc36f13ec..bca8b889cb10 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020, Oracle and/or its affiliates. */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
- 
- #include <errno.h>
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-index b2f7c7c5f952..6e7b400888fe 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-index 43c36f5f7649..f2b8167b72a8 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-index 11d1aa37cf11..4ea6a37d1345 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-index 54380c5e1069..2e4775c35414 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_endian.h>
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-index b4fbddfa4e10..943f7bba180e 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_endian.h>
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-index f258583afbbd..cf0c485b1ed7 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_endian.h>
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c b/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-index 65f93bb03f0f..5031e21c433f 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
-@@ -3,7 +3,6 @@
- #include "bpf_iter.h"
- #include "bpf_tracing_net.h"
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- #include <bpf/bpf_endian.h>
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-index e35129bea0a0..e2ad26150f9b 100644
---- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -3,7 +3,6 @@
- 
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
- 
- __u32 pid = 0;
- 
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+Jason
