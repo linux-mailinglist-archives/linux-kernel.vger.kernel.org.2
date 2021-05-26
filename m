@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B91391110
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76C139111A
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 08:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhEZG52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 02:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S232922AbhEZG7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 02:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbhEZG5X (ORCPT
+        with ESMTP id S232606AbhEZG7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 02:57:23 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D8EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:52 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m8-20020a17090a4148b029015fc5d36343so350528pjg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OghfnCYzIco1oCB8DECwfdKUj+xfk1JNRs+3JjyLdXI=;
-        b=CCftkdps53BVXky2a9t4INCXiuBpldrwHuYcfsj9FttPg9GWoJMIbrkQPyFn2MYHIf
-         bkw6b6zp9AUYdfjPZQroCwWoeyRlmE/2TAfr3U37E7UB8yknBqC4cvY0lHPvUlROS9UD
-         eao02dBf+HTJvDo3JdkmS0VaouKxD1I+3c1LTjCckBYxsaLqCMVotKxMKJtEZE1izPs6
-         f812utp0zPSVIfJajOBZORYmQJu76xCDQYPyv06KK5Hh2/ftc1MNKSg0KycP8XdMDo6L
-         nblUf2RnO1XQakl22pTpRPpHxuKKjUKg5PWuXVFDXzZ6OEYb0/MSMYpcVEnSnUtDzb38
-         pnyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OghfnCYzIco1oCB8DECwfdKUj+xfk1JNRs+3JjyLdXI=;
-        b=op/GLI9TUPvWviIrfu20otfNcsbWBuxQZZtoUVfzLVuwcWQjw+Xa2EFnF0+GTkDB/2
-         wXfzj9TsTOSmbAvj/Eq7XIjrNhj+bsoPDDMBCHf3gGg5+r2entYZsbQ/qRvZr3U0jGII
-         RM/SXOc7TKr2Ha6stbrclm8gz6hdcY09rs/wJMdexyJBo5aTdZDNEkINNeAKMlI7u77/
-         EDEIJi3sqc+Tu4sA+QjG1qSH5fqmnOwGVuM//lSEIyF5lS8V75XNQvcrtTu9vCiNcyix
-         0R/QyCaG048AQrp/h9y6/uJ1yNaLwnBmUAy6lP6fFi4aU64SyEH8gtakqI/saqXVM655
-         PYjg==
-X-Gm-Message-State: AOAM530Yfl/0sI+E0L5tIp6j6hGyjcBa6u1gJmnDqt6RO6XORZQqpIui
-        KJfeaovb20cSkMqLVAM1kMCctvQOhB6ubbZSP0Q53g==
-X-Google-Smtp-Source: ABdhPJzyaejiTydXm07i/HmREiEYAcJNxFQUzAXDcvtQus1UwAnFRkMd3F6EUE8wkrNfH1tbPx7q4VrM4ztY4bhY21M=
-X-Received: by 2002:a17:90a:6f06:: with SMTP id d6mr34723831pjk.216.1622012151775;
- Tue, 25 May 2021 23:55:51 -0700 (PDT)
+        Wed, 26 May 2021 02:59:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2070EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 23:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aEkOpvu322TNLJ5NQfkEhT81icJn6y8HTArGFvcW2M8=; b=hkWKYtufVdcDm7J/UBSKWvBwLa
+        f0bvXz0q0slbYIuSXV8aVZwTExraIOsseqhO8gu4fXTW/2zZ8QSmSoUpHiJH3K9mLoSXTNiPQk43O
+        ZVZJinj2hqribQJaWeZXM6xcTumpm0S0KPou3tIme3dNMiLA8Gg/n7vxOle2Ta7GpUKP7BDEcImoR
+        0uYax1vn+i2cT0MEkjY4YcPoZsN4SbJILAOBiIISMRL48PedoyYu7t0YJD/3wunWqWEv5kwhbZAYR
+        xp1prNDoxUY1f/Q26B+8V8W0NXXyHaHA6GfWNKnDXXQtNRU4WtzGj9oml25O7XkMalC1Yq4Mp3Seq
+        NCwisL6w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llnTf-004G0U-H4; Wed, 26 May 2021 06:57:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DBF4B30022C;
+        Wed, 26 May 2021 08:57:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B62B7202611A4; Wed, 26 May 2021 08:57:13 +0200 (CEST)
+Date:   Wed, 26 May 2021 08:57:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] sched/topology: Fix a spelling mistake in error
+ message
+Message-ID: <YK3xSVbwub51ZnaD@hirez.programming.kicks-ass.net>
+References: <20210526021856.9060-1-thunder.leizhen@huawei.com>
+ <42d36255-c1a6-956a-b56b-0c09eee125ec@infradead.org>
+ <5571d34f-1965-8d8e-3033-6352dd0dcaee@huawei.com>
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-17-seanjc@google.com>
-In-Reply-To: <20210424004645.3950558-17-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 25 May 2021 23:55:36 -0700
-Message-ID: <CAAeT=FxQzCnMECRjSxi6J1KVdCnMaRYCOxeE-9efmN_BFFGsAw@mail.gmail.com>
-Subject: Re: [PATCH 16/43] KVM: VMX: Stuff vcpu->arch.apic_base directly at
- vCPU RESET
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5571d34f-1965-8d8e-3033-6352dd0dcaee@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 5:50 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Write vcpu->arch.apic_base directly instead of bouncing through
-> kvm_set_apic_base().  This is a glorified nop, and is a step towards
-> cleaning up the mess that is local APIC creation.
->
-> When using an in-kernel APIC, kvm_create_lapic() explicitly sets
-> vcpu->arch.apic_base to MSR_IA32_APICBASE_ENABLE to avoid its own
-> kvm_lapic_set_base() call in kvm_lapic_reset() from triggering state
-> changes.  That call during RESET exists purely to set apic->base_address
-> to the default base value.  As a result, by the time VMX gets control,
-> the only missing piece is the BSP bit being set for the reset BSP.
->
-> For a userspace APIC, there are no side effects to process (for the APIC).
->
-> In both cases, the call to kvm_update_cpuid_runtime() is a nop because
-> the vCPU hasn't yet been exposed to userspace, i.e. there can't be any
-> CPUID entries.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Wed, May 26, 2021 at 10:42:31AM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/5/26 10:32, Randy Dunlap wrote:
+> > On 5/25/21 7:18 PM, Zhen Lei wrote:
+> >> The misspelled word 'borken' should be 'broken'.
+> >>
+> >> Fixes: 6ae72dff3759 ("sched: Robustify topology setup")
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> ---
+> >>  kernel/sched/topology.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> >> index 55a0a243e871..80295e224442 100644
+> >> --- a/kernel/sched/topology.c
+> >> +++ b/kernel/sched/topology.c
+> >> @@ -1937,7 +1937,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
+> >>  
+> >>  		if (!cpumask_subset(sched_domain_span(child),
+> >>  				    sched_domain_span(sd))) {
+> >> -			pr_err("BUG: arch topology borken\n");
+> >> +			pr_err("BUG: arch topology broken\n");
+> > 
+> > Would "borked" or "b0rken" be clearer?
+> 
+> These two words don't seem to exist at all. Linux is an open-source
+> code for the world, so it's better to use a more common word.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+Language is a living thing; also:
+
+  https://www.urbandictionary.com/define.php?term=borked
+
+I realize that as a non-native speaker idioms and colloquialisms are
+difficult, but if we sanitize the language we'll end up with something
+dreadfully dull and less expressive.
+
+Also; this is a rather trivial play on words, to break the word broken,
+it should apply to pretty much any (written) language. It should be an
+evident pun to all except computer spell checkers (they so lack humour).
+
+Also, I too am a non-native speaker, although I suspect I have it easier
+for my native tongue is at least in the same language group as English.
+
