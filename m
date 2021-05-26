@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3953E3921B1
+	by mail.lfdr.de (Postfix) with ESMTP id A79393921B2
 	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 22:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhEZU7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 16:59:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:49878 "EHLO foss.arm.com"
+        id S233858AbhEZU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 16:59:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:49906 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233697AbhEZU7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 16:59:33 -0400
+        id S233726AbhEZU7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 16:59:34 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B88D13A1;
-        Wed, 26 May 2021 13:58:01 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA21F1476;
+        Wed, 26 May 2021 13:58:02 -0700 (PDT)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7007F3F73B;
-        Wed, 26 May 2021 13:57:59 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 355E33F73B;
+        Wed, 26 May 2021 13:58:01 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -29,9 +29,9 @@ Cc:     Will Deacon <will@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         kernel-team@android.com
-Subject: [PATCH 1/2] sched: Don't defer CPU pick to migration_cpu_stop()
-Date:   Wed, 26 May 2021 21:57:50 +0100
-Message-Id: <20210526205751.842360-2-valentin.schneider@arm.com>
+Subject: [PATCH 2/2] sched: Plug race between SCA, hotplug and migration_cpu_stop()
+Date:   Wed, 26 May 2021 21:57:51 +0100
+Message-Id: <20210526205751.842360-3-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210526205751.842360-1-valentin.schneider@arm.com>
 References: <20210526205751.842360-1-valentin.schneider@arm.com>
@@ -41,91 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will reported that the 'XXX __migrate_task() can fail' in migration_cpu_stop()
-can happen, and it *is* sort of a big deal. Looking at it some more, one
-will note there is a glaring hole in the deferred CPU selection:
+migration_cpu_stop() is handed a CPU that was a valid pick at the time
+set_cpus_allowed_ptr() was invoked. However, hotplug may have happened
+between then and the stopper work being executed, meaning
+__move_queued_task() could fail when passed arg.dest_cpu. This could mean
+leaving a task on its current CPU (despite it being outside the task's
+affinity) up until its next wakeup, which is a big no-no.
 
-  (w/ CONFIG_CPUSET=n, so that the affinity mask passed via taskset doesn't
-  get AND'd with cpu_online_mask)
-
-  $ taskset -pc 0-2 $PID
-  # offline CPUs 3-4
-  $ taskset -pc 3-5 $PID
-    `\
-      $PID may stay on 0-2 due to the cpumask_any_distribute() picking an
-      offline CPU and __migrate_task() refusing to do anything due to
-      cpu_is_allowed().
-
-set_cpus_allowed_ptr() goes to some length to pick a dest_cpu that matches
-the right constraints vs affinity and the online/active state of the
-CPUs. Reuse that instead of discarding it in the affine_move_task() case.
+Verify the validity of the pick in the stopper callback, and invoke
+select_fallback_rq() there if need be.
 
 Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
 Reported-by: Will Deacon <will@kernel.org>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/core.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ kernel/sched/core.c | 36 ++++++++++++++++++++++++------------
+ 1 file changed, 24 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3d2527239c3e..d40511c55e80 100644
+index d40511c55e80..0679efb6c22d 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2273,7 +2273,6 @@ static int migration_cpu_stop(void *data)
- 	struct migration_arg *arg = data;
- 	struct set_affinity_pending *pending = arg->pending;
- 	struct task_struct *p = arg->task;
--	int dest_cpu = arg->dest_cpu;
+@@ -2263,6 +2263,8 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
+ 	return rq;
+ }
+ 
++static int select_fallback_rq(int cpu, struct task_struct *p);
++
+ /*
+  * migration_cpu_stop - this will be executed by a highprio stopper thread
+  * and performs thread migration by bumping thread off CPU then
+@@ -2276,6 +2278,7 @@ static int migration_cpu_stop(void *data)
  	struct rq *rq = this_rq();
  	bool complete = false;
  	struct rq_flags rf;
-@@ -2311,19 +2310,15 @@ static int migration_cpu_stop(void *data)
- 		if (pending) {
- 			p->migration_pending = NULL;
- 			complete = true;
--		}
++	int dest_cpu;
  
--		if (dest_cpu < 0) {
- 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+ 	/*
+ 	 * The original target CPU might have gone down and we might
+@@ -2315,18 +2318,27 @@ static int migration_cpu_stop(void *data)
  				goto out;
+ 		}
+ 
+-		if (task_on_rq_queued(p))
+-			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+-		else
+-			p->wake_cpu = arg->dest_cpu;
 -
--			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
- 		}
- 
- 		if (task_on_rq_queued(p))
--			rq = __migrate_task(rq, &rf, p, dest_cpu);
-+			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
- 		else
--			p->wake_cpu = dest_cpu;
-+			p->wake_cpu = arg->dest_cpu;
- 
- 		/*
- 		 * XXX __migrate_task() can fail, at which point we might end
-@@ -2606,7 +2601,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			init_completion(&my_pending.done);
- 			my_pending.arg = (struct migration_arg) {
- 				.task = p,
--				.dest_cpu = -1,		/* any */
-+				.dest_cpu = dest_cpu,
- 				.pending = &my_pending,
- 			};
- 
-@@ -2614,6 +2609,15 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		} else {
- 			pending = p->migration_pending;
- 			refcount_inc(&pending->refs);
+-		/*
+-		 * XXX __migrate_task() can fail, at which point we might end
+-		 * up running on a dodgy CPU, AFAICT this can only happen
+-		 * during CPU hotplug, at which point we'll get pushed out
+-		 * anyway, so it's probably not a big deal.
+-		 */
+-
++		dest_cpu = arg->dest_cpu;
++		if (task_on_rq_queued(p)) {
 +			/*
-+			 * Affinity has changed, but we've already installed a
-+			 * pending. migration_cpu_stop() *must* see this, else
-+			 * we risk a completion of the pending despite having a
-+			 * task on a disallowed CPU.
-+			 *
-+			 * Serialized by p->pi_lock, so this is safe.
++			 * A hotplug operation could have happened between
++			 * set_cpus_allowed_ptr() and here, making dest_cpu no
++			 * longer allowed.
 +			 */
-+			pending->arg.dest_cpu = dest_cpu;
- 		}
- 	}
- 	pending = p->migration_pending;
++			if (!is_cpu_allowed(p, dest_cpu))
++				dest_cpu = select_fallback_rq(cpu_of(rq), p);
++			/*
++			 * dest_cpu can be victim of hotplug between is_cpu_allowed()
++			 * and here. However, per the synchronize_rcu() in
++			 * sched_cpu_deactivate(), it can't have gone lower than
++			 * CPUHP_AP_ACTIVE, so it's safe to punt it over and let
++			 * balance_push() route it elsewhere.
++			 */
++			update_rq_clock(rq);
++			rq = move_queued_task(rq, &rf, p, dest_cpu);
++		} else {
++			p->wake_cpu = dest_cpu;
++		}
+ 	} else if (pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
 -- 
 2.25.1
 
