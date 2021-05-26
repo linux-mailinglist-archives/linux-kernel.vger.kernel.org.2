@@ -2,77 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF65391DA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49795391DAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhEZROU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 May 2021 13:14:20 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:35703 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhEZROQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:14:16 -0400
-Received: by mail-ot1-f50.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1702753otg.2;
-        Wed, 26 May 2021 10:12:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TBOemGopDfiBmIqH0OnacL3v5GkpKCDhQTWQv9aQog8=;
-        b=lQoO4ue+Imggi6nLmtN1/4wz3CyLBEDzvZQXdH6adKI2YhhW02kbXXwy67CrRRin2a
-         QtZnb7dC7dtJhKiPyk4W6edBjn6ZJh2KWjMj7cZCIIMMGXQ7v5kW/4sqxnzmFr1Z/9KP
-         fEeUTCCNrh5tUzrQ1YNfamm5aWpJdqbPtaawtzl+28mi+MaKEwBPPabECuP2jLWYbbjA
-         zmiacVZR1iG3nj7OIM3Ih0ywAisWCTAXCAhIHZSuYZIwWcp3HTf1L3qIml6UXZ6mFwAm
-         zJh9BYURHo+mf3CTDgPV5mZQ4KiN5f9Pyel6wFXOlHLxQl05LgEfiShXNHoDyCrqf3Tm
-         tRhg==
-X-Gm-Message-State: AOAM530S8oAm0xM0WAMln1Fg26jdfimrLWKB2PYGiM3ozq0EACsXdfrk
-        h0JgYKJFJ/K+9wH8cv6rBn1hk/INMp91usSszNc=
-X-Google-Smtp-Source: ABdhPJx2CfuGHBFZSKfg02/GeSLyTmj5dZLTLY59d+seNRb/QpvUHN1FK+1jkrTFalLrMzHF7mQHe/GGVUiqj1pIV/M=
-X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr3321117otc.206.1622049164811;
- Wed, 26 May 2021 10:12:44 -0700 (PDT)
+        id S234230AbhEZRQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:16:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5589 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234188AbhEZRQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 13:16:30 -0400
+IronPort-SDR: ewagfwxBD2wBh9ww41t60xXRMdAHyP5KcHxnGOLd/+JeLhSYUo7G4pNK/Q/EFn9vbcQP2lgQ8C
+ wuvGU87+c0JA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202277177"
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="202277177"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 10:14:57 -0700
+IronPort-SDR: rMn/9UR7w7MAQJDLp/3RxcLw2YnxpI1aQOCKUiXdtLLnZLpVLFCL3enkIKFrPeYR42YtUP0S89
+ axXYofxh/3yQ==
+X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; 
+   d="scan'208";a="615036247"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 10:14:49 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id DB3CD2011E;
+        Wed, 26 May 2021 20:14:47 +0300 (EEST)
+Date:   Wed, 26 May 2021 20:14:47 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH v5 00/16] Allwinner MIPI CSI-2 support for A31/V3s/A83T
+Message-ID: <20210526171447.GF3@paasikivi.fi.intel.com>
+References: <20210115200141.1397785-1-paul.kocialkowski@bootlin.com>
+ <f92c0812-7e1c-74e4-602b-7a885ef31454@xs4all.nl>
+ <YK5M9PyUB4IfuaNU@aptenodytes>
 MIME-Version: 1.0
-References: <4337451.LvFx2qVVIh@kreacher> <4f0f3e94-d42a-a0fd-ced6-bd1edd6d471b@infradead.org>
-In-Reply-To: <4f0f3e94-d42a-a0fd-ced6-bd1edd6d471b@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 26 May 2021 19:12:33 +0200
-Message-ID: <CAJZ5v0iVS0YR67M0b6V4p6Bk9gDR_x5YPVB0JYB8jBfQj0eKUw@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI unset
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK5M9PyUB4IfuaNU@aptenodytes>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 6:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 5/26/21 8:01 AM, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > One of the previous commits introducing hybrid processor support to
-> > intel_pstate broke build with CONFIG_ACPI unset.
-> >
-> > Fix that and while at it fix up empty stubs of two functions related
-> > to ACPI CPPC.
-> >
-> > Fixes: eb3693f0521e ("cpufreq: intel_pstate: hybrid: CPU-specific scaling factor")
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Hi Rafael,
->
-> I still have this build error:
->
-> ../drivers/cpufreq/intel_pstate.c: In function ‘show_base_frequency’:
-> ../drivers/cpufreq/intel_pstate.c:950:10: error: implicit declaration of function ‘intel_pstate_get_cppc_guranteed’; did you mean ‘intel_pstate_get_epp’? [-Werror=implicit-function-declaration]
->   ratio = intel_pstate_get_cppc_guranteed(policy->cpu);
+Hi Paul,
 
-Well, I did too much in this patch, will send an update shortly.
+On Wed, May 26, 2021 at 03:28:20PM +0200, Paul Kocialkowski wrote:
+> Hi,
+> 
+> On Wed 26 May 21, 14:00, Hans Verkuil wrote:
+> > Hi Paul,
+> > 
+> > On 15/01/2021 21:01, Paul Kocialkowski wrote:
+> > > This series introduces support for MIPI CSI-2, with the A31 controller that is
+> > > found on most SoCs (A31, V3s and probably V5) as well as the A83T-specific
+> > > controller. While the former uses the same MIPI D-PHY that is already supported
+> > > for DSI, the latter embeds its own D-PHY.
+> > > 
+> > > In order to distinguish the use of the D-PHY between Rx mode (for MIPI CSI-2)
+> > > and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the PHY API.
+> > > This allows adding Rx support in the A31 D-PHY driver.
+> > > 
+> > > A few changes and fixes are applied to the A31 CSI controller driver, in order
+> > > to support the MIPI CSI-2 use-case.
+> > 
+> > Besides the compile error for patch 2/16, I also get several other compile errors:
+> > 
+> > drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c: In function ‘sun6i_csi_v4l2_fwnode_init’:
+> > ./include/media/v4l2-async.h:207:10: error: expected expression before ‘)’ token
+> >   207 |  ((type *)       \
+> >       |          ^
+> > drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c:790:8: note: in expansion of macro ‘v4l2_async_notifier_add_fwnode_remote_subdev’
+> >   790 |  ret = v4l2_async_notifier_add_fwnode_remote_subdev(&csi->notifier,
+> >       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > ./include/media/v4l2-async.h:207:10: error: expected expression before ‘)’ token
+> >   207 |  ((type *)       \
+> >       |          ^
+> > drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c:811:8: note: in expansion of macro ‘v4l2_async_notifier_add_fwnode_remote_subdev’
+> >   811 |  ret = v4l2_async_notifier_add_fwnode_remote_subdev(&csi->notifier,
+> >       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > make[5]: *** [scripts/Makefile.build:272: drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.o] Error 1
+> > make[5]: *** Waiting for unfinished jobs....
+> > make[4]: *** [scripts/Makefile.build:272: drivers/media/platform/rockchip/rkisp1/rkisp1-isp.o] Error 1
+> > make[3]: *** [scripts/Makefile.build:515: drivers/media/platform/rockchip/rkisp1] Error 2
+> > make[3]: *** Waiting for unfinished jobs....
+> > In file included from ./include/media/v4l2-subdev.h:14,
+> >                  from ./include/media/v4l2-device.h:13,
+> >                  from drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c:19:
+> > drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c: In function ‘sun8i_a83t_mipi_csi2_v4l2_setup’:
+> > ./include/media/v4l2-async.h:207:10: error: expected expression before ‘)’ token
+> >   207 |  ((type *)       \
+> >       |          ^
+> > drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c:495:8: note: in expansion of macro
+> > ‘v4l2_async_notifier_add_fwnode_remote_subdev’
+> >   495 |  ret = v4l2_async_notifier_add_fwnode_remote_subdev(notifier, handle,
+> >       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/media/v4l2-subdev.h:14,
+> >                  from ./include/media/v4l2-device.h:13,
+> >                  from drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c:18:
+> > drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c: In function ‘sun6i_mipi_csi2_v4l2_setup’:
+> > ./include/media/v4l2-async.h:207:10: error: expected expression before ‘)’ token
+> >   207 |  ((type *)       \
+> >       |          ^
+> > drivers/media/platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c:437:8: note: in expansion of macro ‘v4l2_async_notifier_add_fwnode_remote_subdev’
+> >   437 |  ret = v4l2_async_notifier_add_fwnode_remote_subdev(notifier, handle,
+> >       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Can you rebase this series?
+> 
+> Thanks for letting me know, I'll look into this for the next iteration.
+> 
+> > I also need Acked-by's for patches 1-3 from one of the PHY maintainers, but as
+> > you mentioned this might need to change as well.
+> > 
+> > Was there a reason why I haven't looked at this before? It's quite an old series,
+> > usually I don't wait for so long. If it was because I was really slow, then I
+> > apologize and please kick me sooner if you see a review like this take so long.
+> 
+> I'm not sure, but Sakari definitely went over previous interations and made
+> various comments,so the series definitely hasn't gone unreviewed!
 
-> BTW: s/guranteed/guaranteed/g
+My acks seem to be missing. Let me go through it. As for Hans: please ping
+if you don't get reviews.
 
-Right.
+-- 
+Kind regards,
+
+Sakari Ailus
