@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD05239177E
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B60E391783
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 14:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhEZMi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 08:38:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47709 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233595AbhEZMiR (ORCPT
+        id S233770AbhEZMjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 08:39:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39990 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233524AbhEZMjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 08:38:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622032602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vo3CFjgMiVFpDxJLQuQQeOIXjZuz9Jnetz8hQXS67No=;
-        b=Yy2iOPvOQPOuCUbADZ8BLSpoEZ1Ylrystpzutw1Uo21w8pb2cksBGqBEKTViFzJY02VbV9
-        L0wpJD5S4mDh9UiDSfyY0EJR8m5jc5od2nvETuqdaUrkFYMZtxxN721SWcBZwqqElpZLiF
-        ELcONW10UgPJmYy1NhStOoxG2gVJYE4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-M6ygiTvkPDCIrl1Q-pm_VQ-1; Wed, 26 May 2021 08:36:40 -0400
-X-MC-Unique: M6ygiTvkPDCIrl1Q-pm_VQ-1
-Received: by mail-ej1-f69.google.com with SMTP id sd18-20020a170906ce32b02903cedf584542so344163ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 05:36:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vo3CFjgMiVFpDxJLQuQQeOIXjZuz9Jnetz8hQXS67No=;
-        b=uW2dN6DzEYkC1adk9psf+Rki7JJ2UlaBncAr9w0XurCjLg81fOb5S1hui3MDIjqydD
-         nF+TqPjVxD9JYXcXBJJgnPd51zmwry+m0e0ACJTtY2txxVSUsS3sYd9NPE1zRCTP1t7S
-         7raxm79Qo29xSlkhscFt/NjKJdaBN5B94v6rxEj1Hehmm7ufoXS7B4+8wnMJF4hUWHQ9
-         JQD2xA5YL68NyJqpvlmYjfzzpud/aVzYX/OfemR4EMKsnKJid6Bu2HFfXesH3Kngg/SO
-         jmwkmt/ZwSrTQSrz8R8yTmpkRBVgwuMHkXRj04UIgp2xqVbOdL/qRE68BslYkA24n/IU
-         ZYhg==
-X-Gm-Message-State: AOAM533TAyB1RDlI4CumkcD0DoKFn6JtrBlhcIkZhc5OkspfF3brwjdq
-        YJ6C+fKhObqL/r/QaKdUWjnzeNBxGU0nwQUkcM2cGhzUF0E2G20ESvd10juLNQUQQXTwheK8usb
-        HHPZA21P0oaFnP2vgDn5Vn01h
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr2036977eja.389.1622032599355;
-        Wed, 26 May 2021 05:36:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCzSG2YLjcyhKgm8r3o/LZqPgFxUK6ylJOFe2YCzql+M/THNIC19JLVSjVDkUJ82LC9sNhuQ==
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr2036951eja.389.1622032599157;
-        Wed, 26 May 2021 05:36:39 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y15sm284014ejc.48.2021.05.26.05.36.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 05:36:38 -0700 (PDT)
-Subject: Re: [PATCH v4 0/8] Introduce intel_skl_int3472 module
-To:     Daniel Scally <djrscally@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-Cc:     Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-References: <20210520140928.3252671-1-djrscally@gmail.com>
- <f2d8e74f-f33b-2489-1b90-b11bf7465d19@redhat.com>
- <f4664310-0975-335d-8dc3-95726f53ab67@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d7b7b2ba-d941-7df3-38e6-32dbbba7a36f@redhat.com>
-Date:   Wed, 26 May 2021 14:36:37 +0200
+        Wed, 26 May 2021 08:39:39 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QCXwCc071474;
+        Wed, 26 May 2021 08:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Y/ZAm0hc6y8atguqC+GcaNI2BLv4kgCtQsr6ztIfTKs=;
+ b=I4zuADPdMujvWFQEzoAHMzXv4K2/IXa8M0GsKs3tuNrTPRX3tU8wYLwZgfg7ulkgy/pj
+ 5G0kSuS2FtnEmwnUhcvwJcoSSXamtkhoGZ7UzXl+0DT9Zz1QaQaQAgg9Vkc1TjQqqHBD
+ iVBhmYFfXsercWLa8WlKi5HpDyxScWWwCxQcSzjFejbn0WCnZ3MBpEvOSrXD9mLQzWAa
+ Ktain9bRh+QdU1BgmYZeYyroYaPGyGrEzbnWfWugqC8zxPEtBgQhQLHKWJ2cgBgm+rXy
+ jHyCq+bO+cXjzvfUV2VZXQmPX/tsGxMkMiutwoOBKOiP344Bu83bZktwNsDVZD56gckx ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sp5p0uft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 08:38:04 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14QCYfIC076661;
+        Wed, 26 May 2021 08:38:04 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38sp5p0ufb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 08:38:04 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14QCaVXx028897;
+        Wed, 26 May 2021 12:38:03 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 38s1ggah7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 12:38:03 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14QCc17w28115408
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 May 2021 12:38:02 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFAEB136055;
+        Wed, 26 May 2021 12:38:01 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 97966136060;
+        Wed, 26 May 2021 12:38:00 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 26 May 2021 12:38:00 +0000 (GMT)
+Subject: Re: [PATCH v4 1/2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-2-akrowiak@linux.ibm.com>
+ <20210525150337.021aabd8.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <1eda14a0-fdcb-0d47-b1ed-1a1f5847efe8@linux.ibm.com>
+Date:   Wed, 26 May 2021 08:37:59 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <f4664310-0975-335d-8dc3-95726f53ab67@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210525150337.021aabd8.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eO8zM1RmyBDg-hiGg8DFI5E-nOvur_PG
+X-Proofpoint-ORIG-GUID: oqQIiT39Wa3hIhvfbTS-OJDKPqDL1ul7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-26_08:2021-05-26,2021-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 suspectscore=0 spamscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105260084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 5/26/21 1:03 AM, Daniel Scally wrote:
 
-<snip>
-
->> 3/8 and 5/8 seem to be nice cleanups, but not really necessary. IMHO it
->> would be best to park these cleanups for later and for 3/8 add the following
->> where necessary for now:
+On 5/25/21 9:03 AM, Halil Pasic wrote:
+> On Fri, 21 May 2021 15:36:47 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> The mdev remove callback for the vfio_ap device driver bails out with
+>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+>> to prevent the mdev from being removed while in use; however, returning a
+>> non-zero rc does not prevent removal. This could result in a memory leak
+>> of the resources allocated when the mdev was created. In addition, the
+>> KVM guest will still have access to the AP devices assigned to the mdev
+>> even though the mdev no longer exists.
 >>
->> /* FIXME drop this once the I2C_DEV_NAME_FORMAT macro has been added to include/linux/i2c.h */
->> #ifndef I2C_DEV_NAME_FORMAT
->> #define I2C_DEV_NAME_FORMAT		"i2c-%s"
->> #endif
+>> To prevent this scenario, cleanup will be done - including unplugging the
+>> AP adapters, domains and control domains - regardless of whether the mdev
+>> is in use by a KVM guest or not.
 >>
->> This is not the prettiest but it reduces all the subsys cross-deps and things
->> like this have been done before for similar reasons.
->>
->> Likewise it would be good if you can add if (foo) as condition before any
->> clkdev_drop(foo) calls in this patch-set and then merge
->> 5/8 "clkdev: Make clkdev_drop() null aware" independently of this and then
->> once both are in Linux tree follow-up with a cleanup patch dropping the if (foo)
->> guards.
-> 
-> 
-> This is fine by me if people are happy for it to go in like that; I'll
-> just fix it up later.
+>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> AFAIU we all agree that, after patch there is a possibility for an use
+> after free error. I'm a little confused by the fact that we want this
+> one for stable, but the patch that fixes the use after free as no
+> Cc stable (it can't have a proper fixes tag, because this one is not yet
+> merged). Actually I'm not a big fan of splitting up patches to the
+> extent that when not all patches of the series are applied we get bugous
+> behavior (e.g. patch n breaks something that is live at patch n level,
+> but it is supposed to be OK, because patch n+m is going to fix it (where
+> n,m \in \Z^{+}).
 
-I don't expect anyone to object against these 2 small fixes going in later,
-if you can drop these 2 for v5 that would greatly help with untangling all the
-subsys dependencies. Then I can just merge an ACPI + a gpiolib-acpi immutable
-branch and then merge the big drivers/platform/x86 patch.
+After thinking about this some more, this patch does not really
+fix a memory leak and should probably not be flagged as a fix
+for 258287c994. Memory is not leaked
+because the remove callback returns -EBUSY without freeing
+mdev storage or resetting the queues.
 
-Regards,
+Under normal circumstances, if the mdev is removed before
+the mdev fd is closed (i.e., the guest is shut down), the process
+will wait until the fd is closed, at which time the
+release callback will get invoked. Since the release callback
+clears the KVM pointer from the matrix_mdev, the remove
+callback will not return -EBUSY and will in fact free the mdev
+storage when it is subsequently invoked.
 
-Hans
+I am going to change the subject and remove the 'Fixes'
+tag as well as the 'Cc' of stable. I'll change the subject to
+something like:
+
+"s390/vfio-ap: always free storage for mdev in remove callback"
+
+>
+> Do we want to squash these? Is the use after free possible prior to this
+> patch?
+>
+> Regards,
+> Halil
 
