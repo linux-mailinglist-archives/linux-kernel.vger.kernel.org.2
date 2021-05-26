@@ -2,105 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5DB391937
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C1939193F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 15:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhEZNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 09:53:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232932AbhEZNxa (ORCPT
+        id S233864AbhEZN5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 09:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232659AbhEZN5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 09:53:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622037118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DCcVaBxhcbgaehz8vTuBVb/8+1PT3tCpcBtJLuUH4T8=;
-        b=bbzkdU/p18t8YvBiNu9ICstcOFJxxUAoRWgHP/BJv9mZPWdm1Ksd3rJo4LuEoAbuoLHNQb
-        W8ju8vmF7yAt1l0UwgK83GjBBiwNI4Q2nCVPAZes93Z+28uan3wBQlYg/Qqv0y2/Qpii9F
-        Ipz30j9GuXudxO2qSTVTrJ7eG7uywWE=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-1WZpxX-_N7-DQWzvJV1m_A-1; Wed, 26 May 2021 09:51:56 -0400
-X-MC-Unique: 1WZpxX-_N7-DQWzvJV1m_A-1
-Received: by mail-ot1-f71.google.com with SMTP id i25-20020a9d4a990000b0290304f00e3e3aso693610otf.15
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 06:51:56 -0700 (PDT)
+        Wed, 26 May 2021 09:57:08 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992F7C061574;
+        Wed, 26 May 2021 06:55:36 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id q5so1248067wrs.4;
+        Wed, 26 May 2021 06:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=TU3P0IKFMilt8ibVl4VKMuJHkoYIAn/qixm+CzZt3XY=;
+        b=T+HcjrsEUXOWGUaWTnZju5AIaSnH3PqjPOwPYW4ipUV9yRsxBetzMULBBoAT56Qtpf
+         H/M3FCtNPj8Iwtl2jeHEFPrmL/YVEhWJC+Q3TI00deH4ryOMAcie/C7EJpO/dF3jMS6i
+         8eMb0/A2yCsXyQFkjK22XArq2m4ne2dnuCxkwBWln8tZ40wLcaPxyeBo7fx5/0Qj2Ulk
+         ZqVpUlFcSWiIxmmiBpq/dvfLyuNDZEeLU749VaEK5j8EcbkbW9uHJTqGbpIPgjAgLHY+
+         Favy5rTCkaS96KEiLjFbk0btiPUpw4/dgL4n9SAGqMUVoeRP1HLKcEY4wgmIk2qe89nP
+         iXnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DCcVaBxhcbgaehz8vTuBVb/8+1PT3tCpcBtJLuUH4T8=;
-        b=dI5Wy25EDA21+udZd7+Owg5Im/R57pcXyf1EZBmZpQchDdJV9BD+C8IQe9ZEqHApFC
-         /hITVCSe2D1k4pk0IZrZG8DkcHc2DVBdI0pOhY8B7iFg8PdpG1xAiO7P1FNLcb4hQEF1
-         RLtIrk98wq1VJ8OB8fP9pi0fvSM8w+wSo1o1OgquvuIkw1IevAbjc7L6mMoOBSKdqlvQ
-         HYNoSOTYxvCJM9lo5lc4A60eZFLZ8QR6fTAUKM5RkvN3QjBkxZyNOsDf0enXYw/e1Ngg
-         M0sPwNWsDjPyxRtPjS828VN1h2uNaQhLZ+sIoN/2fDYoO0wSF1pLtzSkibllixRwLxvQ
-         K25g==
-X-Gm-Message-State: AOAM531tS0vpouxpJtj7TtSCsszUVw/cO285Jvv18whBNkZVm38WKSZJ
-        ghMh2RALlLOo8+3fw87DRBARqO52QGV44nr6/j2kmGMCPtkIIpEri4sYt3qQIWGLmPswPvf+zKR
-        imfFeFT7lkDROCn2dj7/SlVTP
-X-Received: by 2002:a05:6808:13c9:: with SMTP id d9mr2017465oiw.142.1622037115428;
-        Wed, 26 May 2021 06:51:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQe5R+wkwIYkUyw04XU6nhnkV9UEzK9e2/fc8SlwYh3zvakrFwC97ESECe1Zy6d5NtnJa9bQ==
-X-Received: by 2002:a05:6808:13c9:: with SMTP id d9mr2017444oiw.142.1622037115277;
-        Wed, 26 May 2021 06:51:55 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w6sm4467633otj.5.2021.05.26.06.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 06:51:54 -0700 (PDT)
-From:   trix@redhat.com
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        peterz@infradead.org, ira.weiny@intel.com,
-        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
-        jgross@suse.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] x86/mm/fixmap: rename NR_CPUS to CONFIG_NR_CPUS
-Date:   Wed, 26 May 2021 06:51:50 -0700
-Message-Id: <20210526135150.2332379-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TU3P0IKFMilt8ibVl4VKMuJHkoYIAn/qixm+CzZt3XY=;
+        b=eheUH/IQlUOfpfUR2+yIKwwoV4LueTCpktaJ6M4qAYiAu+SxJ/t+cr3ZZrR7P2Z/4v
+         cWjtm3o3BVv++vV5iQLlCyDmb6NhdgZPb4iA/kHaOWNEy8fjUot6DGi9JSvOEVeLyxZt
+         29lKZYXTkUktBWGft5rWhg1lQuhGWO4aukcW8BOr7d0E9pZDnzBQ0mMdwNvmvTCI90nq
+         xI/NMJ3yJxXA9K4FIcRD2Jjzt5U/ObbUqGds+gNEUmAqCmHnB+RFCvBp2jG9IvY4LHLl
+         NmAFG0fgrP2Ao0IKV0a33ioVgqFb4TKIqBc5Pi8WzAtc0tYvLZluXnvVgZ2vn3oEs4zk
+         R7Uw==
+X-Gm-Message-State: AOAM532Le8fLl8JLGR04/0r1AO9VPvU+ypY1bsd6rg/DzvtwRazEs008
+        4pxnCTkgbwVLxev7hnNiEc0OkcRYRao=
+X-Google-Smtp-Source: ABdhPJycBxK7z+PqUyXbcZFcoctpc91ER13IQRbQetENRae626IdwcBDhfNknbM4cqForIgAI2dTYQ==
+X-Received: by 2002:a5d:6c61:: with SMTP id r1mr33494342wrz.309.1622037334799;
+        Wed, 26 May 2021 06:55:34 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:1950:35e:cae9:5bed? ([2a02:908:1252:fb60:1950:35e:cae9:5bed])
+        by smtp.gmail.com with ESMTPSA id l188sm2272741wmf.27.2021.05.26.06.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 06:55:34 -0700 (PDT)
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+To:     Ard Biesheuvel <ardb@kernel.org>, Peter Geis <pgwipeout@gmail.com>
+Cc:     Punit Agrawal <punitagrawal@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Rob Herring <robh@kernel.org>, PCI <linux-pci@vger.kernel.org>
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
+ <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com> <87eedxbtkn.fsf@stealth>
+ <CAMj1kXE3U+16A6bO0UHG8=sx45DE6u0FtdSnoLDvfGnFJYTDrg@mail.gmail.com>
+ <877djnaq11.fsf@stealth>
+ <CAMj1kXFk2u=tbTYpa6Vqz5ihATFq61pCDiEbfRgXL_Rw+q_9Fg@mail.gmail.com>
+ <CAMdYzYo-vdJvT_MPNTYvdveG3W8na7qMVEZFL4AjyQWqcLZi=Q@mail.gmail.com>
+ <CAMj1kXEBePfKDOc6eo9yjZPnVeFimX-zxR+R3As+2pP9XnZkuQ@mail.gmail.com>
+ <CAMdYzYrH_M92Pc6AqTgagtATr1TPq7Pdm57hadZeAmMBF2f0nA@mail.gmail.com>
+ <CAMj1kXHsGgFedbhW2CiS5gveK3=ZxhXQ5siDeHJyttkOVKBQrQ@mail.gmail.com>
+ <CAMdYzYruNYtJ8hwKPBUHPed1-=tV=CWDd_oSQtRmr4BJHp=YxA@mail.gmail.com>
+ <CAMj1kXHLCJbzRpic-kkdWh5wKTE=6fqkesYbB6XoeJELKn93tw@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <9b99d520-e4b1-ae44-44eb-93c2e3d0c0cb@gmail.com>
+Date:   Wed, 26 May 2021 15:55:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXHLCJbzRpic-kkdWh5wKTE=6fqkesYbB6XoeJELKn93tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hi Ard,
 
-Fixes this build error
-from arch/x86/xen/platform-pci-unplug.c:11:
-...
-fixmap.h:103:48: error: ‘NR_CPUS’ undeclared here (not in a function)
-  103 |  FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
+Am 25.05.21 um 19:18 schrieb Ard Biesheuvel:
+> [SNIP]
+>>> I seriously doubt that this is what is going on here.
+>>>
+>>> lspci -x will give you the bare BAR values - I suspect that those are
+>>> probably fine.
+>> lspci -x
+>> 00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd Device 3566 (rev 01)
+>> 00: 87 1d 66 35 07 05 10 40 01 00 04 06 00 00 01 00
+>> 10: 00 00 00 00 00 00 00 00 00 01 ff 00 10 10 00 20
+>> 20: 00 10 00 10 01 00 f1 0f 00 00 00 00 00 00 00 00
+>> 30: 00 00 00 00 40 00 00 00 00 00 00 00 5f 01 02 00
+>>
+>> 01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
+>> [AMD/ATI] Turks PRO [Radeon HD 7570]
+>> 00: 02 10 5d 67 07 00 10 20 00 00 00 03 00 00 80 00
+>> 10: 0c 00 00 00 00 00 00 00
+> This is a 64-bit prefetchable BAR programmed with bus address 0x0
+>
+>> 04 00 00 10 00 00 00 00
+> This is a 64-bit non-prefetchable BAR programmed with bus address 0x1000_0000
+>
+> (https://en.wikipedia.org/wiki/PCI_configuration_space describes the
+> meaning of the low order BAR bits)
 
-This block used to be conditional on CONFIG_X86_32 which also
-included linux/threads.h which defines NR_CPUS as CONFIG_NR_CPUS.
+Sorry for jumping into the middle of the discussion and to be honest I 
+haven't fully read it.
 
-Since CONFIG_NR_CPUS is already used fixmap.h, instead of including
-linux/threads.h again, rename NR_CPUS to CONFIG_NR_CPUS.
+This looks a bit odd since on AMD VGA hardware the non-prefetchable BAR 
+is usually only 32bit, not 64bit.
 
-Fixes: 14df32670291 ("x86: Support kmap_local() forced debugging")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- arch/x86/include/asm/fixmap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But this hardware generation is rather old and I'm not sure what the BAR 
+assignment for that generation was. I would need to dig up the register 
+description in our archives as well.
 
-diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
-index d0dcefb5cc59d..4d1f5cc448b98 100644
---- a/arch/x86/include/asm/fixmap.h
-+++ b/arch/x86/include/asm/fixmap.h
-@@ -100,7 +100,7 @@ enum fixed_addresses {
- #endif
- #ifdef CONFIG_KMAP_LOCAL
- 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
--	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
-+	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * CONFIG_NR_CPUS) - 1,
- #ifdef CONFIG_PCI_MMCONFIG
- 	FIX_PCIE_MCFG,
- #endif
--- 
-2.26.3
+Christian.
+
+>
+>> 20: 01 10 70 3f 00 00 00 00
+> This looks odd. This looks like a 32-bit MMIO address poked into a I/O BAR.
+>
+>
+>> 00 00 00 00 28 10 20 2b
+>> 30: 00 00 02 10 50 00 00 00 00 00 00 00 5f 01 00 00
+>>
+>> 01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Turks
+>> HDMI Audio [Radeon HD 6500/6600 / 6700M Series]
+>> 00: 02 10 90 aa 06 00 10 20 00 00 03 04 00 00 80 00
+>> 10: 04 00 04 10 00 00 00 00 00 00 00 00 00 00 00 00
+>> 20: 00 00 00 00 00 00 00 00 00 00 00 00 28 10 90 aa
+>> 30: 00 00 00 00 50 00 00 00 00 00 00 00 ff 02 00 00
+>>
+>>>
+>>>>>> Also, if <0x82000000> (32 bit) is changed to <0x83000000> (64 bit),
+>>>>>> most of the allocations for the dGPU fail due to no valid regions
+>>>>>> available.
+>>>>>>
+>>>>> But wasn't the original problem that the resource window was 64-bit to
+>>>>> begin with? Are you sure we are talking about the same problem here?
+>>>> The rk3399 in the original report has a 32MB memory window in the
+>>>> upper end of the 4GB range.
+>>>> The rk356x has a similar layout, or it can use a 1GB window available
+>>>> at <0x3 0x00000000>.
+>>>> Rockchip's default windows are defined as 64bit.
+>>>>
+>>>> The rk3399 doesn't have enough space to reasonably define two windows,
+>>>> one 32bit, one 64bit, to work around an allocation bug.
+>>>> These are the defined regions in the rk3399:
+>>>> ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
+>>>> <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
+>>>>
+>>> All you really need is a 32-bit non-prefetchable resource window: any
+>>> BAR can be allocated from that. A 64-bit BAR can carry a 32-bit number
+>>> (just add zeroes at the top), and a prefetchable BAR can happily live
+>>> in a non-prefetchable window, with a theoretical performance impact if
+>>> the OS actually does use different memory attributes for the
+>>> prefetchable window (but I don't think Linux ever handles it this way)
+>> So is the IO range necessary as well or will it be automatically
+>> allocated as well?
+>>
+> You need one I/O range and one 32-bit non-prefetchable MMIO window at
+> the very least, even though the I/O range is rarely used, even by
+> endpoints that expose I/O BARs.
+>
+> The translation is tricky to get right, and confuses some drivers, so
+> it is better avoided if possible. If you do need translation, make
+> sure to translate in the right direction.
+>
+>>>
+>>>>>
+>>>>>>>> I am happy to put something together once I understand the preferred way
+>>>>>>>> to go about it.
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>> Punit
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>>
+>>>>>>> _______________________________________________
+>>>>>>> Linux-rockchip mailing list
+>>>>>>> Linux-rockchip@lists.infradead.org
+>>>>>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
