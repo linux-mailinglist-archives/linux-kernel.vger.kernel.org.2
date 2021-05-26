@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598D9391DF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1819D391DD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 19:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhEZRXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 13:23:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36808 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235186AbhEZRWj (ORCPT
+        id S235068AbhEZRWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 13:22:35 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:57326 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234489AbhEZRW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 13:22:39 -0400
-Received: from mail-vs1-f72.google.com ([209.85.217.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1llxDN-0003eL-EB
-        for linux-kernel@vger.kernel.org; Wed, 26 May 2021 17:21:06 +0000
-Received: by mail-vs1-f72.google.com with SMTP id d19-20020a0561020413b029023877d74e72so551785vsq.15
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 10:21:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YYv9QSwtcmYn0218F0zCf1aEruGYQ8/WBysY7w5EfCc=;
-        b=kFkBpQMWb+AzJDEVvqG502r+SFqcwxG8VMwbqNPkW5raTccxz5A5rQrCL7z/A1MsJE
-         YxCdWOXCmY1kxyhNNKl4OBGqoOq0uc/4fdq4vILAsYb1/1TekfLSmZ9sXFD9XVp+EIjP
-         zvVFnI0dK2hbRqJPwfGvGHN4830y78lTsjNI1g/z6nBTDGAOJ7dHPkxX0ZNgscz27GpB
-         +YV0stwMPLVS0RXxXk55lPBuf5hRA6XmU9Ug8ykVvTNmvYynDnznCN03hP4cQuPiZqnL
-         5TepyueG9VA3S1qfl5wH6eDCzNMvxwhQisEWnRpN4hQWH6AhLMsihfMJGx8bW2RwXZfM
-         5lSg==
-X-Gm-Message-State: AOAM5313uAx3s1uzW851Jb6BQHXtoPOnkg6GZSnWkz3eU4XT7LU/o5uo
-        vZMuaQU6RmMto3/aUOdgtrB5/lSDOzengPPz1ZaAKOkPTbeI2dn3MEp5PxPRxvD0JHnbOu1iVqq
-        WU032iuYwSQJWrsNbMbWRdYHkDqZSICzjZne70NLmqQ==
-X-Received: by 2002:ac5:c382:: with SMTP id s2mr31980821vkk.24.1622049664525;
-        Wed, 26 May 2021 10:21:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBWWyrs1VJTSEVr7gNlAWxnMbfMY4X+d68llpnvHKbyCP4O8ma7yU99jBXSJa7bdYyXsWV8g==
-X-Received: by 2002:ac5:c382:: with SMTP id s2mr31980793vkk.24.1622049664379;
-        Wed, 26 May 2021 10:21:04 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id u195sm2036032vsc.10.2021.05.26.10.21.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 10:21:03 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH v2 7/7] power: supply: max17040: Do not enforce (incorrect) interrupt trigger type
-Date:   Wed, 26 May 2021 13:20:36 -0400
-Message-Id: <20210526172036.183223-8-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210526172036.183223-1-krzysztof.kozlowski@canonical.com>
-References: <20210526172036.183223-1-krzysztof.kozlowski@canonical.com>
+        Wed, 26 May 2021 13:22:27 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14QHKnV3045129;
+        Wed, 26 May 2021 12:20:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622049649;
+        bh=DOzpQie/mGWTTenkXEi80ULFXld6+uPVu0nfBLM42BU=;
+        h=From:To:CC:Subject:Date;
+        b=LYtumEw42av7RPsqlvvkQ586rh+IRdKHX0lUVSYM1FfdCaSRS6wCJ/Lw6LU17rFHL
+         OKlWxZXzwe32xnaB/42w8j88nnTo0+NKQrYBTnTdVv4bQOMyned7en//uFruW4HkHM
+         Zcm04sePONzijIbc4jcuHF9pSOmGLgyZf76jbO9c=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14QHKnrT102834
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 May 2021 12:20:49 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 26
+ May 2021 12:20:49 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 26 May 2021 12:20:49 -0500
+Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14QHKnle011356;
+        Wed, 26 May 2021 12:20:49 -0500
+Received: from uda0271916b.dhcp.ti.com (uda0271916b.dhcp.ti.com [128.247.81.224] (may be forged))
+        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 14QHKnK3007817;
+        Wed, 26 May 2021 12:20:49 -0500
+From:   Gowtham Tammana <g-tammana@ti.com>
+To:     <tony@atomide.com>, <bcousson@baylibre.com>,
+        Suman Anna <s-anna@ti.com>
+CC:     <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nisanth Menon <nm@ti.com>, Gowtham Tammana <g-tammana@ti.com>
+Subject: [PATCH v2] ARM: dts: dra7: Fix duplicate USB4 device node
+Date:   Wed, 26 May 2021 12:20:38 -0500
+Message-ID: <20210526172038.17542-1-g-tammana@ti.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+With [1] USB4 device node got defined in dra74x.dtsi file. However,
+there was a prior defintion of the same in [2] which didn't get removed
+causing boot failures. USB4 node is present only in DRA74x variants so
+keeping the entry in dra74x.dtsi and removing it from the top level
+interconnect hierarchy dra7-l4.dtsi file.
 
-Interrupt line can be configured on different hardware in different way,
-even inverted.  Therefore driver should not enforce specific trigger
-type - edge falling - but instead rely on Devicetree to configure it.
+Since USB4 is only included in DRA74x variants, remove its reference
+for AM5718, DRA71x and DR72x boards.
 
-The Maxim 14577/77836 datasheets describe the interrupt line as active
-low with a requirement of acknowledge from the CPU therefore the edge
-falling is not correct.
+[1]: commit 549fce068a311 ("ARM: dts: dra7: Add l4 interconnect
+hierarchy and ti-sysc data")
+[2]: commit c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for
+dra7 dwc3")
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Iskren Chernev <iskren.chernev@gmail.com>
-
+Fixes: c7b72abca61ec ("ARM: OMAP2+: Drop legacy platform data for dra7 dwc3")
+Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
 ---
+v2:
+  - changed reference to commit sha instead of line numbers
+  - added Fixes: tag
+  - moved the definition to dra74.dtsi as per Suman and Tony review comments
 
-Changes since v1:
-1. Remove the 'flags' variable.
-2. Added ack.
-3. Rebase - the bindings were converted to dtschema.
----
- .../devicetree/bindings/power/supply/maxim,max17040.yaml      | 2 +-
- drivers/power/supply/max17040_battery.c                       | 4 +---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/am5718.dtsi  |  6 +-----
+ arch/arm/boot/dts/dra7-l4.dtsi | 22 ----------------------
+ arch/arm/boot/dts/dra71x.dtsi  |  4 ----
+ arch/arm/boot/dts/dra72x.dtsi  |  4 ----
+ arch/arm/boot/dts/dra74x.dtsi  |  2 +-
+ 5 files changed, 2 insertions(+), 36 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-index de91cf3f058c..f792d06db413 100644
---- a/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-@@ -89,7 +89,7 @@ examples:
-         reg = <0x36>;
-         maxim,alert-low-soc-level = <10>;
-         interrupt-parent = <&gpio7>;
--        interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-         wakeup-source;
-       };
-     };
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index 1aab868adabf..e80dd9141ae7 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -361,12 +361,10 @@ static irqreturn_t max17040_thread_handler(int id, void *dev)
- static int max17040_enable_alert_irq(struct max17040_chip *chip)
- {
- 	struct i2c_client *client = chip->client;
--	unsigned int flags;
- 	int ret;
+diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
+index ebf4d3cc1cfb..6d7530a48c73 100644
+--- a/arch/arm/boot/dts/am5718.dtsi
++++ b/arch/arm/boot/dts/am5718.dtsi
+@@ -17,17 +17,13 @@ / {
+  * VCP1, VCP2
+  * MLB
+  * ISS
+- * USB3, USB4
++ * USB3
+  */
  
--	flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
- 	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
--					max17040_thread_handler, flags,
-+					max17040_thread_handler, IRQF_ONESHOT,
- 					chip->battery->desc->name, chip);
+ &usb3_tm {
+ 	status = "disabled";
+ };
  
- 	return ret;
+-&usb4_tm {
+-	status = "disabled";
+-};
+-
+ &atl_tm {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+index 149144cdff35..648d23f7f748 100644
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -4129,28 +4129,6 @@ usb3: usb@10000 {
+ 			};
+ 		};
+ 
+-		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
+-			compatible = "ti,sysc-omap4", "ti,sysc";
+-			reg = <0x140000 0x4>,
+-			      <0x140010 0x4>;
+-			reg-names = "rev", "sysc";
+-			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
+-			ti,sysc-midle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
+-					<SYSC_IDLE_NO>,
+-					<SYSC_IDLE_SMART>,
+-					<SYSC_IDLE_SMART_WKUP>;
+-			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
+-			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
+-			clock-names = "fck";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges = <0x0 0x140000 0x20000>;
+-		};
+-
+ 		target-module@170000 {			/* 0x48970000, ap 21 0a.0 */
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x170010 0x4>;
+diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
+index cad0e4a2bd8d..9c270d8f75d5 100644
+--- a/arch/arm/boot/dts/dra71x.dtsi
++++ b/arch/arm/boot/dts/dra71x.dtsi
+@@ -11,7 +11,3 @@
+ &rtctarget {
+ 	status = "disabled";
+ };
+-
+-&usb4_tm {
+-	status = "disabled";
+-};
+diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
+index d403acc754b6..f3e934ef7d3e 100644
+--- a/arch/arm/boot/dts/dra72x.dtsi
++++ b/arch/arm/boot/dts/dra72x.dtsi
+@@ -108,7 +108,3 @@ &pcie1_ep {
+ &pcie2_rc {
+ 	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
+ };
+-
+-&usb4_tm {
+-	status = "disabled";
+-};
+diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
+index e1850d6c841a..60f2ab8d34d5 100644
+--- a/arch/arm/boot/dts/dra74x.dtsi
++++ b/arch/arm/boot/dts/dra74x.dtsi
+@@ -49,7 +49,7 @@ dsp2_system: dsp_system@41500000 {
+ 			reg = <0x41500000 0x100>;
+ 		};
+ 
+-		target-module@48940000 {
++		usb4_tm: target-module@48940000 {
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x48940000 0x4>,
+ 			      <0x48940010 0x4>;
 -- 
-2.27.0
+2.31.1
 
