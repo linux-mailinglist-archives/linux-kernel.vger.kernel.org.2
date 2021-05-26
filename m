@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96893391CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF65391CB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 18:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhEZQHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 12:07:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34446 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235382AbhEZQHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 12:07:52 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1llw2y-0006jH-K7; Wed, 26 May 2021 16:06:16 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Connor McAdams <conmanx360@gmail.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ALSA: hda/ca0132: Make a const array static, makes object smaller
-Date:   Wed, 26 May 2021 17:06:16 +0100
-Message-Id: <20210526160616.3764119-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S235489AbhEZQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 12:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235159AbhEZQJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 12:09:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5806613D4;
+        Wed, 26 May 2021 16:07:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622045261;
+        bh=j6Odz9vOMSnIs4wWXntwTwZIr6CshcRW2BHOShPDJPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rUgCR+uaaXALcZoWRgnnPpHPi975FoacDvb1MOnemnXtnzIJw6OoodjAJogz+f5Hr
+         LCGMkt0nePk8Xg4xhmvlzLQuPhuTKQM9nKSUn5tk1XvRbfM20V9tFNWQiS30yKmN0v
+         Qs0sM8xsdz0Y697b2/XcH+a/MuIqb7pDKNgNU3Oa9SKJREzdifQfQLrFV6bmUKXh8h
+         4UaVu3v1+B+ii8daplbddOL8mGcXICalVn17kYd0tbISr2zvid2Oerh51XYFu6mPk/
+         zB3UehjCy0WLcUY63OG/VbtG5QJ6eQx+iauqd6obdjMUBNnBVEkrK7MK1kIVxFhHM+
+         /VhhB7JDtKP8g==
+Date:   Wed, 26 May 2021 17:07:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com, Li Zefan <lizefan@huawei.com>
+Subject: Re: [PATCH v7 08/22] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20210526160730.GC19691@willie-the-truck>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-9-will@kernel.org>
+ <YK5i/GQ/30hSsYBU@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK5i/GQ/30hSsYBU@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, May 26, 2021 at 05:02:20PM +0200, Peter Zijlstra wrote:
+> On Tue, May 25, 2021 at 04:14:18PM +0100, Will Deacon wrote:
+> >  void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+> >  {
+> > +	const struct cpumask *cs_mask;
+> > +	const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
+> > +
+> >  	rcu_read_lock();
+> > +	cs_mask = task_cs(tsk)->cpus_allowed;
+> > +
+> > +	if (!is_in_v2_mode() || !cpumask_subset(cs_mask, possible_mask))
+> > +		goto unlock; /* select_fallback_rq will try harder */
+> > +
+> > +	do_set_cpus_allowed(tsk, cs_mask);
+> > +unlock:
+> 
+> 	if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask))
+> 		do_set_cpus_allowed(tsk, cs_mask);
+> 
+> perhaps?
 
-Don't populate the const array dsp_dma_stream_ids the stack but instead
-make it static. Makes the object code smaller by 21 bytes.
+Absolutely.
 
-Before:
-   text    data     bss     dec     hex filename
- 189012   70376     192  259580   3f5fc ./sound/pci/hda/patch_ca0132.o
-
-After:
-   text    data     bss     dec     hex filename
- 188927   70440     192  259559   3f5e7 ./sound/pci/hda/patch_ca0132.o
-
-(gcc version 10.3.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/pci/hda/patch_ca0132.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 49b4fdd2feab..b66e7bdbf483 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -7598,7 +7598,7 @@ static void ca0132_alt_free_active_dma_channels(struct hda_codec *codec)
-  */
- static void ca0132_alt_start_dsp_audio_streams(struct hda_codec *codec)
- {
--	const unsigned int dsp_dma_stream_ids[] = { 0x0c, 0x03, 0x04 };
-+	static const unsigned int dsp_dma_stream_ids[] = { 0x0c, 0x03, 0x04 };
- 	struct ca0132_spec *spec = codec->spec;
- 	unsigned int i, tmp;
- 
--- 
-2.31.1
-
+Will
