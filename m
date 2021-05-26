@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E8A3922FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 00:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3F53922FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 01:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhEZW50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 18:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S234527AbhEZXFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 19:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhEZW5Y (ORCPT
+        with ESMTP id S234343AbhEZXFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 18:57:24 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD5C061574;
-        Wed, 26 May 2021 15:55:51 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id n2so2783600wrm.0;
-        Wed, 26 May 2021 15:55:51 -0700 (PDT)
+        Wed, 26 May 2021 19:05:09 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8E8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:03:37 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id r5so5033895lfr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 16:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=gPwm/bFLTQknXqSBHE8+frTItoBX1WvDbpLyvrh7WXw=;
-        b=E+oZSERpm7nR3VDyMmDKRLV8fXzYHsjRoACZKthbjyJ3ya9KOTY2P2J/u0JErj/Kt2
-         mvw2UTMeB6AXpar59SdVIwrRN91MeKQg4nDjD2sJpjlsjwo+69MRiWFtOXgJAo2RP6+e
-         Tim+ecSMwwKUbci3USZAzuoq920NQdhVRgx479D6c9YnznR2/oTsbDIiIYczem+otiir
-         oX+P5/0EGpSSIr0lb2grDSo2CQe7Hzzdl2xbtbwk1QxyGMBLouX28jAY8e5Q0icHJt0j
-         BP+KvuxST7TZRGOx/esOm+iInBde+JLdrUfrtTvVQ70vUAEJHs+5noa/gy48M2ERneIX
-         /bjA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ZAwr+uWe1RDh6PrvXQCTvhQUq67NZKbIFSU2NmGCms=;
+        b=DInztS5vf5H0IuXW0bNB2j/bEcRgqdeBKI3unl909a7pWSL4CZS3Tpy3WBmmUC0gQY
+         f68bgDCxLBTVFTAeX0sz7iharrOIYJSyiL9a4g2if77wv6Kt4MMDG5PxQWPy2jEvRogq
+         JHf9kdJz1NqntFyp92Ws2ydglgYZOR2wRU1uEqQqVja7yEfpbEKpjNq093b4E1xcZR/l
+         3t8Ry09STINW1tp0ja6ia3P1FQ23E8rW2vntCvdsVevBk3LOb0+d26/1qDeV1Pfr9gQZ
+         mFJZUPSR3GZpNKfvPFAoPmlR1k0qTLgF5nqRDSayzEjb4ePVni/0iGYbri7sNWNt+q8z
+         e3jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gPwm/bFLTQknXqSBHE8+frTItoBX1WvDbpLyvrh7WXw=;
-        b=NDr1w6wo2v8qk1Dn8h55VIgsnjiWfL3Vz7qojrEw8OiTxxenj9GLQZ60jegySqZOyN
-         WUG99SJjtMAKuy4bMtAUWPd4KlKZllGmDBTbpAxaCW9hS0rHzYIDgQ2RjEqAk274K1jr
-         XmzLnnKc3zRbc2eeOK2MwFuyMxjJj55jWbBmSKnyZ7wNYpi74wyYfkcyWN4k8v96bdZQ
-         oTzLGPDHXZVugHb28/DbAY3aiI6SXTkuAuvA9ZDDwVaSFy/wSSgq2qAJ2skkkAsYuaFR
-         xNUE8L3jbn4kwngYL0RIghV7SeOvZiRFPP1yArwZH0ONxoyc2vsXqte7kzYFHeMILHcP
-         p/tw==
-X-Gm-Message-State: AOAM532Ym98tEYpW0RkCdKuy8R7oxRxr+QkCM2bOj7fFfy3QphMZp8A4
-        U5TpjuRdT7h+gOIhX5DxUAK+k8H3etc=
-X-Google-Smtp-Source: ABdhPJzF9Esks2jjeXzFwZFez3T5gxEJOb3T54ToweqH47/cdBJKZP8KVRuuixrS4JbCGeqj2UlkLw==
-X-Received: by 2002:a5d:5052:: with SMTP id h18mr241222wrt.365.1622069749434;
-        Wed, 26 May 2021 15:55:49 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.129.15])
-        by smtp.gmail.com with ESMTPSA id f1sm460692wrr.63.2021.05.26.15.55.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 15:55:49 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Remove CONFIG_EXPERT
-To:     "Justin M. Forbes" <jforbes@fedoraproject.org>, axboe@kernel.dk,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210526223445.317749-1-jforbes@fedoraproject.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <0d335e81-9a94-ca60-5659-bb46080b9242@gmail.com>
-Date:   Wed, 26 May 2021 23:55:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ZAwr+uWe1RDh6PrvXQCTvhQUq67NZKbIFSU2NmGCms=;
+        b=lWU+z1BJ++3XQ6MhO/k1iwZLEPttoC24p1jlAilY5tickwPGzPk/xuDF8MvaOh8rxS
+         rgVUiFVmumqhTXzql87ka5rBI5y1Y5ZpKIvJ1UWGpUas7Wk7YwzhgxQWeVPoXOGPBOf/
+         /3BIBj8hliv6kwMO5tqB+i7Lx4ZXOkASp5eYgRC+0CVXY4/Suw9KKXff6XWfIcbt/WF4
+         2b6afiKxKpUda0GbHO3/qVfuXXpdAQ8F14e2MIO3CbhwK9r0Atu0jl7HVrx9hRl5FrfF
+         TtCsTDLke8ql8OPZuegsAlb+VenYw5T/X/jOj8+gil0Z3PGpZtWCnBm7kzN6MYPQR5ns
+         yVOg==
+X-Gm-Message-State: AOAM530o3l4S+pcLLpN7KVjpr+iwJDu2oUHqfOStHBwd+15OHj7xQpWO
+        kc5dGjpanYZBsZv4yGqmVMAuWtlhioJO+3mVzYtbEg==
+X-Google-Smtp-Source: ABdhPJwVNK5U1mLQGbtiooe5DWoQS/py60QeZeqjo8+tyrjQRST7xi1Cw3dVr1w2aBB8MPL7N55L07DFRCvJvmC/z0Y=
+X-Received: by 2002:a19:7012:: with SMTP id h18mr285616lfc.432.1622070215096;
+ Wed, 26 May 2021 16:03:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526223445.317749-1-jforbes@fedoraproject.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210526201239.3351-1-shy828301@gmail.com> <20210526201239.3351-2-shy828301@gmail.com>
+In-Reply-To: <20210526201239.3351-2-shy828301@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 26 May 2021 16:03:23 -0700
+Message-ID: <CALvZod7AXsky5ojvc_4E8=vK3eaBmto0XHcc41fBLFuWHUA4+g@mail.gmail.com>
+Subject: Re: [v4 PATCH 2/2] mm: rmap: make try_to_unmap() void function
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>, Zi Yan <ziy@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>, naoya.horiguchi@nec.com,
+        wangyugui@e16-tech.com, Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 11:34 PM, Justin M. Forbes wrote:
-> While IO_URING has been in fairly heavy development, it is hidden behind
-> CONFIG_EXPERT with a default of on.  It has been long enough now that I
-> think we should remove EXPERT and allow users and distros to decide how
-> they want this config option set without jumping through hoops.
+On Wed, May 26, 2021 at 1:12 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> Currently try_to_unmap() return bool value by checking page_mapcount(),
+> however this may return false positive since page_mapcount() doesn't
+> check all subpages of compound page.  The total_mapcount() could be used
+> instead, but its cost is higher since it traverses all subpages.
+>
+> Actually the most callers of try_to_unmap() don't care about the
+> return value at all.  So just need check if page is still mapped by
+> page_mapped() when necessary.  And page_mapped() does bail out early
+> when it finds mapped subpage.
+>
+> Suggested-by: Hugh Dickins <hughd@google.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Acked-by: Pavel Begunkov <asml.silence@gmail.com>
-
-
-> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> ---
->  init/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 1ea12c64e4c9..0decca696bf7 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1621,7 +1621,7 @@ config AIO
->  	  this option saves about 7k.
-> 
->  config IO_URING
-> -	bool "Enable IO uring support" if EXPERT
-> +	bool "Enable IO uring support"
->  	select IO_WQ
->  	default y
->  	help
-> 
-
--- 
-Pavel Begunkov
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
