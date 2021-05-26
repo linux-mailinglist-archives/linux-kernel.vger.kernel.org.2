@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812D2391532
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F364739154C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 12:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhEZKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 06:42:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233946AbhEZKmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 06:42:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 356DF613D3;
-        Wed, 26 May 2021 10:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622025641;
-        bh=fgxtvK+VLmElnGTJt7fJtJ+g5hluXnrJ9ugzu78I4T8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=F7mffP8tCx5ArjCKqddjKqLgQ8A4agdIqWtTcrcJMywyjJNwJk29+NaKCN9sWdD6L
-         6IFyHYzgoE9xUotWBjOqqhXwPyfeIKM2CZigNHYy6+aNxIW3559XWdhfJL7TOJmmrQ
-         ykIm7cbvrhe5VMSps8I8I6e89doYxZs2HBOv5DkXGWCTAOBmXJH9THr1sFfeRnsAKZ
-         piWmD32EBgnNhdRKXaNS0N7VTHY1c7fNlJFE6nMQHqWov5zEiaGN70cYOXcY8W/N4X
-         OJ9HpcmN+g3U0x26RPwM5kpbKb7a5V+rQoVXP6bVXu8JGNbrCw+ByqdbOinb6o312T
-         yuOOfvHfGFr1w==
-Date:   Wed, 26 May 2021 12:40:38 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Anssi Hannula <anssi.hannula@gmail.com>,
-        Dmitry Torokhov <dtor@mail.ru>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] HID: pidff: fix error return code in
- hid_pidff_init()
-In-Reply-To: <20210508024737.1927-1-thunder.leizhen@huawei.com>
-Message-ID: <nycvar.YFH.7.76.2105261240280.28378@cbobk.fhfr.pm>
-References: <20210508024737.1927-1-thunder.leizhen@huawei.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S234190AbhEZKsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 06:48:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48180 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234068AbhEZKsT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 06:48:19 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C08E91FD29;
+        Wed, 26 May 2021 10:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622025645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bkCGM14oSutPXR2oQe/Ky///EW/gzPaRnDOrBGh+z4k=;
+        b=l0dGOAizp1uH2nbWe1n/07Jv6BlZPm3AjVt/hoYCn2eu6hcQmaKVc7cX9QsCCcbWBxRiZs
+        Qo0pg6obADZXGSBVQk8vACeTEn8nxu3uYChZxx/RXEE3iziXWn/ya5Q3tRXvBlGiO5BeSa
+        gt6TfiQnRm1oj83rZHheHRaOkF3gkik=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622025645;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bkCGM14oSutPXR2oQe/Ky///EW/gzPaRnDOrBGh+z4k=;
+        b=05EZKRMu172ocC8cN5HU987P8mLty1KhACWfX2Ex2tHmynPqV277FfAxCHoi1VcP8dbdHY
+        6VUKaVREZbUmR3Bg==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id A790D11A98;
+        Wed, 26 May 2021 10:40:45 +0000 (UTC)
+Subject: Re: [PATCH v2 3/4] slub: Indicate slab_fix() uses printf formats
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>
+References: <20210526025625.601023-1-swboyd@chromium.org>
+ <20210526025625.601023-4-swboyd@chromium.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <904b3ea3-c308-5807-4288-d6cd9109be5b@suse.cz>
+Date:   Wed, 26 May 2021 12:40:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210526025625.601023-4-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 8 May 2021, Zhen Lei wrote:
-
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+On 5/26/21 4:56 AM, Stephen Boyd wrote:
+> From: Joe Perches <joe@perches.com>
 > 
-> Fixes: 224ee88fe395 ("Input: add force feedback driver for PID devices")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Ideally, slab_fix() would be marked with __printf and the format here
+> would not use \n as that's emitted by the slab_fix(). Make these
+> changes.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
 > ---
->  drivers/hid/usbhid/hid-pidff.c | 1 +
->  1 file changed, 1 insertion(+)
+>  mm/slub.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
-> index ea126c50acc3..3b4ee21cd811 100644
-> --- a/drivers/hid/usbhid/hid-pidff.c
-> +++ b/drivers/hid/usbhid/hid-pidff.c
-> @@ -1292,6 +1292,7 @@ int hid_pidff_init(struct hid_device *hid)
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 6168b3ce1b3e..bf4949115412 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -672,6 +672,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
+>  	va_end(args);
+>  }
 >  
->  	if (pidff->pool[PID_DEVICE_MANAGED_POOL].value &&
->  	    pidff->pool[PID_DEVICE_MANAGED_POOL].value[0] == 0) {
-> +		error = -EPERM;
->  		hid_notice(hid,
->  			   "device does not support device managed pool\n");
->  		goto fail;
-
-Good catch, applied, thank you.
-
--- 
-Jiri Kosina
-SUSE Labs
+> +__printf(2, 3)
+>  static void slab_fix(struct kmem_cache *s, char *fmt, ...)
+>  {
+>  	struct va_format vaf;
+> @@ -777,7 +778,7 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
+>  static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
+>  						void *from, void *to)
+>  {
+> -	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x\n", message, from, to - 1, data);
+> +	slab_fix(s, "Restoring %s 0x%p-0x%p=0x%x", message, from, to - 1, data);
+>  	memset(from, data, to - from);
+>  }
+>  
+> @@ -1026,13 +1027,13 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
+>  		slab_err(s, page, "Wrong number of objects. Found %d but should be %d",
+>  			 page->objects, max_objects);
+>  		page->objects = max_objects;
+> -		slab_fix(s, "Number of objects adjusted.");
+> +		slab_fix(s, "Number of objects adjusted");
+>  	}
+>  	if (page->inuse != page->objects - nr) {
+>  		slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
+>  			 page->inuse, page->objects - nr);
+>  		page->inuse = page->objects - nr;
+> -		slab_fix(s, "Object count adjusted.");
+> +		slab_fix(s, "Object count adjusted");
+>  	}
+>  	return search == NULL;
+>  }
+> 
 
