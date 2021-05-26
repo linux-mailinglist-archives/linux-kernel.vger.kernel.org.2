@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1DE390E74
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5658C390E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 04:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhEZCua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 22:50:30 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:49423 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230157AbhEZCu3 (ORCPT
+        id S232571AbhEZCvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 22:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhEZCvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 22:50:29 -0400
-X-UUID: 25d36622d6c44af498e08984b3cf9757-20210526
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1U46B7Bl7bjwl0Eqjg0kYMe2AujHOPWtzQx1mw4esww=;
-        b=JJ/GiDbjmIh2aVThmSl95Dq6s/4d5g+OWxwCJf0ePJ4yNdc3b/PejNSvAklyZOy1+k49moxTyxaljFMkVfYCdrAFKVEmqTdw5YJnra9VWpaUJa9P2OzC/nQZDbuovEeJ9sSTZksu3MDY5Wz9jF/8vzE8o7j29bcYOwqQzK+8AHI=;
-X-UUID: 25d36622d6c44af498e08984b3cf9757-20210526
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 261370762; Wed, 26 May 2021 10:48:53 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
- 2021 10:48:51 +0800
-Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Wed, 26 May 2021 10:48:50 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
-        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
-        <ck.hu@mediatek.com>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v3 3/3] pwm: mtk_disp: implement atomic API .get_state()
-Date:   Wed, 26 May 2021 10:48:46 +0800
-Message-ID: <20210526024846.120838-4-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210526024846.120838-1-jitao.shi@mediatek.com>
-References: <20210526024846.120838-1-jitao.shi@mediatek.com>
+        Tue, 25 May 2021 22:51:17 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08BCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:49:44 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x18so20829364pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 25 May 2021 19:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2BepZnCkcUmGhQ5OjwD1VB02wV2VKA/owewc6BO/X1Y=;
+        b=DDmq7hQ0ghVGWObwNW2j54M3a6BBUK6YgYXiFDgE/1LUF3TVDNic2ox+7j6NRkepE2
+         yI2s7tDtlPv+f4cgn59M8gGrFY5oNNnCcbyliWqRSntAZdz8z8T/P20djEyMlPywkkHv
+         rdrJdzQ5OhY1mFFg9t0VUcpzEe1ZraHVLxID29+JvKSDjihPv+sf4AZDr3pcobUya5Sy
+         /fcBeRb2bjpH9JIP36gkbwERmQeXtSRV4jKVLC5jqkaqirTNObH4b7GjjNjZL5J98kHX
+         e/WFuuJpP6ayvJzZdkd73crm5jHJOqGrRVzcQfF80up3W/jn2ny9nZbzX4Ka9ELQwJvI
+         QJFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2BepZnCkcUmGhQ5OjwD1VB02wV2VKA/owewc6BO/X1Y=;
+        b=XplOSMVia9D8OJG2fyQmTHhy8h9Ayg7LIZWONANy0XT27/JOjxJU0AWVmRsxh9o7PP
+         Kk/lP887969r1hYzHtdnFKEeG9t1eo/Qv/5Q/vUNbLnYG6YYAFC7A4OjucYxMWyT9uJp
+         DGfHVGcPXYM2Y30DqWVeLgBgM2Ims1wk/WwONmMPf0Q1U6Yz4RZl+37ewRFUCeQR+wUr
+         0CfqJKjHNuD5RfyafCzMyP87lTXxcvIH/N7iI9otbs+oxqHzBQ0lw7Avk2uiUG53waz5
+         Sf8dmiHv3vFfwdgfLOh6nl7ASW88/N7htb7zuHA/sa/69HoCHgrazbJsK5cpiJC5doYz
+         C98Q==
+X-Gm-Message-State: AOAM530yYadVohwdjwsFNkHndc43hY34kclThl4TXq58qungQ5Yqkavr
+        EtPF5EvJQgSu5qQ1kSvPwouwnt7M65DSZBB/9jX+Fg==
+X-Google-Smtp-Source: ABdhPJx7cPc0O2UrFrGyIQ+PbMrQwFRfUkTEdyu0u54IUeYn/MLLF/V39FIJVJEulczW9iJpLwXOLxLq7cKeyiXb+Zg=
+X-Received: by 2002:a63:6547:: with SMTP id z68mr15614319pgb.341.1621997384564;
+ Tue, 25 May 2021 19:49:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 4FDB6116F4B55DB7826D226E8689B2C78A0F2CC440C7A178632882E9BB30287C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210421070059.69361-1-songmuchun@bytedance.com>
+ <20210421070059.69361-3-songmuchun@bytedance.com> <YK0yBhDj+9zJlz/d@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YK0yBhDj+9zJlz/d@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 26 May 2021 10:49:08 +0800
+Message-ID: <CAMZfGtXEJv1mU5CHZV3H7Qkkmq0mEugQpOpDM7Q=K-Sr1L3ydQ@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH v3 02/12] mm: memcontrol: introduce compact_lock_page_lruvec_irqsave
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, "Singh, Balbir" <bsingharora@gmail.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlLUlkOiBJZTE2MThiOTBlNzc5ODlhZTU1OGY1OTU1NGQ1NWQwZDE4NzU0YjA5MQ0KU2ln
-bmVkLW9mZi1ieTogSml0YW8gU2hpIDxqaXRhby5zaGlAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJp
-dmVycy9wd20vcHdtLW10ay1kaXNwLmMgfCA0NCArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYyBiL2RyaXZlcnMvcHdtL3B3bS1tdGstZGlz
-cC5jDQppbmRleCA5Yzk1YjlhZjQxN2YuLmQ3NTM1ZjI0MzY0YSAxMDA2NDQNCi0tLSBhL2RyaXZl
-cnMvcHdtL3B3bS1tdGstZGlzcC5jDQorKysgYi9kcml2ZXJzL3B3bS9wd20tbXRrLWRpc3AuYw0K
-QEAgLTE3OSw4ICsxNzksNTIgQEAgc3RhdGljIGludCBtdGtfZGlzcF9wd21fYXBwbHkoc3RydWN0
-IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0KIAlyZXR1cm4gbXRrX2Rp
-c3BfcHdtX2VuYWJsZShjaGlwLCBzdGF0ZSk7DQogfQ0KIA0KK3N0YXRpYyB2b2lkIG10a19kaXNw
-X3B3bV9nZXRfc3RhdGUoc3RydWN0IHB3bV9jaGlwICpjaGlwLA0KKwkJCQkgICBzdHJ1Y3QgcHdt
-X2RldmljZSAqcHdtLA0KKwkJCQkgICBzdHJ1Y3QgcHdtX3N0YXRlICpzdGF0ZSkNCit7DQorCXN0
-cnVjdCBtdGtfZGlzcF9wd20gKm1kcCA9IHRvX210a19kaXNwX3B3bShjaGlwKTsNCisJdTMyIGNs
-a19kaXYsIHBlcmlvZCwgaGlnaF93aWR0aCwgY29uMCwgY29uMTsNCisJdTY0IHJhdGU7DQorCWlu
-dCBlcnI7DQorDQorCWVyciA9IGNsa19wcmVwYXJlX2VuYWJsZShtZHAtPmNsa19tYWluKTsNCisJ
-aWYgKGVyciA8IDApIHsNCisJCWRldl9lcnIoY2hpcC0+ZGV2LCAiQ2FuJ3QgZW5hYmxlIG1kcC0+
-Y2xrX21haW46ICVkXG4iLCBlcnIpOw0KKwkJcmV0dXJuOw0KKwl9DQorCWVyciA9IGNsa19wcmVw
-YXJlX2VuYWJsZShtZHAtPmNsa19tbSk7DQorCWlmIChlcnIgPCAwKSB7DQorCQlkZXZfZXJyKGNo
-aXAtPmRldiwgIkNhbid0IGVuYWJsZSBtZHAtPmNsa19tbTogJWRcbiIsIGVycik7DQorCQljbGtf
-ZGlzYWJsZV91bnByZXBhcmUobWRwLT5jbGtfbWFpbik7DQorCQlyZXR1cm47DQorCX0NCisNCisJ
-cmF0ZSA9IGNsa19nZXRfcmF0ZShtZHAtPmNsa19tYWluKTsNCisNCisJY29uMCA9IHJlYWRsKG1k
-cC0+YmFzZSArIG1kcC0+ZGF0YS0+Y29uMCk7DQorCWNvbjEgPSByZWFkbChtZHAtPmJhc2UgKyBt
-ZHAtPmRhdGEtPmNvbjEpOw0KKw0KKwlzdGF0ZS0+cG9sYXJpdHkgPSBjb24wICYgUFdNX1BPTEFS
-SVRZID8NCisJCQkgIFBXTV9QT0xBUklUWV9JTlZFUlNFRCA6IFBXTV9QT0xBUklUWV9OT1JNQUw7
-DQorCXN0YXRlLT5lbmFibGVkID0gISEoY29uMCAmIEJJVCgwKSk7DQorDQorCWNsa19kaXYgPSAo
-Y29uMCAmIFBXTV9DTEtESVZfTUFTSykgPj4gUFdNX0NMS0RJVl9TSElGVDsNCisJcGVyaW9kID0g
-Y29uMSAmIFBXTV9QRVJJT0RfTUFTSzsNCisJc3RhdGUtPnBlcmlvZCA9IGRpdl91NjQocGVyaW9k
-ICogKGNsa19kaXYgKyAxKSAqIE5TRUNfUEVSX1NFQywgcmF0ZSk7DQorCWhpZ2hfd2lkdGggPSAo
-Y29uMSAmIFBXTV9ISUdIX1dJRFRIX01BU0spID4+IFBXTV9ISUdIX1dJRFRIX1NISUZUOw0KKwlz
-dGF0ZS0+ZHV0eV9jeWNsZSA9IGRpdl91NjQoaGlnaF93aWR0aCAqIChjbGtfZGl2ICsgMSkgKiBO
-U0VDX1BFUl9TRUMsDQorCQkJCSAgICByYXRlKTsNCisNCisJY2xrX2Rpc2FibGVfdW5wcmVwYXJl
-KG1kcC0+Y2xrX21tKTsNCisJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKG1kcC0+Y2xrX21haW4pOw0K
-Kw0KKwltZHAtPmVuYWJsZWQgPSBzdGF0ZS0+ZW5hYmxlZDsNCit9DQorDQogc3RhdGljIGNvbnN0
-IHN0cnVjdCBwd21fb3BzIG10a19kaXNwX3B3bV9vcHMgPSB7DQogCS5hcHBseSA9IG10a19kaXNw
-X3B3bV9hcHBseSwNCisJLmdldF9zdGF0ZSA9IG10a19kaXNwX3B3bV9nZXRfc3RhdGUsDQogCS5v
-d25lciA9IFRISVNfTU9EVUxFLA0KIH07DQogDQotLSANCjIuMjUuMQ0K
+On Wed, May 26, 2021 at 1:21 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Apr 21, 2021 at 03:00:49PM +0800, Muchun Song wrote:
+> > If we reuse the objcg APIs to charge LRU pages, the page_memcg()
+> > can be changed when the LRU pages reparented. In this case, we need
+> > to acquire the new lruvec lock.
+> >
+> >     lruvec = mem_cgroup_page_lruvec(page);
+> >
+> >     // The page is reparented.
+> >
+> >     compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+> >
+> >     // Acquired the wrong lruvec lock and need to retry.
+> >
+> > But compact_lock_irqsave() only take lruvec lock as the parameter,
+> > we cannot aware this change. If it can take the page as parameter
+> > to acquire the lruvec lock. When the page memcg is changed, we can
+> > use the page_memcg() detect whether we need to reacquire the new
+> > lruvec lock. So compact_lock_irqsave() is not suitable for us.
+> > Similar to lock_page_lruvec_irqsave(), introduce
+> > compact_lock_page_lruvec_irqsave() to acquire the lruvec lock in
+> > the compaction routine.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
+Thanks.
+
+>
+> > ---
+> >  mm/compaction.c | 27 ++++++++++++++++++++++++---
+> >  1 file changed, 24 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/compaction.c b/mm/compaction.c
+> > index 1c500e697c88..082293587cc6 100644
+> > --- a/mm/compaction.c
+> > +++ b/mm/compaction.c
+> > @@ -511,6 +511,29 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+> >       return true;
+> >  }
+> >
+> > +static struct lruvec *
+> > +compact_lock_page_lruvec_irqsave(struct page *page, unsigned long *flags,
+> > +                              struct compact_control *cc)
+>
+> Maybe compact_lock_page_irqsave() to make it more similar to
+> compact_lock_irqsafe()? But it's up to you.
+
+I like a more brief name, compact_lock_page_irqsave is a good and
+brief name. Thanks.
+
+>
+> Thanks!
