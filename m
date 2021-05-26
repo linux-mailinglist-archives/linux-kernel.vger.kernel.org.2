@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F65390D9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE37390D9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 02:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhEZA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 25 May 2021 20:57:52 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:53162 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231373AbhEZA5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 25 May 2021 20:57:47 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14Q0shDR029693;
-        Tue, 25 May 2021 17:56:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=wxenAkV1tMw7M32aV7mK5sIBBg3iM4RtcUwB2rhMyYw=;
- b=iPYqma4pZnxxteEhy5kh2/LMvsQlaYs7igICK0SWebb9Lk6EDRSgVrpnAWXgrAKl8Nle
- FQqODYTzGcOjAY/1VXJ+gfXeF0hVgD7g6M+txqHBTV/6szmL5UthqQRv65uCHN+L91rd
- Ot389rfH5s27cW5DJhXa1LWxZiWs34JkNsxjLOYaWR9uN82qMPrWO0N6n5LV81+bhXYp
- /I3DZOhcMgvdkgQIEcWsql2UKOOCJ/L2xHphq/L30uPWs252vKZJTMAQxHN3bVjtwj1O
- I99i9qR2TZoGW9i2QYvP3IrK0kHLkdeAHxO6gP7Zf79Bg6kp27snf6bag7+xnT3udw7S RA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 38s0fetu2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 17:56:14 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 17:56:12 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 25 May 2021 17:56:12 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id 0A8F73F703F;
-        Tue, 25 May 2021 17:56:13 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 14Q0uCiH027284;
-        Tue, 25 May 2021 17:56:12 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Tue, 25 May 2021 17:56:12 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     <linux-scsi@vger.kernel.org>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        <linux-kernel@vger.kernel.org>, Nilesh Javali <njavali@marvell.com>
-Subject: Re: [EXT] Re: [RFC 0/2] Serialize timeout handling and done
- callback.
-In-Reply-To: <20210525132604.dpn56mga2otyaxwl@beryllium.lan>
-Message-ID: <alpine.LRH.2.21.9999.2105251755360.24132@irv1user01.caveonetworks.com>
-References: <20210507123103.10265-1-dwagner@suse.de>
- <20210525132604.dpn56mga2otyaxwl@beryllium.lan>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-ORIG-GUID: W1yMh3XG33BL328smcIfhzp4tdaLXBbI
-X-Proofpoint-GUID: W1yMh3XG33BL328smcIfhzp4tdaLXBbI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_09:2021-05-25,2021-05-25 signatures=0
+        id S232673AbhEZA7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 25 May 2021 20:59:23 -0400
+Received: from m12-17.163.com ([220.181.12.17]:37001 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231373AbhEZA7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 25 May 2021 20:59:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=cPH5Hg7aCKUvPB2wbv
+        u+VOANrZ+iZsaBNFD4X/zNBzQ=; b=Oi135XrbTrNT167mRcEyBkQCvGgXEQjjqg
+        EvBqCd4J1kEfxX5XS1FaNGM4EwEYLw362SrFvZBYXmcyeKmly8WmC5rZlZKnhl6P
+        TiG5rONhMZIfjk50U5hTSHYu9JOsiWHvUBZKSNfp+KlFmkhQsj4+GhDkeUVE33bv
+        fCHd5sFBE=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp13 (Coremail) with SMTP id EcCowACXwYXWnK1g5t2d3Q--.46987S2;
+        Wed, 26 May 2021 08:56:55 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        dinghao.liu@zju.edu.cn
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH v2] nfc: st95hf: remove unnecessary assignment and label
+Date:   Wed, 26 May 2021 08:56:51 +0800
+Message-Id: <20210526005651.12652-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EcCowACXwYXWnK1g5t2d3Q--.46987S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW3Wr1xtF1rAF4kJw17trb_yoWkGwbE9r
+        yYv347ZFyUGr1UJry2g3ZxX34rKwn7ur4rX3Wag3WYkryjqwsxZanYyrZ5W3sxW3yFyas8
+        G3Z5A3yxurnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU51c_DUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqxeesVUMZimqwQAAsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021, 6:26am, Daniel Wagner wrote:
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-> External Email
-> 
-> ----------------------------------------------------------------------
-> Hi,
-> 
-> On Fri, May 07, 2021 at 02:31:00PM +0200, Daniel Wagner wrote:
-> > Maybe they make sense to add the driver even if I don't have prove it
-> > really address the mentioned bug hence this is marked as RFC.
-> 
-> Any feedback?
-> 
+In function st95hf_in_send_cmd, the variable rc is assigned then goto
+error label, which just returns rc, so we use return to replace it.
+Since error label only used once in the function, so we remove error label.
 
-Apologies for the delay, Daniel. I will review this by end of this week.
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/st95hf/core.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Regards,
--Arun
+diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
+index 4578547..88924be 100644
+--- a/drivers/nfc/st95hf/core.c
++++ b/drivers/nfc/st95hf/core.c
+@@ -926,10 +926,8 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
+ 	int len_data_to_tag = 0;
+ 
+ 	skb_resp = nfc_alloc_recv_skb(MAX_RESPONSE_BUFFER_SIZE, GFP_KERNEL);
+-	if (!skb_resp) {
+-		rc = -ENOMEM;
+-		goto error;
+-	}
++	if (!skb_resp)
++		return -ENOMEM;
+ 
+ 	switch (stcontext->current_rf_tech) {
+ 	case NFC_DIGITAL_RF_TECH_106A:
+@@ -986,7 +984,6 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
+ 
+ free_skb_resp:
+ 	kfree_skb(skb_resp);
+-error:
+ 	return rc;
+ }
+ 
+-- 
+1.9.1
+
+
