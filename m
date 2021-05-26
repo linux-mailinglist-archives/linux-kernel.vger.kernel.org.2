@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398C2391259
-	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A289F39125C
+	for <lists+linux-kernel@lfdr.de>; Wed, 26 May 2021 10:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhEZIdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 04:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbhEZIdD (ORCPT
+        id S232849AbhEZIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 04:33:15 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:39008 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231410AbhEZIdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 04:33:03 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B36C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:31:31 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q5so161229wrs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 01:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9K2ZcaJ0UvKBWGL+DeoaKZZOV/me504do+MmjS7kGQ=;
-        b=P70uwTkXc4vT2c5pOT9UmXAbxVfDBayRnjnwKwb5i7xU93GCfNy57HkEeIDQDX9kyr
-         oGV3731A637cYdMYRfYKRmso14jvlvYj2Hv2+JvBWrmC2f8g+Zvu8Z07NusMsWY3GPhc
-         UKmwoOnj1kuWVpOi1yblzuJ09IedkNgv40hsi0IbNutDC+tUeoLExdQEkLkUw/yivu5X
-         7AyciQWIxE6XD/2+z7F+tutFB0FiQnVj5DLOfvTB5a+Q0dk6wcOut7y1lJlSMlbDGK7/
-         MNd4rgdmsA8VDeVVg1zxVlukBaMXeXhNfLO/NNjaEBd0LXxpxnVg48MMhrqz55ts+ajA
-         tNLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9K2ZcaJ0UvKBWGL+DeoaKZZOV/me504do+MmjS7kGQ=;
-        b=DhCmdex0T8PWcb0PEiAdb0s1Io6IfTKdX0pRFJKOwVNOTCKFRISyufxPli6KfYwono
-         BMOZdYBtZl+I4RANJGbvuNFF15FbrKnWtMiHk9X1LYM/OWhn4xeD+p6RkdFaAlErWM9i
-         CE+4vUFc9gQWaC1ecL0DR8taXTH1ovQFMtX6MsxOnM++xa9fMMnrbN4GXNYzXKPKgZSJ
-         uU5XlK71NzCWZOK7Nl2p7jYkSus8v+JaZN/hS8xvsWiW9XgJ5DYNZIVNlqMjXi/iX+3u
-         IEAlplard3KCCdimYz7ZglNTc8QH5L4sva0JfsbafNCunU3yyMJSlntIzU/7mDMpwBv0
-         DB0Q==
-X-Gm-Message-State: AOAM532B8+lRoW9b2qvOgNY5jaT+IdxDUJBCoxlTwNf1qhIkPJufGyxF
-        ISk9k8iQaV8ZCYeHcrkJ8ATbtw==
-X-Google-Smtp-Source: ABdhPJyPsFXwbE1eTXxhQ/j5Y7oVhYsoZXPs/ZRPePhKsZQ/rDuz008HdVucTiMSLr9J9LdkFn9Rgw==
-X-Received: by 2002:a05:6000:1b0b:: with SMTP id f11mr32015361wrz.165.1622017889499;
-        Wed, 26 May 2021 01:31:29 -0700 (PDT)
-Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id r4sm237828wre.84.2021.05.26.01.31.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 01:31:28 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
-        processes-Sapan Bhatia <sapan@corewars.org>
-Subject: [PATCH v2 1/1] tty: n_tty: Fix some misdocumented functions
-Date:   Wed, 26 May 2021 09:31:25 +0100
-Message-Id: <20210526083125.549626-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        Wed, 26 May 2021 04:33:14 -0400
+Received: from dread.disaster.area (pa49-180-230-185.pa.nsw.optusnet.com.au [49.180.230.185])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id CD4E1104350A;
+        Wed, 26 May 2021 18:31:38 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1llowz-005N7h-2k; Wed, 26 May 2021 18:31:37 +1000
+Date:   Wed, 26 May 2021 18:31:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Wu Bo <wubo40@huawei.com>, linfeilong@huawei.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, davem@davemloft.net,
+        herbert@gondor.apana.org.au, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 1/2] crypto: af_alg - use DIV_ROUND_UP helper macro for
+ calculations
+Message-ID: <20210526083137.GK2817@dread.disaster.area>
+References: <1621930520-515336-1-git-send-email-wubo40@huawei.com>
+ <1621930520-515336-2-git-send-email-wubo40@huawei.com>
+ <20210525103744.Horde.nmFFeC3J2_-Qdu7udOYa8g1@messagerie.c-s.fr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210525103744.Horde.nmFFeC3J2_-Qdu7udOYa8g1@messagerie.c-s.fr>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=dUIOjvib2kB+GiIc1vUx8g==:117 a=dUIOjvib2kB+GiIc1vUx8g==:17
+        a=8nJEP1OIZ-IA:10 a=5FLXtPjwQuUA:10 a=i0EeH86SAAAA:8 a=7-415B0cAAAA:8
+        a=PjDj1IsLZaY1bt5ZHPIA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, May 25, 2021 at 10:37:44AM +0200, Christophe Leroy wrote:
+> Wu Bo <wubo40@huawei.com> a écrit :
+> 
+> > From: Wu Bo <wubo40@huawei.com>
+> > 
+> > Replace open coded divisor calculations with the DIV_ROUND_UP kernel
+> > macro for better readability.
+> > 
+> > Signed-off-by: Wu Bo <wubo40@huawei.com>
+> > ---
+> >  crypto/af_alg.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+> > index 18cc82d..8bd288d 100644
+> > --- a/crypto/af_alg.c
+> > +++ b/crypto/af_alg.c
+> > @@ -411,7 +411,7 @@ int af_alg_make_sg(struct af_alg_sgl *sgl, struct
+> > iov_iter *iter, int len)
+> >  	if (n < 0)
+> >  		return n;
+> > 
+> > -	npages = (off + n + PAGE_SIZE - 1) >> PAGE_SHIFT;
+> > +	npages = DIV_ROUND_UP(off + n, PAGE_SIZE);
+> 
+> You should use PFN_UP()
 
- drivers/tty/n_tty.c:623: warning: expecting prototype for process_echoes(). Prototype was for __process_echoes() instead
- drivers/tty/n_tty.c:1109: warning: expecting prototype for isig(). Prototype was for __isig() instead
- drivers/tty/n_tty.c:1268: warning: expecting prototype for n_tty_receive_char(). Prototype was for n_tty_receive_char_special() instead
- drivers/tty/n_tty.c:2132: warning: Excess function parameter 'buf' description in 'n_tty_read'
+No. We are not using pfns here - we're converting a byte count to a
+page count.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
-Cc: processes-Sapan Bhatia <sapan@corewars.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
+Besides, "PFN_UP" is a horrible, awful api. It does not decribe what
+it does and anyone who is not a mm developer will look at it and ask
+"what <the ....> does this do?" and have to go looking for it's
+definition to determine what it does. Yes, that's exactyl what I've
+just done, and I really wish I didn't because, well, it just
+reinforces how much we suck at APIs...
 
-v2: Rebased
+OTOH, what DIV_ROUND_UP() does is obvious, widely understood, self
+documenting and easy to determine if the usage is correct, which
+indeed this is.
 
- drivers/tty/n_tty.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+The lesson: do not use whacky obscure, out of context macros when a
+simple, obvious, widely known macro will give the same result and
+make the code easier to understand.
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 0ec93f1a61f5d..56d3b43d8a3a4 100644
---- a/drivers/tty/n_tty.c
-+++ b/drivers/tty/n_tty.c
-@@ -596,7 +596,7 @@ static ssize_t process_output_block(struct tty_struct *tty,
- }
- 
- /**
-- *	process_echoes	-	write pending echo characters
-+ *	__process_echoes	-	write pending echo characters
-  *	@tty: terminal device
-  *
-  *	Write previously buffered echo (and other ldisc-generated)
-@@ -1092,7 +1092,7 @@ static void eraser(unsigned char c, struct tty_struct *tty)
- }
- 
- /**
-- *	isig		-	handle the ISIG optio
-+ *	__isig		-	handle the ISIG optio
-  *	@sig: signal
-  *	@tty: terminal
-  *
-@@ -1248,7 +1248,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
- }
- 
- /**
-- *	n_tty_receive_char	-	perform processing
-+ *	n_tty_receive_char_special	-	perform processing
-  *	@tty: terminal device
-  *	@c: character
-  *
-@@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
- }
- 
- 
--/**
-+/*
-  *	n_tty_read		-	read function for tty
-  *	@tty: tty device
-  *	@file: file object
-- *	@buf: userspace buffer pointer
-+ *	@kbuf: userspace buffer pointer
-  *	@nr: size of I/O
-  *
-  *	Perform reads for the line discipline. We are guaranteed that the
+Cheers,
+
+Dave.
 -- 
-2.31.1
-
+Dave Chinner
+david@fromorbit.com
