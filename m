@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A035F39337A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21DF393383
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237347AbhE0QR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237231AbhE0QQY (ORCPT
+        id S234392AbhE0QTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:19:09 -0400
+Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:36432 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235283AbhE0QTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:16:24 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3A4C06134F
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:14:41 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t193so303183pgb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yOo3xovVcNidUoYcJvwEMktoREV2uEDIl9X3bGysEBc=;
-        b=wPZmXvapgn/51ASZhLJUL63xsdBMSjDE+rrAxuGBvRwJfAGUekxAPZP21IpR1jIKtC
-         wfcwgNkDFuA0ceiPPX0rwcAMwGDKQfLTs1fXJmFl3Jb6h+noBl/Vt2+pmG4/GxHmOSQc
-         yQJzEtxvAEFHjumfhkIT0s7QxPvY/VFSPlug0TN20G1wFKcAOhWHJ1oNjmv6IvVILQIh
-         KCdKufezbQpT9lmc43Nhs6DK9MCvwVdoRKcQe1TR+ueu/FYLGZ3oNsuYqGrrk2htzhz+
-         QE9x6NROG0bZXuiiPliMlyiyf7wFvqmf98ZG+YNjIdw5obNTsbGcUq223NT9xzBUy8gq
-         BmxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yOo3xovVcNidUoYcJvwEMktoREV2uEDIl9X3bGysEBc=;
-        b=dbeoOdpNuMVUJw92+Yy8AEyEQezpcTuY52w2C+YYk6RDc482RB12uS5i/GrlyNXIh+
-         NpXcihot7ZiqbENsM0hCRikJWIVBTv8ExZ4Ag0+11joqNzSun0buqRSxNtAdwnaxrEzi
-         fysg78mznorUErnMAMckgjg83YmQTNm6namCKFobgtSgsCDd/wb6SZubgwScnwcqsUh0
-         /WGkfPSKoTqNmTtSl051jcr2yvoTQvGwPcjGbv9ZV/UXlFAb+v6eiHDbJ6GVURPXysWd
-         RXuO/yxzb5xkfoqECHi5LnN9T1WKK0ZR7ZNDda7tqmlbAZJ0+L/Z8N8/7fZmcI9IoxRI
-         tseg==
-X-Gm-Message-State: AOAM531yzgPf3IJdlD5G8KZvS2EqLoW+bh8olYZNg2RpQz7IB6a7jMVN
-        Nj1/O7h7ly8JwRIayopSNW74KQ==
-X-Google-Smtp-Source: ABdhPJwO4u09Vlb10kRNsBTLVudmy4YUu4FG9TKwzWOozj3DQGU3n6rMDWSF7M/AMVz92mCTFYklzg==
-X-Received: by 2002:a62:1cd4:0:b029:2d9:f0ef:2b42 with SMTP id c203-20020a621cd40000b02902d9f0ef2b42mr4374930pfc.36.1622132080684;
-        Thu, 27 May 2021 09:14:40 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id o134sm2310639pfd.58.2021.05.27.09.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 09:14:40 -0700 (PDT)
-Date:   Thu, 27 May 2021 16:14:36 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
-Message-ID: <YK/FbFzKhZEmI40C@google.com>
-References: <20210527023922.2017-1-jiangshanlai@gmail.com>
- <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
- <YK/FGYejaIu6EzSn@google.com>
+        Thu, 27 May 2021 12:19:04 -0400
+Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 7B4A21812870E;
+        Thu, 27 May 2021 16:17:28 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 840D8268E46;
+        Thu, 27 May 2021 16:17:26 +0000 (UTC)
+Message-ID: <644a711e4d2639a23bfc50dffa180ad184a4acb1.camel@perches.com>
+Subject: Re: [PATCH] iio: si1133: fix format string warnings
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maxime =?ISO-8859-1?Q?Roussin-B=E9langer?= 
+        <maxime.roussinbelanger@gmail.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Date:   Thu, 27 May 2021 09:17:24 -0700
+In-Reply-To: <20210516103628.2cf899a0@jic23-huawei>
+References: <20210514135927.2926482-1-arnd@kernel.org>
+         <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
+         <20210516103628.2cf899a0@jic23-huawei>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK/FGYejaIu6EzSn@google.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.39
+X-Stat-Signature: qdkk4frfin6s4b3oqc9zzfiayxtbnk1i
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 840D8268E46
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+ozl0XL3trtk2YILrXGbz44hU+4X9/M6Q=
+X-HE-Tag: 1622132246-824994
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Maxim for real this time...
+On Sun, 2021-05-16 at 10:36 +0100, Jonathan Cameron wrote:
+> On Fri, 14 May 2021 10:45:02 -0700
+> Nathan Chancellor <nathan@kernel.org> wrote:
+> > On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > clang complains about multiple instances of printing an integer
+> > > using the %hhx format string:
+> > > 
+> > > drivers/iio/light/si1133.c:982:4: error: format specifies type 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
+> > >                   part_id, rev_id, mfr_id);
+> > >                   ^~~~~~~
+> > > 
+> > > Print them as a normal integer instead, leaving the "#02"
+> > > length modifier.
+[]
+> > > diff --git a/drivers/iio/light/si1133.c b/drivers/iio/light/si1133.c
+[]
+> > > @@ -978,11 +978,11 @@ static int si1133_validate_ids(struct iio_dev *iio_dev)
+> > >   		return err;
+> > >   
+> > > 
+> > >   	dev_info(&iio_dev->dev,
+> > > -		 "Device ID part %#02hhx rev %#02hhx mfr %#02hhx\n",
+> > > +		 "Device ID part %#02x rev %#02x mfr %#02x\n",
+> > >   		 part_id, rev_id, mfr_id);
+> > >   	if (part_id != SI1133_PART_ID) {
+> > >   		dev_err(&iio_dev->dev,
+> > > -			"Part ID mismatch got %#02hhx, expected %#02x\n",
+> > > +			"Part ID mismatch got %#02x, expected %#02x\n",
 
-On Thu, May 27, 2021, Sean Christopherson wrote:
-> +Maxim - A proper fix for this bug might fix your shadow paging + win10 boot
->          issue, this also affects the KVM_REQ_HV_TLB_FLUSH used for HyperV PV
-> 	 flushing.
-> 
-> On Thu, May 27, 2021, Paolo Bonzini wrote:
-> > On 27/05/21 04:39, Lai Jiangshan wrote:
-> > > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > > 
-> > > For KVM_VCPU_FLUSH_TLB used in kvm_flush_tlb_multi(), the guest expects
-> > > the hypervisor do the operation that equals to native_flush_tlb_global()
-> > > or invpcid_flush_all() in the specified guest CPU.
-> > > 
-> > > When TDP is enabled, there is no problem to just flush the hardware
-> > > TLB of the specified guest CPU.
-> > > 
-> > > But when using shadowpaging, the hypervisor should have to sync the
-> > > shadow pagetable at first before flushing the hardware TLB so that
-> > > it can truely emulate the operation of invpcid_flush_all() in guest.
-> > 
-> > Can you explain why?
-> 
-> KVM's unsync logic hinges on guest TLB flushes.  For page permission modifications
-> that require a TLB flush to take effect, e.g. making a writable page read-only,
-> KVM waits until the guest explicitly does said flush to propagate the changes to
-> the shadow page tables.  E.g. failure to sync PTEs could result in a read-only 4k
-> page being writable when the guest expects it to be read-only.
-> 
-> > Also it is simpler to handle this in kvm_vcpu_flush_tlb_guest, using "if
-> > (tdp_enabled).  This provides also a single, good place to add a comment
-> > with the explanation of what invalid entries KVM_REQ_RELOAD is presenting.
-> 
-> Ya.  
-> 
-> KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
-> offset the performance gains of the paravirtualized flush.
-> 
-> And making a request won't work without revamping the order of request handling
-> in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
-> serviced before KVM_REQ_STEAL_UPDATE.
-> 
-> Cleaning up and documenting the MMU related requests is on my todo list, but the
-> immediate fix should be tiny and I can do my cleanups on top.
-> 
-> I believe the minimal fix is:
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 81ab3b8f22e5..b0072063f9bf 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
->  static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
->  {
->         ++vcpu->stat.tlb_flush;
-> +
-> +       if (!tdp_enabled)
-> +               kvm_mmu_sync_roots(vcpu);
->         static_call(kvm_x86_tlb_flush_guest)(vcpu);
->  }
->  
-> 
+which is almost certainly wrong.
+the length specification includes the # which is already 2 bytes.
+
+Likely these should be 0x%02x
+
+> > >   			part_id, SI1133_PART_ID);
+
+
