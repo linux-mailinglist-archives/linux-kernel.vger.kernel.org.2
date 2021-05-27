@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF513928F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F80839290F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhE0H4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:56:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:47126 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234828AbhE0H4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:56:09 -0400
-IronPort-SDR: OaNU4YWfWpBaUcXkjxd4y5UE+SxvWQLisDjy0WfyMIobR5WgbdCPTSUk0l5VGP5mY5QOAyb63Q
- OZXRLFabBq4Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202683021"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="202683021"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 00:54:35 -0700
-IronPort-SDR: aYMgbIo7tJITXQWv98gBDb/96yNeLidVngMYp6u8YJMreIDdTjQ/hYYIU8TcxvQuNbLjjyCprT
- Mm+QKEh7lDzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="480467583"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 00:54:33 -0700
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
-Date:   Thu, 27 May 2021 10:54:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233375AbhE0H6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235278AbhE0H5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:57:35 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CD0C061345
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:56:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h12so1926206plf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/doZaj7RzG7nsTUhqK4KmB6iqriYK3erH2nH1FOUD68=;
+        b=Du/bJjPCbg4kECu8cN42XUDMYzFFqM5hhuJsKuyni/Iegd+QkpFdn3erdTrw336+Je
+         MCwLbsMBWJXz9lKm8LpL3AbKjpXSOXT5Q8Ntiqk2nW/bsG0pjlMkmDWdZVLJ1OskB9oK
+         ElmGvZ2xGkaz9Wb4LxkotNheavjAAy9N3UN8A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/doZaj7RzG7nsTUhqK4KmB6iqriYK3erH2nH1FOUD68=;
+        b=XuMYOFgkOb4nhH0PxlP1EAHoi97f9Kz56i/ZOMCA12juFezlc1e7yl7rFW4u/JyOtn
+         30Dl27kIM4+OYIlC0b0SyOMT6YufpsYnhu6ZwcYb+3bPiT6LO45CuMB7CG8Fm8T9PYWr
+         ZSFkecogWEJFpK4gXKebgjJyYP+uS/lPEgyM22dNouF+PD+1t6K7HSKKIizKgP8+WnDH
+         HCElpt2gStHzApj9RG8OfA97qGtoyo2uuZyfjkhk9EbGd12+2ZAhWLe4y/1voKklI1/t
+         vk3gIw0FPeazkRLy7g8CXgLCfy7yQ+0AFq1YG5kmsv0Og6Lgi7KfycSSQ1bZVocdt7SH
+         tiog==
+X-Gm-Message-State: AOAM532KwuDlJP+uIsQ4nFmQIvTmC7G2YkVAnNbUWOAGWaGGadUL1f5k
+        9pLaPgVNFIX8gW4+nysgAev4xQ==
+X-Google-Smtp-Source: ABdhPJw9vM3CRZoYcvKhq2sIemcpggZaXiWzX+hqAh8djv70fHOy2wHjuL36qI4azOgorAmQvAePXg==
+X-Received: by 2002:a17:90a:e553:: with SMTP id ei19mr2447297pjb.175.1622102161697;
+        Thu, 27 May 2021 00:56:01 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:ece5:55a4:6ad3:d20f])
+        by smtp.gmail.com with ESMTPSA id 69sm1217790pfx.115.2021.05.27.00.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 00:56:01 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jean Delvare <khali@linux-fr.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v21 RESEND 0/4] add power control in i2c
+Date:   Thu, 27 May 2021 15:55:52 +0800
+Message-Id: <20210527075556.1709140-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
-In-Reply-To: <20210519140319.1673043-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/21 5:03 pm, Leo Yan wrote:
-> The AUX ring buffer's head and tail can be accessed from multiple CPUs
-> on SMP system, so changes to use SMP memory barriers to replace the
-> uniprocessor barriers.
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-I don't think user space should attempt to be SMP-aware.
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
-For perf tools, on __x86_64__ it looks like smp_rmb() is only a compiler barrier, whereas
-rmb() is a "lfence" memory barrier instruction, so this patch does not
-seem to do what the commit message says at least for x86.
+Changes since v20:
+ - fix regulator check logic in suspend/resume.
 
-With regard to the AUX area, we don't know in general how data gets there,
-so using memory barriers seems sensible.
+Changes since v19:
+ - resend v19 with fix tag added.
 
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/auxtrace.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index 472c0973b1f1..8bed284ccc82 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -452,7 +452,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
->  	u64 head = READ_ONCE(pc->aux_head);
->  
->  	/* Ensure all reads are done after we read the head */
-> -	rmb();
-> +	smp_rmb();
->  	return head;
->  }
->  
-> @@ -466,7 +466,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->  #endif
->  
->  	/* Ensure all reads are done after we read the head */
-> -	rmb();
-> +	smp_rmb();
->  	return head;
->  }
->  
-> @@ -478,7 +478,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->  #endif
->  
->  	/* Ensure all reads are done before we write the tail out */
-> -	mb();
-> +	smp_mb();
->  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
->  	pc->aux_tail = tail;
->  #else
-> 
+Changes since v18:
+ - Fix a function name conflict with drivers/gpu/drm/i915/selftests/i915_gem.c
+
+Changes since v17:
+ - Add a patch to fix unbalanced regulator disabling.
+ - Add dts patch.
+
+Changes since v16:
+ - request regulator in device instead of in the core.
+ - control regulator only if it's provided.
+
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
+
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+[... snip ...]
+
+Bibby Hsieh (1):
+  i2c: core: support bus regulator controlling in adapter
+
+Hsin-Yi Wang (3):
+  dt-binding: i2c: mt65xx: add vbus-supply property
+  i2c: mediatek: mt65xx: add optional vbus-supply
+  arm64: dts: mt8183: add supply name for eeprom
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
+ .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  4 +
+ .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  4 +
+ .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  4 +
+ drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
+ drivers/i2c/i2c-core-base.c                   | 95 +++++++++++++++++++
+ include/linux/i2c.h                           |  2 +
+ 7 files changed, 117 insertions(+)
+
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
