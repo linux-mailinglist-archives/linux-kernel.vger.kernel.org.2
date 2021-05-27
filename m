@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CC23931F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA57D3931E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236897AbhE0PNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:13:55 -0400
-Received: from [110.188.70.11] ([110.188.70.11]:46805 "EHLO spam2.hygon.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235400AbhE0PNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:13:46 -0400
-Received: from MK-FE.hygon.cn ([172.23.18.61])
-        by spam2.hygon.cn with ESMTP id 14RF9B2Q005775;
-        Thu, 27 May 2021 23:09:11 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-FE.hygon.cn with ESMTP id 14RF97TT002292;
-        Thu, 27 May 2021 23:09:07 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from [192.168.1.193] (172.23.18.44) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Thu, 27 May
- 2021 23:09:03 +0800
-Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
-To:     Sean Christopherson <seanjc@google.com>
-CC:     <x86@kernel.org>, <joro@8bytes.org>, <thomas.lendacky@amd.com>,
-        <dave.hansen@linux.intel.com>, <peterz@infradead.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@suse.de>,
-        <hpa@zytor.com>, <jroedel@suse.de>, <sashal@kernel.org>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20210526072424.22453-1-puwen@hygon.cn>
- <YK6E5NnmRpYYDMTA@google.com>
-From:   Pu Wen <puwen@hygon.cn>
-Message-ID: <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
-Date:   Thu, 27 May 2021 23:08:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S236935AbhE0PLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:11:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:58974 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236879AbhE0PKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:10:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CCFD11D4;
+        Thu, 27 May 2021 08:08:46 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5379F3F73B;
+        Thu, 27 May 2021 08:08:44 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+References: <20210524101617.8965-1-beata.michalska@arm.com>
+ <20210524101617.8965-3-beata.michalska@arm.com> <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+ <87a6oj6sxo.mognet@arm.com>
+ <20210525102945.GA24210@e120325.cambridge.arm.com>
+ <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+ <20210526121546.GA13262@e120325.cambridge.arm.com>
+ <20210526125133.GB13262@e120325.cambridge.arm.com>
+ <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
+ <20210526214004.GA1712@e120325.cambridge.arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <14593ba7-eed9-f035-724c-5cadbb859adc@arm.com>
+Date:   Thu, 27 May 2021 17:08:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YK6E5NnmRpYYDMTA@google.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210526214004.GA1712@e120325.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.23.18.44]
-X-ClientProxiedBy: cncheex02.Hygon.cn (172.23.18.12) To cncheex01.Hygon.cn
- (172.23.18.10)
-X-MAIL: spam2.hygon.cn 14RF9B2Q005775
-X-DNSRBL: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/27 1:27, Sean Christopherson wrote:
-> On Wed, May 26, 2021, Pu Wen wrote:
->> The first two bits of the CPUID leaf 0x8000001F EAX indicate whether
->> SEV or SME is supported respectively. It's better to check whether
->> SEV or SME is supported before checking the SEV MSR(0xc0010131) to
->> see whether SEV or SME is enabled.
+On 26/05/2021 23:40, Beata Michalska wrote:
+> On Wed, May 26, 2021 at 08:17:41PM +0200, Dietmar Eggemann wrote:
+>> On 26/05/2021 14:51, Beata Michalska wrote:
+>>> On Wed, May 26, 2021 at 01:15:46PM +0100, Beata Michalska wrote:
+>>>> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
+>>>>> On 25/05/2021 12:29, Beata Michalska wrote:
+>>>>>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
+>>>>>>> On 24/05/21 23:55, Beata Michalska wrote:
+>>>>>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+>>>>>>>>> On 24/05/21 11:16, Beata Michalska wrote:
+
+[...]
+
+>>                 cpu-map {
+>>                         cluster0 {
+>>                                 core0 {
+>> 					thread0 {
+>>                                         	cpu = <&A53_0>;
+>> 					};
+>> 					thread1 {
+>>                                         	cpu = <&A53_1>;
+>> 					};
+>>                                 };
+>>                                 core1 {
+>> 					thread0 {
+>>                                         	cpu = <&A53_2>;
+>> 					};
+>> 					thread1 {
+>>                                         	cpu = <&A53_3>;
+>> 					};
+>>                                 };
+>>                                 core2 {
+>> 					thread0 {
+>>                                         	cpu = <&A53_4>;
+>> 					};
+>> 					thread1 {
+>>                                         	cpu = <&A53_5>;
+>> 					};
+>>                                 };
+>>                         };
 >>
->> This also avoid the MSR reading failure on the first generation Hygon
->> Dhyana CPU which does not support SEV or SME.
+>>                         cluster1 {
+>>                                 core0 {
+>> 					thread0 {
+>>                                         	cpu = <&A53_6>;
+>> 					};
+>> 					thread1 {
+>>                                         	cpu = <&A53_7>;
+>> 					};
+>>                                 };
+>>                         };
+>>                 };
 >>
->> Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
->> Cc: <stable@vger.kernel.org> # v5.10+
->> Signed-off-by: Pu Wen <puwen@hygon.cn>
->> ---
->>   arch/x86/mm/mem_encrypt_identity.c | 11 ++++++-----
->>   1 file changed, 6 insertions(+), 5 deletions(-)
+>> 		A53_0: cpu@0 {
+>> 			capacity-dmips-mhz = <446>;
+>> 	 	A53_1: cpu@1 {
+>> 			capacity-dmips-mhz = <1024>;
+>> 		A53_2: cpu@2 {
+>> 			capacity-dmips-mhz = <871>;
+>> 		A53_3: cpu@3 {
+>> 			capacity-dmips-mhz = <1024>;
+>> 		A53_4: cpu@4 {
+>> 			capacity-dmips-mhz = <446>;
+>> 		A53_5: cpu@5 {
+>> 			capacity-dmips-mhz = <871>;
+>> 		A53_6: cpu@6 {
+>> 			capacity-dmips-mhz = <1024>;
+>> 		A53_7: cpu@7 {
+>> 			capacity-dmips-mhz = <1024>;
 >>
->> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
->> index a9639f663d25..470b20208430 100644
->> --- a/arch/x86/mm/mem_encrypt_identity.c
->> +++ b/arch/x86/mm/mem_encrypt_identity.c
->> @@ -504,10 +504,6 @@ void __init sme_enable(struct boot_params *bp)
->>   #define AMD_SME_BIT	BIT(0)
->>   #define AMD_SEV_BIT	BIT(1)
->>   
->> -	/* Check the SEV MSR whether SEV or SME is enabled */
->> -	sev_status   = __rdmsr(MSR_AMD64_SEV);
->> -	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
->> -
->>   	/*
->>   	 * Check for the SME/SEV feature:
->>   	 *   CPUID Fn8000_001F[EAX]
->> @@ -519,11 +515,16 @@ void __init sme_enable(struct boot_params *bp)
->>   	eax = 0x8000001f;
->>   	ecx = 0;
->>   	native_cpuid(&eax, &ebx, &ecx, &edx);
->> -	if (!(eax & feature_mask))
->> +	/* Check whether SEV or SME is supported */
->> +	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
-> 
-> Hmm, checking CPUID at all before MSR_AMD64_SEV is flawed for SEV, e.g. the VMM
-> doesn't need to pass-through CPUID to attack the guest, it can lie directly.
-> 
-> SEV-ES is protected by virtue of CPUID interception being reflected as #VC, which
-> effectively tells the guest that it's (probably) an SEV-ES guest and also gives
-> the guest the opportunity to sanity check the emulated CPUID values provided by
-> the VMM.
-> 
-> In other words, this patch is flawed, but commit eab696d8e8b9 was also flawed by
-> conditioning the SEV path on CPUID.0x80000000.
-
-Yes, so I think we'd better admit that the VMM is still trusted for SEV guests
-as you mentioned below.
-
-> 
-> Given that #VC can be handled cleanly, the kernel should be able to handle a #GP
-> at this point.  So I think the proper fix is to change __rdmsr() to
-> native_read_msr_safe(), or an open coded variant if necessary, and drop the CPUID
-
-Reading MSR_AMD64_SEV which is not implemented on Hygon Dhyana CPU will cause
-the kernel reboot, and native_read_msr_safe() has no help.
-
-> checks for SEV.
-> 
-> The other alternative is to admit that the VMM is still trusted for SEV guests
-
-Agree with that.
-
--- 
-Regards,
-Pu Wen
-
-> and take this patch as is (with a reworded changelog).  This probably has my
-> vote, I don't see much value in pretending that the VMM can't exfiltrate data
-> from an SEV guest.  In fact, a malicious VMM is probably more likely to get
-> access to interesting data by _not_ lying about SEV being enabled, because lying
-> about SEV itself will hose the guest sooner than later.
-> 
->>   		return;
->>   
->>   	me_mask = 1UL << (ebx & 0x3f);
->>   
->> +	/* Check the SEV MSR whether SEV or SME is enabled */
->> +	sev_status   = __rdmsr(MSR_AMD64_SEV);
->> +	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
->> +
->>   	/* Check if memory encryption is enabled */
->>   	if (feature_mask == AMD_SME_BIT) {
->>   		/*
->> -- 
->> 2.23.0
+>> Here I guess SD_ASYM_CPUCAPACITY will be attached to SMT[0-5]. So this
+>> 'capacity-dmips-mhz' config error won't be detected.
 >>
+>> In case all CPUs (i.e. hw threads would have the correct
+>> capacity-dmips-mhz = <1024> or not being set (default 1024))
+>> asym_cap_list would corrcetly only have 1 entry.
+> We could possibly add a warning (like in EAS) if the asymmetry is detected
+> for SMT which would give some indication that there is smth ... wrong ?
+
+Maybe, in case you find an easy way to detect this.
+
+But the issue already exists today. Not with the topology mentioned
+above but in case we slightly change it to:
+
+  cpus = { ([446 1024] [871 1024] [446 1024] ) ([1024 1024]) }
+                                       ^^^^
+so that we have a 1024 CPU in the lowest sd for each CPU, we would get
+SD_ASYM_CPUCAPACITY on SMT.
