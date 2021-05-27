@@ -2,56 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3C8392972
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C19392970
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235415AbhE0IYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
+        id S235412AbhE0IYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:24:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50824 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235386AbhE0IX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235400AbhE0IX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 May 2021 04:23:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C5C661248;
-        Thu, 27 May 2021 08:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622103745;
-        bh=SmqcZoGjvVySNErmmqJr2WJO0gKoHt1cpbNrwjdeUPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qeGVgZ/TP3UIwcE3Ee0BwO/v82DYIKHouAMlpiIGCG0qiQ/FKADUtJlHCy3KPwCvx
-         VZCtxDL9Ymp/Q/BDF1Z7p9juFmPLUQrA8W/7+i1/bnv2ddsYAz6CH4g6Og4geNAVEJ
-         ZdhZwx3A2EK6/DtoLnN745z5IB9xl7U/VbxPgameMikESl0wj9uTAPlVTmLoCDzxbO
-         TA9R8Jx+gP7zSonSItR9f5Kdx4dCSW4xRfyXq6iSW2m3TQHEo5oultMkJo+Zg28QXZ
-         ekZ1gMQ6RZsLDKYnBozB1ou19J1Cq3NF8gagSTIy7sgsHkjjzJX+DZVl4p0BIDSRda
-         knzcsWUT0dIFw==
-Date:   Thu, 27 May 2021 09:22:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Xin Hao <xhao@linux.alibaba.com>
-Cc:     fweisbec@gmail.com, john.stultz@linaro.org,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, lorenzo@google.com, maz@kernel.org,
-        mika.penttila@nextfour.com, sboyd@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 2/5] tick/broadcast: Split
- __tick_broadcast_oneshot_control() into a helper
-Message-ID: <20210527082219.GA21311@willie-the-truck>
-References: <20210524221818.15850-3-will@kernel.org>
- <c3573cd8-a4c8-43c2-be66-8b74d688a406@linux.alibaba.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622103744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EfkVrIQZXBeZTPSxjNuEm8wUQKfD3cTZZ/zTTMSBzw=;
+        b=iIdOJB9ZclOzK1R83f55YqiC+wO2fih/GoA1P6TTFS7h/zJZv+/vjHUezFzt6uULVaRUNQ
+        eLiBhU2Vt0rRbhtKjqCzvjWLKXmuXfKoUvniad9b6jcJksXd04jGHck9f8MPt9I054mw0y
+        VQ+IuJWWlJzLeN4HCvmS7MSB1NRuQbw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F646AB71;
+        Thu, 27 May 2021 08:22:24 +0000 (UTC)
+Date:   Thu, 27 May 2021 10:22:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
+Message-ID: <YK9Wv+EexkCi2+U5@dhcp22.suse.cz>
+References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+ <YK9OoPzkBB1jTpC1@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3573cd8-a4c8-43c2-be66-8b74d688a406@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YK9OoPzkBB1jTpC1@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 03:23:06PM +0800, Xin Hao wrote:
->      I  had backport you  tick/broadcast: Prefer per-cpu relatives patches,
+On Thu 27-05-21 09:47:44, Oscar Salvador wrote:
+> On Thu, May 27, 2021 at 08:52:57AM +0900, Naoya Horiguchi wrote:
+> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > 
+> > When memory_failure() or soft_offline_page() is called on a tail page of
+> > some hugetlb page, "BUG: unable to handle page fault" error can be
+> > triggered.
+> > 
+> > remove_hugetlb_page() dereferences page->lru, so it's assumed that the
+> > page points to a head page, but one of the caller,
+> > dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
+> > which could be a tail page.  So pass 'head' to it, instead.
+> > 
+> > Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
+> > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 > 
-> but i did not get the true result,  the Wakeup Devices are all null, why?
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> 
+> It is probably worth adding a comment in remove_hugetlb_page() noting
+> that we need a head page, so future users do not repeat the same
+> mistake.
 
-Probably because you don't have any suitable per-cpu timers to act as a
-wakeup. Do you have a per-cpu timer registered with CLOCK_EVT_FEAT_PERCPU
-and CLOCK_EVT_FEAT_ONESHOT but not CLOCK_EVT_FEAT_C3STOP?
-
-Will
+Ideally this will turn into page folio concept and no comments are
+really needed.
+-- 
+Michal Hocko
+SUSE Labs
