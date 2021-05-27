@@ -2,153 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407E3392697
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9C83926A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbhE0Exa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:53:30 -0400
-Received: from mga14.intel.com ([192.55.52.115]:57901 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhE0Ex3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:53:29 -0400
-IronPort-SDR: L87SDuFUovS5MHTtqVESlsIKTHif70Hx0Ljw2ouMIv6W95yNANJPlKLNKXmzs0D/AqsyFEEh6w
- TdP94saI5aPg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202411548"
-X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="202411548"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:51:52 -0700
-IronPort-SDR: Bl8poXRU2Tsbv09kdrjwMS83I7WZaiBIchUlDudPk4f+Q/QkJb8ny3jZEYC7VmooKpsxfIpBKY
- Wpwgb6ZFrzVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="477321703"
-Received: from unknown (HELO chenyu-desktop.sh.intel.com) ([10.239.158.131])
-  by orsmga001.jf.intel.com with ESMTP; 26 May 2021 21:51:49 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH] intel_idle: Adjust the SKX C6 latency and residency if PC6 is disabled
-Date:   Thu, 27 May 2021 12:56:47 +0800
-Message-Id: <20210527045647.3599-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S234595AbhE0E6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 00:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234431AbhE0E6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 00:58:39 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB90C061760;
+        Wed, 26 May 2021 21:57:05 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so3308588oto.0;
+        Wed, 26 May 2021 21:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zd33jEwk8aHcS5XVZ56yw2Oa1m/r43mn4HOR1FizvXU=;
+        b=S3Q3irWuVCW9yu9MDQAE7KTjnhM/caOcdVcxZmKxu/a9WxHh1BOfD970uWtTPqCQrV
+         Rj3gsWRoMHvBobnlMbQnZ72NxeQ7761HUk1xPHQPwd4EUO4GuHlFpkMDjnBCyBFxn2CB
+         ERnwMOp1G48Pu8Y6nKL++IroC/7XOJoUCI0U9RF/uC4k+ghA84wsIxp0u204F6biLwid
+         sfI/p9qDDPAe7cD9bmPs1aT3JxF/2w/vK6pgiJFlF3YoFei4UlaWzcgQhJnJwFkCMjoq
+         NzN1eORSy+VODVm72LhiDH3MRgAyZY/btEjET53xim+VaMZtYGClYdAH41XmdhEAjWJM
+         YvCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zd33jEwk8aHcS5XVZ56yw2Oa1m/r43mn4HOR1FizvXU=;
+        b=kbcd00dkUXUcYELmsrsGkEXZVCZtTAdc+Gwg9yANL5NWBFZ4C52UNzhI/ov24ZQVU1
+         wHjq3eErHQIFi9UTkm7riM3LAFVCj/aE5o7prMtuS1PvYirVQRe3Zk2A0SUrG41pUVFc
+         SoWddebKWTLSq85uWWEcnxiaMdKPSLh69yeN/bBGevuT+LkAx9F8rMpJ0tWP9LzYwODQ
+         CuKod1YjTocWFodRu+glvBWGq4FFSivHf0/HdoSqcX4be0mhmW4VXnSq6EOD2tW/TnNt
+         /lDIQF03htLOMfL15IXwC3BW5uDKKMeI9gnmDFKL+WsI/YeYVi3wWsa26+f2LoHHMJdl
+         OKVw==
+X-Gm-Message-State: AOAM533d0stulAPMGvyEOJfnQ5Fe5yvMifB9juX69j8OsEP7Uig83GcB
+        BhVHeAcqCZfIpDkDFBvSLdweqkPoxjU0jQn5fD8=
+X-Google-Smtp-Source: ABdhPJyqy6tKSYJTO5Q/P3AU0dl27HaGrFoIR5zhBPvAV35Y/8Rt1mNAb4MgMs8/FoG3RwsudmZ9xYXw33XpsO6chec=
+X-Received: by 2002:a9d:4b0e:: with SMTP id q14mr1304495otf.254.1622091425262;
+ Wed, 26 May 2021 21:57:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210527084356.12c2784f@canb.auug.org.au>
+In-Reply-To: <20210527084356.12c2784f@canb.auug.org.au>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Thu, 27 May 2021 12:56:54 +0800
+Message-ID: <CANRm+CyC+=hMrVJCVWZ7cTC_F3CXYKRms2xNFQCvWa5rPS3U-w@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kvm-fixes tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently cpuidle assumes worst-case C-state parameters, and so C6
-is described with PC6 parameters, which is worst case for requesting
-CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
-in BIOS, the exit latency and target_residency should be adjusted
-accordingly.
+On Thu, 27 May 2021 at 10:50, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the kvm-fixes tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>
+> In file included from arch/powerpc/include/asm/kvm_ppc.h:19,
+>                  from arch/powerpc/include/asm/dbell.h:17,
+>                  from arch/powerpc/kernel/asm-offsets.c:38:
+> include/linux/kvm_host.h: In function 'kvm_vcpu_can_poll':
+> include/linux/kvm_host.h:270:9: error: implicit declaration of function 'single_task_running' [-Werror=implicit-function-declaration]
+>   270 |  return single_task_running() && !need_resched() && ktime_before(cur, stop);
+>       |         ^~~~~~~~~~~~~~~~~~~
+>
+> Caused by commit
+>
+>   85d4c3baeb45 ("KVM: PPC: exit halt polling on need_resched()")
+>
+> I have used the kvm-fixes tree from next-20210524 again today.
 
-Exit latency:
-The C6 exit latency is measured when woken up from CC6/PC6. In the past,
-if PC6 is disabled, CPU would be demoted to CC6/PC3, which is close to
-the latency from CC6/PC6 and there is no need to update the C6 exit latency.
-However on newer platform there is no CC3/PC3 anymore, then the C6 exit
-latency with PC6 disabled should be CC6/PC0.
+The kvm/master is broken by several patches.
 
-Target residency:
-With PC6 disabled and C3/PC3 supported, the OS requests C3 if idle
-duration is within [CC6, PC6) target_residency. On new CPU generations
-with C3/PC3 deprecated, the OS would request C1E. This would cause
-low energy-efficiency. In summary, the question is, should we lower
-the bar to request C6 when PC6 is disabled? The answer is yes.
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index 0f6f394..e851671 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1659,7 +1659,7 @@ struct kvm_hv_hcall {
 
-To fill this gap, check if PC6 is disabled in the BIOS in the
-MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
-new exit latency. Meanwhile, update target_residency to 3 times of the new
-exit latency. This is consistent with how intel_idle driver uses _CST to
-calculate the target_residency. The consequence is that, the OS would
-be more offen to choose C6 over C1E when PC6 is disabled. The new exit
-latency of CC6/PC0 was from wult[1] result, which was measured via NIC
-wakeup from 99.99th latency.
-
-Before the change:
-PC6 enabled        Y          N           N
-has C3/PC3         N          N           Y
-idle duration      [CC6,PC6)  [CC6,PC6)   [CC6,PC6)
-CPU request        C1E        C1E         C3
-
-After the change:
-PC6 enabled        Y          N           N
-has C3/PC3         N          N           Y
-idle duration      [CC6,PC6)  [CC6,PC6)   [CC6,PC6)
-CPU request        C1E        *C6*        C3
-
-*C6* rather than C1E is chosen.
-
-There is concern that if we should introduce a more generic solution
-rather than optimizing on each platforms. However consider the
-code complexity and different PC6 bit interpretation on different
-platforms, tune the code per platform seems to be an acceptable trade-off.
-
-[1] https://intel.github.io/wult/
-
-Suggested-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- drivers/idle/intel_idle.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index ec1b9d306ba6..e6c543b5ee1d 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -1484,6 +1484,36 @@ static void __init sklh_idle_state_table_update(void)
- 	skl_cstates[6].flags |= CPUIDLE_FLAG_UNUSABLE;	/* C9-SKL */
- }
- 
-+/**
-+ * skx_idle_state_table_update - Adjust the Sky Lake/Cascade Lake
-+ * idle states table.
-+ */
-+static void __init skx_idle_state_table_update(void)
-+{
-+	unsigned long long msr;
-+
-+	rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, msr);
-+
-+	/*
-+	 * 000b: C0/C1 (no package C-state support)
-+	 * 001b: C2
-+	 * 010b: C6 (non-retention)
-+	 * 011b: C6 (retention)
-+	 * 111b: No Package C state limits.
-+	 */
-+	if ((msr & 0x7) < 2) {
-+		/*
-+		 * Uses the CC6 + PC0 latency and 3 times of
-+		 * latency for target_residency if the PC6
-+		 * is disabled in BIOS. This is consistent
-+		 * with how intel_idle driver uses _CST
-+		 * to set the target_residency.
-+		 */
-+		skx_cstates[2].exit_latency = 92;
-+		skx_cstates[2].target_residency = 276;
-+	}
-+}
-+
- static bool __init intel_idle_verify_cstate(unsigned int mwait_hint)
+ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct
+kvm_hv_hcall *hc, bool ex)
  {
- 	unsigned int mwait_cstate = MWAIT_HINT2CSTATE(mwait_hint) + 1;
-@@ -1515,6 +1545,9 @@ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
- 	case INTEL_FAM6_SKYLAKE:
- 		sklh_idle_state_table_update();
- 		break;
-+	case INTEL_FAM6_SKYLAKE_X:
-+		skx_idle_state_table_update();
-+		break;
- 	}
- 
- 	for (cstate = 0; cstate < CPUIDLE_STATE_MAX; ++cstate) {
--- 
-2.25.1
-
+-    int i, j;
++    int i;
+     gpa_t gpa;
+     struct kvm *kvm = vcpu->kvm;
+     struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9d095bed..feb9611 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3604,7 +3604,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu,
+struct msr_data *msr_info)
+          * to ensure backwards-compatible behavior for migration.
+          */
+         if (msr_info->host_initiated &&
+-            kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_TSC_HOST_ACCESS))
++            kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_TSC_HOST_ACCESS)) {
+             offset = vcpu->arch.l1_tsc_offset;
+             ratio = vcpu->arch.l1_tsc_scaling_ratio;
+         } else {
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 18905c9..4273e04 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -10,6 +10,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/signal.h>
+ #include <linux/sched.h>
++#include <linux/sched/stat.h>
+ #include <linux/bug.h>
+ #include <linux/minmax.h>
+ #include <linux/mm.h>
