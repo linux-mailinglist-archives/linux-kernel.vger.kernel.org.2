@@ -2,284 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A798392C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01778392C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhE0LZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:25:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55712 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhE0LZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:25:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622114644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vCzWseyOGBi3z4zUiXurCHvAdbdxl07NG4gokJyQHA8=;
-        b=R8/ZidV+yvu/KKQ4OzSg8KTRZFUZFys8A0QyIL18evZSYIYBAudLWL35WTMX0ZDRe70bVW
-        UaxMtcVIhiub5/bMGgJn2pVb6Z6rOWe5cVkRVgEIr9QwicwG3a42JFnkuEdh8ytnfv6XjJ
-        YO6JK3aA/zrALdazpTlWBjS/LLOlmeQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622114644;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vCzWseyOGBi3z4zUiXurCHvAdbdxl07NG4gokJyQHA8=;
-        b=VorQAZiK9xkcwZVYHHsk6WE3MPRxb/f8fR7qg3r872Y9XvN+BwGA3kuO0fJBff23Md0fuK
-        lbXbhZ5dwAFgUVCA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22CD2AD05;
-        Thu, 27 May 2021 11:24:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C9BC61F2C9A; Thu, 27 May 2021 13:24:03 +0200 (CEST)
-Date:   Thu, 27 May 2021 13:24:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <20210527112403.GC24486@quack2.suse.cz>
-References: <20210526222557.3118114-1-guro@fb.com>
- <20210526222557.3118114-3-guro@fb.com>
-MIME-Version: 1.0
+        id S229897AbhE0L0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:26:11 -0400
+Received: from mail-dm6nam08on2089.outbound.protection.outlook.com ([40.107.102.89]:17472
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229640AbhE0L0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:26:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyIzTy0eAzsB0htBrqIRq2slitk3cp2IUCJ2ZgBMHTxKXvx6NSvEweJGrFo/FUETdrAcGbjqdBzmbcaer40Q63ogfSworVl+i+joZA5GTcJONyZCpAG1emL532nfi9EHRXhCChw9PH5g0KVclxHliYOau3hf/InjaCP2NKAOiJZ+Pe9AiJgkmlawmXrkXtO3iowVCWb5JOdz2SYmtEIHEuHfSh1dv9EUE8Cnhye1V851Bk1PvAYtvU//BFbC606mpfZ+ICWHQbVl4DgtV46DW2Il6Ih/wscC1U+g1iyeR4G4Pi+vCRb5PTAlKkvSfb0J0PJZeXCwQXT0VGxEnc89eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m+GLlbyavN2s4LlXhC05paHiRoLrZ64ztRX12w67Qs8=;
+ b=UOfRmGAAjvTEfhcQ5LuZYDh/hRHEAnUdOnFZgsyR0XUtz4xIbyaqLftuJ+JEbLhHsvbHM8OJPBE9/T8+cdV+uCHzlCoYwtugMczNNP9D82A1FJThlrtbWIe43TAhJbpToGtuIWV+MTXeRzKYNQcfMCMPdgwpaXUlJtKN/VqDb60toKE7dfTBCFkqknMtTLQe+WtUuD11fZPS3/w30PpqOBhNkPLVYX2mgHgDhozn2e2ON0SsB4hrzmsJqlLeDVBBurAPkmgesRpe3oWt5iFie4jhlyKl6yN/Ppggp0vZ675M5xpbKV+4H5DWw/13qtCLlXCsooJh1D/w7pz+ca0ZSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m+GLlbyavN2s4LlXhC05paHiRoLrZ64ztRX12w67Qs8=;
+ b=iu6mWV6lPLcENYc847UpOBycMc8gcK8O9vUmDFF+pqoLte2G+WQYMXFoOcJND6Ux7Frn2Kr5C/IM9oX37rR8mhrOI/djhe87uxx1PSazBfwn/OpdRr/Rnw+k84DxNPoTEDnFLx+Mu+res9uMSv3rl3wJR/eqTC3YT2Fh+z7O7sj+ywHkxKXHfkKW2hlvf2U8whcrJcAgALBrFDen0WDeafyjbCAESv/xFwF9/kRP01Xrb9yYr8cXuUvflXel14xkQ2g2aRylBwRj1+HIqmsdkT0xDDFO+yLiZvUTkUSrpCLA/k6E+1zbVSB3gP2sd0xuhaRGDSR7OiE9jklXI3GGLQ==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5556.namprd12.prod.outlook.com (2603:10b6:208:1cf::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 27 May
+ 2021 11:24:36 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Thu, 27 May 2021
+ 11:24:36 +0000
+Date:   Thu, 27 May 2021 08:24:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210527112433.GX1002214@nvidia.com>
+References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+ <20210521193648.940864-3-akrowiak@linux.ibm.com>
+ <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
+ <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
+ <20210525131912.GW1002214@nvidia.com>
+ <c54ef522-f348-df16-a99f-1e31feb1b0bd@linux.ibm.com>
+ <20210525162927.GC1002214@nvidia.com>
+ <966142da-779f-d604-c6f6-e58cec128e5d@linux.ibm.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526222557.3118114-3-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <966142da-779f-d604-c6f6-e58cec128e5d@linux.ibm.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0028.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::41)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0028.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Thu, 27 May 2021 11:24:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmE7t-00FXJ3-SK; Thu, 27 May 2021 08:24:33 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bce5b8be-498f-4705-3dc8-08d921020237
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5556:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB555673A4B43E694886772653C2239@BL0PR12MB5556.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Fyqh+IM8RZKzZtBithyk3tZ/Zjrx5ZM4EK9jqMC28lvd5WRA/41/j55fUy52C2Y78TuDntdpLN4CfCJdUW4d+r0rpoRLYMiHEH/GJIB2ybuixpP23OVaXYfNCvusrrYOkzzd3GxCN3Yv1NQ0Y9+t8h9AcdcUDhU+Nyb25MoEaI2XVEHhJOMeyBtxQqZ/2Zu0XBu3qDUQBRJaC6Fm6/YrjjpEAymTTLxwe///NLO2Nniyc/F4vy2aVM+8qFNOohqQc8dqiTNpuwtGARJEO6DfL69Yn5955qVjSFtReeCFiPV3NRSVByO+JztF2snVgsbOV2dEYpqX4PH0MJeuG9+JSgpxQKewPCnzw07HgavPe16MkrtEKk5ysad9ljE9kvRhP9+VCYyvpGtBJyMQ4UGcm9xuobgQ/ug8JBScHfmVfjMvrg/4dXwYQx2YStIOGhcPtF1a1p6UW0bpQf3JUfMbgKyftL4Qt1QHrIsrCsSGBqDP5Dr9cte/y+KMHppRwjdbfS/QRc6cZ3qR1vyHjwk0l9DjNZwSIlsxzMCFYw4CLP2RNAJZnT2vMtsScwyqmQUgHbwJjBqzYdwiUOH7IUmQpkrB/5dH/zchBz+wzipTHo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(83380400001)(478600001)(8936002)(7416002)(8676002)(38100700002)(5660300002)(426003)(33656002)(53546011)(86362001)(6916009)(1076003)(66556008)(316002)(66476007)(2906002)(26005)(9786002)(9746002)(36756003)(4326008)(186003)(2616005)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YHP2NGJFEhHYLbxMcpSQgK7pqbWSZIZSTWt6hFeA7YaSQKw+JSx7rnJXE7oO?=
+ =?us-ascii?Q?oUI+PA+dMsiCj3dDs9Kr9pqXcC3qD53Qh7lC2qYY0fZDFc5LLfAvBwSWFHAB?=
+ =?us-ascii?Q?Yh3b8FbugtwsVCWU+3mw1NBYXAkJ09mM7Nx5y4W5kHdr9GkoAVbyXlrpPbHp?=
+ =?us-ascii?Q?L1rYrOivXVOvnP6MOuANicTR8Z2wM2pzCRG2d0vUx2mOIuPxf5Dpxj1Wc6J6?=
+ =?us-ascii?Q?WKamYLCt20eC2ENe8s8EP2obXn6Vt9CIwqr3nhmrL8/v3J8uPs9Hnrps/JRo?=
+ =?us-ascii?Q?oQnD6U9Ok2SbkMfQi1uKBEfWl5JsLIeAK1n6Yvn1yqjICgSZBgyj/ALeDggL?=
+ =?us-ascii?Q?wLeucvvDJyOVKt4T/c6cO2bz7E9Vhd6+nRhSpjGefBRYfEDVOuCxrcsQN3h/?=
+ =?us-ascii?Q?CGSyl9ZFqXEUaW67pEJLHPd7YdsqTdZOtYreH5dq2q7TQMs56YD82b4e6+yj?=
+ =?us-ascii?Q?Pn0AEoeYUqy90wlSffOnWtGyPdP97kjPYRLVjzEBDPQI9bYGQNWxsZfDR59v?=
+ =?us-ascii?Q?rmS9c/GCgrtdRJ7M7fR49Q5vav+GPYuID2kvMzGBSUZRao9urAKxqrH421CI?=
+ =?us-ascii?Q?tRMxh3vrGoc9y1S2admI2ItWA8gcdugyb2ekZ7qQV/eEHSnx+tLyEnYaqbyU?=
+ =?us-ascii?Q?tzqjEVGw/MzpeTcRGNIfmJeKIRIbA1zh19sweKrbM5wEsuh8Zc7LdRvPCVNF?=
+ =?us-ascii?Q?Yzv1zIEVVihWPXiMM3441J/epNFWQrKAIahzqrIyElmZT0z69Q+mY9nZgSBc?=
+ =?us-ascii?Q?D5NPoqg4o+8COmiNEH2iCtp+H8eMotDd6JTkBLuMef6THUcIvAv5ZSKrhTuu?=
+ =?us-ascii?Q?FhVsuLVbfBN//sdPZzP+mcbHOYWR4E0bjwLkXL7OwsiuDWssDO59eoY7pmW7?=
+ =?us-ascii?Q?ZObovA4+uRQMGzZ2eO6rYP+eWI+t/aQHoDrhQclkFJsK5SI4LVWiCUQPU5x0?=
+ =?us-ascii?Q?uyKH+VJrBUUkaiZueQJJYIg7jYM3Co/AEQRcrvUuhoBzkywOXpQMFcoBiJew?=
+ =?us-ascii?Q?ji0ly3dofyUqAjzVccobPfqm6JF+tLHhl/pDA2JpxchTSAgnFu96oaZFtZFx?=
+ =?us-ascii?Q?hTV4UW7DUZDi5UISP6pZeJo2LUhDkKaD1DreXW5Kso9VXu4KpbsY0Pbadres?=
+ =?us-ascii?Q?H+McgTnmT2wYVTS5fTJF955NA0kTLuYT+8PeHOg3pYN5f3QyC9q+7WZqrXh8?=
+ =?us-ascii?Q?b15VXofKkdmQdQF8s+XeyKgQY9DOKH/wTvOYSo8xgH+YRWBweDdqldUaiKd1?=
+ =?us-ascii?Q?MCbMPFcW7sAHsGfkOgw+k+AQipaAuAH0hZCXlsXXAHD6Gu5+YRgFRUeQJ8Vj?=
+ =?us-ascii?Q?oqtQpGG4u2l/1hkgPPBTRjNc?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bce5b8be-498f-4705-3dc8-08d921020237
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 11:24:36.3568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E/b71o+qYYJaq1rrLE0qAcC9EdJJS7S0ZX9GSCPp6bROoUXZ9IkwZVeJytZm6Rrx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5556
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26-05-21 15:25:57, Roman Gushchin wrote:
-> Asynchronously try to release dying cgwbs by switching clean attached
-> inodes to the bdi's wb. It helps to get rid of per-cgroup writeback
-> structures themselves and of pinned memory and block cgroups, which
-> are way larger structures (mostly due to large per-cpu statistics
-> data). It helps to prevent memory waste and different scalability
-> problems caused by large piles of dying cgroups.
+On Wed, May 26, 2021 at 10:28:29PM -0400, Tony Krowiak wrote:
 > 
-> A cgwb cleanup operation can fail due to different reasons (e.g. the
-> cgwb has in-glight/pending io, an attached inode is locked or isn't
-> clean, etc). In this case the next scheduled cleanup will make a new
-> attempt. An attempt is made each time a new cgwb is offlined (in other
-> words a memcg and/or a blkcg is deleted by a user). In the future an
-> additional attempt scheduled by a timer can be implemented.
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  fs/fs-writeback.c                | 35 ++++++++++++++++++
->  include/linux/backing-dev-defs.h |  1 +
->  include/linux/writeback.h        |  1 +
->  mm/backing-dev.c                 | 61 ++++++++++++++++++++++++++++++--
->  4 files changed, 96 insertions(+), 2 deletions(-)
+> On 5/25/21 12:29 PM, Jason Gunthorpe wrote:
+> > On Tue, May 25, 2021 at 11:56:50AM -0400, Tony Krowiak wrote:
+> > 
+> > > The vfio_ap_mdev_unset_kvm() function, however, is called both by
+> > > the group notifier when the KVM pointer has been cleared or when the
+> > > mdev is being removed. In both cases, the only way to get the KVM
+> > > pointer - which is needed to unplug the AP resources from the guest
+> > > - is from the matrix_mdev which contains it.
+> > Okay, but that isn't a problem, the matrix dev holds a ref on the kvm
+> > pointer so we can just copy it outside the lock after we prevent it
+> > from changing by unregistering the notifier:
+> > 
+> > @@ -1362,14 +1365,19 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+> >   {
+> >          struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> > -       mutex_lock(&matrix_dev->lock);
+> > -       vfio_ap_mdev_unset_kvm(matrix_mdev);
+> > -       mutex_unlock(&matrix_dev->lock);
+> > -
+> >          vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+> >                                   &matrix_mdev->iommu_notifier);
+> >          vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
+> >                                   &matrix_mdev->group_notifier);
+> > +
+> > +       mutex_lock(&matrix_dev->lock);
+> > +       /* matrix_dev->kvm cannot be changed now since we removed the notifiers */
+> > +       kvm = matrix_mdev->kvm;
+> > +       matrix_mdev->kvm = NULL;
+> > +       mutex_unlock(&matrix_dev->lock);
+> > +
+> > +       vfio_ap_mdev_unset_kvm(matrix_mdev, kvm);
+> > +
+> >          module_put(THIS_MODULE);
+> > 
+> > Note the above misordering is an existing bug too
+> > 
+> > And reoganize unset_kvm so it uses internal locking and gets the kvm
+> > from the argument.
 > 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 631ef6366293..8fbcd50844f0 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -577,6 +577,41 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	kfree(isw);
->  }
->  
-> +/**
-> + * cleanup_offline_wb - detach associated clean inodes
-> + * @wb: target wb
-> + *
-> + * Switch the inode->i_wb pointer of the attached inodes to the bdi's wb and
-> + * drop the corresponding per-cgroup wb's reference. Skip inodes which are
-> + * dirty, freeing, in the active writeback process or are in any way busy.
+> As I told you in a previous email, this is not a trivial exercise.
 
-I think the comment doesn't match the function anymore.
+Well, it is not a 5 line patch, but it looks like 10 mins work and
+some testing to me, tracking down all the uses of matrx_mdev->kvm
+under the vfio_ap_mdev_unset_kvm() call does not seem difficult nor do
+there seem to be so many.
 
-> + */
-> +void cleanup_offline_wb(struct bdi_writeback *wb)
-> +{
-> +	struct inode *inode, *tmp;
-> +
-> +	spin_lock(&wb->list_lock);
-> +restart:
-> +	list_for_each_entry_safe(inode, tmp, &wb->b_attached, i_io_list) {
-> +		if (!spin_trylock(&inode->i_lock))
-> +			continue;
-> +		xa_lock_irq(&inode->i_mapping->i_pages);
-> +		if ((inode->i_state & I_REFERENCED) != I_REFERENCED) {
+> vfio_ap_free_aqic_resources() function. In order to unregister the
+> the guest's ISC, the matrix_mdev->kvm pointer must still
+> be set, however, you cleared it above.
 
-Why the I_REFERENCED check here? That's just inode aging bit and I have
-hard time seeing how it would relate to whether inode should switch wbs...
+Which is why I said unset_kvm needs to be reorganized to use the kvm
+argument, not the matrixt_mdev->kvm
 
-> +			struct bdi_writeback *bdi_wb = &inode_to_bdi(inode)->wb;
-> +
-> +			WARN_ON_ONCE(inode->i_wb != wb);
-> +
-> +			inode->i_wb = bdi_wb;
-> +			list_del_init(&inode->i_io_list);
-> +			wb_put(wb);
+> Another thing you're overlooking is the fact that all of the
+> assignment/unassignment functions associated with the
+> corresponding syfs attributes of the mdev change the
+> content of the matrix_mdev->matrix and
+> matrix_mdev->shadow_apcb structures. In particular,
+> the matrix_mdev->matrix contains the APQNs of the
+> queues that must be reset. These sysfs attributes can
+> be accessed at any time including when the
+> vfio_ap_mdev_unset_kvm() function is executing,
+> so that is something that must also be taken into
+> consideration.
 
-I was kind of hoping you'll use some variant of inode_switch_wbs() here.
-That way we have single function handling all the subtleties of switching
-inode->i_wb of an active inode. Maybe it isn't strictly needed here because
-you detach only from b_attached list and move to bdi_wb so things are
-indeed simpler here. But you definitely miss transferring WB_WRITEBACK stat
-and I'd also like to have a comment here explaining why this cannot race
-with other writeback handling or wb switching in a harmful way.
+I checked and thought they already had a lock?
+ 
+> > Also the kvm_busy should be replaced by a proper rwsem, don't try to
+> > open code locks like that - it just defeats lockdep analysis.
+> 
+> I've had no luck trying to refactor this using rwsem. I always
+> run into lockdep problems between the matrix_dev->lock
+> and matrix_mdev->rwsem, even if the locking order is maintained.
 
-> +		}
-> +		xa_unlock_irq(&inode->i_mapping->i_pages);
-> +		spin_unlock(&inode->i_lock);
-> +		if (cond_resched_lock(&wb->list_lock))
-> +			goto restart;
-> +	}
-> +	spin_unlock(&wb->list_lock);
-> +}
-> +
->  /**
->   * wbc_attach_and_unlock_inode - associate wbc with target inode and unlock it
->   * @wbc: writeback_control of interest
-> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-> index e5dc238ebe4f..07d6b6d6dbdf 100644
-> --- a/include/linux/backing-dev-defs.h
-> +++ b/include/linux/backing-dev-defs.h
-> @@ -155,6 +155,7 @@ struct bdi_writeback {
->  	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
->  	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
->  	struct list_head b_attached;	/* attached inodes, protected by list_lock */
-> +	struct list_head offline_node;	/* anchored at offline_cgwbs */
->  
->  	union {
->  		struct work_struct release_work;
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index 572a13c40c90..922f15fe6ad4 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -222,6 +222,7 @@ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
->  int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
->  			   enum wb_reason reason, struct wb_completion *done);
->  void cgroup_writeback_umount(void);
-> +void cleanup_offline_wb(struct bdi_writeback *wb);
->  
->  /**
->   * inode_attach_wb - associate an inode with its wb
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 54c5dc4b8c24..92a00bcaa504 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -371,12 +371,16 @@ static void wb_exit(struct bdi_writeback *wb)
->  #include <linux/memcontrol.h>
->  
->  /*
-> - * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_list.
-> - * bdi->cgwb_tree is also RCU protected.
-> + * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs and
-> + * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
->   */
->  static DEFINE_SPINLOCK(cgwb_lock);
->  static struct workqueue_struct *cgwb_release_wq;
->  
-> +static LIST_HEAD(offline_cgwbs);
-> +static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-> +static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_workfn);
-> +
->  static void cgwb_release_workfn(struct work_struct *work)
->  {
->  	struct bdi_writeback *wb = container_of(work, struct bdi_writeback,
-> @@ -395,6 +399,7 @@ static void cgwb_release_workfn(struct work_struct *work)
->  
->  	fprop_local_destroy_percpu(&wb->memcg_completions);
->  	percpu_ref_exit(&wb->refcnt);
-> +	WARN_ON(!list_empty(&wb->offline_node));
+Usually when people start open coding locks it is often because
+lockdep complained.
 
-Hum, cannot this happen when when wb had originally some attached inodes,
-we added it to offline_cgwbs but then normal inode reclaim cleaned all the
-inodes (and thus all wb refs were dropped) before
-cleanup_offline_cgwbs_workfn() was executed? So either the offline_cgwbs
-list has to hold its own wb ref or we have to remove cgwb from the list
-in cgwb_release_workfn().
+Open coding a lock makes lockdep stop because the lockdep code is
+removed, but it doesn't fix anything.
 
->  	wb_exit(wb);
->  	WARN_ON_ONCE(!list_empty(&wb->b_attached));
->  	kfree_rcu(wb, rcu);
-> @@ -414,6 +419,10 @@ static void cgwb_kill(struct bdi_writeback *wb)
->  	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
->  	list_del(&wb->memcg_node);
->  	list_del(&wb->blkcg_node);
-> +	if (!list_empty(&wb->b_attached))
-> +		list_add(&wb->offline_node, &offline_cgwbs);
-> +	else
-> +		INIT_LIST_HEAD(&wb->offline_node);
->  	percpu_ref_kill(&wb->refcnt);
->  }
->  
-> @@ -635,6 +644,50 @@ static void cgwb_bdi_unregister(struct backing_dev_info *bdi)
->  	mutex_unlock(&bdi->cgwb_release_mutex);
->  }
->  
-> +/**
-> + * cleanup_offline_cgwbs - try to release dying cgwbs
-> + *
-> + * Try to release dying cgwbs by switching attached inodes to the wb
-> + * belonging to the root memory cgroup. Processed wbs are placed at the
-> + * end of the list to guarantee the forward progress.
-> + *
-> + * Should be called with the acquired cgwb_lock lock, which might
-> + * be released and re-acquired in the process.
-> + */
-> +static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-> +{
-> +	struct bdi_writeback *wb;
-> +	LIST_HEAD(processed);
-> +
-> +	spin_lock_irq(&cgwb_lock);
-> +
-> +	while (!list_empty(&offline_cgwbs)) {
-> +		wb = list_first_entry(&offline_cgwbs, struct bdi_writeback,
-> +				      offline_node);
-> +		list_move(&wb->offline_node, &processed);
-> +
-> +		if (wb_has_dirty_io(wb))
-> +			continue;
-> +
-> +		if (!percpu_ref_tryget(&wb->refcnt))
-> +			continue;
-> +
-> +		spin_unlock_irq(&cgwb_lock);
-> +		cleanup_offline_wb(wb);
-> +		spin_lock_irq(&cgwb_lock);
-> +
-> +		if (list_empty(&wb->b_attached))
-> +			list_del_init(&wb->offline_node);
+> Clearly, I am lacking in understanding of how these locks
+> interact. Any clues here?
 
-But the cgwb can still have inodes in its dirty lists which will eventually
-move to b_attached. So you can delete cgwb here prematurely, cannot you?
+I'd have to see the lockdep reports and look at it quite a lot
+more. 
 
-> +
-> +		wb_put(wb);
-> +	}
-> +
-> +	if (!list_empty(&processed))
-> +		list_splice_tail(&processed, &offline_cgwbs);
-> +
-> +	spin_unlock_irq(&cgwb_lock);
-> +}
-> +
->  /**
->   * wb_memcg_offline - kill all wb's associated with a memcg being offlined
->   * @memcg: memcg being offlined
-> @@ -650,6 +703,10 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
->  	list_for_each_entry_safe(wb, next, memcg_cgwb_list, memcg_node)
->  		cgwb_kill(wb);
->  	memcg_cgwb_list->next = NULL;	/* prevent new wb's */
-> +
-> +	if (!list_empty(&offline_cgwbs))
-> +		schedule_work(&cleanup_offline_cgwbs_work);
-> +
->  	spin_unlock_irq(&cgwb_lock);
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jason
