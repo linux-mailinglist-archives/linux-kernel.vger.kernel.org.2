@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515A2393335
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EDC393339
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235665AbhE0QLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:11:23 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:53278 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbhE0QLV (ORCPT
+        id S236793AbhE0QLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:11:43 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:41033 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235412AbhE0QLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:11:21 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:58506 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lmIZv-0001O5-GO; Thu, 27 May 2021 12:09:47 -0400
-Message-ID: <6b67bd40815f779059f7f3d3ad22f638789452b1.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: handle signals before letting io-worker exit
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 27 May 2021 12:09:46 -0400
-In-Reply-To: <7e10ffd2-5948-3869-b0dc-fd81d693fe33@kernel.dk>
-References: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
-         <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
-         <1e5c308bd25055ac8a899d40f00df08fc755e066.camel@trillion01.com>
-         <7e10ffd2-5948-3869-b0dc-fd81d693fe33@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        Thu, 27 May 2021 12:11:36 -0400
+Received: from [192.168.1.101] (83.6.168.54.neoplus.adsl.tpnet.pl [83.6.168.54])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 201923F116;
+        Thu, 27 May 2021 18:10:00 +0200 (CEST)
+Subject: Re: [PATCH 2/2] video: backlight: qcom-wled: Add PMI8994 compatible
+To:     Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Jingoo Han <jingoohan1@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org
+References: <20210228124106.135812-1-konrad.dybcio@somainline.org>
+ <20210228124106.135812-2-konrad.dybcio@somainline.org>
+ <20210322161810.biagj2qro66rv4gt@maple.lan> <20210323083935.GF2916463@dell>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <a81bfa44-ed86-207c-0f8c-c9bbad62733d@somainline.org>
+Date:   Thu, 27 May 2021 18:09:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+In-Reply-To: <20210323083935.GF2916463@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 09:30 -0600, Jens Axboe wrote:
-> > > 
-> > Jens,
-> > 
-> > You are 100% correct. In fact, this is the same problem for ALL
-> > currently existing and future io threads. Therefore, I start to
-> > think
-> > that the right place for the fix might be straight into
-> > do_exit()...
-> 
-> That is what I was getting at. To avoid poluting do_exit() with it, I
-> think it'd be best to add an io_thread_exit() that simply does:
-> 
-> void io_thread_exit(void)
-> {
->         if (signal_pending(current)) {
->                 struct ksignal ksig;
->                 get_signal(&ksig);
->         }
->         do_exit(0);
-> }
-> 
-> and convert the do_exit() calls in io_uring/io-wq to io_thread_exit()
-> instead.
-> 
-IMHO, that would be an acceptable compromise because it does fix my
-problem. However, I am of the opinion that it wouldn't be poluting
-do_exit() and would in fact be the right place to do it considering
-that create_io_thread() is in kernel and theoritically, anyone can call
-it to create an io_thread and would be susceptible to get bitten by the
-exact same problem and would have to come up with a similar solution if
-it is not addressed directly by the kernel.
+Hi,
 
-Also, since I have submitted the patch, I have made the following
-realization:
+> Why are you Reviewing/Acking a patch that was applied on the 10th?
 
-I got bitten by the problem because of a race condition between the io-
-mgr thread and its io-wrks threads for processing their pending SIGKILL
-and the proposed patch does correct my problem.
+Forgive me if it turns out I'm blind, but I can't see the patch being in either -next, backlight/for-next, or 5.13-rc3. Perhaps it was omitted after all?
 
-The issue would have most likely been buried by 5.13 io-mgr removal...
 
-BUT, even the proposed patch isn't 100% perfect. AFAIK, it is still
-possible, but very unlikely, to get a signal between calling
-signal_pending() and do_exit().
-
-It might be possible to implement the solution and be 100% correct all
-the time by doing it inside do_exit()... I am currently eyeing
-exit_signals() as a potential good site for the patch...
-
+Konrad
 
