@@ -2,158 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769943938CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562083938D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhE0Wta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhE0Wt3 (ORCPT
+        id S236219AbhE0Wxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:53:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37420 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233203AbhE0Wxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:49:29 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F1DC061574;
-        Thu, 27 May 2021 15:47:54 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id a5so2536214lfm.0;
-        Thu, 27 May 2021 15:47:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tuFErfKmLPSW2pDEG6U77o1tTeY9ZBhylVoP4RDt4Ss=;
-        b=DSGs6n4jWVE8GR/oISRKpkTcZkRqZ1A39y5G4e1oGNApylenW3Ho1FR3x7Fh0BN12O
-         0gY1BAYYDv5JlKRSpy10a9P9Q6Z3bUm04y8qPx7eK5ISGcFMlylCq+msaH80pUAgKQZB
-         06ez4e3oBLxPRuL0uNWGBMiyrEQqKBMlWP64F0fR0E7y84UuNtceukRWXSaf1wu/jpBP
-         jVufZZFxPCTABEqfRz8GZ94+K/3GbU7ucJrq8MRl1wS/XgIwkKMTJ/w7S2kts/zbO9J9
-         C7QttwAk/dXYRTFLUsEuswkxvaq0EcX9d4IxFjUB1egSKGwECdFzp7Sd0+n6Goy2SNKy
-         Werw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tuFErfKmLPSW2pDEG6U77o1tTeY9ZBhylVoP4RDt4Ss=;
-        b=q6+UTj0fQJYe2vlDl8hF4XnTZzWlJMbIM1mmSUSU8bYrdENSMC4SiWjAKitkgM2S6m
-         fuiiNdAAA+4M/6C+xDMdRBuCkusjci82XIeOnoD9ogPueIKvSjsStQ3bqDrragbkSkbf
-         zsI05ruD55b2FpIDXcFOpudlFod9/pGlKsXxdvcBpVvjeJnM3827CFQ7O9d6S5kQSq7v
-         JEjS0DX7L0k2a1fNE6EnXujYyD3AutozCwZKXcKzb/Tu301fRGi6wW98uw1LS0fSrCRH
-         EGfUNY+IKPj4f0EVwI2JXDsmu2Ql5/pcLrGnFW/tdP/2ZaUlNjAv0xcZQD3DXOYyMM4q
-         tOvQ==
-X-Gm-Message-State: AOAM531b1j40wzGf2nK8EF3IBE8yvxlf77bWZzLEtNTqZaPCxRhtN0Me
-        P9l2Ez8mkv7c2FqA8Zc+KoE9UbxUQ/I=
-X-Google-Smtp-Source: ABdhPJzIsHbe6MXd6NB4bSatrOBZTgSqABnUMzpg9+rxjNeZmHMUlx22rMk7kngwZa20jFRpzdgcpg==
-X-Received: by 2002:a19:6a13:: with SMTP id u19mr3715501lfu.252.1622155673149;
-        Thu, 27 May 2021 15:47:53 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
-        by smtp.googlemail.com with ESMTPSA id h16sm258660lfc.142.2021.05.27.15.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 15:47:52 -0700 (PDT)
-Subject: Re: [BUG] brcmfmac: brcmf_sdio_bus_rxctl: resumed on timeout (WiFi
- dies)
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <fcf95129-cba7-817d-4bfd-8efaf92f957f@gmail.com>
- <cc328771-0c1d-93e7-cec6-3f4fb7f64d02@broadcom.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <fe3bf47f-7a95-8b58-1d33-c9ba1c8b1ebb@gmail.com>
-Date:   Fri, 28 May 2021 01:47:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 27 May 2021 18:53:40 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622155923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAIoLlMtrjzvrcsBxWhaicEwWt4fesWA8JrISGhrLd8=;
+        b=XK0pzWuM+eObk9PdHaBYcRiPNn68IG5lkkSx+/M1IFv1KJVDo4XGjreMmYtvfcptFdJaMK
+        o8SAPmC2vpJsvRPrME1koGoJpxNT6UHo6MNWwTVoUwCCdTjyFu2gEKbVN3gcCQ1uAWpKn2
+        eMP0WdUIgfjHREIlP0+JcDkIW057x0G6Nzuk+8V0P741kSHsc8BdMuqlCin/skeHZ1v9tl
+        d57tofIlP/91yyXfeHbJcEQb4au943NVBZRydPidUONCE+/77OLFVbPnRAffEEYUhuqdE1
+        1OVM4filzuJMq3TAb9snPrtMAq5hUXBcXu/CpEd4kL/ZC/dDScu36YsxvKFbiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622155923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAIoLlMtrjzvrcsBxWhaicEwWt4fesWA8JrISGhrLd8=;
+        b=NgIBE2poQuAfCdybmeEvdWm3RcgZ7+Cwxqm+Hlou0f5BLGQUi1m1uWytGTEfuproQ+/nss
+        kUTkS29UD5CGimCw==
+To:     syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+        seanjc@google.com, steve.wahl@hpe.com,
+        syzkaller-bugs@googlegroups.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org
+Subject: Re: [syzbot] WARNING in x86_emulate_instruction
+In-Reply-To: <000000000000f3fc9305c2e24311@google.com>
+References: <000000000000f3fc9305c2e24311@google.com>
+Date:   Fri, 28 May 2021 00:52:03 +0200
+Message-ID: <87v9737pt8.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <cc328771-0c1d-93e7-cec6-3f4fb7f64d02@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.05.2021 19:42, Arend van Spriel пишет:
-> On 5/26/2021 5:10 PM, Dmitry Osipenko wrote:
->> Hello,
->>
->> After updating to Ubuntu 21.04 I found two problems related to the
->> BRCMF_C_GET_ASSOCLIST using an older BCM4329 SDIO WiFi.
->>
->> 1. The kernel is spammed with:
->>
->>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->> unsupported, err=-52
->>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->> unsupported, err=-52
->>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->> unsupported, err=-52
->>
->> Which happens apparently due to a newer NetworkManager version that
->> pokes dump_station() periodically. I sent [1] that fixes this noise.
->>
->> [1]
->> https://patchwork.kernel.org/project/linux-wireless/list/?series=480715
-> 
-> Right. I noticed this one and did not have anything to add to the
-> review/suggestion.
+On Fri, May 21 2021 at 19:52, syzbot wrote:
 
-Please feel free to add yours r-b to the patches if they are good to you.
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    8ac91e6c Merge tag 'for-5.13-rc2-tag' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16a80fc7d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dddb87edd6431081
+> dashboard link: https://syzkaller.appspot.com/bug?extid=71271244f206d17f6441
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d1f89bd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
+>
+> The issue was bisected to:
+>
+> commit 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
+> Author: Steve Wahl <steve.wahl@hpe.com>
+> Date:   Fri Jan 8 15:35:49 2021 +0000
+>
+>     perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bf9b3d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bf9b3d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=132bf9b3d00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+> Fixes: 9a7832ce3d92 ("perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info")
 
->> 2. The other much worse problem is that WiFi eventually dies now with
->> these errors:
->>
->> ...
->>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->> unsupported, err=-52
->>   brcmfmac: brcmf_sdio_bus_rxctl: resumed on timeout
->>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->> unsupported, err=-110
->>   ieee80211 phy0: brcmf_proto_bcdc_query_dcmd: brcmf_proto_bcdc_msg
->> failed w/status -110
->>
->>  From this point all firmware calls start to fail with err=-110 and
->> WiFi doesn't work anymore. This problem is reproducible with 5.13-rc
->> and current -next, I haven't checked older kernel versions. Somehow
->> it's worse using a recent -next, WiFi dies quicker.
->>
->> What's interesting is that I see that there is always a pending signal
->> in brcmf_sdio_dcmd_resp_wait() when timeout happens. It looks like the
->> timeout happens when there is access to a swap partition, which stalls
->> system for a second or two, but this is not 100%. Increasing
->> DCMD_RESP_TIMEOUT doesn't help.
-> 
-> The timeout error (-110) can have two root causes that I am aware off.
-> Either the firmware died or the SDIO layer has gone haywire. Not sure if
-> that swap partition is on eMMC device, but if so it could be related.
-> You could try generating device coredump. If that also gives -110 errors
-> we know it is the SDIO layer.
+So this is stale for a week now. It's fully reproducible and nobody
+can't be bothered to look at that?
 
-Coredump is a good idea, thank you. The swap partition is on external SD
-card, everything else is on eMMC.
+What's wrong with you people?
 
->> Please let me know if you have any ideas of how to fix this trouble
->> properly or if you need need any more info.
->>
->> Removing BRCMF_C_GET_ASSOCLIST firmware call entirely from the driver
->> fixes the problem.
-> 
-> My guess is that reducing interaction with firmware is what is avoiding
-> the issue and not so much this specific firmware command. As always it
-> is good to know the conditions in which the issue occurs. What is the
-> hardware platform you are running Ubuntu on? Stuff like that.
+Thanks,
 
-That's an older Acer A500 NVIDIA Tegra20 tablet device [1]. I may also
-try to reproduce problem on Tegra30 Nexus 7 with BCM4330.
-
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-
-Thank you very much for the suggestions. I will try to collect more info
-and come back with the report.
+        tglx
