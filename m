@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60502393723
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25735393728
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhE0U0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:26:38 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:41630 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbhE0U0c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:26:32 -0400
-Received: by mail-io1-f42.google.com with SMTP id n10so1846923ion.8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:24:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c5avyG+JG+HCBZSkDHForBT/c7WMYaoLNLCgHmVeHfQ=;
-        b=OToOPIeA8FBu36dTLjBiJ9hAN1E3NoNlSRMRK24TRcdEf8yvye/xedQ/1kmvNcj9bq
-         qVt/MunXuJEOwaHzz56D/ZtewgHHazVhz0Bt9RHs+GudbmRVvsJUa8JvP4SQ5hoIYv88
-         54/3KpvIKwG96wac9Y4I2BLDCE3zhOMDVfgOLgj0bmy0AycWOZhPRiJvslKu31t6GmO+
-         XxvhwxDOR8y9xxI+2jkuUa0n8SvAg78QYTOadFnXFv/tfNufDts30AvVgpeMgRG4ZvS4
-         bpH24bPD/5nme0klhQ6EBWwwfpxnyld8BoKGOSKGoFihb3gJtDyFaVS45+sLU1hF5cFw
-         6E4Q==
-X-Gm-Message-State: AOAM531mbV9/QRQOpEdx8LXKaOrmiakJgYZYHLsQk8ZUXeD9eeN6Wj2W
-        yvYMLU4qkDU7Un4u/eI8x2yoF+5Rxls=
-X-Google-Smtp-Source: ABdhPJxuqBvZJLjl7cqOx+pzzc28YudKBtnl2uT3U+QHzhvlP9kfRDVM+jRRpZQEE83MxpnWGvyWcQ==
-X-Received: by 2002:a02:908a:: with SMTP id x10mr5067710jaf.30.1622147097974;
-        Thu, 27 May 2021 13:24:57 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id o18sm1690240ilq.9.2021.05.27.13.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 13:24:57 -0700 (PDT)
-Date:   Thu, 27 May 2021 20:24:56 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] percpu: initialize best_upa variable
-Message-ID: <YLAAGCeCyVKGxO+V@google.com>
-References: <20210515180817.1751084-1-trix@redhat.com>
- <YKHPV4QAXmaWb6jJ@google.com>
- <dd1dabe0-73a5-8a39-ba58-bb58a1453d90@redhat.com>
- <YKKAGbOyRSX5jmxY@google.com>
+        id S235847AbhE0U2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235524AbhE0U2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 16:28:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A7A061360;
+        Thu, 27 May 2021 20:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622147196;
+        bh=cy1zdvQCkbyF8cbGtaUW+3spYF3RmL4ltiIOEIZGXTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LRpAz+Zy10IieHd0zOw9oMrAFqOFjHdkQ6rnJvVonE+xMbFBybp6MaAj2gQXI1IdH
+         wEgPAZhR9pK2rKbl6aj/DAEug8PiyLXkjLp1WbIeQkKXB2zPcjGzYItapkH7Ke3sf+
+         LFSiC79CS4PLUPwsR9Mj1THEJaJkcUZzN4Rh4O9ZOd+9wz2hPirbanP8youDZtvMEy
+         TlEqbF574UBIrMurNf0tAOCp1W6YPs/IIusOsurS7ldudHPWe/9GfmmQQLkZ7tbdVt
+         O9YfBRJv4ZCaEoEtiGJzyFaBwW+yKq7NyV2vMzV50qjH/MpGw4OkXplZgTCQT23JLD
+         wN75hpiRFkqZg==
+Date:   Thu, 27 May 2021 22:26:33 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/6] i2c: acpi: Export i2c_acpi_find_client_by_adev()
+ for users
+Message-ID: <YLAAedlB6UaJQh0X@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YkSC1hApOCzGjIKM"
 Content-Disposition: inline
-In-Reply-To: <YKKAGbOyRSX5jmxY@google.com>
+In-Reply-To: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Mon, May 17, 2021 at 02:39:21PM +0000, Dennis Zhou wrote:
-> On Mon, May 17, 2021 at 06:17:47AM -0700, Tom Rix wrote:
-> > 
-> > On 5/16/21 7:05 PM, Dennis Zhou wrote:
-> > > Hello,
-> > > 
-> > > On Sat, May 15, 2021 at 11:08:17AM -0700, trix@redhat.com wrote:
-> > > > From: Tom Rix <trix@redhat.com>
-> > > > 
-> > > > Static analysis reports this problem
-> > > > percpu.c:2945:6: warning: Assigned value is garbage or undefined
-> > > >          upa = best_upa;
-> > > >              ^ ~~~~~~~~
-> > > > best_upa may not be set, so initialize it.
-> > > > 
-> > > > Signed-off-by: Tom Rix <trix@redhat.com>
-> > > > ---
-> > > >   mm/percpu.c | 1 +
-> > > >   1 file changed, 1 insertion(+)
-> > > > 
-> > > > diff --git a/mm/percpu.c b/mm/percpu.c
-> > > > index a257c3efdf18b..6578b706fae81 100644
-> > > > --- a/mm/percpu.c
-> > > > +++ b/mm/percpu.c
-> > > > @@ -2916,6 +2916,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
-> > > >   	 * Related to atom_size, which could be much larger than the unit_size.
-> > > >   	 */
-> > > >   	last_allocs = INT_MAX;
-> > > > +	best_upa = max_upa;
-> > > >   	for (upa = max_upa; upa; upa--) {
-> > > >   		int allocs = 0, wasted = 0;
-> > > > -- 
-> > > > 2.26.3
-> > > > 
-> > > I think the proper fix would be:
-> > > 
-> > > best_upa = 0;
-> > 
-> > I was looking for initializing with something that would work.
-> > 
-> 
-> I think I prefer setting it to 0 because it forces the loop to have
-> succeeded vs being able to bypass it if the for loop logic was changed.
-> 
-> > > for (...) { }
-> > > BUG_ON(!best_upa);
-> > WARN_ON instead?
-> 
-> This is initialization code. So if upa == 0, it really is a problem.
-> Having 0 units per allocation is bogus.
-> 
-> > > upa = best_upa;
-> > > 
-> > > If you're fine with this I'll make the changes and apply it to
-> > > for-5.13-fixes.
-> > > 
-> > > Can you also tell me what static analysis tool produced this? I'm just a
-> > > little curious because this code hasn't changed in several years so I'd
-> > > have expected some static analyzer to have caught this by now.
-> > 
-> > Clang 10
-> > 
-> > Tom
-> > 
-> 
-> Thanks,
-> Dennis
+--YkSC1hApOCzGjIKM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Following up here. Are you find with me making the changes and
-attributing it to you? Otherwise I can just spin another patch real
-quick.
+On Wed, May 26, 2021 at 03:43:17PM +0300, Andy Shevchenko wrote:
+> There is at least one user that will gain from the
+> i2c_acpi_find_client_by_adev() being exported.
 
-At this point I've already sent my PR for-5.13-fixes. So I'll queue some
-fix for-5.14.
- 
-Thanks,
-Dennis
+No objections per se. But as the user is in staging, I want to ask if
+the use there is really a solution we would also accept outside of
+staging? Or is it a hack?
+
+
+--YkSC1hApOCzGjIKM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwAHkACgkQFA3kzBSg
+KbZ39Q//Xi/xhfYvz+yPnbg09qxKQMLjTghIum8+MBovB6wG5KO3xJquun3lgwi2
+91cLMUs4vccepTNqhLc9E2aTpEj7vXT+TXXdi5lquG7A5UyRRXtLjdUUpocgQkK2
+c7XgdaghXzIHL2WQg/D69kWuCeqjDI2zKwozAUHj/xlq1VYH3G9t+JQjdCT2Mxr8
+cxLfc3CMIGALlPUY7KWJs4D094vladvWSenCpsQMMLbkJVXEGfBGbnvntrOEhNqZ
+w6WCapfG80/xPcVesMaQSRAkyTLIVwea/d0njRwmb3vd9GjhAtpc+2EHGJL16y0Y
+WAywSlzqXFHg50laA7nnV8nGUBPOwztSI000Lpry/jWqeG2sGKkwer0vl6701+84
+YBP7n1e3Fed/tNwlP5Ge38MAZg7q9tyhWn+PZmjccu3OPz0I/ITmQ3u3xjvVPyGp
+1VtJ8kH124M6l7VsnaQVv1iA827+rPQVmZ6DWtuRFDNjuhtuLgnAf726hS9ZW3U6
+tuR+BQDqM+Gno64KiErYiIEal5YVveCV3H5nub70hvVGKTsi2/Wpu5It3isQUppv
+puv31INxtAA0lqivGAwNAQ9JyIYWH32Yktfl7MQGfR8WkKiDcgG0o9krHDXhTXWK
+BAFQOOKvzTAmth8WGRktwJo2Pf3vQ6Yd6bb0yaNR9zIJbfV2hKM=
+=CIL7
+-----END PGP SIGNATURE-----
+
+--YkSC1hApOCzGjIKM--
