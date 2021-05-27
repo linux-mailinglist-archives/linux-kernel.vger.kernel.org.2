@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5029392FF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED423392FF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236569AbhE0NoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:44:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236373AbhE0NoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:44:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA5C460FEE;
-        Thu, 27 May 2021 13:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622122947;
-        bh=c/L3W4ntmhHJs70AlmnrREK6uGfMAvXGVW97NOBEeXA=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=VSyZ9aLIf1PMr5kHvHMy96DW1BTdgc30qRf9LqlavDQe9dIXF41YDwOGyiAk+YMud
-         V6XkRS/SIeHhinfanS7s3fKANkIx+wNa6NiJ7Yl7Uja+ZCjIf5Vb0bVu7arjfHkTjD
-         ivjOhUunpfrfB0g+2wEZOr0FR4+D1KG+YjBa6EWRFf5sxKWfAcluPTNrC7H4LrbcXy
-         nhckGWK3Z/+0foojyweixcpUnMn6IPqYGMHBmi9udks4yP7Wg+ofVfjFIB2U6nGbG3
-         9Su9cWhUpiH13mBAGl6z048SvC4TcSAd6EEEPl+Wk9JXa3b3rMt5gIbi6aE9zLZhsI
-         cN/N1j7hyqXBA==
-Date:   Thu, 27 May 2021 15:42:24 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the hid tree
-In-Reply-To: <e5ee42f7-b0eb-40c7-e54f-8e16e8b97b68@redhat.com>
-Message-ID: <nycvar.YFH.7.76.2105271542090.28378@cbobk.fhfr.pm>
-References: <20210527152631.1e70fba2@canb.auug.org.au> <nycvar.YFH.7.76.2105271012430.28378@cbobk.fhfr.pm> <e5ee42f7-b0eb-40c7-e54f-8e16e8b97b68@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S236575AbhE0Nor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236531AbhE0Noq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:44:46 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49A5C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:43:12 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so235164otc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=iGQlZEEAZDBpgg5JSABtElPLt5kqvvkZA7rme3t9db8=;
+        b=0IwmFMFThe1zLZzoAl5f70Xny9ySewzTP+RHjtCel3XB+S3hh2pRuDcMacB+5YByRr
+         QFkPLCT69PQoMUF9d8bySfE/r5nEdKqC1bGuJYMAUNn03VaLfjSkcbmtxo7394ySl2kg
+         kdBeVcT+VYikF+vLbtMfwIl2aQ9pM7OVcrLqZ5aBh0GHi76jkBNK4LMxnVEszgB2wn9/
+         JKmfAHMKWK5jR0C9c87Tx8fT69fhkSepY4XjnQ9lnmq5nuK6lxVEbmwQwkbzQji/Lwn0
+         JtW5zy1uYdxujePTYI3e5bSItD7VgW4x/TVD+NzXp9cPDzBWykRIrYC3uWoSI2hd+RP/
+         H3Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iGQlZEEAZDBpgg5JSABtElPLt5kqvvkZA7rme3t9db8=;
+        b=H3MKCRMhr4l+oyVRgsC5m0ruoMPPxXX9Swrc4En8YwX5H5bkNCXTJh3hSAA+6GRA4Z
+         yELeOxirQVlw5pZwgEa6ZMVgbfGH4buoN/eHMGku6CaiCygWUmpboEn8VqoXPI7R5Wpz
+         Hpi8cK1UO9aAQmVudlY6XWEZ3nSc6mmnss9WLm4F64sr+u+r3Wj4iJbzsQ746Tij8vWT
+         a2aEjXwWPfSnUd4qjh6ZrCbOLqaX/EmxSQYhFdfAfwbfsnY90zqkmo3574HybXprZDD6
+         WtVv9fVt0NNp8B3/eHA1pXj0nkJDdbcFhevd0e9Up08qnwqIpAOFbhYBed2vVsfIpNDk
+         eaRQ==
+X-Gm-Message-State: AOAM531El3/PuALV00wuDgDMsV6EhnOkTPxUzYVmGHJAoWUlu7N9h8oK
+        THgpJZkaoBufpMI9tWVMHZZOI6RqrNuVUQ==
+X-Google-Smtp-Source: ABdhPJypE4GJ67gMrf2L28NON3Gvn6AkwpYX3QKNBGDCLa0k6sOF3niKv89EJVx9mnmc8DSGIkCvWA==
+X-Received: by 2002:a05:6830:51:: with SMTP id d17mr2826477otp.75.1622122991696;
+        Thu, 27 May 2021 06:43:11 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id z15sm487225otp.20.2021.05.27.06.43.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 06:43:11 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: Remove CONFIG_EXPERT
+To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210526223445.317749-1-jforbes@fedoraproject.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <aa130828-03c9-b49b-ab31-1fb83a0349fb@kernel.dk>
+Date:   Thu, 27 May 2021 07:43:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210526223445.317749-1-jforbes@fedoraproject.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021, Hans de Goede wrote:
+On 5/26/21 4:34 PM, Justin M. Forbes wrote:
+> While IO_URING has been in fairly heavy development, it is hidden behind
+> CONFIG_EXPERT with a default of on.  It has been long enough now that I
+> think we should remove EXPERT and allow users and distros to decide how
+> they want this config option set without jumping through hoops.
 
-> >> After merging the hid tree, today's linux-next build (x86_64
-> >> modules_install (on an allmodconfig build)) failed like this:
-> >>
-> >> depmod: ERROR: Cycle detected: hid -> usbhid -> hid
-> >> depmod: ERROR: Found 2 modules in dependency cycles!
-> >>
-> >> I could not easily figure out what caused this (it may not be the hid
-> >> tree, but probably is), so all I could do was leave it broken.
-> > 
-> > This is caused by Hans' patches (CCed). I will be dropping those today, as 
-> > the proper fix needs a bit more of rework.
-> 
-> Ack, sorry about the trouble these patches are causing.
-
-for-next has now been rebased with the three relevant commits removed.
-
-Thanks,
+The whole point of EXPERT is to ensure that it doesn't get turned off
+"by accident". It's a core feature, and something that more and more
+apps or libraries are relying on. It's not something I intended to ever
+go away, just like it would never go away for eg futex or epoll support.
 
 -- 
-Jiri Kosina
-SUSE Labs
+Jens Axboe
 
